@@ -68,8 +68,6 @@ public class FileOpen {
   /**
    * Returns the newly selected file.
    * Will return null if no file is selected.
-   *
-   * @return java.io.File
    */
   public File getFile() {
     return file;
@@ -78,8 +76,6 @@ public class FileOpen {
   /**
    * Returns the newly selected file.
    * Will return null if no file is selected.
-   *
-   * @return java.lang.String
    */
   public String getPathString() {
     return (file == null) ? null : file.getPath();

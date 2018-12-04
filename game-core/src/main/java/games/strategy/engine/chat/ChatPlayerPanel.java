@@ -59,9 +59,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   private Chat chat;
   private final Set<String> hiddenPlayers = new HashSet<>();
   private final IStatusListener statusListener;
-  // if our renderer is overridden
-  // we do not set this directly on the JList,
-  // instead we feed it the node name and staus as a string
+  // if our renderer is overridden we do not set this directly on the JList,
+  // instead we feed it the node name and status as a string
   private ListCellRenderer<Object> setCellRenderer = new DefaultListCellRenderer();
   private final List<IPlayerActionFactory> actionFactories = new ArrayList<>();
 
@@ -262,7 +261,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   public void addStatusMessage(final String message) {}
 
   /**
-   * Add an action factory that will be used to populate the pop up meny when
+   * Add an action factory that will be used to populate the pop up many when
    * right clicking on a player in the chat panel.
    */
   public void addActionFactory(final IPlayerActionFactory actionFactory) {

@@ -121,8 +121,7 @@ public final class CenterPicker {
     private final JLabel locationLabel = new JLabel();
 
     /**
-     * Setus up all GUI components, initializes variables with
-     * default or needed values, and prepares the map for user
+     * Sets up all GUI components, initializes variables with default or needed values, and prepares the map for user
      * commands.
      *
      * @param mapName Name of map file.
@@ -161,9 +160,7 @@ public final class CenterPicker {
       createImage(mapName);
       final JPanel imagePanel = createMainPanel();
       /*
-       * Add a mouse listener to show
-       * X : Y coordinates on the lower
-       * left corner of the screen.
+       * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
        */
       imagePanel.addMouseMotionListener(new MouseMotionAdapter() {
         @Override
@@ -215,11 +212,9 @@ public final class CenterPicker {
     } // end constructor
 
     /**
-     * createImage(java.lang.String)
-     * creates the image map and makes sure
-     * it is properly loaded.
+     * creates the image map and makes sure it is properly loaded.
      *
-     * @param mapName .lang.String mapName the path of image map
+     * @param mapName the path of image map
      */
     private void createImage(final String mapName) {
       image = Toolkit.getDefaultToolkit().createImage(mapName);
@@ -227,11 +222,7 @@ public final class CenterPicker {
     }
 
     /**
-     * javax.swing.JPanel createMainPanel()
-     * Creates the main panel and returns
-     * a JPanel object.
-     *
-     * @return javax.swing.JPanel the panel to return
+     * Creates the main panel and returns a JPanel object.
      */
     private JPanel createMainPanel() {
       return new JPanel() {
@@ -251,7 +242,6 @@ public final class CenterPicker {
     }
 
     /**
-     * saveCenters()
      * Saves the centers to disk.
      */
     private void saveCenters() {
@@ -269,7 +259,6 @@ public final class CenterPicker {
     }
 
     /**
-     * loadCenters()
      * Loads a pre-defined file with map center points.
      */
     private void loadCenters() {

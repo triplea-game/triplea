@@ -277,7 +277,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public void postStartGame() {
-    // // store the dice server
+    // store the dice server
     final GameData data = gameSelectorModel.getGameData();
     data.getProperties().set(DICE_ROLLER, diceServerEditor.getBean());
     // store the Turn Summary Poster
@@ -434,7 +434,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     /**
      * Get a serializable from the cache.
      *
-     * @param key the key ot was stored under
+     * @param key the key it was stored under
      * @return the serializable or null if one doesn't exists under the given key
      */
     IBean getSerializable(final String key) {

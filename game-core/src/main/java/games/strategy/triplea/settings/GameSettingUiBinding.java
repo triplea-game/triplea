@@ -14,8 +14,7 @@ public interface GameSettingUiBinding<T> {
   SelectionComponent<T> newSelectionComponent();
 
   /**
-   * The title describing the setting that can be updated in 2 or 3 words. The space for this value is very
-   * limited.
+   * The title describing the setting that can be updated in 2 or 3 words. The space for this value is very limited.
    *
    * @return The value displayed to user giving a setting component a 'title', to let the user know which value
    *         is updated by which control.

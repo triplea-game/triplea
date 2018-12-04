@@ -48,7 +48,6 @@ public class UnitImageFactory {
   private double scaleFactor;
   private ResourceLoader resourceLoader;
 
-  /** Creates new UnitImageFactory. */
   public UnitImageFactory() {}
 
   public void setResourceLoader(final ResourceLoader loader, final double scaleFactor, final int initialUnitWidth,
@@ -123,12 +122,9 @@ public class UnitImageFactory {
     }
     final Image baseImage = image.get();
 
-
     // We want to scale units according to the given scale factor.
-    // We use smooth scaling since the images are cached to allow
-    // to take our time in doing the scaling.
-    // Image observer is null, since the image should have been
-    // guaranteed to be loaded.
+    // We use smooth scaling since the images are cached to allow to take our time in doing the scaling.
+    // Image observer is null, since the image should have been guaranteed to be loaded.
     final int width = (int) (baseImage.getWidth(null) * scaleFactor);
     final int height = (int) (baseImage.getHeight(null) * scaleFactor);
     final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);

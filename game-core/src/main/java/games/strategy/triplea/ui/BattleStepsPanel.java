@@ -18,7 +18,7 @@ import lombok.extern.java.Log;
  * A panel for showing the battle steps in a display.
  * Contains code for walking from the current step, to a given step
  * there is a delay while we walk so that the user can see the steps progression.
- * Users of this class should deactive it after they are done.
+ * Users of this class should deactivate it after they are done.
  */
 @Log
 class BattleStepsPanel extends JPanel implements Active {
@@ -31,8 +31,7 @@ class BattleStepsPanel extends JPanel implements Active {
   // the step we want to reach
   private String targetStep = null;
   // all changes to state should be done while locked on this object.
-  // when we reach the target step, or when we want to walk the step
-  // notifyAll on this object
+  // when we reach the target step, or when we want to walk the step cakk notifyAll on this object
   private final Object mutex = new Object();
   private final List<CountDownLatch> waiters = new ArrayList<>();
   private boolean hasWalkThread = false;
@@ -147,8 +146,7 @@ class BattleStepsPanel extends JPanel implements Active {
   }
 
   /**
-   * This method blocks until the last step is reached, unless
-   * this method is called from the swing event thread.
+   * This method blocks until the last step is reached, unless this method is called from the swing event thread.
    */
   public void walkToLastStep() {
     synchronized (mutex) {
@@ -158,8 +156,8 @@ class BattleStepsPanel extends JPanel implements Active {
   }
 
   /**
-   * Set the target step for this panel
-   * This method returns immediatly, and must be called from the swing event thread.
+   * Set the target step for this panel.
+   * This method returns immediately, and must be called from the swing event thread.
    */
   public void setStep(final String step) {
     synchronized (mutex) {
@@ -180,8 +178,7 @@ class BattleStepsPanel extends JPanel implements Active {
   }
 
   /**
-   * Doesnt allow the user to change the selection, must be done through
-   * hiddenSetSelectionInterval.
+   * Doesn't allow the user to change the selection, must be done through hiddenSetSelectionInterval.
    */
   private static final class MyListSelectionModel extends DefaultListSelectionModel {
     private static final long serialVersionUID = -4359950441657840015L;

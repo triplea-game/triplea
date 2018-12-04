@@ -18,18 +18,15 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.util.CollectionUtils;
 
 /**
- * Logic for activating tech rolls. This delegate requires the
- * TechnologyDelegate to run correctly.
+ * Logic for activating tech rolls. This delegate requires the TechnologyDelegate to run correctly.
  */
 public class TechActivationDelegate extends BaseTripleADelegate {
   private boolean needToInitialize = true;
 
-  /** Creates new TechActivationDelegate. */
   public TechActivationDelegate() {}
 
   /**
-   * Called before the delegate will run. In this class, this does all the
-   * work.
+   * Called before the delegate will run. In this class, this does all the work.
    */
   @Override
   public void start() {

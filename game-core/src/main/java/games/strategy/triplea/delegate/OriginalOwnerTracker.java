@@ -19,8 +19,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 
 /**
  * Tracks the original owner of things.
- * Needed since territories and factories must revert
- * to their original owner when captured from the enemy.
+ * Needed since territories and factories must revert to their original owner when captured from the enemy.
  */
 public class OriginalOwnerTracker implements Serializable {
   private static final long serialVersionUID = 8462432412106180906L;

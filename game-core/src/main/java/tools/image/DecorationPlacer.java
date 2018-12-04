@@ -282,9 +282,7 @@ public final class DecorationPlacer {
       image = createImage(mapName);
       final JPanel imagePanel = createMainPanel();
       /*
-       * Add a mouse listener to show
-       * X : Y coordinates on the lower
-       * left corner of the screen.
+       * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
        */
       imagePanel.addMouseMotionListener(new MouseMotionAdapter() {
         @Override
@@ -297,9 +295,7 @@ public final class DecorationPlacer {
       });
       locationLabel.setFont(new Font("Ariel", Font.BOLD, 16));
       /*
-       * Add a mouse listener to monitor
-       * for right mouse button being
-       * clicked.
+       * Add a mouse listener to monitor for right mouse button being clicked.
        */
       imagePanel.addMouseListener(new MouseAdapter() {
         @Override
@@ -450,7 +446,6 @@ public final class DecorationPlacer {
     }
 
     /**
-     * saveCenters()
      * Saves the centers to disk.
      */
     private void saveImagePoints() {
@@ -562,8 +557,7 @@ public final class DecorationPlacer {
         loadImagePointTextFile();
         topLeftOrBottomLeft();
         // load all territories? things like pu_place.txt should have all or most territories, while things like
-        // blockade.txt and
-        // kamikaze_place.txt and capitols.txt will only have a small number of territories
+        // blockade.txt and kamikaze_place.txt and capitols.txt will only have a small number of territories
         log.info("Select Fill in all territories OR let you select them?");
         final Object[] fillAllOptions = {"Fill In All Territories", "Let Me Select Territories"};
         fillCurrentImagePointsBasedOnTextFile(JOptionPane.showOptionDialog(this,

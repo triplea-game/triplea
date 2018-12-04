@@ -72,8 +72,7 @@ public final class ImageShrinker {
     final int thumbHeight = (int) (baseImg.getHeight(null) * scale);
     // based on code from
     // http://www.geocities.com/marcoschmidt.geo/java-save-jpeg-thumbnail.html
-    // draw original image to thumbnail image object and
-    // scale it to the new size on-the-fly
+    // draw original image to thumbnail image object and scale it to the new size on-the-fly
     final BufferedImage thumbImage = new BufferedImage(thumbWidth, thumbHeight, BufferedImage.TYPE_INT_RGB);
     final Graphics2D graphics2D = thumbImage.createGraphics();
     graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);

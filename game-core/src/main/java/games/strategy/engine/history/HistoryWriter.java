@@ -10,8 +10,7 @@ import games.strategy.engine.data.PlayerId;
 import lombok.extern.java.Log;
 
 /**
- * Used to write to a history object. Delegates should use a
- * DelegateHistoryWriter
+ * Used to write to a history object. Delegates should use a DelegateHistoryWriter.
  */
 @Log
 public class HistoryWriter implements Serializable {

@@ -36,8 +36,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   public static final String AFTER = "after";
   public static final String BEFORE = "before";
   // "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for
-  // backwards
-  // compatibility.
+  // backwards compatibility.
   private int uses = -1;
   private boolean usedThisRound = false;
   private String notification = null;

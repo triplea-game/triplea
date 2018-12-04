@@ -235,8 +235,7 @@ public class ProUtils {
   }
 
   /**
-   * Returns whether the game is a FFA based on whether any of the player's enemies
-   * are enemies of each other.
+   * Returns whether the game is a FFA based on whether any of the player's enemies are enemies of each other.
    */
   public static boolean isFfa(final GameData data, final PlayerId player) {
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();

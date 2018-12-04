@@ -2,9 +2,8 @@ package games.strategy.triplea;
 
 /**
  * Indicates a class is serialized over network and has compatibility considerations.
- * With such classes there is a magic call to 'readObject' and 'writeObject'. Unless these methods
- * are overriden (see: serialization proxy pattern), then the non-transient variable names and types
- * must be kept the same.
+ * With such classes there is a magic call to 'readObject' and 'writeObject'. Unless these methods are overridden (see:
+ * serialization proxy pattern), then the non-transient variable names and types must be kept the same.
  *
  * <p>
  * NeworkData annotated classes do not have a method constraints, they are not necessarily called by reflection

@@ -169,8 +169,7 @@ final class ExportMenu extends JMenu {
       final String[] alliances = statPanel.getAlliances().toArray(new String[0]);
       final PlayerId[] players = statPanel.getPlayers().toArray(new PlayerId[0]);
       // its important here to translate the player objects into our game data
-      // the players for the stat panel are only relevant with respect to
-      // the game data they belong to
+      // the players for the stat panel are only relevant with respect to the game data they belong to
       Arrays.setAll(players, i -> clone.getPlayerList().getPlayerId(players[i].getName()));
       text.append(defaultFileName).append(",");
       text.append("\n");

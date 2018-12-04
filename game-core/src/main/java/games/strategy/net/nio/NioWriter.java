@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import lombok.extern.java.Log;
 
 /**
- * A thread that writes socket data using NIO .
+ * A thread that writes socket data using NIO.
  * Data is written in packets that are enqueued on our buffer.
  * Packets are sent to the sockets in the order that they are received.
  */
@@ -120,15 +120,13 @@ class NioWriter {
               }
             } else {
               // nothing to write
-              // cancel the key, otherwise we will
-              // spin forever as the socket will always be writable
+              // cancel the key, otherwise we will spin forever as the socket will always be writable
               key.cancel();
             }
           }
         }
       } catch (final Exception e) {
-        // catch unhandles exceptions to that the writer
-        // thread doesnt die
+        // catch unhandled exceptions so that the writer thread doesn't die
         log.log(Level.WARNING, "error in writer", e);
       }
     }

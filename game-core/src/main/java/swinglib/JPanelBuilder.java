@@ -137,11 +137,9 @@ public class JPanelBuilder {
   /**
    * Sets the current layout manager to a GridBag. This helper method will do most of the work
    * of the gridbag for you, but the number of columns in the grid needs to be specified. After
-   * this components can be added as normal, rows will wrap as needed when enough components are
-   * added.
+   * this components can be added as normal, rows will wrap as needed when enough components are added.
    *
-   * @param gridBagHelperColumns The number of columns to be created before components will wrap
-   *        to a new row.
+   * @param gridBagHelperColumns The number of columns to be created before components will wrap to a new row.
    */
   public JPanelBuilder gridBagLayout(final int gridBagHelperColumns) {
     this.useGridBagHelper = true;

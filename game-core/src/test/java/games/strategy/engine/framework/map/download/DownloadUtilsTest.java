@@ -62,9 +62,6 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     @Mock
     private StatusLine statusLine;
 
-    /**
-     * Sets up the test fixture.
-     */
     @BeforeEach
     public void setUp(@TempDir final Path tempDirPath) throws Exception {
       file = Files.createTempFile(tempDirPath, null, null).toFile();
@@ -185,9 +182,6 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     @Mock
     private StatusLine statusLine;
 
-    /**
-     * Sets up the test fixture.
-     */
     @BeforeEach
     public void setUp() throws Exception {
       when(client.execute(any())).thenReturn(response);

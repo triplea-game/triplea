@@ -37,8 +37,7 @@ public interface IDrawable {
   }
 
   /**
-   * Draw the tile
-   * If the graphics are scaled, then unscaled and scaled will be non null.
+   * Draw the tile. If the graphics are scaled, then unscaled and scaled will be non null.
    *
    * <p>
    * The affine transform will be set to the scaled version.

@@ -77,14 +77,12 @@ public class TileManager {
   /**
    * Selects tiles which fall into rectangle bounds.
    *
-   * @param bounds
-   *        rectangle for selection
+   * @param bounds rectangle for selection
    * @return tiles which fall into the rectangle
    */
   public List<Tile> getTiles(final Rectangle2D bounds) {
     // if the rectangle exceeds the map dimensions we to do shift the rectangle and check for each shifted rectangle as
-    // well as the original
-    // rectangle
+    // well as the original rectangle
     final MapData mapData = uiContext.getMapData();
     final Dimension mapDimensions = mapData.getMapDimensions();
     final boolean testXshift =

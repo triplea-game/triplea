@@ -43,9 +43,6 @@ import games.strategy.util.IntegerMap;
 public class TechAbilityAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1866305599625384294L;
 
-  /**
-   * Convenience method.
-   */
   public static TechAbilityAttachment get(final TechAdvance type) {
     if (type instanceof GenericTechAdvance) {
       // generic techs can name a hardcoded tech, therefore if it exists we should use the hard coded tech's attachment.
@@ -763,8 +760,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
    */
   public static void setDefaultTechnologyAttachments(final GameData data) throws GameParseException {
     // loop through all technologies. any "default/hard-coded" tech that doesn't have an attachment, will get its
-    // "default" attachment. any
-    // non-default tech are ignored.
+    // "default" attachment. any non-default tech are ignored.
     for (final TechAdvance techAdvance : TechAdvance.getTechAdvances(data)) {
       final TechAdvance ta;
       if (techAdvance instanceof GenericTechAdvance) {
@@ -881,8 +877,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
               taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
               if (heavyBombersLhtr) {
                 // TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this
-                // does not get changed.
-                // (meaning, turning on LHTR bombers will not result in this bonus damage,
+                // does not get changed. (meaning, turning on LHTR bombers will not result in this bonus damage,
                 // etc. It would have to start on, in the xml.)
                 taa.setDefenseRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
                 // LHTR adds 1 to base roll
@@ -901,11 +896,9 @@ public class TechAbilityAttachment extends DefaultAttachment {
         // options
         // mechanizedInfantry = because it is already completely atomized and controlled through unit attachments
         // IF one of the above named techs changes what it does in a future version of a&a, and the change is large
-        // enough or different
-        // enough that it cannot be done easily with a new game option,
+        // enough or different enough that it cannot be done easily with a new game option,
         // then it is better to create a new tech rather than change the old one, and give the new one a new name, like
-        // paratroopers2 or
-        // paratroopersAttack or Airborne_Forces, or some crap.
+        // paratroopers2 or paratroopersAttack or Airborne_Forces, or some crap.
       }
     }
   }

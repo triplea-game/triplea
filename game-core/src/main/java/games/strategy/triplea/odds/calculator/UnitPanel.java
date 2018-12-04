@@ -64,8 +64,7 @@ public class UnitPanel extends JPanel {
       // creating the unit just makes it, we want to make sure it is damaged if the category says it is damaged
       if (category.getHitPoints() > 1 && category.getDamaged() > 0) {
         // we do not need to use bridge and change factory here because this is not sent over the network. these are
-        // just some temporary
-        // units for the battle calc.
+        // just some temporary units for the battle calc.
         for (final Unit u : units) {
           u.setHits(category.getDamaged());
         }
@@ -93,4 +92,3 @@ public class UnitPanel extends JPanel {
     listeners.forEach(Runnable::run);
   }
 }
-

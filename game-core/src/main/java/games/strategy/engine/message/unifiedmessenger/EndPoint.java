@@ -15,8 +15,7 @@ import lombok.extern.java.Log;
 
 /**
  * This is where the methods finally get called.
- * An endpoint contains the implementors for a given name that are local to this
- * node.
+ * An end point contains the implementors for a given name that are local to this node.
  * You can invoke the method and get the results for all the implementors.
  */
 @Log

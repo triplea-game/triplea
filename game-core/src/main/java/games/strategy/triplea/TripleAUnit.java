@@ -31,8 +31,7 @@ import games.strategy.util.Tuple;
  *
  * <p>
  * As with all game data components, changes made to this unit must be made through a Change instance. Calling setters
- * on this directly will
- * not serialize the changes across the network.
+ * on this directly will not serialize the changes across the network.
  * </p>
  */
 public class TripleAUnit extends Unit {

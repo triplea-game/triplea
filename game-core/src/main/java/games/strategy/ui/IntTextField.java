@@ -12,8 +12,7 @@ import javax.swing.text.PlainDocument;
 
 /**
  * Text field for entering int values.
- * Ensures valid integers are entered, and can limit the range of
- * values user can enter.
+ * Ensures valid integers are entered, and can limit the range of values user can enter.
  */
 public class IntTextField extends JTextField {
   private static final long serialVersionUID = -7993942326354823887L;
@@ -22,7 +21,6 @@ public class IntTextField extends JTextField {
   private String terr;
   private final List<IntTextFieldChangeListener> listeners = new ArrayList<>();
 
-  /** Creates new IntTextField. */
   public IntTextField() {
     super(3);
     initTextField();

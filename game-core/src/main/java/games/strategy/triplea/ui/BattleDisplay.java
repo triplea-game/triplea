@@ -151,8 +151,7 @@ public class BattleDisplay extends JPanel {
   }
 
   void takeFocus() {
-    // we want a component on this frame to take focus
-    // so that pressing space will work (since it requires in focused
+    // we want a component on this frame to take focus so that pressing space will work (since it requires in focused
     // window). Only seems to be an issue on windows
     actionButton.requestFocus();
   }
@@ -361,8 +360,7 @@ public class BattleDisplay extends JPanel {
         latch.countDown();
         return;
       }
-      // if you have eliminated the impossible, whatever remains, no matter
-      // how improbable, must be the truth
+      // if you have eliminated the impossible, whatever remains, no matter how improbable, must be the truth
       // retreat
       if (possible.size() == 1) {
         retreatTo[0] = possible.iterator().next();

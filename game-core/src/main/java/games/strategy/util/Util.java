@@ -17,7 +17,6 @@ public class Util {
 
   private static final String SHA_512 = "SHA-512";
 
-  /** Creates new Util. */
   private Util() {}
 
   /**
@@ -63,9 +62,9 @@ public class Util {
   /**
    * Returns a predicate that represents the logical negation of the specified predicate.
    *
-   * @param p The predicate to negate; must not be {@code null}.
+   * @param p The predicate to negate.
    *
-   * @return A predicate that represents the logical negation of the specified predicate; never {@code null}.
+   * @return A predicate that represents the logical negation of the specified predicate.
    */
   public static <T> Predicate<T> not(final Predicate<T> p) {
     checkNotNull(p);

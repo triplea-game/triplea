@@ -26,11 +26,9 @@ import lombok.extern.java.Log;
 import tools.util.ToolArguments;
 
 /**
- * Utility for breaking an image into seperate smaller images.
- * User must make a new directory called "newImages" and then run the utility
- * first.
- * To create sea zones only, he must choose "Y" at the prompt. To create
- * territories, he must choose "N" at the prompt.
+ * Utility for breaking an image into separate smaller images.
+ * User must make a new directory called "newImages" and then run the utility first.
+ * To create sea zones only, he must choose "Y" at the prompt. To create territories, he must choose "N" at the prompt.
  * sea zone images directory must be renamed to "seazone
  */
 @Log

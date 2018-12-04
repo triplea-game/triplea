@@ -144,9 +144,7 @@ public class RemoteMessengerTest {
       // register it on the server
       final TestRemote testRemote = new TestRemote();
       serverRemoteMessenger.registerRemote(testRemote, test);
-      // since the registration must go over a socket
-      // and through a couple threads, wait for the
-      // client to get it
+      // since the registration must go over a socket and through a couple threads, wait for the client to get it
       await().until(() -> unifiedMessengerHub.hasImplementors(test.getName()));
       // call it on the client
       final int incrementedValue = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
@@ -183,7 +181,7 @@ public class RemoteMessengerTest {
       final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
       // call it on the client
       // should be no need to wait since the constructor should not
-      // reutrn until the initial state of the messenger is good
+      // return until the initial state of the messenger is good
       final int incrementedValue = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
       assertEquals(2, incrementedValue);
       assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
@@ -194,8 +192,7 @@ public class RemoteMessengerTest {
 
   @Test
   public void testShutDownClient() throws Exception {
-    // when the client shutdown, remotes created
-    // on the client should not be visible on server
+    // when the client shutdown, remotes created on the client should not be visible on server
     final RemoteName test = new RemoteName("test", ITestRemote.class);
     IServerMessenger server = null;
     ClientMessenger client = null;
@@ -218,8 +215,7 @@ public class RemoteMessengerTest {
 
   @Test
   public void testMethodReturnsOnWait() throws Exception {
-    // when the client shutdown, remotes created
-    // on the client should not be visible on server
+    // when the client shutdown, remotes created on the client should not be visible on server
     final RemoteName test = new RemoteName("test", IFoo.class);
     IServerMessenger server = null;
     ClientMessenger client = null;

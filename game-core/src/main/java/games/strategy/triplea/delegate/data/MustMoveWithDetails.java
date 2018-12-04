@@ -9,14 +9,11 @@ import games.strategy.engine.data.Unit;
 /**
  * A response to a must move query.
  * Returns a mapping of unit -> collection of units.
- * Units that must move are land units in transports,
- * and friendly aircraft that must move with carriers.
+ * Units that must move are land units in transports, and friendly aircraft that must move with carriers.
  */
 public class MustMoveWithDetails implements Serializable {
   private static final long serialVersionUID = 936060269327534445L;
-  /**
-   * Maps Unit -> Collection of units.
-   */
+
   private final Map<Unit, Collection<Unit>> mapping;
 
   /**

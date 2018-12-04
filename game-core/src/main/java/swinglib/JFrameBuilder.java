@@ -89,8 +89,7 @@ public class JFrameBuilder {
   }
 
   /**
-   * Adds a component to the frame, can be called multiple times and will keep appending
-   * to the current frame.
+   * Adds a component to the frame, can be called multiple times and will keep appending to the current frame.
    */
   public JFrameBuilder add(final Component componentToAdd) {
     children.add(componentToAdd);

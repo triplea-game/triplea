@@ -13,9 +13,8 @@ import org.apache.commons.math3.util.Pair;
 import games.strategy.ui.SwingComponents;
 
 /**
- * Builder for a JTabbedPane. Provides a convenient API for adding components
- * to a JTabbedPane and starts off with reasonable defaults that can be configured
- * further as needed.
+ * Builder for a JTabbedPane. Provides a convenient API for adding components to a JTabbedPane and starts off with
+ * reasonable defaults that can be configured further as needed.
  * <br />
  * Example usage:
  *

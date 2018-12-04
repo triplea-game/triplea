@@ -34,8 +34,7 @@ public class GameSelectorModel extends Observable {
   private String fileName;
   private boolean canSelect = true;
   private boolean isHostHeadlessBot = false;
-  // just for host bots, so we can get the actions for loading/saving games on the bots
-  // from this model
+  // just for host bots, so we can get the actions for loading/saving games on the bots from this model
   private ClientModel clientModelForHostBots = null;
 
   public GameSelectorModel() {
@@ -145,7 +144,7 @@ public class GameSelectorModel extends Observable {
   }
 
   /**
-   * We dont have a gane data (ie we are a remote player and the data has not been sent yet), but
+   * We don't have a game data (i.e. we are a remote player and the data has not been sent yet), but
    * we still want to display game info.
    */
   public void clearDataButKeepGameInfo(final String gameName, final String gameRound, final String gameVersion) {
@@ -205,15 +204,13 @@ public class GameSelectorModel extends Observable {
   }
 
   /**
-   * Runs the load default game logic in same thread. Default game is the one that we loaded
-   * on startup.
+   * Runs the load default game logic in same thread. Default game is the one that we loaded on startup.
    */
   public void loadDefaultGameSameThread() {
     final String userPreferredDefaultGameUri = ClientSetting.defaultGameUri.getValue().orElse("");
 
     // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
-    // version of triplea
-    // was using running a game within its root folder, we shouldn't open it)
+    // version of triplea was using running a game within its root folder, we shouldn't open it)
     GameChooserEntry selectedGame;
     final String user = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
     if (!userPreferredDefaultGameUri.isEmpty() && userPreferredDefaultGameUri.contains(user)) {

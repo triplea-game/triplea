@@ -265,8 +265,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       return "";
     }
     // basically, if we are sharing our technology with someone, and we have warbonds but they do not, then we roll our
-    // warbonds and give
-    // them the proceeds (Global 1940)
+    // warbonds and give them the proceeds (Global 1940)
     final PlayerAttachment playerattachment = PlayerAttachment.get(player);
     if (playerattachment == null) {
       return "";
@@ -282,8 +281,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       final int diceSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
       if (diceSides <= 0 && diceCount <= 0) {
         // if both are zero, then it must mean we did not share our war bonds tech with them, even though we are sharing
-        // all tech (because
-        // they cannot have this tech)
+        // all tech (because they cannot have this tech)
         if (canPlayerCollectIncome(p, data)) {
           giveWarBondsTo = p;
           break;
@@ -422,11 +420,9 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         }
         if (numberOfDice > 0) {
           // there is an issue with maps that have lots of rolls without any pause between them: they are causing the
-          // cypted random source
-          // (ie: live and pbem games) to lock up or error out
+          // cypted random source (ie: live and pbem games) to lock up or error out
           // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the
-          // chances together, then
-          // getting a ton of random numbers at once instead of one at a time)
+          // chances together, then getting a ton of random numbers at once instead of one at a time)
           Interruptibles.sleep(100);
           final String transcript = "Rolling for Convoy Blockade Damage in " + b.getName();
           final int[] dice = bridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice,
@@ -455,8 +451,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       return 0;
     }
     // now we need to make sure that we didn't deal more damage than the territories are worth, in the case of having
-    // multiple sea zones
-    // touching the same land zone.
+    // multiple sea zones touching the same land zone.
     final List<Territory> blockadeZonesSorted = new ArrayList<>(damagePerBlockadeZone.keySet());
     blockadeZonesSorted.sort(getSingleBlockadeThenHighestToLowestBlockadeDamage(damagePerBlockadeZone));
     // we want to match highest damage to largest producer first, that is why we sort twice

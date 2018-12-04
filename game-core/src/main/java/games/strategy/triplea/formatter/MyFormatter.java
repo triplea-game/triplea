@@ -396,8 +396,5 @@ public class MyFormatter {
     return buf.toString().replaceFirst(separator, "");
   }
 
-  /** Creates a new instance of MyFormatter. */
   private MyFormatter() {}
 }
-
-

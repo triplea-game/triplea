@@ -33,8 +33,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
 
   /**
    * Query what units can be produced in a given territory.
-   * ProductionResponse may indicate an error string that there
-   * can be no units placed in a given territory
+   * ProductionResponse may indicate an error string that there can be no units placed in a given territory
    *
    * @param units place-able units
    * @param at referring territory
@@ -44,8 +43,7 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
 
   /**
    * Returns the number of placements made so far.
-   * this is not the number of units placed, but the number
-   * of times we have made successful placements.
+   * this is not the number of units placed, but the number of times we have made successful placements.
    */
   int getPlacementsMade();
 

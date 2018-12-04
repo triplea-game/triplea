@@ -31,11 +31,9 @@ import games.strategy.util.IntegerMap;
 /**
  * SpecialMoveDelegate is a move delegate made for special movements like the new paratrooper/airborne movement.
  * Airborne Attacks is actually Paratroopers tech for Global 1940, except that I really do not want to confuse myself by
- * naming yet another
- * thing Paratroopers, so this is now getting a new name.
+ * naming yet another thing Paratroopers, so this is now getting a new name.
  * This is very different than "paratroopers" for AA50. We are actually launching the units from a static unit (an
- * airbase) to another
- * territory, instead of carrying them.
+ * airbase) to another territory, instead of carrying them.
  */
 public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private boolean needToInitialize = true;

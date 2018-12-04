@@ -287,12 +287,11 @@ public final class TileImageFactory {
       final BufferedImage fromFile = ImageIO.read(imageLocation);
       loadingImages.done();
       final Stopwatch copyingImage = new Stopwatch("Copying image:" + imageLocation);
-      // if we dont copy, drawing the tile to the screen takes significantly longer
-      // has something to do with the colour model and type of the images
-      // some images can be copeid quickly to the screen
+      // if we don't copy, drawing the tile to the screen takes significantly longer
+      // has something to do with the color model and type of the images
+      // some images can be copied quickly to the screen
       // this step is a significant bottle neck in the image drawing process
-      // we should try to find a way to avoid it, and load the
-      // png directly as the right type
+      // we should try to find a way to avoid it, and load the png directly as the right type
       image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
       final Graphics2D g = (Graphics2D) image.getGraphics();
       if (scaled && scale != 1.0) {

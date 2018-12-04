@@ -50,8 +50,7 @@ public final class Version implements Serializable, Comparable<Version> {
   }
 
   /**
-   * version must be of the from xx.xx.xx.xx or xx.xx.xx or
-   * xx.xx or xx where xx is a positive integer
+   * version must be of the from xx.xx.xx.xx or xx.xx.xx or xx.xx or xx where xx is a positive integer.
    */
   public Version(final String version) {
     exactVersion = version;

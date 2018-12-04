@@ -133,8 +133,7 @@ public class WW2V3Year42Test {
     // adding of lingering units was moved from end of combat-move phase, to start of battle phase
     battleDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
-    // all units in sz5 should be involved in the battle
-    // except the italian carrier
+    // all units in sz5 should be involved in the battle except the italian carrier
     final MustFightBattle mfb =
         (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
     assertEquals(6, mfb.getAttackingUnits().size());

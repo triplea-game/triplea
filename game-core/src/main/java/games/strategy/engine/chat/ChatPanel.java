@@ -19,7 +19,7 @@ import games.strategy.util.Interruptibles;
  * A Chat window.
  *
  * <p>
- * Mutiple chat panels can be connected to the same Chat.
+ * Multiple chat panels can be connected to the same Chat.
  * </p>
  *
  * <p>
@@ -102,8 +102,7 @@ public class ChatPanel extends JPanel implements IChatPanel {
   @Override
   public void setPlayerRenderer(final DefaultListCellRenderer renderer) {
     chatPlayerPanel.setPlayerRenderer(renderer);
-    // gets remaining width from parent component, so setting
-    // the width is not really necessary
+    // gets remaining width from parent component, so setting the width is not really necessary
     chatMessagePanel.setPreferredSize(new Dimension(30, chatMessagePanel.getPreferredSize().height));
   }
 

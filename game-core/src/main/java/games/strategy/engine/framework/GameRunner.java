@@ -197,8 +197,7 @@ public final class GameRunner {
   /**
    * Opens a Swing FileChooser menu.
    *
-   * @return Empty optional if dialog is closed without selection, otherwise returns the user
-   *         selection.
+   * @return Empty optional if dialog is closed without selection, otherwise returns the user selection.
    */
   public static Optional<File> showFileChooser(final FileFilter fileFilter) {
     final JFileChooser fileChooser = new JFileChooser();

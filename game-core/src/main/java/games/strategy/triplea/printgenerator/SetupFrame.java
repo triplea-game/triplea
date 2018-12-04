@@ -26,9 +26,6 @@ public class SetupFrame extends JPanel {
   private final GameData data;
   private File outDir;
 
-  /**
-   * Creates a new SetupFrame.
-   */
   public SetupFrame(final GameData data) {
     super(new BorderLayout());
     this.data = data;

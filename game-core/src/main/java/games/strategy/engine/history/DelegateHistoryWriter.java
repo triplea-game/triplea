@@ -7,8 +7,7 @@ import games.strategy.engine.message.IChannelMessenger;
 /**
  * Has a subset of the historyWriters functionality.
  * Delegates should only have access to these functions.
- * The rest of the history writers functions should only
- * be used by the GameData
+ * The rest of the history writers functions should only be used by the GameData.
  */
 public class DelegateHistoryWriter implements IDelegateHistoryWriter {
   private final IGameModifiedChannel channel;

@@ -34,8 +34,7 @@ import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.SwingAction;
 
 /**
- * This panel is fired by ActionButtons and controls the selection of a valid
- * political action to attempt.
+ * This panel is fired by ActionButtons and controls the selection of a valid political action to attempt.
  */
 public class PoliticsPanel extends ActionPanel {
   private static final long serialVersionUID = -4661479948450261578L;
@@ -132,8 +131,7 @@ public class PoliticsPanel extends ActionPanel {
   }
 
   /**
-   * waits till someone calls release() and then returns the political action
-   * chosen.
+   * waits till someone calls release() and then returns the political action chosen.
    *
    * @return the choice of political action
    */
@@ -208,8 +206,7 @@ public class PoliticsPanel extends ActionPanel {
   }
 
   /**
-   * Convenient method to get a JCompenent showing the flags involved in this
-   * action.
+   * Convenient method to get a JCompenent showing the flags involved in this action.
    *
    * @param paa the political action attachment to get the "otherflags" for
    * @return a JComponent with the flags involved.

@@ -136,8 +136,7 @@ class EditPanel extends ActionPanel {
           mustChoose = false;
         } else {
           // if the unit choice is ambiguous then ask the user to clarify which units to remove
-          // an ambiguous selection would be if the user selects 1 of 2 tanks, but
-          // the tanks have different movement.
+          // an ambiguous selection would be if the user selects 1 of 2 tanks, but the tanks have different movement.
           final Set<UnitType> selectedUnitTypes = new HashSet<>();
           for (final Unit u : selectedUnits) {
             selectedUnitTypes.add(u.getType());

@@ -39,11 +39,7 @@ import lombok.extern.java.Log;
 /**
  * Utility for loading and playing sound clips.
  * Stores a preference in the user preferences for being silent.
- * The property will persist and be reloaded after the virtual machine
- * has been stopped and restarted.
- * <br>
- * <br>
- * <br>
+ * The property will persist and be reloaded after the virtual machine has been stopped and restarted.
  * <br>
  * <br>
  * How it works: <br>
@@ -63,8 +59,7 @@ import lombok.extern.java.Log;
  * <b>battle_aa_miss</b>=ww2/battle_aa_miss;future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.mp3 <br>
  * "battle_aa_miss" is one of the folders under "generic", therefore it is a "sound location key" <br>
  * We can set this equal to any list of sounds paths, each separated by a semicolon (;). The engine will pick one at
- * random each time we
- * need to play this sound. <br>
+ * random each time we need to play this sound. <br>
  * The "sound path" can be a "folder" or a "file". If it is a folder, we will use all the sounds in that folder.
  * If it is a file, we will only use that file. We can use a file and folder and another file and another folder, all
  * together. <br>
@@ -77,23 +72,18 @@ import lombok.extern.java.Log;
  * So, lets say that you want to play 2 sounds, for the "battle_land" sound key.
  * One of them is located at "tripleainstallfolder/assets/sounds/generic/battle_land_01_angry_drumming_noise.mp3".
  * The other is located at "tripleainstallfolder/assets/sounds/classical/battle_land_02_war_trumpets.mp3". Then the
- * entry would look like
- * this: <br>
+ * entry would look like this: <br>
  * battle_land=generic/battle_land_01_angry_drumming_noise.mp3;classical/battle_land_02_war_trumpets.mp3 <br>
  * If you wanted it to also play every single sound in the "tripleainstallfolder/assets/sounds/ww2/battle_land/" folder,
- * then you would add
- * that folder to path: <br>
+ * then you would add that folder to path: <br>
  * battle_land=generic/battle_land_01_angry_drumming_noise.mp3;classical/battle_land_02_war_trumpets.mp3;ww2/battle_land
  * <br>
  * <br>
  * Furthermore, we can customize the sound key by adding "_nationName" onto the end of it. So if you want a specific
- * sound for a german land
- * attack, then use: <br>
+ * sound for a german land attack, then use: <br>
  * battle_land<b>_Germans</b>=misc/battle_land/battle_land_Germans_panzers_and_yelling_in_german.mp3 <br>
  * You can use nation specific sound keys for almost all sounds, though things like game_start, or chat_message, will
  * never use them. <br>
- * <br>
- * <br>
  * <br>
  * <br>
  * <b>You do not need to specify every single "sound key". This is why/because we have the "Sound.Default.Folder".</b>
@@ -108,8 +98,7 @@ import lombok.extern.java.Log;
  * If no key, then just use all the sounds in "Sound.Default.Folder/sound_key/" (which for us would be "ww2/game_start/"
  * folder). <br>
  * 5. If no sounds are found, then use all the sounds located at "generic/sound_key/" (which for us would be
- * "generic/game_start").
- * (if any sounds are found in step 4 above, then we ignore the generic folder completely) <br>
+ * "generic/game_start"). (if any sounds are found in step 4 above, then we ignore the generic folder completely) <br>
  * 6. Randomize the list's order, then pick one, and play the sound.
  */
 @Log
@@ -315,8 +304,7 @@ public class ClipPlayer {
     if (availableSounds == null || availableSounds.isEmpty()) {
       return null;
     }
-    // we want to pick a random sound from this folder, as users don't like hearing the same ones over
-    // and over again
+    // we want to pick a random sound from this folder, as users don't like hearing the same ones over and over again
     Collections.shuffle(availableSounds);
     try {
       return availableSounds.get(0).toURI();
@@ -330,8 +318,7 @@ public class ClipPlayer {
    * we use for sounds.
    * Because we do not want a lot of duplicate sound files, we also have a "generic" sound folder.
    * If a sound cannot be found for a soundpath using the sounds.properties or default folder, then we try to find one
-   * in the generic
-   * folder.
+   * in the generic folder.
    * The sounds.properties file can specify all the sounds to use for a specific sound path (multiple per path).
    * If there is no key for that path, we try by the default way. <br>
    * <br>
@@ -378,8 +365,7 @@ public class ClipPlayer {
     final URI thisSoundUri;
     File thisSoundFile;
     // we are checking to see if this is a file, to see if it is a directory, or a sound, or a zipped directory, or a
-    // zipped sound. There
-    // might be a better way to do this...
+    // zipped sound. There might be a better way to do this...
     try {
       thisSoundUri = thisSoundUrl.toURI();
       try {
@@ -407,8 +393,7 @@ public class ClipPlayer {
       final String soundFilePath = thisSoundUrl.getPath();
       if (soundFilePath != null && soundFilePath.length() > 5 && soundFilePath.contains(".zip!")) {
         // so the URL with a zip or jar in it, will start with "file:", and unfortunately when you make a file and test
-        // if it exists, if it
-        // starts with that it doesn't exist
+        // if it exists, if it starts with that it doesn't exist
         final int index1 = Math.max(0, Math.min(soundFilePath.length(),
             soundFilePath.contains("file:") ? soundFilePath.indexOf("file:") + 5 : 0));
         final String zipFilePath = soundFilePath.substring(index1,

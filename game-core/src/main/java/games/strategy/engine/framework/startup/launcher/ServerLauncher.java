@@ -62,8 +62,7 @@ public class ServerLauncher extends AbstractLauncher {
   private volatile boolean abortLaunch = false;
   private volatile boolean gameStopped = false;
   // a list of observers that tried to join the game during starup
-  // we need to track these, because when we loose connections to them
-  // we can ignore the connection lost
+  // we need to track these, because when we lose connections to them we can ignore the connection lost
   private final List<INode> observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<>());
   private InGameLobbyWatcherWrapper inGameLobbyWatcher;
 
@@ -127,9 +126,7 @@ public class ServerLauncher extends AbstractLauncher {
       if (headless) {
         HeadlessGameServer.setServerGame(serverGame);
       }
-      // tell the clients to start,
-      // later we will wait for them to all
-      // signal that they are ready.
+      // tell the clients to start, later we will wait for them to all signal that they are ready.
       ((IClientChannel) channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME))
           .doneSelectingPlayers(gameDataAsBytes, serverGame.getPlayerManager().getPlayerMapping());
 
@@ -253,8 +250,7 @@ public class ServerLauncher extends AbstractLauncher {
   }
 
   private void warmUpCryptoRandomSource() {
-    // the first roll takes a while, initialize
-    // here in the background so that the user doesnt notice
+    // the first roll takes a while, initialize here in the background so that the user doesn't notice
     new Thread(() -> {
       try {
         serverGame.getRandomSource().getRandom(gameData.getDiceSides(), 2, "Warming up crypto random source");
@@ -281,8 +277,7 @@ public class ServerLauncher extends AbstractLauncher {
    */
   public void connectionLost(final INode node) {
     if (isLaunching) {
-      // this is expected, we told the observer
-      // he couldnt join, so now we loose the connection
+      // this is expected, we told the observer he couldn't join, so now we lose the connection
       if (observersThatTriedToJoinDuringStartup.remove(node)) {
         return;
       }
@@ -291,16 +286,14 @@ public class ServerLauncher extends AbstractLauncher {
       serverReady.countDownAll();
       return;
     }
-    // if we loose a connection to a player, shut down
-    // the game (after saving) and go back to the main screen
+    // if we loose a connection to a player, shut down the game (after saving) and go back to the main screen
     if (serverGame.getPlayerManager().isPlaying(node)) {
       if (serverGame.isGameSequenceRunning()) {
         saveAndEndGame(node);
       } else {
         stopGame();
       }
-      // if the game already exited do to a networking error
-      // we need to let them continue
+      // if the game already exited do to a networking error we need to let them continue
       errorLatch.countDown();
     }
   }
@@ -366,4 +359,3 @@ public class ServerLauncher extends AbstractLauncher {
     }
   }
 }
-

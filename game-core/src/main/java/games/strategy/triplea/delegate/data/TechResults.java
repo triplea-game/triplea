@@ -22,14 +22,6 @@ public class TechResults implements Serializable {
     rolls = null;
   }
 
-  /**
-   * Creates a new TechResults.
-   *
-   * @param rolls rolls
-   * @param remainder remainder
-   * @param hits number of hits
-   * @param advances a List of Strings
-   */
   public TechResults(final int[] rolls, final int remainder, final int hits, final List<String> advances) {
     this.rolls = rolls;
     this.remainder = remainder;

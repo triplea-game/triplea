@@ -54,8 +54,7 @@ public class SwingComponents {
   private static final Collection<String> visiblePrompts = new HashSet<>();
 
   /**
-   * Enum for swing codes that represent key events. In this case holding control or the
-   * meta keys.
+   * Enum for swing codes that represent key events. In this case holding control or the meta keys.
    */
   public enum KeyDownMask {
     META_DOWN(InputEvent.META_DOWN_MASK),
@@ -115,17 +114,14 @@ public class SwingComponents {
     addKeyListener(component, KeyStroke.getKeyStroke(key, keyDownMask.code), keyDownAction);
   }
 
-
-
   private static void addKeyListener(
       final JComponent component,
       final KeyStroke keyStroke,
       final Runnable keyDownAction) {
 
     // We are using the object address here of our action.
-    // It is okay since we only need it to be the same value when we store it in the
-    // input and action maps below. Having the address be logged could be useful
-    // for debugging, otherwise no particular reason to use this exact value.
+    // It is okay since we only need it to be the same value when we store it in the input and action maps below. Having
+    // the address be logged could be useful for debugging, otherwise no particular reason to use this exact value.
     final String actionKey = keyDownAction.toString();
 
     component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
@@ -207,8 +203,8 @@ public class SwingComponents {
   /**
    * Executes the specified action when the specified window is in the process of being closed.
    *
-   * @param window The window to which the action is attached; must not be {@code null}.
-   * @param action The action to execute; must not be {@code null}.
+   * @param window The window to which the action is attached.
+   * @param action The action to execute.
    */
   public static void addWindowClosingListener(final Window window, final Runnable action) {
     checkNotNull(window);
@@ -225,8 +221,8 @@ public class SwingComponents {
   /**
    * Executes the specified action when the specified window has been closed.
    *
-   * @param window The window to which the action is attached; must not be {@code null}.
-   * @param action The action to execute; must not be {@code null}.
+   * @param window The window to which the action is attached.
+   * @param action The action to execute.
    */
   public static void addWindowClosedListener(final Window window, final Runnable action) {
     checkNotNull(window);
@@ -325,12 +321,11 @@ public class SwingComponents {
    *
    * @param parent Determines the {@code Frame} in which the dialog is displayed; if {@code null}, or if {@code parent}
    *        has no {@code Frame}, a default {@code Frame} is used.
-   * @param fileExtension The extension of the file to save, with or without a leading period; must not be {@code null}.
-   *        This extension will be automatically appended to the file name if not present.
-   * @param fileExtensionDescription The description of the file extension to be displayed in the file chooser; must not
-   *        be {@code null}.
+   * @param fileExtension The extension of the file to save, with or without a leading period. This extension will be
+   *        automatically appended to the file name if not present.
+   * @param fileExtensionDescription The description of the file extension to be displayed in the file chooser.
    *
-   * @return The file selected by the user or empty if the user aborted the save; never {@code null}.
+   * @return The file selected by the user or empty if the user aborted the save.
    */
   public static Optional<File> promptSaveFile(final Component parent, final String fileExtension,
       final String fileExtensionDescription) {
@@ -397,10 +392,10 @@ public class SwingComponents {
    *
    * @param frame The {@code Frame} from which the progress dialog is displayed or {@code null} to use a shared, hidden
    *        frame as the owner of the progress dialog.
-   * @param message The message to display in the progress dialog; must not be {@code null}.
-   * @param task The task to be executed; must not be {@code null}.
+   * @param message The message to display in the progress dialog.
+   * @param task The task to be executed.
    *
-   * @return A promise that resolves to the result of the task; never {@code null}.
+   * @return A promise that resolves to the result of the task.
    */
   public static <T> CompletableFuture<T> runWithProgressBar(
       final Frame frame,

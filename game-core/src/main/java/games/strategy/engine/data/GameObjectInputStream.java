@@ -24,8 +24,7 @@ public class GameObjectInputStream extends ObjectInputStream {
 
   @Override
   protected Object resolveObject(final Object obj) {
-    // when loading units, we want to maintain == relationships for many
-    // of the game data objects.
+    // when loading units, we want to maintain == relationships for many of the game data objects.
     // this is to prevent the situation where we have 2 Territory objects for the
     // the same territory, or two object for the same player id or ...
     // thus, in one vm you can add some units to a territory, and when you serialize the change

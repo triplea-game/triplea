@@ -30,7 +30,7 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 
 /**
- * Root panel for all action buttons in a triplea game. <br>
+ * Root panel for all action buttons in a triplea game.
  */
 public class ActionButtons extends JPanel {
   private static final long serialVersionUID = 2175685892863042399L;
@@ -48,7 +48,6 @@ public class ActionButtons extends JPanel {
   private UserActionPanel userActionPanel;
   private PickTerritoryAndUnitsPanel pickTerritoryAndUnitsPanel;
 
-  /** Creates new ActionButtons. */
   public ActionButtons(final GameData data, final MapPanel map, final MovePanel movePanel, final TripleAFrame parent) {
     battlePanel = new BattlePanel(data, map);
     this.movePanel = movePanel;
@@ -75,13 +74,8 @@ public class ActionButtons extends JPanel {
     add(politicsPanel, politicsPanel.toString());
     add(userActionPanel, userActionPanel.toString());
     add(pickTerritoryAndUnitsPanel, pickTerritoryAndUnitsPanel.toString());
-    // this should not be necceessary
-    // but it makes tracking down garbage leaks easier
-    // in the profiler
-    // since it removes a lot of links
-    // between objects
-    // and if there is a memory leak
-    // this will minimize the damage
+    // this should not be necessary, but it makes tracking down garbage leaks easier in the profiler
+    // since it removes a lot of links between objects and if there is a memory leak, this will minimize the damage
     map.getUiContext().addActive(() -> {
       removeAll();
       actionPanel = null;

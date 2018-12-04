@@ -77,8 +77,7 @@ public class ChannelMessengerTest {
 
   @Test
   public void testMultipleClients() throws Exception {
-    // set up the client and server
-    // so that the client has 1 subscribor, and the server knows about it
+    // set up the client and server so that the client has 1 subscriber, and the server knows about it
     final RemoteName test = new RemoteName("test", IChannelBase.class);
     final ChannelSubscribor client1Subscribor = new ChannelSubscribor();
     clientChannelMessenger.registerChannelSubscriber(client1Subscribor, test);
@@ -120,8 +119,7 @@ public class ChannelMessengerTest {
   }
 
   private static void assertCallCountIs(final ChannelSubscribor subscribor, final int expected) {
-    // since the method call happens in a seperate thread,
-    // wait for the call to go through, but dont wait too long
+    // since the method call happens in a separate thread, wait for the call to go through, but don't wait too long
     int waitCount = 0;
     while (waitCount < 20 && expected != subscribor.getCallCount()) {
       Interruptibles.sleep(50);

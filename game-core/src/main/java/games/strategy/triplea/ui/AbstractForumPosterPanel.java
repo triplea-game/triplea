@@ -42,7 +42,7 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
     super.display(id);
     SwingUtilities.invokeLater(() -> {
       actionLabel.setText(id.getName() + " " + getTitle());
-      // defer componenet layout until waitForEndTurn()
+      // defer component layout until waitForEndTurn()
     });
   }
 

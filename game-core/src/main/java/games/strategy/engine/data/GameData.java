@@ -37,14 +37,12 @@ import games.strategy.util.Version;
  * Central place to find all the information for a running game.
  *
  * <p>
- * Using this object you can find the territories, connections, production rules,
- * unit types...
+ * Using this object you can find the territories, connections, production rules, unit types...
  * </p>
  *
  * <p>
  * Threading. The game data, and all parts of the game data (such as Territories, Players, Units...) are protected by a
- * read/write lock. If
- * you are reading the game data, you should read while you have the read lock as below.
+ * read/write lock. If you are reading the game data, you should read while you have the read lock as below.
  * </p>
  *
  * <p>
@@ -60,14 +58,12 @@ import games.strategy.util.Version;
  * }
  * </code>
  * The exception is delegates within a start(), end() or any method called from an IGamePlayer through the delegates
- * remote interface. The
- * delegate will have a read lock for the duration of those methods.
+ * remote interface. The delegate will have a read lock for the duration of those methods.
  * </p>
  *
  * <p>
  * Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made through a
- * DelegateBridge or through a
- * History object.
+ * DelegateBridge or through a History object.
  * </p>
  */
 public class GameData implements Serializable {
@@ -106,7 +102,6 @@ public class GameData implements Serializable {
   private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
-  /** Creates new GameData. */
   public GameData() {
     delegateList = new DelegateList(this);
     properties.set(GAME_UUID, UUID.randomUUID().toString());
@@ -118,8 +113,7 @@ public class GameData implements Serializable {
   }
 
   /**
-   * Converts the current GameData object to a byte array, useful for serialization or for
-   * copying the game data.
+   * Converts the current GameData object to a byte array, useful for serialization or for copying the game data.
    */
   public byte[] toBytes() {
     try {
@@ -203,16 +197,14 @@ public class GameData implements Serializable {
   }
 
   /**
-   * Returns whether we should throw an error if changes to this game data are made outside of the swing
-   * event thread.
+   * Returns whether we should throw an error if changes to this game data are made outside of the swing event thread.
    */
   public boolean areChangesOnlyInSwingEventThread() {
     return forceInSwingEventThread;
   }
 
   /**
-   * If set to true, then we will throw an error when the game data is changed outside
-   * the swing event thread.
+   * If set to true, then we will throw an error when the game data is changed outside the swing event thread.
    */
   public void forceChangesOnlyInSwingEventThread() {
     forceInSwingEventThread = true;
@@ -312,8 +304,7 @@ public class GameData implements Serializable {
 
   public History getHistory() {
     // don't ensure the lock is held when getting the history
-    // history operations often acquire the write lock
-    // and we cant acquire the write lock if we have the read lock
+    // history operations often acquire the write lock and we can't acquire the write lock if we have the read lock
     return gameHistory;
   }
 
@@ -335,8 +326,7 @@ public class GameData implements Serializable {
 
   /**
    * No changes to the game data should be made unless this lock is held.
-   * calls to acquire lock will block if the lock is held, and will be held
-   * until the release method is called
+   * calls to acquire lock will block if the lock is held, and will be held until the release method is called
    */
   public void acquireReadLock() {
     if (readWriteLockMissing()) {
@@ -354,8 +344,7 @@ public class GameData implements Serializable {
 
   /**
    * No changes to the game data should be made unless this lock is held.
-   * calls to acquire lock will block if the lock is held, and will be held
-   * until the release method is called
+   * calls to acquire lock will block if the lock is held, and will be held until the release method is called
    */
   public void acquireWriteLock() {
     if (readWriteLockMissing()) {
@@ -372,8 +361,7 @@ public class GameData implements Serializable {
   }
 
   /**
-   * Indicates whether readWriteLock is missing.
-   * This can happen in very odd circumstances while deserializing.
+   * Indicates whether readWriteLock is missing. This can happen in very odd circumstances while deserializing.
    */
   private boolean readWriteLockMissing() {
     return readWriteLock == null;

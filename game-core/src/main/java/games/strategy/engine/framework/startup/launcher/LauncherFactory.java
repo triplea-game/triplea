@@ -28,8 +28,7 @@ public class LauncherFactory {
     final Map<String, Boolean> playersEnabled = playerRows.stream()
         .collect(Collectors.toMap(PlayerCountrySelection::getPlayerName, PlayerCountrySelection::isPlayerEnabled));
 
-    // we don't need the playerToNode list, the disable-able players, or the alliances
-    // list, for a local game
+    // we don't need the playerToNode list, the disable-able players, or the alliances list, for a local game
     final PlayerListing pl =
         new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);

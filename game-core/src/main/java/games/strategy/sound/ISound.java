@@ -7,15 +7,13 @@ import games.strategy.engine.message.IChannelSubscribor;
 
 /**
  * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move
- * delegate) to also be played
- * on clients.
+ * delegate) to also be played on clients.
  */
 public interface ISound extends IChannelSubscribor {
 
   /**
    * You will want to call this from things that the server only runs (like delegates), and not call this from user
-   * interface elements
-   * (because all users have these).
+   * interface elements (because all users have these).
    *
    * @param clipName The name of the sound clip to play, found in SoundPath.java
    * @param playerId The player who's sound we want to play (ie: russians infantry might make different sounds from
@@ -23,11 +21,9 @@ public interface ISound extends IChannelSubscribor {
    */
   void playSoundForAll(final String clipName, final PlayerId playerId);
 
-
   /**
    * You will want to call this from things that the server only runs (like delegates), and not call this from user
-   * interface elements
-   * (because all users have these).
+   * interface elements (because all users have these).
    *
    * @param clipName The name of the sound clip to play, found in SoundPath.java
    * @param playersToSendTo The machines controlling these PlayerId's who we want to hear this sound.
@@ -39,5 +35,4 @@ public interface ISound extends IChannelSubscribor {
   void playSoundToPlayers(final String clipName,
       final Collection<PlayerId> playersToSendTo, final Collection<PlayerId> butNotThesePlayers,
       final boolean includeObservers);
-
 }

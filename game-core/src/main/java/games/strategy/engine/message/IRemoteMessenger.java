@@ -4,19 +4,17 @@ package games.strategy.engine.message;
  * Very similar to RMI.
  *
  * <p>
- * Objects can be registered with a remote messenger under a public name and
- * declared to implement a particular interface. Methods on this registered
- * object can then be called on different vms.
+ * Objects can be registered with a remote messenger under a public name and declared to implement a particular
+ * interface. Methods on this registered object can then be called on different VMs.
  * </p>
  *
  * <p>
- * To call a method on the registered object, you get a remote reference to it using the
- * getRemote(...) method. This returns an object that can be used and called
- * as if it were the original implementor.
+ * To call a method on the registered object, you get a remote reference to it using the getRemote(...) method. This
+ * returns an object that can be used and called as if it were the original implementor.
  * </p>
  *
  * <p>
- * The getRemote(...) method though may be called on a different vm than
+ * The getRemote(...) method though may be called on a different VM than
  * the registerRemote(...) method. In that case the calls on the return value of
  * getRemote(...) will be routed to the implementor object passed to registerRemote(...)
  * On VM A you have code like

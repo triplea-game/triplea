@@ -264,8 +264,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     pusLost.clear();
     final Change change = getResetUnitStateChange(getData());
     if (!change.isEmpty()) {
-      // if no non-combat occurred, we may have cleanup left from combat
-      // that we need to spawn an event for
+      // if no non-combat occurred, we may have cleanup left from combat that we need to spawn an event for
       bridge.getHistoryWriter().startEvent(CLEANING_UP_DURING_MOVEMENT_PHASE);
       bridge.addChange(change);
     }

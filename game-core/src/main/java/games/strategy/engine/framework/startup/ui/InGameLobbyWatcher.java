@@ -60,8 +60,7 @@ import lombok.extern.java.Log;
 @Log
 public class InGameLobbyWatcher {
   // this is the messenger used by the game
-  // it is different than the messenger we use to connect to
-  // the game lobby
+  // it is different than the messenger we use to connect to the game lobby
   private final IServerMessenger serverMessenger;
   private boolean isShutdown = false;
   private final GUID gameId = new GUID();
@@ -70,8 +69,7 @@ public class InGameLobbyWatcher {
   private IGame game;
   private final GameStepListener gameStepListener =
       (stepName, delegateName, player, round, displayName) -> InGameLobbyWatcher.this.gameStepChanged(round);
-  // we create this messenger, and use it to connect to the
-  // game lobby
+  // we create this messenger, and use it to connect to the game lobby
   private final IMessenger messenger;
   private final IRemoteMessenger remoteMessenger;
   private final GameDescription gameDescription;
@@ -214,8 +212,7 @@ public class InGameLobbyWatcher {
         updatePlayerCount();
       }
     };
-    // when players join or leave the game
-    // update the connection count
+    // when players join or leave the game update the connection count
     this.serverMessenger.addConnectionChangeListener(connectionChangeListener);
     if (oldWatcher != null && oldWatcher.gameDescription != null) {
       this.setGameStatus(oldWatcher.gameDescription.getStatus(), oldWatcher.game);

@@ -16,8 +16,7 @@ class AddBattleRecordsChange extends Change {
   AddBattleRecordsChange(final BattleRecords battleRecords, final GameData data) {
     round = data.getSequence().getRound();
     // make a copy because this is only done once, and only externally from battle
-    // tracker, and the source will be cleared (battle tracker clears out the records
-    // each turn)
+    // tracker, and the source will be cleared (battle tracker clears out the records each turn)
     recordsToAdd = new BattleRecords(battleRecords);
   }
 
@@ -31,8 +30,7 @@ class AddBattleRecordsChange extends Change {
   @Override
   protected void perform(final GameData data) {
     final Map<Integer, BattleRecords> currentRecords = data.getBattleRecordsList().getBattleRecordsMap();
-    // make a copy because otherwise ours will be
-    // cleared when we RemoveBattleRecordsChange
+    // make a copy because otherwise ours will be cleared when we RemoveBattleRecordsChange
     BattleRecordsList.addRecords(currentRecords, round, new BattleRecords(recordsToAdd));
   }
 

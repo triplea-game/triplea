@@ -14,11 +14,6 @@ public class PlaceableUnits implements Serializable {
   private Collection<Unit> units;
   private int maxUnits;
 
-  /**
-   * Creates new PlaceableUnits.
-   *
-   * @param errorMessage error message
-   */
   public PlaceableUnits(final String errorMessage) {
     this.errorMessage = errorMessage;
   }

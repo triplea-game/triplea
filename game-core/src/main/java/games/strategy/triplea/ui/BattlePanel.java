@@ -57,17 +57,14 @@ public class BattlePanel extends ActionPanel {
   private final JLabel actionLabel = new JLabel();
   private FightBattleDetails fightBattleMessage;
   private volatile BattleDisplay battleDisplay;
-  // if we are showing a battle, then this will be set to the currently
-  // displayed battle. This will only be set after the display
-  // is shown on the screen
+  // if we are showing a battle, then this will be set to the currently displayed battle. This will only be set after
+  // the display is shown on the screen
   private volatile GUID currentBattleDisplayed;
-  // there is a bug in linux jdk1.5.0_6 where frames are not
-  // being garbage collected
+  // there is a bug in linux jdk1.5.0_6 where frames are not being garbage collected
   // reuse one frame
   private final JFrame battleFrame;
   Map<BattleType, Collection<Territory>> battles;
 
-  /** Creates new BattlePanel. */
   public BattlePanel(final GameData data, final MapPanel map) {
     super(data, map);
     battleFrame = new JFrame() {

@@ -66,10 +66,8 @@ public final class MacFinder {
   }
 
   private static String getMacAddress() {
-    // We must try different methods of obtaining the mac address because not all the methods
-    // work on each system, and
-    // if we can't obtain
-    // the mac, we can't login to the lobby
+    // We must try different methods of obtaining the mac address because not all the methods work on each system, and
+    // if we can't obtain the mac, we can't login to the lobby.
     // First, try to get the mac address of the local host network interface
     try {
       final InetAddress address = Node.getLocalHost();
@@ -87,8 +85,7 @@ public final class MacFinder {
     } catch (final SocketException | UnknownHostException e) {
       log.log(Level.SEVERE, "Error while trying to get a valid MAC adress", e);
     }
-    // Next, try to get the mac address of the first network interfaces that has an accessible
-    // mac address
+    // Next, try to get the mac address of the first network interfaces that has an accessible mac address
     try {
       for (final NetworkInterface ni : Collections.list(NetworkInterface.getNetworkInterfaces())) {
         final byte[] rawMac = ni.getHardwareAddress();
@@ -135,8 +132,7 @@ public final class MacFinder {
       log.log(Level.SEVERE, "Error while trying to get mac address", e);
     }
     try {
-      // ipconfig -all does not work on my computer, while ipconfig /all does not work on
-      // others computers
+      // ipconfig -all does not work on my computer, while ipconfig /all does not work on others computers
       final String results = executeCommandAndGetResults("ipconfig /all");
       final String mac = tryToParseMacFromOutput(results, Arrays.asList("-", ":", "."), false);
       if (isMacValid(mac)) {
@@ -145,10 +141,8 @@ public final class MacFinder {
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Error while trying to get mac address", e);
     }
-    // Next, try to get the mac address by calling the 'ifconfig -a' app that exists in Linux
-    // and possibly others. May
-    // have 1 or 2 spaces
-    // between Ethernet and HWaddr, and may be wireless instead of ethernet.
+    // Next, try to get the mac address by calling the 'ifconfig -a' app that exists in Linux and possibly others. May
+    // have 1 or 2 spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
     /*
      * ...
      * eth0 Link encap:Ethernet HWaddr 00:08:C7:1B:8C:02
@@ -156,8 +150,7 @@ public final class MacFinder {
      */
     try {
       final String results = executeCommandAndGetResults("ifconfig -a");
-      // Allow the parser to try adding a zero to
-      // the beginning
+      // Allow the parser to try adding a zero to the beginning
       final String mac = tryToParseMacFromOutput(results, Arrays.asList(":", "-", "."), true);
       if (isMacValid(mac)) {
         return mac;
@@ -167,8 +160,7 @@ public final class MacFinder {
     }
     // Next, try to get the mac address by calling the '/sbin/ifconfig -a' app that exists in Linux
     // and possibly others.
-    // May have 1 or 2
-    // spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
+    // May have 1 or 2 spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
     /*
      * ...
      * eth0 Link encap:Ethernet HWaddr 00:08:C7:1B:8C:02
@@ -176,8 +168,7 @@ public final class MacFinder {
      */
     try {
       final String results = executeCommandAndGetResults("/sbin/ifconfig -a");
-      // Allow the parser to try adding a zero to
-      // the beginning
+      // Allow the parser to try adding a zero to the beginning
       final String mac = tryToParseMacFromOutput(results, Arrays.asList(":", "-", "."), true);
       if (isMacValid(mac)) {
         return mac;
@@ -185,8 +176,7 @@ public final class MacFinder {
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Error while trying to get mac address", e);
     }
-    // Next, try to get the mac address by calling the 'dmesg' app that exists in FreeBSD
-    // and possibly others.
+    // Next, try to get the mac address by calling the 'dmesg' app that exists in FreeBSD and possibly others.
     /*
      * ...
      * [ 405.681688] wlan0_rename: associate with AP 00:16:f8:40:3e:bd
@@ -287,10 +277,8 @@ public final class MacFinder {
             }
           }
         }
-        // We only invalidate the one separator char and what's before it, so that
-        // '-ether 89-94-19...' would not fail,
-        // then cause the -
-        // after 89 to get ignored (Not sure if this situation really occurs)
+        // We only invalidate the one separator char and what's before it, so that '-ether 89-94-19...' would not fail,
+        // then cause the - after 89 to get ignored (Not sure if this situation really occurs)
         leftToSearch = leftToSearch.substring(Math.min(macStartIndex + 1, leftToSearch.length()));
       }
     }
@@ -302,8 +290,7 @@ public final class MacFinder {
    *
    * @param value The value to test.
    *
-   * @return {@code true} if the specified value is a valid hashed MAC address;
-   *         otherwise {@code false}.
+   * @return {@code true} if the specified value is a valid hashed MAC address; otherwise {@code false}.
    */
   public static boolean isValidHashedMacAddress(final String value) {
     checkNotNull(value);

@@ -166,8 +166,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       if (route.getEnd() != null && !route.getEnd().isWater() && units.stream().anyMatch(Matches.unitIsLand())) {
         amphibiousLandAttackers.removeAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
       }
-      // if none of the units is a land unit, the attack from
-      // that territory is no longer an amphibious assault
+      // if none of the units is a land unit, the attack from that territory is no longer an amphibious assault
       if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
         getAmphibiousAttackTerritories().remove(attackingFrom);
         // do we have any amphibious attacks left?
@@ -310,7 +309,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       return;
     }
     // it is possible that no defending units exist, changed to only look at units that can be destroyed in combat, and
-    // therefore not include factories, aaguns, and infrastructure.
+    // therefore not include factories, aa guns, and infrastructure.
     if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure()).size() == 0) {
       endBattle(bridge);
       attackerWins(bridge);
@@ -607,8 +606,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // if we are a sea zone, then we may not be able to retreat
     // (ie a sub traveled under another unit to get to the battle site)
     // or an enemy sub retreated to our sea zone
-    // however, if all our sea units die, then
-    // the air units can still retreat, so if we have any air units attacking in
+    // however, if all our sea units die, then the air units can still retreat, so if we have any air units attacking in
     // a sea zone, we always have to have the retreat option shown
     // later, if our sea units die, we may ask the user to retreat
     final boolean someAirAtSea = battleSite.isWater() && attackingUnits.stream().anyMatch(Matches.unitIsAir());
@@ -2215,9 +2213,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   /**
    * Returns only the relevant non-combatant units present in the specified collection.
    *
-   * @return a collection containing all the combatants in units non
-   *         combatants include such things as factories, aaguns, land units
-   *         in a water battle.
+   * @return a collection containing all the combatants in units non-combatants include such things as factories,
+   *         aa guns, land units in a water battle.
    */
   private List<Unit> removeNonCombatants(final Collection<Unit> units, final boolean attacking,
       final boolean doNotIncludeAa, final boolean doNotIncludeSeaBombardmentUnits, final boolean removeForNextRound) {

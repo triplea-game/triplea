@@ -49,8 +49,7 @@ public final class LobbyMenu extends JMenuBar {
 
   public LobbyMenu(final LobbyFrame frame) {
     lobbyFrame = frame;
-    // file only has one value
-    // and on mac it is in the apple menu
+    // file only has one value, and on mac it is in the apple menu
     if (!SystemProperties.isMac()) {
       createFileMenu(this);
     } else {

@@ -39,8 +39,7 @@ class Encoder {
       final SocketWriteData data = new SocketWriteData(bytes, bytes.length);
       writer.enque(data, to);
     } catch (final IOException e) {
-      // we arent doing any io, just writing in memory
-      // so something is very wrong
+      // we aren't doing any I/O, just writing in memory so something is very wrong
       log.log(Level.SEVERE, "Error writing object:" + header, e);
     }
   }

@@ -14,7 +14,6 @@ import games.strategy.triplea.ui.UnitIconProperties;
 public class UnitIconImageFactory extends ImageFactory {
   private static final String PREFIX = "unitIcons/";
 
-  /** Creates new FlagIconImageFactory. */
   public UnitIconImageFactory() {}
 
   public List<Image> getImages(final String player, final String unitType, final GameData data) {
@@ -24,5 +23,4 @@ public class UnitIconImageFactory extends ImageFactory {
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
-
 }

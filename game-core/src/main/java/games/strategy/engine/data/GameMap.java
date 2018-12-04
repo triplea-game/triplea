@@ -35,8 +35,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   // for fast lookup based on the string name of the territory
   private final Map<String, Territory> territoryLookup = new HashMap<>();
   // nil if the map is not grid-based
-  // otherwise, gridDimensions.length is the number of dimensions,
-  // and each element is the size of a dimension
+  // otherwise, gridDimensions.length is the number of dimensions, and each element is the size of a dimension
   private int[] gridDimensions = null;
 
   GameMap(final GameData data) {
@@ -197,8 +196,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   /**
    * Returns all neighbors within a certain distance of the starting territory set that match the condition.
-   * Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each
-   * other.
+   * Does NOT include the original/starting territories in the returned Set, even if they are neighbors of each other.
    */
   public Set<Territory> getNeighbors(final Set<Territory> frontier, final int distance,
       final Predicate<Territory> cond) {
@@ -272,7 +270,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * A composite route between two territories
+   * A composite route between two territories.
    * Example set of matches: [Friendly Land, score: 1] [Enemy Land, score: 2] [Neutral Land, score = 4]
    * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2
    * length neutral route.

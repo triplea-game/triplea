@@ -158,8 +158,7 @@ public final class GameParser {
     parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
     parseGameLoader(getSingleChild("loader", root, true));
     // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and
-    // see if we have any
-    // SAX errors we need to show
+    // see if we have any SAX errors we need to show
     if (!errorsSax.isEmpty()) {
       for (final SAXParseException error : errorsSax) {
         log.log(Level.SEVERE,
@@ -216,8 +215,7 @@ public final class GameParser {
       parseInitialization(initialization);
     }
     // set & override default relationships
-    // sets the relationship between all players and the NullPlayer to NullRelation
-    // (with archeType War)
+    // sets the relationship between all players and the NullPlayer to NullRelation (with archeType War)
     data.getRelationshipTracker().setNullPlayerRelations();
     // sets the relationship for all players with themselfs to the SelfRelation (with archeType Allied)
     data.getRelationshipTracker().setSelfRelations();
@@ -362,7 +360,6 @@ public final class GameParser {
    *
    * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes should have been
    *         declared
-   * @throws GameParseException when
    */
   private RelationshipType getRelationshipType(final Element element, final String attribute, final boolean mustFind)
       throws GameParseException {
@@ -864,8 +861,7 @@ public final class GameParser {
         final List<Node> children2 = getNonTextNodesIgnoring(current, "value");
         if (children2.size() == 0) {
           // we don't know what type this property is!!, it appears like only numbers and string may be represented
-          // without proper type
-          // definition
+          // without proper type definition
           try {
             // test if it is an integer
             final int integer = Integer.parseInt(value);
@@ -1330,8 +1326,7 @@ public final class GameParser {
         final TerritoryAttachment ta = TerritoryAttachment.get(territory);
         if (ta != null) {
           // If we already have an original owner set (ie: we set it previously in the attachment using originalOwner or
-          // occupiedTerrOf),
-          // then we DO NOT set the original owner again.
+          // occupiedTerrOf), then we DO NOT set the original owner again.
           // This is how we can have a game start with territories owned by 1 faction but controlled by a 2nd faction.
           final PlayerId currentOwner = ta.getOriginalOwner();
           if (currentOwner == null) {

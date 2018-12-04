@@ -201,8 +201,7 @@ class StatPanel extends AbstractStatPanel {
     }
 
     /*
-     * Recalcs the underlying data in a lazy manner Limitation: This is not
-     * a threadsafe implementation
+     * Recalcs the underlying data in a lazy manner. Limitation: This is not a thread-safe implementation.
      */
     @Override
     public synchronized Object getValueAt(final int row, final int col) {
@@ -234,8 +233,7 @@ class StatPanel extends AbstractStatPanel {
       }
 
       // no need to recalculate all the stats just to get the row count
-      // getting the row count is a fairly frequent operation, and will
-      // happen even if we are not displayed!
+      // getting the row count is a fairly frequent operation, and will happen even if we are not displayed!
       gameData.acquireReadLock();
       try {
         return gameData.getPlayerList().size() + getAlliances().size();
@@ -277,8 +275,7 @@ class StatPanel extends AbstractStatPanel {
         colMap.put(colList[i], i + 1);
       }
       /*
-       * .size()+1 added to stop index out of bounds errors when using an
-       * Italian player.
+       * .size()+1 added to stop index out of bounds errors when using an Italian player.
        */
       boolean useTech = false;
       try {
@@ -369,8 +366,7 @@ class StatPanel extends AbstractStatPanel {
     }
 
     /*
-     * Recalcs the underlying data in a lazy manner Limitation: This is not
-     * a threadsafe implementation
+     * Recalcs the underlying data in a lazy manner. Limitation: This is not a thread-safe implementation.
      */
     @Override
     public Object getValueAt(final int row, final int col) {

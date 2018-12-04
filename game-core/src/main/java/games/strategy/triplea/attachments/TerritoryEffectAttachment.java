@@ -29,16 +29,10 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   private List<UnitType> noBlitz = new ArrayList<>();
   private List<UnitType> unitsNotAllowed = new ArrayList<>();
 
-  /**
-   * Creates new TerritoryEffectAttachment.
-   */
   public TerritoryEffectAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
-  /**
-   * Convenience method.
-   */
   public static TerritoryEffectAttachment get(final TerritoryEffect te) {
     return get(te, Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
   }

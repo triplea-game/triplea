@@ -108,12 +108,10 @@ public final class IntegerMap<T> implements Serializable {
   }
 
   /**
-   * By >= we mean that each of our entries is greater
-   * than or equal to each entry in the other map. We do not take into
+   * By >= we mean that each of our entries is greater than or equal to each entry in the other map. We do not take into
    * account entries that are in our map but not in the second map. <br>
    * It is possible that for two maps a and b
-   * a.greaterThanOrEqualTo(b) is false, and b.greaterThanOrEqualTo(a) is false, and
-   * that a and b are not equal.
+   * a.greaterThanOrEqualTo(b) is false, and b.greaterThanOrEqualTo(a) is false, and that a and b are not equal.
    */
   public boolean greaterThanOrEqualTo(final IntegerMap<T> map) {
     return map.entrySet().stream()
@@ -172,8 +170,7 @@ public final class IntegerMap<T> implements Serializable {
 
   /**
    * The equals method will only return true if both the keys and values
-   * match exactly. If a has entries that b doesn't have or vice versa,
-   * then a and b are not equal.
+   * match exactly. If a has entries that b doesn't have or vice versa, then a and b are not equal.
    */
   @Override
   public boolean equals(final Object o) {

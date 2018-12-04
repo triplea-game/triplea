@@ -50,8 +50,7 @@ public class ServiceResponse<T> {
   }
 
   /**
-   * Any exceptions sending or receiving the service call result will be returned, if no errors then
-   * will return empty.
+   * Any exceptions sending or receiving the service call result will be returned, if no errors then will return empty.
    */
   public Optional<Throwable> getThrown() {
     return Optional.ofNullable(thrown);

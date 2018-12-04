@@ -212,11 +212,11 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   @Override
   public void socketUnqaurantined(final SocketChannel channel, final QuarantineConversation converstaion2) {
     final ClientQuarantineConversation conversation = (ClientQuarantineConversation) converstaion2;
-    // all ids are based on the socket adress of nodes in the network
-    // but the adress of a node changes depending on who is looking at it
-    // ie, sometimes it is the loopback adress if connecting locally,
+    // all ids are based on the socket address of nodes in the network
+    // but the address of a node changes depending on who is looking at it
+    // ie, sometimes it is the loopback address if connecting locally,
     // sometimes the client or server will be behind a NAT
-    // so all node ids are defined as what the server sees the adress as
+    // so all node ids are defined as what the server sees the address as
     // we are still in the decode thread at this point, set our nodes now
     // before the socket is unquarantined
     node = new Node(conversation.getLocalName(), conversation.getNetworkVisibleSocketAdress());
@@ -229,8 +229,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     if (shutDown) {
       return;
     }
-    // if an error occurs during set up
-    // we need to return in the constructor
+    // if an error occurs during set up we need to return in the constructor
     // otherwise this is harmless
     connectionRefusedError = error;
     for (final IMessengerErrorListener errorListener : errorListeners) {

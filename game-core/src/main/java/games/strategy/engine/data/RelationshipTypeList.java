@@ -52,8 +52,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
           data);
     } catch (final GameParseException e) {
       // this should never happen, createDefaultRelationship only throws a GameParseException when the wrong ArcheType
-      // is supplied, but we
-      // never do that
+      // is supplied, but we never do that
       throw new IllegalStateException(e);
     }
   }
@@ -64,8 +63,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
    * @param relationshipTypeConstant the type of relationship
    * @param relationshipArcheType the archetype of the relationship
    * @param data the GameData object for this relationship
-   * @throws GameParseException
-   *         if the wrong relationshipArcheType is used
+   * @throws GameParseException if the wrong relationshipArcheType is used
    */
   private void createDefaultRelationship(final String relationshipTypeConstant, final String relationshipArcheType,
       final GameData data) throws GameParseException {

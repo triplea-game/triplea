@@ -130,9 +130,8 @@ public final class PolygonGrabber {
     private final JLabel location = new JLabel();
 
     /**
-     * Asks user to specify a file with center points. If not
-     * program will exit. We setup the mouse listenrs and toolbars
-     * and load the actual image of the map here.
+     * Asks user to specify a file with center points. If not program will exit. We setup the mouse listeners and
+     * toolbars and load the actual image of the map here.
      *
      * @param mapName Path to image map.
      */
@@ -178,9 +177,7 @@ public final class PolygonGrabber {
       createImage(mapName);
       final JPanel imagePanel = createMainPanel();
       /*
-       * Add a mouse listener to show
-       * X : Y coordinates on the lower
-       * left corner of the screen.
+       * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
        */
       imagePanel.addMouseMotionListener(new MouseMotionAdapter() {
         @Override
@@ -189,9 +186,7 @@ public final class PolygonGrabber {
         }
       });
       /*
-       * Add a mouse listener to monitor
-       * for right mouse button being
-       * clicked.
+       * Add a mouse listener to monitor for right mouse button being clicked.
        */
       imagePanel.addMouseListener(new MouseAdapter() {
         @Override
@@ -235,14 +230,12 @@ public final class PolygonGrabber {
           log.info("Detecting Polygon for:" + territoryName);
           final Polygon p = findPolygon(center.x, center.y);
           // test if the poly contains the center point (this often fails when there is an island right above (because
-          // findPolygon will grab
-          // the island instead)
+          // findPolygon will grab the island instead)
           if (!p.contains(center)) {
             continue;
           }
           // test if this poly contains any other centers, and if so do not do this one. let the user manually do it to
-          // make sure it gets
-          // done properly
+          // make sure it gets done properly
           boolean hasIslands = false;
           for (final Point otherCenterPoint : centers.values()) {
             if (center.equals(otherCenterPoint)) {
@@ -257,8 +250,7 @@ public final class PolygonGrabber {
             continue;
           }
           // some islands do not have centers on them because they are island chains that are also part of an island or
-          // territory touching a
-          // sidewall or outside of this polygon. we should still skip them.
+          // territory touching a sidewall or outside of this polygon. we should still skip them.
           if (doesPolygonContainAnyBlackInside(p, imageCopy, g)) {
             continue;
           }
@@ -303,8 +295,7 @@ public final class PolygonGrabber {
     } // end constructor
 
     /**
-     * We create the image of the map here and
-     * assure that it is loaded properly.
+     * We create the image of the map here and assure that it is loaded properly.
      *
      * @param mapName The path of the image map.
      */
@@ -318,13 +309,9 @@ public final class PolygonGrabber {
     }
 
     /**
-     * Creates a JPanel to be used. Dictates how the map is
-     * painted. Current problem is that islands inside sea
-     * zones are not recognized when filling in the sea zone
-     * with a color, so we just outline in red instead of
-     * filling. We fill for selecting territories only for
-     * ease of use. We use var "islandMode" to dictate how
-     * to paint the map.
+     * Creates a JPanel to be used. Dictates how the map is painted. Current problem is that islands inside sea zones
+     * are not recognized when filling in the sea zone with a color, so we just outline in red instead of filling. We
+     * fill for selecting territories only for ease of use. We use var "islandMode" to dictate how to paint the map.
      *
      * @return The newly created panel.
      */
@@ -495,8 +482,7 @@ public final class PolygonGrabber {
         return false;
       }
       // gets ARGB integer value and we LOGICAL AND mask it
-      // with ARGB value of 00,FF,FF,FF to determine if it
-      // it black or not.
+      // with ARGB value of 00,FF,FF,FF to determine if it black or not.
       // maybe here ?
       return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
     }
@@ -507,8 +493,7 @@ public final class PolygonGrabber {
         return false;
       }
       // gets ARGB integer value and we LOGICAL AND mask it
-      // with ARGB value of 00,FF,FF,FF to determine if it
-      // it black or not.
+      // with ARGB value of 00,FF,FF,FF to determine if it black or not.
       // maybe here ?
       return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0;
     }
@@ -590,8 +575,7 @@ public final class PolygonGrabber {
     }
 
     /**
-     * Algorithm to find a polygon given a x/y coordinates and
-     * returns the found polygon.
+     * Algorithm to find a polygon given a x/y coordinates and returns the found polygon.
      */
     private Polygon findPolygon(final int x, final int y) {
       // walk up, find the first black point

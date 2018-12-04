@@ -13,19 +13,17 @@ import javax.annotation.Nullable;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * All the info necessary to describe a method call in one handy
- * serializable package.
+ * All the info necessary to describe a method call in one handy serializable package.
  */
 public class RemoteMethodCall implements Externalizable {
   private static final long serialVersionUID = 4630825927685836207L;
   private String remoteName;
   private String methodName;
   private Object[] args;
-  // to save space, we dont serialize method name/types
-  // instead we just serialize a number which can be transalted into
-  // the correct method.
+  // to save space, we don't serialize method name/types
+  // instead we just serialize a number which can be translated into the correct method.
   private int methodNumber;
-  // stored as a String[] so we can be serialzed
+  // stored as a String[] so we can be serialized
   private String[] argTypes;
 
   public RemoteMethodCall() {}
@@ -150,8 +148,7 @@ public class RemoteMethodCall implements Externalizable {
   }
 
   /**
-   * After we have been de-serialized, we do not transmit enough
-   * information to determine the method without being told
+   * After we have been deserialized, we do not transmit enough information to determine the method without being told
    * what class we operate on.
    */
   public void resolve(final Class<?> remoteType) {

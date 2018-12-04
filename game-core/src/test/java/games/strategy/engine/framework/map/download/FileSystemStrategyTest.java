@@ -18,9 +18,8 @@ import org.junitpioneer.jupiter.TempDirectory.TempDir;
 import games.strategy.util.Version;
 
 /**
- * For transition reasons we use a DownloadFileProperties to read
- * a properties file for each map that we download. Reading XMLs in Zips is can be
- * fast, so one day we should just read the versions directly from the map zip files.
+ * For transition reasons we use a DownloadFileProperties to read a properties file for each map that we download.
+ * Reading XMLs in Zips is can be fast, so one day we should just read the versions directly from the map zip files.
  */
 @ExtendWith(TempDirectory.class)
 public class FileSystemStrategyTest {

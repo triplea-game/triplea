@@ -83,14 +83,6 @@ public class ServerGame extends AbstractGame {
    */
   private volatile boolean delegateExecutionStopped = false;
 
-  /**
-   * Initializes a new instance of the ServerGame class.
-   *
-   * @param data game data.
-   * @param localPlayers Set - A set of GamePlayers
-   * @param remotePlayerMapping Map
-   * @param messengers IServerMessenger
-   */
   public ServerGame(final GameData data, final Set<IGamePlayer> localPlayers,
       final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
     super(data, localPlayers, remotePlayerMapping, messengers);
@@ -267,13 +259,12 @@ public class ServerGame extends AbstractGame {
 
 
   /**
-   * And here we go.
-   * Starts the game in a new thread
+   * Starts the game in a new thread.
    */
   public void startGame() {
     try {
-      // we dont want to notify that the step has been saved when reloading a saved game, since
-      // in fact the step hasnt changed, we are just resuming where we left off
+      // we don't want to notify that the step has been saved when reloading a saved game, since
+      // in fact the step hasn't changed, we are just resuming where we left off
       final boolean gameHasBeenSaved = gameData.getProperties().get(GAME_HAS_BEEN_SAVED_PROPERTY, false);
       if (!gameHasBeenSaved) {
         gameData.getProperties().set(GAME_HAS_BEEN_SAVED_PROPERTY, Boolean.TRUE);
@@ -285,8 +276,7 @@ public class ServerGame extends AbstractGame {
       while (!isGameOver) {
         if (delegateExecutionStopped) {
           // the delegate has told us to stop stepping through game steps
-          // dont let this method return, as this method returning signals
-          // that the game is over.
+          // don't let this method return, as this method returning signals that the game is over.
           Interruptibles.await(delegateExecutionStoppedLatch);
         } else {
           runStep(false);
@@ -562,8 +552,7 @@ public class ServerGame extends AbstractGame {
       final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     // potential bugs with adding changes to a game that has not yet started and has no history nodes yet. So wait for
-    // the first delegate to
-    // start before making changes.
+    // the first delegate to start before making changes.
     if (getCurrentStep() == null || getCurrentStep().getPlayerId() == null || firstRun) {
       firstRun = false;
       return;
@@ -619,8 +608,7 @@ public class ServerGame extends AbstractGame {
 
   @Override
   public void addChange(final Change change) {
-    // let our channel subscribor do the change,
-    // that way all changes will happen in the same thread
+    // let our channel subscriber do the change, that way all changes will happen in the same thread
     getGameModifiedBroadcaster().gameDataChanged(change);
   }
 

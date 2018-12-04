@@ -62,8 +62,7 @@ public final class RouteCalculator {
    * Used to display routes with higher offsets than the map width/height.
    *
    * @param point The Point to "clone"
-   * @return A List of all possible Points depending in map Properties
-   *         size may vary
+   * @return A List of all possible Points depending in map Properties. Size may vary.
    */
   public List<Point2D> getPossiblePoints(final Point2D point) {
     return MapScrollUtil

@@ -16,8 +16,8 @@ public interface ILoginValidator {
   /**
    * Validates a login attempt.
    *
-   * @param propertiesReadFromClient - client properties written by the client after receiving the challange string.
-   * @param remoteAddress - the remote adress
+   * @param propertiesReadFromClient Client properties written by the client after receiving the challenge string.
+   * @param remoteAddress The remote address.
    * @param clientName - the user name given by the client
    * @return - null if the attempt was successful, an error message otherwise
    */

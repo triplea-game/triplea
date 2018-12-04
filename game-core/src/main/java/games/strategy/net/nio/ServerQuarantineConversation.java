@@ -58,12 +58,12 @@ public class ServerQuarantineConversation extends QuarantineConversation {
     try {
       switch (step) {
         case READ_NAME:
-          // read name, send challent
+          // read name, send challenge
           remoteName = (String) o;
           step = Step.READ_MAC;
           return Action.NONE;
         case READ_MAC:
-          // read name, send challent
+          // read name, send challenge
           remoteMac = (String) o;
           if (validator != null) {
             challenge = validator.getChallengeProperties(remoteName);
@@ -108,7 +108,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   }
 
   private void send(final Serializable object) {
-    // this messenger is quarantined, so to and from dont matter
+    // this messenger is quarantined, so to and from don't matter
     final MessageHeader header = new MessageHeader(Node.NULL_NODE, Node.NULL_NODE, object);
     socket.send(channel, header);
   }

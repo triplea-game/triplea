@@ -60,7 +60,7 @@ public class GenericEmailSender implements IEmailSender {
   private static final String USE_TRANSIENT_CREDENTIAL = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
 
   /**
-   * Currently only message encryption is allowed. Later connect based encryption through SSL may be implementes
+   * Currently only message encryption is allowed. Later connect based encryption through SSL may be implemented.
    */
   public enum Encryption {
     NONE, TLS

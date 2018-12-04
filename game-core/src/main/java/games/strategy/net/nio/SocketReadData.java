@@ -18,14 +18,11 @@ import lombok.extern.java.Log;
 class SocketReadData {
   public static final int MAX_MESSAGE_SIZE = 1000 * 1000 * 10;
   private static final AtomicInteger counter = new AtomicInteger();
-  // as a sanity check to make sure
-  // we are talking to another tripea instance
-  // that the upper bits of the packet
-  // size we send is 0x9b
+  // as a sanity check to make sure we are talking to another triplea instance
+  // that the upper bits of the packet size we send is 0x9b
   public static final int MAGIC = 0x9b000000;
   private int targetSize = -1;
-  // we read into here the first four
-  // bytes to find out size
+  // we read into here the first four bytes to find out size
   private ByteBuffer sizeBuffer;
   // we read into here after knowing out size
   private ByteBuffer contentBuffer;

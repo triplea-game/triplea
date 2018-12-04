@@ -10,7 +10,6 @@ import games.strategy.engine.data.PlayerId;
 public class FlagIconImageFactory extends ImageFactory {
   private static final String PREFIX = "flags/";
 
-  /** Creates new FlagIconImageFactory. */
   public FlagIconImageFactory() {}
 
   public Image getFlag(final PlayerId id) {

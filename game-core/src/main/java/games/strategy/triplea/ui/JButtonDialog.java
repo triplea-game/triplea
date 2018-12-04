@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 /**
  * A Dialog window which has a single component, and a number of buttons.
- * Thi is a wrapper around JOptionPane.showOptionDialog, that allows you to use any names for the button
+ * This is a wrapper around JOptionPane.showOptionDialog, that allows you to use any names for the button
  */
 public class JButtonDialog {
   /**

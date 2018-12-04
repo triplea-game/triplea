@@ -33,9 +33,6 @@ public class ServerOptions extends JDialog {
   private JTextField comment;
   private final boolean showComment;
 
-  /**
-   * Creates a new instance of ServerOptions.
-   */
   public ServerOptions(final Component owner, final String defaultName, final int defaultPort,
       final boolean showComment) {
     super(owner == null ? null : JOptionPane.getFrameForComponent(owner), "Server options", true);

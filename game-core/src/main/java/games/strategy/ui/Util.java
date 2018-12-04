@@ -120,20 +120,17 @@ public final class Util {
   }
 
   /**
-   * java.lang.String findTerritoryName(java.awt.Point)
    * Finds a land territory name or some sea zone name where the point is contained in according to the territory name
    * -> polygons map.
    *
    * @param p A point on the map.
    * @param terrPolygons a map territory name -> polygons
-   * @return Optional&lt;String>
    */
   public static Optional<String> findTerritoryName(final Point p, final Map<String, List<Polygon>> terrPolygons) {
     return Optional.ofNullable(findTerritoryName(p, terrPolygons, null));
   }
 
   /**
-   * java.lang.String findTerritoryName(java.awt.Point)
    * Finds a land territory name or some sea zone name where the point is contained in according to the territory name
    * -> polygons map. If no land or sea territory has been found a default name is returned.
    *

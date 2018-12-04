@@ -62,8 +62,7 @@ import tools.util.ToolArguments;
  * display related information about your map. <br>
  * Such things as the dimensions of your map, the colors of each of the players,
  * the size of the unit images, and how zoomed out they are, etc. <br>
- * To use, just fill in the information in the fields below, and click on 'Show More' to
- * show other, optional, fields.
+ * To use, just fill in the information in the fields below, and click on 'Show More' to show other, optional, fields.
  */
 @Log
 public final class MapPropertiesMaker {

@@ -6,8 +6,7 @@ import games.strategy.util.IntegerMap;
 
 /**
  * Used to describe a tech roll.
- * advance may be null if the game does not support rolling for
- * specific techs
+ * advance may be null if the game does not support rolling for specific techs
  */
 public class TechRoll {
   private final TechnologyFrontier tech;

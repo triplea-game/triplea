@@ -7,8 +7,7 @@ import games.strategy.engine.framework.LocalPlayers;
 
 /**
  * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move
- * delegate) to also be played
- * on clients.
+ * delegate) to also be played on clients.
  */
 public class DefaultSoundChannel implements ISound {
   private final LocalPlayers localPlayers;
@@ -16,7 +15,6 @@ public class DefaultSoundChannel implements ISound {
   public DefaultSoundChannel(final LocalPlayers localPlayers) {
     this.localPlayers = localPlayers;
   }
-
 
   @Override
   public void playSoundForAll(final String clipName, final PlayerId playerId) {
@@ -45,5 +43,4 @@ public class DefaultSoundChannel implements ISound {
       ClipPlayer.play(clipName);
     }
   }
-
 }

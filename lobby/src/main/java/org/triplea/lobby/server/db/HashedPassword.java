@@ -9,8 +9,7 @@ import games.strategy.util.Md5Crypt;
 
 /**
  * A Wrapper class for salted password hashes.
- * If the given String is not matching the format
- * of Md5Crypt or BCrypt hashes isValidSyntax returns false.
+ * If the given String is not matching the format of Md5Crypt or BCrypt hashes isValidSyntax returns false.
  */
 public final class HashedPassword {
   public final String value;

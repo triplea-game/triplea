@@ -53,12 +53,10 @@ public class BattleRecord implements Serializable {
 
     /**
      * No battle was fought, possibly because the territory you were about to bomb was conquered before the
-     * bombing could begin,
-     * etc.
+     * bombing could begin, etc.
      */
     NO_BATTLE
   }
-
 
   private static final long serialVersionUID = 3642216371483289106L;
   private Territory battleSite;

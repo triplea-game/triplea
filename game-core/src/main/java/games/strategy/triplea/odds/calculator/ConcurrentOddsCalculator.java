@@ -124,14 +124,12 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
     final long memoryLeftBeforeMax = runtime.maxMemory() - Math.max(usedMemoryAfterCopy, memoryUsedBeforeCopy);
     // make sure it is a decent size
     final long memoryUsedByCopy = Math.max(100000, (usedMemoryAfterCopy - memoryUsedBeforeCopy));
-    // regardless of how stupid the gc is
-    // we leave some memory left over just in case
+    // regardless of how stupid the gc is we leave some memory left over just in case
     final int numberOfTimesWeCanCopyMax =
         Math.max(1, (int) Math.min(Integer.MAX_VALUE, (memoryLeftBeforeMax / memoryUsedByCopy)));
 
     if (timeToCopyInMillis > 3000) {
-      // use half the number of threads available if we took
-      // more than 3 seconds to copy
+      // use half the number of threads available if we took more than 3 seconds to copy
       return Math.min(numberOfTimesWeCanCopyMax, Math.max(1, (MAX_THREADS / 2)));
     }
     // use all threads
@@ -161,8 +159,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
         // we are already in 1 executor thread, so we have MAX_THREADS-1 threads left to use
         if (currentThreads <= 2 || MAX_THREADS <= 2) {
           // if 2 or fewer threads, do not multi-thread the copying (we have already copied it once above, so at most
-          // only 1 more copy to
-          // make)
+          // only 1 more copy to make)
           while (cancelCurrentOperation.get() >= 0 && i < currentThreads) {
             // the last one will use our already copied data from above, without copying it again
             workers.add(new OddsCalculator(newData, (currentThreads == ++i)));
@@ -248,8 +245,7 @@ public class ConcurrentOddsCalculator implements IOddsCalculator {
 
   /**
    * Concurrently calculates odds using the OddsCalculatorWorker. It uses Executor to process the results. Then waits
-   * for all the future
-   * results and combines them together.
+   * for all the future results and combines them together.
    */
   @Override
   public AggregateResults calculate() throws IllegalStateException {

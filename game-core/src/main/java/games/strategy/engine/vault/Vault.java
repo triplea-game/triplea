@@ -20,8 +20,7 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.RemoteName;
 
 /**
- * A vault is a secure way for the client and server to share information without
- * trusting each other.
+ * A vault is a secure way for the client and server to share information without trusting each other.
  *
  * <p>
  * Data can be locked in the vault by a node. This data then is not readable by other nodes until the data is unlocked.
@@ -29,8 +28,7 @@ import games.strategy.engine.message.RemoteName;
  *
  * <p>
  * When the data is unlocked by the original node, other nodes can read the data. When data is put in the vault, it cant
- * be changed by the
- * originating node.
+ * be changed by the originating node.
  * </p>
  *
  * <p>
@@ -45,8 +43,7 @@ public class Vault {
   private final SecretKeyFactory secretKeyFactory;
   // 0xCAFEBABE
   // we encrypt both this value and data when we encrypt data.
-  // when decrypting we ensure that KNOWN_VAL is correct
-  // and thus guarantee that we are being given the right key
+  // when decrypting we ensure that KNOWN_VAL is correct and thus guarantee that we are being given the right key
   private static final byte[] KNOWN_VAL = new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE};
   private final KeyGenerator keyGen;
   private final IChannelMessenger channelMessenger;
@@ -58,9 +55,6 @@ public class Vault {
   private final ConcurrentMap<VaultId, byte[]> verifiedValues = new ConcurrentHashMap<>();
   private final Object waitForLock = new Object();
 
-  /**
-   * Creates a new instance of Vault.
-   */
   public Vault(final IChannelMessenger channelMessenger) {
     this.channelMessenger = channelMessenger;
     this.channelMessenger.registerChannelSubscriber(remoteVault, VAULT_CHANNEL);
@@ -78,8 +72,7 @@ public class Vault {
 
   // serialize secret key as byte array to
   // preserve jdk 1.4 to 1.5 compatability
-  // they should be compatable, but we are
-  // getting errors with serializing secret keys
+  // they should be compatable, but we are getting errors with serializing secret keys
   private SecretKey bytesToKey(final byte[] bytes) {
     try {
       final DESKeySpec spec = new DESKeySpec(bytes);
@@ -103,8 +96,7 @@ public class Vault {
   }
 
   /**
-   * place data in the vault. An encrypted form of the data is sent at this
-   * time to all nodes.
+   * Place data in the vault. An encrypted form of the data is sent at this time to all nodes.
    *
    * <p>
    * The same key used to encrypt the KNOWN_VALUE so that nodes can verify the key when it is used to decrypt the data.
@@ -175,8 +167,7 @@ public class Vault {
 
   /**
    * Note - if an id has been released, then this will return false.
-   * If this instance of vault locked id, then this method will return true
-   * if the id has not been released.
+   * If this instance of vault locked id, then this method will return true if the id has not been released.
    *
    * @return - has this id been unlocked
    */
@@ -345,4 +336,3 @@ public class Vault {
     void release(VaultId id);
   }
 }
-

@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * This is an updated version with enhancements made by Daniel Migowski,
- * Andre Bogus, and David Koelle
+ * This is an updated version with enhancements made by Daniel Migowski, Andre Bogus, and David Koelle.
  * To convert to use Templates (Java 1.5+):
  * - Change "implements Comparator" to "implements Comparator&lt;String>"
  * - Change "compare(Object o1, Object o2)" to "compare(String s1, String s2)"

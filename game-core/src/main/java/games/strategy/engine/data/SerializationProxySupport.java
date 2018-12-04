@@ -1,6 +1,5 @@
 package games.strategy.engine.data;
 
-
 /**
  * Annotation to mark magic 'writeReplace' methods that are used to support the serialization proxy pattern. See the
  * following references:
@@ -41,15 +40,12 @@ package games.strategy.engine.data;
  * </pre>
  *
  * <p>
- * IMPORTANT: It is critical that the 'readResolve' method only calls public APIs on the
- * proxied object.
- * On the other hand, it is okay for the serialization proxy constructor to use class private
- * data members.
+ * IMPORTANT: It is critical that the 'readResolve' method only calls public APIs on the proxied object.
+ * On the other hand, it is okay for the serialization proxy constructor to use class private data members.
  * </p>
  *
  * <p>
- * This way you only are using public methods to recreate your object on a read, so long as
- * those methods are left
+ * This way you only are using public methods to recreate your object on a read, so long as those methods are left
  * in place, we will be able to load games between versions.
  * </p>
  */

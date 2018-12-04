@@ -138,13 +138,6 @@ public class MapData implements Closeable {
     this(ResourceLoader.getMapResourceLoader(mapNameDir));
   }
 
-  /**
-   * Constructor TerritoryData(java.lang.String)
-   * Sets the map directory for this instance of TerritoryData
-   *
-   * @param loader .lang.String
-   *        mapNameDir the given map directory
-   */
   public MapData(final ResourceLoader loader) {
     resourceLoader = loader;
     try {
@@ -546,10 +539,9 @@ public class MapData implements Closeable {
   }
 
   /**
-   * returns the name of the territory contained in the given territory. This
-   * applies to islands within sea zones.
+   * returns the name of the territory contained in the given territory. This applies to islands within sea zones.
    *
-   * @return possiblly null
+   * @return possibly null
    */
   public List<String> getContainedTerritory(final String territoryName) {
     return contains.get(territoryName);
@@ -717,8 +709,7 @@ public class MapData implements Closeable {
     // the map,
     // then the polygon's width or height could be almost equal to the map width or height
     // this can cause lots of problems, like when we want to get the tiles for the territory we would end up getting all
-    // the tiles for the
-    // map (and a java heap space error)
+    // the tiles for the map (and a java heap space error)
     final Dimension mapDimensions = getMapDimensions();
     if ((scrollWrapX() && bounds.width > 1800 && bounds.width > mapDimensions.width * 0.9)
         || (scrollWrapY() && bounds.height > 1200 && bounds.height > mapDimensions.height * 0.9)) {
@@ -737,14 +728,12 @@ public class MapData implements Closeable {
     final boolean scrollWrapY = this.scrollWrapY();
     for (final Polygon item : polys) {
       // if our rectangle is on the right side (mapscrollx) then we push it to be on the negative left side, so that the
-      // bounds.x will be
-      // negative
+      // bounds.x will be negative
       // this solves the issue of maps that have a territory where polygons were on both sides of the map divide
       // (so our bounds.x was 0, and our bounds.y would be the entire map width)
       // (when in fact it should actually be bounds.x = -10 or something, and bounds.width = 20 or something)
       // we use map dimensions.width * 0.9 because the polygon may not actually touch the side of the map (like if the
-      // territory borders are
-      // thick)
+      // territory borders are thick)
       final Rectangle itemRect = item.getBounds();
       if (scrollWrapX && itemRect.getMaxX() >= closeToMapWidth) {
         itemRect.translate(-mapWidth, 0);

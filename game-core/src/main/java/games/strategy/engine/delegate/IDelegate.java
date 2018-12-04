@@ -6,8 +6,7 @@ import games.strategy.engine.message.IRemote;
 
 /**
  * A section of code that implements game logic.
- * The delegate should be deterministic. All random events should be
- * obtained through calls to the delegateBridge.
+ * The delegate should be deterministic. All random events should be obtained through calls to the delegateBridge.
  * Delegates make changes to gameData by calling the addChange method in DelegateBridge.
  * All delegates must have a zero argument constructor, due to reflection constraints.
  * The delegate will be initialized with a call of initialize(..) before used.
@@ -87,11 +86,9 @@ public interface IDelegate {
   /**
    * Do we have any user-interface things to do in this delegate or not?
    * Example: In the "place delegate" if we have units to place or have already placed some units then this should
-   * return true,
-   * and if we have nothing to place then this should return false;
+   * return true, and if we have nothing to place then this should return false;
    * Example2: In a "move delegate" if we have either moved units already or have units with movement left, then this
-   * should return true,
-   * and if we have no units to move or undo-move, then this should return false.
+   * should return true, and if we have no units to move or undo-move, then this should return false.
    * Because communication over the network can take a while, this should only be called from the server game.
    *
    * @return should we run the delegate in order to receive user input, or not?

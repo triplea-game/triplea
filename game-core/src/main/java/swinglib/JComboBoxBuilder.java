@@ -13,8 +13,7 @@ import javax.swing.JComboBox;
 import com.google.common.base.Preconditions;
 
 /**
- * Builds a swing JComboBox that supports String values only. This is a pull down
- * box with items that can be selected.
+ * Builds a swing JComboBox that supports String values only. This is a pull down box with items that can be selected.
  * <br />
  * Example usage:
  *

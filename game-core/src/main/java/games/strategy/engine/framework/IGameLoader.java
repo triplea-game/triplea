@@ -17,12 +17,9 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.player.IGamePlayer;
 
 /**
- * A game loader is responsible for telling the framework
- * what types of players are available, for creating players, and
- * starting the game.
- * The name is somewhat misleading since it doesn't actually load the
- * game data, merely performs the game specific steps for starting the game
- * and meta data needed by the engine.
+ * A game loader is responsible for telling the framework what types of players are available, for creating players, and
+ * starting the game. The name is somewhat misleading since it doesn't actually load the game data, merely performs the
+ * game specific steps for starting the game and meta data needed by the engine.
  */
 public interface IGameLoader extends Serializable {
   /**

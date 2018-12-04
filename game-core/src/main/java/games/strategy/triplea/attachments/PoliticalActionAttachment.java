@@ -27,8 +27,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * An attachment, attached to a player that will describe which political
- * actions a player may take.
+ * An attachment, attached to a player that will describe which political actions a player may take.
  */
 public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 4392770599777282477L;

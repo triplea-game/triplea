@@ -72,9 +72,8 @@ public final class GridBagHelper {
   }
 
   /**
-   * Adds a child component to the parent component passed in to the GridBagHelper constructor. The
-   * child component is added to the grid bag layout at the next column (left to right), wrapping to
-   * the next row when needed.
+   * Adds a child component to the parent component passed in to the GridBagHelper constructor. The child component is
+   * added to the grid bag layout at the next column (left to right), wrapping to the next row when needed.
    */
   public void add(final Component child) {
     addAll(child);

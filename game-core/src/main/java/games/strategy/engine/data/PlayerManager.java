@@ -62,8 +62,7 @@ public class PlayerManager {
   }
 
   /**
-   * Get a player from an opposing side, if possible, else
-   * get a player playing at a remote computer, if possible.
+   * Get a player from an opposing side, if possible, else get a player playing at a remote computer, if possible.
    */
   public PlayerId getRemoteOpponent(final INode localNode, final GameData data) {
     // find a local player

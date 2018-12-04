@@ -36,8 +36,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   // Used with the next Territory conditions to determine the number of territories needed to be valid
   // (ex: alliedOwnershipTerritories)
   protected int territoryCount = -1;
-  // A list of players that can be used with
-  // directOwnershipTerritories, directExclusionTerritories,
+  // A list of players that can be used with directOwnershipTerritories, directExclusionTerritories,
   // directPresenceTerritories, or any of the other territory lists
   // only used if the attachment begins with "objectiveAttachment"
   protected List<PlayerId> players = new ArrayList<>();
@@ -105,8 +104,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
    * Internal use only, is not set by xml or property utils.
    * Is used to determine the number of territories we need to satisfy a specific territory based condition check.
    * It is set multiple times during each check [isSatisfied], as there might be multiple types of territory checks
-   * being done. So it is
-   * just a temporary value.
+   * being done. So it is just a temporary value.
    */
   protected void setTerritoryCount(final String value) {
     if (value.equals("each")) {
@@ -147,8 +145,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   /**
    * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and
-   * therefore should not
-   * be tested for in isSatisfied.
+   * therefore should not be tested for in isSatisfied.
    */
   public int getUses() {
     return uses;
@@ -250,8 +247,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   /**
    * Takes a string like "original", "originalNoWater", "enemy", "controlled", "controlledNoWater", "all", "map", and
-   * turns it into an
-   * actual list of territories.
+   * turns it into an actual list of territories.
    * Also sets territoryCount.
    */
   protected Set<Territory> getTerritoriesBasedOnStringName(final String name, final Collection<PlayerId> players,
@@ -355,8 +351,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   /**
    * Validate that all listed territories actually exist. Will return an empty list of territories if sent a list that
-   * is empty or contains
-   * only a "" string.
+   * is empty or contains only a "" string.
    */
   public Set<Territory> getListedTerritories(final String[] list, final boolean testFirstItemForCount,
       final boolean mustSetTerritoryCount) {

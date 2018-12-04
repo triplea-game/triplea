@@ -11,7 +11,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.Properties;
 
 /**
- * Abstract superclass for all action panels. <br>
+ * Abstract superclass for all action panels.
  */
 public abstract class ActionPanel extends JPanel {
   private static final long serialVersionUID = -5954576036704958641L;
@@ -22,7 +22,6 @@ public abstract class ActionPanel extends JPanel {
   private CountDownLatch latch;
   private final Object latchLock = new Object();
 
-  /** Creates new ActionPanel. */
   public ActionPanel(final GameData data, final MapPanel map) {
     this.data = data;
     this.map = map;
@@ -48,8 +47,7 @@ public abstract class ActionPanel extends JPanel {
   }
 
   /**
-   * Waitfor another thread to call release.
-   * If the thread is interupted, we will return silently.
+   * Wait for another thread to call release. If the thread is interrupted, we will return silently.
    *
    * <p>
    * A memory barrier will be crossed both on entering and before exiting this method.
@@ -92,10 +90,8 @@ public abstract class ActionPanel extends JPanel {
   protected void release() {
     synchronized (latchLock) {
       // not set up yet
-      // this is ok as we set up in one thread
-      // and wait in another
-      // if the release happens too early
-      // the user will be able to press done again
+      // this is ok as we set up in one thread and wait in another
+      // if the release happens too early, the user will be able to press done again
       if (latch == null) {
         return;
       }
@@ -123,8 +119,7 @@ public abstract class ActionPanel extends JPanel {
   }
 
   /**
-   * Called when the history panel shows used to disable the panel
-   * temporarily.
+   * Called when the history panel shows used to disable the panel temporarily.
    */
   public void setActive(final boolean active) {
     this.active = active;

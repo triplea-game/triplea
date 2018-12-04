@@ -26,8 +26,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   private final IMessenger messenger;
   // maps end points to a list of nodes with implementors
   private final Map<String, Collection<INode>> endPoints = new HashMap<>();
-  // changes to the list of endpoints, or reads to it, should be made
-  // only while holding this lock
+  // changes to the list of end points, or reads to it, should be made only while holding this lock
   private final Object endPointMutex = new Object();
   // the invocations that are currently in progress
   private final Map<GUID, InvocationInProgress> invocations = new ConcurrentHashMap<>();
@@ -88,8 +87,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
               new RemoteMethodCallResults(new RemoteNotFoundException("Not found:" + invoke.call.getRemoteName()));
           send(new SpokeInvocationResults(results, invoke.methodCallId), from);
         }
-        // no end points, this is ok, we
-        // we are a channel with no implementors
+        // no end points, this is ok, we are a channel with no implementors
       } else {
         invoke(invoke, endPointCols, from);
       }

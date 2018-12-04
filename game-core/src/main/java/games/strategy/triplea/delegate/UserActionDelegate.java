@@ -161,8 +161,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   /**
-   * Get a list of players that should accept this action and then ask each
-   * player if it accepts this action.
+   * Get a list of players that should accept this action and then ask each player if it accepts this action.
    *
    * @param uaa the UserActionAttachment that should be accepted
    */
@@ -254,8 +253,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   /**
-   * Let the player know he is being charged for money or that he hasn't got
-   * enough money.
+   * Let the player know he is being charged for money or that he hasn't got enough money.
    *
    * @param uaa the UserActionAttachment the player is notified about
    *
@@ -266,17 +264,15 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   }
 
   /**
-   * Let the player know this action isn't valid anymore, this shouldn't
-   * happen as the player shouldn't get an option to push the button on
-   * non-valid actions.
+   * Let the player know this action isn't valid anymore, this shouldn't happen as the player shouldn't get an option to
+   * push the button on non-valid actions.
    */
   private void notifyNoValidAction() {
     sendNotification("This action isn't available anymore (this shouldn't happen!?!)");
   }
 
   /**
-   * Reset the attempts-counter for this action, so next round the player can
-   * try again for a number of attempts.
+   * Reset the attempts-counter for this action, so next round the player can try again for a number of attempts.
    */
   private void resetAttempts() {
     for (final UserActionAttachment uaa : UserActionAttachment.getUserActionAttachments(player)) {

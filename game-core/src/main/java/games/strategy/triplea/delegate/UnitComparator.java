@@ -27,8 +27,7 @@ public class UnitComparator {
   }
 
   /**
-   * A Helper method that returns a Comparator comparing Units
-   * based on the total transporting cost of transportable
+   * A Helper method that returns a Comparator comparing Units based on the total transporting cost of transportable
    * Units in the same territory as the Unit.
    *
    * <p>

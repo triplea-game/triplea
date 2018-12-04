@@ -1143,8 +1143,7 @@ public class WW2V3Year41Test {
     // germany owns madagascar, with 2 fighters in it
     // also 1 carrier, and 1 allied fighter in sz 40
     // the fighters should not be able to move from madagascar
-    // to sz 40, since with the allied fighter, their is no room
-    // on the carrier
+    // to sz 40, since with the allied fighter, there is no room on the carrier
     final Territory madagascar = territory("French Madagascar", gameData);
     final PlayerId germans = germans(gameData);
     madagascar.setOwner(germans);

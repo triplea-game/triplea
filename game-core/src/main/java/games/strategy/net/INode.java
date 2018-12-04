@@ -12,10 +12,9 @@ import java.net.InetSocketAddress;
  * </p>
  *
  * <p>
- * Since different nodes may appear as different adresses to different nodes (eg the server sees a node as its nat
- * accesseble adress, while
- * the node itself sees itself as a subnet address), the address for a node is defined as the address that the server
- * sees!
+ * Since different nodes may appear as different addresses to different nodes (eg the server sees a node as its nat
+ * accessible address, while the node itself sees itself as a subnet address), the address for a node is defined as the
+ * address that the server sees!
  * </p>
  */
 public interface INode extends Serializable, Comparable<INode> {

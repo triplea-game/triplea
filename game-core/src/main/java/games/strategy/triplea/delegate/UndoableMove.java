@@ -108,11 +108,9 @@ public class UndoableMove extends AbstractUndoableMove {
         final Route routeUnitUsedToMove =
             DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, route.getStart());
         if (!battle.getBattleType().isBombingRun()) {
-          // route units used to move will be null in the case
-          // where an enemy sub is submerged in the territory, and another unit
-          // moved in to attack it, but some of the units in the original
-          // territory are moved out. Undoing this last move, the route used to move
-          // into the battle zone will be null
+          // route units used to move will be null in the case where an enemy sub is submerged in the territory, and
+          // another unit moved in to attack it, but some of the units in the original territory are moved out. Undoing
+          // this last move, the route used to move into the battle zone will be null
           if (routeUnitUsedToMove != null) {
             final Change change = battle.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), null);
             bridge.addChange(change);
@@ -167,10 +165,9 @@ public class UndoableMove extends AbstractUndoableMove {
       if (!CollectionUtils.intersection(other.getUnits(), this.getUnits()).isEmpty()
           // if the other move has transports that we are loading
           || !CollectionUtils.intersection(other.units, this.loaded).isEmpty()
-          // or we are moving through a previously conqueured territory
+          // or we are moving through a previously conquered territory
           // we should be able to take this out later
-          // we need to add logic for this move to take over the same territories
-          // when the other move is undone
+          // we need to add logic for this move to take over the same territories when the other move is undone
           || !CollectionUtils.intersection(other.conquered, route.getAllTerritories()).isEmpty()
           // or we are unloading transports that have moved in another turn
           || !CollectionUtils.intersection(other.units, this.unloaded).isEmpty()

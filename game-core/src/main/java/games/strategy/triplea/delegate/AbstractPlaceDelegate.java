@@ -471,8 +471,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     }
     // do we have any spare carrier capacity
     int capacity = AirMovementValidator.carrierCapacity(units, at);
-    // subtract fighters that have already been produced with this carrier
-    // this turn.
+    // subtract fighters that have already been produced with this carrier this turn.
     capacity -= AirMovementValidator.carrierCost(units);
     if (capacity <= 0) {
       return null;
@@ -544,14 +543,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * Test whether or not the territory has the factory resources to support
-   * the placement. AlreadyProduced maps territory->units already produced
-   * this turn by that territory.
+   * Test whether or not the territory has the factory resources to support the placement. AlreadyProduced maps
+   * territory->units already produced this turn by that territory.
    */
   protected String canProduce(final Territory to, final Collection<Unit> units, final PlayerId player) {
     final Collection<Territory> producers = getAllProducers(to, player, units, true);
-    // the only reason it could be empty is if its water and no
-    // territories adjacent have factories
+    // the only reason it could be empty is if its water and no territories adjacent have factories
     if (producers.isEmpty()) {
       return "No factory in or adjacent to " + to.getName();
     }
@@ -662,8 +659,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   /**
    * Returns the territories that would do the producing if units are to be placed in a given territory. Returns an
-   * empty list if no
-   * suitable territory could be found.
+   * empty list if no suitable territory could be found.
    *
    * @param to - Territory to place in.
    * @param player - player that is placing.
@@ -699,9 +695,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   }
 
   /**
-   * Test whether or not the territory has the factory resources to support
-   * the placement. AlreadyProduced maps territory->units already produced
-   * this turn by that territory.
+   * Test whether or not the territory has the factory resources to support the placement. AlreadyProduced maps
+   * territory->units already produced this turn by that territory.
    */
   protected String checkProduction(final Territory to, final Collection<Unit> units, final PlayerId player) {
     final List<Territory> producers = getAllProducers(to, player, units);
@@ -878,8 +873,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
         if (maxUnits > 0) {
           // we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be
-          // able to place the
-          // max placement by constructionType of each unitType
+          // able to place the max placement by constructionType of each unitType
           if (skipUnits.contains(currentUnit)) {
             continue;
           }
@@ -955,8 +949,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         break;
       }
       // remove units which are now consumed, then test the rest of the consuming units on the diminishing pile of units
-      // which were in the
-      // territory at start of turn
+      // which were in the territory at start of turn
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       final IntegerMap<UnitType> requiredUnitsMap = ua.getConsumesUnits();
       final Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
@@ -1131,8 +1124,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
           final Territory placeTerritory = placementMove.getPlaceTerritory();
           final Collection<Unit> unitsPlacedByCurrentPlacementMove = placementMove.getUnits();
           // TODO: Units which have the unit attachment property, requiresUnits, are too difficult to mess with
-          // logically, so we ignore them
-          // for our special 'move shit around' methods.
+          // logically, so we ignore them for our special 'move shit around' methods.
           if (!placeTerritory.isWater() || (isUnitPlacementRestrictions()
               && unitsPlacedByCurrentPlacementMove.stream().anyMatch(Matches.unitRequiresUnitsOnCreation()))) {
             productionCanNotBeMoved += unitsPlacedByCurrentPlacementMove.size();
@@ -1627,5 +1619,3 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return IAbstractPlaceDelegate.class;
   }
 }
-
-

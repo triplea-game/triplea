@@ -4,8 +4,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Raised when message is throttled (not sent and dropped) due to client side restrictions.
- * Such client side throttles are a safety check to guard against bugs that could
- * accidently send bad messages.
+ * Such client side throttles are a safety check to guard against bugs that could accidently send bad messages.
  */
 @NoArgsConstructor
 public class MessageNotSentException extends RuntimeException {

@@ -106,7 +106,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     return ZipProcessingResult.SUCCESS;
   }
 
-  /*
+  /**
    * Open up a confirmation dialog, if user says yes, delete the map specified by
    * parameter, then show confirmation of deletion.
    */

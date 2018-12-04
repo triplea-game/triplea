@@ -12,12 +12,9 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.ISound;
 
 /**
- * A class that communicates with the Delegate. DelegateBridge co-ordinates
- * comunication between the Delegate and both the players and the game data.
- * The reason for communicating through a DelegateBridge is to achieve network
- * transparancy.
- * The delegateBridge allows the Delegate to talk to the player in a safe
- * manner.
+ * A class that communicates with the Delegate. DelegateBridge coordinates communication between the Delegate and both
+ * the players and the game data. The reason for communicating through a DelegateBridge is to achieve network
+ * transparency. The delegateBridge allows the Delegate to talk to the player in a safe manner.
  */
 public interface IDelegateBridge {
   /**
@@ -41,8 +38,7 @@ public interface IDelegateBridge {
 
   /**
    * Add a change to game data. Use this rather than changing gameData
-   * directly since this method allows us to send the changes to other
-   * machines.
+   * directly since this method allows us to send the changes to other machines.
    */
   void addChange(Change change);
 
@@ -57,9 +53,7 @@ public interface IDelegateBridge {
    * Delegates should not use random data that comes from any other source.
    * <p>
    *
-   * @param annotation -
-   *        a string used to describe the random event.
-   *        <p>
+   * @param annotation a string used to describe the random event.
    */
   int[] getRandom(final int max, final int count, final PlayerId player, final DiceType diceType,
       final String annotation);
@@ -102,7 +96,7 @@ public interface IDelegateBridge {
    * After this step finishes executing, the next delegate will not be called.
    *
    * <p>
-   * This methd allows the delegate to signal that the game is over, but does not force the ui or the display to
+   * This method allows the delegate to signal that the game is over, but does not force the ui or the display to
    * shutdown.
    * </p>
    */

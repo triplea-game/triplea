@@ -35,8 +35,7 @@ public class CompositeChange extends Change {
   @Override
   public Change invert() {
     final List<Change> newChanges = new ArrayList<>();
-    // to invert a list of changes, process the opposite of
-    // each change in the reverse order of the original list
+    // to invert a list of changes, process the opposite of each change in the reverse order of the original list
     for (int i = changes.size() - 1; i >= 0; i--) {
       final Change current = changes.get(i);
       newChanges.add(current.invert());

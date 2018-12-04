@@ -11,13 +11,12 @@ import games.strategy.net.MessageHeader;
 public interface NioSocketListener {
   /**
    * This connection will leave quarantine.
-   * Messages on this channel will not be read until after this method returns, allowing for setup of the
-   * channel.
+   * Messages on this channel will not be read until after this method returns, allowing for setup of the channel.
    */
   void socketUnqaurantined(SocketChannel channel, QuarantineConversation conversation);
 
   /**
-   * An error occured on the channel and it was shut down.
+   * An error occurred on the channel and it was shut down.
    */
   void socketError(SocketChannel channel, Exception error);
 

@@ -33,20 +33,16 @@ public final class ProLogger {
   /**
    * Some notes on using the Pro AI logger:
    * First, to make the logs easily readable even when there are hundreds of lines, I want every considerable step down
-   * in the call stack to
-   * mean more log message indentation.
+   * in the call stack to mean more log message indentation.
    * For example, the base logs in the Pro AI class have no indentation before them, but the base logs in the
-   * DoCombatMove class will have
-   * two spaces inserted at the start, and the level below that, four spaces.
+   * DoCombatMove class will have two spaces inserted at the start, and the level below that, four spaces.
    * In this way, when you're reading the log, you can skip over unimportant areas with speed because of the
    * indentation.
    * Second, I generally want the Fine logs to be messages that run less than 10 times each round, including almost all
-   * messages in the Pro
-   * AI class,
+   * messages in the Pro AI class.
    * Finest for messages showing details within a method that, for example, returns a value.
    * (So, for example, the NCM_Task method IsTaskWorthwhile() would primarily use finest, as it just returns a boolean,
-   * and the logs within
-   * it are just for details)
+   * and the logs within it are just for details)
    * Finer for just about everything else. (There's also the SERVER, INFO, etc. levels)
    * Just keep these things in mind while adding new logging code.
    */

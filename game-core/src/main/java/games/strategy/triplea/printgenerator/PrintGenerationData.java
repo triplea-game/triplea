@@ -8,9 +8,6 @@ class PrintGenerationData {
   private File outDir;
   private GameData gameData;
 
-  /**
-   * General Constructor.
-   */
   PrintGenerationData() {}
 
   File getOutDir() {

@@ -162,8 +162,7 @@ final class ProTechAi {
       } else { // get ships attack strength
         // old assumed fleets won't split up, new lets them. no biggie.
         // assumes max ship movement is 3.
-        // note, both old and new implementations
-        // allow units to be calculated that are in
+        // note, both old and new implementations allow units to be calculated that are in
         // territories we have already assaulted
         // this can be easily changed
         final Set<Integer> ignore = new HashSet<>();

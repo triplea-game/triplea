@@ -218,8 +218,7 @@ public class BattleTracker implements Serializable {
     }
     final RelationshipTracker relationshipTracker = bridge.getData().getRelationshipTracker();
     // if we have no longer conquered it, clear the blitz state
-    // We must look at all territories,
-    // because we could have conquered the end territory if there are no units there
+    // We must look at all territories, because we could have conquered the end territory if there are no units there
     for (final Territory current : route.getAllTerritories()) {
       if (!relationshipTracker.isAllied(current.getOwner(), player) && conquered.contains(current)) {
         conquered.remove(current);
@@ -836,8 +835,7 @@ public class BattleTracker implements Serializable {
     }
     if (!nonCom.isEmpty()) {
       // FYI: a dummy delegate will not do anything with this change,
-      // meaning that the battle calculator will think this unit lived,
-      // even though it died or was captured, etc!
+      // meaning that the battle calculator will think this unit lived, even though it died or was captured, etc!
       final Change capture = ChangeFactory.changeOwner(nonCom, newOwner, territory);
       bridge.addChange(capture);
       if (changeTracker != null) {
@@ -883,9 +881,8 @@ public class BattleTracker implements Serializable {
 
   private Change addMustFightBattleChange(final Route route, final Collection<Unit> units, final PlayerId id,
       final GameData data) {
-    // it is possible to add a battle with a route that is just
-    // the start territory, ie the units did not move into the country
-    // they were there to start with
+    // it is possible to add a battle with a route that is just the start territory, ie the units did not move into the
+    // country they were there to start with
     // this happens when you have submerged subs emerging
     Territory site = route.getEnd();
     if (site == null) {
@@ -917,8 +914,7 @@ public class BattleTracker implements Serializable {
     if (precede != null && units.stream().anyMatch(Matches.unitIsLand())) {
       addDependency(battle, precede);
     }
-    // dont let land battles in the same territory occur before bombing
-    // battles
+    // don't let land battles in the same territory occur before bombing battles
     final IBattle bombing = getPendingBattle(route.getEnd(), true, null);
     if (bombing != null) {
       addDependency(battle, bombing);

@@ -330,9 +330,8 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Sets production and unitProduction (or just "production" in a map xml)
-   * of a territory to be equal to the string value passed. This method is
-   * used when parsing game XML since it passes string values.
+   * Sets production and unitProduction (or just "production" in a map xml) of a territory to be equal to the string
+   * value passed. This method is used when parsing game XML since it passes string values.
    */
   private void setProduction(final String value) {
     production = getInt(value);
@@ -341,9 +340,8 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Sets production and unitProduction (or just "production" in a map xml)
-   * of a territory to be equal to the Integer value passed. This method is
-   * used when working with game history since it passes Integer values.
+   * Sets production and unitProduction (or just "production" in a map xml) of a territory to be equal to the Integer
+   * value passed. This method is used when working with game history since it passes Integer values.
    */
   private void setProduction(final Integer value) {
     production = value;

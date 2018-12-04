@@ -52,13 +52,10 @@ public class BattleCalculator {
     oolCache.clear();
   }
 
-  // There is a problem with this variable, that it isn't
+  // There is a problem with this variable, that it isn't being cleared out when we switch maps.
   // private static IntegerMap<UnitType> costsForTuvForAllPlayersMergedAndAveraged;
-  // being cleared out when we switch maps.
-  // we want to sort in a determined way so that those looking at the dice results
-  // can tell what dice is for who
-  // we also want to sort by movement, so casualties will be choosen as the
-  // units with least movement
+  // we want to sort in a determined way so that those looking at the dice results can tell what dice is for who
+  // we also want to sort by movement, so casualties will be chosen as the units with least movement
   static void sortPreBattle(final List<Unit> units) {
     units.sort(Comparator.comparing(Unit::getType,
         Comparator.comparing(UnitType::getName))
@@ -597,8 +594,7 @@ public class BattleCalculator {
 
   /**
    * A unit with two hitpoints will be listed twice if they will die. The first time they are listed it is as damaged.
-   * The second time they
-   * are listed, it is dead.
+   * The second time they are listed, it is dead.
    */
   private static Tuple<CasualtyList, List<Unit>> getDefaultCasualties(final Collection<Unit> targetsToPickFrom,
       final int hits, final boolean defending, final PlayerId player, final Collection<Unit> enemyUnits,
@@ -647,8 +643,7 @@ public class BattleCalculator {
    * the same size,
    * then to take 1 artillery followed by 1 infantry, followed by 1 artillery, then 1 inf, etc, until everyone is dead.
    * If you just return all infantry followed by all artillery, or the other way around, you will be missing out on some
-   * important support
-   * provided.
+   * important support provided.
    * (Veqryn)
    */
   private static List<Unit> sortUnitsForCasualtiesWithSupport(final Collection<Unit> targetsToPickFrom,

@@ -13,9 +13,6 @@ public class GameDataComponent implements Serializable {
 
   private GameData gameData;
 
-  /**
-   * Creates new GameDataComponent.
-   */
   public GameDataComponent(final GameData gameData) {
     this.gameData = gameData;
   }

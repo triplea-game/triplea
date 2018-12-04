@@ -5,8 +5,7 @@ import games.strategy.engine.message.IRemote;
 
 /**
  * Used for both IGamePlayer (used by the server, etc.) and specific game players such as ITripleaPlayer and
- * IGridGamePlayer (used by
- * delegates for communication, etc.)
+ * IGridGamePlayer (used by delegates for communication, etc.).
  */
 public interface IRemotePlayer extends IRemote {
   /**

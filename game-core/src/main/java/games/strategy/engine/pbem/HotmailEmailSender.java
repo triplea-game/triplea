@@ -10,9 +10,6 @@ import games.strategy.triplea.help.HelpSupport;
 public class HotmailEmailSender extends GenericEmailSender {
   private static final long serialVersionUID = 3511375113962472063L;
 
-  /**
-   * Initializes a new instance of the {@code HotmailEmailSender} class.
-   */
   public HotmailEmailSender() {
     setHost("smtp.live.com");
     setPort(587);

@@ -22,12 +22,6 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   private final List<Unit> units = new ArrayList<>();
   private final NamedUnitHolder holder;
 
-  /**
-   * Creates new UnitCollection.
-   *
-   * @param holder named unit holder
-   * @param data game data
-   */
   public UnitCollection(final NamedUnitHolder holder, final GameData data) {
     super(data);
     this.holder = holder;

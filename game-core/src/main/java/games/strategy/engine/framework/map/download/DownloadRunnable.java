@@ -24,11 +24,9 @@ public class DownloadRunnable {
     this.urlString = urlString;
   }
 
-
   /**
-   * Returns a parsed list of parsed downloadable maps. If initialized with a URL
-   * then we will do a network fetch and parse those contents, otherwise (for testing)
-   * we assume a local file reference and parse that.
+   * Returns a parsed list of parsed downloadable maps. If initialized with a URL then we will do a network fetch and
+   * parse those contents, otherwise (for testing) we assume a local file reference and parse that.
    */
   public List<DownloadFileDescription> getDownloads() {
     return beginsWithHttpProtocol(urlString) ? downloadFile() : readLocalFile();

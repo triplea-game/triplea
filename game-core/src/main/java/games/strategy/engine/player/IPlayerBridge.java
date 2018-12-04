@@ -4,8 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.message.IRemote;
 
 /**
- * Communication with the GamePlayer goes through the PlayerBridge to
- * make the game network transparent.
+ * Communication with the GamePlayer goes through the PlayerBridge to make the game network transparent.
  */
 public interface IPlayerBridge {
   /**
