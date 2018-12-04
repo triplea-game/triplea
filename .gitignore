@@ -1,6 +1,7 @@
 .classpath
 .gradle
-.idea
+.idea/*
+!.idea/runConfigurations
 .project
 .remote-libs/
 .settings
