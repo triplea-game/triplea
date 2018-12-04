@@ -20,7 +20,7 @@ public abstract class DependentBattle extends AbstractBattle {
   private static final long serialVersionUID = 9119442509652443015L;
   protected Map<Territory, Collection<Unit>> attackingFromMap;
   protected Set<Territory> attackingFrom;
-  private Collection<Territory> amphibiousAttackFrom;
+  private final Collection<Territory> amphibiousAttackFrom;
 
   DependentBattle(final Territory battleSite, final PlayerId attacker, final BattleTracker battleTracker,
       final GameData data) {

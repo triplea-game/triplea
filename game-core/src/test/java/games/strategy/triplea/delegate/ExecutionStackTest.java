@@ -41,7 +41,7 @@ class ExecutionStackTest {
 
     executionStack.execute(null);
 
-    assertThat(orderCheck.toArray(new Integer[0]), is(new Integer[]{0, 1, 2, 3, 4}));
+    assertThat(orderCheck.toArray(new Integer[0]), is(new Integer[] {0, 1, 2, 3, 4}));
   }
 
   @Test
