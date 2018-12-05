@@ -265,8 +265,6 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   }
 
   private void selectSavedGameFile() {
-    // For some strange reason, the only way to get a Mac OS X native-style file dialog
-    // is to use an AWT FileDialog instead of a Swing JDialog
     GameFileSelector.selectGameFile()
         .ifPresent(file -> Interruptibles
             .await(() -> GameRunner.newBackgroundTaskRunner().runInBackground("Loading savegame...", () -> {
