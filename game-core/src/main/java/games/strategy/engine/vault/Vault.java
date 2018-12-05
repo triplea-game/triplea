@@ -16,7 +16,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.RemoteName;
 
 /**
@@ -328,7 +328,7 @@ public class Vault {
     }
   }
 
-  interface IRemoteVault extends IChannelSubscribor {
+  interface IRemoteVault extends IChannelSubscriber {
     void addLockedValue(VaultId id, byte[] data);
 
     void unlock(VaultId id, byte[] secretKeyBytes);

@@ -2,12 +2,12 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.IChannelSubscriber;
 
 /**
  * All changes to game data (Changes and History events) can be tracked through this channel.
  */
-public interface IGameModifiedChannel extends IChannelSubscribor {
+public interface IGameModifiedChannel extends IChannelSubscriber {
   void gameDataChanged(final Change change);
 
   void startHistoryEvent(final String event, final Object renderingData);

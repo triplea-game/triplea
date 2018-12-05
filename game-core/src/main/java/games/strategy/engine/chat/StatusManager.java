@@ -16,11 +16,11 @@ public class StatusManager {
   private final Map<INode, String> status = new HashMap<>();
   private final Messengers messengers;
   private final Object mutex = new Object();
-  private final IStatusChannel statusChannelSubscribor;
+  private final IStatusChannel statusChannelSubscriber;
 
   public StatusManager(final Messengers messengers) {
     this.messengers = messengers;
-    statusChannelSubscribor = (node, status1) -> {
+    statusChannelSubscriber = (node, status1) -> {
       synchronized (mutex) {
         if (status1 == null) {
           StatusManager.this.status.remove(node);
@@ -35,7 +35,7 @@ public class StatusManager {
       final StatusController controller = new StatusController(messengers);
       messengers.getRemoteMessenger().registerRemote(controller, IStatusController.STATUS_CONTROLLER);
     }
-    this.messengers.getChannelMessenger().registerChannelSubscriber(statusChannelSubscribor,
+    this.messengers.getChannelMessenger().registerChannelSubscriber(statusChannelSubscriber,
         IStatusChannel.STATUS_CHANNEL);
     final IStatusController controller =
         (IStatusController) this.messengers.getRemoteMessenger().getRemote(IStatusController.STATUS_CONTROLLER);
@@ -48,7 +48,7 @@ public class StatusManager {
   }
 
   public void shutDown() {
-    messengers.getChannelMessenger().unregisterChannelSubscriber(statusChannelSubscribor,
+    messengers.getChannelMessenger().unregisterChannelSubscriber(statusChannelSubscriber,
         IStatusChannel.STATUS_CHANNEL);
   }
 

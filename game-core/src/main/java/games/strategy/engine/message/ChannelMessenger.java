@@ -21,17 +21,17 @@ public class ChannelMessenger implements IChannelMessenger {
   }
 
   @Override
-  public IChannelSubscribor getChannelBroadcastor(final RemoteName channelName) {
+  public IChannelSubscriber getChannelBroadcastor(final RemoteName channelName) {
     final InvocationHandler ih =
         new UnifiedInvocationHandler(unifiedMessenger, channelName.getName(), true, channelName.getClazz());
-    return (IChannelSubscribor) Proxy
+    return (IChannelSubscriber) Proxy
         .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[] {channelName.getClazz()}, ih);
   }
 
   @Override
   public void registerChannelSubscriber(final Object implementor, final RemoteName channelName) {
-    if (!IChannelSubscribor.class.isAssignableFrom(channelName.getClazz())) {
-      throw new IllegalStateException(channelName.getClazz() + " is not a channel subscribor");
+    if (!IChannelSubscriber.class.isAssignableFrom(channelName.getClazz())) {
+      throw new IllegalStateException(channelName.getClazz() + " is not a channel subscriber");
     }
     unifiedMessenger.addImplementor(channelName, implementor, true);
   }

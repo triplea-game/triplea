@@ -3,13 +3,13 @@ package games.strategy.sound;
 import java.util.Collection;
 
 import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.IChannelSubscriber;
 
 /**
  * A sound channel allowing sounds normally played on the server (for example: in a delegate, such as a the move
  * delegate) to also be played on clients.
  */
-public interface ISound extends IChannelSubscribor {
+public interface ISound extends IChannelSubscriber {
 
   /**
    * You will want to call this from things that the server only runs (like delegates), and not call this from user

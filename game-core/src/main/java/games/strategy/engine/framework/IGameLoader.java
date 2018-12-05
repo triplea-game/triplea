@@ -12,7 +12,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.player.IGamePlayer;
 
@@ -38,11 +38,11 @@ public interface IGameLoader extends Serializable {
   /**
    * Get the type of the display.
    *
-   * @return an interface that extends IChannelSubscribor
+   * @return an interface that extends IChannelSubscriber
    */
-  Class<? extends IChannelSubscribor> getDisplayType();
+  Class<? extends IChannelSubscriber> getDisplayType();
 
-  Class<? extends IChannelSubscribor> getSoundType();
+  Class<? extends IChannelSubscriber> getSoundType();
 
   /**
    * Get the type of the GamePlayer.

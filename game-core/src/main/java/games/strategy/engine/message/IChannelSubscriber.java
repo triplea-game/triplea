@@ -6,9 +6,8 @@ package games.strategy.engine.message;
  * may be called by a remote VM.
  * Return values of an IChannelSubscriber will be ignored.
  * Exceptions thrown by methods of an IChannelSubscriber will be printed to standard error, but otherwise ignored.
- * Arguments to the methods of IChannelSubscribor should not be modified
+ * Arguments to the methods of IChannelSubscriber should not be modified
  * in any way. The values may be used in method calls to other subscribers.
  */
-// TODO: fix typo in Subscribor, should be 'Subscriber'
-public interface IChannelSubscribor {
+public interface IChannelSubscriber {
 }
