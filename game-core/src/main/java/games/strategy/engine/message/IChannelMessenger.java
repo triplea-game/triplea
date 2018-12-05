@@ -17,7 +17,7 @@ import games.strategy.net.INode;
  * <pre>
  * RemoteName FOO = new RemoteName(&quot;Foo&quot;, IFoo.class);
  * IFoo aFoo = new Foo();
- * someChannelMessenger.registerChannelSubscribor(aFoo, FOO);
+ * someChannelMessenger.registerChannelSubscriber(aFoo, FOO);
  * </pre>
  *
  * <p>
@@ -26,8 +26,8 @@ import games.strategy.net.INode;
  *
  * <pre>
  * IFoo anotherFoo = new Foo();
- * anotherChannelMessenger.registerChannelSubscribor(anotherFoo, FOO);
- * IFoo multicastFoo = (IFoo) anotherChannelMessenger.getChannelBroadcastor(FOO);
+ * anotherChannelMessenger.registerChannelSubscriber(anotherFoo, FOO);
+ * IFoo multicastFoo = (IFoo) anotherChannelMessenger.getChannelBroadcaster(FOO);
  * multicastFoo.fee();
  * </pre>
  *
@@ -67,7 +67,7 @@ public interface IChannelMessenger {
   /**
    * Get a reference such that methods called on it will be multicast to all subscribers of the channel.
    */
-  IChannelSubscribor getChannelBroadcastor(RemoteName channelName);
+  IChannelSubscriber getChannelBroadcaster(RemoteName channelName);
 
   /**
    * register a subscriber to a channel.

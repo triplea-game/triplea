@@ -480,7 +480,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     Optional.ofNullable(channelMessenger)
         .ifPresent(messenger -> {
           final IClientChannel channel =
-              (IClientChannel) messenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
+              (IClientChannel) messenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
           channel.playerListingChanged(getPlayerListingInternal());
         });
   }
@@ -643,7 +643,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   public void newGame() {
     serverMessenger.setAcceptNewConnections(true);
     final IClientChannel channel =
-        (IClientChannel) channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
+        (IClientChannel) channelMessenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
     notifyChanellPlayersChanged();
     channel.gameReset();
   }

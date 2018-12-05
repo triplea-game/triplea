@@ -78,7 +78,7 @@ public class Chat {
     // this all seems a lot more involved than it needs to be.
     final IChatController controller = (IChatController) messengers.getRemoteMessenger()
         .getRemote(ChatController.getChatControlerRemoteName(chatName));
-    messengers.getChannelMessenger().registerChannelSubscriber(chatChannelSubscribor,
+    messengers.getChannelMessenger().registerChannelSubscriber(chatChannelSubscriber,
         new RemoteName(chatChannelName, IChatChannel.class));
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
     final Map<INode, Tag> chatters = init.getFirst();
@@ -172,7 +172,7 @@ public class Chat {
    * Stop receiving events from the messenger.
    */
   public void shutdown() {
-    messengers.getChannelMessenger().unregisterChannelSubscriber(chatChannelSubscribor,
+    messengers.getChannelMessenger().unregisterChannelSubscriber(chatChannelSubscriber,
         new RemoteName(chatChannelName, IChatChannel.class));
     if (messengers.getMessenger().isConnected()) {
       final RemoteName chatControllerName = ChatController.getChatControlerRemoteName(chatName);
@@ -184,13 +184,13 @@ public class Chat {
 
   void sendSlap(final String playerName) {
     final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
-        .getChannelBroadcastor(new RemoteName(chatChannelName, IChatChannel.class));
+        .getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
     remote.slapOccured(playerName);
   }
 
   public void sendMessage(final String message, final boolean meMessage) {
     final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
-        .getChannelBroadcastor(new RemoteName(chatChannelName, IChatChannel.class));
+        .getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
     if (meMessage) {
       remote.meMessageOccured(message);
     } else {
@@ -229,7 +229,7 @@ public class Chat {
     return new ArrayList<>(nodes);
   }
 
-  private final IChatChannel chatChannelSubscribor = new IChatChannel() {
+  private final IChatChannel chatChannelSubscriber = new IChatChannel() {
     private void assertMessageFromServer() {
       final INode senderNode = MessageContext.getSender();
       final INode serverNode = messengers.getMessenger().getServerNode();

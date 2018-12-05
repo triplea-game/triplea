@@ -20,7 +20,7 @@ public class MessageContext {
    *
    * <p>
    * Will return null if the current thread is not currently executing a remote method of an IRemote or
-   * IChannelSubscribor.
+   * IChannelSubscriber.
    * </p>
    *
    * <p>

@@ -32,7 +32,7 @@ class StatusController implements IStatusController {
       status.remove(to);
     }
     final IStatusChannel channel =
-        (IStatusChannel) messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
+        (IStatusChannel) messengers.getChannelMessenger().getChannelBroadcaster(IStatusChannel.STATUS_CHANNEL);
     channel.statusChanged(to, null);
   }
 
@@ -50,7 +50,7 @@ class StatusController implements IStatusController {
       status.put(node, newStatus);
     }
     final IStatusChannel channel =
-        (IStatusChannel) messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
+        (IStatusChannel) messengers.getChannelMessenger().getChannelBroadcaster(IStatusChannel.STATUS_CHANNEL);
     channel.statusChanged(node, newStatus);
   }
 }

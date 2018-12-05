@@ -127,7 +127,7 @@ public class ServerLauncher extends AbstractLauncher {
         HeadlessGameServer.setServerGame(serverGame);
       }
       // tell the clients to start, later we will wait for them to all signal that they are ready.
-      ((IClientChannel) channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME))
+      ((IClientChannel) channelMessenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME))
           .doneSelectingPlayers(gameDataAsBytes, serverGame.getPlayerManager().getPlayerMapping());
 
       final boolean useSecureRandomSource = !remotePlayers.isEmpty();

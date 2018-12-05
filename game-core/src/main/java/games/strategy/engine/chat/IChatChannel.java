@@ -1,7 +1,7 @@
 package games.strategy.engine.chat;
 
 import games.strategy.engine.chat.IChatController.Tag;
-import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.net.INode;
 
 /**
@@ -10,7 +10,7 @@ import games.strategy.net.INode;
  * RMI warning: the ordering of methods cannot be changed, these methods will be invoked by method order number
  * </p>
  */
-public interface IChatChannel extends IChannelSubscribor {
+public interface IChatChannel extends IChannelSubscriber {
   // we get the sender from MessageContext
   void chatOccured(final String message);
 

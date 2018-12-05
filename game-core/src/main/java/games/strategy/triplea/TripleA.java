@@ -19,7 +19,7 @@ import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.message.IChannelSubscribor;
+import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.player.IGamePlayer;
 import games.strategy.sound.ClipPlayer;
@@ -138,12 +138,12 @@ public class TripleA implements IGameLoader {
   }
 
   @Override
-  public Class<? extends IChannelSubscribor> getDisplayType() {
+  public Class<? extends IChannelSubscriber> getDisplayType() {
     return ITripleADisplay.class;
   }
 
   @Override
-  public Class<? extends IChannelSubscribor> getSoundType() {
+  public Class<? extends IChannelSubscriber> getSoundType() {
     return ISound.class;
   }
 
