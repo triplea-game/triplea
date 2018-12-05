@@ -92,8 +92,7 @@ public class ClientModel implements IMessengerErrorListener {
   private IChatPanel chatPanel;
   private ClientGame game;
   private boolean hostIsHeadlessBot = false;
-  // we set the game data to be null, since we
-  // are a client game, and the game data lives on the server
+  // we set the game data to be null, since we are a client game, and the game data lives on the server
   // however, if we cancel, we want to restore the old game data.
   private GameData gameDataOnStartup;
   private Map<String, String> playersToNodes = new HashMap<>();
@@ -307,8 +306,7 @@ public class ClientModel implements IMessengerErrorListener {
       final boolean gameRunning) {
     final GameData data;
     try {
-      // this normally takes a couple seconds, but can take
-      // up to 60 seconds for a freaking huge game
+      // this normally takes a couple seconds, but can take up to 60 seconds for a freaking huge game
       data = IoUtils.readFromMemory(gameData, GameDataManager::loadGame);
     } catch (final IOException ex) {
       log.log(Level.SEVERE, "Failed to load game", ex);
@@ -335,8 +333,7 @@ public class ClientModel implements IMessengerErrorListener {
             game.shutDown();
             messenger.shutDown();
             gameLoadingWindow.doneWait();
-            // an ugly hack, we need a better
-            // way to get the main frame
+            // an ugly hack, we need a better way to get the main frame
             GameRunner.clientLeftGame();
           }
         }

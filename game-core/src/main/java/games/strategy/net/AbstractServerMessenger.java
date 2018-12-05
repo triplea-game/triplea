@@ -147,8 +147,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a
-  // message was sent,
-  // which can be very slow
+  // message was sent, which can be very slow
   private final List<String> liveMutedUsernames = new ArrayList<>();
 
   private boolean isUsernameMutedInCache(final String username) {
@@ -677,7 +676,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   public void socketError(final SocketChannel channel, final Exception error) {
     checkNotNull(channel);
 
-    // already closed, dont report it again
+    // already closed, don't report it again
     final INode node = channelToNode.get(channel);
     if (node != null) {
       removeConnection(node);

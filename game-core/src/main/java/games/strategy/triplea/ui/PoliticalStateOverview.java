@@ -25,8 +25,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.util.Triple;
 
 /**
- * A panel that shows the current political state, this has no other
- * functionality then a view on the current politics.
+ * A panel that shows the current political state, this has no other functionality then a view on the current politics.
  */
 public class PoliticalStateOverview extends JPanel {
   private static final long serialVersionUID = -8445782272897831080L;
@@ -36,12 +35,6 @@ public class PoliticalStateOverview extends JPanel {
   private final boolean editable;
   private final Set<Triple<PlayerId, PlayerId, RelationshipType>> editChanges = new HashSet<>();
 
-  /**
-   * Constructs this panel.
-   *
-   * @param data gamedata to get the info from
-   * @param uiContext uicontext to use to show this panel.
-   */
   public PoliticalStateOverview(final GameData data, final UiContext uiContext, final boolean editable) {
     this.uiContext = uiContext;
     this.data = data;
@@ -88,8 +81,7 @@ public class PoliticalStateOverview extends JPanel {
   }
 
   /**
-   * Gets a label showing the coloured relationshipName between these two
-   * players.
+   * Gets a label showing the colored relationshipName between these two players.
    */
   private JPanel getRelationshipLabel(final PlayerId player1, final PlayerId player2) {
     RelationshipType relType = null;

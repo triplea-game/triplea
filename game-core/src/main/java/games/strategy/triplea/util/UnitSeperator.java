@@ -22,7 +22,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 /**
- * Seperates a group of units into distinct categories.
+ * Separates a group of units into distinct categories.
  */
 public class UnitSeperator {
   private UnitSeperator() {}
@@ -77,10 +77,8 @@ public class UnitSeperator {
   public static Set<UnitCategory> categorize(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
       final boolean categorizeMovement, final boolean categorizeTransportCost, final boolean categorizeTrnMovement,
       final boolean sort) {
-    // somewhat odd, but we map UnitCategory->UnitCategory,
-    // key and value are the same
-    // we do this to take advanatge of .equals() on objects that
-    // are equal in a special way
+    // somewhat odd, but we map UnitCategory->UnitCategory, key and value are the same
+    // we do this to take advantage of .equals() on objects that are equal in a special way
     final Map<UnitCategory, UnitCategory> categories;
     if (sort) {
       categories = new HashMap<>();
@@ -104,8 +102,7 @@ public class UnitSeperator {
       final UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, current.getHits(),
           TripleAUnit.get(current).getUnitDamage(), disabled, unitTransportCost);
       // we test to see if we have the key using equals, then since
-      // key maps to key, we retrieve it to add the unit to the correct
-      // category
+      // key maps to key, we retrieve it to add the unit to the correct category
       if (categories.containsKey(entry)) {
         final UnitCategory stored = categories.get(entry);
         stored.addUnit(current);

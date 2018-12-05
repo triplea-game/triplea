@@ -44,9 +44,6 @@ import games.strategy.util.Tuple;
 public class UnitAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -2946748686268541820L;
 
-  /**
-   * Convenience method.
-   */
   public static UnitAttachment get(final UnitType type) {
     return get(type, Constants.UNIT_ATTACHMENT_NAME);
   }
@@ -175,9 +172,8 @@ public class UnitAttachment extends DefaultAttachment {
   private int maxConstructionsPerTypePerTerr = -1;
   // -1 means anywhere
   private int canOnlyBePlacedInTerritoryValuedAtX = -1;
-  // multiple colon delimited lists of the unit combos required for
-  // this unit to be built somewhere. (units must be in same
-  // territory, owned by player, not be disabled)
+  // multiple colon delimited lists of the unit combos required for this unit to be built somewhere. (units must be in
+  // same territory, owned by player, not be disabled)
   private List<String[]> requiresUnits = new ArrayList<>();
   private IntegerMap<UnitType> consumesUnits = new IntegerMap<>();
   // multiple colon delimited lists of the unit combos required for
@@ -202,8 +198,7 @@ public class UnitAttachment extends DefaultAttachment {
   // special abilities
   private int blockade = 0;
   // a colon delimited list of the units this unit can repair.
-  // (units must be in same territory, unless this unit is land
-  // and the repaired unit is sea)
+  // (units must be in same territory, unless this unit is land and the repaired unit is sea)
   private IntegerMap<UnitType> repairsUnits = new IntegerMap<>();
   private IntegerMap<UnitType> givesMovement = new IntegerMap<>();
   private List<Tuple<String, PlayerId>> destroyedWhenCapturedBy = new ArrayList<>();
@@ -215,11 +210,9 @@ public class UnitAttachment extends DefaultAttachment {
   private int whenCapturedSustainsDamage = 0;
   private List<PlayerId> canBeCapturedOnEnteringBy = new ArrayList<>();
   private List<PlayerId> canBeGivenByTerritoryTo = new ArrayList<>();
-  // a set of information for dealing with special abilities or
-  // loss of abilities when a unit takes x-y amount of damage
+  // a set of information for dealing with special abilities or loss of abilities when a unit takes x-y amount of damage
   private List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamaged = new ArrayList<>();
-  // a kind of support attachment for giving actual unit
-  // attachment abilities or other to a unit, when in the
+  // a kind of support attachment for giving actual unit attachment abilities or other to a unit, when in the
   // precense or on the same route with another unit
   private List<String> receivesAbilityWhenWith = new ArrayList<>();
   // currently used for: placement in original territories only
@@ -227,7 +220,6 @@ public class UnitAttachment extends DefaultAttachment {
   // Manually set TUV
   private int tuv = -1;
 
-  /** Creates new UnitAttachment. */
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
@@ -1941,8 +1933,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getAttackAa(final PlayerId player) {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
-    // does not divide
-    // perfectly into attackAAmaxDieSides
+    // does not divide perfectly into attackAAmaxDieSides
     return Math.max(0, Math.min(getAttackAaMaxDieSides(),
         attackAa + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
   }
@@ -1965,8 +1956,7 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getOffensiveAttackAa(final PlayerId player) {
     // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
-    // does not divide
-    // perfectly into attackAAmaxDieSides
+    // does not divide perfectly into attackAAmaxDieSides
     return Math.max(0, Math.min(getOffensiveAttackAaMaxDieSides(),
         offensiveAttackAa + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
   }
@@ -2528,8 +2518,7 @@ public class UnitAttachment extends DefaultAttachment {
           throw new GameParseException(transport + " has no attachments, please declare " + transport
               + " in the xml before using it as a transport" + thisErrorMsg());
           // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are
-          // mech infantry. The
-          // "transporter" may not be an actual transport, so we should not check for that here.
+          // mech infantry. The "transporter" may not be an actual transport, so we should not check for that here.
         }
       }
     }

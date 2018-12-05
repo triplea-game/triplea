@@ -162,8 +162,7 @@ public final class PlacementPicker {
     private String currentCountry;
 
     /**
-     * Setus up all GUI components, initializes variables with
-     * default or needed values, and prepares the map for user
+     * Sets up all GUI components, initializes variables with default or needed values, and prepares the map for user
      * commands.
      *
      * @param mapName Name of map file.
@@ -310,9 +309,7 @@ public final class PlacementPicker {
       createImage(mapName);
       final JPanel imagePanel = createMainPanel();
       /*
-       * Add a mouse listener to show
-       * X : Y coordinates on the lower
-       * left corner of the screen.
+       * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
        */
       imagePanel.addMouseMotionListener(new MouseMotionAdapter() {
         @Override
@@ -323,9 +320,7 @@ public final class PlacementPicker {
         }
       });
       /*
-       * Add a mouse listener to monitor
-       * for right mouse button being
-       * clicked.
+       * Add a mouse listener to monitor for right mouse button being clicked.
        */
       imagePanel.addMouseListener(new MouseAdapter() {
         @Override
@@ -411,8 +406,7 @@ public final class PlacementPicker {
     } // end constructor
 
     /**
-     * creates the image map and makes sure
-     * it is properly loaded.
+     * creates the image map and makes sure it is properly loaded.
      *
      * @param mapName The path of image map.
      */
@@ -422,10 +416,7 @@ public final class PlacementPicker {
     }
 
     /**
-     * Creates the main panel and returns
-     * a JPanel object.
-     *
-     * @return The panel to return.
+     * Creates the main panel and returns a JPanel object.
      */
     private JPanel createMainPanel() {
       return new JPanel() {

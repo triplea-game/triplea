@@ -18,8 +18,7 @@ public interface IEmailSender extends IBean, Cloneable {
    * @param subject the subject of the email
    * @param htmlMessage the html email body
    * @param saveGame the savegame or null
-   * @throws IOException
-   *         if an error occurs
+   * @throws IOException if an error occurs
    */
   void sendEmail(String subject, String htmlMessage, File saveGame, String saveGameName) throws IOException;
 

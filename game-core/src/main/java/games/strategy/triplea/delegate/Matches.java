@@ -365,8 +365,7 @@ public final class Matches {
       if (ua.getMaxOperationalDamage() < 0) {
         // factories may or may not have max operational damage set, so we must still determine here
         // assume that if maxOperationalDamage < 0, then the max damage must be based on the territory value (if the
-        // damage >= production of
-        // territory, then we are disabled)
+        // damage >= production of territory, then we are disabled)
         // TerritoryAttachment ta = TerritoryAttachment.get(t);
         // return taUnit.getUnitDamage() >= ta.getProduction();
         return false;
@@ -1052,8 +1051,7 @@ public final class Matches {
       final GameStep stepName = unit.getData().getSequence().getStep();
       if (ua.getIsSea() && stepName.getDisplayName().equals("Non Combat Move")) {
         movementcost = route.numberOfSteps();
-        // If a zone adjacent to the starting and ending sea zones
-        // are allied navalbases, increase the range.
+        // If a zone adjacent to the starting and ending sea zones are allied naval bases, increase the range.
         // TODO Still need to be able to handle stops on the way
         // (history to get route.getStart()
         for (final Territory terrNext : unit.getData().getMap().getNeighbors(route.getStart(), 1)) {
@@ -1165,8 +1163,7 @@ public final class Matches {
 
   public static Predicate<Territory> isTerritoryEnemyAndNotUnownedWater(final PlayerId player, final GameData data) {
     // if we look at territory attachments, may have funny results for blockades or other things that are passable
-    // and not owned. better
-    // to check them by alliance. (veqryn)
+    // and not owned. better to check them by alliance. (veqryn)
     return t -> !t.getOwner().equals(player)
         && ((!t.getOwner().equals(PlayerId.NULL_PLAYERID)
             || !t.isWater())
@@ -1180,8 +1177,7 @@ public final class Matches {
         return false;
       }
       // if we look at territory attachments, may have funny results for blockades or other things that are passable
-      // and not owned. better
-      // to check them by alliance. (veqryn)
+      // and not owned. better to check them by alliance. (veqryn)
       if (t.getOwner().equals(PlayerId.NULL_PLAYERID) && t.isWater()) {
         return false;
       }

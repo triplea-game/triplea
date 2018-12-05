@@ -40,11 +40,9 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   // how many times are left to perform this action each round?
   protected int attemptsLeftThisTurn = 1;
   // which players should accept this action? this could be the player who is the target of this action in the case of
-  // proposing a treaty or
-  // the players in your 'alliance' in case you want to declare war...
+  // proposing a treaty or the players in your 'alliance' in case you want to declare war...
   // especially for actions such as when france declares war on germany and it automatically causes UK to declare war as
-  // well. it is good to
-  // set "actionAccept" to "UK" so UK can accept this action to go through.
+  // well. it is good to set "actionAccept" to "UK" so UK can accept this action to go through.
   protected List<PlayerId> actionAccept = new ArrayList<>();
 
   protected AbstractUserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {

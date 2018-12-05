@@ -54,8 +54,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   /**
-   * All delegates should use random data that comes from both players so that
-   * neither player cheats.
+   * All delegates should use random data that comes from both players so that neither player cheats.
    */
   @Override
   public int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation)

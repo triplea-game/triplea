@@ -70,8 +70,7 @@ public class SetupPanelModel {
   }
 
   /**
-   * A method that establishes a connection to a remote game
-   * and displays the game start screen afterwards if the
+   * A method that establishes a connection to a remote game and displays the game start screen afterwards if the
    * connection was successfully established.
    */
   public void showClient(final Component ui) {

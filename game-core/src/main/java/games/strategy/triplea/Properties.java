@@ -12,8 +12,7 @@ public final class Properties implements Constants {
   // These should always default to false, if boolean, and if not should default to whatever is the "default" behavior
   // of TripleA.
   // If you want something to default to "true", when change the wording of the constant to make it a negative of
-  // itself, then default to
-  // false. (ex: "Do not do something", false; instead of "Do something", true;)
+  // itself, then default to false. (ex: "Do not do something", false; instead of "Do something", true;)
 
   public static int getNeutralCharge(final GameData data) {
     return data.getProperties().get(NEUTRAL_CHARGE_PROPERTY, 0);
@@ -63,111 +62,106 @@ public final class Properties implements Constants {
     return data.getProperties().get(ROCKETS_CAN_FLY_OVER_IMPASSABLES, false);
   }
 
-  /*
-   * Pacific Theater
+  /**
+   * Pacific Theater.
    */
   public static boolean getPacificTheater(final GameData data) {
     return data.getProperties().get(PACIFIC_THEATER, false);
   }
 
-  /*
-   * World War 2 Version 3
+  /**
+   * World War 2 Version 3.
    */
   public static boolean getWW2V3(final GameData data) {
     return data.getProperties().get(WW2V3, false);
   }
 
-  /*
-   * Economic Victory Condition
+  /**
+   * Economic Victory Condition.
    */
   public static boolean getEconomicVictory(final GameData data) {
     return data.getProperties().get(ECONOMIC_VICTORY, false);
   }
 
-  /*
-   * Triggered Victory Condition
+  /**
+   * Triggered Victory Condition.
    */
   public static boolean getTriggeredVictory(final GameData data) {
     return data.getProperties().get(TRIGGERED_VICTORY, false);
   }
 
-  /*
+  /**
    * Restrict the number of units that can be placed at a factory.
    */
   public static boolean getPlacementRestrictedByFactory(final GameData data) {
     return data.getProperties().get(PLACEMENT_RESTRICTED_BY_FACTORY, false);
   }
 
-  /*
-   * Can the player select the type of technology they are rolling for
+  /**
+   * Can the player select the type of technology they are rolling for.
    */
   public static boolean getSelectableTechRoll(final GameData data) {
     return data.getProperties().get(SELECTABLE_TECH_ROLL, false);
   }
 
-  /*
-   * Can the player select the type of technology they are rolling for
+  /**
+   * Can the player select the type of technology they are rolling for.
    */
   public static boolean getWW2V3TechModel(final GameData data) {
     return data.getProperties().get(WW2V3_TECH_MODEL, false);
   }
 
-  /*
-   * Use Advanced Technology
+  /**
+   * Use Advanced Technology.
    */
   public static boolean getTechDevelopment(final GameData data) {
     return data.getProperties().get(TECH_DEVELOPMENT, false);
   }
 
-  /*
-   * Are transports restricted from unloading in multiple territories in a
-   * turn
+  /**
+   * Are transports restricted from unloading in multiple territories in a turn.
    */
   public static boolean getTransportUnloadRestricted(final GameData data) {
     return data.getProperties().get(TRANSPORT_UNLOAD_RESTRICTED, false);
   }
 
-  /*
-   * Are AA casualties chosen randomly
+  /**
+   * Are AA casualties chosen randomly.
    */
   public static boolean getRandomAaCasualties(final GameData data) {
     return data.getProperties().get(RANDOM_AA_CASUALTIES, false);
   }
 
-  /*
-   * Are AA casualties chosen randomly
+  /**
+   * Are AA casualties chosen randomly.
    */
   public static boolean getRollAaIndividually(final GameData data) {
     return data.getProperties().get(ROLL_AA_INDIVIDUALLY, false);
   }
 
-  /*
-   * Limit the damage caused by each bomber on rockets and Strategic Bomb Raids to
-   * production of territory
+  /**
+   * Limit the damage caused by each bomber on rockets and Strategic Bomb Raids to production of territory.
    */
   public static boolean getLimitRocketAndSbrDamageToProduction(final GameData data) {
     return data.getProperties().get(LIMIT_ROCKET_AND_SBR_DAMAGE_TO_PRODUCTION, false);
   }
 
-  /*
-   * Limit the TOTAL damage caused by Bombers in a turn to territory's
-   * production
+  /**
+   * Limit the TOTAL damage caused by Bombers in a turn to territory's production.
    */
   public static boolean getLimitSbrDamagePerTurn(final GameData data) {
     return data.getProperties().get(LIMIT_SBR_DAMAGE_PER_TURN, false);
   }
 
   /**
-   * Limit the TOTAL damage caused by Rockets in a turn to territory's
-   * production.
+   * Limit the TOTAL damage caused by Rockets in a turn to territory's production.
    */
   public static boolean getLimitRocketDamagePerTurn(final GameData data) {
     return data.getProperties().get(LIMIT_ROCKET_DAMAGE_PER_TURN, false);
   }
 
   /**
-   * Limit the TOTAL PUs lost to Bombers/Rockets in a turn to territory's
-   * production.
+   * Limit the TOTAL PUs lost to Bombers/Rockets in a turn to territory's production.
    */
   public static boolean getPuCap(final GameData data) {
     return data.getProperties().get(PU_CAP, false);
@@ -243,8 +237,8 @@ public final class Properties implements Constants {
     return data.getProperties().get(SUB_CONTROL_SEA_ZONE_RESTRICTED, false);
   }
 
-  /*
-   * Can Transports control sea zones
+  /**
+   * Can Transports control sea zones.
    */
   public static boolean getTransportControlSeaZone(final GameData data) {
     return data.getProperties().get(TRANSPORT_CONTROL_SEA_ZONE, false);

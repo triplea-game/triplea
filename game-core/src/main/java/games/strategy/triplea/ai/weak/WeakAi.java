@@ -516,10 +516,8 @@ public class WeakAi extends AbstractAi {
       final Route aaRoute = Utils.findNearest(t, canLand, Matches.territoryIsImpassable().negate(), data);
       final Collection<Unit> airToLand =
           t.getUnits().getMatches(Matches.unitIsAir().and(Matches.unitIsOwnedBy(player)));
-      // dont bother to see if all the air units have enough movement points
-      // to move without aa guns firing
-      // simply move first over no aa, then with aa
-      // one (but hopefully not both) will be rejected
+      // don't bother to see if all the air units have enough movement points to move without aa guns firing
+      // simply move first over no aa, then with aa one (but hopefully not both) will be rejected
       moveUnits.add(airToLand);
       moveRoutes.add(noAaRoute);
       moveUnits.add(airToLand);
@@ -611,8 +609,7 @@ public class WeakAi extends AbstractAi {
                 .and(Matches.unitCanNotMoveDuringCombatMove().negate());
             if (!unitsAlreadyMoved.contains(unit) && match.test(unit)) {
               moveRoutes.add(data.getMap().getRoute(attackFrom, enemy));
-              // if unloading units, unload all of them,
-              // otherwise we wont be able to unload them
+              // if unloading units, unload all of them, otherwise we wont be able to unload them
               // in non com, for land moves we want to move the minimal
               // number of units, to leave units free to move elsewhere
               if (attackFrom.isWater()) {
@@ -859,8 +856,7 @@ public class WeakAi extends AbstractAi {
             purchaseDelegate.purchaseRepair(repair);
             repair.clear();
             repairMap.clear();
-            // ideally we would adjust this after each single PU spent, then re-evaluate
-            // everything.
+            // ideally we would adjust this after each single PU spent, then re-evaluate everything.
             maxUnits = (leftToSpend - 1) / minimumUnitPrice;
           }
         }
@@ -877,8 +873,7 @@ public class WeakAi extends AbstractAi {
               continue;
             }
             // we will repair the first territories in the list as much as we can, until we fulfill the condition, then
-            // skip all other
-            // territories
+            // skip all other territories
             if (currentProduction >= maxUnits) {
               continue;
             }
@@ -906,8 +901,7 @@ public class WeakAi extends AbstractAi {
               purchaseDelegate.purchaseRepair(repair);
               repair.clear();
               repairMap.clear();
-              // ideally we would adjust this after each single PU spent, then re-evaluate
-              // everything.
+              // ideally we would adjust this after each single PU spent, then re-evaluate everything.
               maxUnits = (leftToSpend - 1) / minimumUnitPrice;
             }
           }
@@ -954,8 +948,7 @@ public class WeakAi extends AbstractAi {
         if (minCost > cost) {
           minCost = cost;
         }
-        // give a preferene to cheap units, and to transports
-        // but dont go overboard with buying transports
+        // give a preference to cheap units, and to transports but don't go overboard with buying transports
         int goodNumberOfTransports = 0;
         final boolean isTransport = transportCapacity > 0;
         if (amphibRoute != null) {

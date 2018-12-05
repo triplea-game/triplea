@@ -40,9 +40,6 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   private String canMoveThroughCanals = PROPERTY_DEFAULT;
   private String rocketsCanFlyOver = PROPERTY_DEFAULT;
 
-  /**
-   * Creates new RelationshipTypeAttachment.
-   */
   public RelationshipTypeAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
@@ -66,15 +63,13 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * These archeTypes determine the behavior of isAllied, isWar and isNeutral
    * These archeTyps determine the default behavior of the engine unless you override some option in this attachment;
    * for example the RelationshipType ColdWar could be based on the WAR_ARCHETYPE but overrides options like "canInvade"
-   * "canAttackHomeTerritory"
-   * to not allow all-out invasion to mimic a not-all-out-war.
+   * "canAttackHomeTerritory" to not allow all-out invasion to mimic a not-all-out-war.
    * Or you could base it on NEUTRAL_ARCHETYPE but override the options like "canAttackAtSea" and "canFireAA" to mimic a
    * uneasy peace.
    *
    * @param archeType the template used to base this relationType on, can be war, allied or neutral, default archeType =
    *        WAR_ARCHETYPE
-   * @throws GameParseException
-   *         if archeType isn't set to war, allied or neutral
+   * @throws GameParseException if archeType isn't set to war, allied or neutral
    */
   public void setArcheType(final String archeType) throws GameParseException {
     final String lowerArcheType = archeType.toLowerCase();

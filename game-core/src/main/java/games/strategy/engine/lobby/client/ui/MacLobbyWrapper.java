@@ -9,7 +9,7 @@ import games.strategy.util.ExitStatus;
  */
 public class MacLobbyWrapper {
   // keep this in its own class, otherwise we get a no class def error when
-  // we try to load the game and the stubs arent in the classpath
+  // we try to load the game and the stubs aren't in the classpath
   // i think the java validator triggers this
   public static void registerMacShutdownHandler(final LobbyFrame frame) {
     Application.getApplication().setQuitHandler((quitEvent, quitResponse) -> {

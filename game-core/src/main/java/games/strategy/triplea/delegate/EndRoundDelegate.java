@@ -40,7 +40,6 @@ public class EndRoundDelegate extends BaseTripleADelegate {
   private boolean gameOver = false;
   private Collection<PlayerId> winners = new ArrayList<>();
 
-  /** Creates a new instance of EndRoundDelegate. */
   public EndRoundDelegate() {}
 
   @Override

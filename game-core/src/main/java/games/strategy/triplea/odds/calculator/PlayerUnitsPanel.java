@@ -132,9 +132,8 @@ public class PlayerUnitsPanel extends JPanel {
   }
 
   /**
-   * Get all unit type categories that can be in combat first in the order of the player's
-   * production frontier and then any unit types the player owns on the map. Then populate the list
-   * of units into the categories.
+   * Get all unit type categories that can be in combat first in the order of the player's production frontier and then
+   * any unit types the player owns on the map. Then populate the list of units into the categories.
    */
   private Set<UnitCategory> categorize(final PlayerId id, final List<Unit> units) {
 
@@ -198,5 +197,3 @@ public class PlayerUnitsPanel extends JPanel {
     listeners.forEach(Runnable::run);
   }
 }
-
-

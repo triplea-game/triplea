@@ -459,8 +459,7 @@ public class AirBattle extends AbstractBattle {
   private void retreat(final Collection<Unit> retreating, final boolean defender, final IDelegateBridge bridge) {
     if (!defender) {
       // we must remove any of these units from the land battle that follows (this comes before we remove them from this
-      // battle, because
-      // after we remove from this battle we are no longer blocking any battles)
+      // battle, because after we remove from this battle we are no longer blocking any battles)
       final Collection<IBattle> dependentBattles = battleTracker.getBlocked(AirBattle.this);
       removeFromDependents(retreating, bridge, dependentBattles, true);
     }
@@ -521,8 +520,7 @@ public class AirBattle extends AbstractBattle {
         groundedPlanesRetreated = false;
       } else {
         // if normal battle, we may choose to withdraw some air units (keep them grounded for both Air battle and the
-        // subsequent normal
-        // battle) instead of launching
+        // subsequent normal battle) instead of launching
         if (Properties.getAirBattleDefendersCanRetreat(gameData)) {
           interceptors = getRemote(defender, bridge).selectUnitsQuery(battleSite,
               new ArrayList<>(defendingUnits), "Select Air to Intercept");

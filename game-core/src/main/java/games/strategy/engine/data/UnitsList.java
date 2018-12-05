@@ -28,8 +28,8 @@ public class UnitsList implements Serializable, Iterable<Unit> {
     allUnits.put(unit.getId(), unit);
   }
 
-  /*
-   * Gets all units currently in the game
+  /**
+   * Gets all units currently in the game.
    */
   public Collection<Unit> getUnits() {
     return Collections.unmodifiableCollection(allUnits.values());

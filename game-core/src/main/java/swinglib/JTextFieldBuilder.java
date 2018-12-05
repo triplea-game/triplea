@@ -161,8 +161,7 @@ public class JTextFieldBuilder {
   }
 
   /**
-   * Adds an action listener that is fired when the user presses enter after entering text
-   * into the text field.
+   * Adds an action listener that is fired when the user presses enter after entering text into the text field.
    *
    * @param textEnteredAction Action to fire on 'enter', input value is the current value of the
    *        text field.

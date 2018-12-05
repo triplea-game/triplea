@@ -209,9 +209,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final Map<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
-    // all triggers at this point have their conditions satisfied
-    // so we now test chance (because we test chance last), and remove any conditions that do not succeed in their dice
-    // rolls
+    // all triggers at this point have their conditions satisfied so we now test chance (because we test chance last),
+    // and remove any conditions that do not succeed in their dice rolls
     final Set<TriggerAttachment> triggersToFire = new HashSet<>();
     for (final TriggerAttachment t : triggersToBeFired) {
       if (testChance && !t.testChance(bridge)) {
@@ -220,9 +219,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       triggersToFire.add(t);
     }
     // Order: Notifications, Attachment Property Changes (Player, Relationship, Territory, TerritoryEffect, Unit),
-    // Relationship,
-    // AvailableTech, Tech, ProductionFrontier, ProductionEdit, Support, Purchase, UnitPlacement, Resource, Victory
-    // Notifications to current player
+    // Relationship, AvailableTech, Tech, ProductionFrontier, ProductionEdit, Support, Purchase, UnitPlacement,
+    // Resource, Victory Notifications to current player
     triggerNotifications(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
     // Attachment property changes
     triggerPlayerPropertyChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
@@ -1341,8 +1339,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
   // And now for the actual triggers, as called throughout the engine.
   // Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the
-  // default location for
-  // when 'when' is not used.
+  // default location for when 'when' is not used.
   // Should be void.
 
   /**

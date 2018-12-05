@@ -35,8 +35,7 @@ public class MapTest {
   @BeforeEach
   public void setUp() {
     // map, l is land, w is water
-    // each territory is connected to
-    // it's direct neighbors, but not diagonals
+    // each territory is connected to it's direct neighbors, but not diagonals
     // llll
     // llww
     // llwl

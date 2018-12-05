@@ -68,15 +68,13 @@ public class Chat {
     sentMessages = new SentMessagesHistory();
 
     // the order of events is significant.
-    // 1 register our channel listener
-    // once the channel is registered, we are guaranteed that
+    // 1 register our channel listener. Once the channel is registered, we are guaranteed that
     // when we receive the response from our init(...) message, our channel
     // subscriber has been added, and will see any messages broadcasted by the server
     // 2 call the init message on the server remote. Any add or join messages sent from the server
     // will queue until we receive the init return value (they queue since they see the init version is -1)
     // 3 when we receive the init message response, acquire the lock, and initialize our state
-    // and run any queued messages. Queued messages may be ignored if the
-    // server version is incorrect.
+    // and run any queued messages. Queued messages may be ignored if the server version is incorrect.
     // this all seems a lot more involved than it needs to be.
     final IChatController controller = (IChatController) messengers.getRemoteMessenger()
         .getRemote(ChatController.getChatControlerRemoteName(chatName));
@@ -373,11 +371,9 @@ public class Chat {
   /**
    * While using this, you should synchronize on getMutex().
    *
-   * @return the messages that have occured so far.
+   * @return the messages that have occurred so far.
    */
   List<ChatMessage> getChatHistory() {
     return chatHistory;
   }
 }
-
-

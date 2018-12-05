@@ -42,8 +42,7 @@ public class StatusManager {
     final Map<INode, String> values = controller.getAllStatus();
     synchronized (mutex) {
       status.putAll(values);
-      // at this point we are just being constructed, so we have no
-      // listeners
+      // at this point we are just being constructed, so we have no listeners
       // and we do not need to notify if anything has changed
     }
   }

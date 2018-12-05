@@ -31,10 +31,8 @@ import swinglib.JButtonBuilder;
 import swinglib.JPanelBuilder;
 
 /**
- * When the game launches, the MainFrame is loaded which will contain
- * the MainPanel. The contents of the MainPanel are swapped out
- * until a new game has been started (TODO: check if the lobby
- * uses mainpanel at all)
+ * When the game launches, the MainFrame is loaded which will contain the MainPanel. The contents of the MainPanel are
+ * swapped out until a new game has been started (TODO: check if the lobby uses MainPanel at all).
  */
 public class MainPanel extends JPanel implements Observer, ScreenChangeListener {
   private static final long serialVersionUID = -5548760379892913464L;
@@ -64,8 +62,7 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
   private final Supplier<Optional<IChatPanel>> chatPanelSupplier;
 
   /**
-   * MainPanel is the full contents of the 'mainFrame'. This panel represents the
-   * welcome screen and subsequent screens..
+   * MainPanel is the full contents of the 'mainFrame'. This panel represents the welcome screen and subsequent screens.
    */
   MainPanel(
       final GameSelectorPanel gameSelectorPanel,

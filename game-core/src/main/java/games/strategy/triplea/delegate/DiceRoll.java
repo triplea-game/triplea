@@ -53,8 +53,7 @@ import games.strategy.util.Tuple;
 public class DiceRoll implements Externalizable {
   private static final long serialVersionUID = -1167204061937566271L;
   private List<Die> rolls;
-  // this does not need to match the Die with isHit true
-  // since for low luck we get many hits with few dice
+  // this does not need to match the Die with isHit true since for low luck we get many hits with few dice
   private int hits;
   private double expectedHits;
 
@@ -978,8 +977,7 @@ public class DiceRoll implements Externalizable {
           Math.max(0, (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()))));
       for (int i = 0; i < rolls; i++) {
         // LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1
-        // onto the power to
-        // simulate the gains of having the best die picked.
+        // onto the power to simulate the gains of having the best die picked.
         if (i > 1 && (lhtrBombers || ua.getChooseBestRoll())) {
           totalStrength += extraRollBonus;
           continue;
@@ -1179,12 +1177,11 @@ public class DiceRoll implements Externalizable {
   /**
    * Initializes a new instance of the DiceRoll class.
    *
-   * @param dice int[] the dice, 0 based
-   * @param hits int - the number of hits
-   * @param rollAt int - what we roll at, [0,Constants.MAX_DICE]
-   * @param hitOnlyIfEquals boolean - do we get a hit only if we are equals, or do we hit
-   *        when we are equal or less than for example a 5 is a hit when
-   *        rolling at 6 for equal and less than, but is not for equals
+   * @param dice the dice, 0 based
+   * @param hits the number of hits
+   * @param rollAt what we roll at, [0,Constants.MAX_DICE]
+   * @param hitOnlyIfEquals Do we get a hit only if we are equals, or do we hit when we are equal or less than for
+   *        example a 5 is a hit when rolling at 6 for equal and less than, but is not for equals.
    */
   public DiceRoll(final int[] dice, final int hits, final int rollAt, final boolean hitOnlyIfEquals) {
     this.hits = hits;
@@ -1221,10 +1218,7 @@ public class DiceRoll implements Externalizable {
   /**
    * Returns all rolls that are equal to the specified value.
    *
-   * @param rollAt the strength of the roll, eg infantry roll at 2, expecting a
-   *        number in [1,6]
-   * @return in int[] which shouldnt be modifed, the int[] is 0 based, ie
-   *         0..MAX_DICE
+   * @param rollAt the strength of the roll, eg infantry roll at 2, expecting a number in [1,6]
    */
   public List<Die> getRolls(final int rollAt) {
     final List<Die> dice = new ArrayList<>();

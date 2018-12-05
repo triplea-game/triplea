@@ -204,8 +204,7 @@ public class UserActionPanel extends ActionPanel {
   });
 
   /**
-   * Convenient method to get a JCompenent showing the flags involved in this
-   * action.
+   * Convenient method to get a JCompenent showing the flags involved in this action.
    *
    * @param uaa the User action attachment to get the "otherflags" for
    * @return a JComponent with the flags involved.

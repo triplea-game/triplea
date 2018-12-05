@@ -41,11 +41,9 @@ public class LobbyServerProperties {
 
   /**
    * Typical constructor for lobby properties based on a yaml object. Parses lobby
-   * host, port, message, and an error message used to indicate potential down times
-   * to the user.
+   * host, port, message, and an error message used to indicate potential down times to the user.
    *
-   * @param yamlProps Yaml object with lobby properties from the point of view of the game
-   *        client.
+   * @param yamlProps Yaml object with lobby properties from the point of view of the game client.
    */
   public LobbyServerProperties(final Map<String, Object> yamlProps) {
     this.host = (String) yamlProps.get("host");

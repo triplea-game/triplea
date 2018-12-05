@@ -139,9 +139,7 @@ public class MovePerformer implements Serializable {
       @Override
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         // if any non enemy territories on route
-        // or if any enemy units on route the
-        // battles on (note water could have enemy but its
-        // not owned)
+        // or if any enemy units on route the battles on (note water could have enemy but its not owned)
         final GameData data = bridge.getData();
         final Predicate<Territory> mustFightThrough = getMustFightThroughMatch(id, data);
         final Collection<Unit> arrived =
@@ -151,8 +149,7 @@ public class MovePerformer implements Serializable {
         final Collection<Unit> arrivedCopyForBattles = new ArrayList<>(arrived);
         final Map<Unit, Unit> transporting = TransportUtils.mapTransports(route, arrived, transportsToLoad);
         // If we have paratrooper land units being carried by air units, they should be dropped off in the last
-        // territory. This means they
-        // are still dependent during the middle steps of the route.
+        // territory. This means they are still dependent during the middle steps of the route.
         final Collection<Unit> dependentOnSomethingTilTheEndOfRoute = new ArrayList<>();
         final Collection<Unit> airTransports = CollectionUtils.getMatches(arrived, Matches.unitIsAirTransport());
         final Collection<Unit> paratroops = CollectionUtils.getMatches(arrived, Matches.unitIsAirTransportable());
@@ -242,8 +239,7 @@ public class MovePerformer implements Serializable {
           }
           if (!ignoreBattle && GameStepPropertiesHelper.isNonCombatMove(data, false) && !targetedAttack) {
             // We are in non-combat move phase, and we are taking over friendly territories. No need for a battle. (This
-            // could get really
-            // difficult if we want these recorded in battle records).
+            // could get really difficult if we want these recorded in battle records).
             for (final Territory t : route
                 .getMatches(Matches
                     .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id)
@@ -331,8 +327,7 @@ public class MovePerformer implements Serializable {
         && GameStepPropertiesHelper.isNonCombatMove(data, false) && routeEnd.getUnits()
             .anyMatch(Matches.unitIsEnemyOf(data, id).and(Matches.unitIsDestroyer()))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
-      // can't keep moving them
-      // if there is an enemy destroyer there
+      // can't keep moving them if there is an enemy destroyer there
       for (final Unit unit : CollectionUtils.getMatches(units,
           Matches.unitIsSub().and(Matches.unitIsAir().negate()))) {
         change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));

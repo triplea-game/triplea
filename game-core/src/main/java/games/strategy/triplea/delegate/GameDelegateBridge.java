@@ -19,11 +19,6 @@ public class GameDelegateBridge implements IDelegateBridge {
   private final IDelegateBridge bridge;
   private final GameDelegateHistoryWriter historyWriter;
 
-  /**
-   * Creates new TripleADelegateBridge to wrap an existing IDelegateBridge.
-   *
-   * @param bridge delegate bridge
-   */
   public GameDelegateBridge(final IDelegateBridge bridge) {
     this.bridge = bridge;
     historyWriter = new GameDelegateHistoryWriter(this.bridge.getHistoryWriter(), getData());
@@ -48,8 +43,7 @@ public class GameDelegateBridge implements IDelegateBridge {
   }
 
   /**
-   * All delegates should use random data that comes from both players so that
-   * neither player cheats.
+   * All delegates should use random data that comes from both players so that neither player cheats.
    */
   @Override
   public int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation) {

@@ -84,8 +84,7 @@ public class RouteCalculatorTest {
   @Test
   public void testPossiblePoints() {
     final List<Point2D> possiblePoints = new ArrayList<>();
-    // The values below must be all combinations of
-    // x and y values 0, -mapWidth/height, +mapWidth/Height
+    // The values below must be all combinations of x and y values 0, -mapWidth/height, +mapWidth/Height
     possiblePoints.add(point(-MAP_WIDTH, -MAP_HEIGHT));
     possiblePoints.add(point(-MAP_WIDTH, 0));
     possiblePoints.add(point(-MAP_WIDTH, MAP_HEIGHT));

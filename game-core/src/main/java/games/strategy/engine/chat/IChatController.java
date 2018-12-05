@@ -15,8 +15,7 @@ import games.strategy.util.Tuple;
  *
  * <p>
  * To handle un-ordered comings and going into the chat, we send a version number with each chat change. The init method
- * is the sum of all
- * changes &lt; the version number returned in the init message.
+ * is the sum of all changes &lt; the version number returned in the init message.
  * </p>
  */
 public interface IChatController extends IRemote {

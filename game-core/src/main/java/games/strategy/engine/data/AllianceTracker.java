@@ -16,8 +16,7 @@ import com.google.common.collect.Multimap;
  * Tracks alliances between players.
  * An alliance is a named entity, players are added to an alliance.
  * Currently only used for tracking stats (like TUV, total production, etc), and for tracking total victory cities for
- * alliance based
- * victory conditions.
+ * alliance based victory conditions.
  * Not used for determining in-game alliances (instead, see the Relationship tracker for that).
  */
 public class AllianceTracker implements Serializable {
@@ -70,8 +69,7 @@ public class AllianceTracker implements Serializable {
   }
 
   /**
-   * Returns the PlayerId's that are members of the alliance
-   * specified by the String allianceName.
+   * Returns the PlayerId's that are members of the alliance specified by the String allianceName.
    *
    * @param allianceName Alliance name
    * @return all the players in the given alliance

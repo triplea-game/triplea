@@ -88,11 +88,9 @@ public class ClientGame extends AbstractGame {
               }
             }
             // TODO: this is causing problems if the very last step is a client step. we end up creating a new round
-            // before the host's
-            // rounds has started.
+            // before the host's rounds has started.
             // right now, fixing it with a hack. but in reality we probably need to have a better way of determining
-            // when a new round has
-            // started (like with a roundChanged listener).
+            // when a new round has started (like with a roundChanged listener).
             if ((currentRound - 1 > round && ourOriginalCurrentRound >= round)
                 || (currentRound > round && ourOriginalCurrentRound < round)) {
               throw new IllegalStateException("Cannot create more rounds that host currently has. Host Round:" + round
@@ -142,8 +140,7 @@ public class ClientGame extends AbstractGame {
             log.log(Level.SEVERE, "Waited more than 30 seconds for step to update. Something wrong.");
             shownErrorMessage = true;
             // TODO: should we throw an illegal state error? or just return? or a game over exception? should we
-            // request the server to
-            // send the step update again or something?
+            // request the server to send the step update again or something?
           }
         }
       }

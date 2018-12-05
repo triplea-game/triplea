@@ -8,9 +8,8 @@ import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 
 /**
- * Can be used to create a {@code MainPanel} UI component class, which is a UI holder. The final
- * contents are added to #MainPanel and we set up listeners so that we can change screens
- * by swapping the contents rendered by #MainPanel.
+ * Can be used to create a {@code MainPanel} UI component class, which is a UI holder. The final contents are added to
+ * #MainPanel and we set up listeners so that we can change screens by swapping the contents rendered by #MainPanel.
  */
 public class MainPanelBuilder {
 

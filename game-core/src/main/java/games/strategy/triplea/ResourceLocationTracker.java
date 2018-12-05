@@ -46,7 +46,7 @@ class ResourceLocationTracker {
    * <p>
    * The 'mapPrefix' is the path within a map zip file where we will then find any map contents.
    * For example, if the map prefix is "map", then when we expand the map zip, we would expect
-   * "/map" to be the first folder we see, and we woudl expect things like "/map/game" and
+   * "/map" to be the first folder we see, and we would expect things like "/map/game" and
    * "/map/polygons.txt" to exist.
    * </p>
    */

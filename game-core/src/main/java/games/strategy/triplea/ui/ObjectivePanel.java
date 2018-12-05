@@ -466,8 +466,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     }
 
     /**
-     * Look through all columns and get the renderer. If it is
-     * also a TextAreaRenderer, we look at the maximum height in
+     * Look through all columns and get the renderer. If it is also a TextAreaRenderer, we look at the maximum height in
      * its hash table for this row.
      */
     private static int findTotalMaximumRowSize(final JTable table, final int row) {

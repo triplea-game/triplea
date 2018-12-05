@@ -37,7 +37,6 @@ import lombok.extern.java.Log;
 public class InitializationDelegate extends BaseTripleADelegate {
   private boolean needToInitialize = true;
 
-  /** Creates a new instance of InitializationDelegate. */
   public InitializationDelegate() {}
 
   @Override
@@ -101,10 +100,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   /**
-   * Want to make sure that all units in the sea that can be transported are
-   * marked as being transported by something.
-   * We assume that all transportable units in the sea are in a transport, no
-   * exceptions.
+   * Want to make sure that all units in the sea that can be transported are marked as being transported by something.
+   * We assume that all transportable units in the sea are in a transport, no exceptions.
    */
   private static void initTransportedLandUnits(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();

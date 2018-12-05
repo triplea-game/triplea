@@ -29,8 +29,7 @@ import games.strategy.util.Triple;
  * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit
  * individually.
  * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap
- * with the points per
- * unit.
+ * with the points per unit.
  * </p>
  */
 public class IndividualUnitPanel extends JPanel {
@@ -50,8 +49,7 @@ public class IndividualUnitPanel extends JPanel {
    * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit
    * individually.
    * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap
-   * with the points per
-   * unit.
+   * with the points per unit.
    */
   IndividualUnitPanel(final Collection<Unit> units, final String title,
       final UiContext uiContext, final int max, final boolean showMinAndMax, final boolean showSelectAll,

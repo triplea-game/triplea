@@ -18,8 +18,7 @@ import games.strategy.util.CollectionUtils;
  * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2
  * length neutral route.
  * This is because the friendly route score is 1/2 of the enemy route score and 1/4 of the neutral route score.
- * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any
- * way.
+ * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any way.
  */
 public class CompositeRouteFinder {
   private final GameMap map;
@@ -104,8 +103,8 @@ public class CompositeRouteFinder {
     return result;
   }
 
-  /*
-   * Returns the score of the best match that matches this territory
+  /**
+   * Returns the score of the best match that matches this territory.
    */
   private int getTerScore(final Territory ter) {
     int bestMatchingScore = Integer.MAX_VALUE;

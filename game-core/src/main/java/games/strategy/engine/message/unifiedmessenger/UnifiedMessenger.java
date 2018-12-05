@@ -30,8 +30,7 @@ import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**
- * A messenger general enough that both Channel and Remote messenger can be
- * based on it.
+ * A messenger general enough that both Channel and Remote messenger can be based on it.
  */
 @Log
 public class UnifiedMessenger {
@@ -41,8 +40,7 @@ public class UnifiedMessenger {
   // lock on this for modifications to create or remove local end points
   private final Object endPointMutex = new Object();
   // maps String -> EndPoint
-  // these are the end points that
-  // have local implementors
+  // these are the end points that have local implementors
   private final Map<String, EndPoint> localEndPoints = new HashMap<>();
   private final Object pendingLock = new Object();
   // threads wait on these latches for the hub to return invocations
@@ -56,9 +54,6 @@ public class UnifiedMessenger {
   // only non null for the server
   private UnifiedMessengerHub hub;
 
-  /**
-   * Creates a new instance of UnifiedMessanger.
-   */
   public UnifiedMessenger(final IMessenger messenger) {
     this.messenger = messenger;
     this.messenger.addMessageListener(this::messageReceived);
@@ -168,7 +163,7 @@ public class UnifiedMessenger {
   }
 
   /**
-   * Get the 1 and only implementor for the endpoint. throws an exception if there are not exctly 1 implementors
+   * Get the 1 and only implementor for the end point. throws an exception if there are not exactly 1 implementors.
    */
   public Object getImplementor(final String name) {
     synchronized (endPointMutex) {
@@ -246,8 +241,7 @@ public class UnifiedMessenger {
       synchronized (endPointMutex) {
         local = localEndPoints.get(invoke.call.getRemoteName());
       }
-      // something a bit strange here, it may be the case
-      // that the endpoint was deleted locally
+      // something a bit strange here, it may be the case that the end point was deleted locally
       // regardless, the other side is expecting our reply
       if (local == null) {
         if (invoke.needReturnValues) {
@@ -259,10 +253,8 @@ public class UnifiedMessenger {
         return;
       }
       // very important
-      // we are guaranteed that here messages will be
-      // read in the same order that they are sent from the client
-      // however, once we delegate to the thread pool, there is no
-      // guarantee that the thread pool task will run before
+      // we are guaranteed that here messages will be read in the same order that they are sent from the client
+      // however, once we delegate to the thread pool, there is no guarantee that the thread pool task will run before
       // we get the next message notification
       // get the number for the invocation here
       final long methodRunNumber = local.takeANumber();
@@ -290,8 +282,7 @@ public class UnifiedMessenger {
       final SpokeInvocationResults spokeInvocationResults = (SpokeInvocationResults) msg;
       final GUID methodId = spokeInvocationResults.methodCallId;
       // both of these should already be populated
-      // this list should be a synchronized list so we can do the add
-      // all
+      // this list should be a synchronized list so we can do the add all
       synchronized (pendingLock) {
         results.put(methodId, spokeInvocationResults.results);
         final CountDownLatch latch = pendingInvocations.remove(methodId);
@@ -313,5 +304,3 @@ public class UnifiedMessenger {
     return "Server:" + messenger.isServer() + " EndPoints:" + localEndPoints;
   }
 }
-
-

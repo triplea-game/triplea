@@ -246,11 +246,9 @@ final class UnitChooser extends JPanel {
         // there may be some units being given multiple hits, while others get a single or no hits
         for (int i = 0; i < chooserEntry.size() - 1; i++) {
           // here we are counting on the fact that unit category stores the units in a list, so the order is the same
-          // every time we access
-          // it.
+          // every time we access it.
           // this means that in the loop we may select the first 2 units in the list to receive 1 hit, then select the
-          // first unit the list
-          // to receive 1 more hit
+          // first unit the list to receive 1 more hit
           addToCollection(selectedUnits, chooserEntry, chooserEntry.getHits(i), false);
         }
       }

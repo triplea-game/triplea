@@ -4,8 +4,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 /**
- * This synchronization aid is very similar to {@link CountDownLatch},
- * except that you can increment the latch.
+ * This synchronization aid is very similar to {@link CountDownLatch}, except that you can increment the latch.
  * Implements AQS behind the scenes similar to CountDownLatch.
  * Class is hobbled together from various learnings and tickets on stackexchange/stackoverflow.
  */

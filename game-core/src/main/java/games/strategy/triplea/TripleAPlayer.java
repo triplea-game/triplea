@@ -297,8 +297,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_COMBAT, id);
       soundPlayedAlreadyCombatMove = true;
     }
-    // getMove will block until all moves are done. We recursively call this same method
-    // until getMove stops blocking.
+    // getMove will block until all moves are done. We recursively call this same method until getMove stops blocking.
     final MoveDescription moveDescription = ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
     if (moveDescription == null) {
       if (GameStepPropertiesHelper.isRemoveAirThatCanNotLand(getGameData())) {
@@ -390,7 +389,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
             final String error = purchaseDel.purchaseRepair(repair);
             if (error != null) {
               ui.notifyError(error);
-              // dont give up, keep going
+              // don't give up, keep going
               purchase(bid);
             }
           }
@@ -413,7 +412,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     final String purchaseError = purchaseDel.purchase(prod);
     if (purchaseError != null) {
       ui.notifyError(purchaseError);
-      // dont give up, keep going
+      // don't give up, keep going
       purchase(bid);
     }
   }
@@ -634,7 +633,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     if (ui.getLocalPlayers().playing(hitPlayer)) {
       return;
     }
-    // we dont want to confirm enemy casualties
+    // we don't want to confirm enemy casualties
     if (!ClientSetting.confirmEnemyCasualties.getValueOrThrow()) {
       return;
     }

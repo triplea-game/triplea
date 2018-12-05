@@ -53,8 +53,7 @@ public class OddsCalculatorTest {
   public void testKeepOneAttackingLand() {
     // 1 bomber and 1 infantry attacking
     // 1 fighter
-    // if one attacking inf must live, the odds
-    // much worse
+    // if one attacking inf must live, the odds much worse
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final Territory eastCanada = gameData.getMap().getTerritory("Eastern Canada");

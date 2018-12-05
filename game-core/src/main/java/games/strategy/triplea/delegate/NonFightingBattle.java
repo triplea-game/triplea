@@ -21,9 +21,7 @@ import games.strategy.util.CollectionUtils;
 
 /**
  * Battle in which no fighting occurs.
- * Example is a naval invasion into an empty country,
- * but the battle cannot be fought until a naval battle
- * occurs.
+ * Example is a naval invasion into an empty country, but the battle cannot be fought until a naval battle occurs.
  */
 public class NonFightingBattle extends DependentBattle {
   private static final long serialVersionUID = -1699534010648145123L;
@@ -111,8 +109,7 @@ public class NonFightingBattle extends DependentBattle {
       if (route.getEnd() != null && !route.getEnd().isWater() && units.stream().anyMatch(Matches.unitIsLand())) {
         amphibiousLandAttackers.removeAll(CollectionUtils.getMatches(units, Matches.unitIsLand()));
       }
-      // if none of the units is a land unit, the attack from
-      // that territory is no longer an amphibious assault
+      // if none of the units is a land unit, the attack from that territory is no longer an amphibious assault
       if (attackingFromMapUnits.stream().noneMatch(Matches.unitIsLand())) {
         getAmphibiousAttackTerritories().remove(attackingFrom);
         // do we have any amphibious attacks left?

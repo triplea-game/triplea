@@ -65,11 +65,9 @@ public class ClientQuarantineConversation extends QuarantineConversation {
    * Prompts the user to enter their credentials.
    */
   public void showCredentials() {
-    // We need to do this in the thread that created the socket, since
-    // the thread that creates the socket will often be, or will block the
-    // swing event thread, but the getting of a username/password
-    // must be done in the swing event thread.
-    // So we have complex code to switch back and forth.
+    // We need to do this in the thread that created the socket, since the thread that creates the socket will often be,
+    // or will block the swing event thread, but the getting of a username/password must be done in the swing event
+    // thread. So we have complex code to switch back and forth.
     Interruptibles.await(showLatch);
 
     if (login != null && challengeProperties != null) {

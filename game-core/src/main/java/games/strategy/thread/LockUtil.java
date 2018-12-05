@@ -20,8 +20,7 @@ import lombok.extern.java.Log;
  *
  * <p>
  * Simply use this class and call acquireLock(aLock) releaseLock(aLock) instead of lock.lock(), lock.release(). If locks
- * are acquired in an
- * inconsistent order, an error message will be printed.
+ * are acquired in an inconsistent order, an error message will be printed.
  * </p>
  *
  * <p>
@@ -69,9 +68,7 @@ public enum LockUtil {
         for (final Lock l : locksHeld.get().keySet()) {
           locksHeldWhenAcquired.get(lock).add(new WeakLockRef(l));
         }
-        // we are lock a, check to
-        // see if any lock we hold (b)
-        // has ever been acquired before a
+        // we are lock a, check to see if any lock we hold (b) has ever been acquired before a
         for (final Lock l : locksHeld.get().keySet()) {
           final Set<WeakLockRef> held = locksHeldWhenAcquired.get(l);
           // clear out of date locks
@@ -133,8 +130,7 @@ public enum LockUtil {
   }
 
   private static final class WeakLockRef extends WeakReference<Lock> {
-    // cache the hash code to make sure it doesn't change if our reference
-    // has been cleared
+    // cache the hash code to make sure it doesn't change if our reference has been cleared
     private final int hashCode;
 
     public WeakLockRef(final Lock referent) {

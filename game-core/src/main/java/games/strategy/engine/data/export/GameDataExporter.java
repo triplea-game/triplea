@@ -79,8 +79,7 @@ public class GameDataExporter {
 
   private void tripleaMinimumVersion() {
     // Since we do not keep the minimum version info in the game data, just put the current version of triplea here
-    // (since we have
-    // successfully started the map, it is basically correct)
+    // (since we have successfully started the map, it is basically correct)
     xmlfile.append("    <triplea minimumVersion=\"").append(ClientContext.engineVersion()).append("\"/>\n");
   }
 
@@ -348,8 +347,7 @@ public class GameDataExporter {
     xmlfile.append("    <attachmentList>\n");
     for (final Tuple<IAttachment, List<Tuple<String, String>>> attachment : data.getAttachmentOrderAndValues()) {
       // TODO: use a ui switch to determine if we are printing the xml as it was created, or as it stands right now
-      // (including changes to
-      // the game data)
+      // (including changes to the game data)
       printAttachments(attachment);
     }
     xmlfile.append("    </attachmentList>\n");

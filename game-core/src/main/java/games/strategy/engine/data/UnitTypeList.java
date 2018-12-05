@@ -15,11 +15,6 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
 
   private final Map<String, UnitType> unitTypes = new LinkedHashMap<>();
 
-  /**
-   * Creates new UnitTypeCollection.
-   *
-   * @param data game data
-   */
   public UnitTypeList(final GameData data) {
     super(data);
   }

@@ -64,9 +64,8 @@ public class PlayerAttachment extends DefaultAttachment {
   private boolean destroysPus = false;
   // are we immune to being blockaded?
   private boolean immuneToBlockade = false;
-  // what resources can be used for suicide attacks, and
+  // what resources can be used for suicide attacks, and at what attack power
   private IntegerMap<Resource> suicideAttackResources = new IntegerMap<>();
-  // at what attack power
   // what can be hit by suicide attacks
   private Set<UnitType> suicideAttackTargets = null;
   // placement limits on a flexible per player basis

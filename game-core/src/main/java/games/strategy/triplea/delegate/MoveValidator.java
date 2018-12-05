@@ -1587,6 +1587,5 @@ public class MoveValidator {
     return Properties.getIgnoreSubInMovement(data);
   }
 
-  /** Creates new MoveValidator. */
   private MoveValidator() {}
 }

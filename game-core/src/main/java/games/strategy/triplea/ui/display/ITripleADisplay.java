@@ -25,16 +25,13 @@ public interface ITripleADisplay extends IDisplay {
 
   /**
    * Sends a message to all TripleAFrame's that are playing AND are controlling one or more of the players listed but
-   * NOT any of the players
-   * listed as butNotThesePlayers.
-   * (No message to any observers or players not in the list.)
+   * NOT any of the players listed as butNotThesePlayers. (No message to any observers or players not in the list.)
    */
   void reportMessageToPlayers(final Collection<PlayerId> playersToSendTo,
       final Collection<PlayerId> butNotThesePlayers, final String message, final String title);
 
   /**
-   * Display info about the battle.
-   * This is the first message to be displayed in a battle
+   * Display info about the battle. This is the first message to be displayed in a battle.
    *
    * @param battleId - a unique id for the battle
    * @param location - where the battle occurs

@@ -111,8 +111,7 @@ public abstract class AbstractUiContext implements UiContext {
   public void setMapDir(final GameData data, final String mapDir) {
     internalSetMapDir(mapDir, data);
     this.getMapData().verify(data);
-    // set the default after internal succeeds, if an error is thrown
-    // we don't want to persist it
+    // set the default after internal succeeds, if an error is thrown we don't want to persist it
     final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
     final Preferences prefs = getPreferencesForMap(mapName);
     prefs.put(MAP_SKIN_PREF, mapDir);

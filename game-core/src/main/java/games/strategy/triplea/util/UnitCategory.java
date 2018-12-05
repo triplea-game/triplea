@@ -101,8 +101,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
       return false;
     }
     final UnitCategory other = (UnitCategory) o;
-    // equality of categories does not compare the number
-    // of units in the category, so don't compare on units
+    // equality of categories does not compare the number of units in the category, so don't compare on units
     final boolean equalsIgnoreDamaged = equalsIgnoreDamagedAndBombingDamageAndDisabled(other);
     return equalsIgnoreDamaged && other.damaged == this.damaged && other.bombingDamage == this.bombingDamage
         && other.disabled == this.disabled;

@@ -168,8 +168,7 @@ public class MapPanel extends ImageScrollerLargeView {
         if (lastActive == -1) {
           new Thread(() -> {
             // Mouse Events are different than key events
-            // Thats why we're "simulating" multiple
-            // clicks while the mouse button is held down
+            // Thats why we're "simulating" multiple clicks while the mouse button is held down
             // so the map keeps scrolling
             while (lastActive != -1) {
               final int diffPixel = computeScrollSpeed.get();
@@ -293,8 +292,7 @@ public class MapPanel extends ImageScrollerLargeView {
       return;
     }
     final Point p = uiContext.getMapData().getCenter(territory);
-    // when centering don't want the map to wrap around,
-    // eg if centering on hawaii
+    // when centering don't want the map to wrap around, eg if centering on hawaii
     super.setTopLeft((int) (p.x - (getScaledWidth() / 2)), (int) (p.y - (getScaledHeight() / 2)));
   }
 

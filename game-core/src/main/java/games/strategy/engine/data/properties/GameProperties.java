@@ -38,24 +38,17 @@ public class GameProperties extends GameDataComponent {
   public static final String EDITABLE_PROPERTIES_FIELD_NAME = "editableProperties";
   private final Map<String, IEditableProperty<?>> editableProperties = new HashMap<>();
 
-  // This list is used to keep track of order properties were
-  // added.
+  // This list is used to keep track of order properties were added.
   private final List<String> ordering = new ArrayList<>();
 
   private final Map<String, IEditableProperty<?>> playerProperties = new HashMap<>();
 
-  /**
-   * Creates a new instance of GameProperties.
-   *
-   * @param data game data
-   */
   public GameProperties(final GameData data) {
     super(data);
   }
 
   /**
    * Setting a property to null has the effect of unbinding the key.
-   * package access to prevent outsiders from setting properties
    *
    * @param key key of property
    * @param value property

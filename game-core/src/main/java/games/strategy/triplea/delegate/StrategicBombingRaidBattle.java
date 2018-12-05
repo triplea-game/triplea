@@ -60,14 +60,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   private int bombingRaidTotal;
   private final IntegerMap<Unit> bombingRaidDamage = new IntegerMap<>();
 
-  /**
-   * Creates new StrategicBombingRaidBattle.
-   *
-   * @param battleSite - battle territory
-   * @param data - game data
-   * @param attacker - attacker PlayerId
-   * @param battleTracker - BattleTracker
-   */
   public StrategicBombingRaidBattle(final Territory battleSite, final GameData data, final PlayerId attacker,
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, true, BattleType.BOMBING_RAID, data);
@@ -81,8 +73,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       return;
     }
     // we were having a problem with units that had been killed previously were still part of battle's variables, so we
-    // double check that
-    // the stuff still exists here.
+    // double check that the stuff still exists here.
     defendingUnits.retainAll(battleSite.getUnits().getUnits());
     attackingUnits.retainAll(battleSite.getUnits().getUnits());
     targets.keySet().removeIf(unit -> !battleSite.getUnits().getUnits().contains(unit));
@@ -164,8 +155,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
     // We update Defending Units twice: first time when the battle is created, and second time before the battle begins.
     // The reason is because when the battle is created, there are no attacking units yet in it, meaning that targets
-    // is empty. We need to
-    // update right as battle begins to know we have the full list of targets.
+    // is empty. We need to update right as battle begins to know we have the full list of targets.
     updateDefendingUnits();
     bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + battleSite, battleSite);
     if (attackingUnits.isEmpty() || (defendingUnits.isEmpty()
@@ -625,8 +615,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             int maxDice = ua.getBombingMaxDieSides();
             int bonus = ua.getBombingBonus();
             // both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the
-            // map, and zero for
-            // the bonus.
+            // map, and zero for the bonus.
             if (maxDice < 0 || doNotUseBombingBonus) {
               maxDice = diceSides;
             }
@@ -634,8 +623,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               bonus = 0;
             }
             // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this
-            // case that we reduce the
-            // luck by 2/3.
+            // case that we reduce the luck by 2/3.
             if (maxDice >= 5) {
               bonus += (maxDice + 1) / 3;
               maxDice = (maxDice + 1) / 3;

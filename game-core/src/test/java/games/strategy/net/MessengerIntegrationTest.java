@@ -182,9 +182,7 @@ public class MessengerIntegrationTest {
 
   @Test
   public void testCorrectNodeCountInRemove() {
-    // when we receive the notification that a
-    // connection has been lost, the node list
-    // should reflect that change
+    // when we receive the notification that a connection has been lost, the node list should reflect that change
     for (int i = 0; i < 100; i++) {
       if (serverMessenger.getNodes().size() == 3) {
         break;

@@ -882,8 +882,7 @@ public class RevisedTest {
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
     final IDelegateBridge bridge = newDelegateBridge(british);
     // should be exactly 3 rolls total. would be exactly 2 rolls if the number of units being shot at = max dice side of
-    // the AA gun, because
-    // the casualty selection roll would not happen in LL
+    // the AA gun, because the casualty selection roll would not happen in LL
     // first 0 is the AA gun rolling 1@2 and getting a 1, which is a hit
     // second 0 is the LL AA casualty selection randomly picking the first unit to die
     // third 0 is the single remaining bomber dealing 1 damage to the enemy's PUs
@@ -913,8 +912,7 @@ public class RevisedTest {
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany), bombers, null);
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
     final IDelegateBridge bridge = newDelegateBridge(british);
-    // aa guns rolls 0 and hits, next 5 dice are for the bombing raid cost for the
-    // surviving bombers
+    // aa guns rolls 0 and hits, next 5 dice are for the bombing raid cost for the surviving bombers
     whenGetRandom(bridge)
         .thenAnswer(withValues(0))
         .thenAnswer(withValues(0, 0, 0, 0, 0));
@@ -1020,8 +1018,7 @@ public class RevisedTest {
     final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
     final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
     assertTrue(attackSubs < defendSubs);
-    // fight, each sub should fire
-    // and hit
+    // fight, each sub should fire and hit
     whenGetRandom(bridge)
         .thenAnswer(withValues(0))
         .thenAnswer(withValues(0));
@@ -1052,20 +1049,15 @@ public class RevisedTest {
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
      * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of
-     * combat. That is the only
-     * time a sub ever fires.
+     * combat. That is the only time a sub ever fires.
      * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal
-     * attack and defense rolls,
-     * unless the enemy has a destroyer present.
+     * attack and defense rolls, unless the enemy has a destroyer present.
      * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the
-     * Remove Casualties step
-     * (step 6) of combat.
+     * Remove Casualties step (step 6) of combat.
      * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever
-     * stops a sub from
-     * rolling its die (attack or defense) in the Opening Fire step.
+     * stops a sub from rolling its die (attack or defense) in the Opening Fire step.
      * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step
-     * 6, allowing them to
-     * fire back before going to the scrap heap.
+     * 6, allowing them to fire back before going to the scrap heap.
      */
     assertEquals(Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE,
         attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, defender + FIRE, attacker + SELECT_CASUALTIES,
@@ -1111,20 +1103,15 @@ public class RevisedTest {
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
      * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of
-     * combat. That is the only
-     * time a sub ever fires.
+     * combat. That is the only time a sub ever fires.
      * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal
-     * attack and defense rolls,
-     * unless the enemy has a destroyer present.
+     * attack and defense rolls, unless the enemy has a destroyer present.
      * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the
-     * Remove Casualties step
-     * (step 6) of combat.
+     * Remove Casualties step (step 6) of combat.
      * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever
-     * stops a sub from
-     * rolling its die (attack or defense) in the Opening Fire step.
+     * stops a sub from rolling its die (attack or defense) in the Opening Fire step.
      * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step
-     * 6, allowing them to
-     * fire back before going to the scrap heap.
+     * 6, allowing them to fire back before going to the scrap heap.
      */
     assertEquals(
         Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE,
@@ -1212,20 +1199,15 @@ public class RevisedTest {
     /*
      * Here are the exact errata clarifications on how REVISED rules subs work:
      * Every sub, regardless of whether it is on the attacking or defending side, fires in the Opening Fire step of
-     * combat. That is the only
-     * time a sub ever fires.
+     * combat. That is the only time a sub ever fires.
      * Losses caused by attacking or defending subs are removed at the end of the Opening Fire step, before normal
-     * attack and defense rolls,
-     * unless the enemy has a destroyer present.
+     * attack and defense rolls, unless the enemy has a destroyer present.
      * If the enemy (attacker or defender) has a destroyer, then hits caused by your subs are not removed until the
-     * Remove Casualties step
-     * (step 6) of combat.
+     * Remove Casualties step (step 6) of combat.
      * In other words, subs work exactly the same for the attacker and the defender. Nothing, not even a destroyer, ever
-     * stops a sub from
-     * rolling its die (attack or defense) in the Opening Fire step.
+     * stops a sub from rolling its die (attack or defense) in the Opening Fire step.
      * What a destroyer does do is let you keep your units that were sunk by enemy subs on the battle board until step
-     * 6, allowing them to
-     * fire back before going to the scrap heap.
+     * 6, allowing them to fire back before going to the scrap heap.
      */
     assertEquals(
         Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE,

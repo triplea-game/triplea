@@ -16,15 +16,13 @@ import lombok.Builder;
 // TODO: move this class to lobby.common upon next incompatible release; it is shared between client and server
 
 /**
- * NOTE - this class is not thread safe. Modifications should be done holding an
- * external lock.
+ * NOTE - this class is not thread safe. Modifications should be done holding an external lock.
  */
 public class GameDescription implements Externalizable, Cloneable {
   private static final long serialVersionUID = 508593169141567546L;
 
   /**
-   * Represents the game states displayed to users looking at the list of available
-   * lobby games.
+   * Represents the game states displayed to users looking at the list of available lobby games.
    */
   public enum GameStatus {
     LAUNCHING {
@@ -67,8 +65,7 @@ public class GameDescription implements Externalizable, Cloneable {
   private boolean passworded;
   /**
    * Engine version, used to be useful when multiple engine versions were in same lobby,
-   * now that lobby has homogeneous versions and should going forward, this column is no
-   * longer useful.
+   * now that lobby has homogeneous versions and should going forward, this column is no longer useful.
    *
    * @deprecated No longer used, waiting for non-compatible change opportunity to remove.
    */

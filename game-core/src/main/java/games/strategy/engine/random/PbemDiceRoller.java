@@ -26,9 +26,8 @@ import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 
 /**
- * Its a bit messy, but the threads are a pain to deal with We want to be able
- * to call this from any thread, and have a dialog that doesnt close until the
- * dice roll finishes. If there is an error we wait until we get a good roll
+ * It's a bit messy, but the threads are a pain to deal with. We want to be able to call this from any thread, and have
+ * a dialog that doesn't close until the dice roll finishes. If there is an error we wait until we get a good roll
  * before returning.
  */
 public class PbemDiceRoller implements IRandomSource {
@@ -37,10 +36,9 @@ public class PbemDiceRoller implements IRandomSource {
   private static Frame focusWindow;
 
   /**
-   * If the game has multiple frames, allows the ui to
-   * set what frame should be the parent of the dice rolling window
-   * if set to null, or not set, we try to guess by finding the currently
-   * focused window (or a visble window if none are focused).
+   * If the game has multiple frames, allows the UI to set what frame should be the parent of the dice rolling window.
+   * If set to null, or not set, we try to guess by finding the currently focused window (or a visible window if none
+   * are focused).
    */
   public static void setFocusWindow(final Frame w) {
     focusWindow = w;
@@ -203,11 +201,9 @@ public class PbemDiceRoller implements IRandomSource {
     }
 
     /**
-     * should be called from a thread other than the event thread after we are
-     * open (or at least in the process of opening) will close the window and
-     * notify any waiting threads when completed successfully.
-     * Before contacting Irony Dice Server, check if email has a reasonable
-     * valid syntax.
+     * Should be called from a thread other than the event thread after we are open (or at least in the process of
+     * opening) will close the window and notify any waiting threads when completed successfully.
+     * Before contacting Irony Dice Server, check if email has a reasonable valid syntax.
      */
     private void rollInSeperateThread() throws IllegalStateException {
       if (SwingUtilities.isEventDispatchThread()) {

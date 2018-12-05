@@ -209,7 +209,6 @@ public class RocketsFireHelper {
     final Collection<Unit> targets = new ArrayList<>();
     if (damageFromBombingDoneToUnits) {
       // TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc
-      // etc.
       final Set<UnitType> legalTargetsForTheseRockets = new HashSet<>();
       if (rockets == null) {
         legalTargetsForTheseRockets.addAll(data.getUnitTypeList().getAllUnitTypes());
@@ -319,8 +318,7 @@ public class RocketsFireHelper {
             maxDice = diceSides;
           }
           // now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case
-          // that we reduce the
-          // luck by 2/3.
+          // that we reduce the luck by 2/3.
           if (maxDice >= 5) {
             bonus += (maxDice + 1) / 3;
             maxDice = (maxDice + 1) / 3;

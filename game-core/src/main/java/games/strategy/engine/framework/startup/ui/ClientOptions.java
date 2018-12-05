@@ -27,9 +27,6 @@ public class ClientOptions extends JDialog {
   private IntTextField portField;
   private boolean okPressed;
 
-  /**
-   * Creates a new instance of ClientOptions.
-   */
   public ClientOptions(final Component parent, final String defaultName, final int defaultPort,
       final String defaultAddress) {
     super(JOptionPane.getFrameForComponent(parent), "Client options", true);

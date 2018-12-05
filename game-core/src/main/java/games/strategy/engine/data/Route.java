@@ -305,8 +305,7 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   /**
-   * the territory before the end territory (this could be the start territory
-   * in the case of 1 step).
+   * the territory before the end territory (this could be the start territory in the case of 1 step).
    *
    * @return the territory before the end territory
    */

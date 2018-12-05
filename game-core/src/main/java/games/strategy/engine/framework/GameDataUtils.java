@@ -49,8 +49,7 @@ public final class GameDataUtils {
   }
 
   /**
-   * Translate units,territories and other game data objects from one
-   * game data into another.
+   * Translate units, territories and other game data objects from one game data into another.
    */
   @SuppressWarnings("unchecked")
   public static <T> T translateIntoOtherGameData(final T object, final GameData translateInto) {

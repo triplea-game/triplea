@@ -48,7 +48,7 @@ public interface IGame {
   IRandomSource getRandomSource();
 
   /**
-   * add a display that will recieve broadcasts from the IDelegateBridge.getDisplayBroadvaster
+   * Add a display that will receive broadcasts from the IDelegateBridge.getDisplayBroadcaster.
    */
   void addDisplay(IDisplay display);
 

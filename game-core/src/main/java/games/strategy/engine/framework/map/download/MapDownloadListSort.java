@@ -22,8 +22,7 @@ public final class MapDownloadListSort {
     checkNotNull(downloads);
 
     // Until we see a header, save each map to this List.
-    // When we see a header, we'll sort this list, add it
-    // to the return values, and then clear it.
+    // When we see a header, we'll sort this list, add it to the return values, and then clear it.
     final List<DownloadFileDescription> maps = new ArrayList<>(downloads);
 
     // in case the file does not end with a header, sort and add any remaining maps

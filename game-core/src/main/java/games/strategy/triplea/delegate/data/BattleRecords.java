@@ -125,9 +125,8 @@ public class BattleRecords implements Serializable {
         }
         return true;
         // TODO: do more types.... (maybe make a much better enum class that covers both WhoWon and
-        // BattleResultDescription in a single enum
-        // with multiple variables for each enum to cover the different tiers of detail (ie: won/lost/draw vs
-        // conquer/blitz/etc.)
+        // BattleResultDescription in a single enum with multiple variables for each enum to cover the different tiers
+        // of detail (ie: won/lost/draw vs conquer/blitz/etc.)
       }
     }
     return false;
@@ -139,8 +138,7 @@ public class BattleRecords implements Serializable {
   public void removeBattle(final PlayerId currentPlayer, final GUID battleId) {
     final Map<GUID, BattleRecord> current = records.get(currentPlayer);
     // we can't count on this being the current player. If we created a battle using edit mode, then the battle might be
-    // under a different
-    // player.
+    // under a different player.
     if (current == null || !current.containsKey(battleId)) {
       for (final Entry<PlayerId, Map<GUID, BattleRecord>> entry : records.entrySet()) {
         if (entry.getValue() != null && entry.getValue().containsKey(battleId)) {
@@ -161,8 +159,7 @@ public class BattleRecords implements Serializable {
       final Map<GUID, BattleRecord> currentRecord = records.get(p);
       if (currentRecord != null) {
         // this only comes up if we use edit mode to create an attack for a player who's already had their turn and
-        // therefore already has
-        // their record.
+        // therefore already has their record.
         final Map<GUID, BattleRecord> additionalRecords = other.records.get(p);
         for (final Entry<GUID, BattleRecord> entry : additionalRecords.entrySet()) {
           final GUID guid = entry.getKey();

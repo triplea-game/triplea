@@ -85,8 +85,6 @@ public interface IBattle extends Serializable {
 
   /**
    * Fight this battle.
-   *
-   * @param bridge - IDelegateBridge
    */
   void fight(IDelegateBridge bridge);
 
@@ -97,11 +95,9 @@ public interface IBattle extends Serializable {
 
   /**
    * Call this method when units are lost in another battle.
-   * This is needed to remove dependent units who have been
-   * lost in another battle.
+   * This is needed to remove dependent units who have been lost in another battle.
    *
    * @param units - referring units
-   * @param bridge - IDelegateBridge
    */
   void unitsLostInPrecedingBattle(Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
 

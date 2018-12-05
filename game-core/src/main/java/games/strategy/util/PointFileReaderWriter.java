@@ -32,8 +32,7 @@ import com.google.common.collect.Streams;
 import com.google.common.primitives.Ints;
 
 /**
- * Utility to read and write files in the form of
- * String -> a list of points, or string-> list of polygons.
+ * Utility to read and write files in the form of String -> a list of points, or string-> list of polygons.
  */
 public final class PointFileReaderWriter {
 

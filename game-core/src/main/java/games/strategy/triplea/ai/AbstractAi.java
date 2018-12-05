@@ -537,8 +537,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
     // generally all AI's will follow the same logic.
     // loop until all battles are fought.
     // rather than try to analyze battles to figure out which must be fought before others
-    // as in the case of a naval battle preceding an amphibious attack,
-    // keep trying to fight every battle
+    // as in the case of a naval battle preceding an amphibious attack, keep trying to fight every battle
     while (true) {
       final BattleListing listing = battleDelegate.getBattles();
       if (listing.isEmpty()) {

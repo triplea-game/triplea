@@ -19,8 +19,8 @@ public class MessageContext {
    * this method will return the node that originated the message.
    *
    * <p>
-   * Will return null if the current thread is not currenlty executing a remote method of an IRemote or
-   * IChannelSubscrobor.
+   * Will return null if the current thread is not currently executing a remote method of an IRemote or
+   * IChannelSubscribor.
    * </p>
    *
    * <p>

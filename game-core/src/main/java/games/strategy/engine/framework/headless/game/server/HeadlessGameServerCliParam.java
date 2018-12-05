@@ -11,7 +11,7 @@ import lombok.Getter;
 
 /**
  * Enum that represents each CLI option that can be provided to a headless server, and for each one
- * relevent configuration options.
+ * relevant configuration options.
  */
 @AllArgsConstructor
 public enum HeadlessGameServerCliParam {

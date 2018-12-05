@@ -14,11 +14,9 @@ import lombok.extern.java.Log;
 
 /**
  * The threads needed for a group of sockets using NIO.
- * One thread reds socket data, one thread writes socket data
- * and one thread deserializes (decodes) packets read by the read
- * thread.
- * serializing (encoding) objects to be written across the network is done
- * by threads calling this object.
+ * One thread reds socket data, one thread writes socket data and one thread deserializes (decodes) packets read by the
+ * read thread.
+ * serializing (encoding) objects to be written across the network is done by threads calling this object.
  */
 @Log
 public class NioSocket implements ErrorReporter {

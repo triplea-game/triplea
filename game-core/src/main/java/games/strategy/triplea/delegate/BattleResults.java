@@ -20,12 +20,10 @@ public class BattleResults extends GameDataComponent {
   private final WhoWon whoWon;
 
   // FYI: do not save the battle in BattleResults. It is both too much memory overhead, and also causes problems with
-  // BattleResults being
-  // saved into BattleRecords
+  // BattleResults being saved into BattleRecords
   /**
    * This battle must have been fought. If fight() was not run on this battle, then the WhoWon will not have been set
-   * yet, which will give
-   * an error with this constructor.
+   * yet, which will give an error with this constructor.
    */
   public BattleResults(final IBattle battle, final GameData data) {
     super(data);
@@ -71,14 +69,13 @@ public class BattleResults extends GameDataComponent {
   }
 
   // These could easily screw up an AI into thinking it has won when it really hasn't. Must make sure we only count
-  // combat units that can
-  // die.
+  // combat units that can die.
   public boolean attackerWon() {
     return !draw() && whoWon == WhoWon.ATTACKER;
   }
 
   public boolean defenderWon() {
-    // if noone is left, it is considered a draw, even if whoWon says defender.
+    // if no one is left, it is considered a draw, even if whoWon says defender.
     return !draw() && whoWon == WhoWon.DEFENDER;
   }
 

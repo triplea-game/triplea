@@ -49,7 +49,6 @@ class ProLogWindow extends JDialog {
   private JTabbedPane logHolderTabbedPane;
   private JTabbedPane tabPaneMain;
 
-  /** Creates new form ProLogWindow. */
   ProLogWindow(final TripleAFrame frame) {
     super(frame);
     initComponents();

@@ -12,7 +12,6 @@ public class NamedAttachable extends DefaultNamed implements Attachable {
 
   private final Map<String, IAttachment> attachments = new HashMap<>();
 
-  /** Creates new NamedAttachable. */
   public NamedAttachable(final String name, final GameData data) {
     super(name, data);
   }

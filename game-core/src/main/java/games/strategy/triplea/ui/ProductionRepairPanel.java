@@ -200,8 +200,7 @@ class ProductionRepairPanel extends JPanel {
   private ResourceCollection getResources() {
     if (bid) {
       // TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple resources can be given?
-      // (actually, bids should
-      // not cover repairing at all...)
+      // (actually, bids should not cover repairing at all...)
       final String propertyName = id.getName() + " bid";
       final int bid = data.getProperties().get(propertyName, 0);
       final ResourceCollection bidCollection = new ResourceCollection(data);

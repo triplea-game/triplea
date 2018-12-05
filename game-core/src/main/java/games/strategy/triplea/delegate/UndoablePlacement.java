@@ -21,9 +21,6 @@ public class UndoablePlacement extends AbstractUndoableMove {
   private final Territory placeTerritory;
   private Territory producerTerritory;
 
-  /**
-   * This constructor initializes an UndoablePlacement objects with the passed parameters.
-   */
   public UndoablePlacement(final CompositeChange change, final Territory producerTerritory,
       final Territory placeTerritory, final Collection<Unit> units) {
     super(change, units);

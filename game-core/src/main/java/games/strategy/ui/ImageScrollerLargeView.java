@@ -332,8 +332,7 @@ public class ImageScrollerLargeView extends JComponent {
   }
 
   /**
-   * Update will not be seen until update is called. Resets the offscreen
-   * image to the original.
+   * Update will not be seen until update is called. Resets the offscreen image to the original.
    */
   public int getXOffset() {
     return model.getX();

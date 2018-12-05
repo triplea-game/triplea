@@ -72,12 +72,6 @@ public abstract class AbstractGame implements IGame {
 
   /**
    * Notifies game step listeners that a game step has changed.
-   *
-   * @param stepName step name.
-   * @param delegateName delegate name
-   * @param player playerID
-   * @param round round number
-   * @param displayName display name
    */
   protected void notifyGameStepListeners(final String stepName, final String delegateName, final PlayerId player,
       final int round, final String displayName) {

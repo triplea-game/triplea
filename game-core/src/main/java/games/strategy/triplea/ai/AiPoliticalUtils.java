@@ -17,10 +17,9 @@ import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.util.CollectionUtils;
 
 /**
- * Basic utility methods to handle basic AI stuff for Politics this AI always
- * tries to get from Neutral to War with state if it is free with everyone this
- * AI will not go through a different Neutral state to reach a War state. (ie go
- * from NAP to Peace to War)
+ * Basic utility methods to handle basic AI stuff for Politics this AI always tries to get from Neutral to War with
+ * state if it is free with everyone this AI will not go through a different Neutral state to reach a War state
+ * (i.e. go from NAP to Peace to War).
  */
 public class AiPoliticalUtils {
   public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerId id,
@@ -80,10 +79,8 @@ public class AiPoliticalUtils {
     return isFree(nextAction) && goesTowardsWar(nextAction, id, data);
   }
 
-  // this code has a rare risk of circular loop actions.. depending on the map
-  // designer
-  // only switches from a Neutral to an War state... won't go through
-  // in-between neutral states
+  // this code has a rare risk of circular loop actions.. depending on the map designer
+  // only switches from a Neutral to an War state... won't go through in-between neutral states
   // TODO have another look at this part.
   private static boolean goesTowardsWar(final PoliticalActionAttachment nextAction, final PlayerId p0,
       final GameData data) {

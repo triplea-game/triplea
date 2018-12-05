@@ -35,8 +35,7 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   /**
-   * Checks if the route contains both territories to pass through the given canal. If route is
-   * null returns true.
+   * Checks if the route contains both territories to pass through the given canal. If route is null returns true.
    */
   public static boolean isCanalOnRoute(final String canalName, final Route route) {
     if (route == null) {

@@ -40,10 +40,8 @@ public class PropertiesUi extends JPanel {
 
   private void init() {
     setLayout(new GridBagLayout());
-    // Create a blank label to use as a vertical fill so that the
-    // label/item pairs are aligned to the top of the panel and are not
-    // grouped in the centre if the parent component is taller than
-    // the preferred size of the panel.
+    // Create a blank label to use as a vertical fill so that the label/item pairs are aligned to the top of the panel
+    // and are not grouped in the center if the parent component is taller than the preferred size of the panel.
     final GridBagConstraints constraints = new GridBagConstraints();
     constraints.gridx = 0;
     constraints.gridy = 99;

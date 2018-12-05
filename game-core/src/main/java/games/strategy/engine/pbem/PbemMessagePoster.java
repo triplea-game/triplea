@@ -23,8 +23,7 @@ import lombok.extern.java.Log;
  * This class is responsible for posting turn summary and email at the end of each round in a PBEM game.
  * A new instance is created at end of turn, based on the Email and a forum poster stored in the game data.
  * The needs to be serialized since it is invoked through the IAbstractEndTurnDelegate which require all objects to be
- * serializable
- * although the PBEM games will always be local
+ * serializable although the PBEM games will always be local
  */
 @Log
 public class PbemMessagePoster implements Serializable {
@@ -91,8 +90,7 @@ public class PbemMessagePoster implements Serializable {
   /**
    * Post summary to form and/or email, and writes the action performed to the history writer.
    *
-   * @param historyWriter the history writer (which has no effect since save game has already be generated...) // todo
-   *        (kg)
+   * @param historyWriter the history writer (which has no effect since save game has already be generated) // todo (kg)
    * @return true if all posts were successful
    */
   public boolean post(final IDelegateHistoryWriter historyWriter, final String title, final boolean includeSaveGame) {

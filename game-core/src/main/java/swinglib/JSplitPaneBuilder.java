@@ -33,7 +33,6 @@ import com.google.common.base.Preconditions;
  *      .build();
  * </code>
  * </pre>
- *
  */
 public final class JSplitPaneBuilder {
 

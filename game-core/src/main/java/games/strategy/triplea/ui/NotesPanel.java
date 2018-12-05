@@ -12,11 +12,9 @@ class NotesPanel extends JPanel {
   protected final JEditorPane gameNotesPane;
 
   // we now require passing a JEditorPane containing the notes in it, because we do not want to have multiple copies of
-  // it in memory for all
-  // the different ways the user can access the game notes
+  // it in memory for all the different ways the user can access the game notes
   // so instead we keep the main copy in the TripleAMenuBar, and then give it to the notes tab. this prevents out of
-  // memory errors for
-  // maps with large images in their games notes.
+  // memory errors for maps with large images in their games notes.
   NotesPanel(final JEditorPane gameNotesPane) {
     this.gameNotesPane = gameNotesPane;
     initLayout();

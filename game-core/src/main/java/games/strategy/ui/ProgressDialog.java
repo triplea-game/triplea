@@ -25,7 +25,7 @@ public final class ProgressDialog extends JDialog {
    *
    * @param owner The {@code Frame} from which the dialog is displayed or {@code null} to use a shared, hidden frame as
    *        the owner of the dialog.
-   * @param message The progress message; must not be {@code null}.
+   * @param message The progress message.
    */
   public ProgressDialog(final Frame owner, final String message) {
     super(owner, true);

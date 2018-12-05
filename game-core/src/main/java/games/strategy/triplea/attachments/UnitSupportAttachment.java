@@ -373,8 +373,7 @@ public class UnitSupportAttachment extends DefaultAttachment {
       }
     }
     // if first, it means we do not have any support attachments created yet. so create a temporary one on this unit
-    // just to hold the target
-    // info.
+    // just to hold the target info.
     if (first) {
       addRule(type, data, first);
     }

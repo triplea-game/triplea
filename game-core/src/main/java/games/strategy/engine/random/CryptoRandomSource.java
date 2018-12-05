@@ -13,8 +13,7 @@ import games.strategy.engine.vault.Vault;
 import games.strategy.engine.vault.VaultId;
 
 /**
- * A random source that generates numbers using a secure algorithm shared
- * between two players.
+ * A random source that generates numbers using a secure algorithm shared between two players.
  * Code originally contributed by Ben Giddings.
  */
 public class CryptoRandomSource implements IRandomSource {
@@ -71,7 +70,7 @@ public class CryptoRandomSource implements IRandomSource {
   }
 
   // the remote players who involved in rolling the dice
-  // dice are rolled securly between us and her
+  // dice are rolled securely between us and her
   private final PlayerId remotePlayer;
   private final IGame game;
 
@@ -81,8 +80,7 @@ public class CryptoRandomSource implements IRandomSource {
   }
 
   /**
-   * All delegates should use random data that comes from both players so that
-   * neither player cheats.
+   * All delegates should use random data that comes from both players so that neither player cheats.
    */
   @Override
   public int getRandom(final int max, final String annotation) {

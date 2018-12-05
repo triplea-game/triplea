@@ -62,8 +62,7 @@ public class ImageScrollerSmallView extends JComponent {
         }
         lastUpdate = now;
         final Rectangle bounds = (Rectangle) getBounds().clone();
-        // if the mouse is a little off the screen, allow it to still scroll
-        // the screen
+        // if the mouse is a little off the screen, allow it to still scroll the screen
         bounds.grow(30, 0);
         if (!bounds.contains(e.getPoint())) {
           return;

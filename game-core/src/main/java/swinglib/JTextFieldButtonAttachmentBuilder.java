@@ -54,16 +54,13 @@ public final class JTextFieldButtonAttachmentBuilder {
         .build();
   }
 
-
   /**
-   * Adds a JButtonn component with title and action that will be fired
-   * when the button is clicked. Input of the consumer function is the value
-   * of the associated JTextField.
+   * Adds a JButtonn component with title and action that will be fired when the button is clicked. Input of the
+   * consumer function is the value of the associated JTextField.
    */
   public JTextFieldButtonAttachmentBuilder withButton(final String buttonText, final Consumer<String> buttonAction) {
     this.actionButtonText = buttonText;
     this.actionButtonAction = buttonAction;
     return this;
   }
-
 }

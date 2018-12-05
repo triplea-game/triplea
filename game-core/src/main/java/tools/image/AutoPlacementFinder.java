@@ -95,7 +95,6 @@ public final class AutoPlacementFinder {
   }
 
   /**
-   * calculate()
    * Will calculate the placements on the map automatically.
    */
   private void calculate() {

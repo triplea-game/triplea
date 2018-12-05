@@ -124,8 +124,7 @@ class Decoder {
       to = null;
     } else {
       if (objectInput.read() == 1) {
-        // this may be null if we
-        // have not yet fully joined the network
+        // this may be null if we have not yet fully joined the network
         to = nioSocket.getLocalNode();
       } else {
         to = new Node();
@@ -170,11 +169,9 @@ class Decoder {
   }
 
   /**
-   * Most messages we pass will be one of the types below
-   * since each of these is externalizable, we can
-   * reduce network traffic considerably by skipping the
-   * writing of the full identifiers, and simply write a single
-   * byte to show the type.
+   * Most messages we pass will be one of the types below.
+   * Since each of these is externalizable, we can reduce network traffic considerably by skipping the writing of the
+   * full identifiers, and simply write a single byte to show the type.
    */
   static byte getType(final Object msg) {
     if (msg instanceof HubInvoke) {

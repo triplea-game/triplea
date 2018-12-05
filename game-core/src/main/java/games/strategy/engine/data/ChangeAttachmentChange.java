@@ -25,7 +25,7 @@ public class ChangeAttachmentChange extends Change {
   /**
    * Initializes a new instance of the ChangeAttachmentChange class.
    *
-   * @param attachment An attachment object which we will update via reflexion
+   * @param attachment An attachment object which we will update via reflection.
    * @param newValue The new value for the property
    * @param property The property by String name.
    */
@@ -41,8 +41,7 @@ public class ChangeAttachmentChange extends Change {
 
   /**
    * You don't want to clear the variable first unless you are setting some variable where the setting method is
-   * actually adding things to a
-   * list rather than overwriting.
+   * actually adding things to a list rather than overwriting.
    */
   public ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property,
       final boolean resetFirst) {
@@ -58,8 +57,7 @@ public class ChangeAttachmentChange extends Change {
 
   /**
    * You don't want to clear the variable first unless you are setting some variable where the setting method is
-   * actually adding things to a
-   * list rather than overwriting.
+   * actually adding things to a list rather than overwriting.
    */
   public ChangeAttachmentChange(final Attachable attachTo, final String attachmentName, final Object newValue,
       final Object oldValue, final String property, final boolean resetFirst) {

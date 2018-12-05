@@ -89,7 +89,6 @@ public class MovePanel extends AbstractMovePanel {
   private String displayText = "Combat Move";
   private MoveType moveType = MoveType.DEFAULT;
 
-  /** Creates new MovePanel. */
   public MovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
     undoableMovesPanel = new UndoableMovesPanel(this);
@@ -170,8 +169,7 @@ public class MovePanel extends AbstractMovePanel {
    * Return the units that are to be unloaded for this route.
    * If needed will ask the user what transports to unload.
    * This is needed because the user needs to be able to select what transports to unload
-   * in the case where some transports have different movement, different
-   * units etc
+   * in the case where some transports have different movement, different units etc
    */
   private Collection<Unit> getUnitsToUnload(final Route route, final Collection<Unit> unitsToUnload) {
     final Collection<Unit> allUnits = getFirstSelectedTerritory().getUnits().getUnits();
@@ -451,8 +449,7 @@ public class MovePanel extends AbstractMovePanel {
           Matches.unitIsTransport().and(Matches.alliedUnit(getCurrentPlayer(), getData())));
     }
     List<Unit> best = new ArrayList<>(units);
-    // if the player selects a land unit and other units
-    // when the
+    // if the player selects a land unit and other units when the
     // only consider the non land units
     if (route.getStart().isWater() && route.getEnd() != null && route.getEnd().isWater() && !route.isLoad()) {
       best = CollectionUtils.getMatches(best, Matches.unitIsLand().negate());
@@ -608,8 +605,7 @@ public class MovePanel extends AbstractMovePanel {
     final Collection<Unit> capableTransports = new ArrayList<>(candidateTransports);
 
     // only allow incapable transports for updateUnitsThatCanMoveOnRoute
-    // so that we can have a nice UI error shown if these transports
-    // are selected, since it may not be obvious
+    // so that we can have a nice UI error shown if these transports are selected, since it may not be obvious
     final Collection<Unit> incapableTransports =
         CollectionUtils.getMatches(capableTransports, Matches.transportCannotUnload(route.getEnd()));
     capableTransports.removeAll(incapableTransports);
@@ -641,8 +637,7 @@ public class MovePanel extends AbstractMovePanel {
     availableUnits.removeAll(unitsToAlliedTransports.keySet());
 
     // only allow incapable transports for updateUnitsThatCanMoveOnRoute
-    // so that we can have a nice UI error shown if these transports
-    // are selected, since it may not be obvious
+    // so that we can have a nice UI error shown if these transports are selected, since it may not be obvious
     if (getSelectedEndpointTerritory() == null) {
       final Map<Unit, Unit> unitsToIncapableTransports =
           TransportUtils.mapTransportsToLoadUsingMinTransports(availableUnits, incapableTransports);
@@ -1109,8 +1104,7 @@ public class MovePanel extends AbstractMovePanel {
         for (final Unit unit : units) {
           maxMap.add(unit.getType(), 1);
         }
-        // this match will make sure we can't select more units
-        // of a specific type then we had originally selected
+        // this match will make sure we can't select more units of a specific type then we had originally selected
         final Predicate<Collection<Unit>> unitTypeCountMatch = unitsToCheck -> {
           final IntegerMap<UnitType> currentMap = new IntegerMap<>();
           for (final Unit unit : unitsToCheck) {
@@ -1136,8 +1130,7 @@ public class MovePanel extends AbstractMovePanel {
   };
 
   /**
-   * Allow the user to select specific units, if for example some units
-   * have different movement
+   * Allow the user to select specific units, if for example some units have different movement.
    * Units are sorted in preferred order, so units represents the default selections.
    */
   private boolean allowSpecificUnitSelection(
@@ -1160,9 +1153,8 @@ public class MovePanel extends AbstractMovePanel {
           if (category2.getMovement() == 0) {
             continue;
           }
-          // if we find that two categories are compatable, and some units
-          // are selected from one category, but not the other
-          // then the user has to refine his selection
+          // if we find that two categories are compatible, and some units are selected from one category, but not the
+          // other then the user has to refine his selection
           if (!ObjectUtils.referenceEquals(category1, category2)
               && Objects.equals(category1.getType(), category2.getType())
               && !category1.equals(category2)) {
@@ -1256,8 +1248,7 @@ public class MovePanel extends AbstractMovePanel {
           try {
             updateUnitsThatCanMoveOnRoute(selectedUnits, route);
             // now, check if there is a better route for just the units that can get there (we check only air since that
-            // is the only one for
-            // which the route may actually change much)
+            // is the only one for which the route may actually change much)
             if (unitsThatCanMoveOnRoute.size() < selectedUnits.size() && (unitsThatCanMoveOnRoute.size() == 0
                 || unitsThatCanMoveOnRoute.stream().allMatch(Matches.unitIsAir()))) {
               final Collection<Unit> airUnits = CollectionUtils.getMatches(selectedUnits, Matches.unitIsAir());

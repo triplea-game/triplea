@@ -150,10 +150,9 @@ public class TerritoryNameDrawable implements IDrawable {
   }
 
   /**
-   * Find the best rectangle inside the territory to place the name in. Finds the rectangle
-   * that can fit the name, that is the closest to the vertical center, and has a large width at
-   * that location. If there isn't any rectangles that can fit the name then default back to the
-   * bounding rectangle.
+   * Find the best rectangle inside the territory to place the name in. Finds the rectangle that can fit the name, that
+   * is the closest to the vertical center, and has a large width at that location. If there isn't any rectangles that
+   * can fit the name then default back to the bounding rectangle.
    */
   private static Rectangle getBestTerritoryNameRect(final MapData mapData, final Territory territory,
       final FontMetrics fontMetrics) {

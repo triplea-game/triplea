@@ -113,7 +113,7 @@ public final class DownloadUtils {
   }
 
   /**
-   * Creaetes a temp file, downloads the contents of a target uri to that file, returns the file.
+   * Creates a temp file, downloads the contents of a target uri to that file, returns the file.
    *
    * @param uri The URI whose contents will be downloaded
    */
@@ -136,7 +136,6 @@ public final class DownloadUtils {
   public static class FileDownloadResult {
     public final boolean wasSuccess;
     public final File downloadedFile;
-
 
     public static final FileDownloadResult FAILURE = new FileDownloadResult();
 
@@ -174,8 +173,6 @@ public final class DownloadUtils {
       downloadToFile(uri, os, client);
     }
   }
-
-
 
   @VisibleForTesting
   static void downloadToFile(

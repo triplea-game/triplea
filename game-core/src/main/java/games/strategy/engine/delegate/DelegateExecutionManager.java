@@ -18,14 +18,12 @@ import games.strategy.triplea.util.WrappedInvocationHandler;
  *
  * <p>
  * When saving a game, we want to ensure that no delegate is executing, otherwise the delegate could modify the state of
- * the game while the
- * game is being saved, resulting in an invalid save game.
+ * the game while the game is being saved, resulting in an invalid save game.
  * </p>
  *
  * <p>
- * This class effectivly keeps a count of how many threads are executing in the delegates, and provides a way of
- * blocking further threads
- * from starting execution in a delegate.
+ * This class effectively keeps a count of how many threads are executing in the delegates, and provides a way of
+ * blocking further threads from starting execution in a delegate.
  * </p>
  */
 public class DelegateExecutionManager {
@@ -47,7 +45,7 @@ public class DelegateExecutionManager {
    * a call to resumeDelegateExecution is made.
    *
    * <p>
-   * When delegateExecution is blocked, it also blocks subsequent cals to blockDelegateExecution(...)
+   * When delegateExecution is blocked, it also blocks subsequent calls to blockDelegateExecution(...)
    * </p>
    *
    * <p>

@@ -177,15 +177,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge bridge) {
     setupUnitsInSameTerritoryBattles(battleTracker, bridge);
     setupTerritoriesAbandonedToTheEnemy(battleTracker, bridge);
-    // these are "blitzed" and "conquered" territories without a fight, without a pending
-    // battle
+    // these are "blitzed" and "conquered" territories without a fight, without a pending battle
     battleTracker.clearFinishedBattles(bridge);
     resetMaxScrambleCount(bridge);
   }
 
   private static void clearEmptyAirBattleAttacks(final BattleTracker battleTracker, final IDelegateBridge bridge) {
-    // these are air battle and air raids where there is no defender, probably because no
-    // air is in range to defend
+    // these are air battle and air raids where there is no defender, probably because no air is in range to defend
     battleTracker.clearEmptyAirBattleAttacks(bridge);
   }
 
@@ -384,10 +382,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   /**
-   * Setup the battles where the battle occurs because units are in the
-   * same territory. This happens when subs emerge (after being submerged), and
-   * when naval units are placed in enemy occupied sea zones, and also
-   * when political relationships change and potentially leave units in now-hostile territories.
+   * Setup the battles where the battle occurs because units are in the same territory. This happens when subs emerge
+   * (after being submerged), and when naval units are placed in enemy occupied sea zones, and also when political
+   * relationships change and potentially leave units in now-hostile territories.
    */
   private static void setupUnitsInSameTerritoryBattles(final BattleTracker battleTracker,
       final IDelegateBridge bridge) {
@@ -433,8 +430,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       IBattle battle = battleTracker.getPendingBattle(territory, false, BattleType.NORMAL);
       if (battle == null) {
         // we must land any paratroopers here, but only if there is not going to be a battle (cus battles land them
-        // separately, after aa
-        // fires)
+        // separately, after aa fires)
         if (enemyUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
           landParatroopers(player, territory, bridge);
         }
@@ -828,8 +824,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           attackingUnits.removeAll(bombing.getAttackingUnits());
         }
         // no need to create a "bombing" battle or air battle, because those are set up automatically whenever the map
-        // allows scrambling
-        // into an air battle / air raid
+        // allows scrambling into an air battle / air raid
         if (attackingUnits.isEmpty()) {
           continue;
         }
@@ -893,8 +888,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
           if (attackingUnits.stream().anyMatch(Matches.unitIsAir().negate())) {
             // TODO: for now, we will hack and say that the attackers came from Everywhere, and hope the user will
-            // choose the correct place
-            // to retreat to! (TODO: Fix this)
+            // choose the correct place to retreat to! (TODO: Fix this)
             final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<>();
             final Collection<Territory> neighbors = data.getMap().getNeighbors(to,
                 (Matches.territoryIsLand().test(to) ? Matches.territoryIsLand() : Matches.territoryIsWater()));
@@ -1174,13 +1168,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    * been designated.
    * The resources are designated in PlayerAttachment, and hold information like the attack power of the resource.
    * KamikazeSuicideAttacks are done in any territory that is a kamikazeZone, and the attacks are done by the original
-   * owner of that
-   * territory.
+   * owner of that territory.
    * The user has the option not to do any attacks, and they make target any number of units with any number of resource
    * tokens.
    * The units are then attacked individually by each resource token (meaning that casualties do not get selected
-   * because the attacks are
-   * targeted).
+   * because the attacks are targeted).
    * The enemies of current player should decide all their attacks before the attacks are rolled.
    */
   private void doKamikazeSuicideAttacks() {

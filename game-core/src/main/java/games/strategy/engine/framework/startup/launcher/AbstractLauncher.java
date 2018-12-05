@@ -9,8 +9,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 
-
-
 /**
  * Abstract class for launching a game.
  */

@@ -108,8 +108,7 @@ class DiceChooser extends JPanel {
     final JScrollPane scroll = new JScrollPane(dicePanel);
     scroll.setBorder(null);
     scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-    // we're adding to a box layout, so to prevent the component from
-    // grabbing extra space, set the max height.
+    // we're adding to a box layout, so to prevent the component from grabbing extra space, set the max height.
     // allow room for a dice and a scrollbar
     scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, DiceImageFactory.DIE_HEIGHT + 17));
     scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, DiceImageFactory.DIE_HEIGHT + 17));

@@ -2,12 +2,10 @@ package games.strategy.engine.auto.health.check;
 
 import java.util.Optional;
 
-
 /**
  * Class that performs a 'check' of some sort (executes an arbitrary Runnable).
  * If the runnable executes without exception then the check has passed, otherwise
  * a failure is marked and we remember the exception.
- *
  */
 public class SystemCheck {
   private final boolean result;
@@ -53,5 +51,4 @@ public class SystemCheck {
   public Optional<Exception> getException() {
     return exception;
   }
-
 }

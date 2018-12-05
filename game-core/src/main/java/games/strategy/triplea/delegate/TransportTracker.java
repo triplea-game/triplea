@@ -35,22 +35,17 @@ public class TransportTracker {
     }
   }
 
-  /**
-   * Constructor.
-   */
   private TransportTracker() {}
 
   /**
-   * Returns the collection of units that the given transport is transporting.
-   * Could be null.
+   * Returns the collection of units that the given transport is transporting. Could be null.
    */
   public static Collection<Unit> transporting(final Unit transport) {
     return new ArrayList<>(((TripleAUnit) transport).getTransporting());
   }
 
   /**
-   * Returns the collection of units that the given transport is transporting.
-   * Could be null.
+   * Returns the collection of units that the given transport is transporting. Could be null.
    */
   public static Collection<Unit> transporting(final Unit transport, final Collection<Unit> transportedUnitsPossible) {
     return new ArrayList<>(((TripleAUnit) transport).getTransporting(transportedUnitsPossible));
@@ -94,8 +89,7 @@ public class TransportTracker {
   }
 
   /**
-   * Returns the collection of units that the given transport has unloaded
-   * this turn. Could be empty.
+   * Returns the collection of units that the given transport has unloaded this turn. Could be empty.
    */
   public static Collection<Unit> unloaded(final Unit transport) {
     return ((TripleAUnit) transport).getUnloaded();
@@ -136,8 +130,7 @@ public class TransportTracker {
     }
     if (!dependentBattle) {
       // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling creates a battle,
-      // there is no longer any
-      // way to have the units removed if those transports die.
+      // there is no longer any way to have the units removed if those transports die.
       change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
     }
     change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, TripleAUnit.UNLOADED));
@@ -164,13 +157,11 @@ public class TransportTracker {
     }
     if (!dependentBattle) {
       // TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling creates a battle,
-      // there is no longer any
-      // way to have the units removed if those transports die.
+      // there is no longer any way to have the units removed if those transports die.
       change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
     }
     // dependencies for battle calc and casualty selection include unloaded. therefore even if we have unloaded this
-    // unit, it will die if
-    // air transport dies IF we have the unloaded flat set. so don't set it.
+    // unit, it will die if air transport dies IF we have the unloaded flat set. so don't set it.
     // TODO: fix this bullshit by re-writing entire transportation engine
     // change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, TripleAUnit.UNLOADED));
     return change;
@@ -211,13 +202,9 @@ public class TransportTracker {
   static Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(final Collection<Unit> units) {
     final Collection<Unit> loadedUnits = new ArrayList<>();
     for (final Unit u : units) {
-      // a unit loaded onto an allied transport
-      // cannot be unloaded in the same turn, so
-      // if we check both wasLoadedThisTurn and
-      // the transport that transports us, we can tell if
-      // we were loaded onto an allied transport
-      // if we are no longer being transported,
-      // then we must have been transported on our own transport
+      // a unit loaded onto an allied transport cannot be unloaded in the same turn, so if we check both
+      // wasLoadedThisTurn and the transport that transports us, we can tell if we were loaded onto an allied transport
+      // if we are no longer being transported, then we must have been transported on our own transport
       final TripleAUnit taUnit = (TripleAUnit) u;
       // an allied transport if the owner of the transport is not the owner of the unit
       if (taUnit.getWasLoadedThisTurn() && taUnit.getTransportedBy() != null
@@ -250,8 +237,7 @@ public class TransportTracker {
     return Properties.getTransportUnloadRestricted(data);
   }
 
-  // In some versions, a transport can never unload into
-  // multiple territories in a given turn.
+  // In some versions, a transport can never unload into multiple territories in a given turn.
   // In WW2V1 a transport can unload to multiple territories in
   // non-combat phase, provided they are both adjacent to the sea zone.
   static boolean isTransportUnloadRestrictedToAnotherTerritory(final Unit transport, final Territory territory) {
@@ -279,11 +265,10 @@ public class TransportTracker {
     return false;
   }
 
-  // This method should be called after isTransportUnloadRestrictedToAnotherTerritory()
-  // returns false, in order to populate the error message.
-  // However, we only need to call this method to determine why we can't
-  // unload an additional unit. Since transports only hold up to two units,
-  // we only need to return one territory, not multiple territories.
+  // This method should be called after isTransportUnloadRestrictedToAnotherTerritory() returns false, in order to
+  // populate the error message. However, we only need to call this method to determine why we can't unload an
+  // additional unit. Since transports only hold up to two units, we only need to return one territory, not multiple
+  // territories.
   static Territory getTerritoryTransportHasUnloadedTo(final Unit transport) {
     final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
     if (unloaded.isEmpty()) {

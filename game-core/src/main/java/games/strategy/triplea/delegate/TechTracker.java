@@ -35,8 +35,7 @@ public final class TechTracker {
 
   /**
    * Returns what tech categories are no longer available for this player, because all techs in them have been
-   * successfully researched
-   * already.
+   * successfully researched already.
    */
   public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(final PlayerId id) {
     final Collection<TechnologyFrontier> technologyFrontiers = new ArrayList<>();

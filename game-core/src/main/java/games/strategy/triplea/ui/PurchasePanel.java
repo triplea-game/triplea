@@ -47,7 +47,6 @@ public class PurchasePanel extends ActionPanel {
   private static final String BUY = "Buy...";
   private static final String CHANGE = "Change...";
 
-  /** Creates new PurchasePanel. */
   public PurchasePanel(final GameData data, final MapPanel map) {
     super(data, map);
     purchasedPreviousRoundsUnits = new SimpleUnitPanel(map.getUiContext());

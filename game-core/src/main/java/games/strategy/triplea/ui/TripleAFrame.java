@@ -638,8 +638,7 @@ public final class TripleAFrame extends JFrame {
     } else {
       game.getMessenger().shutDown();
       ((ClientGame) game).shutDown();
-      // an ugly hack, we need a better
-      // way to get the main frame
+      // an ugly hack, we need a better way to get the main frame
       new Thread(GameRunner::clientLeftGame).start();
     }
   }
@@ -1582,14 +1581,12 @@ public final class TripleAFrame extends JFrame {
       currentStepPlayer = player;
     }
     resourceBar.gameDataChanged(null);
-    // if the game control has passed to someone else and we are not just showing the map
-    // show the history
+    // if the game control has passed to someone else and we are not just showing the map, show the history
     if (player != null && !player.isNull()) {
       if (isPlaying) {
         if (inHistory) {
           requiredTurnSeries.put(player, true);
-          // if the game control is with us
-          // show the current game
+          // if the game control is with us, show the current game
           showGame();
         }
       } else {
@@ -1802,8 +1799,7 @@ public final class TripleAFrame extends JFrame {
     final GameData clonedGameData;
     data.acquireReadLock();
     try {
-      // we want to use a clone of the data, so we can make changes to it
-      // as we walk up and down the history
+      // we want to use a clone of the data, so we can make changes to it as we walk up and down the history
       clonedGameData = GameDataUtils.cloneGameData(data);
       if (clonedGameData == null) {
         return;

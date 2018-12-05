@@ -45,8 +45,7 @@ public class Die implements Serializable {
   }
 
   // compress to an int
-  // we write a lot of dice over the network and to the saved
-  // game, so we want to make this fairly efficient
+  // we write a lot of dice over the network and to the saved game, so we want to make this fairly efficient
   int getCompressedValue() {
     if (value > 255 || rolledAt > 255) {
       throw new IllegalStateException("too big to serialize");

@@ -7,7 +7,7 @@ import games.strategy.net.INode;
  *
  * <p>
  * A channel can be created such that all channel subscribers must implement the same
- * interface. Channel subscribors can be on multiple machines.
+ * interface. Channel subscribers can be on multiple machines.
  * </p>
  *
  * <p>
@@ -58,17 +58,14 @@ import games.strategy.net.INode;
  * </p>
  *
  * <p>
- * There will only be one thread calling methods in a channel at one time. Methods will be called on subscribors in the
- * order that they are
- * called on broadcasters. This means that if you block the current thread during a client invocation, no further
- * methods can be called on
- * that channel.
+ * There will only be one thread calling methods in a channel at one time. Methods will be called on subscribers in the
+ * order that they are called on broadcasters. This means that if you block the current thread during a client
+ * invocation, no further methods can be called on that channel.
  * </p>
  */
 public interface IChannelMessenger {
   /**
-   * Get a reference such that methods called on it will be multicast
-   * to all subscribers of the channel.
+   * Get a reference such that methods called on it will be multicast to all subscribers of the channel.
    */
   IChannelSubscribor getChannelBroadcastor(RemoteName channelName);
 

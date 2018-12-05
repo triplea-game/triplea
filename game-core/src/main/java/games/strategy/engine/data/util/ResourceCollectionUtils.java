@@ -16,17 +16,15 @@ import games.strategy.triplea.Constants;
  * A collection of methods that operate on or return resource collections.
  */
 public final class ResourceCollectionUtils {
-  private ResourceCollectionUtils() {
-    // do nothing
-  }
+  private ResourceCollectionUtils() {}
 
   /**
    * Returns a copy of the specified resource collection filtered to exclude the blacklisted resources.
    *
-   * @param unfiltered The resource collection to filter; must not be {@code null}.
-   * @param resources The blacklisted resources to exclude; must not be {@code null}.
+   * @param unfiltered The resource collection to filter.
+   * @param resources The blacklisted resources to exclude.
    *
-   * @return The filtered resource collection; never {@code null}.
+   * @return The filtered resource collection.
    *
    * @throws IllegalArgumentException If {@code resources} contains a {@code null} element.
    */
@@ -44,10 +42,10 @@ public final class ResourceCollectionUtils {
    * Returns a copy of the specified resource collection filtered to exclude the blacklisted resources with the given
    * names.
    *
-   * @param unfiltered The resource collection to filter; must not be {@code null}.
-   * @param names The names of the blacklisted resources to exclude; must not be {@code null}.
+   * @param unfiltered The resource collection to filter.
+   * @param names The names of the blacklisted resources to exclude.
    *
-   * @return The filtered resource collection; never {@code null}.
+   * @return The filtered resource collection.
    *
    * @throws IllegalArgumentException If {@code names} contains a {@code null} element.
    */
@@ -76,9 +74,9 @@ public final class ResourceCollectionUtils {
    * Returns a copy of the specified resource collection filtered to include only resources that can be used to make
    * production purchases.
    *
-   * @param unfiltered The resource collection to filter; must not be {@code null}.
+   * @param unfiltered The resource collection to filter.
    *
-   * @return The filtered resource collection; never {@code null}.
+   * @return The filtered resource collection.
    */
   public static ResourceCollection getProductionResources(final ResourceCollection unfiltered) {
     checkNotNull(unfiltered);

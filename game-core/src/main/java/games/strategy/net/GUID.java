@@ -19,8 +19,7 @@ public final class GUID implements Externalizable {
   // this prefix is unique across vms
   private static VMID vmPrefix = new VMID();
   // the local identifier
-  // this coupled with the unique vm prefix comprise
-  // our unique id
+  // this coupled with the unique vm prefix comprise our unique id
   private static AtomicInteger lastId = new AtomicInteger();
   private int id;
   private VMID prefix;

@@ -27,8 +27,7 @@ abstract class AbstractBattle implements IBattle {
   final GUID battleId = new GUID();
   /**
    * In headless mode we should NOT access any Delegates. In headless mode we are just being used to calculate results
-   * for an odds
-   * calculator so we can skip some steps for efficiency.
+   * for an odds calculator so we can skip some steps for efficiency.
    */
   boolean headless = false;
   final Territory battleSite;

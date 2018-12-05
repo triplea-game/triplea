@@ -71,20 +71,15 @@ public class TechAttachment extends DefaultAttachment {
    * Initializes a new instance of the TechAttachment class.
    *
    * @deprecated Since many maps do not include a tech attachment for each player (and no maps include tech attachments
-   *             for the Null
-   *             Player),
-   *             we must ensure a default tech attachment is available for all these players. It is preferred to use the
-   *             full
-   *             constructor. Do not delete
-   *             this.
+   *             for the Null Player), we must ensure a default tech attachment is available for all these players. It
+   *             is preferred to use the full constructor. Do not delete this.
    *             TODO: create tech attachments all players that don't have one, as the map is initialized.
    */
   @Deprecated
   public TechAttachment() {
     super(Constants.TECH_ATTACHMENT_NAME, null, null);
     // TODO: not having game data, and not having generic techs, causes problems. Fix by creating real tech attachments
-    // for all players who
-    // are missing them, at the beginning of the game.
+    // for all players who are missing them, at the beginning of the game.
   }
 
   // setters

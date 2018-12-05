@@ -23,8 +23,7 @@ public interface ILobbyGameController extends IRemote {
 
   /**
    * Test if the server can connect to the game at this address. This is used to see if the client address is network
-   * accessible
-   * (this will not be true if the client is behind a nat or firewall that is not properly configured)
+   * accessible (this will not be true if the client is behind a nat or firewall that is not properly configured).
    *
    * <p>
    * This method may only be called by the node that is hosting this game.

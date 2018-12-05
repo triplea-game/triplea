@@ -109,14 +109,12 @@ public final class LobbyServerPropertiesFetcher {
   /**
    * Downloads the lobby properties file from the specified URL and returns the parsed properties.
    *
-   * @param lobbyPropFileUrl The taret URL to scrape for a lobby properties file.
+   * @param lobbyPropFileUrl The target URL to scrape for a lobby properties file.
    * @param currentVersion Our current engine version. The properties file can contain
    *        multiple listings for different versions.
-   * @return Parsed LobbyServerProperties object from the data we found at the remote
-   *         url.
+   * @return Parsed LobbyServerProperties object from the data we found at the remote url.
    * @throws IOException Thrown if there is a failure doing the remote network fetching
-   *         or IO problem once we downloaded the remote file to a temp file and are then
-   *         reading it..
+   *         or IO problem once we downloaded the remote file to a temp file and are then reading it.
    */
   @VisibleForTesting
   LobbyServerProperties downloadAndParseRemoteFile(

@@ -571,8 +571,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     map = new IntegerMap<>();
-    // only 2 originially, would have to move the 2 we just unloaded
-    // as well
+    // only 2 originally, would have to move the 2 we just unloaded as well
     map.put(infantry, 4);
     route = new Route();
     route.setStart(equatorialAfrica);
@@ -661,9 +660,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(infantry, 2);
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
-    // move the other transport south, should
-    // figure out that only 1 can move
-    // and will choose that one
+    // move the other transport south, should figure out that only 1 can move and will choose that one
     route = new Route();
     route.setStart(congoSeaZone);
     route.add(angolaSeaZone);
@@ -1317,8 +1314,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   @Test
   public void testAirDifferingRouts() {
     // move one air unit 3 spaces, and a second 2,
-    // this was causing an exception when the validator tried to find if they
-    // could both land
+    // this was causing an exception when the validator tried to find if they could both land
     // EW: I don't know why this test is failing or what it is supposed to do...
     Route route = new Route();
     route.setStart(congoSeaZone);

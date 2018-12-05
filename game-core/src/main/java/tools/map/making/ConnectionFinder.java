@@ -220,7 +220,7 @@ public final class ConnectionFinder {
    *
    * @param waterString a substring contained in a TerritoryName to define a Sea Zone or a regex expression that
    *        indicates that a territory is water
-   * @return StringBuffer containing XML representing these connections
+   * @return StringBuilder containing XML representing these connections
    */
   private static StringBuilder doTerritoryDefinitions(final List<String> allTerritoryNames, final String waterString) {
     // sort for pretty xml's
@@ -246,7 +246,7 @@ public final class ConnectionFinder {
    * Converts a map of connections to XML formatted text with the connections.
    *
    * @param connections a map of connections between Territories
-   * @return a StringBuffer containing XML representing these connections
+   * @return a StringBuilder containing XML representing these connections
    */
   private static StringBuilder convertToXml(final Map<String, Collection<String>> connections) {
     final StringBuilder output = new StringBuilder();
@@ -293,8 +293,7 @@ public final class ConnectionFinder {
 
   /**
    * from: eu.hansolo.steelseries.tools.Scaler.java
-   * Returns a Point2D object that represents the center of mass of the given point array which represents a
-   * polygon.
+   * Returns a Point2D object that represents the center of mass of the given point array which represents a polygon.
    *
    * @return a Point2D object that represents the center of mass of the given point array
    */

@@ -123,11 +123,9 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     final AggregateResults aggregateResults = new AggregateResults(count);
     final BattleTracker battleTracker = new BattleTracker();
     // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
-    // the AI and a human
-    // are both using the calc)
+    // the AI and a human are both using the calc)
     // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a
-    // per-thread, per-calc
-    // caching
+    // per-thread, per-calc caching
     final List<Unit> attackerOrderOfLosses =
         OrderOfLossesInputPanel.getUnitListByOrderOfLoss(this.attackerOrderOfLosses, attackingUnits, gameData);
     final List<Unit> defenderOrderOfLosses =

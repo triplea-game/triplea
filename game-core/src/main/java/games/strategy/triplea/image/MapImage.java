@@ -218,7 +218,6 @@ public class MapImage {
     pref.remove(property);
   }
 
-  /** Creates a new instance of MapImage. */
   public MapImage() {}
 
   public BufferedImage getSmallMapImage() {

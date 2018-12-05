@@ -3,8 +3,7 @@ package games.strategy.ui;
 import java.util.Observable;
 
 /**
- * Model for an ImageScroller. Generally one large view and one small view will be
- * connected to the same model.
+ * Model for an ImageScroller. Generally one large view and one small view will be connected to the same model.
  *
  * <p>
  * notifies its observers when changes occur.
@@ -71,8 +70,7 @@ public class ImageScrollModel extends Observable {
         y += maxHeight;
       }
     }
-    // if the box is bigger than the map
-    // put us at 0,0
+    // if the box is bigger than the map, put us at 0,0
     if (boxHeight > maxHeight) {
       y = 0;
     }
@@ -93,8 +91,7 @@ public class ImageScrollModel extends Observable {
         x += maxWidth;
       }
     }
-    // if the box is bigger than the map
-    // put us at 0,0
+    // if the box is bigger than the map, put us at 0,0
     if (boxWidth > maxWidth) {
       x = 0;
     }

@@ -43,10 +43,9 @@ final class DownloadFile {
     createDownloadThread().start();
   }
 
-  /*
-   * Creates a thread that will download to a target temporary file, and once
-   * complete and if the download state is not cancelled, it will then move
-   * the completed download temp file to: 'downloadDescription.getInstallLocation()'
+  /**
+   * Creates a thread that will download to a target temporary file, and once complete and if the download state is not
+   * cancelled, it will then move the completed download temp file to: 'downloadDescription.getInstallLocation()'.
    */
   private Thread createDownloadThread() {
     return new Thread(() -> {

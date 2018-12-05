@@ -27,8 +27,6 @@ public class LocalizeHtml {
    * Regex's found at http://www.mkyong.com/
    */
 
-
-
   /* Match the <img /> tag */
   public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
   /* Match the src attribute */
@@ -36,8 +34,7 @@ public class LocalizeHtml {
 
   /**
    * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be
-   * the last game's
-   * resource loader.
+   * the last game's resource loader.
    */
   public static String localizeImgLinksInHtml(final String htmlText) {
     return localizeImgLinksInHtml(htmlText, AbstractUiContext.getResourceLoader(), null);

@@ -46,10 +46,6 @@ public class RelationshipInterpreter extends GameDataComponent {
 
   /**
    * returns true if p1 is at war with p2.
-   *
-   * @param p1 player1
-   * @param p2 player2
-   * @return whether p1 is at war with p2
    */
   public boolean isAtWar(final PlayerId p1, final PlayerId p2) {
     return Matches.relationshipTypeIsAtWar().test(getRelationshipType(p1, p2));

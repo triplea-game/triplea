@@ -6,7 +6,6 @@ import java.util.Map;
 /**
  * Simple flood control, only allow so many events per window of time. During each rolling time window, anyone that
  * sends more than "N" messages will be filtered until the next time window begins.
- *
  */
 class ChatFloodControl {
   private static final int ONE_MINUTE = 60 * 1000;

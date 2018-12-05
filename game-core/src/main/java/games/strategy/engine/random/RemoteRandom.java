@@ -29,7 +29,7 @@ public class RemoteRandom implements IRemoteRandom {
   private VaultId remoteVaultId;
   private String annotation;
   private int max;
-  // have we recieved a generate request, but not a unlock request
+  // have we received a generate request, but not a unlock request
   private boolean waitingForUnlock;
   private int[] localNumbers;
 
@@ -49,9 +49,9 @@ public class RemoteRandom implements IRemoteRandom {
           + "Asked for: " + count + "x" + max + " for " + annotation);
     }
     waitingForUnlock = true;
-    // clean up here, we know these keys arent needed anymore so release them
-    // we cant do this earlier without synchronizing between the server and the client
-    // but here we know they arent needed anymore
+    // clean up here, we know these keys aren't needed anymore so release them
+    // we can't do this earlier without synchronizing between the server and the client
+    // but here we know they aren't needed anymore
     if (this.remoteVaultId != null) {
       game.getVault().release(this.remoteVaultId);
     }

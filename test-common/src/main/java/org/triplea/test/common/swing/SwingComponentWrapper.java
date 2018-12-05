@@ -21,7 +21,6 @@ public class SwingComponentWrapper {
   /**
    * Recursively searches the wrapped component for a swing component whose name matches the parameter,
    * any such component found is then returned and casted to the type specified by the second parameter.
-   * *
    *
    * @param childName Component name to find, searching current component or any of its children.
    * @param classType The component type to return.

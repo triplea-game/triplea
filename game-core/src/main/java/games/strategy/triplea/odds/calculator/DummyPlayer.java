@@ -145,8 +145,7 @@ class DummyPlayer extends AbstractAi {
     if (retreatWhenOnlyAirLeft) {
       // lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
       // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken
-      // casualty
-      // last)
+      // casualty last)
       // then we add the number of air, to the retreat after X left number (which we would set to '1')
       int retreatNum = airLeft.size();
       if (retreatAfterXUnitsLeft > 0) {

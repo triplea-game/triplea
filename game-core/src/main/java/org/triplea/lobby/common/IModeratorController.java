@@ -39,8 +39,7 @@ public interface IModeratorController extends IRemote {
    * @param node The node to ban.
    * @param banExpires {@code null} for a permanent ban.
    *
-   * @deprecated Kept to maintain backwards compatibility.
-   *             Remove with next incompatible release.
+   * @deprecated Kept to maintain backwards compatibility. Remove with next incompatible release.
    */
   @Deprecated
   default void banIp(final INode node, final @Nullable Date banExpires) {}
@@ -72,8 +71,7 @@ public interface IModeratorController extends IRemote {
    * @param node The node to mute.
    * @param muteExpires {@code null} for a permanent mute.
    *
-   * @deprecated Kept to maintain backwards compatibility.
-   *             Remove with next incompatible release.
+   * @deprecated Kept to maintain backwards compatibility. Remove with next incompatible release.
    */
   @Deprecated
   default void muteIp(final INode node, final @Nullable Date muteExpires) {}

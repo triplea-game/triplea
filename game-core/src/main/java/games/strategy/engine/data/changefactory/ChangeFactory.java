@@ -158,8 +158,7 @@ public class ChangeFactory {
 
   /**
    * You don't want to clear the variable first unless you are setting some variable where the setting method is
-   * actually adding things to a
-   * list rather than overwriting.
+   * actually adding things to a list rather than overwriting.
    */
   public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue,
       final String property, final boolean resetFirst) {
@@ -168,8 +167,7 @@ public class ChangeFactory {
 
   /**
    * You don't want to clear the variable first unless you are setting some variable where the setting method is
-   * actually adding things to a
-   * list rather than overwriting.
+   * actually adding things to a list rather than overwriting.
    */
   public static Change attachmentPropertyReset(final IAttachment attachment, final String property) {
     return new AttachmentPropertyReset(attachment, property);
@@ -187,7 +185,6 @@ public class ChangeFactory {
     return new AddBattleRecordsChange(records, data);
   }
 
-  /** Creates new ChangeFactory. No need */
   private ChangeFactory() {}
 
   /**
@@ -224,5 +221,3 @@ public class ChangeFactory {
     return unitPropertyChange(unit, TripleAUnit.get(unit).getMaxMovementAllowed(), TripleAUnit.ALREADY_MOVED);
   }
 }
-
-
