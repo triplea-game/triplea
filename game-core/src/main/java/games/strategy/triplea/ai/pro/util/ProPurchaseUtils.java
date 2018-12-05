@@ -104,10 +104,8 @@ public class ProPurchaseUtils {
 
   /**
    * Removes any invalid purchase options from {@code purchaseOptions}.
-   *
-   * @return TODO: Change return type to void; return value is never used.
    */
-  public static List<ProPurchaseOption> removeInvalidPurchaseOptions(final PlayerId player, final GameData data,
+  public static void removeInvalidPurchaseOptions(final PlayerId player, final GameData data,
       final List<ProPurchaseOption> purchaseOptions, final ProResourceTracker resourceTracker,
       final int remainingUnitProduction, final List<Unit> unitsToPlace,
       final Map<Territory, ProPurchaseTerritory> purchaseTerritories) {
@@ -147,7 +145,6 @@ public class ProPurchaseUtils {
         }
       }
     }
-    return purchaseOptions;
   }
 
   /**
