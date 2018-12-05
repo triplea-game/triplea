@@ -184,13 +184,13 @@ public class Chat {
 
   void sendSlap(final String playerName) {
     final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
-        .getChannelBroadcastor(new RemoteName(chatChannelName, IChatChannel.class));
+        .getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
     remote.slapOccured(playerName);
   }
 
   public void sendMessage(final String message, final boolean meMessage) {
     final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
-        .getChannelBroadcastor(new RemoteName(chatChannelName, IChatChannel.class));
+        .getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
     if (meMessage) {
       remote.meMessageOccured(message);
     } else {

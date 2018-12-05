@@ -27,7 +27,7 @@ import games.strategy.net.INode;
  * <pre>
  * IFoo anotherFoo = new Foo();
  * anotherChannelMessenger.registerChannelSubscriber(anotherFoo, FOO);
- * IFoo multicastFoo = (IFoo) anotherChannelMessenger.getChannelBroadcastor(FOO);
+ * IFoo multicastFoo = (IFoo) anotherChannelMessenger.getChannelBroadcaster(FOO);
  * multicastFoo.fee();
  * </pre>
  *
@@ -67,7 +67,7 @@ public interface IChannelMessenger {
   /**
    * Get a reference such that methods called on it will be multicast to all subscribers of the channel.
    */
-  IChannelSubscriber getChannelBroadcastor(RemoteName channelName);
+  IChannelSubscriber getChannelBroadcaster(RemoteName channelName);
 
   /**
    * register a subscriber to a channel.

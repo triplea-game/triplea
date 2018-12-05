@@ -92,7 +92,7 @@ public class Vault {
   }
 
   private IRemoteVault getRemoteBroadcaster() {
-    return (IRemoteVault) channelMessenger.getChannelBroadcastor(VAULT_CHANNEL);
+    return (IRemoteVault) channelMessenger.getChannelBroadcaster(VAULT_CHANNEL);
   }
 
   /**

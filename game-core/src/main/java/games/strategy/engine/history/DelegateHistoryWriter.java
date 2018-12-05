@@ -13,7 +13,7 @@ public class DelegateHistoryWriter implements IDelegateHistoryWriter {
   private final IGameModifiedChannel channel;
 
   public DelegateHistoryWriter(final IChannelMessenger messenger) {
-    channel = (IGameModifiedChannel) messenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
+    channel = (IGameModifiedChannel) messenger.getChannelBroadcaster(IGame.GAME_MODIFICATION_CHANNEL);
   }
 
   public DelegateHistoryWriter(final IGameModifiedChannel channel) {

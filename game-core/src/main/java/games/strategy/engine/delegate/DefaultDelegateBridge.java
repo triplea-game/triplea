@@ -119,13 +119,13 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
     final Object implementor =
-        game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getDisplayChannel(gameData));
+        game.getChannelMessenger().getChannelBroadcaster(AbstractGame.getDisplayChannel(gameData));
     return (IDisplay) getOutbound(implementor);
   }
 
   @Override
   public ISound getSoundChannelBroadcaster() {
-    final Object implementor = game.getChannelMessenger().getChannelBroadcastor(AbstractGame.getSoundChannel(gameData));
+    final Object implementor = game.getChannelMessenger().getChannelBroadcaster(AbstractGame.getSoundChannel(gameData));
     return (ISound) getOutbound(implementor);
   }
 

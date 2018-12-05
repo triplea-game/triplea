@@ -52,7 +52,7 @@ public class ChannelMessengerTest {
   public void testLocalCall() {
     final RemoteName descriptor = new RemoteName("testLocalCall", IChannelBase.class);
     serverChannelMessenger.registerChannelSubscriber(new ChannelSubscriber(), descriptor);
-    final IChannelBase subscriber = (IChannelBase) serverChannelMessenger.getChannelBroadcastor(descriptor);
+    final IChannelBase subscriber = (IChannelBase) serverChannelMessenger.getChannelBroadcaster(descriptor);
     subscriber.testNoParams();
     subscriber.testPrimitives(1, (short) 0, 1, (byte) 1, true, (float) 1.0);
     subscriber.testString("a");
@@ -64,7 +64,7 @@ public class ChannelMessengerTest {
     final ChannelSubscriber subscriber1 = new ChannelSubscriber();
     serverChannelMessenger.registerChannelSubscriber(subscriber1, testRemote);
     assertHasChannel(testRemote, unifiedMessengerHub);
-    final IChannelBase channelTest = (IChannelBase) clientChannelMessenger.getChannelBroadcastor(testRemote);
+    final IChannelBase channelTest = (IChannelBase) clientChannelMessenger.getChannelBroadcaster(testRemote);
     channelTest.testNoParams();
     assertCallCountIs(subscriber1, 1);
     channelTest.testString("a");
@@ -87,7 +87,7 @@ public class ChannelMessengerTest {
     final String mac = MacFinder.getHashedMacAddress();
     final ClientMessenger clientMessenger2 = new ClientMessenger("localhost", serverPort, "client2", mac);
     final ChannelMessenger client2 = new ChannelMessenger(new UnifiedMessenger(clientMessenger2));
-    ((IChannelBase) client2.getChannelBroadcastor(test)).testString("a");
+    ((IChannelBase) client2.getChannelBroadcaster(test)).testString("a");
     assertCallCountIs(client1Subscriber, 1);
   }
 
@@ -101,10 +101,10 @@ public class ChannelMessengerTest {
     clientChannelMessenger.registerChannelSubscriber(subscriber3, testRemote3);
     assertHasChannel(testRemote2, unifiedMessengerHub);
     assertHasChannel(testRemote3, unifiedMessengerHub);
-    final IChannelBase channelTest2 = (IChannelBase) serverChannelMessenger.getChannelBroadcastor(testRemote2);
+    final IChannelBase channelTest2 = (IChannelBase) serverChannelMessenger.getChannelBroadcaster(testRemote2);
     channelTest2.testNoParams();
     assertCallCountIs(subscriber2, 1);
-    final IChannelBase channelTest3 = (IChannelBase) serverChannelMessenger.getChannelBroadcastor(testRemote3);
+    final IChannelBase channelTest3 = (IChannelBase) serverChannelMessenger.getChannelBroadcaster(testRemote3);
     channelTest3.testNoParams();
     assertCallCountIs(subscriber3, 1);
   }

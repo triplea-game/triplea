@@ -102,7 +102,7 @@ public class ChatController implements IChatController {
   }
 
   private IChatChannel getChatBroadcaster() {
-    return (IChatChannel) channelMessenger.getChannelBroadcastor(new RemoteName(chatChannel, IChatChannel.class));
+    return (IChatChannel) channelMessenger.getChannelBroadcaster(new RemoteName(chatChannel, IChatChannel.class));
   }
 
   // a player has joined

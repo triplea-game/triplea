@@ -603,7 +603,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private IGameModifiedChannel getGameModifiedBroadcaster() {
-    return (IGameModifiedChannel) channelMessenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
+    return (IGameModifiedChannel) channelMessenger.getChannelBroadcaster(IGame.GAME_MODIFICATION_CHANNEL);
   }
 
   @Override
