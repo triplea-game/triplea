@@ -29,6 +29,7 @@ import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.FileBackedGamePropertiesCache;
 import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.ui.SwingAction;
@@ -38,8 +39,9 @@ import swinglib.JButtonBuilder;
 /**
  * Left hand side panel of the launcher screen that has various info, like selected game and engine version.
  */
-public class GameSelectorPanel extends JPanel implements Observer {
+public final class GameSelectorPanel extends JPanel implements Observer {
   private static final long serialVersionUID = -4598107601238030020L;
+
   private final GameSelectorModel model;
   private final IGamePropertiesCache gamePropertiesCache = new FileBackedGamePropertiesCache();
   private final Map<String, Object> originalPropertiesMap = new HashMap<>();
@@ -71,37 +73,41 @@ public class GameSelectorPanel extends JPanel implements Observer {
     }
 
     setLayout(new GridBagLayout());
-    add(new JLabel("Engine Version:"), buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
-    add(new JLabel(ClientContext.engineVersion().getExactVersion()), buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
 
-    add(new JLabel("Map Name:"), buildGridCell(0, 1, new Insets(0, 10, 3, 5)));
-    add(nameText, buildGridCell(1, 1, new Insets(0, 0, 3, 0)));
+    add(new JLabel("Java Version:"), buildGridCell(0, 0, new Insets(10, 10, 3, 5)));
+    add(new JLabel(SystemProperties.getJavaRuntimeVersion()), buildGridCell(1, 0, new Insets(10, 0, 3, 0)));
 
-    add(new JLabel("Map Version:"), buildGridCell(0, 2, new Insets(0, 10, 3, 5)));
-    add(versionText, buildGridCell(1, 2, new Insets(0, 0, 3, 0)));
+    add(new JLabel("Engine Version:"), buildGridCell(0, 1, new Insets(0, 10, 3, 5)));
+    add(new JLabel(ClientContext.engineVersion().getExactVersion()), buildGridCell(1, 1, new Insets(0, 0, 3, 0)));
 
-    add(new JLabel("Game Round:"), buildGridCell(0, 3, new Insets(0, 10, 3, 5)));
-    add(roundText, buildGridCell(1, 3, new Insets(0, 0, 3, 0)));
+    add(new JLabel("Map Name:"), buildGridCell(0, 2, new Insets(0, 10, 3, 5)));
+    add(nameText, buildGridCell(1, 2, new Insets(0, 0, 3, 0)));
 
-    add(new JLabel("File Name:"), buildGridCell(0, 4, new Insets(20, 10, 3, 5)));
+    add(new JLabel("Map Version:"), buildGridCell(0, 3, new Insets(0, 10, 3, 5)));
+    add(versionText, buildGridCell(1, 3, new Insets(0, 0, 3, 0)));
 
-    add(fileNameText, buildGridRow(0, 5, new Insets(0, 10, 3, 5)));
+    add(new JLabel("Game Round:"), buildGridCell(0, 4, new Insets(0, 10, 3, 5)));
+    add(roundText, buildGridCell(1, 4, new Insets(0, 0, 3, 0)));
 
-    add(loadNewGame, buildGridRow(0, 6, new Insets(25, 10, 10, 10)));
+    add(new JLabel("File Name:"), buildGridCell(0, 5, new Insets(20, 10, 3, 5)));
 
-    add(loadSavedGame, buildGridRow(0, 7, new Insets(0, 10, 10, 10)));
+    add(fileNameText, buildGridRow(0, 6, new Insets(0, 10, 3, 5)));
+
+    add(loadNewGame, buildGridRow(0, 7, new Insets(25, 10, 10, 10)));
+
+    add(loadSavedGame, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
 
     final JButton downloadMapButton = JButtonBuilder.builder()
         .title("Download Maps")
         .toolTip("Click this button to install additional maps")
         .actionListener(DownloadMapsWindow::showDownloadMapsWindow)
         .build();
-    add(downloadMapButton, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
+    add(downloadMapButton, buildGridRow(0, 9, new Insets(0, 10, 10, 10)));
 
-    add(gameOptions, buildGridRow(0, 9, new Insets(25, 10, 10, 10)));
+    add(gameOptions, buildGridRow(0, 10, new Insets(25, 10, 10, 10)));
 
     // spacer
-    add(new JPanel(), new GridBagConstraints(0, 10, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+    add(new JPanel(), new GridBagConstraints(0, 11, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
 
     loadNewGame.addActionListener(e -> {
