@@ -48,7 +48,7 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
     assertThat(objectToCheck.getGameVersion(), is(fakeGameVersion));
   }
 
-  private static final String fakeGameVersion = "12.34.56.78";
+  private static final String fakeGameVersion = "12.34.56";
   private static final String fakeGameRound = "3";
   private static final String fakeGameName = "_fakeGameName_";
   private static final String fakeFileName = "/hack/and/slash";

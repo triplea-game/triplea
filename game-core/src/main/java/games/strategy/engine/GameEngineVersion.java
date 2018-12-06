@@ -34,7 +34,7 @@ public final class GameEngineVersion {
   public boolean isCompatibleWithEngineVersion(final Version engineVersion) {
     checkNotNull(engineVersion);
 
-    return version.withMicro(0).equals(engineVersion.withMicro(0));
+    return version.withPoint(0).equals(engineVersion.withPoint(0));
   }
 
   /**
@@ -48,6 +48,6 @@ public final class GameEngineVersion {
   public boolean isCompatibleWithMapMinimumEngineVersion(final Version mapMinimumEngineVersion) {
     checkNotNull(mapMinimumEngineVersion);
 
-    return version.withMicro(0).isGreaterThanOrEqualTo(mapMinimumEngineVersion.withMicro(0));
+    return version.withPoint(0).isGreaterThanOrEqualTo(mapMinimumEngineVersion.withPoint(0));
   }
 }
