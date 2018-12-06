@@ -15,8 +15,8 @@ final class ProductConfigurationTest {
 
   @Test
   void getVersion() {
-    memoryPropertyReader.setProperty(PropertyKeys.VERSION, "1.0.1.3.buildId");
+    memoryPropertyReader.setProperty(PropertyKeys.VERSION, "1.6.buildId");
 
-    assertThat(productConfiguration.getVersion(), is(new Version(1, 0, 1, 3)));
+    assertThat(productConfiguration.getVersion(), is(new Version(1, 6)));
   }
 }

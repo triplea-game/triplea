@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 
 /**
  * Represents a version string.
- * versions are of the form major.minor.point.micro
+ * versions are of the form major.minor.point
  */
 public final class Version implements Serializable, Comparable<Version> {
   private static final long serialVersionUID = -4770210855326775333L;
@@ -21,51 +21,41 @@ public final class Version implements Serializable, Comparable<Version> {
   private final int major;
   private final int minor;
   private final int point;
-  private final int micro;
   private final String exactVersion;
 
   /**
-   * Constructs a Version object without the point and micro version, defaults those to 0.
+   * Constructs a Version object without the point version, defaults those to 0.
    */
   public Version(final int major, final int minor) {
     this(major, minor, 0);
   }
 
   /**
-   * Constructs a Version object without the micro version, defaults to 0.
+   * Constructs a Version object with all three parts: major/minor/point.
    */
   public Version(final int major, final int minor, final int point) {
-    this(major, minor, point, 0);
-  }
-
-  /**
-   * Constructs a Version object with all version values set.
-   */
-  public Version(final int major, final int minor, final int point, final int micro) {
     this.major = major;
     this.minor = minor;
     this.point = point;
-    this.micro = micro;
     exactVersion = toString();
   }
 
   /**
-   * version must be of the from xx.xx.xx.xx or xx.xx.xx or xx.xx or xx where xx is a positive integer.
+   * version must be of the from xx.xx.xx or xx.xx or xx where xx is a positive integer
    */
   public Version(final String version) {
     exactVersion = version;
 
-    final Matcher matcher = Pattern.compile("^(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:\\.((?:\\d+|dev)[^.]*))?)?)?")
+    final Matcher matcher = Pattern.compile("^(\\d+)(?:\\.(\\d+)(?:\\.((?:\\d+|dev)[^.]*))?)?")
         .matcher(version);
 
     if (matcher.find()) {
       major = Integer.parseInt(matcher.group(1));
       minor = Optional.ofNullable(matcher.group(2)).map(Integer::valueOf).orElse(0);
-      point = Optional.ofNullable(matcher.group(3)).map(Integer::valueOf).orElse(0);
-      final String microString = matcher.group(4);
-      micro = "dev".equals(microString)
+      final String pointString = matcher.group(3);
+      point = "dev".equals(pointString)
           ? Integer.MAX_VALUE
-          : Optional.ofNullable(microString).map(Integer::valueOf).orElse(0);
+          : Optional.ofNullable(pointString).map(Integer::valueOf).orElse(0);
       return;
     }
     throw new IllegalArgumentException("Invalid version String: " + version);
@@ -75,9 +65,9 @@ public final class Version implements Serializable, Comparable<Version> {
    * Returns the exact and full version number.
    * For example, if we specify:
    * <code>
-   * new Version(1.2.3.4.5).getMicro == 4; // true
-   * new Version(1.2.3.4.5).toString().equals("1.2.3.4"); // true
-   * new Version(1.2.3.4.5).getExactVersion.equals("1.2.3.4.5"); // true
+   * new Version("1.2.3").getPoint() == 3; // true
+   * new Version("1.2.3.4").toString().equals("1.2.3"); // true
+   * new Version("1.2.3.4").getExactVersion().equals("1.2.3.4"); // true
    * </code>
    */
   public String getExactVersion() {
@@ -106,13 +96,6 @@ public final class Version implements Serializable, Comparable<Version> {
     return point;
   }
 
-  /**
-   * Returns the micro version number.
-   */
-  public int getMicro() {
-    return micro;
-  }
-
   @Override
   public boolean equals(final @Nullable Object o) {
     return o instanceof Version && compareTo((Version) o) == 0;
@@ -120,7 +103,7 @@ public final class Version implements Serializable, Comparable<Version> {
 
   @Override
   public int hashCode() {
-    return Objects.hash(major, minor, point, micro);
+    return Objects.hash(major, minor, point);
   }
 
   @Override
@@ -130,7 +113,6 @@ public final class Version implements Serializable, Comparable<Version> {
     return Comparator.comparingInt(Version::getMajor)
         .thenComparingInt(Version::getMinor)
         .thenComparingInt(Version::getPoint)
-        .thenComparingInt(Version::getMicro)
         .compare(this, other);
   }
 
@@ -174,10 +156,10 @@ public final class Version implements Serializable, Comparable<Version> {
   }
 
   /**
-   * Returns a new version with the major, minor, and point versions from this instance and the specified micro version.
+   * Returns a new version with the major and minor versions from this instance and the specified point version.
    */
-  public Version withMicro(final int micro) {
-    return new Version(major, minor, point, micro);
+  public Version withPoint(final int point) {
+    return new Version(major, minor, point);
   }
 
   /**
@@ -188,12 +170,11 @@ public final class Version implements Serializable, Comparable<Version> {
         ".",
         String.valueOf(major),
         String.valueOf(minor),
-        String.valueOf(point),
-        (micro == Integer.MAX_VALUE) ? "dev" : String.valueOf(micro));
+        (point == Integer.MAX_VALUE) ? "dev" : String.valueOf(point));
   }
 
   @Override
   public String toString() {
-    return micro != 0 ? toStringFull() : major + "." + minor + (point != 0 ? "." + point : "");
+    return point != 0 ? toStringFull() : major + "." + minor;
   }
 }

@@ -18,7 +18,7 @@
     Join the TripleA ranked ladder by posting here:
     https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
   error_message:
-- version: 1.10.0.0
+- version: "1.10"
   host: lobby.triplea-game.org
   port: 3304
   message: |
