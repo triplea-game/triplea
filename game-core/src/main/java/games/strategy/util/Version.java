@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 
 /**
  * Represents a version string.
- * versions are of the form major.minor.point.micro
+ * versions are of the form major.minor.point
  */
 public final class Version implements Serializable, Comparable<Version> {
   private static final long serialVersionUID = -4770210855326775333L;
@@ -24,14 +24,14 @@ public final class Version implements Serializable, Comparable<Version> {
   private final String exactVersion;
 
   /**
-   * Constructs a Version object without the point and micro version, defaults those to 0.
+   * Constructs a Version object without the point version, defaults those to 0.
    */
   public Version(final int major, final int minor) {
     this(major, minor, 0);
   }
 
   /**
-   * Constructs a Version object without the micro version, defaults to 0.
+   * Constructs a Version object with all three parts: major/minor/point.
    */
   public Version(final int major, final int minor, final int point) {
     this.major = major;
@@ -41,7 +41,7 @@ public final class Version implements Serializable, Comparable<Version> {
   }
 
   /**
-   * version must be of the from xx.xx.xx.xx or xx.xx.xx or
+   * version must be of the from xx.xx.xx or
    * xx.xx or xx where xx is a positive integer
    */
   public Version(final String version) {
@@ -66,9 +66,9 @@ public final class Version implements Serializable, Comparable<Version> {
    * Returns the exact and full version number.
    * For example, if we specify:
    * <code>
-   * new Version(1.2.3).getPoint == 3; // true
-   * new Version(1.2.3.4.5).toString().equals("1.2.3"); // true
-   * new Version(1.2.3.4.5).getExactVersion.equals("1.2.3.4.5"); // true
+   * new Version("1.2.3").getPoint == 3; // true
+   * new Version("1.2.3.4").toString().equals("1.2.3"); // true
+   * new Version("1.2.3.4").getExactVersion.equals("1.2.3.4"); // true
    * </code>
    */
   public String getExactVersion() {
