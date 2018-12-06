@@ -542,7 +542,10 @@ final class SelectionComponentFactory {
         context.setValue(usernameSetting, username.isEmpty() ? null : username.toCharArray());
         withSensitiveArray(
             passwordField::getPassword,
-            password -> context.setValue(passwordSetting, (password.length == 0) ? null : password));
+            password -> context.setValue(
+                passwordSetting,
+                (password.length == 0) ? null : password,
+                SaveContext.ValueSensitivity.SENSITIVE));
       }
 
       @Override

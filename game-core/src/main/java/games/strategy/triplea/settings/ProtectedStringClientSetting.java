@@ -1,7 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.util.Arrays;
-
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.security.CredentialManager;
@@ -12,12 +10,8 @@ import games.strategy.util.function.ThrowingBiFunction;
  * ClientSetting to store encrypted versions of potentially sensitive Strings.
  */
 final class ProtectedStringClientSetting extends ClientSetting<char[]> {
-
-  private final boolean sensitive;
-
-  ProtectedStringClientSetting(final String name, final boolean sensitive) {
+  ProtectedStringClientSetting(final String name) {
     super(char[].class, name);
-    this.sensitive = sensitive;
   }
 
   @Override
@@ -59,14 +53,5 @@ final class ProtectedStringClientSetting extends ClientSetting<char[]> {
     } catch (final CredentialManagerException e) {
       throw new ValueEncodingException("Error while trying to unprotect string '" + encodedValue + "'", e);
     }
-  }
-
-  @Override
-  public String getDisplayValue() {
-    final char[] string = getValue().orElse(new char[0]);
-    if (sensitive) {
-      Arrays.fill(string, '*');
-    }
-    return new String(string);
   }
 }
