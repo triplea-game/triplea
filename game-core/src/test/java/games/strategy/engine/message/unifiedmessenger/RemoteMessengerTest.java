@@ -1,6 +1,7 @@
 package games.strategy.engine.message.unifiedmessenger;
 
 import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -145,7 +146,7 @@ public class RemoteMessengerTest {
       final TestRemote testRemote = new TestRemote();
       serverRemoteMessenger.registerRemote(testRemote, test);
       // since the registration must go over a socket and through a couple threads, wait for the client to get it
-      await().until(() -> unifiedMessengerHub.hasImplementors(test.getName()));
+      await().until(() -> unifiedMessengerHub.hasImplementors(test.getName()), is(true));
       // call it on the client
       final int incrementedValue = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
       assertEquals(2, incrementedValue);
@@ -205,9 +206,9 @@ public class RemoteMessengerTest {
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
       clientRemoteMessenger.registerRemote(new TestRemote(), test);
-      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
+      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(true));
       client.shutDown();
-      await().until(() -> !serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
+      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(false));
     } finally {
       shutdownServerAndClient(server, client);
     }
@@ -235,7 +236,7 @@ public class RemoteMessengerTest {
         Interruptibles.await(testCompleteSignal);
       };
       clientRemoteMessenger.registerRemote(foo, test);
-      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()));
+      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(true));
       final CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
         final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
         remoteFoo.foo();
