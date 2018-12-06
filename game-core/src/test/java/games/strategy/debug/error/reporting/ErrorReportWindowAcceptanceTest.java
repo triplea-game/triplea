@@ -26,7 +26,8 @@ import swinglib.DialogBuilder;
  * Set up a window, enter in data for the user input text fields, click the submit button and verify
  * we have that data sent to the {@code reportHandler}.
  */
-@ExtendWith({DisabledInHeadlessGraphicsEnvironment.class, MockitoExtension.class})
+@ExtendWith(DisabledInHeadlessGraphicsEnvironment.class)
+@ExtendWith(MockitoExtension.class)
 class ErrorReportWindowAcceptanceTest {
   private static final String TITLE = "addis informacio";
   private static final String DESCRIPTION = "errus descriptus";
