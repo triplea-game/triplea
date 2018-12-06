@@ -10,8 +10,8 @@
     "properties": {
       "version": {
         "description": "The lobby server engine version",
-        "type": [ "string", "number" ],
-        "pattern": "^\\d+\\.\\d+\\.\\d+\\.\\d+$"
+        "type": "string",
+        "pattern": "^\\d+(\\.\\d+){1,3}$"
       },
       "host": {
         "description": "The lobby server host",
