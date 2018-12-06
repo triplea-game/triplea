@@ -41,8 +41,7 @@ public final class Version implements Serializable, Comparable<Version> {
   }
 
   /**
-   * version must be of the from xx.xx.xx or
-   * xx.xx or xx where xx is a positive integer
+   * version must be of the from xx.xx.xx or xx.xx or xx where xx is a positive integer
    */
   public Version(final String version) {
     exactVersion = version;
@@ -66,9 +65,9 @@ public final class Version implements Serializable, Comparable<Version> {
    * Returns the exact and full version number.
    * For example, if we specify:
    * <code>
-   * new Version("1.2.3").getPoint == 3; // true
+   * new Version("1.2.3").getPoint() == 3; // true
    * new Version("1.2.3.4").toString().equals("1.2.3"); // true
-   * new Version("1.2.3.4").getExactVersion.equals("1.2.3.4"); // true
+   * new Version("1.2.3.4").getExactVersion().equals("1.2.3.4"); // true
    * </code>
    */
   public String getExactVersion() {

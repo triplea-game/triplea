@@ -55,6 +55,11 @@ public class VersionTest {
         Tuple.of(new Version("0.0.dev"), new Version(0, 0, 0)))
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(greaterThan(0))));
   }
+  
+  @Test
+  public void testWithPoint() {
+    assertEquals(new Version(1, 2, 999), new Version(1, 2, 3).withPoint(999));
+  }
 
   @Test
   public void testIsGreaterThan() {
