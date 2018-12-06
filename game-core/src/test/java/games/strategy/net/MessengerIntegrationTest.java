@@ -1,10 +1,11 @@
 package games.strategy.net;
 
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class MessengerIntegrationTest {
   private final MessageListener client2MessageListener = new MessageListener();
 
   @BeforeEach
-  public void setUp() throws IOException {
+  public void setUp() throws Exception {
     serverMessenger = new TestServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.addMessageListener(serverMessageListener);
@@ -45,14 +46,7 @@ public class MessengerIntegrationTest {
     assertEquals(client1Messenger.getServerNode(), serverMessenger.getLocalNode());
     assertEquals(client2Messenger.getServerNode(), serverMessenger.getLocalNode());
     assertEquals(serverMessenger.getServerNode(), serverMessenger.getLocalNode());
-    for (int i = 0; i < 100; i++) {
-      if (serverMessenger.getNodes().size() != 3) {
-        Interruptibles.sleep(1);
-      } else {
-        break;
-      }
-    }
-    assertEquals(3, serverMessenger.getNodes().size());
+    await().until(serverMessenger::getNodes, hasSize(3));
   }
 
   @AfterEach
@@ -183,12 +177,7 @@ public class MessengerIntegrationTest {
   @Test
   public void testCorrectNodeCountInRemove() {
     // when we receive the notification that a connection has been lost, the node list should reflect that change
-    for (int i = 0; i < 100; i++) {
-      if (serverMessenger.getNodes().size() == 3) {
-        break;
-      }
-      Interruptibles.sleep(10);
-    }
+    await().until(serverMessenger::getNodes, hasSize(3));
     final AtomicInteger serverCount = new AtomicInteger(3);
     serverMessenger.addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
@@ -202,35 +191,16 @@ public class MessengerIntegrationTest {
       }
     });
     client1Messenger.shutDown();
-    for (int i = 0; i < 100; i++) {
-      if (serverMessenger.getNodes().size() == 2) {
-        Interruptibles.sleep(10);
-        break;
-      }
-      Interruptibles.sleep(10);
-    }
+    await().until(serverMessenger::getNodes, hasSize(2));
     assertEquals(2, serverCount.get());
   }
 
   @Test
   public void testDisconnect() {
-    for (int i = 0; i < 100; i++) {
-      if (serverMessenger.getNodes().size() == 3) {
-        break;
-      }
-      Interruptibles.sleep(10);
-    }
-    assertEquals(3, serverMessenger.getNodes().size());
+    await().until(serverMessenger::getNodes, hasSize(3));
     client1Messenger.shutDown();
     client2Messenger.shutDown();
-    for (int i = 0; i < 100; i++) {
-      if (serverMessenger.getNodes().size() == 1) {
-        Interruptibles.sleep(10);
-        break;
-      }
-      Interruptibles.sleep(1);
-    }
-    assertEquals(1, serverMessenger.getNodes().size());
+    await().until(serverMessenger::getNodes, hasSize(1));
   }
 
   @Test
@@ -238,16 +208,11 @@ public class MessengerIntegrationTest {
     final AtomicBoolean closed = new AtomicBoolean(false);
     client1Messenger.addErrorListener(reason -> closed.set(true));
     serverMessenger.removeConnection(client1Messenger.getLocalNode());
-    int waitCount = 0;
-    while (!closed.get() && waitCount < 10) {
-      Interruptibles.sleep(40);
-      waitCount++;
-    }
-    assert (closed.get());
+    await().untilTrue(closed);
   }
 
   @Test
-  public void testManyClients() throws IOException {
+  public void testManyClients() throws Exception {
     final int count = 5;
     final List<ClientMessenger> clients = new ArrayList<>();
     final List<MessageListener> listeners = new ArrayList<>();

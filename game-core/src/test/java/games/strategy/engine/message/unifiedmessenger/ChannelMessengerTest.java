@@ -1,7 +1,8 @@
 package games.strategy.engine.message.unifiedmessenger;
 
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
@@ -19,7 +20,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.MessengerTestUtils;
 import games.strategy.net.TestServerMessenger;
-import games.strategy.util.Interruptibles;
 
 public class ChannelMessengerTest {
   private IServerMessenger serverMessenger;
@@ -110,22 +110,11 @@ public class ChannelMessengerTest {
   }
 
   private static void assertHasChannel(final RemoteName descriptor, final UnifiedMessengerHub hub) {
-    int waitCount = 0;
-    while (waitCount < 10 && !hub.hasImplementors(descriptor.getName())) {
-      Interruptibles.sleep(100);
-      waitCount++;
-    }
-    assertTrue(hub.hasImplementors(descriptor.getName()));
+    await().until(() -> hub.hasImplementors(descriptor.getName()), is(true));
   }
 
   private static void assertCallCountIs(final ChannelSubscriber subscriber, final int expected) {
-    // since the method call happens in a separate thread, wait for the call to go through, but don't wait too long
-    int waitCount = 0;
-    while (waitCount < 20 && expected != subscriber.getCallCount()) {
-      Interruptibles.sleep(50);
-      waitCount++;
-    }
-    assertEquals(expected, subscriber.getCallCount());
+    await().until(subscriber::getCallCount, is(expected));
   }
 
   private interface IChannelBase extends IChannelSubscriber {

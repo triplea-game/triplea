@@ -1,5 +1,7 @@
 package games.strategy.engine.chat;
 
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
@@ -13,7 +15,6 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
-import games.strategy.util.Interruptibles;
 
 public class StatusTest {
 
@@ -30,8 +31,7 @@ public class StatusTest {
     final StatusManager manager = new StatusManager(messengers);
     assertNull(manager.getStatus(messenger.getLocalNode()));
     manager.setStatus("test");
-    Interruptibles.sleep(200);
-    assertEquals("test", manager.getStatus(messenger.getLocalNode()));
+    await().until(() -> manager.getStatus(messenger.getLocalNode()), is("test"));
     assertEquals("test", new StatusManager(messengers).getStatus(messenger.getLocalNode()));
   }
 }
