@@ -1924,6 +1924,13 @@
     <br>
     House of Habsburg Beta Version
     <br>Large map of Europe set in the 1500s
+- mapName: CrazyG's Big World War One
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/crazygs_ww1/archive/master.zip
+  version: 1
+  description: |
+    <br>
+    Beta Version of a large world war one map. Please provide feedback.
 - mapName: Map Making Tutorial
   url: https://github.com/triplea-maps/map_making_tutorial/archive/master.zip
   version: 1
