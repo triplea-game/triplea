@@ -120,6 +120,14 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<char[]> emailUsername = new ProtectedStringClientSetting("EMAIL_USERNAME");
   public static final ClientSetting<char[]> emailPassword = new ProtectedStringClientSetting("EMAIL_PASSWORD");
 
+  public static final ClientSetting<char[]> tripleaForumUsername =
+      new ProtectedStringClientSetting("TRIPLEA_FORUM_USERNAME");
+  public static final ClientSetting<char[]> tripleaForumPassword =
+      new ProtectedStringClientSetting("TRIPLEA_FORUM_PASSWORD");
+
+  public static final ClientSetting<char[]> aaForumUsername = new ProtectedStringClientSetting("A&A_FORUM_USERNAME");
+  public static final ClientSetting<char[]> aaForumPassword = new ProtectedStringClientSetting("A&A_FORUM_PASSWORD");
+
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
   @Getter(value = AccessLevel.PROTECTED)

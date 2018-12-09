@@ -441,6 +441,13 @@ final class SelectionComponentFactory {
     };
   }
 
+  /**
+   * Returns an unscrubbable string containing sensitive data. Use only when absolutely required.
+   */
+  private static String credentialToString(final Supplier<Optional<char[]>> credentialSupplier) {
+    return withSensitiveArrayAndReturn(() -> credentialSupplier.get().orElseGet(() -> new char[0]), String::new);
+  }
+
   static SelectionComponent<JComponent> emailSettings(
       final ClientSetting<String> hostSetting,
       final ClientSetting<Integer> portSetting,
@@ -473,7 +480,7 @@ final class SelectionComponentFactory {
       }
 
       private final List<EmailProviderSetting> knownProviders = Arrays.asList(
-          new EmailProviderSetting("GMail", "smtp.gmail.com", 587, true),
+          new EmailProviderSetting("Gmail", "smtp.gmail.com", 587, true),
           new EmailProviderSetting("Hotmail", "smtp.live.com", 587, true));
 
       private final JTextField serverField = new JTextField(hostSetting.getValue().orElse(""), 20);
@@ -521,13 +528,6 @@ final class SelectionComponentFactory {
           .addLeftJustified(passwordField)
           .build();
 
-      /**
-       * Returns an unscrubbable string containing sensitive data. Use only when absolutely required.
-       */
-      private String credentialToString(final Supplier<Optional<char[]>> credentialSupplier) {
-        return withSensitiveArrayAndReturn(() -> credentialSupplier.get().orElseGet(() -> new char[0]), String::new);
-      }
-
       @Override
       public JComponent getUiComponent() {
         return panel;
@@ -564,6 +564,54 @@ final class SelectionComponentFactory {
         tlsCheckBox.setSelected(tlsSetting.getValue().orElse(true));
         usernameField.setText(credentialToString(usernameSetting::getValue));
         passwordField.setText(credentialToString(passwordSetting::getValue));
+      }
+    };
+  }
+
+  static SelectionComponent<JComponent> forumPosterSettings(
+      final ClientSetting<char[]> usernameSetting,
+      final ClientSetting<char[]> passwordSetting
+  ) {
+    return new AlwaysValidInputSelectionComponent() {
+
+      private JTextField usernameField = new JTextField(credentialToString(usernameSetting::getValue), 20);
+      private JPasswordField passwordField = new JPasswordField(credentialToString(passwordSetting::getValue), 20);
+
+      private final JPanel mainPanel = JPanelBuilder.builder()
+          .verticalBoxLayout()
+          .addLeftJustified(new JLabel("Username:"))
+          .addLeftJustified(usernameField)
+          .addLeftJustified(new JLabel("Password:"))
+          .addLeftJustified(passwordField)
+          .build();
+
+      @Override
+      public JComponent getUiComponent() {
+        return mainPanel;
+      }
+
+      @Override
+      public void save(final SaveContext context) {
+        final String username = usernameField.getText();
+        context.setValue(usernameSetting, username.isEmpty() ? null : username.toCharArray());
+        withSensitiveArray(
+            passwordField::getPassword,
+            password -> context.setValue(
+                passwordSetting,
+                (password.length == 0) ? null : password,
+                SaveContext.ValueSensitivity.SENSITIVE));
+      }
+
+      @Override
+      public void resetToDefault() {
+        usernameField.setText(credentialToString(usernameSetting::getValue));
+        passwordField.setText(credentialToString(passwordSetting::getValue));
+      }
+
+      @Override
+      public void reset() {
+        usernameField.setText(credentialToString(usernameSetting::getDefaultValue));
+        passwordField.setText(credentialToString(passwordSetting::getDefaultValue));
       }
     };
   }
