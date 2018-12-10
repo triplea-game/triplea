@@ -7,17 +7,10 @@ import java.awt.Insets;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import games.strategy.debug.error.reporting.ReportWindowController;
-import games.strategy.engine.config.client.LobbyServerPropertiesFetcher;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.engine.lobby.client.LobbyClient;
-import games.strategy.engine.lobby.client.login.LobbyLogin;
-import games.strategy.engine.lobby.client.login.LobbyServerProperties;
-import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.SwingComponents;
@@ -129,7 +122,7 @@ public class MetaSetupPanel extends SetupPanel {
     startPbem.addActionListener(e -> model.showPbem());
     hostGame.addActionListener(e -> new Thread(() -> model.showServer(MetaSetupPanel.this)).start());
     connectToHostedGame.addActionListener(e -> new Thread(() -> model.showClient(MetaSetupPanel.this)).start());
-    connectToLobby.addActionListener(e -> connectToLobby());
+    connectToLobby.addActionListener(e -> model.login(this));
     enginePreferences.addActionListener(e -> ClientSetting.showSettingsWindow());
     ruleBook.addActionListener(e -> ruleBook());
     helpButton.addActionListener(e -> helpPage());
@@ -142,20 +135,6 @@ public class MetaSetupPanel extends SetupPanel {
 
   private static void helpPage() {
     SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP);
-  }
-
-  private void connectToLobby() {
-    final LobbyServerProperties lobbyServerProperties = new LobbyServerPropertiesFetcher().fetchLobbyServerProperties();
-    final LobbyLogin login = new LobbyLogin(
-        JOptionPane.getFrameForComponent(this),
-        lobbyServerProperties);
-    final LobbyClient client = login.login();
-    if (client == null) {
-      return;
-    }
-    final LobbyFrame lobbyFrame = new LobbyFrame(client, lobbyServerProperties);
-    GameRunner.hideMainFrame();
-    lobbyFrame.setVisible(true);
   }
 
   @Override
