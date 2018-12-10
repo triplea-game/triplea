@@ -38,7 +38,6 @@ import org.junitpioneer.jupiter.TempDirectory.TempDir;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import games.strategy.engine.framework.map.download.DownloadUtils.DownloadLengthSupplier;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
 public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
@@ -88,7 +87,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
 
     private void downloadToFile() throws Exception {
       try (FileOutputStream os = new FileOutputStream(file)) {
-        DownloadUtils.downloadToFile(URI, os, client);
+        DownloadUtils.contentReader.downloadToFile(URI, os, client);
       }
     }
 
@@ -120,16 +119,16 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
   @Nested
   public final class GetDownloadLengthFromCacheTest {
     @Mock
-    private DownloadLengthSupplier downloadLengthSupplier;
+    private DownloadLengthReader.DownloadLengthSupplier downloadLengthSupplier;
 
     @BeforeEach
     public void setUp() {
-      DownloadUtils.downloadLengthsByUri.clear();
+      DownloadUtils.downloadLengthReader.downloadLengthsByUri.clear();
     }
 
     @AfterEach
     public void tearDown() {
-      DownloadUtils.downloadLengthsByUri.clear();
+      DownloadUtils.downloadLengthReader.downloadLengthsByUri.clear();
     }
 
     @Test
@@ -143,12 +142,12 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     }
 
     private Optional<Long> getDownloadLengthFromCache() {
-      return DownloadUtils.getDownloadLengthFromCache(URI, downloadLengthSupplier);
+      return DownloadUtils.downloadLengthReader.getDownloadLengthFromCache(URI, downloadLengthSupplier);
     }
 
     @Test
     public void shouldUseCacheWhenUriPresentInCache() {
-      DownloadUtils.downloadLengthsByUri.put(URI, 42L);
+      DownloadUtils.downloadLengthReader.downloadLengthsByUri.put(URI, 42L);
 
       final Optional<Long> downloadLength = getDownloadLengthFromCache();
 
@@ -163,7 +162,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
       final Optional<Long> downloadLength = getDownloadLengthFromCache();
 
       assertThat(downloadLength, is(Optional.empty()));
-      assertThat(DownloadUtils.downloadLengthsByUri, is(anEmptyMap()));
+      assertThat(DownloadUtils.downloadLengthReader.downloadLengthsByUri, is(anEmptyMap()));
     }
   }
 
@@ -204,7 +203,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     }
 
     private Optional<Long> getDownloadLengthFromHost() throws Exception {
-      return DownloadUtils.getDownloadLengthFromHost(URI, client);
+      return DownloadUtils.downloadLengthReader.getDownloadLengthFromHost(URI, client);
     }
 
     @Test
