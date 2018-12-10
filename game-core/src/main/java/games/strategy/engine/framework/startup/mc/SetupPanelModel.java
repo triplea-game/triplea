@@ -4,10 +4,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Optional;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import com.google.common.base.Preconditions;
 
+import games.strategy.engine.config.client.LobbyServerPropertiesFetcher;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
@@ -15,23 +18,21 @@ import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.ScreenChangeListener;
+import games.strategy.engine.lobby.client.login.LobbyLogin;
+import games.strategy.engine.lobby.client.login.LobbyServerProperties;
+import games.strategy.engine.lobby.client.ui.LobbyFrame;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
  * This class provides a way to switch between different ISetupPanel displays.
- * TODO: rename this to MainPanelController
  */
+@RequiredArgsConstructor
 public class SetupPanelModel {
+  @Getter
   protected final GameSelectorModel gameSelectorModel;
   protected ISetupPanel panel = null;
-
-  public SetupPanelModel(final GameSelectorModel gameSelectorModel) {
-    this.gameSelectorModel = gameSelectorModel;
-  }
-
-  public GameSelectorModel getGameSelectorModel() {
-    return gameSelectorModel;
-  }
 
   @Setter
   private ScreenChangeListener panelChangeListener;
@@ -95,5 +96,27 @@ public class SetupPanelModel {
 
   public ISetupPanel getPanel() {
     return panel;
+  }
+
+  /**
+   * Executes a login sequence prompting the user for their lobby username+password and sends it to
+   * server. If successful the user is presented with the lobby frame. Failure cases are handled and
+   * user is presented with another try or they can abort. In the abort case this method is a no-op.
+   *
+   * @param uiParent Used to center pop-up's prompting user for their lobby credentials.
+   */
+  public void login(final Component uiParent) {
+    final LobbyServerProperties lobbyServerProperties =
+        new LobbyServerPropertiesFetcher().fetchLobbyServerProperties();
+    final LobbyLogin login =
+        new LobbyLogin(JOptionPane.getFrameForComponent(uiParent), lobbyServerProperties);
+
+    Optional.ofNullable(login.login())
+        .ifPresent(
+            lobbyClient -> {
+              final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyServerProperties);
+              GameRunner.hideMainFrame();
+              lobbyFrame.setVisible(true);
+            });
   }
 }
