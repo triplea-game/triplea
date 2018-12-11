@@ -9,7 +9,6 @@ import javax.swing.SwingUtilities;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.engine.config.client.LobbyServerPropertiesFetcher;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
@@ -20,6 +19,7 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.ScreenChangeListener;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
+import games.strategy.engine.lobby.client.login.LobbyServerPropertiesFetcher;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package games.strategy.engine.config.client;
+package games.strategy.engine.lobby.client.login;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +10,6 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.map.download.DownloadUtils;
-import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
