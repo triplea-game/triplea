@@ -20,6 +20,9 @@ TripleA is an open source gaming community, free to play, 100% open source and v
 - [Feature requests](https://forums.triplea-game.org/category/42/feature-requests-and-ideas)
 - [Gitter](https://gitter.im/triplea-game/social)
 
+## Up-Time Reports
+- [Lobby and Forums](https://stats.uptimerobot.com/14RYqsN5m)
+- [Game Hosting Bots](https://stats.uptimerobot.com/2WVgrCzO4)
 
 ## Documentation Links
 - Developer, getting started: https://github.com/triplea-game/triplea/tree/master/docs/dev
