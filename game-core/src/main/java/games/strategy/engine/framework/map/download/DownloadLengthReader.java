@@ -1,5 +1,5 @@
 package games.strategy.engine.framework.map.download;
-// TODO: move to package games.strategy.engine.framework.map.download
+// TODO: move to package games.strategy.engine.framework.map.download.client
 
 import java.io.IOException;
 import java.util.Optional;

@@ -1,5 +1,5 @@
 package games.strategy.engine.framework.map.download;
-// TODO: move to package games.strategy.engine.framework.map.download
+// TODO: move to package games.strategy.engine.framework.map.download.client
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
