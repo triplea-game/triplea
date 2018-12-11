@@ -1,4 +1,4 @@
-package games.strategy.engine.config.client;
+package games.strategy.engine.lobby.client.login;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -9,9 +9,9 @@ import org.triplea.test.common.Integration;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
 @Integration
-public class LobbyServerPropertiesFetcherIntegrationTest extends AbstractClientSettingTestCase {
+class LobbyServerPropertiesFetcherIntegrationTest extends AbstractClientSettingTestCase {
   @Test
-  public void remoteLobbyUrlReaderWorks() {
+  void remoteLobbyUrlReaderWorks() {
 
     final LobbyServerPropertiesFetcher testObj = new LobbyServerPropertiesFetcher();
 

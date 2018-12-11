@@ -32,7 +32,7 @@ public class LobbyServerProperties {
    * @param host The host address of the lobby, typically an IP address
    * @param port The port the lobby is listening on
    */
-  public LobbyServerProperties(final String host, final int port) {
+  LobbyServerProperties(final String host, final int port) {
     this.host = host;
     this.port = port;
     this.serverErrorMessage = "";
@@ -45,7 +45,7 @@ public class LobbyServerProperties {
    *
    * @param yamlProps Yaml object with lobby properties from the point of view of the game client.
    */
-  public LobbyServerProperties(final Map<String, Object> yamlProps) {
+  LobbyServerProperties(final Map<String, Object> yamlProps) {
     this.host = (String) yamlProps.get("host");
     this.port = (Integer) yamlProps.get("port");
     this.serverMessage = Strings.nullToEmpty((String) yamlProps.get("message"));

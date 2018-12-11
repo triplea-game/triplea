@@ -1,4 +1,4 @@
-package games.strategy.engine.config.client;
+package games.strategy.engine.lobby.client.login;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -11,10 +11,9 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.util.Version;
 
-public class LobbyPropertyFileParserTest {
+class LobbyPropertyFileParserTest {
 
   private static TestProps[] testDataSet() {
     final TestProps testProps1 = new TestProps();
@@ -48,7 +47,7 @@ public class LobbyPropertyFileParserTest {
    * straight forward 1:1
    */
   @Test
-  public void parseWithSimpleCase() throws Exception {
+  void parseWithSimpleCase() throws Exception {
     final TestProps testProps = new TestProps();
     testProps.host = TestData.host;
     testProps.port = TestData.port;
@@ -82,7 +81,7 @@ public class LobbyPropertyFileParserTest {
    * line up and we get the expected lobby config back.
    */
   @Test
-  public void checkVersionSelection() throws Exception {
+  void checkVersionSelection() throws Exception {
     final File testFile = createTempFile(testDataSet());
 
     final LobbyServerProperties result =

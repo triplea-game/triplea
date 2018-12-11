@@ -1,4 +1,4 @@
-package games.strategy.engine.config.client;
+package games.strategy.engine.lobby.client.login;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -13,7 +13,6 @@ import org.yaml.snakeyaml.Yaml;
 import com.github.openjson.JSONArray;
 import com.github.openjson.JSONObject;
 
-import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.OpenJsonUtils;
 import games.strategy.util.Version;

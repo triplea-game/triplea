@@ -1,4 +1,4 @@
-package games.strategy.engine.config.client;
+package games.strategy.engine.lobby.client.login;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -19,31 +19,30 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import games.strategy.engine.framework.map.download.DownloadUtils;
-import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.util.OptionalUtils;
 import games.strategy.util.Version;
 
 @ExtendWith(MockitoExtension.class)
-public class LobbyServerPropertiesFetcherTest {
+class LobbyServerPropertiesFetcherTest {
   @Mock
   private LobbyLocationFileDownloader mockFileDownloader;
 
   private LobbyServerPropertiesFetcher testObj;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     testObj = new LobbyServerPropertiesFetcher(mockFileDownloader);
   }
 
   @ExtendWith(MockitoExtension.class)
   @Nested
-  public final class DownloadAndParseRemoteFileTest {
+  final class DownloadAndParseRemoteFileTest {
     /**
      * Happy case test path, download file, parse it, return values parsed.
      */
     @Test
-    public void happyCase() throws Exception {
+    void happyCase() throws Exception {
       givenHappyCase();
 
       final LobbyServerProperties result = testObj.downloadAndParseRemoteFile(TestData.url,
@@ -59,7 +58,7 @@ public class LobbyServerPropertiesFetcherTest {
     }
 
     @Test
-    public void throwsOnDownloadFailure() {
+    void throwsOnDownloadFailure() {
       assertThrows(IOException.class, () -> {
         when(mockFileDownloader.download(TestData.url)).thenReturn(DownloadUtils.FileDownloadResult.FAILURE);
 
@@ -70,7 +69,7 @@ public class LobbyServerPropertiesFetcherTest {
 
   @ExtendWith(MockitoExtension.class)
   @Nested
-  public final class GetTestOverridePropertiesTest {
+  final class GetTestOverridePropertiesTest {
     @Mock
     private GameSetting<String> testLobbyHostSetting;
 
@@ -120,7 +119,7 @@ public class LobbyServerPropertiesFetcherTest {
     }
 
     @Test
-    public void shouldReturnEmptyWhenHostNotSetAndPortNotSet() {
+    void shouldReturnEmptyWhenHostNotSetAndPortNotSet() {
       givenTestLobbyHostIsNotSet();
 
       whenGetTestOverrideProperties();
@@ -129,7 +128,7 @@ public class LobbyServerPropertiesFetcherTest {
     }
 
     @Test
-    public void shouldReturnEmptyWhenHostSetAndPortNotSet() {
+    void shouldReturnEmptyWhenHostSetAndPortNotSet() {
       givenTestLobbyHostIsSet();
       givenTestLobbyPortIsNotSet();
 
@@ -139,7 +138,7 @@ public class LobbyServerPropertiesFetcherTest {
     }
 
     @Test
-    public void shouldReturnEmptyWhenHostNotSetAndPortSet() {
+    void shouldReturnEmptyWhenHostNotSetAndPortSet() {
       givenTestLobbyHostIsNotSet();
 
       whenGetTestOverrideProperties();
@@ -148,7 +147,7 @@ public class LobbyServerPropertiesFetcherTest {
     }
 
     @Test
-    public void shouldReturnPropertiesWhenHostSetAndPortSet() {
+    void shouldReturnPropertiesWhenHostSetAndPortSet() {
       givenTestLobbyHostIsSetTo("foo");
       givenTestLobbyPortIsSetTo(4242);
 
