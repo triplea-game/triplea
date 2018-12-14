@@ -1307,7 +1307,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
 
   /**
    * Returns a predicate that indicates whether the territory contains one of the required combos of units
-   * (and if 'doNotCountNeighbors' is false, and unit is Sea unit, will return true if an adjacent land
+   * (and if 'doNotCountNeighbors' is false, and territory is water, will return true if an adjacent land
    * territory has one of the required combos as well).
    *
    * @param to - Territory we are testing for required units
@@ -1325,15 +1325,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
           .test(unitWhichRequiresUnits)) {
         return true;
       }
-      if (!doNotCountNeighbors) {
-        if (Matches.unitIsSea().test(unitWhichRequiresUnits)) {
-          for (final Territory current : getAllProducers(to, player,
-              Collections.singletonList(unitWhichRequiresUnits), true)) {
-            final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
-            if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
-                .test(unitWhichRequiresUnits)) {
-              return true;
-            }
+      if (!doNotCountNeighbors && to.isWater()) {
+        for (final Territory current : getAllProducers(to, player,
+            Collections.singletonList(unitWhichRequiresUnits), true)) {
+          final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
+          if (Matches.unitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent)
+              .test(unitWhichRequiresUnits)) {
+            return true;
           }
         }
       }
