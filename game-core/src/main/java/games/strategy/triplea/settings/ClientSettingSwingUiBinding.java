@@ -313,8 +313,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     public SelectionComponent<JComponent> newSelectionComponent() {
       return SelectionComponentFactory.forumPosterSettings(
           ClientSetting.tripleaForumUsername,
-          ClientSetting.tripleaForumPassword
-      );
+          ClientSetting.tripleaForumPassword);
     }
   },
 
@@ -326,8 +325,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     public SelectionComponent<JComponent> newSelectionComponent() {
       return SelectionComponentFactory.forumPosterSettings(
           ClientSetting.aaForumUsername,
-          ClientSetting.aaForumPassword
-      );
+          ClientSetting.aaForumPassword);
     }
   };
 
