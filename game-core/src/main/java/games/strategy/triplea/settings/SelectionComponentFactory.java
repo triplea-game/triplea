@@ -604,14 +604,14 @@ final class SelectionComponentFactory {
 
       @Override
       public void resetToDefault() {
-        usernameField.setText(credentialToString(usernameSetting::getValue));
-        passwordField.setText(credentialToString(passwordSetting::getValue));
+        usernameField.setText(credentialToString(usernameSetting::getDefaultValue));
+        passwordField.setText(credentialToString(passwordSetting::getDefaultValue));
       }
 
       @Override
       public void reset() {
-        usernameField.setText(credentialToString(usernameSetting::getDefaultValue));
-        passwordField.setText(credentialToString(passwordSetting::getDefaultValue));
+        usernameField.setText(credentialToString(usernameSetting::getValue));
+        passwordField.setText(credentialToString(passwordSetting::getValue));
       }
     };
   }
