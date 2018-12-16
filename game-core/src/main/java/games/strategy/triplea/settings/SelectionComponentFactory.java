@@ -570,8 +570,7 @@ final class SelectionComponentFactory {
 
   static SelectionComponent<JComponent> forumPosterSettings(
       final ClientSetting<char[]> usernameSetting,
-      final ClientSetting<char[]> passwordSetting
-  ) {
+      final ClientSetting<char[]> passwordSetting) {
     return new AlwaysValidInputSelectionComponent() {
 
       private JTextField usernameField = new JTextField(credentialToString(usernameSetting::getValue), 20);
