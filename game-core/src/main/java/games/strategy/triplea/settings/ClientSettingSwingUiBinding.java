@@ -303,6 +303,30 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           ClientSetting.emailUsername,
           ClientSetting.emailPassword);
     }
+  },
+
+  TRIPLEA_FORUM_SETTINGS(
+      "TripleA Forum Settings",
+      SettingType.PLAY_BY_FORUM_EMAIL,
+      "Configure the login credentials of the TripleA Forum") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return SelectionComponentFactory.forumPosterSettings(
+          ClientSetting.tripleaForumUsername,
+          ClientSetting.tripleaForumPassword);
+    }
+  },
+
+  AXIS_AND_ALLIES_FORUM_SETTINGS(
+      "Axis & Allies Forum Settings",
+      SettingType.PLAY_BY_FORUM_EMAIL,
+      "Configure the login credentials of the Axis & Allies Forum") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return SelectionComponentFactory.forumPosterSettings(
+          ClientSetting.aaForumUsername,
+          ClientSetting.aaForumPassword);
+    }
   };
 
   @Getter(onMethod_ = {@Override})
