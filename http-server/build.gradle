@@ -21,14 +21,14 @@ jar {
     }
 }
 
-task httpServerArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
     from(shadowJar.outputs) {
         into 'bin'
     }
 }
 
-task release(group: 'release', dependsOn: httpServerArchive) {
+task release(group: 'release', dependsOn: portableInstaller) {
     doLast {
-        publishArtifacts(httpServerArchive.outputs.files)
+        publishArtifacts(portableInstaller.outputs.files)
     }
 }

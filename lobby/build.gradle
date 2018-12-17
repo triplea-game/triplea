@@ -22,7 +22,7 @@ jar {
     }
 }
 
-task lobbyArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
     from('config') {
         into 'config'
     }
@@ -31,8 +31,8 @@ task lobbyArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
     }
 }
 
-task release(group: 'release', dependsOn: lobbyArchive) {
+task release(group: 'release', dependsOn: portableInstaller) {
     doLast {
-        publishArtifacts(lobbyArchive.outputs.files)
+        publishArtifacts(portableInstaller.outputs.files)
     }
 }
