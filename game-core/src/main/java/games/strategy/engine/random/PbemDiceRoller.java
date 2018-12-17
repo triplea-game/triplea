@@ -188,7 +188,7 @@ public class PbemDiceRoller implements IRandomSource {
       }
       reRollButton.setEnabled(false);
       exitButton.setEnabled(false);
-      new Thread(this::rollInSeperateThread, "Triplea, roll in seperate thread").start();
+      new Thread(this::rollInSeparateThread, "Triplea, roll in separate thread").start();
     }
 
     private void closeAndReturn() {
@@ -205,7 +205,7 @@ public class PbemDiceRoller implements IRandomSource {
      * opening) will close the window and notify any waiting threads when completed successfully.
      * Before contacting Irony Dice Server, check if email has a reasonable valid syntax.
      */
-    private void rollInSeperateThread() throws IllegalStateException {
+    private void rollInSeparateThread() throws IllegalStateException {
       if (SwingUtilities.isEventDispatchThread()) {
         throw new IllegalStateException("Wrong thread");
       }

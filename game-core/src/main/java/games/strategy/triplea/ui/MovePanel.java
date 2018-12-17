@@ -46,7 +46,7 @@ import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.ObjectUtils;
@@ -195,7 +195,7 @@ public class MovePanel extends AbstractMovePanel {
 
     // Are the transports all of the same type and if they are, then don't ask
     final Collection<UnitCategory> categories =
-        UnitSeperator.categorize(candidateTransports, mustMoveWithDetails.getMustMoveWith(), true, false);
+        UnitSeparator.categorize(candidateTransports, mustMoveWithDetails.getMustMoveWith(), true, false);
     if (categories.size() == 1) {
       return unitsToUnload;
     }
@@ -234,11 +234,11 @@ public class MovePanel extends AbstractMovePanel {
           if (transporting == null) {
             continue;
           }
-          final Collection<UnitCategory> transCategories = UnitSeperator.categorize(transporting);
+          final Collection<UnitCategory> transCategories = UnitSeparator.categorize(transporting);
           final Iterator<Unit> unitIter = availableUnits.iterator();
           while (unitIter.hasNext()) {
             final Unit unit = unitIter.next();
-            final Collection<UnitCategory> unitCategory = UnitSeperator.categorize(Collections.singleton(unit));
+            final Collection<UnitCategory> unitCategory = UnitSeparator.categorize(Collections.singleton(unit));
 
             // Is one of the transported units of the same type we want to unload?
             if (!Collections.disjoint(transCategories, unitCategory)) {
@@ -663,7 +663,7 @@ public class MovePanel extends AbstractMovePanel {
         return candidateTransports;
       }
       // all the same type, dont ask unless we have more than 1 unit type
-      if (UnitSeperator.categorize(candidateTransports, endMustMoveWith.getMustMoveWith(), true, false).size() == 1
+      if (UnitSeparator.categorize(candidateTransports, endMustMoveWith.getMustMoveWith(), true, false).size() == 1
           && unitsToLoad.size() == 1) {
         return candidateTransports;
       }
@@ -1142,7 +1142,7 @@ public class MovePanel extends AbstractMovePanel {
     boolean mustQueryUser = initialMustQueryUser;
     if (!mustQueryUser) {
       final Set<UnitCategory> categories =
-          UnitSeperator.categorize(candidateUnits, mustMoveWithDetails.getMustMoveWith(), true, false);
+          UnitSeparator.categorize(candidateUnits, mustMoveWithDetails.getMustMoveWith(), true, false);
       for (final UnitCategory category1 : categories) {
         // we cant move these, dont bother to check
         if (category1.getMovement() == 0) {
