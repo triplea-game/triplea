@@ -62,6 +62,10 @@ public final class Properties implements Constants {
     return data.getProperties().get(ROCKETS_CAN_FLY_OVER_IMPASSABLES, false);
   }
 
+  public static boolean getSequentiallyTargetedRockets(final GameData data) {
+    return data.getProperties().get(TARGET_ROCKETS_SEQUENTIALLY_AND_AFTER_SBR, false);
+  }
+
   /**
    * Pacific Theater.
    */
@@ -172,13 +176,6 @@ public final class Properties implements Constants {
    */
   public static boolean getSbrVictoryPoints(final GameData data) {
     return data.getProperties().get(SBR_VICTORY_POINTS, false);
-  }
-
-  /**
-   * Allow x rocket attack(s) per defending factory.
-   */
-  public static boolean getRocketAttacksPerFactoryInfinite(final GameData data) {
-    return data.getProperties().get(ROCKET_ATTACKS_PER_FACTORY_INFINITE, false);
   }
 
   /**

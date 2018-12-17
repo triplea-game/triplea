@@ -189,13 +189,11 @@ public class MoveDelegate extends AbstractMoveDelegate {
       removeAirThatCantLand();
     }
 
-    // WW2V2/WW2V3, fires at end of combat move
-    // WW2V1, fires at end of non combat move
-    if (GameStepPropertiesHelper.isFireRockets(data)) {
-      if (needToDoRockets && TechTracker.hasRocket(bridge.getPlayerId())) {
-        RocketsFireHelper.fireRockets(bridge, bridge.getPlayerId());
-        needToDoRockets = false;
-      }
+    // WW2V1, fires at end of non combat move.
+    // Other versions fire Rockets in BattleDelegate
+    if (needToDoRockets && GameStepPropertiesHelper.isNonCombatMove(data, true)) {
+      RocketsFireHelper.fireWW2V1IfNeeded(bridge);
+      needToDoRockets = false;
     }
 
     // do at the end of the round, if we do it at the start of non combat, then we may do it in the middle of the round,

@@ -60,6 +60,7 @@ public interface Constants {
   String PROJECTION_OF_POWER = "Projection of Power";
   String ALL_ROCKETS_ATTACK = "All Rockets Attack";
   String ROCKETS_CAN_FLY_OVER_IMPASSABLES = "Rockets Can Fly Over Impassables";
+  String TARGET_ROCKETS_SEQUENTIALLY_AND_AFTER_SBR = "Target Rockets Sequentially and After SBR";
   String NEUTRALS_ARE_IMPASSABLE = "Neutrals Are Impassable";
   String NEUTRALS_ARE_BLITZABLE = "Neutrals Are Blitzable";
   String PARTIAL_AMPHIBIOUS_RETREAT = "Partial Amphibious Retreat";
@@ -76,7 +77,6 @@ public interface Constants {
   String ROLL_AA_INDIVIDUALLY = "Roll AA Individually";
   String LIMIT_ROCKET_AND_SBR_DAMAGE_TO_PRODUCTION = "Limit SBR Damage To Factory Production";
   String SBR_VICTORY_POINTS = "SBR Victory Points";
-  String ROCKET_ATTACKS_PER_FACTORY_INFINITE = "Rocket Attacks Per Factory Infinite";
   String LIMIT_SBR_DAMAGE_PER_TURN = "Limit SBR Damage Per Turn";
   String LIMIT_ROCKET_DAMAGE_PER_TURN = "Limit Rocket Damage Per Turn";
   String ALLIED_AIR_INDEPENDENT = "Allied Air Independent";

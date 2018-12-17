@@ -10,11 +10,14 @@ class BattleExtendedDelegateState implements Serializable {
   BattleTracker battleTracker = new BattleTracker();
   public boolean needToInitialize;
   boolean needToScramble;
+  boolean needToCreateRockets;
   boolean needToKamikazeSuicideAttacks;
   boolean needToClearEmptyAirBattleAttacks;
   boolean needToAddBombardmentSources;
+  boolean needToFireRockets;
   boolean needToRecordBattleStatistics;
   boolean needToCheckDefendingPlanesCanLand;
   boolean needToCleanup;
+  RocketsFireHelper rocketHelper;
   IBattle currentBattle;
 }

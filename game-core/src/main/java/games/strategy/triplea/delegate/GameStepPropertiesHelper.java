@@ -137,26 +137,6 @@ public final class GameStepPropertiesHelper {
   }
 
   /**
-   * Fire rockets after phase is over. Normally would occur after combat move for WW2v2 and WW2v3, and after noncombat
-   * move for WW2v1.
-   */
-  static boolean isFireRockets(final GameData data) {
-    data.acquireReadLock();
-    try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.FIRE_ROCKETS);
-      if (prop != null) {
-        return Boolean.parseBoolean(prop);
-      } else if (Properties.getWW2V2(data) || Properties.getWW2V3(data)) {
-        return isCombatDelegate(data);
-      }
-      return isNonCombatDelegate(data);
-
-    } finally {
-      data.releaseReadLock();
-    }
-  }
-
-  /**
    * Repairs damaged units. Normally would occur at either start of combat move or end of turn, depending.
    */
   static boolean isRepairUnits(final GameData data) {
@@ -289,6 +269,7 @@ public final class GameStepPropertiesHelper {
   }
 
   private static boolean isCombatDelegate(final GameData data) {
+    // NonCombatMove endsWith CombatMove so check for NCM first
     return !data.getSequence().getStep().getName().endsWith("NonCombatMove")
         && data.getSequence().getStep().getName().endsWith("CombatMove");
   }
