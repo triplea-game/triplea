@@ -53,7 +53,7 @@ public class TripleA implements IGameLoader {
   protected transient IGame game;
 
   @Override
-  public Set<IGamePlayer> createPlayers(final Map<String, PlayerType> playerNames) {
+  public Set<IGamePlayer> newPlayers(final Map<String, PlayerType> playerNames) {
     return playerNames.entrySet()
         .stream()
         .map(TripleA::toGamePlayer)
@@ -62,7 +62,7 @@ public class TripleA implements IGameLoader {
 
   private static IGamePlayer toGamePlayer(final Map.Entry<String, PlayerType> namePlayerType) {
     return namePlayerType.getValue()
-        .createPlayerWithName(namePlayerType.getKey());
+        .newPlayerWithName(namePlayerType.getKey());
   }
 
   @Override
@@ -153,7 +153,7 @@ public class TripleA implements IGameLoader {
   }
 
   @Override
-  public Unit createUnit(final UnitType type, final PlayerId owner, final GameData data) {
+  public Unit newUnit(final UnitType type, final PlayerId owner, final GameData data) {
     return new TripleAUnit(type, owner, data);
   }
 }

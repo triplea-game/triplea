@@ -227,12 +227,12 @@ public final class PointFileReaderWriter {
       while (pointMatcher.find()) {
         points.add(new Point(Integer.parseInt(pointMatcher.group(1)), Integer.parseInt(pointMatcher.group(2))));
       }
-      polygons.add(createPolygonFromPoints(points));
+      polygons.add(newPolygonFromPoints(points));
     }
     mapping.put(name, polygons);
   }
 
-  private static Polygon createPolygonFromPoints(final List<Point> points) {
+  private static Polygon newPolygonFromPoints(final List<Point> points) {
     return new Polygon(
         points.stream().mapToInt(it -> it.x).toArray(),
         points.stream().mapToInt(it -> it.y).toArray(),

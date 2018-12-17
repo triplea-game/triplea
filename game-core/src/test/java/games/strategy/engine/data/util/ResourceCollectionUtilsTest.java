@@ -36,18 +36,18 @@ public final class ResourceCollectionUtilsTest {
 
   @BeforeEach
   public void setUp() {
-    pus = createResource(Constants.PUS);
-    techTokens = createResource(Constants.TECH_TOKENS);
-    vps = createResource(Constants.VPS);
+    pus = newResource(Constants.PUS);
+    techTokens = newResource(Constants.TECH_TOKENS);
+    vps = newResource(Constants.VPS);
   }
 
-  private Resource createResource(final String name) {
+  private Resource newResource(final String name) {
     return new Resource(name, data);
   }
 
   @Test
   public void testExcludeByResources_ShouldExcludeSpecifiedResources() {
-    final ResourceCollection unfiltered = createResourceCollection(pus, techTokens, vps);
+    final ResourceCollection unfiltered = newResourceCollection(pus, techTokens, vps);
 
     final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, pus, vps);
 
@@ -56,7 +56,7 @@ public final class ResourceCollectionUtilsTest {
     assertThat(filtered.getQuantity(vps), is(0));
   }
 
-  private ResourceCollection createResourceCollection(final Resource... resources) {
+  private ResourceCollection newResourceCollection(final Resource... resources) {
     final ResourceCollection resourceCollection = new ResourceCollection(data);
     resourceCollection.add(new IntegerMap<>(Arrays.stream(resources).collect(toMap(Function.identity(), r -> 42))));
     return resourceCollection;
@@ -64,8 +64,8 @@ public final class ResourceCollectionUtilsTest {
 
   @Test
   public void testExcludeByResources_ShouldIgnoreUnregisteredResources() {
-    final Resource gold = createResource("gold");
-    final ResourceCollection unfiltered = createResourceCollection(pus);
+    final Resource gold = newResource("gold");
+    final ResourceCollection unfiltered = newResourceCollection(pus);
 
     final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, gold);
 
@@ -75,7 +75,7 @@ public final class ResourceCollectionUtilsTest {
   @Test
   public void testExcludeByNames_ShouldExcludeSpecifiedResources() {
     givenGameResources(pus, vps);
-    final ResourceCollection unfiltered = createResourceCollection(pus, techTokens, vps);
+    final ResourceCollection unfiltered = newResourceCollection(pus, techTokens, vps);
 
     final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, pus.getName(), vps.getName());
 
@@ -94,9 +94,9 @@ public final class ResourceCollectionUtilsTest {
 
   @Test
   public void testExcludeByNames_ShouldIgnoreUnregisteredResourceNames() {
-    final Resource gold = createResource("gold");
+    final Resource gold = newResource("gold");
     givenGameResources();
-    final ResourceCollection unfiltered = createResourceCollection(pus);
+    final ResourceCollection unfiltered = newResourceCollection(pus);
 
     final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, gold.getName());
 
@@ -105,9 +105,9 @@ public final class ResourceCollectionUtilsTest {
 
   @Test
   public void testGetProductionResources_ShouldIncludeAllResourcesExceptTechTokensAndVPs() {
-    final Resource gold = createResource("gold");
+    final Resource gold = newResource("gold");
     givenGameResources(techTokens, vps);
-    final ResourceCollection unfiltered = createResourceCollection(gold, pus, techTokens, vps);
+    final ResourceCollection unfiltered = newResourceCollection(gold, pus, techTokens, vps);
 
     final ResourceCollection filtered = ResourceCollectionUtils.getProductionResources(unfiltered);
 

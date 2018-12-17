@@ -138,7 +138,7 @@ public class HeadedUiContext extends AbstractUiContext {
   }
 
   @Override
-  public JLabel createUnitImageJLabel(final UnitType type, final PlayerId player,
+  public JLabel newUnitImageLabel(final UnitType type, final PlayerId player,
       final UnitDamage damaged, final UnitEnable disabled) {
     final Optional<ImageIcon> image = getUnitImageFactory().getIcon(type, player, damaged == UnitDamage.DAMAGED,
         disabled == UnitEnable.DISABLED);

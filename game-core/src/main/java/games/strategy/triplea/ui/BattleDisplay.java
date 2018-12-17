@@ -191,11 +191,11 @@ public class BattleDisplay extends JPanel {
     }
     for (final UnitCategory category : UnitSeparator.categorize(killedUnits, dependentsMap, false, false)) {
       final JPanel panel = new JPanel();
-      JLabel unit = uiContext.createUnitImageJLabel(category.getType(), category.getOwner());
+      JLabel unit = uiContext.newUnitImageLabel(category.getType(), category.getOwner());
       panel.add(unit);
       panel.add(new JLabel("x " + category.getUnits().size()));
       for (final UnitOwner owner : category.getDependents()) {
-        unit = uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner());
+        unit = uiContext.newUnitImageLabel(owner.getType(), owner.getOwner());
         panel.add(unit);
         // TODO this size is of the transport collection size, not the transportED collection size.
         panel.add(new JLabel("x " + category.getUnits().size()));
@@ -417,7 +417,7 @@ public class BattleDisplay extends JPanel {
       final int width = 250;
       final int height = 250;
       final Image img = mapPanel.getTerritoryImage(list.getSelectedValue(), location);
-      final Image finalImage = Util.createImage(width, height, true);
+      final Image finalImage = Util.newImage(width, height, true);
       final Graphics g = finalImage.getGraphics();
       g.drawImage(img, 0, 0, width, height, this);
       g.dispose();
@@ -622,7 +622,7 @@ public class BattleDisplay extends JPanel {
   private static final int MY_HEIGHT = 100;
 
   private JComponent getTerritoryComponent() {
-    final Image finalImage = Util.createImage(MY_WIDTH, MY_HEIGHT, true);
+    final Image finalImage = Util.newImage(MY_WIDTH, MY_HEIGHT, true);
     final Image territory = mapPanel.getTerritoryImage(location);
     final Graphics g = finalImage.getGraphics();
     g.drawImage(territory, 0, 0, MY_WIDTH, MY_HEIGHT, this);
@@ -897,7 +897,7 @@ public class BattleDisplay extends JPanel {
         // when units are killed.)
         MapUnitTooltipManager.setUnitTooltip(unit, category.getType(), category.getOwner(), 1);
         for (final UnitOwner owner : category.getDependents()) {
-          unit.add(uiContext.createUnitImageJLabel(owner.getType(), owner.getOwner()));
+          unit.add(uiContext.newUnitImageLabel(owner.getType(), owner.getOwner()));
         }
         panel.add(new JLabel("x " + category.getUnits().size()));
         if (damaged) {

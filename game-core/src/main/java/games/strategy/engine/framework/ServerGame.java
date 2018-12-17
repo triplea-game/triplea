@@ -233,7 +233,7 @@ public class ServerGame extends AbstractGame {
       return;
     }
     final Object wrappedDelegate =
-        delegateExecutionManager.createInboundImplementation(delegate, new Class<?>[] {delegate.getRemoteType()});
+        delegateExecutionManager.newInboundImplementation(delegate, new Class<?>[] {delegate.getRemoteType()});
     final RemoteName descriptor = getRemoteName(delegate);
     remoteMessenger.registerRemote(wrappedDelegate, descriptor);
   }
@@ -475,7 +475,7 @@ public class ServerGame extends AbstractGame {
       final DefaultDelegateBridge bridge = new DefaultDelegateBridge(gameData, this,
           new DelegateHistoryWriter(channelMessenger), randomStats, delegateExecutionManager);
       if (delegateRandomSource == null) {
-        delegateRandomSource = (IRandomSource) delegateExecutionManager.createOutboundImplementation(randomSource,
+        delegateRandomSource = (IRandomSource) delegateExecutionManager.newOutboundImplementation(randomSource,
             new Class<?>[] {IRandomSource.class});
       }
       bridge.setRandomSource(delegateRandomSource);
@@ -494,7 +494,7 @@ public class ServerGame extends AbstractGame {
     final DefaultDelegateBridge bridge = new DefaultDelegateBridge(gameData, this,
         new DelegateHistoryWriter(channelMessenger), randomStats, delegateExecutionManager);
     if (delegateRandomSource == null) {
-      delegateRandomSource = (IRandomSource) delegateExecutionManager.createOutboundImplementation(randomSource,
+      delegateRandomSource = (IRandomSource) delegateExecutionManager.newOutboundImplementation(randomSource,
           new Class<?>[] {IRandomSource.class});
     }
     bridge.setRandomSource(delegateRandomSource);

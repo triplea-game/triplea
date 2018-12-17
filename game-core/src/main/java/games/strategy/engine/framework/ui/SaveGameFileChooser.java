@@ -24,7 +24,7 @@ public final class SaveGameFileChooser extends JFileChooser {
   }
 
   private SaveGameFileChooser() {
-    setFileFilter(createGameDataFileFilter());
+    setFileFilter(newGameDataFileFilter());
     final File saveGamesFolder = ClientSetting.saveGamesFolderPath.getValueOrThrow().toFile();
     ensureDirectoryExists(saveGamesFolder);
     setCurrentDirectory(saveGamesFolder);
@@ -39,7 +39,7 @@ public final class SaveGameFileChooser extends JFileChooser {
     }
   }
 
-  private static FileFilter createGameDataFileFilter() {
+  private static FileFilter newGameDataFileFilter() {
     return new FileFilter() {
       @Override
       public boolean accept(final File file) {

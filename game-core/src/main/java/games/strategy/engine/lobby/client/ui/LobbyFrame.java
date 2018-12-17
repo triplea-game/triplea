@@ -68,7 +68,7 @@ public class LobbyFrame extends JFrame {
     chatPlayers.addHiddenPlayerName(LobbyConstants.ADMIN_USERNAME);
     chatPlayers.setChat(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
-    chatPlayers.addActionFactory(this::createAdminActions);
+    chatPlayers.addActionFactory(this::newAdminActions);
     final LobbyGamePanel gamePanel = new LobbyGamePanel(this.client.getMessengers());
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -105,7 +105,7 @@ public class LobbyFrame extends JFrame {
     }
   }
 
-  private List<Action> createAdminActions(final INode clickedOn) {
+  private List<Action> newAdminActions(final INode clickedOn) {
     if (!client.isAdmin()) {
       return Collections.emptyList();
     }

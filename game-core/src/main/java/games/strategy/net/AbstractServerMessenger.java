@@ -591,7 +591,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   private TimerTask getUsernameUnmuteTask(final String username) {
-    return createUnmuteTimerTask(
+    return newUnmuteTimerTask(
         () -> isUsernameMutedInBackingStore(username),
         () -> liveMutedUsernames.remove(username));
   }
@@ -611,7 +611,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     return false;
   }
 
-  private TimerTask createUnmuteTimerTask(final BooleanSupplier isUserMuted, final Runnable unmuteUser) {
+  private TimerTask newUnmuteTimerTask(final BooleanSupplier isUserMuted, final Runnable unmuteUser) {
     return new TimerTask() {
       @Override
       public void run() {
@@ -625,7 +625,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   private TimerTask getMacUnmuteTask(final String mac) {
-    return createUnmuteTimerTask(
+    return newUnmuteTimerTask(
         () -> isMacMutedInBackingStore(mac),
         () -> liveMutedMacAddresses.remove(mac));
   }

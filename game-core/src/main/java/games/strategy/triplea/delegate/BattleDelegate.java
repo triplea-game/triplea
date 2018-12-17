@@ -1406,7 +1406,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       } else {
         final IntegerMap<Unit> hitMap = new IntegerMap<>();
         hitMap.put(unitUnderFire, hits);
-        change.add(createDamageChange(hitMap, bridge));
+        change.add(newDamageChange(hitMap, bridge));
       }
     }
     if (!change.isEmpty()) {
@@ -1429,10 +1429,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     for (final Unit u : damaged) {
       damagedMap.add(u, 1);
     }
-    bridge.addChange(createDamageChange(damagedMap, bridge));
+    bridge.addChange(newDamageChange(damagedMap, bridge));
   }
 
-  private static Change createDamageChange(final IntegerMap<Unit> damagedMap, final IDelegateBridge bridge) {
+  private static Change newDamageChange(final IntegerMap<Unit> damagedMap, final IDelegateBridge bridge) {
     final Set<Unit> units = new HashSet<>(damagedMap.keySet());
     for (final Unit u : units) {
       damagedMap.add(u, u.getHits());

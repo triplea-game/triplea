@@ -230,7 +230,7 @@ public class ClientModel implements IMessengerErrorListener {
     channelMessenger = new ChannelMessenger(unifiedMessenger);
     remoteMessenger = new RemoteMessenger(unifiedMessenger);
     channelMessenger.registerChannelSubscriber(channelListener, IClientChannel.CHANNEL_NAME);
-    chatPanel = ChatPanel.createChatPanel(messenger, channelMessenger, remoteMessenger, ServerModel.CHAT_NAME,
+    chatPanel = ChatPanel.newChatPanel(messenger, channelMessenger, remoteMessenger, ServerModel.CHAT_NAME,
         Chat.ChatSoundProfile.GAME_CHATROOM);
     if (getIsServerHeadlessTest()) {
       gameSelectorModel.setClientModelForHostBots(this);
@@ -318,7 +318,7 @@ public class ClientModel implements IMessengerErrorListener {
         .filter(e -> e.getValue() != null)
         .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
         .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerType.CLIENT_PLAYER));
-    final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
+    final Set<IGamePlayer> playerSet = data.getGameLoader().newPlayers(playerMapping);
     final Messengers messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
     game = new ClientGame(data, playerSet, players, messengers);
     new Thread(() -> {

@@ -369,16 +369,16 @@ public class TileManager {
     }
   }
 
-  public Image createTerritoryImage(final Territory t, final GameData data, final MapData mapData) {
-    return createTerritoryImage(t, t, data, mapData, true);
+  public Image newTerritoryImage(final Territory t, final GameData data, final MapData mapData) {
+    return newTerritoryImage(t, t, data, mapData, true);
   }
 
-  public Image createTerritoryImage(final Territory selected, final Territory focusOn, final GameData data,
+  public Image newTerritoryImage(final Territory selected, final Territory focusOn, final GameData data,
       final MapData mapData) {
-    return createTerritoryImage(selected, focusOn, data, mapData, false);
+    return newTerritoryImage(selected, focusOn, data, mapData, false);
   }
 
-  private Image createTerritoryImage(final Territory selected, final Territory focusOn, final GameData data,
+  private Image newTerritoryImage(final Territory selected, final Territory focusOn, final GameData data,
       final MapData mapData, final boolean drawOutline) {
     acquireLock();
     try {
@@ -417,7 +417,7 @@ public class TileManager {
           bounds.y = mapDataHeight - bounds.height;
         }
       }
-      final Image territoryImage = Util.createImage(squareLength, squareLength, false);
+      final Image territoryImage = Util.newImage(squareLength, squareLength, false);
       final Graphics2D graphics = (Graphics2D) territoryImage.getGraphics();
       graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
       graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,

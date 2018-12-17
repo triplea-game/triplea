@@ -75,7 +75,7 @@ public class DelegateExecutionManager {
    * is finished.
    * </p>
    */
-  public Object createOutboundImplementation(final Object implementor, final Class<?>[] interfaces) {
+  public Object newOutboundImplementation(final Object implementor, final Class<?>[] interfaces) {
     assertGameNotOver();
     final InvocationHandler ih = (proxy, method, args) -> {
       assertGameNotOver();
@@ -113,7 +113,7 @@ public class DelegateExecutionManager {
    * is finished.
    * </p>
    */
-  public Object createInboundImplementation(final Object implementor, final Class<?>[] interfaces) {
+  public Object newInboundImplementation(final Object implementor, final Class<?>[] interfaces) {
     assertGameNotOver();
     final InvocationHandler ih = new WrappedInvocationHandler(implementor) {
       @Override

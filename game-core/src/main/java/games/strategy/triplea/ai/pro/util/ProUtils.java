@@ -31,7 +31,7 @@ import games.strategy.util.Interruptibles;
  */
 public class ProUtils {
 
-  public static Map<Unit, Territory> createUnitTerritoryMap() {
+  public static Map<Unit, Territory> newUnitTerritoryMap() {
     final Map<Unit, Territory> unitTerritoryMap = new HashMap<>();
     for (final Territory t : ProData.getData().getMap().getTerritories()) {
       for (final Unit u : t.getUnits().getUnits()) {

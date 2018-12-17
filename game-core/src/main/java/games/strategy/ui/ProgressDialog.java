@@ -36,7 +36,7 @@ public final class ProgressDialog extends JDialog {
     setUndecorated(true);
 
     setLayout(new BorderLayout());
-    add(createContent(message), BorderLayout.CENTER);
+    add(newContent(message), BorderLayout.CENTER);
 
     pack();
 
@@ -44,7 +44,7 @@ public final class ProgressDialog extends JDialog {
     setLocationRelativeTo(owner);
   }
 
-  private static Component createContent(final String message) {
+  private static Component newContent(final String message) {
     final JPanel panel = new JPanel();
     panel.setBorder(new LineBorder(Color.BLACK));
     panel.setLayout(new BorderLayout());

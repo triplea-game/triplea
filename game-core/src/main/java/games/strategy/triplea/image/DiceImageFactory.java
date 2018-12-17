@@ -81,7 +81,7 @@ public class DiceImageFactory {
 
   private static Image drawFallbackDie(final int dieSide, final Color color) {
     final int pipSize = 6;
-    final Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT, true);
+    final Image canvas = Util.newImage(DIE_WIDTH, DIE_HEIGHT, true);
     final Graphics2D graphics = (Graphics2D) canvas.getGraphics();
     graphics.setColor(color);
     graphics.drawRoundRect(1, 1, DIE_WIDTH - 3, DIE_HEIGHT - 3, 5, 5);
@@ -128,7 +128,7 @@ public class DiceImageFactory {
       throw new IllegalArgumentException("Die can't be less than 0, value: " + i);
     }
     if (i > diceSides) {
-      final Image canvas = Util.createImage(DIE_WIDTH, DIE_HEIGHT, true);
+      final Image canvas = Util.newImage(DIE_WIDTH, DIE_HEIGHT, true);
       final Graphics graphics = canvas.getGraphics();
       graphics.setFont(new Font("Arial", Font.BOLD, 16));
       switch (type) {

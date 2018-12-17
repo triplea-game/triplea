@@ -24,14 +24,14 @@ interface GithubIssueClient {
       "Content-Type: application/json",
       "Accept: application/json"
   })
-  CreateIssueResponse createIssue(
+  CreateIssueResponse newIssue(
       final @HeaderMap Map<String, Object> headerMap,
       final @Param("org") String org,
       final @Param("repo") String repo,
       final CreateIssueRequest createIssueRequest);
 
 
-  default CreateIssueResponse createIssue(
+  default CreateIssueResponse newIssue(
       final String authToken,
       final String org,
       final String repo,
@@ -39,6 +39,6 @@ interface GithubIssueClient {
 
     final Map<String, Object> tokens = new HashMap<>();
     tokens.put("Authorization", "token " + authToken);
-    return createIssue(tokens, org, repo, createIssueRequest);
+    return newIssue(tokens, org, repo, createIssueRequest);
   }
 }

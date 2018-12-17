@@ -292,7 +292,7 @@ public final class TileImageFactory {
       // some images can be copied quickly to the screen
       // this step is a significant bottle neck in the image drawing process
       // we should try to find a way to avoid it, and load the png directly as the right type
-      image = Util.createImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
+      image = Util.newImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
       final Graphics2D g = (Graphics2D) image.getGraphics();
       if (scaled && scale != 1.0) {
         final AffineTransform transform = new AffineTransform();

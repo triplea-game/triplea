@@ -39,7 +39,7 @@ public class ChatPanel extends JPanel implements IChatPanel {
    * Note that if this method is being called on the EDT It will still work,
    * but the UI might freeze for a long time.
    */
-  public static ChatPanel createChatPanel(
+  public static ChatPanel newChatPanel(
       final IMessenger messenger,
       final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger,

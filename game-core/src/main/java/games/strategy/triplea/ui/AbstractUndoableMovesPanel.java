@@ -80,7 +80,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     final Dimension separatorSize = new Dimension(150, 20);
     while (iter.hasNext()) {
       final AbstractUndoableMove item = iter.next();
-      final JComponent moveComponent = createComponentForMove(item);
+      final JComponent moveComponent = newComponentForMove(item);
       scrollIncrement = moveComponent.getPreferredSize().height;
       items.add(moveComponent);
       if (iter.hasNext()) {
@@ -121,7 +121,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     SwingUtilities.invokeLater(this::validate);
   }
 
-  private JComponent createComponentForMove(final AbstractUndoableMove move) {
+  private JComponent newComponentForMove(final AbstractUndoableMove move) {
     final Box unitsBox = new Box(BoxLayout.X_AXIS);
     unitsBox.add(new JLabel((move.getIndex() + 1) + ") "));
     final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(move.getUnits());

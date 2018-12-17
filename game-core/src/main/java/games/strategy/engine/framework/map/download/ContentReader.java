@@ -37,7 +37,7 @@ final class ContentReader {
    * @param uri The URI whose contents will be downloaded
    */
   DownloadUtils.FileDownloadResult downloadToFile(final String uri) {
-    final File file = ClientFileSystemHelper.createTempFile();
+    final File file = ClientFileSystemHelper.newTempFile();
     file.deleteOnExit();
     try {
       downloadToFile(uri, file);

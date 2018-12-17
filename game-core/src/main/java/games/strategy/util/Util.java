@@ -35,7 +35,7 @@ public class Util {
     return emailAddress.matches(regex);
   }
 
-  public static String createUniqueTimeStamp() {
+  public static String newUniqueTimestamp() {
     final long time = System.currentTimeMillis();
     while (time == System.currentTimeMillis()) {
       Interruptibles.sleep(1);

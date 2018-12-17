@@ -74,7 +74,7 @@ public enum SettingsWindow {
     Preconditions.checkState(SwingUtilities.isEventDispatchThread());
     if (dialog == null) {
       dialog = GameRunner.newDialog("Settings");
-      dialog.setContentPane(createContents());
+      dialog.setContentPane(newContentPane());
       dialog.setMinimumSize(new Dimension(400, 50));
       dialog.pack();
       dialog.setLocationRelativeTo(dialog.getOwner());
@@ -87,7 +87,7 @@ public enum SettingsWindow {
     }
   }
 
-  private JComponent createContents() {
+  private JComponent newContentPane() {
     tabbedPane = SwingComponents.newJTabbedPane(1000, 400);
     Arrays.stream(SettingType.values())
         .forEach(settingType -> tabbedPane.add(settingType.tabTitle, buildTabPanel(getSettingsByType(settingType))));

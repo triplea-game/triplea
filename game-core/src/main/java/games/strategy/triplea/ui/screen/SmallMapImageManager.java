@@ -59,7 +59,7 @@ public class SmallMapImageManager {
     }
     final Rectangle bounds = new Rectangle(mapData.getBoundingRect(t.getName()));
     // create a large image for the territory
-    final Image largeImage = Util.createImage(bounds.width, bounds.height, true);
+    final Image largeImage = Util.newImage(bounds.width, bounds.height, true);
     // make it transparent
     // http://www-106.ibm.com/developerworks/library/j-begjava/
     {
@@ -89,7 +89,7 @@ public class SmallMapImageManager {
     final int thumbsX = (int) (bounds.x * view.getRatioX()) - 1;
     final int thumbsY = (int) (bounds.y * view.getRatioY()) - 1;
     // create the thumb image
-    final Image thumbImage = Util.createImage(thumbWidth, thumbHeight, true);
+    final Image thumbImage = Util.newImage(thumbWidth, thumbHeight, true);
     {
       final Graphics g = thumbImage.getGraphics();
       g.drawImage(largeImage, 0, 0, thumbImage.getWidth(null), thumbImage.getHeight(null), null);

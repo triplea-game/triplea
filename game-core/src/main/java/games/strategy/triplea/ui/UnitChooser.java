@@ -165,13 +165,13 @@ final class UnitChooser extends JPanel {
         UnitSeparator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
     final Collection<UnitCategory> defaultSelectionsCategorized =
         UnitSeparator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
-    final IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
+    final IntegerMap<UnitCategory> defaultValues = newDefaultSelectionsMap(defaultSelectionsCategorized);
     for (final UnitCategory category : categories) {
       addCategory(category, defaultValues.getInt(category));
     }
   }
 
-  private static IntegerMap<UnitCategory> createDefaultSelectionsMap(final Collection<UnitCategory> categories) {
+  private static IntegerMap<UnitCategory> newDefaultSelectionsMap(final Collection<UnitCategory> categories) {
     final IntegerMap<UnitCategory> defaultValues = new IntegerMap<>();
     for (final UnitCategory category : categories) {
       final int defaultValue = category.getUnits().size();

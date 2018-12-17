@@ -119,7 +119,7 @@ public final class MapPropertiesMaker {
       super("Map Properties Maker");
       setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       this.getContentPane().setLayout(new BorderLayout());
-      final JPanel panel = createPropertiesPanel();
+      final JPanel panel = newPropertiesPanel();
       this.getContentPane().add(new JScrollPane(panel), BorderLayout.CENTER);
       // set up the actions
       final Action saveAction = SwingAction.of("Save Properties", e -> saveProperties());
@@ -145,7 +145,7 @@ public final class MapPropertiesMaker {
       menuBar.add(fileMenu);
     }
 
-    private JPanel createPropertiesPanel() {
+    private JPanel newPropertiesPanel() {
       final JPanel panel = new JPanel();
       panel.setLayout(new GridBagLayout());
       int row = 0;

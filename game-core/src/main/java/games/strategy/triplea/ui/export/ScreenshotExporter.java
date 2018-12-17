@@ -89,7 +89,7 @@ public final class ScreenshotExporter {
     // print map panel to image
     final MapPanel mapPanel = frame.getMapPanel();
     final BufferedImage mapImage =
-        Util.createImage((int) (scale * mapPanel.getImageWidth()), (int) (scale * mapPanel.getImageHeight()), false);
+        Util.newImage((int) (scale * mapPanel.getImageWidth()), (int) (scale * mapPanel.getImageHeight()), false);
     final Graphics2D mapGraphics = mapImage.createGraphics();
     try {
       // workaround to get the whole map (otherwise the map is cut if current window is not on top of map)

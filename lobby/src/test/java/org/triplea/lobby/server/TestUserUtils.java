@@ -25,7 +25,7 @@ public final class TestUserUtils {
   }
 
   private static String newUsername() {
-    return "user_" + Util.createUniqueTimeStamp();
+    return "user_" + Util.newUniqueTimestamp();
   }
 
   private static InetAddress newInetAddress() {

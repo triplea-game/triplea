@@ -495,23 +495,23 @@ final class ViewMenu extends JMenu {
     unitSizeMenu.add(toggleFlags);
 
     final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
-    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Small", unitFlagSettingGroup,
+    unitSizeMenu.add(newFlagDrawModeRadioButtonItem("Small", unitFlagSettingGroup,
         UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
-    unitSizeMenu.add(createFlagDrawModeRadionButtonItem("Large", unitFlagSettingGroup,
+    unitSizeMenu.add(newFlagDrawModeRadioButtonItem("Large", unitFlagSettingGroup,
         UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
     add(unitSizeMenu);
   }
 
-  private JRadioButtonMenuItem createFlagDrawModeRadionButtonItem(final String text, final ButtonGroup group,
+  private JRadioButtonMenuItem newFlagDrawModeRadioButtonItem(final String text, final ButtonGroup group,
       final UnitsDrawer.UnitFlagDrawMode drawMode, final UnitsDrawer.UnitFlagDrawMode setting,
       final Preferences prefs) {
-    return createRadioButtonItem(text, group, e -> {
+    return newRadioButtonItem(text, group, e -> {
       UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
       frame.getMapPanel().resetMap();
     }, setting == drawMode);
   }
 
-  private static JRadioButtonMenuItem createRadioButtonItem(final String text, final ButtonGroup group,
+  private static JRadioButtonMenuItem newRadioButtonItem(final String text, final ButtonGroup group,
       final ActionListener action, final boolean selected) {
     final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
     buttonItem.addActionListener(action);

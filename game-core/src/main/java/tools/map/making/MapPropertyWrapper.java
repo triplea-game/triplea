@@ -106,7 +106,7 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     }
   }
 
-  private static List<MapPropertyWrapper<?>> createProperties(final Object object) {
+  private static List<MapPropertyWrapper<?>> newProperties(final Object object) {
     final List<MapPropertyWrapper<?>> properties = new ArrayList<>();
     for (final Method setter : object.getClass().getMethods()) {
       final boolean startsWithSet = setter.getName().startsWith("set");
@@ -143,9 +143,9 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     }
   }
 
-  static Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> createPropertiesUi(final Object object,
+  static Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> newPropertiesUi(final Object object,
       final boolean editable) {
-    final List<MapPropertyWrapper<?>> properties = createProperties(object);
+    final List<MapPropertyWrapper<?>> properties = newProperties(object);
     final PropertiesUi ui = new PropertiesUi(properties, editable);
     return Tuple.of(ui, properties);
   }

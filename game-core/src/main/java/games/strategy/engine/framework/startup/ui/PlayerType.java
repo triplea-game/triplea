@@ -20,7 +20,7 @@ import lombok.Getter;
 public enum PlayerType {
   HUMAN_PLAYER("Human") {
     @Override
-    public IGamePlayer createPlayerWithName(final String name) {
+    public IGamePlayer newPlayerWithName(final String name) {
       return new TripleAPlayer(name) {
         @Override
         public PlayerType getPlayerType() {
@@ -32,28 +32,28 @@ public enum PlayerType {
 
   WEAK_AI("Easy (AI)") {
     @Override
-    public IGamePlayer createPlayerWithName(final String name) {
+    public IGamePlayer newPlayerWithName(final String name) {
       return new WeakAi(name);
     }
   },
 
   FAST_AI("Fast (AI)") {
     @Override
-    public IGamePlayer createPlayerWithName(final String name) {
+    public IGamePlayer newPlayerWithName(final String name) {
       return new FastAi(name);
     }
   },
 
   PRO_AI("Hard (AI)") {
     @Override
-    public IGamePlayer createPlayerWithName(final String name) {
+    public IGamePlayer newPlayerWithName(final String name) {
       return new ProAi(name);
     }
   },
 
   DOES_NOTHING_AI("Does Nothing (AI)") {
     @Override
-    public IGamePlayer createPlayerWithName(final String name) {
+    public IGamePlayer newPlayerWithName(final String name) {
       return new DoesNothingAi(name);
     }
   },
@@ -63,7 +63,7 @@ public enum PlayerType {
    */
   CLIENT_PLAYER("Client", false) {
     @Override
-    public IGamePlayer createPlayerWithName(final String name) {
+    public IGamePlayer newPlayerWithName(final String name) {
       return new TripleAPlayer(name) {
         @Override
         public PlayerType getPlayerType() {
@@ -78,7 +78,7 @@ public enum PlayerType {
    */
   BATTLE_CALC_DUMMY("None (AI)", false) {
     @Override
-    public IGamePlayer createPlayerWithName(final String name) {
+    public IGamePlayer newPlayerWithName(final String name) {
       throw new UnsupportedOperationException(
           "Fail fast - bad configuration, should instantiate dummy player type only for battle calc");
     }
@@ -109,7 +109,7 @@ public enum PlayerType {
    * Each PlayerType is backed by an {@code IGamePlayer} instance. Given a player name this method
    * will create the corresponding {@code IGamePlayer} instance.
    */
-  public abstract IGamePlayer createPlayerWithName(String name);
+  public abstract IGamePlayer newPlayerWithName(String name);
 
   /**
    * Converter function, each player type has a label, this method will convert from a given label

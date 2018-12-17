@@ -40,14 +40,14 @@ final class DownloadFile {
 
   void startAsyncDownload() {
     state = DownloadState.DOWNLOADING;
-    createDownloadThread().start();
+    newDownloadThread().start();
   }
 
   /**
    * Creates a thread that will download to a target temporary file, and once complete and if the download state is not
    * cancelled, it will then move the completed download temp file to: 'downloadDescription.getInstallLocation()'.
    */
-  private Thread createDownloadThread() {
+  private Thread newDownloadThread() {
     return new Thread(() -> {
       if (state == DownloadState.CANCELLED) {
         return;
@@ -90,7 +90,7 @@ final class DownloadFile {
   }
 
   private static File newTempFile() {
-    final File file = ClientFileSystemHelper.createTempFile();
+    final File file = ClientFileSystemHelper.newTempFile();
     file.deleteOnExit();
     return file;
   }

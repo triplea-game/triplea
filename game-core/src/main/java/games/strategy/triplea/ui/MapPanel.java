@@ -728,7 +728,7 @@ public class MapPanel extends ImageScrollerLargeView {
   Image getTerritoryImage(final Territory territory) {
     getData().acquireReadLock();
     try {
-      return tileManager.createTerritoryImage(territory, gameData, uiContext.getMapData());
+      return tileManager.newTerritoryImage(territory, gameData, uiContext.getMapData());
     } finally {
       getData().releaseReadLock();
     }
@@ -737,7 +737,7 @@ public class MapPanel extends ImageScrollerLargeView {
   Image getTerritoryImage(final Territory territory, final Territory focusOn) {
     getData().acquireReadLock();
     try {
-      return tileManager.createTerritoryImage(territory, focusOn, gameData, uiContext.getMapData());
+      return tileManager.newTerritoryImage(territory, focusOn, gameData, uiContext.getMapData());
     } finally {
       getData().releaseReadLock();
     }
@@ -803,7 +803,7 @@ public class MapPanel extends ImageScrollerLargeView {
     final Set<UnitCategory> categories = UnitSeparator.categorize(units);
     final int iconWidth = uiContext.getUnitImageFactory().getUnitImageWidth();
     final int horizontalSpace = 5;
-    final BufferedImage img = Util.createImage(categories.size() * (horizontalSpace + iconWidth),
+    final BufferedImage img = Util.newImage(categories.size() * (horizontalSpace + iconWidth),
         uiContext.getUnitImageFactory().getUnitImageHeight(), true);
     final Graphics2D g = img.createGraphics();
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));

@@ -53,7 +53,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   private ChallengeResultFunction generateChallenge(final HashedPassword password) {
-    return generateChallenge(Util.createUniqueTimeStamp(), password);
+    return generateChallenge(Util.newUniqueTimestamp(), password);
   }
 
   private ChallengeResultFunction generateChallenge(final String name, final HashedPassword password) {
@@ -85,7 +85,7 @@ public class LobbyLoginValidatorIntegrationTest {
 
   @Test
   public void testCreateNewUser() {
-    final String name = Util.createUniqueTimeStamp();
+    final String name = Util.newUniqueTimestamp();
     final String password = "password";
     final Map<String, String> response = new HashMap<>();
     response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
@@ -125,7 +125,7 @@ public class LobbyLoginValidatorIntegrationTest {
 
   @Test
   public void testAnonymousLoginBadName() {
-    final String name = "bitCh" + Util.createUniqueTimeStamp();
+    final String name = "bitCh" + Util.newUniqueTimestamp();
     try {
       new BadWordController(database).addBadWord("bitCh");
     } catch (final Exception ignore) {
@@ -139,7 +139,7 @@ public class LobbyLoginValidatorIntegrationTest {
 
   @Test
   public void testLogin() {
-    final String user = Util.createUniqueTimeStamp();
+    final String user = Util.newUniqueTimestamp();
     final String password = "foo";
     final Map<String, String> response = new HashMap<>();
     assertNull(

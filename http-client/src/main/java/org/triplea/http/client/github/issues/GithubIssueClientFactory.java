@@ -22,6 +22,6 @@ public class GithubIssueClientFactory {
       final String githubOrg,
       final String githubRepo) {
     return new ServiceClient<>(new HttpClient<>(GithubIssueClient.class,
-        (client, request) -> client.createIssue(authToken, githubOrg, githubRepo, request)));
+        (client, request) -> client.newIssue(authToken, githubOrg, githubRepo, request)));
   }
 }

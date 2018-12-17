@@ -30,14 +30,14 @@ public abstract class AbstractPropertyReaderTestCase {
    *
    * @throws Exception If the property reader cannot be created.
    */
-  protected abstract PropertyReader createPropertyReader(Map<String, String> properties) throws Exception;
+  protected abstract PropertyReader newPropertyReader(Map<String, String> properties) throws Exception;
 
-  private PropertyReader createEmptyPropertyReader() throws Exception {
-    return createPropertyReader(Collections.emptyMap());
+  private PropertyReader newEmptyPropertyReader() throws Exception {
+    return newPropertyReader(Collections.emptyMap());
   }
 
-  private PropertyReader createSingletonPropertyReader(final String value) throws Exception {
-    return createPropertyReader(Collections.singletonMap(PRESENT_PROPERTY_KEY, value));
+  private PropertyReader newSingletonPropertyReader(final String value) throws Exception {
+    return newPropertyReader(Collections.singletonMap(PRESENT_PROPERTY_KEY, value));
   }
 
   /**
@@ -51,7 +51,7 @@ public abstract class AbstractPropertyReaderTestCase {
 
     @BeforeEach
     public final void setupPropertyReader() throws Exception {
-      propertyReader = createSingletonPropertyReader(PRESENT_PROPERTY_VALUE);
+      propertyReader = newSingletonPropertyReader(PRESENT_PROPERTY_VALUE);
     }
 
     @Test
@@ -72,7 +72,7 @@ public abstract class AbstractPropertyReaderTestCase {
 
     @Test
     public void shouldReturnTrimmedValueWhenKeyIsPresentAndValueHasLeadingAndTrailingWhitespace() throws Exception {
-      final PropertyReader propertyReader = createSingletonPropertyReader("  " + PRESENT_PROPERTY_VALUE + "  ");
+      final PropertyReader propertyReader = newSingletonPropertyReader("  " + PRESENT_PROPERTY_VALUE + "  ");
 
       assertThat(propertyReader.readProperty(PRESENT_PROPERTY_KEY), is(PRESENT_PROPERTY_VALUE));
     }
@@ -91,7 +91,7 @@ public abstract class AbstractPropertyReaderTestCase {
     @Test
     public void shouldReturnValueWhenKeyIsPresent() throws Exception {
       final String value = "value";
-      final PropertyReader propertyReader = createSingletonPropertyReader(value);
+      final PropertyReader propertyReader = newSingletonPropertyReader(value);
 
       assertThat(propertyReader.readPropertyOrDefault(PRESENT_PROPERTY_KEY, "defaultValue"), is(value));
     }
@@ -99,7 +99,7 @@ public abstract class AbstractPropertyReaderTestCase {
     @Test
     public void shouldReturnDefaultValueWhenKeyIsAbsent() throws Exception {
       final String defaultValue = "defaultValue";
-      final PropertyReader propertyReader = createEmptyPropertyReader();
+      final PropertyReader propertyReader = newEmptyPropertyReader();
 
       assertThat(propertyReader.readPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue), is(defaultValue));
     }
@@ -113,7 +113,7 @@ public abstract class AbstractPropertyReaderTestCase {
     @Test
     public void shouldReturnValueWhenKeyIsPresent() throws Exception {
       final boolean value = true;
-      final PropertyReader propertyReader = createSingletonPropertyReader(String.valueOf(value));
+      final PropertyReader propertyReader = newSingletonPropertyReader(String.valueOf(value));
 
       assertThat(propertyReader.readBooleanPropertyOrDefault(PRESENT_PROPERTY_KEY, false), is(value));
     }
@@ -121,7 +121,7 @@ public abstract class AbstractPropertyReaderTestCase {
     @Test
     public void shouldReturnDefaultValueWhenKeyIsAbsent() throws Exception {
       final boolean defaultValue = true;
-      final PropertyReader propertyReader = createEmptyPropertyReader();
+      final PropertyReader propertyReader = newEmptyPropertyReader();
 
       assertThat(propertyReader.readBooleanPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue), is(defaultValue));
     }
@@ -135,7 +135,7 @@ public abstract class AbstractPropertyReaderTestCase {
     @Test
     public void shouldReturnValueWhenKeyIsPresent() throws Exception {
       final int value = 42;
-      final PropertyReader propertyReader = createSingletonPropertyReader(String.valueOf(value));
+      final PropertyReader propertyReader = newSingletonPropertyReader(String.valueOf(value));
 
       assertThat(propertyReader.readIntegerPropertyOrDefault(PRESENT_PROPERTY_KEY, -1), is(value));
     }
@@ -143,7 +143,7 @@ public abstract class AbstractPropertyReaderTestCase {
     @Test
     public void shouldReturnDefaultValueWhenKeyIsPresentAndValueIsNotAnInteger() throws Exception {
       final int defaultValue = 777;
-      final PropertyReader propertyReader = createSingletonPropertyReader("other");
+      final PropertyReader propertyReader = newSingletonPropertyReader("other");
 
       assertThat(propertyReader.readIntegerPropertyOrDefault(PRESENT_PROPERTY_KEY, defaultValue), is(defaultValue));
     }
@@ -151,7 +151,7 @@ public abstract class AbstractPropertyReaderTestCase {
     @Test
     public void shouldReturnDefaultValueWhenKeyIsAbsent() throws Exception {
       final int defaultValue = 777;
-      final PropertyReader propertyReader = createEmptyPropertyReader();
+      final PropertyReader propertyReader = newEmptyPropertyReader();
 
       assertThat(propertyReader.readIntegerPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue), is(defaultValue));
     }

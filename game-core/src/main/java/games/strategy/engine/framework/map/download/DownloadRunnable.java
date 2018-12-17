@@ -38,7 +38,7 @@ public class DownloadRunnable {
 
   private List<DownloadFileDescription> downloadFile() {
     try {
-      final File tempFile = ClientFileSystemHelper.createTempFile();
+      final File tempFile = ClientFileSystemHelper.newTempFile();
       tempFile.deleteOnExit();
       DownloadUtils.downloadToFile(urlString, tempFile);
       final byte[] contents = Files.readAllBytes(tempFile.toPath());

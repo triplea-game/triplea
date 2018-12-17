@@ -241,7 +241,7 @@ public class IndividualUnitPanel extends JPanel {
       setLayout(new GridBagLayout());
 
       final boolean isDamaged = taUnit.getUnitDamage() > 0 || taUnit.getHits() > 0;
-      final JLabel label = uiContext.createUnitImageJLabel(this.unit.getType(), this.unit.getOwner(),
+      final JLabel label = uiContext.newUnitImageLabel(this.unit.getType(), this.unit.getOwner(),
           isDamaged ? UiContext.UnitDamage.DAMAGED : UiContext.UnitDamage.NOT_DAMAGED,
           taUnit.getDisabled() ? UiContext.UnitEnable.DISABLED : UiContext.UnitEnable.ENABLED);
 

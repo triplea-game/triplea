@@ -47,7 +47,7 @@ public interface UiContext {
   /**
    * Indicates the damaged or undamaged version of a unit image should be used.
    *
-   * @see UiContext#createUnitImageJLabel(UnitType, PlayerId, UnitDamage, UnitEnable)
+   * @see UiContext#newUnitImageLabel(UnitType, PlayerId, UnitDamage, UnitEnable)
    */
   enum UnitDamage {
     DAMAGED, NOT_DAMAGED
@@ -56,17 +56,17 @@ public interface UiContext {
   /**
    * Indicates the enabled or disabled version of a unit image should be used.
    *
-   * @see UiContext#createUnitImageJLabel(UnitType, PlayerId, UnitDamage, UnitEnable)
+   * @see UiContext#newUnitImageLabel(UnitType, PlayerId, UnitDamage, UnitEnable)
    */
   enum UnitEnable {
     DISABLED, ENABLED
   }
 
-  default JLabel createUnitImageJLabel(final UnitType type, final PlayerId player) {
-    return createUnitImageJLabel(type, player, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
+  default JLabel newUnitImageLabel(final UnitType type, final PlayerId player) {
+    return newUnitImageLabel(type, player, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
   }
 
-  JLabel createUnitImageJLabel(final UnitType type, final PlayerId player,
+  JLabel newUnitImageLabel(final UnitType type, final PlayerId player,
       final UnitDamage damaged,
       final UnitEnable disabled);
 
