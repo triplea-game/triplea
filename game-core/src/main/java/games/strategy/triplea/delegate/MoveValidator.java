@@ -33,7 +33,7 @@ import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
@@ -1150,7 +1150,7 @@ public class MoveValidator {
       }
       if (!unitsToTransports.keySet().containsAll(land)) {
         // some units didn't get mapped to a transport
-        final Collection<UnitCategory> unitsToLoadCategories = UnitSeperator.categorize(land);
+        final Collection<UnitCategory> unitsToLoadCategories = UnitSeparator.categorize(land);
         if (unitsToTransports.size() == 0 || unitsToLoadCategories.size() == 1) {
           // set all unmapped units as disallowed if there are no transports or only one unit category
           for (final Unit unit : land) {

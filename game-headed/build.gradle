@@ -51,7 +51,7 @@ jar {
     }
 }
 
-task downloadInstallerAssets(group: 'release') {
+task downloadPlatformInstallerAssets(group: 'release') {
     doLast {
         [
             'icons/triplea_icon_16_16.png',
@@ -73,10 +73,10 @@ task downloadInstallerAssets(group: 'release') {
     }
 }
 
-task headedGameInstallers(
+task platformInstallers(
         type: com.install4j.gradle.Install4jTask,
         group: 'release',
-        dependsOn: [shadowJar, downloadInstallerAssets]) {
+        dependsOn: [shadowJar, downloadPlatformInstallerAssets]) {
     projectFile = file('build.install4j')
     release = version
 
@@ -85,7 +85,7 @@ task headedGameInstallers(
     }
 }
 
-task headedGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
     from file('.triplea-root')
     from(file('assets')) {
         into 'assets'
@@ -98,9 +98,9 @@ task headedGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
     }
 }
 
-task release(group: 'release', dependsOn: [headedGameArchive, headedGameInstallers]) {
+task release(group: 'release', dependsOn: [portableInstaller, platformInstallers]) {
     doLast {
-        publishArtifacts(headedGameArchive.outputs.files + [
+        publishArtifacts(portableInstaller.outputs.files + [
             file("$releasesDir/TripleA_${version}_macos.dmg"),
             file("$releasesDir/TripleA_${version}_unix.sh"),
             file("$releasesDir/TripleA_${version}_windows-32bit.exe"),

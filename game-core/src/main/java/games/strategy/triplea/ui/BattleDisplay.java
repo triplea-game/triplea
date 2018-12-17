@@ -66,7 +66,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
@@ -189,7 +189,7 @@ public class BattleDisplay extends JPanel {
     for (final Collection<Unit> dependentCollection : dependentsMap.values()) {
       dependentUnitsReturned.addAll(dependentCollection);
     }
-    for (final UnitCategory category : UnitSeperator.categorize(killedUnits, dependentsMap, false, false)) {
+    for (final UnitCategory category : UnitSeparator.categorize(killedUnits, dependentsMap, false, false)) {
       final JPanel panel = new JPanel();
       JLabel unit = uiContext.newUnitImageLabel(category.getType(), category.getOwner());
       panel.add(unit);
@@ -740,7 +740,7 @@ public class BattleDisplay extends JPanel {
         }
       }
       final int diceSides = gameData.getDiceSides();
-      final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units, null, false, false, false);
+      final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(units, null, false, false, false);
       for (final UnitCategory category : unitCategories) {
         int strength;
         final UnitAttachment attachment = UnitAttachment.get(category.getType());
@@ -860,13 +860,13 @@ public class BattleDisplay extends JPanel {
       if (!killed.isEmpty()) {
         this.killed.add(new JLabel("Killed"));
       }
-      final Iterable<UnitCategory> killedIter = UnitSeperator.categorize(killed, dependents, false, false);
+      final Iterable<UnitCategory> killedIter = UnitSeparator.categorize(killed, dependents, false, false);
       categorizeUnits(killedIter, false, false);
       damaged.removeAll(killed);
       if (!damaged.isEmpty()) {
         this.damaged.add(new JLabel("Damaged"));
       }
-      final Iterable<UnitCategory> damagedIter = UnitSeperator.categorize(damaged, dependents, false, false);
+      final Iterable<UnitCategory> damagedIter = UnitSeparator.categorize(damaged, dependents, false, false);
       categorizeUnits(damagedIter, true, true);
       invalidate();
       validate();
@@ -877,7 +877,7 @@ public class BattleDisplay extends JPanel {
       if (!killed.isEmpty()) {
         this.killed.add(new JLabel("Killed"));
       }
-      final Iterable<UnitCategory> killedIter = UnitSeperator.categorize(killed, dependents, false, false);
+      final Iterable<UnitCategory> killedIter = UnitSeparator.categorize(killed, dependents, false, false);
       categorizeUnits(killedIter, false, false);
       invalidate();
       validate();

@@ -24,7 +24,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
@@ -82,7 +82,7 @@ public class PurchasePanel extends ActionPanel {
 
       getData().acquireReadLock();
       try {
-        purchasedPreviousRoundsUnits.setUnitsFromCategories(UnitSeperator.categorize(id.getUnits().getUnits()));
+        purchasedPreviousRoundsUnits.setUnitsFromCategories(UnitSeparator.categorize(id.getUnits().getUnits()));
         add(Box.createVerticalStrut(4));
         if (!id.getUnits().isEmpty()) {
           add(purchasedPreviousRoundsLabel);

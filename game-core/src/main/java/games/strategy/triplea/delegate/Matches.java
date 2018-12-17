@@ -38,7 +38,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.PredicateBuilder;
@@ -1112,11 +1112,11 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitIsTransportingSomeCategories(final Collection<Unit> units) {
-    final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units);
+    final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(units);
     return unit -> {
       final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
       return transporting != null
-          && !Collections.disjoint(UnitSeperator.categorize(transporting), unitCategories);
+          && !Collections.disjoint(UnitSeparator.categorize(transporting), unitCategories);
     };
   }
 

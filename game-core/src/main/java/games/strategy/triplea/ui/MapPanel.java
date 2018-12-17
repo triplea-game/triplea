@@ -60,7 +60,7 @@ import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.Util;
@@ -630,7 +630,7 @@ public class MapPanel extends ImageScrollerLargeView {
     }
     if (highlightedUnits != null) {
       for (final List<Unit> value : highlightedUnits.values()) {
-        for (final UnitCategory category : UnitSeperator.categorize(value)) {
+        for (final UnitCategory category : UnitSeparator.categorize(value)) {
           final List<Unit> territoryUnitsOfSameCategory = category.getUnits();
           if (territoryUnitsOfSameCategory.isEmpty()) {
             continue;
@@ -800,7 +800,7 @@ public class MapPanel extends ImageScrollerLargeView {
       gameData.releaseReadLock();
     }
 
-    final Set<UnitCategory> categories = UnitSeperator.categorize(units);
+    final Set<UnitCategory> categories = UnitSeparator.categorize(units);
     final int iconWidth = uiContext.getUnitImageFactory().getUnitImageWidth();
     final int horizontalSpace = 5;
     final BufferedImage img = Util.newImage(categories.size() * (horizontalSpace + iconWidth),

@@ -25,7 +25,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
@@ -162,9 +162,9 @@ final class UnitChooser extends JPanel {
       final boolean categorizeMovement, final boolean categorizeTransportCost,
       final Collection<Unit> defaultSelections) {
     final Collection<UnitCategory> categories =
-        UnitSeperator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
+        UnitSeparator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
     final Collection<UnitCategory> defaultSelectionsCategorized =
-        UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
+        UnitSeparator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
     final IntegerMap<UnitCategory> defaultValues = newDefaultSelectionsMap(defaultSelectionsCategorized);
     for (final UnitCategory category : categories) {
       addCategory(category, defaultValues.getInt(category));

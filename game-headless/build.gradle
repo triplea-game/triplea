@@ -20,7 +20,7 @@ jar {
     }
 }
 
-task headlessGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
     from file('.triplea-root')
     from file('scripts/run_bot')
     from(file('scripts/run_bot.bat')) {
@@ -32,8 +32,8 @@ task headlessGameArchive(type: Zip, group: 'release', dependsOn: shadowJar) {
     }
 }
 
-task release(group: 'release', dependsOn: headlessGameArchive) {
+task release(group: 'release', dependsOn: portableInstaller) {
     doLast {
-        publishArtifacts(headlessGameArchive.outputs.files)
+        publishArtifacts(portableInstaller.outputs.files)
     }
 }

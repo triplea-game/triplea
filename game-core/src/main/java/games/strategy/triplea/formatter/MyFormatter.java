@@ -282,7 +282,7 @@ public class MyFormatter {
    * In both cases, the objects will appear in the string in order by name.
    * </p>
    */
-  public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final String seperator,
+  public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final String separator,
       final boolean showQuantity) {
     final IntegerMap<DefaultNamed> map = new IntegerMap<>();
     for (final DefaultNamed unit : list) {
@@ -307,7 +307,7 @@ public class MyFormatter {
       }
       count--;
       if (count > 1) {
-        buf.append(seperator);
+        buf.append(separator);
       }
       if (count == 1) {
         buf.append(" and ");

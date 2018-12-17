@@ -52,7 +52,7 @@ import games.strategy.triplea.ui.screen.drawable.TerritoryEffectDrawable;
 import games.strategy.triplea.ui.screen.drawable.TerritoryNameDrawable;
 import games.strategy.triplea.ui.screen.drawable.VcDrawable;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.Util;
 import games.strategy.util.Tuple;
 
@@ -341,7 +341,7 @@ public class TileManager {
     }
 
     Point lastPlace = null;
-    for (final UnitCategory category : UnitSeperator.getSortedUnitCategories(territory, mapData)) {
+    for (final UnitCategory category : UnitSeparator.getSortedUnitCategories(territory, mapData)) {
       final boolean overflow;
       if (placementPoints.hasNext()) {
         lastPlace = new Point(placementPoints.next());
