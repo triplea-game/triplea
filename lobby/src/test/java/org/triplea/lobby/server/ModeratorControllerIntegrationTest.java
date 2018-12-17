@@ -46,7 +46,7 @@ public class ModeratorControllerIntegrationTest {
   @BeforeEach
   public void setUp() throws UnknownHostException {
     moderatorController = new ModeratorController(serverMessenger, null, TestLobbyConfigurations.INTEGRATION_TEST);
-    final String adminName = Util.createUniqueTimeStamp();
+    final String adminName = Util.newUniqueTimestamp();
 
     final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
 

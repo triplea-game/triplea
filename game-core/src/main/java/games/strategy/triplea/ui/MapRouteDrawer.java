@@ -170,7 +170,7 @@ public class MapRouteDrawer {
    * @param points - The Points which should be parameterized
    * @return A Parameter-Array called the "Index"
    */
-  protected double[] createParameterizedIndex(final Point2D[] points) {
+  protected double[] newParameterizedIndex(final Point2D[] points) {
     final double[] index = new double[points.length];
     if (index.length > 0) {
       index[0] = 0;
@@ -264,7 +264,7 @@ public class MapRouteDrawer {
       final ResourceImageFactory resourceImageFactory) {
 
     final BufferedImage movementImage =
-        createMovementLeftImage(String.valueOf(numTerritories - 1), maxMovement, movementFuelCost,
+        newMovementLeftImage(String.valueOf(numTerritories - 1), maxMovement, movementFuelCost,
             resourceImageFactory);
     final int textXOffset = -movementImage.getWidth() / 2;
     final Point2D cursorPos = points[points.length - 1];
@@ -298,7 +298,7 @@ public class MapRouteDrawer {
    * @param points The Knot Points for the Spline-Interpolator aka the joints
    */
   private void drawCurvedPath(final Graphics2D graphics, final Point2D[] points) {
-    final double[] index = createParameterizedIndex(points);
+    final double[] index = newParameterizedIndex(points);
     final PolynomialSplineFunction xcurve =
         splineInterpolator.interpolate(index, getValues(points, Point2D::getX));
     final double[] xcoords = getCoords(xcurve, index);
@@ -325,7 +325,7 @@ public class MapRouteDrawer {
   /**
    * This draws current moves, max moves, and fuel cost.
    */
-  private static BufferedImage createMovementLeftImage(final String curMovement, final String maxMovement,
+  private static BufferedImage newMovementLeftImage(final String curMovement, final String maxMovement,
       final ResourceCollection movementFuelCost, final ResourceImageFactory resourceImageFactory) {
 
     // Create and configure image
@@ -409,7 +409,7 @@ public class MapRouteDrawer {
    * @param angle The radiant angle at which the arrow should be rotated
    * @return A transformed Arrow-Shape
    */
-  private static Shape createArrowTipShape(final double angle) {
+  private static Shape newArrowTipShape(final double angle) {
     final int arrowOffset = 1;
     final Polygon arrowPolygon = new Polygon();
     arrowPolygon.addPoint(arrowOffset - ARROW_LENGTH, ARROW_LENGTH / 2);
@@ -432,7 +432,7 @@ public class MapRouteDrawer {
    * @param to The placement {@linkplain Point2D} for the Arrow
    */
   private void drawArrow(final Graphics2D graphics, final Point2D from, final Point2D to) {
-    final Shape arrow = createArrowTipShape(Math.atan2(to.getY() - from.getY(), to.getX() - from.getX()));
+    final Shape arrow = newArrowTipShape(Math.atan2(to.getY() - from.getY(), to.getX() - from.getX()));
     final double scale = mapPanel.getScale();
     final Shape antiScaledArrow = AffineTransform.getScaleInstance(1 / scale, 1 / scale).createTransformedShape(arrow);
     final AffineTransform transform = getDrawingTransform();

@@ -37,7 +37,7 @@ public class Tile {
   Tile(final Rectangle bounds, final double scale) {
     this.bounds = bounds;
     this.scale = scale;
-    image = Util.createImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), true);
+    image = Util.newImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), true);
   }
 
   public boolean isDirty() {

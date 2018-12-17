@@ -95,7 +95,7 @@ class PlayerChooser extends JOptionPane {
         final boolean isSelected, final boolean cellHasFocus) {
       super.getListCellRendererComponent(list, ((PlayerId) value).getName(), index, isSelected, cellHasFocus);
       if (uiContext == null || value == PlayerId.NULL_PLAYERID) {
-        setIcon(new ImageIcon(Util.createImage(32, 32, true)));
+        setIcon(new ImageIcon(Util.newImage(32, 32, true)));
       } else {
         setIcon(new ImageIcon(uiContext.getFlagImageFactory().getFlag((PlayerId) value)));
       }

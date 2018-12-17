@@ -17,14 +17,14 @@ final class FileSizeWatcher {
   FileSizeWatcher(final File fileToWatch, final Consumer<Long> progressListener) {
     this.fileToWatch = fileToWatch;
     this.progressListener = progressListener;
-    new Thread(createRunner()).start();
+    new Thread(newRunner()).start();
   }
 
   void stop() {
     stop = true;
   }
 
-  private Runnable createRunner() {
+  private Runnable newRunner() {
     return () -> {
       while (!stop) {
         progressListener.accept(fileToWatch.length());

@@ -45,7 +45,7 @@ public final class Util {
   }
 
   public static Image copyImage(final BufferedImage img) {
-    final BufferedImage copy = createImage(img.getWidth(), img.getHeight(), false);
+    final BufferedImage copy = newImage(img.getWidth(), img.getHeight(), false);
     final Graphics2D g = (Graphics2D) copy.getGraphics();
     g.drawImage(img, 0, 0, null);
     g.dispose();
@@ -56,7 +56,7 @@ public final class Util {
    * Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory
    * problems. Fix is to use 3Byte rather than INT.
    */
-  public static BufferedImage createImage(final int width, final int height, final boolean needAlpha) {
+  public static BufferedImage newImage(final int width, final int height, final boolean needAlpha) {
     return new BufferedImage(width, height, needAlpha ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_3BYTE_BGR);
   }
 

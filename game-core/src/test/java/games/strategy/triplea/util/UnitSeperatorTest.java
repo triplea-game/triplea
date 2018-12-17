@@ -50,15 +50,15 @@ public class UnitSeperatorTest {
     when(mockMapData.shouldDrawUnit(ArgumentMatchers.anyString())).thenReturn(true);
     final List<UnitCategory> categories = UnitSeperator.getSortedUnitCategories(northernGermany, mockMapData);
     final List<UnitCategory> expected = new ArrayList<>();
-    expected.add(createUnitCategory("germanFactory", germans, data));
-    expected.add(createUnitCategory("Truck", germans, data));
-    expected.add(createUnitCategory("germanInfantry", germans, data));
-    expected.add(createUnitCategory("italianFactory", italians, data));
-    expected.add(createUnitCategory("Truck", italians, data));
-    expected.add(createUnitCategory("italianInfantry", italians, data));
-    expected.add(createUnitCategory("britishFactory", british, data));
-    expected.add(createUnitCategory("Truck", british, data));
-    expected.add(createUnitCategory("britishInfantry", british, data));
+    expected.add(newUnitCategory("germanFactory", germans, data));
+    expected.add(newUnitCategory("Truck", germans, data));
+    expected.add(newUnitCategory("germanInfantry", germans, data));
+    expected.add(newUnitCategory("italianFactory", italians, data));
+    expected.add(newUnitCategory("Truck", italians, data));
+    expected.add(newUnitCategory("italianInfantry", italians, data));
+    expected.add(newUnitCategory("britishFactory", british, data));
+    expected.add(newUnitCategory("Truck", british, data));
+    expected.add(newUnitCategory("britishInfantry", british, data));
     assertEquals(expected, categories);
   }
 
@@ -77,7 +77,7 @@ public class UnitSeperatorTest {
     assertEquals(expected, categories);
   }
 
-  private static UnitCategory createUnitCategory(final String unitName, final PlayerId player, final GameData data) {
+  private static UnitCategory newUnitCategory(final String unitName, final PlayerId player, final GameData data) {
     return new UnitCategory(new UnitType(unitName, data), player);
   }
 }

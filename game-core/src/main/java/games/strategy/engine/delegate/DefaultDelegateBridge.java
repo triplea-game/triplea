@@ -98,7 +98,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
 
   private Object getOutbound(final Object o) {
     final Class<?>[] interfaces = o.getClass().getInterfaces();
-    return delegateExecutionManager.createOutboundImplementation(o, interfaces);
+    return delegateExecutionManager.newOutboundImplementation(o, interfaces);
   }
 
   @Override

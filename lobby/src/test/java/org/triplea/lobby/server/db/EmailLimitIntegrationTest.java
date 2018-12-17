@@ -35,14 +35,14 @@ public class EmailLimitIntegrationTest {
   }
 
   private static String getStringWithLength(final int length) {
-    return Strings.padStart(Util.createUniqueTimeStamp(), length, 'a');
+    return Strings.padStart(Util.newUniqueTimestamp(), length, 'a');
   }
 
   private void createAccountWithEmail(final String email) throws SQLException {
     try (Connection connection = database.newConnection();
         PreparedStatement ps =
             connection.prepareStatement("insert into ta_users (username, email, bcrypt_password) values (?, ?, ?)")) {
-      ps.setString(1, Util.createUniqueTimeStamp());
+      ps.setString(1, Util.newUniqueTimestamp());
       ps.setString(2, email);
       ps.setString(3, BCrypt.hashpw("password", BCrypt.gensalt()));
       ps.execute();

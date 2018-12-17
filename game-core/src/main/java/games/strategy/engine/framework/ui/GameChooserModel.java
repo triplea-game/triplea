@@ -101,7 +101,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
       return ZipProcessingResult.ERROR;
     }
 
-    createGameChooserEntry(URI.create(url.toString().replace(" ", "%20")))
+    newGameChooserEntry(URI.create(url.toString().replace(" ", "%20")))
         .ifPresent(entries::add);
     return ZipProcessingResult.SUCCESS;
   }
@@ -141,7 +141,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
    *
    * @param uri URI of the new entry
    */
-  private static Optional<GameChooserEntry> createGameChooserEntry(final URI uri) {
+  private static Optional<GameChooserEntry> newGameChooserEntry(final URI uri) {
     try {
       return Optional.of(GameChooserEntry.newInstance(uri));
     } catch (final EngineVersionException e) {
@@ -172,7 +172,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     final File games = new File(parentFolder, "games");
     for (final File game : FileUtils.listFiles(games)) {
       if (game.isFile() && game.getName().toLowerCase().endsWith("xml")) {
-        createGameChooserEntry(game.toURI()).ifPresent(entries::add);
+        newGameChooserEntry(game.toURI()).ifPresent(entries::add);
       }
     }
     return entries;

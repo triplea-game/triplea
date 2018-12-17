@@ -32,7 +32,7 @@ final class MapRouteDrawerTest {
   private final Point[] dummyPoints = new Point[] {new Point(0, 0), new Point(100, 0), new Point(0, 100)};
   private final MapData dummyMapData = mock(MapData.class);
   private final MapRouteDrawer spyRouteDrawer = spy(new MapRouteDrawer(mock(MapPanel.class), dummyMapData));
-  private final double[] dummyIndex = spyRouteDrawer.createParameterizedIndex(dummyPoints);
+  private final double[] dummyIndex = spyRouteDrawer.newParameterizedIndex(dummyPoints);
   private final Route dummyRoute = spy(new Route(mock(Territory.class), mock(Territory.class)));
   private final RouteDescription dummyRouteDescription =
       spy(new RouteDescription(dummyRoute, dummyPoints[0], dummyPoints[2], null));
@@ -45,7 +45,7 @@ final class MapRouteDrawerTest {
 
   @Test
   public void testIndex() {
-    assertArrayEquals(spyRouteDrawer.createParameterizedIndex(new Point2D[] {}), new double[] {});
+    assertArrayEquals(spyRouteDrawer.newParameterizedIndex(new Point2D[] {}), new double[] {});
     assertEquals(dummyIndex.length, dummyPoints.length);
     // Not sure whether it makes sense to include a Test for specific values
     // The way the index is being calculated may change to a better System

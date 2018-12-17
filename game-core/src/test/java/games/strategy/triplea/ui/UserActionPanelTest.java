@@ -30,13 +30,13 @@ final class UserActionPanelTest {
 
   private Resource pus;
 
-  private PlayerId createPlayer() {
+  private PlayerId newPlayer() {
     final PlayerId player = new PlayerId("player", data);
     player.getResources().addResource(pus, 42);
     return player;
   }
 
-  private UserActionAttachment createUserActionWithCost(final int costInPUs) {
+  private UserActionAttachment newUserActionWithCost(final int costInPUs) {
     final UserActionAttachment userAction = new UserActionAttachment("userAction", mock(Attachable.class), data);
     if (costInPUs > 0) {
       final IntegerMap<Resource> cost = new IntegerMap<>();
@@ -55,8 +55,8 @@ final class UserActionPanelTest {
   final class CanPlayerAffordUserActionTest {
     @Test
     void shouldReturnFalseWhenUserActionCostGreaterThanPlayerPUs() {
-      final PlayerId player = createPlayer();
-      final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus) + 1);
+      final PlayerId player = newPlayer();
+      final UserActionAttachment userAction = newUserActionWithCost(player.getResources().getQuantity(pus) + 1);
 
       final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
@@ -65,8 +65,8 @@ final class UserActionPanelTest {
 
     @Test
     void shouldReturnTrueWhenUserActionCostEqualToPlayerPUs() {
-      final PlayerId player = createPlayer();
-      final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus));
+      final PlayerId player = newPlayer();
+      final UserActionAttachment userAction = newUserActionWithCost(player.getResources().getQuantity(pus));
 
       final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
@@ -75,8 +75,8 @@ final class UserActionPanelTest {
 
     @Test
     void shouldReturnTrueWhenUserActionCostLessThanPlayerPUs() {
-      final PlayerId player = createPlayer();
-      final UserActionAttachment userAction = createUserActionWithCost(player.getResources().getQuantity(pus) - 1);
+      final PlayerId player = newPlayer();
+      final UserActionAttachment userAction = newUserActionWithCost(player.getResources().getQuantity(pus) - 1);
 
       final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
@@ -85,8 +85,8 @@ final class UserActionPanelTest {
 
     @Test
     void shouldReturnTrueWhenUserActionCostIsZeroAndPlayerPUsIsZero() {
-      final PlayerId player = createPlayer();
-      final UserActionAttachment userAction = createUserActionWithCost(0);
+      final PlayerId player = newPlayer();
+      final UserActionAttachment userAction = newUserActionWithCost(0);
 
       final boolean canAffordUserAction = UserActionPanel.canPlayerAffordUserAction(player, userAction);
 
@@ -108,7 +108,7 @@ final class UserActionPanelTest {
     @Test
     void shouldReturnFalseWhenNoUserActionHasCost() {
       final Collection<UserActionAttachment> userActions =
-          Arrays.asList(createUserActionWithCost(0), createUserActionWithCost(0));
+          Arrays.asList(newUserActionWithCost(0), newUserActionWithCost(0));
 
       final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 
@@ -118,7 +118,7 @@ final class UserActionPanelTest {
     @Test
     void shouldReturnTrueWhenAtLeastOneUserActionHasCost() {
       final Collection<UserActionAttachment> userActions =
-          Arrays.asList(createUserActionWithCost(0), createUserActionWithCost(5));
+          Arrays.asList(newUserActionWithCost(0), newUserActionWithCost(5));
 
       final boolean canSpendResources = UserActionPanel.canSpendResourcesOnUserActions(userActions);
 

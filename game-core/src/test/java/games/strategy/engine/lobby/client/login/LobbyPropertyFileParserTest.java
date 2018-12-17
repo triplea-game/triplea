@@ -55,7 +55,7 @@ class LobbyPropertyFileParserTest {
     testProps.message = TestData.message;
     testProps.version = TestData.clientCurrentVersion;
 
-    final File testFile = createTempFile(testProps);
+    final File testFile = newTempFile(testProps);
 
     final LobbyServerProperties result =
         LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
@@ -65,7 +65,7 @@ class LobbyPropertyFileParserTest {
     assertThat(result.serverErrorMessage, is(TestData.errorMessage));
   }
 
-  private static File createTempFile(final TestProps... testProps) throws Exception {
+  private static File newTempFile(final TestProps... testProps) throws Exception {
     final File f = File.createTempFile("testing", ".tmp");
     try (Writer writer = Files.newBufferedWriter(f.toPath(), StandardCharsets.UTF_8)) {
       for (final TestProps testProp : Arrays.asList(testProps)) {
@@ -82,7 +82,7 @@ class LobbyPropertyFileParserTest {
    */
   @Test
   void checkVersionSelection() throws Exception {
-    final File testFile = createTempFile(testDataSet());
+    final File testFile = newTempFile(testDataSet());
 
     final LobbyServerProperties result =
         LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));

@@ -1567,7 +1567,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
 
     // Fire each type of suicide on hit unit separately and then remaining units
-    final List<Collection<Unit>> firingGroups = createFiringUnitGroups(firingUnits);
+    final List<Collection<Unit>> firingGroups = newFiringUnitGroups(firingUnits);
     for (final Collection<Unit> units : firingGroups) {
       stack.push(new Fire(attackableUnits, returnFire, firing, defending, units, stepName, text, this, defender,
           dependentUnits, headless, battleSite, territoryEffects, allEnemyUnitsAliveOrWaitingToDie));
@@ -1578,7 +1578,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    * Breaks list of units into groups of non suicide on hit units and each type of suicide on hit units
    * since each type of suicide on hit units need to roll separately to know which ones get hits.
    */
-  private static List<Collection<Unit>> createFiringUnitGroups(final Collection<Unit> units) {
+  private static List<Collection<Unit>> newFiringUnitGroups(final Collection<Unit> units) {
 
     // Sort suicide on hit units by type
     final Map<UnitType, Collection<Unit>> map = new HashMap<>();
@@ -2082,7 +2082,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       for (final String aaType : (defending ? defendingAaTypes : offensiveAaTypes)) {
         final Collection<Unit> aaTypeUnits = CollectionUtils.getMatches((defending ? defendingAa : offensiveAa),
             Matches.unitIsAaOfTypeAa(aaType));
-        final List<Collection<Unit>> firingGroups = createFiringUnitGroups(aaTypeUnits);
+        final List<Collection<Unit>> firingGroups = newFiringUnitGroups(aaTypeUnits);
         for (final Collection<Unit> firingGroup : firingGroups) {
           final Set<UnitType> validTargetTypes =
               UnitAttachment.get(firingGroup.iterator().next().getType()).getTargetsAa(gameData);

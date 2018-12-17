@@ -131,7 +131,7 @@ public final class ClientFileSystemHelper {
   }
 
   /** Create a temporary file, checked exceptions are re-thrown as unchecked. */
-  public static File createTempFile() {
+  public static File newTempFile() {
     try {
       return File.createTempFile("triplea", "tmp");
     } catch (final IOException e) {

@@ -277,7 +277,7 @@ class ProLogWindow extends JDialog {
     limitLogHistoryToSpinner.setValue(settings.getLogHistoryLimit());
   }
 
-  ProLogSettings createSettings() {
+  ProLogSettings newSettings() {
     final ProLogSettings settings = new ProLogSettings();
     settings.setLogEnabled(enableAiLogging.isSelected());
     if (logDepth.getSelectedIndex() == 0) {
@@ -319,7 +319,7 @@ class ProLogWindow extends JDialog {
   }
 
   private void okButtonActionPerformed() {
-    final ProLogSettings settings = createSettings();
+    final ProLogSettings settings = newSettings();
     ProLogSettings.saveSettings(settings);
     this.setVisible(false);
   }

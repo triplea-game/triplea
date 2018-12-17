@@ -167,7 +167,7 @@ public class UnitImageFactory {
   }
 
   private static Image highlightImage(final Image image) {
-    final BufferedImage highlightedImage = Util.createImage(image.getWidth(null), image.getHeight(null), true);
+    final BufferedImage highlightedImage = Util.newImage(image.getWidth(null), image.getHeight(null), true);
     // copy the real image
     final Graphics2D g = highlightedImage.createGraphics();
     g.drawImage(image, 0, 0, null);

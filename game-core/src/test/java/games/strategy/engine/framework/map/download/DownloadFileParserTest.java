@@ -52,7 +52,7 @@ public class DownloadFileParserTest {
     return IoUtils.readFromMemory(bytes, DownloadFileParser::parse);
   }
 
-  private static String createTypeTag(final DownloadFileDescription.DownloadType type) {
+  private static String newTypeTag(final DownloadFileDescription.DownloadType type) {
     return "  " + DownloadFileParser.Tags.mapType + ": " + type + "\n";
   }
 
@@ -61,7 +61,7 @@ public class DownloadFileParserTest {
         + "- url: http://example.com/games/game.zip\n"
         + "  mapName: " + GAME_NAME + "\n"
         + "  version: 1\n"
-        + createTypeTag(DownloadFileDescription.DownloadType.MAP)
+        + newTypeTag(DownloadFileDescription.DownloadType.MAP)
         + "  description: |\n"
         + "     <pre>Some notes about the game, simple html allowed.\n"
         + "     </pre>\n"
@@ -74,13 +74,13 @@ public class DownloadFileParserTest {
         + "- url: http://example.com/games/skin.zip\n"
         + "  mapName: skin\n"
         + "  version: 1\n"
-        + createTypeTag(DownloadFileDescription.DownloadType.MAP_SKIN)
+        + newTypeTag(DownloadFileDescription.DownloadType.MAP_SKIN)
         + "  description: |\n"
         + "      map skin\n"
         + "- url: http://example.com/games/tool.zip\n"
         + "  mapName: mapToolName\n"
         + "  version: 1\n"
-        + createTypeTag(DownloadFileDescription.DownloadType.MAP_TOOL)
+        + newTypeTag(DownloadFileDescription.DownloadType.MAP_TOOL)
         + "  description: |\n"
         + "       <pre>\n"
         + "       this is a map tool"
@@ -90,14 +90,14 @@ public class DownloadFileParserTest {
 
   @Test
   public void testMapTypeDefaultsToMap() throws Exception {
-    final DownloadFileDescription download = parse(createSimpleGameXmlWithNoTypeTag()).get(0);
+    final DownloadFileDescription download = parse(newSimpleGameXmlWithNoTypeTag()).get(0);
 
     assertThat(download.isMap(), is(true));
     assertThat(download.isMapSkin(), is(false));
     assertThat(download.isMapTool(), is(false));
   }
 
-  private static byte[] createSimpleGameXmlWithNoTypeTag() {
+  private static byte[] newSimpleGameXmlWithNoTypeTag() {
     final String xml = ""
         + "- url: http://example.com/games/mod.zip\n"
         + "  mapName: " + GAME_NAME + "\n"

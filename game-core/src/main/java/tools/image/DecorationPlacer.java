@@ -279,8 +279,8 @@ public final class DecorationPlacer {
           throw new IOException("no polygons file specified");
         }
       }
-      image = createImage(mapName);
-      final JPanel imagePanel = createMainPanel();
+      image = newImage(mapName);
+      final JPanel imagePanel = newMainPanel();
       /*
        * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
        */
@@ -371,13 +371,13 @@ public final class DecorationPlacer {
      *
      * @param mapName The path of image map.
      */
-    private Image createImage(final String mapName) {
+    private Image newImage(final String mapName) {
       final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
       Util.ensureImageLoaded(image);
       return image;
     }
 
-    private JPanel createMainPanel() {
+    private JPanel newMainPanel() {
       return new JPanel() {
         private static final long serialVersionUID = -7130828419508975924L;
 
@@ -623,7 +623,7 @@ public final class DecorationPlacer {
         if (imageSelection.getFile() == null || !imageSelection.getFile().exists()) {
           continue;
         }
-        staticImageForPlacing = createImage(imageSelection.getPathString());
+        staticImageForPlacing = newImage(imageSelection.getPathString());
       }
       final int width = staticImageForPlacing.getWidth(null);
       final int height = staticImageForPlacing.getHeight(null);
@@ -663,7 +663,7 @@ public final class DecorationPlacer {
         }
         final String imageName = file.getName();
         final String possibleTerritoryName = imageName.substring(0, imageName.length() - 4);
-        final Image image = createImage(file.getPath());
+        final Image image = newImage(file.getPath());
         List<Point> points = (currentPoints != null
             ? currentPoints.get((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName))
             : null);

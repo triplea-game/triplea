@@ -158,7 +158,7 @@ public final class CenterPicker {
         }
       }
       createImage(mapName);
-      final JPanel imagePanel = createMainPanel();
+      final JPanel imagePanel = newMainPanel();
       /*
        * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
        */
@@ -224,7 +224,7 @@ public final class CenterPicker {
     /**
      * Creates the main panel and returns a JPanel object.
      */
-    private JPanel createMainPanel() {
+    private JPanel newMainPanel() {
       return new JPanel() {
         private static final long serialVersionUID = -7130828419508975924L;
 

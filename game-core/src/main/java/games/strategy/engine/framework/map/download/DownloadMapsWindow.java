@@ -234,13 +234,13 @@ public class DownloadMapsWindow extends JFrame {
     final JTabbedPane outerTabs = new JTabbedPane();
 
     final List<DownloadFileDescription> maps = filterMaps(allDownloads, DownloadFileDescription::isMap);
-    outerTabs.add("Maps", createdTabbedPanelForMaps(maps, pendingDownloads));
+    outerTabs.add("Maps", newTabbedPanelForMaps(maps, pendingDownloads));
 
     final List<DownloadFileDescription> skins = filterMaps(allDownloads, DownloadFileDescription::isMapSkin);
-    outerTabs.add("Skins", createAvailableInstalledTabbedPanel(selectedMapName, skins, pendingDownloads));
+    outerTabs.add("Skins", newAvailableInstalledTabbedPanel(selectedMapName, skins, pendingDownloads));
 
     final List<DownloadFileDescription> tools = filterMaps(allDownloads, DownloadFileDescription::isMapTool);
-    outerTabs.add("Tools", createAvailableInstalledTabbedPanel(selectedMapName, tools, pendingDownloads));
+    outerTabs.add("Tools", newAvailableInstalledTabbedPanel(selectedMapName, tools, pendingDownloads));
 
     final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, outerTabs,
         SwingComponents.newJScrollPane(progressPanel));
@@ -291,7 +291,7 @@ public class DownloadMapsWindow extends JFrame {
     return sb.toString();
   }
 
-  private Component createdTabbedPanelForMaps(
+  private Component newTabbedPanelForMaps(
       final List<DownloadFileDescription> downloads,
       final Set<DownloadFileDescription> pendingDownloads) {
     final JTabbedPane mapTabs = SwingComponents.newJTabbedPane();
@@ -300,7 +300,7 @@ public class DownloadMapsWindow extends JFrame {
           .filter(download -> download.getMapCategory() == mapCategory)
           .collect(Collectors.toList());
       if (!categorizedDownloads.isEmpty()) {
-        final JTabbedPane subTab = createAvailableInstalledTabbedPanel(Optional.of(mapCategory.toString()),
+        final JTabbedPane subTab = newAvailableInstalledTabbedPanel(Optional.of(mapCategory.toString()),
             categorizedDownloads, pendingDownloads);
         mapTabs.add(mapCategory.toString(), subTab);
       }
@@ -333,7 +333,7 @@ public class DownloadMapsWindow extends JFrame {
         .collect(Collectors.toList());
   }
 
-  private JTabbedPane createAvailableInstalledTabbedPanel(
+  private JTabbedPane newAvailableInstalledTabbedPanel(
       final Optional<String> selectedMapName,
       final List<DownloadFileDescription> downloads,
       final Set<DownloadFileDescription> pendingDownloads) {
@@ -344,10 +344,10 @@ public class DownloadMapsWindow extends JFrame {
     final List<DownloadFileDescription> outOfDateDownloads = mapList.getOutOfDateExcluding(pendingDownloads);
     final JPanel outOfDate = outOfDateDownloads.isEmpty()
         ? null
-        : createMapSelectionPanel(selectedMapName, outOfDateDownloads, MapAction.UPDATE);
+        : newMapSelectionPanel(selectedMapName, outOfDateDownloads, MapAction.UPDATE);
     // For the UX, always show an available maps tab, even if it is empty
     final JPanel available =
-        createMapSelectionPanel(selectedMapName, mapList.getAvailableExcluding(pendingDownloads), MapAction.INSTALL);
+        newMapSelectionPanel(selectedMapName, mapList.getAvailableExcluding(pendingDownloads), MapAction.INSTALL);
 
     // if there is a map to preselect, show the available map list first
     if (selectedMapName.isPresent()) {
@@ -366,13 +366,13 @@ public class DownloadMapsWindow extends JFrame {
     }
 
     if (!mapList.getInstalled().isEmpty()) {
-      final JPanel installed = createMapSelectionPanel(selectedMapName, mapList.getInstalled(), MapAction.REMOVE);
+      final JPanel installed = newMapSelectionPanel(selectedMapName, mapList.getInstalled(), MapAction.REMOVE);
       tabbedPane.addTab("Installed", installed);
     }
     return tabbedPane;
   }
 
-  private JPanel createMapSelectionPanel(final Optional<String> selectedMap,
+  private JPanel newMapSelectionPanel(final Optional<String> selectedMap,
       final List<DownloadFileDescription> unsortedMaps, final MapAction action) {
 
     final List<DownloadFileDescription> maps = MapDownloadListSort.sortByMapName(unsortedMaps);
@@ -390,8 +390,8 @@ public class DownloadMapsWindow extends JFrame {
       maps.stream().map(DownloadFileDescription::getMapName).forEach(model::addElement);
 
       final DownloadFileDescription mapToSelect = determineCurrentMapSelection(maps, selectedMap);
-      final JList<String> gamesList = createGameSelectionList(mapToSelect, maps, descriptionPane, model);
-      gamesList.addListSelectionListener(createDescriptionPanelUpdatingSelectionListener(
+      final JList<String> gamesList = newGameSelectionList(mapToSelect, maps, descriptionPane, model);
+      gamesList.addListSelectionListener(newDescriptionPanelUpdatingSelectionListener(
           descriptionPane, gamesList, maps, action, mapSizeLabel));
 
       DownloadMapsWindow.updateMapUrlAndSizeLabel(mapToSelect, action, mapSizeLabel);
@@ -400,7 +400,7 @@ public class DownloadMapsWindow extends JFrame {
       final JPanel southPanel = JPanelBuilder.builder()
           .gridLayout(2, 1)
           .add(mapSizeLabel)
-          .add(createButtonsPanel(action, gamesList, maps, model))
+          .add(newButtonsPanel(action, gamesList, maps, model))
           .build();
       main.add(southPanel, BorderLayout.SOUTH);
     }
@@ -423,7 +423,7 @@ public class DownloadMapsWindow extends JFrame {
     return maps.get(0);
   }
 
-  private static JList<String> createGameSelectionList(final DownloadFileDescription selectedMap,
+  private static JList<String> newGameSelectionList(final DownloadFileDescription selectedMap,
       final List<DownloadFileDescription> maps, final JEditorPane descriptionPanel,
       final DefaultListModel<String> model) {
     final JList<String> gamesList = new JList<>(model);
@@ -436,7 +436,7 @@ public class DownloadMapsWindow extends JFrame {
     return gamesList;
   }
 
-  private static ListSelectionListener createDescriptionPanelUpdatingSelectionListener(
+  private static ListSelectionListener newDescriptionPanelUpdatingSelectionListener(
       final JEditorPane descriptionPanel,
       final JList<String> gamesList, final List<DownloadFileDescription> maps, final MapAction action,
       final JLabel mapSizeLabelToUpdate) {
@@ -466,12 +466,12 @@ public class DownloadMapsWindow extends JFrame {
       final JLabel mapSizeLabel) {
     mapSizeLabel.setText(" ");
     new Thread(() -> {
-      final String labelText = createLabelText(action, map);
+      final String labelText = newLabelText(action, map);
       SwingUtilities.invokeLater(() -> mapSizeLabel.setText(labelText));
     }).start();
   }
 
-  private static String createLabelText(final MapAction action, final DownloadFileDescription map) {
+  private static String newLabelText(final MapAction action, final DownloadFileDescription map) {
     final String doubleSpace = "&nbsp;&nbsp;";
 
     final StringBuilder sb = new StringBuilder();
@@ -484,7 +484,7 @@ public class DownloadMapsWindow extends JFrame {
     } else {
       mapSize = Optional.of(map.getInstallLocation().length());
     }
-    mapSize.ifPresent(size -> sb.append(doubleSpace).append(" (").append(createSizeLabel(size)).append(")"));
+    mapSize.ifPresent(size -> sb.append(doubleSpace).append(" (").append(newSizeLabel(size)).append(")"));
 
     sb.append("<br>");
 
@@ -499,14 +499,14 @@ public class DownloadMapsWindow extends JFrame {
     return sb.toString();
   }
 
-  private static String createSizeLabel(final long bytes) {
+  private static String newSizeLabel(final long bytes) {
     final long kiloBytes = (bytes / 1024);
     final long megaBytes = kiloBytes / 1024;
     final long kbDigits = ((kiloBytes % 1000) / 100);
     return megaBytes + "." + kbDigits + " MB";
   }
 
-  private JPanel createButtonsPanel(final MapAction action, final JList<String> gamesList,
+  private JPanel newButtonsPanel(final MapAction action, final JList<String> gamesList,
       final List<DownloadFileDescription> maps,
       final DefaultListModel<String> listModel) {
 

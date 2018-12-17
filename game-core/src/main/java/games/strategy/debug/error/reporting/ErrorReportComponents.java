@@ -48,19 +48,19 @@ class ErrorReportComponents {
   }
 
 
-  JButton createSubmitButton(final JFrame frame, final FormHandler config) {
+  JButton newSubmitButton(final JFrame frame, final FormHandler config) {
     return JButtonBuilder.builder()
         .title("Upload")
         .toolTip("Upload error report to TripleA server")
         .componentName(Names.UPLOAD_BUTTON.toString())
-        .actionListener(button -> createSendConfirmationDialog(
+        .actionListener(button -> newShowSendConfirmationDialogAction(
             button,
             () -> config.guiDataHandler.accept(frame, config.guiReader.get())))
         .biggerFont()
         .build();
   }
 
-  private static Runnable createSendConfirmationDialog(
+  private static Runnable newShowSendConfirmationDialogAction(
       final Component parent,
       final Runnable confirmAction) {
 
@@ -72,14 +72,14 @@ class ErrorReportComponents {
         .showDialog();
   }
 
-  JButton createCancelButton(final Runnable closeAction) {
+  JButton newCancelButton(final Runnable closeAction) {
     return JButtonBuilder.builder()
         .title("Cancel")
         .actionListener(closeAction)
         .build();
   }
 
-  JButton createPreviewButton(final JFrame frame, final FormHandler config) {
+  JButton newPreviewButton(final JFrame frame, final FormHandler config) {
     return JButtonBuilder.builder()
         .title("Preview")
         .toolTip("Preview the full error report that will be uploaded")

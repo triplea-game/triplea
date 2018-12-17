@@ -36,10 +36,10 @@ class FileSystemAccessStrategy {
     SwingComponents.promptUser("Remove Maps?",
         "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>"
             + formatMapList(toRemove, DownloadFileDescription::getMapName) + "</html>",
-        createRemoveMapAction(toRemove, listModel));
+        newRemoveMapAction(toRemove, listModel));
   }
 
-  private static Runnable createRemoveMapAction(final List<DownloadFileDescription> maps,
+  private static Runnable newRemoveMapAction(final List<DownloadFileDescription> maps,
       final DefaultListModel<String> listModel) {
     return () -> {
 
@@ -89,13 +89,13 @@ class FileSystemAccessStrategy {
   }
 
   private static void showRemoveFailDialog(final String failMessage, final List<DownloadFileDescription> mapList) {
-    final String message = createDialogMessage(failMessage, mapList);
+    final String message = newDialogMessage(failMessage, mapList);
     showDialog(message, mapList, (map) -> map.getInstallLocation().getAbsolutePath());
   }
 
   private static void showRemoveSuccessDialog(final String successMessage,
       final List<DownloadFileDescription> mapList) {
-    final String message = createDialogMessage(successMessage, mapList);
+    final String message = newDialogMessage(successMessage, mapList);
     showDialog(message, mapList, DownloadFileDescription::getMapName);
   }
 
@@ -106,7 +106,7 @@ class FileSystemAccessStrategy {
         "<html>" + message + "<br /> " + formatMapList(mapList, outputFunction) + "</html>");
   }
 
-  private static String createDialogMessage(final String message, final List<DownloadFileDescription> mapList) {
+  private static String newDialogMessage(final String message, final List<DownloadFileDescription> mapList) {
     final String plural = mapList.size() != 1 ? "s" : "";
     return message + " " + mapList.size() + " map" + plural;
   }

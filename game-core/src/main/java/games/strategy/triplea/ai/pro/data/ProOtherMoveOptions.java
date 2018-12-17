@@ -30,8 +30,8 @@ public class ProOtherMoveOptions {
 
   public ProOtherMoveOptions(final List<Map<Territory, ProTerritory>> moveMapList, final PlayerId player,
       final boolean isAttacker) {
-    maxMoveMap = createMaxMoveMap(moveMapList, player, isAttacker);
-    moveMaps = createMoveMaps(moveMapList);
+    maxMoveMap = newMaxMoveMap(moveMapList, player, isAttacker);
+    moveMaps = newMoveMaps(moveMapList);
   }
 
   public ProTerritory getMax(final Territory t) {
@@ -51,7 +51,7 @@ public class ProOtherMoveOptions {
     return maxMoveMap.toString();
   }
 
-  private static Map<Territory, ProTerritory> createMaxMoveMap(final List<Map<Territory, ProTerritory>> moveMaps,
+  private static Map<Territory, ProTerritory> newMaxMoveMap(final List<Map<Territory, ProTerritory>> moveMaps,
       final PlayerId player, final boolean isAttacker) {
 
 
@@ -100,7 +100,7 @@ public class ProOtherMoveOptions {
     return result;
   }
 
-  private static Map<Territory, List<ProTerritory>> createMoveMaps(
+  private static Map<Territory, List<ProTerritory>> newMoveMaps(
       final List<Map<Territory, ProTerritory>> moveMapList) {
 
     final Map<Territory, List<ProTerritory>> result = new HashMap<>();

@@ -29,37 +29,37 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
   public void testCreate() throws Exception {
     final int startCount = getUserCount();
 
-    createUserWithMd5CryptHash();
+    newUserWithMd5CryptHash();
     assertEquals(getUserCount(), startCount + 1);
 
-    createUserWithBCryptHash();
+    newUserWithBCryptHash();
     assertEquals(getUserCount(), startCount + 2);
   }
 
   @Test
   public void testGet() {
-    final DBUser user = createUserWithMd5CryptHash();
+    final DBUser user = newUserWithMd5CryptHash();
     assertEquals(user, controller.getUserByName(user.getName()));
   }
 
   @Test
   public void testDoesUserExist() {
-    assertTrue(controller.doesUserExist(createUserWithMd5CryptHash().getName()));
-    assertTrue(controller.doesUserExist(createUserWithBCryptHash().getName()));
+    assertTrue(controller.doesUserExist(newUserWithMd5CryptHash().getName()));
+    assertTrue(controller.doesUserExist(newUserWithBCryptHash().getName()));
   }
 
   @Test
   public void testCreateDupe() {
     assertThrows(Exception.class,
-        () -> controller.createUser(createUserWithMd5CryptHash(),
-            new HashedPassword(md5Crypt(Util.createUniqueTimeStamp()))),
+        () -> controller.createUser(newUserWithMd5CryptHash(),
+            new HashedPassword(md5Crypt(Util.newUniqueTimestamp()))),
         "Should not be allowed to create a dupe user");
   }
 
   @Test
   public void testLogin() {
-    final String password = md5Crypt(Util.createUniqueTimeStamp());
-    final DBUser user = createUserWithHash(password, Function.identity());
+    final String password = md5Crypt(Util.newUniqueTimestamp());
+    final DBUser user = newUserWithHash(password, Function.identity());
     controller.updateUser(user, new HashedPassword(bcrypt(obfuscate(password))));
     assertTrue(controller.login(user.getName(), new HashedPassword(password)));
     assertTrue(controller.login(user.getName(), new HashedPassword(obfuscate(password))));
@@ -67,13 +67,13 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
 
   @Test
   public void testUpdate() throws Exception {
-    final DBUser user = createUserWithMd5CryptHash();
+    final DBUser user = newUserWithMd5CryptHash();
     assertTrue(controller.doesUserExist(user.getName()));
     final String password2 = md5Crypt("foo");
     final String email2 = "foo@foo.foo";
     controller.updateUser(
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
-        new HashedPassword(bcrypt(obfuscate(Util.createUniqueTimeStamp()))));
+        new HashedPassword(bcrypt(obfuscate(Util.newUniqueTimestamp()))));
     controller.updateUser(
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
         new HashedPassword(password2));
@@ -87,15 +87,15 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
     }
   }
 
-  private DBUser createUserWithMd5CryptHash() {
-    return createUserWithHash(Util.createUniqueTimeStamp(), UserControllerIntegrationTest::md5Crypt);
+  private DBUser newUserWithMd5CryptHash() {
+    return newUserWithHash(Util.newUniqueTimestamp(), UserControllerIntegrationTest::md5Crypt);
   }
 
-  private DBUser createUserWithBCryptHash() {
-    return createUserWithHash(Util.createUniqueTimeStamp(), UserControllerIntegrationTest::bcrypt);
+  private DBUser newUserWithBCryptHash() {
+    return newUserWithHash(Util.newUniqueTimestamp(), UserControllerIntegrationTest::bcrypt);
   }
 
-  private DBUser createUserWithHash(final @Nullable String password, final Function<String, String> hashingMethod) {
+  private DBUser newUserWithHash(final @Nullable String password, final Function<String, String> hashingMethod) {
     final String name = UUID.randomUUID().toString().substring(0, 20);
     final DBUser user = new DBUser(
         new DBUser.UserName(name),

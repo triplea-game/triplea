@@ -45,9 +45,9 @@ final class JavaFxSelectionComponentFactory {
       final int maxValue,
       final boolean allowUnset) {
     return new SelectionComponent<Region>() {
-      private final Spinner<Integer> spinner = createSpinner();
+      private final Spinner<Integer> spinner = newSpinner();
 
-      private Spinner<Integer> createSpinner() {
+      private Spinner<Integer> newSpinner() {
         final Spinner<Integer> spinner = new Spinner<>(
             minValue - (allowUnset ? 1 : 0),
             maxValue,

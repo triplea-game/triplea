@@ -87,7 +87,7 @@ public final class EventThreadJOptionPane {
 
     invokeAndWait(
         latchHandler,
-        () -> JOptionPane.showMessageDialog(parentComponent, createJLabelInScrollPane(message), title, messageType));
+        () -> JOptionPane.showMessageDialog(parentComponent, newScrollPane(message), title, messageType));
   }
 
   private static void invokeAndWait(final CountDownLatchHandler latchHandler, final Runnable runnable) {
@@ -119,7 +119,7 @@ public final class EventThreadJOptionPane {
     return invokeAndWait(latchHandler, () -> Optional.of(supplier.getAsInt())).get();
   }
 
-  private static JScrollPane createJLabelInScrollPane(final @Nullable String message) {
+  private static JScrollPane newScrollPane(final @Nullable String message) {
     final JLabel label = new JLabel(message);
     final JScrollPane scroll = new JScrollPane(label);
     scroll.setBorder(BorderFactory.createEmptyBorder());

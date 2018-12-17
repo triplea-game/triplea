@@ -60,9 +60,9 @@ public abstract class TechAdvance extends NamedAttachable {
           TECH_NAME_ROCKETS, TECH_NAME_PARATROOPERS, TECH_NAME_INCREASED_FACTORY_PRODUCTION, TECH_NAME_WAR_BONDS,
           TECH_NAME_MECHANIZED_INFANTRY, TECH_NAME_INDUSTRIAL_TECHNOLOGY, TECH_NAME_DESTROYER_BOMBARD));
   private static final Map<String, Class<? extends TechAdvance>> ALL_PREDEFINED_TECHNOLOGIES =
-      createPreDefinedTechnologyMap();
+      newPredefinedTechnologyMap();
 
-  private static Map<String, Class<? extends TechAdvance>> createPreDefinedTechnologyMap() {
+  private static Map<String, Class<? extends TechAdvance>> newPredefinedTechnologyMap() {
     final Map<String, Class<? extends TechAdvance>> preDefinedTechMap =
         new HashMap<>();
     preDefinedTechMap.put(TECH_PROPERTY_SUPER_SUBS, SuperSubsAdvance.class);

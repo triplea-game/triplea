@@ -37,7 +37,7 @@ final class FileMenu extends JMenu {
 
     setMnemonic(KeyEvent.VK_F);
 
-    add(createSaveMenu());
+    add(newSaveMenuItem());
     if (PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
       add(addPostPbem());
     }
@@ -45,7 +45,7 @@ final class FileMenu extends JMenu {
     addExitMenu();
   }
 
-  private JMenuItem createSaveMenu() {
+  private JMenuItem newSaveMenuItem() {
     final JMenuItem menuFileSave = new JMenuItem(SwingAction.of("Save", e -> {
       final File f = TripleAMenuBar.getSaveGameLocation(frame);
       if (f != null) {

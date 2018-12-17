@@ -226,7 +226,7 @@ public class MapImage {
 
   public void loadMaps(final ResourceLoader loader) {
     final Image smallFromFile = loadImage(loader, Constants.SMALL_MAP_FILENAME, Constants.SMALL_MAP_EXTENSIONS);
-    smallMapImage = Util.createImage(smallFromFile.getWidth(null), smallFromFile.getHeight(null), false);
+    smallMapImage = Util.newImage(smallFromFile.getWidth(null), smallFromFile.getHeight(null), false);
     final Graphics g = smallMapImage.getGraphics();
     g.drawImage(smallFromFile, 0, 0, null);
     g.dispose();

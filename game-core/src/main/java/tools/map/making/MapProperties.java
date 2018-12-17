@@ -67,7 +67,7 @@ public class MapProperties {
   }
 
   public Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> propertyWrapperUi(final boolean editable) {
-    return MapPropertyWrapper.createPropertiesUi(this, editable);
+    return MapPropertyWrapper.newPropertiesUi(this, editable);
   }
 
   public void writePropertiesToObject(final List<MapPropertyWrapper<?>> properties) {

@@ -28,7 +28,7 @@ public interface IGameLoader extends Serializable {
    *
    * @return a Set of GamePlayers
    */
-  Set<IGamePlayer> createPlayers(Map<String, PlayerType> players);
+  Set<IGamePlayer> newPlayers(Map<String, PlayerType> players);
 
   /**
    * The game is about to start.
@@ -55,5 +55,5 @@ public interface IGameLoader extends Serializable {
 
   void shutDown();
 
-  Unit createUnit(UnitType type, PlayerId owner, GameData data);
+  Unit newUnit(UnitType type, PlayerId owner, GameData data);
 }

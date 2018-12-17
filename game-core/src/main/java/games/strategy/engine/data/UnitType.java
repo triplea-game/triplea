@@ -46,7 +46,7 @@ public class UnitType extends NamedAttachable {
   }
 
   private Unit create(final PlayerId owner, final boolean isTemp, final int hitsTaken, final int bombingUnitDamage) {
-    final Unit u = getData().getGameLoader().createUnit(this, owner, getData());
+    final Unit u = getData().getGameLoader().newUnit(this, owner, getData());
     u.setHits(hitsTaken);
     if (u instanceof TripleAUnit) {
       ((TripleAUnit) u).setUnitDamage(bombingUnitDamage);

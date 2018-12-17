@@ -9,7 +9,7 @@ import games.strategy.io.IoUtils;
 
 final class AbstractInputStreamPropertyReaderAsPropertyReaderTest extends AbstractPropertyReaderTestCase {
   @Override
-  protected PropertyReader createPropertyReader(final Map<String, String> properties) throws Exception {
+  protected PropertyReader newPropertyReader(final Map<String, String> properties) throws Exception {
     final Properties props = new Properties();
     props.putAll(properties);
     final byte[] bytes = IoUtils.writeToMemory(os -> {

@@ -13,12 +13,12 @@ import games.strategy.util.Version;
 
 public class MapDownloadListSortTest {
 
-  private static final DownloadFileDescription MAP_A = createDownload("a", "url");
+  private static final DownloadFileDescription MAP_A = newDownload("a", "url");
   // capitol B to ensure case insensitive sorting
-  private static final DownloadFileDescription MAP_B = createDownload("B", "url");
-  private static final DownloadFileDescription MAP_C = createDownload("c", "url");
+  private static final DownloadFileDescription MAP_B = newDownload("B", "url");
+  private static final DownloadFileDescription MAP_C = newDownload("c", "url");
 
-  private static DownloadFileDescription createDownload(final String mapName, final String url) {
+  private static DownloadFileDescription newDownload(final String mapName, final String url) {
     final String description = "fake";
     final Version version = new Version("1");
     return new DownloadFileDescription(url, description, mapName, version, DownloadFileDescription.DownloadType.MAP,
