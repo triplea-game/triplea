@@ -41,7 +41,7 @@ public class DelegateList extends GameDataComponent implements Iterable<IDelegat
   }
 
   private void writeObject(@SuppressWarnings("unused") final ObjectOutputStream out) {
-    // dont write since delegates should be handled seperatly.
+    // don't write since delegates should be handled separately.
   }
 
   private void readObject(@SuppressWarnings("unused") final ObjectInputStream in) {

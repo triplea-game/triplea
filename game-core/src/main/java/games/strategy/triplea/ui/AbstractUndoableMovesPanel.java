@@ -33,7 +33,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.AbstractUndoableMove;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 
 abstract class AbstractUndoableMovesPanel extends JPanel {
   private static final long serialVersionUID = 1910945925958952416L;
@@ -77,17 +77,17 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
       add(new JLabel((this instanceof UndoablePlacementsPanel) ? "Placements:" : "Moves:"), BorderLayout.NORTH);
     }
     int scrollIncrement = 10;
-    final Dimension seperatorSize = new Dimension(150, 20);
+    final Dimension separatorSize = new Dimension(150, 20);
     while (iter.hasNext()) {
       final AbstractUndoableMove item = iter.next();
       final JComponent moveComponent = createComponentForMove(item);
       scrollIncrement = moveComponent.getPreferredSize().height;
       items.add(moveComponent);
       if (iter.hasNext()) {
-        final JSeparator seperator = new JSeparator(SwingConstants.HORIZONTAL);
-        seperator.setPreferredSize(seperatorSize);
-        seperator.setMaximumSize(seperatorSize);
-        items.add(seperator);
+        final JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
+        separator.setPreferredSize(separatorSize);
+        separator.setMaximumSize(separatorSize);
+        items.add(separator);
       }
     }
     if (movePanel.getUndoableMoves() != null && movePanel.getUndoableMoves().size() > 1) {
@@ -96,7 +96,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
       items.add(undoAllButton);
     }
 
-    final int scrollIncrementFinal = scrollIncrement + seperatorSize.height;
+    final int scrollIncrementFinal = scrollIncrement + separatorSize.height;
     // JScrollPane scroll = new JScrollPane(items);
     scroll = new JScrollPane(items) {
       private static final long serialVersionUID = -1064967105431785533L;
@@ -124,7 +124,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
   private JComponent createComponentForMove(final AbstractUndoableMove move) {
     final Box unitsBox = new Box(BoxLayout.X_AXIS);
     unitsBox.add(new JLabel((move.getIndex() + 1) + ") "));
-    final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(move.getUnits());
+    final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(move.getUnits());
     final Dimension buttonSize = new Dimension(80, 22);
     for (final UnitCategory category : unitCategories) {
       final Optional<ImageIcon> icon =

@@ -25,7 +25,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
@@ -145,7 +145,7 @@ public class PlayerUnitsPanel extends JPanel {
     }
 
     // Populate units into each category then add any remaining categories (damaged units, etc)
-    final Set<UnitCategory> unitCategories = UnitSeperator.categorize(units);
+    final Set<UnitCategory> unitCategories = UnitSeparator.categorize(units);
     for (final UnitCategory category : categories) {
       for (final UnitCategory unitCategory : unitCategories) {
         if (category.equals(unitCategory)) {

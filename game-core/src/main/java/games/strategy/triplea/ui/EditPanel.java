@@ -61,7 +61,7 @@ import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
@@ -144,9 +144,9 @@ class EditPanel extends ActionPanel {
           final List<Unit> allOfCorrectType = CollectionUtils.getMatches(allUnits,
               o -> selectedUnitTypes.contains(o.getType()));
           final int allCategories =
-              UnitSeperator.categorize(allOfCorrectType, mustMoveWithDetails.getMustMoveWith(), true, true).size();
+              UnitSeparator.categorize(allOfCorrectType, mustMoveWithDetails.getMustMoveWith(), true, true).size();
           final int selectedCategories =
-              UnitSeperator.categorize(selectedUnits, mustMoveWithDetails.getMustMoveWith(), true, true).size();
+              UnitSeparator.categorize(selectedUnits, mustMoveWithDetails.getMustMoveWith(), true, true).size();
           mustChoose = (allCategories != selectedCategories);
         }
         final Collection<Unit> bestUnits;

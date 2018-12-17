@@ -24,8 +24,8 @@ import games.strategy.triplea.ui.mapdata.MapData;
 /**
  * Separates a group of units into distinct categories.
  */
-public class UnitSeperator {
-  private UnitSeperator() {}
+public class UnitSeparator {
+  private UnitSeparator() {}
 
   /**
    * Finds unit categories, removes not displayed, and then sorts them into logical order to display based on:
@@ -35,7 +35,7 @@ public class UnitSeperator {
    */
   public static List<UnitCategory> getSortedUnitCategories(final Territory t, final MapData mapData) {
     final GameData data = t.getData();
-    final List<UnitCategory> categories = new ArrayList<>(UnitSeperator.categorize(t.getUnits().getUnits()));
+    final List<UnitCategory> categories = new ArrayList<>(UnitSeparator.categorize(t.getUnits().getUnits()));
     categories.removeIf(uc -> !mapData.shouldDrawUnit(uc.getType().getName()));
     final List<UnitType> xmlUnitTypes = new ArrayList<>(data.getUnitTypeList().getAllUnitTypes());
     categories.sort(Comparator

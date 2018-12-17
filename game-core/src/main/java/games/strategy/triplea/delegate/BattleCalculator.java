@@ -33,7 +33,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
@@ -136,7 +136,7 @@ public class BattleCalculator {
    */
   private static Tuple<List<List<Unit>>, List<Unit>> categorizeLowLuckAirUnits(final Collection<Unit> units,
       final int groupSize) {
-    final Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(units, null, false, true);
+    final Collection<UnitCategory> categorizedAir = UnitSeparator.categorize(units, null, false, true);
     final List<List<Unit>> groupsOfSize = new ArrayList<>();
     final List<Unit> toRoll = new ArrayList<>();
     for (final UnitCategory uc : categorizedAir) {
@@ -865,14 +865,14 @@ public class BattleCalculator {
 
   /**
    * Checks if the given collections target are all of one category as defined
-   * by UnitSeperator.categorize and they are not two hit units.
+   * by UnitSeparator.categorize and they are not two hit units.
    *
    * @param targets a collection of target units
    * @param dependents map of depend units for target units
    */
   private static boolean allTargetsOneTypeOneHitPoint(final Collection<Unit> targets,
       final Map<Unit, Collection<Unit>> dependents) {
-    final Set<UnitCategory> categorized = UnitSeperator.categorize(targets, dependents, false, false);
+    final Set<UnitCategory> categorized = UnitSeparator.categorize(targets, dependents, false, false);
     if (categorized.size() == 1) {
       final UnitCategory unitCategory = categorized.iterator().next();
       return unitCategory.getHitPoints() - unitCategory.getDamaged() <= 1;

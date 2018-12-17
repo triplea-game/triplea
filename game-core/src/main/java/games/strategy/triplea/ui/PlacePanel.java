@@ -25,7 +25,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.util.CollectionUtils;
 
 class PlacePanel extends AbstractMovePanel {
@@ -159,7 +159,7 @@ class PlacePanel extends AbstractMovePanel {
   }
 
   private void updateUnits() {
-    final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(getCurrentPlayer().getUnits().getUnits());
+    final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(getCurrentPlayer().getUnits().getUnits());
     unitsToPlace.setUnitsFromCategories(unitCategories);
   }
 

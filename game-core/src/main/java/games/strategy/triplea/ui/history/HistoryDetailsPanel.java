@@ -23,7 +23,7 @@ import games.strategy.triplea.ui.DicePanel;
 import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.ui.SimpleUnitPanel;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.triplea.util.UnitSeperator;
+import games.strategy.triplea.util.UnitSeparator;
 
 /**
  * A UI component that displays details about the currently-selected history node.
@@ -108,7 +108,7 @@ public class HistoryDetailsPanel extends JPanel {
   }
 
   private void renderUnits(final GridBagConstraints mainConstraints, final Collection<Unit> units) {
-    final Collection<UnitCategory> unitsCategories = UnitSeperator.categorize(units);
+    final Collection<UnitCategory> unitsCategories = UnitSeparator.categorize(units);
     final SimpleUnitPanel unitsPanel = new SimpleUnitPanel(mapPanel.getUiContext());
     unitsPanel.setUnitsFromCategories(unitsCategories);
     add(unitsPanel, mainConstraints);
