@@ -68,7 +68,7 @@ public class DiceServerEditor extends EditorPanel {
    */
   private void setupListeners() {
     testDiceyButton.addActionListener(e -> {
-      final PbemDiceRoller random = new PbemDiceRoller(getDiceServer(), null);
+      final PbemDiceRoller random = new PbemDiceRoller(getDiceServer());
       random.test();
     });
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();

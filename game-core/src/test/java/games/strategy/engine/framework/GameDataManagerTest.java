@@ -16,11 +16,11 @@ final class GameDataManagerTest {
   @Nested
   final class RoundTripTest {
     @Test
-    void shouldPreserveGameUuid() throws Exception {
+    void shouldPreserveGameName() throws Exception {
       final GameData data = new GameData();
       final byte[] bytes = IoUtils.writeToMemory(os -> GameDataManager.saveGame(os, data));
       final GameData loaded = IoUtils.readFromMemory(bytes, GameDataManager::loadGame);
-      assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
+      assertEquals(loaded.getGameName(), data.getGameName());
     }
   }
 

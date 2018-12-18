@@ -2,9 +2,6 @@ package games.strategy.triplea.ui.menubar;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +29,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.MenuEvent;
@@ -91,7 +87,6 @@ final class ViewMenu extends JMenu {
     addChatTimeMenu();
     addShowCommentLog();
     addTabbedProduction();
-    addShowGameUuid();
     addSeparator();
     addFindTerritory();
 
@@ -110,22 +105,6 @@ final class ViewMenu extends JMenu {
     tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
     tabbedProduction.addActionListener(e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected()));
     add(tabbedProduction);
-  }
-
-  private void addShowGameUuid() {
-    add(SwingAction.of("Game UUID", e -> {
-      final String id = (String) gameData.getProperties().get(GameData.GAME_UUID);
-      final JTextField text = new JTextField();
-      text.setText(id);
-      final JPanel panel = new JPanel();
-      panel.setLayout(new GridBagLayout());
-      panel.add(new JLabel("Game UUID:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-      panel.add(text, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-          new Insets(0, 0, 0, 0), 0, 0));
-      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(this), panel, "Game UUID",
-          JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
-    })).setMnemonic(KeyEvent.VK_U);
   }
 
   private void addZoomMenu() {

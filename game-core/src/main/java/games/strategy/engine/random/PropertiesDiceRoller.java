@@ -119,8 +119,8 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId,
-      final String gameUuid) throws IOException {
+  public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId)
+      throws IOException {
     final String normalizedGameId = gameId.trim().isEmpty() ? "TripleA" : gameId;
     String message = normalizedGameId + ":" + subjectMessage;
     final int maxLength = Integer.valueOf(props.getProperty("message.maxlength"));
@@ -131,19 +131,13 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
         HttpClientBuilder.create().setRedirectStrategy(new AdvancedRedirectStrategy()).build()) {
       final HttpPost httpPost = new HttpPost(props.getProperty("path"));
       final List<NameValuePair> params = ImmutableList.of(
-          new BasicNameValuePair("numdice", "" + numDice),
-          new BasicNameValuePair("numsides", "" + max),
-          new BasicNameValuePair("modroll", "No"),
-          new BasicNameValuePair("numroll", "" + 1),
+          new BasicNameValuePair("numdice", String.valueOf(numDice)),
+          new BasicNameValuePair("numsides", String.valueOf(max)),
           new BasicNameValuePair("subject", message),
           new BasicNameValuePair("roller", getToAddress()),
-          new BasicNameValuePair("gm", getCcAddress()),
-          new BasicNameValuePair("send", "true"));
+          new BasicNameValuePair("gm", getCcAddress()));
       httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
       httpPost.addHeader("User-Agent", "triplea/" + ClientContext.engineVersion());
-      // this is to allow a dice server to allow the user to request the emails for the game
-      // rather than sending out email for each roll
-      httpPost.addHeader("X-Triplea-Game-UUID", gameUuid);
       final String host = props.getProperty("host");
       final int port = Integer.parseInt(props.getProperty("port", "-1"));
       final String scheme = props.getProperty("scheme", "http");
