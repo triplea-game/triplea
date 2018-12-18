@@ -232,23 +232,6 @@ public class HeadlessGameServer {
     }
   }
 
-  /**
-   * Sends a chat message to all nodes except the originating node.
-   */
-  public static synchronized void sendChat(final String chatString) {
-    final HeadlessGameServer instance = getInstance();
-    if (instance != null) {
-      final Chat chat = instance.getChat();
-      if (chat != null) {
-        try {
-          chat.sendMessage(chatString, false);
-        } catch (final Exception e) {
-          log.log(Level.SEVERE, "Failed to send chat", e);
-        }
-      }
-    }
-  }
-
   public String getSalt() {
     return BCrypt.gensalt();
   }
