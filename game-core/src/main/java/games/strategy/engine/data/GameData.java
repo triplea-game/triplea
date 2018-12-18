@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -68,7 +67,6 @@ import games.strategy.util.Version;
  */
 public class GameData implements Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
-  public static final String GAME_UUID = "GAME_UUID";
   private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
   private transient LockUtil lockUtil = LockUtil.INSTANCE;
   private transient volatile boolean forceInSwingEventThread = false;
@@ -104,7 +102,6 @@ public class GameData implements Serializable {
 
   public GameData() {
     delegateList = new DelegateList(this);
-    properties.set(GAME_UUID, UUID.randomUUID().toString());
   }
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {

@@ -31,7 +31,6 @@ import games.strategy.util.Interruptibles;
  * before returning.
  */
 public class PbemDiceRoller implements IRandomSource {
-  private final String gameUuid;
   private final IRemoteDiceServer remoteDiceServer;
   private static Frame focusWindow;
 
@@ -44,9 +43,8 @@ public class PbemDiceRoller implements IRandomSource {
     focusWindow = w;
   }
 
-  public PbemDiceRoller(final IRemoteDiceServer diceServer, final String gameUuid) {
+  public PbemDiceRoller(final IRemoteDiceServer diceServer) {
     remoteDiceServer = diceServer;
-    this.gameUuid = gameUuid;
   }
 
   /**
@@ -55,7 +53,7 @@ public class PbemDiceRoller implements IRandomSource {
   public void test() {
     // TODO: do a test based on data.getDiceSides()
     final HttpDiceRollerDialog dialog =
-        new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", remoteDiceServer, "test-roll");
+        new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", remoteDiceServer);
     dialog.setTest();
     dialog.roll();
   }
@@ -64,7 +62,7 @@ public class PbemDiceRoller implements IRandomSource {
   public int[] getRandom(final int max, final int count, final String annotation) throws IllegalStateException {
     final Supplier<int[]> action = () -> {
       final HttpDiceRollerDialog dialog =
-          new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, remoteDiceServer, gameUuid);
+          new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, remoteDiceServer);
       dialog.roll();
       return dialog.getDiceRoll();
     };
@@ -107,7 +105,6 @@ public class PbemDiceRoller implements IRandomSource {
     private final String subjectMessage;
     private final String gameId;
     private final IRemoteDiceServer diceServer;
-    private final String gameUuid;
     private boolean test = false;
     private final JPanel buttons = new JPanel();
     private Window owner;
@@ -120,10 +117,9 @@ public class PbemDiceRoller implements IRandomSource {
      * @param count the number of dice rolled
      * @param subjectMessage the subject for the email the dice roller will send (if it sends emails)
      * @param diceServer the dice server implementation
-     * @param gameUuid the TripleA game UUID or null
      */
     HttpDiceRollerDialog(final Frame owner, final int sides, final int count, final String subjectMessage,
-        final IRemoteDiceServer diceServer, final String gameUuid) {
+        final IRemoteDiceServer diceServer) {
       super(owner, "Dice roller", true);
       this.owner = owner;
       this.sides = sides;
@@ -131,7 +127,6 @@ public class PbemDiceRoller implements IRandomSource {
       this.subjectMessage = subjectMessage;
       gameId = diceServer.getGameId() == null ? "" : diceServer.getGameId();
       this.diceServer = diceServer;
-      this.gameUuid = gameUuid;
       setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       exitButton.addActionListener(e -> ExitStatus.FAILURE.exit());
       exitButton.setEnabled(false);
@@ -216,7 +211,7 @@ public class PbemDiceRoller implements IRandomSource {
       appendText("Contacting  " + diceServer.getDisplayName() + "\n");
       String text = null;
       try {
-        text = diceServer.postRequest(sides, count, subjectMessage, gameId, gameUuid);
+        text = diceServer.postRequest(sides, count, subjectMessage, gameId);
         if (text.length() == 0) {
           appendText("Nothing could be read from dice server\n");
           appendText("Please check your firewall settings");
