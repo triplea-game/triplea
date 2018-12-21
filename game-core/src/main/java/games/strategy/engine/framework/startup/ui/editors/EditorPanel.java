@@ -84,21 +84,6 @@ public abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * called to see if the bean that is edited is in a valid state.
-   * This is typically called by editor listeners in response to a change in the editor
-   *
-   * @return true if valid
-   */
-  public abstract boolean isBeanValid();
-
-  /**
-   * Get the bean that is being edited. You should only call this when #isBeanValid return true
-   *
-   * @return the bean modified by the editor
-   */
-  public abstract IBean getBean();
-
-  /**
    * Returns the Label width, this can be used by wrapping editors to try to align label sizes.
    *
    * @return the size of the largest label in the first column
@@ -135,34 +120,6 @@ public abstract class EditorPanel extends JPanel {
         component.setPreferredSize(dimension);
         component.setSize(dimension);
       }
-    }
-  }
-
-  /**
-   * Fires the EDITOR_CHANGE property change, to notify propertyChangeListeners which have registered to be
-   * notified when the editor modifies the bean.
-   */
-  protected void fireEditorChanged() {
-    firePropertyChange(EDITOR_CHANGE, null, null);
-  }
-
-  /**
-   * Document listener which calls fireEditorChanged in response to any document change.
-   */
-  protected class EditorChangedFiringDocumentListener implements DocumentListener {
-    @Override
-    public void changedUpdate(final DocumentEvent e) {
-      fireEditorChanged();
-    }
-
-    @Override
-    public void insertUpdate(final DocumentEvent e) {
-      fireEditorChanged();
-    }
-
-    @Override
-    public void removeUpdate(final DocumentEvent e) {
-      fireEditorChanged();
     }
   }
 }

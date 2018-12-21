@@ -1,12 +1,6 @@
 package games.strategy.engine.random;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Splitter;
-
-import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
-import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
  * This is not actually a dice server, it just uses the normal TripleA PlainRandomSource for dice roll
@@ -15,15 +9,9 @@ import games.strategy.engine.framework.startup.ui.editors.IBean;
  * Because DiceServers must be serializable read resolve must be implemented
  */
 public final class InternalDiceServer implements IRemoteDiceServer {
-  private static final long serialVersionUID = -8369097763085658445L;
   private static final char DICE_SEPARATOR = ',';
 
   private final transient IRandomSource randomSource = new PlainRandomSource();
-
-  @Override
-  public EditorPanel getEditor() {
-    return new DiceServerEditor(this);
-  }
 
   @Override
   public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId) {
@@ -76,17 +64,6 @@ public final class InternalDiceServer implements IRemoteDiceServer {
     return false;
   }
 
-  /**
-   * Dice servers has to be serializable, so we need to provide custom serialization since
-   * PlainRandomSource is not serializable.
-   *
-   * @return a new InternalDiceServer
-   */
-  @SuppressWarnings("static-method")
-  private Object readResolve() {
-    return new InternalDiceServer();
-  }
-
   @Override
   public boolean supportsGameId() {
     return false;
@@ -98,15 +75,5 @@ public final class InternalDiceServer implements IRemoteDiceServer {
   @Override
   public String getGameId() {
     return null;
-  }
-
-  @Override
-  public String getHelpText() {
-    return "<html>No help</html>";
-  }
-
-  @Override
-  public boolean isSameType(final @Nullable IBean other) {
-    return other instanceof InternalDiceServer;
   }
 }

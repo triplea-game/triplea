@@ -1,5 +1,7 @@
 package games.strategy.engine.pbem;
 
+import java.util.function.Supplier;
+
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.help.HelpSupport;
 
@@ -11,8 +13,10 @@ import games.strategy.triplea.help.HelpSupport;
  * </p>
  */
 public class AxisAndAlliesForumPoster extends NodeBbForumPoster {
-  private static final long serialVersionUID = -823830258973002082L;
 
+  AxisAndAlliesForumPoster(final int topicId, final String username, final Supplier<String> password) {
+    super(topicId, username, password);
+  }
   @Override
   String getForumUrl() {
     return UrlConstants.AXIS_AND_ALLIES_FORUM.toString();
@@ -23,19 +27,6 @@ public class AxisAndAlliesForumPoster extends NodeBbForumPoster {
     return "www.axisandallies.org/forums/";
   }
 
-  @Override
-  public IForumPoster doClone() {
-    final AxisAndAlliesForumPoster clone = new AxisAndAlliesForumPoster();
-    clone.setTopicId(getTopicId());
-    clone.setIncludeSaveGame(getIncludeSaveGame());
-    clone.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
-    clone.setPassword(getPassword());
-    clone.setUsername(getUsername());
-    clone.setCredentialsSaved(areCredentialsSaved());
-    return clone;
-  }
-
-  @Override
   public String getHelpText() {
     return HelpSupport.loadHelp("axisAndAlliesForum.html");
   }

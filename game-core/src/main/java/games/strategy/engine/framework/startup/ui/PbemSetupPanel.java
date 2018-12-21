@@ -6,13 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +13,10 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
-import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,18 +24,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
-import games.strategy.engine.framework.startup.ui.editors.SelectAndViewEditor;
 import games.strategy.engine.pbem.AxisAndAlliesForumPoster;
-import games.strategy.engine.pbem.GenericEmailSender;
-import games.strategy.engine.pbem.GmailEmailSender;
-import games.strategy.engine.pbem.HotmailEmailSender;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.pbem.PbemMessagePoster;
@@ -53,6 +40,7 @@ import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.ui.SwingAction;
 import lombok.extern.java.Log;
+import swinglib.JPanelBuilder;
 
 /**
  * A panel for setting up Play by Email/Forum.
@@ -64,9 +52,9 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 9006941131918034674L;
   private static final String DICE_ROLLER = "games.strategy.engine.random.IRemoteDiceServer";
   private final GameSelectorModel gameSelectorModel;
-  private final SelectAndViewEditor diceServerEditor;
-  private final SelectAndViewEditor forumPosterEditor;
-  private final SelectAndViewEditor emailSenderEditor;
+  private final JPanel diceServerEditor;
+  private final JPanel forumPosterEditor;
+  private final JPanel emailSenderEditor;
   private final List<PlayerSelectorRow> playerTypes = new ArrayList<>();
   private final JPanel localPlayerPanel = new JPanel();
   private final JButton localPlayerSelection = new JButton("Select Local Players and AI's");
@@ -79,9 +67,9 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    */
   public PbemSetupPanel(final GameSelectorModel model) {
     gameSelectorModel = model;
-    diceServerEditor = new SelectAndViewEditor("Dice Server", "");
-    forumPosterEditor = new SelectAndViewEditor("Post to Forum", "forumPosters.html");
-    emailSenderEditor = new SelectAndViewEditor("Provider", "emailSenders.html");
+    diceServerEditor = JPanelBuilder.builder().add(new JLabel("Dice Server")).build();
+    forumPosterEditor = JPanelBuilder.builder().add(new JLabel("Post to Forum")).build();
+    emailSenderEditor = JPanelBuilder.builder().add(new JLabel("Provider")).build();
     createComponents();
     layoutComponents();
     setupListeners();
@@ -161,22 +149,10 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   private void loadDiceServer(final GameData data) {
     final List<IRemoteDiceServer> diceRollers = new ArrayList<>(PropertiesDiceRoller.loadFromFile());
     diceRollers.add(new InternalDiceServer());
-    for (final IRemoteDiceServer diceRoller : diceRollers) {
-      final IRemoteDiceServer cached =
-          (IRemoteDiceServer) LocalBeanCache.INSTANCE.getSerializable(diceRoller.getDisplayName());
-      if (cached != null) {
-        diceRoller.setCcAddress(cached.getCcAddress());
-        diceRoller.setToAddress(cached.getToAddress());
-        diceRoller.setGameId(cached.getGameId());
-      }
-    }
-    diceServerEditor.setBeans(diceRollers);
     if (gameSelectorModel.isSavedGame()) {
       // get the dice roller from the save game, if any
-      final IRemoteDiceServer roller = (IRemoteDiceServer) data.getProperties().get(DICE_ROLLER);
-      if (roller != null) {
-        diceServerEditor.setSelectedBean(roller);
-      }
+      // FIXME fill fields from savegame
+      // final IRemoteDiceServer roller = (IRemoteDiceServer) data.getProperties().get(DICE_ROLLER);
     }
   }
 
@@ -187,22 +163,13 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   private void loadForumPosters(final GameData data) {
     // get the forum posters,
     final List<IForumPoster> forumPosters = new ArrayList<>();
-    forumPosters.add(null);
-    forumPosters.add(useCacheIfAvailable(new AxisAndAlliesForumPoster()));
-    forumPosters.add(useCacheIfAvailable(new TripleAForumPoster()));
-    forumPosterEditor.setBeans(forumPosters);
+    //forumPosters.add(new AxisAndAlliesForumPoster());
+    //forumPosters.add(new TripleAForumPoster());
     // now get the poster stored in the save game
     final IForumPoster forumPoster = (IForumPoster) data.getProperties().get(PbemMessagePoster.FORUM_POSTER_PROP_NAME);
     if (forumPoster != null) {
       // if we have a cached version, use the credentials from this, as each player has different forum login
-      final IForumPoster cached =
-          (IForumPoster) LocalBeanCache.INSTANCE.getSerializable(forumPoster.getClass().getCanonicalName());
-      if (cached != null) {
-        forumPoster.setUsername(cached.getUsername());
-        forumPoster.setPassword(cached.getPassword());
-        forumPoster.setCredentialsSaved(cached.areCredentialsSaved());
-      }
-      forumPosterEditor.setSelectedBean(forumPoster);
+      // FIXME load from savegame
     }
   }
 
@@ -215,37 +182,12 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   private void loadEmailSender(final GameData data) {
     // The list of email, either loaded from cache or created
     final List<IEmailSender> emailSenders = new ArrayList<>();
-    emailSenders.add(null);
-    emailSenders.add(useCacheIfAvailable(new GmailEmailSender()));
-    emailSenders.add(useCacheIfAvailable(new HotmailEmailSender()));
-    emailSenders.add(useCacheIfAvailable(new GenericEmailSender()));
-    emailSenderEditor.setBeans(emailSenders);
+    // emailSenders.add(new GenericEmailSender());
     // now get the sender from the save game, update it with credentials from the cache, and set it
     final IEmailSender sender = (IEmailSender) data.getProperties().get(PbemMessagePoster.EMAIL_SENDER_PROP_NAME);
     if (sender != null) {
-      final IEmailSender cached =
-          (IEmailSender) LocalBeanCache.INSTANCE.getSerializable(sender.getClass().getCanonicalName());
-      if (cached != null) {
-        sender.setUserName(cached.getUserName());
-        sender.setPassword(cached.getPassword());
-        sender.setCredentialsSaved(cached.areCredentialsSaved());
-      }
-      emailSenderEditor.setSelectedBean(sender);
+      // FIXME load from savegame
     }
-  }
-
-  /**
-   * Finds a cached instance of the same type as the given instance. If a cached version is not available,
-   * {@code instance} is returned.
-   *
-   * @param instance The instance whose type is searched for in the cache.
-   *
-   * @return A IBean loaded from the cache or {@code instance} if a cached version is not available.
-   */
-  private static <T extends IBean> T useCacheIfAvailable(final T instance) {
-    @SuppressWarnings("unchecked")
-    final T cached = (T) LocalBeanCache.INSTANCE.getSerializable(instance.getClass().getCanonicalName());
-    return cached == null ? instance : cached;
   }
 
   /**
@@ -264,10 +206,10 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     if (gameSelectorModel.getGameData() == null) {
       return false;
     }
-    final boolean diceServerValid = diceServerEditor.isBeanValid();
-    final boolean summaryValid = forumPosterEditor.isBeanValid();
-    final boolean emailValid = emailSenderEditor.isBeanValid();
-    final boolean pbemReady = diceServerValid && summaryValid && emailValid && gameSelectorModel.getGameData() != null;
+    // final boolean diceServerValid = diceServerEditor.isBeanValid();
+    // final boolean summaryValid = forumPosterEditor.isBeanValid();
+    // final boolean emailValid = emailSenderEditor.isBeanValid();
+    final boolean pbemReady = true; // diceServerValid && summaryValid && emailValid && gameSelectorModel.getGameData() != null;
     if (!pbemReady) {
       return false;
     }
@@ -279,29 +221,27 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   public void postStartGame() {
     // store the dice server
     final GameData data = gameSelectorModel.getGameData();
-    data.getProperties().set(DICE_ROLLER, diceServerEditor.getBean());
+    // data.getProperties().set(DICE_ROLLER, diceServerEditor.getBean());
     // store the Turn Summary Poster
-    final IForumPoster poster = (IForumPoster) forumPosterEditor.getBean();
-    if (poster != null) {
+    // final IForumPoster poster = (IForumPoster) forumPosterEditor.getBean();
+    /*if (poster != null) {
       // clone the poster, the remove sensitive info, and put the clone into the game data
       // this was the sensitive info is not stored in the save game, but the user cache still has the password
       final IForumPoster summaryPoster = poster.doClone();
       summaryPoster.clearSensitiveInfo();
       data.getProperties().set(PbemMessagePoster.FORUM_POSTER_PROP_NAME, summaryPoster);
-    }
+    }*/
     // store the email poster
-    IEmailSender sender = (IEmailSender) emailSenderEditor.getBean();
+    /*IEmailSender sender = (IEmailSender) emailSenderEditor.getBean();
     if (sender != null) {
       // create a clone, delete the sensitive information in the clone, and use it in the game
       // the locally cached version still has the password so the user doesn't have to enter it every time
-      sender = sender.clone();
-      sender.clearSensitiveInfo();
       data.getProperties().set(PbemMessagePoster.EMAIL_SENDER_PROP_NAME, sender);
     }
     // store whether we are a pbem game or not, whether we are capable of posting a game save
     if (poster != null || sender != null) {
       data.getProperties().set(PbemMessagePoster.PBEM_GAME_PROP_NAME, true);
-    }
+    }*/
   }
 
   /**
@@ -323,20 +263,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    */
   @Override
   public Optional<ILauncher> getLauncher() {
-    // update local cache and write to disk before game starts
-    final IForumPoster poster = (IForumPoster) forumPosterEditor.getBean();
-    if (poster != null) {
-      LocalBeanCache.INSTANCE.storeSerializable(poster.getClass().getCanonicalName(), poster);
-    }
-    final IEmailSender sender = (IEmailSender) emailSenderEditor.getBean();
-    if (sender != null) {
-      LocalBeanCache.INSTANCE.storeSerializable(sender.getClass().getCanonicalName(), sender);
-    }
-    final IRemoteDiceServer server = (IRemoteDiceServer) diceServerEditor.getBean();
-    LocalBeanCache.INSTANCE.storeSerializable(server.getDisplayName(), server);
-    LocalBeanCache.INSTANCE.writeToDisk();
     // create local launcher
-    final PbemDiceRoller randomSource = new PbemDiceRoller((IRemoteDiceServer) diceServerEditor.getBean());
+    final PbemDiceRoller randomSource = new PbemDiceRoller(null /* (IRemoteDiceServer) diceServerEditor.getBean()*/);
     final Map<String, PlayerType> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
     for (final PlayerSelectorRow player : this.playerTypes) {
@@ -355,89 +283,5 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   @Override
   public JComponent getDrawable() {
     return this;
-  }
-
-  /**
-   * A cache for serialized beans that should be stored locally.
-   * This is used to store settings which are not game related, and should therefore not go into the options cache
-   * This is often used by editors to remember previous values
-   */
-  @SuppressWarnings("ImmutableEnumChecker") // Enum singleton pattern
-  private enum LocalBeanCache {
-    INSTANCE;
-    private final File file;
-    private final Object mutex = new Object();
-
-    final Map<String, IBean> map;
-
-    LocalBeanCache() {
-      file = new File(ClientFileSystemHelper.getUserRootFolder(), "local.cache");
-      map = loadMap();
-      // add a shutdown, just in case someone forgets to call writeToDisk
-      Runtime.getRuntime().addShutdownHook(new Thread(this::writeToDisk));
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, IBean> loadMap() {
-      if (file.exists()) {
-        try (FileInputStream fin = new FileInputStream(file);
-            ObjectInput oin = new ObjectInputStream(fin)) {
-          final Object o = oin.readObject();
-          if (o instanceof Map) {
-            final Map<?, ?> m = (Map<?, ?>) o;
-            for (final Object o1 : m.keySet()) {
-              if (!(o1 instanceof String)) {
-                throw new Exception("Map is corrupt");
-              }
-            }
-          } else {
-            throw new Exception("File is corrupt");
-          }
-          // we know that the map has proper type key/value
-          return (Map<String, IBean>) o;
-        } catch (final Exception e) {
-          // on error we delete the cache file, if we can
-          file.delete();
-          log.log(Level.SEVERE, "serialized local bean cache invalid", e);
-        }
-      }
-      return new HashMap<>();
-    }
-
-    /**
-     * Adds a new Serializable to the cache.
-     *
-     * @param key the key the serializable should be stored under. Take care not to override a serializable stored by
-     *        other code it is generally a good ide to use fully qualified class names, getClass().getCanonicalName() as
-     *        key
-     * @param bean the bean
-     */
-    void storeSerializable(final String key, final IBean bean) {
-      map.put(key, bean);
-    }
-
-    /**
-     * Call to have the cache written to disk.
-     */
-    void writeToDisk() {
-      synchronized (mutex) {
-        try (FileOutputStream fout = new FileOutputStream(file, false);
-            ObjectOutputStream out = new ObjectOutputStream(fout)) {
-          out.writeObject(map);
-        } catch (final IOException e) {
-          log.log(Level.SEVERE, "failed to write local bean cache", e);
-        }
-      }
-    }
-
-    /**
-     * Get a serializable from the cache.
-     *
-     * @param key the key it was stored under
-     * @return the serializable or null if one doesn't exists under the given key
-     */
-    IBean getSerializable(final String key) {
-      return map.get(key);
-    }
   }
 }

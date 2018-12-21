@@ -111,9 +111,8 @@ public final class ForumPosterComponent extends JPanel {
     if (allowDiceStatistics) {
       add(showDiceStatisticsCheckBox);
     }
-    // we always send savegame with emails i think?
-    includeSavegameCheckBox.setSelected(this.poster.getEmailSender() != null
-        || (this.poster.getForumPoster() != null && this.poster.getForumPoster().getIncludeSaveGame()));
+
+    includeSavegameCheckBox.setSelected(data.getProperties().get("INCLUDE_SAVEGAME", false));
     add(includeSavegameCheckBox);
     repostTurnSummaryCheckBox.setSelected(!hasPosted);
     add(repostTurnSummaryCheckBox);

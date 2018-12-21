@@ -3,7 +3,11 @@ package games.strategy.engine.pbem;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import org.apache.http.NameValuePair;
@@ -35,36 +39,46 @@ import lombok.extern.java.Log;
  * </p>
  */
 @Log
-abstract class NodeBbForumPoster extends AbstractForumPoster {
-  private static final long serialVersionUID = -6128723809566917089L;
+abstract class NodeBbForumPoster implements IForumPoster {
+
+  private final int topicId;
+  private final String username;
+  private final Supplier<String> password;
+
+
+  NodeBbForumPoster(final int topicId, final String username, final Supplier<String> password) {
+    this.topicId = topicId;
+    this.username = username;
+    this.password = password;
+  }
 
   abstract String getForumUrl();
 
   @Override
-  public boolean postTurnSummary(final String summary, final String title) {
+  public Future<String> postTurnSummary(final String summary, final String title, final Path file) {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
       final int userId = getUserId(client);
       final String token = getToken(client, userId);
       try {
-        post(client, token, "### " + title + "\n" + summary);
-        turnSummaryRef = "Successfully posted!";
-        return true;
+        post(client, token, "### " + title + "\n" + summary, file);
+        return CompletableFuture.completedFuture("Successfully posted!");
       } finally {
         deleteToken(client, userId, token);
       }
     } catch (final IOException | IllegalStateException e) {
       log.log(Level.SEVERE, "Failed to post game to forum", e);
-      turnSummaryRef = e.getMessage();
+      final CompletableFuture<String> result = new CompletableFuture<>();
+      result.completeExceptionally(e);
+      return result;
     }
-    return false;
   }
 
-  private void post(final CloseableHttpClient client, final String token, final String text) throws IOException {
-    final HttpPost post = new HttpPost(getForumUrl() + "/api/v2/topics/" + getTopicId());
+  private void post(final CloseableHttpClient client, final String token, final String text, final Path file) throws IOException {
+    final HttpPost post = new HttpPost(getForumUrl() + "/api/v2/topics/" + topicId);
     addTokenHeader(post, token);
     post.setEntity(new UrlEncodedFormEntity(
         Collections.singletonList(new BasicNameValuePair("content",
-            text + ((includeSaveGame && saveGameFile != null) ? uploadSaveGame(client, token) : ""))),
+            text + ((file != null) ? uploadSaveGame(client, token, file) : ""))),
         StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
@@ -75,10 +89,10 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
     }
   }
 
-  private String uploadSaveGame(final CloseableHttpClient client, final String token) throws IOException {
+  private String uploadSaveGame(final CloseableHttpClient client, final String token, final Path file) throws IOException {
     final HttpPost fileUpload = new HttpPost(getForumUrl() + "/api/v2/util/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
-        .addBinaryBody("files[]", saveGameFile, ContentType.APPLICATION_OCTET_STREAM, saveGameFileName)
+        .addBinaryBody("files[]", file.toFile(), ContentType.APPLICATION_OCTET_STREAM, file.getFileName().toString())
         .build());
     HttpProxy.addProxy(fileUpload);
     addTokenHeader(fileUpload, token);
@@ -108,7 +122,7 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
 
   private void checkUser(final JSONObject jsonObject) {
     if (!jsonObject.has("uid")) {
-      throw new IllegalStateException(String.format("User %s doesn't exist.", getUsername()));
+      throw new IllegalStateException(String.format("User %s doesn't exist.", username));
     }
     if (jsonObject.getBoolean("banned")) {
       throw new IllegalStateException("Your account is banned from the forum.");
@@ -119,7 +133,7 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
   }
 
   private JSONObject queryUserInfo(final CloseableHttpClient client) throws IOException {
-    final HttpGet post = new HttpGet(getForumUrl() + "/api/user/" + getUsername());
+    final HttpGet post = new HttpGet(getForumUrl() + "/api/user/" + username);
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       return new JSONObject(EntityUtils.toString(response.getEntity()));
@@ -127,7 +141,7 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
   }
 
   private NameValuePair newPasswordParameter() {
-    return new BasicNameValuePair("password", getPassword());
+    return new BasicNameValuePair("password", password.get());
   }
 
   private String getToken(final CloseableHttpClient client, final int userId) throws IOException {
@@ -150,11 +164,6 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
       throw new IllegalStateException("Failed to retrieve Token, server did not return correct response: "
           + response.getStatusLine() + "; JSON: " + rawJson);
     }
-  }
-
-  @Override
-  public boolean supportsSaveGame() {
-    return true;
   }
 
   @Override

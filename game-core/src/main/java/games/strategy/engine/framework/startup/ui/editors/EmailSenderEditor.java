@@ -55,18 +55,17 @@ public class EmailSenderEditor extends EditorPanel {
    * creates a new instance.
    *
    * @param bean the EmailSender to edit
-   * @param editorConfiguration configures which editor fields should be visible
    */
-  public EmailSenderEditor(final GenericEmailSender bean, final EditorConfiguration editorConfiguration) {
+  public EmailSenderEditor(final GenericEmailSender bean) {
     genericEmailSender = bean;
-    subject.setText(genericEmailSender.getSubjectPrefix());
+    /* subject.setText(genericEmailSender.getSubjectPrefix());
     host.setText(genericEmailSender.getHost());
     port.setText(String.valueOf(genericEmailSender.getPort()));
     toAddress.setText(genericEmailSender.getToAddress());
     login.setText(genericEmailSender.getUserName());
     password.setText(genericEmailSender.getPassword());
     credentialsSaved.setSelected(genericEmailSender.areCredentialsSaved());
-    useTls.setSelected(genericEmailSender.getEncryption() == GenericEmailSender.Encryption.TLS);
+    useTls.setSelected(genericEmailSender.getEncryption() == GenericEmailSender.Encryption.TLS);*/
 
     final int bottomSpace = 1;
     final int labelSpace = 2;
@@ -95,55 +94,26 @@ public class EmailSenderEditor extends EditorPanel {
         GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(credentialsSaved, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
         GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
-    if (editorConfiguration.showHost) {
-      row++;
-      add(hostLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(host, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
-    }
-    if (editorConfiguration.showPort) {
-      row++;
-      add(portLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(port, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
-    }
-    if (editorConfiguration.showEncryption) {
-      row++;
-      add(useTls, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
-      // add Test button on the same line as encryption
-      add(testEmail, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
-      row++;
-      add(alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
-          GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
-    } else {
-      row++;
-      add(alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
-          GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
-      add(testEmail, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
-      // or on a separate line if no encryption
-      // add(testEmail, new GridBagConstraints(1, row, 3, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-      // new Insets(0, 0,
-      // bottomSpace, 0), 0, 0));
-    }
-    alsoPostAfterCombatMove.setSelected(genericEmailSender.getAlsoPostAfterCombatMove());
-    setupListeners();
-  }
-
-  private void setupListeners() {
-    final EditorChangedFiringDocumentListener listener = new EditorChangedFiringDocumentListener();
-    host.getDocument().addDocumentListener(listener);
-    login.getDocument().addDocumentListener(listener);
-    port.getDocument().addDocumentListener(listener);
-    password.getDocument().addDocumentListener(listener);
-    toAddress.getDocument().addDocumentListener(listener);
-    credentialsSaved.addActionListener(e -> fireEditorChanged());
-    useTls.addActionListener(e -> fireEditorChanged());
-    testEmail.addActionListener(e -> testEmail());
+    row++;
+    add(hostLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(host, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+        new Insets(0, 0, bottomSpace, 0), 0, 0));
+    row++;
+    add(portLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(port, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+        new Insets(0, 0, bottomSpace, 0), 0, 0));
+    row++;
+    add(useTls, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+        new Insets(0, 0, bottomSpace, 0), 0, 0));
+    // add Test button on the same line as encryption
+    add(testEmail, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new Insets(0, 0, bottomSpace, 0), 0, 0));
+    row++;
+    add(alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
+        GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
+    // alsoPostAfterCombatMove.setSelected(genericEmailSender.getAlsoPostAfterCombatMove());
   }
 
   /**
@@ -164,7 +134,7 @@ public class EmailSenderEditor extends EditorPanel {
           fout.write("This file would normally be a save game".getBytes(StandardCharsets.UTF_8));
         }
         final String html = "<html><body><h1>Success</h1><p>This was a test email sent by TripleA<p></body></html>";
-        ((IEmailSender) getBean()).sendEmail("TripleA Test", html, dummy, "dummy.txt");
+        // ((IEmailSender) getBean()).sendEmail("TripleA Test", html, dummy, "dummy.txt");
         // email was sent, or an exception would have been thrown
         message = "Email sent, it should arrive shortly, otherwise check your spam folder";
         messageType = JOptionPane.INFORMATION_MESSAGE;
@@ -185,23 +155,20 @@ public class EmailSenderEditor extends EditorPanel {
     }).start();
   }
 
-  @Override
-  public boolean isBeanValid() {
+  public boolean hasValidFields() {
     final boolean hostValid = validateTextFieldNotEmpty(host, hostLabel);
     final boolean portValid = validateTextField(port, portLabel, new IntegerRangeValidator(0, 65635));
-    final boolean authenticationRequired = genericEmailSender.isAuthenticationRequired();
-    final boolean loginValid = !authenticationRequired || validateTextFieldNotEmpty(login, loginLabel);
-    final boolean passwordValid = !authenticationRequired || validateTextFieldNotEmpty(password, passwordLabel);
+    final boolean loginValid = validateTextFieldNotEmpty(login, loginLabel);
+    final boolean passwordValid = validateTextFieldNotEmpty(password, passwordLabel);
     final boolean addressValid = validateTextField(toAddress, toLabel, new EmailValidator(false));
     final boolean allValid = hostValid && portValid && loginValid && passwordValid && addressValid;
     testEmail.setEnabled(allValid);
     return allValid;
   }
 
-  @Override
-  public IBean getBean() {
-    genericEmailSender
-        .setEncryption(useTls.isSelected() ? GenericEmailSender.Encryption.TLS : GenericEmailSender.Encryption.NONE);
+  public IEmailSender getEmailSender() {
+    /*genericEmailSender
+        .setEncryption(useTls.isSelected());
     genericEmailSender.setSubjectPrefix(subject.getText());
     genericEmailSender.setHost(host.getText());
     genericEmailSender.setUserName(login.getText());
@@ -215,24 +182,7 @@ public class EmailSenderEditor extends EditorPanel {
     }
     genericEmailSender.setPort(port);
     genericEmailSender.setToAddress(toAddress.getText());
-    genericEmailSender.setAlsoPostAfterCombatMove(alsoPostAfterCombatMove.isSelected());
+    genericEmailSender.setAlsoPostAfterCombatMove(alsoPostAfterCombatMove.isSelected());*/
     return genericEmailSender;
-  }
-
-  /**
-   * class for configuring the editor so some fields can be hidden.
-   */
-  public static class EditorConfiguration {
-    public boolean showHost;
-    public boolean showPort;
-    public boolean showEncryption;
-
-    public EditorConfiguration() {}
-
-    public EditorConfiguration(final boolean showHost, final boolean showPort, final boolean showEncryption) {
-      this.showHost = showHost;
-      this.showPort = showPort;
-      this.showEncryption = showEncryption;
-    }
   }
 }

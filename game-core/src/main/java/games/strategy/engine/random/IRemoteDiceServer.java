@@ -3,13 +3,11 @@ package games.strategy.engine.random;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import games.strategy.engine.framework.startup.ui.editors.IBean;
-
 /**
  * A service that provides dice rolling facilities outside the game process. Used to provide a level of trust between
  * players that no one player is cheating using a compromised local dice server.
  */
-public interface IRemoteDiceServer extends IBean {
+public interface IRemoteDiceServer {
   /**
    * Post a request to the dice server, and return the resulting html page as a string.
    */
@@ -86,4 +84,6 @@ public interface IRemoteDiceServer extends IBean {
    * @return the game id or null if not configured
    */
   String getGameId();
+
+  String getDisplayName();
 }

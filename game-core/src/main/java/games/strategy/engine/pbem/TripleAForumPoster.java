@@ -1,5 +1,7 @@
 package games.strategy.engine.pbem;
 
+import java.util.function.Supplier;
+
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.help.HelpSupport;
 
@@ -11,7 +13,10 @@ import games.strategy.triplea.help.HelpSupport;
  * </p>
  */
 public class TripleAForumPoster extends NodeBbForumPoster {
-  private static final long serialVersionUID = -3380344469767981030L;
+
+  TripleAForumPoster(final int topicId, final String username, final Supplier<String> password) {
+    super(topicId, username, password);
+  }
 
   @Override
   String getForumUrl() {
@@ -23,19 +28,6 @@ public class TripleAForumPoster extends NodeBbForumPoster {
     return "forums.triplea-game.org";
   }
 
-  @Override
-  public IForumPoster doClone() {
-    final TripleAForumPoster clone = new TripleAForumPoster();
-    clone.setTopicId(getTopicId());
-    clone.setIncludeSaveGame(getIncludeSaveGame());
-    clone.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
-    clone.setPassword(getPassword());
-    clone.setUsername(getUsername());
-    clone.setCredentialsSaved(areCredentialsSaved());
-    return clone;
-  }
-
-  @Override
   public String getHelpText() {
     return HelpSupport.loadHelp("tripleaForum.html");
   }

@@ -60,24 +60,9 @@ public class DiceServerEditor extends EditorPanel {
     }
     add(testDiceyButton, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
-    setupListeners();
   }
 
-  /**
-   * Configures the listeners for the gui components.
-   */
-  private void setupListeners() {
-    testDiceyButton.addActionListener(e -> {
-      final PbemDiceRoller random = new PbemDiceRoller(getDiceServer());
-      random.test();
-    });
-    final DocumentListener docListener = new EditorChangedFiringDocumentListener();
-    toAddress.getDocument().addDocumentListener(docListener);
-    ccAddress.getDocument().addDocumentListener(docListener);
-  }
-
-  @Override
-  public boolean isBeanValid() {
+  public boolean areFieldsValid() {
     boolean toValid = true;
     boolean ccValid = true;
     if (getDiceServer().sendsEmail()) {
@@ -87,11 +72,6 @@ public class DiceServerEditor extends EditorPanel {
     final boolean allValid = toValid && ccValid;
     testDiceyButton.setEnabled(allValid);
     return allValid;
-  }
-
-  @Override
-  public IBean getBean() {
-    return getDiceServer();
   }
 
   /**

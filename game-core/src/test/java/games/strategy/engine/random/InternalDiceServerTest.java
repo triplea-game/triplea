@@ -4,35 +4,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.framework.startup.ui.editors.IBean;
-
 final class InternalDiceServerTest {
-  @Nested
-  final class IsSameTypeTest {
-    private final InternalDiceServer reference = new InternalDiceServer();
-
-    @Test
-    void shouldReturnTrueWhenOtherHasSameClass() {
-      assertThat(reference.isSameType(new InternalDiceServer()), is(true));
-    }
-
-    @Test
-    void shouldReturnFalseWhenOtherHasDifferentClass() {
-      assertThat(reference.isSameType(mock(IBean.class)), is(false));
-    }
-
-    @Test
-    void shouldReturnFalseWhenOtherIsNull() {
-      assertThat(reference.isSameType(null), is(false));
-    }
-  }
 
   @Nested
   final class GetDiceTest {

@@ -14,9 +14,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -35,9 +33,8 @@ import javax.swing.SpinnerNumberModel;
 import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.engine.pbem.GenericEmailSender;
 import games.strategy.ui.SwingComponents;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import swinglib.JButtonBuilder;
 import swinglib.JComboBoxBuilder;
 import swinglib.JPanelBuilder;
@@ -455,33 +452,10 @@ final class SelectionComponentFactory {
       final ClientSetting<char[]> usernameSetting,
       final ClientSetting<char[]> passwordSetting) {
     return new AlwaysValidInputSelectionComponent() {
-      /**
-       * Data class to store a 3-tuple consisting of
-       * a server host, a server port and whether or not
-       * to use an encrypted connection.
-       */
-      @AllArgsConstructor
-      @Immutable
-      final class EmailProviderSetting {
-        @Nonnull
-        private final String displayName;
-        @Getter
-        @Nonnull
-        private final String host;
-        @Getter
-        private final int port;
-        @Getter
-        private final boolean isEncrypted;
 
-        @Override
-        public String toString() {
-          return displayName;
-        }
-      }
-
-      private final List<EmailProviderSetting> knownProviders = Arrays.asList(
-          new EmailProviderSetting("Gmail", "smtp.gmail.com", 587, true),
-          new EmailProviderSetting("Hotmail", "smtp.live.com", 587, true));
+      private final List<GenericEmailSender.EmailProviderSetting> knownProviders = Arrays.asList(
+          new GenericEmailSender.EmailProviderSetting("Gmail", "smtp.gmail.com", 587, true),
+          new GenericEmailSender.EmailProviderSetting("Hotmail", "smtp.live.com", 587, true));
 
       private final JTextField serverField = new JTextField(hostSetting.getValue().orElse(""), 20);
 
@@ -509,13 +483,13 @@ final class SelectionComponentFactory {
           .addLeftJustified(JButtonBuilder.builder()
               .title("Presets...")
               .actionListener(() -> {
-                final JComboBox<EmailProviderSetting> comboBox =
-                    JComboBoxBuilder.builder(EmailProviderSetting.class)
+                final JComboBox<GenericEmailSender.EmailProviderSetting> comboBox =
+                    JComboBoxBuilder.builder(GenericEmailSender.EmailProviderSetting.class)
                         .items(knownProviders)
                         .build();
                 if (JOptionPane.showConfirmDialog(this.panel.getParent(), JPanelBuilder.builder().add(comboBox).build(),
                     "Select a Preset", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                  final EmailProviderSetting config = (EmailProviderSetting) comboBox.getSelectedItem();
+                  final GenericEmailSender.EmailProviderSetting config = (GenericEmailSender.EmailProviderSetting) comboBox.getSelectedItem();
                   serverField.setText(config.getHost());
                   portSpinner.setValue(config.getPort());
                   tlsCheckBox.setSelected(config.isEncrypted());

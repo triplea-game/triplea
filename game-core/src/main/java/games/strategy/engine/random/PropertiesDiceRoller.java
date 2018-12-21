@@ -11,11 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
-
-import javax.annotation.Nullable;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -43,9 +40,6 @@ import com.google.common.collect.ImmutableList;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
-import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.io.FileUtils;
 import lombok.extern.java.Log;
@@ -55,8 +49,6 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class PropertiesDiceRoller implements IRemoteDiceServer {
-  private static final long serialVersionUID = 6481409417543119539L;
-
   /**
    * Loads the property dice rollers from the properties file.
    *
@@ -102,11 +94,6 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
   @Override
   public String getDisplayName() {
     return props.getProperty(PropertyKeys.DISPLAY_NAME);
-  }
-
-  @Override
-  public EditorPanel getEditor() {
-    return new DiceServerEditor(this);
   }
 
   @Override
@@ -239,16 +226,6 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
   @Override
   public String getGameId() {
     return gameId;
-  }
-
-  @Override
-  public String getHelpText() {
-    return getInfoText();
-  }
-
-  @Override
-  public boolean isSameType(final @Nullable IBean other) {
-    return other instanceof PropertiesDiceRoller && Objects.equals(getDisplayName(), other.getDisplayName());
   }
 
   @VisibleForTesting
