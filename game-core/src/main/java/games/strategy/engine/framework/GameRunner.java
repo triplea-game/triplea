@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
-import java.util.logging.SimpleFormatter;
+import java.util.logging.Logger;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -51,6 +51,7 @@ import org.triplea.game.client.ui.javafx.JavaFxClientRunner;
 import games.strategy.debug.Console;
 import games.strategy.debug.ConsoleHandler;
 import games.strategy.debug.ErrorMessage;
+import games.strategy.debug.ErrorMessageHandler;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.auto.health.check.LocalSystemChecker;
@@ -116,15 +117,7 @@ public final class GameRunner {
     if (!ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
       Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
         LookAndFeel.initialize();
-        final Console console = new Console();
-        final SimpleFormatter formatter = new SimpleFormatter();
-        LogManager.getLogManager().getLogger("").addHandler(new ConsoleHandler(
-            logMsg -> {
-              if (logMsg.getLevel().intValue() > Level.INFO.intValue()) {
-                ErrorMessage.show(logMsg);
-              }
-              console.append(formatter.format(logMsg));
-            }));
+        initializeLogManager(Console.newInstance());
         ErrorMessage.enable();
       }));
     }
@@ -159,6 +152,12 @@ public final class GameRunner {
       LocalSystemChecker.launch();
       UpdateChecks.launch();
     }
+  }
+
+  private static void initializeLogManager(final Console console) {
+    final Logger defaultLogger = LogManager.getLogManager().getLogger("");
+    defaultLogger.addHandler(new ErrorMessageHandler());
+    defaultLogger.addHandler(new ConsoleHandler(console));
   }
 
   private static JFrame newMainFrame() {

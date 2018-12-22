@@ -1,17 +1,17 @@
 package games.strategy.debug;
 
-import java.util.function.Consumer;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
-
-import lombok.AllArgsConstructor;
+import java.util.logging.SimpleFormatter;
 
 /**
- * A {@link Handler} that publishes log records to an injected log handler. This can be wired up to send log messages
- * to a UI console.
+ * A {@link Handler} that publishes log records to an instance of {@link Console}.
+ *
  * <p>
- * Configuration: This handler does not currently support configuration through the {@link LogManager}.
+ * <strong>Configuration:</strong> This handler does not currently support configuration through the {@link LogManager}.
  * It always uses the following default configuration:
  * </p>
  * <ul>
@@ -21,31 +21,27 @@ import lombok.AllArgsConstructor;
  * <li>Encoding: default platform encoding</li>
  * </ul>
  */
-@AllArgsConstructor
 public final class ConsoleHandler extends Handler {
+  private final Console console;
 
-  private final Consumer<LogRecord> msgReceiver;
+  public ConsoleHandler(final Console console) {
+    checkNotNull(console);
 
-  @Override
-  public void close() {
-    // no-op
+    this.console = console;
+
+    setFormatter(new SimpleFormatter());
   }
 
   @Override
-  public void flush() {
-    // no-op
-  }
+  public void close() {}
 
   @Override
-  public void publish(final LogRecord record) {
-    if (!isLoggable(record)) {
-      return;
+  public void flush() {}
+
+  @Override
+  public synchronized void publish(final LogRecord record) {
+    if (isLoggable(record)) {
+      console.append(getFormatter().format(record));
     }
-    msgReceiver.accept(record);
-  }
-
-  @Override
-  public boolean isLoggable(final LogRecord record) {
-    return (record != null) && super.isLoggable(record);
   }
 }

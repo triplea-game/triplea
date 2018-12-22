@@ -1,41 +1,55 @@
 package games.strategy.debug;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.function.Consumer;
+import java.util.logging.Filter;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 final class ConsoleHandlerTest {
-  private ConsoleHandler consoleHandler;
+  @ExtendWith(MockitoExtension.class)
+  @Nested
+  final class PublishTest {
+    @Mock
+    private Console console;
+    private ConsoleHandler consoleHandler;
+    private final LogRecord record = new LogRecord(Level.SEVERE, "message");
 
-  @Mock
-  private Consumer<LogRecord> errorHandler;
+    @BeforeEach
+    void createConsoleHandler() {
+      consoleHandler = new ConsoleHandler(console);
+    }
 
-  @BeforeEach
-  void setUp() {
-    consoleHandler = new ConsoleHandler(errorHandler);
-  }
+    @Test
+    void shouldAppendFormattedMessageToConsoleWhenRecordIsLoggable(@Mock final Formatter formatter) {
+      final String formattedMessage = "formattedMessage";
+      when(formatter.format(record)).thenReturn(formattedMessage);
+      consoleHandler.setFormatter(formatter);
 
-  @Test
-  void isLoggable_ShouldReturnFalseWhenRecordIsNull() {
-    assertThat(consoleHandler.isLoggable(null), is(false));
-  }
+      consoleHandler.publish(record);
 
-  @Test
-  void publishWritesToErrorHandler() {
-    final LogRecord logRecord = new LogRecord(Level.SEVERE, "message");
-    consoleHandler.publish(logRecord);
-    verify(errorHandler, times(1)).accept(logRecord);
+      verify(console).append(formattedMessage);
+    }
+
+    @Test
+    void shouldNotAppendMessageToConsoleWhenRecordIsNotLoggable(@Mock final Filter filter) {
+      when(filter.isLoggable(record)).thenReturn(false);
+      consoleHandler.setFilter(filter);
+
+      consoleHandler.publish(record);
+
+      verify(console, never()).append(anyString());
+    }
   }
 }
