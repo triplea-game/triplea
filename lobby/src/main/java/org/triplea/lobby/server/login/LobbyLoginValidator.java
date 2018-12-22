@@ -54,7 +54,6 @@ public final class LobbyLoginValidator implements ILoginValidator {
     String ANONYMOUS_AUTHENTICATION_FAILED = "Can't login anonymously, username already exists";
     String AUTHENTICATION_FAILED = "Incorrect username or password";
     String INVALID_MAC = "Invalid mac address";
-    String MAINTENANCE_MODE_ENABLED = "The lobby is in maintenance mode; please try again later";
     String THATS_NOT_A_NICE_NAME = "That's not a nice name";
     String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
     String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
@@ -65,17 +64,15 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private final BannedMacDao bannedMacDao;
   private final BannedUsernameDao bannedUsernameDao;
   private final BcryptSaltGenerator bcryptSaltGenerator;
-  private final LobbyConfiguration lobbyConfiguration;
   private final RsaAuthenticator rsaAuthenticator;
   private final UserDao userDao;
 
   public LobbyLoginValidator(final LobbyConfiguration lobbyConfiguration) {
-    this(lobbyConfiguration, new Database(lobbyConfiguration));
+    this(new Database(lobbyConfiguration));
   }
 
-  private LobbyLoginValidator(final LobbyConfiguration lobbyConfiguration, final Database database) {
+  private LobbyLoginValidator(final Database database) {
     this(
-        lobbyConfiguration,
         new BadWordController(database),
         new BannedMacController(database),
         new BannedUsernameController(database),
@@ -87,7 +84,6 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
   @VisibleForTesting
   LobbyLoginValidator(
-      final LobbyConfiguration lobbyConfiguration,
       final BadWordDao badWordDao,
       final BannedMacDao bannedMacDao,
       final BannedUsernameDao bannedUsernameDao,
@@ -100,7 +96,6 @@ public final class LobbyLoginValidator implements ILoginValidator {
     this.bannedMacDao = bannedMacDao;
     this.bannedUsernameDao = bannedUsernameDao;
     this.bcryptSaltGenerator = bcryptSaltGenerator;
-    this.lobbyConfiguration = lobbyConfiguration;
     this.rsaAuthenticator = rsaAuthenticator;
     this.userDao = userDao;
   }
@@ -115,13 +110,9 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
   private Map<String, String> newMd5CryptAuthenticatorChallenge(final String userName) {
     final Map<String, String> challenge = new HashMap<>();
-    if (lobbyConfiguration.isMaintenanceMode()) {
-      challenge.put(LobbyLoginChallengeKeys.SALT, Md5Crypt.newSalt());
-    } else {
-      final HashedPassword password = userDao.getLegacyPassword(userName);
-      if (password != null && Strings.emptyToNull(password.value) != null) {
-        challenge.put(LobbyLoginChallengeKeys.SALT, Md5Crypt.getSalt(password.value));
-      }
+    final HashedPassword password = userDao.getLegacyPassword(userName);
+    if (password != null && Strings.emptyToNull(password.value) != null) {
+      challenge.put(LobbyLoginChallengeKeys.SALT, Md5Crypt.getSalt(password.value));
     }
     return challenge;
   }
@@ -134,9 +125,6 @@ public final class LobbyLoginValidator implements ILoginValidator {
       final String clientName,
       final String clientMac,
       final SocketAddress remoteAddress) {
-    if (lobbyConfiguration.isMaintenanceMode()) {
-      return ErrorMessages.MAINTENANCE_MODE_ENABLED;
-    }
     final User user = User.builder()
         .username(clientName)
         .inetAddress(((InetSocketAddress) remoteAddress).getAddress())

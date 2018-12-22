@@ -121,22 +121,4 @@ public final class LobbyConfigurationTest {
       assertThat(lobbyConfiguration.getPostgresUser(), is(emptyString()));
     }
   }
-
-  @Nested
-  public final class IsMaintenanceModeTest {
-    @Test
-    public void shouldReturnValueWhenPresent() {
-      final boolean value = !DefaultValues.MAINTENANCE_MODE;
-      memoryPropertyReader.setProperty(PropertyKeys.MAINTENANCE_MODE, String.valueOf(value));
-
-      assertThat(lobbyConfiguration.isMaintenanceMode(), is(value));
-    }
-
-    @Test
-    public void shouldReturnDefaultValueWhenAbsent() {
-      memoryPropertyReader.setProperty(PropertyKeys.MAINTENANCE_MODE, "");
-
-      assertThat(lobbyConfiguration.isMaintenanceMode(), is(DefaultValues.MAINTENANCE_MODE));
-    }
-  }
 }
