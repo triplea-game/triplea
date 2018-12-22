@@ -42,16 +42,11 @@ public final class LobbyConfiguration {
     return propertyReader.readProperty(PropertyKeys.POSTGRES_USER);
   }
 
-  public boolean isMaintenanceMode() {
-    return propertyReader.readBooleanPropertyOrDefault(PropertyKeys.MAINTENANCE_MODE, DefaultValues.MAINTENANCE_MODE);
-  }
-
   /**
    * The valid lobby property keys.
    */
   @VisibleForTesting
   public interface PropertyKeys {
-    String MAINTENANCE_MODE = "maintenance_mode";
     String PORT = "port";
     String POSTGRES_DATABASE = "postgres_database";
     String POSTGRES_HOST = "postgres_host";
@@ -62,7 +57,6 @@ public final class LobbyConfiguration {
 
   @VisibleForTesting
   interface DefaultValues {
-    boolean MAINTENANCE_MODE = false;
     int PORT = 3304;
     String POSTGRES_DATABASE = "ta_users";
     String POSTGRES_HOST = "localhost";

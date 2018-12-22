@@ -24,14 +24,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.common.config.MemoryPropertyReader;
 import org.triplea.lobby.common.LobbyConstants;
-import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
-import org.triplea.lobby.server.config.LobbyConfiguration;
 import org.triplea.lobby.server.db.BadWordDao;
 import org.triplea.lobby.server.db.BannedMacDao;
 import org.triplea.lobby.server.db.BannedUsernameDao;
@@ -66,8 +63,6 @@ public final class LobbyLoginValidatorTest {
     @Mock
     BannedUsernameDao bannedUsernameDao;
 
-    private final MemoryPropertyReader memoryPropertyReader = new MemoryPropertyReader();
-
     @Mock
     private UserDao userDao;
 
@@ -86,7 +81,6 @@ public final class LobbyLoginValidatorTest {
     @BeforeEach
     public void createLobbyLoginValidator() throws Exception {
       lobbyLoginValidator = new LobbyLoginValidator(
-          new LobbyConfiguration(memoryPropertyReader),
           badWordDao,
           bannedMacDao,
           bannedUsernameDao,
@@ -131,10 +125,6 @@ public final class LobbyLoginValidatorTest {
 
     final void givenAuthenticationWillUseObfuscatedPasswordAndFail() {
       when(userDao.login(user.getUsername(), new HashedPassword(obfuscate(PASSWORD)))).thenReturn(false);
-    }
-
-    final void givenMaintenanceModeIsEnabled() {
-      memoryPropertyReader.setProperty(LobbyConfiguration.PropertyKeys.MAINTENANCE_MODE, String.valueOf(true));
     }
 
     final void givenUserDoesNotExist() {
@@ -424,56 +414,6 @@ public final class LobbyLoginValidatorTest {
               .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
               .build();
         }
-      }
-    }
-  }
-
-  @Nested
-  public final class MaintenanceModeTest {
-    @ExtendWith(MockitoExtension.class)
-    @Nested
-    public final class WhenUsingLegacyClientTest extends AbstractTestCase {
-      @Test
-      public void shouldFailAuthentication() {
-        givenMaintenanceModeIsEnabled();
-
-        whenAuthenticating(givenAuthenticationResponse());
-
-        thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.MAINTENANCE_MODE_ENABLED);
-      }
-
-      private ResponseGenerator givenAuthenticationResponse() {
-        return challenge -> {
-          thenChallengeShouldBeProcessableByMd5CryptAuthenticator(challenge);
-          return ImmutableMap.of(
-              LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD),
-              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
-        };
-      }
-
-      private void thenChallengeShouldBeProcessableByMd5CryptAuthenticator(final Map<String, String> challenge) {
-        assertThat(challenge.containsKey(LobbyLoginChallengeKeys.SALT), is(true));
-      }
-    }
-
-    @ExtendWith(MockitoExtension.class)
-    @Nested
-    public final class WhenUsingCurrentClientTest extends AbstractTestCase {
-      @Test
-      public void shouldFailAuthentication() {
-        givenMaintenanceModeIsEnabled();
-
-        whenAuthenticating(givenAuthenticationResponse());
-
-        thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.MAINTENANCE_MODE_ENABLED);
-      }
-
-      private ResponseGenerator givenAuthenticationResponse() {
-        return challenge -> ImmutableMap.<String, String>builder()
-            .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
-            .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
-            .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
-            .build();
       }
     }
   }
