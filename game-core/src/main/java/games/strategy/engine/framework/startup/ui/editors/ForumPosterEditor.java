@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -25,10 +27,12 @@ import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.pbem.TripleAForumPoster;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.util.TimeManager;
+import lombok.extern.java.Log;
 
 /**
  * A class for selecting which Forum poster to use.
  */
+@Log
 public class ForumPosterEditor extends EditorPanel {
   private static final long serialVersionUID = -6069315084412575053L;
   private final JButton viewPosts = new JButton("View Forum");
@@ -103,18 +107,24 @@ public class ForumPosterEditor extends EditorPanel {
               + ", time: " + TimeManager.getLocalizedTime(),
           "Testing Forum poster", f != null ? f.toPath() : null);
       progressWindow.setVisible(false);
-      // now that we have a result, marshall it back unto the swing thread
-      future.thenAccept(message -> SwingUtilities.invokeLater(() -> GameRunner.showMessageDialog(
-          message,
-          GameRunner.Title.of("Test Turn Summary Post"),
-          JOptionPane.INFORMATION_MESSAGE)))
-        .exceptionally(throwable -> {
-          SwingUtilities.invokeLater(() -> GameRunner.showMessageDialog(
-              throwable.getMessage(),
-              GameRunner.Title.of("Test Turn Summary Post"),
-              JOptionPane.INFORMATION_MESSAGE));
-          return null;
-        });
+      try {
+        // now that we have a result, marshall it back unto the swing thread
+        future.thenAccept(message -> SwingUtilities.invokeLater(() -> GameRunner.showMessageDialog(
+            message,
+            GameRunner.Title.of("Test Turn Summary Post"),
+            JOptionPane.INFORMATION_MESSAGE)))
+            .exceptionally(throwable -> {
+              SwingUtilities.invokeLater(() -> GameRunner.showMessageDialog(
+                  throwable.getMessage(),
+                  GameRunner.Title.of("Test Turn Summary Post"),
+                  JOptionPane.INFORMATION_MESSAGE));
+              return null;
+            }).get();
+      } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      } catch (final ExecutionException e) {
+        log.log(Level.SEVERE, "Error while retrieving post", e);
+      }
     }).start();
   }
 

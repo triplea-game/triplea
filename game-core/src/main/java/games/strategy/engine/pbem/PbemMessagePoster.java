@@ -24,8 +24,6 @@ import lombok.extern.java.Log;
 /**
  * This class is responsible for posting turn summary and email at the end of each round in a PBEM game.
  * A new instance is created at end of turn, based on the Email and a forum poster stored in the game data.
- * The needs to be serialized since it is invoked through the IAbstractEndTurnDelegate which require all objects to be
- * serializable although the PBEM games will always be local
  */
 @Log
 public class PbemMessagePoster {
