@@ -12,7 +12,7 @@ import games.strategy.triplea.help.HelpSupport;
  */
 public class TripleAForumPoster extends NodeBbForumPoster {
 
-  TripleAForumPoster(final int topicId, final String username, final String password) {
+  public TripleAForumPoster(final int topicId, final String username, final String password) {
     super(topicId, username, password);
   }
 
@@ -24,9 +24,5 @@ public class TripleAForumPoster extends NodeBbForumPoster {
   @Override
   public String getDisplayName() {
     return "forums.triplea-game.org";
-  }
-
-  public String getHelpText() {
-    return HelpSupport.loadHelp("tripleaForum.html");
   }
 }

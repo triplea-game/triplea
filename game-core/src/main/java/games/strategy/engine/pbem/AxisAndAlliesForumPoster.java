@@ -12,7 +12,7 @@ import games.strategy.triplea.help.HelpSupport;
  */
 public class AxisAndAlliesForumPoster extends NodeBbForumPoster {
 
-  AxisAndAlliesForumPoster(final int topicId, final String username, final String password) {
+  public AxisAndAlliesForumPoster(final int topicId, final String username, final String password) {
     super(topicId, username, password);
   }
   @Override
@@ -23,9 +23,5 @@ public class AxisAndAlliesForumPoster extends NodeBbForumPoster {
   @Override
   public String getDisplayName() {
     return "www.axisandallies.org/forums/";
-  }
-
-  public String getHelpText() {
-    return HelpSupport.loadHelp("axisAndAlliesForum.html");
   }
 }

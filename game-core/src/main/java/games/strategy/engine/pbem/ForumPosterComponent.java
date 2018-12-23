@@ -72,7 +72,7 @@ public final class ForumPosterComponent extends JPanel {
   private void post() {
     postButton.setEnabled(false);
     updateHistoryLog();
-    PbemMessagePoster.postTurn(title, historyLog, includeSavegameCheckBox.isSelected(), poster,
+    poster.postTurn(title, historyLog, includeSavegameCheckBox.isSelected(),
         forumPosterDelegate, frame, postButton);
     repostTurnSummaryCheckBox.setSelected(false);
   }

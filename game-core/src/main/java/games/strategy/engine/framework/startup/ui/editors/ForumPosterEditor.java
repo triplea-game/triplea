@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -19,7 +20,9 @@ import javax.swing.SwingUtilities;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.pbem.AxisAndAlliesForumPoster;
 import games.strategy.engine.pbem.IForumPoster;
+import games.strategy.engine.pbem.TripleAForumPoster;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.util.TimeManager;
 
@@ -34,11 +37,19 @@ public class ForumPosterEditor extends EditorPanel {
   private final JLabel topicIdLabel = new JLabel("Topic Id:");
   private final JCheckBox includeSaveGame = new JCheckBox("Attach save game to summary");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
+  private final JComboBox<String> forums = new JComboBox<>();
 
   public ForumPosterEditor() {
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
+    forums.addItem(new TripleAForumPoster(0, null, null).getDisplayName());
+    forums.addItem(new AxisAndAlliesForumPoster(0, null, null).getDisplayName());
+    add(new JLabel("Forums:"), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(forums, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
+    row++;
     add(topicIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(topicIdField, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST,

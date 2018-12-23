@@ -32,12 +32,11 @@ public class PbemMessagePoster {
   private final GameProperties gameProperties;
   private File saveGameFile = null;
   private String turnSummary = null;
-  private final String saveGameRef = null;
   private String turnSummaryRef = null;
   private String emailSendStatus;
-  private final transient PlayerId currentPlayer;
-  private final transient int roundNumber;
-  private final transient String gameNameAndInfo;
+  private final PlayerId currentPlayer;
+  private final int roundNumber;
+  private final String gameNameAndInfo;
 
   public PbemMessagePoster(final GameData gameData, final PlayerId currentPlayer, final int roundNumber,
       final String title) {
@@ -49,7 +48,7 @@ public class PbemMessagePoster {
   }
 
   public boolean hasMessengers() {
-    return gameProperties.get(IForumPoster.NAME) != null && gameProperties.get("EMAIL_POSTER") != null;
+    return gameProperties.get(IForumPoster.NAME) != null && gameProperties.get(IEmailSender.SUBJECT) != null;
   }
 
   public static boolean gameDataHasPlayByEmailOrForumMessengers(final GameData gameData) {
@@ -58,23 +57,12 @@ public class PbemMessagePoster {
         || gameData.getProperties().get(IEmailSender.SUBJECT) != null);
   }
 
-  public void setTurnSummary(final String turnSummary) {
-    this.turnSummary = turnSummary;
-  }
-
   public void setSaveGame(final File saveGameFile) {
     this.saveGameFile = saveGameFile;
   }
 
-  public String getTurnSummaryRef() {
-    return turnSummaryRef;
-  }
-
-  public String getSaveGameRef() {
-    return saveGameRef;
-  }
-
   private IForumPoster getForumPoster() {
+    // FIXME use global method outside of this class
     final String name = gameProperties.get(IForumPoster.NAME, "");
     if (name.equals("TripleA")) { // FIXME change to actual names
       return new TripleAForumPoster(gameProperties.get(IForumPoster.TOPIC_ID, 0), "", "");
@@ -157,15 +145,6 @@ public class PbemMessagePoster {
     return "<pre><br/>" + string.replaceAll("\n", "<br/>") + "<br/></pre>";
   }
 
-  /**
-   * Return the status string from sending the email.
-   *
-   * @return a success of failure string, or null if no email sender was configured
-   */
-  public String getEmailSendStatus() {
-    return emailSendStatus;
-  }
-
   public boolean alsoPostMoveSummary() {
     return gameProperties.get(IForumPoster.POST_AFTER_COMBAT,
         gameProperties.get(IEmailSender.POST_AFTER_COMBAT, false));
@@ -176,11 +155,11 @@ public class PbemMessagePoster {
    * and forum (if provided). The user is first prompted to confirm they wish to perform the action before the turn is
    * posted.
    */
-  public static void postTurn(final String title, final HistoryLog historyLog, final boolean includeSaveGame,
-      final PbemMessagePoster posterPbem, final IAbstractForumPosterDelegate postingDelegate,
+  public void postTurn(final String title, final HistoryLog historyLog, final boolean includeSaveGame,
+      final IAbstractForumPosterDelegate postingDelegate,
       final TripleAFrame frame, final JComponent postButton) {
     String message = "";
-    final String displayName = posterPbem.gameProperties.get(IForumPoster.NAME, "");
+    final String displayName = gameProperties.get(IForumPoster.NAME, "");
     final StringBuilder sb = new StringBuilder();
     if (!displayName.isEmpty()) {
       sb.append(message).append("Post ").append(title).append(" ");
@@ -189,7 +168,7 @@ public class PbemMessagePoster {
       }
       sb.append("to ").append(displayName).append("?\n");
     }
-    final String opponent = posterPbem.gameProperties.get(IEmailSender.OPPONENT, "");
+    final String opponent = gameProperties.get(IEmailSender.OPPONENT, "");
     if (!opponent.isEmpty()) {
       sb.append("Send email to ").append(opponent).append("?\n");
     }
@@ -203,6 +182,7 @@ public class PbemMessagePoster {
       final ProgressWindow progressWindow = new ProgressWindow(frame, "Posting " + title + "...");
       progressWindow.setVisible(true);
       // start a new thread for posting the summary.
+      // FIXME swap opponent here (so the opponent is always not you)
       new Thread(() -> {
         boolean postOk = true;
         File saveGameFile = null;
@@ -212,20 +192,20 @@ public class PbemMessagePoster {
         try {
           saveGameFile = File.createTempFile("triplea", GameDataFileUtils.getExtension());
           frame.getGame().saveGame(saveGameFile);
-          posterPbem.setSaveGame(saveGameFile);
+          setSaveGame(saveGameFile);
         } catch (final Exception e) {
           postOk = false;
           log.log(Level.SEVERE, "Failed to create save game", e);
         }
-        posterPbem.setTurnSummary(historyLog.toString());
+        turnSummary = historyLog.toString();
         try {
           // forward the poster to the delegate which invokes post() on the poster
           if (postingDelegate != null) {
-            if (!postingDelegate.postTurnSummary(posterPbem, title)) {
+            if (!postingDelegate.postTurnSummary(this, title)) {
               postOk = false;
             }
           } else {
-            if (!posterPbem.post(null, title)) {
+            if (!post(null, title)) {
               postOk = false;
             }
           }
@@ -237,24 +217,21 @@ public class PbemMessagePoster {
           postingDelegate.setHasPostedTurnSummary(postOk);
         }
         final StringBuilder sb1 = new StringBuilder();
-        if (posterPbem.gameProperties.get(IForumPoster.NAME) != null) {
-          final String saveGameRef = posterPbem.getSaveGameRef();
-          final String turnSummaryRef = posterPbem.getTurnSummaryRef();
-          if (saveGameRef != null) {
-            sb1.append("\nSave Game : ").append(saveGameRef);
-          }
-          if (turnSummaryRef != null) {
-            sb1.append("\nSummary Text: ").append(turnSummaryRef);
+        if (gameProperties.get(IForumPoster.NAME) != null) {
+          if (this.turnSummaryRef != null) {
+            sb1.append("\nSummary Text: ").append(this.turnSummaryRef);
           }
         }
-        if (posterPbem.gameProperties.get(IEmailSender.SUBJECT) != null) {
-          sb1.append("\nEmails: ").append(posterPbem.getEmailSendStatus());
+        if (gameProperties.get(IEmailSender.SUBJECT) != null) {
+          sb1.append("\nEmails: ").append(emailSendStatus);
         }
         historyLog.getWriter().println(sb1.toString());
         if (historyLog.isVisible()) {
           historyLog.setVisible(true);
         }
-        saveGameFile.delete();
+        if (saveGameFile != null) {
+          saveGameFile.delete();
+        }
         progressWindow.setVisible(false);
         progressWindow.removeAll();
         progressWindow.dispose();
@@ -264,13 +241,8 @@ public class PbemMessagePoster {
           if (postButton != null) {
             postButton.setEnabled(!finalPostOk);
           }
-          if (finalPostOk) {
-            JOptionPane.showMessageDialog(frame, finalMessage, title + " Posted",
-                JOptionPane.INFORMATION_MESSAGE);
-          } else {
-            JOptionPane.showMessageDialog(frame, finalMessage, title + " Posted",
-                JOptionPane.ERROR_MESSAGE);
-          }
+          JOptionPane.showMessageDialog(frame, finalMessage, title + " Posted",
+              finalPostOk ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
         });
       }).start();
     }
