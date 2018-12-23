@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -43,7 +44,7 @@ public class ActionButtons extends JPanel {
   private TechPanel techPanel;
   private EndTurnPanel endTurnPanel;
   private MoveForumPosterPanel moveForumPosterPanel;
-  private ActionPanel actionPanel;
+  private @Nullable ActionPanel actionPanel;
   private PoliticsPanel politicsPanel;
   private UserActionPanel userActionPanel;
   private PickTerritoryAndUnitsPanel pickTerritoryAndUnitsPanel;
@@ -150,15 +151,18 @@ public class ActionButtons extends JPanel {
     changeTo(id, moveForumPosterPanel);
   }
 
-  private void changeTo(final PlayerId id, final ActionPanel newCurrent) {
-    actionPanel.setActive(false);
-    actionPanel = newCurrent;
-    // newCurrent might be null if we are shutting down
-    if (actionPanel == null) {
-      return;
+  private void changeTo(final PlayerId id, final @Nullable ActionPanel newCurrent) {
+    if (actionPanel != null) {
+      actionPanel.setActive(false);
     }
-    actionPanel.display(id);
-    SwingUtilities.invokeLater(() -> layout.show(ActionButtons.this, actionPanel.toString()));
+
+    actionPanel = newCurrent;
+
+    // newCurrent might be null if we are shutting down
+    if (actionPanel != null) {
+      actionPanel.display(id);
+      SwingUtilities.invokeLater(() -> layout.show(ActionButtons.this, actionPanel.toString()));
+    }
   }
 
   public void changeToPickTerritoryAndUnits(final PlayerId id) {
@@ -254,7 +258,7 @@ public class ActionButtons extends JPanel {
     return pickTerritoryAndUnitsPanel.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
   }
 
-  public ActionPanel getCurrent() {
+  public @Nullable ActionPanel getCurrent() {
     return actionPanel;
   }
 
