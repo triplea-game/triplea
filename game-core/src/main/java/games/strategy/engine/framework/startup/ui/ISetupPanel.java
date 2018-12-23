@@ -48,6 +48,12 @@ public interface ISetupPanel {
 
   List<Action> getUserActions();
 
+  /**
+   * Helper method to clear PbF/PbEM related properties from a game that has potentially
+   * been used for PbF/PbEM before.
+   *
+   * @param properties The {@link GameProperties} object the properties should be cleared from.
+   */
   static void clearPbfPbemInformation(final GameProperties properties) {
     properties.set(IRemoteDiceServer.NAME, null);
     properties.set(IRemoteDiceServer.GAME_NAME, null);
