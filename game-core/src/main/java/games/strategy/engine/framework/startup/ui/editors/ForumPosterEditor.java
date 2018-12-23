@@ -34,10 +34,8 @@ public class ForumPosterEditor extends EditorPanel {
   private final JLabel topicIdLabel = new JLabel("Topic Id:");
   private final JCheckBox includeSaveGame = new JCheckBox("Attach save game to summary");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
-  // private final TriFunction<Integer, String, String, IForumPoster> function;
 
   public ForumPosterEditor() {
-    // this.function = function;
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;

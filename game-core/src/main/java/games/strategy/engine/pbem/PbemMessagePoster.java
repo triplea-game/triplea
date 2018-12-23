@@ -29,10 +29,6 @@ import lombok.extern.java.Log;
  */
 @Log
 public class PbemMessagePoster {
-  public static final String FORUM_POSTER_PROP_NAME = "games.strategy.engine.pbem.IForumPoster";
-  public static final String EMAIL_SENDER_PROP_NAME = "games.strategy.engine.pbem.IEmailSender";
-  public static final String PBEM_GAME_PROP_NAME = "games.strategy.engine.pbem.PbemMessagePoster";
-
   private final GameProperties gameProperties;
   private File saveGameFile = null;
   private String turnSummary = null;
@@ -57,13 +53,9 @@ public class PbemMessagePoster {
   }
 
   public static boolean gameDataHasPlayByEmailOrForumMessengers(final GameData gameData) {
-    if (gameData == null) {
-      return false;
-    }
-    final IForumPoster forumPoster = (IForumPoster) gameData.getProperties().get(FORUM_POSTER_PROP_NAME);
-    final IEmailSender emailSender = (IEmailSender) gameData.getProperties().get(EMAIL_SENDER_PROP_NAME);
-    final boolean isPbem = gameData.getProperties().get(PBEM_GAME_PROP_NAME, false);
-    return isPbem && (forumPoster != null || emailSender != null);
+    return gameData != null
+        && (gameData.getProperties().get(IForumPoster.NAME) != null
+        || gameData.getProperties().get(IEmailSender.SUBJECT) != null);
   }
 
   public void setTurnSummary(final String turnSummary) {

@@ -12,7 +12,6 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 
 import games.strategy.engine.chat.IChatPanel;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
@@ -20,7 +19,6 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
@@ -146,12 +144,8 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   }
 
   @Override
-  public void preStartGame() {}
-
-  @Override
   public void postStartGame() {
-    final GameData data = gameSelectorModel.getGameData();
-    data.getProperties().set(PbemMessagePoster.PBEM_GAME_PROP_NAME, false);
+    ISetupPanel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
   }
 
   @Override

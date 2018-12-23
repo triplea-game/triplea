@@ -12,7 +12,7 @@ import games.strategy.engine.framework.startup.ui.editors.validators.EmailValida
 import games.strategy.engine.random.IRemoteDiceServer;
 
 /**
- * An class for editing a Dice Server bean.
+ * A class for to configure a Dice Server for the game.
  */
 public class DiceServerEditor extends EditorPanel {
   private static final long serialVersionUID = -451810815037661114L;

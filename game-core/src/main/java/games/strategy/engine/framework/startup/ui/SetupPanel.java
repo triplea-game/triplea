@@ -19,7 +19,11 @@ import javax.swing.JPanel;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.pbem.IEmailSender;
+import games.strategy.engine.pbem.IForumPoster;
+import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.ui.SwingAction;
 
 abstract class SetupPanel extends JPanel implements ISetupPanel {
@@ -43,17 +47,6 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
   @Override
   public IChatPanel getChatPanel() {
     return null;
-  }
-
-  @Override
-  public void preStartGame() {}
-
-  @Override
-  public void postStartGame() {}
-
-  @Override
-  public Optional<ILauncher> getLauncher() {
-    throw new IllegalStateException("NOt implemented");
   }
 
   @Override

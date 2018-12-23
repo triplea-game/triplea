@@ -48,8 +48,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public void postStartGame() {
-    final GameData data = gameSelectorModel.getGameData();
-    data.getProperties().set(PbemMessagePoster.PBEM_GAME_PROP_NAME, false);
+    ISetupPanel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
   }
 
   @Override

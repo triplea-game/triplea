@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.swing.Action;
@@ -23,6 +24,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
+import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.ui.SwingAction;
@@ -273,4 +275,12 @@ public class ClientSetupPanel extends SetupPanel {
     return true;
   }
 
+
+  @Override
+  public Optional<ILauncher> getLauncher() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void postStartGame() {}
 }

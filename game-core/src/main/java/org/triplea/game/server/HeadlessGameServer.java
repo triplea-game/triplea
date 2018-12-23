@@ -526,7 +526,6 @@ public class HeadlessGameServer {
       if (setupPanelModel != null && setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart()) {
         log.info("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName()
             + ", Round: " + setupPanelModel.getGameSelectorModel().getGameData().getSequence().getRound());
-        setupPanelModel.getPanel().preStartGame();
 
         final boolean launched = setupPanelModel.getPanel().getLauncher()
             .map(launcher -> {

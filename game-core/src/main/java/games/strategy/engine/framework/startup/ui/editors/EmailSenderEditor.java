@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 
-import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -68,7 +67,6 @@ public class EmailSenderEditor extends EditorPanel {
   private void testEmail() {
     final ProgressWindow progressWindow = GameRunner.newProgressWindow("Sending test email...");
     progressWindow.setVisible(true);
-    // start a background thread
     new Thread(() -> {
       // initialize variables to error state, override if successful
       String message = "An unknown occurred, report this as a bug on the TripleA dev forum";
@@ -80,7 +78,7 @@ public class EmailSenderEditor extends EditorPanel {
           fout.write("This file would normally be a save game".getBytes(StandardCharsets.UTF_8));
         }
         final String html = "<html><body><h1>Success</h1><p>This was a test email sent by TripleA<p></body></html>";
-        // ((IEmailSender) getBean()).sendEmail("TripleA Test", html, dummy, "dummy.txt");
+        createEmailSender().sendEmail("TripleA Test", html, dummy, "dummy.txt");
         // email was sent, or an exception would have been thrown
         message = "Email sent, it should arrive shortly, otherwise check your spam folder";
         messageType = JOptionPane.INFORMATION_MESSAGE;
@@ -117,5 +115,10 @@ public class EmailSenderEditor extends EditorPanel {
     subject.setText(properties.get(IEmailSender.SUBJECT, ""));
     toAddress.setText(properties.get(IEmailSender.OPPONENT, ""));
     alsoPostAfterCombatMove.setSelected(properties.get(IEmailSender.POST_AFTER_COMBAT, false));
+  }
+
+  private IEmailSender createEmailSender() {
+    // FIXME email sender instance
+    return null;
   }
 }
