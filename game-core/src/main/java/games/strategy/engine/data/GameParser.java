@@ -515,7 +515,7 @@ public final class GameParser {
 
   private static void parseGameLoader(final Node loader) {
     if (loader != null) {
-      log.info("Loader tag is being ignored");
+      log.fine("Loader tag is being ignored");
     }
   }
 
