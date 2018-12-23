@@ -428,10 +428,10 @@ public final class TripleAFrame extends JFrame {
         } finally {
           data.releaseReadLock();
         }
-        actionButtons.getCurrent().setActive(false);
+        actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
         editPanel.display(player1);
       } else {
-        actionButtons.getCurrent().setActive(true);
+        actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
         editPanel.setActive(false);
       }
     });
@@ -1178,9 +1178,7 @@ public final class TripleAFrame extends JFrame {
       });
       Interruptibles.await(latch2);
     }
-    if (actionButtons.getCurrent() != null) {
-      actionButtons.getCurrent().setActive(false);
-    }
+    actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
     return territoryAndUnits;
   }
 
@@ -1835,9 +1833,7 @@ public final class TripleAFrame extends JFrame {
       if (getEditMode()) {
         tabsPanel.add("Edit", editPanel);
       }
-      if (actionButtons.getCurrent() != null) {
-        actionButtons.getCurrent().setActive(false);
-      }
+      actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
       historyComponent.removeAll();
       historyComponent.setLayout(new BorderLayout());
       // create history tree context menu
@@ -1993,9 +1989,7 @@ public final class TripleAFrame extends JFrame {
       if (getEditMode()) {
         tabsPanel.add("Edit", editPanel);
       }
-      if (actionButtons.getCurrent() != null) {
-        actionButtons.getCurrent().setActive(true);
-      }
+      actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(true));
       gameMainPanel.removeAll();
       gameMainPanel.setLayout(new BorderLayout());
       gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
