@@ -4,6 +4,7 @@ import java.awt.CardLayout;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -258,8 +259,8 @@ public class ActionButtons extends JPanel {
     return pickTerritoryAndUnitsPanel.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
   }
 
-  public @Nullable ActionPanel getCurrent() {
-    return actionPanel;
+  public Optional<ActionPanel> getCurrent() {
+    return Optional.ofNullable(actionPanel);
   }
 
   public BattlePanel getBattlePanel() {
