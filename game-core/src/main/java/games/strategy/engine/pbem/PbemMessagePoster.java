@@ -2,7 +2,6 @@ package games.strategy.engine.pbem;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
@@ -77,7 +76,7 @@ public class PbemMessagePoster {
    * @return true if all posts were successful
    */
   public boolean post(final IDelegateHistoryWriter historyWriter, final String title) {
-    IForumPoster forumPoster = getForumPoster();
+    final IForumPoster forumPoster = getForumPoster();
 
     Future<String> forumSuccess = null;
     final StringBuilder saveGameSb = new StringBuilder().append("triplea_");
@@ -100,7 +99,7 @@ public class PbemMessagePoster {
       }
     }
     boolean emailSuccess = true;
-    IEmailSender emailSender = null;
+    final IEmailSender emailSender = null;
     if (gameProperties.get(GenericEmailSender.SUBJECT) != null) {
       final StringBuilder subjectPostFix = new StringBuilder(currentPlayer.getName());
       subjectPostFix.append(" - ").append("round ").append(roundNumber);

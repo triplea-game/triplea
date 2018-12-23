@@ -8,11 +8,9 @@ import java.util.Optional;
 
 import javax.swing.JComponent;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LauncherFactory;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.ui.SwingAction;
 
 /** Setup panel when hosting a local game. */

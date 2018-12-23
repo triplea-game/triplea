@@ -31,8 +31,8 @@ public class DiceServerEditor extends EditorPanel {
     final int labelSpace = 2;
     int row = 0;
     PropertiesDiceRoller.loadFromFile().forEach(server -> servers.addItem(server.getDisplayName()));
-    add(new JLabel("Servers:"), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(new JLabel("Servers:"), new GridBagConstraints(0, row, 1, 1, 0, 0,
+        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(servers, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
     row++;
@@ -57,8 +57,8 @@ public class DiceServerEditor extends EditorPanel {
   }
 
   public boolean areFieldsValid() {
-    boolean toValid = validateTextField(toAddress, toLabel, new EmailValidator(false));
-    boolean ccValid = validateTextField(ccAddress, ccLabel, new EmailValidator(true));
+    final boolean toValid = validateTextField(toAddress, toLabel, new EmailValidator(false));
+    final boolean ccValid = validateTextField(ccAddress, ccLabel, new EmailValidator(true));
     final boolean allValid = toValid && ccValid;
     testDiceButton.setEnabled(allValid);
     return allValid;

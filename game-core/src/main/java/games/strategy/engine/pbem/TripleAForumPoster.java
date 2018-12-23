@@ -1,7 +1,6 @@
 package games.strategy.engine.pbem;
 
 import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.help.HelpSupport;
 
 /**
  * Posts turn summaries to forums.triplea-game.org.

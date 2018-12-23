@@ -29,7 +29,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.chat.IChatPanel;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
@@ -42,10 +41,6 @@ import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
-import games.strategy.engine.pbem.IEmailSender;
-import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.engine.pbem.PbemMessagePoster;
-import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;

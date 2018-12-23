@@ -71,7 +71,8 @@ abstract class NodeBbForumPoster implements IForumPoster {
     }
   }
 
-  private void post(final CloseableHttpClient client, final String token, final String text, final Path file) throws IOException {
+  private void post(final CloseableHttpClient client, final String token, final String text, final Path file)
+      throws IOException {
     final HttpPost post = new HttpPost(getForumUrl() + "/api/v2/topics/" + topicId);
     addTokenHeader(post, token);
     post.setEntity(new UrlEncodedFormEntity(
@@ -87,7 +88,8 @@ abstract class NodeBbForumPoster implements IForumPoster {
     }
   }
 
-  private String uploadSaveGame(final CloseableHttpClient client, final String token, final Path file) throws IOException {
+  private String uploadSaveGame(final CloseableHttpClient client, final String token, final Path file)
+      throws IOException {
     final HttpPost fileUpload = new HttpPost(getForumUrl() + "/api/v2/util/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
         .addBinaryBody("files[]", file.toFile(), ContentType.APPLICATION_OCTET_STREAM, file.getFileName().toString())

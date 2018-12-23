@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
-import java.util.Optional;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -19,11 +18,6 @@ import javax.swing.JPanel;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
-import games.strategy.engine.pbem.IEmailSender;
-import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.ui.SwingAction;
 
 abstract class SetupPanel extends JPanel implements ISetupPanel {

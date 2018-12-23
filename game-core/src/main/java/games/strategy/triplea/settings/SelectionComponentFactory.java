@@ -489,7 +489,8 @@ final class SelectionComponentFactory {
                         .build();
                 if (JOptionPane.showConfirmDialog(this.panel.getParent(), JPanelBuilder.builder().add(comboBox).build(),
                     "Select a Preset", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                  final GenericEmailSender.EmailProviderSetting config = (GenericEmailSender.EmailProviderSetting) comboBox.getSelectedItem();
+                  final GenericEmailSender.EmailProviderSetting config =
+                      (GenericEmailSender.EmailProviderSetting) comboBox.getSelectedItem();
                   serverField.setText(config.getHost());
                   portSpinner.setValue(config.getPort());
                   tlsCheckBox.setSelected(config.isEncrypted());

@@ -49,8 +49,8 @@ public class ForumPosterEditor extends EditorPanel {
     int row = 0;
     forums.addItem(new TripleAForumPoster(0, null, null).getDisplayName());
     forums.addItem(new AxisAndAlliesForumPoster(0, null, null).getDisplayName());
-    add(new JLabel("Forums:"), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(new JLabel("Forums:"), new GridBagConstraints(0, row, 1, 1, 0, 0,
+        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(forums, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
     row++;
@@ -85,7 +85,7 @@ public class ForumPosterEditor extends EditorPanel {
   /**
    * Tests the Forum poster.
    */
-  void testForum() {
+  private void testForum() {
     final IForumPoster poster = getForumPoster();
     final ProgressWindow progressWindow = GameRunner.newProgressWindow(poster.getTestMessage());
     progressWindow.setVisible(true);
@@ -129,9 +129,8 @@ public class ForumPosterEditor extends EditorPanel {
   }
 
   public boolean areFieldsValid() {
-    boolean idValid = validateTextFieldNotEmpty(topicIdField, topicIdLabel);
+    final boolean idValid = validateTextFieldNotEmpty(topicIdField, topicIdLabel);
     viewPosts.setEnabled(idValid);
-
     testForum.setEnabled(idValid);
     return idValid;
   }
@@ -143,14 +142,14 @@ public class ForumPosterEditor extends EditorPanel {
   }
 
   public void applyToGameProperties(final GameProperties properties) {
-    properties.set(IForumPoster.NAME, ""/* FIXME put actual name here*/);
+    properties.set(IForumPoster.NAME, forums.getSelectedItem());
     properties.set(IForumPoster.TOPIC_ID, topicIdField.getText());
     properties.set(IForumPoster.POST_AFTER_COMBAT, alsoPostAfterCombatMove.isSelected());
     properties.set(IForumPoster.INCLUDE_SAVEGAME, includeSaveGame.isSelected());
   }
 
   public void populateFromGameProperties(final GameProperties properties) {
-    // FIXME add name combobox
+    forums.setSelectedItem(properties.get(IForumPoster.NAME));
     topicIdField.setText(properties.get(IForumPoster.TOPIC_ID, ""));
     alsoPostAfterCombatMove.setSelected(properties.get(IForumPoster.POST_AFTER_COMBAT, false));
     includeSaveGame.setSelected(properties.get(IForumPoster.INCLUDE_SAVEGAME, true));

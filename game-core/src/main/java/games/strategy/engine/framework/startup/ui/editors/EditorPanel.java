@@ -1,16 +1,12 @@
 package games.strategy.engine.framework.startup.ui.editors;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import com.google.common.base.Preconditions;
 
@@ -24,9 +20,9 @@ import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyVal
 public abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;
   private static final String EDITOR_CHANGE = "EditorChange";
-  protected final Color labelColor;
+  private final Color labelColor;
 
-  public EditorPanel() {
+  EditorPanel() {
     super(new GridBagLayout());
     labelColor = new JLabel().getForeground();
   }

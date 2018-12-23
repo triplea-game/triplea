@@ -1,7 +1,6 @@
 package games.strategy.engine.pbem;
 
 import games.strategy.triplea.UrlConstants;
-import games.strategy.triplea.help.HelpSupport;
 
 /**
  * Posts turn summaries to www.axisandallies.org/forums.
@@ -15,6 +14,7 @@ public class AxisAndAlliesForumPoster extends NodeBbForumPoster {
   public AxisAndAlliesForumPoster(final int topicId, final String username, final String password) {
     super(topicId, username, password);
   }
+
   @Override
   String getForumUrl() {
     return UrlConstants.AXIS_AND_ALLIES_FORUM.toString();
