@@ -6,8 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import org.apache.http.NameValuePair;
@@ -43,10 +41,10 @@ abstract class NodeBbForumPoster implements IForumPoster {
 
   private final int topicId;
   private final String username;
-  private final Supplier<String> password;
+  private final String password;
 
 
-  NodeBbForumPoster(final int topicId, final String username, final Supplier<String> password) {
+  NodeBbForumPoster(final int topicId, final String username, final String password) {
     this.topicId = topicId;
     this.username = username;
     this.password = password;
@@ -55,7 +53,7 @@ abstract class NodeBbForumPoster implements IForumPoster {
   abstract String getForumUrl();
 
   @Override
-  public Future<String> postTurnSummary(final String summary, final String title, final Path file) {
+  public CompletableFuture<String> postTurnSummary(final String summary, final String title, final Path file) {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
       final int userId = getUserId(client);
       final String token = getToken(client, userId);
@@ -141,7 +139,7 @@ abstract class NodeBbForumPoster implements IForumPoster {
   }
 
   private NameValuePair newPasswordParameter() {
-    return new BasicNameValuePair("password", password.get());
+    return new BasicNameValuePair("password", password);
   }
 
   private String getToken(final CloseableHttpClient client, final int userId) throws IOException {

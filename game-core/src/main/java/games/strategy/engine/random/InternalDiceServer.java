@@ -42,35 +42,9 @@ public final class InternalDiceServer implements IRemoteDiceServer {
   }
 
   @Override
-  public void setToAddress(final String toAddress) {}
-
-  @Override
   public String getCcAddress() {
     return null;
   }
-
-  @Override
-  public void setCcAddress(final String ccAddress) {}
-
-  @Override
-  public String getInfoText() {
-    return "Uses the build in TripleA dice roller.\n"
-        + "Dice are not logged, and no internet access is required.\n"
-        + "It is technically possible (for a hacker) to modify the dice rolls.";
-  }
-
-  @Override
-  public boolean sendsEmail() {
-    return false;
-  }
-
-  @Override
-  public boolean supportsGameId() {
-    return false;
-  }
-
-  @Override
-  public void setGameId(final String gameId) {}
 
   @Override
   public String getGameId() {

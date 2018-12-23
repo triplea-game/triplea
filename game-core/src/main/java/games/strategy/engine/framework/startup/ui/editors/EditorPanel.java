@@ -82,44 +82,4 @@ public abstract class EditorPanel extends JPanel {
     label.setForeground(valid ? labelColor : Color.RED);
     return valid;
   }
-
-  /**
-   * Returns the Label width, this can be used by wrapping editors to try to align label sizes.
-   *
-   * @return the size of the largest label in the first column
-   */
-  public int getLabelWidth() {
-    int width = 0;
-    final GridBagLayout layout = (GridBagLayout) getLayout();
-    final Component[] components = getComponents();
-    for (final Component component : components) {
-      // label in first column
-      if (component instanceof JLabel
-          && layout.getConstraints(component).gridx == 0
-          && component.getPreferredSize().width > width) {
-        width = component.getPreferredSize().width;
-      }
-    }
-    return width;
-  }
-
-  /**
-   * Sets the label with for labels in the first column of the gridBagLayout.
-   * This can be used to align components in a GUI, so all editors (or nested editors) have same label width
-   *
-   * @param width the new width of the labels
-   */
-  public void setLabelWidth(final int width) {
-    final GridBagLayout layout = (GridBagLayout) getLayout();
-    final Component[] components = getComponents();
-    for (final Component component : components) {
-      // label in first column
-      if (component instanceof JLabel && layout.getConstraints(component).gridx == 0) {
-        final int height = component.getPreferredSize().height;
-        final Dimension dimension = new Dimension(width, height);
-        component.setPreferredSize(dimension);
-        component.setSize(dimension);
-      }
-    }
-  }
 }

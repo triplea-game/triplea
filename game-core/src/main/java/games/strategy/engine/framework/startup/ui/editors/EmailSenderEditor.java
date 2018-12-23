@@ -9,21 +9,20 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import com.google.common.base.Ascii;
 
 import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.editors.validators.EmailValidator;
-import games.strategy.engine.framework.startup.ui.editors.validators.IntegerRangeValidator;
-import games.strategy.engine.pbem.GenericEmailSender;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.ProgressWindow;
 import lombok.extern.java.Log;
@@ -34,39 +33,13 @@ import lombok.extern.java.Log;
 @Log
 public class EmailSenderEditor extends EditorPanel {
   private static final long serialVersionUID = -4647781117491269926L;
-  private final GenericEmailSender genericEmailSender;
   private final JTextField subject = new JTextField();
   private final JTextField toAddress = new JTextField();
-  private final JTextField host = new JTextField();
-  private final JTextField port = new JTextField();
-  private final JTextField login = new JTextField();
-  private final JCheckBox useTls = new JCheckBox("Use TLS encryption");
-  private final JTextField password = new JPasswordField();
   private final JLabel toLabel = new JLabel("To:");
-  private final JLabel hostLabel = new JLabel("Host:");
-  private final JLabel portLabel = new JLabel("Port:");
-  private final JLabel loginLabel = new JLabel("Login:");
-  private final JLabel passwordLabel = new JLabel("Password:");
   private final JButton testEmail = new JButton("Test Email");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
-  private final JCheckBox credentialsSaved = new JCheckBox("Remember me");
 
-  /**
-   * creates a new instance.
-   *
-   * @param bean the EmailSender to edit
-   */
-  public EmailSenderEditor(final GenericEmailSender bean) {
-    genericEmailSender = bean;
-    /* subject.setText(genericEmailSender.getSubjectPrefix());
-    host.setText(genericEmailSender.getHost());
-    port.setText(String.valueOf(genericEmailSender.getPort()));
-    toAddress.setText(genericEmailSender.getToAddress());
-    login.setText(genericEmailSender.getUserName());
-    password.setText(genericEmailSender.getPassword());
-    credentialsSaved.setSelected(genericEmailSender.areCredentialsSaved());
-    useTls.setSelected(genericEmailSender.getEncryption() == GenericEmailSender.Encryption.TLS);*/
-
+  public EmailSenderEditor() {
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
@@ -80,40 +53,13 @@ public class EmailSenderEditor extends EditorPanel {
     add(toAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
     row++;
-    add(loginLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(login, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
-    row++;
-    add(passwordLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(password, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
-    row++;
-    add(new JLabel(""), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(credentialsSaved, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
-    row++;
-    add(hostLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(host, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
-    row++;
-    add(portLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(port, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
-    row++;
-    add(useTls, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
     // add Test button on the same line as encryption
     add(testEmail, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
+    testEmail.addActionListener(e -> testEmail());
     row++;
     add(alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
         GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
-    // alsoPostAfterCombatMove.setSelected(genericEmailSender.getAlsoPostAfterCombatMove());
   }
 
   /**
@@ -155,34 +101,21 @@ public class EmailSenderEditor extends EditorPanel {
     }).start();
   }
 
-  public boolean hasValidFields() {
-    final boolean hostValid = validateTextFieldNotEmpty(host, hostLabel);
-    final boolean portValid = validateTextField(port, portLabel, new IntegerRangeValidator(0, 65635));
-    final boolean loginValid = validateTextFieldNotEmpty(login, loginLabel);
-    final boolean passwordValid = validateTextFieldNotEmpty(password, passwordLabel);
+  public boolean areFieldsValid() {
     final boolean addressValid = validateTextField(toAddress, toLabel, new EmailValidator(false));
-    final boolean allValid = hostValid && portValid && loginValid && passwordValid && addressValid;
-    testEmail.setEnabled(allValid);
-    return allValid;
+    testEmail.setEnabled(addressValid);
+    return addressValid;
   }
 
-  public IEmailSender getEmailSender() {
-    /*genericEmailSender
-        .setEncryption(useTls.isSelected());
-    genericEmailSender.setSubjectPrefix(subject.getText());
-    genericEmailSender.setHost(host.getText());
-    genericEmailSender.setUserName(login.getText());
-    genericEmailSender.setPassword(password.getText());
-    genericEmailSender.setCredentialsSaved(credentialsSaved.isSelected());
-    int port = 0;
-    try {
-      port = Integer.parseInt(this.port.getText());
-    } catch (final NumberFormatException e) {
-      // ignore
-    }
-    genericEmailSender.setPort(port);
-    genericEmailSender.setToAddress(toAddress.getText());
-    genericEmailSender.setAlsoPostAfterCombatMove(alsoPostAfterCombatMove.isSelected());*/
-    return genericEmailSender;
+  public void applyToGameProperties(final GameProperties properties) {
+    properties.set(IEmailSender.SUBJECT, subject.getText());
+    properties.set(IEmailSender.OPPONENT, toAddress.getText());
+    properties.set(IEmailSender.POST_AFTER_COMBAT, alsoPostAfterCombatMove.isSelected());
+  }
+
+  public void populateFromGameProperties(final GameProperties properties) {
+    subject.setText(properties.get(IEmailSender.SUBJECT, ""));
+    toAddress.setText(properties.get(IEmailSender.OPPONENT, ""));
+    alsoPostAfterCombatMove.setSelected(properties.get(IEmailSender.POST_AFTER_COMBAT, false));
   }
 }

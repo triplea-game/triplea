@@ -1,7 +1,5 @@
 package games.strategy.engine.pbem;
 
-import java.util.function.Supplier;
-
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.help.HelpSupport;
 
@@ -14,7 +12,7 @@ import games.strategy.triplea.help.HelpSupport;
  */
 public class AxisAndAlliesForumPoster extends NodeBbForumPoster {
 
-  AxisAndAlliesForumPoster(final int topicId, final String username, final Supplier<String> password) {
+  AxisAndAlliesForumPoster(final int topicId, final String username, final String password) {
     super(topicId, username, password);
   }
   @Override

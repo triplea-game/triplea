@@ -82,24 +82,34 @@ public class PbemMessagePoster {
     return saveGameRef;
   }
 
+  private IForumPoster getForumPoster() {
+    final String name = gameProperties.get(IForumPoster.NAME, "");
+    if (name.equals("TripleA")) { // FIXME change to actual names
+      return new TripleAForumPoster(gameProperties.get(IForumPoster.TOPIC_ID, 0), "", "");
+    } else if (name.equals("Axis and Allies")) {
+      return new AxisAndAlliesForumPoster(gameProperties.get(IForumPoster.TOPIC_ID, 0), "", "");
+    }
+    return null;
+  }
+
   /**
    * Post summary to form and/or email, and writes the action performed to the history writer.
    *
    * @param historyWriter the history writer (which has no effect since save game has already be generated) // todo (kg)
    * @return true if all posts were successful
    */
-  public boolean post(final IDelegateHistoryWriter historyWriter, final String title, final boolean includeSaveGame) {
-    IForumPoster forumPoster = null; // FIXME aquire poster by name
+  public boolean post(final IDelegateHistoryWriter historyWriter, final String title) {
+    IForumPoster forumPoster = getForumPoster();
 
     Future<String> forumSuccess = null;
     final StringBuilder saveGameSb = new StringBuilder().append("triplea_");
-    if (gameProperties.get("FORUM_POSTER") != null) {
+    if (forumPoster != null) {
       saveGameSb.append(gameProperties.get(IForumPoster.TOPIC_ID)).append("_");
     }
     saveGameSb.append(currentPlayer.getName(), 0, Math.min(3, currentPlayer.getName().length() - 1))
         .append(roundNumber);
     final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
-    if (gameProperties.get("FORUM_POSTER") != null) {
+    if (forumPoster != null) {
       try {
         forumSuccess = forumPoster.postTurnSummary((gameNameAndInfo + "\n\n" + turnSummary),
             "TripleA " + title + ": " + currentPlayer.getName() + " round " + roundNumber, saveGameFile.toPath());
@@ -219,11 +229,11 @@ public class PbemMessagePoster {
         try {
           // forward the poster to the delegate which invokes post() on the poster
           if (postingDelegate != null) {
-            if (!postingDelegate.postTurnSummary(posterPbem, title, includeSaveGame)) {
+            if (!postingDelegate.postTurnSummary(posterPbem, title)) {
               postOk = false;
             }
           } else {
-            if (!posterPbem.post(null, title, includeSaveGame)) {
+            if (!posterPbem.post(null, title)) {
               postOk = false;
             }
           }

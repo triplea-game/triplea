@@ -16,31 +16,24 @@ import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.pbem.AxisAndAlliesForumPoster;
-import games.strategy.engine.pbem.IEmailSender;
-import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.engine.pbem.PbemMessagePoster;
-import games.strategy.engine.pbem.TripleAForumPoster;
-import games.strategy.engine.random.IRemoteDiceServer;
-import games.strategy.engine.random.InternalDiceServer;
+import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
+import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
+import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
 import games.strategy.engine.random.PbemDiceRoller;
-import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.ui.SwingAction;
 import lombok.extern.java.Log;
-import swinglib.JPanelBuilder;
 
 /**
  * A panel for setting up Play by Email/Forum.
@@ -50,11 +43,10 @@ import swinglib.JPanelBuilder;
 @Log
 public class PbemSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 9006941131918034674L;
-  private static final String DICE_ROLLER = "games.strategy.engine.random.IRemoteDiceServer";
   private final GameSelectorModel gameSelectorModel;
-  private final JPanel diceServerEditor;
-  private final JPanel forumPosterEditor;
-  private final JPanel emailSenderEditor;
+  private final DiceServerEditor diceServerEditor;
+  private final ForumPosterEditor forumPosterEditor;
+  private final EmailSenderEditor emailSenderEditor;
   private final List<PlayerSelectorRow> playerTypes = new ArrayList<>();
   private final JPanel localPlayerPanel = new JPanel();
   private final JButton localPlayerSelection = new JButton("Select Local Players and AI's");
@@ -67,9 +59,9 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    */
   public PbemSetupPanel(final GameSelectorModel model) {
     gameSelectorModel = model;
-    diceServerEditor = JPanelBuilder.builder().add(new JLabel("Dice Server")).build();
-    forumPosterEditor = JPanelBuilder.builder().add(new JLabel("Post to Forum")).build();
-    emailSenderEditor = JPanelBuilder.builder().add(new JLabel("Provider")).build();
+    diceServerEditor = new DiceServerEditor();
+    forumPosterEditor = new ForumPosterEditor();
+    emailSenderEditor = new EmailSenderEditor();
     createComponents();
     layoutComponents();
     setupListeners();
@@ -101,17 +93,12 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     int row = 0;
     add(diceServerEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
         GridBagConstraints.HORIZONTAL, new Insets(10, 0, 20, 0), 0, 0));
-    // the play by Forum settings
-    forumPosterEditor.setBorder(new TitledBorder("Play By Forum"));
-    add(forumPosterEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
-    final JPanel emailPanel = new JPanel(new GridBagLayout());
-    emailPanel.setBorder(new TitledBorder("Play By Email"));
-    add(emailPanel, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
 
-    emailPanel.add(emailSenderEditor, new GridBagConstraints(0, 0, 1, 1, 1.0d, 0d,
-        GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
+    final JTabbedPane tabbedPane = new JTabbedPane();
+    add(tabbedPane, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
+        GridBagConstraints.HORIZONTAL, new Insets(10, 0, 20, 0), 0, 0));
+    tabbedPane.addTab("Play By Forum", forumPosterEditor);
+    tabbedPane.addTab("Play By Email", emailSenderEditor);
 
     // add selection of local players
     add(localPlayerSelection, new GridBagConstraints(0, row, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHEAST,
@@ -128,66 +115,21 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     // register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects
     // another game)
     gameSelectorModel.addObserver(this);
-    // subscribe to editor changes, so we cannotify the MainPanel
+    // subscribe to editor changes, so we can notify the MainPanel
     diceServerEditor.addPropertyChangeListener(e -> notifyObservers());
     forumPosterEditor.addPropertyChangeListener(e -> notifyObservers());
     emailSenderEditor.addPropertyChangeListener(e -> notifyObservers());
   }
 
   private void loadAll() {
-    final GameData data = gameSelectorModel.getGameData();
-    if (data != null) {
-      loadDiceServer(data);
-      loadForumPosters(data);
-      loadEmailSender(data);
-    }
-  }
-
-  /**
-   * Load the dice rollers from cache, if the game was a save game, the dice roller store is selected.
-   */
-  private void loadDiceServer(final GameData data) {
-    final List<IRemoteDiceServer> diceRollers = new ArrayList<>(PropertiesDiceRoller.loadFromFile());
-    diceRollers.add(new InternalDiceServer());
-    if (gameSelectorModel.isSavedGame()) {
-      // get the dice roller from the save game, if any
-      // FIXME fill fields from savegame
-      // final IRemoteDiceServer roller = (IRemoteDiceServer) data.getProperties().get(DICE_ROLLER);
-    }
-  }
-
-  /**
-   * Load the Forum poster that are stored in the GameData, and select it in the list.
-   * Sensitive information such as passwords are not stored in save games, so the are loaded from the LocalBeanCache
-   */
-  private void loadForumPosters(final GameData data) {
-    // get the forum posters,
-    final List<IForumPoster> forumPosters = new ArrayList<>();
-    //forumPosters.add(new AxisAndAlliesForumPoster());
-    //forumPosters.add(new TripleAForumPoster());
-    // now get the poster stored in the save game
-    final IForumPoster forumPoster = (IForumPoster) data.getProperties().get(PbemMessagePoster.FORUM_POSTER_PROP_NAME);
-    if (forumPoster != null) {
-      // if we have a cached version, use the credentials from this, as each player has different forum login
-      // FIXME load from savegame
-    }
-  }
-
-  /**
-   * Configures the list of Email senders. If the game was saved we use this email sender.
-   * Since passwords are not stored in save games, the LocalBeanCache is checked
-   *
-   * @param data the game data
-   */
-  private void loadEmailSender(final GameData data) {
-    // The list of email, either loaded from cache or created
-    final List<IEmailSender> emailSenders = new ArrayList<>();
-    // emailSenders.add(new GenericEmailSender());
-    // now get the sender from the save game, update it with credentials from the cache, and set it
-    final IEmailSender sender = (IEmailSender) data.getProperties().get(PbemMessagePoster.EMAIL_SENDER_PROP_NAME);
-    if (sender != null) {
-      // FIXME load from savegame
-    }
+    Optional
+        .ofNullable(gameSelectorModel.getGameData())
+        .map(GameData::getProperties)
+        .ifPresent(properties -> {
+          diceServerEditor.populateFromGameProperties(properties);
+          forumPosterEditor.populateFromGameProperties(properties);
+          emailSenderEditor.populateFromGameProperties(properties);
+        });
   }
 
   /**
@@ -203,45 +145,20 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    */
   @Override
   public boolean canGameStart() {
-    if (gameSelectorModel.getGameData() == null) {
-      return false;
-    }
-    // final boolean diceServerValid = diceServerEditor.isBeanValid();
-    // final boolean summaryValid = forumPosterEditor.isBeanValid();
-    // final boolean emailValid = emailSenderEditor.isBeanValid();
-    final boolean pbemReady = true; // diceServerValid && summaryValid && emailValid && gameSelectorModel.getGameData() != null;
-    if (!pbemReady) {
-      return false;
-    }
+    final boolean diceServerValid = diceServerEditor.areFieldsValid();
+    final boolean summaryValid = forumPosterEditor.areFieldsValid();
+    final boolean emailValid = emailSenderEditor.areFieldsValid();
+    final boolean pbemReady = diceServerValid && summaryValid && emailValid && gameSelectorModel.getGameData() != null;
     // make sure at least 1 player is enabled
-    return playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
+    return pbemReady && playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
   }
 
   @Override
   public void postStartGame() {
-    // store the dice server
     final GameData data = gameSelectorModel.getGameData();
-    // data.getProperties().set(DICE_ROLLER, diceServerEditor.getBean());
-    // store the Turn Summary Poster
-    // final IForumPoster poster = (IForumPoster) forumPosterEditor.getBean();
-    /*if (poster != null) {
-      // clone the poster, the remove sensitive info, and put the clone into the game data
-      // this was the sensitive info is not stored in the save game, but the user cache still has the password
-      final IForumPoster summaryPoster = poster.doClone();
-      summaryPoster.clearSensitiveInfo();
-      data.getProperties().set(PbemMessagePoster.FORUM_POSTER_PROP_NAME, summaryPoster);
-    }*/
-    // store the email poster
-    /*IEmailSender sender = (IEmailSender) emailSenderEditor.getBean();
-    if (sender != null) {
-      // create a clone, delete the sensitive information in the clone, and use it in the game
-      // the locally cached version still has the password so the user doesn't have to enter it every time
-      data.getProperties().set(PbemMessagePoster.EMAIL_SENDER_PROP_NAME, sender);
-    }
-    // store whether we are a pbem game or not, whether we are capable of posting a game save
-    if (poster != null || sender != null) {
-      data.getProperties().set(PbemMessagePoster.PBEM_GAME_PROP_NAME, true);
-    }*/
+    diceServerEditor.applyToGameProperties(data.getProperties());
+    forumPosterEditor.applyToGameProperties(data.getProperties());
+    emailSenderEditor.applyToGameProperties(data.getProperties());
   }
 
   /**
@@ -263,8 +180,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    */
   @Override
   public Optional<ILauncher> getLauncher() {
-    // create local launcher
-    final PbemDiceRoller randomSource = new PbemDiceRoller(null /* (IRemoteDiceServer) diceServerEditor.getBean()*/);
+    final PbemDiceRoller randomSource = new PbemDiceRoller(diceServerEditor.createDiceServer());
     final Map<String, PlayerType> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
     for (final PlayerSelectorRow player : this.playerTypes) {

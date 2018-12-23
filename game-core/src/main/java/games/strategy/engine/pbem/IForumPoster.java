@@ -1,7 +1,7 @@
 package games.strategy.engine.pbem;
 
 import java.nio.file.Path;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An interface for classes that can post a turn summary, the summary may also include a save game if the
@@ -22,7 +22,7 @@ public interface IForumPoster {
    * @param subject the forum subject
    * @return true if the post was successful
    */
-  Future<String> postTurnSummary(String summary, final String subject, final Path savegame);
+  CompletableFuture<String> postTurnSummary(String summary, final String subject, final Path savegame);
 
   String getDisplayName();
 

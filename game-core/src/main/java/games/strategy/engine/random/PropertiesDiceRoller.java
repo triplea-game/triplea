@@ -97,15 +97,6 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public boolean sendsEmail() {
-    final String property = props.getProperty("send.email");
-    if (property == null) {
-      return true;
-    }
-    return Boolean.valueOf(property);
-  }
-
-  @Override
   public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId)
       throws IOException {
     final String normalizedGameId = gameId.trim().isEmpty() ? "TripleA" : gameId;
@@ -134,11 +125,6 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
         return EntityUtils.toString(response.getEntity());
       }
     }
-  }
-
-  @Override
-  public String getInfoText() {
-    return props.getProperty("infotext");
   }
 
   @Override
@@ -198,29 +184,8 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public void setToAddress(final String toAddress) {
-    this.toAddress = toAddress;
-  }
-
-  @Override
   public String getCcAddress() {
     return ccAddress;
-  }
-
-  @Override
-  public void setCcAddress(final String ccAddress) {
-    this.ccAddress = ccAddress;
-  }
-
-  @Override
-  public boolean supportsGameId() {
-    final String gameid = props.getProperty("gameid");
-    return "true".equals(gameid);
-  }
-
-  @Override
-  public void setGameId(final String gameId) {
-    this.gameId = gameId;
   }
 
   @Override
