@@ -14,7 +14,7 @@ import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PropertiesDiceRoller;
 
 /**
- * A class for to configure a Dice Server for the game.
+ * A class to configure a Dice Server for the game.
  */
 public class DiceServerEditor extends EditorPanel {
   private static final long serialVersionUID = -451810815037661114L;
