@@ -110,7 +110,6 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Renderable;
 import games.strategy.engine.history.Round;
@@ -590,10 +589,6 @@ public final class TripleAFrame extends JFrame {
     }
     this.setVisible(false);
     TripleAFrame.this.dispose();
-    if (SystemProperties.isMac()) {
-      // this frame should not handle shutdowns anymore
-      MacQuitMenuWrapper.unregisterShutdownHandler();
-    }
     messageAndDialogThreadPool.shutdown();
     uiContext.shutDown();
     if (chatPanel != null) {
@@ -608,16 +603,19 @@ public final class TripleAFrame extends JFrame {
   }
 
   /**
-   * Prompts the user if they wish to exit the application. If they answer yes, the game will be stopped, and the
-   * process will be terminated.
+   * If the frame is visible, prompts the user if they wish to exit the application. If they answer yes or the frame is
+   * not visible, the game will be stopped, and the process will be terminated.
    */
   public void shutdown() {
-    final int selectedOption = EventThreadJOptionPane.showConfirmDialog(this,
-        "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.", "Exit Program",
-        JOptionPane.YES_NO_OPTION, getUiContext().getCountDownLatchHandler());
-    if (selectedOption != JOptionPane.OK_OPTION) {
-      return;
+    if (isVisible()) {
+      final int selectedOption = EventThreadJOptionPane.showConfirmDialog(this,
+          "Are you sure you want to exit TripleA?\nUnsaved game data will be lost.", "Exit Program",
+          JOptionPane.YES_NO_OPTION, getUiContext().getCountDownLatchHandler());
+      if (selectedOption != JOptionPane.OK_OPTION) {
+        return;
+      }
     }
+
     stopGame();
     ExitStatus.SUCCESS.exit();
   }
