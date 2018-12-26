@@ -85,9 +85,7 @@ public final class MacOsIntegration {
           }
           return null;
         });
-    application.getClass()
-        .getDeclaredMethod(addHandlerMethodName, handlerClass)
-        .invoke(application, handlerProxy);
+    application.getClass().getMethod(addHandlerMethodName, handlerClass).invoke(application, handlerProxy);
   }
 
   private static Object newApplication() throws ReflectiveOperationException {
