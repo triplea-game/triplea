@@ -91,9 +91,7 @@ public final class MacOsIntegration {
   }
 
   private static Object newApplication() throws ReflectiveOperationException {
-    return Class.forName("com.apple.eawt.Application")
-        .getConstructor((Class[]) null)
-        .newInstance((Object[]) null);
+    return Class.forName("com.apple.eawt.Application").getConstructor().newInstance();
   }
 
   /**
