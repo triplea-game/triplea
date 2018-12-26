@@ -14,7 +14,6 @@ dependencies {
     implementation 'commons-cli:commons-cli:1.4'
     implementation 'commons-codec:commons-codec:1.11'
     implementation 'commons-io:commons-io:2.6'
-    implementation 'org.apache.commons:commons-lang3:3.8.1'
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation "org.apache.httpcomponents:httpclient:$apacheHttpComponentsVersion"
     implementation "org.apache.httpcomponents:httpmime:$apacheHttpComponentsVersion"

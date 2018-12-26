@@ -8,9 +8,9 @@ import java.net.URI;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
-import org.apache.commons.lang3.JavaVersion;
-import org.apache.commons.lang3.SystemUtils;
+import com.google.common.annotations.VisibleForTesting;
 
+import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.util.function.ThrowingConsumer;
 import lombok.extern.java.Log;
 
@@ -39,8 +39,21 @@ public final class MacOsIntegration {
   }
 
   private static String getHandlerClassName(final String java9OrLaterClassName, final String java8ClassName) {
-    // remove dependency on org.apache.commons:commons-lang3 (if possible) upon dropping support for Java 8
-    return SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_9) ? java9OrLaterClassName : java8ClassName;
+    return isJavaVersionAtLeast9() ? java9OrLaterClassName : java8ClassName;
+  }
+
+  private static boolean isJavaVersionAtLeast9() {
+    return isJavaVersionAtLeast9(SystemProperties.getJavaSpecificationVersion());
+  }
+
+  @VisibleForTesting
+  static boolean isJavaVersionAtLeast9(final String encodedJavaSpecificationVersion) {
+    try {
+      return Float.parseFloat(encodedJavaSpecificationVersion) >= 9.0F;
+    } catch (final NumberFormatException e) {
+      log.log(Level.WARNING, "Malformed Java specification version: '" + encodedJavaSpecificationVersion + "'", e);
+      return false;
+    }
   }
 
   private static void addHandler(
