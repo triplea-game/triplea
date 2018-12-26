@@ -51,7 +51,7 @@ public final class MacOsIntegration {
     try {
       return Float.parseFloat(encodedJavaSpecificationVersion) >= 9.0F;
     } catch (final NumberFormatException e) {
-      log.log(Level.WARNING, "Malformed Java specification version: '" + encodedJavaSpecificationVersion + "'", e);
+      log.log(Level.SEVERE, "Malformed Java specification version: '" + encodedJavaSpecificationVersion + "'", e);
       return false;
     }
   }
@@ -60,24 +60,40 @@ public final class MacOsIntegration {
       final String handlerClassName,
       final String handlerMethodName,
       final String addHandlerMethodName,
-      final ThrowingConsumer<Object[], Throwable> handler) {
+      final ThrowingConsumer<Object[], Exception> handler) {
     try {
-      final Class<?> applicationClass = Class.forName("com.apple.eawt.Application");
-      final Object application = applicationClass.getConstructor((Class[]) null).newInstance((Object[]) null);
-      final Class<?> handlerClass = Class.forName(handlerClassName);
-      final Object handlerProxy = Proxy.newProxyInstance(
-          MacOsIntegration.class.getClassLoader(),
-          new Class<?>[] {handlerClass},
-          (proxy, method, args) -> {
-            if (handlerMethodName.equals(method.getName())) {
-              handler.accept(args);
-            }
-            return null;
-          });
-      applicationClass.getDeclaredMethod(addHandlerMethodName, handlerClass).invoke(application, handlerProxy);
+      addHandler(newApplication(), handlerClassName, handlerMethodName, addHandlerMethodName, handler);
     } catch (final ReflectiveOperationException e) {
-      log.log(Level.SEVERE, "Failed to add macOS application handler (" + handlerClassName + ")", e);
+      log.log(Level.SEVERE, "Failed to add macOS application handler: " + handlerClassName, e);
     }
+  }
+
+  @VisibleForTesting
+  static void addHandler(
+      final Object application,
+      final String handlerClassName,
+      final String handlerMethodName,
+      final String addHandlerMethodName,
+      final ThrowingConsumer<Object[], Exception> handler) throws ReflectiveOperationException {
+    final Class<?> handlerClass = Class.forName(handlerClassName);
+    final Object handlerProxy = Proxy.newProxyInstance(
+        MacOsIntegration.class.getClassLoader(),
+        new Class<?>[] {handlerClass},
+        (proxy, method, args) -> {
+          if (handlerMethodName.equals(method.getName())) {
+            handler.accept(args);
+          }
+          return null;
+        });
+    application.getClass()
+        .getDeclaredMethod(addHandlerMethodName, handlerClass)
+        .invoke(application, handlerProxy);
+  }
+
+  private static Object newApplication() throws ReflectiveOperationException {
+    return Class.forName("com.apple.eawt.Application")
+        .getConstructor((Class[]) null)
+        .newInstance((Object[]) null);
   }
 
   /**
