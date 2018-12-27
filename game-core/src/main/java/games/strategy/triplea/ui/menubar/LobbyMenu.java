@@ -26,6 +26,8 @@ import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IUserManager;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 
+import com.google.common.base.Strings;
+
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
@@ -144,7 +146,7 @@ public final class LobbyMenu extends JMenuBar {
       final @Nullable String username = showInputDialog(
           "Enter the username that you want to ban from the lobby.\n\n"
               + "Note that this ban is effective on any username, registered or anonymous, online or offline.");
-      if (username == null || username.length() < 1) {
+      if (Strings.isNullOrEmpty(username)) {
         return;
       }
       if (!DBUser.isValidUserName(username)) {
@@ -192,7 +194,7 @@ public final class LobbyMenu extends JMenuBar {
       final @Nullable String hashedMacAddress = showInputDialog(
           "Enter the hashed Mac Address that you want to ban from the lobby.\n\n"
               + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
-      if (hashedMacAddress == null || hashedMacAddress.length() < 1) {
+      if (Strings.isNullOrEmpty(hashedMacAddress)) {
         return;
       }
       if (!MacFinder.isValidHashedMacAddress(hashedMacAddress)) {
@@ -210,7 +212,7 @@ public final class LobbyMenu extends JMenuBar {
     final JMenuItem menuItem = new JMenuItem("Unban Username");
     menuItem.addActionListener(e -> {
       final @Nullable String username = showInputDialog("Enter the username that you want to unban from the lobby.");
-      if (username == null || username.length() < 1) {
+      if (Strings.isNullOrEmpty(username)) {
         return;
       }
       if (!DBUser.isValidUserName(username)) {
@@ -228,7 +230,7 @@ public final class LobbyMenu extends JMenuBar {
       final @Nullable String hashedMacAddress = showInputDialog(
           "Enter the hashed Mac Address that you want to unban from the lobby.\n\n"
               + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
-      if (hashedMacAddress == null || hashedMacAddress.length() < 1) {
+      if (Strings.isNullOrEmpty(hashedMacAddress)) {
         return;
       }
       if (!MacFinder.isValidHashedMacAddress(hashedMacAddress)) {
