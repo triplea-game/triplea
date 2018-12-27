@@ -94,8 +94,8 @@ public final class LobbyMenu extends JMenuBar {
   }
 
   private void addDisplayPlayersInformationMenu(final JMenu parentMenu) {
-    final JMenuItem revive = new JMenuItem("Display Players Information");
-    revive.addActionListener(event -> new Thread(() -> {
+    final JMenuItem menuItem = new JMenuItem("Display Players Information");
+    menuItem.addActionListener(event -> new Thread(() -> {
       final IModeratorController controller = getModeratorController();
       final StringBuilder builder = new StringBuilder();
       builder.append("Online Players:\r\n\r\n");
@@ -135,27 +135,27 @@ public final class LobbyMenu extends JMenuBar {
         dialog.setVisible(true);
       });
     }).start());
-    parentMenu.add(revive);
+    parentMenu.add(menuItem);
   }
 
   private void addBanUsernameMenu(final JMenu parentMenu) {
-    final JMenuItem item = new JMenuItem("Ban Username");
-    item.addActionListener(e -> {
-      final @Nullable String name = showInputDialog(
+    final JMenuItem menuItem = new JMenuItem("Ban Username");
+    menuItem.addActionListener(e -> {
+      final @Nullable String username = showInputDialog(
           "Enter the username that you want to ban from the lobby.\n\n"
               + "Note that this ban is effective on any username, registered or anonymous, online or offline.");
-      if (name == null || name.length() < 1) {
+      if (username == null || username.length() < 1) {
         return;
       }
-      if (!DBUser.isValidUserName(name)) {
+      if (!DBUser.isValidUserName(username)) {
         showErrorDialog("The username you entered is invalid.", "Invalid Username");
         return;
       }
       showTimespanDialog(
           "Please consult other admins before banning longer than 1 day.",
-          date -> getModeratorController().banUsername(newDummyNode(name), date));
+          date -> getModeratorController().banUsername(newDummyNode(username), date));
     });
-    parentMenu.add(item);
+    parentMenu.add(menuItem);
   }
 
   private @Nullable String showInputDialog(final String message) {
@@ -187,57 +187,57 @@ public final class LobbyMenu extends JMenuBar {
   }
 
   private void addBanMacAddressMenu(final JMenu parentMenu) {
-    final JMenuItem item = new JMenuItem("Ban Hashed Mac Address");
-    item.addActionListener(e -> {
-      final @Nullable String mac = showInputDialog(
+    final JMenuItem menuItem = new JMenuItem("Ban Hashed Mac Address");
+    menuItem.addActionListener(e -> {
+      final @Nullable String hashedMacAddress = showInputDialog(
           "Enter the hashed Mac Address that you want to ban from the lobby.\n\n"
               + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
-      if (mac == null || mac.length() < 1) {
+      if (hashedMacAddress == null || hashedMacAddress.length() < 1) {
         return;
       }
-      if (!MacFinder.isValidHashedMacAddress(mac)) {
+      if (!MacFinder.isValidHashedMacAddress(hashedMacAddress)) {
         showErrorDialog("The hashed Mac Address you entered is invalid.", "Invalid Hashed Mac");
         return;
       }
       showTimespanDialog(
           "Please consult other admins before banning longer than 1 day.",
-          date -> getModeratorController().banMac(newDummyNode("__unknown__"), mac, date));
+          date -> getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, date));
     });
-    parentMenu.add(item);
+    parentMenu.add(menuItem);
   }
 
   private void addUnbanUsernameMenu(final JMenu parentMenu) {
-    final JMenuItem item = new JMenuItem("Unban Username");
-    item.addActionListener(e -> {
-      final @Nullable String name = showInputDialog("Enter the username that you want to unban from the lobby.");
-      if (name == null || name.length() < 1) {
+    final JMenuItem menuItem = new JMenuItem("Unban Username");
+    menuItem.addActionListener(e -> {
+      final @Nullable String username = showInputDialog("Enter the username that you want to unban from the lobby.");
+      if (username == null || username.length() < 1) {
         return;
       }
-      if (!DBUser.isValidUserName(name)) {
+      if (!DBUser.isValidUserName(username)) {
         showErrorDialog("The username you entered is invalid.", "Invalid Username");
         return;
       }
-      getModeratorController().banUsername(newDummyNode(name), Date.from(Instant.EPOCH));
+      getModeratorController().banUsername(newDummyNode(username), Date.from(Instant.EPOCH));
     });
-    parentMenu.add(item);
+    parentMenu.add(menuItem);
   }
 
   private void addUnbanMacAddressMenu(final JMenu parentMenu) {
-    final JMenuItem item = new JMenuItem("Unban Hashed Mac Address");
-    item.addActionListener(e -> {
-      final @Nullable String mac = showInputDialog(
+    final JMenuItem menuItem = new JMenuItem("Unban Hashed Mac Address");
+    menuItem.addActionListener(e -> {
+      final @Nullable String hashedMacAddress = showInputDialog(
           "Enter the hashed Mac Address that you want to unban from the lobby.\n\n"
               + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
-      if (mac == null || mac.length() < 1) {
+      if (hashedMacAddress == null || hashedMacAddress.length() < 1) {
         return;
       }
-      if (!MacFinder.isValidHashedMacAddress(mac)) {
+      if (!MacFinder.isValidHashedMacAddress(hashedMacAddress)) {
         showErrorDialog("The hashed Mac Address you entered is invalid.", "Invalid Hashed Mac");
         return;
       }
-      getModeratorController().banMac(newDummyNode("__unknown__"), mac, Date.from(Instant.EPOCH));
+      getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, Date.from(Instant.EPOCH));
     });
-    parentMenu.add(item);
+    parentMenu.add(menuItem);
   }
 
   private void createSettingsMenu(final LobbyMenu menuBar) {
