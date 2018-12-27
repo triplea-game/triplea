@@ -98,13 +98,13 @@ public final class LobbyMenu extends JMenuBar {
     menuItem.addActionListener(event -> new Thread(() -> {
       final IModeratorController controller = getModeratorController();
       final StringBuilder builder = new StringBuilder();
-      builder.append("Online Players:\r\n\r\n");
+      builder.append("Online Players:\n\n");
       for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getOnlinePlayers()) {
-        builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
+        builder.append(controller.getInformationOn(player)).append("\n\n");
       }
-      builder.append("Players That Have Left (Last 10):\r\n\r\n");
+      builder.append("Players That Have Left (Last 10):\n\n");
       for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getPlayersThatLeft_Last10()) {
-        builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
+        builder.append(controller.getInformationOn(player)).append("\n\n");
       }
       SwingUtilities.invokeLater(() -> {
         final JDialog dialog = new JDialog(lobbyFrame, "Players Information");
