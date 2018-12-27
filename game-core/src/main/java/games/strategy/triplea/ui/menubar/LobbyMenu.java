@@ -95,7 +95,6 @@ public final class LobbyMenu extends JMenuBar {
 
   private void addDisplayPlayersInformationMenu(final JMenu parentMenu) {
     final JMenuItem revive = new JMenuItem("Display Players Information");
-    revive.setEnabled(true);
     revive.addActionListener(event -> new Thread(() -> {
       final IModeratorController controller = getModeratorController();
       final StringBuilder builder = new StringBuilder();
@@ -156,7 +155,6 @@ public final class LobbyMenu extends JMenuBar {
           "Please consult other admins before banning longer than 1 day.",
           date -> getModeratorController().banUsername(newDummyNode(name), date));
     });
-    item.setEnabled(true);
     parentMenu.add(item);
   }
 
@@ -205,7 +203,6 @@ public final class LobbyMenu extends JMenuBar {
           "Please consult other admins before banning longer than 1 day.",
           date -> getModeratorController().banMac(newDummyNode("__unknown__"), mac, date));
     });
-    item.setEnabled(true);
     parentMenu.add(item);
   }
 
@@ -222,7 +219,6 @@ public final class LobbyMenu extends JMenuBar {
       }
       getModeratorController().banUsername(newDummyNode(name), Date.from(Instant.EPOCH));
     });
-    item.setEnabled(true);
     parentMenu.add(item);
   }
 
@@ -241,7 +237,6 @@ public final class LobbyMenu extends JMenuBar {
       }
       getModeratorController().banMac(newDummyNode("__unknown__"), mac, Date.from(Instant.EPOCH));
     });
-    item.setEnabled(true);
     parentMenu.add(item);
   }
 
