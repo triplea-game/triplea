@@ -152,9 +152,15 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   @Override
   public void postStartGame() {
     final GameData data = gameSelectorModel.getGameData();
-    diceServerEditor.applyToGameProperties(data.getProperties());
-    forumPosterEditor.applyToGameProperties(data.getProperties());
-    emailSenderEditor.applyToGameProperties(data.getProperties());
+    if (diceServerEditor.areFieldsValid()) {
+      diceServerEditor.applyToGameProperties(data.getProperties());
+    }
+    if (forumPosterEditor.areFieldsValid()) {
+      forumPosterEditor.applyToGameProperties(data.getProperties());
+    }
+    if (emailSenderEditor.areFieldsValid()) {
+      emailSenderEditor.applyToGameProperties(data.getProperties());
+    }
   }
 
   /**
