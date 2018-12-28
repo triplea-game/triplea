@@ -178,6 +178,18 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
     }
   }
 
+  public void setToAddress(final String toAddress) {
+    this.toAddress = toAddress;
+  }
+
+  public void setCcAddress(final String ccAddress) {
+    this.ccAddress = ccAddress;
+  }
+
+  public void setGameId(final String gameId) {
+    this.gameId = gameId;
+  }
+
   @Override
   public String getToAddress() {
     return toAddress;

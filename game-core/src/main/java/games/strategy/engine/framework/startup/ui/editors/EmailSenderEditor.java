@@ -22,6 +22,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IEmailSender;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.util.Util;
 import lombok.extern.java.Log;
@@ -102,10 +103,14 @@ public class EmailSenderEditor extends EditorPanel {
   }
 
   public boolean areFieldsValid() {
+    final boolean setupValid = ClientSetting.emailServerHost.isSet() && ClientSetting.emailServerPort.isSet()
+        && ClientSetting.emailServerSecurity.isSet() && ClientSetting.emailUsername.isSet();
+
     final String toAddressText = toAddress.getText();
     final boolean addressValid = setLabelValid(!toAddressText.isEmpty() && Util.isMailValid(toAddressText), toLabel);
-    testEmail.setEnabled(addressValid);
-    return addressValid;
+    final boolean allValid = setupValid && addressValid;
+    testEmail.setEnabled(allValid);
+    return allValid;
   }
 
   public void applyToGameProperties(final GameProperties properties) {

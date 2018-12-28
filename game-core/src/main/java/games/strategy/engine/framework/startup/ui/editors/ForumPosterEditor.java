@@ -27,6 +27,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.AxisAndAlliesForumPoster;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.pbem.TripleAForumPoster;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.util.TimeManager;
 import games.strategy.util.Util;
@@ -136,9 +137,17 @@ public class ForumPosterEditor extends EditorPanel {
   }
 
   public boolean areFieldsValid() {
+    final boolean setupValid;
+    if (TripleAForumPoster.DISPLAY_NAME.equals(forums.getSelectedItem())) {
+      setupValid = ClientSetting.tripleaForumUsername.isSet() && ClientSetting.tripleaForumPassword.isSet();
+    } else if (AxisAndAlliesForumPoster.DISPLAY_NAME.equals(forums.getSelectedItem())) {
+      setupValid = ClientSetting.aaForumUsername.isSet() && ClientSetting.aaForumPassword.isSet();
+    } else {
+      setupValid = false;
+    }
     final boolean idValid = setLabelValid(Util.isInt(topicIdField.getText()), topicIdLabel);
     final boolean forumValid = validateCombobox(forums, forumLabel);
-    final boolean allValid = idValid && forumValid;
+    final boolean allValid = setupValid && idValid && forumValid;
     viewPosts.setEnabled(allValid);
     testForum.setEnabled(allValid);
     return allValid;

@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.random.IRemoteDiceServer;
+import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.util.Util;
 
@@ -29,7 +30,7 @@ public class DiceServerEditor extends EditorPanel {
   private final JLabel toLabel = new JLabel("To:");
   private final JLabel ccLabel = new JLabel("Cc:");
   private final JComboBox<String> servers = new JComboBox<>();
-  private static final ImmutableMap<String, IRemoteDiceServer> mapping = PropertiesDiceRoller.loadFromFile()
+  private static final ImmutableMap<String, PropertiesDiceRoller> mapping = PropertiesDiceRoller.loadFromFile()
       .stream()
       .collect(ImmutableMap.toImmutableMap(IRemoteDiceServer::getDisplayName, Function.identity()));
 
@@ -63,6 +64,10 @@ public class DiceServerEditor extends EditorPanel {
         new Insets(0, 0, bottomSpace, 0), 0, 0));
 
     servers.addItemListener(e -> areFieldsValid());
+    testDiceButton.addActionListener(e -> {
+      final PbemDiceRoller random = new PbemDiceRoller(createDiceServer());
+      random.test();
+    });
     toAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
     ccAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
     gameId.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
@@ -95,6 +100,10 @@ public class DiceServerEditor extends EditorPanel {
   public IRemoteDiceServer createDiceServer() {
     final String selectedName = (String) servers.getSelectedItem();
     assert selectedName != null;
-    return mapping.get(selectedName);
+    final PropertiesDiceRoller roller = mapping.get(selectedName);
+    roller.setGameId(gameId.getText());
+    roller.setToAddress(toAddress.getText());
+    roller.setCcAddress(ccAddress.getText());
+    return roller;
   }
 }
