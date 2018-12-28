@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.ui.editors;
 import java.awt.Color;
 import java.awt.GridBagLayout;
 import java.beans.PropertyChangeListener;
+import java.util.function.Predicate;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -10,8 +11,7 @@ import javax.swing.JTextField;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.engine.framework.startup.ui.editors.validators.IValidator;
-import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyValidator;
+import games.strategy.util.Util;
 
 /**
  * Base class for editors.
@@ -46,7 +46,7 @@ public abstract class EditorPanel extends JPanel {
    * @return true if text field content is valid
    */
   protected boolean validateTextFieldNotEmpty(final JTextField field, final JLabel label) {
-    return validateTextField(field, label, new NonEmptyValidator());
+    return validateTextField(field, label, Util.not(String::isEmpty));
   }
 
   /**
@@ -58,7 +58,7 @@ public abstract class EditorPanel extends JPanel {
    * @param validator the validator
    * @return true if text field content is valid
    */
-  protected boolean validateTextField(final JTextField field, final JLabel label, final IValidator validator) {
+  protected boolean validateTextField(final JTextField field, final JLabel label, final Predicate<String> validator) {
     return validateText(field.getText(), label, validator);
   }
 
@@ -71,10 +71,10 @@ public abstract class EditorPanel extends JPanel {
    * @param validator the validator
    * @return true if text field content is valid
    */
-  private boolean validateText(final String text, final JLabel label, final IValidator validator) {
+  private boolean validateText(final String text, final JLabel label, final Predicate<String> validator) {
     Preconditions.checkNotNull(label);
     Preconditions.checkNotNull(validator);
-    final boolean valid = validator.isValid(text);
+    final boolean valid = validator.test(text);
     label.setForeground(valid ? labelColor : Color.RED);
     return valid;
   }

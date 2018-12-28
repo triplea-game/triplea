@@ -21,9 +21,9 @@ import com.google.common.base.Ascii;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.startup.ui.editors.validators.EmailValidator;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.ProgressWindow;
+import games.strategy.util.Util;
 import lombok.extern.java.Log;
 
 /**
@@ -100,7 +100,7 @@ public class EmailSenderEditor extends EditorPanel {
   }
 
   public boolean areFieldsValid() {
-    final boolean addressValid = validateTextField(toAddress, toLabel, new EmailValidator(false));
+    final boolean addressValid = validateTextField(toAddress, toLabel, Util::isMailValid);
     testEmail.setEnabled(addressValid);
     return addressValid;
   }

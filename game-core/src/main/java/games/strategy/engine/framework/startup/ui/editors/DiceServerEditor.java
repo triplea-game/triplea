@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui.editors;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.util.function.Predicate;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -9,9 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.framework.startup.ui.editors.validators.EmailValidator;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PropertiesDiceRoller;
+import games.strategy.util.Util;
 
 /**
  * A class to configure a Dice Server for the game.
@@ -57,8 +58,9 @@ public class DiceServerEditor extends EditorPanel {
   }
 
   public boolean areFieldsValid() {
-    final boolean toValid = validateTextField(toAddress, toLabel, new EmailValidator(false));
-    final boolean ccValid = validateTextField(ccAddress, ccLabel, new EmailValidator(true));
+    final Predicate<String> mailValid = Util::isMailValid;
+    final boolean toValid = validateTextField(toAddress, toLabel, mailValid);
+    final boolean ccValid = validateTextField(ccAddress, ccLabel, mailValid.or(String::isEmpty));
     final boolean allValid = toValid && ccValid;
     testDiceButton.setEnabled(allValid);
     return allValid;
