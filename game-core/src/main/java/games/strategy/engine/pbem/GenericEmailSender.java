@@ -7,12 +7,9 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -27,8 +24,6 @@ import javax.mail.util.ByteArrayDataSource;
 
 import com.google.common.base.Splitter;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.extern.java.Log;
 
 /**
@@ -49,52 +44,22 @@ public class GenericEmailSender implements IEmailSender {
   private final long timeout = TimeUnit.SECONDS.toMillis(60);
   private final String subjectPrefix;
   private final String username;
-  private final Supplier<String> password;
+  private final String password;
   private final String toAddress;
   private final EmailProviderSetting providerSetting;
-
-  private final boolean alsoPostAfterCombatMove;
-
-
-
-  /**
-   * Data class to store a 3-tuple consisting of
-   * a server host, a server port and whether or not
-   * to use an encrypted connection.
-   */
-  @AllArgsConstructor
-  @Immutable
-  public static final class EmailProviderSetting {
-    @Nonnull
-    private final String displayName;
-    @Getter
-    @Nonnull
-    private final String host;
-    @Getter
-    private final int port;
-    @Getter
-    private final boolean isEncrypted;
-
-    @Override
-    public String toString() {
-      return displayName;
-    }
-  }
 
 
   public GenericEmailSender(
       final EmailProviderSetting providerSetting,
       final String username,
-      final Supplier<String> password,
+      final String password,
       final String subjectPrefix,
-      final String toAddress,
-      final boolean alsoPostAfterCombatMove) {
+      final String toAddress) {
     this.providerSetting = providerSetting;
     this.username = username;
     this.password = password;
     this.subjectPrefix = subjectPrefix;
     this.toAddress = toAddress;
-    this.alsoPostAfterCombatMove = alsoPostAfterCombatMove;
   }
 
 
@@ -155,17 +120,13 @@ public class GenericEmailSender implements IEmailSender {
       }
 
       try (Transport transport = session.getTransport("smtp")) {
-        transport.connect(providerSetting.getHost(), providerSetting.getPort(), username, password.get());
+        transport.connect(providerSetting.getHost(), providerSetting.getPort(), username, password);
         mimeMessage.saveChanges();
         transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
       }
     } catch (final MessagingException e) {
       throw new IOException(e);
     }
-  }
-
-  public boolean isAlsoPostAfterCombatMove() {
-    return alsoPostAfterCombatMove;
   }
 
   @Override

@@ -59,14 +59,19 @@ public class PbemMessagePoster {
   }
 
   private IForumPoster getForumPoster() {
-    // FIXME use global method outside of this class
     final String name = gameProperties.get(IForumPoster.NAME, "");
-    if (name.equals("TripleA")) { // FIXME change to actual names
-      return new TripleAForumPoster(gameProperties.get(IForumPoster.TOPIC_ID, 0), "", "");
-    } else if (name.equals("Axis and Allies")) {
-      return new AxisAndAlliesForumPoster(gameProperties.get(IForumPoster.TOPIC_ID, 0), "", "");
+    if (name.isEmpty()) {
+      return null;
     }
-    return null;
+    return IForumPoster.getForumPosterByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0));
+  }
+
+  private IEmailSender getEmailSender() {
+    final String subject = gameProperties.get(IEmailSender.SUBJECT, "");
+    if (subject.isEmpty()) {
+      return null;
+    }
+    return IEmailSender.getEmailSender(subject, gameProperties.get(IEmailSender.OPPONENT, ""));
   }
 
   /**
@@ -99,7 +104,7 @@ public class PbemMessagePoster {
       }
     }
     boolean emailSuccess = true;
-    final IEmailSender emailSender = null;
+    final IEmailSender emailSender = getEmailSender();
     if (gameProperties.get(GenericEmailSender.SUBJECT) != null) {
       final StringBuilder subjectPostFix = new StringBuilder(currentPlayer.getName());
       subjectPostFix.append(" - ").append("round ").append(roundNumber);

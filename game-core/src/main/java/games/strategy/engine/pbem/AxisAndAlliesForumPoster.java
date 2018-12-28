@@ -10,8 +10,9 @@ import games.strategy.triplea.UrlConstants;
  * </p>
  */
 public class AxisAndAlliesForumPoster extends NodeBbForumPoster {
+  public static final String DISPLAY_NAME = "www.axisandallies.org/forums/";
 
-  public AxisAndAlliesForumPoster(final int topicId, final String username, final String password) {
+  AxisAndAlliesForumPoster(final int topicId, final String username, final String password) {
     super(topicId, username, password);
   }
 
@@ -22,6 +23,6 @@ public class AxisAndAlliesForumPoster extends NodeBbForumPoster {
 
   @Override
   public String getDisplayName() {
-    return "www.axisandallies.org/forums/";
+    return DISPLAY_NAME;
   }
 }

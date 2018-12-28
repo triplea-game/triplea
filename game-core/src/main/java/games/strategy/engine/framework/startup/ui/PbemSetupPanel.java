@@ -115,10 +115,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     // register, so we get notified when the game model (GameData) changes
     // (e.g if the user load a save game or selects another game)
     gameSelectorModel.addObserver(this);
-    // subscribe to editor changes, so we can notify the MainPanel
-    diceServerEditor.addPropertyChangeListener(e -> notifyObservers());
-    forumPosterEditor.addPropertyChangeListener(e -> notifyObservers());
-    emailSenderEditor.addPropertyChangeListener(e -> notifyObservers());
   }
 
   private void loadAll() {
@@ -146,9 +142,9 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   @Override
   public boolean canGameStart() {
     final boolean diceServerValid = diceServerEditor.areFieldsValid();
-    final boolean summaryValid = forumPosterEditor.areFieldsValid();
+    final boolean forumValid = forumPosterEditor.areFieldsValid();
     final boolean emailValid = emailSenderEditor.areFieldsValid();
-    final boolean pbemReady = diceServerValid && summaryValid && emailValid && gameSelectorModel.getGameData() != null;
+    final boolean pbemReady = diceServerValid && (forumValid || emailValid) && gameSelectorModel.getGameData() != null;
     // make sure at least 1 player is enabled
     return pbemReady && playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
   }

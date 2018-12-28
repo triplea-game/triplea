@@ -2,24 +2,22 @@ package games.strategy.engine.framework.startup.ui.editors;
 
 import java.awt.Color;
 import java.awt.GridBagLayout;
-import java.beans.PropertyChangeListener;
-import java.util.function.Predicate;
 
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import com.google.common.base.Preconditions;
-
-import games.strategy.util.Util;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
- * Base class for editors.
- * Editors fire property Events in response when changed, so other editors or GUI can be notified
+ * Helper Base class for Editors, that provides a basic collection of useful operations.
+ *
+ * This class used to have a legitimate reason to be a superclass of editors,
+ * but making all methods in this class static, and converting it to a utility class
+ * is probably a good thing to do.
  */
-public abstract class EditorPanel extends JPanel {
+abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;
-  private static final String EDITOR_CHANGE = "EditorChange";
   private final Color labelColor;
 
   EditorPanel() {
@@ -28,54 +26,50 @@ public abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * Registers a listener for editor changes.
-   *
-   * @param listener the listener. be aware that the oldValue and newValue properties of the PropertyChangeEvent
-   *        will both be null
+   * Checks if a combobox has an active item.
+   * @param comboBox The comboBox to check.
+   * @param label The label which should be used to indicate an invalid setup.
+   * @return True, if the combobox is valid, false otherwise.
    */
-  @Override
-  public void addPropertyChangeListener(final PropertyChangeListener listener) {
-    super.addPropertyChangeListener(EDITOR_CHANGE, listener);
+  boolean validateCombobox(final JComboBox<?> comboBox, final JLabel label) {
+    return setLabelValid(comboBox.getSelectedItem() != null, label);
   }
 
   /**
-   * Validates that a text field is not empty. if the content is not valid the associated label is marked in red
-   *
-   * @param field the field to validate
-   * @param label the associated label
-   * @return true if text field content is valid
+   * Turns the label red to indicate an error if valid is true.
+   * @param valid The parameter that decides if an error should be indicated.
+   * @param label The Label whose color should be changed.
+   * @return The value of valid
    */
-  protected boolean validateTextFieldNotEmpty(final JTextField field, final JLabel label) {
-    return validateTextField(field, label, Util.not(String::isEmpty));
-  }
-
-  /**
-   * Validates a the contents of a text field using a specified validator. if the content is not valid the associated
-   * label is marked in red
-   *
-   * @param field the field to validate
-   * @param label the associated label
-   * @param validator the validator
-   * @return true if text field content is valid
-   */
-  protected boolean validateTextField(final JTextField field, final JLabel label, final Predicate<String> validator) {
-    return validateText(field.getText(), label, validator);
-  }
-
-  /**
-   * Validates a the contents of text using a specified validator. if the content is not valid the associated label is
-   * marked in red
-   *
-   * @param text the text to validate
-   * @param label the associated label
-   * @param validator the validator
-   * @return true if text field content is valid
-   */
-  private boolean validateText(final String text, final JLabel label, final Predicate<String> validator) {
-    Preconditions.checkNotNull(label);
-    Preconditions.checkNotNull(validator);
-    final boolean valid = validator.test(text);
+  boolean setLabelValid(final boolean valid, final JLabel label) {
     label.setForeground(valid ? labelColor : Color.RED);
     return valid;
+  }
+
+  /**
+   * Wrapper class to add input changed listeners t JTextFields with ease.
+   */
+  class TextFieldInputListenerWrapper implements DocumentListener {
+
+    private final Runnable runnable;
+
+    TextFieldInputListenerWrapper(final Runnable runnable) {
+      this.runnable = runnable;
+    }
+
+    @Override
+    public void changedUpdate(final DocumentEvent e) {
+      runnable.run();
+    }
+
+    @Override
+    public void insertUpdate(final DocumentEvent e) {
+      runnable.run();
+    }
+
+    @Override
+    public void removeUpdate(final DocumentEvent e) {
+      runnable.run();
+    }
   }
 }

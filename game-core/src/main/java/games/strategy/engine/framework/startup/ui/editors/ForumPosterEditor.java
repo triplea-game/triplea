@@ -19,6 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
@@ -27,6 +29,7 @@ import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.pbem.TripleAForumPoster;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.util.TimeManager;
+import games.strategy.util.Util;
 import lombok.extern.java.Log;
 
 /**
@@ -39,6 +42,7 @@ public class ForumPosterEditor extends EditorPanel {
   private final JButton testForum = new JButton("Test Post");
   private final JTextField topicIdField = new JTextField();
   private final JLabel topicIdLabel = new JLabel("Topic Id:");
+  private final JLabel forumLabel = new JLabel("Forums:");
   private final JCheckBox includeSaveGame = new JCheckBox("Attach save game to summary");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
   private final JComboBox<String> forums = new JComboBox<>();
@@ -47,9 +51,9 @@ public class ForumPosterEditor extends EditorPanel {
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
-    forums.addItem(new TripleAForumPoster(0, null, null).getDisplayName());
-    forums.addItem(new AxisAndAlliesForumPoster(0, null, null).getDisplayName());
-    add(new JLabel("Forums:"), new GridBagConstraints(0, row, 1, 1, 0, 0,
+    forums.addItem(TripleAForumPoster.DISPLAY_NAME);
+    forums.addItem(AxisAndAlliesForumPoster.DISPLAY_NAME);
+    add(forumLabel, new GridBagConstraints(0, row, 1, 1, 0, 0,
         GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(forums, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
@@ -80,6 +84,9 @@ public class ForumPosterEditor extends EditorPanel {
   private void setupListeners() {
     viewPosts.addActionListener(e -> getForumPoster().viewPosted());
     testForum.addActionListener(e -> testForum());
+    forums.addItemListener(e -> areFieldsValid());
+    topicIdField.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
+
   }
 
   /**
@@ -129,16 +136,18 @@ public class ForumPosterEditor extends EditorPanel {
   }
 
   public boolean areFieldsValid() {
-    final boolean idValid = validateTextFieldNotEmpty(topicIdField, topicIdLabel);
-    viewPosts.setEnabled(idValid);
-    testForum.setEnabled(idValid);
-    return idValid;
+    final boolean idValid = setLabelValid(Util.isInt(topicIdField.getText()), topicIdLabel);
+    final boolean forumValid = validateCombobox(forums, forumLabel);
+    final boolean allValid = idValid && forumValid;
+    viewPosts.setEnabled(allValid);
+    testForum.setEnabled(allValid);
+    return allValid;
   }
 
   private IForumPoster getForumPoster() {
-    // FIXME apply values of other fields to the gamedata somehow.
-    // also fall back to stored values
-    return null; // function.apply(Integer.parseInt(topicIdField.getText()), login.getText(), password.getText());
+    final String forumName = (String) forums.getSelectedItem();
+    Preconditions.checkNotNull(forumName);
+    return IForumPoster.getForumPosterByName(forumName, Integer.parseInt(topicIdField.getText()));
   }
 
   public void applyToGameProperties(final GameProperties properties) {

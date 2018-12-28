@@ -34,6 +34,7 @@ import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.GenericEmailSender;
+import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.SwingComponents;
 import swinglib.JButtonBuilder;
 import swinglib.JComboBoxBuilder;
@@ -453,9 +454,9 @@ final class SelectionComponentFactory {
       final ClientSetting<char[]> passwordSetting) {
     return new AlwaysValidInputSelectionComponent() {
 
-      private final List<GenericEmailSender.EmailProviderSetting> knownProviders = Arrays.asList(
-          new GenericEmailSender.EmailProviderSetting("Gmail", "smtp.gmail.com", 587, true),
-          new GenericEmailSender.EmailProviderSetting("Hotmail", "smtp.live.com", 587, true));
+      private final List<IEmailSender.EmailProviderSetting> knownProviders = Arrays.asList(
+          new IEmailSender.EmailProviderSetting("Gmail", "smtp.gmail.com", 587, true),
+          new IEmailSender.EmailProviderSetting("Hotmail", "smtp.live.com", 587, true));
 
       private final JTextField serverField = new JTextField(hostSetting.getValue().orElse(""), 20);
 

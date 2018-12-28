@@ -2,12 +2,14 @@ package games.strategy.engine.framework.startup.ui.editors;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.random.IRemoteDiceServer;
@@ -23,16 +25,20 @@ public class DiceServerEditor extends EditorPanel {
   private final JTextField toAddress = new JTextField();
   private final JTextField ccAddress = new JTextField();
   private final JTextField gameId = new JTextField();
+  private final JLabel serverLabel = new JLabel("Servers:");
   private final JLabel toLabel = new JLabel("To:");
   private final JLabel ccLabel = new JLabel("Cc:");
   private final JComboBox<String> servers = new JComboBox<>();
+  private static final ImmutableMap<String, IRemoteDiceServer> mapping = PropertiesDiceRoller.loadFromFile()
+      .stream()
+      .collect(ImmutableMap.toImmutableMap(IRemoteDiceServer::getDisplayName, Function.identity()));
 
   public DiceServerEditor() {
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
-    PropertiesDiceRoller.loadFromFile().forEach(server -> servers.addItem(server.getDisplayName()));
-    add(new JLabel("Servers:"), new GridBagConstraints(0, row, 1, 1, 0, 0,
+    mapping.keySet().forEach(servers::addItem);
+    add(serverLabel, new GridBagConstraints(0, row, 1, 1, 0, 0,
         GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(servers, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
         GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
@@ -55,13 +61,19 @@ public class DiceServerEditor extends EditorPanel {
     row++;
     add(testDiceButton, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
+
+    servers.addItemListener(e -> areFieldsValid());
+    toAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
+    ccAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
+    gameId.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
   }
 
   public boolean areFieldsValid() {
-    final Predicate<String> mailValid = Util::isMailValid;
-    final boolean toValid = validateTextField(toAddress, toLabel, mailValid);
-    final boolean ccValid = validateTextField(ccAddress, ccLabel, mailValid.or(String::isEmpty));
-    final boolean allValid = toValid && ccValid;
+    final String toAddressText = toAddress.getText();
+    final boolean toValid = setLabelValid(!toAddressText.isEmpty() && Util.isMailValid(toAddressText), toLabel);
+    final boolean ccValid = setLabelValid(Util.isMailValid(ccAddress.getText()), ccLabel);
+    final boolean serverValid = validateCombobox(servers, serverLabel);
+    final boolean allValid = serverValid && toValid && ccValid;
     testDiceButton.setEnabled(allValid);
     return allValid;
   }
@@ -81,7 +93,8 @@ public class DiceServerEditor extends EditorPanel {
   }
 
   public IRemoteDiceServer createDiceServer() {
-    // FIXME create dice server instance
-    return null;
+    final String selectedName = (String) servers.getSelectedItem();
+    assert selectedName != null;
+    return mapping.get(selectedName);
   }
 }

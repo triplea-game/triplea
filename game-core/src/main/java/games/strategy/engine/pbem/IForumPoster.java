@@ -3,6 +3,9 @@ package games.strategy.engine.pbem;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
+import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.util.Util;
+
 /**
  * An interface for classes that can post a turn summary, the summary may also include a save game if the
  * implementing class supports this.
@@ -37,4 +40,21 @@ public interface IForumPoster {
    * @return the progress bar message
    */
   String getTestMessage();
+
+  static IForumPoster getForumPosterByName(final String name, final int topicId) {
+    switch (name) {
+      case TripleAForumPoster.DISPLAY_NAME:
+        return new TripleAForumPoster(
+            topicId,
+            Util.getFromSetting(ClientSetting.tripleaForumUsername),
+            Util.getFromSetting(ClientSetting.tripleaForumUsername));
+      case AxisAndAlliesForumPoster.DISPLAY_NAME:
+        return new AxisAndAlliesForumPoster(
+            topicId,
+            Util.getFromSetting(ClientSetting.aaForumUsername),
+            Util.getFromSetting(ClientSetting.aaForumPassword));
+      default:
+        throw new IllegalArgumentException(String.format("String '%s' must be a valid name", name));
+    }
+  }
 }

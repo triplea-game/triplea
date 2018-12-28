@@ -3,6 +3,14 @@ package games.strategy.engine.pbem;
 import java.io.File;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
+
+import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.util.Util;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * An interface for sending emails from a PBEM (play by email ) game.
  * Implementers must be serialized, as the sender is stored as part of the save game.
@@ -26,4 +34,42 @@ public interface IEmailSender {
   void sendEmail(String subject, String htmlMessage, File saveGame, String saveGameName) throws IOException;
 
   String getDisplayName();
+
+  /**
+   * Data class to store a 3-tuple consisting of
+   * a server host, a server port and whether or not
+   * to use an encrypted connection.
+   */
+  @AllArgsConstructor
+  @Immutable
+  final class EmailProviderSetting {
+    @Nonnull
+    private final String displayName;
+    @Getter
+    @Nonnull
+    private final String host;
+    @Getter
+    private final int port;
+    @Getter
+    private final boolean isEncrypted;
+
+    @Override
+    public String toString() {
+      return displayName;
+    }
+  }
+
+  static IEmailSender getEmailSender(final String subjectPrefix, final String toAdress) {
+    return new GenericEmailSender(
+        new IEmailSender.EmailProviderSetting(
+            "",
+            ClientSetting.emailServerHost.getValueOrThrow(),
+            ClientSetting.emailServerPort.getValueOrThrow(),
+            ClientSetting.emailServerSecurity.getValueOrThrow()
+        ),
+        Util.getFromSetting(ClientSetting.emailUsername),
+        Util.getFromSetting(ClientSetting.emailPassword),
+        subjectPrefix,
+        toAdress);
+  }
 }

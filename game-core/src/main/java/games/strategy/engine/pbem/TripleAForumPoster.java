@@ -10,8 +10,9 @@ import games.strategy.triplea.UrlConstants;
  * </p>
  */
 public class TripleAForumPoster extends NodeBbForumPoster {
+  public static final String DISPLAY_NAME = "forums.triplea-game.org";
 
-  public TripleAForumPoster(final int topicId, final String username, final String password) {
+  TripleAForumPoster(final int topicId, final String username, final String password) {
     super(topicId, username, password);
   }
 
@@ -22,6 +23,6 @@ public class TripleAForumPoster extends NodeBbForumPoster {
 
   @Override
   public String getDisplayName() {
-    return "forums.triplea-game.org";
+    return DISPLAY_NAME;
   }
 }

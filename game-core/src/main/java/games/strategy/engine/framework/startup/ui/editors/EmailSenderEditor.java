@@ -59,6 +59,8 @@ public class EmailSenderEditor extends EditorPanel {
     row++;
     add(alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
         GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
+    subject.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
+    toAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
   }
 
   /**
@@ -100,7 +102,8 @@ public class EmailSenderEditor extends EditorPanel {
   }
 
   public boolean areFieldsValid() {
-    final boolean addressValid = validateTextField(toAddress, toLabel, Util::isMailValid);
+    final String toAddressText = toAddress.getText();
+    final boolean addressValid = setLabelValid(!toAddressText.isEmpty() && Util.isMailValid(toAddressText), toLabel);
     testEmail.setEnabled(addressValid);
     return addressValid;
   }
@@ -118,7 +121,6 @@ public class EmailSenderEditor extends EditorPanel {
   }
 
   private IEmailSender createEmailSender() {
-    // FIXME email sender instance
-    return null;
+    return IEmailSender.getEmailSender(subject.getText(), toAddress.getText());
   }
 }
