@@ -59,7 +59,10 @@ public interface IEmailSender {
     }
   }
 
-  static IEmailSender getEmailSender(final String subjectPrefix, final String toAdress) {
+  /**
+   * Creates an {@link IEmailSender} instance based on the given arguments and the configured settings.
+   */
+  static IEmailSender getEmailSender(final String subjectPrefix, final String toAddress) {
     return new GenericEmailSender(
         new IEmailSender.EmailProviderSetting(
             "",
@@ -70,6 +73,6 @@ public interface IEmailSender {
         Util.getFromSetting(ClientSetting.emailUsername),
         Util.getFromSetting(ClientSetting.emailPassword),
         subjectPrefix,
-        toAdress);
+        toAddress);
   }
 }

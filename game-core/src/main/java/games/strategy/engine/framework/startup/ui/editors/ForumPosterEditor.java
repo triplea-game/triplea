@@ -136,6 +136,9 @@ public class ForumPosterEditor extends EditorPanel {
     }).start();
   }
 
+  /**
+   * Checks if all fields are filled out correctly and indicates an error otherwise.
+   */
   public boolean areFieldsValid() {
     final boolean setupValid;
     if (TripleAForumPoster.DISPLAY_NAME.equals(forums.getSelectedItem())) {

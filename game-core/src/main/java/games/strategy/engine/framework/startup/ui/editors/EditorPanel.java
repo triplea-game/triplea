@@ -12,9 +12,11 @@ import javax.swing.event.DocumentListener;
 /**
  * Helper Base class for Editors, that provides a basic collection of useful operations.
  *
+ * <p>
  * This class used to have a legitimate reason to be a superclass of editors,
  * but making all methods in this class static, and converting it to a utility class
  * is probably a good thing to do.
+ * </p>
  */
 abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;

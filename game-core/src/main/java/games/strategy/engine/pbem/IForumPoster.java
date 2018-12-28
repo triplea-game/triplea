@@ -41,6 +41,9 @@ public interface IForumPoster {
    */
   String getTestMessage();
 
+  /**
+   * Creates an {@link IForumPoster} instance based on the given arguments and the configured settings.
+   */
   static IForumPoster getForumPosterByName(final String name, final int topicId) {
     switch (name) {
       case TripleAForumPoster.DISPLAY_NAME:
