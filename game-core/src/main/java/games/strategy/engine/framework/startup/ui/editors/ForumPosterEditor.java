@@ -171,14 +171,15 @@ public class ForumPosterEditor extends EditorPanel {
 
   public void applyToGameProperties(final GameProperties properties) {
     properties.set(IForumPoster.NAME, forums.getSelectedItem());
-    properties.set(IForumPoster.TOPIC_ID, topicIdField.getText());
+    properties.set(IForumPoster.TOPIC_ID, Integer.parseInt(topicIdField.getText()));
     properties.set(IForumPoster.POST_AFTER_COMBAT, alsoPostAfterCombatMove.isSelected());
     properties.set(IForumPoster.INCLUDE_SAVEGAME, includeSaveGame.isSelected());
   }
 
   public void populateFromGameProperties(final GameProperties properties) {
     forums.setSelectedItem(properties.get(IForumPoster.NAME));
-    topicIdField.setText(properties.get(IForumPoster.TOPIC_ID, ""));
+    final Object topicId = properties.get(IForumPoster.TOPIC_ID);
+    topicIdField.setText(topicId == null ? "" : String.valueOf(topicId));
     alsoPostAfterCombatMove.setSelected(properties.get(IForumPoster.POST_AFTER_COMBAT, false));
     includeSaveGame.setSelected(properties.get(IForumPoster.INCLUDE_SAVEGAME, true));
   }

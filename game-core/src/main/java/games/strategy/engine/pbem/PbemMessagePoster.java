@@ -105,7 +105,7 @@ public class PbemMessagePoster {
     }
     boolean emailSuccess = true;
     final IEmailSender emailSender = getEmailSender();
-    if (gameProperties.get(GenericEmailSender.SUBJECT) != null) {
+    if (emailSender != null) {
       final StringBuilder subjectPostFix = new StringBuilder(currentPlayer.getName());
       subjectPostFix.append(" - ").append("round ").append(roundNumber);
       try {

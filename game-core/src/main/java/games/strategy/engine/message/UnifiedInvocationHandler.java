@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
+import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.triplea.util.WrappedInvocationHandler;
 
 /**
@@ -36,7 +37,7 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
     }
     if (args != null) {
       for (final Object o : args) {
-        if (o != null && !(o instanceof Serializable)) {
+        if (o != null && !(o instanceof Serializable) && !(o instanceof PbemMessagePoster)) {
           throw new IllegalArgumentException(
               o + " is not serializable, all remote method args must be serializable.  method:" + method);
         }
