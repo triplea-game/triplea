@@ -49,8 +49,7 @@ abstract class EditorPanel extends JPanel {
   /**
    * Wrapper class to add input changed listeners t JTextFields with ease.
    */
-  class TextFieldInputListenerWrapper implements DocumentListener {
-
+  static class TextFieldInputListenerWrapper implements DocumentListener {
     private final Runnable runnable;
 
     TextFieldInputListenerWrapper(final Runnable runnable) {
