@@ -30,11 +30,13 @@ public class DiceServerEditor extends EditorPanel {
   private final JLabel toLabel = new JLabel("To:");
   private final JLabel ccLabel = new JLabel("Cc:");
   private final JComboBox<String> servers = new JComboBox<>();
+  private final Runnable readyCallback;
   private static final ImmutableMap<String, PropertiesDiceRoller> mapping = PropertiesDiceRoller.loadFromFile()
       .stream()
       .collect(ImmutableMap.toImmutableMap(IRemoteDiceServer::getDisplayName, Function.identity()));
 
-  public DiceServerEditor() {
+  public DiceServerEditor(final Runnable readyCallback) {
+    this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
@@ -63,14 +65,19 @@ public class DiceServerEditor extends EditorPanel {
     add(testDiceButton, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
 
-    servers.addItemListener(e -> areFieldsValid());
+    servers.addItemListener(e -> checkFieldsAndNotify());
     testDiceButton.addActionListener(e -> {
       final PbemDiceRoller random = new PbemDiceRoller(createDiceServer());
       random.test();
     });
-    toAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
-    ccAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
-    gameId.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
+    toAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
+    ccAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
+    gameId.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
+  }
+
+  private void checkFieldsAndNotify() {
+    areFieldsValid();
+    readyCallback.run();
   }
 
   public boolean areFieldsValid() {

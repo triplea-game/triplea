@@ -47,8 +47,10 @@ public class ForumPosterEditor extends EditorPanel {
   private final JCheckBox includeSaveGame = new JCheckBox("Attach save game to summary");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
   private final JComboBox<String> forums = new JComboBox<>();
+  private final Runnable readyCallback;
 
-  public ForumPosterEditor() {
+  public ForumPosterEditor(final Runnable readyCallback) {
+    this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
@@ -79,14 +81,19 @@ public class ForumPosterEditor extends EditorPanel {
     setupListeners();
   }
 
+  private void checkFieldsAndNotify() {
+    areFieldsValid();
+    readyCallback.run();
+  }
+
   /**
    * Configures the listeners for the gui components.
    */
   private void setupListeners() {
     viewPosts.addActionListener(e -> getForumPoster().viewPosted());
     testForum.addActionListener(e -> testForum());
-    forums.addItemListener(e -> areFieldsValid());
-    topicIdField.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
+    forums.addItemListener(e -> checkFieldsAndNotify());
+    topicIdField.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
 
   }
 
@@ -101,7 +108,7 @@ public class ForumPosterEditor extends EditorPanel {
     new Thread(() -> {
       File f = null;
       try {
-        f = File.createTempFile("123", "test");
+        f = File.createTempFile("123", ".jpg");
         f.deleteOnExit();
         final BufferedImage image = new BufferedImage(130, 40, BufferedImage.TYPE_INT_RGB);
         final Graphics g = image.getGraphics();

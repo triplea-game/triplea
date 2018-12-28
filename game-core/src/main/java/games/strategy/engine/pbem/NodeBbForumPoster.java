@@ -102,7 +102,8 @@ abstract class NodeBbForumPoster implements IForumPoster {
         final String json = EntityUtils.toString(response.getEntity());
         return "\n[Savegame](" + new JSONArray(json).getJSONObject(0).getString("url") + ")";
       }
-      throw new IllegalStateException("Failed to upload savegame, server returned Error Code " + status);
+      throw new IllegalStateException("Failed to upload savegame, server returned Error Code "
+          + status + "\nMessage:\n" + EntityUtils.toString(response.getEntity()));
     }
   }
 

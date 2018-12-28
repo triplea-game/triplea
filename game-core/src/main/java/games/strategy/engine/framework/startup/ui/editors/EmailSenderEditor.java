@@ -38,8 +38,10 @@ public class EmailSenderEditor extends EditorPanel {
   private final JLabel toLabel = new JLabel("To:");
   private final JButton testEmail = new JButton("Test Email");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
+  private final Runnable readyCallback;
 
-  public EmailSenderEditor() {
+  public EmailSenderEditor(final Runnable readyCallback) {
+    this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
@@ -60,8 +62,13 @@ public class EmailSenderEditor extends EditorPanel {
     row++;
     add(alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
         GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
-    subject.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
-    toAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::areFieldsValid));
+    subject.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
+    toAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
+  }
+
+  private void checkFieldsAndNotify() {
+    areFieldsValid();
+    readyCallback.run();
   }
 
   /**

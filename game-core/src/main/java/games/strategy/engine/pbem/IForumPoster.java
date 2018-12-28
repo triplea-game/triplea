@@ -50,7 +50,7 @@ public interface IForumPoster {
         return new TripleAForumPoster(
             topicId,
             Util.getFromSetting(ClientSetting.tripleaForumUsername),
-            Util.getFromSetting(ClientSetting.tripleaForumUsername));
+            Util.getFromSetting(ClientSetting.tripleaForumPassword));
       case AxisAndAlliesForumPoster.DISPLAY_NAME:
         return new AxisAndAlliesForumPoster(
             topicId,

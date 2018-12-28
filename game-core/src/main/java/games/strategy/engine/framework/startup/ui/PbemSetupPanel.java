@@ -59,9 +59,9 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    */
   public PbemSetupPanel(final GameSelectorModel model) {
     gameSelectorModel = model;
-    diceServerEditor = new DiceServerEditor();
-    forumPosterEditor = new ForumPosterEditor();
-    emailSenderEditor = new EmailSenderEditor();
+    diceServerEditor = new DiceServerEditor(this::notifyObservers);
+    forumPosterEditor = new ForumPosterEditor(this::notifyObservers);
+    emailSenderEditor = new EmailSenderEditor(this::notifyObservers);
     createComponents();
     layoutComponents();
     setupListeners();
@@ -144,9 +144,9 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     final boolean diceServerValid = diceServerEditor.areFieldsValid();
     final boolean forumValid = forumPosterEditor.areFieldsValid();
     final boolean emailValid = emailSenderEditor.areFieldsValid();
-    final boolean pbemReady = diceServerValid && (forumValid || emailValid) && gameSelectorModel.getGameData() != null;
+    final boolean ready = diceServerValid && (forumValid || emailValid) && gameSelectorModel.getGameData() != null;
     // make sure at least 1 player is enabled
-    return pbemReady && playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
+    return ready && playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
   }
 
   @Override
