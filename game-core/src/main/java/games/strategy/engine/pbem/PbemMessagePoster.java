@@ -121,7 +121,7 @@ public class PbemMessagePoster {
     }
     if (historyWriter != null) {
       final StringBuilder sb = new StringBuilder("Post Turn Summary");
-      if (forumPoster.isPresent()) {
+      if (forumSuccess != null) {
         sb.append(" to ").append(forumPoster.get().getDisplayName()).append(" success = ")
             .append(forumSuccess.isDone() && !forumSuccess.isCancelled());
       }
@@ -135,7 +135,7 @@ public class PbemMessagePoster {
       }
       historyWriter.startEvent(sb.toString());
     }
-    return !forumSuccess.isCancelled() && emailSuccess;
+    return (forumSuccess == null || !forumSuccess.isCancelled()) && emailSuccess;
   }
 
   /**
