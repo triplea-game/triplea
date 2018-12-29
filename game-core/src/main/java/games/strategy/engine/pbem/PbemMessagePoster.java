@@ -2,6 +2,7 @@ package games.strategy.engine.pbem;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
@@ -58,20 +59,20 @@ public class PbemMessagePoster {
     this.saveGameFile = saveGameFile;
   }
 
-  private IForumPoster newForumPoster() {
+  private Optional<IForumPoster> newForumPoster() {
     final String name = gameProperties.get(IForumPoster.NAME, "");
     if (name.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
-    return IForumPoster.newInstanceByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0));
+    return Optional.of(IForumPoster.newInstanceByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0)));
   }
 
-  private IEmailSender newEmailSender() {
+  private Optional<IEmailSender> newEmailSender() {
     final String subject = gameProperties.get(IEmailSender.SUBJECT, "");
     if (subject.isEmpty()) {
-      return null;
+      return Optional.empty();
     }
-    return IEmailSender.newInstance(subject, gameProperties.get(IEmailSender.OPPONENT, ""));
+    return Optional.of(IEmailSender.newInstance(subject, gameProperties.get(IEmailSender.OPPONENT, "")));
   }
 
   /**
@@ -81,19 +82,19 @@ public class PbemMessagePoster {
    * @return true if all posts were successful
    */
   public boolean post(final IDelegateHistoryWriter historyWriter, final String title) {
-    final IForumPoster forumPoster = newForumPoster();
+    final Optional<IForumPoster> forumPoster = newForumPoster();
 
     Future<String> forumSuccess = null;
     final StringBuilder saveGameSb = new StringBuilder().append("triplea_");
-    if (forumPoster != null) {
+    if (forumPoster.isPresent()) {
       saveGameSb.append(gameProperties.get(IForumPoster.TOPIC_ID)).append("_");
     }
     saveGameSb.append(currentPlayer.getName(), 0, Math.min(3, currentPlayer.getName().length() - 1))
         .append(roundNumber);
     final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
-    if (forumPoster != null) {
+    if (forumPoster.isPresent()) {
       try {
-        forumSuccess = forumPoster.postTurnSummary((gameNameAndInfo + "\n\n" + turnSummary),
+        forumSuccess = forumPoster.get().postTurnSummary((gameNameAndInfo + "\n\n" + turnSummary),
             "TripleA " + title + ": " + currentPlayer.getName() + " round " + roundNumber, saveGameFile.toPath());
         turnSummaryRef = forumSuccess.get();
         if (turnSummaryRef != null && historyWriter != null) {
@@ -104,12 +105,12 @@ public class PbemMessagePoster {
       }
     }
     boolean emailSuccess = true;
-    final IEmailSender emailSender = newEmailSender();
-    if (emailSender != null) {
+    final Optional<IEmailSender> emailSender = newEmailSender();
+    if (emailSender.isPresent()) {
       final StringBuilder subjectPostFix = new StringBuilder(currentPlayer.getName());
       subjectPostFix.append(" - ").append("round ").append(roundNumber);
       try {
-        emailSender.sendEmail(subjectPostFix.toString(), convertToHtml((gameNameAndInfo + "\n\n" + turnSummary)),
+        emailSender.get().sendEmail(subjectPostFix.toString(), convertToHtml((gameNameAndInfo + "\n\n" + turnSummary)),
             saveGameFile, saveGameName);
         emailSendStatus = "Success, sent to " + gameProperties.get(IEmailSender.OPPONENT);
       } catch (final IOException e) {
@@ -120,12 +121,12 @@ public class PbemMessagePoster {
     }
     if (historyWriter != null) {
       final StringBuilder sb = new StringBuilder("Post Turn Summary");
-      if (forumPoster != null) {
-        sb.append(" to ").append(forumPoster.getDisplayName()).append(" success = ")
+      if (forumPoster.isPresent()) {
+        sb.append(" to ").append(forumPoster.get().getDisplayName()).append(" success = ")
             .append(forumSuccess.isDone() && !forumSuccess.isCancelled());
       }
-      if (emailSender != null) {
-        if (forumPoster != null) {
+      if (emailSender.isPresent()) {
+        if (forumPoster.isPresent()) {
           sb.append(" and to ");
         } else {
           sb.append(" to ");
