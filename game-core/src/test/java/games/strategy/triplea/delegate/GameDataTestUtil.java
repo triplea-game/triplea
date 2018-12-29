@@ -339,6 +339,13 @@ public final class GameDataTestUtil {
   }
 
   /**
+   * Returns a americanStrategicBomber UnitType object for the specified GameData object.
+   */
+  public static UnitType americanStrategicBomber(final GameData data) {
+    return unitType("americanStrategicBomber", data);
+  }
+
+  /**
    * Returns a factory_upgrade UnitType object for the specified GameData object.
    */
   public static UnitType factoryUpgrade(final GameData data) {
