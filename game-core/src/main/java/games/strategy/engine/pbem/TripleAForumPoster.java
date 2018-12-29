@@ -9,8 +9,8 @@ import games.strategy.triplea.UrlConstants;
  * URL format is {@code https://forums.triplea-game.org/api/v2/topics/<topicID>}.
  * </p>
  */
-public class TripleAForumPoster extends NodeBbForumPoster {
-  public static final String DISPLAY_NAME = "forums.triplea-game.org";
+class TripleAForumPoster extends NodeBbForumPoster {
+  static final String DISPLAY_NAME = "forums.triplea-game.org";
 
   TripleAForumPoster(final int topicId, final String username, final String password) {
     super(topicId, username, password);

@@ -24,10 +24,7 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.pbem.AxisAndAlliesForumPoster;
 import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.engine.pbem.TripleAForumPoster;
-import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.util.TimeManager;
 import games.strategy.util.Util;
@@ -54,8 +51,7 @@ public class ForumPosterEditor extends EditorPanel {
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
-    forums.addItem(TripleAForumPoster.DISPLAY_NAME);
-    forums.addItem(AxisAndAlliesForumPoster.DISPLAY_NAME);
+    IForumPoster.availablePosters().forEach(forums::addItem);
     add(forumLabel, new GridBagConstraints(0, row, 1, 1, 0, 0,
         GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(forums, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST,
@@ -147,14 +143,7 @@ public class ForumPosterEditor extends EditorPanel {
    * Checks if all fields are filled out correctly and indicates an error otherwise.
    */
   public boolean areFieldsValid() {
-    final boolean setupValid;
-    if (TripleAForumPoster.DISPLAY_NAME.equals(forums.getSelectedItem())) {
-      setupValid = ClientSetting.tripleaForumUsername.isSet() && ClientSetting.tripleaForumPassword.isSet();
-    } else if (AxisAndAlliesForumPoster.DISPLAY_NAME.equals(forums.getSelectedItem())) {
-      setupValid = ClientSetting.aaForumUsername.isSet() && ClientSetting.aaForumPassword.isSet();
-    } else {
-      setupValid = false;
-    }
+    final boolean setupValid = IForumPoster.isClientSettingSetupValidForServer((String) forums.getSelectedItem());
     final boolean idValid = setLabelValid(Util.isInt(topicIdField.getText()), topicIdLabel);
     final boolean forumValid = validateComboBox(forums, forumLabel);
     final boolean allValid = setupValid && idValid && forumValid;

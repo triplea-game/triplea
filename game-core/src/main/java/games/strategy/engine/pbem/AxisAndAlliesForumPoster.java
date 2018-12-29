@@ -9,8 +9,8 @@ import games.strategy.triplea.UrlConstants;
  * URL format is {@code https://www.axisandallies.org/forums/api/v2/topics/<topicID>}.
  * </p>
  */
-public class AxisAndAlliesForumPoster extends NodeBbForumPoster {
-  public static final String DISPLAY_NAME = "www.axisandallies.org/forums/";
+class AxisAndAlliesForumPoster extends NodeBbForumPoster {
+  static final String DISPLAY_NAME = "www.axisandallies.org/forums/";
 
   AxisAndAlliesForumPoster(final int topicId, final String username, final String password) {
     super(topicId, username, password);

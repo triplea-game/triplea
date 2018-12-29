@@ -1,7 +1,11 @@
 package games.strategy.engine.pbem;
 
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+
+import com.google.common.collect.ImmutableSet;
 
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Util;
@@ -59,5 +63,18 @@ public interface IForumPoster {
       default:
         throw new IllegalArgumentException(String.format("String '%s' must be a valid name", name));
     }
+  }
+
+  static boolean isClientSettingSetupValidForServer(final String server) {
+    if (TripleAForumPoster.DISPLAY_NAME.equals(server)) {
+      return ClientSetting.tripleaForumUsername.isSet() && ClientSetting.tripleaForumPassword.isSet();
+    } else if (AxisAndAlliesForumPoster.DISPLAY_NAME.equals(server)) {
+      return ClientSetting.aaForumUsername.isSet() && ClientSetting.aaForumPassword.isSet();
+    }
+    return false;
+  }
+
+  static ImmutableSet<String> availablePosters() {
+    return ImmutableSet.of(TripleAForumPoster.DISPLAY_NAME, AxisAndAlliesForumPoster.DISPLAY_NAME);
   }
 }
