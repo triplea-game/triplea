@@ -55,7 +55,7 @@ final class FileMenu extends JMenu {
     }));
     menuFileSave.setMnemonic(KeyEvent.VK_S);
     menuFileSave.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
     return menuFileSave;
   }
 
@@ -81,7 +81,7 @@ final class FileMenu extends JMenu {
     }));
     menuPbem.setMnemonic(KeyEvent.VK_P);
     menuPbem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
     return menuPbem;
   }
 
@@ -92,10 +92,10 @@ final class FileMenu extends JMenu {
     if (isMac) { // On Mac OS X, the command-Q is reserved for the Quit action,
       // so set the command-L key combo for the Leave Game action
       leaveGameMenuExit.setAccelerator(
-          KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+          KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
     } else { // On non-Mac operating systems, set the Ctrl-Q key combo for the Leave Game action
       leaveGameMenuExit.setAccelerator(
-          KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+          KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
     }
     add(leaveGameMenuExit);
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,

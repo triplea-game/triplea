@@ -80,7 +80,7 @@ final class GameMenu extends JMenu {
     final JMenuItem gameMenuItem = add(action);
     gameMenuItem.setMnemonic(keyCode);
     gameMenuItem.setAccelerator(
-        KeyStroke.getKeyStroke(keyCode, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(keyCode, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
   }
 
   private void addEditMode() {
@@ -89,7 +89,7 @@ final class GameMenu extends JMenu {
     final JMenuItem editMenuItem = add(editMode);
     editMenuItem.setMnemonic(KeyEvent.VK_E);
     editMenuItem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
   }
 
   private void addShowVerifiedDice() {
@@ -132,7 +132,7 @@ final class GameMenu extends JMenu {
     }));
     politicsMenuItem.setMnemonic(KeyEvent.VK_P);
     politicsMenuItem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
   }
 
   private void addNotificationSettings() {

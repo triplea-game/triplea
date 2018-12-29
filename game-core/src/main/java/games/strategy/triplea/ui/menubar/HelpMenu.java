@@ -238,7 +238,7 @@ public final class HelpMenu extends JMenu {
     }));
     unitMenuItem.setMnemonic(KeyEvent.VK_U);
     unitMenuItem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
   }
 
   public static final JEditorPane gameNotesPane = new JEditorPane();
