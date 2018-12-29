@@ -794,13 +794,20 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           checkForUnitsThatCanRollLeft(bridge, false);
           endBattle(bridge);
           attackerWins(bridge);
-        } else if (shouldEndBattleDueToMaxRounds()
-            || (!attackingUnits.isEmpty()
-                && attackingUnits.stream().allMatch(Matches.unitHasAttackValueOfAtLeast(1).negate())
-                && !defendingUnits.isEmpty()
-                && defendingUnits.stream().allMatch(Matches.unitHasDefendValueOfAtLeast(1).negate()))) {
+        } else if (shouldEndBattleDueToMaxRounds()) {
           endBattle(bridge);
           nobodyWins(bridge);
+        } else {
+          final int attackPower =
+              DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(attackingUnits, defendingUnits,
+                  false, gameData, battleSite, territoryEffects, isAmphibious, amphibiousLandAttackers), gameData);
+          final int defensePower =
+              DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(defendingUnits, attackingUnits,
+                  true, gameData, battleSite, territoryEffects, isAmphibious, amphibiousLandAttackers), gameData);
+          if (attackPower == 0 && defensePower == 0) {
+            endBattle(bridge);
+            nobodyWins(bridge);
+          }
         }
       }
     });
