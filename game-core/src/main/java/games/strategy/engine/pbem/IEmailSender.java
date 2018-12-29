@@ -62,8 +62,8 @@ public interface IEmailSender {
   /**
    * Creates an {@link IEmailSender} instance based on the given arguments and the configured settings.
    */
-  static IEmailSender getEmailSender(final String subjectPrefix, final String toAddress) {
-    return new GenericEmailSender(
+  static IEmailSender newInstance(final String subjectPrefix, final String toAddress) {
+    return new DefaultEmailSender(
         new IEmailSender.EmailProviderSetting(
             "",
             ClientSetting.emailServerHost.getValueOrThrow(),

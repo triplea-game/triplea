@@ -27,6 +27,8 @@ import com.github.openjson.JSONObject;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.net.OpenFileUtility;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 
 /**
@@ -37,28 +39,22 @@ import lombok.extern.java.Log;
  * </p>
  */
 @Log
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 abstract class NodeBbForumPoster implements IForumPoster {
 
   private final int topicId;
   private final String username;
   private final String password;
 
-
-  NodeBbForumPoster(final int topicId, final String username, final String password) {
-    this.topicId = topicId;
-    this.username = username;
-    this.password = password;
-  }
-
   abstract String getForumUrl();
 
   @Override
-  public CompletableFuture<String> postTurnSummary(final String summary, final String title, final Path file) {
+  public CompletableFuture<String> postTurnSummary(final String summary, final String title, final Path path) {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
       final int userId = getUserId(client);
       final String token = getToken(client, userId);
       try {
-        post(client, token, "### " + title + "\n" + summary, file);
+        post(client, token, "### " + title + "\n" + summary, path);
         return CompletableFuture.completedFuture("Successfully posted!");
       } finally {
         deleteToken(client, userId, token);
@@ -71,13 +67,13 @@ abstract class NodeBbForumPoster implements IForumPoster {
     }
   }
 
-  private void post(final CloseableHttpClient client, final String token, final String text, final Path file)
+  private void post(final CloseableHttpClient client, final String token, final String text, final Path path)
       throws IOException {
     final HttpPost post = new HttpPost(getForumUrl() + "/api/v2/topics/" + topicId);
     addTokenHeader(post, token);
     post.setEntity(new UrlEncodedFormEntity(
         Collections.singletonList(new BasicNameValuePair("content",
-            text + ((file != null) ? uploadSaveGame(client, token, file) : ""))),
+            text + ((path != null) ? uploadSaveGame(client, token, path) : ""))),
         StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
@@ -88,11 +84,11 @@ abstract class NodeBbForumPoster implements IForumPoster {
     }
   }
 
-  private String uploadSaveGame(final CloseableHttpClient client, final String token, final Path file)
+  private String uploadSaveGame(final CloseableHttpClient client, final String token, final Path path)
       throws IOException {
     final HttpPost fileUpload = new HttpPost(getForumUrl() + "/api/v2/util/upload");
     fileUpload.setEntity(MultipartEntityBuilder.create()
-        .addBinaryBody("files[]", file.toFile(), ContentType.APPLICATION_OCTET_STREAM, file.getFileName().toString())
+        .addBinaryBody("files[]", path.toFile(), ContentType.APPLICATION_OCTET_STREAM, path.getFileName().toString())
         .build());
     HttpProxy.addProxy(fileUpload);
     addTokenHeader(fileUpload, token);

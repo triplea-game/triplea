@@ -86,11 +86,6 @@ public class Util {
 
   public static boolean isInt(final String string) {
     Preconditions.checkNotNull(string);
-    try {
-      Integer.parseInt(string);
-      return true;
-    } catch (final NumberFormatException e) {
-      return false;
-    }
+    return string.matches("^\\d+$");
   }
 }

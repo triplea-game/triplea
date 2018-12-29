@@ -24,8 +24,6 @@ import javax.mail.util.ByteArrayDataSource;
 
 import com.google.common.base.Splitter;
 
-import lombok.extern.java.Log;
-
 /**
  * A PBEM (play by email) sender that will email turn summary and save game.
  *
@@ -39,9 +37,8 @@ import lombok.extern.java.Log;
  * credentials. The persistent password is used when the object is stored in the local cache.
  * </p>
  */
-@Log
-public class GenericEmailSender implements IEmailSender {
-  private final long timeout = TimeUnit.SECONDS.toMillis(60);
+public class DefaultEmailSender implements IEmailSender {
+  private static final long TIMEOUT = TimeUnit.SECONDS.toMillis(60);
   private final String subjectPrefix;
   private final String username;
   private final String password;
@@ -49,7 +46,7 @@ public class GenericEmailSender implements IEmailSender {
   private final EmailProviderSetting providerSetting;
 
 
-  public GenericEmailSender(
+  DefaultEmailSender(
       final EmailProviderSetting providerSetting,
       final String username,
       final String password,
@@ -80,8 +77,8 @@ public class GenericEmailSender implements IEmailSender {
     }
     props.put("mail.smtp.host", providerSetting.getHost());
     props.put("mail.smtp.port", providerSetting.getPort());
-    props.put("mail.smtp.connectiontimeout", timeout);
-    props.put("mail.smtp.timeout", timeout);
+    props.put("mail.smtp.connectiontimeout", TIMEOUT);
+    props.put("mail.smtp.timeout", TIMEOUT);
     // todo get the turn and player number from the game data
     try {
       final Session session = Session.getInstance(props, null);

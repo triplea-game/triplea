@@ -31,7 +31,8 @@ public class DiceServerEditor extends EditorPanel {
   private final JLabel ccLabel = new JLabel("Cc:");
   private final JComboBox<String> servers = new JComboBox<>();
   private final Runnable readyCallback;
-  private static final ImmutableMap<String, PropertiesDiceRoller> mapping = PropertiesDiceRoller.loadFromFile()
+  private static final ImmutableMap<String, PropertiesDiceRoller> diceRollersByDisplayName = PropertiesDiceRoller
+      .loadFromFile()
       .stream()
       .collect(ImmutableMap.toImmutableMap(IRemoteDiceServer::getDisplayName, Function.identity()));
 
@@ -40,7 +41,7 @@ public class DiceServerEditor extends EditorPanel {
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
-    mapping.keySet().forEach(servers::addItem);
+    diceRollersByDisplayName.keySet().forEach(servers::addItem);
     add(serverLabel, new GridBagConstraints(0, row, 1, 1, 0, 0,
         GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
     add(servers, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
@@ -67,7 +68,7 @@ public class DiceServerEditor extends EditorPanel {
 
     servers.addItemListener(e -> checkFieldsAndNotify());
     testDiceButton.addActionListener(e -> {
-      final PbemDiceRoller random = new PbemDiceRoller(createDiceServer());
+      final PbemDiceRoller random = new PbemDiceRoller(newDiceServer());
       random.test();
     });
     toAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
@@ -84,7 +85,7 @@ public class DiceServerEditor extends EditorPanel {
     final String toAddressText = toAddress.getText();
     final boolean toValid = setLabelValid(!toAddressText.isEmpty() && Util.isMailValid(toAddressText), toLabel);
     final boolean ccValid = setLabelValid(Util.isMailValid(ccAddress.getText()), ccLabel);
-    final boolean serverValid = validateCombobox(servers, serverLabel);
+    final boolean serverValid = validateComboBox(servers, serverLabel);
     final boolean allValid = serverValid && toValid && ccValid;
     testDiceButton.setEnabled(allValid);
     return allValid;
@@ -104,10 +105,10 @@ public class DiceServerEditor extends EditorPanel {
     ccAddress.setText(properties.get(IRemoteDiceServer.EMAIL_2, ""));
   }
 
-  public IRemoteDiceServer createDiceServer() {
+  public IRemoteDiceServer newDiceServer() {
     final String selectedName = (String) servers.getSelectedItem();
     assert selectedName != null;
-    final PropertiesDiceRoller roller = mapping.get(selectedName);
+    final PropertiesDiceRoller roller = diceRollersByDisplayName.get(selectedName);
     roller.setGameId(gameId.getText());
     roller.setToAddress(toAddress.getText());
     roller.setCcAddress(ccAddress.getText());

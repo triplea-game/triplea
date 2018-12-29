@@ -58,20 +58,20 @@ public class PbemMessagePoster {
     this.saveGameFile = saveGameFile;
   }
 
-  private IForumPoster getForumPoster() {
+  private IForumPoster newForumPoster() {
     final String name = gameProperties.get(IForumPoster.NAME, "");
     if (name.isEmpty()) {
       return null;
     }
-    return IForumPoster.getForumPosterByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0));
+    return IForumPoster.newInstanceByName(name, gameProperties.get(IForumPoster.TOPIC_ID, 0));
   }
 
-  private IEmailSender getEmailSender() {
+  private IEmailSender newEmailSender() {
     final String subject = gameProperties.get(IEmailSender.SUBJECT, "");
     if (subject.isEmpty()) {
       return null;
     }
-    return IEmailSender.getEmailSender(subject, gameProperties.get(IEmailSender.OPPONENT, ""));
+    return IEmailSender.newInstance(subject, gameProperties.get(IEmailSender.OPPONENT, ""));
   }
 
   /**
@@ -81,7 +81,7 @@ public class PbemMessagePoster {
    * @return true if all posts were successful
    */
   public boolean post(final IDelegateHistoryWriter historyWriter, final String title) {
-    final IForumPoster forumPoster = getForumPoster();
+    final IForumPoster forumPoster = newForumPoster();
 
     Future<String> forumSuccess = null;
     final StringBuilder saveGameSb = new StringBuilder().append("triplea_");
@@ -104,7 +104,7 @@ public class PbemMessagePoster {
       }
     }
     boolean emailSuccess = true;
-    final IEmailSender emailSender = getEmailSender();
+    final IEmailSender emailSender = newEmailSender();
     if (emailSender != null) {
       final StringBuilder subjectPostFix = new StringBuilder(currentPlayer.getName());
       subjectPostFix.append(" - ").append("round ").append(roundNumber);

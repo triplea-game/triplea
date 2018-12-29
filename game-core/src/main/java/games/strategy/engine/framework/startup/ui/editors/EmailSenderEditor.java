@@ -88,7 +88,7 @@ public class EmailSenderEditor extends EditorPanel {
           fout.write("This file would normally be a save game".getBytes(StandardCharsets.UTF_8));
         }
         final String html = "<html><body><h1>Success</h1><p>This was a test email sent by TripleA<p></body></html>";
-        createEmailSender().sendEmail("TripleA Test", html, dummy, "dummy.txt");
+        newEmailSender().sendEmail("TripleA Test", html, dummy, "dummy.txt");
         // email was sent, or an exception would have been thrown
         message = "Email sent, it should arrive shortly, otherwise check your spam folder";
         messageType = JOptionPane.INFORMATION_MESSAGE;
@@ -132,7 +132,7 @@ public class EmailSenderEditor extends EditorPanel {
     alsoPostAfterCombatMove.setSelected(properties.get(IEmailSender.POST_AFTER_COMBAT, false));
   }
 
-  private IEmailSender createEmailSender() {
-    return IEmailSender.getEmailSender(subject.getText(), toAddress.getText());
+  private IEmailSender newEmailSender() {
+    return IEmailSender.newInstance(subject.getText(), toAddress.getText());
   }
 }

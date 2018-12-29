@@ -33,14 +33,12 @@ import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
 import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.ui.SwingAction;
-import lombok.extern.java.Log;
 
 /**
  * A panel for setting up Play by Email/Forum.
  * This panel listens to the GameSelectionModel so it can refresh when a new game is selected or save game loaded
  * The MainPanel also listens to this panel, and we notify it through the notifyObservers()
  */
-@Log
 public class PbemSetupPanel extends SetupPanel implements Observer {
   private static final long serialVersionUID = 9006941131918034674L;
   private final GameSelectorModel gameSelectorModel;
@@ -182,7 +180,7 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
    */
   @Override
   public Optional<ILauncher> getLauncher() {
-    final PbemDiceRoller randomSource = new PbemDiceRoller(diceServerEditor.createDiceServer());
+    final PbemDiceRoller randomSource = new PbemDiceRoller(diceServerEditor.newDiceServer());
     final Map<String, PlayerType> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
     for (final PlayerSelectorRow player : this.playerTypes) {

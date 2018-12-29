@@ -33,7 +33,6 @@ import javax.swing.SpinnerNumberModel;
 import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.system.HttpProxy;
-import games.strategy.engine.pbem.GenericEmailSender;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.SwingComponents;
 import swinglib.JButtonBuilder;
@@ -484,14 +483,14 @@ final class SelectionComponentFactory {
           .addLeftJustified(JButtonBuilder.builder()
               .title("Presets...")
               .actionListener(() -> {
-                final JComboBox<GenericEmailSender.EmailProviderSetting> comboBox =
-                    JComboBoxBuilder.builder(GenericEmailSender.EmailProviderSetting.class)
+                final JComboBox<IEmailSender.EmailProviderSetting> comboBox =
+                    JComboBoxBuilder.builder(IEmailSender.EmailProviderSetting.class)
                         .items(knownProviders)
                         .build();
                 if (JOptionPane.showConfirmDialog(this.panel.getParent(), JPanelBuilder.builder().add(comboBox).build(),
                     "Select a Preset", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                  final GenericEmailSender.EmailProviderSetting config =
-                      (GenericEmailSender.EmailProviderSetting) comboBox.getSelectedItem();
+                  final IEmailSender.EmailProviderSetting config =
+                      (IEmailSender.EmailProviderSetting) comboBox.getSelectedItem();
                   serverField.setText(config.getHost());
                   portSpinner.setValue(config.getPort());
                   tlsCheckBox.setSelected(config.isEncrypted());

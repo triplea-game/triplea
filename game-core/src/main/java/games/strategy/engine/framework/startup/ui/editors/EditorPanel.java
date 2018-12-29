@@ -33,7 +33,7 @@ abstract class EditorPanel extends JPanel {
    * @param label The label which should be used to indicate an invalid setup.
    * @return True, if the combobox is valid, false otherwise.
    */
-  boolean validateCombobox(final JComboBox<?> comboBox, final JLabel label) {
+  boolean validateComboBox(final JComboBox<?> comboBox, final JLabel label) {
     return setLabelValid(comboBox.getSelectedItem() != null, label);
   }
 
@@ -49,7 +49,7 @@ abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * Wrapper class to add input changed listeners t JTextFields with ease.
+   * Wrapper class to add input changed listeners to JTextFields with ease.
    */
   static class TextFieldInputListenerWrapper implements DocumentListener {
     private final Runnable runnable;

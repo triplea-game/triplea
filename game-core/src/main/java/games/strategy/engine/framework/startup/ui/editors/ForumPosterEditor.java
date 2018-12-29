@@ -90,7 +90,7 @@ public class ForumPosterEditor extends EditorPanel {
    * Configures the listeners for the gui components.
    */
   private void setupListeners() {
-    viewPosts.addActionListener(e -> getForumPoster().viewPosted());
+    viewPosts.addActionListener(e -> newForumPoster().viewPosted());
     testForum.addActionListener(e -> testForum());
     forums.addItemListener(e -> checkFieldsAndNotify());
     topicIdField.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
@@ -101,7 +101,7 @@ public class ForumPosterEditor extends EditorPanel {
    * Tests the Forum poster.
    */
   private void testForum() {
-    final IForumPoster poster = getForumPoster();
+    final IForumPoster poster = newForumPoster();
     final ProgressWindow progressWindow = GameRunner.newProgressWindow(poster.getTestMessage());
     progressWindow.setVisible(true);
 
@@ -156,17 +156,17 @@ public class ForumPosterEditor extends EditorPanel {
       setupValid = false;
     }
     final boolean idValid = setLabelValid(Util.isInt(topicIdField.getText()), topicIdLabel);
-    final boolean forumValid = validateCombobox(forums, forumLabel);
+    final boolean forumValid = validateComboBox(forums, forumLabel);
     final boolean allValid = setupValid && idValid && forumValid;
     viewPosts.setEnabled(allValid);
     testForum.setEnabled(allValid);
     return allValid;
   }
 
-  private IForumPoster getForumPoster() {
+  private IForumPoster newForumPoster() {
     final String forumName = (String) forums.getSelectedItem();
     Preconditions.checkNotNull(forumName);
-    return IForumPoster.getForumPosterByName(forumName, Integer.parseInt(topicIdField.getText()));
+    return IForumPoster.newInstanceByName(forumName, Integer.parseInt(topicIdField.getText()));
   }
 
   public void applyToGameProperties(final GameProperties properties) {
