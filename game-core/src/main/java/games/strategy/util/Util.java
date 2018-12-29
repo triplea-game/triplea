@@ -5,13 +5,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.BaseEncoding;
-
-import games.strategy.triplea.settings.ClientSetting;
 
 /**
  * Some utility methods for dealing with collections.
@@ -73,15 +70,6 @@ public class Util {
     checkNotNull(p);
 
     return p.negate();
-  }
-
-  public static String getFromSetting(final ClientSetting<char[]> setting) {
-    final char[] charArray = setting.getValueOrThrow();
-    try {
-      return new String(charArray);
-    } finally {
-      Arrays.fill(charArray, '\0');
-    }
   }
 
   public static boolean isInt(final String string) {

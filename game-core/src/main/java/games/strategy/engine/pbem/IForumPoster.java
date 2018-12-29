@@ -1,14 +1,12 @@
 package games.strategy.engine.pbem;
 
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.common.collect.ImmutableSet;
 
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.Util;
+import games.strategy.triplea.settings.GameSetting;
 
 /**
  * An interface for classes that can post a turn summary, the summary may also include a save game if the
@@ -53,13 +51,13 @@ public interface IForumPoster {
       case TripleAForumPoster.DISPLAY_NAME:
         return new TripleAForumPoster(
             topicId,
-            Util.getFromSetting(ClientSetting.tripleaForumUsername),
-            Util.getFromSetting(ClientSetting.tripleaForumPassword));
+            GameSetting.getFromSetting(ClientSetting.tripleaForumUsername),
+            GameSetting.getFromSetting(ClientSetting.tripleaForumPassword));
       case AxisAndAlliesForumPoster.DISPLAY_NAME:
         return new AxisAndAlliesForumPoster(
             topicId,
-            Util.getFromSetting(ClientSetting.aaForumUsername),
-            Util.getFromSetting(ClientSetting.aaForumPassword));
+            GameSetting.getFromSetting(ClientSetting.aaForumUsername),
+            GameSetting.getFromSetting(ClientSetting.aaForumPassword));
       default:
         throw new IllegalArgumentException(String.format("String '%s' must be a valid name", name));
     }

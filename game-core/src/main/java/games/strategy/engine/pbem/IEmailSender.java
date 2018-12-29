@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.Util;
+import games.strategy.triplea.settings.GameSetting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -70,8 +70,8 @@ public interface IEmailSender {
             ClientSetting.emailServerPort.getValueOrThrow(),
             ClientSetting.emailServerSecurity.getValueOrThrow()
         ),
-        Util.getFromSetting(ClientSetting.emailUsername),
-        Util.getFromSetting(ClientSetting.emailPassword),
+        GameSetting.getFromSetting(ClientSetting.emailUsername),
+        GameSetting.getFromSetting(ClientSetting.emailPassword),
         subjectPrefix,
         toAddress);
   }
