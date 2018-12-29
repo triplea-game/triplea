@@ -13,7 +13,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -30,12 +29,10 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
-import lombok.extern.java.Log;
 
 /**
  * Responsible for loading saved games, new games from xml, and saving games.
  */
-@Log
 public final class GameDataManager {
   private static final String DELEGATE_START = "<DelegateStart>";
   private static final String DELEGATE_DATA_NEXT = "<DelegateData>";
@@ -79,14 +76,6 @@ public final class GameDataManager {
       final Version readVersion = (Version) input.readObject();
       final boolean headless = HeadlessGameServer.headless();
       if (!GameEngineVersion.of(ClientContext.engineVersion()).isCompatibleWithEngineVersion(readVersion)) {
-        // a hack for now, but a headless server should not try to open any savegame that is not its version
-        if (headless) {
-          final String message = "Incompatible game save, we are: " + ClientContext.engineVersion()
-              + "  Trying to load game created with: " + readVersion;
-          HeadlessGameServer.sendChat(message);
-          log.log(Level.SEVERE, message);
-          return null;
-        }
         final String error = "Incompatible engine versions. We are: "
             + ClientContext.engineVersion() + " . Trying to load game created with: " + readVersion
             + "\nTo download the latest version of TripleA, Please visit "

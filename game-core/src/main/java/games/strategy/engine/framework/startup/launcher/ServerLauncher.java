@@ -191,12 +191,9 @@ public class ServerLauncher extends AbstractLauncher {
           });
           stopGame();
         } catch (final RuntimeException e) {
-          final String errorMessage = "Unrecognized error occurred: " + e.getMessage() + ", if this is a repeatable "
-              + "error please make a copy of this savegame and report to:\n" + UrlConstants.GITHUB_ISSUES;
+          final String errorMessage = "Unrecognized error occurred. If this is a repeatable error, "
+              + "please make a copy of this savegame and report to:\n" + UrlConstants.GITHUB_ISSUES;
           log.log(Level.SEVERE, errorMessage, e);
-          if (headless) {
-            HeadlessGameServer.sendChat(errorMessage);
-          }
           stopGame();
         }
         // having an oddball issue with the zip stream being closed while parsing to load default game. might be
