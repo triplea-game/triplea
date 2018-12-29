@@ -1997,6 +1997,7 @@ public final class TripleAFrame extends JFrame {
       getContentPane().removeAll();
       getContentPane().add(gameMainPanel, BorderLayout.CENTER);
       validate();
+      requestWindowFocus();
     });
     mapPanel.setRoute(null);
   }
