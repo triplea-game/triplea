@@ -40,13 +40,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
-public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
+final class DownloadUtilsTest extends AbstractClientSettingTestCase {
   private static final String URI = "some://uri";
 
   @ExtendWith(MockitoExtension.class)
   @ExtendWith(TempDirectory.class)
   @Nested
-  public final class DownloadToFileTest {
+  final class DownloadToFileTest {
     @Mock
     private CloseableHttpClient client;
 
@@ -62,7 +62,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     private StatusLine statusLine;
 
     @BeforeEach
-    public void setUp(@TempDir final Path tempDirPath) throws Exception {
+    void setUp(@TempDir final Path tempDirPath) throws Exception {
       file = Files.createTempFile(tempDirPath, null, null).toFile();
 
       when(client.execute(any())).thenReturn(response);
@@ -70,7 +70,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     }
 
     @Test
-    public void shouldCopyEntityToFileWhenHappyPath() throws Exception {
+    void shouldCopyEntityToFileWhenHappyPath() throws Exception {
       when(response.getEntity()).thenReturn(entity);
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
       final byte[] bytes = givenEntityContentIs(new byte[] {42, 43, 44, 45});
@@ -87,7 +87,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
 
     private void downloadToFile() throws Exception {
       try (FileOutputStream os = new FileOutputStream(file)) {
-        DownloadUtils.contentReader.downloadToFile(URI, os, client);
+        ContentReader.downloadToFile(URI, os, client);
       }
     }
 
@@ -96,20 +96,20 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     }
 
     @Test
-    public void shouldThrowExceptionWhenStatusCodeIsNotOk() {
+    void shouldThrowExceptionWhenStatusCodeIsNotOk() {
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NOT_FOUND);
 
-      final Exception e = assertThrows(IOException.class, () -> downloadToFile());
+      final Exception e = assertThrows(IOException.class, this::downloadToFile);
 
       assertThat(e.getMessage(), containsString("status code"));
     }
 
     @Test
-    public void shouldThrowExceptionWhenEntityIsAbsent() {
+    void shouldThrowExceptionWhenEntityIsAbsent() {
       when(response.getEntity()).thenReturn(null);
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
 
-      final Exception e = assertThrows(IOException.class, () -> downloadToFile());
+      final Exception e = assertThrows(IOException.class, this::downloadToFile);
 
       assertThat(e.getMessage(), containsString("entity is missing"));
     }
@@ -117,22 +117,24 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
 
   @ExtendWith(MockitoExtension.class)
   @Nested
-  public final class GetDownloadLengthFromCacheTest {
+  final class GetDownloadLengthFromCacheTest {
     @Mock
     private DownloadLengthReader.DownloadLengthSupplier downloadLengthSupplier;
 
     @BeforeEach
-    public void setUp() {
+    @SuppressWarnings("deprecation")
+    void setUp() {
       DownloadUtils.downloadLengthReader.downloadLengthsByUri.clear();
     }
 
     @AfterEach
-    public void tearDown() {
+    @SuppressWarnings("deprecation")
+    void tearDown() {
       DownloadUtils.downloadLengthReader.downloadLengthsByUri.clear();
     }
 
     @Test
-    public void shouldUseSupplierWhenUriAbsentFromCache() {
+    void shouldUseSupplierWhenUriAbsentFromCache() {
       when(downloadLengthSupplier.get(URI)).thenReturn(Optional.of(42L));
 
       final Optional<Long> downloadLength = getDownloadLengthFromCache();
@@ -141,12 +143,14 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
       verify(downloadLengthSupplier).get(URI);
     }
 
+    @SuppressWarnings("deprecation")
     private Optional<Long> getDownloadLengthFromCache() {
       return DownloadUtils.downloadLengthReader.getDownloadLengthFromCache(URI, downloadLengthSupplier);
     }
 
     @Test
-    public void shouldUseCacheWhenUriPresentInCache() {
+    @SuppressWarnings("deprecation")
+    void shouldUseCacheWhenUriPresentInCache() {
       DownloadUtils.downloadLengthReader.downloadLengthsByUri.put(URI, 42L);
 
       final Optional<Long> downloadLength = getDownloadLengthFromCache();
@@ -156,7 +160,8 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     }
 
     @Test
-    public void shouldNotUpdateCacheWhenSupplierProvidesEmptyValue() {
+    @SuppressWarnings("deprecation")
+    void shouldNotUpdateCacheWhenSupplierProvidesEmptyValue() {
       when(downloadLengthSupplier.get(URI)).thenReturn(Optional.empty());
 
       final Optional<Long> downloadLength = getDownloadLengthFromCache();
@@ -168,7 +173,7 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
 
   @ExtendWith(MockitoExtension.class)
   @Nested
-  public final class GetDownloadLengthFromHostTest {
+  final class GetDownloadLengthFromHostTest {
     @Mock
     private CloseableHttpClient client;
 
@@ -182,14 +187,14 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     private StatusLine statusLine;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
       when(client.execute(any())).thenReturn(response);
       when(response.getStatusLine()).thenReturn(statusLine);
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
     }
 
     @Test
-    public void shouldReturnLengthWhenContentLengthHeaderIsPresent() throws Exception {
+    void shouldReturnLengthWhenContentLengthHeaderIsPresent() throws Exception {
       givenContentLengthHeaderValueIs("42");
 
       final Optional<Long> length = getDownloadLengthFromHost();
@@ -203,20 +208,20 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     }
 
     private Optional<Long> getDownloadLengthFromHost() throws Exception {
-      return DownloadUtils.downloadLengthReader.getDownloadLengthFromHost(URI, client);
+      return DownloadLengthReader.getDownloadLengthFromHost(URI, client);
     }
 
     @Test
-    public void shouldThrowExceptionWhenStatusCodeIsNotOk() {
+    void shouldThrowExceptionWhenStatusCodeIsNotOk() {
       when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_NOT_FOUND);
 
-      final Exception e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
+      final Exception e = assertThrows(IOException.class, this::getDownloadLengthFromHost);
 
       assertThat(e.getMessage(), containsString("status code"));
     }
 
     @Test
-    public void shouldReturnEmptyWhenContentLengthHeaderIsAbsent() throws Exception {
+    void shouldReturnEmptyWhenContentLengthHeaderIsAbsent() throws Exception {
       when(response.getFirstHeader(HttpHeaders.CONTENT_LENGTH)).thenReturn(null);
 
       final Optional<Long> length = getDownloadLengthFromHost();
@@ -225,19 +230,19 @@ public final class DownloadUtilsTest extends AbstractClientSettingTestCase {
     }
 
     @Test
-    public void shouldThrowExceptionWhenContentLengthHeaderValueIsAbsent() {
+    void shouldThrowExceptionWhenContentLengthHeaderValueIsAbsent() {
       givenContentLengthHeaderValueIs(null);
 
-      final Exception e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
+      final Exception e = assertThrows(IOException.class, this::getDownloadLengthFromHost);
 
       assertThat(e.getMessage(), containsString("content length header value is absent"));
     }
 
     @Test
-    public void shouldThrowExceptionWhenContentLengthHeaderValueIsNotNumber() {
+    void shouldThrowExceptionWhenContentLengthHeaderValueIsNotNumber() {
       givenContentLengthHeaderValueIs("value");
 
-      final Exception e = assertThrows(IOException.class, () -> getDownloadLengthFromHost());
+      final Exception e = assertThrows(IOException.class, this::getDownloadLengthFromHost);
 
       assertThat(e.getCause(), is(instanceOf(NumberFormatException.class)));
     }
