@@ -1,6 +1,7 @@
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
+import static games.strategy.triplea.delegate.GameDataTestUtil.battleDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.move;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
@@ -46,5 +47,28 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
     battle.fight(bridge);
     assertEquals(0, sz40.getUnits().size());
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
+  }
+
+  @Test
+  public void testFightWithBothZeroStrength() throws Exception {
+    final GameData twwGameData = TestMapGameData.TWW.getGameData();
+
+    // Create TWW battle in Celebes with 1 inf attacking 1 strat where both have 0 strength
+    final PlayerId usa = GameDataTestUtil.usa(twwGameData);
+    final PlayerId germany = GameDataTestUtil.germany(twwGameData);
+    final Territory celebes = territory("Celebes", twwGameData);
+    celebes.getUnits().clear();
+    addTo(celebes, GameDataTestUtil.americanStrategicBomber(twwGameData).create(1, usa));
+    addTo(celebes, GameDataTestUtil.germanInfantry(twwGameData).create(1, germany));
+    final IDelegateBridge bridge = MockDelegateBridge.newInstance(twwGameData, germany);
+    battleDelegate(twwGameData).setDelegateBridgeAndPlayer(bridge);
+    BattleDelegate.doInitialize(battleDelegate(twwGameData).getBattleTracker(), bridge);
+    final MustFightBattle battle =
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(celebes, false, null);
+
+    // Ensure battle ends, both units remain, and has 0 rolls
+    battle.fight(bridge);
+    assertEquals(2, celebes.getUnits().size());
+    thenGetRandomShouldHaveBeenCalled(bridge, times(0));
   }
 }

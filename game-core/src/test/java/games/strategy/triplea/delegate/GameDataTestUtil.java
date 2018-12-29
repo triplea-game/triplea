@@ -318,6 +318,13 @@ public final class GameDataTestUtil {
   }
 
   /**
+   * Returns a germanStrategicBomber UnitType object for the specified GameData object.
+   */
+  public static UnitType germanStrategicBomber(final GameData data) {
+    return unitType("germanStrategicBomber", data);
+  }
+
+  /**
    * Returns a americanTank UnitType object for the specified GameData object.
    */
   public static UnitType americanAtCounter(final GameData data) {
@@ -336,6 +343,13 @@ public final class GameDataTestUtil {
    */
   public static UnitType americanCruiser(final GameData data) {
     return unitType("americanCruiser", data);
+  }
+
+  /**
+   * Returns a americanStrategicBomber UnitType object for the specified GameData object.
+   */
+  public static UnitType americanStrategicBomber(final GameData data) {
+    return unitType("americanStrategicBomber", data);
   }
 
   /**
