@@ -101,12 +101,13 @@ public class DefaultEmailSender implements IEmailSender {
         final Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(bodypart);
         // add save game
-        final FileInputStream fin = new FileInputStream(saveGame);
-        final DataSource source = new ByteArrayDataSource(fin, "application/triplea");
-        final BodyPart messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setDataHandler(new DataHandler(source));
-        messageBodyPart.setFileName(saveGameName);
-        multipart.addBodyPart(messageBodyPart);
+        try (FileInputStream fin = new FileInputStream(saveGame)) {
+          final DataSource source = new ByteArrayDataSource(fin, "application/triplea");
+          final BodyPart messageBodyPart = new MimeBodyPart();
+          messageBodyPart.setDataHandler(new DataHandler(source));
+          messageBodyPart.setFileName(saveGameName);
+          multipart.addBodyPart(messageBodyPart);
+        }
         mimeMessage.setContent(multipart);
       }
       // date
