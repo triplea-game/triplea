@@ -105,7 +105,7 @@ public class PbemMessagePoster {
       }
     }
     final Optional<IEmailSender> emailSender = newEmailSender();
-    boolean emailSuccess = emailSender.map(sender -> {
+    final boolean emailSuccess = emailSender.map(sender -> {
       try {
         sender.sendEmail(currentPlayer.getName() + " - round " + roundNumber,
             convertToHtml((gameNameAndInfo + "\n\n" + turnSummary)), saveGameFile, saveGameName);
