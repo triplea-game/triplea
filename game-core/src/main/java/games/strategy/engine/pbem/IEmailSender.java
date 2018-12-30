@@ -6,8 +6,9 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
+import org.triplea.common.util.Arrays;
+
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.settings.GameSetting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -70,8 +71,8 @@ public interface IEmailSender {
             ClientSetting.emailServerPort.getValueOrThrow(),
             ClientSetting.emailServerSecurity.getValueOrThrow()
         ),
-        GameSetting.getFromSetting(ClientSetting.emailUsername),
-        GameSetting.getFromSetting(ClientSetting.emailPassword),
+        Arrays.withSensitiveArrayAndReturn(ClientSetting.emailUsername::getValueOrThrow, String::new),
+        Arrays.withSensitiveArrayAndReturn(ClientSetting.emailPassword::getValueOrThrow, String::new),
         subjectPrefix,
         toAddress);
   }

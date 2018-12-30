@@ -1,6 +1,5 @@
 package games.strategy.triplea.settings;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -61,15 +60,4 @@ public interface GameSetting<T> {
    * Unregisters {@code listener} to no longer receive a notification whenever the setting value has changed.
    */
   void removeListener(Consumer<GameSetting<T>> listener);
-
-
-
-  static String getFromSetting(final GameSetting<char[]> setting) {
-    final char[] charArray = setting.getValueOrThrow();
-    try {
-      return new String(charArray);
-    } finally {
-      Arrays.fill(charArray, '\0');
-    }
-  }
 }

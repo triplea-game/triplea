@@ -3,10 +3,11 @@ package games.strategy.engine.pbem;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
+import org.triplea.common.util.Arrays;
+
 import com.google.common.collect.ImmutableSet;
 
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.settings.GameSetting;
 
 /**
  * An interface for classes that can post a turn summary, the summary may also include a save game if the
@@ -51,13 +52,13 @@ public interface IForumPoster {
       case TripleAForumPoster.DISPLAY_NAME:
         return new TripleAForumPoster(
             topicId,
-            GameSetting.getFromSetting(ClientSetting.tripleaForumUsername),
-            GameSetting.getFromSetting(ClientSetting.tripleaForumPassword));
+            Arrays.withSensitiveArrayAndReturn(ClientSetting.tripleaForumUsername::getValueOrThrow, String::new),
+            Arrays.withSensitiveArrayAndReturn(ClientSetting.tripleaForumPassword::getValueOrThrow, String::new));
       case AxisAndAlliesForumPoster.DISPLAY_NAME:
         return new AxisAndAlliesForumPoster(
             topicId,
-            GameSetting.getFromSetting(ClientSetting.aaForumUsername),
-            GameSetting.getFromSetting(ClientSetting.aaForumPassword));
+            Arrays.withSensitiveArrayAndReturn(ClientSetting.aaForumUsername::getValueOrThrow, String::new),
+            Arrays.withSensitiveArrayAndReturn(ClientSetting.aaForumPassword::getValueOrThrow, String::new));
       default:
         throw new IllegalArgumentException(String.format("String '%s' must be a valid name", name));
     }
