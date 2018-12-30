@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
@@ -136,7 +135,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     private static void printError(final String errorMessage) {
       if (!shownError) {
         shownError = true;
-        log.log(Level.SEVERE, errorMessage);
+        log.severe(errorMessage);
       }
     }
   }

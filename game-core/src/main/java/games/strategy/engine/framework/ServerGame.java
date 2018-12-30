@@ -295,7 +295,7 @@ public class ServerGame extends AbstractGame {
    */
   public void stopGame() {
     if (isGameOver) {
-      log.log(Level.WARNING, "Game previously stopped, cannot stop again.");
+      log.warning("Game previously stopped, cannot stop again.");
       return;
     }
 
@@ -313,7 +313,7 @@ public class ServerGame extends AbstractGame {
         log.warning("Could not stop delegate execution.");
         // Try one more time
         if (!delegateExecutionManager.blockDelegateExecution(16000)) {
-          log.log(Level.SEVERE, "Exiting...");
+          log.severe("Exiting...");
           ExitStatus.FAILURE.exit();
         }
       }
@@ -375,7 +375,7 @@ public class ServerGame extends AbstractGame {
       if (!delegateExecutionManager.blockDelegateExecution(6000)) {
         // try again
         if (!delegateExecutionManager.blockDelegateExecution(6000)) {
-          log.log(Level.SEVERE, errorMessage + " could not lock delegate execution");
+          log.severe(errorMessage + " could not lock delegate execution");
           return;
         }
       }

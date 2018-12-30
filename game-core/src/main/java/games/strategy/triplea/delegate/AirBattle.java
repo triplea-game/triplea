@@ -441,7 +441,7 @@ public class AirBattle extends AbstractBattle {
     final Territory retreatTo =
         getRemote(retreatingPlayer, bridge).retreatQuery(battleId, false, battleSite, availableTerritories, text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo)) {
-      log.log(Level.SEVERE, "Invalid retreat selection :" + retreatTo + " not in "
+      log.severe("Invalid retreat selection :" + retreatTo + " not in "
           + MyFormatter.defaultNamedToTextList(availableTerritories));
       return;
     }

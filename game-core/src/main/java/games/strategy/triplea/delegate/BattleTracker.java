@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -552,7 +551,7 @@ public class BattleTracker implements Serializable {
         bridge.getHistoryWriter().addChildToEvent(id.getName() + " loses " + -puChargeReal + " "
             + MyFormatter.pluralize("PU", -puChargeReal) + " for violating " + territory.getName() + "s neutrality.");
       } else {
-        log.log(Level.SEVERE, "Player, " + id.getName() + " attacks a Neutral territory, and should have had to pay "
+        log.severe("Player, " + id.getName() + " attacks a Neutral territory, and should have had to pay "
             + puChargeIdeal + ", but did not have enough PUs to pay! This is a bug.");
         bridge.getHistoryWriter()
             .addChildToEvent(id.getName() + " loses " + -puChargeReal + " " + MyFormatter.pluralize("PU", -puChargeReal)

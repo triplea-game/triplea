@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -130,7 +129,7 @@ public class HistoryLog extends JFrame {
       }
       printRemainingTurn(turnStartNode, verbose, data.getDiceSides(), players);
     } else {
-      log.log(Level.SEVERE, "No step node found in!");
+      log.severe("No step node found in!");
     }
   }
 

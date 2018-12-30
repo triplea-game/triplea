@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -528,12 +527,10 @@ public class BattleCalculator {
         && !(numhits + damaged.size() == (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining))) {
       tripleaPlayer.reportError("Wrong number of casualties selected");
       if (headLess) {
-        log.log(
-            Level.SEVERE,
-            "Possible Infinite Loop: Wrong number of casualties selected: number of hits on units "
-                + (numhits + damaged.size()) + " != number of hits to take "
-                + (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining) + ", for "
-                + casualtySelection.toString());
+        log.severe("Possible Infinite Loop: Wrong number of casualties selected: number of hits on units "
+            + (numhits + damaged.size()) + " != number of hits to take "
+            + (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining) + ", for "
+            + casualtySelection.toString());
       }
       return selectCasualties(step, player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
           amphibiousLandAttackers, battlesite, territoryEffects, bridge, text, dice, defending, battleId, headLess,
@@ -543,10 +540,8 @@ public class BattleCalculator {
     if (!sortedTargetsToPickFrom.containsAll(killed) || !sortedTargetsToPickFrom.containsAll(damaged)) {
       tripleaPlayer.reportError("Cannot remove enough units of those types");
       if (headLess) {
-        log.log(
-            Level.SEVERE,
-            "Possible Infinite Loop: Cannot remove enough units of those types: targets "
-                + MyFormatter.unitsToTextNoOwner(sortedTargetsToPickFrom) + ", for " + casualtySelection.toString());
+        log.severe("Possible Infinite Loop: Cannot remove enough units of those types: targets "
+            + MyFormatter.unitsToTextNoOwner(sortedTargetsToPickFrom) + ", for " + casualtySelection.toString());
       }
       return selectCasualties(step, player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
           amphibiousLandAttackers, battlesite, territoryEffects, bridge, text, dice, defending, battleId, headLess,

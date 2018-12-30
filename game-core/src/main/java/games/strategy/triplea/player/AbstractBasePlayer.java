@@ -1,7 +1,5 @@
 package games.strategy.triplea.player;
 
-import java.util.logging.Level;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.player.IGamePlayer;
@@ -62,13 +60,13 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
         Interruptibles.sleep(100);
         i++;
         if (i == 30) {
-          log.log(Level.SEVERE, "Start step: " + stepName + " does not match player bridge step: " + bridgeStep
+          log.severe("Start step: " + stepName + " does not match player bridge step: " + bridgeStep
               + ". Player Bridge GameOver=" + getPlayerBridge().isGameOver() + ", PlayerId: " + getPlayerId().getName()
               + ", Game: " + getGameData().getGameName()
               + ". Something wrong or very laggy. Will keep trying for 30 more seconds. ");
         }
         if (i > 310) {
-          log.log(Level.SEVERE, "Start step: " + stepName + " still does not match player bridge step: " + bridgeStep
+          log.severe("Start step: " + stepName + " still does not match player bridge step: " + bridgeStep
               + " even after waiting more than 30 seconds. This will probably result in a ClassCastException very "
               + "soon. Player Bridge GameOver=" + getPlayerBridge().isGameOver()
               + ", PlayerId: " + getPlayerId().getName() + ", Game: " + getGameData().getGameName());

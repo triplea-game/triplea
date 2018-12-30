@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
-import java.util.logging.Level;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -113,9 +112,7 @@ public enum LockUtil {
   private static final class DefaultErrorReporter implements ErrorReporter {
     @Override
     public void reportError(final Lock from, final Lock to) {
-      log.log(
-          Level.SEVERE,
-          "Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:" + getStackTrace());
+      log.severe("Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:" + getStackTrace());
     }
 
     private static String getStackTrace() {

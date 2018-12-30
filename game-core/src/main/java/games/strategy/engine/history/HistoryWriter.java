@@ -1,7 +1,6 @@
 package games.strategy.engine.history;
 
 import java.io.Serializable;
-import java.util.logging.Level;
 
 import javax.swing.SwingUtilities;
 
@@ -143,8 +142,7 @@ public class HistoryWriter implements Serializable {
   public void addChildToEvent(final EventChild node) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      log.log(Level.SEVERE,
-          "Not in an event, but trying to add child: " + node + ". Current history node is: " + current);
+      log.severe("Not in an event, but trying to add child: " + node + ". Current history node is: " + current);
       startEvent("Filler event for child: " + node);
     }
     addToCurrent(node);
@@ -156,7 +154,7 @@ public class HistoryWriter implements Serializable {
   public void addChange(final Change change) {
     assertCorrectThread();
     if (!isCurrentEvent() && !isCurrentStep()) {
-      log.log(Level.SEVERE,
+      log.severe(
           "Not in an event or step, but trying to add change: " + change + ". Current history node is: " + current);
       startEvent("Filler event for change: " + change);
     }
@@ -169,8 +167,7 @@ public class HistoryWriter implements Serializable {
   public void setRenderingData(final Object details) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      log.log(Level.SEVERE,
-          "Not in an event, but trying to set details: " + details + ". Current history node is: " + current);
+      log.severe("Not in an event, but trying to set details: " + details + ". Current history node is: " + current);
       startEvent("Filler event for details: " + details);
     }
     history.getGameData().acquireWriteLock();

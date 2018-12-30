@@ -143,7 +143,7 @@ public final class CenterPicker {
         try (InputStream is = new FileInputStream(file.getPath())) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Something wrong with your Polygons file: " + file.getAbsolutePath());
+          log.severe("Something wrong with your Polygons file: " + file.getAbsolutePath());
           throw e;
         }
       } else {
@@ -152,7 +152,7 @@ public final class CenterPicker {
           try (InputStream is = new FileInputStream(polyPath)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(is);
           } catch (final IOException e) {
-            log.log(Level.SEVERE, "Something wrong with your Polygons file: " + polyPath);
+            log.severe("Something wrong with your Polygons file: " + polyPath);
             throw e;
           }
         }

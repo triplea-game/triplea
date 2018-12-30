@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -140,7 +139,7 @@ public class ObjectivePanel extends AbstractStatPanel {
         final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length()));
         final String value = (String) entry.getValue();
         if (key.size() != 2) {
-          log.log(Level.SEVERE, "objective.properties keys must be 2 parts: <game_name>."
+          log.severe("objective.properties keys must be 2 parts: <game_name>."
               + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
           continue;
         }
@@ -172,9 +171,8 @@ public class ObjectivePanel extends AbstractStatPanel {
         final List<String> key = Splitter.on(';').splitToList(fileKey.substring(gameName.length()));
         final String value = (String) entry.getValue();
         if (key.size() != 2) {
-          log.log(Level.SEVERE,
-              "objective.properties keys must be 2 parts: <game_name>."
-                  + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
+          log.severe("objective.properties keys must be 2 parts: <game_name>."
+              + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
           continue;
         }
         if (key.get(0).startsWith(ObjectiveProperties.GROUP_PROPERTY)) {
