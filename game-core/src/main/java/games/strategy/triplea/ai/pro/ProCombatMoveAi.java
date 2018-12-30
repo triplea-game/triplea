@@ -38,6 +38,7 @@ import games.strategy.triplea.ai.pro.util.ProTransportUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.triplea.delegate.AirBattle;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
@@ -718,8 +719,11 @@ class ProCombatMoveAi {
         Optional<Territory> maxBombingTerritory = Optional.empty();
         int maxBombingScore = MIN_BOMBING_SCORE;
         for (final Territory t : bomberMoveMap.get(unit)) {
-          final boolean territoryCanBeBombed = t.getUnits().anyMatch(Matches.unitCanProduceUnitsAndCanBeDamaged());
-          if (territoryCanBeBombed && canAirSafelyLandAfterAttack(unit, t)) {
+          final boolean canBeBombedByThisUnit = t.getUnits()
+              .anyMatch(Matches.unitCanProduceUnitsAndCanBeDamaged().and(Matches.unitIsLegalBombingTargetBy(unit)));
+          final boolean canCreateAirBattle = Properties.getRaidsMayBePreceededByAirBattles(data)
+              && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(t, player, data, true);
+          if (canBeBombedByThisUnit && !canCreateAirBattle && canAirSafelyLandAfterAttack(unit, t)) {
             final int noAaBombingDefense = t.getUnits().anyMatch(Matches.unitIsAaForBombingThisUnitOnly()) ? 0 : 1;
             int maxDamage = 0;
             final TerritoryAttachment ta = TerritoryAttachment.get(t);

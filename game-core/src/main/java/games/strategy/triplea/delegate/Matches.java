@@ -336,7 +336,7 @@ public final class Matches {
     };
   }
 
-  static Predicate<Unit> unitIsLegalBombingTargetBy(final Unit bomberOrRocket) {
+  public static Predicate<Unit> unitIsLegalBombingTargetBy(final Unit bomberOrRocket) {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(bomberOrRocket.getType());
       final Set<UnitType> allowedTargets = ua.getBombingTargets(bomberOrRocket.getData());

@@ -326,7 +326,7 @@ public class AirBattle extends AbstractBattle {
                 target =
                     getRemote(bridge).whatShouldBomberBomb(battleSite, enemyTargets, Collections.singletonList(unit));
               }
-            } else if (!enemyTargets.isEmpty()) {
+            } else {
               target = enemyTargets.iterator().next();
             }
             if (target != null) {
@@ -691,7 +691,10 @@ public class AirBattle extends AbstractBattle {
             || Matches.territoryHasUnitsThatMatch(airbasesCanIntercept).test(territory));
   }
 
-  static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerId attacker,
+  /**
+   * Determines if enemy has any air units that can intercept to create an air battle.
+   */
+  public static boolean territoryCouldPossiblyHaveAirBattleDefenders(final Territory territory, final PlayerId attacker,
       final GameData data, final boolean bombing) {
     final boolean canScrambleToAirBattle = Properties.getCanScrambleIntoAirBattles(data);
     final Predicate<Unit> defendingAirMatch = bombing ? defendingBombingRaidInterceptors(territory, attacker, data)
