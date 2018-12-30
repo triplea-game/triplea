@@ -149,22 +149,29 @@ public final class LobbyMenu extends JMenuBar {
       final @Nullable String username = showInputDialog(
           "Enter the username that you want to ban from the lobby.\n\n"
               + "Note that this ban is effective on any username, registered or anonymous, online or offline.");
-      if (Strings.isNullOrEmpty(username)) {
-        return;
+      if (validateUsername(username)) {
+        showTimespanDialog(
+            "Please consult other admins before banning longer than 1 day.",
+            date -> getModeratorController().banUsername(newDummyNode(username), date));
       }
-      if (!DBUser.isValidUserName(username)) {
-        showErrorDialog("The username you entered is invalid.", "Invalid Username");
-        return;
-      }
-      showTimespanDialog(
-          "Please consult other admins before banning longer than 1 day.",
-          date -> getModeratorController().banUsername(newDummyNode(username), date));
     });
     parentMenu.add(menuItem);
   }
 
   private @Nullable String showInputDialog(final String message) {
     return JOptionPane.showInputDialog(lobbyFrame, message);
+  }
+
+  private boolean validateUsername(final @Nullable String username) {
+    if (Strings.isNullOrEmpty(username)) {
+      // user canceled operation
+      return false;
+    } else if (!DBUser.isValidUserName(username)) {
+      showErrorDialog("The username you entered is invalid.", "Invalid Username");
+      return false;
+    }
+
+    return true;
   }
 
   private void showErrorDialog(final String message, final String title) {
@@ -215,14 +222,9 @@ public final class LobbyMenu extends JMenuBar {
     final JMenuItem menuItem = new JMenuItem("Unban Username");
     menuItem.addActionListener(e -> {
       final @Nullable String username = showInputDialog("Enter the username that you want to unban from the lobby.");
-      if (Strings.isNullOrEmpty(username)) {
-        return;
+      if (validateUsername(username)) {
+        getModeratorController().banUsername(newDummyNode(username), Date.from(Instant.EPOCH));
       }
-      if (!DBUser.isValidUserName(username)) {
-        showErrorDialog("The username you entered is invalid.", "Invalid Username");
-        return;
-      }
-      getModeratorController().banUsername(newDummyNode(username), Date.from(Instant.EPOCH));
     });
     parentMenu.add(menuItem);
   }
@@ -251,16 +253,11 @@ public final class LobbyMenu extends JMenuBar {
       final @Nullable String username = showInputDialog(
           "Enter the username that you want to mute in the lobby.\n\n"
               + "Note that this mute is effective on any username, registered or anonymous, online or offline.");
-      if (Strings.isNullOrEmpty(username)) {
-        return;
+      if (validateUsername(username)) {
+        showTimespanDialog(
+            "Please consult other admins before muting longer than 1 day.",
+            date -> getModeratorController().muteUsername(newDummyNode(username), date));
       }
-      if (!DBUser.isValidUserName(username)) {
-        showErrorDialog("The username you entered is invalid.", "Invalid Username");
-        return;
-      }
-      showTimespanDialog(
-          "Please consult other admins before muting longer than 1 day.",
-          date -> getModeratorController().muteUsername(newDummyNode(username), date));
     });
     parentMenu.add(menuItem);
   }
@@ -269,14 +266,9 @@ public final class LobbyMenu extends JMenuBar {
     final JMenuItem menuItem = new JMenuItem("Unmute Username");
     menuItem.addActionListener(e -> {
       final @Nullable String username = showInputDialog("Enter the username that you want to unmute in the lobby.");
-      if (Strings.isNullOrEmpty(username)) {
-        return;
+      if (validateUsername(username)) {
+        getModeratorController().muteUsername(newDummyNode(username), Date.from(Instant.EPOCH));
       }
-      if (!DBUser.isValidUserName(username)) {
-        showErrorDialog("The username you entered is invalid.", "Invalid Username");
-        return;
-      }
-      getModeratorController().muteUsername(newDummyNode(username), Date.from(Instant.EPOCH));
     });
     parentMenu.add(menuItem);
   }
