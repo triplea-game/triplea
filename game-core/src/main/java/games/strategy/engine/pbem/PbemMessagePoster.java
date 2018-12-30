@@ -84,7 +84,6 @@ public class PbemMessagePoster {
   public boolean post(final IDelegateHistoryWriter historyWriter, final String title) {
     final Optional<IForumPoster> forumPoster = newForumPoster();
 
-    Future<String> forumSuccess = null;
     final StringBuilder saveGameSb = new StringBuilder().append("triplea_");
     if (forumPoster.isPresent()) {
       saveGameSb.append(gameProperties.get(IForumPoster.TOPIC_ID)).append("_");
@@ -92,6 +91,7 @@ public class PbemMessagePoster {
     saveGameSb.append(currentPlayer.getName(), 0, Math.min(3, currentPlayer.getName().length() - 1))
         .append(roundNumber);
     final String saveGameName = GameDataFileUtils.addExtension(saveGameSb.toString());
+    Future<String> forumSuccess = null;
     if (forumPoster.isPresent()) {
       try {
         forumSuccess = forumPoster.get().postTurnSummary((gameNameAndInfo + "\n\n" + turnSummary),
@@ -104,21 +104,19 @@ public class PbemMessagePoster {
         log.log(Level.SEVERE, "Failed to post game to forum", e);
       }
     }
-    boolean emailSuccess = true;
     final Optional<IEmailSender> emailSender = newEmailSender();
-    if (emailSender.isPresent()) {
-      final StringBuilder subjectPostFix = new StringBuilder(currentPlayer.getName());
-      subjectPostFix.append(" - ").append("round ").append(roundNumber);
+    boolean emailSuccess = emailSender.map(sender -> {
       try {
-        emailSender.get().sendEmail(subjectPostFix.toString(), convertToHtml((gameNameAndInfo + "\n\n" + turnSummary)),
-            saveGameFile, saveGameName);
+        sender.sendEmail(currentPlayer.getName() + " - round " + roundNumber,
+            convertToHtml((gameNameAndInfo + "\n\n" + turnSummary)), saveGameFile, saveGameName);
         emailSendStatus = "Success, sent to " + gameProperties.get(IEmailSender.OPPONENT);
+        return true;
       } catch (final IOException e) {
-        emailSuccess = false;
         emailSendStatus = "Failed! Error " + e.getMessage();
         log.log(Level.SEVERE, "Failed to send game via email", e);
+        return false;
       }
-    }
+    }).orElse(false);
     if (historyWriter != null) {
       final StringBuilder sb = new StringBuilder("Post Turn Summary");
       if (forumSuccess != null) {
@@ -126,11 +124,7 @@ public class PbemMessagePoster {
             .append(forumSuccess.isDone() && !forumSuccess.isCancelled());
       }
       if (emailSender.isPresent()) {
-        if (forumPoster.isPresent()) {
-          sb.append(" and to ");
-        } else {
-          sb.append(" to ");
-        }
+        sb.append(forumPoster.isPresent() ? " and to " : " to ");
         sb.append(gameProperties.get(IEmailSender.OPPONENT)).append(" success = ").append(emailSuccess);
       }
       historyWriter.startEvent(sb.toString());
