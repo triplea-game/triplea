@@ -93,7 +93,7 @@ public final class LobbyMenu extends JMenuBar {
     addBanMacAddressMenuItem(toolboxMenu);
     addUnbanUsernameMenuItem(toolboxMenu);
     addUnbanMacAddressMenuItem(toolboxMenu);
-    parentMenu.addSeparator();
+    toolboxMenu.addSeparator();
     addMuteUsernameMenuItem(toolboxMenu);
     addUnmuteUsernameMenuItem(toolboxMenu);
   }
