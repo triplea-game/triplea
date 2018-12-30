@@ -86,13 +86,16 @@ public final class LobbyMenu extends JMenuBar {
     addDisplayPlayersInformationMenu(diagnostics);
   }
 
-  private void createToolboxMenu(final JMenu menuBar) {
-    final JMenu toolbox = new JMenu("Toolbox");
-    menuBar.add(toolbox);
-    addBanUsernameMenu(toolbox);
-    addBanMacAddressMenu(toolbox);
-    addUnbanUsernameMenu(toolbox);
-    addUnbanMacAddressMenu(toolbox);
+  private void createToolboxMenu(final JMenu parentMenu) {
+    final JMenu toolboxMenu = new JMenu("Toolbox");
+    parentMenu.add(toolboxMenu);
+    addBanUsernameMenuItem(toolboxMenu);
+    addBanMacAddressMenuItem(toolboxMenu);
+    addUnbanUsernameMenuItem(toolboxMenu);
+    addUnbanMacAddressMenuItem(toolboxMenu);
+    parentMenu.addSeparator();
+    addMuteUsernameMenuItem(toolboxMenu);
+    addUnmuteUsernameMenuItem(toolboxMenu);
   }
 
   private void addDisplayPlayersInformationMenu(final JMenu parentMenu) {
@@ -140,7 +143,7 @@ public final class LobbyMenu extends JMenuBar {
     parentMenu.add(menuItem);
   }
 
-  private void addBanUsernameMenu(final JMenu parentMenu) {
+  private void addBanUsernameMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Ban Username");
     menuItem.addActionListener(e -> {
       final @Nullable String username = showInputDialog(
@@ -188,7 +191,7 @@ public final class LobbyMenu extends JMenuBar {
     }
   }
 
-  private void addBanMacAddressMenu(final JMenu parentMenu) {
+  private void addBanMacAddressMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Ban Hashed Mac Address");
     menuItem.addActionListener(e -> {
       final @Nullable String hashedMacAddress = showInputDialog(
@@ -208,7 +211,7 @@ public final class LobbyMenu extends JMenuBar {
     parentMenu.add(menuItem);
   }
 
-  private void addUnbanUsernameMenu(final JMenu parentMenu) {
+  private void addUnbanUsernameMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Unban Username");
     menuItem.addActionListener(e -> {
       final @Nullable String username = showInputDialog("Enter the username that you want to unban from the lobby.");
@@ -224,7 +227,7 @@ public final class LobbyMenu extends JMenuBar {
     parentMenu.add(menuItem);
   }
 
-  private void addUnbanMacAddressMenu(final JMenu parentMenu) {
+  private void addUnbanMacAddressMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Unban Hashed Mac Address");
     menuItem.addActionListener(e -> {
       final @Nullable String hashedMacAddress = showInputDialog(
@@ -238,6 +241,42 @@ public final class LobbyMenu extends JMenuBar {
         return;
       }
       getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, Date.from(Instant.EPOCH));
+    });
+    parentMenu.add(menuItem);
+  }
+
+  private void addMuteUsernameMenuItem(final JMenu parentMenu) {
+    final JMenuItem menuItem = new JMenuItem("Mute Username");
+    menuItem.addActionListener(e -> {
+      final @Nullable String username = showInputDialog(
+          "Enter the username that you want to mute in the lobby.\n\n"
+              + "Note that this mute is effective on any username, registered or anonymous, online or offline.");
+      if (Strings.isNullOrEmpty(username)) {
+        return;
+      }
+      if (!DBUser.isValidUserName(username)) {
+        showErrorDialog("The username you entered is invalid.", "Invalid Username");
+        return;
+      }
+      showTimespanDialog(
+          "Please consult other admins before muting longer than 1 day.",
+          date -> getModeratorController().muteUsername(newDummyNode(username), date));
+    });
+    parentMenu.add(menuItem);
+  }
+
+  private void addUnmuteUsernameMenuItem(final JMenu parentMenu) {
+    final JMenuItem menuItem = new JMenuItem("Unmute Username");
+    menuItem.addActionListener(e -> {
+      final @Nullable String username = showInputDialog("Enter the username that you want to unmute in the lobby.");
+      if (Strings.isNullOrEmpty(username)) {
+        return;
+      }
+      if (!DBUser.isValidUserName(username)) {
+        showErrorDialog("The username you entered is invalid.", "Invalid Username");
+        return;
+      }
+      getModeratorController().muteUsername(newDummyNode(username), Date.from(Instant.EPOCH));
     });
     parentMenu.add(menuItem);
   }
