@@ -593,13 +593,12 @@ public class HeadlessGameServer {
   public static void start(final String[] args) {
     final ArgValidationResult validation = HeadlessGameServerCliParam.validateArgs(args);
     if (!validation.isValid()) {
-      log.log(Level.SEVERE,
-          String.format("Failed to start, improper args: %s\n"
-              + "Errors:\n- %s\n"
-              + "Example usage: %s",
-              Arrays.toString(args),
-              String.join("\n- ", validation.getErrorMessages()),
-              HeadlessGameServerCliParam.exampleUsage()));
+      log.severe(String.format("Failed to start, improper args: %s\n"
+          + "Errors:\n- %s\n"
+          + "Example usage: %s",
+          Arrays.toString(args),
+          String.join("\n- ", validation.getErrorMessages()),
+          HeadlessGameServerCliParam.exampleUsage()));
       return;
     }
 

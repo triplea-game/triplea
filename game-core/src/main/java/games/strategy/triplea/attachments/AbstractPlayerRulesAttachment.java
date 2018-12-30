@@ -70,8 +70,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     final PlayerId player = data.getPlayerList().getPlayerId(playerName);
     if (player == null) {
       // could be an old map, or an old save, so we don't want to stop the game from running.
-      log.log(Level.SEVERE,
-          "When trying to find condition: " + conditionName + ", player does not exist: " + playerName);
+      log.severe("When trying to find condition: " + conditionName + ", player does not exist: " + playerName);
       return null;
     }
     final Collection<PlayerId> allPlayers = data.getPlayerList().getPlayers();
@@ -85,11 +84,9 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       } else if (conditionName.contains(Constants.POLITICALACTION_ATTACHMENT_PREFIX)) {
         attachment = PoliticalActionAttachment.get(player, conditionName, allPlayers);
       } else {
-        log.log(
-            Level.SEVERE,
-            conditionName + " attachment must begin with: " + Constants.RULES_OBJECTIVE_PREFIX
-                + " or " + Constants.RULES_CONDITION_PREFIX + " or " + Constants.TRIGGER_ATTACHMENT_PREFIX + " or "
-                + Constants.POLITICALACTION_ATTACHMENT_PREFIX);
+        log.severe(conditionName + " attachment must begin with: " + Constants.RULES_OBJECTIVE_PREFIX
+            + " or " + Constants.RULES_CONDITION_PREFIX + " or " + Constants.TRIGGER_ATTACHMENT_PREFIX + " or "
+            + Constants.POLITICALACTION_ATTACHMENT_PREFIX);
         return null;
       }
     } catch (final Exception e) {
@@ -98,7 +95,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       return null;
     }
     if (attachment == null) {
-      log.log(Level.SEVERE, "Condition attachment does not exist: " + conditionName);
+      log.severe("Condition attachment does not exist: " + conditionName);
       return null;
     }
     return attachment;

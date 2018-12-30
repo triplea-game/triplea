@@ -3,7 +3,6 @@ package games.strategy.util;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,11 +82,11 @@ public class LocalizeHtml {
           URL replacementUrl = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + imageFileName);
 
           if (replacementUrl == null || replacementUrl.toString().length() == 0) {
-            log.log(Level.SEVERE, "Could not find: " + mapNameDir + "/" + ASSET_IMAGE_FOLDER + imageFileName);
+            log.severe("Could not find: " + mapNameDir + "/" + ASSET_IMAGE_FOLDER + imageFileName);
             replacementUrl = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
           }
           if (replacementUrl == null || replacementUrl.toString().length() == 0) {
-            log.log(Level.SEVERE, "Could not find: " + ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
+            log.severe("Could not find: " + ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
             continue;
           }
           localizedHtmlText = localizedHtmlText.replaceAll(link, replacementUrl.toString());

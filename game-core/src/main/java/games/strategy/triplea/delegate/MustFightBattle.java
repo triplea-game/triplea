@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
@@ -1322,7 +1321,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(battleId,
         (submerge || canDefendingSubsSubmergeOrRetreat), battleSite, availableTerritories, text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo) && !subs) {
-      log.log(Level.SEVERE, "Invalid retreat selection :" + retreatTo + " not in "
+      log.severe("Invalid retreat selection :" + retreatTo + " not in "
           + MyFormatter.defaultNamedToTextList(availableTerritories));
       return;
     }

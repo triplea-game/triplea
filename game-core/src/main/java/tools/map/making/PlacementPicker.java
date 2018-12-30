@@ -288,7 +288,7 @@ public final class PlacementPicker {
           log.info("Polygons : " + file.getPath());
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Failed to load polygons: " + file.getAbsolutePath());
+          log.severe("Failed to load polygons: " + file.getAbsolutePath());
           throw e;
         }
       } else {

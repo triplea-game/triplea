@@ -141,7 +141,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
                   Level.SEVERE,
                   "You can only edit add transports+units after the initialization delegate of the game is finished.  "
                       + "If this error came up and you have not used Edit Mode to add units + transports, then please "
-                      + "report this as a bug:\n" + e.getMessage());
+                      + "report this as a bug.",
+                  e);
             }
             found = true;
             break;

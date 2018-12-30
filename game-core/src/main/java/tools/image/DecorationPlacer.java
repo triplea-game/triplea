@@ -222,7 +222,7 @@ public final class DecorationPlacer {
           log.info("Centers : " + fileCenters.getPath());
           centers = PointFileReaderWriter.readOneToOne(is);
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Something wrong with Centers file");
+          log.severe("Something wrong with Centers file");
           throw e;
         }
       } else {
@@ -240,7 +240,7 @@ public final class DecorationPlacer {
             throw new IOException("no centers file specified");
           }
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Something wrong with Centers file");
+          log.severe("Something wrong with Centers file");
           throw e;
         }
       }
@@ -259,7 +259,7 @@ public final class DecorationPlacer {
           log.info("Polygons : " + filePoly.getPath());
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Something wrong with your Polygons file: " + filePoly.getAbsolutePath());
+          log.severe("Something wrong with your Polygons file: " + filePoly.getAbsolutePath());
           throw e;
         }
       } else {
@@ -270,7 +270,7 @@ public final class DecorationPlacer {
           try (InputStream is = new FileInputStream(polyPath)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(is);
           } catch (final IOException e) {
-            log.log(Level.SEVERE, "Something wrong with your Polygons file: " + polyPath);
+            log.severe("Something wrong with your Polygons file: " + polyPath);
             throw e;
           }
         } else {

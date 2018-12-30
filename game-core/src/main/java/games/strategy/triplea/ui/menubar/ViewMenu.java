@@ -213,7 +213,7 @@ final class ViewMenu extends JMenu {
       }
     }
     if (!matchFound) {
-      log.log(Level.SEVERE, "default unit size does not match any menu item");
+      log.severe("default unit size does not match any menu item");
     }
     unitSizeMenu.add(radioItem125);
     unitSizeMenu.add(radioItem100);

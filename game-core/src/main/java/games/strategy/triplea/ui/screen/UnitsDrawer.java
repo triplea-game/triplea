@@ -11,7 +11,6 @@ import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.prefs.Preferences;
 
 import games.strategy.engine.data.GameData;
@@ -112,7 +111,7 @@ public class UnitsDrawer implements IDrawable {
         uiContext.getUnitImageFactory().getImage(type, owner, damaged > 0 || bombingUnitDamage > 0, disabled);
 
     if (!img.isPresent() && !uiContext.isShutDown()) {
-      log.log(Level.SEVERE, "MISSING IMAGE (this unit or image will be invisible): " + type);
+      log.severe("MISSING IMAGE (this unit or image will be invisible): " + type);
     }
 
     if (img.isPresent() && enabledFlags) {

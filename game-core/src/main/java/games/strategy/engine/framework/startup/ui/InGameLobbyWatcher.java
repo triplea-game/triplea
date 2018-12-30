@@ -237,7 +237,7 @@ public class InGameLobbyWatcher {
                 + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
                 + "The server tried to connect to your external ip: " + addressUsed;
             if (HeadlessGameServer.headless()) {
-              log.log(Level.SEVERE, message);
+              log.severe(message);
               ExitStatus.FAILURE.exit();
             }
             final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
