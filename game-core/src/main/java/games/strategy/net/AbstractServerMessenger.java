@@ -188,18 +188,61 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     }
   }
 
-  private void scheduleUsernameUnmuteAt(final String username, final Instant checkTime) {
+  private void scheduleUsernameUnmuteAt(final String username, final Instant expires) {
     final Timer unmuteUsernameTimer = new Timer("Username unmute timer");
     unmuteUsernameTimer.schedule(
-        getUsernameUnmuteTask(username),
-        Math.max(0, MILLIS.between(Instant.now(), checkTime)));
+        newUnmuteTimerTask(() -> isUsernameMutedInBackingStore(username), () -> liveMutedUsernames.remove(username)),
+        Math.max(0, MILLIS.between(Instant.now(), expires)));
   }
 
-  private void scheduleMacUnmuteAt(final String mac, final Instant checkTime) {
+  /**
+   * Returns {@code true} if the user associated with the specified username is muted according to the backing store
+   * (e.g. a database); otherwise {@code false}.
+   *
+   * <p>
+   * Subclasses may override and are not required to call the superclass implementation. This implementation returns
+   * {@code false} indicating the user is not currently muted.
+   * </p>
+   *
+   * @param username The username of the user.
+   */
+  protected boolean isUsernameMutedInBackingStore(final String username) {
+    return false;
+  }
+
+  private TimerTask newUnmuteTimerTask(final BooleanSupplier isUserMuted, final Runnable unmuteUser) {
+    return new TimerTask() {
+      @Override
+      public void run() {
+        if (!isUserMuted.getAsBoolean()) {
+          synchronized (cachedListLock) {
+            unmuteUser.run();
+          }
+        }
+      }
+    };
+  }
+
+  private void scheduleMacUnmuteAt(final String mac, final Instant expires) {
     final Timer unmuteMacTimer = new Timer("Mac unmute timer");
     unmuteMacTimer.schedule(
-        getMacUnmuteTask(mac),
-        Math.max(0, MILLIS.between(Instant.now(), checkTime)));
+        newUnmuteTimerTask(() -> isMacMutedInBackingStore(mac), () -> liveMutedMacAddresses.remove(mac)),
+        Math.max(0, MILLIS.between(Instant.now(), expires)));
+  }
+
+  /**
+   * Returns {@code true} if the user associated with the specified MAC is muted according to the backing store (e.g. a
+   * database); otherwise {@code false}.
+   *
+   * <p>
+   * Subclasses may override and are not required to call the superclass implementation. This implementation returns
+   * {@code false} indicating the user is not currently muted.
+   * </p>
+   *
+   * @param mac The MAC of the user.
+   */
+  protected boolean isMacMutedInBackingStore(final String mac) {
+    return false;
   }
 
   /**
@@ -348,17 +391,21 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
       if (expires != null) {
         final Timer unbanUsernameTimer = new Timer("Username unban timer");
         unbanUsernameTimer.schedule(
-            new TimerTask() {
-              @Override
-              public void run() {
-                synchronized (cachedListLock) {
-                  miniBannedUsernames.remove(username);
-                }
-              }
-            },
+            newUnbanTimerTask(() -> miniBannedUsernames.remove(username)),
             Math.max(0, MILLIS.between(Instant.now(), expires)));
       }
     }
+  }
+
+  private TimerTask newUnbanTimerTask(final Runnable unbanUser) {
+    return new TimerTask() {
+      @Override
+      public void run() {
+        synchronized (cachedListLock) {
+          unbanUser.run();
+        }
+      }
+    };
   }
 
   private final List<String> miniBannedIpAddresses = new ArrayList<>();
@@ -379,14 +426,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
       if (expires != null) {
         final Timer unbanIpTimer = new Timer("IP unban timer");
         unbanIpTimer.schedule(
-            new TimerTask() {
-              @Override
-              public void run() {
-                synchronized (cachedListLock) {
-                  miniBannedIpAddresses.remove(ip);
-                }
-              }
-            },
+            newUnbanTimerTask(() -> miniBannedIpAddresses.remove(ip)),
             Math.max(0, MILLIS.between(Instant.now(), expires)));
       }
     }
@@ -410,14 +450,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
       if (expires != null) {
         final Timer unbanMacTimer = new Timer("Mac unban timer");
         unbanMacTimer.schedule(
-            new TimerTask() {
-              @Override
-              public void run() {
-                synchronized (cachedListLock) {
-                  miniBannedMacAddresses.remove(mac);
-                }
-              }
-            },
+            newUnbanTimerTask(() -> miniBannedMacAddresses.remove(mac)),
             Math.max(0, MILLIS.between(Instant.now(), expires)));
       }
     }
@@ -597,61 +630,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
         }
       }
     }
-  }
-
-  private TimerTask getUsernameUnmuteTask(final String username) {
-    return newUnmuteTimerTask(
-        () -> isUsernameMutedInBackingStore(username),
-        () -> liveMutedUsernames.remove(username));
-  }
-
-  /**
-   * Returns {@code true} if the user associated with the specified username is muted according to the backing store
-   * (e.g. a database); otherwise {@code false}.
-   *
-   * <p>
-   * Subclasses may override and are not required to call the superclass implementation. This implementation returns
-   * {@code false} indicating the user is not currently muted.
-   * </p>
-   *
-   * @param username The username of the user.
-   */
-  protected boolean isUsernameMutedInBackingStore(final String username) {
-    return false;
-  }
-
-  private TimerTask newUnmuteTimerTask(final BooleanSupplier isUserMuted, final Runnable unmuteUser) {
-    return new TimerTask() {
-      @Override
-      public void run() {
-        if (!isUserMuted.getAsBoolean()) {
-          synchronized (cachedListLock) {
-            unmuteUser.run();
-          }
-        }
-      }
-    };
-  }
-
-  private TimerTask getMacUnmuteTask(final String mac) {
-    return newUnmuteTimerTask(
-        () -> isMacMutedInBackingStore(mac),
-        () -> liveMutedMacAddresses.remove(mac));
-  }
-
-  /**
-   * Returns {@code true} if the user associated with the specified MAC is muted according to the backing store (e.g. a
-   * database); otherwise {@code false}.
-   *
-   * <p>
-   * Subclasses may override and are not required to call the superclass implementation. This implementation returns
-   * {@code false} indicating the user is not currently muted.
-   * </p>
-   *
-   * @param mac The MAC of the user.
-   */
-  protected boolean isMacMutedInBackingStore(final String mac) {
-    return false;
   }
 
   @Override
