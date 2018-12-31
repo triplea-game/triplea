@@ -95,7 +95,7 @@ public final class Properties implements Constants {
   }
 
   /**
-   * Restrict the number of units that can be placed at a factory.
+   * Indicates the number of units that can be placed at a factory is restricted.
    */
   public static boolean getPlacementRestrictedByFactory(final GameData data) {
     return data.getProperties().get(PLACEMENT_RESTRICTED_BY_FACTORY, false);
@@ -137,7 +137,7 @@ public final class Properties implements Constants {
   }
 
   /**
-   * Are AA casualties chosen randomly.
+   * Indicates AA dice for each type of aircraft are rolled separately.
    */
   public static boolean getRollAaIndividually(final GameData data) {
     return data.getProperties().get(ROLL_AA_INDIVIDUALLY, false);

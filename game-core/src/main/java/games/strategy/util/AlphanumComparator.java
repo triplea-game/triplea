@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
+ * "Smart" alphanumeric comparator. Treats sequences of digit characters as numeric values to produce a more expected
+ * sort order. For example, consider the strings {@code "foo9bar"} and {@code "foo10bar"}. Using a natural order
+ * comparator, the second string would be sorted before the first. However, using this comparator, the first string is
+ * sorted before the second.
+ *
+ * <p>
  * This is an updated version with enhancements made by Daniel Migowski, Andre Bogus, and David Koelle.
- * To convert to use Templates (Java 1.5+):
- * - Change "implements Comparator" to "implements Comparator&lt;String>"
- * - Change "compare(Object o1, Object o2)" to "compare(String s1, String s2)"
- * - Remove the type checking and casting in compare().
- * To use this class:
- * Use the static "sort" method from the java.tools.Collections class:
- * Collections.sort(your list, new AlphanumComparator());
+ * </p>
  */
 public class AlphanumComparator implements Comparator<String>, Serializable {
   private static final long serialVersionUID = 2885360470032673881L;

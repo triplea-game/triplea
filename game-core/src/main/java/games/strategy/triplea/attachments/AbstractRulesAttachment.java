@@ -351,7 +351,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 
   /**
    * Validate that all listed territories actually exist. Will return an empty list of territories if sent a list that
-   * is empty or contains only a "" string.
+   * is empty or contains only an empty/{@code null} string.
    */
   public Set<Territory> getListedTerritories(final String[] list, final boolean testFirstItemForCount,
       final boolean mustSetTerritoryCount) {
