@@ -204,18 +204,25 @@ public final class LobbyMenu extends JMenuBar {
       final @Nullable String hashedMacAddress = showInputDialog(
           "Enter the hashed Mac Address that you want to ban from the lobby.\n\n"
               + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
-      if (Strings.isNullOrEmpty(hashedMacAddress)) {
-        return;
+      if (validateHashedMacAddress(hashedMacAddress)) {
+        showTimespanDialog(
+            "Please consult other admins before banning longer than 1 day.",
+            date -> getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, date));
       }
-      if (!MacFinder.isValidHashedMacAddress(hashedMacAddress)) {
-        showErrorDialog("The hashed Mac Address you entered is invalid.", "Invalid Hashed Mac");
-        return;
-      }
-      showTimespanDialog(
-          "Please consult other admins before banning longer than 1 day.",
-          date -> getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, date));
     });
     parentMenu.add(menuItem);
+  }
+
+  private boolean validateHashedMacAddress(final @Nullable String hashedMacAddress) {
+    if (Strings.isNullOrEmpty(hashedMacAddress)) {
+      // user canceled operation
+      return false;
+    } else if (!MacFinder.isValidHashedMacAddress(hashedMacAddress)) {
+      showErrorDialog("The hashed Mac Address you entered is invalid.", "Invalid Hashed Mac");
+      return false;
+    }
+
+    return true;
   }
 
   private void addUnbanUsernameMenuItem(final JMenu parentMenu) {
@@ -235,14 +242,9 @@ public final class LobbyMenu extends JMenuBar {
       final @Nullable String hashedMacAddress = showInputDialog(
           "Enter the hashed Mac Address that you want to unban from the lobby.\n\n"
               + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
-      if (Strings.isNullOrEmpty(hashedMacAddress)) {
-        return;
+      if (validateHashedMacAddress(hashedMacAddress)) {
+        getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, Date.from(Instant.EPOCH));
       }
-      if (!MacFinder.isValidHashedMacAddress(hashedMacAddress)) {
-        showErrorDialog("The hashed Mac Address you entered is invalid.", "Invalid Hashed Mac");
-        return;
-      }
-      getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, Date.from(Instant.EPOCH));
     });
     parentMenu.add(menuItem);
   }
