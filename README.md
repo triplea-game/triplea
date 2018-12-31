@@ -32,11 +32,9 @@ TripleA is an open source gaming community, free to play, 100% open source and v
 - Forums Ops: https://github.com/triplea-game/triplea/tree/master/docs/admin#nodebb-forums
 - Dice Server (TODO): https://github.com/triplea-game/triplea/tree/master/docs/admin#the-dice-server
 
-
-
 ## License
 
-Copyright (C) 2001-2018 TripleA contributors.
+Copyright (C) 2001-2019 TripleA contributors.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
