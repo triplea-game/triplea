@@ -70,9 +70,6 @@ public class Vault {
     channelMessenger.unregisterChannelSubscriber(remoteVault, VAULT_CHANNEL);
   }
 
-  // serialize secret key as byte array to
-  // preserve jdk 1.4 to 1.5 compatability
-  // they should be compatable, but we are getting errors with serializing secret keys
   private SecretKey bytesToKey(final byte[] bytes) {
     try {
       final DESKeySpec spec = new DESKeySpec(bytes);

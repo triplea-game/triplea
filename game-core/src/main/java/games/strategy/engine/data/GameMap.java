@@ -34,7 +34,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   private final Map<Territory, Set<Territory>> connections = new HashMap<>();
   // for fast lookup based on the string name of the territory
   private final Map<String, Territory> territoryLookup = new HashMap<>();
-  // nil if the map is not grid-based
+  // null if the map is not grid-based
   // otherwise, gridDimensions.length is the number of dimensions, and each element is the size of a dimension
   private int[] gridDimensions = null;
 

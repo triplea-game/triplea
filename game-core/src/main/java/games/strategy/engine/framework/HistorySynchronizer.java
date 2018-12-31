@@ -13,7 +13,7 @@ import games.strategy.engine.history.EventChild;
  * this class can be used to display a history tree to the user.
  */
 public class HistorySynchronizer {
-  // Note the GameData here and the game are not the same we are keeping gameData in synch with the history of the game
+  // Note the GameData here and the game are not the same we are keeping gameData in sync with the history of the game
   // by listening for changes we do this because our data can change depending where in the history we are we want to be
   // able to do this without changing the data for the game
   private final GameData gameData;
@@ -103,7 +103,7 @@ public class HistorySynchronizer {
 
   /**
    * Serializes the object and then deserializes it, resolving object references into gameData. Note the the history we
-   * are synching may refer to a different game data than the GaneData held by the IGame. A clone is made so that we can
+   * are syncing may refer to a different game data than the GaneData held by the IGame. A clone is made so that we can
    * walk up and down the history without changing the game.
    */
   private Object translateIntoMyData(final Object msg) {

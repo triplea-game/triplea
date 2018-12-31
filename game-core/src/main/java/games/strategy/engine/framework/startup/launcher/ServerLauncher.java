@@ -283,7 +283,7 @@ public class ServerLauncher extends AbstractLauncher {
       serverReady.countDownAll();
       return;
     }
-    // if we loose a connection to a player, shut down the game (after saving) and go back to the main screen
+    // if we lose a connection to a player, shut down the game (after saving) and go back to the main screen
     if (serverGame.getPlayerManager().isPlaying(node)) {
       if (serverGame.isGameSequenceRunning()) {
         saveAndEndGame(node);

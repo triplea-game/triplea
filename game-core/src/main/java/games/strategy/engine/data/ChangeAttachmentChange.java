@@ -25,9 +25,9 @@ public class ChangeAttachmentChange extends Change {
   /**
    * Initializes a new instance of the ChangeAttachmentChange class.
    *
-   * @param attachment An attachment object which we will update via reflection.
-   * @param newValue The new value for the property
-   * @param property The property by String name.
+   * @param attachment The attachment to be updated.
+   * @param newValue The new value for the property.
+   * @param property The property name.
    */
   public ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property) {
     checkNotNull(attachment, "null attachment; newValue: " + newValue + ", property: " + property);
