@@ -14,14 +14,11 @@ import org.apache.http.impl.client.HttpClients;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
-import lombok.extern.java.Log;
-
 /**
  * Provides methods to download files via HTTP.
  *
  * @deprecated Use either {@code ContentReader} or {@code DownloadLengthReader} instead.
  */
-@Log
 @Deprecated
 // TODO: testing, break up DownloadUtilsTest to test this component individually from DownloadUtils.
 public final class DownloadUtils {
