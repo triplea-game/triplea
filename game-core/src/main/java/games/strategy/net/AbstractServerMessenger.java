@@ -157,7 +157,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   @Override
-  public void notifyUsernameMutingOfPlayer(final String username, final Instant muteExpires) {
+  public void notifyUsernameMutingOfPlayer(final String username, final @Nullable Instant muteExpires) {
     synchronized (cachedListLock) {
       if (!liveMutedUsernames.contains(username)) {
         liveMutedUsernames.add(username);
@@ -177,7 +177,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   @Override
-  public void notifyMacMutingOfPlayer(final String mac, final Instant muteExpires) {
+  public void notifyMacMutingOfPlayer(final String mac, final @Nullable Instant muteExpires) {
     synchronized (cachedListLock) {
       if (!liveMutedMacAddresses.contains(mac)) {
         liveMutedMacAddresses.add(mac);
@@ -383,7 +383,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   @Override
-  public void notifyUsernameMiniBanningOfPlayer(final String username, final Instant expires) {
+  public void notifyUsernameMiniBanningOfPlayer(final String username, final @Nullable Instant expires) {
     synchronized (cachedListLock) {
       if (!miniBannedUsernames.contains(username)) {
         miniBannedUsernames.add(username);
@@ -418,7 +418,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   @Override
-  public void notifyIpMiniBanningOfPlayer(final String ip, final Instant expires) {
+  public void notifyIpMiniBanningOfPlayer(final String ip, final @Nullable Instant expires) {
     synchronized (cachedListLock) {
       if (!miniBannedIpAddresses.contains(ip)) {
         miniBannedIpAddresses.add(ip);
@@ -442,7 +442,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   @Override
-  public void notifyMacMiniBanningOfPlayer(final String mac, final Instant expires) {
+  public void notifyMacMiniBanningOfPlayer(final String mac, final @Nullable Instant expires) {
     synchronized (cachedListLock) {
       if (!miniBannedMacAddresses.contains(mac)) {
         miniBannedMacAddresses.add(mac);

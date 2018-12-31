@@ -39,11 +39,29 @@ public interface IServerMessenger extends IMessenger {
    */
   Set<INode> getNodes();
 
-  void notifyIpMiniBanningOfPlayer(String ip, Instant expires);
+  /**
+   * Notifies the server that the specified IP address has been banned until the specified instant.
+   *
+   * @param ip The IP address to ban.
+   * @param expires The time at which the ban expires or {@code null} if the ban is indefinite.
+   */
+  void notifyIpMiniBanningOfPlayer(String ip, @Nullable Instant expires);
 
-  void notifyMacMiniBanningOfPlayer(String mac, Instant expires);
+  /**
+   * Notifies the server that the specified hashed MAC address has been banned until the specified instant.
+   *
+   * @param mac The hashed MAC address to ban.
+   * @param expires The time at which the ban expires or {@code null} if the ban is indefinite.
+   */
+  void notifyMacMiniBanningOfPlayer(String mac, @Nullable Instant expires);
 
-  void notifyUsernameMiniBanningOfPlayer(String username, Instant expires);
+  /**
+   * Notifies the server that the specified username has been banned until the specified instant.
+   *
+   * @param username The username to ban.
+   * @param expires The time at which the ban expires or {@code null} if the ban is indefinite.
+   */
+  void notifyUsernameMiniBanningOfPlayer(String username, @Nullable Instant expires);
 
   /**
    * Returns the hashed MAC address for the user with the specified name or {@code null} if unknown.
@@ -51,9 +69,21 @@ public interface IServerMessenger extends IMessenger {
   @Nullable
   String getPlayerMac(String name);
 
-  void notifyUsernameMutingOfPlayer(String username, Instant muteExpires);
+  /**
+   * Notifies the server that the specified username has been muted until the specified instant.
+   *
+   * @param username The username to mute.
+   * @param muteExpires The time at which the mute expires or {@code null} if the mute is indefinite.
+   */
+  void notifyUsernameMutingOfPlayer(String username, @Nullable Instant muteExpires);
 
-  void notifyMacMutingOfPlayer(String mac, Instant muteExpires);
+  /**
+   * Notifies the server that the specified hashed MAC address has been muted until the specified instant.
+   *
+   * @param mac The hashed MAC address to mute.
+   * @param muteExpires The time at which the mute expires or {@code null} if the mute is indefinite.
+   */
+  void notifyMacMutingOfPlayer(String mac, @Nullable Instant muteExpires);
 
   boolean isUsernameMiniBanned(String username);
 
