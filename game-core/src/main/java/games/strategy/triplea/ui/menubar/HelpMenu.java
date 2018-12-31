@@ -305,7 +305,7 @@ public final class HelpMenu extends JMenu {
         + "<br>"
         + "<b>License</b><br>"
         + "<br>"
-        + "Copyright (C) 2001-2018 TripleA contributors.<br>"
+        + "Copyright (C) 2001-2019 TripleA contributors.<br>"
         + "<br>"
         + "This program is free software: you can redistribute it and/or modify<br>"
         + "it under the terms of the GNU General Public License as published by<br>"
