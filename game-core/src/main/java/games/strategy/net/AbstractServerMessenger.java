@@ -1,7 +1,6 @@
 package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.time.temporal.ChronoUnit.MILLIS;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -12,6 +11,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -192,7 +192,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     final Timer unmuteUsernameTimer = new Timer("Username unmute timer");
     unmuteUsernameTimer.schedule(
         newUnmuteTimerTask(() -> isUsernameMutedInBackingStore(username), () -> liveMutedUsernames.remove(username)),
-        Math.max(0, MILLIS.between(Instant.now(), expires)));
+        millisBetweenNowAnd(expires));
   }
 
   /**
@@ -223,11 +223,15 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     };
   }
 
+  private static long millisBetweenNowAnd(final Instant end) {
+    return Math.max(0, ChronoUnit.MILLIS.between(Instant.now(), end));
+  }
+
   private void scheduleMacUnmuteAt(final String mac, final Instant expires) {
     final Timer unmuteMacTimer = new Timer("Mac unmute timer");
     unmuteMacTimer.schedule(
         newUnmuteTimerTask(() -> isMacMutedInBackingStore(mac), () -> liveMutedMacAddresses.remove(mac)),
-        Math.max(0, MILLIS.between(Instant.now(), expires)));
+        millisBetweenNowAnd(expires));
   }
 
   /**
@@ -392,7 +396,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
         final Timer unbanUsernameTimer = new Timer("Username unban timer");
         unbanUsernameTimer.schedule(
             newUnbanTimerTask(() -> miniBannedUsernames.remove(username)),
-            Math.max(0, MILLIS.between(Instant.now(), expires)));
+            millisBetweenNowAnd(expires));
       }
     }
   }
@@ -427,7 +431,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
         final Timer unbanIpTimer = new Timer("IP unban timer");
         unbanIpTimer.schedule(
             newUnbanTimerTask(() -> miniBannedIpAddresses.remove(ip)),
-            Math.max(0, MILLIS.between(Instant.now(), expires)));
+            millisBetweenNowAnd(expires));
       }
     }
   }
@@ -451,7 +455,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
         final Timer unbanMacTimer = new Timer("Mac unban timer");
         unbanMacTimer.schedule(
             newUnbanTimerTask(() -> miniBannedMacAddresses.remove(mac)),
-            Math.max(0, MILLIS.between(Instant.now(), expires)));
+            millisBetweenNowAnd(expires));
       }
     }
   }
