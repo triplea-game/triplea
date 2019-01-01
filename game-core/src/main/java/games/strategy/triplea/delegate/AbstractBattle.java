@@ -2,23 +2,29 @@ package games.strategy.triplea.delegate;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
+import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 abstract class AbstractBattle implements IBattle {
@@ -80,6 +86,39 @@ abstract class AbstractBattle implements IBattle {
       }
     }
     return dependentUnits;
+  }
+
+  void clearTransportedBy(final IDelegateBridge bridge) {
+    // Clear the transported_by for successfully off loaded units
+    final Collection<Unit> transports = CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport());
+    if (!transports.isEmpty()) {
+      final CompositeChange change = new CompositeChange();
+      final Collection<Unit> dependents = getTransportDependents(transports);
+      if (!dependents.isEmpty()) {
+        for (final Unit unit : dependents) {
+          // clear the loaded by ONLY for Combat unloads. NonCombat unloads are handled elsewhere.
+          if (Matches.unitWasUnloadedThisTurn().test(unit)) {
+            change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
+          }
+        }
+        bridge.addChange(change);
+      }
+    }
+  }
+
+  /**
+   * Figure out what units a transport is transporting and has to unloaded.
+   */
+  Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
+    if (headless) {
+      return Collections.emptyList();
+    } else if (targets.stream().noneMatch(Matches.unitCanTransport())) {
+      return new ArrayList<>();
+    }
+    return targets.stream()
+        .map(TransportTracker::transportingAndUnloaded)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 
   protected void removeUnitsThatNoLongerExist() {
