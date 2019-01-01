@@ -20,7 +20,6 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.lobby.common.IRemoteHostUtils;
 import org.triplea.lobby.common.LobbyConstants;
@@ -76,17 +75,23 @@ public class InGameLobbyWatcher {
   private final Object mutex = new Object();
   private final IConnectionChangeListener connectionChangeListener;
   private final IMessengerErrorListener messengerErrorListener;
+  private final boolean headless;
 
   /**
-   * Reads SystemProperties to see if we should connect to a lobby server.
+   * Reads system properties to see if we should connect to a lobby server.
    *
    * <p>
    * After creation, those properties are cleared, since we should watch the first start game.
    * </p>
    *
+   * @param parent The parent component for any error dialogs displayed to the user or {@code null} if this is a
+   *        headless server.
+   *
    * @return null if no watcher should be created
    */
-  public static InGameLobbyWatcher newInGameLobbyWatcher(final IServerMessenger gameMessenger, final JComponent parent,
+  public static InGameLobbyWatcher newInGameLobbyWatcher(
+      final IServerMessenger gameMessenger,
+      final @Nullable JComponent parent,
       final InGameLobbyWatcher oldWatcher) {
     final @Nullable String host = getLobbySystemProperty(LOBBY_HOST);
     final @Nullable String port = getLobbySystemProperty(LOBBY_PORT);
@@ -158,18 +163,23 @@ public class InGameLobbyWatcher {
     }
   }
 
-  InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger,
-      final IServerMessenger serverMessenger, final JComponent parent, final InGameLobbyWatcher oldWatcher) {
+  private InGameLobbyWatcher(
+      final IMessenger messenger,
+      final IRemoteMessenger remoteMessenger,
+      final IServerMessenger serverMessenger,
+      final @Nullable JComponent parent,
+      final InGameLobbyWatcher oldWatcher) {
     this.messenger = messenger;
     this.remoteMessenger = remoteMessenger;
     this.serverMessenger = serverMessenger;
+    this.headless = (parent == null);
     final String password = System.getProperty(SERVER_PASSWORD);
     final boolean passworded = password != null && password.length() > 0;
     final Instant startDateTime = (oldWatcher == null || oldWatcher.gameDescription == null
         || oldWatcher.gameDescription.getStartDateTime() == null) ? Instant.now()
             : oldWatcher.gameDescription.getStartDateTime();
     final int playerCount = (oldWatcher == null || oldWatcher.gameDescription == null)
-        ? (HeadlessGameServer.headless() ? 0 : 1)
+        ? (headless ? 0 : 1)
         : oldWatcher.gameDescription.getPlayerCount();
     final GameDescription.GameStatus gameStatus =
         (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getStatus() == null)
@@ -192,7 +202,7 @@ public class InGameLobbyWatcher {
         .passworded(passworded)
         .engineVersion(ClientContext.engineVersion().toString())
         .gameVersion("0")
-        .botSupportEmail(HeadlessGameServer.headless() ? System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "") : "")
+        .botSupportEmail(headless ? System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "") : "")
         .build();
     final ILobbyGameController controller =
         (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
@@ -236,7 +246,7 @@ public class InGameLobbyWatcher {
                 + " to your local ip address.\r\n"
                 + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
                 + "The server tried to connect to your external ip: " + addressUsed;
-            if (HeadlessGameServer.headless()) {
+            if (headless) {
               log.severe(message);
               ExitStatus.FAILURE.exit();
             }
@@ -270,7 +280,7 @@ public class InGameLobbyWatcher {
 
   protected void updatePlayerCount() {
     synchronized (mutex) {
-      gameDescription.setPlayerCount(serverMessenger.getNodes().size() - (HeadlessGameServer.headless() ? 1 : 0));
+      gameDescription.setPlayerCount(serverMessenger.getNodes().size() - (headless ? 1 : 0));
       postUpdate();
     }
   }
