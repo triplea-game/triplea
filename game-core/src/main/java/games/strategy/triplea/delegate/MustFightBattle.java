@@ -2302,21 +2302,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  /**
-   * Figure out what units a transport is transporting and has to unloaded.
-   */
-  private Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
-    if (headless) {
-      return Collections.emptyList();
-    } else if (targets.stream().noneMatch(Matches.unitCanTransport())) {
-      return new ArrayList<>();
-    }
-    return targets.stream()
-        .map(TransportTracker::transportingAndUnloaded)
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
-  }
-
   private void remove(final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite,
       final Boolean defenderDying) {
     if (killed.size() == 0) {
@@ -2469,6 +2454,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (headless) {
       return;
     }
+
     // do we need to change ownership
     if (attackingUnits.stream().anyMatch(Matches.unitIsNotAir())) {
       if (Matches.isTerritoryEnemyAndNotUnownedWater(attacker, gameData).test(battleSite)) {
@@ -2479,43 +2465,27 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     } else {
       battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
     }
-    // Clear the transported_by for successfully off loaded units
-    final Collection<Unit> transports = CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport());
-    if (!transports.isEmpty()) {
-      final CompositeChange change = new CompositeChange();
-      final Collection<Unit> dependents = getTransportDependents(transports);
-      if (!dependents.isEmpty()) {
-        for (final Unit unit : dependents) {
-          // clear the loaded by ONLY for Combat unloads. NonCombat unloads are handled elsewhere.
-          if (Matches.unitWasUnloadedThisTurn().test(unit)) {
-            change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
-          }
-        }
-        bridge.addChange(change);
-      }
-    }
+
+    clearTransportedBy(bridge);
     bridge.getHistoryWriter().addChildToEvent(attacker.getName() + " win", new ArrayList<>(attackingUnits));
     showCasualties(bridge);
-    if (!headless) {
-      battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender, attackerLostTuv,
-          defenderLostTuv, battleResultDescription, new BattleResults(this, gameData));
-    }
-    if (!headless) {
-      if (Matches.territoryIsWater().test(battleSite)) {
-        if (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir())) {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
-              attacker);
-        } else {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL,
-              attacker);
-        }
+    battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender, attackerLostTuv, defenderLostTuv,
+        battleResultDescription, new BattleResults(this, gameData));
+
+    if (Matches.territoryIsWater().test(battleSite)) {
+      if (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir())) {
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
+            attacker);
       } else {
-        // no sounds for a successful land battle, because land battle means we are going to capture a territory, and we
-        // have capture sounds for that
-        if (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir())) {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
-              attacker);
-        }
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL,
+            attacker);
+      }
+    } else {
+      // no sounds for a successful land battle, because land battle means we are going to capture a territory, and we
+      // have capture sounds for that
+      if (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir())) {
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
+            attacker);
       }
     }
   }
