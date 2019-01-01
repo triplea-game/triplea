@@ -97,13 +97,13 @@ public class HeadlessServerMessenger implements IServerMessenger {
   }
 
   @Override
-  public void notifyIpMiniBanningOfPlayer(final String ip, final Instant expires) {}
+  public void notifyIpMiniBanningOfPlayer(final String ip, final @Nullable Instant expires) {}
 
   @Override
-  public void notifyMacMiniBanningOfPlayer(final String mac, final Instant expires) {}
+  public void notifyMacMiniBanningOfPlayer(final String mac, final @Nullable Instant expires) {}
 
   @Override
-  public void notifyUsernameMiniBanningOfPlayer(final String username, final Instant expires) {}
+  public void notifyUsernameMiniBanningOfPlayer(final String username, final @Nullable Instant expires) {}
 
   @Override
   public @Nullable String getPlayerMac(final String name) {
@@ -111,10 +111,10 @@ public class HeadlessServerMessenger implements IServerMessenger {
   }
 
   @Override
-  public void notifyUsernameMutingOfPlayer(final String username, final Instant muteExpires) {}
+  public void notifyUsernameMutingOfPlayer(final String username, final @Nullable Instant muteExpires) {}
 
   @Override
-  public void notifyMacMutingOfPlayer(final String mac, final Instant muteExpires) {}
+  public void notifyMacMutingOfPlayer(final String mac, final @Nullable Instant muteExpires) {}
 
   @Override
   public boolean isUsernameMiniBanned(final String username) {
