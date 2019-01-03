@@ -28,7 +28,6 @@ import lombok.extern.java.Log;
 /** Provides methods to download files via HTTP. */
 @Log
 @AllArgsConstructor
-// TODO: testing, break up DownloadUtilsTest to test this component individually from DownloadUtils.
 public final class ContentReader {
   private final Supplier<CloseableHttpClient> httpClientFactory;
 
