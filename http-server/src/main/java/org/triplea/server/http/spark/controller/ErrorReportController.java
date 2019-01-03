@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import org.triplea.http.client.error.report.create.ErrorReport;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.server.reporting.error.ErrorReportRequest;
 
 import com.google.gson.Gson;
 
@@ -20,7 +21,7 @@ public class ErrorReportController implements Runnable {
 
   public static final String ERROR_REPORT_PATH = "/error-report";
 
-  private final Function<ErrorReport, ErrorReportResponse> errorReportIngestion;
+  private final Function<ErrorReportRequest, ErrorReportResponse> errorReportIngestion;
 
   @Override
   public void run() {
@@ -28,12 +29,15 @@ public class ErrorReportController implements Runnable {
   }
 
   String uploadErrorReport(final Request req) {
-    final ErrorReport errorReport = readErrorReport(req);
+    final ErrorReportRequest errorReport = readErrorReport(req);
     final ErrorReportResponse result = errorReportIngestion.apply(errorReport);
     return new Gson().toJson(result);
   }
 
-  private static ErrorReport readErrorReport(final Request request) {
-    return new Gson().fromJson(request.body(), ErrorReport.class);
+  private static ErrorReportRequest readErrorReport(final Request request) {
+    return ErrorReportRequest.builder()
+        .errorReport(new Gson().fromJson(request.body(), ErrorReport.class))
+        .clientIp(request.ip())
+        .build();
   }
 }

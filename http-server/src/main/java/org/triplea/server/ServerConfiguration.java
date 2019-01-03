@@ -1,7 +1,7 @@
 package org.triplea.server;
 
-import org.triplea.server.reporting.error.upload.ErrorUploadConfiguration;
-import org.triplea.server.reporting.error.upload.ErrorUploadStrategy;
+import org.triplea.server.reporting.error.ErrorUploadConfiguration;
+import org.triplea.server.reporting.error.ErrorUploadStrategy;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package org.triplea.server.reporting.error.upload;
+package org.triplea.server.reporting.error;
 
 import org.triplea.http.client.ServiceClient;
 import org.triplea.http.client.github.issues.GithubIssueClientFactory;
@@ -31,6 +31,7 @@ public class ErrorUploadConfiguration {
         .createIssueClient(createIssueClient)
         .requestAdapter(new ErrorReportRequestAdapter())
         .responseAdapter(new ErrorReportResponseAdapter())
+        .allowErrorReport(new ErrorReportGateKeeper())
         .build();
   }
 }
