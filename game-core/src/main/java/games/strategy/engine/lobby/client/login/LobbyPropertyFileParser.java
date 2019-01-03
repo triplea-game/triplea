@@ -2,19 +2,17 @@ package games.strategy.engine.lobby.client.login;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.yaml.snakeyaml.Yaml;
 
 import com.github.openjson.JSONArray;
 import com.github.openjson.JSONObject;
+import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.triplea.UrlConstants;
 import games.strategy.util.OpenJsonUtils;
 import games.strategy.util.Version;
 
@@ -45,9 +43,9 @@ class LobbyPropertyFileParser {
         .serverMessage((String) yamlProps.get("message"))
         .serverErrorMessage((String) yamlProps.get("error_message"))
         .httpServerUri(
-              Optional.ofNullable((String) yamlProps.get(YAML_HTTP_SERVER_URI))
-                  .map(URI::create)
-                  .orElse(null))
+            Optional.ofNullable((String) yamlProps.get(YAML_HTTP_SERVER_URI))
+                .map(URI::create)
+                .orElse(null))
         .build();
   }
 

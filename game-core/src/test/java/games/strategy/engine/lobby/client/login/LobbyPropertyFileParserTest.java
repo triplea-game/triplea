@@ -3,10 +3,7 @@ package games.strategy.engine.lobby.client.login;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.io.File;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -116,7 +113,7 @@ class LobbyPropertyFileParserTest {
     String version;
 
     String toYaml() {
-      final String printVersion = (version == null) ? "" : "version: \"" + version + "\"";
+      final String printVersion = (version == null) ? "" : ("version: \"" + version + "\"");
       return String.format(
           "- %s: %s\n"
               + "  %s: %s\n"
