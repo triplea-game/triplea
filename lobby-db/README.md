@@ -1,66 +1,56 @@
-## lobby-db
+# lobby-db
 
-A project that contains the migration scripts for the lobby postgres database.
-
-
-
-### Prod Deployments
-
-We use [FlyWay](https://flywaydb.org/) to execute database changes. This means we do not change DB by hand,
-but instead check in the commands we wish to run and then deploy and run those commands
-with FlyWay.
+This component is responsible for:
+1. Creates a build artifact, a zip file, with DB migration files. This is eventually executed against
+   the production database to 'deploy' those changes and make them live.
+2. Support local development, provide tools and environment to run a DB locally (docker)
 
 
-- Production database changes are triggered by checking in
-  [flyway changes](https://github.com/triplea-game/triplea/tree/master/lobby-db/src/main/resources/db/migration)
-  followed by checking in an updated version number to infrastructure
-  [host_control.sh](https://github.com/triplea-game/infrastructure/blob/master/roles/host_control.sh)
+## Prod Deployments
 
-- Following that, when the [infastructure master branch](https://github.com/triplea-game/infrastructure/tree/master) 
-  is merged to [infrastructure prod branch](https://github.com/triplea-game/infrastructure/tree/prod), 
-  then production servers will see the live updates triggering this sequence:
-    - DB will download the flyway migration artifact created during travis builds
-    - flyway is executed which triggers the checked-in database updates
+We use [FlyWay](https://flywaydb.org/)
+  - DB is not updated 'by-hand', anything to be run is checked in to 'migration files'
 
-- By convention we keep the version number the same between the lobby binaries and the lobby-db binaries.
 
+### Making Production Changes
+- DB changes, are checked in to files here: [flyway migrations folder](https://github.com/triplea-game/triplea/tree/master/lobby-db/src/main/resources/db/migration)
+- Artifact build is automatically triggered on merge, which includes:
+   - [Travis](https://github.com/triplea-game/triplea/blob/master/.travis.yml) 
+     invokes [Gradle](https://github.com/triplea-game/triplea/blob/master/build.gradle) to build a zip file
+     of the flyway migration folder
+   - Travis then pushes that zip file to [Github releases](https://github.com/triplea-game/triplea/releases)
+
+Servers are 'listening' to the [infrastructure host_control.sh file](https://github.com/triplea-game/infrastructure/blob/master/roles/host_control.sh)
+on the  [infrastructure prod branch](https://github.com/triplea-game/infrastructure/tree/prod)
+ 
+Updating the lobby-db version on the control file will trigger servers to download that specific
+migrations zip file and then execute flyway (which then runs any new SQL files not yet run against the DB).
 
 
 ## Dev Setup
 
-
 ### pre-requirements:
-- Docker installed
-
-
-There is a Dockerfile in this project for building a lobby database image that can be used for development/testing.
+- Docker
+- `psql` (postgres-client) command 
 
 
 ### Usage
 
-
-Rough usage flow could look like this:
+A [Dockerfile](https://github.com/triplea-game/triplea/blob/master/lobby-db/Dockerfile) 
+with a lobby database image is used for development/testing. Convenience scripts are
+provided, a typical flow looks like this:
 
 ```
+      ## Create docker container
 $ ./build-docker.sh
+      ## Run docker Container
 $ ./run-docker.sh
-
-## This will open a CLI
+      ## Connect to running DB with `psql`
 $ ./connect_to_db.sh
-     ## show tables
-  ta_users#  \l
-    ## sample query
-  ta_users#  select 1 from dual;
-    ## quit
-  ta_users# \q
-
-## to clean up data:
+      ## Delete all data in DB
 $ ./drop_db.sh
-
-## run flyway migration to create tables,
-## this will pick up locally added flyway
-## migration files and can be used for 
-## local testing
+      ## Re-run fly migrations.
+      ## Includes any new in-development files.
 $ ./run_flyway.sh
 ```
 
