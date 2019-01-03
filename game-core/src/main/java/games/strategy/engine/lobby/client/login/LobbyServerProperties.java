@@ -29,7 +29,7 @@ public class LobbyServerProperties {
   /** The port the lobby is listening on. */
   @Nonnull private final Integer port;
 
-  /** URI the http lobby server. */
+  /** URI for the http lobby server. */
   @Nullable private final URI httpServerUri;
 
   @Nullable private final String serverErrorMessage;
