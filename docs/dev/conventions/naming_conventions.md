@@ -12,9 +12,13 @@
 
 - [snake_case](https://en.wikipedia.org/wiki/Snake_case) 
 - Use singular names, eg: `user` instead of `users`
-- Use `id` for primary key column name
-- Foreign key columns are named after the table the refer to, eg: `<table_name>.id`
-- Use spaces, no tabs
+- Favor using a PK column that is a number
+- Use `id` for the name of the primary key column
+   - Good: `user.id`
+   - Bad: `user.user_id`
+- Foreign key columns are named after the table and column they refer to, eg: `<table_name>_<column_name>`.
+  EG: `user_id` would reference the `id` column of the `user` table.
+- Spaces, no tabs
 - line continuations are 4 space indented
 - Line break on SQL keywords "select, join, where, having, group by, order by"
 
