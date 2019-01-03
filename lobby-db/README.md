@@ -29,7 +29,7 @@ migrations zip file and then execute flyway (which then runs any new SQL files n
 
 ## Dev Setup
 
-### pre-requirements:
+### Prerequisites
 - Docker
 - `psql` (postgres-client) command 
 
