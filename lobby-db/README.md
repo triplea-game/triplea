@@ -24,12 +24,6 @@ with FlyWay.
 - By convention we keep the version number the same between the lobby binaries and the lobby-db binaries.
 
 
-### FlyWay References
-
-- https://flywaydb.org/documentation
-- https://flywaydb.org/documentation/gradle/migrate
-- https://github.com/triplea-game/lobby
-
 
 ## Dev Setup
 
@@ -42,23 +36,36 @@ pre-requirements:
 There is a Dockerfile in this project for building a lobby database image that can be used for development/testing.
 
 
-### Build
-
-Build the lobby database image using the following command (run from this directory):
-
-```
-$ docker build --tag triplea/lobby-db:latest .
-```
-
-### Run
-
-Start a new lobby database container using the following command:
-
-```
-$ docker run -d --name=triplea-lobby-db -p 5432:5432 triplea/lobby-db
-```
-
 ### Usage
+
+
+Rough usage flow could look like this:
+
+```
+$ ./build-docker.sh
+$ ./run-docker.sh
+
+## This will open a CLI
+$ ./connect_to_db.sh
+     ## show tables
+  ta_users#  \l
+    ## sample query
+  ta_users#  select 1 from dual;
+    ## quit
+  ta_users# \q
+
+## to clean up data:
+$ ./drop_db.sh
+
+## run flyway migration to create tables,
+## this will pick up locally added flyway
+## migration files and can be used for 
+## local testing
+$ ./run_flyway.sh
+```
+
+
+## Connection Configuration
 
 A lobby server running on the same host as the lobby database container may connect to the database using the following properties:
 
@@ -69,23 +76,3 @@ Password | _&lt;any&gt;_ | The lobby database is configured with authentication 
 Host | `localhost` |
 Port | `5432` |
 
-Convenience scripts for executing common commands are included. You will need to install
-a postgres database first locally.
-
-
-Typical commands:
-```
-## drops+creates empty database (no tables)
-./drop_db.sh
-
-## runs flyway migrations (creates tables)
-./run_flyway.sh
-
-## util script to connect to a local DB
-./connect_to_db.sh
-
-## common psql commands
-\l  ## list databases
-\c ta_users   ## connect to 'ta_users' DB
-\d ## show tables
-```
