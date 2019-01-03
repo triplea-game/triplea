@@ -21,9 +21,9 @@
 EG:
 
 ```
-select * from banned_users bu
-join users u on bu.banned_users_id = u.id
-where bu.expires_on > now()
-   and bu.some_column = 'example';
+select * from user_ban ub
+join users u on u.id = ub.user_id
+where ub.expires_on > now()
+   and ub.some_column = 'example';
 ```
 
