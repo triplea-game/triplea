@@ -42,13 +42,11 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
     private DownloadLengthReader.DownloadLengthSupplier downloadLengthSupplier;
 
     @BeforeEach
-    @SuppressWarnings("deprecation")
     void setUp() {
       DownloadConfiguration.downloadLengthReader().downloadLengthsByUri.clear();
     }
 
     @AfterEach
-    @SuppressWarnings("deprecation")
     void tearDown() {
       DownloadConfiguration.downloadLengthReader().downloadLengthsByUri.clear();
     }
@@ -63,13 +61,11 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
       verify(downloadLengthSupplier).get(URI);
     }
 
-    @SuppressWarnings("deprecation")
     private Optional<Long> getDownloadLengthFromCache() {
       return DownloadConfiguration.downloadLengthReader().getDownloadLengthFromCache(URI, downloadLengthSupplier);
     }
 
     @Test
-    @SuppressWarnings("deprecation")
     void shouldUseCacheWhenUriPresentInCache() {
       DownloadConfiguration.downloadLengthReader().downloadLengthsByUri.put(URI, 42L);
 
@@ -80,7 +76,6 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
     void shouldNotUpdateCacheWhenSupplierProvidesEmptyValue() {
       when(downloadLengthSupplier.get(URI)).thenReturn(Optional.empty());
 
