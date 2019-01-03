@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -24,7 +25,7 @@ import games.strategy.util.Version;
 @ExtendWith(MockitoExtension.class)
 class LobbyServerPropertiesFetcherTest {
   @Mock
-  private LobbyLocationFileDownloader mockFileDownloader;
+  private Function<String, Optional<File>> mockFileDownloader;
 
   private LobbyServerPropertiesFetcher testObj;
 
@@ -33,7 +34,6 @@ class LobbyServerPropertiesFetcherTest {
     testObj = new LobbyServerPropertiesFetcher(mockFileDownloader);
   }
 
-  @ExtendWith(MockitoExtension.class)
   @Nested
   final class DownloadAndParseRemoteFileTest {
     /**
@@ -52,12 +52,12 @@ class LobbyServerPropertiesFetcherTest {
     private void givenHappyCase() throws Exception {
       final File temp = File.createTempFile("temp", "tmp");
       temp.deleteOnExit();
-      when(mockFileDownloader.download(TestData.url)).thenReturn(Optional.of(temp));
+      when(mockFileDownloader.apply(TestData.url)).thenReturn(Optional.of(temp));
     }
 
     @Test
     void throwsOnDownloadFailure() {
-      when(mockFileDownloader.download(TestData.url)).thenReturn(Optional.empty());
+      when(mockFileDownloader.apply(TestData.url)).thenReturn(Optional.empty());
 
       final Optional<LobbyServerProperties> result =
           testObj.downloadAndParseRemoteFile(TestData.url, TestData.version, (a, b) -> TestData.lobbyServerProperties);
@@ -66,7 +66,6 @@ class LobbyServerPropertiesFetcherTest {
     }
   }
 
-  @ExtendWith(MockitoExtension.class)
   @Nested
   final class GetTestOverridePropertiesTest {
     @Mock
