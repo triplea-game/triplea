@@ -11,8 +11,8 @@ import org.apache.http.impl.client.HttpClients;
  */
 public final class DownloadConfiguration {
 
-  private static ContentReader contentReader;
-  private static DownloadLengthReader downloadLengthReader;
+  private static final ContentReader contentReader;
+  private static final DownloadLengthReader downloadLengthReader;
 
   static {
     final Supplier<CloseableHttpClient> httpClientSupplier =
