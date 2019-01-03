@@ -1,10 +1,12 @@
 package games.strategy.engine.lobby.client.login;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.logging.Level;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -22,7 +24,7 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class LobbyServerPropertiesFetcher {
-  private final LobbyLocationFileDownloader fileDownloader;
+  private final Function<String, Optional<File>> fileDownloader;
 
   /**
    * Default constructor with default (prod) dependencies.
@@ -34,7 +36,7 @@ public final class LobbyServerPropertiesFetcher {
   }
 
   @VisibleForTesting
-  LobbyServerPropertiesFetcher(final LobbyLocationFileDownloader fileDownloader) {
+  LobbyServerPropertiesFetcher(final Function<String, Optional<File>> fileDownloader) {
     this.fileDownloader = fileDownloader;
   }
 
@@ -94,7 +96,6 @@ public final class LobbyServerPropertiesFetcher {
 
     final Version currentVersion = ClientContext.engineVersion();
 
-
     final Optional<LobbyServerProperties> lobbyProps = downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion,
         LobbyPropertyFileParser::parse);
 
@@ -105,7 +106,6 @@ public final class LobbyServerPropertiesFetcher {
     });
 
     return lobbyProps;
-
   }
 
   /**
@@ -122,9 +122,7 @@ public final class LobbyServerPropertiesFetcher {
       final String lobbyPropFileUrl,
       final Version currentVersion,
       final BiFunction<String, Version, LobbyServerProperties> propertyParser) {
-
-    return fileDownloader.download(lobbyPropFileUrl).map(downloadFile -> {
-
+    return fileDownloader.apply(lobbyPropFileUrl).map(downloadFile -> {
       try {
         final String yamlContent = new String(Files.readAllBytes(downloadFile.toPath()), StandardCharsets.UTF_8);
 
