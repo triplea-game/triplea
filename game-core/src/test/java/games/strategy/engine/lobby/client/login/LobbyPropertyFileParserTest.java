@@ -122,7 +122,7 @@ class LobbyPropertyFileParserTest {
 
 
     String toYaml() {
-      final String printVersion = (version == null) ? "" : "version: \"" + version + "\"\n";
+      final String printVersion = (version == null) ? "" : "version: \"" + version + "\"";
       return String.format(
           "- %s: %s\n"
               + "  %s: %s\n"
