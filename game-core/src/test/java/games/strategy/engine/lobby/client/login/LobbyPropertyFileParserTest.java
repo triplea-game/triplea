@@ -5,10 +5,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.io.Writer;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +48,7 @@ class LobbyPropertyFileParserTest {
    * straight forward 1:1
    */
   @Test
-  void parseWithSimpleCase() throws Exception {
+  void parseWithSimpleCase() {
     final TestProps testProps = new TestProps();
     testProps.host = TestData.host;
     testProps.port = TestData.port;
@@ -57,10 +57,10 @@ class LobbyPropertyFileParserTest {
     testProps.message = TestData.message;
     testProps.version = TestData.clientCurrentVersion;
 
-    final File testFile = newTempFile(testProps);
+    final String yamlContents = newYaml(testProps);
 
     final LobbyServerProperties result =
-        LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
+        LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));
     assertThat(result.getHost(), is(TestData.host));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.port)));
     assertThat(result.getHttpServerUri(), is(TestData.httpHostUri));
@@ -68,15 +68,10 @@ class LobbyPropertyFileParserTest {
     assertThat(result.getServerErrorMessage(), is(TestData.errorMessage));
   }
 
-  private static File newTempFile(final TestProps... testProps) throws Exception {
-    final File f = File.createTempFile("testing", ".tmp");
-    try (Writer writer = Files.newBufferedWriter(f.toPath(), StandardCharsets.UTF_8)) {
-      for (final TestProps testProp : Arrays.asList(testProps)) {
-        writer.write(testProp.toYaml());
-      }
-    }
-    f.deleteOnExit();
-    return f;
+  private static String newYaml(final TestProps... testProps) {
+    return Arrays.stream(testProps)
+        .map(TestProps::toYaml)
+        .collect(Collectors.joining("\n"));
   }
 
   /**
@@ -84,11 +79,11 @@ class LobbyPropertyFileParserTest {
    * line up and we get the expected lobby config back.
    */
   @Test
-  void checkVersionSelection() throws Exception {
-    final File testFile = newTempFile(testDataSet());
+  void checkVersionSelection() {
+    final String yamlContents = newYaml(testDataSet());
 
     final LobbyServerProperties result =
-        LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
+        LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));
 
     assertThat(result.getHost(), is(TestData.hostOther));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.portOther)));
@@ -119,7 +114,6 @@ class LobbyPropertyFileParserTest {
     String message;
     String errorMessage;
     String version;
-
 
     String toYaml() {
       final String printVersion = (version == null) ? "" : "version: \"" + version + "\"";

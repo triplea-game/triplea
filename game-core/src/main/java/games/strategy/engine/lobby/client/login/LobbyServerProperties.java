@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Strings;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -22,6 +23,7 @@ import lombok.Getter;
  */
 @Builder
 @Getter
+@EqualsAndHashCode
 public class LobbyServerProperties {
   /** The host address of the lobby, typically an IP address. */
   @Nonnull private final String host;

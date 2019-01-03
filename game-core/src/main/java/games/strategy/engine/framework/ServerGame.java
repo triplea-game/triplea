@@ -14,8 +14,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import org.triplea.game.server.HeadlessGameServer;
-
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -73,6 +71,7 @@ public class ServerGame extends AbstractGame {
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
   private InGameLobbyWatcherWrapper inGameLobbyWatcher;
   private boolean needToInitialize = true;
+  private final boolean headless;
   /**
    * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from
    * returning.
@@ -83,9 +82,14 @@ public class ServerGame extends AbstractGame {
    */
   private volatile boolean delegateExecutionStopped = false;
 
-  public ServerGame(final GameData data, final Set<IGamePlayer> localPlayers,
-      final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
+  public ServerGame(
+      final GameData data,
+      final Set<IGamePlayer> localPlayers,
+      final Map<String, INode> remotePlayerMapping,
+      final Messengers messengers,
+      final boolean headless) {
     super(data, localPlayers, remotePlayerMapping, messengers);
+    this.headless = headless;
     gameModifiedChannel = new IGameModifiedChannel() {
       @Override
       public void gameDataChanged(final Change change) {
@@ -348,7 +352,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSaveBefore(final IDelegate delegate) {
-    saveGame(AutoSaveFileUtils.getBeforeStepAutoSaveFile(delegate.getName(), HeadlessGameServer.headless()));
+    saveGame(AutoSaveFileUtils.getBeforeStepAutoSaveFile(delegate.getName(), headless));
   }
 
   @Override
@@ -424,7 +428,6 @@ public class ServerGame extends AbstractGame {
     // otherwise, the delegate will execute again.
     final boolean autoSaveThisDelegate = currentDelegate.getClass().isAnnotationPresent(AutoSave.class)
         && currentDelegate.getClass().getAnnotation(AutoSave.class).afterStepEnd();
-    final boolean headless = HeadlessGameServer.headless();
     if (autoSaveThisDelegate && currentStep.getName().endsWith("Move")) {
       final String stepName = currentStep.getName();
       // If we are headless we don't want to include the nation in the save game because that would make it too
