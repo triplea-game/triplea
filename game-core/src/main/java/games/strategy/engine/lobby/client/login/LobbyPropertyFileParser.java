@@ -27,11 +27,16 @@ import games.strategy.util.Version;
  */
 class LobbyPropertyFileParser {
 
-  @VisibleForTesting static final String YAML_HOST = "host";
-  @VisibleForTesting static final String YAML_PORT = "port";
-  @VisibleForTesting static final String YAML_HTTP_SERVER_URI = "http_server_uri";
-  @VisibleForTesting static final String YAML_MESSAGE = "message";
-  @VisibleForTesting static final String YAML_ERROR_MESSAGE = "error_message";
+  @VisibleForTesting
+  static final String YAML_HOST = "host";
+  @VisibleForTesting
+  static final String YAML_PORT = "port";
+  @VisibleForTesting
+  static final String YAML_HTTP_SERVER_URI = "http_server_uri";
+  @VisibleForTesting
+  static final String YAML_MESSAGE = "message";
+  @VisibleForTesting
+  static final String YAML_ERROR_MESSAGE = "error_message";
 
   public static LobbyServerProperties parse(final File file, final Version currentVersion) {
     try {
