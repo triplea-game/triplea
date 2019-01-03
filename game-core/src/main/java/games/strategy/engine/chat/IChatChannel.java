@@ -6,9 +6,9 @@ import games.strategy.net.INode;
 
 /**
  * Chat messages occur on this channel.
- * <p>
- * RMI warning: the ordering of methods cannot be changed, these methods will be invoked by method order number
- * </p>
+ *
+ * <p>RMI warning: the ordering of methods cannot be changed, these methods will be invoked by
+ * method order number
  */
 public interface IChatChannel extends IChannelSubscriber {
   // we get the sender from MessageContext
@@ -24,7 +24,8 @@ public interface IChatChannel extends IChannelSubscriber {
 
   void speakerTagUpdated(final INode node, final Tag tag);
 
-  // purely here to keep connections open and stop NATs and crap from thinking that our connection is closed when it is
+  // purely here to keep connections open and stop NATs and crap from thinking that our connection
+  // is closed when it is
   // not.
   void ping();
 }

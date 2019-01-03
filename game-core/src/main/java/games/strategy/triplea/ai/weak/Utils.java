@@ -17,8 +17,8 @@ import games.strategy.util.CollectionUtils;
 
 class Utils {
 
-  static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units,
-      final boolean sea) {
+  static List<Unit> getUnitsUpToStrength(
+      final double maxStrength, final Collection<Unit> units, final boolean sea) {
     if (AiUtils.strength(units, true, sea) < maxStrength) {
       return new ArrayList<>(units);
     }
@@ -34,16 +34,23 @@ class Utils {
 
   static float getStrengthOfPotentialAttackers(final Territory location, final GameData data) {
     float strength = 0;
-    for (final Territory t : data.getMap().getNeighbors(location,
-        location.isWater() ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
-      final List<Unit> enemies = t.getUnits().getMatches(Matches.enemyUnit(location.getOwner(), data));
+    for (final Territory t :
+        data.getMap()
+            .getNeighbors(
+                location,
+                location.isWater() ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
+      final List<Unit> enemies =
+          t.getUnits().getMatches(Matches.enemyUnit(location.getOwner(), data));
       strength += AiUtils.strength(enemies, true, location.isWater());
     }
     return strength;
   }
 
-  static Route findNearest(final Territory start, final Predicate<Territory> endCondition,
-      final Predicate<Territory> routeCondition, final GameData data) {
+  static Route findNearest(
+      final Territory start,
+      final Predicate<Territory> endCondition,
+      final Predicate<Territory> routeCondition,
+      final GameData data) {
     Route shortestRoute = null;
     for (final Territory t : data.getMap().getTerritories()) {
       if (endCondition.test(t)) {
@@ -59,10 +66,12 @@ class Utils {
     return shortestRoute;
   }
 
-  static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerId us, final GameData data) {
-    for (final PlayerId player : CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
-        Matches.isAtWar(us, data))) {
-      for (final Territory capital : TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data)) {
+  static boolean hasLandRouteToEnemyOwnedCapitol(
+      final Territory t, final PlayerId us, final GameData data) {
+    for (final PlayerId player :
+        CollectionUtils.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(us, data))) {
+      for (final Territory capital :
+          TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data)) {
         if (data.getMap().getDistance(t, capital, Matches.territoryIsLand()) != -1) {
           return true;
         }
@@ -79,8 +88,8 @@ class Utils {
   }
 
   /**
-   * Return Territories containing any unit depending on unitCondition
-   * Differs from findCertainShips because it doesn't require the units be owned.
+   * Return Territories containing any unit depending on unitCondition Differs from findCertainShips
+   * because it doesn't require the units be owned.
    */
   static List<Territory> findUnitTerr(final GameData data, final Predicate<Unit> unitCondition) {
     // Return territories containing a certain unit or set of Units

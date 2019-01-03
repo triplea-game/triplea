@@ -5,9 +5,7 @@ import java.util.Collection;
 
 import games.strategy.engine.data.Unit;
 
-/**
- * Superclass for any action that describes the movement or placement of units.
- */
+/** Superclass for any action that describes the movement or placement of units. */
 public abstract class AbstractMoveDescription implements Serializable {
   private static final long serialVersionUID = -6615899716448836002L;
   private final Collection<Unit> units;

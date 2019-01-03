@@ -13,13 +13,11 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
 
-/**
- * A collection of comparators for sorting units based on various heuristics.
- */
+/** A collection of comparators for sorting units based on various heuristics. */
 public class UnitComparator {
   static Comparator<Unit> getLowestToHighestMovementComparator() {
-    return Comparator.comparing(TripleAUnit::get,
-        Comparator.comparingInt(TripleAUnit::getMovementLeft));
+    return Comparator.comparing(
+        TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft));
   }
 
   public static Comparator<Unit> getHighestToLowestMovementComparator() {
@@ -27,43 +25,40 @@ public class UnitComparator {
   }
 
   /**
-   * A Helper method that returns a Comparator comparing Units based on the total transporting cost of transportable
-   * Units in the same territory as the Unit.
+   * A Helper method that returns a Comparator comparing Units based on the total transporting cost
+   * of transportable Units in the same territory as the Unit.
    *
-   * <p>
-   * Because figuring out this cost is a relatively expensive operation
-   * The returned Comparator stores lazily calculated costs for its lifetime.
-   * </p>
+   * <p>Because figuring out this cost is a relatively expensive operation The returned Comparator
+   * stores lazily calculated costs for its lifetime.
    *
    * @return A {@code Comparator<Unit>} that compares Units by transport capacity
    */
   public static Comparator<Unit> getIncreasingCapacityComparator() {
     final Map<Unit, Integer> cache = new HashMap<>();
-    return Comparator.comparingInt(u -> cache.computeIfAbsent(u,
-        k -> TransportUtils.getTransportCost(TripleAUnit.get(u).getTransporting())));
+    return Comparator.comparingInt(
+        u ->
+            cache.computeIfAbsent(
+                u, k -> TransportUtils.getTransportCost(TripleAUnit.get(u).getTransporting())));
   }
 
   private static Comparator<Unit> getDecreasingCapacityComparator() {
     return getIncreasingCapacityComparator().reversed();
   }
 
-  /**
-   * Return a Comparator that will order the specified transports in preferred load order.
-   */
-  public static Comparator<Unit> getLoadableTransportsComparator(final Route route,
-      final PlayerId player) {
+  /** Return a Comparator that will order the specified transports in preferred load order. */
+  public static Comparator<Unit> getLoadableTransportsComparator(
+      final Route route, final PlayerId player) {
     return Comparator.comparing(Matches.transportCannotUnload(route.getEnd())::test)
         .thenComparing(Unit::getOwner, Comparator.comparing(player::equals).reversed())
         .thenComparing(getDecreasingCapacityComparator())
-        .thenComparing(TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed())
+        .thenComparing(
+            TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed())
         .thenComparingInt(Object::hashCode);
   }
 
-  /**
-   * Return a Comparator that will order the specified transports in preferred unload order.
-   */
-  public static Comparator<Unit> getUnloadableTransportsComparator(final Route route,
-      final PlayerId player, final boolean noTies) {
+  /** Return a Comparator that will order the specified transports in preferred unload order. */
+  public static Comparator<Unit> getUnloadableTransportsComparator(
+      final Route route, final PlayerId player, final boolean noTies) {
     return Comparator.comparing(Matches.transportCannotUnload(route.getEnd())::test)
         .thenComparing(Unit::getOwner, Comparator.comparing(player::equals))
         .thenComparing(getDecreasingCapacityComparator())
@@ -71,10 +66,9 @@ public class UnitComparator {
         .thenComparingInt(t -> noTies ? t.hashCode() : 0);
   }
 
-  /**
-   * Return a Comparator that will order the specified units in preferred move order.
-   */
-  public static Comparator<Unit> getMovableUnitsComparator(final List<Unit> units, final Route route) {
+  /** Return a Comparator that will order the specified units in preferred move order. */
+  public static Comparator<Unit> getMovableUnitsComparator(
+      final List<Unit> units, final Route route) {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator();
     return (u1, u2) -> {
       // Ensure units have enough movement
@@ -114,20 +108,24 @@ public class UnitComparator {
   }
 
   /**
-   * Return a Comparator that will order the specified units in preferred unload order.
-   * If needed it may also inspect the transport holding the units.
+   * Return a Comparator that will order the specified units in preferred unload order. If needed it
+   * may also inspect the transport holding the units.
    */
-  public static Comparator<Unit> getUnloadableUnitsComparator(final List<Unit> units, final Route route,
-      final PlayerId player) {
-    return Comparator.comparing(TripleAUnit::get,
-        Comparator.comparing(TripleAUnit::getTransportedBy,
-            Comparator.nullsLast(getUnloadableTransportsComparator(route, player, false))))
+  public static Comparator<Unit> getUnloadableUnitsComparator(
+      final List<Unit> units, final Route route, final PlayerId player) {
+    return Comparator.comparing(
+            TripleAUnit::get,
+            Comparator.comparing(
+                TripleAUnit::getTransportedBy,
+                Comparator.nullsLast(getUnloadableTransportsComparator(route, player, false))))
         .thenComparing(getMovableUnitsComparator(units, route));
   }
 
   static Comparator<Unit> getDecreasingAttackComparator(final PlayerId player) {
-    return Comparator.comparing(Unit::getType,
-        Comparator.comparing(UnitAttachment::get,
+    return Comparator.comparing(
+        Unit::getType,
+        Comparator.comparing(
+            UnitAttachment::get,
             Comparator.<UnitAttachment>comparingInt(u -> u.getAttack(player)).reversed()));
   }
 }

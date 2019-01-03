@@ -16,7 +16,8 @@ class GenericTechChange extends Change {
   private final boolean oldValue;
   private final String property;
 
-  GenericTechChange(final TechAttachment attachment, final boolean newValue, final String property) {
+  GenericTechChange(
+      final TechAttachment attachment, final boolean newValue, final String property) {
     checkNotNull(attachment, "null attachment; newValue: " + newValue + ", property: " + property);
 
     attachedTo = attachment.getAttachedTo();
@@ -26,8 +27,12 @@ class GenericTechChange extends Change {
     this.property = property;
   }
 
-  public GenericTechChange(final Attachable attachTo, final String attachmentName, final boolean newValue,
-      final boolean oldValue, final String property) {
+  public GenericTechChange(
+      final Attachable attachTo,
+      final String attachmentName,
+      final boolean newValue,
+      final boolean oldValue,
+      final String property) {
     this.attachmentName = attachmentName;
     attachedTo = attachTo;
     this.newValue = newValue;
@@ -48,7 +53,13 @@ class GenericTechChange extends Change {
 
   @Override
   public String toString() {
-    return "GenericTechChange attached to:" + attachedTo + " name:" + attachmentName + " new value:" + newValue
-        + " old value:" + oldValue;
+    return "GenericTechChange attached to:"
+        + attachedTo
+        + " name:"
+        + attachmentName
+        + " new value:"
+        + newValue
+        + " old value:"
+        + oldValue;
   }
 }

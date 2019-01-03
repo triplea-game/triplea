@@ -2,21 +2,14 @@ package swinglib;
 
 import javax.swing.JCheckBox;
 
-/**
- * Relatively simple builder for a swing JCheckBox.
- * By default check boxes are 'selected'.
- */
+/** Relatively simple builder for a swing JCheckBox. By default check boxes are 'selected'. */
 public class JCheckBoxBuilder {
 
   private boolean isSelected = true;
 
-  private JCheckBoxBuilder() {
+  private JCheckBoxBuilder() {}
 
-  }
-
-  /**
-   * Builds the swing component.
-   */
+  /** Builds the swing component. */
   public JCheckBox build() {
     final JCheckBox checkBox = new JCheckBox();
     checkBox.setSelected(isSelected);
@@ -31,5 +24,4 @@ public class JCheckBoxBuilder {
   public static JCheckBoxBuilder builder() {
     return new JCheckBoxBuilder();
   }
-
 }

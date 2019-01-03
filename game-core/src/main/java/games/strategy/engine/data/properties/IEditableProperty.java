@@ -22,9 +22,7 @@ public interface IEditableProperty<T> {
    */
   T getValue();
 
-  /**
-   * Indicates the object is a valid object for setting as our value.
-   */
+  /** Indicates the object is a valid object for setting as our value. */
   boolean validate(Object value);
 
   /**
@@ -34,19 +32,13 @@ public interface IEditableProperty<T> {
    */
   void setValue(T value);
 
-  /**
-   * Returns the component used to edit this property.
-   */
+  /** Returns the component used to edit this property. */
   JComponent getEditorComponent();
 
-  /**
-   * Get the view (read only) component for this property.
-   */
+  /** Get the view (read only) component for this property. */
   JComponent getViewComponent();
 
-  /**
-   * Description of what this property is, can be used for tooltip.
-   */
+  /** Description of what this property is, can be used for tooltip. */
   String getDescription();
 
   int getRowsNeeded();
@@ -62,7 +54,8 @@ public interface IEditableProperty<T> {
 
   default void validateAndSet(final Object object) {
     if (!setValueIfValid(object)) {
-      throw new IllegalArgumentException("Invalid value " + object + " for class " + getClass().getCanonicalName());
+      throw new IllegalArgumentException(
+          "Invalid value " + object + " for class " + getClass().getCanonicalName());
     }
   }
 }

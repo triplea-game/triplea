@@ -28,11 +28,9 @@ import games.strategy.util.Tuple;
 /**
  * For when you want multiple individual unit panels, perhaps one for each territory, etc.
  *
- * <p>
- * This lets you create multiple IndividualUnitPanel into a single panel, and have them integrated to use the same MAX.
- * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each
- * unit.
- * </p>
+ * <p>This lets you create multiple IndividualUnitPanel into a single panel, and have them
+ * integrated to use the same MAX. IndividualUnitPanel is a group of units each displayed
+ * individually, and you can set an integer up to max for each unit.
  */
 public class IndividualUnitPanelGrouped extends JPanel {
   private static final long serialVersionUID = 3573683064535306664L;
@@ -41,21 +39,23 @@ public class IndividualUnitPanelGrouped extends JPanel {
   private final JTextArea title;
   private final UiContext uiContext;
   private final Map<String, Collection<Unit>> unitsToChooseFrom;
-  private final Collection<Tuple<String, IndividualUnitPanel>> entries =
-      new ArrayList<>();
+  private final Collection<Tuple<String, IndividualUnitPanel>> entries = new ArrayList<>();
   private final JLabel leftToSelect = new JLabel();
   private final boolean showSelectAll;
   private final ScrollableTextFieldListener textFieldListener = field -> updateLeft();
 
   /**
-   * For when you want multiple individual unit panels, perhaps one for each territory, etc.
-   * This lets you create multiple IndividualUnitPanel into a single panel, and have them integrated to use the same
-   * MAX.
-   * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each
-   * unit.
+   * For when you want multiple individual unit panels, perhaps one for each territory, etc. This
+   * lets you create multiple IndividualUnitPanel into a single panel, and have them integrated to
+   * use the same MAX. IndividualUnitPanel is a group of units each displayed individually, and you
+   * can set an integer up to max for each unit.
    */
-  public IndividualUnitPanelGrouped(final Map<String, Collection<Unit>> unitsToChooseFrom,
-      final UiContext uiContext, final String title, final int maxTotal, final boolean showMinAndMax,
+  public IndividualUnitPanelGrouped(
+      final Map<String, Collection<Unit>> unitsToChooseFrom,
+      final UiContext uiContext,
+      final String title,
+      final int maxTotal,
+      final boolean showMinAndMax,
       final boolean showSelectAll) {
     this.uiContext = uiContext;
     setMaxAndShowMaxButton(maxTotal);
@@ -106,8 +106,20 @@ public class IndividualUnitPanelGrouped extends JPanel {
     selectNoneButton.setPreferredSize(buttonSize);
     final JButton autoSelectButton = new JButton("Max");
     autoSelectButton.setPreferredSize(buttonSize);
-    add(title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        nullInsets, 0, 0));
+    add(
+        title,
+        new GridBagConstraints(
+            0,
+            0,
+            7,
+            1,
+            0,
+            0.5,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            nullInsets,
+            0,
+            0));
     selectNoneButton.addActionListener(e -> selectNone());
     autoSelectButton.addActionListener(e -> autoSelect());
     final JPanel entries = new JPanel();
@@ -124,33 +136,77 @@ public class IndividualUnitPanelGrouped extends JPanel {
       chooserTitle.setFont(new Font("Arial", Font.BOLD, 12));
       panelChooser.add(chooserTitle);
       panelChooser.add(new JLabel(" "));
-      final IndividualUnitPanel chooser = new IndividualUnitPanel(possibleTargets, miniTitle, uiContext,
-          max, showMinAndMax, showSelectAll, textFieldListener);
+      final IndividualUnitPanel chooser =
+          new IndividualUnitPanel(
+              possibleTargets,
+              miniTitle,
+              uiContext,
+              max,
+              showMinAndMax,
+              showSelectAll,
+              textFieldListener);
       this.entries.add(Tuple.of(miniTitle, chooser));
       panelChooser.add(chooser);
       final JScrollPane chooserScrollPane = new JScrollPane(panelChooser);
       chooserScrollPane.setMaximumSize(new Dimension(220, 520));
-      chooserScrollPane
-          .setPreferredSize(
-              new Dimension(
-                  (chooserScrollPane.getPreferredSize().width > 220 ? 220
-                      : (chooserScrollPane.getPreferredSize().height > 520
-                          ? chooserScrollPane.getPreferredSize().width + 20
-                          : chooserScrollPane.getPreferredSize().width)),
-                  (chooserScrollPane.getPreferredSize().height > 520 ? 520
-                      : (chooserScrollPane.getPreferredSize().width > 220
-                          ? chooserScrollPane.getPreferredSize().height + 20
-                          : chooserScrollPane.getPreferredSize().height))));
+      chooserScrollPane.setPreferredSize(
+          new Dimension(
+              (chooserScrollPane.getPreferredSize().width > 220
+                  ? 220
+                  : (chooserScrollPane.getPreferredSize().height > 520
+                      ? chooserScrollPane.getPreferredSize().width + 20
+                      : chooserScrollPane.getPreferredSize().width)),
+              (chooserScrollPane.getPreferredSize().height > 520
+                  ? 520
+                  : (chooserScrollPane.getPreferredSize().width > 220
+                      ? chooserScrollPane.getPreferredSize().height + 20
+                      : chooserScrollPane.getPreferredSize().height))));
       entries.add(chooserScrollPane);
     }
-    add(entries, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-        nullInsets, 0, 0));
+    add(
+        entries,
+        new GridBagConstraints(
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            nullInsets,
+            0,
+            0));
     if (showSelectAll) {
-      add(autoSelectButton, new GridBagConstraints(0, 2, 7, 1, 0, 0.5, GridBagConstraints.CENTER,
-          GridBagConstraints.NONE, nullInsets, 0, 0));
+      add(
+          autoSelectButton,
+          new GridBagConstraints(
+              0,
+              2,
+              7,
+              1,
+              0,
+              0.5,
+              GridBagConstraints.CENTER,
+              GridBagConstraints.NONE,
+              nullInsets,
+              0,
+              0));
     }
-    add(leftToSelect, new GridBagConstraints(0, 3, 5, 2, 0, 0.5, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+    add(
+        leftToSelect,
+        new GridBagConstraints(
+            0,
+            3,
+            5,
+            2,
+            0,
+            0.5,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            nullInsets,
+            0,
+            0));
   }
 
   Map<String, IntegerMap<Unit>> getSelected() {

@@ -34,11 +34,9 @@ final class LobbyLoginPreferencesTest {
   private static final String USER_NAME = "userName";
   private static final String PROTECTED_USER_NAME = String.format("PROTECTED(%s)", USER_NAME);
 
-  @Mock
-  private CredentialManager credentialManager;
+  @Mock private CredentialManager credentialManager;
 
-  @Mock
-  private Preferences preferences;
+  @Mock private Preferences preferences;
 
   @Nested
   final class EqualsAndHashCodeTest {
@@ -56,10 +54,7 @@ final class LobbyLoginPreferencesTest {
 
     @Test
     void shouldMigrateLegacyPreferences() {
-      givenPreferenceNode()
-          .withLegacyAnonymousLogin(true)
-          .withLegacyUserName(USER_NAME)
-          .create();
+      givenPreferenceNode().withLegacyAnonymousLogin(true).withLegacyUserName(USER_NAME).create();
 
       assertThat(whenLoad(), is(new LobbyLoginPreferences(USER_NAME, "", false, true)));
     }
@@ -271,19 +266,26 @@ final class LobbyLoginPreferencesTest {
 
     void create() {
       doReturnValueOrSecondArg(anonymousLogin)
-          .when(preferences).getBoolean(eq(PreferenceKeys.ANONYMOUS_LOGIN), anyBoolean());
+          .when(preferences)
+          .getBoolean(eq(PreferenceKeys.ANONYMOUS_LOGIN), anyBoolean());
       doReturnValueOrSecondArg(credentialsProtected)
-          .when(preferences).getBoolean(eq(PreferenceKeys.CREDENTIALS_PROTECTED), anyBoolean());
+          .when(preferences)
+          .getBoolean(eq(PreferenceKeys.CREDENTIALS_PROTECTED), anyBoolean());
       doReturnValueOrSecondArg(credentialsSaved)
-          .when(preferences).getBoolean(eq(PreferenceKeys.CREDENTIALS_SAVED), anyBoolean());
+          .when(preferences)
+          .getBoolean(eq(PreferenceKeys.CREDENTIALS_SAVED), anyBoolean());
       doReturnValueOrSecondArg(legacyAnonymousLogin)
-          .when(preferences).getBoolean(eq(PreferenceKeys.LEGACY_ANONYMOUS_LOGIN), anyBoolean());
+          .when(preferences)
+          .getBoolean(eq(PreferenceKeys.LEGACY_ANONYMOUS_LOGIN), anyBoolean());
       doReturnValueOrSecondArg(legacyUserName)
-          .when(preferences).get(eq(PreferenceKeys.LEGACY_USER_NAME), anyString());
+          .when(preferences)
+          .get(eq(PreferenceKeys.LEGACY_USER_NAME), anyString());
       doReturnValueOrSecondArg(password)
-          .when(preferences).get(eq(PreferenceKeys.PASSWORD), anyString());
+          .when(preferences)
+          .get(eq(PreferenceKeys.PASSWORD), anyString());
       doReturnValueOrSecondArg(userName)
-          .when(preferences).get(eq(PreferenceKeys.USER_NAME), anyString());
+          .when(preferences)
+          .get(eq(PreferenceKeys.USER_NAME), anyString());
     }
 
     private <T> Stubber doReturnValueOrSecondArg(final Optional<T> optional) {
@@ -292,16 +294,12 @@ final class LobbyLoginPreferencesTest {
   }
 
   private void givenCredentialManagerWillProtect(
-      final String credential,
-      final String protectedCredential)
-      throws Exception {
+      final String credential, final String protectedCredential) throws Exception {
     doReturn(protectedCredential).when(credentialManager).protect(credential);
   }
 
   private void givenCredentialManagerWillUnprotect(
-      final String protectedCredential,
-      final String credential)
-      throws Exception {
+      final String protectedCredential, final String credential) throws Exception {
     doReturn(credential).when(credentialManager).unprotectToString(protectedCredential);
   }
 
@@ -310,7 +308,9 @@ final class LobbyLoginPreferencesTest {
   }
 
   private void givenCredentialManagerWillThrowWhenUnprotecting() throws Exception {
-    doThrow(new CredentialManagerException("")).when(credentialManager).unprotectToString(anyString());
+    doThrow(new CredentialManagerException(""))
+        .when(credentialManager)
+        .unprotectToString(anyString());
   }
 
   private void thenRemovesValueFromPreferenceNode(final String key) {

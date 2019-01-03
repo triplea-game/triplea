@@ -133,22 +133,28 @@ public final class MatchesTest {
 
     @Test
     public void shouldMatchWhenTerritoryContainsEnemyLandUnits() {
-      territory.getUnits().addAll(Arrays.asList(
-          newLandUnitFor(player),
-          newLandUnitFor(enemyPlayer),
-          newAirUnitFor(enemyPlayer),
-          newInfrastructureUnitFor(enemyPlayer)));
+      territory
+          .getUnits()
+          .addAll(
+              Arrays.asList(
+                  newLandUnitFor(player),
+                  newLandUnitFor(enemyPlayer),
+                  newAirUnitFor(enemyPlayer),
+                  newInfrastructureUnitFor(enemyPlayer)));
 
       assertThat(newMatch(), matches(territory));
     }
 
     @Test
     public void shouldMatchWhenTerritoryContainsEnemySeaUnits() {
-      territory.getUnits().addAll(Arrays.asList(
-          newSeaUnitFor(player),
-          newSeaUnitFor(enemyPlayer),
-          newAirUnitFor(enemyPlayer),
-          newInfrastructureUnitFor(enemyPlayer)));
+      territory
+          .getUnits()
+          .addAll(
+              Arrays.asList(
+                  newSeaUnitFor(player),
+                  newSeaUnitFor(enemyPlayer),
+                  newAirUnitFor(enemyPlayer),
+                  newInfrastructureUnitFor(enemyPlayer)));
 
       assertThat(newMatch(), matches(territory));
     }
@@ -192,7 +198,8 @@ public final class MatchesTest {
       seaTerritory = gameData.getMap().getTerritory("Baltic Sea Zone");
       seaTerritory.setOwner(player);
       assertThat(TerritoryAttachment.get(seaTerritory), is(nullValue()));
-      TerritoryAttachment.add(seaTerritory, new TerritoryAttachment("name", seaTerritory, gameData));
+      TerritoryAttachment.add(
+          seaTerritory, new TerritoryAttachment("name", seaTerritory, gameData));
       assertThat(TerritoryAttachment.get(seaTerritory), is(notNullValue()));
     }
 

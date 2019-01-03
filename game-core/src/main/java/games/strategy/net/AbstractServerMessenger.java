@@ -41,9 +41,7 @@ import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.net.nio.ServerQuarantineConversation;
 import lombok.extern.java.Log;
 
-/**
- * A Messenger that can have many clients connected to it.
- */
+/** A Messenger that can have many clients connected to it. */
 @Log
 public abstract class AbstractServerMessenger implements IServerMessenger, NioSocketListener {
   private final Selector acceptorSelector;
@@ -59,7 +57,8 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
 
-  protected AbstractServerMessenger(final String name, final int port, final IObjectStreamFactory objectStreamFactory)
+  protected AbstractServerMessenger(
+      final String name, final int port, final IObjectStreamFactory objectStreamFactory)
       throws IOException {
     socketChannel = ServerSocketChannel.open();
     socketChannel.configureBlocking(false);
@@ -146,7 +145,8 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     }
   }
 
-  // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a
+  // We need to cache whether players are muted, because otherwise the database would have to be
+  // accessed each time a
   // message was sent, which can be very slow
   private final List<String> liveMutedUsernames = new ArrayList<>();
 
@@ -157,7 +157,8 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   @Override
-  public void notifyUsernameMutingOfPlayer(final String username, final @Nullable Instant muteExpires) {
+  public void notifyUsernameMutingOfPlayer(
+      final String username, final @Nullable Instant muteExpires) {
     synchronized (cachedListLock) {
       if (!liveMutedUsernames.contains(username)) {
         liveMutedUsernames.add(username);
@@ -191,18 +192,18 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   private void scheduleUsernameUnmuteAt(final String username, final Instant expires) {
     final Timer unmuteUsernameTimer = new Timer("Username unmute timer");
     unmuteUsernameTimer.schedule(
-        newUnmuteTimerTask(() -> isUsernameMutedInBackingStore(username), () -> liveMutedUsernames.remove(username)),
+        newUnmuteTimerTask(
+            () -> isUsernameMutedInBackingStore(username),
+            () -> liveMutedUsernames.remove(username)),
         millisBetweenNowAnd(expires));
   }
 
   /**
-   * Returns {@code true} if the user associated with the specified username is muted according to the backing store
-   * (e.g. a database); otherwise {@code false}.
+   * Returns {@code true} if the user associated with the specified username is muted according to
+   * the backing store (e.g. a database); otherwise {@code false}.
    *
-   * <p>
-   * Subclasses may override and are not required to call the superclass implementation. This implementation returns
-   * {@code false} indicating the user is not currently muted.
-   * </p>
+   * <p>Subclasses may override and are not required to call the superclass implementation. This
+   * implementation returns {@code false} indicating the user is not currently muted.
    *
    * @param username The username of the user.
    */
@@ -210,7 +211,8 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     return false;
   }
 
-  private TimerTask newUnmuteTimerTask(final BooleanSupplier isUserMuted, final Runnable unmuteUser) {
+  private TimerTask newUnmuteTimerTask(
+      final BooleanSupplier isUserMuted, final Runnable unmuteUser) {
     return new TimerTask() {
       @Override
       public void run() {
@@ -230,18 +232,17 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   private void scheduleMacUnmuteAt(final String mac, final Instant expires) {
     final Timer unmuteMacTimer = new Timer("Mac unmute timer");
     unmuteMacTimer.schedule(
-        newUnmuteTimerTask(() -> isMacMutedInBackingStore(mac), () -> liveMutedMacAddresses.remove(mac)),
+        newUnmuteTimerTask(
+            () -> isMacMutedInBackingStore(mac), () -> liveMutedMacAddresses.remove(mac)),
         millisBetweenNowAnd(expires));
   }
 
   /**
-   * Returns {@code true} if the user associated with the specified MAC is muted according to the backing store (e.g. a
-   * database); otherwise {@code false}.
+   * Returns {@code true} if the user associated with the specified MAC is muted according to the
+   * backing store (e.g. a database); otherwise {@code false}.
    *
-   * <p>
-   * Subclasses may override and are not required to call the superclass implementation. This implementation returns
-   * {@code false} indicating the user is not currently muted.
-   * </p>
+   * <p>Subclasses may override and are not required to call the superclass implementation. This
+   * implementation returns {@code false} indicating the user is not currently muted.
    *
    * @param mac The MAC of the user.
    */
@@ -250,9 +251,9 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   /**
-   * Invoked when the node with the specified unique name has successfully logged in. Note that {@code uniquePlayerName}
-   * is the node name and may not be identical to the name of the player associated with the node (see
-   * {@link #getUniqueName(String)}.
+   * Invoked when the node with the specified unique name has successfully logged in. Note that
+   * {@code uniquePlayerName} is the node name and may not be identical to the name of the player
+   * associated with the node (see {@link #getUniqueName(String)}.
    */
   public void notifyPlayerLogin(final String uniquePlayerName, final String mac) {
     synchronized (cachedListLock) {
@@ -260,35 +261,35 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
       final String realName = IServerMessenger.getRealName(uniquePlayerName);
       if (!liveMutedUsernames.contains(realName)) {
         final Optional<Instant> muteTill = getUsernameUnmuteTime(realName);
-        muteTill.ifPresent(instant -> {
-          if (instant.isAfter(Instant.now())) {
-            // Signal the player as muted
-            liveMutedUsernames.add(realName);
-            scheduleUsernameUnmuteAt(realName, instant);
-          }
-        });
+        muteTill.ifPresent(
+            instant -> {
+              if (instant.isAfter(Instant.now())) {
+                // Signal the player as muted
+                liveMutedUsernames.add(realName);
+                scheduleUsernameUnmuteAt(realName, instant);
+              }
+            });
       }
       if (!liveMutedMacAddresses.contains(mac)) {
         final Optional<Instant> muteTill = getMacUnmuteTime(mac);
-        muteTill.ifPresent(instant -> {
-          if (instant.isAfter(Instant.now())) {
-            // Signal the player as muted
-            liveMutedMacAddresses.add(mac);
-            scheduleMacUnmuteAt(mac, instant);
-          }
-        });
+        muteTill.ifPresent(
+            instant -> {
+              if (instant.isAfter(Instant.now())) {
+                // Signal the player as muted
+                liveMutedMacAddresses.add(mac);
+                scheduleMacUnmuteAt(mac, instant);
+              }
+            });
       }
     }
   }
 
   /**
-   * Returns the instant at which the user associated with the specified username is to be unmuted or empty if the user
-   * is not currently muted.
+   * Returns the instant at which the user associated with the specified username is to be unmuted
+   * or empty if the user is not currently muted.
    *
-   * <p>
-   * Subclasses may override and are not required to call the superclass implementation. This implementation returns an
-   * empty instant indicating the user is not currently muted.
-   * </p>
+   * <p>Subclasses may override and are not required to call the superclass implementation. This
+   * implementation returns an empty instant indicating the user is not currently muted.
    *
    * @param username The username of the user.
    */
@@ -297,13 +298,11 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   /**
-   * Returns the instant at which the user associated with the specified MAC is to be unmuted or empty if the user is
-   * not currently muted.
+   * Returns the instant at which the user associated with the specified MAC is to be unmuted or
+   * empty if the user is not currently muted.
    *
-   * <p>
-   * Subclasses may override and are not required to call the superclass implementation. This implementation returns an
-   * empty instant indicating the user is not currently muted.
-   * </p>
+   * <p>Subclasses may override and are not required to call the superclass implementation. This
+   * implementation returns an empty instant indicating the user is not currently muted.
    *
    * @param mac The MAC of the user.
    */
@@ -317,7 +316,8 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     synchronized (cachedListLock) {
       playersThatLeftMacsLast10.put(node.getName(), cachedMacAddresses.get(node.getName()));
       if (playersThatLeftMacsLast10.size() > 10) {
-        playersThatLeftMacsLast10.remove(playersThatLeftMacsLast10.entrySet().iterator().next().toString());
+        playersThatLeftMacsLast10.remove(
+            playersThatLeftMacsLast10.entrySet().iterator().next().toString());
       }
       cachedMacAddresses.remove(node.getName());
     }
@@ -332,7 +332,8 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     if (msg.getMessage() instanceof HubInvoke) { // Chat messages are always HubInvoke's
       if (((HubInvoke) msg.getMessage()).call.getRemoteName().equals(getChatControlChannelName())) {
         final String realName = IServerMessenger.getRealName(msg.getFrom().getName());
-        if (isUsernameMutedInCache(realName) || isMacMutedInCache(getPlayerMac(msg.getFrom().getName()))) {
+        if (isUsernameMutedInCache(realName)
+            || isMacMutedInCache(getPlayerMac(msg.getFrom().getName()))) {
           bareBonesSendChatMessage(getAdministrativeMuteChatMessage(), msg.getFrom());
           return;
         }
@@ -352,9 +353,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     return ChatController.getChatChannelName(getChatChannelName());
   }
 
-  /**
-   * Returns the name of the chat channel.
-   */
+  /** Returns the name of the chat channel. */
   protected abstract String getChatChannelName();
 
   /**
@@ -366,17 +365,19 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
 
   private void bareBonesSendChatMessage(final String message, final INode to) {
     final RemoteName rn = new RemoteName(getChatControlChannelName(), IChatChannel.class);
-    final RemoteMethodCall call = new RemoteMethodCall(
-        rn.getName(),
-        "chatOccured",
-        new Object[] {message},
-        new Class<?>[] {String.class},
-        IChatChannel.class);
+    final RemoteMethodCall call =
+        new RemoteMethodCall(
+            rn.getName(),
+            "chatOccured",
+            new Object[] {message},
+            new Class<?>[] {String.class},
+            IChatChannel.class);
     final SpokeInvoke spokeInvoke = new SpokeInvoke(null, false, call, getServerNode());
     send(spokeInvoke, to);
   }
 
-  // The following code is used in hosted lobby games by the host for player mini-banning and mini-muting
+  // The following code is used in hosted lobby games by the host for player mini-banning and
+  // mini-muting
   private final List<String> miniBannedUsernames = new ArrayList<>();
 
   @Override
@@ -387,7 +388,8 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   @Override
-  public void notifyUsernameMiniBanningOfPlayer(final String username, final @Nullable Instant expires) {
+  public void notifyUsernameMiniBanningOfPlayer(
+      final String username, final @Nullable Instant expires) {
     synchronized (cachedListLock) {
       if (!miniBannedUsernames.contains(username)) {
         miniBannedUsernames.add(username);
@@ -486,15 +488,13 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   private boolean isNameTaken(final String nodeName) {
-    return getNodes().stream()
-        .map(INode::getName)
-        .anyMatch(nodeName::equalsIgnoreCase);
+    return getNodes().stream().map(INode::getName).anyMatch(nodeName::equalsIgnoreCase);
   }
 
   /**
-   * Returns a node name, based on the specified node name, that is unique across all nodes. The node name is made
-   * unique by adding a numbered suffix to the existing node name. For example, for the second node with the name "foo",
-   * this method will return "foo (1)".
+   * Returns a node name, based on the specified node name, that is unique across all nodes. The
+   * node name is made unique by adding a numbered suffix to the existing node name. For example,
+   * for the second node with the name "foo", this method will return "foo (1)".
    */
   public String getUniqueName(final String name) {
     String currentName = name;
@@ -622,11 +622,9 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
               }
               continue;
             }
-            final ServerQuarantineConversation conversation = new ServerQuarantineConversation(
-                loginValidator,
-                socketChannel,
-                nioSocket,
-                AbstractServerMessenger.this);
+            final ServerQuarantineConversation conversation =
+                new ServerQuarantineConversation(
+                    loginValidator, socketChannel, nioSocket, AbstractServerMessenger.this);
             nioSocket.add(socketChannel, conversation);
           } else if (!key.isValid()) {
             key.cancel();
@@ -675,9 +673,12 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   @Override
-  public void socketUnqaurantined(final SocketChannel channel, final QuarantineConversation conversation) {
+  public void socketUnqaurantined(
+      final SocketChannel channel, final QuarantineConversation conversation) {
     final ServerQuarantineConversation con = (ServerQuarantineConversation) conversation;
-    final INode remote = new Node(con.getRemoteName(), (InetSocketAddress) channel.socket().getRemoteSocketAddress());
+    final INode remote =
+        new Node(
+            con.getRemoteName(), (InetSocketAddress) channel.socket().getRemoteSocketAddress());
     nodeToChannel.put(remote, channel);
     channelToNode.put(channel, remote);
     notifyConnectionsChanged(true, remote);
@@ -696,6 +697,10 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
 
   @Override
   public String toString() {
-    return getClass().getSimpleName() + " LocalNode:" + node + " ClientNodes:" + nodeToChannel.keySet();
+    return getClass().getSimpleName()
+        + " LocalNode:"
+        + node
+        + " ClientNodes:"
+        + nodeToChannel.keySet();
   }
 }

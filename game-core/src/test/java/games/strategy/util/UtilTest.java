@@ -36,21 +36,21 @@ public class UtilTest {
   @Test
   public void isMailValid_ShouldReturnTrueWhenAddressIsValid() {
     Arrays.asList(
-        "some@some.com",
-        "some.someMore@some.com",
-        "some@some.com some2@some2.com",
-        "some@some.com some2@some2.co.uk",
-        "some@some.com some2@some2.co.br",
-        "",
-        "some@some.some.some.com")
+            "some@some.com",
+            "some.someMore@some.com",
+            "some@some.com some2@some2.com",
+            "some@some.com some2@some2.co.uk",
+            "some@some.com some2@some2.co.br",
+            "",
+            "some@some.some.some.com")
         .forEach(it -> assertThat("'" + it + "' should be valid", Util.isMailValid(it), is(true)));
   }
 
   @Test
   public void isMailValid_ShouldReturnFalseWhenAddressIsInvalid() {
-    Arrays.asList(
-        "test")
-        .forEach(it -> assertThat("'" + it + "' should be invalid", Util.isMailValid(it), is(false)));
+    Arrays.asList("test")
+        .forEach(
+            it -> assertThat("'" + it + "' should be invalid", Util.isMailValid(it), is(false)));
   }
 
   @Test

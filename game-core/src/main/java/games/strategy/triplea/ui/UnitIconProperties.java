@@ -27,9 +27,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.java.Log;
 
-/**
- * Loads unit icons from unit_icons.properties.
- */
+/** Loads unit icons from unit_icons.properties. */
 @Log
 public final class UnitIconProperties extends PropertyFile {
   private static final String PROPERTY_FILE = "unit_icons.properties";
@@ -45,7 +43,10 @@ public final class UnitIconProperties extends PropertyFile {
   }
 
   @VisibleForTesting
-  UnitIconProperties(final Properties properties, final GameData gameData, final ConditionSupplier conditionSupplier) {
+  UnitIconProperties(
+      final Properties properties,
+      final GameData gameData,
+      final ConditionSupplier conditionSupplier) {
     super(properties);
 
     unitIconDescriptors = parseUnitIconDescriptors();
@@ -56,10 +57,17 @@ public final class UnitIconProperties extends PropertyFile {
     final ImmutableList.Builder<UnitIconDescriptor> builder = ImmutableList.builder();
     for (final Map.Entry<Object, Object> property : properties.entrySet()) {
       try {
-        builder.add(parseUnitIconDescriptor(property.getKey().toString(), property.getValue().toString()));
+        builder.add(
+            parseUnitIconDescriptor(property.getKey().toString(), property.getValue().toString()));
       } catch (final MalformedUnitIconDescriptorException e) {
-        log.log(Level.WARNING, e, () -> "Expected " + PROPERTY_FILE + " property key to be of the form "
-            + "<game_name>.<player>.<unit_type>;attachmentName OR if always true <game_name>.<player>.<unit_type>");
+        log.log(
+            Level.WARNING,
+            e,
+            () ->
+                "Expected "
+                    + PROPERTY_FILE
+                    + " property key to be of the form "
+                    + "<game_name>.<player>.<unit_type>;attachmentName OR if always true <game_name>.<player>.<unit_type>");
       }
     }
     return builder.build();
@@ -68,35 +76,28 @@ public final class UnitIconProperties extends PropertyFile {
   /**
    * Parses a unit icon descriptor from a line in a unit_icons.properties file.
    *
-   * <p>
-   * Each line in a unit_icons.properties file has the format:
-   * </p>
-   * <p>
-   * {@code <encodedIconId>=<iconPath>}
-   * </p>
-   * <p>
-   * Where {@code encodedIconId} is
-   * </p>
-   * <p>
-   * {@code <encodedUnitTypeId>[;conditionName]}
-   * </p>
-   * <p>
-   * Where {@code encodedUnitTypeId} is
-   * </p>
-   * <p>
-   * {@code <gameName>.<playerName>.<unitTypeName>}
-   * </p>
+   * <p>Each line in a unit_icons.properties file has the format:
+   *
+   * <p>{@code <encodedIconId>=<iconPath>}
+   *
+   * <p>Where {@code encodedIconId} is
+   *
+   * <p>{@code <encodedUnitTypeId>[;conditionName]}
+   *
+   * <p>Where {@code encodedUnitTypeId} is
+   *
+   * <p>{@code <gameName>.<playerName>.<unitTypeName>}
    */
   @VisibleForTesting
-  static UnitIconDescriptor parseUnitIconDescriptor(final String encodedIconId, final String iconPath) {
+  static UnitIconDescriptor parseUnitIconDescriptor(
+      final String encodedIconId, final String iconPath) {
     final List<String> iconIdTokens = Splitter.on(';').splitToList(encodedIconId);
     if (iconIdTokens.size() != 1 && iconIdTokens.size() != 2) {
       throw new MalformedUnitIconDescriptorException(encodedIconId);
     }
     final String encodedUnitTypeId = iconIdTokens.get(0);
-    final Optional<String> conditionName = (iconIdTokens.size() == 2)
-        ? Optional.ofNullable(iconIdTokens.get(1))
-        : Optional.empty();
+    final Optional<String> conditionName =
+        (iconIdTokens.size() == 2) ? Optional.ofNullable(iconIdTokens.get(1)) : Optional.empty();
 
     final List<String> unitTypeIdTokens = Splitter.on('.').limit(3).splitToList(encodedUnitTypeId);
     if (unitTypeIdTokens.size() != 3) {
@@ -109,17 +110,20 @@ public final class UnitIconProperties extends PropertyFile {
     return new UnitIconDescriptor(gameName, playerName, unitTypeName, conditionName, iconPath);
   }
 
-  private void initializeConditionsStatus(final GameData gameData, final ConditionSupplier conditionSupplier) {
+  private void initializeConditionsStatus(
+      final GameData gameData, final ConditionSupplier conditionSupplier) {
     final String gameName = normalizeGameName(gameData);
     for (final UnitIconDescriptor unitIconDescriptor : unitIconDescriptors) {
       if (unitIconDescriptor.matches(gameName)) {
-        unitIconDescriptor.conditionName.ifPresent(conditionName -> {
-          final @Nullable ICondition condition =
-              conditionSupplier.getCondition(unitIconDescriptor.playerName, conditionName, gameData);
-          if (condition != null) {
-            conditionsStatus.put(condition, false);
-          }
-        });
+        unitIconDescriptor.conditionName.ifPresent(
+            conditionName -> {
+              final @Nullable ICondition condition =
+                  conditionSupplier.getCondition(
+                      unitIconDescriptor.playerName, conditionName, gameData);
+              if (condition != null) {
+                conditionsStatus.put(condition, false);
+              }
+            });
       }
     }
     conditionsStatus = getTestedConditions(gameData);
@@ -137,8 +141,10 @@ public final class UnitIconProperties extends PropertyFile {
    * Get all unit icon images for given player and unit type that are currently true, ensuring order
    * from the properties file.
    */
-  public List<String> getImagePaths(final String playerName, final String unitTypeName, final GameData gameData) {
-    return getImagePaths(playerName, unitTypeName, gameData, AbstractPlayerRulesAttachment::getCondition);
+  public List<String> getImagePaths(
+      final String playerName, final String unitTypeName, final GameData gameData) {
+    return getImagePaths(
+        playerName, unitTypeName, gameData, AbstractPlayerRulesAttachment::getCondition);
   }
 
   @VisibleForTesting
@@ -154,7 +160,8 @@ public final class UnitIconProperties extends PropertyFile {
         OptionalUtils.ifPresentOrElse(
             unitIconDescriptor.conditionName,
             conditionName -> {
-              if (conditionsStatus.get(conditionSupplier.getCondition(playerName, conditionName, gameData))) {
+              if (conditionsStatus.get(
+                  conditionSupplier.getCondition(playerName, conditionName, gameData))) {
                 imagePaths.add(unitIconDescriptor.unitIconPath);
               }
             },
@@ -175,9 +182,10 @@ public final class UnitIconProperties extends PropertyFile {
 
   private Map<ICondition, Boolean> getTestedConditions(final GameData data) {
     final Set<ICondition> allConditionsNeeded =
-        AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(conditionsStatus.keySet()), null);
-    return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null,
-        new ObjectiveDummyDelegateBridge(data));
+        AbstractConditionsAttachment.getAllConditionsRecursive(
+            new HashSet<>(conditionsStatus.keySet()), null);
+    return AbstractConditionsAttachment.testAllConditionsRecursive(
+        allConditionsNeeded, null, new ObjectiveDummyDelegateBridge(data));
   }
 
   @VisibleForTesting

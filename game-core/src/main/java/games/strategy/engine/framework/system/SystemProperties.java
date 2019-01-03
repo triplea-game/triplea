@@ -7,10 +7,11 @@ import java.util.Properties;
 import javax.annotation.Nullable;
 
 /**
- * Wrapper class around System.getProperties(), use this class to set/get System properties.
- * Prefer to use system props only for command line usage. TripleA code base has made pretty extensive use
- * of System props to pass values, which is not a best practice. Converting those usages to this wrapper interface
- * will make different parts of the code that use system properties much easier to manage.
+ * Wrapper class around System.getProperties(), use this class to set/get System properties. Prefer
+ * to use system props only for command line usage. TripleA code base has made pretty extensive use
+ * of System props to pass values, which is not a best practice. Converting those usages to this
+ * wrapper interface will make different parts of the code that use system properties much easier to
+ * manage.
  */
 public final class SystemProperties {
   private SystemProperties() {}

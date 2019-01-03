@@ -11,9 +11,7 @@ import games.strategy.net.INode;
  * Allows client nodes to access various information from the server node during network game setup.
  */
 public interface IServerStartupRemote extends IRemote {
-  /**
-   * Returns a listing of the players in the game.
-   */
+  /** Returns a listing of the players in the game. */
   PlayerListing getPlayerListing();
 
   void takePlayer(INode who, String playerName);
@@ -25,9 +23,8 @@ public interface IServerStartupRemote extends IRemote {
   void enablePlayer(String playerName);
 
   /**
-   * Has the game already started?
-   * If true, the server will call our ObserverWaitingToJoin to start the game.
-   * Note, the return value may come back after our ObserverWaitingToJoin has been created
+   * Has the game already started? If true, the server will call our ObserverWaitingToJoin to start
+   * the game. Note, the return value may come back after our ObserverWaitingToJoin has been created
    */
   boolean isGameStarted(INode newNode);
 

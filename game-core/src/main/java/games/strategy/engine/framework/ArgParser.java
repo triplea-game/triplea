@@ -7,17 +7,13 @@ import java.nio.file.Paths;
 
 import games.strategy.triplea.settings.ClientSetting;
 
-/**
- * Command line argument parser, parses args formatted as: "-Pkey=value".
- */
+/** Command line argument parser, parses args formatted as: "-Pkey=value". */
 public final class ArgParser {
   static final String TRIPLEA_PROTOCOL = "triplea:";
 
   private ArgParser() {}
 
-  /**
-   * Move command line arguments to system properties or client settings.
-   */
+  /** Move command line arguments to system properties or client settings. */
   public static void handleCommandLineArgs(final String... args) {
     ClientSetting.mapFolderOverride.resetValue();
 
@@ -34,7 +30,8 @@ public final class ArgParser {
   private static void handleMapDownloadArg(final String arg) {
     final String encoding = StandardCharsets.UTF_8.displayName();
     try {
-      setSystemPropertyOrClientSetting(CliProperties.TRIPLEA_MAP_DOWNLOAD,
+      setSystemPropertyOrClientSetting(
+          CliProperties.TRIPLEA_MAP_DOWNLOAD,
           URLDecoder.decode(arg.substring(TRIPLEA_PROTOCOL.length()), encoding));
     } catch (final UnsupportedEncodingException e) {
       throw new AssertionError(encoding + " is not a supported encoding!", e);

@@ -16,7 +16,8 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 
 /**
- * Takes all available purchase options, filters out those which the AI can't handle, and sorts them into categories.
+ * Takes all available purchase options, filters out those which the AI can't handle, and sorts them
+ * into categories.
  */
 public class ProPurchaseOptionMap {
 
@@ -65,8 +66,9 @@ public class ProPurchaseOptionMap {
 
       // Add rule to appropriate purchase option list
       if ((UnitAttachment.get(unitType).getMovement(player) <= 0
-          && !UnitAttachment.get(unitType).getCanProduceUnits())
-          || Matches.unitTypeConsumesUnitsOnCreation().test(unitType) || UnitAttachment.get(unitType).getIsSuicide()
+              && !UnitAttachment.get(unitType).getCanProduceUnits())
+          || Matches.unitTypeConsumesUnitsOnCreation().test(unitType)
+          || UnitAttachment.get(unitType).getIsSuicide()
           || UnitAttachment.get(unitType).getIsSuicideOnHit()) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);

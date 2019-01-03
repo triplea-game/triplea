@@ -42,10 +42,8 @@ import tools.image.FileSave;
 import tools.util.ToolArguments;
 
 /**
- * Utility to find connections between polygons
- * Not pretty, meant only for one time use.
- * Inputs - a polygons.txt file
- * Outputs - a list of connections between the Polygons
+ * Utility to find connections between polygons Not pretty, meant only for one time use. Inputs - a
+ * polygons.txt file Outputs - a list of connections between the Polygons
  */
 @Log
 public final class ConnectionFinder {
@@ -56,10 +54,12 @@ public final class ConnectionFinder {
   private File mapFolderLocation = null;
   private boolean dimensionsSet = false;
   private StringBuilder territoryDefinitions = null;
-  // how many pixels should each area become bigger in both x and y axis to see which area it overlaps?
+  // how many pixels should each area become bigger in both x and y axis to see which area it
+  // overlaps?
   // default 8, or if LINE_THICKNESS if given 4x linethickness
   private int scalePixels = 8;
-  // how many pixels should the boundingbox of the overlapping area have for it to be considered a valid connection?
+  // how many pixels should the boundingbox of the overlapping area have for it to be considered a
+  // valid connection?
   // default 32, or if LINE_THICKNESS is given 16 x linethickness
   private double minOverlap = 32.0;
 
@@ -78,22 +78,30 @@ public final class ConnectionFinder {
 
   private void runInternal(final String[] args) {
     handleCommandLineArgs(args);
-    JOptionPane.showMessageDialog(null,
-        new JLabel("<html>" + "This is the ConnectionFinder. "
-            + "<br>It will create a file containing the connections between territories, and optionally the territory "
-            + "definitions as well. "
-            + "<br>Copy and paste everything from this file into your game xml file (the 'map' section). "
-            + "<br>The connections file can and Should Be Deleted when finished, because it is Not Needed and not read "
-            + "by the engine. "
-            + "</html>"));
+    JOptionPane.showMessageDialog(
+        null,
+        new JLabel(
+            "<html>"
+                + "This is the ConnectionFinder. "
+                + "<br>It will create a file containing the connections between territories, and optionally the territory "
+                + "definitions as well. "
+                + "<br>Copy and paste everything from this file into your game xml file (the 'map' section). "
+                + "<br>The connections file can and Should Be Deleted when finished, because it is Not Needed and not read "
+                + "by the engine. "
+                + "</html>"));
     log.info("Select polygons.txt");
     File polyFile = null;
     if (mapFolderLocation != null && mapFolderLocation.exists()) {
       polyFile = new File(mapFolderLocation, "polygons.txt");
     }
-    if (polyFile == null || !polyFile.exists() || JOptionPane.showConfirmDialog(null,
-        "A polygons.txt file was found in the map's folder, do you want to use it?", "File Suggestion",
-        JOptionPane.YES_NO_CANCEL_OPTION) != 0) {
+    if (polyFile == null
+        || !polyFile.exists()
+        || JOptionPane.showConfirmDialog(
+                null,
+                "A polygons.txt file was found in the map's folder, do you want to use it?",
+                "File Suggestion",
+                JOptionPane.YES_NO_CANCEL_OPTION)
+            != 0) {
       polyFile = new FileOpen("Select The polygons.txt file", mapFolderLocation, ".txt").getFile();
     }
     if (polyFile == null || !polyFile.exists()) {
@@ -108,17 +116,18 @@ public final class ConnectionFinder {
     try (InputStream in = new FileInputStream(polyFile)) {
       mapOfPolygons = PointFileReaderWriter.readOneToManyPolygons(in);
       for (final Entry<String, List<Polygon>> entry : mapOfPolygons.entrySet()) {
-        territoryAreas.put(entry.getKey(), entry.getValue().stream()
-            .map(Area::new)
-            .collect(Collectors.toList()));
+        territoryAreas.put(
+            entry.getKey(), entry.getValue().stream().map(Area::new).collect(Collectors.toList()));
       }
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to load polygons: " + polyFile.getAbsolutePath(), e);
       return;
     }
     if (!dimensionsSet) {
-      final String lineWidth = JOptionPane.showInputDialog(null,
-          "Enter the width of territory border lines on your map? \r\n(eg: 1, or 2, etc.)");
+      final String lineWidth =
+          JOptionPane.showInputDialog(
+              null,
+              "Enter the width of territory border lines on your map? \r\n(eg: 1, or 2, etc.)");
       try {
         final int lineThickness = Integer.parseInt(lineWidth);
         scalePixels = lineThickness * 4;
@@ -128,22 +137,33 @@ public final class ConnectionFinder {
         // ignore malformed input
       }
     }
-    if (JOptionPane.showConfirmDialog(null,
-        "Scale set to " + scalePixels + " pixels larger, and minimum overlap set to " + minOverlap + " pixels. \r\n"
-            + "Do you wish to continue with this? \r\n"
-            + "Select Yes to continue, Select No to override and change the size.",
-        "Scale and Overlap Size", JOptionPane.YES_NO_OPTION) == 1) {
-      final String scale = JOptionPane.showInputDialog(null,
-          "Enter the number of pixels larger each territory should become? \r\n"
-              + "(Normally 4x bigger than the border line width. eg: 4, or 8, etc)");
+    if (JOptionPane.showConfirmDialog(
+            null,
+            "Scale set to "
+                + scalePixels
+                + " pixels larger, and minimum overlap set to "
+                + minOverlap
+                + " pixels. \r\n"
+                + "Do you wish to continue with this? \r\n"
+                + "Select Yes to continue, Select No to override and change the size.",
+            "Scale and Overlap Size",
+            JOptionPane.YES_NO_OPTION)
+        == 1) {
+      final String scale =
+          JOptionPane.showInputDialog(
+              null,
+              "Enter the number of pixels larger each territory should become? \r\n"
+                  + "(Normally 4x bigger than the border line width. eg: 4, or 8, etc)");
       try {
         scalePixels = Integer.parseInt(scale);
       } catch (final NumberFormatException ex) {
         // ignore malformed input
       }
-      final String overlap = JOptionPane.showInputDialog(null,
-          "Enter the minimum number of overlapping pixels for a connection? \r\n"
-              + "(Normally 16x bigger than the border line width. eg: 16, or 32, etc.)");
+      final String overlap =
+          JOptionPane.showInputDialog(
+              null,
+              "Enter the minimum number of overlapping pixels for a connection? \r\n"
+                  + "(Normally 16x bigger than the border line width. eg: 16, or 32, etc.)");
       try {
         minOverlap = Integer.parseInt(overlap);
       } catch (final NumberFormatException ex) {
@@ -151,9 +171,9 @@ public final class ConnectionFinder {
       }
     }
     log.info("Now Scanning for Connections");
-    // sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
-    final List<String> allTerritories =
-        new ArrayList<>(mapOfPolygons.keySet());
+    // sort so that they are in alphabetic order (makes xml's prettier and easier to update in
+    // future)
+    final List<String> allTerritories = new ArrayList<>(mapOfPolygons.keySet());
     allTerritories.sort(new AlphanumComparator());
     final List<String> allAreas = new ArrayList<>(territoryAreas.keySet());
     allAreas.sort(new AlphanumComparator());
@@ -170,7 +190,8 @@ public final class ConnectionFinder {
           if (thisTerritoryConnections.contains(otherTerritory)) {
             continue;
           }
-          if (connections.get(otherTerritory) != null && connections.get(otherTerritory).contains(territory)) {
+          if (connections.get(otherTerritory) != null
+              && connections.get(otherTerritory).contains(territory)) {
             continue;
           }
           for (final Area otherArea : territoryAreas.get(otherTerritory)) {
@@ -184,17 +205,28 @@ public final class ConnectionFinder {
         connections.put(territory, thisTerritoryConnections);
       }
     }
-    if (JOptionPane.showConfirmDialog(null, "Do you also want to create the Territory Definitions?",
-        "Territory Definitions", JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
-      final String waterString = JOptionPane.showInputDialog(null,
-          "Enter a string or regex that determines if the territory is Water? \r\n(e.g.: "
-              + Util.TERRITORY_SEA_ZONE_INFIX + ")",
-          Util.TERRITORY_SEA_ZONE_INFIX);
+    if (JOptionPane.showConfirmDialog(
+            null,
+            "Do you also want to create the Territory Definitions?",
+            "Territory Definitions",
+            JOptionPane.YES_NO_CANCEL_OPTION)
+        == 0) {
+      final String waterString =
+          JOptionPane.showInputDialog(
+              null,
+              "Enter a string or regex that determines if the territory is Water? \r\n(e.g.: "
+                  + Util.TERRITORY_SEA_ZONE_INFIX
+                  + ")",
+              Util.TERRITORY_SEA_ZONE_INFIX);
       territoryDefinitions = doTerritoryDefinitions(allTerritories, waterString);
     }
     try {
-      final String fileName = new FileSave("Where To Save connections.txt ? (cancel to print to console)",
-          "connections.txt", mapFolderLocation).getPathString();
+      final String fileName =
+          new FileSave(
+                  "Where To Save connections.txt ? (cancel to print to console)",
+                  "connections.txt",
+                  mapFolderLocation)
+              .getPathString();
       final StringBuilder connectionsString = convertToXml(connections);
       if (fileName == null) {
         if (territoryDefinitions != null) {
@@ -218,11 +250,12 @@ public final class ConnectionFinder {
   /**
    * Creates the xml territory definitions.
    *
-   * @param waterString a substring contained in a TerritoryName to define a Sea Zone or a regex expression that
-   *        indicates that a territory is water
+   * @param waterString a substring contained in a TerritoryName to define a Sea Zone or a regex
+   *     expression that indicates that a territory is water
    * @return StringBuilder containing XML representing these connections
    */
-  private static StringBuilder doTerritoryDefinitions(final List<String> allTerritoryNames, final String waterString) {
+  private static StringBuilder doTerritoryDefinitions(
+      final List<String> allTerritoryNames, final String waterString) {
     // sort for pretty xml's
     allTerritoryNames.sort(new AlphanumComparator());
     final StringBuilder output = new StringBuilder();
@@ -256,7 +289,12 @@ public final class ConnectionFinder {
     allTerritories.sort(new AlphanumComparator());
     for (final String t1 : allTerritories) {
       for (final String t2 : connections.get(t1)) {
-        output.append("<connection t1=\"").append(t1).append("\" t2=\"").append(t2).append("\"/>\r\n");
+        output
+            .append("<connection t1=\"")
+            .append(t1)
+            .append("\" t2=\"")
+            .append(t2)
+            .append("\"/>\r\n");
       }
     }
     return output;
@@ -274,8 +312,8 @@ public final class ConnectionFinder {
   }
 
   /**
-   * from: eu.hansolo.steelseries.tools.Scaler.java
-   * Returns a double that represents the area of the given point array of a polygon
+   * from: eu.hansolo.steelseries.tools.Scaler.java Returns a double that represents the area of the
+   * given point array of a polygon
    *
    * @return a double that represents the area of the given point array of a polygon
    */
@@ -292,8 +330,8 @@ public final class ConnectionFinder {
   }
 
   /**
-   * from: eu.hansolo.steelseries.tools.Scaler.java
-   * Returns a Point2D object that represents the center of mass of the given point array which represents a polygon.
+   * from: eu.hansolo.steelseries.tools.Scaler.java Returns a Point2D object that represents the
+   * center of mass of the given point array which represents a polygon.
    *
    * @return a Point2D object that represents the center of mass of the given point array
    */
@@ -305,7 +343,9 @@ public final class ConnectionFinder {
     final Point2D centroid = new Point2D.Double();
     for (int i = 0; i < length; i++) {
       final int j = (i + 1) % length;
-      final double factor = (pointArray[i].getX() * pointArray[j].getY() - pointArray[j].getX() * pointArray[i].getY());
+      final double factor =
+          (pointArray[i].getX() * pointArray[j].getY()
+              - pointArray[j].getX() * pointArray[i].getY());
       cx += (pointArray[i].getX() + pointArray[j].getX()) * factor;
       cy += (pointArray[i].getY() + pointArray[j].getY()) * factor;
     }
@@ -318,8 +358,8 @@ public final class ConnectionFinder {
   }
 
   /**
-   * from: eu.hansolo.steelseries.tools.Scaler.java
-   * Returns a Point2D object that represents the center of mass of the given shape.
+   * from: eu.hansolo.steelseries.tools.Scaler.java Returns a Point2D object that represents the
+   * center of mass of the given shape.
    *
    * @return a Point2D object that represents the center of mass of the given shape
    */
@@ -370,18 +410,20 @@ public final class ConnectionFinder {
   }
 
   /**
-   * from: eu.hansolo.steelseries.tools.Scaler.java
-   * Returns a scaled version of the given shape, calculated by the given scale factor.
-   * The scaling will be calculated around the centroid of the shape.
+   * from: eu.hansolo.steelseries.tools.Scaler.java Returns a scaled version of the given shape,
+   * calculated by the given scale factor. The scaling will be calculated around the centroid of the
+   * shape.
    *
    * @param sx how much to scale on the x-axis
    * @param sy how much to scale on the y-axis
-   * @return a scaled version of the given shape, calculated around the centroid by the given scale factors.
+   * @return a scaled version of the given shape, calculated around the centroid by the given scale
+   *     factors.
    */
   private static Shape scale(final Shape currentPolygon, final double sx, final double sy) {
     final Point2D centroid = getCentroid(currentPolygon);
-    final AffineTransform transform = AffineTransform.getTranslateInstance((1.0 - sx) * centroid.getX(),
-        (1.0 - sy) * centroid.getY());
+    final AffineTransform transform =
+        AffineTransform.getTranslateInstance(
+            (1.0 - sx) * centroid.getX(), (1.0 - sy) * centroid.getY());
     transform.scale(sx, sy);
     return transform.createTransformedShape(currentPolygon);
   }

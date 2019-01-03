@@ -11,9 +11,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Runnables;
 
-/**
- * Fake implementation of {@link IAttachment} useful for testing.
- */
+/** Fake implementation of {@link IAttachment} useful for testing. */
 @Immutable
 public final class FakeAttachment implements IAttachment {
   private static final long serialVersionUID = 3686559484645729844L;
@@ -41,9 +39,7 @@ public final class FakeAttachment implements IAttachment {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("name", name)
-        .toString();
+    return MoreObjects.toStringHelper(this).add("name", name).toString();
   }
 
   @Override

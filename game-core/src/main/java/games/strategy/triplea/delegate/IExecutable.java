@@ -10,8 +10,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
  * @see ExecutionStack
  */
 public interface IExecutable extends Serializable {
-  /**
-   * See the documentation to IExecutionStack.
-   */
+  /** See the documentation to IExecutionStack. */
   void execute(ExecutionStack stack, IDelegateBridge bridge);
 }

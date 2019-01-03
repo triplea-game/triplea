@@ -43,9 +43,7 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 
-/**
- * The lobby client menu bar.
- */
+/** The lobby client menu bar. */
 public final class LobbyMenu extends JMenuBar {
   private static final long serialVersionUID = 4980621864542042057L;
 
@@ -100,61 +98,72 @@ public final class LobbyMenu extends JMenuBar {
 
   private void addDisplayPlayersInformationMenu(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Display Players Information");
-    menuItem.addActionListener(event -> new Thread(() -> {
-      final IModeratorController controller = getModeratorController();
-      final StringBuilder builder = new StringBuilder();
-      builder.append("Online Players:\n\n");
-      for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getOnlinePlayers()) {
-        builder.append(controller.getInformationOn(player)).append("\n\n");
-      }
-      builder.append("Players That Have Left (Last 10):\n\n");
-      for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getPlayersThatLeft_Last10()) {
-        builder.append(controller.getInformationOn(player)).append("\n\n");
-      }
-      SwingUtilities.invokeLater(() -> {
-        final JDialog dialog = new JDialog(lobbyFrame, "Players Information");
-        final JTextArea label = new JTextArea(builder.toString());
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        label.setEditable(false);
-        label.setAutoscrolls(true);
-        label.setLineWrap(false);
-        label.setFocusable(true);
-        label.setWrapStyleWord(true);
-        label.setLocation(0, 0);
-        dialog.setBackground(label.getBackground());
-        dialog.setLayout(new BorderLayout());
-        final JScrollPane pane = new JScrollPane();
-        pane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        pane.setViewportView(label);
-        dialog.add(pane, BorderLayout.CENTER);
-        final JButton button = new JButton("Close");
-        button.addActionListener(e -> dialog.dispose());
-        button.setMinimumSize(new Dimension(100, 30));
-        dialog.add(button, BorderLayout.SOUTH);
-        dialog.setMinimumSize(new Dimension(500, 300));
-        dialog.setSize(new Dimension(800, 600));
-        dialog.setResizable(true);
-        dialog.setLocationRelativeTo(lobbyFrame);
-        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        dialog.setVisible(true);
-      });
-    }).start());
+    menuItem.addActionListener(
+        event ->
+            new Thread(
+                    () -> {
+                      final IModeratorController controller = getModeratorController();
+                      final StringBuilder builder = new StringBuilder();
+                      builder.append("Online Players:\n\n");
+                      for (final INode player :
+                          lobbyFrame.getChatMessagePanel().getChat().getOnlinePlayers()) {
+                        builder.append(controller.getInformationOn(player)).append("\n\n");
+                      }
+                      builder.append("Players That Have Left (Last 10):\n\n");
+                      for (final INode player :
+                          lobbyFrame.getChatMessagePanel().getChat().getPlayersThatLeft_Last10()) {
+                        builder.append(controller.getInformationOn(player)).append("\n\n");
+                      }
+                      SwingUtilities.invokeLater(
+                          () -> {
+                            final JDialog dialog = new JDialog(lobbyFrame, "Players Information");
+                            final JTextArea label = new JTextArea(builder.toString());
+                            label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                            label.setEditable(false);
+                            label.setAutoscrolls(true);
+                            label.setLineWrap(false);
+                            label.setFocusable(true);
+                            label.setWrapStyleWord(true);
+                            label.setLocation(0, 0);
+                            dialog.setBackground(label.getBackground());
+                            dialog.setLayout(new BorderLayout());
+                            final JScrollPane pane = new JScrollPane();
+                            pane.setHorizontalScrollBarPolicy(
+                                javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                            pane.setVerticalScrollBarPolicy(
+                                javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+                            pane.setViewportView(label);
+                            dialog.add(pane, BorderLayout.CENTER);
+                            final JButton button = new JButton("Close");
+                            button.addActionListener(e -> dialog.dispose());
+                            button.setMinimumSize(new Dimension(100, 30));
+                            dialog.add(button, BorderLayout.SOUTH);
+                            dialog.setMinimumSize(new Dimension(500, 300));
+                            dialog.setSize(new Dimension(800, 600));
+                            dialog.setResizable(true);
+                            dialog.setLocationRelativeTo(lobbyFrame);
+                            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                            dialog.setVisible(true);
+                          });
+                    })
+                .start());
     parentMenu.add(menuItem);
   }
 
   private void addBanUsernameMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Ban Username");
-    menuItem.addActionListener(e -> {
-      final @Nullable String username = showInputDialog(
-          "Enter the username that you want to ban from the lobby.\n\n"
-              + "Note that this ban is effective on any username, registered or anonymous, online or offline.");
-      if (validateUsername(username)) {
-        showTimespanDialog(
-            "Please consult other admins before banning longer than 1 day.",
-            date -> getModeratorController().banUsername(newDummyNode(username), date));
-      }
-    });
+    menuItem.addActionListener(
+        e -> {
+          final @Nullable String username =
+              showInputDialog(
+                  "Enter the username that you want to ban from the lobby.\n\n"
+                      + "Note that this ban is effective on any username, registered or anonymous, online or offline.");
+          if (validateUsername(username)) {
+            showTimespanDialog(
+                "Please consult other admins before banning longer than 1 day.",
+                date -> getModeratorController().banUsername(newDummyNode(username), date));
+          }
+        });
     parentMenu.add(menuItem);
   }
 
@@ -183,11 +192,12 @@ public final class LobbyMenu extends JMenuBar {
   }
 
   private IModeratorController getModeratorController() {
-    return (IModeratorController) lobbyFrame
-        .getLobbyClient()
-        .getMessengers()
-        .getRemoteMessenger()
-        .getRemote(IModeratorController.REMOTE_NAME);
+    return (IModeratorController)
+        lobbyFrame
+            .getLobbyClient()
+            .getMessengers()
+            .getRemoteMessenger()
+            .getRemote(IModeratorController.REMOTE_NAME);
   }
 
   private static INode newDummyNode(final String name) {
@@ -200,16 +210,20 @@ public final class LobbyMenu extends JMenuBar {
 
   private void addBanMacAddressMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Ban Hashed Mac Address");
-    menuItem.addActionListener(e -> {
-      final @Nullable String hashedMacAddress = showInputDialog(
-          "Enter the hashed Mac Address that you want to ban from the lobby.\n\n"
-              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
-      if (validateHashedMacAddress(hashedMacAddress)) {
-        showTimespanDialog(
-            "Please consult other admins before banning longer than 1 day.",
-            date -> getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, date));
-      }
-    });
+    menuItem.addActionListener(
+        e -> {
+          final @Nullable String hashedMacAddress =
+              showInputDialog(
+                  "Enter the hashed Mac Address that you want to ban from the lobby.\n\n"
+                      + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
+          if (validateHashedMacAddress(hashedMacAddress)) {
+            showTimespanDialog(
+                "Please consult other admins before banning longer than 1 day.",
+                date ->
+                    getModeratorController()
+                        .banMac(newDummyNode("__unknown__"), hashedMacAddress, date));
+          }
+        });
     parentMenu.add(menuItem);
   }
 
@@ -227,51 +241,60 @@ public final class LobbyMenu extends JMenuBar {
 
   private void addUnbanUsernameMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Unban Username");
-    menuItem.addActionListener(e -> {
-      final @Nullable String username = showInputDialog("Enter the username that you want to unban from the lobby.");
-      if (validateUsername(username)) {
-        getModeratorController().banUsername(newDummyNode(username), Date.from(Instant.EPOCH));
-      }
-    });
+    menuItem.addActionListener(
+        e -> {
+          final @Nullable String username =
+              showInputDialog("Enter the username that you want to unban from the lobby.");
+          if (validateUsername(username)) {
+            getModeratorController().banUsername(newDummyNode(username), Date.from(Instant.EPOCH));
+          }
+        });
     parentMenu.add(menuItem);
   }
 
   private void addUnbanMacAddressMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Unban Hashed Mac Address");
-    menuItem.addActionListener(e -> {
-      final @Nullable String hashedMacAddress = showInputDialog(
-          "Enter the hashed Mac Address that you want to unban from the lobby.\n\n"
-              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
-      if (validateHashedMacAddress(hashedMacAddress)) {
-        getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, Date.from(Instant.EPOCH));
-      }
-    });
+    menuItem.addActionListener(
+        e -> {
+          final @Nullable String hashedMacAddress =
+              showInputDialog(
+                  "Enter the hashed Mac Address that you want to unban from the lobby.\n\n"
+                      + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
+          if (validateHashedMacAddress(hashedMacAddress)) {
+            getModeratorController()
+                .banMac(newDummyNode("__unknown__"), hashedMacAddress, Date.from(Instant.EPOCH));
+          }
+        });
     parentMenu.add(menuItem);
   }
 
   private void addMuteUsernameMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Mute Username");
-    menuItem.addActionListener(e -> {
-      final @Nullable String username = showInputDialog(
-          "Enter the username that you want to mute in the lobby.\n\n"
-              + "Note that this mute is effective on any username, registered or anonymous, online or offline.");
-      if (validateUsername(username)) {
-        showTimespanDialog(
-            "Please consult other admins before muting longer than 1 day.",
-            date -> getModeratorController().muteUsername(newDummyNode(username), date));
-      }
-    });
+    menuItem.addActionListener(
+        e -> {
+          final @Nullable String username =
+              showInputDialog(
+                  "Enter the username that you want to mute in the lobby.\n\n"
+                      + "Note that this mute is effective on any username, registered or anonymous, online or offline.");
+          if (validateUsername(username)) {
+            showTimespanDialog(
+                "Please consult other admins before muting longer than 1 day.",
+                date -> getModeratorController().muteUsername(newDummyNode(username), date));
+          }
+        });
     parentMenu.add(menuItem);
   }
 
   private void addUnmuteUsernameMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Unmute Username");
-    menuItem.addActionListener(e -> {
-      final @Nullable String username = showInputDialog("Enter the username that you want to unmute in the lobby.");
-      if (validateUsername(username)) {
-        getModeratorController().muteUsername(newDummyNode(username), Date.from(Instant.EPOCH));
-      }
-    });
+    menuItem.addActionListener(
+        e -> {
+          final @Nullable String username =
+              showInputDialog("Enter the username that you want to unmute in the lobby.");
+          if (validateUsername(username)) {
+            getModeratorController().muteUsername(newDummyNode(username), Date.from(Instant.EPOCH));
+          }
+        });
     parentMenu.add(menuItem);
   }
 
@@ -291,19 +314,23 @@ public final class LobbyMenu extends JMenuBar {
 
   private static void addHelpMenu(final JMenu parentMenu) {
     final JMenuItem hostingLink = new JMenuItem("How to host");
-    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.HOSTING_GUIDE));
+    hostingLink.addActionListener(
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.HOSTING_GUIDE));
     parentMenu.add(hostingLink);
 
     final JMenuItem helpPageLink = new JMenuItem("Help Page");
-    helpPageLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP));
+    helpPageLink.addActionListener(
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP));
     parentMenu.add(helpPageLink);
 
     final JMenuItem lobbyRules = new JMenuItem("Lobby Rules");
-    lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES));
+    lobbyRules.addActionListener(
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES));
     parentMenu.add(lobbyRules);
 
     final JMenuItem warClub = new JMenuItem("TripleA Forum");
-    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
+    warClub.addActionListener(
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
     parentMenu.add(warClub);
   }
 
@@ -324,22 +351,26 @@ public final class LobbyMenu extends JMenuBar {
 
   private void updateAccountDetails() {
     final IUserManager manager =
-        (IUserManager) lobbyFrame.getLobbyClient().getRemoteMessenger().getRemote(IUserManager.REMOTE_NAME);
-    final DBUser user = manager.getUserInfo(lobbyFrame.getLobbyClient().getMessenger().getLocalNode().getName());
+        (IUserManager)
+            lobbyFrame.getLobbyClient().getRemoteMessenger().getRemote(IUserManager.REMOTE_NAME);
+    final DBUser user =
+        manager.getUserInfo(lobbyFrame.getLobbyClient().getMessenger().getLocalNode().getName());
     if (user == null) {
       showErrorDialog("No user info found", "Error");
       return;
     }
 
-    final CreateUpdateAccountPanel panel = CreateUpdateAccountPanel.newUpdatePanel(user, LobbyLoginPreferences.load());
+    final CreateUpdateAccountPanel panel =
+        CreateUpdateAccountPanel.newUpdatePanel(user, LobbyLoginPreferences.load());
     final CreateUpdateAccountPanel.ReturnValue returnValue = panel.show(lobbyFrame);
     if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
-    final String error = manager.updateUser(
-        panel.getUserName(),
-        panel.getEmail(),
-        RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()));
+    final String error =
+        manager.updateUser(
+            panel.getUserName(),
+            panel.getEmail(),
+            RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()));
     if (error != null) {
       showErrorDialog(error, "Error");
       return;
@@ -359,7 +390,8 @@ public final class LobbyMenu extends JMenuBar {
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (!isMac) { // On non-Mac operating systems, we need to manually create an Exit menu item
-      final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit", e -> lobbyFrame.shutdown()));
+      final JMenuItem menuFileExit =
+          new JMenuItem(SwingAction.of("Exit", e -> lobbyFrame.shutdown()));
       parentMenu.add(menuFileExit);
     }
   }

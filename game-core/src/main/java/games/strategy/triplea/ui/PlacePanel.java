@@ -48,8 +48,9 @@ class PlacePanel extends AbstractMovePanel {
   }
 
   private void refreshActionLabelText(final boolean bid) {
-    SwingUtilities
-        .invokeLater(() -> actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : "")));
+    SwingUtilities.invokeLater(
+        () ->
+            actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : "")));
   }
 
   PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge) {
@@ -73,45 +74,60 @@ class PlacePanel extends AbstractMovePanel {
     return Properties.getLhtrCarrierProductionRules(getData());
   }
 
-  private final MapSelectionListener placeMapSelectionListener = new DefaultMapSelectionListener() {
-    @Override
-    public void territorySelected(final Territory territory, final MouseDetails e) {
-      if (!getActive() || (e.getButton() != MouseEvent.BUTTON1)) {
-        return;
-      }
-      final int[] maxUnits = new int[1];
-      final Collection<Unit> units = getUnitsToPlace(territory, maxUnits);
-      if (units.isEmpty()) {
-        return;
-      }
-      final UnitChooser chooser = new UnitChooser(units, Collections.emptyMap(), false, getMap().getUiContext());
-      final String messageText = "Place units in " + territory.getName();
-      if (maxUnits[0] >= 0) {
-        chooser.setMaxAndShowMaxButton(maxUnits[0]);
-      }
-      final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-      final int availHeight = screenResolution.height - 120;
-      final int availWidth = screenResolution.width - 40;
-      final JScrollPane scroll = new JScrollPane(chooser);
-      scroll.setBorder(BorderFactory.createEmptyBorder());
-      scroll.setPreferredSize(new Dimension(
-          (scroll.getPreferredSize().width > availWidth ? availWidth
-              : (scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeight ? 20 : 0))),
-          (scroll.getPreferredSize().height > availHeight ? availHeight
-              : (scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidth ? 26 : 0)))));
-      final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, messageText,
-          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-      if (option == JOptionPane.OK_OPTION) {
-        final Collection<Unit> choosen = chooser.getSelected();
-        placeData = new PlaceData(choosen, territory);
-        updateUnits();
-        if (choosen.containsAll(units)) {
-          leftToPlaceLabel.setText("");
+  private final MapSelectionListener placeMapSelectionListener =
+      new DefaultMapSelectionListener() {
+        @Override
+        public void territorySelected(final Territory territory, final MouseDetails e) {
+          if (!getActive() || (e.getButton() != MouseEvent.BUTTON1)) {
+            return;
+          }
+          final int[] maxUnits = new int[1];
+          final Collection<Unit> units = getUnitsToPlace(territory, maxUnits);
+          if (units.isEmpty()) {
+            return;
+          }
+          final UnitChooser chooser =
+              new UnitChooser(units, Collections.emptyMap(), false, getMap().getUiContext());
+          final String messageText = "Place units in " + territory.getName();
+          if (maxUnits[0] >= 0) {
+            chooser.setMaxAndShowMaxButton(maxUnits[0]);
+          }
+          final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+          final int availHeight = screenResolution.height - 120;
+          final int availWidth = screenResolution.width - 40;
+          final JScrollPane scroll = new JScrollPane(chooser);
+          scroll.setBorder(BorderFactory.createEmptyBorder());
+          scroll.setPreferredSize(
+              new Dimension(
+                  (scroll.getPreferredSize().width > availWidth
+                      ? availWidth
+                      : (scroll.getPreferredSize().width
+                          + (scroll.getPreferredSize().height > availHeight ? 20 : 0))),
+                  (scroll.getPreferredSize().height > availHeight
+                      ? availHeight
+                      : (scroll.getPreferredSize().height
+                          + (scroll.getPreferredSize().width > availWidth ? 26 : 0)))));
+          final int option =
+              JOptionPane.showOptionDialog(
+                  getTopLevelAncestor(),
+                  scroll,
+                  messageText,
+                  JOptionPane.OK_CANCEL_OPTION,
+                  JOptionPane.PLAIN_MESSAGE,
+                  null,
+                  null,
+                  null);
+          if (option == JOptionPane.OK_OPTION) {
+            final Collection<Unit> choosen = chooser.getSelected();
+            placeData = new PlaceData(choosen, territory);
+            updateUnits();
+            if (choosen.containsAll(units)) {
+              leftToPlaceLabel.setText("");
+            }
+            release();
+          }
         }
-        release();
-      }
-    }
-  };
+      };
 
   private Collection<Unit> getUnitsToPlace(final Territory territory, final int[] maxUnits) {
     getData().acquireReadLock();
@@ -120,7 +136,9 @@ class PlacePanel extends AbstractMovePanel {
       if (!territory.isWater() && !territory.getOwner().equals(getCurrentPlayer())) {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
-          if ((pa == null || pa.getGiveUnitControl() == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
+          if ((pa == null
+                  || pa.getGiveUnitControl() == null
+                  || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
               && !territory.getUnits().anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
             return Collections.emptyList();
           }
@@ -131,11 +149,14 @@ class PlacePanel extends AbstractMovePanel {
       // get the units that can be placed on this territory.
       Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
       if (territory.isWater()) {
-        if (!(canProduceFightersOnCarriers() || canProduceNewFightersOnOldCarriers()
-            || isLhtrCarrierProductionRules() || GameStepPropertiesHelper.isBid(getData()))) {
+        if (!(canProduceFightersOnCarriers()
+            || canProduceNewFightersOnOldCarriers()
+            || isLhtrCarrierProductionRules()
+            || GameStepPropertiesHelper.isBid(getData()))) {
           units = CollectionUtils.getMatches(units, Matches.unitIsSea());
         } else {
-          final Predicate<Unit> unitIsSeaOrCanLandOnCarrier = Matches.unitIsSea().or(Matches.unitCanLandOnCarrier());
+          final Predicate<Unit> unitIsSeaOrCanLandOnCarrier =
+              Matches.unitIsSea().or(Matches.unitCanLandOnCarrier());
           units = CollectionUtils.getMatches(units, unitIsSeaOrCanLandOnCarrier);
         }
       } else {
@@ -144,10 +165,14 @@ class PlacePanel extends AbstractMovePanel {
       if (units.isEmpty()) {
         return Collections.emptyList();
       }
-      final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
+      final IAbstractPlaceDelegate placeDel =
+          (IAbstractPlaceDelegate) getPlayerBridge().getRemoteDelegate();
       final PlaceableUnits production = placeDel.getPlaceableUnits(units, territory);
       if (production.isError()) {
-        JOptionPane.showMessageDialog(getTopLevelAncestor(), production.getErrorMessage(), "No units",
+        JOptionPane.showMessageDialog(
+            getTopLevelAncestor(),
+            production.getErrorMessage(),
+            "No units",
             JOptionPane.INFORMATION_MESSAGE);
         return Collections.emptyList();
       }
@@ -159,7 +184,8 @@ class PlacePanel extends AbstractMovePanel {
   }
 
   private void updateUnits() {
-    final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(getCurrentPlayer().getUnits().getUnits());
+    final Collection<UnitCategory> unitCategories =
+        UnitSeparator.categorize(getCurrentPlayer().getUnits().getUnits());
     unitsToPlace.setUnitsFromCategories(unitCategories);
   }
 
@@ -193,9 +219,13 @@ class PlacePanel extends AbstractMovePanel {
   @Override
   protected boolean doneMoveAction() {
     if (getCurrentPlayer().getUnits().size() > 0) {
-      final int option = JOptionPane.showConfirmDialog(getTopLevelAncestor(),
-          "You have not placed all your units yet.  Are you sure you want to end your turn?", "TripleA",
-          JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+      final int option =
+          JOptionPane.showConfirmDialog(
+              getTopLevelAncestor(),
+              "You have not placed all your units yet.  Are you sure you want to end your turn?",
+              "TripleA",
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.PLAIN_MESSAGE);
       // TODO COMCO add code here to store the units until next time
       if (option != JOptionPane.YES_OPTION) {
         return false;

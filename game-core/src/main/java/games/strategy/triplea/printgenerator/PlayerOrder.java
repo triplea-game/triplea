@@ -39,7 +39,8 @@ class PlayerOrder {
           continue;
         }
       } else if (currentStep.getName() != null
-          && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace"))) {
+          && (currentStep.getName().endsWith("Bid")
+              || currentStep.getName().endsWith("BidPlace"))) {
         continue;
       }
       final PlayerId currentPlayerId = currentStep.getPlayerId();
@@ -49,10 +50,12 @@ class PlayerOrder {
     }
     printData.getOutDir().mkdir();
     final File outFile = new File(printData.getOutDir(), "General Information.csv");
-    try (Writer turnWriter = Files.newBufferedWriter(
-        outFile.toPath(),
-        StandardCharsets.UTF_8,
-        StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+    try (Writer turnWriter =
+        Files.newBufferedWriter(
+            outFile.toPath(),
+            StandardCharsets.UTF_8,
+            StandardOpenOption.CREATE,
+            StandardOpenOption.APPEND)) {
       turnWriter.write("Turn Order\r\n");
       int count = 1;
       for (final PlayerId currentPlayerId : removeDups(playerSet)) {

@@ -21,9 +21,9 @@ import games.strategy.triplea.xml.TestMapGameData;
 import games.strategy.util.IntegerMap;
 
 /**
- * "Victory" map is just a branch/mod of Pact of Steel 2.
- * POS2 is an actual game with good gameplay that we don't want to mess with, so
- * "Victory" is more of an xml purely for testing purposes, and probably should never be played.
+ * "Victory" map is just a branch/mod of Pact of Steel 2. POS2 is an actual game with good gameplay
+ * that we don't want to mess with, so "Victory" is more of an xml purely for testing purposes, and
+ * probably should never be played.
  */
 public class VictoryTest {
   private GameData gameData;
@@ -85,7 +85,8 @@ public class VictoryTest {
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
     final String error =
-        moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
+        moveDelegate.move(
+            libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
     moveDelegate.end();
     assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
   }
@@ -97,7 +98,8 @@ public class VictoryTest {
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
     final String error =
-        moveDelegate.move(frenchWestAfrica.getUnits().getUnits(),
+        moveDelegate.move(
+            frenchWestAfrica.getUnits().getUnits(),
             gameData.getMap().getRoute(frenchWestAfrica, britishCongo));
     moveDelegate.end();
     assertEquals(null, error);
@@ -109,11 +111,15 @@ public class VictoryTest {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    String error = moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, angloEgypt));
+    String error =
+        moveDelegate.move(
+            libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, angloEgypt));
     // first step is legal
     assertEquals(null, error);
     // second step isn't legal because we lost blitz even though we took the mountain
-    error = moveDelegate.move(angloEgypt.getUnits().getUnits(), gameData.getMap().getRoute(angloEgypt, britishCongo));
+    error =
+        moveDelegate.move(
+            angloEgypt.getUnits().getUnits(), gameData.getMap().getRoute(angloEgypt, britishCongo));
     moveDelegate.end();
     assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
   }
@@ -124,15 +130,18 @@ public class VictoryTest {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    String error = moveDelegate.move(frenchWestAfrica.getUnits().getUnits(),
-        gameData.getMap().getRoute(frenchWestAfrica, frenchEastAfrica));
+    String error =
+        moveDelegate.move(
+            frenchWestAfrica.getUnits().getUnits(),
+            gameData.getMap().getRoute(frenchWestAfrica, frenchEastAfrica));
     assertEquals(null, error);
-    error = moveDelegate.move(frenchEastAfrica.getUnits().getUnits(),
-        gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
+    error =
+        moveDelegate.move(
+            frenchEastAfrica.getUnits().getUnits(),
+            gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
     moveDelegate.end();
     assertEquals(null, error);
   }
-
 
   @Test
   public void testMotorizedThroughMountain() {
@@ -141,7 +150,8 @@ public class VictoryTest {
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
     final String error =
-        moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
+        moveDelegate.move(
+            libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
     moveDelegate.end();
     assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
   }
@@ -155,13 +165,19 @@ public class VictoryTest {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    String error = moveDelegate.move(frenchEastAfrica.getUnits().getUnits(),
-        gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
+    String error =
+        moveDelegate.move(
+            frenchEastAfrica.getUnits().getUnits(),
+            gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
     assertEquals(null, error);
-    error = moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
+    error =
+        moveDelegate.move(
+            kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertEquals(null, error);
-    error = moveDelegate.move(britishCongo.getUnits().getUnits(),
-        gameData.getMap().getRoute(britishCongo, frenchEastAfrica));
+    error =
+        moveDelegate.move(
+            britishCongo.getUnits().getUnits(),
+            gameData.getMap().getRoute(britishCongo, frenchEastAfrica));
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
     moveDelegate.end();
   }
@@ -190,7 +206,9 @@ public class VictoryTest {
     assertEquals(puAmount - 1, italians.getResources().getQuantity("PUs"));
     assertEquals(oreAmount - 2, italians.getResources().getQuantity("Ore"));
 
-    moveDelegate.move(britishCongo.getUnits().getUnits(), gameData.getMap().getRoute(britishCongo, frenchEastAfrica));
+    moveDelegate.move(
+        britishCongo.getUnits().getUnits(),
+        gameData.getMap().getRoute(britishCongo, frenchEastAfrica));
     assertEquals(fuelAmount - 3, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 2, italians.getResources().getQuantity("PUs"));
     assertEquals(oreAmount - 2, italians.getResources().getQuantity("Ore"));
@@ -203,7 +221,8 @@ public class VictoryTest {
 
     gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(50, italians)));
     final String error =
-        moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
+        moveDelegate.move(
+            kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertTrue(error.startsWith("Not enough resources to perform this move"));
     moveDelegate.end();
   }
@@ -242,7 +261,8 @@ public class VictoryTest {
     assertEquals(fuelAmount - 11, italians.getResources().getQuantity("Fuel"));
     moveDelegate.move(sz29.getUnits().getUnits(), gameData.getMap().getRoute(sz29, sz30));
     assertEquals(fuelAmount - 12, italians.getResources().getQuantity("Fuel"));
-    moveDelegate.move(sz30.getUnits().getMatches(Matches.unitIsAir()), gameData.getMap().getRoute(sz30, sz29));
+    moveDelegate.move(
+        sz30.getUnits().getMatches(Matches.unitIsAir()), gameData.getMap().getRoute(sz30, sz29));
     assertEquals(fuelAmount - 16, italians.getResources().getQuantity("Fuel"));
     gameData.performChange(ChangeFactory.removeUnits(sz29, sz29.getUnits()));
     gameData.performChange(ChangeFactory.removeUnits(sz30, sz30.getUnits()));
@@ -267,7 +287,8 @@ public class VictoryTest {
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
     final IntegerMap<ProductionRule> purchaseList = new IntegerMap<>();
-    final ProductionRule armourtest = gameData.getProductionRuleList().getProductionRule("buyArmourtest");
+    final ProductionRule armourtest =
+        gameData.getProductionRuleList().getProductionRule("buyArmourtest");
     assertNotNull(armourtest);
     italianResources.subtract(armourtest.getCosts());
     purchaseList.add(armourtest, 1);
@@ -282,7 +303,8 @@ public class VictoryTest {
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
     final IntegerMap<ProductionRule> purchaseList = new IntegerMap<>();
-    final ProductionRule armourtest = gameData.getProductionRuleList().getProductionRule("buyArmourtest2");
+    final ProductionRule armourtest =
+        gameData.getProductionRuleList().getProductionRule("buyArmourtest2");
     assertNotNull(armourtest);
     italianResources.subtract(armourtest.getCosts());
     purchaseList.add(armourtest, 1);
@@ -296,7 +318,8 @@ public class VictoryTest {
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
     final IntegerMap<ProductionRule> purchaseList = new IntegerMap<>();
-    final ProductionRule buyArmour = gameData.getProductionRuleList().getProductionRule("buyArmour");
+    final ProductionRule buyArmour =
+        gameData.getProductionRuleList().getProductionRule("buyArmour");
     assertNotNull(buyArmour);
     italianResources.subtract(buyArmour.getCosts());
     purchaseList.add(buyArmour, 1);
@@ -311,7 +334,8 @@ public class VictoryTest {
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
     final IntegerMap<ProductionRule> purchaseList = new IntegerMap<>();
-    final ProductionRule buyArmour = gameData.getProductionRuleList().getProductionRule("buyArmourtest3");
+    final ProductionRule buyArmour =
+        gameData.getProductionRuleList().getProductionRule("buyArmourtest3");
     assertNotNull(buyArmour);
     italianResources.subtract(buyArmour.getCosts());
     purchaseList.add(buyArmour, 1);

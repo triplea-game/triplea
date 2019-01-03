@@ -19,27 +19,25 @@ import com.google.common.base.Strings;
 import games.strategy.triplea.settings.ClientSetting;
 import lombok.extern.java.Log;
 
-/**
- * Provides methods to configure the proxy to use for HTTP requests.
- */
+/** Provides methods to configure the proxy to use for HTTP requests. */
 @Log
 public class HttpProxy {
 
   /**
-   * Set of possible proxy options. Users can change between these via settings.
-   * System preferences will load proxy settings from the OS.
+   * Set of possible proxy options. Users can change between these via settings. System preferences
+   * will load proxy settings from the OS.
    */
   public enum ProxyChoice {
-    NONE, USE_SYSTEM_SETTINGS, USE_USER_PREFERENCES
+    NONE,
+    USE_SYSTEM_SETTINGS,
+    USE_USER_PREFERENCES
   }
 
   public static boolean isUsingSystemProxy() {
     return ClientSetting.proxyChoice.getValueOrThrow().equals(ProxyChoice.USE_SYSTEM_SETTINGS);
   }
 
-  /**
-   * Get the latest system proxy settings and apply them.
-   */
+  /** Get the latest system proxy settings and apply them. */
   public static void updateSystemProxy() {
     final Optional<InetSocketAddress> address = getSystemProxy();
     final @Nullable String host;
@@ -63,7 +61,8 @@ public class HttpProxy {
     try {
       final ProxySelector def = ProxySelector.getDefault();
       if (def != null) {
-        // TODO: if we switch to HTTPS, we will potentially need an https URL, proxies can very by protocol.
+        // TODO: if we switch to HTTPS, we will potentially need an https URL, proxies can very by
+        // protocol.
         final String anyUrlThatShouldAvailable = "http://sourceforge.net/";
         final List<Proxy> proxyList = def.select(new URI(anyUrlThatShouldAvailable));
         ProxySelector.setDefault(null);
@@ -81,15 +80,16 @@ public class HttpProxy {
     return Optional.empty();
   }
 
-  /**
-   * Attaches proxy host and port values, if any, to the http request parameter.
-   */
+  /** Attaches proxy host and port values, if any, to the http request parameter. */
   public static void addProxy(final HttpRequestBase request) {
     if (ClientSetting.proxyHost.isSet() && ClientSetting.proxyPort.isSet()) {
-      request.setConfig(RequestConfig
-          .copy(request.getConfig())
-          .setProxy(new HttpHost(ClientSetting.proxyHost.getValueOrThrow(), ClientSetting.proxyPort.getValueOrThrow()))
-          .build());
+      request.setConfig(
+          RequestConfig.copy(request.getConfig())
+              .setProxy(
+                  new HttpHost(
+                      ClientSetting.proxyHost.getValueOrThrow(),
+                      ClientSetting.proxyPort.getValueOrThrow()))
+              .build());
     }
   }
 }

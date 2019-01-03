@@ -15,10 +15,8 @@ import com.google.common.base.Ascii;
 import com.google.common.base.Preconditions;
 
 /**
- * Builds a swing JLabel.
- * <br />
- * Example usage:
- * <code><pre>
+ * Builds a swing JLabel. <br>
+ * Example usage: <code><pre>
  *   JLabel label = JLabelBuilder.builder()
  *     .text("label text")
  *     .leftAlign()
@@ -44,8 +42,7 @@ public class JLabelBuilder {
   }
 
   /**
-   * Constructs a Swing JLabel using current builder values.
-   * Values that must be set: text or icon
+   * Constructs a Swing JLabel using current builder values. Values that must be set: text or icon
    */
   public JLabel build() {
     Preconditions.checkState(text != null || icon != null);
@@ -60,31 +57,27 @@ public class JLabelBuilder {
 
     final JLabel label = new JLabel(truncated);
 
-    Optional.ofNullable(icon)
-        .ifPresent(label::setIcon);
+    Optional.ofNullable(icon).ifPresent(label::setIcon);
 
-    Optional.ofNullable(iconTextGap)
-        .ifPresent(label::setIconTextGap);
+    Optional.ofNullable(iconTextGap).ifPresent(label::setIconTextGap);
 
     Optional.ofNullable(alignment)
-        .ifPresent(align -> {
-          switch (align) {
-            case LEFT:
-              label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-              break;
-            default:
-              break;
-          }
-        });
+        .ifPresent(
+            align -> {
+              switch (align) {
+                case LEFT:
+                  label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+                  break;
+                default:
+                  break;
+              }
+            });
 
-    Optional.ofNullable(tooltip)
-        .ifPresent(label::setToolTipText);
+    Optional.ofNullable(tooltip).ifPresent(label::setToolTipText);
 
-    Optional.ofNullable(maxSize)
-        .ifPresent(label::setMaximumSize);
+    Optional.ofNullable(maxSize).ifPresent(label::setMaximumSize);
 
-    Optional.ofNullable(border)
-        .ifPresent(label::setBorder);
+    Optional.ofNullable(border).ifPresent(label::setBorder);
 
     Optional.ofNullable(borderSize)
         .ifPresent(size -> label.setBorder(new EmptyBorder(size, size, size, size)));
@@ -126,7 +119,6 @@ public class JLabelBuilder {
     return this;
   }
 
-
   public JLabelBuilder border(final Border border) {
     this.border = border;
     return this;
@@ -137,10 +129,9 @@ public class JLabelBuilder {
     return this;
   }
 
-
   /**
-   * Builds a label with a max length enforced for the printed text. Text is truncated if exceeds the max
-   * length and the full text is placed into a hover-over tooltip.
+   * Builds a label with a max length enforced for the printed text. Text is truncated if exceeds
+   * the max length and the full text is placed into a hover-over tooltip.
    */
   public JLabelBuilder textWithMaxLength(final String text, final int maxTextLength) {
     this.maxTextLength = maxTextLength;

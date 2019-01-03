@@ -9,10 +9,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.UndoableMove;
 
-/**
- * Remote interface for MoveDelegate.
- */
-public interface IMoveDelegate extends IAbstractMoveDelegate<UndoableMove>, IAbstractForumPosterDelegate {
+/** Remote interface for MoveDelegate. */
+public interface IMoveDelegate
+    extends IAbstractMoveDelegate<UndoableMove>, IAbstractForumPosterDelegate {
   /**
    * Moves the specified units along the specified route.
    *
@@ -29,10 +28,14 @@ public interface IMoveDelegate extends IAbstractMoveDelegate<UndoableMove>, IAbs
    * @param units - the units to move.
    * @param route - the route to move along
    * @param transportsThatCanBeLoaded - transports that can be loaded while moving, must be non null
-   * @param newDependents - units that will be made into new dependents if this move is successful, must be non null
+   * @param newDependents - units that will be made into new dependents if this move is successful,
+   *     must be non null
    * @return an error message if the move can't be made, null otherwise
    */
-  String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded,
+  String move(
+      Collection<Unit> units,
+      Route route,
+      Collection<Unit> transportsThatCanBeLoaded,
       Map<Unit, Collection<Unit>> newDependents);
 
   /**

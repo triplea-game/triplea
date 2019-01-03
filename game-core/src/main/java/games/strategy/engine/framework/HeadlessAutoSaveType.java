@@ -3,9 +3,7 @@ package games.strategy.engine.framework;
 import java.io.File;
 import java.nio.file.Path;
 
-/**
- * The types of auto-saves that can be loaded by a headless game server.
- */
+/** The types of auto-saves that can be loaded by a headless game server. */
 public enum HeadlessAutoSaveType {
   DEFAULT(AutoSaveFileUtils.getHeadlessAutoSaveFile()),
 

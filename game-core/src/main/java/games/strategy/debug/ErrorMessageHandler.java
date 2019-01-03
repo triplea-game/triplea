@@ -9,23 +9,21 @@ import java.util.logging.LogRecord;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * A {@link Handler} that displays an error message dialog if any log record with a level equal to or greater than
- * {@link Level#WARNING} is published.
+ * A {@link Handler} that displays an error message dialog if any log record with a level equal to
+ * or greater than {@link Level#WARNING} is published.
  *
- * <p>
- * <strong>Configuration:</strong> This handler does not currently support configuration through the {@link LogManager}.
- * It always uses the following default configuration:
- * </p>
+ * <p><strong>Configuration:</strong> This handler does not currently support configuration through
+ * the {@link LogManager}. It always uses the following default configuration:
+ *
  * <ul>
- * <li>Level: {@code Level.ALL}</li>
- * <li>Filter: No {@code Filter}</li>
- * <li>Formatter: No {@code Formatter}</li>
- * <li>Encoding: default platform encoding</li>
+ *   <li>Level: {@code Level.ALL}
+ *   <li>Filter: No {@code Filter}
+ *   <li>Formatter: No {@code Formatter}
+ *   <li>Encoding: default platform encoding
  * </ul>
  */
 public final class ErrorMessageHandler extends Handler {
-  @VisibleForTesting
-  static final int THRESHOLD_LEVEL_VALUE = Level.WARNING.intValue();
+  @VisibleForTesting static final int THRESHOLD_LEVEL_VALUE = Level.WARNING.intValue();
 
   @Override
   public void close() {}

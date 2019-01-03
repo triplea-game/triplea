@@ -47,5 +47,4 @@ public class TuvUtilsTest {
     final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
     assertEquals(25, result.getInt(GameDataTestUtil.germanBattleship(gameData)));
   }
-
 }

@@ -92,15 +92,18 @@ class PuChart {
         if (avoidMap.containsKey(z) && moneyArray[z] / 42 == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 63 + 87 * valFloorXDim);
+          g2d.drawString(
+              playerArray[z].getName(), 42 + 87 * valModXDim - width, 63 + 87 * valFloorXDim);
         } else if (avoidMap.containsValue(z) && moneyArray[z] / 42 == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 30 + 87 * valFloorXDim);
+          g2d.drawString(
+              playerArray[z].getName(), 42 + 87 * valModXDim - width, 30 + 87 * valFloorXDim);
         } else if (moneyArray[z] / 42 == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 60 + 87 * valFloorXDim);
+          g2d.drawString(
+              playerArray[z].getName(), 42 + 87 * valModXDim - width, 60 + 87 * valFloorXDim);
         }
       }
       // Draw Ellipses and Numbers

@@ -23,8 +23,8 @@ import games.strategy.util.IntegerMap;
 class EditProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 5826523459539469173L;
 
-  static IntegerMap<ProductionRule> getProduction(final PlayerId id, final JFrame parent, final GameData data,
-      final UiContext uiContext) {
+  static IntegerMap<ProductionRule> getProduction(
+      final PlayerId id, final JFrame parent, final GameData data, final UiContext uiContext) {
     return new EditProductionPanel(uiContext).show(id, parent, data, false, new IntegerMap<>());
   }
 
@@ -40,7 +40,8 @@ class EditProductionPanel extends ProductionPanel {
   }
 
   @Override
-  protected void initRules(final PlayerId player, final IntegerMap<ProductionRule> initialPurchase) {
+  protected void initRules(
+      final PlayerId player, final IntegerMap<ProductionRule> initialPurchase) {
     this.data.acquireReadLock();
     try {
       id = player;
@@ -48,7 +49,8 @@ class EditProductionPanel extends ProductionPanel {
       if (player.getProductionFrontier() != null) {
         for (final ProductionRule productionRule : player.getProductionFrontier()) {
           final Rule rule = new Rule(productionRule, player);
-          for (final Entry<NamedAttachable, Integer> entry : productionRule.getResults().entrySet()) {
+          for (final Entry<NamedAttachable, Integer> entry :
+              productionRule.getResults().entrySet()) {
             if (UnitType.class.isAssignableFrom(entry.getKey().getClass())) {
               unitsAllowed.add((UnitType) entry.getKey());
             }
@@ -58,8 +60,10 @@ class EditProductionPanel extends ProductionPanel {
           rules.add(rule);
         }
       }
-      // this next part is purely to allow people to "add" neutral (null player) units to territories.
-      // This is because the null player does not have a production frontier, and we also do not know what units we have
+      // this next part is purely to allow people to "add" neutral (null player) units to
+      // territories.
+      // This is because the null player does not have a production frontier, and we also do not
+      // know what units we have
       // art for, so only use the units on a map.
       for (final Territory t : data.getMap()) {
         for (final Unit u : t.getUnits()) {

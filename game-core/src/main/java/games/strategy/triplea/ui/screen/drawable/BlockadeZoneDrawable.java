@@ -9,9 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 
-/**
- * Draws the blockade image for the associated territory.
- */
+/** Draws the blockade image for the associated territory. */
 public class BlockadeZoneDrawable implements IDrawable {
   private final String location;
 
@@ -20,8 +18,13 @@ public class BlockadeZoneDrawable implements IDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData,
+      final AffineTransform unscaled,
+      final AffineTransform scaled) {
     // Find blockade.png from misc folder
     final Point point = mapData.getBlockadePlacementPoint(data.getMap().getTerritory(location));
     drawImage(graphics, mapData.getBlockadeImage(), point, bounds);

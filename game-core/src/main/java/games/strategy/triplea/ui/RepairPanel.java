@@ -45,31 +45,34 @@ class RepairPanel extends ActionPanel {
   public void display(final PlayerId id) {
     super.display(id);
     repair = new HashMap<>();
-    SwingUtilities.invokeLater(() -> {
-      removeAll();
-      actionLabel.setText(id.getName() + " repair");
-      buyButton.setText(BUY);
-      add(actionLabel);
-      add(buyButton);
-      add(new JButton(doneAction));
-      repairdSoFar.setText("");
-      add(Box.createVerticalStrut(9));
-      add(repairdSoFar);
-      add(Box.createVerticalStrut(4));
-      unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), id, getData());
-      add(unitsPanel);
-      add(Box.createVerticalGlue());
-      SwingUtilities.invokeLater(refresh);
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          removeAll();
+          actionLabel.setText(id.getName() + " repair");
+          buyButton.setText(BUY);
+          add(actionLabel);
+          add(buyButton);
+          add(new JButton(doneAction));
+          repairdSoFar.setText("");
+          add(Box.createVerticalStrut(9));
+          add(repairdSoFar);
+          add(Box.createVerticalStrut(4));
+          unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), id, getData());
+          add(unitsPanel);
+          add(Box.createVerticalGlue());
+          SwingUtilities.invokeLater(refresh);
+        });
   }
 
   private void refreshActionLabelText() {
     SwingUtilities.invokeLater(
-        () -> actionLabel.setText(getCurrentPlayer().getName() + " repair " + (bid ? " for bid" : "")));
+        () ->
+            actionLabel.setText(
+                getCurrentPlayer().getName() + " repair " + (bid ? " for bid" : "")));
   }
 
-  Map<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
-      final Collection<PlayerId> allowedPlayersToRepair) {
+  Map<Unit, IntegerMap<RepairRule>> waitForRepair(
+      final boolean bid, final Collection<PlayerId> allowedPlayersToRepair) {
     this.bid = bid;
     this.allowedPlayersToRepair = allowedPlayersToRepair;
     refreshActionLabelText();
@@ -79,42 +82,58 @@ class RepairPanel extends ActionPanel {
     return repair;
   }
 
-  private final ActionListener purchaseAction = new ActionListener() {
+  private final ActionListener purchaseAction =
+      new ActionListener() {
 
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final PlayerId player = getCurrentPlayer();
-      final GameData data = getData();
-      repair = ProductionRepairPanel.getProduction(player, allowedPlayersToRepair, (JFrame) getTopLevelAncestor(),
-          data, bid, repair, getMap().getUiContext());
-      unitsPanel.setUnitsFromRepairRuleMap(repair, player, data);
-      final int totalValues = getTotalValues(repair);
-      if (totalValues == 0) {
-        repairdSoFar.setText("");
-        buyButton.setText(BUY);
-      } else {
-        buyButton.setText(CHANGE);
-        repairdSoFar.setText(totalValues + MyFormatter.pluralize(" unit", totalValues) + " to be repaired:");
-      }
-    }
-  };
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+          final PlayerId player = getCurrentPlayer();
+          final GameData data = getData();
+          repair =
+              ProductionRepairPanel.getProduction(
+                  player,
+                  allowedPlayersToRepair,
+                  (JFrame) getTopLevelAncestor(),
+                  data,
+                  bid,
+                  repair,
+                  getMap().getUiContext());
+          unitsPanel.setUnitsFromRepairRuleMap(repair, player, data);
+          final int totalValues = getTotalValues(repair);
+          if (totalValues == 0) {
+            repairdSoFar.setText("");
+            buyButton.setText(BUY);
+          } else {
+            buyButton.setText(CHANGE);
+            repairdSoFar.setText(
+                totalValues + MyFormatter.pluralize(" unit", totalValues) + " to be repaired:");
+          }
+        }
+      };
 
   // Spin through the territories to get this.
   private static int getTotalValues(final Map<Unit, IntegerMap<RepairRule>> repair) {
     return repair.values().stream().mapToInt(IntegerMap::totalValues).sum();
   }
 
-  private final Action doneAction = SwingAction.of("Done", e -> {
-    final boolean hasPurchased = getTotalValues(repair) != 0;
-    if (!hasPurchased) {
-      final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(RepairPanel.this),
-          "Are you sure you dont want to repair anything?", "End Purchase", JOptionPane.YES_NO_OPTION);
-      if (selectedOption != JOptionPane.YES_OPTION) {
-        return;
-      }
-    }
-    release();
-  });
+  private final Action doneAction =
+      SwingAction.of(
+          "Done",
+          e -> {
+            final boolean hasPurchased = getTotalValues(repair) != 0;
+            if (!hasPurchased) {
+              final int selectedOption =
+                  JOptionPane.showConfirmDialog(
+                      JOptionPane.getFrameForComponent(RepairPanel.this),
+                      "Are you sure you dont want to repair anything?",
+                      "End Purchase",
+                      JOptionPane.YES_NO_OPTION);
+              if (selectedOption != JOptionPane.YES_OPTION) {
+                return;
+              }
+            }
+            release();
+          });
 
   @Override
   public String toString() {

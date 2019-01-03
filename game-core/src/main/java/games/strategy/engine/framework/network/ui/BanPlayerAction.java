@@ -12,9 +12,7 @@ import javax.swing.JOptionPane;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 
-/**
- * An action for banning a player from a network game.
- */
+/** An action for banning a player from a network game. */
 public class BanPlayerAction extends AbstractAction {
   private static final long serialVersionUID = -2415917785233191860L;
   private final Component parent;
@@ -37,11 +35,13 @@ public class BanPlayerAction extends AbstractAction {
       }
     }
     if (model.getSize() == 1) {
-      JOptionPane.showMessageDialog(parent, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(
+          parent, "No remote players", "No Remote Players", JOptionPane.ERROR_MESSAGE);
       return;
     }
     final int selectedOption =
-        JOptionPane.showConfirmDialog(parent, combo, "Select player to ban", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(
+            parent, combo, "Select player to ban", JOptionPane.OK_CANCEL_OPTION);
     if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }

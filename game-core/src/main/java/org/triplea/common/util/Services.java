@@ -6,16 +6,15 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
-/**
- * Provides convenience methods for loading services via {@link ServiceLoader}.
- */
+/** Provides convenience methods for loading services via {@link ServiceLoader}. */
 public final class Services {
   private Services() {}
 
   /**
    * Returns any available provider of the service of the specified type.
    *
-   * @throws ServiceNotAvailableException If there are no service providers of the specified type available.
+   * @throws ServiceNotAvailableException If there are no service providers of the specified type
+   *     available.
    */
   public static <T> T loadAny(final Class<T> type) {
     checkNotNull(type);
@@ -24,8 +23,8 @@ public final class Services {
   }
 
   /**
-   * Returns any available provider of the service of the specified type or empty if there are no service providers of
-   * the specified type available.
+   * Returns any available provider of the service of the specified type or empty if there are no
+   * service providers of the specified type available.
    */
   public static <T> Optional<T> tryLoadAny(final Class<T> type) {
     checkNotNull(type);

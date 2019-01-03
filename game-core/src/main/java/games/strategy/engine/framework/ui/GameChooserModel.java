@@ -25,20 +25,20 @@ import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
-/**
- * The model for a {@link GameChooser} dialog.
- */
+/** The model for a {@link GameChooser} dialog. */
 @Log
 public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   private static final long serialVersionUID = -2044689419834812524L;
 
   private enum ZipProcessingResult {
-    SUCCESS, ERROR
+    SUCCESS,
+    ERROR
   }
 
   /**
-   * Initializes a new {@code GameChooserModel} using all available maps installed in the user's maps folder. This
-   * method will block until all maps are parsed and should not be called from the EDT.
+   * Initializes a new {@code GameChooserModel} using all available maps installed in the user's
+   * maps folder. This method will block until all maps are parsed and should not be called from the
+   * EDT.
    */
   public GameChooserModel() {
     this(parseMapFiles());
@@ -55,14 +55,16 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
 
   static Set<GameChooserEntry> parseMapFiles() {
     final Set<GameChooserEntry> parsedMapSet = new HashSet<>();
-    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).parallelStream()
-        .forEach(map -> {
-          if (map.isDirectory()) {
-            parsedMapSet.addAll(populateFromDirectory(map));
-          } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
-            parsedMapSet.addAll(populateFromZip(map));
-          }
-        });
+    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
+        .parallelStream()
+        .forEach(
+            map -> {
+              if (map.isDirectory()) {
+                parsedMapSet.addAll(populateFromDirectory(map));
+              } else if (map.isFile() && map.getName().toLowerCase().endsWith(".zip")) {
+                parsedMapSet.addAll(populateFromZip(map));
+              }
+            });
     return parsedMapSet;
   }
 
@@ -93,47 +95,54 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     return entries;
   }
 
-  private static ZipProcessingResult processZipEntry(final URLClassLoader loader, final ZipEntry entry,
-      final Set<GameChooserEntry> entries) {
+  private static ZipProcessingResult processZipEntry(
+      final URLClassLoader loader, final ZipEntry entry, final Set<GameChooserEntry> entries) {
     final URL url = loader.getResource(entry.getName());
     if (url == null) {
       // not loading the URL means the XML is truncated or otherwise in bad shape
       return ZipProcessingResult.ERROR;
     }
 
-    newGameChooserEntry(URI.create(url.toString().replace(" ", "%20")))
-        .ifPresent(entries::add);
+    newGameChooserEntry(URI.create(url.toString().replace(" ", "%20"))).ifPresent(entries::add);
     return ZipProcessingResult.SUCCESS;
   }
 
   /**
-   * Open up a confirmation dialog, if user says yes, delete the map specified by
-   * parameter, then show confirmation of deletion.
+   * Open up a confirmation dialog, if user says yes, delete the map specified by parameter, then
+   * show confirmation of deletion.
    */
-  private static void confirmWithUserAndThenDeleteCorruptZipFile(final File map, final Optional<String> errorDetails) {
-    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-      String message = "Could not parse map file correctly, would you like to remove it?\n" + map.getAbsolutePath()
-          + "\n(You may see this error message again if you keep the file)";
-      String title = "Corrup Map File Found";
-      final int optionType = JOptionPane.YES_NO_OPTION;
-      int messageType = JOptionPane.WARNING_MESSAGE;
-      final int result = GameRunner.showConfirmDialog(
-          message, GameRunner.Title.of(title), optionType, messageType);
-      if (result == JOptionPane.YES_OPTION) {
-        if (map.delete()) {
-          messageType = JOptionPane.INFORMATION_MESSAGE;
-          message = "File was deleted successfully.";
-        } else if (map.exists()) {
-          message = "Unable to delete file, please remove it in the file system and restart tripleA:\n" + map
-              .getAbsolutePath();
-          if (errorDetails.isPresent()) {
-            message += "\nError details: " + errorDetails;
-          }
-        }
-        title = "File Removal Result";
-        JOptionPane.showMessageDialog(null, message, title, messageType);
-      }
-    }));
+  private static void confirmWithUserAndThenDeleteCorruptZipFile(
+      final File map, final Optional<String> errorDetails) {
+    Interruptibles.await(
+        () ->
+            SwingAction.invokeAndWait(
+                () -> {
+                  String message =
+                      "Could not parse map file correctly, would you like to remove it?\n"
+                          + map.getAbsolutePath()
+                          + "\n(You may see this error message again if you keep the file)";
+                  String title = "Corrup Map File Found";
+                  final int optionType = JOptionPane.YES_NO_OPTION;
+                  int messageType = JOptionPane.WARNING_MESSAGE;
+                  final int result =
+                      GameRunner.showConfirmDialog(
+                          message, GameRunner.Title.of(title), optionType, messageType);
+                  if (result == JOptionPane.YES_OPTION) {
+                    if (map.delete()) {
+                      messageType = JOptionPane.INFORMATION_MESSAGE;
+                      message = "File was deleted successfully.";
+                    } else if (map.exists()) {
+                      message =
+                          "Unable to delete file, please remove it in the file system and restart tripleA:\n"
+                              + map.getAbsolutePath();
+                      if (errorDetails.isPresent()) {
+                        message += "\nError details: " + errorDetails;
+                      }
+                    }
+                    title = "File Removal Result";
+                    JOptionPane.showMessageDialog(null, message, title, messageType);
+                  }
+                }));
   }
 
   /**
@@ -152,9 +161,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
     return Optional.empty();
   }
 
-  /**
-   * Searches for a GameChooserEntry whose gameName matches the input parameter.
-   */
+  /** Searches for a GameChooserEntry whose gameName matches the input parameter. */
   public Optional<GameChooserEntry> findByName(final String name) {
     return IntStream.range(0, size())
         .mapToObj(this::get)
@@ -165,7 +172,8 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
   private static Set<GameChooserEntry> populateFromDirectory(final File mapDir) {
     final Set<GameChooserEntry> entries = new HashSet<>();
 
-    // use contents under a "mapDir/map" folder if present, otherwise use the "mapDir/" contents directly
+    // use contents under a "mapDir/map" folder if present, otherwise use the "mapDir/" contents
+    // directly
     final File mapFolder = new File(mapDir, "map");
 
     final File parentFolder = mapFolder.exists() ? mapFolder : mapDir;

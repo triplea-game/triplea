@@ -66,11 +66,12 @@ final class UnitIconPropertiesTest {
     }
 
     private UnitIconProperties.ConditionSupplier givenConditionSupplier(
-        final GameData gameData,
-        final ICondition... conditions) {
-      final UnitIconProperties.ConditionSupplier conditionSupplier = mock(UnitIconProperties.ConditionSupplier.class);
+        final GameData gameData, final ICondition... conditions) {
+      final UnitIconProperties.ConditionSupplier conditionSupplier =
+          mock(UnitIconProperties.ConditionSupplier.class);
       for (final ICondition condition : conditions) {
-        when(conditionSupplier.getCondition(PLAYER_NAME, condition.getName(), gameData)).thenReturn(condition);
+        when(conditionSupplier.getCondition(PLAYER_NAME, condition.getName(), gameData))
+            .thenReturn(condition);
       }
       return conditionSupplier;
     }
@@ -78,49 +79,53 @@ final class UnitIconPropertiesTest {
     @Test
     void shouldReturnImagePathsForIconsWithSatisfiedConditionOrNoCondition() {
       final GameData gameData = givenGameData();
-      final UnitIconProperties.ConditionSupplier conditionSupplier = givenConditionSupplier(
-          gameData,
-          givenCondition(CONDITION_1_NAME, true),
-          givenCondition(CONDITION_2_NAME, false));
+      final UnitIconProperties.ConditionSupplier conditionSupplier =
+          givenConditionSupplier(
+              gameData,
+              givenCondition(CONDITION_1_NAME, true),
+              givenCondition(CONDITION_2_NAME, false));
       final Properties properties = new OrderedProperties();
       properties.put(formatIconId(CONDITION_1_NAME), ICON_1_PATH);
       properties.put(formatIconId(CONDITION_2_NAME), ICON_2_PATH);
       properties.put(formatIconId(null), ICON_3_PATH);
-      final UnitIconProperties unitIconProperties = new UnitIconProperties(properties, gameData, conditionSupplier);
+      final UnitIconProperties unitIconProperties =
+          new UnitIconProperties(properties, gameData, conditionSupplier);
 
       assertThat(
-          unitIconProperties.getImagePaths(PLAYER_NAME, UNIT_TYPE_NAME, gameData, conditionSupplier),
+          unitIconProperties.getImagePaths(
+              PLAYER_NAME, UNIT_TYPE_NAME, gameData, conditionSupplier),
           contains(ICON_1_PATH, ICON_3_PATH));
     }
 
     @Test
     void shouldIgnoreIconsThatHaveDifferentUnitTypeId() {
       final GameData gameData = givenGameData();
-      final UnitIconProperties.ConditionSupplier conditionSupplier = givenConditionSupplier(gameData);
+      final UnitIconProperties.ConditionSupplier conditionSupplier =
+          givenConditionSupplier(gameData);
       final Properties properties = new OrderedProperties();
       properties.put(formatIconId("otherGameName", PLAYER_NAME, UNIT_TYPE_NAME, null), ICON_1_PATH);
       properties.put(formatIconId(GAME_NAME, "otherPlayerName", UNIT_TYPE_NAME, null), ICON_2_PATH);
       properties.put(formatIconId(GAME_NAME, PLAYER_NAME, "otherUnitTypeName", null), ICON_3_PATH);
-      final UnitIconProperties unitIconProperties = new UnitIconProperties(properties, gameData, conditionSupplier);
+      final UnitIconProperties unitIconProperties =
+          new UnitIconProperties(properties, gameData, conditionSupplier);
 
       assertThat(
-          unitIconProperties.getImagePaths(PLAYER_NAME, UNIT_TYPE_NAME, gameData, conditionSupplier),
+          unitIconProperties.getImagePaths(
+              PLAYER_NAME, UNIT_TYPE_NAME, gameData, conditionSupplier),
           is(empty()));
     }
   }
 
   @Nested
   final class ParseUnitIconDescriptorTest {
-    private UnitIconDescriptor newUnitIconDescriptorWithCondition(final @Nullable String conditionName) {
+    private UnitIconDescriptor newUnitIconDescriptorWithCondition(
+        final @Nullable String conditionName) {
       return new UnitIconDescriptor(
-          GAME_NAME,
-          PLAYER_NAME,
-          UNIT_TYPE_NAME,
-          Optional.ofNullable(conditionName),
-          ICON_1_PATH);
+          GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME, Optional.ofNullable(conditionName), ICON_1_PATH);
     }
 
-    private UnitIconDescriptor parseUnitIconDescriptorWithCondition(final @Nullable String conditionName) {
+    private UnitIconDescriptor parseUnitIconDescriptorWithCondition(
+        final @Nullable String conditionName) {
       return UnitIconProperties.parseUnitIconDescriptor(formatIconId(conditionName), ICON_1_PATH);
     }
 
@@ -133,7 +138,8 @@ final class UnitIconPropertiesTest {
 
     @Test
     void shouldParseUnitIconDescriptorWithoutCondition() {
-      assertThat(parseUnitIconDescriptorWithCondition(null), is(newUnitIconDescriptorWithCondition(null)));
+      assertThat(
+          parseUnitIconDescriptorWithCondition(null), is(newUnitIconDescriptorWithCondition(null)));
     }
 
     @Test
@@ -167,7 +173,8 @@ final class UnitIconPropertiesTest {
     @Nested
     final class MatchesGameNameTest {
       private final UnitIconDescriptor unitIconDescriptor =
-          new UnitIconDescriptor(GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME, Optional.empty(), ICON_1_PATH);
+          new UnitIconDescriptor(
+              GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME, Optional.empty(), ICON_1_PATH);
 
       @Test
       void shouldReturnTrueWhenGameNameMatches() {
@@ -183,7 +190,8 @@ final class UnitIconPropertiesTest {
     @Nested
     final class MatchesGameNameAndPlayerNameAndUnitTypeNameTest {
       private final UnitIconDescriptor unitIconDescriptor =
-          new UnitIconDescriptor(GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME, Optional.empty(), ICON_1_PATH);
+          new UnitIconDescriptor(
+              GAME_NAME, PLAYER_NAME, UNIT_TYPE_NAME, Optional.empty(), ICON_1_PATH);
 
       @Test
       void shouldReturnTrueWhenGameNameAndPlayerNameAndUnitTypeNameMatches() {
@@ -192,9 +200,12 @@ final class UnitIconPropertiesTest {
 
       @Test
       void shouldReturnFalseWhenGameNameOrPlayerNameOrUnitTypeNameDoesNotMatch() {
-        assertThat(unitIconDescriptor.matches("otherGameName", PLAYER_NAME, UNIT_TYPE_NAME), is(false));
-        assertThat(unitIconDescriptor.matches(GAME_NAME, "otherPlayerName", UNIT_TYPE_NAME), is(false));
-        assertThat(unitIconDescriptor.matches(GAME_NAME, PLAYER_NAME, "otherUnitTypeName"), is(false));
+        assertThat(
+            unitIconDescriptor.matches("otherGameName", PLAYER_NAME, UNIT_TYPE_NAME), is(false));
+        assertThat(
+            unitIconDescriptor.matches(GAME_NAME, "otherPlayerName", UNIT_TYPE_NAME), is(false));
+        assertThat(
+            unitIconDescriptor.matches(GAME_NAME, PLAYER_NAME, "otherUnitTypeName"), is(false));
       }
     }
   }

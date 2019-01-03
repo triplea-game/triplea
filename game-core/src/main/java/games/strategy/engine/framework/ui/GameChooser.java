@@ -29,11 +29,11 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.util.LocalizeHtml;
 
 /**
- * A modal dialog that prompts the user to select a game (map) from the list of installed games (maps).
+ * A modal dialog that prompts the user to select a game (map) from the list of installed games
+ * (maps).
  */
 public class GameChooser extends JDialog {
   private static final long serialVersionUID = -3223711652118741132L;
-
 
   private final JButton okButton = new JButton("OK");
   private final JButton cancelButton = new JButton("Cancel");
@@ -67,11 +67,36 @@ public class GameChooser extends JDialog {
     final JPanel leftPanel = new JPanel();
     leftPanel.setLayout(new GridBagLayout());
     final JLabel gamesLabel = new JLabel("Games");
-    gamesLabel.setFont(gamesLabel.getFont().deriveFont(Font.BOLD, gamesLabel.getFont().getSize() + 2));
-    leftPanel.add(gamesLabel, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(10, 10, 10, 10), 0, 0));
-    leftPanel.add(listScroll, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.EAST,
-        GridBagConstraints.BOTH, new Insets(0, 10, 0, 0), 0, 0));
+    gamesLabel.setFont(
+        gamesLabel.getFont().deriveFont(Font.BOLD, gamesLabel.getFont().getSize() + 2));
+    leftPanel.add(
+        gamesLabel,
+        new GridBagConstraints(
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(10, 10, 10, 10),
+            0,
+            0));
+    leftPanel.add(
+        listScroll,
+        new GridBagConstraints(
+            0,
+            1,
+            1,
+            1,
+            1.0,
+            1.0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.BOTH,
+            new Insets(0, 10, 0, 0),
+            0,
+            0));
     mainSplit.setLeftComponent(leftPanel);
     mainSplit.setRightComponent(infoPanel);
     mainSplit.setBorder(null);
@@ -94,19 +119,21 @@ public class GameChooser extends JDialog {
   }
 
   /**
-   * Displays the Game Chooser dialog and returns the game selected by the user or {@code null} if no game was selected.
+   * Displays the Game Chooser dialog and returns the game selected by the user or {@code null} if
+   * no game was selected.
    */
   public static GameChooserEntry chooseGame(final Frame parent, final String defaultGameName)
       throws InterruptedException {
     final GameChooserModel gameChooserModel =
-        new GameChooserModel(GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
-            "Loading all available games...",
-            GameChooserModel::parseMapFiles));
+        new GameChooserModel(
+            GameRunner.newBackgroundTaskRunner()
+                .runInBackgroundAndReturn(
+                    "Loading all available games...", GameChooserModel::parseMapFiles));
     final GameChooser chooser = new GameChooser(parent, gameChooserModel);
     chooser.setSize(800, 600);
     chooser.setLocationRelativeTo(parent);
     chooser.selectGame(defaultGameName);
-    chooser.setVisible(true);// Blocking
+    chooser.setVisible(true); // Blocking
     // chooser is now visible and waits for user action
     chooser.setVisible(false);
     chooser.removeAll();
@@ -119,8 +146,7 @@ public class GameChooser extends JDialog {
       gameList.setSelectedIndex(0);
       return;
     }
-    gameListModel.findByName(gameName)
-        .ifPresent(entry -> gameList.setSelectedValue(entry, true));
+    gameListModel.findByName(gameName).ifPresent(entry -> gameList.setSelectedValue(entry, true));
   }
 
   private void updateInfoPanel() {
@@ -136,8 +162,10 @@ public class GameChooser extends JDialog {
       notes.append("<p></p>");
       final String notesProperty = data.getProperties().get("notes", "");
       if (notesProperty != null && notesProperty.trim().length() != 0) {
-        // AbstractUiContext resource loader should be null (or potentially is still the last game we played's loader),
-        // so we send the map dir name so that our localizing of image links can get a new resource loader if needed
+        // AbstractUiContext resource loader should be null (or potentially is still the last game
+        // we played's loader),
+        // so we send the map dir name so that our localizing of image links can get a new resource
+        // loader if needed
         notes.append(LocalizeHtml.localizeImgLinksInHtml(notesProperty.trim(), null, mapNameDir));
       }
       notesPanel.setText(notes.toString());
@@ -148,7 +176,8 @@ public class GameChooser extends JDialog {
     SwingUtilities.invokeLater(() -> notesPanel.scrollRectToVisible(new Rectangle(0, 0, 0, 0)));
   }
 
-  private static void appendListItem(final String title, final String value, final StringBuilder builder) {
+  private static void appendListItem(
+      final String title, final String value, final StringBuilder builder) {
     builder.append("<b>").append(title).append("</b>").append(": ").append(value).append("<br>");
   }
 
@@ -164,26 +193,27 @@ public class GameChooser extends JDialog {
     okButton.addActionListener(e -> selectAndReturn());
     cancelButton.addActionListener(e -> cancelAndReturn());
     gameList.addListSelectionListener(e -> updateInfoPanel());
-    gameList.addMouseListener(new MouseListener() {
-      @Override
-      public void mouseClicked(final MouseEvent event) {
-        if (event.getClickCount() == 2) {
-          selectAndReturn();
-        }
-      }
+    gameList.addMouseListener(
+        new MouseListener() {
+          @Override
+          public void mouseClicked(final MouseEvent event) {
+            if (event.getClickCount() == 2) {
+              selectAndReturn();
+            }
+          }
 
-      @Override
-      public void mousePressed(final MouseEvent e) {}
+          @Override
+          public void mousePressed(final MouseEvent e) {}
 
-      @Override
-      public void mouseReleased(final MouseEvent e) {}
+          @Override
+          public void mouseReleased(final MouseEvent e) {}
 
-      @Override
-      public void mouseEntered(final MouseEvent e) {}
+          @Override
+          public void mouseEntered(final MouseEvent e) {}
 
-      @Override
-      public void mouseExited(final MouseEvent e) {}
-    });
+          @Override
+          public void mouseExited(final MouseEvent e) {}
+        });
   }
 
   private void selectAndReturn() {

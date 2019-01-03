@@ -21,16 +21,16 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 
 /**
- * A UI component that displays an extended set of game statistics beyond those displayed by {@link StatPanel}.
+ * A UI component that displays an extended set of game statistics beyond those displayed by {@link
+ * StatPanel}.
  *
- * <p>
- * The additional statistics include:
- * </p>
+ * <p>The additional statistics include:
+ *
  * <ul>
- * <li>All resources other than PUs.</li>
- * <li>Number of technologies.</li>
- * <li>Details about each technology.</li>
- * <li>Available unit types.</li>
+ *   <li>All resources other than PUs.
+ *   <li>Number of technologies.
+ *   <li>Details about each technology.
+ *   <li>Available unit types.
  * </ul>
  */
 public class ExtendedStats extends StatPanel {

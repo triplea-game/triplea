@@ -23,15 +23,18 @@ class LobbyGameTable extends JTable {
     final TableRowSorter<LobbyGameTableModel> tableSorter = new TableRowSorter<>(gameTableModel);
     // by default, sort by host
     final int hostColumn = gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host);
-    tableSorter.setSortKeys(Collections.singletonList(new RowSorter.SortKey(hostColumn, SortOrder.DESCENDING)));
+    tableSorter.setSortKeys(
+        Collections.singletonList(new RowSorter.SortKey(hostColumn, SortOrder.DESCENDING)));
     setRowSorter(tableSorter);
   }
 
   @Override
-  public Component prepareRenderer(final TableCellRenderer renderer, final int rowIndex, final int colIndex) {
+  public Component prepareRenderer(
+      final TableCellRenderer renderer, final int rowIndex, final int colIndex) {
     final Component component = super.prepareRenderer(renderer, rowIndex, colIndex);
     final LobbyGameTableModel lobbyGameTableModel = (LobbyGameTableModel) getModel();
-    final GameDescription gameDescription = lobbyGameTableModel.get(convertRowIndexToModel(rowIndex));
+    final GameDescription gameDescription =
+        lobbyGameTableModel.get(convertRowIndexToModel(rowIndex));
     component.setFont(gameDescription.isBot() ? ITALIC_FONT : DEFAULT_FONT);
     return component;
   }

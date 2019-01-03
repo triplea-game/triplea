@@ -9,9 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 
-/**
- * Abstract class for launching a game.
- */
+/** Abstract class for launching a game. */
 public abstract class AbstractLauncher implements ILauncher {
   protected final GameData gameData;
   protected final GameSelectorModel gameSelectorModel;

@@ -12,9 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-/**
- * A fixture for testing the basic aspects of classes that implement {@link PropertyReader}.
- */
+/** A fixture for testing the basic aspects of classes that implement {@link PropertyReader}. */
 public abstract class AbstractPropertyReaderTestCase {
   private static final String ABSENT_PROPERTY_KEY = "absentKey";
   private static final String PRESENT_PROPERTY_KEY = "presentKey";
@@ -24,13 +22,13 @@ public abstract class AbstractPropertyReaderTestCase {
   /**
    * Creates the property reader under test.
    *
-   * @param properties The properties the new property reader should consider present when requested.
-   *
+   * @param properties The properties the new property reader should consider present when
+   *     requested.
    * @return A new property reader.
-   *
    * @throws Exception If the property reader cannot be created.
    */
-  protected abstract PropertyReader newPropertyReader(Map<String, String> properties) throws Exception;
+  protected abstract PropertyReader newPropertyReader(Map<String, String> properties)
+      throws Exception;
 
   private PropertyReader newEmptyPropertyReader() throws Exception {
     return newPropertyReader(Collections.emptyMap());
@@ -40,9 +38,7 @@ public abstract class AbstractPropertyReaderTestCase {
     return newPropertyReader(Collections.singletonMap(PRESENT_PROPERTY_KEY, value));
   }
 
-  /**
-   * Test cases for {@link PropertyReader#readProperty(String)}.
-   */
+  /** Test cases for {@link PropertyReader#readProperty(String)}. */
   @Nested
   public final class ReadPropertyTest {
     private static final String PRESENT_PROPERTY_VALUE = "presentValue";
@@ -71,8 +67,10 @@ public abstract class AbstractPropertyReaderTestCase {
     }
 
     @Test
-    public void shouldReturnTrimmedValueWhenKeyIsPresentAndValueHasLeadingAndTrailingWhitespace() throws Exception {
-      final PropertyReader propertyReader = newSingletonPropertyReader("  " + PRESENT_PROPERTY_VALUE + "  ");
+    public void shouldReturnTrimmedValueWhenKeyIsPresentAndValueHasLeadingAndTrailingWhitespace()
+        throws Exception {
+      final PropertyReader propertyReader =
+          newSingletonPropertyReader("  " + PRESENT_PROPERTY_VALUE + "  ");
 
       assertThat(propertyReader.readProperty(PRESENT_PROPERTY_KEY), is(PRESENT_PROPERTY_VALUE));
     }
@@ -83,9 +81,7 @@ public abstract class AbstractPropertyReaderTestCase {
     }
   }
 
-  /**
-   * Test cases for {@link PropertyReader#readPropertyOrDefault(String, String)}.
-   */
+  /** Test cases for {@link PropertyReader#readPropertyOrDefault(String, String)}. */
   @Nested
   public final class ReadPropertyOrDefaultTest {
     @Test
@@ -93,7 +89,8 @@ public abstract class AbstractPropertyReaderTestCase {
       final String value = "value";
       final PropertyReader propertyReader = newSingletonPropertyReader(value);
 
-      assertThat(propertyReader.readPropertyOrDefault(PRESENT_PROPERTY_KEY, "defaultValue"), is(value));
+      assertThat(
+          propertyReader.readPropertyOrDefault(PRESENT_PROPERTY_KEY, "defaultValue"), is(value));
     }
 
     @Test
@@ -101,13 +98,13 @@ public abstract class AbstractPropertyReaderTestCase {
       final String defaultValue = "defaultValue";
       final PropertyReader propertyReader = newEmptyPropertyReader();
 
-      assertThat(propertyReader.readPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue), is(defaultValue));
+      assertThat(
+          propertyReader.readPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue),
+          is(defaultValue));
     }
   }
 
-  /**
-   * Test cases for {@link PropertyReader#readBooleanPropertyOrDefault(String, boolean)}.
-   */
+  /** Test cases for {@link PropertyReader#readBooleanPropertyOrDefault(String, boolean)}. */
   @Nested
   public final class ReadBooleanPropertyOrDefaultTest {
     @Test
@@ -115,7 +112,8 @@ public abstract class AbstractPropertyReaderTestCase {
       final boolean value = true;
       final PropertyReader propertyReader = newSingletonPropertyReader(String.valueOf(value));
 
-      assertThat(propertyReader.readBooleanPropertyOrDefault(PRESENT_PROPERTY_KEY, false), is(value));
+      assertThat(
+          propertyReader.readBooleanPropertyOrDefault(PRESENT_PROPERTY_KEY, false), is(value));
     }
 
     @Test
@@ -123,13 +121,13 @@ public abstract class AbstractPropertyReaderTestCase {
       final boolean defaultValue = true;
       final PropertyReader propertyReader = newEmptyPropertyReader();
 
-      assertThat(propertyReader.readBooleanPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue), is(defaultValue));
+      assertThat(
+          propertyReader.readBooleanPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue),
+          is(defaultValue));
     }
   }
 
-  /**
-   * Test cases for {@link PropertyReader#readIntegerPropertyOrDefault(String, int)}.
-   */
+  /** Test cases for {@link PropertyReader#readIntegerPropertyOrDefault(String, int)}. */
   @Nested
   public final class ReadIntegerPropertyOrDefaultTest {
     @Test
@@ -145,7 +143,9 @@ public abstract class AbstractPropertyReaderTestCase {
       final int defaultValue = 777;
       final PropertyReader propertyReader = newSingletonPropertyReader("other");
 
-      assertThat(propertyReader.readIntegerPropertyOrDefault(PRESENT_PROPERTY_KEY, defaultValue), is(defaultValue));
+      assertThat(
+          propertyReader.readIntegerPropertyOrDefault(PRESENT_PROPERTY_KEY, defaultValue),
+          is(defaultValue));
     }
 
     @Test
@@ -153,7 +153,9 @@ public abstract class AbstractPropertyReaderTestCase {
       final int defaultValue = 777;
       final PropertyReader propertyReader = newEmptyPropertyReader();
 
-      assertThat(propertyReader.readIntegerPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue), is(defaultValue));
+      assertThat(
+          propertyReader.readIntegerPropertyOrDefault(ABSENT_PROPERTY_KEY, defaultValue),
+          is(defaultValue));
     }
   }
 }

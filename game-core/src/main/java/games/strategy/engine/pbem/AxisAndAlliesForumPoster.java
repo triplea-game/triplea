@@ -6,9 +6,7 @@ import games.strategy.triplea.help.HelpSupport;
 /**
  * Posts turn summaries to www.axisandallies.org/forums.
  *
- * <p>
- * URL format is {@code https://www.axisandallies.org/forums/api/v2/topics/<topicID>}.
- * </p>
+ * <p>URL format is {@code https://www.axisandallies.org/forums/api/v2/topics/<topicID>}.
  */
 public class AxisAndAlliesForumPoster extends NodeBbForumPoster {
   private static final long serialVersionUID = -823830258973002082L;

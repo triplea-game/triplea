@@ -40,10 +40,11 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
   @Override
   public void display(final PlayerId id) {
     super.display(id);
-    SwingUtilities.invokeLater(() -> {
-      actionLabel.setText(id.getName() + " " + getTitle());
-      // defer component layout until waitForEndTurn()
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          actionLabel.setText(id.getName() + " " + getTitle());
+          // defer component layout until waitForEndTurn()
+        });
   }
 
   protected abstract boolean allowIncludeTerritorySummary();
@@ -71,7 +72,8 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
     tripleAFrame = frame;
     playerBridge = bridge;
     // Nothing to do if there are no PBEM messengers
-    pbemMessagePoster = new PbemMessagePoster(getData(), getCurrentPlayer(), getRound(), getTitle());
+    pbemMessagePoster =
+        new PbemMessagePoster(getData(), getCurrentPlayer(), getRound(), getTitle());
     if (!pbemMessagePoster.hasMessengers()) {
       return;
     }
@@ -79,15 +81,23 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
       return;
     }
     final boolean hasPosted = getHasPostedTurnSummary();
-    SwingUtilities.invokeLater(() -> {
-      removeAll();
-      add(actionLabel);
-      add(forumPosterComponent.layoutComponents(pbemMessagePoster, getForumPosterDelegate(),
-          tripleAFrame, hasPosted,
-          allowIncludeTerritorySummary(), allowIncludeTerritoryAllPlayersSummary(), allowIncludeProductionSummary(),
-          allowDiceBattleDetails(), allowDiceStatistics()));
-      validate();
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          removeAll();
+          add(actionLabel);
+          add(
+              forumPosterComponent.layoutComponents(
+                  pbemMessagePoster,
+                  getForumPosterDelegate(),
+                  tripleAFrame,
+                  hasPosted,
+                  allowIncludeTerritorySummary(),
+                  allowIncludeTerritoryAllPlayersSummary(),
+                  allowIncludeProductionSummary(),
+                  allowDiceBattleDetails(),
+                  allowDiceStatistics()));
+          validate();
+        });
     waitForRelease();
   }
 }

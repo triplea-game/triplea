@@ -110,23 +110,38 @@ public class ParserTest {
 
   @Test
   public void testPlayerProduction() {
-    final ProductionFrontier cf = gameData.getProductionFrontierList().getProductionFrontier("canProd");
+    final ProductionFrontier cf =
+        gameData.getProductionFrontierList().getProductionFrontier("canProd");
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
     assertEquals(cf, can.getProductionFrontier());
   }
 
   @Test
   public void testAttachments() {
-    TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold")
-        .getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
+    TestAttachment att =
+        (TestAttachment)
+            gameData
+                .getResourceList()
+                .getResource("gold")
+                .getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
     assertEquals("gold", att.getValue());
-    final UnitAttachment ua = (UnitAttachment) gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF)
-        .getAttachment(Constants.UNIT_ATTACHMENT_NAME);
+    final UnitAttachment ua =
+        (UnitAttachment)
+            gameData
+                .getUnitTypeList()
+                .getUnitType(Constants.UNIT_TYPE_INF)
+                .getAttachment(Constants.UNIT_ATTACHMENT_NAME);
     assertEquals(1, ua.getTransportCost());
-    att = (TestAttachment) gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+    att =
+        (TestAttachment)
+            gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
     assertEquals("us of a", att.getValue());
-    att = (TestAttachment) gameData.getPlayerList().getPlayerId("chretian")
-        .getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
+    att =
+        (TestAttachment)
+            gameData
+                .getPlayerList()
+                .getPlayerId("chretian")
+                .getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
     assertEquals("liberal", att.getValue());
   }
 

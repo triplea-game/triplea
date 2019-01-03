@@ -13,9 +13,8 @@ import org.apache.commons.math3.util.Pair;
 import games.strategy.ui.SwingComponents;
 
 /**
- * Builder for a JTabbedPane. Provides a convenient API for adding components to a JTabbedPane and starts off with
- * reasonable defaults that can be configured further as needed.
- * <br />
+ * Builder for a JTabbedPane. Provides a convenient API for adding components to a JTabbedPane and
+ * starts off with reasonable defaults that can be configured further as needed. <br>
  * Example usage:
  *
  * <pre>
@@ -34,23 +33,21 @@ public class JTabbedPaneBuilder {
   private final List<Pair<String, Component>> components = new ArrayList<>();
   private int tabIndex = 0;
 
-  private JTabbedPaneBuilder() {
+  private JTabbedPaneBuilder() {}
 
-  }
-
-  /**
-   * Builds the swing component.
-   */
+  /** Builds the swing component. */
   public JTabbedPane build() {
     final JTabbedPane tabbedPane = new JTabbedPane();
 
-    components.forEach(component -> {
-      final JLabel sizedLabel = new JLabel(component.getKey());
-      sizedLabel.setPreferredSize(new Dimension(DEFAULT_TAB_WIDTH, DEFAULT_TAB_HEIGHT));
-      tabbedPane.addTab(component.getKey(), SwingComponents.newJScrollPane(component.getValue()));
-      tabbedPane.setTabComponentAt(tabIndex, sizedLabel);
-      tabIndex++;
-    });
+    components.forEach(
+        component -> {
+          final JLabel sizedLabel = new JLabel(component.getKey());
+          sizedLabel.setPreferredSize(new Dimension(DEFAULT_TAB_WIDTH, DEFAULT_TAB_HEIGHT));
+          tabbedPane.addTab(
+              component.getKey(), SwingComponents.newJScrollPane(component.getValue()));
+          tabbedPane.setTabComponentAt(tabIndex, sizedLabel);
+          tabIndex++;
+        });
 
     return tabbedPane;
   }
@@ -59,7 +56,6 @@ public class JTabbedPaneBuilder {
     components.add(new Pair<>(tabTitle, tabContents));
     return this;
   }
-
 
   public static JTabbedPaneBuilder builder() {
     return new JTabbedPaneBuilder();

@@ -39,10 +39,8 @@ import games.strategy.triplea.ui.display.TripleADisplay;
 /**
  * Default implementation of {@link IGameLoader}.
  *
- * <p>
- * TODO: As there are no longer different game loader specializations, this class should be renamed to
- * {@code DefaultGameLoader} and moved to the {@code g.s.engine.data} package.
- * </p>
+ * <p>TODO: As there are no longer different game loader specializations, this class should be
+ * renamed to {@code DefaultGameLoader} and moved to the {@code g.s.engine.data} package.
  */
 public class TripleA implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
@@ -54,15 +52,11 @@ public class TripleA implements IGameLoader {
 
   @Override
   public Set<IGamePlayer> newPlayers(final Map<String, PlayerType> playerNames) {
-    return playerNames.entrySet()
-        .stream()
-        .map(TripleA::toGamePlayer)
-        .collect(Collectors.toSet());
+    return playerNames.entrySet().stream().map(TripleA::toGamePlayer).collect(Collectors.toSet());
   }
 
   private static IGamePlayer toGamePlayer(final Map.Entry<String, PlayerType> namePlayerType) {
-    return namePlayerType.getValue()
-        .newPlayerWithName(namePlayerType.getKey());
+    return namePlayerType.getValue().newPlayerWithName(namePlayerType.getKey());
   }
 
   @Override
@@ -84,8 +78,11 @@ public class TripleA implements IGameLoader {
   }
 
   @Override
-  public void startGame(final IGame game, final Set<IGamePlayer> players,
-      final boolean headless, @Nullable final Chat chat) {
+  public void startGame(
+      final IGame game,
+      final Set<IGamePlayer> players,
+      final boolean headless,
+      @Nullable final Chat chat) {
     this.game = game;
     if (game.getData().getDelegateList().getDelegate("edit") == null) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
@@ -111,13 +108,14 @@ public class TripleA implements IGameLoader {
     } else {
       final TripleAFrame frame = TripleAFrame.create(game, localPlayers, chat);
 
-      SwingUtilities.invokeLater(() -> {
-        LookAndFeelSwingFrameListener.register(frame);
-        frame.setSize(700, 400);
-        frame.setVisible(true);
-        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-        frame.toFront();
-      });
+      SwingUtilities.invokeLater(
+          () -> {
+            LookAndFeelSwingFrameListener.register(frame);
+            frame.setSize(700, 400);
+            frame.setVisible(true);
+            frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+            frame.toFront();
+          });
 
       display = new TripleADisplay(frame);
       game.addDisplay(display);
@@ -125,7 +123,6 @@ public class TripleA implements IGameLoader {
       game.addSoundChannel(soundChannel);
       ClipPlayer.play(SoundPath.CLIP_GAME_START);
       connectPlayers(players, frame);
-
     }
   }
 

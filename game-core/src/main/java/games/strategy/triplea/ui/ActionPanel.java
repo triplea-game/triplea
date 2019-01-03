@@ -10,9 +10,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.Properties;
 
-/**
- * Abstract superclass for all action panels.
- */
+/** Abstract superclass for all action panels. */
 public abstract class ActionPanel extends JPanel {
   private static final long serialVersionUID = -5954576036704958641L;
   private final GameData data;
@@ -41,7 +39,6 @@ public abstract class ActionPanel extends JPanel {
     return Properties.getPlacementRestrictedByFactory(data);
   }
 
-
   protected final boolean isSelectableTechRoll() {
     return Properties.getSelectableTechRoll(data);
   }
@@ -49,13 +46,9 @@ public abstract class ActionPanel extends JPanel {
   /**
    * Wait for another thread to call release. If the thread is interrupted, we will return silently.
    *
-   * <p>
-   * A memory barrier will be crossed both on entering and before exiting this method.
-   * </p>
+   * <p>A memory barrier will be crossed both on entering and before exiting this method.
    *
-   * <p>
-   * This method will return in the event of the game shutting down.
-   * </p>
+   * <p>This method will return in the event of the game shutting down.
    */
   protected void waitForRelease() {
     if (Thread.currentThread().isInterrupted()) {
@@ -83,9 +76,7 @@ public abstract class ActionPanel extends JPanel {
   /**
    * Release the latch acquired by waitOnNewLatch().
    *
-   * <p>
-   * This method will crossed on entering this method.
-   * </p>
+   * <p>This method will crossed on entering this method.
    */
   protected void release() {
     synchronized (latchLock) {
@@ -118,9 +109,7 @@ public abstract class ActionPanel extends JPanel {
     return map;
   }
 
-  /**
-   * Called when the history panel shows used to disable the panel temporarily.
-   */
+  /** Called when the history panel shows used to disable the panel temporarily. */
   public void setActive(final boolean active) {
     this.active = active;
   }
@@ -129,11 +118,10 @@ public abstract class ActionPanel extends JPanel {
     return active;
   }
 
-  /**
-   * Refreshes the action panel. Should be run within the swing event queue.
-   */
-  protected final Runnable refresh = () -> {
-    revalidate();
-    repaint();
-  };
+  /** Refreshes the action panel. Should be run within the swing event queue. */
+  protected final Runnable refresh =
+      () -> {
+        revalidate();
+        repaint();
+      };
 }

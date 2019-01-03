@@ -14,9 +14,7 @@ final class UpdatedMapsCheck {
 
   static boolean isMapUpdateCheckRequired() {
     return isMapUpdateCheckRequired(
-        LocalDate.now(),
-        ClientSetting.lastCheckForMapUpdates,
-        ClientSetting::flush);
+        LocalDate.now(), ClientSetting.lastCheckForMapUpdates, ClientSetting::flush);
   }
 
   @VisibleForTesting
@@ -25,9 +23,13 @@ final class UpdatedMapsCheck {
       final GameSetting<String> updateCheckDateSetting,
       final Runnable flushSetting) {
     // check at most once per month
-    final boolean updateCheckRequired = updateCheckDateSetting.getValue()
-        .map(encodedUpdateCheckDate -> !parseUpdateCheckDate(encodedUpdateCheckDate).isAfter(now.minusMonths(1)))
-        .orElse(true);
+    final boolean updateCheckRequired =
+        updateCheckDateSetting
+            .getValue()
+            .map(
+                encodedUpdateCheckDate ->
+                    !parseUpdateCheckDate(encodedUpdateCheckDate).isAfter(now.minusMonths(1)))
+            .orElse(true);
     if (!updateCheckRequired) {
       return false;
     }

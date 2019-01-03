@@ -17,16 +17,12 @@ import lombok.extern.java.Log;
 /**
  * Utility class for ensuring that locks are acquired in a consistent order.
  *
- * <p>
- * Simply use this class and call acquireLock(aLock) releaseLock(aLock) instead of lock.lock(), lock.release(). If locks
- * are acquired in an inconsistent order, an error message will be printed.
- * </p>
+ * <p>Simply use this class and call acquireLock(aLock) releaseLock(aLock) instead of lock.lock(),
+ * lock.release(). If locks are acquired in an inconsistent order, an error message will be printed.
  *
- * <p>
- * This class is not terribly good for multithreading as it locks globally on all calls, but that is ok, as this code is
- * meant more for when
- * you are considering your ambitious multi-threaded code a mistake, and you are trying to limit the damage.
- * </p>
+ * <p>This class is not terribly good for multithreading as it locks globally on all calls, but that
+ * is ok, as this code is meant more for when you are considering your ambitious multi-threaded code
+ * a mistake, and you are trying to limit the damage.
  */
 @Log
 @SuppressWarnings("ImmutableEnumChecker") // Enum singleton pattern
@@ -42,16 +38,15 @@ public enum LockUtil {
   private final Map<Lock, Set<WeakLockRef>> locksHeldWhenAcquired = new WeakHashMap<>();
   private final Object mutex = new Object();
 
-  private final AtomicReference<ErrorReporter> errorReporterRef = new AtomicReference<>(new DefaultErrorReporter());
+  private final AtomicReference<ErrorReporter> errorReporterRef =
+      new AtomicReference<>(new DefaultErrorReporter());
 
   /**
    * Acquires {@code lock}.
    *
-   * <p>
-   * If {@code lock} is not currently held by the current thread, verifies that all other locks acquired prior to
-   * {@code lock} by the thread that most-recently held {@code lock} are held by the current thread. If not, a message
-   * will be written to the associated error reporter.
-   * </p>
+   * <p>If {@code lock} is not currently held by the current thread, verifies that all other locks
+   * acquired prior to {@code lock} by the thread that most-recently held {@code lock} are held by
+   * the current thread. If not, a message will be written to the associated error reporter.
    */
   public void acquireLock(final Lock lock) {
     // we already have the lock, increase the count
@@ -112,7 +107,13 @@ public enum LockUtil {
   private static final class DefaultErrorReporter implements ErrorReporter {
     @Override
     public void reportError(final Lock from, final Lock to) {
-      log.severe("Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:" + getStackTrace());
+      log.severe(
+          "Invalid lock ordering at, from:"
+              + from
+              + " to:"
+              + to
+              + " stack trace:"
+              + getStackTrace());
     }
 
     private static String getStackTrace() {

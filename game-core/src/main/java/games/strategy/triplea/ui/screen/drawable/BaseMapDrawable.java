@@ -4,9 +4,7 @@ import java.awt.Image;
 
 import games.strategy.triplea.ui.UiContext;
 
-/**
- * Draws a base map tile.
- */
+/** Draws a base map tile. */
 public class BaseMapDrawable extends MapTileDrawable {
   public BaseMapDrawable(final int x, final int y, final UiContext uiContext) {
     super(x, y, uiContext);

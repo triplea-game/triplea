@@ -3,9 +3,7 @@ package games.strategy.triplea.ai.pro.logging;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.util.IntegerMap;
 
-/**
- * Pro AI metrics.
- */
+/** Pro AI metrics. */
 public class ProMetricUtils {
   private static final IntegerMap<ProductionRule> totalPurchaseMap = new IntegerMap<>();
 

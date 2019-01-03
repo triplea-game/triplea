@@ -5,8 +5,8 @@ import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.lobby.server.GameDescription.GameStatus;
 
 /**
- * A proxy for an {@link InGameLobbyWatcher} to accommodate dynamically changing the underlying lobby watcher as games
- * are started and stopped on the host.
+ * A proxy for an {@link InGameLobbyWatcher} to accommodate dynamically changing the underlying
+ * lobby watcher as games are started and stopped on the host.
  */
 public class InGameLobbyWatcherWrapper {
   private volatile InGameLobbyWatcher lobbyWatcher = null;

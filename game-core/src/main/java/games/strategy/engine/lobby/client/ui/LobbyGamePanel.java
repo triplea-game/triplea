@@ -55,11 +55,12 @@ class LobbyGamePanel extends JPanel {
     hostGame = new JButton("Host Game");
     joinGame = new JButton("Join Game");
     bootGame = new JButton("Boot Game");
-    gameTableModel = new LobbyGameTableModel(
-        isAdmin(),
-        messengers.getMessenger(),
-        messengers.getChannelMessenger(),
-        messengers.getRemoteMessenger());
+    gameTableModel =
+        new LobbyGameTableModel(
+            isAdmin(),
+            messengers.getMessenger(),
+            messengers.getChannelMessenger(),
+            messengers.getRemoteMessenger());
 
     gameTable = new LobbyGameTable(gameTableModel);
     // only allow one row to be selected
@@ -68,25 +69,43 @@ class LobbyGamePanel extends JPanel {
     gameTable.setRowSelectionAllowed(true);
     gameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     // these should add up to 700 at most
-    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Players))
+    gameTable
+        .getColumnModel()
+        .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Players))
         .setPreferredWidth(42);
-    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Round))
+    gameTable
+        .getColumnModel()
+        .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Round))
         .setPreferredWidth(40);
-    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.P))
+    gameTable
+        .getColumnModel()
+        .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.P))
         .setPreferredWidth(12);
-    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.GV))
+    gameTable
+        .getColumnModel()
+        .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.GV))
         .setPreferredWidth(32);
     if (isAdmin()) {
-      gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started))
+      gameTable
+          .getColumnModel()
+          .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started))
           .setPreferredWidth(55);
     }
-    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Status))
+    gameTable
+        .getColumnModel()
+        .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Status))
         .setPreferredWidth(112);
-    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name))
+    gameTable
+        .getColumnModel()
+        .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name))
         .setPreferredWidth(156);
-    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Comments))
+    gameTable
+        .getColumnModel()
+        .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Comments))
         .setPreferredWidth(160);
-    gameTable.getColumnModel().getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host))
+    gameTable
+        .getColumnModel()
+        .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host))
         .setPreferredWidth(67);
   }
 
@@ -105,8 +124,9 @@ class LobbyGamePanel extends JPanel {
   }
 
   boolean isAdmin() {
-    return ((IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(IModeratorController.REMOTE_NAME)).isAdmin();
+    return ((IModeratorController)
+            messengers.getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME))
+        .isAdmin();
   }
 
   private void setupListeners() {
@@ -114,38 +134,40 @@ class LobbyGamePanel extends JPanel {
     joinGame.addActionListener(e -> joinGame());
     bootGame.addActionListener(e -> bootGame());
     gameTable.getSelectionModel().addListSelectionListener(e -> setWidgetActivation());
-    gameTable.addMouseListener(new MouseListener() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        if (e.getClickCount() == 2) {
-          joinGame();
-        }
-        mouseOnGamesList(e);
-      }
+    gameTable.addMouseListener(
+        new MouseListener() {
+          @Override
+          public void mouseClicked(final MouseEvent e) {
+            if (e.getClickCount() == 2) {
+              joinGame();
+            }
+            mouseOnGamesList(e);
+          }
 
-      @Override
-      public void mousePressed(final MouseEvent e) {
-        // right clicks do not 'select' a row by default. so force a row selection at the mouse point.
-        final int r = gameTable.rowAtPoint(e.getPoint());
-        if (r >= 0 && r < gameTable.getRowCount()) {
-          gameTable.setRowSelectionInterval(r, r);
-        } else {
-          gameTable.clearSelection();
-        }
-        mouseOnGamesList(e);
-      }
+          @Override
+          public void mousePressed(final MouseEvent e) {
+            // right clicks do not 'select' a row by default. so force a row selection at the mouse
+            // point.
+            final int r = gameTable.rowAtPoint(e.getPoint());
+            if (r >= 0 && r < gameTable.getRowCount()) {
+              gameTable.setRowSelectionInterval(r, r);
+            } else {
+              gameTable.clearSelection();
+            }
+            mouseOnGamesList(e);
+          }
 
-      @Override
-      public void mouseReleased(final MouseEvent e) {
-        mouseOnGamesList(e);
-      }
+          @Override
+          public void mouseReleased(final MouseEvent e) {
+            mouseOnGamesList(e);
+          }
 
-      @Override
-      public void mouseEntered(final MouseEvent e) {} // ignore
+          @Override
+          public void mouseEntered(final MouseEvent e) {} // ignore
 
-      @Override
-      public void mouseExited(final MouseEvent e) {} // ignore
-    });
+          @Override
+          public void mouseExited(final MouseEvent e) {} // ignore
+        });
   }
 
   private void mouseOnGamesList(final MouseEvent e) {
@@ -171,9 +193,11 @@ class LobbyGamePanel extends JPanel {
         generalAdminActions.forEach(menu::add);
       }
 
-      final GameDescription gameDescription = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
+      final GameDescription gameDescription =
+          gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
       if (gameDescription.isBot()) {
-        final Collection<Action> botAdminActions = getBotAdminGamesListContextActions(gameDescription);
+        final Collection<Action> botAdminActions =
+            getBotAdminGamesListContextActions(gameDescription);
         if (!botAdminActions.isEmpty()) {
           menu.addSeparator();
           botAdminActions.forEach(menu::add);
@@ -188,8 +212,7 @@ class LobbyGamePanel extends JPanel {
 
   private Collection<Action> getUserGamesListContextActions() {
     return Arrays.asList(
-        SwingAction.of("Join Game", e -> joinGame()),
-        SwingAction.of("Host Game", e -> hostGame()));
+        SwingAction.of("Join Game", e -> joinGame()), SwingAction.of("Host Game", e -> hostGame()));
   }
 
   private Collection<Action> getGeneralAdminGamesListContextActions() {
@@ -210,18 +233,25 @@ class LobbyGamePanel extends JPanel {
   }
 
   private static Action getSupportInfoHeadlessHostBotAction(final GameDescription gameDescription) {
-    final String supportEmail = gameDescription.getBotSupportEmail()
-        .orElseThrow(() -> new IllegalArgumentException("game description is not for a bot"));
-    final String text = "Support Email for this bot is as follows. "
-        + "\n(Please copy the email address below and manually email them ONLY if something is seriously "
-        + "\nwrong with the bot, like it needs to be restarted because it is down and not working at all.) "
-        + "\n\nEmail: \n" + supportEmail;
-    return SwingAction.of("Show Support Information/Email Of Headless Host Bot", e -> {
-      final JTextPane textPane = new JTextPane();
-      textPane.setEditable(false);
-      textPane.setText(text);
-      JOptionPane.showMessageDialog(null, textPane, "Bot Support Info", JOptionPane.INFORMATION_MESSAGE);
-    });
+    final String supportEmail =
+        gameDescription
+            .getBotSupportEmail()
+            .orElseThrow(() -> new IllegalArgumentException("game description is not for a bot"));
+    final String text =
+        "Support Email for this bot is as follows. "
+            + "\n(Please copy the email address below and manually email them ONLY if something is seriously "
+            + "\nwrong with the bot, like it needs to be restarted because it is down and not working at all.) "
+            + "\n\nEmail: \n"
+            + supportEmail;
+    return SwingAction.of(
+        "Show Support Information/Email Of Headless Host Bot",
+        e -> {
+          final JTextPane textPane = new JTextPane();
+          textPane.setEditable(false);
+          textPane.setText(text);
+          JOptionPane.showMessageDialog(
+              null, textPane, "Bot Support Info", JOptionPane.INFORMATION_MESSAGE);
+        });
   }
 
   private void joinGame() {
@@ -230,20 +260,29 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     // we sort the table, so get the correct index
-    final GameDescription description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
+    final GameDescription description =
+        gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
     GameRunner.joinGame(description, messengers, getParent());
   }
 
   protected void hostGame() {
-    final ServerOptions options = new ServerOptions(JOptionPane.getFrameForComponent(this),
-        messengers.getMessenger().getLocalNode().getName(), 3300, true);
+    final ServerOptions options =
+        new ServerOptions(
+            JOptionPane.getFrameForComponent(this),
+            messengers.getMessenger().getLocalNode().getName(),
+            3300,
+            true);
     options.setLocationRelativeTo(JOptionPane.getFrameForComponent(this));
     options.setNameEditable(false);
     options.setVisible(true);
     if (!options.getOkPressed()) {
       return;
     }
-    GameRunner.hostGame(options.getPort(), options.getName(), options.getComments(), options.getPassword(),
+    GameRunner.hostGame(
+        options.getPort(),
+        options.getName(),
+        options.getComments(),
+        options.getPassword(),
         messengers);
   }
 
@@ -252,16 +291,22 @@ class LobbyGamePanel extends JPanel {
     if (selectedIndex == -1) {
       return;
     }
-    final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to disconnect the selected game?",
-        "Remove Game From Lobby", JOptionPane.OK_CANCEL_OPTION);
+    final int result =
+        JOptionPane.showConfirmDialog(
+            null,
+            "Are you sure you want to disconnect the selected game?",
+            "Remove Game From Lobby",
+            JOptionPane.OK_CANCEL_OPTION);
     if (result != JOptionPane.OK_OPTION) {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(IModeratorController.REMOTE_NAME);
+    final IModeratorController controller =
+        (IModeratorController)
+            messengers.getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
     controller.boot(lobbyWatcherNode);
-    JOptionPane.showMessageDialog(null, "The game you selected has been disconnected from the lobby.");
+    JOptionPane.showMessageDialog(
+        null, "The game you selected has been disconnected from the lobby.");
   }
 
   private void getHostInfo() {
@@ -270,8 +315,9 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(IModeratorController.REMOTE_NAME);
+    final IModeratorController controller =
+        (IModeratorController)
+            messengers.getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
     final String text = controller.getInformationOn(lobbyWatcherNode);
     final String connections = controller.getHostConnections(lobbyWatcherNode);
     final JTextPane textPane = new JTextPane();
@@ -286,30 +332,44 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final int result =
-        JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote get chat log this host?",
-            "Remote Get Chat Log Headless Host Bot", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(
+            null,
+            "Are you sure you want to perform a remote get chat log this host?",
+            "Remote Get Chat Log Headless Host Bot",
+            JOptionPane.OK_CANCEL_OPTION);
     if (result != JOptionPane.OK_OPTION) {
       return;
     }
     // we sort the table, so get the correct index
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(IModeratorController.REMOTE_NAME);
-    final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+    final IModeratorController controller =
+        (IModeratorController)
+            messengers.getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
+    final JLabel label =
+        new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
-        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    final int selectedOption =
+        JOptionPane.showOptionDialog(
+            getTopLevelAncestor(),
+            panel,
+            "Host Remote Access Password?",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            null);
     if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
     final String password = new String(passwordField.getPassword());
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
     final String hashedPassword = hashPassword(password, salt);
-    final String response = controller.getChatLogHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
+    final String response =
+        controller.getChatLogHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
     final JTextPane textPane = new JTextPane();
     textPane.setEditable(false);
     textPane.setText(response == null ? "Failed to get chat log!" : response);
@@ -318,8 +378,10 @@ class LobbyGamePanel extends JPanel {
     final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
     final int availWidth = screenResolution.width - 100;
     final int availHeight = screenResolution.height - 140;
-    scroll.setPreferredSize(new Dimension(Math.min(availWidth, scroll.getPreferredSize().width),
-        Math.min(availHeight, scroll.getPreferredSize().height)));
+    scroll.setPreferredSize(
+        new Dimension(
+            Math.min(availWidth, scroll.getPreferredSize().width),
+            Math.min(availHeight, scroll.getPreferredSize().height)));
     JOptionPane.showMessageDialog(null, scroll, "Bot Chat Log", JOptionPane.INFORMATION_MESSAGE);
   }
 
@@ -328,12 +390,15 @@ class LobbyGamePanel extends JPanel {
   }
 
   private INode getLobbyWatcherNodeForTableRow(final int selectedIndex) {
-    final GameDescription description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
+    final GameDescription description =
+        gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
     final String hostedByName = description.getHostedBy().getName();
     return new Node(
-        (hostedByName.endsWith("_" + LobbyConstants.LOBBY_WATCHER_NAME) ? hostedByName
+        (hostedByName.endsWith("_" + LobbyConstants.LOBBY_WATCHER_NAME)
+            ? hostedByName
             : hostedByName + "_" + LobbyConstants.LOBBY_WATCHER_NAME),
-        description.getHostedBy().getAddress(), description.getHostedBy().getPort());
+        description.getHostedBy().getAddress(),
+        description.getHostedBy().getPort());
   }
 
   private void mutePlayerInHeadlessHostBot() {
@@ -342,19 +407,32 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final int result =
-        JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote mute player on this host?",
-            "Remote Player Mute Headless Host Bot", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(
+            null,
+            "Are you sure you want to perform a remote mute player on this host?",
+            "Remote Player Mute Headless Host Bot",
+            JOptionPane.OK_CANCEL_OPTION);
     if (result != JOptionPane.OK_OPTION) {
       return;
     }
-    final String playerToBeMuted = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Muted?",
-        "Player Name To Be Muted?", JOptionPane.QUESTION_MESSAGE);
+    final String playerToBeMuted =
+        JOptionPane.showInputDialog(
+            getTopLevelAncestor(),
+            "Player Name To Be Muted?",
+            "Player Name To Be Muted?",
+            JOptionPane.QUESTION_MESSAGE);
     if (playerToBeMuted == null) {
       return;
     }
-    final Object minutes = JOptionPane.showInputDialog(getTopLevelAncestor(),
-        "Minutes to Mute for?  (between 0 and 2880, choose zero to unmute [works only if players is in the host])",
-        "Minutes to Mute for?", JOptionPane.QUESTION_MESSAGE, null, null, 10);
+    final Object minutes =
+        JOptionPane.showInputDialog(
+            getTopLevelAncestor(),
+            "Minutes to Mute for?  (between 0 and 2880, choose zero to unmute [works only if players is in the host])",
+            "Minutes to Mute for?",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            null,
+            10);
     if (minutes == null) {
       return;
     }
@@ -365,16 +443,26 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(IModeratorController.REMOTE_NAME);
-    final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+    final IModeratorController controller =
+        (IModeratorController)
+            messengers.getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
+    final JLabel label =
+        new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
-        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    final int selectedOption =
+        JOptionPane.showOptionDialog(
+            getTopLevelAncestor(),
+            panel,
+            "Host Remote Access Password?",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            null);
     if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
@@ -382,10 +470,13 @@ class LobbyGamePanel extends JPanel {
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
     final String hashedPassword = hashPassword(password, salt);
     final String response =
-        controller.mutePlayerHeadlessHostBot(lobbyWatcherNode, playerToBeMuted, min, hashedPassword, salt);
-    JOptionPane.showMessageDialog(null, (response == null
-        ? "Successfully attempted to mute player (" + playerToBeMuted + ") on host"
-        : "Failed: " + response));
+        controller.mutePlayerHeadlessHostBot(
+            lobbyWatcherNode, playerToBeMuted, min, hashedPassword, salt);
+    JOptionPane.showMessageDialog(
+        null,
+        (response == null
+            ? "Successfully attempted to mute player (" + playerToBeMuted + ") on host"
+            : "Failed: " + response));
   }
 
   private void bootPlayerInHeadlessHostBot() {
@@ -394,27 +485,44 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final int result =
-        JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote boot player on this host?",
-            "Remote Player Boot Headless Host Bot", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(
+            null,
+            "Are you sure you want to perform a remote boot player on this host?",
+            "Remote Player Boot Headless Host Bot",
+            JOptionPane.OK_CANCEL_OPTION);
     if (result != JOptionPane.OK_OPTION) {
       return;
     }
-    final String playerToBeBooted = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Booted?",
-        "Player Name To Be Booted?", JOptionPane.QUESTION_MESSAGE);
+    final String playerToBeBooted =
+        JOptionPane.showInputDialog(
+            getTopLevelAncestor(),
+            "Player Name To Be Booted?",
+            "Player Name To Be Booted?",
+            JOptionPane.QUESTION_MESSAGE);
     if (playerToBeBooted == null) {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(IModeratorController.REMOTE_NAME);
-    final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+    final IModeratorController controller =
+        (IModeratorController)
+            messengers.getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
+    final JLabel label =
+        new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
-        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    final int selectedOption =
+        JOptionPane.showOptionDialog(
+            getTopLevelAncestor(),
+            panel,
+            "Host Remote Access Password?",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            null);
     if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
@@ -422,10 +530,13 @@ class LobbyGamePanel extends JPanel {
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
     final String hashedPassword = hashPassword(password, salt);
     final String response =
-        controller.bootPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBooted, hashedPassword, salt);
-    JOptionPane.showMessageDialog(null, (response == null
-        ? "Successfully attempted to boot player (" + playerToBeBooted + ") on host"
-        : "Failed: " + response));
+        controller.bootPlayerHeadlessHostBot(
+            lobbyWatcherNode, playerToBeBooted, hashedPassword, salt);
+    JOptionPane.showMessageDialog(
+        null,
+        (response == null
+            ? "Successfully attempted to boot player (" + playerToBeBooted + ") on host"
+            : "Failed: " + response));
   }
 
   private void banPlayerInHeadlessHostBot() {
@@ -433,20 +544,33 @@ class LobbyGamePanel extends JPanel {
     if (selectedIndex == -1) {
       return;
     }
-    final int result = JOptionPane.showConfirmDialog(null,
-        "Are you sure you want to perform a (permanent) remote ban player on this host?",
-        "Remote Player Ban Headless Host Bot", JOptionPane.OK_CANCEL_OPTION);
+    final int result =
+        JOptionPane.showConfirmDialog(
+            null,
+            "Are you sure you want to perform a (permanent) remote ban player on this host?",
+            "Remote Player Ban Headless Host Bot",
+            JOptionPane.OK_CANCEL_OPTION);
     if (result != JOptionPane.OK_OPTION) {
       return;
     }
-    final String playerToBeBanned = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Banned?",
-        "Player Name To Be Banned?", JOptionPane.QUESTION_MESSAGE);
+    final String playerToBeBanned =
+        JOptionPane.showInputDialog(
+            getTopLevelAncestor(),
+            "Player Name To Be Banned?",
+            "Player Name To Be Banned?",
+            JOptionPane.QUESTION_MESSAGE);
     if (playerToBeBanned == null) {
       return;
     }
-    final Object hours = JOptionPane.showInputDialog(getTopLevelAncestor(),
-        "Hours to Ban for?  (between 0 and 720, this is permanent and only a restart of the host will undo it!)",
-        "Hours to Ban for?", JOptionPane.QUESTION_MESSAGE, null, null, 24);
+    final Object hours =
+        JOptionPane.showInputDialog(
+            getTopLevelAncestor(),
+            "Hours to Ban for?  (between 0 and 720, this is permanent and only a restart of the host will undo it!)",
+            "Hours to Ban for?",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            null,
+            24);
     if (hours == null) {
       return;
     }
@@ -457,16 +581,26 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(IModeratorController.REMOTE_NAME);
-    final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+    final IModeratorController controller =
+        (IModeratorController)
+            messengers.getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
+    final JLabel label =
+        new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
-        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    final int selectedOption =
+        JOptionPane.showOptionDialog(
+            getTopLevelAncestor(),
+            panel,
+            "Host Remote Access Password?",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            null);
     if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
@@ -474,10 +608,13 @@ class LobbyGamePanel extends JPanel {
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
     final String hashedPassword = hashPassword(password, salt);
     final String response =
-        controller.banPlayerHeadlessHostBot(lobbyWatcherNode, playerToBeBanned, hrs, hashedPassword, salt);
-    JOptionPane.showMessageDialog(null, (response == null
-        ? "Successfully attempted banned player (" + playerToBeBanned + ") on host"
-        : "Failed: " + response));
+        controller.banPlayerHeadlessHostBot(
+            lobbyWatcherNode, playerToBeBanned, hrs, hashedPassword, salt);
+    JOptionPane.showMessageDialog(
+        null,
+        (response == null
+            ? "Successfully attempted banned player (" + playerToBeBanned + ") on host"
+            : "Failed: " + response));
   }
 
   private void stopGameHeadlessHostBot() {
@@ -486,31 +623,48 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final int result =
-        JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote stop game on this host?",
-            "Remote Stopgame Headless Host Bot", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(
+            null,
+            "Are you sure you want to perform a remote stop game on this host?",
+            "Remote Stopgame Headless Host Bot",
+            JOptionPane.OK_CANCEL_OPTION);
     if (result != JOptionPane.OK_OPTION) {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(IModeratorController.REMOTE_NAME);
-    final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+    final IModeratorController controller =
+        (IModeratorController)
+            messengers.getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
+    final JLabel label =
+        new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
-        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    final int selectedOption =
+        JOptionPane.showOptionDialog(
+            getTopLevelAncestor(),
+            panel,
+            "Host Remote Access Password?",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            null);
     if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
     final String password = new String(passwordField.getPassword());
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
     final String hashedPassword = hashPassword(password, salt);
-    final String response = controller.stopGameHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
-    JOptionPane.showMessageDialog(null,
-        (response == null ? "Successfully attempted stop of current game on host" : "Failed: " + response));
+    final String response =
+        controller.stopGameHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
+    JOptionPane.showMessageDialog(
+        null,
+        (response == null
+            ? "Successfully attempted stop of current game on host"
+            : "Failed: " + response));
   }
 
   private void shutDownHeadlessHostBot() {
@@ -518,31 +672,46 @@ class LobbyGamePanel extends JPanel {
     if (selectedIndex == -1) {
       return;
     }
-    final int result = JOptionPane.showConfirmDialog(null,
-        "Are you sure you want to perform a remote shutdown of this host? \n\nYou MUST email the host's owner FIRST!!",
-        "Remote Shutdown Headless Host Bot", JOptionPane.OK_CANCEL_OPTION);
+    final int result =
+        JOptionPane.showConfirmDialog(
+            null,
+            "Are you sure you want to perform a remote shutdown of this host? \n\nYou MUST email the host's owner FIRST!!",
+            "Remote Shutdown Headless Host Bot",
+            JOptionPane.OK_CANCEL_OPTION);
     if (result != JOptionPane.OK_OPTION) {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-        .getRemote(IModeratorController.REMOTE_NAME);
-    final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
+    final IModeratorController controller =
+        (IModeratorController)
+            messengers.getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
+    final JLabel label =
+        new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
     final JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
-        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    final int selectedOption =
+        JOptionPane.showOptionDialog(
+            getTopLevelAncestor(),
+            panel,
+            "Host Remote Access Password?",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            null);
     if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
       return;
     }
     final String password = new String(passwordField.getPassword());
     final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
     final String hashedPassword = hashPassword(password, salt);
-    final String response = controller.shutDownHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
-    JOptionPane.showMessageDialog(null,
+    final String response =
+        controller.shutDownHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
+    JOptionPane.showMessageDialog(
+        null,
         (response == null ? "Successfully attempted to shut down host" : "Failed: " + response));
   }
 

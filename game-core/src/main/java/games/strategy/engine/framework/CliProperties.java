@@ -1,8 +1,6 @@
 package games.strategy.engine.framework;
 
-/**
- * A collection of all CLI related constants.
- */
+/** A collection of all CLI related constants. */
 public class CliProperties {
   private CliProperties() {}
 

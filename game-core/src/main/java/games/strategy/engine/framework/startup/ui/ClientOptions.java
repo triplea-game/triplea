@@ -17,9 +17,7 @@ import javax.swing.JTextField;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.SwingAction;
 
-/**
- * UI for choosing client options.
- */
+/** UI for choosing client options. */
 public class ClientOptions extends JDialog {
   private static final long serialVersionUID = 8036055679545539809L;
   private JTextField nameField;
@@ -27,7 +25,10 @@ public class ClientOptions extends JDialog {
   private IntTextField portField;
   private boolean okPressed;
 
-  public ClientOptions(final Component parent, final String defaultName, final int defaultPort,
+  public ClientOptions(
+      final Component parent,
+      final String defaultName,
+      final int defaultPort,
       final String defaultAddress) {
     super(JOptionPane.getFrameForComponent(parent), "Client options", true);
     initComponents();
@@ -99,10 +100,14 @@ public class ClientOptions extends JDialog {
     fields.add(addressField);
     content.add(fields, BorderLayout.CENTER);
     final JPanel buttons = new JPanel();
-    buttons.add(new JButton(SwingAction.of("Connect", e -> {
-      setVisible(false);
-      okPressed = true;
-    })));
+    buttons.add(
+        new JButton(
+            SwingAction.of(
+                "Connect",
+                e -> {
+                  setVisible(false);
+                  okPressed = true;
+                })));
     buttons.add(new JButton(SwingAction.of("Cancel", e -> setVisible(false))));
     content.add(buttons, BorderLayout.SOUTH);
   }

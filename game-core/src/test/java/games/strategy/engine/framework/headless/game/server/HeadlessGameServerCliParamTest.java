@@ -8,7 +8,6 @@ import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 import org.triplea.test.common.CustomMatcher;
 
-
 class HeadlessGameServerCliParamTest {
 
   @Test
@@ -22,7 +21,8 @@ class HeadlessGameServerCliParamTest {
   @Test
   void validateArgsValidCase() {
     assertThat(
-        "With all args supplied we should see a valid object result: " + Arrays.toString(givenCompleteArgs()),
+        "With all args supplied we should see a valid object result: "
+            + Arrays.toString(givenCompleteArgs()),
         HeadlessGameServerCliParam.validateArgs(givenCompleteArgs()),
         expectValid(true));
   }
@@ -32,7 +32,6 @@ class HeadlessGameServerCliParamTest {
         .description("Expecting result to be valid? " + valid)
         .checkCondition(result -> result.isValid() == valid)
         .build();
-
   }
 
   private static String[] givenCompleteArgs() {

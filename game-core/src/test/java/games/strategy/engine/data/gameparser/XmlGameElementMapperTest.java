@@ -34,8 +34,8 @@ final class XmlGameElementMapperTest {
 
     @Test
     void shouldReturnDelegateWhenFullyQualifiedNamePresent() {
-      final Optional<IDelegate> result = xmlGameElementMapper
-          .newDelegate("games.strategy.triplea.delegate.BattleDelegate");
+      final Optional<IDelegate> result =
+          xmlGameElementMapper.newDelegate("games.strategy.triplea.delegate.BattleDelegate");
 
       assertThat(result, isPresent());
       assertThat(result.get(), is(instanceOf(BattleDelegate.class)));
@@ -44,9 +44,9 @@ final class XmlGameElementMapperTest {
     @Test
     void shouldReturnDelegateWhenNamePresentInAuxiliaryMap() {
       final String typeName = "TestDelegate";
-      final XmlGameElementMapper xmlGameElementMapper = new XmlGameElementMapper(
-          Collections.singletonMap(typeName, TestDelegate::new),
-          Collections.emptyMap());
+      final XmlGameElementMapper xmlGameElementMapper =
+          new XmlGameElementMapper(
+              Collections.singletonMap(typeName, TestDelegate::new), Collections.emptyMap());
 
       final Optional<IDelegate> result = xmlGameElementMapper.newDelegate(typeName);
 
@@ -64,7 +64,8 @@ final class XmlGameElementMapperTest {
   final class NewAttachmentTest {
     @Test
     void shouldReturnAttachmentWhenNamePresent() {
-      final Optional<IAttachment> result = xmlGameElementMapper.newAttachment("CanalAttachment", "", null, null);
+      final Optional<IAttachment> result =
+          xmlGameElementMapper.newAttachment("CanalAttachment", "", null, null);
 
       assertThat(result, isPresent());
       assertThat(result.get(), is(instanceOf(CanalAttachment.class)));
@@ -72,8 +73,9 @@ final class XmlGameElementMapperTest {
 
     @Test
     void shouldReturnAttachmentWhenFullyQualifiedNamePresent() {
-      final Optional<IAttachment> result = xmlGameElementMapper
-          .newAttachment("games.strategy.triplea.attachments.CanalAttachment", "", null, null);
+      final Optional<IAttachment> result =
+          xmlGameElementMapper.newAttachment(
+              "games.strategy.triplea.attachments.CanalAttachment", "", null, null);
 
       assertThat(result, isPresent());
       assertThat(result.get(), is(instanceOf(CanalAttachment.class)));
@@ -82,11 +84,12 @@ final class XmlGameElementMapperTest {
     @Test
     void shouldReturnAttachmentWhenNamePresentInAuxiliaryMap() {
       final String typeName = "TestAttachment";
-      final XmlGameElementMapper xmlGameElementMapper = new XmlGameElementMapper(
-          Collections.emptyMap(),
-          Collections.singletonMap(typeName, TestAttachment::new));
+      final XmlGameElementMapper xmlGameElementMapper =
+          new XmlGameElementMapper(
+              Collections.emptyMap(), Collections.singletonMap(typeName, TestAttachment::new));
 
-      final Optional<IAttachment> result = xmlGameElementMapper.newAttachment(typeName, "", null, null);
+      final Optional<IAttachment> result =
+          xmlGameElementMapper.newAttachment(typeName, "", null, null);
 
       assertThat(result, isPresent());
       assertThat(result.get(), is(instanceOf(TestAttachment.class)));

@@ -24,8 +24,7 @@ import games.strategy.util.Version;
 
 @ExtendWith(MockitoExtension.class)
 class LobbyServerPropertiesFetcherTest {
-  @Mock
-  private Function<String, Optional<File>> mockFileDownloader;
+  @Mock private Function<String, Optional<File>> mockFileDownloader;
 
   private LobbyServerPropertiesFetcher testObj;
 
@@ -36,15 +35,14 @@ class LobbyServerPropertiesFetcherTest {
 
   @Nested
   final class DownloadAndParseRemoteFileTest {
-    /**
-     * Happy case test path, download file, parse it, return values parsed.
-     */
+    /** Happy case test path, download file, parse it, return values parsed. */
     @Test
     void happyCase() throws Exception {
       givenHappyCase();
 
-      final Optional<LobbyServerProperties> result = testObj.downloadAndParseRemoteFile(TestData.url,
-          TestData.version, (a, b) -> TestData.lobbyServerProperties);
+      final Optional<LobbyServerProperties> result =
+          testObj.downloadAndParseRemoteFile(
+              TestData.url, TestData.version, (a, b) -> TestData.lobbyServerProperties);
 
       assertThat(result, isPresentAndIs(TestData.lobbyServerProperties));
     }
@@ -60,7 +58,8 @@ class LobbyServerPropertiesFetcherTest {
       when(mockFileDownloader.apply(TestData.url)).thenReturn(Optional.empty());
 
       final Optional<LobbyServerProperties> result =
-          testObj.downloadAndParseRemoteFile(TestData.url, TestData.version, (a, b) -> TestData.lobbyServerProperties);
+          testObj.downloadAndParseRemoteFile(
+              TestData.url, TestData.version, (a, b) -> TestData.lobbyServerProperties);
 
       assertThat(result, isEmpty());
     }
@@ -68,11 +67,9 @@ class LobbyServerPropertiesFetcherTest {
 
   @Nested
   final class GetTestOverridePropertiesTest {
-    @Mock
-    private GameSetting<String> testLobbyHostSetting;
+    @Mock private GameSetting<String> testLobbyHostSetting;
 
-    @Mock
-    private GameSetting<Integer> testLobbyPortSetting;
+    @Mock private GameSetting<Integer> testLobbyPortSetting;
 
     private Optional<LobbyServerProperties> result;
 
@@ -99,7 +96,9 @@ class LobbyServerPropertiesFetcherTest {
     }
 
     private void whenGetTestOverrideProperties() {
-      result = LobbyServerPropertiesFetcher.getTestOverrideProperties(testLobbyHostSetting, testLobbyPortSetting);
+      result =
+          LobbyServerPropertiesFetcher.getTestOverrideProperties(
+              testLobbyHostSetting, testLobbyPortSetting);
     }
 
     private void thenResultIsEmpty() {

@@ -30,7 +30,10 @@ class PlayerChooser extends JOptionPane {
     this(players, null, uiContext, allowNeutral);
   }
 
-  PlayerChooser(final PlayerList players, final PlayerId defaultPlayer, final UiContext uiContext,
+  PlayerChooser(
+      final PlayerList players,
+      final PlayerId defaultPlayer,
+      final UiContext uiContext,
       final boolean allowNeutral) {
     setMessageType(JOptionPane.PLAIN_MESSAGE);
     setOptionType(JOptionPane.OK_CANCEL_OPTION);
@@ -52,15 +55,17 @@ class PlayerChooser extends JOptionPane {
     list.setSelectedValue(defaultPlayer, true);
     list.setFocusable(false);
     list.setCellRenderer(new PlayerChooserRenderer(uiContext));
-    list.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent evt) {
-        if (evt.getClickCount() == 2) {
-          // set OK_OPTION on DoubleClick, this fires a property change which causes the dialog to close()
-          setValue(OK_OPTION);
-        }
-      }
-    });
+    list.addMouseListener(
+        new MouseAdapter() {
+          @Override
+          public void mouseClicked(final MouseEvent evt) {
+            if (evt.getClickCount() == 2) {
+              // set OK_OPTION on DoubleClick, this fires a property change which causes the dialog
+              // to close()
+              setValue(OK_OPTION);
+            }
+          }
+        });
     setMessage(SwingComponents.newJScrollPane(list));
 
     final int maxSize = 700;
@@ -68,7 +73,6 @@ class PlayerChooser extends JOptionPane {
     final int actualSize = suggestedSize > maxSize ? maxSize : suggestedSize;
     setPreferredSize(new Dimension(300, actualSize));
   }
-
 
   /**
    * Returns the selected player or null, or null if the dialog was closed.
@@ -91,9 +95,14 @@ class PlayerChooser extends JOptionPane {
     }
 
     @Override
-    public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
-        final boolean isSelected, final boolean cellHasFocus) {
-      super.getListCellRendererComponent(list, ((PlayerId) value).getName(), index, isSelected, cellHasFocus);
+    public Component getListCellRendererComponent(
+        final JList<?> list,
+        final Object value,
+        final int index,
+        final boolean isSelected,
+        final boolean cellHasFocus) {
+      super.getListCellRendererComponent(
+          list, ((PlayerId) value).getName(), index, isSelected, cellHasFocus);
       if (uiContext == null || value == PlayerId.NULL_PLAYERID) {
         setIcon(new ImageIcon(Util.newImage(32, 32, true)));
       } else {

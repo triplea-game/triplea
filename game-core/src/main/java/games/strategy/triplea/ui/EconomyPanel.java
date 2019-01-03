@@ -96,7 +96,8 @@ class EconomyPanel extends AbstractStatPanel {
         final Map<PlayerId, IntegerMap<Resource>> resourceIncomeMap = new HashMap<>();
         for (final PlayerId player : players) {
           collectedData[row][0] = player.getName();
-          final IntegerMap<Resource> resourceIncomes = AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
+          final IntegerMap<Resource> resourceIncomes =
+              AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
           resourceIncomeMap.put(player, resourceIncomes);
           for (int i = 0; i < resourceStats.size(); i++) {
             final ResourceStat resourceStat = resourceStats.get(i);
@@ -111,8 +112,12 @@ class EconomyPanel extends AbstractStatPanel {
           for (int i = 0; i < resourceStats.size(); i++) {
             final ResourceStat resourceStat = resourceStats.get(i);
             final double amount = resourceStat.getValue(alliance.getKey(), gameData);
-            final int income = alliance.getValue().stream()
-                .mapToInt(p -> resourceIncomeMap.get(p).getInt(resourceStat.resource)).sum();
+            final int income =
+                alliance
+                    .getValue()
+                    .stream()
+                    .mapToInt(p -> resourceIncomeMap.get(p).getInt(resourceStat.resource))
+                    .sum();
             collectedData[row][i + 1] = getResourceAmountAndIncome(resourceStat, amount, income);
           }
           row++;
@@ -122,10 +127,11 @@ class EconomyPanel extends AbstractStatPanel {
       }
     }
 
-    private String getResourceAmountAndIncome(final ResourceStat resourceStat, final double amount,
-        final int income) {
+    private String getResourceAmountAndIncome(
+        final ResourceStat resourceStat, final double amount, final int income) {
       final StringBuilder resourceAmountAndIncome =
-          new StringBuilder("<html><b>" + resourceStat.getFormatter().format(amount) + "</b>&nbsp;(");
+          new StringBuilder(
+              "<html><b>" + resourceStat.getFormatter().format(amount) + "</b>&nbsp;(");
       if (income >= 0) {
         resourceAmountAndIncome.append("+");
       }

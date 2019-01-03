@@ -6,13 +6,12 @@ import java.io.ObjectInputStream;
 
 import games.strategy.engine.framework.GameObjectStreamFactory;
 
-/**
- * Please refer to the comments on GameObjectOutputStream.
- */
+/** Please refer to the comments on GameObjectOutputStream. */
 public class GameObjectInputStream extends ObjectInputStream {
   private final GameObjectStreamFactory dataSource;
 
-  public GameObjectInputStream(final GameObjectStreamFactory dataSource, final InputStream input) throws IOException {
+  public GameObjectInputStream(final GameObjectStreamFactory dataSource, final InputStream input)
+      throws IOException {
     super(input);
     this.dataSource = dataSource;
     enableResolveObject(true);

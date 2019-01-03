@@ -16,30 +16,31 @@ import games.strategy.triplea.Properties;
 import lombok.extern.java.Log;
 
 /**
- * A helper class for determining Game Step Properties.
- * These are things such as whether a move phase is combat move or noncombat move,
- * or whether we are going to post to a forum during this end turn phase.
+ * A helper class for determining Game Step Properties. These are things such as whether a move
+ * phase is combat move or noncombat move, or whether we are going to post to a forum during this
+ * end turn phase.
  */
 @Log
 public final class GameStepPropertiesHelper {
   private GameStepPropertiesHelper() {}
 
-  /**
-   * Indicates we skip posting the game summary and save to a forum or email.
-   */
+  /** Indicates we skip posting the game summary and save to a forum or email. */
   public static boolean isSkipPosting(final GameData data) {
     data.acquireReadLock();
     try {
       return Boolean.parseBoolean(
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.SKIP_POSTING, "false"));
+          data.getSequence()
+              .getStep()
+              .getProperties()
+              .getProperty(GameStep.PropertyKeys.SKIP_POSTING, "false"));
     } finally {
       data.releaseReadLock();
     }
   }
 
   /**
-   * What players is this turn summary for? If more than 1 player, whose phases are touching or intermeshed, then we
-   * will summarize for all those phases.
+   * What players is this turn summary for? If more than 1 player, whose phases are touching or
+   * intermeshed, then we will summarize for all those phases.
    *
    * @return The set of players; may be empty if not set.
    */
@@ -50,9 +51,7 @@ public final class GameStepPropertiesHelper {
   }
 
   private static Set<PlayerId> getPlayersFromProperty(
-      final GameData gameData,
-      final String propertyKey,
-      final @Nullable PlayerId defaultPlayer) {
+      final GameData gameData, final String propertyKey, final @Nullable PlayerId defaultPlayer) {
     final Set<PlayerId> players = new HashSet<>();
     if (defaultPlayer != null) {
       players.add(defaultPlayer);
@@ -68,8 +67,11 @@ public final class GameStepPropertiesHelper {
           if (player != null) {
             players.add(player);
           } else {
-            log.warning(() -> String.format("gameplay sequence step: %s stepProperty: %s player: %s DOES NOT EXIST",
-                gameData.getSequence().getStep().getName(), propertyKey, playerName));
+            log.warning(
+                () ->
+                    String.format(
+                        "gameplay sequence step: %s stepProperty: %s player: %s DOES NOT EXIST",
+                        gameData.getSequence().getStep().getName(), propertyKey, playerName));
           }
         }
       }
@@ -80,26 +82,30 @@ public final class GameStepPropertiesHelper {
     return players;
   }
 
-  /**
-   * For various things related to movement validation.
-   */
+  /** For various things related to movement validation. */
   public static boolean isAirborneMove(final GameData data) {
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.AIRBORNE_MOVE);
+      final String prop =
+          data.getSequence()
+              .getStep()
+              .getProperties()
+              .getProperty(GameStep.PropertyKeys.AIRBORNE_MOVE);
       return prop != null ? Boolean.parseBoolean(prop) : isAirborneDelegate(data);
     } finally {
       data.releaseReadLock();
     }
   }
 
-  /**
-   * For various things related to movement validation.
-   */
+  /** For various things related to movement validation. */
   static boolean isCombatMove(final GameData data) {
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.COMBAT_MOVE);
+      final String prop =
+          data.getSequence()
+              .getStep()
+              .getProperties()
+              .getProperty(GameStep.PropertyKeys.COMBAT_MOVE);
       if (prop != null) {
         return Boolean.parseBoolean(prop);
       } else if (isCombatDelegate(data)) {
@@ -107,21 +113,24 @@ public final class GameStepPropertiesHelper {
       } else if (isNonCombatDelegate(data)) {
         return false;
       } else {
-        throw new IllegalStateException("Cannot determine combat or not: " + data.getSequence().getStep().getName());
+        throw new IllegalStateException(
+            "Cannot determine combat or not: " + data.getSequence().getStep().getName());
       }
     } finally {
       data.releaseReadLock();
     }
   }
 
-  /**
-   * For various things related to movement validation.
-   */
-  public static boolean isNonCombatMove(final GameData data, final boolean doNotThrowErrorIfNotMoveDelegate) {
+  /** For various things related to movement validation. */
+  public static boolean isNonCombatMove(
+      final GameData data, final boolean doNotThrowErrorIfNotMoveDelegate) {
     data.acquireReadLock();
     try {
       final String prop =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.NON_COMBAT_MOVE);
+          data.getSequence()
+              .getStep()
+              .getProperties()
+              .getProperty(GameStep.PropertyKeys.NON_COMBAT_MOVE);
       if (prop != null) {
         return Boolean.parseBoolean(prop);
       } else if (isNonCombatDelegate(data)) {
@@ -129,7 +138,8 @@ public final class GameStepPropertiesHelper {
       } else if (isCombatDelegate(data) || doNotThrowErrorIfNotMoveDelegate) {
         return false;
       } else {
-        throw new IllegalStateException("Cannot determine combat or not: " + data.getSequence().getStep().getName());
+        throw new IllegalStateException(
+            "Cannot determine combat or not: " + data.getSequence().getStep().getName());
       }
     } finally {
       data.releaseReadLock();
@@ -137,19 +147,25 @@ public final class GameStepPropertiesHelper {
   }
 
   /**
-   * Repairs damaged units. Normally would occur at either start of combat move or end of turn, depending.
+   * Repairs damaged units. Normally would occur at either start of combat move or end of turn,
+   * depending.
    */
   static boolean isRepairUnits(final GameData data) {
     data.acquireReadLock();
     try {
-      final boolean repairAtStartAndOnlyOwn = Properties.getBattleshipsRepairAtBeginningOfRound(data);
+      final boolean repairAtStartAndOnlyOwn =
+          Properties.getBattleshipsRepairAtBeginningOfRound(data);
       final boolean repairAtEndAndAll = Properties.getBattleshipsRepairAtEndOfRound(data);
       // if both are off, we do no repairing, no matter what
       if (!repairAtStartAndOnlyOwn && !repairAtEndAndAll) {
         return false;
       }
 
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.REPAIR_UNITS);
+      final String prop =
+          data.getSequence()
+              .getStep()
+              .getProperties()
+              .getProperty(GameStep.PropertyKeys.REPAIR_UNITS);
       if (prop != null) {
         return Boolean.parseBoolean(prop);
       }
@@ -168,7 +184,10 @@ public final class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       final String prop =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.GIVE_BONUS_MOVEMENT);
+          data.getSequence()
+              .getStep()
+              .getProperties()
+              .getProperty(GameStep.PropertyKeys.GIVE_BONUS_MOVEMENT);
       return prop != null ? Boolean.parseBoolean(prop) : isCombatDelegate(data);
     } finally {
       data.releaseReadLock();
@@ -176,47 +195,56 @@ public final class GameStepPropertiesHelper {
   }
 
   /**
-   * Kills all air that cannot land. Normally would occur both at the end of noncombat movement and also at end of
-   * placement phase.
+   * Kills all air that cannot land. Normally would occur both at the end of noncombat movement and
+   * also at end of placement phase.
    */
   public static boolean isRemoveAirThatCanNotLand(final GameData data) {
     data.acquireReadLock();
     try {
       final String prop =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.REMOVE_AIR_THAT_CAN_NOT_LAND);
+          data.getSequence()
+              .getStep()
+              .getProperties()
+              .getProperty(GameStep.PropertyKeys.REMOVE_AIR_THAT_CAN_NOT_LAND);
       if (prop != null) {
         return Boolean.parseBoolean(prop);
       }
       return (data.getSequence().getStep().getDelegate() == null
-          || !NoAirCheckPlaceDelegate.class.equals(data.getSequence().getStep().getDelegate().getClass()))
-          && (isNonCombatDelegate(data) || data.getSequence().getStep().getName().endsWith("Place"));
+              || !NoAirCheckPlaceDelegate.class.equals(
+                  data.getSequence().getStep().getDelegate().getClass()))
+          && (isNonCombatDelegate(data)
+              || data.getSequence().getStep().getName().endsWith("Place"));
     } finally {
       data.releaseReadLock();
     }
   }
 
   /**
-   * For situations where player phases are intermeshed.
-   * Effects so far:
-   * Lets air live if the other players could put a carrier under it.
+   * For situations where player phases are intermeshed. Effects so far: Lets air live if the other
+   * players could put a carrier under it.
    *
-   * @return a set of player ids. if argument player is not null this set will definitely include that player, but if
-   *         not the set could be empty. never null.
+   * @return a set of player ids. if argument player is not null this set will definitely include
+   *     that player, but if not the set could be empty. never null.
    */
-  public static Set<PlayerId> getCombinedTurns(final GameData data, final @Nullable PlayerId player) {
+  public static Set<PlayerId> getCombinedTurns(
+      final GameData data, final @Nullable PlayerId player) {
     checkNotNull(data);
 
     return getPlayersFromProperty(data, GameStep.PropertyKeys.COMBINED_TURNS, player);
   }
 
   /**
-   * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally does not occur.
+   * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally
+   * does not occur.
    */
   static boolean isResetUnitStateAtStart(final GameData data) {
     data.acquireReadLock();
     try {
       final String prop =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_START);
+          data.getSequence()
+              .getStep()
+              .getProperties()
+              .getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_START);
       return Boolean.parseBoolean(prop);
     } finally {
       data.releaseReadLock();
@@ -224,28 +252,32 @@ public final class GameStepPropertiesHelper {
   }
 
   /**
-   * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally occurs at end of
-   * noncombat move phase.
+   * Resets unit state, such as movement, submerged, transport unload/load, airborne, etc. Normally
+   * occurs at end of noncombat move phase.
    */
   static boolean isResetUnitStateAtEnd(final GameData data) {
     data.acquireReadLock();
     try {
       final String prop =
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_END);
+          data.getSequence()
+              .getStep()
+              .getProperties()
+              .getProperty(GameStep.PropertyKeys.RESET_UNIT_STATE_AT_END);
       return prop != null ? Boolean.parseBoolean(prop) : isNonCombatDelegate(data);
     } finally {
       data.releaseReadLock();
     }
   }
 
-  /**
-   * Indicates bid purchase or placement is enabled for the specified game.
-   */
+  /** Indicates bid purchase or placement is enabled for the specified game. */
   public static boolean isBid(final GameData data) {
     data.acquireReadLock();
     try {
-      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.BID);
-      return prop != null ? Boolean.parseBoolean(prop) : (isBidPurchaseDelegate(data) || isBidPlaceDelegate(data));
+      final String prop =
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.BID);
+      return prop != null
+          ? Boolean.parseBoolean(prop)
+          : (isBidPurchaseDelegate(data) || isBidPlaceDelegate(data));
     } finally {
       data.releaseReadLock();
     }
@@ -254,10 +286,11 @@ public final class GameStepPropertiesHelper {
   /**
    * Returns the collection of players whose units can be repaired by the specified player.
    *
-   * @return a set of player ids. if argument player is not null this set will definitely include that player, but if
-   *         not the set could be empty. never null.
+   * @return a set of player ids. if argument player is not null this set will definitely include
+   *     that player, but if not the set could be empty. never null.
    */
-  public static Set<PlayerId> getRepairPlayers(final GameData data, final @Nullable PlayerId player) {
+  public static Set<PlayerId> getRepairPlayers(
+      final GameData data, final @Nullable PlayerId player) {
     checkNotNull(data);
 
     return getPlayersFromProperty(data, GameStep.PropertyKeys.REPAIR_PLAYERS, player);

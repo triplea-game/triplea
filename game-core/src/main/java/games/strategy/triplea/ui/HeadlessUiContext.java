@@ -21,7 +21,8 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 
 /**
- * Headless version, so that we don't get error in linux when the system has no graphics configuration.
+ * Headless version, so that we don't get error in linux when the system has no graphics
+ * configuration.
  */
 public class HeadlessUiContext extends AbstractUiContext {
 
@@ -53,8 +54,11 @@ public class HeadlessUiContext extends AbstractUiContext {
   }
 
   @Override
-  public JLabel newUnitImageLabel(final UnitType type, final PlayerId player,
-      final UnitDamage damaged, final UnitEnable disabled) {
+  public JLabel newUnitImageLabel(
+      final UnitType type,
+      final PlayerId player,
+      final UnitDamage damaged,
+      final UnitEnable disabled) {
     return null;
   }
 

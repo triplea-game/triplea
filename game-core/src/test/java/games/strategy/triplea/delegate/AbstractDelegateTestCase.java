@@ -18,10 +18,8 @@ import games.strategy.triplea.xml.TestMapGameData;
 /**
  * Superclass for fixtures that test delegates.
  *
- * <p>
- * Pre-loads the {@link TestMapGameData#DELEGATE_TEST} save game and provides fields for the most-commonly-accessed
- * players, territories, and unit types.
- * </p>
+ * <p>Pre-loads the {@link TestMapGameData#DELEGATE_TEST} save game and provides fields for the
+ * most-commonly-accessed players, territories, and unit types.
  */
 public abstract class AbstractDelegateTestCase {
   protected GameData gameData;

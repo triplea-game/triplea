@@ -52,7 +52,8 @@ public class ChannelMessengerTest {
   public void testLocalCall() {
     final RemoteName descriptor = new RemoteName("testLocalCall", IChannelBase.class);
     serverChannelMessenger.registerChannelSubscriber(new ChannelSubscriber(), descriptor);
-    final IChannelBase subscriber = (IChannelBase) serverChannelMessenger.getChannelBroadcaster(descriptor);
+    final IChannelBase subscriber =
+        (IChannelBase) serverChannelMessenger.getChannelBroadcaster(descriptor);
     subscriber.testNoParams();
     subscriber.testPrimitives(1, (short) 0, 1, (byte) 1, true, (float) 1.0);
     subscriber.testString("a");
@@ -64,7 +65,8 @@ public class ChannelMessengerTest {
     final ChannelSubscriber subscriber1 = new ChannelSubscriber();
     serverChannelMessenger.registerChannelSubscriber(subscriber1, testRemote);
     assertHasChannel(testRemote, unifiedMessengerHub);
-    final IChannelBase channelTest = (IChannelBase) clientChannelMessenger.getChannelBroadcaster(testRemote);
+    final IChannelBase channelTest =
+        (IChannelBase) clientChannelMessenger.getChannelBroadcaster(testRemote);
     channelTest.testNoParams();
     assertCallCountIs(subscriber1, 1);
     channelTest.testString("a");
@@ -77,7 +79,8 @@ public class ChannelMessengerTest {
 
   @Test
   public void testMultipleClients() throws Exception {
-    // set up the client and server so that the client has 1 subscriber, and the server knows about it
+    // set up the client and server so that the client has 1 subscriber, and the server knows about
+    // it
     final RemoteName test = new RemoteName("test", IChannelBase.class);
     final ChannelSubscriber client1Subscriber = new ChannelSubscriber();
     clientChannelMessenger.registerChannelSubscriber(client1Subscriber, test);
@@ -85,7 +88,8 @@ public class ChannelMessengerTest {
     assertEquals(1, clientChannelMessenger.getUnifiedMessenger().getLocalEndPointCount(test));
     // add a new client
     final String mac = MacFinder.getHashedMacAddress();
-    final ClientMessenger clientMessenger2 = new ClientMessenger("localhost", serverPort, "client2", mac);
+    final ClientMessenger clientMessenger2 =
+        new ClientMessenger("localhost", serverPort, "client2", mac);
     final ChannelMessenger client2 = new ChannelMessenger(new UnifiedMessenger(clientMessenger2));
     ((IChannelBase) client2.getChannelBroadcaster(test)).testString("a");
     assertCallCountIs(client1Subscriber, 1);
@@ -101,10 +105,12 @@ public class ChannelMessengerTest {
     clientChannelMessenger.registerChannelSubscriber(subscriber3, testRemote3);
     assertHasChannel(testRemote2, unifiedMessengerHub);
     assertHasChannel(testRemote3, unifiedMessengerHub);
-    final IChannelBase channelTest2 = (IChannelBase) serverChannelMessenger.getChannelBroadcaster(testRemote2);
+    final IChannelBase channelTest2 =
+        (IChannelBase) serverChannelMessenger.getChannelBroadcaster(testRemote2);
     channelTest2.testNoParams();
     assertCallCountIs(subscriber2, 1);
-    final IChannelBase channelTest3 = (IChannelBase) serverChannelMessenger.getChannelBroadcaster(testRemote3);
+    final IChannelBase channelTest3 =
+        (IChannelBase) serverChannelMessenger.getChannelBroadcaster(testRemote3);
     channelTest3.testNoParams();
     assertCallCountIs(subscriber3, 1);
   }
@@ -124,7 +130,13 @@ public class ChannelMessengerTest {
 
     void testString(String a);
 
-    void testArray(int[] ints, short[] shorts, byte[] bytes, boolean[] bools, float[] floats, Object[] objects);
+    void testArray(
+        int[] ints,
+        short[] shorts,
+        byte[] bytes,
+        boolean[] bools,
+        float[] floats,
+        Object[] objects);
   }
 
   private static class ChannelSubscriber implements IChannelBase {
@@ -144,7 +156,8 @@ public class ChannelMessengerTest {
     }
 
     @Override
-    public void testPrimitives(final int a, final short b, final long c, final byte d, final boolean e, final float f) {
+    public void testPrimitives(
+        final int a, final short b, final long c, final byte d, final boolean e, final float f) {
       incrementCount();
     }
 
@@ -154,8 +167,13 @@ public class ChannelMessengerTest {
     }
 
     @Override
-    public void testArray(final int[] ints, final short[] shorts, final byte[] bytes, final boolean[] bools,
-        final float[] floats, final Object[] objects) {
+    public void testArray(
+        final int[] ints,
+        final short[] shorts,
+        final byte[] bytes,
+        final boolean[] bools,
+        final float[] floats,
+        final Object[] objects) {
       incrementCount();
     }
   }

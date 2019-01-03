@@ -30,9 +30,7 @@ import lombok.extern.java.Log;
 /**
  * Posts turn summaries to a NodeBB based forum of your choice.
  *
- * <p>
- * URL format is {@code https://your.forumurl.com/api/v2/topics/<topicID>}.
- * </p>
+ * <p>URL format is {@code https://your.forumurl.com/api/v2/topics/<topicID>}.
  */
 @Log
 abstract class NodeBbForumPoster extends AbstractForumPoster {
@@ -59,13 +57,20 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
     return false;
   }
 
-  private void post(final CloseableHttpClient client, final String token, final String text) throws IOException {
+  private void post(final CloseableHttpClient client, final String token, final String text)
+      throws IOException {
     final HttpPost post = new HttpPost(getForumUrl() + "/api/v2/topics/" + getTopicId());
     addTokenHeader(post, token);
-    post.setEntity(new UrlEncodedFormEntity(
-        Collections.singletonList(new BasicNameValuePair("content",
-            text + ((includeSaveGame && saveGameFile != null) ? uploadSaveGame(client, token) : ""))),
-        StandardCharsets.UTF_8));
+    post.setEntity(
+        new UrlEncodedFormEntity(
+            Collections.singletonList(
+                new BasicNameValuePair(
+                    "content",
+                    text
+                        + ((includeSaveGame && saveGameFile != null)
+                            ? uploadSaveGame(client, token)
+                            : ""))),
+            StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final int code = response.getStatusLine().getStatusCode();
@@ -75,11 +80,14 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
     }
   }
 
-  private String uploadSaveGame(final CloseableHttpClient client, final String token) throws IOException {
+  private String uploadSaveGame(final CloseableHttpClient client, final String token)
+      throws IOException {
     final HttpPost fileUpload = new HttpPost(getForumUrl() + "/api/v2/util/upload");
-    fileUpload.setEntity(MultipartEntityBuilder.create()
-        .addBinaryBody("files[]", saveGameFile, ContentType.APPLICATION_OCTET_STREAM, saveGameFileName)
-        .build());
+    fileUpload.setEntity(
+        MultipartEntityBuilder.create()
+            .addBinaryBody(
+                "files[]", saveGameFile, ContentType.APPLICATION_OCTET_STREAM, saveGameFileName)
+            .build());
     HttpProxy.addProxy(fileUpload);
     addTokenHeader(fileUpload, token);
     try (CloseableHttpResponse response = client.execute(fileUpload)) {
@@ -88,13 +96,15 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
         final String json = EntityUtils.toString(response.getEntity());
         return "\n[Savegame](" + new JSONArray(json).getJSONObject(0).getString("url") + ")";
       }
-      throw new IllegalStateException("Failed to upload savegame, server returned Error Code " + status);
+      throw new IllegalStateException(
+          "Failed to upload savegame, server returned Error Code " + status);
     }
   }
 
   private void deleteToken(final CloseableHttpClient client, final int userId, final String token)
       throws IOException {
-    final HttpDelete httpDelete = new HttpDelete(getForumUrl() + "/api/v2/users/" + userId + "/tokens/" + token);
+    final HttpDelete httpDelete =
+        new HttpDelete(getForumUrl() + "/api/v2/users/" + userId + "/tokens/" + token);
     HttpProxy.addProxy(httpDelete);
     addTokenHeader(httpDelete, token);
     client.execute(httpDelete).close(); // ignore errors, execute and then close
@@ -132,9 +142,9 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
 
   private String getToken(final CloseableHttpClient client, final int userId) throws IOException {
     final HttpPost post = new HttpPost(getForumUrl() + "/api/v2/users/" + userId + "/tokens");
-    post.setEntity(new UrlEncodedFormEntity(
-        Collections.singletonList(newPasswordParameter()),
-        StandardCharsets.UTF_8));
+    post.setEntity(
+        new UrlEncodedFormEntity(
+            Collections.singletonList(newPasswordParameter()), StandardCharsets.UTF_8));
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final String rawJson = EntityUtils.toString(response.getEntity());
@@ -145,10 +155,16 @@ abstract class NodeBbForumPoster extends AbstractForumPoster {
           return jsonObject.getJSONObject("payload").getString("token");
         }
         throw new IllegalStateException(
-            "Failed to retrieve Token. Code: " + code + " Message: " + jsonObject.getString("message"));
+            "Failed to retrieve Token. Code: "
+                + code
+                + " Message: "
+                + jsonObject.getString("message"));
       }
-      throw new IllegalStateException("Failed to retrieve Token, server did not return correct response: "
-          + response.getStatusLine() + "; JSON: " + rawJson);
+      throw new IllegalStateException(
+          "Failed to retrieve Token, server did not return correct response: "
+              + response.getStatusLine()
+              + "; JSON: "
+              + rawJson);
     }
   }
 

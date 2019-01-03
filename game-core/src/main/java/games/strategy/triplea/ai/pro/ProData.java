@@ -20,9 +20,7 @@ import games.strategy.triplea.util.TuvUtils;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
-/**
- * Pro AI data.
- */
+/** Pro AI data. */
 public class ProData {
 
   private static ProAi proAi;
@@ -44,12 +42,13 @@ public class ProData {
     hiddenInitialize(proAi, proAi.getGameData(), proAi.getPlayerId(), false);
   }
 
-  public static void initializeSimulation(final ProAi proAi, final GameData data, final PlayerId player) {
+  public static void initializeSimulation(
+      final ProAi proAi, final GameData data, final PlayerId player) {
     hiddenInitialize(proAi, data, player, true);
   }
 
-  private static void hiddenInitialize(final ProAi proAi, final GameData data, final PlayerId player,
-      final boolean isSimulation) {
+  private static void hiddenInitialize(
+      final ProAi proAi, final GameData data, final PlayerId player, final boolean isSimulation) {
     ProData.proAi = proAi;
     ProData.data = data;
     ProData.player = player;
@@ -61,7 +60,8 @@ public class ProData {
     }
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     myUnitTerritories =
-        CollectionUtils.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+        CollectionUtils.getMatches(
+            data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
     unitTerritoryMap = ProUtils.newUnitTerritoryMap();
     unitValueMap = TuvUtils.getCostsForTuv(player, data);
     purchaseOptions = new ProPurchaseOptionMap(player, data);
@@ -89,5 +89,4 @@ public class ProData {
     }
     return minCostPerHitPoint;
   }
-
 }

@@ -16,9 +16,10 @@ class ArgParsingHelperTest {
 
   @Test
   void getTripleaProperties() {
-    final Properties properties = ArgParsingHelper.getTripleaProperties(
-        "-" + ArgParsingHelper.TRIPLEA_PROPERTY_PREFIX + arg + "=" + value,
-        hiddenKey + "=hiddenValueAsKeyDidNotStartWithDashP");
+    final Properties properties =
+        ArgParsingHelper.getTripleaProperties(
+            "-" + ArgParsingHelper.TRIPLEA_PROPERTY_PREFIX + arg + "=" + value,
+            hiddenKey + "=hiddenValueAsKeyDidNotStartWithDashP");
 
     assertThat(properties.getProperty(arg), is(value));
     assertThat(properties.getProperty(hiddenKey), nullValue());

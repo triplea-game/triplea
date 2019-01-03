@@ -7,9 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * A collection of unit types.
- */
+/** A collection of unit types. */
 public class UnitTypeList extends GameDataComponent implements Iterable<UnitType> {
   private static final long serialVersionUID = 9002927658524651749L;
 
@@ -27,9 +25,7 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
     return unitTypes.get(name);
   }
 
-  /**
-   * Will return null if even a single name is not on the unit list.
-   */
+  /** Will return null if even a single name is not on the unit list. */
   public Set<UnitType> getUnitTypes(final String[] names) {
     final Set<UnitType> types = new HashSet<>();
     for (final String name : names) {

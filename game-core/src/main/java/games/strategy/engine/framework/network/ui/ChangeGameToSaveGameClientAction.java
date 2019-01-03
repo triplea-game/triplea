@@ -7,9 +7,7 @@ import javax.swing.AbstractAction;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameFileSelector;
 import games.strategy.net.IClientMessenger;
 
-/**
- * An action for loading a save game across all network nodes from a client node.
- */
+/** An action for loading a save game across all network nodes from a client node. */
 public class ChangeGameToSaveGameClientAction extends AbstractAction {
   private static final long serialVersionUID = -6986376382381381377L;
   private final IClientMessenger clientMessenger;

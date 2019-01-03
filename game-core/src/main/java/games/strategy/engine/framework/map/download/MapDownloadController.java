@@ -25,10 +25,9 @@ public class MapDownloadController {
 
   public MapDownloadController() {}
 
-
   /**
-   * Return true if all locally downloaded maps are latest versions, false if any can are out of date or their version
-   * not recognized.
+   * Return true if all locally downloaded maps are latest versions, false if any can are out of
+   * date or their version not recognized.
    */
   public static boolean checkDownloadedMapsAreLatest() {
     try {
@@ -36,13 +35,16 @@ public class MapDownloadController {
       final Collection<String> outOfDateMapNames = getOutOfDateMapNames(allDownloads);
       if (!outOfDateMapNames.isEmpty()) {
         final StringBuilder text = new StringBuilder();
-        text.append("<html>Some of the maps you have are out of date, and newer versions of those maps exist.<br><br>");
+        text.append(
+            "<html>Some of the maps you have are out of date, and newer versions of those maps exist.<br><br>");
         text.append("Would you like to update (re-download) the following maps now?<br><ul>");
         for (final String mapName : outOfDateMapNames) {
           text.append("<li> ").append(mapName).append("</li>");
         }
         text.append("</ul></html>");
-        SwingComponents.promptUser("Update Your Maps?", text.toString(),
+        SwingComponents.promptUser(
+            "Update Your Maps?",
+            text.toString(),
             () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(outOfDateMapNames));
         return true;
       }
@@ -52,33 +54,41 @@ public class MapDownloadController {
     return false;
   }
 
-  private static Collection<String> getOutOfDateMapNames(final Collection<DownloadFileDescription> downloads) {
+  private static Collection<String> getOutOfDateMapNames(
+      final Collection<DownloadFileDescription> downloads) {
     return getOutOfDateMapNames(downloads, getDownloadedMaps());
   }
 
   @VisibleForTesting
   static Collection<String> getOutOfDateMapNames(
-      final Collection<DownloadFileDescription> downloads,
-      final DownloadedMaps downloadedMaps) {
-    return downloads.stream()
+      final Collection<DownloadFileDescription> downloads, final DownloadedMaps downloadedMaps) {
+    return downloads
+        .stream()
         .filter(Objects::nonNull)
         .filter(it -> isMapOutOfDate(it, downloadedMaps))
         .map(DownloadFileDescription::getMapName)
         .collect(Collectors.toList());
   }
 
-  private static boolean isMapOutOfDate(final DownloadFileDescription download, final DownloadedMaps downloadedMaps) {
+  private static boolean isMapOutOfDate(
+      final DownloadFileDescription download, final DownloadedMaps downloadedMaps) {
     final Optional<Version> latestVersion = Optional.ofNullable(download.getVersion());
-    final Optional<Version> downloadedVersion = getDownloadedVersion(download.getMapName(), downloadedMaps);
+    final Optional<Version> downloadedVersion =
+        getDownloadedVersion(download.getMapName(), downloadedMaps);
 
     final AtomicBoolean mapOutOfDate = new AtomicBoolean(false);
-    latestVersion.ifPresent(latest -> downloadedVersion.ifPresent(
-        downloaded -> mapOutOfDate.set(latest.isGreaterThan(downloaded))));
+    latestVersion.ifPresent(
+        latest ->
+            downloadedVersion.ifPresent(
+                downloaded -> mapOutOfDate.set(latest.isGreaterThan(downloaded))));
     return mapOutOfDate.get();
   }
 
-  private static Optional<Version> getDownloadedVersion(final String mapName, final DownloadedMaps downloadedMaps) {
-    return downloadedMaps.getZipFileCandidates(mapName).stream()
+  private static Optional<Version> getDownloadedVersion(
+      final String mapName, final DownloadedMaps downloadedMaps) {
+    return downloadedMaps
+        .getZipFileCandidates(mapName)
+        .stream()
         .map(downloadedMaps::getVersionForZipFile)
         .filter(Optional::isPresent)
         .findFirst()
@@ -109,7 +119,8 @@ public class MapDownloadController {
   /**
    * Indicates the user should be prompted to download the tutorial map.
    *
-   * @return {@code true} if the user should be prompted to download the tutorial map; otherwise {@code false}.
+   * @return {@code true} if the user should be prompted to download the tutorial map; otherwise
+   *     {@code false}.
    */
   public boolean shouldPromptToDownloadTutorialMap() {
     return shouldPromptToDownloadTutorialMap(getTutorialMapPreferences(), getUserMaps());
@@ -117,8 +128,7 @@ public class MapDownloadController {
 
   @VisibleForTesting
   static boolean shouldPromptToDownloadTutorialMap(
-      final TutorialMapPreferences tutorialMapPreferences,
-      final UserMaps userMaps) {
+      final TutorialMapPreferences tutorialMapPreferences, final UserMaps userMaps) {
     return tutorialMapPreferences.canPromptToDownload() && userMaps.isEmpty();
   }
 
@@ -157,15 +167,14 @@ public class MapDownloadController {
     };
   }
 
-  /**
-   * Prevents the user from being prompted to download the tutorial map.
-   */
+  /** Prevents the user from being prompted to download the tutorial map. */
   public void preventPromptToDownloadTutorialMap() {
     preventPromptToDownloadTutorialMap(getTutorialMapPreferences());
   }
 
   @VisibleForTesting
-  static void preventPromptToDownloadTutorialMap(final TutorialMapPreferences tutorialMapPreferences) {
+  static void preventPromptToDownloadTutorialMap(
+      final TutorialMapPreferences tutorialMapPreferences) {
     tutorialMapPreferences.preventPromptToDownload();
   }
 }

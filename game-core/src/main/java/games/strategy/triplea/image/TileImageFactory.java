@@ -26,9 +26,7 @@ import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 import lombok.extern.java.Log;
 
-/**
- * A factory for creating the base tile images used to render a map.
- */
+/** A factory for creating the base tile images used to render a map. */
 @Log
 public final class TileImageFactory {
   // one instance in the application
@@ -41,10 +39,13 @@ public final class TileImageFactory {
   private static final String SHOW_MAP_BLEND_ALPHA = "BlendAlpha";
   private static float showMapBlendAlpha;
   private static final GraphicsConfiguration configuration =
-      GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+      GraphicsEnvironment.getLocalGraphicsEnvironment()
+          .getDefaultScreenDevice()
+          .getDefaultConfiguration();
   private double scale = 1.0;
   // maps image name to ImageRef
-  private final Map<String, SoftReference<Image>> imageCache = Collections.synchronizedMap(new HashMap<>());
+  private final Map<String, SoftReference<Image>> imageCache =
+      Collections.synchronizedMap(new HashMap<>());
   private ResourceLoader resourceLoader;
 
   static {
@@ -190,12 +191,11 @@ public final class TileImageFactory {
     return "reliefTiles" + "/" + x + "_" + y + ".png";
   }
 
-  /**
-   * This method produces a blank white tile for use in blending.
-   */
+  /** This method produces a blank white tile for use in blending. */
   private static BufferedImage makeMissingBaseTile(final BufferedImage input) {
     final BufferedImage compatibleImage =
-        configuration.createCompatibleImage(input.getWidth(null), input.getHeight(null), Transparency.TRANSLUCENT);
+        configuration.createCompatibleImage(
+            input.getWidth(null), input.getHeight(null), Transparency.TRANSLUCENT);
     final Graphics2D g2 = compatibleImage.createGraphics();
     g2.fillRect(0, 0, input.getWidth(null), input.getHeight(null));
     g2.drawImage(compatibleImage, 0, 0, null);
@@ -203,8 +203,12 @@ public final class TileImageFactory {
     return compatibleImage;
   }
 
-  private Image loadImage(final URL imageLocation, final String fileName, final boolean transparent,
-      final boolean cache, final boolean scale) {
+  private Image loadImage(
+      final URL imageLocation,
+      final String fileName,
+      final boolean transparent,
+      final boolean cache,
+      final boolean scale) {
     return (showMapBlends && showReliefImages && transparent)
         ? loadBlendedImage(fileName, cache, scale)
         : loadUnblendedImage(imageLocation, fileName, transparent, cache, scale);
@@ -225,7 +229,8 @@ public final class TileImageFactory {
 
     // Get buffered images
     try {
-      final Stopwatch loadingImages = new Stopwatch("Loading images:" + urlrelief + " and " + urlBase);
+      final Stopwatch loadingImages =
+          new Stopwatch("Loading images:" + urlrelief + " and " + urlBase);
       if (urlrelief != null) {
         reliefFile = loadCompatibleImage(urlrelief);
       }
@@ -253,7 +258,8 @@ public final class TileImageFactory {
     /* reversing the to/from files leaves white underlays visible */
     if (reliefFile != null) {
       final BufferedImage blendedImage =
-          new BufferedImage(reliefFile.getWidth(null), reliefFile.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+          new BufferedImage(
+              reliefFile.getWidth(null), reliefFile.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics2D g2 = blendedImage.createGraphics();
       if (scaled && scale != 1.0) {
         final AffineTransform transform = new AffineTransform();
@@ -279,8 +285,12 @@ public final class TileImageFactory {
     return baseFile;
   }
 
-  private Image loadUnblendedImage(final URL imageLocation, final String fileName, final boolean transparent,
-      final boolean cache, final boolean scaled) {
+  private Image loadUnblendedImage(
+      final URL imageLocation,
+      final String fileName,
+      final boolean transparent,
+      final boolean cache,
+      final boolean scaled) {
     Image image;
     try {
       final Stopwatch loadingImages = new Stopwatch("Loading image:" + imageLocation);
@@ -320,7 +330,8 @@ public final class TileImageFactory {
 
   private static BufferedImage toCompatibleImage(final BufferedImage image) {
     final BufferedImage compatibleImage =
-        configuration.createCompatibleImage(image.getWidth(), image.getHeight(), Transparency.TRANSLUCENT);
+        configuration.createCompatibleImage(
+            image.getWidth(), image.getHeight(), Transparency.TRANSLUCENT);
     final Graphics g = compatibleImage.getGraphics();
     g.drawImage(image, 0, 0, null);
     g.dispose();

@@ -16,9 +16,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 
-/**
- * A game player (nation, power, etc.).
- */
+/** A game player (nation, power, etc.). */
 public class PlayerId extends NamedAttachable implements NamedUnitHolder {
   private static final long serialVersionUID = -2284878450555315947L;
 
@@ -41,8 +39,13 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
     this(name, false, false, null, false, data);
   }
 
-  public PlayerId(final String name, final boolean optional, final boolean canBeDisabled, final String defaultType,
-      final boolean isHidden, final GameData data) {
+  public PlayerId(
+      final String name,
+      final boolean optional,
+      final boolean canBeDisabled,
+      final String defaultType,
+      final boolean isHidden,
+      final GameData data) {
     super(name, data);
     this.optional = optional;
     this.canBeDisabled = canBeDisabled;
@@ -123,18 +126,23 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
   }
 
   /**
-   * First string is "Human" or "AI" or "null" (case insensitive), while second string is the name of the player,
-   * separated with a colon. For example, it could be "AI:Hard (AI)".
+   * First string is "Human" or "AI" or "null" (case insensitive), while second string is the name
+   * of the player, separated with a colon. For example, it could be "AI:Hard (AI)".
    *
-   * @throws IllegalArgumentException If {@code encodedType} does not contain two strings separated by a colon; or if
-   *         the first string is not one of "AI", "Human", or "null" (case insensitive).
+   * @throws IllegalArgumentException If {@code encodedType} does not contain two strings separated
+   *     by a colon; or if the first string is not one of "AI", "Human", or "null" (case
+   *     insensitive).
    */
   public void setWhoAmI(final String encodedType) {
     final List<String> tokens = tokenizeEncodedType(encodedType);
-    checkArgument(tokens.size() == 2, "whoAmI '" + encodedType + "' must have two strings, separated by a colon");
+    checkArgument(
+        tokens.size() == 2,
+        "whoAmI '" + encodedType + "' must have two strings, separated by a colon");
     final String typeId = tokens.get(0);
     checkArgument(
-        "AI".equalsIgnoreCase(typeId) || "Human".equalsIgnoreCase(typeId) || "null".equalsIgnoreCase(typeId),
+        "AI".equalsIgnoreCase(typeId)
+            || "Human".equalsIgnoreCase(typeId)
+            || "null".equalsIgnoreCase(typeId),
         "whoAmI '" + encodedType + "' first part must be, ai or human or null");
     whoAmI = encodedType;
   }
@@ -165,20 +173,22 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
   }
 
   /**
-   * If I have no units with movement,
-   * And I own zero factories or have have no owned land,
-   * then I am basically dead, and therefore should not participate in things like politics.
+   * If I have no units with movement, And I own zero factories or have have no owned land, then I
+   * am basically dead, and therefore should not participate in things like politics.
    */
   public boolean amNotDeadYet(final GameData data) {
     for (final Territory t : data.getMap().getTerritories()) {
-      if (t.getUnits().anyMatch(Matches.unitIsOwnedBy(this)
-          .and(Matches.unitHasAttackValueOfAtLeast(1))
-          .and(Matches.unitCanMove())
-          .and(Matches.unitIsLand()))) {
+      if (t.getUnits()
+          .anyMatch(
+              Matches.unitIsOwnedBy(this)
+                  .and(Matches.unitHasAttackValueOfAtLeast(1))
+                  .and(Matches.unitCanMove())
+                  .and(Matches.unitIsLand()))) {
         return true;
       }
       if (t.getOwner().equals(this)
-          && t.getUnits().anyMatch(Matches.unitIsOwnedBy(this).and(Matches.unitCanProduceUnits()))) {
+          && t.getUnits()
+              .anyMatch(Matches.unitIsOwnedBy(this).and(Matches.unitCanProduceUnits()))) {
         return true;
       }
     }
@@ -216,21 +226,17 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
     return (TechAttachment) getAttachment(Constants.TECH_ATTACHMENT_NAME);
   }
 
-  /**
-   * A player type (e.g. human, AI).
-   */
+  /** A player type (e.g. human, AI). */
   @AllArgsConstructor(access = AccessLevel.PACKAGE)
   @EqualsAndHashCode
   public static final class Type {
     /**
-     * The type identifier. One of "AI", "Human", or "null". Case is not guaranteed, so comparisons should be
-     * case-insensitive.
+     * The type identifier. One of "AI", "Human", or "null". Case is not guaranteed, so comparisons
+     * should be case-insensitive.
      */
     public final String id;
 
-    /**
-     * The display name of the type (e.g. "Hard (AI)").
-     */
+    /** The display name of the type (e.g. "Hard (AI)"). */
     public final String name;
   }
 }

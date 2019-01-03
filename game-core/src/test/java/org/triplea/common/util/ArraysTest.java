@@ -31,8 +31,7 @@ final class ArraysTest {
 
     @Test
     void shouldScrubArray() {
-      withSensitiveArray(() -> array, it -> {
-      });
+      withSensitiveArray(() -> array, it -> {});
 
       assertThat(array, is(new char[] {'\0', '\0', '\0'}));
     }

@@ -1,8 +1,6 @@
 package tools.util;
 
-/**
- * A collection of argument names common to all support tools.
- */
+/** A collection of argument names common to all support tools. */
 public final class ToolArguments {
   private ToolArguments() {}
 

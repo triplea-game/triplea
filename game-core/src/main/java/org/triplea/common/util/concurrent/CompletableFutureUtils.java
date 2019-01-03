@@ -10,18 +10,17 @@ import com.google.common.annotations.VisibleForTesting;
 
 import lombok.extern.java.Log;
 
-/**
- * A collection of useful methods for working with instances of {@link CompletableFuture}.
- */
+/** A collection of useful methods for working with instances of {@link CompletableFuture}. */
 @Log
 public final class CompletableFutureUtils {
   private CompletableFutureUtils() {}
 
   /**
-   * Logs any exception thrown by {@code future} when it is complete. If {@code future} completes normally, no action is
-   * taken.
+   * Logs any exception thrown by {@code future} when it is complete. If {@code future} completes
+   * normally, no action is taken.
    */
-  public static void logExceptionWhenComplete(final CompletableFuture<?> future, final String message) {
+  public static void logExceptionWhenComplete(
+      final CompletableFuture<?> future, final String message) {
     checkNotNull(future);
     checkNotNull(message);
 
@@ -30,11 +29,13 @@ public final class CompletableFutureUtils {
 
   @SuppressWarnings("FutureReturnValueIgnored")
   @VisibleForTesting
-  static void logExceptionWhenComplete(final CompletableFuture<?> future, final String message, final Logger logger) {
-    future.whenComplete((result, ex) -> {
-      if (ex != null) {
-        logger.log(Level.SEVERE, message, ex);
-      }
-    });
+  static void logExceptionWhenComplete(
+      final CompletableFuture<?> future, final String message, final Logger logger) {
+    future.whenComplete(
+        (result, ex) -> {
+          if (ex != null) {
+            logger.log(Level.SEVERE, message, ex);
+          }
+        });
   }
 }

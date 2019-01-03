@@ -12,9 +12,7 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
-/**
- * sounds.properties file helper class
- */
+/** sounds.properties file helper class */
 @Log
 class SoundProperties {
   // Filename
@@ -53,9 +51,7 @@ class SoundProperties {
     return getProperty(PROPERTY_DEFAULT_FOLDER, DEFAULT_ERA_FOLDER);
   }
 
-  /**
-   * Returns the string property, or null if not found.
-   */
+  /** Returns the string property, or null if not found. */
   String getProperty(final String key) {
     return properties.getProperty(key);
   }

@@ -6,9 +6,7 @@ import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
 import games.strategy.util.function.ThrowingBiFunction;
 
-/**
- * ClientSetting to store encrypted versions of potentially sensitive Strings.
- */
+/** ClientSetting to store encrypted versions of potentially sensitive Strings. */
 final class ProtectedStringClientSetting extends ClientSetting<char[]> {
   ProtectedStringClientSetting(final String name) {
     super(char[].class, name);
@@ -51,7 +49,8 @@ final class ProtectedStringClientSetting extends ClientSetting<char[]> {
     try {
       return credentialManager.unprotect(encodedValue);
     } catch (final CredentialManagerException e) {
-      throw new ValueEncodingException("Error while trying to unprotect string '" + encodedValue + "'", e);
+      throw new ValueEncodingException(
+          "Error while trying to unprotect string '" + encodedValue + "'", e);
     }
   }
 }

@@ -6,8 +6,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 
 interface MouseOverUnitListener {
-  /**
-   * units will be empty if the mouse is not over any unit.
-   */
+  /** units will be empty if the mouse is not over any unit. */
   void mouseEnter(List<Unit> units, Territory territory);
 }

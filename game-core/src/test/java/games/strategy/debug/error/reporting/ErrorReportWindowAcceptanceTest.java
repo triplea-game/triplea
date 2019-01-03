@@ -37,8 +37,7 @@ class ErrorReportWindowAcceptanceTest {
     DialogBuilder.suppressDialog();
   }
 
-  @Mock
-  private BiConsumer<JFrame, UserErrorReport> reportHandler;
+  @Mock private BiConsumer<JFrame, UserErrorReport> reportHandler;
 
   @Test
   void fillInErrorDetailsAndSendThem() {
@@ -57,9 +56,6 @@ class ErrorReportWindowAcceptanceTest {
         .doClick();
 
     verify(reportHandler, times(1))
-        .accept(any(), eq(UserErrorReport.builder()
-            .title(TITLE)
-            .description(DESCRIPTION)
-            .build()));
+        .accept(any(), eq(UserErrorReport.builder().title(TITLE).description(DESCRIPTION).build()));
   }
 }

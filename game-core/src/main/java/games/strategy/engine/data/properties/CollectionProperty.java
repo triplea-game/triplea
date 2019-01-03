@@ -24,7 +24,8 @@ public class CollectionProperty<T> extends AbstractEditableProperty<List<T>> {
    * @param description description of the property.
    * @param values collection of values.
    */
-  public CollectionProperty(final String name, final String description, final Collection<T> values) {
+  public CollectionProperty(
+      final String name, final String description, final Collection<T> values) {
     super(name, description);
     this.values = new ArrayList<>(values);
   }

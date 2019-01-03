@@ -10,9 +10,7 @@ import games.strategy.util.OptionalUtils;
 /**
  * A listener of map download progress events that updates the associated controls in the UI.
  *
- * <p>
- * Instances of this class are thread safe.
- * </p>
+ * <p>Instances of this class are thread safe.
  */
 final class MapDownloadProgressListener {
   private static final int MIN_PROGRESS_VALUE = 0;
@@ -23,7 +21,8 @@ final class MapDownloadProgressListener {
   private volatile Optional<Long> downloadLength = Optional.empty();
   private final JProgressBar progressBar;
 
-  MapDownloadProgressListener(final DownloadFileDescription download, final JProgressBar progressBar) {
+  MapDownloadProgressListener(
+      final DownloadFileDescription download, final JProgressBar progressBar) {
     this.download = download;
     this.progressBar = progressBar;
 
@@ -39,7 +38,11 @@ final class MapDownloadProgressListener {
   }
 
   private void requestDownloadLength() {
-    new Thread(() -> downloadLength = DownloadConfiguration.downloadLengthReader().getDownloadLength(download.getUrl()))
+    new Thread(
+            () ->
+                downloadLength =
+                    DownloadConfiguration.downloadLengthReader()
+                        .getDownloadLength(download.getUrl()))
         .start();
   }
 
@@ -48,25 +51,28 @@ final class MapDownloadProgressListener {
   }
 
   private void updateProgressBar(final String toolTipText) {
-    SwingUtilities.invokeLater(() -> {
-      progressBar.setIndeterminate(true);
-      progressBar.setStringPainted(false);
-      progressBar.setToolTipText(toolTipText);
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          progressBar.setIndeterminate(true);
+          progressBar.setStringPainted(false);
+          progressBar.setToolTipText(toolTipText);
+        });
   }
 
   private void updateProgressBar(final String toolTipText, final int value) {
-    SwingUtilities.invokeLater(() -> {
-      progressBar.setIndeterminate(false);
-      progressBar.setValue(value);
-      progressBar.setStringPainted(true);
-      progressBar.setToolTipText(toolTipText);
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          progressBar.setIndeterminate(false);
+          progressBar.setValue(value);
+          progressBar.setStringPainted(true);
+          progressBar.setToolTipText(toolTipText);
+        });
   }
 
   void downloadUpdated(final long currentLength) {
     final String toolTipText = String.format("Installing to: %s", download.getInstallLocation());
-    OptionalUtils.ifPresentOrElse(downloadLength,
+    OptionalUtils.ifPresentOrElse(
+        downloadLength,
         totalLength -> updateProgressBar(toolTipText, percentComplete(currentLength, totalLength)),
         () -> updateProgressBar(toolTipText));
   }
@@ -76,6 +82,7 @@ final class MapDownloadProgressListener {
   }
 
   void downloadCompleted() {
-    updateProgressBar(String.format("Installed to: %s", download.getInstallLocation()), MAX_PROGRESS_VALUE);
+    updateProgressBar(
+        String.format("Installed to: %s", download.getInstallLocation()), MAX_PROGRESS_VALUE);
   }
 }

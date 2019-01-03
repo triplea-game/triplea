@@ -24,20 +24,14 @@ class JFrameBuilderTest {
 
   @Test
   void title() {
-    final JFrame frame = JFrameBuilder.builder()
-        .title(TITLE)
-        .build();
+    final JFrame frame = JFrameBuilder.builder().title(TITLE).build();
 
-    assertThat(
-        frame.getTitle(),
-        is(TITLE));
+    assertThat(frame.getTitle(), is(TITLE));
   }
 
   @Test
   void minSizeIsSetByDefault() {
-    final Dimension minSize = JFrameBuilder.builder()
-        .build()
-        .getMinimumSize();
+    final Dimension minSize = JFrameBuilder.builder().build().getMinimumSize();
 
     assertThat(minSize.width > 0, is(true));
     assertThat(minSize.height > 0, is(true));
@@ -45,10 +39,8 @@ class JFrameBuilderTest {
 
   @Test
   void minSize() {
-    final Dimension minSize = JFrameBuilder.builder()
-        .minSize(WIDTH, HEIGHT)
-        .build()
-        .getMinimumSize();
+    final Dimension minSize =
+        JFrameBuilder.builder().minSize(WIDTH, HEIGHT).build().getMinimumSize();
 
     assertThat(minSize.width, is(WIDTH));
     assertThat(minSize.height, is(HEIGHT));
@@ -56,18 +48,9 @@ class JFrameBuilderTest {
 
   @Test
   void alwaysOnTop() {
-    assertThat(
-        JFrameBuilder.builder()
-            .alwaysOnTop()
-            .build()
-            .isAlwaysOnTop(),
-        is(true));
+    assertThat(JFrameBuilder.builder().alwaysOnTop().build().isAlwaysOnTop(), is(true));
 
-    assertThat(
-        JFrameBuilder.builder()
-            .build()
-            .isAlwaysOnTop(),
-        is(false));
+    assertThat(JFrameBuilder.builder().build().isAlwaysOnTop(), is(false));
   }
 
   @Test
@@ -75,14 +58,10 @@ class JFrameBuilderTest {
     final JLabel label = new JLabel();
     label.setLocation(new Point(10, 10));
 
-    final Point defaultLocation = JFrameBuilder.builder()
-        .locateRelativeTo(label)
-        .build()
-        .getLocation();
+    final Point defaultLocation =
+        JFrameBuilder.builder().locateRelativeTo(label).build().getLocation();
 
-    final Point relativeLocation = JFrameBuilder.builder()
-        .build()
-        .getLocation();
+    final Point relativeLocation = JFrameBuilder.builder().build().getLocation();
 
     assertThat(
         "location should change when setting position relative to another component",
@@ -96,11 +75,8 @@ class JFrameBuilderTest {
     final JLabel component = new JLabel();
     component.setName(name);
 
-    final JFrame frame = JFrameBuilder.builder()
-        .add(component)
-        .build();
+    final JFrame frame = JFrameBuilder.builder().add(component).build();
 
-    SwingComponentWrapper.of(frame)
-        .assertHasComponentByName(name);
+    SwingComponentWrapper.of(frame).assertHasComponentByName(name);
   }
 }

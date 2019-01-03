@@ -43,8 +43,10 @@ public class PropertyFileTest {
   public void testCaching() {
     final DummyPropertyFile dummy = new DummyPropertyFile(file.getAbsolutePath(), mock);
     assertSame(dummy, PropertyFile.getInstance(DummyPropertyFile.class, () -> dummy));
-    assertSame(dummy, PropertyFile.getInstance(DummyPropertyFile.class,
-        () -> new DummyPropertyFile(file.getAbsolutePath(), mock)));
+    assertSame(
+        dummy,
+        PropertyFile.getInstance(
+            DummyPropertyFile.class, () -> new DummyPropertyFile(file.getAbsolutePath(), mock)));
     DummyPropertyFile.cache.invalidateAll();
     final DummyPropertyFile dummy2 = new DummyPropertyFile(file.getAbsolutePath(), mock);
     assertSame(dummy2, PropertyFile.getInstance(DummyPropertyFile.class, () -> dummy2));

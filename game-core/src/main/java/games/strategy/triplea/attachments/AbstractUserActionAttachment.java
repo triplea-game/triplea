@@ -18,40 +18,42 @@ import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 /**
- * Abstract class for holding various action/condition things for PoliticalActionAttachment and UserActionAttachment.
+ * Abstract class for holding various action/condition things for PoliticalActionAttachment and
+ * UserActionAttachment.
  */
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 3569461523853104614L;
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
 
-  // a key referring to politicaltexts.properties or other .properties for all the UI messages belonging to this action.
+  // a key referring to politicaltexts.properties or other .properties for all the UI messages
+  // belonging to this action.
   protected String text = "";
   /**
    * The cost in PUs to attempt this action.
    *
    * @deprecated Replaced by costResources.
    */
-  @Deprecated
-  protected int costPu = 0;
+  @Deprecated protected int costPu = 0;
   // cost in any resources to attempt this action
   protected IntegerMap<Resource> costResources = new IntegerMap<>();
   // how many times can you perform this action each round?
   protected int attemptsPerTurn = 1;
   // how many times are left to perform this action each round?
   protected int attemptsLeftThisTurn = 1;
-  // which players should accept this action? this could be the player who is the target of this action in the case of
+  // which players should accept this action? this could be the player who is the target of this
+  // action in the case of
   // proposing a treaty or the players in your 'alliance' in case you want to declare war...
-  // especially for actions such as when france declares war on germany and it automatically causes UK to declare war as
+  // especially for actions such as when france declares war on germany and it automatically causes
+  // UK to declare war as
   // well. it is good to set "actionAccept" to "UK" so UK can accept this action to go through.
   protected List<PlayerId> actionAccept = new ArrayList<>();
 
-  protected AbstractUserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  protected AbstractUserActionAttachment(
+      final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
-  /**
-   * Indicates there is no condition to this action or if the condition is satisfied.
-   */
+  /** Indicates there is no condition to this action or if the condition is satisfied. */
   public boolean canPerform(final Map<ICondition, Boolean> testedConditions) {
     return conditions == null || isSatisfied(testedConditions);
   }
@@ -101,7 +103,8 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     final String resourceToProduce = s[1];
     final Resource r = getData().getResourceList().getResource(resourceToProduce);
     if (r == null) {
-      throw new GameParseException("costResources: No resource called: " + resourceToProduce + thisErrorMsg());
+      throw new GameParseException(
+          "costResources: No resource called: " + resourceToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
     costResources.put(r, n);
@@ -135,9 +138,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     actionAccept = value;
   }
 
-  /**
-   * Returns a list of players that must accept this action before it takes effect.
-   */
+  /** Returns a list of players that must accept this action before it takes effect. */
   public List<PlayerId> getActionAccept() {
     return actionAccept;
   }
@@ -161,9 +162,7 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
     setAttemptsLeftThisTurn(attemptsPerTurn);
   }
 
-  /**
-   * Returns the amount of times you can try this Action per Round.
-   */
+  /** Returns the amount of times you can try this Action per Round. */
   private int getAttemptsPerTurn() {
     return attemptsPerTurn;
   }
@@ -190,13 +189,15 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   public void resetAttempts(final IDelegateBridge bridge) {
     if (attemptsLeftThisTurn != attemptsPerTurn) {
-      bridge.addChange(ChangeFactory.attachmentPropertyChange(this, attemptsPerTurn, ATTEMPTS_LEFT_THIS_TURN));
+      bridge.addChange(
+          ChangeFactory.attachmentPropertyChange(this, attemptsPerTurn, ATTEMPTS_LEFT_THIS_TURN));
     }
   }
 
   public void useAttempt(final IDelegateBridge bridge) {
-    bridge
-        .addChange(ChangeFactory.attachmentPropertyChange(this, (attemptsLeftThisTurn - 1), ATTEMPTS_LEFT_THIS_TURN));
+    bridge.addChange(
+        ChangeFactory.attachmentPropertyChange(
+            this, (attemptsLeftThisTurn - 1), ATTEMPTS_LEFT_THIS_TURN));
   }
 
   public boolean hasAttemptsLeft() {
@@ -214,36 +215,34 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("text",
-            MutableProperty.ofString(
-                this::setText,
-                this::getText,
-                this::resetText))
-        .put("costPU",
+        .put("text", MutableProperty.ofString(this::setText, this::getText, this::resetText))
+        .put(
+            "costPU",
             MutableProperty.of(
-                this::setCostPu,
-                this::setCostPu,
-                this::getCostPu,
-                this::resetCostPu))
-        .put("costResources",
+                this::setCostPu, this::setCostPu, this::getCostPu, this::resetCostPu))
+        .put(
+            "costResources",
             MutableProperty.of(
                 this::setCostResources,
                 this::setCostResources,
                 this::getCostResources,
                 this::resetCostResources))
-        .put("attemptsPerTurn",
+        .put(
+            "attemptsPerTurn",
             MutableProperty.of(
                 this::setAttemptsPerTurn,
                 this::setAttemptsPerTurn,
                 this::getAttemptsPerTurn,
                 this::resetAttemptsPerTurn))
-        .put("attemptsLeftThisTurn",
+        .put(
+            "attemptsLeftThisTurn",
             MutableProperty.of(
                 this::setAttemptsLeftThisTurn,
                 this::setAttemptsLeftThisTurn,
                 this::getAttemptsLeftThisTurn,
                 this::resetAttemptsLeftThisTurn))
-        .put("actionAccept",
+        .put(
+            "actionAccept",
             MutableProperty.of(
                 this::setActionAccept,
                 this::setActionAccept,

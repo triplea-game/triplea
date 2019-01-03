@@ -30,7 +30,8 @@ import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
 /**
- * A list of all available games. We make sure we can parse them all, but we don't keep them in memory.
+ * A list of all available games. We make sure we can parse them all, but we don't keep them in
+ * memory.
  */
 @Log
 @Immutable
@@ -54,14 +55,22 @@ final class AvailableGames {
 
   private static GameRepository newGameRepository() {
     final GameRepository gameRepository = new GameRepository();
-    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder()).parallelStream()
-        .forEach(map -> {
-          if (map.isDirectory()) {
-            populateFromDirectory(map, gameRepository.availableGames, gameRepository.availableMapFolderOrZipNames);
-          } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-            populateFromZip(map, gameRepository.availableGames, gameRepository.availableMapFolderOrZipNames);
-          }
-        });
+    FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())
+        .parallelStream()
+        .forEach(
+            map -> {
+              if (map.isDirectory()) {
+                populateFromDirectory(
+                    map,
+                    gameRepository.availableGames,
+                    gameRepository.availableMapFolderOrZipNames);
+              } else if (map.isFile() && map.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
+                populateFromZip(
+                    map,
+                    gameRepository.availableGames,
+                    gameRepository.availableMapFolderOrZipNames);
+              }
+            });
     return gameRepository;
   }
 
@@ -80,7 +89,9 @@ final class AvailableGames {
     }
   }
 
-  private static void populateFromZip(final File map, final Map<String, URI> availableGames,
+  private static void populateFromZip(
+      final File map,
+      final Map<String, URI> availableGames,
       final Set<String> availableMapFolderOrZipNames) {
     try (InputStream fis = new FileInputStream(map);
         ZipInputStream zis = new ZipInputStream(fis);
@@ -90,12 +101,11 @@ final class AvailableGames {
         if (entry.getName().contains("games/") && entry.getName().toLowerCase().endsWith(".xml")) {
           final URL url = loader.getResource(entry.getName());
           if (url != null) {
-            final boolean added = addToAvailableGames(
-                URI.create(url.toString().replace(" ", "%20")),
-                availableGames);
+            final boolean added =
+                addToAvailableGames(URI.create(url.toString().replace(" ", "%20")), availableGames);
             if (added && map.getName().length() > 4) {
-              availableMapFolderOrZipNames
-                  .add(map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
+              availableMapFolderOrZipNames.add(
+                  map.getName().substring(0, map.getName().length() - ZIP_EXTENSION.length()));
             }
           }
         }
@@ -109,8 +119,7 @@ final class AvailableGames {
   }
 
   private static boolean addToAvailableGames(
-      @Nonnull final URI uri,
-      @Nonnull final Map<String, URI> availableGames) {
+      @Nonnull final URI uri, @Nonnull final Map<String, URI> availableGames) {
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
     if (inputStream.isPresent()) {
       try (InputStream input = inputStream.get()) {
@@ -134,23 +143,16 @@ final class AvailableGames {
   /**
    * Returns the path to the file associated with the specified game.
    *
-   * <p>
-   * The "path" is actually a URI in string form.
-   * </p>
+   * <p>The "path" is actually a URI in string form.
    *
    * @param gameName The name of the game whose file path is to be retrieved; may be {@code null}.
-   *
    * @return The path to the game file; or {@code null} if the game is not available.
    */
   String getGameFilePath(final String gameName) {
-    return Optional.ofNullable(availableGames.get(gameName))
-        .map(Object::toString)
-        .orElse(null);
+    return Optional.ofNullable(availableGames.get(gameName)).map(Object::toString).orElse(null);
   }
 
-  /**
-   * Can return null.
-   */
+  /** Can return null. */
   GameData getGameData(final String gameName) {
     return Optional.ofNullable(availableGames.get(gameName))
         .map(uri -> parse(uri).orElse(null))

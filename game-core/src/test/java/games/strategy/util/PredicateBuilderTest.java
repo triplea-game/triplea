@@ -14,7 +14,6 @@ public class PredicateBuilderTest {
   private final Predicate<Object> truePredicate = o -> true;
   private final Predicate<Object> falsePredicate = o -> false;
 
-
   @Test
   public void testSimplePredicate() {
     assertEquals(truePredicate, PredicateBuilder.of(truePredicate).build());
@@ -28,8 +27,8 @@ public class PredicateBuilderTest {
     assertFalse(PredicateBuilder.of(falsePredicate).and(truePredicate).build().test(new Object()));
     assertTrue(PredicateBuilder.of(truePredicate).and(truePredicate).build().test(new Object()));
 
-
-    assertNotEquals(falsePredicate, PredicateBuilder.of(falsePredicate).and(falsePredicate).build());
+    assertNotEquals(
+        falsePredicate, PredicateBuilder.of(falsePredicate).and(falsePredicate).build());
     assertNotEquals(truePredicate, PredicateBuilder.of(truePredicate).and(truePredicate).build());
   }
 
@@ -40,50 +39,72 @@ public class PredicateBuilderTest {
     assertTrue(PredicateBuilder.of(falsePredicate).or(truePredicate).build().test(new Object()));
     assertTrue(PredicateBuilder.of(truePredicate).or(truePredicate).build().test(new Object()));
 
-
     assertNotEquals(falsePredicate, PredicateBuilder.of(falsePredicate).or(falsePredicate).build());
     assertNotEquals(truePredicate, PredicateBuilder.of(truePredicate).or(truePredicate).build());
   }
 
   @Test
   public void testAndIfPredicate() {
-    assertFalse(PredicateBuilder.of(falsePredicate).andIf(true, falsePredicate).build().test(new Object()));
-    assertFalse(PredicateBuilder.of(truePredicate).andIf(true, falsePredicate).build().test(new Object()));
-    assertFalse(PredicateBuilder.of(falsePredicate).andIf(true, truePredicate).build().test(new Object()));
-    assertTrue(PredicateBuilder.of(truePredicate).andIf(true, truePredicate).build().test(new Object()));
+    assertFalse(
+        PredicateBuilder.of(falsePredicate).andIf(true, falsePredicate).build().test(new Object()));
+    assertFalse(
+        PredicateBuilder.of(truePredicate).andIf(true, falsePredicate).build().test(new Object()));
+    assertFalse(
+        PredicateBuilder.of(falsePredicate).andIf(true, truePredicate).build().test(new Object()));
+    assertTrue(
+        PredicateBuilder.of(truePredicate).andIf(true, truePredicate).build().test(new Object()));
 
+    assertFalse(
+        PredicateBuilder.of(falsePredicate)
+            .andIf(false, falsePredicate)
+            .build()
+            .test(new Object()));
+    assertTrue(
+        PredicateBuilder.of(truePredicate).andIf(false, falsePredicate).build().test(new Object()));
+    assertFalse(
+        PredicateBuilder.of(falsePredicate).andIf(false, truePredicate).build().test(new Object()));
+    assertTrue(
+        PredicateBuilder.of(truePredicate).andIf(false, truePredicate).build().test(new Object()));
 
-    assertFalse(PredicateBuilder.of(falsePredicate).andIf(false, falsePredicate).build().test(new Object()));
-    assertTrue(PredicateBuilder.of(truePredicate).andIf(false, falsePredicate).build().test(new Object()));
-    assertFalse(PredicateBuilder.of(falsePredicate).andIf(false, truePredicate).build().test(new Object()));
-    assertTrue(PredicateBuilder.of(truePredicate).andIf(false, truePredicate).build().test(new Object()));
+    assertNotEquals(
+        falsePredicate, PredicateBuilder.of(falsePredicate).andIf(true, falsePredicate).build());
+    assertNotEquals(
+        truePredicate, PredicateBuilder.of(truePredicate).andIf(true, truePredicate).build());
 
-
-    assertNotEquals(falsePredicate, PredicateBuilder.of(falsePredicate).andIf(true, falsePredicate).build());
-    assertNotEquals(truePredicate, PredicateBuilder.of(truePredicate).andIf(true, truePredicate).build());
-
-    assertEquals(falsePredicate, PredicateBuilder.of(falsePredicate).andIf(false, falsePredicate).build());
-    assertEquals(truePredicate, PredicateBuilder.of(truePredicate).andIf(false, truePredicate).build());
+    assertEquals(
+        falsePredicate, PredicateBuilder.of(falsePredicate).andIf(false, falsePredicate).build());
+    assertEquals(
+        truePredicate, PredicateBuilder.of(truePredicate).andIf(false, truePredicate).build());
   }
 
   @Test
   public void testOrIfPredicate() {
-    assertFalse(PredicateBuilder.of(falsePredicate).orIf(true, falsePredicate).build().test(new Object()));
-    assertTrue(PredicateBuilder.of(truePredicate).orIf(true, falsePredicate).build().test(new Object()));
-    assertTrue(PredicateBuilder.of(falsePredicate).orIf(true, truePredicate).build().test(new Object()));
-    assertTrue(PredicateBuilder.of(truePredicate).orIf(true, truePredicate).build().test(new Object()));
+    assertFalse(
+        PredicateBuilder.of(falsePredicate).orIf(true, falsePredicate).build().test(new Object()));
+    assertTrue(
+        PredicateBuilder.of(truePredicate).orIf(true, falsePredicate).build().test(new Object()));
+    assertTrue(
+        PredicateBuilder.of(falsePredicate).orIf(true, truePredicate).build().test(new Object()));
+    assertTrue(
+        PredicateBuilder.of(truePredicate).orIf(true, truePredicate).build().test(new Object()));
 
+    assertFalse(
+        PredicateBuilder.of(falsePredicate).orIf(false, falsePredicate).build().test(new Object()));
+    assertTrue(
+        PredicateBuilder.of(truePredicate).orIf(false, falsePredicate).build().test(new Object()));
+    assertFalse(
+        PredicateBuilder.of(falsePredicate).orIf(false, truePredicate).build().test(new Object()));
+    assertTrue(
+        PredicateBuilder.of(truePredicate).orIf(false, truePredicate).build().test(new Object()));
 
-    assertFalse(PredicateBuilder.of(falsePredicate).orIf(false, falsePredicate).build().test(new Object()));
-    assertTrue(PredicateBuilder.of(truePredicate).orIf(false, falsePredicate).build().test(new Object()));
-    assertFalse(PredicateBuilder.of(falsePredicate).orIf(false, truePredicate).build().test(new Object()));
-    assertTrue(PredicateBuilder.of(truePredicate).orIf(false, truePredicate).build().test(new Object()));
+    assertNotEquals(
+        falsePredicate, PredicateBuilder.of(falsePredicate).orIf(true, falsePredicate).build());
+    assertNotEquals(
+        truePredicate, PredicateBuilder.of(truePredicate).orIf(true, truePredicate).build());
 
-
-    assertNotEquals(falsePredicate, PredicateBuilder.of(falsePredicate).orIf(true, falsePredicate).build());
-    assertNotEquals(truePredicate, PredicateBuilder.of(truePredicate).orIf(true, truePredicate).build());
-
-    assertEquals(falsePredicate, PredicateBuilder.of(falsePredicate).orIf(false, falsePredicate).build());
-    assertEquals(truePredicate, PredicateBuilder.of(truePredicate).orIf(false, truePredicate).build());
+    assertEquals(
+        falsePredicate, PredicateBuilder.of(falsePredicate).orIf(false, falsePredicate).build());
+    assertEquals(
+        truePredicate, PredicateBuilder.of(truePredicate).orIf(false, truePredicate).build());
   }
 }

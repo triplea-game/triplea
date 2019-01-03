@@ -28,9 +28,7 @@ import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.ProgressWindow;
 import lombok.extern.java.Log;
 
-/**
- * An editor for modifying email senders.
- */
+/** An editor for modifying email senders. */
 @Log
 public class EmailSenderEditor extends EditorPanel {
   private static final long serialVersionUID = -4647781117491269926L;
@@ -57,7 +55,8 @@ public class EmailSenderEditor extends EditorPanel {
    * @param bean the EmailSender to edit
    * @param editorConfiguration configures which editor fields should be visible
    */
-  public EmailSenderEditor(final GenericEmailSender bean, final EditorConfiguration editorConfiguration) {
+  public EmailSenderEditor(
+      final GenericEmailSender bean, final EditorConfiguration editorConfiguration) {
     genericEmailSender = bean;
     subject.setText(genericEmailSender.getSubjectPrefix());
     host.setText(genericEmailSender.getHost());
@@ -71,62 +70,291 @@ public class EmailSenderEditor extends EditorPanel {
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
-    add(new JLabel("Subject:"), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(subject, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
+    add(
+        new JLabel("Subject:"),
+        new GridBagConstraints(
+            0,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, labelSpace),
+            0,
+            0));
+    add(
+        subject,
+        new GridBagConstraints(
+            1,
+            row,
+            2,
+            1,
+            1.0,
+            0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
     row++;
-    add(toLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(toAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
+    add(
+        toLabel,
+        new GridBagConstraints(
+            0,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, labelSpace),
+            0,
+            0));
+    add(
+        toAddress,
+        new GridBagConstraints(
+            1,
+            row,
+            2,
+            1,
+            1.0,
+            0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
     row++;
-    add(loginLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(login, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
+    add(
+        loginLabel,
+        new GridBagConstraints(
+            0,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, labelSpace),
+            0,
+            0));
+    add(
+        login,
+        new GridBagConstraints(
+            1,
+            row,
+            2,
+            1,
+            1.0,
+            0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
     row++;
-    add(passwordLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(password, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
+    add(
+        passwordLabel,
+        new GridBagConstraints(
+            0,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, labelSpace),
+            0,
+            0));
+    add(
+        password,
+        new GridBagConstraints(
+            1,
+            row,
+            2,
+            1,
+            1.0,
+            0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
     row++;
-    add(new JLabel(""), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(credentialsSaved, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
+    add(
+        new JLabel(""),
+        new GridBagConstraints(
+            0,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, labelSpace),
+            0,
+            0));
+    add(
+        credentialsSaved,
+        new GridBagConstraints(
+            1,
+            row,
+            2,
+            1,
+            0,
+            0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
     if (editorConfiguration.showHost) {
       row++;
-      add(hostLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(host, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
+      add(
+          hostLabel,
+          new GridBagConstraints(
+              0,
+              row,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.NORTHWEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, bottomSpace, labelSpace),
+              0,
+              0));
+      add(
+          host,
+          new GridBagConstraints(
+              1,
+              row,
+              2,
+              1,
+              1.0,
+              0,
+              GridBagConstraints.EAST,
+              GridBagConstraints.HORIZONTAL,
+              new Insets(0, 0, bottomSpace, 0),
+              0,
+              0));
     }
     if (editorConfiguration.showPort) {
       row++;
-      add(portLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(port, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
+      add(
+          portLabel,
+          new GridBagConstraints(
+              0,
+              row,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.NORTHWEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, bottomSpace, labelSpace),
+              0,
+              0));
+      add(
+          port,
+          new GridBagConstraints(
+              1,
+              row,
+              2,
+              1,
+              0,
+              0,
+              GridBagConstraints.EAST,
+              GridBagConstraints.HORIZONTAL,
+              new Insets(0, 0, bottomSpace, 0),
+              0,
+              0));
     }
     if (editorConfiguration.showEncryption) {
       row++;
-      add(useTls, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
+      add(
+          useTls,
+          new GridBagConstraints(
+              0,
+              row,
+              2,
+              1,
+              0,
+              0,
+              GridBagConstraints.NORTHWEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, bottomSpace, 0),
+              0,
+              0));
       // add Test button on the same line as encryption
-      add(testEmail, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
+      add(
+          testEmail,
+          new GridBagConstraints(
+              2,
+              row,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.EAST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, bottomSpace, 0),
+              0,
+              0));
       row++;
-      add(alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
-          GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
+      add(
+          alsoPostAfterCombatMove,
+          new GridBagConstraints(
+              0,
+              row,
+              2,
+              1,
+              0,
+              0,
+              GridBagConstraints.NORTHWEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, bottomSpace, 0),
+              0,
+              0));
     } else {
       row++;
-      add(alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
-          GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
-      add(testEmail, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
+      add(
+          alsoPostAfterCombatMove,
+          new GridBagConstraints(
+              0,
+              row,
+              2,
+              1,
+              0,
+              0,
+              GridBagConstraints.NORTHWEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, bottomSpace, 0),
+              0,
+              0));
+      add(
+          testEmail,
+          new GridBagConstraints(
+              2,
+              row,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.EAST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, bottomSpace, 0),
+              0,
+              0));
       // or on a separate line if no encryption
-      // add(testEmail, new GridBagConstraints(1, row, 3, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+      // add(testEmail, new GridBagConstraints(1, row, 3, 1, 0, 0, GridBagConstraints.EAST,
+      // GridBagConstraints.NONE,
       // new Insets(0, 0,
       // bottomSpace, 0), 0, 0));
     }
@@ -146,52 +374,59 @@ public class EmailSenderEditor extends EditorPanel {
     testEmail.addActionListener(e -> testEmail());
   }
 
-  /**
-   * Tests the email sender. This must be called from the swing event thread
-   */
+  /** Tests the email sender. This must be called from the swing event thread */
   private void testEmail() {
     final ProgressWindow progressWindow = GameRunner.newProgressWindow("Sending test email...");
     progressWindow.setVisible(true);
     // start a background thread
-    new Thread(() -> {
-      // initialize variables to error state, override if successful
-      String message = "An unknown occurred, report this as a bug on the TripleA dev forum";
-      int messageType = JOptionPane.ERROR_MESSAGE;
-      try {
-        final File dummy = new File(ClientFileSystemHelper.getUserRootFolder(), "dummySave.txt");
-        dummy.deleteOnExit();
-        try (OutputStream fout = new FileOutputStream(dummy)) {
-          fout.write("This file would normally be a save game".getBytes(StandardCharsets.UTF_8));
-        }
-        final String html = "<html><body><h1>Success</h1><p>This was a test email sent by TripleA<p></body></html>";
-        ((IEmailSender) getBean()).sendEmail("TripleA Test", html, dummy, "dummy.txt");
-        // email was sent, or an exception would have been thrown
-        message = "Email sent, it should arrive shortly, otherwise check your spam folder";
-        messageType = JOptionPane.INFORMATION_MESSAGE;
-      } catch (final IOException ioe) {
-        message = "Unable to send email, check SMTP server credentials: "
-            + Ascii.truncate(ioe.getMessage(), 200, "...");
-        log.log(Level.SEVERE, message, ioe);
-      } finally {
-        // now that we have a result, marshall it back unto the swing thread
-        final String finalMessage = message;
-        final int finalMessageType = messageType;
-        SwingUtilities.invokeLater(() -> GameRunner.showMessageDialog(
-            finalMessage,
-            GameRunner.Title.of("Email Test"),
-            finalMessageType));
-        progressWindow.setVisible(false);
-      }
-    }).start();
+    new Thread(
+            () -> {
+              // initialize variables to error state, override if successful
+              String message = "An unknown occurred, report this as a bug on the TripleA dev forum";
+              int messageType = JOptionPane.ERROR_MESSAGE;
+              try {
+                final File dummy =
+                    new File(ClientFileSystemHelper.getUserRootFolder(), "dummySave.txt");
+                dummy.deleteOnExit();
+                try (OutputStream fout = new FileOutputStream(dummy)) {
+                  fout.write(
+                      "This file would normally be a save game".getBytes(StandardCharsets.UTF_8));
+                }
+                final String html =
+                    "<html><body><h1>Success</h1><p>This was a test email sent by TripleA<p></body></html>";
+                ((IEmailSender) getBean()).sendEmail("TripleA Test", html, dummy, "dummy.txt");
+                // email was sent, or an exception would have been thrown
+                message = "Email sent, it should arrive shortly, otherwise check your spam folder";
+                messageType = JOptionPane.INFORMATION_MESSAGE;
+              } catch (final IOException ioe) {
+                message =
+                    "Unable to send email, check SMTP server credentials: "
+                        + Ascii.truncate(ioe.getMessage(), 200, "...");
+                log.log(Level.SEVERE, message, ioe);
+              } finally {
+                // now that we have a result, marshall it back unto the swing thread
+                final String finalMessage = message;
+                final int finalMessageType = messageType;
+                SwingUtilities.invokeLater(
+                    () ->
+                        GameRunner.showMessageDialog(
+                            finalMessage, GameRunner.Title.of("Email Test"), finalMessageType));
+                progressWindow.setVisible(false);
+              }
+            })
+        .start();
   }
 
   @Override
   public boolean isBeanValid() {
     final boolean hostValid = validateTextFieldNotEmpty(host, hostLabel);
-    final boolean portValid = validateTextField(port, portLabel, new IntegerRangeValidator(0, 65635));
+    final boolean portValid =
+        validateTextField(port, portLabel, new IntegerRangeValidator(0, 65635));
     final boolean authenticationRequired = genericEmailSender.isAuthenticationRequired();
-    final boolean loginValid = !authenticationRequired || validateTextFieldNotEmpty(login, loginLabel);
-    final boolean passwordValid = !authenticationRequired || validateTextFieldNotEmpty(password, passwordLabel);
+    final boolean loginValid =
+        !authenticationRequired || validateTextFieldNotEmpty(login, loginLabel);
+    final boolean passwordValid =
+        !authenticationRequired || validateTextFieldNotEmpty(password, passwordLabel);
     final boolean addressValid = validateTextField(toAddress, toLabel, new EmailValidator(false));
     final boolean allValid = hostValid && portValid && loginValid && passwordValid && addressValid;
     testEmail.setEnabled(allValid);
@@ -200,8 +435,10 @@ public class EmailSenderEditor extends EditorPanel {
 
   @Override
   public IBean getBean() {
-    genericEmailSender
-        .setEncryption(useTls.isSelected() ? GenericEmailSender.Encryption.TLS : GenericEmailSender.Encryption.NONE);
+    genericEmailSender.setEncryption(
+        useTls.isSelected()
+            ? GenericEmailSender.Encryption.TLS
+            : GenericEmailSender.Encryption.NONE);
     genericEmailSender.setSubjectPrefix(subject.getText());
     genericEmailSender.setHost(host.getText());
     genericEmailSender.setUserName(login.getText());
@@ -219,9 +456,7 @@ public class EmailSenderEditor extends EditorPanel {
     return genericEmailSender;
   }
 
-  /**
-   * class for configuring the editor so some fields can be hidden.
-   */
+  /** class for configuring the editor so some fields can be hidden. */
   public static class EditorConfiguration {
     public boolean showHost;
     public boolean showPort;
@@ -229,7 +464,8 @@ public class EmailSenderEditor extends EditorPanel {
 
     public EditorConfiguration() {}
 
-    public EditorConfiguration(final boolean showHost, final boolean showPort, final boolean showEncryption) {
+    public EditorConfiguration(
+        final boolean showHost, final boolean showPort, final boolean showEncryption) {
       this.showHost = showHost;
       this.showPort = showPort;
       this.showEncryption = showEncryption;

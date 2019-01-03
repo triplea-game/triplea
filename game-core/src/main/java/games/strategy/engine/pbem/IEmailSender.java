@@ -6,32 +6,34 @@ import java.io.IOException;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
- * An interface for sending emails from a PBEM (play by email ) game.
- * Implementers must be serialized, as the sender is stored as part of the save game.
- * It is also the job of the implementer to store the to address, host/port, credentials etc.
+ * An interface for sending emails from a PBEM (play by email ) game. Implementers must be
+ * serialized, as the sender is stored as part of the save game. It is also the job of the
+ * implementer to store the to address, host/port, credentials etc.
  */
 public interface IEmailSender extends IBean, Cloneable {
   /**
-   * Sends an email with the given subject, optionally attaches a save game file.
-   * The address, and credentials must be stored by the implementing class
+   * Sends an email with the given subject, optionally attaches a save game file. The address, and
+   * credentials must be stored by the implementing class
    *
    * @param subject the subject of the email
    * @param htmlMessage the html email body
    * @param saveGame the savegame or null
    * @throws IOException if an error occurs
    */
-  void sendEmail(String subject, String htmlMessage, File saveGame, String saveGameName) throws IOException;
+  void sendEmail(String subject, String htmlMessage, File saveGame, String saveGameName)
+      throws IOException;
 
   /**
-   * Get the to email addresses configured for this sender.
-   * May contain multiple email addresses separated by space ' '
+   * Get the to email addresses configured for this sender. May contain multiple email addresses
+   * separated by space ' '
    *
    * @return the to addresses
    */
   String getToAddress();
 
   /**
-   * Remove any sensitive information, like passwords before this object is saved in as a game properties.
+   * Remove any sensitive information, like passwords before this object is saved in as a game
+   * properties.
    */
   void clearSensitiveInfo();
 
@@ -54,8 +56,8 @@ public interface IEmailSender extends IBean, Cloneable {
   /**
    * Indicates the credentials will be saved with the sender.
    *
-   * @return {@code true} if the credentials will be saved with the sender or {@code false} if the credentials are not
-   *         saved.
+   * @return {@code true} if the credentials will be saved with the sender or {@code false} if the
+   *     credentials are not saved.
    */
   boolean areCredentialsSaved();
 
@@ -76,8 +78,8 @@ public interface IEmailSender extends IBean, Cloneable {
   /**
    * Indicate the credentials should be saved with the sender.
    *
-   * @param credentialsSaved {@code true} if the credentials should be saved with the sender or {@code false} if the
-   *        credentials should not be saved.
+   * @param credentialsSaved {@code true} if the credentials should be saved with the sender or
+   *     {@code false} if the credentials should not be saved.
    */
   void setCredentialsSaved(boolean credentialsSaved);
 

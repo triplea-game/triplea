@@ -16,18 +16,17 @@ import org.triplea.game.server.HeadlessGameServer;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * A {@link Handler} that publishes log records to the chat subsystem. This allows a headless game server to report its
- * own logs to other game clients via the chat window.
+ * A {@link Handler} that publishes log records to the chat subsystem. This allows a headless game
+ * server to report its own logs to other game clients via the chat window.
  *
- * <p>
- * <strong>Configuration:</strong> This handler does not currently support configuration through the {@link LogManager}.
- * It always uses the following default configuration:
- * </p>
+ * <p><strong>Configuration:</strong> This handler does not currently support configuration through
+ * the {@link LogManager}. It always uses the following default configuration:
+ *
  * <ul>
- * <li>Level: {@code Level.WARNING}</li>
- * <li>Filter: No {@code Filter}</li>
- * <li>Formatter: {@code java.util.logging.SimpleFormatter}</li>
- * <li>Encoding: default platform encoding</li>
+ *   <li>Level: {@code Level.WARNING}
+ *   <li>Filter: No {@code Filter}
+ *   <li>Formatter: {@code java.util.logging.SimpleFormatter}
+ *   <li>Encoding: default platform encoding
  * </ul>
  */
 @ThreadSafe
@@ -74,8 +73,6 @@ public final class ChatHandler extends Handler {
   }
 
   private String formatChatMessage(final LogRecord record) {
-    return getFormatter()
-        .format(record)
-        .trim();
+    return getFormatter().format(record).trim();
   }
 }

@@ -9,9 +9,7 @@ import java.awt.geom.AffineTransform;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.mapdata.MapData;
 
-/**
- * Draws a custom image at a given point on the map.
- */
+/** Draws a custom image at a given point on the map. */
 public class DecoratorDrawable implements IDrawable {
   private final Point point;
   private final Image image;
@@ -22,8 +20,13 @@ public class DecoratorDrawable implements IDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData,
+      final AffineTransform unscaled,
+      final AffineTransform scaled) {
     graphics.drawImage(image, point.x - bounds.x, point.y - bounds.y, null);
   }
 

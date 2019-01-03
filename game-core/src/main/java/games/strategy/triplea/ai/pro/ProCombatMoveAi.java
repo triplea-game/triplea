@@ -44,9 +44,7 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.util.CollectionUtils;
 
-/**
- * Pro combat move AI.
- */
+/** Pro combat move AI. */
 class ProCombatMoveAi {
 
   private static final int MIN_BOMBING_SCORE = 4; // Avoid bombing low production factories with AA
@@ -74,7 +72,8 @@ class ProCombatMoveAi {
 
     // Determine whether capital is threatened and I should be in a defensive stance
     isDefensive =
-        !ProBattleUtils.territoryHasLocalLandSuperiority(ProData.myCapital, ProBattleUtils.MEDIUM_RANGE, player);
+        !ProBattleUtils.territoryHasLocalLandSuperiority(
+            ProData.myCapital, ProBattleUtils.MEDIUM_RANGE, player);
     isBombing = false;
     ProLogger.debug("Currently in defensive stance: " + isDefensive);
 
@@ -83,7 +82,8 @@ class ProCombatMoveAi {
     territoryManager.populateEnemyDefenseOptions();
 
     // Remove territories that aren't worth attacking and prioritize the remaining ones
-    final List<ProTerritory> attackOptions = territoryManager.removeTerritoriesThatCantBeConquered();
+    final List<ProTerritory> attackOptions =
+        territoryManager.removeTerritoriesThatCantBeConquered();
     List<Territory> clearedTerritories = new ArrayList<>();
     for (final ProTerritory patd : attackOptions) {
       clearedTerritories.add(patd.getTerritory());
@@ -92,7 +92,8 @@ class ProCombatMoveAi {
     Set<Territory> territoriesToCheck = new HashSet<>(clearedTerritories);
     territoriesToCheck.addAll(ProData.myUnitTerritories);
     Map<Territory, Double> territoryValueMap =
-        ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), clearedTerritories, territoriesToCheck);
+        ProTerritoryValueUtils.findTerritoryValues(
+            player, new ArrayList<>(), clearedTerritories, territoriesToCheck);
     determineTerritoriesThatCanBeHeld(attackOptions, territoryValueMap);
     prioritizeAttackOptions(player, attackOptions);
     removeTerritoriesThatArentWorthAttacking(attackOptions);
@@ -106,26 +107,34 @@ class ProCombatMoveAi {
     for (final ProTerritory patd : attackOptions) {
       clearedTerritories.add(patd.getTerritory());
       if (!patd.getAmphibAttackMap().isEmpty()) {
-        possibleTransportTerritories
-            .addAll(data.getMap().getNeighbors(patd.getTerritory(), Matches.territoryIsWater()));
+        possibleTransportTerritories.addAll(
+            data.getMap().getNeighbors(patd.getTerritory(), Matches.territoryIsWater()));
       }
     }
     possibleTransportTerritories.addAll(clearedTerritories);
-    territoryManager.populateEnemyAttackOptions(clearedTerritories, new ArrayList<>(possibleTransportTerritories));
+    territoryManager.populateEnemyAttackOptions(
+        clearedTerritories, new ArrayList<>(possibleTransportTerritories));
     territoriesToCheck = new HashSet<>(clearedTerritories);
     territoriesToCheck.addAll(ProData.myUnitTerritories);
     territoryValueMap =
-        ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), clearedTerritories, territoriesToCheck);
+        ProTerritoryValueUtils.findTerritoryValues(
+            player, new ArrayList<>(), clearedTerritories, territoriesToCheck);
     determineTerritoriesThatCanBeHeld(attackOptions, territoryValueMap);
     removeTerritoriesThatArentWorthAttacking(attackOptions);
 
     // Determine how many units to attack each territory with
-    final List<Unit> alreadyMovedUnits = moveOneDefenderToLandTerritoriesBorderingEnemy(attackOptions);
+    final List<Unit> alreadyMovedUnits =
+        moveOneDefenderToLandTerritoriesBorderingEnemy(attackOptions);
     determineUnitsToAttackWith(attackOptions, alreadyMovedUnits);
 
     // Get all transport final territories
-    ProMoveUtils.calculateAmphibRoutes(player, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-        territoryManager.getAttackOptions().getTerritoryMap(), true);
+    ProMoveUtils.calculateAmphibRoutes(
+        player,
+        new ArrayList<>(),
+        new ArrayList<>(),
+        new ArrayList<>(),
+        territoryManager.getAttackOptions().getTerritoryMap(),
+        true);
 
     // Determine max enemy counter attack units and remove territories where transports are exposed
     removeTerritoriesWhereTransportsAreExposed();
@@ -149,12 +158,16 @@ class ProCombatMoveAi {
     ProLogger.info("Logging results");
     logAttackMoves(attackOptions);
 
-    final Map<Territory, ProTerritory> result = territoryManager.getAttackOptions().getTerritoryMap();
+    final Map<Territory, ProTerritory> result =
+        territoryManager.getAttackOptions().getTerritoryMap();
     territoryManager = null;
     return result;
   }
 
-  void doMove(final Map<Territory, ProTerritory> attackMap, final IMoveDelegate moveDel, final GameData data,
+  void doMove(
+      final Map<Territory, ProTerritory> attackMap,
+      final IMoveDelegate moveDel,
+      final GameData data,
       final PlayerId player) {
     this.data = data;
     this.player = player;
@@ -167,7 +180,8 @@ class ProCombatMoveAi {
     moveUnits.clear();
     moveRoutes.clear();
     final List<Collection<Unit>> transportsToLoad = new ArrayList<>();
-    ProMoveUtils.calculateAmphibRoutes(player, moveUnits, moveRoutes, transportsToLoad, attackMap, true);
+    ProMoveUtils.calculateAmphibRoutes(
+        player, moveUnits, moveRoutes, transportsToLoad, attackMap, true);
     ProMoveUtils.doMove(moveUnits, moveRoutes, transportsToLoad, moveDel);
 
     moveUnits.clear();
@@ -187,12 +201,13 @@ class ProCombatMoveAi {
     return isBombing;
   }
 
-  private List<ProTerritory> prioritizeAttackOptions(final PlayerId player, final List<ProTerritory> attackOptions) {
+  private List<ProTerritory> prioritizeAttackOptions(
+      final PlayerId player, final List<ProTerritory> attackOptions) {
 
     ProLogger.info("Prioritizing territories to try to attack");
 
     // Calculate value of attacking territory
-    for (final Iterator<ProTerritory> it = attackOptions.iterator(); it.hasNext();) {
+    for (final Iterator<ProTerritory> it = attackOptions.iterator(); it.hasNext(); ) {
       final ProTerritory patd = it.next();
       final Territory t = patd.getTerritory();
 
@@ -201,13 +216,18 @@ class ProCombatMoveAi {
       final int isNeutral = ProUtils.isNeutralLand(t) ? 1 : 0;
       final int isCanHold = patd.isCanHold() ? 1 : 0;
       final int isAmphib = patd.isNeedAmphibUnits() ? 1 : 0;
-      final List<Unit> defendingUnits = CollectionUtils.getMatches(patd.getMaxEnemyDefenders(player, data),
-          ProMatches.unitIsEnemyAndNotInfa(player, data));
-      final int isEmptyLand = (!t.isWater() && defendingUnits.isEmpty() && !patd.isNeedAmphibUnits()) ? 1 : 0;
+      final List<Unit> defendingUnits =
+          CollectionUtils.getMatches(
+              patd.getMaxEnemyDefenders(player, data),
+              ProMatches.unitIsEnemyAndNotInfa(player, data));
+      final int isEmptyLand =
+          (!t.isWater() && defendingUnits.isEmpty() && !patd.isNeedAmphibUnits()) ? 1 : 0;
       final boolean isAdjacentToMyCapital =
           !data.getMap().getNeighbors(t, Matches.territoryIs(ProData.myCapital)).isEmpty();
       final int isNotNeutralAdjacentToMyCapital =
-          (isAdjacentToMyCapital && ProMatches.territoryIsEnemyNotNeutralLand(player, data).test(t)) ? 1 : 0;
+          (isAdjacentToMyCapital && ProMatches.territoryIsEnemyNotNeutralLand(player, data).test(t))
+              ? 1
+              : 0;
       final int isFactory = ProMatches.territoryHasInfraFactoryAndIsLand().test(t) ? 1 : 0;
       final int isFfa = ProUtils.isFfa(data, player) ? 1 : 0;
 
@@ -227,10 +247,17 @@ class ProCombatMoveAi {
       if (isFfa == 1 && tuvSwing > 0) {
         tuvSwing *= 0.5;
       }
-      final double territoryValue = (1 + isLand + isCanHold * (1 + 2.0 * isFfa * isLand)) * (1 + isEmptyLand)
-          * (1 + isFactory) * (1 - 0.5 * isAmphib) * production;
-      double attackValue = (tuvSwing + territoryValue) * (1 + 4.0 * isEnemyCapital)
-          * (1 + 2.0 * isNotNeutralAdjacentToMyCapital) * (1 - 0.9 * isNeutral);
+      final double territoryValue =
+          (1 + isLand + isCanHold * (1 + 2.0 * isFfa * isLand))
+              * (1 + isEmptyLand)
+              * (1 + isFactory)
+              * (1 - 0.5 * isAmphib)
+              * production;
+      double attackValue =
+          (tuvSwing + territoryValue)
+              * (1 + 4.0 * isEnemyCapital)
+              * (1 + 2.0 * isNotNeutralAdjacentToMyCapital)
+              * (1 - 0.9 * isNeutral);
 
       // Check if a negative value neutral territory should be attacked
       if (attackValue <= 0 && !patd.isNeedAmphibUnits() && ProUtils.isNeutralLand(t)) {
@@ -247,15 +274,20 @@ class ProCombatMoveAi {
         for (final Territory nearbyEnemyTerritory : nearbyEnemyTerritories) {
           boolean allAlliedNeighborsHaveRoute = true;
           for (final Territory nearbyAlliedTerritory : nearbyTerritoriesWithOwnedUnits) {
-            final int distance = data.getMap().getDistance_IgnoreEndForCondition(nearbyAlliedTerritory,
-                nearbyEnemyTerritory, ProMatches.territoryIsEnemyNotNeutralOrAllied(player, data));
+            final int distance =
+                data.getMap()
+                    .getDistance_IgnoreEndForCondition(
+                        nearbyAlliedTerritory,
+                        nearbyEnemyTerritory,
+                        ProMatches.territoryIsEnemyNotNeutralOrAllied(player, data));
             if (distance < 0 || distance > 2) {
               allAlliedNeighborsHaveRoute = false;
               break;
             }
           }
           if (!allAlliedNeighborsHaveRoute) {
-            final double value = ProTerritoryValueUtils.findTerritoryAttackValue(player, nearbyEnemyTerritory);
+            final double value =
+                ProTerritoryValueUtils.findTerritoryAttackValue(player, nearbyEnemyTerritory);
             if (value > 0) {
               nearbyEnemyValue += value;
             }
@@ -263,7 +295,11 @@ class ProCombatMoveAi {
           }
         }
         ProLogger.debug(
-            t.getName() + " calculated nearby enemy value=" + nearbyEnemyValue + " from " + cantReachEnemyTerritories);
+            t.getName()
+                + " calculated nearby enemy value="
+                + nearbyEnemyValue
+                + " from "
+                + cantReachEnemyTerritories);
         if (nearbyEnemyValue > 0) {
           ProLogger.trace(t.getName() + " updating negative neutral attack value=" + attackValue);
           attackValue = nearbyEnemyValue * .001 / (1 - attackValue);
@@ -271,7 +307,8 @@ class ProCombatMoveAi {
 
           // Check if overwhelming attack strength (more than 5 times)
           final double strengthDifference =
-              ProBattleUtils.estimateStrengthDifference(t, patd.getMaxUnits(), patd.getMaxEnemyDefenders(player, data));
+              ProBattleUtils.estimateStrengthDifference(
+                  t, patd.getMaxUnits(), patd.getMaxEnemyDefenders(player, data));
           ProLogger.debug(t.getName() + " calculated strengthDifference=" + strengthDifference);
           if (strengthDifference > 500) {
             ProLogger.trace(t.getName() + " updating negative neutral attack value=" + attackValue);
@@ -283,9 +320,14 @@ class ProCombatMoveAi {
       // Remove negative value territories
       patd.setValue(attackValue);
       if (attackValue <= 0
-          || (isDefensive && attackValue <= 8 && data.getMap().getDistance(ProData.myCapital, t) <= 3)) {
+          || (isDefensive
+              && attackValue <= 8
+              && data.getMap().getDistance(ProData.myCapital, t) <= 3)) {
         ProLogger.debug(
-            "Removing territory that has a negative attack value: " + t.getName() + ", AttackValue=" + patd.getValue());
+            "Removing territory that has a negative attack value: "
+                + t.getName()
+                + ", AttackValue="
+                + patd.getValue());
         it.remove();
       }
     }
@@ -295,8 +337,15 @@ class ProCombatMoveAi {
 
     // Log prioritized territories
     for (final ProTerritory patd : attackOptions) {
-      ProLogger.debug("AttackValue=" + patd.getValue() + ", TUVSwing=" + patd.getMaxBattleResult().getTuvSwing()
-          + ", isAmphib=" + patd.isNeedAmphibUnits() + ", " + patd.getTerritory().getName());
+      ProLogger.debug(
+          "AttackValue="
+              + patd.getValue()
+              + ", TUVSwing="
+              + patd.getMaxBattleResult().getTuvSwing()
+              + ", isAmphib="
+              + patd.isNeedAmphibUnits()
+              + ", "
+              + patd.getTerritory().getName());
     }
     return attackOptions;
   }
@@ -309,7 +358,8 @@ class ProCombatMoveAi {
     int numToAttack = Math.min(1, prioritizedTerritories.size());
     boolean haveRemovedAllAmphibTerritories = false;
     while (true) {
-      final List<ProTerritory> territoriesToTryToAttack = prioritizedTerritories.subList(0, numToAttack);
+      final List<ProTerritory> territoriesToTryToAttack =
+          prioritizedTerritories.subList(0, numToAttack);
       ProLogger.debug("Current number of territories: " + numToAttack);
       tryToAttackTerritories(territoriesToTryToAttack, new ArrayList<>());
 
@@ -318,15 +368,22 @@ class ProCombatMoveAi {
       for (final ProTerritory patd : territoriesToTryToAttack) {
         final Territory t = patd.getTerritory();
         if (patd.getBattleResult() == null) {
-          patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
-              patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+          patd.setBattleResult(
+              calc.estimateAttackBattleResults(
+                  t,
+                  patd.getUnits(),
+                  patd.getMaxEnemyDefenders(player, data),
+                  patd.getBombardTerritoryMap().keySet()));
         }
         ProLogger.trace(patd.getResultString() + " with attackers: " + patd.getUnits());
         final double estimate =
-            ProBattleUtils.estimateStrengthDifference(t, patd.getUnits(), patd.getMaxEnemyDefenders(player, data));
+            ProBattleUtils.estimateStrengthDifference(
+                t, patd.getUnits(), patd.getMaxEnemyDefenders(player, data));
         final ProBattleResult result = patd.getBattleResult();
-        if (!patd.isStrafing() && estimate < patd.getStrengthEstimate()
-            && (result.getWinPercentage() < ProData.minWinPercentage || !result.isHasLandUnitRemaining())) {
+        if (!patd.isStrafing()
+            && estimate < patd.getStrengthEstimate()
+            && (result.getWinPercentage() < ProData.minWinPercentage
+                || !result.isHasLandUnitRemaining())) {
           areSuccessful = false;
         }
       }
@@ -335,8 +392,9 @@ class ProCombatMoveAi {
       if (areSuccessful) {
         for (final ProTerritory patd : territoriesToTryToAttack) {
           patd.setCanAttack(true);
-          final double estimate = ProBattleUtils.estimateStrengthDifference(patd.getTerritory(), patd.getUnits(),
-              patd.getMaxEnemyDefenders(player, data));
+          final double estimate =
+              ProBattleUtils.estimateStrengthDifference(
+                  patd.getTerritory(), patd.getUnits(), patd.getMaxEnemyDefenders(player, data));
           if (estimate < patd.getStrengthEstimate()) {
             patd.setStrengthEstimate(estimate);
           }
@@ -349,8 +407,9 @@ class ProCombatMoveAi {
             for (int i = numToAttack; i < prioritizedTerritories.size(); i++) {
               if (prioritizedTerritories.get(i).isNeedAmphibUnits()) {
                 amphibTerritoriesToRemove.add(prioritizedTerritories.get(i));
-                ProLogger.debug("Removing amphib territory since already used all transports: "
-                    + prioritizedTerritories.get(i).getTerritory().getName());
+                ProLogger.debug(
+                    "Removing amphib territory since already used all transports: "
+                        + prioritizedTerritories.get(i).getTerritory().getName());
               }
             }
             prioritizedTerritories.removeAll(amphibTerritoriesToRemove);
@@ -364,7 +423,9 @@ class ProCombatMoveAi {
           break;
         }
       } else {
-        ProLogger.debug("Removing territory: " + prioritizedTerritories.get(numToAttack - 1).getTerritory().getName());
+        ProLogger.debug(
+            "Removing territory: "
+                + prioritizedTerritories.get(numToAttack - 1).getTerritory().getName());
         prioritizedTerritories.remove(numToAttack - 1);
         if (numToAttack > prioritizedTerritories.size()) {
           numToAttack--;
@@ -374,13 +435,15 @@ class ProCombatMoveAi {
     ProLogger.debug("Final number of territories: " + (numToAttack - 1));
   }
 
-  private void determineTerritoriesThatCanBeHeld(final List<ProTerritory> prioritizedTerritories,
+  private void determineTerritoriesThatCanBeHeld(
+      final List<ProTerritory> prioritizedTerritories,
       final Map<Territory, Double> territoryValueMap) {
 
     ProLogger.info("Check if we should try to hold attack territories");
 
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
 
     // Determine which territories to try and hold
     for (final ProTerritory patd : prioritizedTerritories) {
@@ -395,7 +458,8 @@ class ProCombatMoveAi {
 
       // Set max enemy attackers
       if (enemyAttackOptions.getMax(t) != null) {
-        final Set<Unit> enemyAttackingUnits = new HashSet<>(enemyAttackOptions.getMax(t).getMaxUnits());
+        final Set<Unit> enemyAttackingUnits =
+            new HashSet<>(enemyAttackOptions.getMax(t).getMaxUnits());
         enemyAttackingUnits.addAll(enemyAttackOptions.getMax(t).getMaxAmphibUnits());
         patd.setMaxEnemyUnits(new ArrayList<>(enemyAttackingUnits));
         patd.setMaxEnemyBombardUnits(enemyAttackOptions.getMax(t).getMaxBombardUnits());
@@ -409,7 +473,8 @@ class ProCombatMoveAi {
 
       // Determine whether its worth trying to hold territory
       double totalValue = 0.0;
-      final List<Unit> nonAirAttackers = CollectionUtils.getMatches(patd.getMaxUnits(), Matches.unitIsNotAir());
+      final List<Unit> nonAirAttackers =
+          CollectionUtils.getMatches(patd.getMaxUnits(), Matches.unitIsNotAir());
       for (final Unit u : nonAirAttackers) {
         totalValue += territoryValueMap.get(ProData.unitTerritoryMap.get(u));
       }
@@ -418,7 +483,11 @@ class ProCombatMoveAi {
       if (!t.isWater() && territoryValue < averageValue) {
         attackMap.get(t).setCanHold(false);
         ProLogger.debug(
-            t + ", CanHold=false, value=" + territoryValueMap.get(t) + ", averageAttackFromValue=" + averageValue);
+            t
+                + ", CanHold=false, value="
+                + territoryValueMap.get(t)
+                + ", averageAttackFromValue="
+                + averageValue);
         continue;
       }
       if (enemyAttackOptions.getMax(t) != null) {
@@ -426,48 +495,90 @@ class ProCombatMoveAi {
         // Find max remaining defenders
         final Set<Unit> attackingUnits = new HashSet<>(patd.getMaxUnits());
         attackingUnits.addAll(patd.getMaxAmphibUnits());
-        final ProBattleResult result = calc.estimateAttackBattleResults(t, new ArrayList<>(attackingUnits),
-            patd.getMaxEnemyDefenders(player, data), patd.getMaxBombardUnits());
+        final ProBattleResult result =
+            calc.estimateAttackBattleResults(
+                t,
+                new ArrayList<>(attackingUnits),
+                patd.getMaxEnemyDefenders(player, data),
+                patd.getMaxBombardUnits());
         final List<Unit> remainingUnitsToDefendWith =
-            CollectionUtils.getMatches(result.getAverageAttackersRemaining(), Matches.unitIsAir().negate());
-        ProLogger.debug(t + ", value=" + territoryValueMap.get(t) + ", averageAttackFromValue=" + averageValue
-            + ", MyAttackers=" + attackingUnits.size() + ", RemainingUnits=" + remainingUnitsToDefendWith.size());
+            CollectionUtils.getMatches(
+                result.getAverageAttackersRemaining(), Matches.unitIsAir().negate());
+        ProLogger.debug(
+            t
+                + ", value="
+                + territoryValueMap.get(t)
+                + ", averageAttackFromValue="
+                + averageValue
+                + ", MyAttackers="
+                + attackingUnits.size()
+                + ", RemainingUnits="
+                + remainingUnitsToDefendWith.size());
 
         // Determine counter attack results to see if I can hold it
-        final ProBattleResult result2 = calc.calculateBattleResults(t, patd.getMaxEnemyUnits(),
-            remainingUnitsToDefendWith, enemyAttackOptions.getMax(t).getMaxBombardUnits());
-        final boolean canHold = (!result2.isHasLandUnitRemaining() && !t.isWater()) || (result2.getTuvSwing() < 0)
-            || (result2.getWinPercentage() < ProData.minWinPercentage);
+        final ProBattleResult result2 =
+            calc.calculateBattleResults(
+                t,
+                patd.getMaxEnemyUnits(),
+                remainingUnitsToDefendWith,
+                enemyAttackOptions.getMax(t).getMaxBombardUnits());
+        final boolean canHold =
+            (!result2.isHasLandUnitRemaining() && !t.isWater())
+                || (result2.getTuvSwing() < 0)
+                || (result2.getWinPercentage() < ProData.minWinPercentage);
         patd.setCanHold(canHold);
         ProLogger.debug(
-            t + ", CanHold=" + canHold + ", MyDefenders=" + remainingUnitsToDefendWith.size() + ", EnemyAttackers="
-                + patd.getMaxEnemyUnits().size() + ", win%=" + result2.getWinPercentage() + ", EnemyTUVSwing="
-                + result2.getTuvSwing() + ", hasLandUnitRemaining=" + result2.isHasLandUnitRemaining());
+            t
+                + ", CanHold="
+                + canHold
+                + ", MyDefenders="
+                + remainingUnitsToDefendWith.size()
+                + ", EnemyAttackers="
+                + patd.getMaxEnemyUnits().size()
+                + ", win%="
+                + result2.getWinPercentage()
+                + ", EnemyTUVSwing="
+                + result2.getTuvSwing()
+                + ", hasLandUnitRemaining="
+                + result2.isHasLandUnitRemaining());
       } else {
         attackMap.get(t).setCanHold(true);
-        ProLogger.debug(t + ", CanHold=true since no enemy counter attackers, value=" + territoryValueMap.get(t)
-            + ", averageAttackFromValue=" + averageValue);
+        ProLogger.debug(
+            t
+                + ", CanHold=true since no enemy counter attackers, value="
+                + territoryValueMap.get(t)
+                + ", averageAttackFromValue="
+                + averageValue);
       }
     }
   }
 
-  private void removeTerritoriesThatArentWorthAttacking(final List<ProTerritory> prioritizedTerritories) {
+  private void removeTerritoriesThatArentWorthAttacking(
+      final List<ProTerritory> prioritizedTerritories) {
     ProLogger.info("Remove territories that aren't worth attacking");
 
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Loop through all prioritized territories
-    for (final Iterator<ProTerritory> it = prioritizedTerritories.iterator(); it.hasNext();) {
+    for (final Iterator<ProTerritory> it = prioritizedTerritories.iterator(); it.hasNext(); ) {
       final ProTerritory patd = it.next();
       final Territory t = patd.getTerritory();
-      ProLogger
-          .debug("Checking territory=" + patd.getTerritory().getName() + " with isAmphib=" + patd.isNeedAmphibUnits());
+      ProLogger.debug(
+          "Checking territory="
+              + patd.getTerritory().getName()
+              + " with isAmphib="
+              + patd.isNeedAmphibUnits());
 
       // Remove empty convoy zones that can't be held
-      if (!patd.isCanHold() && enemyAttackOptions.getMax(t) != null && t.isWater()
+      if (!patd.isCanHold()
+          && enemyAttackOptions.getMax(t) != null
+          && t.isWater()
           && !t.getUnits().anyMatch(Matches.enemyUnit(player, data))) {
-        ProLogger.debug("Removing convoy zone that can't be held: " + t.getName() + ", enemyAttackers="
-            + enemyAttackOptions.getMax(t).getMaxUnits());
+        ProLogger.debug(
+            "Removing convoy zone that can't be held: "
+                + t.getName()
+                + ", enemyAttackers="
+                + enemyAttackOptions.getMax(t).getMaxUnits());
         it.remove();
         continue;
       }
@@ -475,27 +586,40 @@ class ProCombatMoveAi {
       // Remove neutral and low value amphib land territories that can't be held
       final boolean isNeutral = ProUtils.isNeutralLand(t);
       final double strengthDifference =
-          ProBattleUtils.estimateStrengthDifference(t, patd.getMaxUnits(), patd.getMaxEnemyDefenders(player, data));
+          ProBattleUtils.estimateStrengthDifference(
+              t, patd.getMaxUnits(), patd.getMaxEnemyDefenders(player, data));
       if (!patd.isCanHold() && enemyAttackOptions.getMax(t) != null && !t.isWater()) {
         if (isNeutral && strengthDifference <= 500) {
 
-          // Remove neutral territories that can't be held and don't have overwhelming attack strength
-          ProLogger.debug("Removing neutral territory that can't be held: " + t.getName() + ", enemyAttackers="
-              + enemyAttackOptions.getMax(t).getMaxUnits() + ", enemyAmphibAttackers="
-              + enemyAttackOptions.getMax(t).getMaxAmphibUnits() + ", strengthDifference=" + strengthDifference);
+          // Remove neutral territories that can't be held and don't have overwhelming attack
+          // strength
+          ProLogger.debug(
+              "Removing neutral territory that can't be held: "
+                  + t.getName()
+                  + ", enemyAttackers="
+                  + enemyAttackOptions.getMax(t).getMaxUnits()
+                  + ", enemyAmphibAttackers="
+                  + enemyAttackOptions.getMax(t).getMaxAmphibUnits()
+                  + ", strengthDifference="
+                  + strengthDifference);
           it.remove();
           continue;
         } else if (patd.isNeedAmphibUnits() && patd.getValue() < 2) {
 
           // Remove amphib territories that aren't worth attacking
-          ProLogger.debug("Removing low value amphib territory that can't be held: " + t.getName() + ", enemyAttackers="
-              + enemyAttackOptions.getMax(t).getMaxUnits() + ", enemyAmphibAttackers="
-              + enemyAttackOptions.getMax(t).getMaxAmphibUnits());
+          ProLogger.debug(
+              "Removing low value amphib territory that can't be held: "
+                  + t.getName()
+                  + ", enemyAttackers="
+                  + enemyAttackOptions.getMax(t).getMaxUnits()
+                  + ", enemyAmphibAttackers="
+                  + enemyAttackOptions.getMax(t).getMaxAmphibUnits());
           it.remove();
           continue;
         }
       }
-      // Remove neutral territories where attackers are adjacent to enemy territories that aren't being attacked
+      // Remove neutral territories where attackers are adjacent to enemy territories that aren't
+      // being attacked
       if (isNeutral && !t.isWater() && strengthDifference <= 500) {
 
         // Get list of territories I'm attacking
@@ -511,12 +635,15 @@ class ProCombatMoveAi {
         }
         attackFromTerritories.retainAll(data.getMap().getNeighbors(t));
 
-        // Determine if any of the attacking from territories has enemy neighbors that aren't being attacked
+        // Determine if any of the attacking from territories has enemy neighbors that aren't being
+        // attacked
         boolean attackersHaveEnemyNeighbors = false;
         Territory attackFromTerritoryWithEnemyNeighbors = null;
         for (final Territory attackFromTerritory : attackFromTerritories) {
           final Set<Territory> enemyNeighbors =
-              data.getMap().getNeighbors(attackFromTerritory, ProMatches.territoryIsEnemyNotNeutralLand(player, data));
+              data.getMap()
+                  .getNeighbors(
+                      attackFromTerritory, ProMatches.territoryIsEnemyNotNeutralLand(player, data));
           if (!prioritizedTerritoryList.containsAll(enemyNeighbors)) {
             attackersHaveEnemyNeighbors = true;
             attackFromTerritoryWithEnemyNeighbors = attackFromTerritory;
@@ -524,19 +651,24 @@ class ProCombatMoveAi {
           }
         }
         if (attackersHaveEnemyNeighbors) {
-          ProLogger.debug("Removing neutral territory that has attackers that are adjacent to enemies: " + t.getName()
-              + ", attackFromTerritory=" + attackFromTerritoryWithEnemyNeighbors);
+          ProLogger.debug(
+              "Removing neutral territory that has attackers that are adjacent to enemies: "
+                  + t.getName()
+                  + ", attackFromTerritory="
+                  + attackFromTerritoryWithEnemyNeighbors);
           it.remove();
         }
       }
     }
   }
 
-  private List<Unit> moveOneDefenderToLandTerritoriesBorderingEnemy(final List<ProTerritory> prioritizedTerritories) {
+  private List<Unit> moveOneDefenderToLandTerritoriesBorderingEnemy(
+      final List<ProTerritory> prioritizedTerritories) {
 
     ProLogger.info("Determine which territories to defend with one land unit");
 
-    final Map<Unit, Set<Territory>> unitMoveMap = territoryManager.getAttackOptions().getUnitMoveMap();
+    final Map<Unit, Set<Territory>> unitMoveMap =
+        territoryManager.getAttackOptions().getUnitMoveMap();
 
     // Get list of territories to attack
     final List<Territory> territoriesToAttack = new ArrayList<>();
@@ -548,9 +680,14 @@ class ProCombatMoveAi {
     final List<Unit> alreadyMovedUnits = new ArrayList<>();
     for (final Territory t : ProData.myUnitTerritories) {
       final boolean hasAlliedLandUnits =
-          t.getUnits().anyMatch(ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(player, data, t));
-      final Set<Territory> enemyNeighbors = data.getMap().getNeighbors(t,
-          Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.unitIsLand()));
+          t.getUnits()
+              .anyMatch(ProMatches.unitCantBeMovedAndIsAlliedDefenderAndNotInfra(player, data, t));
+      final Set<Territory> enemyNeighbors =
+          data.getMap()
+              .getNeighbors(
+                  t,
+                  Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(
+                      data, player, Matches.unitIsLand()));
       enemyNeighbors.removeAll(territoriesToAttack);
       if (!t.isWater() && !hasAlliedLandUnits && !enemyNeighbors.isEmpty()) {
         int minCost = Integer.MAX_VALUE;
@@ -575,16 +712,21 @@ class ProCombatMoveAi {
 
     ProLogger.info("Remove territories where transports are exposed");
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
     // Find maximum defenders for each transport territory
-    final List<Territory> clearedTerritories = attackMap.entrySet().stream()
-        .filter(e -> !e.getValue().getUnits().isEmpty())
-        .map(Map.Entry::getKey)
-        .collect(Collectors.toList());
+    final List<Territory> clearedTerritories =
+        attackMap
+            .entrySet()
+            .stream()
+            .filter(e -> !e.getValue().getUnits().isEmpty())
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
     territoryManager.populateDefenseOptions(clearedTerritories);
-    final Map<Territory, ProTerritory> defendMap = territoryManager.getDefendOptions().getTerritoryMap();
+    final Map<Territory, ProTerritory> defendMap =
+        territoryManager.getDefendOptions().getTerritoryMap();
 
     // Remove units that have already attacked
     final Set<Unit> alreadyAttackedWithUnits = new HashSet<>();
@@ -599,8 +741,11 @@ class ProCombatMoveAi {
     // Loop through all prioritized territories
     for (final Territory t : attackMap.keySet()) {
       final ProTerritory patd = attackMap.get(t);
-      ProLogger.debug("Checking territory=" + patd.getTerritory().getName() + " with tranports size="
-          + patd.getTransportTerritoryMap().size());
+      ProLogger.debug(
+          "Checking territory="
+              + patd.getTerritory().getName()
+              + " with tranports size="
+              + patd.getTransportTerritoryMap().size());
       if (!patd.getTerritory().isWater() && !patd.getTransportTerritoryMap().isEmpty()) {
 
         // Find all transports for each unload territory
@@ -632,34 +777,57 @@ class ProCombatMoveAi {
         double enemyTuvSwing = 0.0;
         for (final Territory unloadTerritory : territoryTransportAndBombardMap.keySet()) {
           if (enemyAttackOptions.getMax(unloadTerritory) != null) {
-            final List<Unit> enemyAttackers = enemyAttackOptions.getMax(unloadTerritory).getMaxUnits();
+            final List<Unit> enemyAttackers =
+                enemyAttackOptions.getMax(unloadTerritory).getMaxUnits();
             final Set<Unit> defenders =
-                new HashSet<>(unloadTerritory.getUnits().getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
+                new HashSet<>(
+                    unloadTerritory
+                        .getUnits()
+                        .getMatches(ProMatches.unitIsAlliedNotOwned(player, data)));
             defenders.addAll(territoryTransportAndBombardMap.get(unloadTerritory));
             if (defendMap.get(unloadTerritory) != null) {
               defenders.addAll(defendMap.get(unloadTerritory).getMaxUnits());
             }
-            final ProBattleResult result = calc.calculateBattleResults(unloadTerritory,
-                enemyAttackOptions.getMax(unloadTerritory).getMaxUnits(), new ArrayList<>(defenders), new HashSet<>());
-            final ProBattleResult minResult = calc.calculateBattleResults(unloadTerritory,
-                enemyAttackOptions.getMax(unloadTerritory).getMaxUnits(),
-                territoryTransportAndBombardMap.get(unloadTerritory), new HashSet<>());
+            final ProBattleResult result =
+                calc.calculateBattleResults(
+                    unloadTerritory,
+                    enemyAttackOptions.getMax(unloadTerritory).getMaxUnits(),
+                    new ArrayList<>(defenders),
+                    new HashSet<>());
+            final ProBattleResult minResult =
+                calc.calculateBattleResults(
+                    unloadTerritory,
+                    enemyAttackOptions.getMax(unloadTerritory).getMaxUnits(),
+                    territoryTransportAndBombardMap.get(unloadTerritory),
+                    new HashSet<>());
             final double minTuvSwing = Math.min(result.getTuvSwing(), minResult.getTuvSwing());
             if (minTuvSwing > 0) {
               enemyTuvSwing += minTuvSwing;
             }
-            ProLogger.trace(unloadTerritory + ", EnemyAttackers=" + enemyAttackers.size() + ", MaxDefenders="
-                + defenders.size() + ", MaxEnemyTUVSwing=" + result.getTuvSwing() + ", MinDefenders="
-                + territoryTransportAndBombardMap.get(unloadTerritory).size() + ", MinEnemyTUVSwing="
-                + minResult.getTuvSwing());
+            ProLogger.trace(
+                unloadTerritory
+                    + ", EnemyAttackers="
+                    + enemyAttackers.size()
+                    + ", MaxDefenders="
+                    + defenders.size()
+                    + ", MaxEnemyTUVSwing="
+                    + result.getTuvSwing()
+                    + ", MinDefenders="
+                    + territoryTransportAndBombardMap.get(unloadTerritory).size()
+                    + ", MinEnemyTUVSwing="
+                    + minResult.getTuvSwing());
           } else {
             ProLogger.trace("Territory=" + unloadTerritory.getName() + " has no enemy attackers");
           }
         }
 
         // Determine whether its worth attacking
-        final ProBattleResult result = calc.calculateBattleResults(t, patd.getUnits(),
-            patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet());
+        final ProBattleResult result =
+            calc.calculateBattleResults(
+                t,
+                patd.getUnits(),
+                patd.getMaxEnemyDefenders(player, data),
+                patd.getBombardTerritoryMap().keySet());
         int production = 0;
         int isEnemyCapital = 0;
         final TerritoryAttachment ta = TerritoryAttachment.get(t);
@@ -671,27 +839,39 @@ class ProCombatMoveAi {
         }
         final double attackValue = result.getTuvSwing() + production * (1 + 3.0 * isEnemyCapital);
         if (!patd.isStrafing() && (0.75 * enemyTuvSwing) > attackValue) {
-          ProLogger.debug("Removing amphib territory: " + patd.getTerritory() + ", enemyTUVSwing="
-              + enemyTuvSwing + ", attackValue=" + attackValue);
+          ProLogger.debug(
+              "Removing amphib territory: "
+                  + patd.getTerritory()
+                  + ", enemyTUVSwing="
+                  + enemyTuvSwing
+                  + ", attackValue="
+                  + attackValue);
           attackMap.get(t).getUnits().clear();
           attackMap.get(t).getAmphibAttackMap().clear();
           attackMap.get(t).getBombardTerritoryMap().clear();
         } else {
-          ProLogger.debug("Keeping amphib territory: " + patd.getTerritory() + ", enemyTUVSwing="
-              + enemyTuvSwing + ", attackValue=" + attackValue);
+          ProLogger.debug(
+              "Keeping amphib territory: "
+                  + patd.getTerritory()
+                  + ", enemyTUVSwing="
+                  + enemyTuvSwing
+                  + ", attackValue="
+                  + attackValue);
         }
       }
     }
   }
 
-  private void determineUnitsToAttackWith(final List<ProTerritory> prioritizedTerritories,
-      final List<Unit> alreadyMovedUnits) {
+  private void determineUnitsToAttackWith(
+      final List<ProTerritory> prioritizedTerritories, final List<Unit> alreadyMovedUnits) {
 
     ProLogger.info("Determine units to attack each territory with");
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
-    final Map<Unit, Set<Territory>> unitAttackMap = territoryManager.getAttackOptions().getUnitMoveMap();
+    final Map<Unit, Set<Territory>> unitAttackMap =
+        territoryManager.getAttackOptions().getUnitMoveMap();
 
     // Assign units to territories by prioritization
     while (true) {
@@ -711,7 +891,8 @@ class ProCombatMoveAi {
       }
 
       // Check to see if any territories can be bombed
-      final Map<Unit, Set<Territory>> bomberMoveMap = territoryManager.getAttackOptions().getBomberMoveMap();
+      final Map<Unit, Set<Territory>> bomberMoveMap =
+          territoryManager.getAttackOptions().getBomberMoveMap();
       for (final Unit unit : bomberMoveMap.keySet()) {
         if (alreadyAttackedWithUnits.contains(unit)) {
           continue;
@@ -719,12 +900,19 @@ class ProCombatMoveAi {
         Optional<Territory> maxBombingTerritory = Optional.empty();
         int maxBombingScore = MIN_BOMBING_SCORE;
         for (final Territory t : bomberMoveMap.get(unit)) {
-          final boolean canBeBombedByThisUnit = t.getUnits()
-              .anyMatch(Matches.unitCanProduceUnitsAndCanBeDamaged().and(Matches.unitIsLegalBombingTargetBy(unit)));
-          final boolean canCreateAirBattle = Properties.getRaidsMayBePreceededByAirBattles(data)
-              && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(t, player, data, true);
-          if (canBeBombedByThisUnit && !canCreateAirBattle && canAirSafelyLandAfterAttack(unit, t)) {
-            final int noAaBombingDefense = t.getUnits().anyMatch(Matches.unitIsAaForBombingThisUnitOnly()) ? 0 : 1;
+          final boolean canBeBombedByThisUnit =
+              t.getUnits()
+                  .anyMatch(
+                      Matches.unitCanProduceUnitsAndCanBeDamaged()
+                          .and(Matches.unitIsLegalBombingTargetBy(unit)));
+          final boolean canCreateAirBattle =
+              Properties.getRaidsMayBePreceededByAirBattles(data)
+                  && AirBattle.territoryCouldPossiblyHaveAirBattleDefenders(t, player, data, true);
+          if (canBeBombedByThisUnit
+              && !canCreateAirBattle
+              && canAirSafelyLandAfterAttack(unit, t)) {
+            final int noAaBombingDefense =
+                t.getUnits().anyMatch(Matches.unitIsAaForBombingThisUnitOnly()) ? 0 : 1;
             int maxDamage = 0;
             final TerritoryAttachment ta = TerritoryAttachment.get(t);
             if (ta != null) {
@@ -748,8 +936,9 @@ class ProCombatMoveAi {
       }
 
       // Re-sort attack options
-      sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
-          attackMap, ProData.unitTerritoryMap, calc);
+      sortedUnitAttackOptions =
+          ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(
+              player, sortedUnitAttackOptions, attackMap, ProData.unitTerritoryMap, calc);
       final List<Unit> addedUnits = new ArrayList<>();
 
       // Set air units in any territory with no AA (don't move planes to empty territories)
@@ -763,14 +952,20 @@ class ProCombatMoveAi {
         for (final Territory t : sortedUnitAttackOptions.get(unit)) {
           final ProTerritory patd = attackMap.get(t);
 
-          // Check if air unit should avoid this territory due to no guaranteed safe landing location
-          final boolean isEnemyFactory = ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t);
+          // Check if air unit should avoid this territory due to no guaranteed safe landing
+          // location
+          final boolean isEnemyFactory =
+              ProMatches.territoryHasInfraFactoryAndIsEnemyLand(player, data).test(t);
           if (!isEnemyFactory && !canAirSafelyLandAfterAttack(unit, t)) {
             continue;
           }
           if (patd.getBattleResult() == null) {
-            patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
-                patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+            patd.setBattleResult(
+                calc.estimateAttackBattleResults(
+                    t,
+                    patd.getUnits(),
+                    patd.getMaxEnemyDefenders(player, data),
+                    patd.getBombardTerritoryMap().keySet()));
           }
           final ProBattleResult result = patd.getBattleResult();
           if (result.getWinPercentage() < minWinPercentage
@@ -795,8 +990,9 @@ class ProCombatMoveAi {
       sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
       // Re-sort attack options
-      sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
-          attackMap, ProData.unitTerritoryMap, calc);
+      sortedUnitAttackOptions =
+          ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(
+              player, sortedUnitAttackOptions, attackMap, ProData.unitTerritoryMap, calc);
 
       // Find territory that we can try to hold that needs unit
       for (final Unit unit : sortedUnitAttackOptions.keySet()) {
@@ -810,8 +1006,12 @@ class ProCombatMoveAi {
 
             // Check if I already have enough attack units to win in 2 rounds
             if (patd.getBattleResult() == null) {
-              patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
-                  patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+              patd.setBattleResult(
+                  calc.estimateAttackBattleResults(
+                      t,
+                      patd.getUnits(),
+                      patd.getMaxEnemyDefenders(player, data),
+                      patd.getBombardTerritoryMap().keySet()));
             }
             final ProBattleResult result = patd.getBattleResult();
             final List<Unit> attackingUnits = patd.getUnits();
@@ -826,7 +1026,8 @@ class ProCombatMoveAi {
         }
         if (minWinTerritory != null) {
           attackMap.get(minWinTerritory).setBattleResult(null);
-          final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
+          final List<Unit> unitsToAdd =
+              ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
           attackMap.get(minWinTerritory).addUnits(unitsToAdd);
           addedUnits.addAll(unitsToAdd);
         }
@@ -834,8 +1035,9 @@ class ProCombatMoveAi {
       sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
       // Re-sort attack options
-      sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
-          attackMap, ProData.unitTerritoryMap, calc);
+      sortedUnitAttackOptions =
+          ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(
+              player, sortedUnitAttackOptions, attackMap, ProData.unitTerritoryMap, calc);
 
       // Add sea units to any territory that significantly increases TUV gain
       for (final Unit unit : sortedUnitAttackOptions.keySet()) {
@@ -846,14 +1048,24 @@ class ProCombatMoveAi {
         for (final Territory t : sortedUnitAttackOptions.get(unit)) {
           final ProTerritory patd = attackMap.get(t);
           if (attackMap.get(t).getBattleResult() == null) {
-            attackMap.get(t).setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
-                patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+            attackMap
+                .get(t)
+                .setBattleResult(
+                    calc.estimateAttackBattleResults(
+                        t,
+                        patd.getUnits(),
+                        patd.getMaxEnemyDefenders(player, data),
+                        patd.getBombardTerritoryMap().keySet()));
           }
           final ProBattleResult result = attackMap.get(t).getBattleResult();
           final List<Unit> attackers = new ArrayList<>(patd.getUnits());
           attackers.add(unit);
-          final ProBattleResult result2 = calc.estimateAttackBattleResults(t, attackers,
-              patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet());
+          final ProBattleResult result2 =
+              calc.estimateAttackBattleResults(
+                  t,
+                  attackers,
+                  patd.getMaxEnemyDefenders(player, data),
+                  patd.getBombardTerritoryMap().keySet());
           final double unitValue = ProData.unitValueMap.getInt(unit.getType());
           if ((result2.getTuvSwing() - unitValue / 3) > result.getTuvSwing()) {
             attackMap.get(t).setBattleResult(null);
@@ -876,8 +1088,12 @@ class ProCombatMoveAi {
 
         // Find battle result
         if (patd.getBattleResult() == null) {
-          patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
-              patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+          patd.setBattleResult(
+              calc.estimateAttackBattleResults(
+                  t,
+                  patd.getUnits(),
+                  patd.getMaxEnemyDefenders(player, data),
+                  patd.getBombardTerritoryMap().keySet()));
         }
         final ProBattleResult result = patd.getBattleResult();
 
@@ -887,30 +1103,49 @@ class ProCombatMoveAi {
         if (enemyAttackOptions.getMax(t) != null
             && !ProMatches.territoryIsWaterAndAdjacentToOwnedFactory(player, data).test(t)) {
           List<Unit> remainingUnitsToDefendWith =
-              CollectionUtils.getMatches(result.getAverageAttackersRemaining(), Matches.unitIsAir().negate());
-          ProBattleResult result2 = calc.calculateBattleResults(t, patd.getMaxEnemyUnits(),
-              remainingUnitsToDefendWith, patd.getMaxBombardUnits());
+              CollectionUtils.getMatches(
+                  result.getAverageAttackersRemaining(), Matches.unitIsAir().negate());
+          ProBattleResult result2 =
+              calc.calculateBattleResults(
+                  t,
+                  patd.getMaxEnemyUnits(),
+                  remainingUnitsToDefendWith,
+                  patd.getMaxBombardUnits());
           if (patd.isCanHold() && result2.getTuvSwing() > 0) {
             final List<Unit> unusedUnits = new ArrayList<>(patd.getMaxUnits());
             unusedUnits.addAll(patd.getMaxAmphibUnits());
             unusedUnits.removeAll(usedUnits);
             unusedUnits.addAll(remainingUnitsToDefendWith);
-            final ProBattleResult result3 = calc.calculateBattleResults(t, patd.getMaxEnemyUnits(), unusedUnits,
-                patd.getMaxBombardUnits());
+            final ProBattleResult result3 =
+                calc.calculateBattleResults(
+                    t, patd.getMaxEnemyUnits(), unusedUnits, patd.getMaxBombardUnits());
             if (result3.getTuvSwing() < result2.getTuvSwing()) {
               result2 = result3;
               remainingUnitsToDefendWith = unusedUnits;
             }
           }
-          canHold = (!result2.isHasLandUnitRemaining() && !t.isWater()) || (result2.getTuvSwing() < 0)
-              || (result2.getWinPercentage() < ProData.minWinPercentage);
+          canHold =
+              (!result2.isHasLandUnitRemaining() && !t.isWater())
+                  || (result2.getTuvSwing() < 0)
+                  || (result2.getWinPercentage() < ProData.minWinPercentage);
           if (result2.getTuvSwing() > 0) {
             enemyCounterTuvSwing = result2.getTuvSwing();
           }
-          ProLogger.trace("Territory=" + t.getName() + ", CanHold=" + canHold + ", MyDefenders="
-              + remainingUnitsToDefendWith.size() + ", EnemyAttackers=" + patd.getMaxEnemyUnits().size() + ", win%="
-              + result2.getWinPercentage() + ", EnemyTUVSwing=" + result2.getTuvSwing() + ", hasLandUnitRemaining="
-              + result2.isHasLandUnitRemaining());
+          ProLogger.trace(
+              "Territory="
+                  + t.getName()
+                  + ", CanHold="
+                  + canHold
+                  + ", MyDefenders="
+                  + remainingUnitsToDefendWith.size()
+                  + ", EnemyAttackers="
+                  + patd.getMaxEnemyUnits().size()
+                  + ", win%="
+                  + result2.getWinPercentage()
+                  + ", EnemyTUVSwing="
+                  + result2.getTuvSwing()
+                  + ", hasLandUnitRemaining="
+                  + result2.isHasLandUnitRemaining());
         }
 
         // Find attack value
@@ -927,20 +1162,29 @@ class ProCombatMoveAi {
           capitalValue = ProUtils.getPlayerProduction(t.getOwner(), data);
         }
         final double territoryValue =
-            (1 + isLand - isCantHoldAmphib + isFactory + isCanHold * (1 + 2.0 * isFfa + 2.0 * isFactory)) * production
+            (1
+                        + isLand
+                        - isCantHoldAmphib
+                        + isFactory
+                        + isCanHold * (1 + 2.0 * isFfa + 2.0 * isFactory))
+                    * production
                 + capitalValue;
         double tuvSwing = result.getTuvSwing();
         if (isFfa == 1 && tuvSwing > 0) {
           tuvSwing *= 0.5;
         }
         final double attackValue =
-            1 + tuvSwing + territoryValue * result.getWinPercentage() / 100 - enemyCounterTuvSwing * 2 / 3;
+            1
+                + tuvSwing
+                + territoryValue * result.getWinPercentage() / 100
+                - enemyCounterTuvSwing * 2 / 3;
         boolean allUnitsCanAttackOtherTerritory = true;
         if (isNeutral && attackValue < 0) {
           for (final Unit u : patd.getUnits()) {
             boolean canAttackOtherTerritory = false;
             for (final ProTerritory patd2 : prioritizedTerritories) {
-              if (!patd.equals(patd2) && unitAttackMap.get(u) != null
+              if (!patd.equals(patd2)
+                  && unitAttackMap.get(u) != null
                   && unitAttackMap.get(u).contains(patd2.getTerritory())) {
                 canAttackOtherTerritory = true;
                 break;
@@ -954,14 +1198,26 @@ class ProCombatMoveAi {
         }
 
         // Determine whether to remove attack
-        if (!patd.isStrafing() && (result.getWinPercentage() < ProData.minWinPercentage
-            || !result.isHasLandUnitRemaining() || (isNeutral && !canHold)
-            || (attackValue < 0 && (!isNeutral || allUnitsCanAttackOtherTerritory || result.getBattleRounds() >= 4)))) {
+        if (!patd.isStrafing()
+            && (result.getWinPercentage() < ProData.minWinPercentage
+                || !result.isHasLandUnitRemaining()
+                || (isNeutral && !canHold)
+                || (attackValue < 0
+                    && (!isNeutral
+                        || allUnitsCanAttackOtherTerritory
+                        || result.getBattleRounds() >= 4)))) {
           territoryToRemove = patd;
         }
-        ProLogger.debug(patd.getResultString() + ", attackValue=" + attackValue + ", territoryValue=" + territoryValue
-            + ", allUnitsCanAttackOtherTerritory=" + allUnitsCanAttackOtherTerritory + " with attackers="
-            + patd.getUnits());
+        ProLogger.debug(
+            patd.getResultString()
+                + ", attackValue="
+                + attackValue
+                + ", territoryValue="
+                + territoryValue
+                + ", allUnitsCanAttackOtherTerritory="
+                + allUnitsCanAttackOtherTerritory
+                + " with attackers="
+                + patd.getUnits());
       }
 
       // Determine whether all attacks are successful or try to hold fewer territories
@@ -974,15 +1230,20 @@ class ProCombatMoveAi {
     }
   }
 
-  private Map<Unit, Set<Territory>> tryToAttackTerritories(final List<ProTerritory> prioritizedTerritories,
-      final List<Unit> alreadyMovedUnits) {
+  private Map<Unit, Set<Territory>> tryToAttackTerritories(
+      final List<ProTerritory> prioritizedTerritories, final List<Unit> alreadyMovedUnits) {
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
-    final Map<Unit, Set<Territory>> unitAttackMap = territoryManager.getAttackOptions().getUnitMoveMap();
-    final Map<Unit, Set<Territory>> transportAttackMap = territoryManager.getAttackOptions().getTransportMoveMap();
-    final Map<Unit, Set<Territory>> bombardMap = territoryManager.getAttackOptions().getBombardMap();
-    final List<ProTransport> transportMapList = territoryManager.getAttackOptions().getTransportList();
+    final Map<Unit, Set<Territory>> unitAttackMap =
+        territoryManager.getAttackOptions().getUnitMoveMap();
+    final Map<Unit, Set<Territory>> transportAttackMap =
+        territoryManager.getAttackOptions().getTransportMoveMap();
+    final Map<Unit, Set<Territory>> bombardMap =
+        territoryManager.getAttackOptions().getBombardMap();
+    final List<ProTransport> transportMapList =
+        territoryManager.getAttackOptions().getTransportList();
 
     // Reset lists
     for (final ProTerritory t : attackMap.values()) {
@@ -1012,7 +1273,8 @@ class ProCombatMoveAi {
     }
 
     // Sort units by number of attack options and cost
-    Map<Unit, Set<Territory>> sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitMoveOptions(unitAttackOptions);
+    Map<Unit, Set<Territory>> sortedUnitAttackOptions =
+        ProSortMoveOptionsUtils.sortUnitMoveOptions(unitAttackOptions);
     final List<Unit> addedUnits = new ArrayList<>();
 
     // Try to set at least one destroyer in each sea territory with subs
@@ -1038,8 +1300,9 @@ class ProCombatMoveAi {
     // Set enough land and sea units in territories to have at least a chance of winning
     for (final Unit unit : sortedUnitAttackOptions.keySet()) {
       final boolean isAirUnit = UnitAttachment.get(unit.getType()).getIsAir();
-      final boolean isExpensiveLandUnit = Matches.unitIsLand().test(unit)
-          && ProData.unitValueMap.getInt(unit.getType()) > 2 * ProData.minCostPerHitPoint;
+      final boolean isExpensiveLandUnit =
+          Matches.unitIsLand().test(unit)
+              && ProData.unitValueMap.getInt(unit.getType()) > 2 * ProData.minCostPerHitPoint;
       if (isAirUnit || isExpensiveLandUnit || addedUnits.contains(unit)) {
         continue; // skip air and expensive units
       }
@@ -1049,7 +1312,9 @@ class ProCombatMoveAi {
           continue; // ignore sea territories that can't be held
         }
         final List<Unit> defendingUnits = attackMap.get(t).getMaxEnemyDefenders(player, data);
-        double estimate = ProBattleUtils.estimateStrengthDifference(t, attackMap.get(t).getUnits(), defendingUnits);
+        double estimate =
+            ProBattleUtils.estimateStrengthDifference(
+                t, attackMap.get(t).getUnits(), defendingUnits);
         final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
         if (hasAa) {
           estimate -= 10;
@@ -1058,7 +1323,8 @@ class ProCombatMoveAi {
       }
       if (!estimatesMap.isEmpty() && estimatesMap.firstKey() < 40) {
         final Territory minWinTerritory = estimatesMap.entrySet().iterator().next().getValue();
-        final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
+        final List<Unit> unitsToAdd =
+            ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
         attackMap.get(minWinTerritory).addUnits(unitsToAdd);
         addedUnits.addAll(unitsToAdd);
       }
@@ -1066,8 +1332,9 @@ class ProCombatMoveAi {
     sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
     // Re-sort attack options
-    sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
-        attackMap, ProData.unitTerritoryMap, calc);
+    sortedUnitAttackOptions =
+        ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(
+            player, sortedUnitAttackOptions, attackMap, ProData.unitTerritoryMap, calc);
 
     // Set non-air units in territories that can be held
     for (final Unit unit : sortedUnitAttackOptions.keySet()) {
@@ -1081,8 +1348,14 @@ class ProCombatMoveAi {
         final ProTerritory patd = attackMap.get(t);
         if (!attackMap.get(t).isCurrentlyWins() && attackMap.get(t).isCanHold()) {
           if (attackMap.get(t).getBattleResult() == null) {
-            attackMap.get(t).setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
-                patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+            attackMap
+                .get(t)
+                .setBattleResult(
+                    calc.estimateAttackBattleResults(
+                        t,
+                        patd.getUnits(),
+                        patd.getMaxEnemyDefenders(player, data),
+                        patd.getBombardTerritoryMap().keySet()));
           }
           final ProBattleResult result = attackMap.get(t).getBattleResult();
           if (result.getWinPercentage() < minWinPercentage
@@ -1094,7 +1367,8 @@ class ProCombatMoveAi {
       }
       if (minWinTerritory != null) {
         attackMap.get(minWinTerritory).setBattleResult(null);
-        final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
+        final List<Unit> unitsToAdd =
+            ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
         attackMap.get(minWinTerritory).addUnits(unitsToAdd);
         addedUnits.addAll(unitsToAdd);
       }
@@ -1102,8 +1376,9 @@ class ProCombatMoveAi {
     sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
     // Re-sort attack options
-    sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
-        attackMap, ProData.unitTerritoryMap, calc);
+    sortedUnitAttackOptions =
+        ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(
+            player, sortedUnitAttackOptions, attackMap, ProData.unitTerritoryMap, calc);
 
     // Set air units in territories that can't be held (don't move planes to empty territories)
     for (final Unit unit : sortedUnitAttackOptions.keySet()) {
@@ -1117,13 +1392,20 @@ class ProCombatMoveAi {
         final ProTerritory patd = attackMap.get(t);
         if (!patd.isCurrentlyWins() && !patd.isCanHold()) {
 
-          // Check if air unit should avoid this territory due to no guaranteed safe landing location
+          // Check if air unit should avoid this territory due to no guaranteed safe landing
+          // location
           final boolean isEnemyCapital = ProUtils.getLiveEnemyCapitals(data, player).contains(t);
-          final boolean isAdjacentToAlliedCapital = Matches.territoryHasNeighborMatching(data,
-              Matches.territoryIsInList(ProUtils.getLiveAlliedCapitals(data, player))).test(t);
+          final boolean isAdjacentToAlliedCapital =
+              Matches.territoryHasNeighborMatching(
+                      data, Matches.territoryIsInList(ProUtils.getLiveAlliedCapitals(data, player)))
+                  .test(t);
           final int range = TripleAUnit.get(unit).getMovementLeft();
-          final int distance = data.getMap().getDistance_IgnoreEndForCondition(ProData.unitTerritoryMap.get(unit), t,
-              ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
+          final int distance =
+              data.getMap()
+                  .getDistance_IgnoreEndForCondition(
+                      ProData.unitTerritoryMap.get(unit),
+                      t,
+                      ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
           final boolean usesMoreThanHalfOfRange = distance > range / 2;
           if (!isEnemyCapital && !isAdjacentToAlliedCapital && usesMoreThanHalfOfRange) {
             continue;
@@ -1131,8 +1413,12 @@ class ProCombatMoveAi {
 
           // Check battle results
           if (patd.getBattleResult() == null) {
-            patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
-                patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+            patd.setBattleResult(
+                calc.estimateAttackBattleResults(
+                    t,
+                    patd.getUnits(),
+                    patd.getMaxEnemyDefenders(player, data),
+                    patd.getBombardTerritoryMap().keySet()));
           }
           final ProBattleResult result = patd.getBattleResult();
           if (result.getWinPercentage() < minWinPercentage
@@ -1143,7 +1429,9 @@ class ProCombatMoveAi {
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
             final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
-            if (!hasNoDefenders && !isOverwhelmingWin && (!hasAa || result.getWinPercentage() < minWinPercentage)) {
+            if (!hasNoDefenders
+                && !isOverwhelmingWin
+                && (!hasAa || result.getWinPercentage() < minWinPercentage)) {
               minWinPercentage = result.getWinPercentage();
               minWinTerritory = t;
               if (patd.isStrafing()) {
@@ -1162,8 +1450,9 @@ class ProCombatMoveAi {
     sortedUnitAttackOptions.keySet().removeAll(addedUnits);
 
     // Re-sort attack options
-    sortedUnitAttackOptions = ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(player, sortedUnitAttackOptions,
-        attackMap, ProData.unitTerritoryMap, calc);
+    sortedUnitAttackOptions =
+        ProSortMoveOptionsUtils.sortUnitNeededOptionsThenAttack(
+            player, sortedUnitAttackOptions, attackMap, ProData.unitTerritoryMap, calc);
 
     // Set remaining units in any territory that needs it (don't move planes to empty territories)
     for (final Unit unit : sortedUnitAttackOptions.keySet()) {
@@ -1177,23 +1466,35 @@ class ProCombatMoveAi {
         final ProTerritory patd = attackMap.get(t);
         if (!patd.isCurrentlyWins()) {
 
-          // Check if air unit should avoid this territory due to no guaranteed safe landing location
-          final boolean isAdjacentToAlliedFactory = Matches
-              .territoryHasNeighborMatching(data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data))
-              .test(t);
+          // Check if air unit should avoid this territory due to no guaranteed safe landing
+          // location
+          final boolean isAdjacentToAlliedFactory =
+              Matches.territoryHasNeighborMatching(
+                      data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data))
+                  .test(t);
           final int range = TripleAUnit.get(unit).getMovementLeft();
-          final int distance = data.getMap().getDistance_IgnoreEndForCondition(ProData.unitTerritoryMap.get(unit), t,
-              ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
+          final int distance =
+              data.getMap()
+                  .getDistance_IgnoreEndForCondition(
+                      ProData.unitTerritoryMap.get(unit),
+                      t,
+                      ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
           final boolean usesMoreThanHalfOfRange = distance > range / 2;
           final boolean territoryValueIsLessThanUnitValue =
               patd.getValue() < ProData.unitValueMap.getInt(unit.getType());
-          if (isAirUnit && !isAdjacentToAlliedFactory && usesMoreThanHalfOfRange
+          if (isAirUnit
+              && !isAdjacentToAlliedFactory
+              && usesMoreThanHalfOfRange
               && (territoryValueIsLessThanUnitValue || (!t.isWater() && !patd.isCanHold()))) {
             continue;
           }
           if (patd.getBattleResult() == null) {
-            patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
-                patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+            patd.setBattleResult(
+                calc.estimateAttackBattleResults(
+                    t,
+                    patd.getUnits(),
+                    patd.getMaxEnemyDefenders(player, data),
+                    patd.getBombardTerritoryMap().keySet()));
           }
           final ProBattleResult result = patd.getBattleResult();
           if (result.getWinPercentage() < minWinPercentage
@@ -1204,8 +1505,10 @@ class ProCombatMoveAi {
             final boolean isOverwhelmingWin =
                 ProBattleUtils.checkForOverwhelmingWin(t, patd.getUnits(), defendingUnits);
             final boolean hasAa = defendingUnits.stream().anyMatch(Matches.unitIsAaForAnything());
-            if (!isAirUnit || (!hasNoDefenders && !isOverwhelmingWin
-                && (!hasAa || result.getWinPercentage() < minWinPercentage))) {
+            if (!isAirUnit
+                || (!hasNoDefenders
+                    && !isOverwhelmingWin
+                    && (!hasAa || result.getWinPercentage() < minWinPercentage))) {
               minWinPercentage = result.getWinPercentage();
               minWinTerritory = t;
             }
@@ -1214,7 +1517,8 @@ class ProCombatMoveAi {
       }
       if (minWinTerritory != null) {
         attackMap.get(minWinTerritory).setBattleResult(null);
-        final List<Unit> unitsToAdd = ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
+        final List<Unit> unitsToAdd =
+            ProTransportUtils.getUnitsToAdd(unit, alreadyMovedUnits, attackMap);
         attackMap.get(minWinTerritory).addUnits(unitsToAdd);
         addedUnits.addAll(unitsToAdd);
       }
@@ -1223,7 +1527,8 @@ class ProCombatMoveAi {
 
     // Re-sort attack options
     sortedUnitAttackOptions =
-        ProSortMoveOptionsUtils.sortUnitNeededOptions(player, sortedUnitAttackOptions, attackMap, calc);
+        ProSortMoveOptionsUtils.sortUnitNeededOptions(
+            player, sortedUnitAttackOptions, attackMap, calc);
 
     // If transports can take casualties try placing in naval battles first
     final List<Unit> alreadyAttackedWithTransports = new ArrayList<>();
@@ -1252,13 +1557,20 @@ class ProCombatMoveAi {
         for (final Territory t : transportAttackOptions.get(transport)) {
           final ProTerritory patd = attackMap.get(t);
           final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
-          if (!patd.isCurrentlyWins() && !TransportTracker.isTransporting(transport) && !defendingUnits.isEmpty()) {
+          if (!patd.isCurrentlyWins()
+              && !TransportTracker.isTransporting(transport)
+              && !defendingUnits.isEmpty()) {
             if (patd.getBattleResult() == null) {
-              patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
-                  patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+              patd.setBattleResult(
+                  calc.estimateAttackBattleResults(
+                      t,
+                      patd.getUnits(),
+                      patd.getMaxEnemyDefenders(player, data),
+                      patd.getBombardTerritoryMap().keySet()));
             }
             final ProBattleResult result = patd.getBattleResult();
-            if (result.getWinPercentage() < ProData.winPercentage || !result.isHasLandUnitRemaining()) {
+            if (result.getWinPercentage() < ProData.winPercentage
+                || !result.isHasLandUnitRemaining()) {
               patd.addUnit(transport);
               patd.setBattleResult(null);
               alreadyAttackedWithTransports.add(transport);
@@ -1303,8 +1615,12 @@ class ProCombatMoveAi {
         final ProTerritory patd = attackMap.get(t);
         if (!patd.isCurrentlyWins()) {
           if (patd.getBattleResult() == null) {
-            patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
-                patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+            patd.setBattleResult(
+                calc.estimateAttackBattleResults(
+                    t,
+                    patd.getUnits(),
+                    patd.getMaxEnemyDefenders(player, data),
+                    patd.getBombardTerritoryMap().keySet()));
           }
           final ProBattleResult result = patd.getBattleResult();
           if (result.getWinPercentage() < minWinPercentage
@@ -1317,9 +1633,11 @@ class ProCombatMoveAi {
               if (proTransportData.getTransport().equals(transport)) {
 
                 // Find units to load
-                final Set<Territory> territoriesCanLoadFrom = proTransportData.getTransportMap().get(t);
-                final List<Unit> amphibUnitsToAdd = ProTransportUtils.getUnitsToTransportFromTerritories(player,
-                    transport, territoriesCanLoadFrom, alreadyAttackedWithUnits);
+                final Set<Territory> territoriesCanLoadFrom =
+                    proTransportData.getTransportMap().get(t);
+                final List<Unit> amphibUnitsToAdd =
+                    ProTransportUtils.getUnitsToTransportFromTerritories(
+                        player, transport, territoriesCanLoadFrom, alreadyAttackedWithUnits);
                 if (amphibUnitsToAdd.isEmpty()) {
                   continue;
                 }
@@ -1328,23 +1646,30 @@ class ProCombatMoveAi {
                 double minStrengthDifference = Double.POSITIVE_INFINITY;
                 minUnloadFromTerritory = null;
                 final Set<Territory> territoriesToMoveTransport =
-                    data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, false));
+                    data.getMap()
+                        .getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, false));
                 final Set<Territory> loadFromTerritories = new HashSet<>();
                 for (final Unit u : amphibUnitsToAdd) {
                   loadFromTerritories.add(ProData.unitTerritoryMap.get(u));
                 }
                 for (final Territory territoryToMoveTransport : territoriesToMoveTransport) {
-                  if (proTransportData.getSeaTransportMap().containsKey(territoryToMoveTransport) && proTransportData
-                      .getSeaTransportMap().get(territoryToMoveTransport).containsAll(loadFromTerritories)) {
+                  if (proTransportData.getSeaTransportMap().containsKey(territoryToMoveTransport)
+                      && proTransportData
+                          .getSeaTransportMap()
+                          .get(territoryToMoveTransport)
+                          .containsAll(loadFromTerritories)) {
                     List<Unit> attackers = new ArrayList<>();
                     if (enemyAttackOptions.getMax(territoryToMoveTransport) != null) {
                       attackers = enemyAttackOptions.getMax(territoryToMoveTransport).getMaxUnits();
                     }
                     final List<Unit> defenders =
-                        territoryToMoveTransport.getUnits().getMatches(Matches.isUnitAllied(player, data));
+                        territoryToMoveTransport
+                            .getUnits()
+                            .getMatches(Matches.isUnitAllied(player, data));
                     defenders.add(transport);
                     final double strengthDifference =
-                        ProBattleUtils.estimateStrengthDifference(territoryToMoveTransport, attackers, defenders);
+                        ProBattleUtils.estimateStrengthDifference(
+                            territoryToMoveTransport, attackers, defenders);
                     if (strengthDifference < minStrengthDifference) {
                       minStrengthDifference = strengthDifference;
                       minUnloadFromTerritory = territoryToMoveTransport;
@@ -1362,7 +1687,10 @@ class ProCombatMoveAi {
       }
       if (minWinTerritory != null) {
         if (minUnloadFromTerritory != null) {
-          attackMap.get(minWinTerritory).getTransportTerritoryMap().put(transport, minUnloadFromTerritory);
+          attackMap
+              .get(minWinTerritory)
+              .getTransportTerritoryMap()
+              .put(transport, minUnloadFromTerritory);
         }
         attackMap.get(minWinTerritory).addUnits(minAmphibUnitsToAdd);
         attackMap.get(minWinTerritory).putAmphibAttackMap(transport, minAmphibUnitsToAdd);
@@ -1370,8 +1698,13 @@ class ProCombatMoveAi {
         for (final Unit unit : minAmphibUnitsToAdd) {
           sortedUnitAttackOptions.remove(unit);
         }
-        ProLogger.trace("Adding amphibious attack to " + minWinTerritory + ", units=" + minAmphibUnitsToAdd.size()
-            + ", unloadFrom=" + minUnloadFromTerritory);
+        ProLogger.trace(
+            "Adding amphibious attack to "
+                + minWinTerritory
+                + ", units="
+                + minAmphibUnitsToAdd.size()
+                + ", unloadFrom="
+                + minUnloadFromTerritory);
       }
     }
 
@@ -1395,9 +1728,12 @@ class ProCombatMoveAi {
       final Set<Territory> canBombardTerritories = new HashSet<>();
       for (final ProTerritory patd : prioritizedTerritories) {
         final List<Unit> defendingUnits = patd.getMaxEnemyDefenders(player, data);
-        final boolean hasDefenders = defendingUnits.stream().anyMatch(Matches.unitIsInfrastructure().negate());
-        if (bombardMap.get(u).contains(patd.getTerritory()) && !patd.getTransportTerritoryMap().isEmpty()
-            && hasDefenders && !TransportTracker.isTransporting(u)) {
+        final boolean hasDefenders =
+            defendingUnits.stream().anyMatch(Matches.unitIsInfrastructure().negate());
+        if (bombardMap.get(u).contains(patd.getTerritory())
+            && !patd.getTransportTerritoryMap().isEmpty()
+            && hasDefenders
+            && !TransportTracker.isTransporting(u)) {
           canBombardTerritories.add(patd.getTerritory());
         }
       }
@@ -1416,8 +1752,12 @@ class ProCombatMoveAi {
       for (final Territory t : bombardOptions.get(u)) {
         final ProTerritory patd = attackMap.get(t);
         if (patd.getBattleResult() == null) {
-          patd.setBattleResult(calc.estimateAttackBattleResults(t, patd.getUnits(),
-              patd.getMaxEnemyDefenders(player, data), patd.getBombardTerritoryMap().keySet()));
+          patd.setBattleResult(
+              calc.estimateAttackBattleResults(
+                  t,
+                  patd.getUnits(),
+                  patd.getMaxEnemyDefenders(player, data),
+                  patd.getBombardTerritoryMap().keySet()));
         }
         final ProBattleResult result = patd.getBattleResult();
         if (result.getWinPercentage() < minWinPercentage
@@ -1442,26 +1782,36 @@ class ProCombatMoveAi {
         attackMap.get(minWinTerritory).setBattleResult(null);
         sortedUnitAttackOptions.remove(u);
         ProLogger.trace(
-            "Adding bombard to " + minWinTerritory + ", units=" + u + ", bombardFrom=" + minBombardFromTerritory);
+            "Adding bombard to "
+                + minWinTerritory
+                + ", units="
+                + u
+                + ", bombardFrom="
+                + minBombardFromTerritory);
       }
     }
     return sortedUnitAttackOptions;
   }
 
-  private void removeAttacksUntilCapitalCanBeHeld(final List<ProTerritory> prioritizedTerritories,
+  private void removeAttacksUntilCapitalCanBeHeld(
+      final List<ProTerritory> prioritizedTerritories,
       final List<ProPurchaseOption> landPurchaseOptions) {
 
     ProLogger.info("Check capital defenses after attack moves");
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
 
     final Territory myCapital = ProData.myCapital;
 
-    // Add max purchase defenders to capital for non-mobile factories (don't consider mobile factories since they may
+    // Add max purchase defenders to capital for non-mobile factories (don't consider mobile
+    // factories since they may
     // move elsewhere)
     final List<Unit> placeUnits = new ArrayList<>();
-    if (ProMatches.territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(player, data).test(myCapital)) {
-      placeUnits.addAll(ProPurchaseUtils.findMaxPurchaseDefenders(player, myCapital, landPurchaseOptions));
+    if (ProMatches.territoryHasNonMobileFactoryAndIsNotConqueredOwnedLand(player, data)
+        .test(myCapital)) {
+      placeUnits.addAll(
+          ProPurchaseUtils.findMaxPurchaseDefenders(player, myCapital, landPurchaseOptions));
     }
 
     // Remove attack until capital can be defended
@@ -1487,28 +1837,43 @@ class ProCombatMoveAi {
       // Find max remaining defenders
       final Set<Territory> territoriesAdjacentToCapital =
           data.getMap().getNeighbors(myCapital, Matches.territoryIsLand());
-      final List<Unit> defenders = myCapital.getUnits().getMatches(Matches.isUnitAllied(player, data));
+      final List<Unit> defenders =
+          myCapital.getUnits().getMatches(Matches.isUnitAllied(player, data));
       defenders.addAll(placeUnits);
       for (final Territory t : territoriesAdjacentToCapital) {
-        defenders.addAll(t.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedLand(player, false)));
+        defenders.addAll(
+            t.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedLand(player, false)));
       }
       for (final ProTerritory t : attackMap.values()) {
         defenders.removeAll(t.getUnits());
       }
 
       // Determine counter attack results to see if I can hold it
-      final Set<Unit> enemyAttackingUnits = new HashSet<>(enemyAttackOptions.getMax(myCapital).getMaxUnits());
+      final Set<Unit> enemyAttackingUnits =
+          new HashSet<>(enemyAttackOptions.getMax(myCapital).getMaxUnits());
       enemyAttackingUnits.addAll(enemyAttackOptions.getMax(myCapital).getMaxAmphibUnits());
-      final ProBattleResult result = calc.estimateDefendBattleResults(myCapital,
-          new ArrayList<>(enemyAttackingUnits), defenders, enemyAttackOptions.getMax(myCapital).getMaxBombardUnits());
-      ProLogger.trace("Current capital result hasLandUnitRemaining=" + result.isHasLandUnitRemaining() + ", TUVSwing="
-          + result.getTuvSwing() + ", defenders=" + defenders.size() + ", attackers=" + enemyAttackingUnits.size());
+      final ProBattleResult result =
+          calc.estimateDefendBattleResults(
+              myCapital,
+              new ArrayList<>(enemyAttackingUnits),
+              defenders,
+              enemyAttackOptions.getMax(myCapital).getMaxBombardUnits());
+      ProLogger.trace(
+          "Current capital result hasLandUnitRemaining="
+              + result.isHasLandUnitRemaining()
+              + ", TUVSwing="
+              + result.getTuvSwing()
+              + ", defenders="
+              + defenders.size()
+              + ", attackers="
+              + enemyAttackingUnits.size());
 
       // Determine attack that uses the most units per value from capital and remove it
       if (result.isHasLandUnitRemaining()) {
         double maxUnitsNearCapitalPerValue = 0.0;
         Territory maxTerritory = null;
-        final Set<Territory> territoriesNearCapital = data.getMap().getNeighbors(myCapital, Matches.territoryIsLand());
+        final Set<Territory> territoriesNearCapital =
+            data.getMap().getNeighbors(myCapital, Matches.territoryIsLand());
         territoriesNearCapital.add(myCapital);
         for (final Territory t : attackMap.keySet()) {
           int unitsNearCapital = 0;
@@ -1518,7 +1883,8 @@ class ProCombatMoveAi {
             }
           }
           final double unitsNearCapitalPerValue = unitsNearCapital / attackMap.get(t).getValue();
-          ProLogger.trace(t.getName() + " has unit near capital per value: " + unitsNearCapitalPerValue);
+          ProLogger.trace(
+              t.getName() + " has unit near capital per value: " + unitsNearCapitalPerValue);
           if (unitsNearCapitalPerValue > maxUnitsNearCapitalPerValue) {
             maxUnitsNearCapitalPerValue = unitsNearCapitalPerValue;
             maxTerritory = t;
@@ -1542,18 +1908,22 @@ class ProCombatMoveAi {
 
   private void checkContestedSeaTerritories() {
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
 
     for (final Territory t : ProData.myUnitTerritories) {
-      if (t.isWater() && Matches.territoryHasEnemyUnits(player, data).test(t)
+      if (t.isWater()
+          && Matches.territoryHasEnemyUnits(player, data).test(t)
           && (attackMap.get(t) == null || attackMap.get(t).getUnits().isEmpty())) {
 
         // Move into random adjacent safe sea territory
         final Set<Territory> possibleMoveTerritories =
-            data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true));
+            data.getMap()
+                .getNeighbors(t, ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true));
         if (!possibleMoveTerritories.isEmpty()) {
           final Territory moveToTerritory = possibleMoveTerritories.iterator().next();
-          final List<Unit> mySeaUnits = t.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedSea(player, true));
+          final List<Unit> mySeaUnits =
+              t.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedSea(player, true));
           if (attackMap.containsKey(moveToTerritory)) {
             attackMap.get(moveToTerritory).addUnits(mySeaUnits);
           } else {
@@ -1569,13 +1939,19 @@ class ProCombatMoveAi {
 
   private void logAttackMoves(final List<ProTerritory> prioritizedTerritories) {
 
-    final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
+    final Map<Territory, ProTerritory> attackMap =
+        territoryManager.getAttackOptions().getTerritoryMap();
 
     // Print prioritization
     ProLogger.debug("Prioritized territories:");
     for (final ProTerritory attackTerritoryData : prioritizedTerritories) {
-      ProLogger.trace("  " + attackTerritoryData.getMaxBattleResult().getTuvSwing() + "  "
-          + attackTerritoryData.getValue() + "  " + attackTerritoryData.getTerritory().getName());
+      ProLogger.trace(
+          "  "
+              + attackTerritoryData.getMaxBattleResult().getTuvSwing()
+              + "  "
+              + attackTerritoryData.getValue()
+              + "  "
+              + attackTerritoryData.getTerritory().getName());
     }
 
     // Print enemy territories with enemy units vs my units
@@ -1602,7 +1978,8 @@ class ProCombatMoveAi {
       final Map<String, Integer> printBombardMap = new HashMap<>();
       for (final Unit unit : attackMap.get(t).getMaxBombardUnits()) {
         if (printBombardMap.containsKey(unit.toStringNoOwner())) {
-          printBombardMap.put(unit.toStringNoOwner(), printBombardMap.get(unit.toStringNoOwner()) + 1);
+          printBombardMap.put(
+              unit.toStringNoOwner(), printBombardMap.get(unit.toStringNoOwner()) + 1);
         } else {
           printBombardMap.put(unit.toStringNoOwner(), 1);
         }
@@ -1666,13 +2043,18 @@ class ProCombatMoveAi {
   }
 
   private boolean canAirSafelyLandAfterAttack(final Unit unit, final Territory t) {
-    final boolean isAdjacentToAlliedFactory = Matches
-        .territoryHasNeighborMatching(data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data)).test(t);
+    final boolean isAdjacentToAlliedFactory =
+        Matches.territoryHasNeighborMatching(
+                data, ProMatches.territoryHasInfraFactoryAndIsAlliedLand(player, data))
+            .test(t);
     final int range = TripleAUnit.get(unit).getMovementLeft();
-    final int distance = data.getMap().getDistance_IgnoreEndForCondition(ProData.unitTerritoryMap.get(unit), t,
-        ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
+    final int distance =
+        data.getMap()
+            .getDistance_IgnoreEndForCondition(
+                ProData.unitTerritoryMap.get(unit),
+                t,
+                ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
     final boolean usesMoreThanHalfOfRange = distance > range / 2;
     return isAdjacentToAlliedFactory || !usesMoreThanHalfOfRange;
   }
-
 }

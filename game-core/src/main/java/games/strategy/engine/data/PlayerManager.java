@@ -8,9 +8,7 @@ import java.util.stream.Collectors;
 
 import games.strategy.net.INode;
 
-/**
- * Tracks what Node in the networks is playing which roles in the game.
- */
+/** Tracks what Node in the networks is playing which roles in the game. */
 public class PlayerManager {
   private final Map<String, INode> playerMapping;
 
@@ -31,10 +29,11 @@ public class PlayerManager {
     if (playerMapping.isEmpty()) {
       return "empty";
     }
-    return playerMapping.entrySet().stream()
+    return playerMapping
+        .entrySet()
+        .stream()
         .map(e -> String.format("%s=%s", e.getKey(), e.getValue().getName()))
         .collect(Collectors.joining(", "));
-
   }
 
   public INode getNode(final String playerName) {
@@ -55,23 +54,29 @@ public class PlayerManager {
   }
 
   public Set<String> getPlayedBy(final INode playerNode) {
-    return playerMapping.entrySet().stream()
+    return playerMapping
+        .entrySet()
+        .stream()
         .filter(e -> e.getValue().equals(playerNode))
         .map(Map.Entry::getKey)
         .collect(Collectors.toSet());
   }
 
   /**
-   * Get a player from an opposing side, if possible, else get a player playing at a remote computer, if possible.
+   * Get a player from an opposing side, if possible, else get a player playing at a remote
+   * computer, if possible.
    */
   public PlayerId getRemoteOpponent(final INode localNode, final GameData data) {
     // find a local player
-    final PlayerId local = playerMapping.entrySet().stream()
-        .filter(e -> e.getValue().equals(localNode))
-        .map(Map.Entry::getKey)
-        .map(data.getPlayerList()::getPlayerId)
-        .findAny()
-        .orElse(null);
+    final PlayerId local =
+        playerMapping
+            .entrySet()
+            .stream()
+            .filter(e -> e.getValue().equals(localNode))
+            .map(Map.Entry::getKey)
+            .map(data.getPlayerList()::getPlayerId)
+            .findAny()
+            .orElse(null);
     // we arent playing anyone, return any
     if (local == null) {
       final String remote = playerMapping.keySet().iterator().next();

@@ -10,16 +10,16 @@ import javax.swing.JOptionPane;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.net.IClientMessenger;
 
-/**
- * An action for loading an autosave across all network nodes from a client node.
- */
+/** An action for loading an autosave across all network nodes from a client node. */
 public class ChangeToAutosaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1972868158345085949L;
   private final Component parent;
   private final IClientMessenger clientMessenger;
   private final HeadlessAutoSaveType typeOfAutosave;
 
-  public ChangeToAutosaveClientAction(final Component parent, final IClientMessenger clientMessenger,
+  public ChangeToAutosaveClientAction(
+      final Component parent,
+      final IClientMessenger clientMessenger,
       final HeadlessAutoSaveType typeOfAutosave) {
     super("Change To " + typeOfAutosave.toString().toLowerCase());
     this.parent = JOptionPane.getFrameForComponent(parent);
@@ -29,10 +29,13 @@ public class ChangeToAutosaveClientAction extends AbstractAction {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final int selectedOption = JOptionPane.showConfirmDialog(parent,
-        new JLabel("Change Game To: " + typeOfAutosave.toString().toLowerCase()),
-        "Change Game To: " + typeOfAutosave.toString().toLowerCase(), JOptionPane.OK_CANCEL_OPTION,
-        JOptionPane.QUESTION_MESSAGE);
+    final int selectedOption =
+        JOptionPane.showConfirmDialog(
+            parent,
+            new JLabel("Change Game To: " + typeOfAutosave.toString().toLowerCase()),
+            "Change Game To: " + typeOfAutosave.toString().toLowerCase(),
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
     if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }

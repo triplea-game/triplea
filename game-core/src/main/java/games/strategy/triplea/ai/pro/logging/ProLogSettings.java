@@ -14,9 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 
-/**
- * Class to manage log settings.
- */
+/** Class to manage log settings. */
 @Getter
 @Setter
 @Log
@@ -31,15 +29,18 @@ final class ProLogSettings implements Serializable {
 
   static ProLogSettings loadSettings() {
     try {
-      final byte[] pool = Preferences.userNodeForPackage(ProAi.class).getByteArray(PROGRAM_SETTINGS, null);
+      final byte[] pool =
+          Preferences.userNodeForPackage(ProAi.class).getByteArray(PROGRAM_SETTINGS, null);
       if (pool != null) {
-        return IoUtils.readFromMemory(pool, is -> {
-          try (ObjectInputStream ois = new ObjectInputStream(is)) {
-            return (ProLogSettings) ois.readObject();
-          } catch (final ClassNotFoundException e) {
-            throw new IOException(e);
-          }
-        });
+        return IoUtils.readFromMemory(
+            pool,
+            is -> {
+              try (ObjectInputStream ois = new ObjectInputStream(is)) {
+                return (ProLogSettings) ois.readObject();
+              } catch (final ClassNotFoundException e) {
+                throw new IOException(e);
+              }
+            });
       }
     } catch (final Exception ex) {
       log.log(Level.SEVERE, "Failed to load pro AI log settings", ex);
@@ -50,11 +51,13 @@ final class ProLogSettings implements Serializable {
 
   static void saveSettings(final ProLogSettings settings) {
     try {
-      final byte[] bytes = IoUtils.writeToMemory(os -> {
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(os)) {
-          outputStream.writeObject(settings);
-        }
-      });
+      final byte[] bytes =
+          IoUtils.writeToMemory(
+              os -> {
+                try (ObjectOutputStream outputStream = new ObjectOutputStream(os)) {
+                  outputStream.writeObject(settings);
+                }
+              });
       final Preferences prefs = Preferences.userNodeForPackage(ProAi.class);
       prefs.putByteArray(PROGRAM_SETTINGS, bytes);
       try {

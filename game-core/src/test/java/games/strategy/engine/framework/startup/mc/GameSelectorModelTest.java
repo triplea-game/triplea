@@ -55,20 +55,15 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
   private GameSelectorModel testObj;
 
-  @Mock
-  private GameChooserEntry mockEntry;
+  @Mock private GameChooserEntry mockEntry;
 
-  @Mock
-  private GameData mockGameData;
+  @Mock private GameData mockGameData;
 
-  @Mock
-  private GameSequence mockSequence;
+  @Mock private GameSequence mockSequence;
 
-  @Mock
-  private Observer mockObserver;
+  @Mock private Observer mockObserver;
 
-  @Mock
-  private ClientModel mockClientModel;
+  @Mock private ClientModel mockClientModel;
 
   @BeforeEach
   public void setup() {
@@ -129,7 +124,6 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
     assertThat(testObj.isSavedGame(), is(true));
   }
 
-
   @Test
   public void testCanSelect() {
     assertThat(testObj.canSelect(), is(true));
@@ -174,7 +168,6 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
     assertHasFakeTestData(testObj);
   }
 
-
   @Test
   public void testLoadFromGameDataFileNamePair() {
     assertHasEmptyData(testObj);
@@ -184,7 +177,6 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
     assertThat(testObj.getGameData(), sameInstance(mockGameData));
     assertThat(testObj.getFileName(), is(fakeFileName));
   }
-
 
   @Test
   public void testGetGameData() {
@@ -202,7 +194,6 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
     testObj.setIsHostHeadlessBot(false);
     assertThat(testObj.isHostHeadlessBot(), is(false));
   }
-
 
   @Test
   public void testSetAndGetClientModelForHostBots() {

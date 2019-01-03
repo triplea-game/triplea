@@ -36,20 +36,14 @@ final class LobbyGameTableModelTest {
   @Nested
   final class RemoveAndUpdateGameTest {
     private LobbyGameTableModel testObj;
-    @Mock
-    private IMessenger mockMessenger;
-    @Mock
-    private IChannelMessenger mockChannelMessenger;
-    @Mock
-    private IRemoteMessenger mockRemoteMessenger;
-    @Mock
-    private ILobbyGameController mockLobbyController;
+    @Mock private IMessenger mockMessenger;
+    @Mock private IChannelMessenger mockChannelMessenger;
+    @Mock private IRemoteMessenger mockRemoteMessenger;
+    @Mock private ILobbyGameController mockLobbyController;
     private Map<GUID, GameDescription> fakeGameMap;
     private Tuple<GUID, GameDescription> fakeGame;
-    @Mock
-    private GameDescription mockGameDescription;
-    @Mock
-    private INode serverNode;
+    @Mock private GameDescription mockGameDescription;
+    @Mock private INode serverNode;
 
     @BeforeEach
     void setUp() {
@@ -60,7 +54,8 @@ final class LobbyGameTableModelTest {
       Mockito.when(mockRemoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME))
           .thenReturn(mockLobbyController);
       Mockito.when(mockLobbyController.listGames()).thenReturn(fakeGameMap);
-      testObj = new LobbyGameTableModel(true, mockMessenger, mockChannelMessenger, mockRemoteMessenger);
+      testObj =
+          new LobbyGameTableModel(true, mockMessenger, mockChannelMessenger, mockRemoteMessenger);
       Mockito.verify(mockLobbyController, Mockito.times(1)).listGames();
 
       MessageContext.setSenderNodeForThread(serverNode);
@@ -100,8 +95,8 @@ final class LobbyGameTableModelTest {
     void updateGameWithNullGuidIsIgnored() {
       testObj.getLobbyGameBroadcaster().gameUpdated(null, new GameDescription());
       waitForSwingThreads();
-      assertThat("expect row count to remain 1, null guid is bogus data",
-          testObj.getRowCount(), is(1));
+      assertThat(
+          "expect row count to remain 1, null guid is bogus data", testObj.getRowCount(), is(1));
     }
 
     @Test

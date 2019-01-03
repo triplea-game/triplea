@@ -22,7 +22,8 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 
 /**
- * An attachment for instances of {@link UnitType} that defines properties for unit types that support other units.
+ * An attachment for instances of {@link UnitType} that defines properties for unit types that
+ * support other units.
  */
 public class UnitSupportAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -3015679930172496082L;
@@ -48,12 +49,15 @@ public class UnitSupportAttachment extends DefaultAttachment {
   private String side;
   private String faction;
 
-  public UnitSupportAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  public UnitSupportAttachment(
+      final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
   public static Set<UnitSupportAttachment> get(final UnitType u) {
-    return u.getAttachments().values().stream()
+    return u.getAttachments()
+        .values()
+        .stream()
         .filter(attachment -> attachment.getName().startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX))
         .map(UnitSupportAttachment.class::cast)
         .collect(Collectors.toSet());
@@ -112,7 +116,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
       } else if (element.equalsIgnoreCase("enemy")) {
         enemy = true;
       } else {
-        throw new GameParseException(faction + " faction must be allied, or enemy" + thisErrorMsg());
+        throw new GameParseException(
+            faction + " faction must be allied, or enemy" + thisErrorMsg());
       }
     }
   }
@@ -171,7 +176,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
       } else if (element.equalsIgnoreCase("AAstrength")) {
         aaStrength = true;
       } else {
-        throw new GameParseException(dice + " dice must be roll, strength, AAroll, or AAstrength: " + thisErrorMsg());
+        throw new GameParseException(
+            dice + " dice must be roll, strength, AAroll, or AAstrength: " + thisErrorMsg());
       }
     }
   }
@@ -312,9 +318,11 @@ public class UnitSupportAttachment extends DefaultAttachment {
    * boolean first is a cheat, adds a bogus support to a unit
    * in the case that supportable units are declared before any artillery
    */
-  static void addRule(final UnitType type, final GameData data, final boolean first) throws GameParseException {
+  static void addRule(final UnitType type, final GameData data, final boolean first)
+      throws GameParseException {
     final String attachmentName =
-        (first ? Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST : Constants.SUPPORT_RULE_NAME_OLD) + type.getName();
+        (first ? Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST : Constants.SUPPORT_RULE_NAME_OLD)
+            + type.getName();
     final UnitSupportAttachment rule = new UnitSupportAttachment(attachmentName, type, data);
     rule.setBonus(1);
     rule.setBonusType(Constants.OLD_ART_RULE_NAME);
@@ -336,7 +344,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
       if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME)) {
         types = rule.getUnitType();
         if (rule.getName().startsWith(Constants.SUPPORT_RULE_NAME_OLD_TEMP_FIRST)) {
-          // remove it because it is a "first", which is just a temporary one made to hold target info. what a hack.
+          // remove it because it is a "first", which is just a temporary one made to hold target
+          // info. what a hack.
           final UnitType attachedTo = (UnitType) rule.getAttachedTo();
           attachedTo.removeAttachment(rule.getName());
           rule.setAttachedTo(null);
@@ -372,7 +381,8 @@ public class UnitSupportAttachment extends DefaultAttachment {
         first = false;
       }
     }
-    // if first, it means we do not have any support attachments created yet. so create a temporary one on this unit
+    // if first, it means we do not have any support attachments created yet. so create a temporary
+    // one on this unit
     // just to hold the target info.
     if (first) {
       addRule(type, data, first);
@@ -385,64 +395,44 @@ public class UnitSupportAttachment extends DefaultAttachment {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("unitType",
+        .put(
+            "unitType",
             MutableProperty.of(
-                this::setUnitType,
-                this::setUnitType,
-                this::getUnitType,
-                this::resetUnitType))
+                this::setUnitType, this::setUnitType, this::getUnitType, this::resetUnitType))
         .put("offence", MutableProperty.ofReadOnly(this::getOffence))
         .put("defence", MutableProperty.ofReadOnly(this::getDefence))
         .put("roll", MutableProperty.ofReadOnly(this::getRoll))
         .put("strength", MutableProperty.ofReadOnly(this::getStrength))
         .put("aaRoll", MutableProperty.ofReadOnly(this::getAaRoll))
         .put("aaStrength", MutableProperty.ofReadOnly(this::getAaStrength))
-        .put("bonus",
+        .put(
+            "bonus",
+            MutableProperty.of(this::setBonus, this::setBonus, this::getBonus, this::resetBonus))
+        .put(
+            "number",
             MutableProperty.of(
-                this::setBonus,
-                this::setBonus,
-                this::getBonus,
-                this::resetBonus))
-        .put("number",
-            MutableProperty.of(
-                this::setNumber,
-                this::setNumber,
-                this::getNumber,
-                this::resetNumber))
+                this::setNumber, this::setNumber, this::getNumber, this::resetNumber))
         .put("allied", MutableProperty.ofReadOnly(this::getAllied))
         .put("enemy", MutableProperty.ofReadOnly(this::getEnemy))
-        .put("bonusType",
-            MutableProperty.ofString(
-                this::setBonusType,
-                this::getBonusType,
-                this::resetBonusType))
-        .put("players",
+        .put(
+            "bonusType",
+            MutableProperty.ofString(this::setBonusType, this::getBonusType, this::resetBonusType))
+        .put(
+            "players",
             MutableProperty.of(
-                this::setPlayers,
-                this::setPlayers,
-                this::getPlayers,
-                this::resetPlayers))
-        .put("impArtTech",
+                this::setPlayers, this::setPlayers, this::getPlayers, this::resetPlayers))
+        .put(
+            "impArtTech",
             MutableProperty.of(
                 this::setImpArtTech,
                 this::setImpArtTech,
                 this::getImpArtTech,
                 this::resetImpArtTech))
-        .put("dice",
-            MutableProperty.ofString(
-                this::setDice,
-                this::getDice,
-                this::resetDice))
-        .put("side",
-            MutableProperty.ofString(
-                this::setSide,
-                this::getSide,
-                this::resetSide))
-        .put("faction",
-            MutableProperty.ofString(
-                this::setFaction,
-                this::getFaction,
-                this::resetFaction))
+        .put("dice", MutableProperty.ofString(this::setDice, this::getDice, this::resetDice))
+        .put("side", MutableProperty.ofString(this::setSide, this::getSide, this::resetSide))
+        .put(
+            "faction",
+            MutableProperty.ofString(this::setFaction, this::getFaction, this::resetFaction))
         .build();
   }
 }

@@ -6,9 +6,7 @@ import javax.annotation.concurrent.Immutable;
 
 import lombok.Getter;
 
-/**
- * Description for a Channel or a Remote end point.
- */
+/** Description for a Channel or a Remote end point. */
 @Getter
 @Immutable
 public final class RemoteName {

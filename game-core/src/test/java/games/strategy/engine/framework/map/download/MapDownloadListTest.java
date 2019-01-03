@@ -25,11 +25,16 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
   private static final Version MAP_VERSION = new Version(10, 10);
   private static final Version lowVersion = new Version(0, 0);
 
-  private static final DownloadFileDescription TEST_MAP = new DownloadFileDescription("", "", MAP_NAME, MAP_VERSION,
-      DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
+  private static final DownloadFileDescription TEST_MAP =
+      new DownloadFileDescription(
+          "",
+          "",
+          MAP_NAME,
+          MAP_VERSION,
+          DownloadFileDescription.DownloadType.MAP,
+          DownloadFileDescription.MapCategory.EXPERIMENTAL);
 
-  @Mock
-  private FileSystemAccessStrategy strategy;
+  @Mock private FileSystemAccessStrategy strategy;
 
   private final List<DownloadFileDescription> descriptions = new ArrayList<>();
 
@@ -59,9 +64,11 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
     final DownloadFileDescription download1 = newDownloadWithUrl("url1");
     final DownloadFileDescription download2 = newDownloadWithUrl("url2");
     final DownloadFileDescription download3 = newDownloadWithUrl("url3");
-    final MapDownloadList testObj = new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
+    final MapDownloadList testObj =
+        new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
 
-    final List<DownloadFileDescription> available = testObj.getAvailableExcluding(Arrays.asList(download1, download3));
+    final List<DownloadFileDescription> available =
+        testObj.getAvailableExcluding(Arrays.asList(download1, download3));
 
     assertThat(available, is(Arrays.asList(download2)));
   }
@@ -112,9 +119,11 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
     final DownloadFileDescription download1 = newDownloadWithUrl("url1");
     final DownloadFileDescription download2 = newDownloadWithUrl("url2");
     final DownloadFileDescription download3 = newDownloadWithUrl("url3");
-    final MapDownloadList testObj = new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
+    final MapDownloadList testObj =
+        new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
 
-    final List<DownloadFileDescription> outOfDate = testObj.getOutOfDateExcluding(Arrays.asList(download1, download3));
+    final List<DownloadFileDescription> outOfDate =
+        testObj.getOutOfDateExcluding(Arrays.asList(download1, download3));
 
     assertThat(outOfDate, is(Arrays.asList(download2)));
   }

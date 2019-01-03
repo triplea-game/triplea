@@ -10,9 +10,7 @@ import java.util.logging.LogRecord;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * In this test we will exercise the various ways to build an Error report object.
- */
+/** In this test we will exercise the various ways to build an Error report object. */
 class UserErrorReportTest {
 
   private static final String DESCRIPTION = "Sunt aususes imitari azureus, grandis hilotaees.";
@@ -31,10 +29,6 @@ class UserErrorReportTest {
   @Test
   void gameVersionIsSet() {
     assertThat(
-        UserErrorReport.builder()
-            .build()
-            .toErrorReport()
-            .getGameVersion(),
-        is(not(emptyString())));
+        UserErrorReport.builder().build().toErrorReport().getGameVersion(), is(not(emptyString())));
   }
 }

@@ -5,29 +5,25 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 
-/**
- * Changes ownership of a territory.
- */
+/** Changes ownership of a territory. */
 class OwnerChange extends Change {
   private static final long serialVersionUID = -5938125380623744929L;
 
-  /**
-   * Either new or old owner can be null.
-   */
+  /** Either new or old owner can be null. */
   private final String oldOwnerName;
+
   private final String newOwnerName;
   private final String territoryName;
 
-  /**
-   * newOwner can be null.
-   */
+  /** newOwner can be null. */
   OwnerChange(final Territory territory, final PlayerId newOwner) {
     territoryName = territory.getName();
     newOwnerName = getName(newOwner);
     oldOwnerName = getName(territory.getOwner());
   }
 
-  private OwnerChange(final String territoryName, final String newOwnerName, final String oldOwnerName) {
+  private OwnerChange(
+      final String territoryName, final String newOwnerName, final String oldOwnerName) {
     this.territoryName = territoryName;
     this.newOwnerName = newOwnerName;
     this.oldOwnerName = oldOwnerName;

@@ -72,7 +72,8 @@ final class GameMenu extends JMenu {
     addNotificationSettings();
     addShowDiceStats();
     addRollDice();
-    addMenuItemWithHotkey(SwingAction.of("Battle Calculator", e -> OddsCalculatorDialog.show(frame, null)),
+    addMenuItemWithHotkey(
+        SwingAction.of("Battle Calculator", e -> OddsCalculatorDialog.show(frame, null)),
         KeyEvent.VK_B);
   }
 
@@ -89,12 +90,15 @@ final class GameMenu extends JMenu {
     final JMenuItem editMenuItem = add(editMode);
     editMenuItem.setMnemonic(KeyEvent.VK_E);
     editMenuItem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(
+            KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
 
   private void addShowVerifiedDice() {
-    final Action showVerifiedDice = SwingAction.of("Show Verified Dice",
-        e -> new VerifiedRandomNumbersDialog(frame.getRootPane()).setVisible(true));
+    final Action showVerifiedDice =
+        SwingAction.of(
+            "Show Verified Dice",
+            e -> new VerifiedRandomNumbersDialog(frame.getRootPane()).setVisible(true));
     if (game instanceof ClientGame) {
       add(showVerifiedDice).setMnemonic(KeyEvent.VK_V);
     }
@@ -102,37 +106,54 @@ final class GameMenu extends JMenu {
 
   private void addGameOptionsMenu() {
     if (!gameData.getProperties().getEditableProperties().isEmpty()) {
-      add(SwingAction.of("Map Options", e -> {
-        final PropertiesUi ui = new PropertiesUi(gameData.getProperties().getEditableProperties(), false);
-        JOptionPane.showMessageDialog(frame, ui, "Map Options", JOptionPane.PLAIN_MESSAGE);
-      })).setMnemonic(KeyEvent.VK_O);
+      add(SwingAction.of(
+              "Map Options",
+              e -> {
+                final PropertiesUi ui =
+                    new PropertiesUi(gameData.getProperties().getEditableProperties(), false);
+                JOptionPane.showMessageDialog(frame, ui, "Map Options", JOptionPane.PLAIN_MESSAGE);
+              }))
+          .setMnemonic(KeyEvent.VK_O);
     }
   }
 
   /**
-   * Add a Politics Panel button to the game menu, this panel will show the
-   * current political landscape as a reference, no actions on this panel.
+   * Add a Politics Panel button to the game menu, this panel will show the current political
+   * landscape as a reference, no actions on this panel.
    */
   private void addPoliticsMenu() {
-    final JMenuItem politicsMenuItem = add(SwingAction.of("Show Politics Panel", e -> {
-      final PoliticalStateOverview ui = new PoliticalStateOverview(gameData, uiContext, false);
-      final JScrollPane scroll = new JScrollPane(ui);
-      scroll.setBorder(BorderFactory.createEmptyBorder());
-      final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-      // not only do we have a start bar, but we also have the message dialog to account for
-      final int availHeight = screenResolution.height - 120;
-      // just the scroll bars plus the window sides
-      final int availWidth = screenResolution.width - 40;
+    final JMenuItem politicsMenuItem =
+        add(
+            SwingAction.of(
+                "Show Politics Panel",
+                e -> {
+                  final PoliticalStateOverview ui =
+                      new PoliticalStateOverview(gameData, uiContext, false);
+                  final JScrollPane scroll = new JScrollPane(ui);
+                  scroll.setBorder(BorderFactory.createEmptyBorder());
+                  final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+                  // not only do we have a start bar, but we also have the message dialog to account
+                  // for
+                  final int availHeight = screenResolution.height - 120;
+                  // just the scroll bars plus the window sides
+                  final int availWidth = screenResolution.width - 40;
 
-      scroll.setPreferredSize(
-          new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
-              (scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
+                  scroll.setPreferredSize(
+                      new Dimension(
+                          (scroll.getPreferredSize().width > availWidth
+                              ? availWidth
+                              : scroll.getPreferredSize().width),
+                          (scroll.getPreferredSize().height > availHeight
+                              ? availHeight
+                              : scroll.getPreferredSize().height)));
 
-      JOptionPane.showMessageDialog(frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
-    }));
+                  JOptionPane.showMessageDialog(
+                      frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
+                }));
     politicsMenuItem.setMnemonic(KeyEvent.VK_P);
     politicsMenuItem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(
+            KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
 
   private void addNotificationSettings() {
@@ -141,7 +162,8 @@ final class GameMenu extends JMenu {
     notificationMenu.setText("User Notifications");
     final JCheckBoxMenuItem showEndOfTurnReport = new JCheckBoxMenuItem("Show End of Turn Report");
     showEndOfTurnReport.setMnemonic(KeyEvent.VK_R);
-    final JCheckBoxMenuItem showTriggeredNotifications = new JCheckBoxMenuItem("Show Triggered Notifications");
+    final JCheckBoxMenuItem showTriggeredNotifications =
+        new JCheckBoxMenuItem("Show Triggered Notifications");
     showTriggeredNotifications.setMnemonic(KeyEvent.VK_T);
     final JCheckBoxMenuItem showTriggerChanceSuccessful =
         new JCheckBoxMenuItem("Show Trigger/Condition Chance Roll Successful");
@@ -149,22 +171,24 @@ final class GameMenu extends JMenu {
     final JCheckBoxMenuItem showTriggerChanceFailure =
         new JCheckBoxMenuItem("Show Trigger/Condition Chance Roll Failure");
     showTriggerChanceFailure.setMnemonic(KeyEvent.VK_F);
-    notificationMenu.addMenuListener(new MenuListener() {
-      @Override
-      public void menuSelected(final MenuEvent e) {
-        showEndOfTurnReport.setSelected(uiContext.getShowEndOfTurnReport());
-        showTriggeredNotifications.setSelected(uiContext.getShowTriggeredNotifications());
-        showTriggerChanceSuccessful.setSelected(uiContext.getShowTriggerChanceSuccessful());
-        showTriggerChanceFailure.setSelected(uiContext.getShowTriggerChanceFailure());
-      }
+    notificationMenu.addMenuListener(
+        new MenuListener() {
+          @Override
+          public void menuSelected(final MenuEvent e) {
+            showEndOfTurnReport.setSelected(uiContext.getShowEndOfTurnReport());
+            showTriggeredNotifications.setSelected(uiContext.getShowTriggeredNotifications());
+            showTriggerChanceSuccessful.setSelected(uiContext.getShowTriggerChanceSuccessful());
+            showTriggerChanceFailure.setSelected(uiContext.getShowTriggerChanceFailure());
+          }
 
-      @Override
-      public void menuDeselected(final MenuEvent e) {}
+          @Override
+          public void menuDeselected(final MenuEvent e) {}
 
-      @Override
-      public void menuCanceled(final MenuEvent e) {}
-    });
-    showEndOfTurnReport.addActionListener(e -> uiContext.setShowEndOfTurnReport(showEndOfTurnReport.isSelected()));
+          @Override
+          public void menuCanceled(final MenuEvent e) {}
+        });
+    showEndOfTurnReport.addActionListener(
+        e -> uiContext.setShowEndOfTurnReport(showEndOfTurnReport.isSelected()));
     showTriggeredNotifications.addActionListener(
         e -> uiContext.setShowTriggeredNotifications(showTriggeredNotifications.isSelected()));
     showTriggerChanceSuccessful.addActionListener(
@@ -179,60 +203,126 @@ final class GameMenu extends JMenu {
   }
 
   private void addShowDiceStats() {
-    add(SwingAction.of("Show Dice Stats", e -> {
-      final IRandomStats randomStats =
-          (IRandomStats) game.getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
-      final RandomStatsDetails stats = randomStats.getRandomStats(gameData.getDiceSides());
-      JOptionPane.showMessageDialog(frame, new JScrollPane(stats.getAllStats()), "Random Stats",
-          JOptionPane.INFORMATION_MESSAGE);
-    })).setMnemonic(KeyEvent.VK_D);
+    add(SwingAction.of(
+            "Show Dice Stats",
+            e -> {
+              final IRandomStats randomStats =
+                  (IRandomStats)
+                      game.getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
+              final RandomStatsDetails stats = randomStats.getRandomStats(gameData.getDiceSides());
+              JOptionPane.showMessageDialog(
+                  frame,
+                  new JScrollPane(stats.getAllStats()),
+                  "Random Stats",
+                  JOptionPane.INFORMATION_MESSAGE);
+            }))
+        .setMnemonic(KeyEvent.VK_D);
   }
 
   private void addRollDice() {
     final JMenuItem rollDiceBox = new JMenuItem("Roll Dice");
     rollDiceBox.setMnemonic(KeyEvent.VK_R);
-    rollDiceBox.addActionListener(e -> {
-      final IntTextField numberOfText = new IntTextField(0, 100);
-      final IntTextField diceSidesText = new IntTextField(1, 200);
-      numberOfText.setText(String.valueOf(0));
-      diceSidesText.setText(String.valueOf(gameData.getDiceSides()));
-      final JPanel panel = new JPanel();
-      panel.setLayout(new GridBagLayout());
-      panel.add(new JLabel("Number of Dice to Roll: "), new GridBagConstraints(0, 0, 1, 1, 0, 0,
-          GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
-      panel.add(new JLabel("Sides on the Dice: "), new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
-      panel.add(numberOfText, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
-      panel.add(diceSidesText, new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.BOTH, new Insets(0, 20, 0, 10), 0, 0));
-      JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(this), panel, "Roll Dice",
-          JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] {"OK"}, "OK");
-      try {
-        final int numberOfDice = Integer.parseInt(numberOfText.getText());
-        if (numberOfDice > 0) {
-          final int diceSides = Integer.parseInt(diceSidesText.getText());
-          final int[] dice =
-              game.getRandomSource().getRandom(diceSides, numberOfDice, "Rolling Dice, no effect on game.");
-          final JPanel panelDice = new JPanel();
-          final BoxLayout layout = new BoxLayout(panelDice, BoxLayout.Y_AXIS);
-          panelDice.setLayout(layout);
-          final JLabel label = new JLabel("Rolls (no effect on game): ");
-          panelDice.add(label);
-          final StringBuilder diceString = new StringBuilder();
-          for (int i = 0; i < dice.length; i++) {
-            diceString.append(String.valueOf(dice[i] + 1)).append((i == dice.length - 1) ? "" : ", ");
+    rollDiceBox.addActionListener(
+        e -> {
+          final IntTextField numberOfText = new IntTextField(0, 100);
+          final IntTextField diceSidesText = new IntTextField(1, 200);
+          numberOfText.setText(String.valueOf(0));
+          diceSidesText.setText(String.valueOf(gameData.getDiceSides()));
+          final JPanel panel = new JPanel();
+          panel.setLayout(new GridBagLayout());
+          panel.add(
+              new JLabel("Number of Dice to Roll: "),
+              new GridBagConstraints(
+                  0,
+                  0,
+                  1,
+                  1,
+                  0,
+                  0,
+                  GridBagConstraints.WEST,
+                  GridBagConstraints.BOTH,
+                  new Insets(0, 0, 0, 20),
+                  0,
+                  0));
+          panel.add(
+              new JLabel("Sides on the Dice: "),
+              new GridBagConstraints(
+                  2,
+                  0,
+                  1,
+                  1,
+                  0,
+                  0,
+                  GridBagConstraints.WEST,
+                  GridBagConstraints.BOTH,
+                  new Insets(0, 20, 0, 10),
+                  0,
+                  0));
+          panel.add(
+              numberOfText,
+              new GridBagConstraints(
+                  0,
+                  1,
+                  1,
+                  1,
+                  0,
+                  0,
+                  GridBagConstraints.WEST,
+                  GridBagConstraints.BOTH,
+                  new Insets(0, 0, 0, 20),
+                  0,
+                  0));
+          panel.add(
+              diceSidesText,
+              new GridBagConstraints(
+                  2,
+                  1,
+                  1,
+                  1,
+                  0,
+                  0,
+                  GridBagConstraints.WEST,
+                  GridBagConstraints.BOTH,
+                  new Insets(0, 20, 0, 10),
+                  0,
+                  0));
+          JOptionPane.showOptionDialog(
+              JOptionPane.getFrameForComponent(this),
+              panel,
+              "Roll Dice",
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.INFORMATION_MESSAGE,
+              null,
+              new String[] {"OK"},
+              "OK");
+          try {
+            final int numberOfDice = Integer.parseInt(numberOfText.getText());
+            if (numberOfDice > 0) {
+              final int diceSides = Integer.parseInt(diceSidesText.getText());
+              final int[] dice =
+                  game.getRandomSource()
+                      .getRandom(diceSides, numberOfDice, "Rolling Dice, no effect on game.");
+              final JPanel panelDice = new JPanel();
+              final BoxLayout layout = new BoxLayout(panelDice, BoxLayout.Y_AXIS);
+              panelDice.setLayout(layout);
+              final JLabel label = new JLabel("Rolls (no effect on game): ");
+              panelDice.add(label);
+              final StringBuilder diceString = new StringBuilder();
+              for (int i = 0; i < dice.length; i++) {
+                diceString
+                    .append(String.valueOf(dice[i] + 1))
+                    .append((i == dice.length - 1) ? "" : ", ");
+              }
+              final JTextField diceList = new JTextField(diceString.toString());
+              diceList.setEditable(false);
+              panelDice.add(diceList);
+              JOptionPane.showMessageDialog(
+                  frame, panelDice, "Dice Rolled", JOptionPane.INFORMATION_MESSAGE);
+            }
+          } catch (final Exception ex) {
+            // ignore malformed input
           }
-          final JTextField diceList = new JTextField(diceString.toString());
-          diceList.setEditable(false);
-          panelDice.add(diceList);
-          JOptionPane.showMessageDialog(frame, panelDice, "Dice Rolled", JOptionPane.INFORMATION_MESSAGE);
-        }
-      } catch (final Exception ex) {
-        // ignore malformed input
-      }
-    });
+        });
     add(rollDiceBox);
   }
-
 }

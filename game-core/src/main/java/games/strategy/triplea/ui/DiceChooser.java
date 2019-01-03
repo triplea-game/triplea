@@ -91,7 +91,8 @@ class DiceChooser extends JPanel {
       final JButton button = new JButton(uiContext.getDiceImageFactory().getDieIcon(roll, dieType));
       button.addActionListener(e -> addDie(dieNum));
       buttons.add(button);
-      button.setPreferredSize(new Dimension(DiceImageFactory.DIE_WIDTH + 4, DiceImageFactory.DIE_HEIGHT + 4));
+      button.setPreferredSize(
+          new Dimension(DiceImageFactory.DIE_WIDTH + 4, DiceImageFactory.DIE_HEIGHT + 4));
       diceButtonPanel.add(button);
     }
     diceButtonPanel.add(Box.createHorizontalStrut(4));
@@ -108,11 +109,15 @@ class DiceChooser extends JPanel {
     final JScrollPane scroll = new JScrollPane(dicePanel);
     scroll.setBorder(null);
     scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-    // we're adding to a box layout, so to prevent the component from grabbing extra space, set the max height.
+    // we're adding to a box layout, so to prevent the component from grabbing extra space, set the
+    // max height.
     // allow room for a dice and a scrollbar
-    scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, DiceImageFactory.DIE_HEIGHT + 17));
-    scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, DiceImageFactory.DIE_HEIGHT + 17));
-    scroll.setPreferredSize(new Dimension(scroll.getPreferredSize().width, DiceImageFactory.DIE_HEIGHT + 17));
+    scroll.setMinimumSize(
+        new Dimension(scroll.getMinimumSize().width, DiceImageFactory.DIE_HEIGHT + 17));
+    scroll.setMaximumSize(
+        new Dimension(scroll.getMaximumSize().width, DiceImageFactory.DIE_HEIGHT + 17));
+    scroll.setPreferredSize(
+        new Dimension(scroll.getPreferredSize().width, DiceImageFactory.DIE_HEIGHT + 17));
     add(scroll);
     add(Box.createVerticalStrut(8));
     add(labelPanel);

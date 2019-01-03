@@ -52,9 +52,7 @@ import lombok.extern.java.Log;
 /**
  * Watches a game in progress, and updates the Lobby with the state of the game.
  *
- * <p>
- * This class opens its own connection to the lobby, and its own messenger.
- * </p>
+ * <p>This class opens its own connection to the lobby, and its own messenger.
  */
 @Log
 public class InGameLobbyWatcher {
@@ -67,7 +65,8 @@ public class InGameLobbyWatcher {
   private final Observer gameSelectorModelObserver = (o, arg) -> gameSelectorModelUpdated();
   private IGame game;
   private final GameStepListener gameStepListener =
-      (stepName, delegateName, player, round, displayName) -> InGameLobbyWatcher.this.gameStepChanged(round);
+      (stepName, delegateName, player, round, displayName) ->
+          InGameLobbyWatcher.this.gameStepChanged(round);
   // we create this messenger, and use it to connect to the game lobby
   private final IMessenger messenger;
   private final IRemoteMessenger remoteMessenger;
@@ -80,13 +79,10 @@ public class InGameLobbyWatcher {
   /**
    * Reads system properties to see if we should connect to a lobby server.
    *
-   * <p>
-   * After creation, those properties are cleared, since we should watch the first start game.
-   * </p>
+   * <p>After creation, those properties are cleared, since we should watch the first start game.
    *
-   * @param parent The parent component for any error dialogs displayed to the user or {@code null} if this is a
-   *        headless server.
-   *
+   * @param parent The parent component for any error dialogs displayed to the user or {@code null}
+   *     if this is a headless server.
    * @return null if no watcher should be created
    */
   public static InGameLobbyWatcher newInGameLobbyWatcher(
@@ -100,17 +96,24 @@ public class InGameLobbyWatcher {
       return null;
     }
 
-    final IConnectionLogin login = challenge -> {
-      final Map<String, String> response = new HashMap<>();
-      response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-      response.put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
-      response.put(LobbyLoginResponseKeys.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
-      return response;
-    };
+    final IConnectionLogin login =
+        challenge -> {
+          final Map<String, String> response = new HashMap<>();
+          response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
+          response.put(
+              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+          response.put(LobbyLoginResponseKeys.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
+          return response;
+        };
     try {
       final String mac = MacFinder.getHashedMacAddress();
-      final ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port),
-          IServerMessenger.getRealName(hostedBy) + "_" + LobbyConstants.LOBBY_WATCHER_NAME, mac, login);
+      final ClientMessenger messenger =
+          new ClientMessenger(
+              host,
+              Integer.parseInt(port),
+              IServerMessenger.getRealName(hostedBy) + "_" + LobbyConstants.LOBBY_WATCHER_NAME,
+              mac,
+              login);
       final UnifiedMessenger um = new UnifiedMessenger(messenger);
       final RemoteMessenger rm = new RemoteMessenger(um);
       final RemoteHostUtils rhu = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);
@@ -175,35 +178,44 @@ public class InGameLobbyWatcher {
     this.headless = (parent == null);
     final String password = System.getProperty(SERVER_PASSWORD);
     final boolean passworded = password != null && password.length() > 0;
-    final Instant startDateTime = (oldWatcher == null || oldWatcher.gameDescription == null
-        || oldWatcher.gameDescription.getStartDateTime() == null) ? Instant.now()
+    final Instant startDateTime =
+        (oldWatcher == null
+                || oldWatcher.gameDescription == null
+                || oldWatcher.gameDescription.getStartDateTime() == null)
+            ? Instant.now()
             : oldWatcher.gameDescription.getStartDateTime();
-    final int playerCount = (oldWatcher == null || oldWatcher.gameDescription == null)
-        ? (headless ? 0 : 1)
-        : oldWatcher.gameDescription.getPlayerCount();
+    final int playerCount =
+        (oldWatcher == null || oldWatcher.gameDescription == null)
+            ? (headless ? 0 : 1)
+            : oldWatcher.gameDescription.getPlayerCount();
     final GameDescription.GameStatus gameStatus =
-        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getStatus() == null)
+        (oldWatcher == null
+                || oldWatcher.gameDescription == null
+                || oldWatcher.gameDescription.getStatus() == null)
             ? GameDescription.GameStatus.WAITING_FOR_PLAYERS
             : oldWatcher.gameDescription.getStatus();
     final String gameRound =
-        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
+        (oldWatcher == null
+                || oldWatcher.gameDescription == null
+                || oldWatcher.gameDescription.getRound() == null)
             ? "-"
             : oldWatcher.gameDescription.getRound();
-    gameDescription = GameDescription.builder()
-        .hostedBy(messenger.getLocalNode())
-        .port(serverMessenger.getLocalNode().getPort())
-        .startDateTime(startDateTime)
-        .gameName("???")
-        .playerCount(playerCount)
-        .status(gameStatus)
-        .round(gameRound)
-        .hostName(serverMessenger.getLocalNode().getName())
-        .comment(System.getProperty(LOBBY_GAME_COMMENTS))
-        .passworded(passworded)
-        .engineVersion(ClientContext.engineVersion().toString())
-        .gameVersion("0")
-        .botSupportEmail(headless ? System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "") : "")
-        .build();
+    gameDescription =
+        GameDescription.builder()
+            .hostedBy(messenger.getLocalNode())
+            .port(serverMessenger.getLocalNode().getPort())
+            .startDateTime(startDateTime)
+            .gameName("???")
+            .playerCount(playerCount)
+            .status(gameStatus)
+            .round(gameRound)
+            .hostName(serverMessenger.getLocalNode().getName())
+            .comment(System.getProperty(LOBBY_GAME_COMMENTS))
+            .passworded(passworded)
+            .engineVersion(ClientContext.engineVersion().toString())
+            .gameVersion("0")
+            .botSupportEmail(headless ? System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "") : "")
+            .build();
     final ILobbyGameController controller =
         (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
     synchronized (mutex) {
@@ -211,56 +223,67 @@ public class InGameLobbyWatcher {
     }
     messengerErrorListener = e -> shutDown();
     this.messenger.addErrorListener(messengerErrorListener);
-    connectionChangeListener = new IConnectionChangeListener() {
-      @Override
-      public void connectionRemoved(final INode to) {
-        updatePlayerCount();
-      }
+    connectionChangeListener =
+        new IConnectionChangeListener() {
+          @Override
+          public void connectionRemoved(final INode to) {
+            updatePlayerCount();
+          }
 
-      @Override
-      public void connectionAdded(final INode to) {
-        updatePlayerCount();
-      }
-    };
+          @Override
+          public void connectionAdded(final INode to) {
+            updatePlayerCount();
+          }
+        };
     // when players join or leave the game update the connection count
     this.serverMessenger.addConnectionChangeListener(connectionChangeListener);
     if (oldWatcher != null && oldWatcher.gameDescription != null) {
       this.setGameStatus(oldWatcher.gameDescription.getStatus(), oldWatcher.game);
     }
     // if we loose our connection, then shutdown
-    new Thread(() -> {
-      final String addressUsed = controller.testGame(gameId);
-      // if the server cannot connect to us, then quit
-      if (addressUsed != null) {
-        if (isActive()) {
-          shutDown();
-          SwingUtilities.invokeLater(() -> {
-            String portString = System.getProperty(TRIPLEA_PORT);
-            if (portString == null || portString.trim().length() <= 0) {
-              portString = "3300";
-            }
-            final String message = "Your computer is not reachable from the internet.\n"
-                + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\n"
-                + "(The firewall exception must be updated every time a new version of TripleA comes out.)\n"
-                + "And that your Router is configured to send TCP traffic on port " + portString
-                + " to your local ip address.\r\n"
-                + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
-                + "The server tried to connect to your external ip: " + addressUsed;
-            if (headless) {
-              log.severe(message);
-              ExitStatus.FAILURE.exit();
-            }
-            final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
-            if (JOptionPane.showConfirmDialog(parentComponent,
-                message + "\nDo you want to view the tutorial on how to host? This will open in your internet browser.",
-                "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-              OpenFileUtility.openUrl(UrlConstants.HOSTING_GUIDE.toString());
-            }
-            ExitStatus.FAILURE.exit();
-          });
-        }
-      }
-    }).start();
+    new Thread(
+            () -> {
+              final String addressUsed = controller.testGame(gameId);
+              // if the server cannot connect to us, then quit
+              if (addressUsed != null) {
+                if (isActive()) {
+                  shutDown();
+                  SwingUtilities.invokeLater(
+                      () -> {
+                        String portString = System.getProperty(TRIPLEA_PORT);
+                        if (portString == null || portString.trim().length() <= 0) {
+                          portString = "3300";
+                        }
+                        final String message =
+                            "Your computer is not reachable from the internet.\n"
+                                + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\n"
+                                + "(The firewall exception must be updated every time a new version of TripleA comes out.)\n"
+                                + "And that your Router is configured to send TCP traffic on port "
+                                + portString
+                                + " to your local ip address.\r\n"
+                                + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
+                                + "The server tried to connect to your external ip: "
+                                + addressUsed;
+                        if (headless) {
+                          log.severe(message);
+                          ExitStatus.FAILURE.exit();
+                        }
+                        final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
+                        if (JOptionPane.showConfirmDialog(
+                                parentComponent,
+                                message
+                                    + "\nDo you want to view the tutorial on how to host? This will open in your internet browser.",
+                                "View Help Website?",
+                                JOptionPane.YES_NO_OPTION)
+                            == JOptionPane.YES_OPTION) {
+                          OpenFileUtility.openUrl(UrlConstants.HOSTING_GUIDE.toString());
+                        }
+                        ExitStatus.FAILURE.exit();
+                      });
+                }
+              }
+            })
+        .start();
   }
 
   void setGameSelectorModel(final GameSelectorModel model) {

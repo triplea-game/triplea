@@ -176,20 +176,22 @@ public class MessengerIntegrationTest {
 
   @Test
   public void testCorrectNodeCountInRemove() {
-    // when we receive the notification that a connection has been lost, the node list should reflect that change
+    // when we receive the notification that a connection has been lost, the node list should
+    // reflect that change
     await().until(serverMessenger::getNodes, hasSize(3));
     final AtomicInteger serverCount = new AtomicInteger(3);
-    serverMessenger.addConnectionChangeListener(new IConnectionChangeListener() {
-      @Override
-      public void connectionRemoved(final INode to) {
-        serverCount.decrementAndGet();
-      }
+    serverMessenger.addConnectionChangeListener(
+        new IConnectionChangeListener() {
+          @Override
+          public void connectionRemoved(final INode to) {
+            serverCount.decrementAndGet();
+          }
 
-      @Override
-      public void connectionAdded(final INode to) {
-        fail("A connection should not be added.");
-      }
-    });
+          @Override
+          public void connectionAdded(final INode to) {
+            fail("A connection should not be added.");
+          }
+        });
     client1Messenger.shutDown();
     await().until(serverMessenger::getNodes, hasSize(2));
     assertEquals(2, serverCount.get());

@@ -26,7 +26,8 @@ final class FileNameUtilsTest {
   final class ReplaceIllegalCharactersTest {
     @Test
     void shouldReplaceIllegalCharacters() {
-      assertThat(FileNameUtils.replaceIllegalCharacters(FileNameUtils.ILLEGAL_CHARACTERS, '_'),
+      assertThat(
+          FileNameUtils.replaceIllegalCharacters(FileNameUtils.ILLEGAL_CHARACTERS, '_'),
           is(String.join("", Collections.nCopies(FileNameUtils.ILLEGAL_CHARACTERS.length(), "_"))));
     }
 

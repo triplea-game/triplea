@@ -7,9 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-/**
- * Implementation of {@link IEditableProperty} for a double-precision floating-point value.
- */
+/** Implementation of {@link IEditableProperty} for a double-precision floating-point value. */
 public class DoubleProperty extends AbstractEditableProperty<Double> {
   private static final long serialVersionUID = 5521967819500867581L;
 
@@ -18,8 +16,13 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
   private double value;
   private final int places;
 
-  public DoubleProperty(final String name, final String description, final double max, final double min,
-      final double def, final int numberOfPlaces) {
+  public DoubleProperty(
+      final String name,
+      final String description,
+      final double max,
+      final double min,
+      final double def,
+      final int numberOfPlaces) {
     super(name, description);
     if (max < min) {
       throw new IllegalThreadStateException("Max must be greater than min");
@@ -51,7 +54,8 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
   public JComponent getEditorComponent() {
     final JSpinner field = new JSpinner(new SpinnerNumberModel(value, min, max, 1.0));
 
-    // NB: Workaround for JSpinner default sizing algorithm when min/max values have very large magnitudes
+    // NB: Workaround for JSpinner default sizing algorithm when min/max values have very large
+    // magnitudes
     // (see: https://implementsblog.com/2012/11/26/java-gotcha-jspinner-preferred-size/)
     final JComponent fieldEditor = field.getEditor();
     if (fieldEditor instanceof JSpinner.DefaultEditor) {

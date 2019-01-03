@@ -22,8 +22,8 @@ import games.strategy.triplea.settings.ClientSetting;
 import lombok.extern.java.Log;
 
 /**
- * Model class that tracks the currently 'selected' game. This is the info that appears in the
- * game selector panel on the staging screens, eg: map, round, filename.
+ * Model class that tracks the currently 'selected' game. This is the info that appears in the game
+ * selector panel on the staging screens, eg: map, round, filename.
  */
 @Log
 public class GameSelectorModel extends Observable {
@@ -34,7 +34,8 @@ public class GameSelectorModel extends Observable {
   private String fileName;
   private boolean canSelect = true;
   private boolean isHostHeadlessBot = false;
-  // just for host bots, so we can get the actions for loading/saving games on the bots from this model
+  // just for host bots, so we can get the actions for loading/saving games on the bots from this
+  // model
   private ClientModel clientModelForHostBots = null;
 
   public GameSelectorModel() {
@@ -61,12 +62,10 @@ public class GameSelectorModel extends Observable {
     ClientSetting.flush();
   }
 
-  /**
-   * Loads game data by parsing a given file.
-   */
+  /** Loads game data by parsing a given file. */
   public void load(final File file) {
-    Preconditions.checkArgument(file.exists() && file.isFile(),
-        "File should exist at: " + file.getAbsolutePath());
+    Preconditions.checkArgument(
+        file.exists() && file.isFile(), "File should exist at: " + file.getAbsolutePath());
 
     final GameData newData;
     try {
@@ -144,7 +143,8 @@ public class GameSelectorModel extends Observable {
    * We don't have a game data (i.e. we are a remote player and the data has not been sent yet), but
    * we still want to display game info.
    */
-  public void clearDataButKeepGameInfo(final String gameName, final String gameRound, final String gameVersion) {
+  public void clearDataButKeepGameInfo(
+      final String gameName, final String gameRound, final String gameVersion) {
     synchronized (this) {
       gameData = null;
       this.gameName = gameName;
@@ -190,28 +190,30 @@ public class GameSelectorModel extends Observable {
     super.clearChanged();
   }
 
-  /**
-   * Clears AI game over cache and loads default game in a new thread.
-   */
+  /** Clears AI game over cache and loads default game in a new thread. */
   public void loadDefaultGameNewThread() {
-    // clear out ai cached properties (this ended up being the best place to put it, as we have definitely left a game
+    // clear out ai cached properties (this ended up being the best place to put it, as we have
+    // definitely left a game
     // at this point)
     ProAi.gameOverClearCache();
     new Thread(this::loadDefaultGameSameThread).start();
   }
 
   /**
-   * Runs the load default game logic in same thread. Default game is the one that we loaded on startup.
+   * Runs the load default game logic in same thread. Default game is the one that we loaded on
+   * startup.
    */
   public void loadDefaultGameSameThread() {
     final String userPreferredDefaultGameUri = ClientSetting.defaultGameUri.getValue().orElse("");
 
-    // we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous
+    // we don't want to load a game file by default that is not within the map folders we can load.
+    // (ie: if a previous
     // version of triplea was using running a game within its root folder, we shouldn't open it)
     GameChooserEntry selectedGame;
     final String user = ClientFileSystemHelper.getUserRootFolder().toURI().toString();
     if (!userPreferredDefaultGameUri.isEmpty() && userPreferredDefaultGameUri.contains(user)) {
-      // if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole
+      // if the user has a preferred URI, then we load it, and don't bother parsing or doing
+      // anything with the whole
       // game model list
       try {
         final URI defaultUri = new URI(userPreferredDefaultGameUri);
@@ -251,8 +253,7 @@ public class GameSelectorModel extends Observable {
     final String userPreferredDefaultGameName = ClientSetting.defaultGameName.getValueOrThrow();
 
     final GameChooserModel model = new GameChooserModel();
-    GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName)
-        .orElse(null);
+    GameChooserEntry selectedGame = model.findByName(userPreferredDefaultGameName).orElse(null);
 
     if (selectedGame == null && model.size() > 0) {
       selectedGame = model.get(0);
@@ -273,9 +274,9 @@ public class GameSelectorModel extends Observable {
   }
 
   /**
-   * Formats the file name text to two lines.
-   * The separation focuses on the second line being at least the filename while the first line
-   * should show the the path including '...' in case it does not fit
+   * Formats the file name text to two lines. The separation focuses on the second line being at
+   * least the filename while the first line should show the the path including '...' in case it
+   * does not fit
    *
    * @return filename formatted file name - in case it is too long (> maxLength) to two lines,
    */

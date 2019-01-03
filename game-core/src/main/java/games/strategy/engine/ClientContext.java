@@ -13,10 +13,9 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Version;
 
 /**
- * Manages the creation of objects, similar to a dependency injection framework.
- * Use this class to manage singletons and as a factory to create objects that have shared
- * dependencies already managed by this class.
- * Example usage:
+ * Manages the creation of objects, similar to a dependency injection framework. Use this class to
+ * manage singletons and as a factory to create objects that have shared dependencies already
+ * managed by this class. Example usage:
  *
  * <pre>
  * <code>
@@ -65,9 +64,10 @@ public final class ClientContext {
   }
 
   public static List<DownloadFileDescription> getMapDownloadList() {
-    final String mapDownloadListUrl = ClientSetting.mapListOverride.isSet()
-        ? ClientSetting.mapListOverride.getValueOrThrow().toString()
-        : UrlConstants.MAP_DOWNLOAD_LIST.toString();
+    final String mapDownloadListUrl =
+        ClientSetting.mapListOverride.isSet()
+            ? ClientSetting.mapListOverride.getValueOrThrow().toString()
+            : UrlConstants.MAP_DOWNLOAD_LIST.toString();
 
     return new DownloadRunnable(mapDownloadListUrl).getDownloads();
   }

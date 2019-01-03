@@ -40,10 +40,9 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
 /**
- * Logic for purchasing units.
- * Subclasses can override canAfford(...) to test if a purchase can be made
- * Subclasses can over ride addToPlayer(...) and removeFromPlayer(...) to change how
- * the adding or removing of resources is done.
+ * Logic for purchasing units. Subclasses can override canAfford(...) to test if a purchase can be
+ * made Subclasses can over ride addToPlayer(...) and removeFromPlayer(...) to change how the adding
+ * or removing of resources is done.
  */
 public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate {
   private boolean needToInitialize = true;
@@ -55,30 +54,39 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     final GameData data = getData();
     if (needToInitialize) {
       if (Properties.getTriggers(data)) {
-        // First set up a match for what we want to have fire as a default in this delegate. List out as a composite
+        // First set up a match for what we want to have fire as a default in this delegate. List
+        // out as a composite
         // match OR.
-        // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-        final Predicate<TriggerAttachment> purchaseDelegateTriggerMatch = AbstractTriggerAttachment.availableUses
-            .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
-            .and(TriggerAttachment.prodMatch()
-                .or(TriggerAttachment.prodFrontierEditMatch())
-                .or(TriggerAttachment.purchaseMatch()));
+        // use 'null, null' because this is the Default firing location for any trigger that does
+        // NOT have 'when' set.
+        final Predicate<TriggerAttachment> purchaseDelegateTriggerMatch =
+            AbstractTriggerAttachment.availableUses
+                .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
+                .and(
+                    TriggerAttachment.prodMatch()
+                        .or(TriggerAttachment.prodFrontierEditMatch())
+                        .or(TriggerAttachment.purchaseMatch()));
         // get all possible triggers based on this match.
-        final Set<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-            new HashSet<>(Collections.singleton(player)), purchaseDelegateTriggerMatch);
+        final Set<TriggerAttachment> toFirePossible =
+            TriggerAttachment.collectForAllTriggersMatching(
+                new HashSet<>(Collections.singleton(player)), purchaseDelegateTriggerMatch);
         if (!toFirePossible.isEmpty()) {
           // get all conditions possibly needed by these triggers, and then test them.
           final Map<ICondition, Boolean> testedConditions =
               TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
           // get all triggers that are satisfied based on the tested conditions.
-          final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-              CollectionUtils.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+          final Set<TriggerAttachment> toFireTestedAndSatisfied =
+              new HashSet<>(
+                  CollectionUtils.getMatches(
+                      toFirePossible,
+                      AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
           // now list out individual types to fire, once for each of the matches above.
-          TriggerAttachment.triggerProductionChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
-              true);
-          TriggerAttachment.triggerProductionFrontierEditChange(toFireTestedAndSatisfied, bridge, null, null, true,
-              true, true, true);
-          TriggerAttachment.triggerPurchase(toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
+          TriggerAttachment.triggerProductionChange(
+              toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
+          TriggerAttachment.triggerProductionFrontierEditChange(
+              toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
+          TriggerAttachment.triggerPurchase(
+              toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
         }
       }
       needToInitialize = false;
@@ -108,19 +116,23 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
-    if ((player.getProductionFrontier() == null || player.getProductionFrontier().getRules().isEmpty())
-        && (player.getRepairFrontier() == null || player.getRepairFrontier().getRules().isEmpty())) {
+    if ((player.getProductionFrontier() == null
+            || player.getProductionFrontier().getRules().isEmpty())
+        && (player.getRepairFrontier() == null
+            || player.getRepairFrontier().getRules().isEmpty())) {
       return false;
     }
     if (!canWePurchaseOrRepair()) {
       return false;
     }
-    // if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
+    // if my capital is captured, I can't produce, but I may have PUs if I captured someone else's
+    // capital
     return TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(player, getData());
   }
 
   protected boolean canWePurchaseOrRepair() {
-    if (player.getProductionFrontier() != null && player.getProductionFrontier().getRules() != null) {
+    if (player.getProductionFrontier() != null
+        && player.getProductionFrontier().getRules() != null) {
       for (final ProductionRule rule : player.getProductionFrontier().getRules()) {
         if (player.getResources().has(rule.getCosts())) {
           return true;
@@ -164,7 +176,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           // count how many units are yet to be placed or are in the field
           int currentlyBuilt = player.getUnits().countMatches(Matches.unitIsOfType(type));
 
-          final Predicate<Unit> unitTypeOwnedBy = Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
+          final Predicate<Unit> unitTypeOwnedBy =
+              Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
           final Collection<Territory> allTerrs = getData().getMap().getTerritories();
           for (final Territory t : allTerrs) {
             currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
@@ -172,7 +185,12 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
 
           final int allowedBuild = maxBuilt - currentlyBuilt;
           if (allowedBuild - quantity < 0) {
-            return "May only build " + allowedBuild + " of " + type.getName() + " this turn, may only build " + maxBuilt
+            return "May only build "
+                + allowedBuild
+                + " of "
+                + type.getName()
+                + " this turn, may only build "
+                + maxBuilt
                 + " total";
           }
         }
@@ -218,7 +236,11 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     final String transcriptText;
     if (!totalUnits.isEmpty()) {
       transcriptText =
-          player.getName() + " buy " + MyFormatter.defaultNamedToTextList(totalAll, ", ", true) + "; " + remaining;
+          player.getName()
+              + " buy "
+              + MyFormatter.defaultNamedToTextList(totalAll, ", ", true)
+              + "; "
+              + remaining;
     } else {
       transcriptText = player.getName() + " buy nothing; " + remaining;
     }
@@ -265,8 +287,12 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     // add history event
     final String transcriptText;
     if (!damageMap.isEmpty()) {
-      transcriptText = player.getName() + " repair damage of "
-          + MyFormatter.integerUnitMapToString(repairMap, ", ", "x ", true) + "; " + remaining;
+      transcriptText =
+          player.getName()
+              + " repair damage of "
+              + MyFormatter.integerUnitMapToString(repairMap, ", ", "x ", true)
+              + "; "
+              + remaining;
     } else {
       transcriptText = player.getName() + " repair nothing; " + remaining;
     }
@@ -278,7 +304,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return null;
   }
 
-  private static IntegerMap<Unit> getUnitRepairs(final Map<Unit, IntegerMap<RepairRule>> repairRules) {
+  private static IntegerMap<Unit> getUnitRepairs(
+      final Map<Unit, IntegerMap<RepairRule>> repairRules) {
     final IntegerMap<Unit> repairMap = new IntegerMap<>();
     for (final Unit u : repairRules.keySet()) {
       final IntegerMap<RepairRule> rules = repairRules.get(u);
@@ -292,9 +319,9 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return repairMap;
   }
 
-  private static final Comparator<RepairRule> repairRuleComparator = Comparator.comparing(
-      o -> (UnitType) o.getResults().keySet().iterator().next(),
-      new UnitTypeComparator());
+  private static final Comparator<RepairRule> repairRuleComparator =
+      Comparator.comparing(
+          o -> (UnitType) o.getResults().keySet().iterator().next(), new UnitTypeComparator());
 
   private static IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<Resource> costs = new IntegerMap<>();
@@ -304,8 +331,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return costs;
   }
 
-  private IntegerMap<Resource> getRepairCosts(final Map<Unit, IntegerMap<RepairRule>> repairRules,
-      final PlayerId player) {
+  private IntegerMap<Resource> getRepairCosts(
+      final Map<Unit, IntegerMap<RepairRule>> repairRules, final PlayerId player) {
     final IntegerMap<Resource> costs = new IntegerMap<>();
     for (final IntegerMap<RepairRule> map : repairRules.values()) {
       for (final RepairRule rule : map.keySet()) {
@@ -319,7 +346,8 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return costs;
   }
 
-  private static IntegerMap<NamedAttachable> getResults(final IntegerMap<ProductionRule> productionRules) {
+  private static IntegerMap<NamedAttachable> getResults(
+      final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<NamedAttachable> costs = new IntegerMap<>();
     for (final ProductionRule rule : productionRules.keySet()) {
       costs.addMultiple(rule.getResults(), productionRules.getInt(rule));
@@ -332,12 +360,17 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     return IPurchaseDelegate.class;
   }
 
-  protected String removeFromPlayer(final IntegerMap<Resource> costs, final CompositeChange changes) {
+  protected String removeFromPlayer(
+      final IntegerMap<Resource> costs, final CompositeChange changes) {
     final StringBuilder returnString = new StringBuilder("Remaining resources: ");
     final IntegerMap<Resource> left = player.getResources().getResourcesCopy();
     left.subtract(costs);
     for (final Entry<Resource, Integer> entry : left.entrySet()) {
-      returnString.append(entry.getValue()).append(" ").append(entry.getKey().getName()).append("; ");
+      returnString
+          .append(entry.getValue())
+          .append(" ")
+          .append(entry.getKey().getName())
+          .append("; ");
     }
     for (final Resource resource : costs.keySet()) {
       final float quantity = costs.getInt(resource);
@@ -347,5 +380,4 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     }
     return returnString.toString();
   }
-
 }

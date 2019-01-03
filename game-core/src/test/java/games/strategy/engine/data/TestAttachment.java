@@ -4,9 +4,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-/**
- * Fake attachment used for testing.
- */
+/** Fake attachment used for testing. */
 public class TestAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 4886924951201479496L;
 

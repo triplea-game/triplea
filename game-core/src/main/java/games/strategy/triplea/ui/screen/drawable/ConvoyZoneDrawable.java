@@ -12,23 +12,27 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 
-/**
- * Draws the convoy flag image for the associated territory.
- */
+/** Draws the convoy flag image for the associated territory. */
 public class ConvoyZoneDrawable implements IDrawable {
   private final String player;
   private final String location;
   private final UiContext uiContext;
 
-  public ConvoyZoneDrawable(final PlayerId player, final Territory location, final UiContext uiContext) {
+  public ConvoyZoneDrawable(
+      final PlayerId player, final Territory location, final UiContext uiContext) {
     this.player = player.getName();
     this.location = location.getName();
     this.uiContext = uiContext;
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData,
+      final AffineTransform unscaled,
+      final AffineTransform scaled) {
     final Image img;
     if (mapData.useNation_convoyFlags()) {
       img = uiContext.getFlagImageFactory().getConvoyFlag(data.getPlayerList().getPlayerId(player));

@@ -18,13 +18,9 @@ import games.strategy.util.Interruptibles;
 /**
  * A Chat window.
  *
- * <p>
- * Multiple chat panels can be connected to the same Chat.
- * </p>
+ * <p>Multiple chat panels can be connected to the same Chat.
  *
- * <p>
- * We can change the chat we are connected to using the setChat(...) method.
- * </p>
+ * <p>We can change the chat we are connected to using the setChat(...) method.
  */
 public class ChatPanel extends JPanel implements IChatPanel {
   private static final long serialVersionUID = -6177517517279779486L;
@@ -33,11 +29,10 @@ public class ChatPanel extends JPanel implements IChatPanel {
   private ChatMessagePanel chatMessagePanel;
 
   /**
-   * Creates a Chat object instance on the current thread based on the provided arguments
-   * and calls the ChatPanel constructor with it on the EDT.
-   * This is to allow for easy off-EDT initialisation of this ChatPanel.
-   * Note that if this method is being called on the EDT It will still work,
-   * but the UI might freeze for a long time.
+   * Creates a Chat object instance on the current thread based on the provided arguments and calls
+   * the ChatPanel constructor with it on the EDT. This is to allow for easy off-EDT initialisation
+   * of this ChatPanel. Note that if this method is being called on the EDT It will still work, but
+   * the UI might freeze for a long time.
    */
   public static ChatPanel newChatPanel(
       final IMessenger messenger,
@@ -45,8 +40,11 @@ public class ChatPanel extends JPanel implements IChatPanel {
       final IRemoteMessenger remoteMessenger,
       final String chatName,
       final ChatSoundProfile chatSoundProfile) {
-    final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat))).result
+    final Chat chat =
+        new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
+    return Interruptibles.awaitResult(
+            () -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat)))
+        .result
         .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
   }
 
@@ -103,7 +101,8 @@ public class ChatPanel extends JPanel implements IChatPanel {
   public void setPlayerRenderer(final DefaultListCellRenderer renderer) {
     chatPlayerPanel.setPlayerRenderer(renderer);
     // gets remaining width from parent component, so setting the width is not really necessary
-    chatMessagePanel.setPreferredSize(new Dimension(30, chatMessagePanel.getPreferredSize().height));
+    chatMessagePanel.setPreferredSize(
+        new Dimension(30, chatMessagePanel.getPreferredSize().height));
   }
 
   @Override

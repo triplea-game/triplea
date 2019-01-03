@@ -17,12 +17,14 @@ import swinglib.JButtonBuilder;
 import swinglib.JTextAreaBuilder;
 import swinglib.JTextFieldBuilder;
 
-
 class ErrorReportComponents {
 
   @VisibleForTesting
   enum Names {
-    DESCRIPTION, TITLE, UPLOAD_BUTTON, PREVIEW_BUTTON
+    DESCRIPTION,
+    TITLE,
+    UPLOAD_BUTTON,
+    PREVIEW_BUTTON
   }
 
   @Builder
@@ -47,36 +49,34 @@ class ErrorReportComponents {
         .build();
   }
 
-
   JButton newSubmitButton(final JFrame frame, final FormHandler config) {
     return JButtonBuilder.builder()
         .title("Upload")
         .toolTip("Upload error report to TripleA server")
         .componentName(Names.UPLOAD_BUTTON.toString())
-        .actionListener(button -> newShowSendConfirmationDialogAction(
-            button,
-            () -> config.guiDataHandler.accept(frame, config.guiReader.get())))
+        .actionListener(
+            button ->
+                newShowSendConfirmationDialogAction(
+                    button, () -> config.guiDataHandler.accept(frame, config.guiReader.get())))
         .biggerFont()
         .build();
   }
 
   private static Runnable newShowSendConfirmationDialogAction(
-      final Component parent,
-      final Runnable confirmAction) {
+      final Component parent, final Runnable confirmAction) {
 
-    return () -> DialogBuilder.builder()
-        .parent(parent)
-        .title("Confirm Upload")
-        .confirmationQuestion("Please confirm you are ready to begin uploading the error report.")
-        .confirmAction(confirmAction)
-        .showDialog();
+    return () ->
+        DialogBuilder.builder()
+            .parent(parent)
+            .title("Confirm Upload")
+            .confirmationQuestion(
+                "Please confirm you are ready to begin uploading the error report.")
+            .confirmAction(confirmAction)
+            .showDialog();
   }
 
   JButton newCancelButton(final Runnable closeAction) {
-    return JButtonBuilder.builder()
-        .title("Cancel")
-        .actionListener(closeAction)
-        .build();
+    return JButtonBuilder.builder().title("Cancel").actionListener(closeAction).build();
   }
 
   JButton newPreviewButton(final JFrame frame, final FormHandler config) {

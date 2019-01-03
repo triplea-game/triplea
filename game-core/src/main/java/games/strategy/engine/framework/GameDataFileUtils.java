@@ -9,9 +9,7 @@ import org.apache.commons.io.IOCase;
 
 import com.google.common.annotations.VisibleForTesting;
 
-/**
- * A collection of utilities for working with game data files.
- */
+/** A collection of utilities for working with game data files. */
 public final class GameDataFileUtils {
   private static final IOCase DEFAULT_IO_CASE = IOCase.SYSTEM;
 
@@ -21,7 +19,6 @@ public final class GameDataFileUtils {
    * Appends the game data file extension to the specified file name.
    *
    * @param fileName The file name.
-   *
    * @return The file name with the game data file extension appended.
    */
   public static String addExtension(final String fileName) {
@@ -31,11 +28,10 @@ public final class GameDataFileUtils {
   }
 
   /**
-   * Appends the game data file extension to the specified file name if the file name does not end with the game data
-   * file extension.
+   * Appends the game data file extension to the specified file name if the file name does not end
+   * with the game data file extension.
    *
    * @param fileName The file name.
-   *
    * @return The file name ending with at most one occurrence of the game data file extension.
    */
   public static String addExtensionIfAbsent(final String fileName) {
@@ -52,7 +48,8 @@ public final class GameDataFileUtils {
   private static Collection<String> getCandidateExtensions() {
     final String legacyExtension = ".svg";
 
-    // Macs download a game data file as "tsvg.gz", so that extension must be used when evaluating candidate game data
+    // Macs download a game data file as "tsvg.gz", so that extension must be used when evaluating
+    // candidate game data
     // files.
     final String macOsAlternativeExtension = "tsvg.gz";
 
@@ -72,8 +69,8 @@ public final class GameDataFileUtils {
    * Indicates the specified file name is a game data file candidate.
    *
    * @param fileName The file name.
-   *
-   * @return {@code true} if the specified file name is a game data file candidate; otherwise {@code false}.
+   * @return {@code true} if the specified file name is a game data file candidate; otherwise {@code
+   *     false}.
    */
   public static boolean isCandidateFileName(final String fileName) {
     checkNotNull(fileName);
@@ -83,7 +80,8 @@ public final class GameDataFileUtils {
 
   @VisibleForTesting
   static boolean isCandidateFileName(final String fileName, final IOCase ioCase) {
-    return getCandidateExtensions().stream()
+    return getCandidateExtensions()
+        .stream()
         .anyMatch(extension -> ioCase.checkEndsWith(fileName, extension));
   }
 }

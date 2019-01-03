@@ -7,7 +7,8 @@ import games.strategy.net.AbstractServerMessenger;
 import games.strategy.net.IObjectStreamFactory;
 
 final class GameServerMessenger extends AbstractServerMessenger {
-  GameServerMessenger(final String name, final int port, final IObjectStreamFactory objectStreamFactory)
+  GameServerMessenger(
+      final String name, final int port, final IObjectStreamFactory objectStreamFactory)
       throws IOException {
     super(name, port, objectStreamFactory);
   }

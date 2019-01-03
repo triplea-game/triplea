@@ -29,9 +29,7 @@ import games.strategy.net.INode;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
-/**
- * A messenger general enough that both Channel and Remote messenger can be based on it.
- */
+/** A messenger general enough that both Channel and Remote messenger can be based on it. */
 @Log
 public class UnifiedMessenger {
   private static final ExecutorService threadPool = Executors.newFixedThreadPool(15);
@@ -78,10 +76,9 @@ public class UnifiedMessenger {
     }
   }
 
-  /**
-   * Invoke and wait for all implementors on all vms to finish executing.
-   */
-  public RemoteMethodCallResults invokeAndWait(final String endPointName, final RemoteMethodCall remoteCall) {
+  /** Invoke and wait for all implementors on all vms to finish executing. */
+  public RemoteMethodCallResults invokeAndWait(
+      final String endPointName, final RemoteMethodCall remoteCall) {
     final EndPoint local;
     synchronized (endPointMutex) {
       local = localEndPoints.get(endPointName);
@@ -92,7 +89,8 @@ public class UnifiedMessenger {
     }
 
     final long number = local.takeANumber();
-    final List<RemoteMethodCallResults> results = local.invokeLocal(remoteCall, number, getLocalNode());
+    final List<RemoteMethodCallResults> results =
+        local.invokeLocal(remoteCall, number, getLocalNode());
     if (results.size() == 0) {
       throw new RemoteNotFoundException("Not found:" + endPointName);
     }
@@ -118,16 +116,18 @@ public class UnifiedMessenger {
       final RemoteMethodCallResults methodCallResults = results.remove(methodCallId);
       if (methodCallResults == null) {
         throw new IllegalStateException(
-            "No results from remote call. Method returned:" + remoteCall.getMethodName() + " for remote name:"
-                + remoteCall.getRemoteName() + " with id:" + methodCallId);
+            "No results from remote call. Method returned:"
+                + remoteCall.getMethodName()
+                + " for remote name:"
+                + remoteCall.getRemoteName()
+                + " with id:"
+                + methodCallId);
       }
       return methodCallResults;
     }
   }
 
-  /**
-   * invoke without waiting for remote nodes to respond.
-   */
+  /** invoke without waiting for remote nodes to respond. */
   public void invoke(final String endPointName, final RemoteMethodCall call) {
     // send the remote invocation
     final Invoke invoke = new HubInvoke(null, false, call);
@@ -139,7 +139,8 @@ public class UnifiedMessenger {
     }
     if (endPoint != null) {
       final long number = endPoint.takeANumber();
-      final List<RemoteMethodCallResults> results = endPoint.invokeLocal(call, number, getLocalNode());
+      final List<RemoteMethodCallResults> results =
+          endPoint.invokeLocal(call, number, getLocalNode());
       for (final RemoteMethodCallResults r : results) {
         if (r.getException() != null) {
           // don't swallow errors
@@ -149,10 +150,11 @@ public class UnifiedMessenger {
     }
   }
 
-  public void addImplementor(final RemoteName endPointDescriptor, final Object implementor,
-      final boolean singleThreaded) {
+  public void addImplementor(
+      final RemoteName endPointDescriptor, final Object implementor, final boolean singleThreaded) {
     if (!endPointDescriptor.getClazz().isAssignableFrom(implementor.getClass())) {
-      throw new IllegalArgumentException(implementor + " does not implement " + endPointDescriptor.getClazz());
+      throw new IllegalArgumentException(
+          implementor + " does not implement " + endPointDescriptor.getClazz());
     }
     final EndPoint endPoint = getLocalEndPointOrCreate(endPointDescriptor, singleThreaded);
     endPoint.addImplementor(implementor);
@@ -163,20 +165,25 @@ public class UnifiedMessenger {
   }
 
   /**
-   * Get the 1 and only implementor for the end point. Throws an exception if there are not exactly 1 implementors.
+   * Get the 1 and only implementor for the end point. Throws an exception if there are not exactly
+   * 1 implementors.
    */
   public Object getImplementor(final String name) {
     synchronized (endPointMutex) {
       final EndPoint endPoint = localEndPoints.get(name);
-      Preconditions.checkNotNull(endPoint, "local endpoints: "
-          + localEndPoints + " did not contain: " + name + ", messenger addr: " + super.toString());
+      Preconditions.checkNotNull(
+          endPoint,
+          "local endpoints: "
+              + localEndPoints
+              + " did not contain: "
+              + name
+              + ", messenger addr: "
+              + super.toString());
       return endPoint.getFirstImplementor();
     }
   }
 
-  /**
-   * Removes the specified implementor for the end point with the specified name.
-   */
+  /** Removes the specified implementor for the end point with the specified name. */
   public void removeImplementor(final String name, final Object implementor) {
     checkNotNull(implementor);
 
@@ -193,13 +200,15 @@ public class UnifiedMessenger {
     }
   }
 
-  private EndPoint getLocalEndPointOrCreate(final RemoteName endPointDescriptor, final boolean singleThreaded) {
+  private EndPoint getLocalEndPointOrCreate(
+      final RemoteName endPointDescriptor, final boolean singleThreaded) {
     final EndPoint endPoint;
     synchronized (endPointMutex) {
       if (localEndPoints.containsKey(endPointDescriptor.getName())) {
         return localEndPoints.get(endPointDescriptor.getName());
       }
-      endPoint = new EndPoint(endPointDescriptor.getName(), endPointDescriptor.getClazz(), singleThreaded);
+      endPoint =
+          new EndPoint(endPointDescriptor.getName(), endPointDescriptor.getClazz(), singleThreaded);
       localEndPoints.put(endPointDescriptor.getName(), endPoint);
     }
     final HasEndPointImplementor msg = new HasEndPointImplementor(endPointDescriptor.getName());
@@ -245,36 +254,50 @@ public class UnifiedMessenger {
       // regardless, the other side is expecting our reply
       if (local == null) {
         if (invoke.needReturnValues) {
-          send(new HubInvocationResults(
-              new RemoteMethodCallResults(new RemoteNotFoundException(
-                  "No implementors for " + invoke.call + ", inode: " + from + ", msg: " + msg)),
-              invoke.methodCallId), from);
+          send(
+              new HubInvocationResults(
+                  new RemoteMethodCallResults(
+                      new RemoteNotFoundException(
+                          "No implementors for "
+                              + invoke.call
+                              + ", inode: "
+                              + from
+                              + ", msg: "
+                              + msg)),
+                  invoke.methodCallId),
+              from);
         }
         return;
       }
       // very important
-      // we are guaranteed that here messages will be read in the same order that they are sent from the client
-      // however, once we delegate to the thread pool, there is no guarantee that the thread pool task will run before
+      // we are guaranteed that here messages will be read in the same order that they are sent from
+      // the client
+      // however, once we delegate to the thread pool, there is no guarantee that the thread pool
+      // task will run before
       // we get the next message notification
       // get the number for the invocation here
       final long methodRunNumber = local.takeANumber();
       // we don't want to block the message thread, only one thread is
       // reading messages per connection, so run with out thread pool
       final EndPoint localFinal = local;
-      threadPool.execute(() -> {
-        final List<RemoteMethodCallResults> results =
-            localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
-        if (invoke.needReturnValues) {
-          final RemoteMethodCallResults result;
-          if (results.size() == 1) {
-            result = results.get(0);
-          } else {
-            result = new RemoteMethodCallResults(
-                new IllegalStateException("Invalid result count" + results.size()) + " for end point:" + localFinal);
-          }
-          send(new HubInvocationResults(result, invoke.methodCallId), from);
-        }
-      });
+      threadPool.execute(
+          () -> {
+            final List<RemoteMethodCallResults> results =
+                localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
+            if (invoke.needReturnValues) {
+              final RemoteMethodCallResults result;
+              if (results.size() == 1) {
+                result = results.get(0);
+              } else {
+                result =
+                    new RemoteMethodCallResults(
+                        new IllegalStateException("Invalid result count" + results.size())
+                            + " for end point:"
+                            + localFinal);
+              }
+              send(new HubInvocationResults(result, invoke.methodCallId), from);
+            }
+          });
     } else if (msg instanceof SpokeInvocationResults) { // a remote machine is returning results
       // if this isn't the server, something is wrong
       // maybe an attempt to spoof a message
@@ -286,9 +309,11 @@ public class UnifiedMessenger {
       synchronized (pendingLock) {
         results.put(methodId, spokeInvocationResults.results);
         final CountDownLatch latch = pendingInvocations.remove(methodId);
-        Preconditions.checkNotNull(latch, String.format(
-            "method id: %s, was not present in pending invocations: %s, unified messenger addr: %s",
-            methodId, pendingInvocations, super.toString()));
+        Preconditions.checkNotNull(
+            latch,
+            String.format(
+                "method id: %s, was not present in pending invocations: %s, unified messenger addr: %s",
+                methodId, pendingInvocations, super.toString()));
         latch.countDown();
       }
     }

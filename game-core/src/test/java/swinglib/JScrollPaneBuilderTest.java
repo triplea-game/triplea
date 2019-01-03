@@ -28,10 +28,7 @@ public final class JScrollPaneBuilderTest {
   public void build_ShouldSetBorderWhenProvided() {
     final Border border = BorderFactory.createEmptyBorder();
 
-    final JScrollPane scrollPane = builder
-        .view(new JLabel())
-        .border(border)
-        .build();
+    final JScrollPane scrollPane = builder.view(new JLabel()).border(border).build();
 
     assertThat(scrollPane.getBorder(), is(sameInstance(border)));
   }
@@ -40,9 +37,7 @@ public final class JScrollPaneBuilderTest {
   public void build_ShouldSetView() {
     final Component view = new JLabel();
 
-    final JScrollPane scrollPane = builder
-        .view(view)
-        .build();
+    final JScrollPane scrollPane = builder.view(view).build();
 
     assertThat(scrollPane.getViewport().getView(), is(sameInstance(view)));
   }

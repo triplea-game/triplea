@@ -23,8 +23,10 @@ public class WrappedInvocationHandler implements InvocationHandler {
     if (other == this) {
       return true;
     }
-    if (Proxy.isProxyClass(other.getClass()) && Proxy.getInvocationHandler(other) instanceof WrappedInvocationHandler) {
-      final WrappedInvocationHandler otherWrapped = (WrappedInvocationHandler) Proxy.getInvocationHandler(other);
+    if (Proxy.isProxyClass(other.getClass())
+        && Proxy.getInvocationHandler(other) instanceof WrappedInvocationHandler) {
+      final WrappedInvocationHandler otherWrapped =
+          (WrappedInvocationHandler) Proxy.getInvocationHandler(other);
       return otherWrapped.delegate.equals(delegate);
     }
     return false;
@@ -49,7 +51,8 @@ public class WrappedInvocationHandler implements InvocationHandler {
   }
 
   @Override
-  public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+  public Object invoke(final Object proxy, final Method method, final Object[] args)
+      throws Throwable {
     if (shouldHandle(method, args)) {
       return handle(method, args);
     }

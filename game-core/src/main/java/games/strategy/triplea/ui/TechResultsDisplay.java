@@ -22,14 +22,50 @@ class TechResultsDisplay extends JPanel {
 
   TechResultsDisplay(final TechResults msg, final UiContext uiContext, final GameData data) {
     setLayout(new GridBagLayout());
-    add(new JLabel("You got " + msg.getHits() + " hit" + (msg.getHits() != 1 ? "s" : "") + "."), new GridBagConstraints(
-        0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 5, 0), 0, 0));
+    add(
+        new JLabel("You got " + msg.getHits() + " hit" + (msg.getHits() != 1 ? "s" : "") + "."),
+        new GridBagConstraints(
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 5, 0),
+            0,
+            0));
     if (msg.getHits() != 0) {
-      add(new JLabel("Technologies discovered:"), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+      add(
+          new JLabel("Technologies discovered:"),
+          new GridBagConstraints(
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, 0, 0),
+              0,
+              0));
       final JList<String> list = new JList<>(SwingComponents.newListModel(msg.getAdvances()));
-      add(list, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(0, 0, 5, 0), 0, 0));
+      add(
+          list,
+          new GridBagConstraints(
+              0,
+              2,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, 5, 0),
+              0,
+              0));
       list.setBackground(this.getBackground());
     }
     final JPanel dice = new JPanel();
@@ -40,11 +76,18 @@ class TechResultsDisplay extends JPanel {
       final int roll = msg.getRolls()[i] + 1;
       final JLabel die;
       if (remainder > 0) {
-        die = new JLabel(
-            uiContext.getDiceImageFactory().getDieIcon(roll, roll <= remainder ? Die.DieType.HIT : Die.DieType.MISS));
+        die =
+            new JLabel(
+                uiContext
+                    .getDiceImageFactory()
+                    .getDieIcon(roll, roll <= remainder ? Die.DieType.HIT : Die.DieType.MISS));
       } else {
-        die = new JLabel(uiContext.getDiceImageFactory().getDieIcon(roll,
-            roll == data.getDiceSides() ? Die.DieType.HIT : Die.DieType.MISS));
+        die =
+            new JLabel(
+                uiContext
+                    .getDiceImageFactory()
+                    .getDieIcon(
+                        roll, roll == data.getDiceSides() ? Die.DieType.HIT : Die.DieType.MISS));
       }
       dice.add(die);
       dice.add(Box.createHorizontalStrut(2));
@@ -52,7 +95,19 @@ class TechResultsDisplay extends JPanel {
     }
     final JScrollPane diceScroll = new JScrollPane(dice);
     diceScroll.setBorder(null);
-    add(diceScroll, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 0, 5, 0), 0, 0));
+    add(
+        diceScroll,
+        new GridBagConstraints(
+            0,
+            3,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 5, 0),
+            0,
+            0));
   }
 }

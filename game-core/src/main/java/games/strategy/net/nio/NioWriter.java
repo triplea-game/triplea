@@ -18,9 +18,8 @@ import java.util.logging.Level;
 import lombok.extern.java.Log;
 
 /**
- * A thread that writes socket data using NIO.
- * Data is written in packets that are enqueued on our buffer.
- * Packets are sent to the sockets in the order that they are received.
+ * A thread that writes socket data using NIO. Data is written in packets that are enqueued on our
+ * buffer. Packets are sent to the sockets in the order that they are received.
  */
 @Log
 class NioWriter {
@@ -94,7 +93,12 @@ class NioWriter {
             final SocketWriteData packet = getData(channel);
             if (packet != null) {
               try {
-                log.finest(() -> "writing packet:" + packet + " to:" + channel.socket().getRemoteSocketAddress());
+                log.finest(
+                    () ->
+                        "writing packet:"
+                            + packet
+                            + " to:"
+                            + channel.socket().getRemoteSocketAddress());
                 final boolean done = packet.write(channel);
                 if (done) {
                   totalBytes += packet.size();
@@ -108,8 +112,15 @@ class NioWriter {
                     if (sa != null) {
                       remote = sa.toString();
                     }
-                    log.fine(" done writing to:" + remote + " size:" + packet.size() + " writeCalls;"
-                        + packet.getWriteCalls() + " total:" + totalBytes);
+                    log.fine(
+                        " done writing to:"
+                            + remote
+                            + " size:"
+                            + packet.size()
+                            + " writeCalls;"
+                            + packet.getWriteCalls()
+                            + " total:"
+                            + totalBytes);
                   }
                   removeLast(channel);
                 }
@@ -120,7 +131,8 @@ class NioWriter {
               }
             } else {
               // nothing to write
-              // cancel the key, otherwise we will spin forever as the socket will always be writable
+              // cancel the key, otherwise we will spin forever as the socket will always be
+              // writable
               key.cancel();
             }
           }
@@ -132,9 +144,7 @@ class NioWriter {
     }
   }
 
-  /**
-   * Remove the data for this channel.
-   */
+  /** Remove the data for this channel. */
   void closed(final SocketChannel channel) {
     removeAll(channel);
   }

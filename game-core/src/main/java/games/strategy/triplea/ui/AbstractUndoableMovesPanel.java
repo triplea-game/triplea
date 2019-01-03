@@ -63,7 +63,6 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     movePanel.undoMoves(units);
   }
 
-
   private void initLayout() {
     removeAll();
     setLayout(new BorderLayout());
@@ -74,7 +73,9 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     Collections.reverse(moves);
     final Iterator<AbstractUndoableMove> iter = moves.iterator();
     if (iter.hasNext()) {
-      add(new JLabel((this instanceof UndoablePlacementsPanel) ? "Placements:" : "Moves:"), BorderLayout.NORTH);
+      add(
+          new JLabel((this instanceof UndoablePlacementsPanel) ? "Placements:" : "Moves:"),
+          BorderLayout.NORTH);
     }
     int scrollIncrement = 10;
     final Dimension separatorSize = new Dimension(150, 20);
@@ -98,19 +99,24 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
 
     final int scrollIncrementFinal = scrollIncrement + separatorSize.height;
     // JScrollPane scroll = new JScrollPane(items);
-    scroll = new JScrollPane(items) {
-      private static final long serialVersionUID = -1064967105431785533L;
+    scroll =
+        new JScrollPane(items) {
+          private static final long serialVersionUID = -1064967105431785533L;
 
-      @Override
-      public void paint(final Graphics g) {
-        if (previousVisibleIndex != null) {
-          items.scrollRectToVisible(new Rectangle(0, scrollIncrementFinal * (moves.size() - previousVisibleIndex),
-              1, scrollIncrementFinal));
-          previousVisibleIndex = null;
-        }
-        super.paint(g);
-      }
-    };
+          @Override
+          public void paint(final Graphics g) {
+            if (previousVisibleIndex != null) {
+              items.scrollRectToVisible(
+                  new Rectangle(
+                      0,
+                      scrollIncrementFinal * (moves.size() - previousVisibleIndex),
+                      1,
+                      scrollIncrementFinal));
+              previousVisibleIndex = null;
+            }
+            super.paint(g);
+          }
+        };
     scroll.setBorder(null);
     scroll.getVerticalScrollBar().setUnitIncrement(scrollIncrementFinal);
     if (scrollBarPreviousValue != null) {
@@ -128,13 +134,21 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     final Dimension buttonSize = new Dimension(80, 22);
     for (final UnitCategory category : unitCategories) {
       final Optional<ImageIcon> icon =
-          movePanel.getMap().getUiContext().getUnitImageFactory().getIcon(category.getType(),
-              category.getOwner(), category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+          movePanel
+              .getMap()
+              .getUiContext()
+              .getUnitImageFactory()
+              .getIcon(
+                  category.getType(),
+                  category.getOwner(),
+                  category.hasDamageOrBombingUnitDamage(),
+                  category.getDisabled());
       if (icon.isPresent()) {
-        final JLabel label = new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);
+        final JLabel label =
+            new JLabel("x" + category.getUnits().size() + " ", icon.get(), SwingConstants.LEFT);
         unitsBox.add(label);
-        MapUnitTooltipManager.setUnitTooltip(label, category.getType(), category.getOwner(),
-            category.getUnits().size());
+        MapUnitTooltipManager.setUnitTooltip(
+            label, category.getType(), category.getOwner(), category.getUnits().size());
       }
     }
     unitsBox.add(Box.createHorizontalGlue());
@@ -167,7 +181,6 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     cancelButton.setPreferredSize(buttonSize);
     cancelButton.setMaximumSize(buttonSize);
   }
-
 
   class UndoMoveActionListener extends AbstractAction {
     private static final long serialVersionUID = -397312652244693138L;
@@ -207,7 +220,6 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
       }
     }
   }
-
 
   class ViewAction extends AbstractAction {
     private static final long serialVersionUID = -6999284663802575467L;

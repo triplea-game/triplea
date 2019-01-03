@@ -14,14 +14,16 @@ import com.google.common.collect.ImmutableList;
  */
 final class LoggerManager {
   /**
-   * Stores strong references to application-specific loggers so they aren't GCed after being configured.
+   * Stores strong references to application-specific loggers so they aren't GCed after being
+   * configured.
    */
   private static final ImmutableCollection<Logger> loggers = getLoggers();
 
   private LoggerManager() {}
 
   private static ImmutableCollection<Logger> getLoggers() {
-    return Arrays.asList("games.strategy", "org.triplea", "swinglib", "tools").stream()
+    return Arrays.asList("games.strategy", "org.triplea", "swinglib", "tools")
+        .stream()
         .map(Logger::getLogger)
         .collect(ImmutableList.toImmutableList());
   }

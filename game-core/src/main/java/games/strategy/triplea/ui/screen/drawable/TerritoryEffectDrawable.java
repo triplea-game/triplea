@@ -9,9 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.triplea.ui.mapdata.MapData;
 
-/**
- * Draws a territory effect image at a given point on the map.
- */
+/** Draws a territory effect image at a given point on the map. */
 public class TerritoryEffectDrawable implements IDrawable {
   private final TerritoryEffect effect;
   private final Point point;
@@ -22,8 +20,13 @@ public class TerritoryEffectDrawable implements IDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData,
+      final AffineTransform unscaled,
+      final AffineTransform scaled) {
     drawImage(graphics, mapData.getTerritoryEffectImage(effect.getName()), point, bounds);
   }
 

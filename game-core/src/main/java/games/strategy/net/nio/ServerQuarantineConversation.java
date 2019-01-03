@@ -12,9 +12,7 @@ import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 import lombok.extern.java.Log;
 
-/**
- * Server-side implementation of {@link QuarantineConversation}.
- */
+/** Server-side implementation of {@link QuarantineConversation}. */
 @Log
 public class ServerQuarantineConversation extends QuarantineConversation {
   /*
@@ -29,7 +27,10 @@ public class ServerQuarantineConversation extends QuarantineConversation {
    */
 
   private enum Step {
-    READ_NAME, READ_MAC, CHALLENGE, ACK_ERROR
+    READ_NAME,
+    READ_MAC,
+    CHALLENGE,
+    ACK_ERROR
   }
 
   private final ILoginValidator validator;
@@ -41,8 +42,11 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   private Map<String, String> challenge;
   private final AbstractServerMessenger serverMessenger;
 
-  public ServerQuarantineConversation(final ILoginValidator validator, final SocketChannel channel,
-      final NioSocket socket, final AbstractServerMessenger serverMessenger) {
+  public ServerQuarantineConversation(
+      final ILoginValidator validator,
+      final SocketChannel channel,
+      final NioSocket socket,
+      final AbstractServerMessenger serverMessenger) {
     this.validator = validator;
     this.socket = socket;
     this.channel = channel;
@@ -75,8 +79,13 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           @SuppressWarnings("unchecked")
           final Map<String, String> response = (Map<String, String>) o;
           if (validator != null) {
-            final String error = validator.verifyConnection(challenge, response, remoteName, remoteMac,
-                channel.socket().getRemoteSocketAddress());
+            final String error =
+                validator.verifyConnection(
+                    challenge,
+                    response,
+                    remoteName,
+                    remoteMac,
+                    channel.socket().getRemoteSocketAddress());
             send(error);
             if (error != null) {
               step = Step.ACK_ERROR;
@@ -90,8 +99,11 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           // send the node its name and our name
           send(new String[] {remoteName, serverMessenger.getLocalNode().getName()});
           // send the node its and our address as we see it
-          send(new InetSocketAddress[] {(InetSocketAddress) channel.socket().getRemoteSocketAddress(),
-              serverMessenger.getLocalNode().getSocketAddress()});
+          send(
+              new InetSocketAddress[] {
+                (InetSocketAddress) channel.socket().getRemoteSocketAddress(),
+                serverMessenger.getLocalNode().getSocketAddress()
+              });
           // Login succeeded, so notify the ServerMessenger about the login with the name, mac, etc.
           serverMessenger.notifyPlayerLogin(remoteName, remoteMac);
           // We are good

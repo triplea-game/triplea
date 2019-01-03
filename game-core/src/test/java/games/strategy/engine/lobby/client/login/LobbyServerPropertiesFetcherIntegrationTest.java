@@ -15,7 +15,9 @@ class LobbyServerPropertiesFetcherIntegrationTest extends AbstractClientSettingT
 
     final LobbyServerPropertiesFetcher testObj = new LobbyServerPropertiesFetcher();
 
-    assertThat("verify fetch to get current lobby properties",
-        testObj.fetchLobbyServerProperties(), notNullValue());
+    assertThat(
+        "verify fetch to get current lobby properties",
+        testObj.fetchLobbyServerProperties(),
+        notNullValue());
   }
 }

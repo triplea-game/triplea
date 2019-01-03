@@ -6,9 +6,7 @@ import java.util.function.Supplier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-/**
- * Provides methods to download files via HTTP.
- */
+/** Provides methods to download files via HTTP. */
 public final class DownloadConfiguration {
 
   private static final ContentReader contentReader;
@@ -28,7 +26,6 @@ public final class DownloadConfiguration {
   public static DownloadLengthReader downloadLengthReader() {
     return downloadLengthReader;
   }
-
 
   private DownloadConfiguration() {}
 }

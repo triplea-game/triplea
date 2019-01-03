@@ -14,9 +14,9 @@ import games.strategy.net.INode;
 import lombok.extern.java.Log;
 
 /**
- * This is where the methods finally get called.
- * An end point contains the implementors for a given name that are local to this node.
- * You can invoke the method and get the results for all the implementors.
+ * This is where the methods finally get called. An end point contains the implementors for a given
+ * name that are local to this node. You can invoke the method and get the results for all the
+ * implementors.
  */
 @Log
 class EndPoint {
@@ -76,7 +76,8 @@ class EndPoint {
    */
   public boolean addImplementor(final Object implementor) {
     if (!remoteClass.isAssignableFrom(implementor.getClass())) {
-      throw new IllegalArgumentException(remoteClass + " is not assignable from " + implementor.getClass());
+      throw new IllegalArgumentException(
+          remoteClass + " is not assignable from " + implementor.getClass());
     }
     synchronized (implementorsMutex) {
       final boolean isFirstImplementor = implementors.isEmpty();
@@ -99,7 +100,8 @@ class EndPoint {
   boolean removeImplementor(final Object implementor) {
     synchronized (implementorsMutex) {
       if (!implementors.remove(implementor)) {
-        throw new IllegalStateException("Not removed, impl:" + implementor + " have " + implementors);
+        throw new IllegalStateException(
+            "Not removed, impl:" + implementor + " have " + implementors);
       }
       return implementors.isEmpty();
     }
@@ -110,8 +112,8 @@ class EndPoint {
    * threaded, then the method will not run until the number comes up. Acquire
    * with getNumber() @return a List of RemoteMethodCallResults
    */
-  public List<RemoteMethodCallResults> invokeLocal(final RemoteMethodCall call, final long number,
-      final INode messageOriginator) {
+  public List<RemoteMethodCallResults> invokeLocal(
+      final RemoteMethodCall call, final long number, final INode messageOriginator) {
     try {
       if (singleThreaded) {
         waitTillCanBeRun(number);
@@ -122,7 +124,8 @@ class EndPoint {
     }
   }
 
-  private List<RemoteMethodCallResults> invokeMultiple(final RemoteMethodCall call, final INode messageOriginator) {
+  private List<RemoteMethodCallResults> invokeMultiple(
+      final RemoteMethodCall call, final INode messageOriginator) {
     // copy the implementors
     final List<Object> implementorsCopy;
     synchronized (implementorsMutex) {
@@ -135,8 +138,8 @@ class EndPoint {
     return results;
   }
 
-  private RemoteMethodCallResults invokeSingle(final RemoteMethodCall call, final Object implementor,
-      final INode messageOriginator) {
+  private RemoteMethodCallResults invokeSingle(
+      final RemoteMethodCall call, final Object implementor, final INode messageOriginator) {
     call.resolve(remoteClass);
     final Method method;
     try {

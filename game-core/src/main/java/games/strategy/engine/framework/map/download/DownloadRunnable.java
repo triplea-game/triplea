@@ -14,7 +14,8 @@ import games.strategy.io.IoUtils;
 import lombok.extern.java.Log;
 
 /**
- * Downloads a map index file, parses it and returns a <code>List</code> of <code>DownloadFileDescription</code>.
+ * Downloads a map index file, parses it and returns a <code>List</code> of <code>
+ * DownloadFileDescription</code>.
  */
 @Log
 public class DownloadRunnable {
@@ -25,8 +26,9 @@ public class DownloadRunnable {
   }
 
   /**
-   * Returns a parsed list of parsed downloadable maps. If initialized with a URL then we will do a network fetch and
-   * parse those contents, otherwise (for testing) we assume a local file reference and parse that.
+   * Returns a parsed list of parsed downloadable maps. If initialized with a URL then we will do a
+   * network fetch and parse those contents, otherwise (for testing) we assume a local file
+   * reference and parse that.
    */
   public List<DownloadFileDescription> getDownloads() {
     return beginsWithHttpProtocol(urlString) ? downloadFile() : readLocalFile();
@@ -44,7 +46,10 @@ public class DownloadRunnable {
       final byte[] contents = Files.readAllBytes(tempFile.toPath());
       return IoUtils.readFromMemory(contents, DownloadFileParser::parse);
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Error - will show an empty list of downloads. Failed to get files from: " + urlString, e);
+      log.log(
+          Level.SEVERE,
+          "Error - will show an empty list of downloads. Failed to get files from: " + urlString,
+          e);
       return new ArrayList<>();
     }
   }
@@ -53,7 +58,8 @@ public class DownloadRunnable {
     final File targetFile = new File(urlString);
     try {
       final byte[] contents = Files.readAllBytes(targetFile.toPath());
-      final List<DownloadFileDescription> downloads = IoUtils.readFromMemory(contents, DownloadFileParser::parse);
+      final List<DownloadFileDescription> downloads =
+          IoUtils.readFromMemory(contents, DownloadFileParser::parse);
       checkNotNull(downloads);
       return downloads;
     } catch (final IOException e) {

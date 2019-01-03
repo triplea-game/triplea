@@ -14,16 +14,17 @@ import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 import lombok.extern.java.Log;
 
-/**
- * Encodes data to be written by a writer.
- */
+/** Encodes data to be written by a writer. */
 @Log
 class Encoder {
   private final NioWriter writer;
   private final IObjectStreamFactory objectStreamFactory;
   private final NioSocket nioSocket;
 
-  Encoder(final NioSocket nioSocket, final NioWriter writer, final IObjectStreamFactory objectStreamFactory) {
+  Encoder(
+      final NioSocket nioSocket,
+      final NioWriter writer,
+      final IObjectStreamFactory objectStreamFactory) {
     this.nioSocket = nioSocket;
     this.writer = writer;
     this.objectStreamFactory = objectStreamFactory;
@@ -35,7 +36,8 @@ class Encoder {
       throw new IllegalArgumentException("No from node");
     }
     try {
-      final byte[] bytes = IoUtils.writeToMemory(os -> write(header, objectStreamFactory.create(os), to));
+      final byte[] bytes =
+          IoUtils.writeToMemory(os -> write(header, objectStreamFactory.create(os), to));
       final SocketWriteData data = new SocketWriteData(bytes, bytes.length);
       writer.enque(data, to);
     } catch (final IOException e) {
@@ -44,7 +46,8 @@ class Encoder {
     }
   }
 
-  private void write(final MessageHeader header, final ObjectOutputStream out, final SocketChannel remote)
+  private void write(
+      final MessageHeader header, final ObjectOutputStream out, final SocketChannel remote)
       throws IOException {
     if (header.getFrom() == null) {
       throw new IllegalArgumentException("null from");

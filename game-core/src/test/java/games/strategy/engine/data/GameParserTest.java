@@ -20,19 +20,20 @@ final class GameParserTest {
     @Test
     void shouldReturnValueWithFirstCharacterDecapitalized() {
       Arrays.asList(
-          Tuple.of("", ""),
-          Tuple.of("N", "n"),
-          Tuple.of("name", "name"),
-          Tuple.of("Name", "name"),
-          Tuple.of("NAME", "nAME"))
-          .forEach(t -> {
-            final String value = t.getFirst();
-            final String decapitalizedValue = t.getSecond();
-            assertThat(
-                String.format("wrong decapitalization for '%s'", value),
-                GameParser.decapitalize(value),
-                is(decapitalizedValue));
-          });
+              Tuple.of("", ""),
+              Tuple.of("N", "n"),
+              Tuple.of("name", "name"),
+              Tuple.of("Name", "name"),
+              Tuple.of("NAME", "nAME"))
+          .forEach(
+              t -> {
+                final String value = t.getFirst();
+                final String decapitalizedValue = t.getSecond();
+                assertThat(
+                    String.format("wrong decapitalization for '%s'", value),
+                    GameParser.decapitalize(value),
+                    is(decapitalizedValue));
+              });
     }
   }
 
@@ -42,9 +43,7 @@ final class GameParserTest {
     private final GameParser gameParser = new GameParser(gameData, "mapName");
 
     private String joinPlayerNames(final PlayerId... playerIds) {
-      return Arrays.stream(playerIds)
-          .map(PlayerId::getName)
-          .collect(Collectors.joining(":"));
+      return Arrays.stream(playerIds).map(PlayerId::getName).collect(Collectors.joining(":"));
     }
 
     @Test
@@ -55,8 +54,7 @@ final class GameParserTest {
       gameData.getPlayerList().addPlayerId(player2);
 
       assertThat(
-          gameParser.parsePlayersFromIsDisplayedFor(joinPlayerNames(player1)),
-          contains(player1));
+          gameParser.parsePlayersFromIsDisplayedFor(joinPlayerNames(player1)), contains(player1));
       assertThat(
           gameParser.parsePlayersFromIsDisplayedFor(joinPlayerNames(player1, player2)),
           contains(player1, player2));
@@ -66,10 +64,13 @@ final class GameParserTest {
     void shouldThrowExceptionWhenAnyPlayerDoesNotExist() {
       final PlayerId player = new PlayerId("unknownPlayerName", gameData);
 
-      final Exception e = assertThrows(
-          GameParseException.class,
-          () -> gameParser.parsePlayersFromIsDisplayedFor(joinPlayerNames(player)));
-      assertThat(e.getMessage(), containsString("Parse resources could not find player: " + player.getName()));
+      final Exception e =
+          assertThrows(
+              GameParseException.class,
+              () -> gameParser.parsePlayersFromIsDisplayedFor(joinPlayerNames(player)));
+      assertThat(
+          e.getMessage(),
+          containsString("Parse resources could not find player: " + player.getName()));
     }
   }
 }

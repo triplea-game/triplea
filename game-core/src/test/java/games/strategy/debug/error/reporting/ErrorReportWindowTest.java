@@ -9,13 +9,10 @@ import org.triplea.test.common.swing.SwingComponentWrapper;
 
 @ExtendWith(DisabledInHeadlessGraphicsEnvironment.class)
 class ErrorReportWindowTest {
-  /**
-   * Verify that all expected components have been added.
-   */
+  /** Verify that all expected components have been added. */
   @Test
   void errorReportWindowContainsExpectedComponents() {
-    final ErrorReportWindow errorReportWindow = new ErrorReportWindow((frame, data) -> {
-    });
+    final ErrorReportWindow errorReportWindow = new ErrorReportWindow((frame, data) -> {});
     final SwingComponentWrapper helper = SwingComponentWrapper.of(errorReportWindow.buildWindow());
 
     Arrays.stream(ErrorReportComponents.Names.values())

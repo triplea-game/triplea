@@ -33,10 +33,12 @@ class ProductionTabsProperties {
   // production_tabs.tab_units.1=Infantry:Panzer:Transport
   // production_tabs.tab_units.2=Artillery:Fighter:Bomber
   private static final String TAB_UNITS = "production_tabs.tab_units";
-  // The number of rows of units to be used in the panel if rows or columns are "0" the system will calculate based on
+  // The number of rows of units to be used in the panel if rows or columns are "0" the system will
+  // calculate based on
   // max units
   private static final String NUMBER_OF_ROWS = "production_tabs.rows";
-  // The number of columns of units to be used in the panel if rows or columns are "0" the system will calculate based
+  // The number of columns of units to be used in the panel if rows or columns are "0" the system
+  // will calculate based
   // on max units
   private static final String NUMBER_OF_COLUMNS = "production_tabs.columns";
   private final Properties properties = new Properties();
@@ -76,10 +78,12 @@ class ProductionTabsProperties {
     final int numberOfTabs = getNumberOfTabs();
     for (int i = 1; i <= numberOfTabs; i++) {
       final String tabName = properties.getProperty(TAB_NAME + "." + i);
-      final List<String> tabValues = Arrays.asList(properties.getProperty(TAB_UNITS + "." + i).split(":"));
+      final List<String> tabValues =
+          Arrays.asList(properties.getProperty(TAB_UNITS + "." + i).split(":"));
       final List<Rule> ruleList = new ArrayList<>();
       for (final Rule rule : rules) {
-        if (tabValues.contains(rule.getProductionRule().getResults().keySet().iterator().next().getName())) {
+        if (tabValues.contains(
+            rule.getProductionRule().getResults().keySet().iterator().next().getName())) {
           ruleList.add(rule);
         }
       }

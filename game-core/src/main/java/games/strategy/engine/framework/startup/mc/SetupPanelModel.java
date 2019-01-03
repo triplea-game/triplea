@@ -24,18 +24,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-/**
- * This class provides a way to switch between different ISetupPanel displays.
- */
+/** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor
 public class SetupPanelModel {
-  @Getter
-  protected final GameSelectorModel gameSelectorModel;
+  @Getter protected final GameSelectorModel gameSelectorModel;
   protected ISetupPanel panel = null;
 
-  @Setter
-  private ScreenChangeListener panelChangeListener;
-
+  @Setter private ScreenChangeListener panelChangeListener;
 
   public void showSelectType() {
     setGameTypePanel(new MetaSetupPanel(this));
@@ -50,7 +45,8 @@ public class SetupPanelModel {
   }
 
   /**
-   * Starts the game server and displays the game start screen afterwards, awaiting remote game clients.
+   * Starts the game server and displays the game start screen afterwards, awaiting remote game
+   * clients.
    */
   public void showServer(final Component ui) {
     final ServerModel model = new ServerModel(gameSelectorModel, this);
@@ -58,20 +54,22 @@ public class SetupPanelModel {
       model.cancel();
       return;
     }
-    SwingUtilities.invokeLater(() -> {
-      setGameTypePanel(new ServerSetupPanel(model, gameSelectorModel));
-      // for whatever reason, the server window is showing very very small, causing the nation info to be cut and
-      // requiring scroll bars
-      final int x = (ui.getPreferredSize().width > 800 ? ui.getPreferredSize().width : 800);
-      final int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
-      ui.setPreferredSize(new Dimension(x, y));
-      ui.setSize(new Dimension(x, y));
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          setGameTypePanel(new ServerSetupPanel(model, gameSelectorModel));
+          // for whatever reason, the server window is showing very very small, causing the nation
+          // info to be cut and
+          // requiring scroll bars
+          final int x = (ui.getPreferredSize().width > 800 ? ui.getPreferredSize().width : 800);
+          final int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
+          ui.setPreferredSize(new Dimension(x, y));
+          ui.setSize(new Dimension(x, y));
+        });
   }
 
   /**
-   * A method that establishes a connection to a remote game and displays the game start screen afterwards if the
-   * connection was successfully established.
+   * A method that establishes a connection to a remote game and displays the game start screen
+   * afterwards if the connection was successfully established.
    */
   public void showClient(final Component ui) {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
@@ -105,18 +103,21 @@ public class SetupPanelModel {
    * @param uiParent Used to center pop-up's prompting user for their lobby credentials.
    */
   public void login(final Component uiParent) {
-    new LobbyServerPropertiesFetcher().fetchLobbyServerProperties()
-        .ifPresent(lobbyServerProperties -> {
-          final LobbyLogin login =
-              new LobbyLogin(JOptionPane.getFrameForComponent(uiParent), lobbyServerProperties);
+    new LobbyServerPropertiesFetcher()
+        .fetchLobbyServerProperties()
+        .ifPresent(
+            lobbyServerProperties -> {
+              final LobbyLogin login =
+                  new LobbyLogin(JOptionPane.getFrameForComponent(uiParent), lobbyServerProperties);
 
-          Optional.ofNullable(login.login())
-              .ifPresent(
-                  lobbyClient -> {
-                    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyServerProperties);
-                    GameRunner.hideMainFrame();
-                    lobbyFrame.setVisible(true);
-                  });
-        });
+              Optional.ofNullable(login.login())
+                  .ifPresent(
+                      lobbyClient -> {
+                        final LobbyFrame lobbyFrame =
+                            new LobbyFrame(lobbyClient, lobbyServerProperties);
+                        GameRunner.hideMainFrame();
+                        lobbyFrame.setVisible(true);
+                      });
+            });
   }
 }

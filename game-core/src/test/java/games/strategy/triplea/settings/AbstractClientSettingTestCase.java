@@ -10,12 +10,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 
 /**
- * Superclass for test fixtures that directly or indirectly interact with instances of {@link ClientSetting}.
+ * Superclass for test fixtures that directly or indirectly interact with instances of {@link
+ * ClientSetting}.
  *
- * <p>
- * This fixture ensures the {@link ClientSetting} preferences are properly initialized before each test and
- * uninitialized after each test.
- * </p>
+ * <p>This fixture ensures the {@link ClientSetting} preferences are properly initialized before
+ * each test and uninitialized after each test.
  */
 public abstract class AbstractClientSettingTestCase {
   @Getter(AccessLevel.PROTECTED)

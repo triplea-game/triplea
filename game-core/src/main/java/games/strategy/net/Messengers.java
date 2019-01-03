@@ -6,9 +6,7 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 
-/**
- * Convenience grouping of a messenger, remote messenger and channel messenger.
- */
+/** Convenience grouping of a messenger, remote messenger and channel messenger. */
 public class Messengers {
   private final IMessenger messenger;
   private final IRemoteMessenger remoteMessenger;
@@ -21,7 +19,9 @@ public class Messengers {
     remoteMessenger = new RemoteMessenger(unifiedMessenger);
   }
 
-  public Messengers(final IMessenger messenger, final IRemoteMessenger remoteMessenger,
+  public Messengers(
+      final IMessenger messenger,
+      final IRemoteMessenger remoteMessenger,
       final IChannelMessenger channelMessenger) {
     this.messenger = messenger;
     this.remoteMessenger = remoteMessenger;

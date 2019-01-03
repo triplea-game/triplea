@@ -20,8 +20,8 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 
 /**
- * An attachment for instances of {@link Territory} that defines a canal through which certain land units may pass from
- * one bordering territory to another.
+ * An attachment for instances of {@link Territory} that defines a canal through which certain land
+ * units may pass from one bordering territory to another.
  */
 public class CanalAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -1991066817386812634L;
@@ -35,7 +35,8 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   /**
-   * Checks if the route contains both territories to pass through the given canal. If route is null returns true.
+   * Checks if the route contains both territories to pass through the given canal. If route is null
+   * returns true.
    */
   public static boolean isCanalOnRoute(final String canalName, final Route route) {
     if (route == null) {
@@ -59,7 +60,9 @@ public class CanalAttachment extends DefaultAttachment {
   }
 
   public static Set<CanalAttachment> get(final Territory t) {
-    return t.getAttachments().values().stream()
+    return t.getAttachments()
+        .values()
+        .stream()
         .filter(attachment -> attachment.getName().startsWith(Constants.CANAL_ATTACHMENT_PREFIX))
         .map(CanalAttachment.class::cast)
         .collect(Collectors.toSet());
@@ -144,7 +147,8 @@ public class CanalAttachment extends DefaultAttachment {
   public Set<UnitType> getExcludedUnits() {
     if (excludedUnits == null) {
       return new HashSet<>(
-          CollectionUtils.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
+          CollectionUtils.getMatches(
+              getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
     }
     return excludedUnits;
   }
@@ -159,7 +163,8 @@ public class CanalAttachment extends DefaultAttachment {
       throw new GameParseException("Canals must have a canalName set!" + thisErrorMsg());
     }
     if (landTerritories == null || landTerritories.size() == 0) {
-      throw new GameParseException("Canal named " + canalName + " must have landTerritories set!" + thisErrorMsg());
+      throw new GameParseException(
+          "Canal named " + canalName + " must have landTerritories set!" + thisErrorMsg());
     }
     final Set<Territory> territories = new HashSet<>();
     for (final Territory t : data.getMap()) {
@@ -172,21 +177,26 @@ public class CanalAttachment extends DefaultAttachment {
     }
     if (territories.size() != 2) {
       throw new GameParseException(
-          "Wrong number of sea zones for canal (exactly 2 sea zones may have the same canalName):" + territories);
+          "Wrong number of sea zones for canal (exactly 2 sea zones may have the same canalName):"
+              + territories);
     }
   }
 
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("canalName", MutableProperty.ofString(this::setCanalName, this::getCanalName, this::resetCanalName))
-        .put("landTerritories",
+        .put(
+            "canalName",
+            MutableProperty.ofString(this::setCanalName, this::getCanalName, this::resetCanalName))
+        .put(
+            "landTerritories",
             MutableProperty.of(
                 this::setLandTerritories,
                 this::setLandTerritories,
                 this::getLandTerritories,
                 this::resetLandTerritories))
-        .put("excludedUnits",
+        .put(
+            "excludedUnits",
             MutableProperty.of(
                 this::setExcludedUnits,
                 this::setExcludedUnits,

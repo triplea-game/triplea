@@ -12,9 +12,11 @@ public class LocalSystemCheckerTest {
 
   private static final SystemCheck PASSING_CHECK = new SystemCheck("no op", Runnables.doNothing());
   private static final SystemCheck FAILING_CHECK =
-      new SystemCheck("throws exception", () -> {
-        throw new RuntimeException(new Exception("test"));
-      });
+      new SystemCheck(
+          "throws exception",
+          () -> {
+            throw new RuntimeException(new Exception("test"));
+          });
 
   @Test
   public void testPassingCase() {
@@ -30,7 +32,8 @@ public class LocalSystemCheckerTest {
 
   @Test
   public void testMixedCase() {
-    final LocalSystemChecker checker = new LocalSystemChecker(ImmutableSet.of(PASSING_CHECK, FAILING_CHECK));
+    final LocalSystemChecker checker =
+        new LocalSystemChecker(ImmutableSet.of(PASSING_CHECK, FAILING_CHECK));
     assertThat(checker.getExceptions().size(), is(1));
   }
 }

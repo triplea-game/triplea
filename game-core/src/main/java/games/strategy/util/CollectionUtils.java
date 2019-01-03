@@ -11,9 +11,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Iterables;
 
-/**
- * A collection of useful methods for working with instances of {@link Collection}.
- */
+/** A collection of useful methods for working with instances of {@link Collection}. */
 public final class CollectionUtils {
   private CollectionUtils() {}
 
@@ -22,7 +20,6 @@ public final class CollectionUtils {
    *
    * @param collection The collection whose elements are to be matched.
    * @param predicate The predicate with which to test each element.
-   *
    * @return The count of elements in the specified collection that match the specified predicate.
    */
   public static <T> int countMatches(final Collection<T> collection, final Predicate<T> predicate) {
@@ -37,10 +34,10 @@ public final class CollectionUtils {
    *
    * @param collection The collection whose elements are to be matched.
    * @param predicate The predicate with which to test each element.
-   *
    * @return A collection of all elements that match the specified predicate.
    */
-  public static <T> List<T> getMatches(final Collection<T> collection, final Predicate<T> predicate) {
+  public static <T> List<T> getMatches(
+      final Collection<T> collection, final Predicate<T> predicate) {
     checkNotNull(collection);
     checkNotNull(predicate);
 
@@ -48,17 +45,17 @@ public final class CollectionUtils {
   }
 
   /**
-   * Returns the elements in the specified collection, up to the specified limit, that match the specified predicate.
+   * Returns the elements in the specified collection, up to the specified limit, that match the
+   * specified predicate.
    *
    * @param collection The collection whose elements are to be matched.
    * @param max The maximum number of elements in the returned collection.
    * @param predicate The predicate with which to test each element.
-   *
    * @return A collection of elements that match the specified predicate.
-   *
    * @throws IllegalArgumentException If {@code max} is negative.
    */
-  public static <T> List<T> getNMatches(final Collection<T> collection, final int max, final Predicate<T> predicate) {
+  public static <T> List<T> getNMatches(
+      final Collection<T> collection, final int max, final Predicate<T> predicate) {
     checkNotNull(collection);
     checkArgument(max >= 0, "max must not be negative");
     checkNotNull(predicate);
@@ -66,11 +63,7 @@ public final class CollectionUtils {
     return collection.stream().filter(predicate).limit(max).collect(Collectors.toList());
   }
 
-
-  /**
-   * return a such that a exists in c1 and a exists in c2.
-   * always returns a new collection.
-   */
+  /** return a such that a exists in c1 and a exists in c2. always returns a new collection. */
   public static <T> List<T> intersection(final Collection<T> c1, final Collection<T> c2) {
     if (c1 == null || c2 == null) {
       return new ArrayList<>();
@@ -78,10 +71,7 @@ public final class CollectionUtils {
     return c1.stream().filter(c2::contains).collect(Collectors.toList());
   }
 
-  /**
-   * Returns a such that a exists in c1 but not in c2.
-   * Always returns a new collection.
-   */
+  /** Returns a such that a exists in c1 but not in c2. Always returns a new collection. */
   public static <T> List<T> difference(final Collection<T> c1, final Collection<T> c2) {
     if (c1 == null || c1.isEmpty()) {
       return new ArrayList<>(0);
@@ -93,15 +83,15 @@ public final class CollectionUtils {
   }
 
   /**
-   * true if for each a in c1, a exists in c2,
-   * and if for each b in c2, b exist in c1
-   * and c1 and c2 are the same size.
-   * Note that (a,a,b) (a,b,b) are equal.
+   * true if for each a in c1, a exists in c2, and if for each b in c2, b exist in c1 and c1 and c2
+   * are the same size. Note that (a,a,b) (a,b,b) are equal.
    */
-  public static <T> boolean haveEqualSizeAndEquivalentElements(final Collection<T> c1, final Collection<T> c2) {
+  public static <T> boolean haveEqualSizeAndEquivalentElements(
+      final Collection<T> c1, final Collection<T> c2) {
     checkNotNull(c1);
     checkNotNull(c2);
 
-    return Iterables.elementsEqual(c1, c2) || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
+    return Iterables.elementsEqual(c1, c2)
+        || (c1.size() == c2.size() && c2.containsAll(c1) && c1.containsAll(c2));
   }
 }

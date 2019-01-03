@@ -15,7 +15,8 @@ public final class WrappedInvocationHandlerTest {
   }
 
   @Test
-  public void equals_ShouldReturnTrueWhenOtherInstanceIsWrappedInvocationHandlerProxyWithEqualDelegate() {
+  public void
+      equals_ShouldReturnTrueWhenOtherInstanceIsWrappedInvocationHandlerProxyWithEqualDelegate() {
     final Object proxy1 = newProxy(new WrappedInvocationHandler("test"));
     final Object proxy2 = newProxy(new WrappedInvocationHandler("test"));
 
@@ -23,7 +24,8 @@ public final class WrappedInvocationHandlerTest {
   }
 
   @Test
-  public void equals_ShouldReturnFalseWhenOtherInstanceIsWrappedInvocationHandlerProxyWithUnequalDelegate() {
+  public void
+      equals_ShouldReturnFalseWhenOtherInstanceIsWrappedInvocationHandlerProxyWithUnequalDelegate() {
     final Object proxy1 = newProxy(new WrappedInvocationHandler("test1"));
     final Object proxy2 = newProxy(new WrappedInvocationHandler("test2"));
 

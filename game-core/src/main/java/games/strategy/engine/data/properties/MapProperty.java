@@ -42,26 +42,33 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
       final String name,
       final String description) {
     properties.clear();
-    map.forEach((key, value) -> {
-      if (value instanceof Boolean) {
-        properties.add(new BooleanProperty(key, description, ((Boolean) value)));
-      } else if (value instanceof Color) {
-        properties.add(new ColorProperty(key, description, ((Color) value)));
-      } else if (value instanceof File) {
-        properties.add(new FileProperty(key, description, ((File) value)));
-      } else if (value instanceof String) {
-        properties.add(new StringProperty(key, description, ((String) value)));
-      } else if (value instanceof Collection) {
-        properties.add(new CollectionProperty<>(name, description, ((Collection<?>) value)));
-      } else if (value instanceof Integer) {
-        properties.add(new NumberProperty(key, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) value)));
-      } else if (value instanceof Double) {
-        properties.add(new DoubleProperty(key, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) value), 5));
-      } else {
-        final String valueTypeName = (value != null) ? value.getClass().getCanonicalName() : "<null>";
-        throw new IllegalArgumentException("cannot instantiate MapProperty with value type: " + valueTypeName);
-      }
-    });
+    map.forEach(
+        (key, value) -> {
+          if (value instanceof Boolean) {
+            properties.add(new BooleanProperty(key, description, ((Boolean) value)));
+          } else if (value instanceof Color) {
+            properties.add(new ColorProperty(key, description, ((Color) value)));
+          } else if (value instanceof File) {
+            properties.add(new FileProperty(key, description, ((File) value)));
+          } else if (value instanceof String) {
+            properties.add(new StringProperty(key, description, ((String) value)));
+          } else if (value instanceof Collection) {
+            properties.add(new CollectionProperty<>(name, description, ((Collection<?>) value)));
+          } else if (value instanceof Integer) {
+            properties.add(
+                new NumberProperty(
+                    key, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) value)));
+          } else if (value instanceof Double) {
+            properties.add(
+                new DoubleProperty(
+                    key, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) value), 5));
+          } else {
+            final String valueTypeName =
+                (value != null) ? value.getClass().getCanonicalName() : "<null>";
+            throw new IllegalArgumentException(
+                "cannot instantiate MapProperty with value type: " + valueTypeName);
+          }
+        });
   }
 
   @Override
@@ -117,16 +124,12 @@ public class MapProperty<V> extends AbstractEditableProperty<Map<String, V>> {
     return true;
   }
 
-  private static boolean areAllElementsNullOrInstanceOf(final Collection<?> collection, final Class<?> type) {
-    return collection.stream()
-        .filter(not(Objects::isNull))
-        .allMatch(type::isInstance);
+  private static boolean areAllElementsNullOrInstanceOf(
+      final Collection<?> collection, final Class<?> type) {
+    return collection.stream().filter(not(Objects::isNull)).allMatch(type::isInstance);
   }
 
   private Class<?> getMapValueType() {
-    return map.values().stream()
-        .<Class<?>>map(Object::getClass)
-        .findAny()
-        .orElse(Object.class);
+    return map.values().stream().<Class<?>>map(Object::getClass).findAny().orElse(Object.class);
   }
 }

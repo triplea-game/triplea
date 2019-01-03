@@ -54,17 +54,18 @@ public class TimespanDialogTest {
     // We can't use Integer#MAX_VALUE for years, because this will result in a long-overflow
     // So we just limit the amount for every time unit
     Arrays.asList(
-        TimeUnit.MINUTES,
-        TimeUnit.HOURS,
-        TimeUnit.DAYS,
-        TimeUnit.WEEKS,
-        TimeUnit.MONTHS,
-        TimeUnit.YEARS)
-        .forEach(timeUnit -> {
-          TimespanDialog.runAction(
-              d -> assertTrue(d.after(new Date())),
-              Optional.of(new Timespan(TimespanDialog.MAX_DURATION, timeUnit)));
-        });
+            TimeUnit.MINUTES,
+            TimeUnit.HOURS,
+            TimeUnit.DAYS,
+            TimeUnit.WEEKS,
+            TimeUnit.MONTHS,
+            TimeUnit.YEARS)
+        .forEach(
+            timeUnit -> {
+              TimespanDialog.runAction(
+                  d -> assertTrue(d.after(new Date())),
+                  Optional.of(new Timespan(TimespanDialog.MAX_DURATION, timeUnit)));
+            });
   }
 
   @Test

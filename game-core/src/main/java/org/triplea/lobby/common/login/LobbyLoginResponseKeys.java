@@ -1,8 +1,6 @@
 package org.triplea.lobby.common.login;
 
-/**
- * The property keys that may be present in a lobby authentication protocol response.
- */
+/** The property keys that may be present in a lobby authentication protocol response. */
 public final class LobbyLoginResponseKeys {
   public static final String ANONYMOUS_LOGIN = "ANONYMOUS_LOGIN";
   public static final String EMAIL = "EMAIL";

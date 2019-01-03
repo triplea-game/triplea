@@ -15,9 +15,7 @@ import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import lombok.extern.java.Log;
 
-/**
- * An action for downloading a save game from the server node to a client node.
- */
+/** An action for downloading a save game from the server node to a client node. */
 @Log
 public class GetGameSaveClientAction extends AbstractAction {
   private static final long serialVersionUID = 1118264715230932068L;
@@ -41,7 +39,8 @@ public class GetGameSaveClientAction extends AbstractAction {
       } catch (final IOException exception) {
         log.log(Level.SEVERE, "Failed to download save game from server", exception);
       }
-      JOptionPane.showMessageDialog(frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+      JOptionPane.showMessageDialog(
+          frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
     }
   }
 }

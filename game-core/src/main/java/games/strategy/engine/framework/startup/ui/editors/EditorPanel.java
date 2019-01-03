@@ -18,8 +18,8 @@ import games.strategy.engine.framework.startup.ui.editors.validators.IValidator;
 import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyValidator;
 
 /**
- * Base class for editors.
- * Editors fire property Events in response when changed, so other editors or GUI can be notified
+ * Base class for editors. Editors fire property Events in response when changed, so other editors
+ * or GUI can be notified
  */
 public abstract class EditorPanel extends JPanel {
   private static final long serialVersionUID = 8156959717037201321L;
@@ -34,8 +34,8 @@ public abstract class EditorPanel extends JPanel {
   /**
    * Registers a listener for editor changes.
    *
-   * @param listener the listener. be aware that the oldValue and newValue properties of the PropertyChangeEvent
-   *        will both be null
+   * @param listener the listener. be aware that the oldValue and newValue properties of the
+   *     PropertyChangeEvent will both be null
    */
   @Override
   public void addPropertyChangeListener(final PropertyChangeListener listener) {
@@ -43,7 +43,8 @@ public abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * Validates that a text field is not empty. if the content is not valid the associated label is marked in red
+   * Validates that a text field is not empty. if the content is not valid the associated label is
+   * marked in red
    *
    * @param field the field to validate
    * @param label the associated label
@@ -54,21 +55,22 @@ public abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * Validates a the contents of a text field using a specified validator. if the content is not valid the associated
-   * label is marked in red
+   * Validates a the contents of a text field using a specified validator. if the content is not
+   * valid the associated label is marked in red
    *
    * @param field the field to validate
    * @param label the associated label
    * @param validator the validator
    * @return true if text field content is valid
    */
-  protected boolean validateTextField(final JTextField field, final JLabel label, final IValidator validator) {
+  protected boolean validateTextField(
+      final JTextField field, final JLabel label, final IValidator validator) {
     return validateText(field.getText(), label, validator);
   }
 
   /**
-   * Validates a the contents of text using a specified validator. if the content is not valid the associated label is
-   * marked in red
+   * Validates a the contents of text using a specified validator. if the content is not valid the
+   * associated label is marked in red
    *
    * @param text the text to validate
    * @param label the associated label
@@ -84,8 +86,8 @@ public abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * called to see if the bean that is edited is in a valid state.
-   * This is typically called by editor listeners in response to a change in the editor
+   * called to see if the bean that is edited is in a valid state. This is typically called by
+   * editor listeners in response to a change in the editor
    *
    * @return true if valid
    */
@@ -119,8 +121,8 @@ public abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * Sets the label with for labels in the first column of the gridBagLayout.
-   * This can be used to align components in a GUI, so all editors (or nested editors) have same label width
+   * Sets the label with for labels in the first column of the gridBagLayout. This can be used to
+   * align components in a GUI, so all editors (or nested editors) have same label width
    *
    * @param width the new width of the labels
    */
@@ -139,16 +141,14 @@ public abstract class EditorPanel extends JPanel {
   }
 
   /**
-   * Fires the EDITOR_CHANGE property change, to notify propertyChangeListeners which have registered to be
-   * notified when the editor modifies the bean.
+   * Fires the EDITOR_CHANGE property change, to notify propertyChangeListeners which have
+   * registered to be notified when the editor modifies the bean.
    */
   protected void fireEditorChanged() {
     firePropertyChange(EDITOR_CHANGE, null, null);
   }
 
-  /**
-   * Document listener which calls fireEditorChanged in response to any document change.
-   */
+  /** Document listener which calls fireEditorChanged in response to any document change. */
   protected class EditorChangedFiringDocumentListener implements DocumentListener {
     @Override
     public void changedUpdate(final DocumentEvent e) {

@@ -16,9 +16,7 @@ import games.strategy.util.LocalizeHtml;
 import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
-/**
- * Generates unit tooltips based on the content of the map's {@code tooltips.properties} file.
- */
+/** Generates unit tooltips based on the content of the map's {@code tooltips.properties} file. */
 @Log
 public final class TooltipProperties {
   // Filename
@@ -54,16 +52,16 @@ public final class TooltipProperties {
     return ttp;
   }
 
-  /**
-   * Get unit type tooltip checking for custom tooltip content.
-   */
+  /** Get unit type tooltip checking for custom tooltip content. */
   public String getTooltip(final UnitType unitType, final PlayerId playerId) {
     final String customTip = getToolTip(unitType, playerId, false);
     if (!customTip.isEmpty()) {
       return LocalizeHtml.localizeImgLinksInHtml(customTip);
     }
-    final String generated = UnitAttachment.get(unitType)
-        .toStringShortAndOnlyImportantDifferences((playerId == null ? PlayerId.NULL_PLAYERID : playerId));
+    final String generated =
+        UnitAttachment.get(unitType)
+            .toStringShortAndOnlyImportantDifferences(
+                (playerId == null ? PlayerId.NULL_PLAYERID : playerId));
     final String appendedTip = getToolTip(unitType, playerId, true);
     if (!appendedTip.isEmpty()) {
       return generated + LocalizeHtml.localizeImgLinksInHtml(appendedTip);
@@ -73,8 +71,17 @@ public final class TooltipProperties {
 
   private String getToolTip(final UnitType ut, final PlayerId playerId, final boolean isAppending) {
     final String append = isAppending ? ".append" : "";
-    final String tooltip = properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + "."
-        + (playerId == null ? PlayerId.NULL_PLAYERID.getName() : playerId.getName()) + append, "");
+    final String tooltip =
+        properties.getProperty(
+            TOOLTIP
+                + "."
+                + UNIT
+                + "."
+                + ut.getName()
+                + "."
+                + (playerId == null ? PlayerId.NULL_PLAYERID.getName() : playerId.getName())
+                + append,
+            "");
     return (tooltip == null || tooltip.isEmpty())
         ? properties.getProperty(TOOLTIP + "." + UNIT + "." + ut.getName() + append, "")
         : tooltip;

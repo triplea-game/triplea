@@ -23,23 +23,20 @@ import games.strategy.triplea.delegate.Matches;
 
 /**
  * Pro retreat AI.
+ *
  * <ol>
- * <li>Consider whether submerging increases/decreases TUV swing</li>
- * <li>Consider what territory needs units when retreating</li>
+ *   <li>Consider whether submerging increases/decreases TUV swing
+ *   <li>Consider what territory needs units when retreating
  * </ol>
- * AFAIK there are 2 options available for maps (land battles):
- * 1. air can retreat separately on an amphib attack
- * 2. non-amphib land can retreat separately
- * So the result would be 4 situations:
- * 1. revised: you can't retreat anything on amphib
- * 2. only air can retreat on amphib
- * 3. only non-amphib land can retreat on amphib
- * 4. aa50: air and non-amphib land can retreat on amphib
+ *
+ * AFAIK there are 2 options available for maps (land battles): 1. air can retreat separately on an
+ * amphib attack 2. non-amphib land can retreat separately So the result would be 4 situations: 1.
+ * revised: you can't retreat anything on amphib 2. only air can retreat on amphib 3. only
+ * non-amphib land can retreat on amphib 4. aa50: air and non-amphib land can retreat on amphib
  * Check by following TripleA.Constants -> TripleA.Properties statis get methods -> MustFightBattle
- * For sea battles you can have:
- * 1. attacker retreats all units at end of battle
- * 2. attacker submerges sub at start or end of battle
- * 3. defender submerges (or moves if Classic rules) sub at start or end of battle
+ * For sea battles you can have: 1. attacker retreats all units at end of battle 2. attacker
+ * submerges sub at start or end of battle 3. defender submerges (or moves if Classic rules) sub at
+ * start or end of battle
  */
 class ProRetreatAi {
 
@@ -49,7 +46,9 @@ class ProRetreatAi {
     calc = ai.getCalc();
   }
 
-  Territory retreatQuery(final GUID battleId, final Territory battleTerritory,
+  Territory retreatQuery(
+      final GUID battleId,
+      final Territory battleTerritory,
       final Collection<Territory> possibleTerritories) {
 
     // Get battle data
@@ -64,7 +63,8 @@ class ProRetreatAi {
     final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
 
     // Calculate battle results
-    final ProBattleResult result = calc.calculateBattleResults(battleTerritory, attackers, defenders, new HashSet<>());
+    final ProBattleResult result =
+        calc.calculateBattleResults(battleTerritory, attackers, defenders, new HashSet<>());
 
     // Determine if it has a factory
     int isFactory = 0;
@@ -86,7 +86,8 @@ class ProRetreatAi {
     // Calculate current attack value
     double territoryValue = 0;
     if (result.isHasLandUnitRemaining() || attackers.stream().noneMatch(Matches.unitIsAir())) {
-      territoryValue = result.getWinPercentage() / 100 * (2.0 * production * (1 + isFactory) * (1 + isCapital));
+      territoryValue =
+          result.getWinPercentage() / 100 * (2.0 * production * (1 + isFactory) * (1 + isCapital));
     }
     double battleValue = result.getTuvSwing() + territoryValue;
     if (!isAttacker) {
@@ -99,26 +100,46 @@ class ProRetreatAi {
       // Retreat to capital if available otherwise the territory with highest defense strength
       Territory retreatTerritory = null;
       double maxStrength = Double.NEGATIVE_INFINITY;
-      final Territory myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
+      final Territory myCapital =
+          TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
       for (final Territory t : possibleTerritories) {
         if (t.equals(myCapital)) {
           retreatTerritory = t;
           break;
         }
-        final double strength = ProBattleUtils.estimateStrength(t,
-            t.getUnits().getMatches(Matches.isUnitAllied(player, data)), new ArrayList<>(), false);
+        final double strength =
+            ProBattleUtils.estimateStrength(
+                t,
+                t.getUnits().getMatches(Matches.isUnitAllied(player, data)),
+                new ArrayList<>(),
+                false);
         if (strength > maxStrength) {
           retreatTerritory = t;
           maxStrength = strength;
         }
       }
-      ProLogger.debug(player.getName() + " retreating from territory " + battleTerritory + " to " + retreatTerritory
-          + " because AttackValue=" + battleValue + ", TUVSwing=" + result.getTuvSwing() + ", possibleTerritories="
-          + possibleTerritories.size());
+      ProLogger.debug(
+          player.getName()
+              + " retreating from territory "
+              + battleTerritory
+              + " to "
+              + retreatTerritory
+              + " because AttackValue="
+              + battleValue
+              + ", TUVSwing="
+              + result.getTuvSwing()
+              + ", possibleTerritories="
+              + possibleTerritories.size());
       return retreatTerritory;
     }
-    ProLogger.debug(player.getName() + " not retreating from territory " + battleTerritory + " with AttackValue="
-        + battleValue + ", TUVSwing=" + result.getTuvSwing());
+    ProLogger.debug(
+        player.getName()
+            + " not retreating from territory "
+            + battleTerritory
+            + " with AttackValue="
+            + battleValue
+            + ", TUVSwing="
+            + result.getTuvSwing());
 
     return null;
   }

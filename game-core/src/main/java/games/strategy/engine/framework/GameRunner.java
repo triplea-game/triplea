@@ -79,8 +79,8 @@ import games.strategy.util.Version;
 import lombok.extern.java.Log;
 
 /**
- * GameRunner - The entrance class with the main method.
- * In this class commonly used constants are getting defined and the Game is being launched
+ * GameRunner - The entrance class with the main method. In this class commonly used constants are
+ * getting defined and the Game is being launched
  */
 @Log
 public final class GameRunner {
@@ -95,45 +95,53 @@ public final class GameRunner {
   private GameRunner() {}
 
   /**
-   * Starts a new UI-enabled game client. This method will return before the game client UI exits. The game client UI
-   * will continue to run until it is shut down by the user.
+   * Starts a new UI-enabled game client. This method will return before the game client UI exits.
+   * The game client UI will continue to run until it is shut down by the user.
    *
-   * <p>
-   * No command-line arguments will launch a client; additional arguments can be supplied to specify additional
-   * behavior.
-   * </p>
+   * <p>No command-line arguments will launch a client; additional arguments can be supplied to
+   * specify additional behavior.
    *
    * @throws IllegalStateException If called from a headless environment.
    */
   public static void start(final String[] args) {
     checkNotNull(args);
-    checkState(!GraphicsEnvironment.isHeadless(),
+    checkState(
+        !GraphicsEnvironment.isHeadless(),
         "UI client launcher invoked from headless environment. This is currently prohibited by design to "
             + "avoid UI rendering errors in the headless environment.");
 
-    Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
+    Thread.setDefaultUncaughtExceptionHandler(
+        (t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
     ClientSetting.initialize();
 
     if (!ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
-      Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-        LookAndFeel.initialize();
-        initializeLogManager(Console.newInstance());
-        ErrorMessage.enable();
-      }));
+      Interruptibles.await(
+          () ->
+              SwingAction.invokeAndWait(
+                  () -> {
+                    LookAndFeel.initialize();
+                    initializeLogManager(Console.newInstance());
+                    ErrorMessage.enable();
+                  }));
     }
     ArgParser.handleCommandLineArgs(args);
 
     if (SystemProperties.isMac()) {
-      com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {
-        final String encoding = StandardCharsets.UTF_8.displayName();
-        try {
-          final String mapName = URLDecoder.decode(
-              event.getURI().toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()), encoding);
-          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
-        } catch (final UnsupportedEncodingException e) {
-          throw new AssertionError(encoding + " is not a supported encoding!", e);
-        }
-      });
+      com.apple.eawt.Application.getApplication()
+          .setOpenURIHandler(
+              event -> {
+                final String encoding = StandardCharsets.UTF_8.displayName();
+                try {
+                  final String mapName =
+                      URLDecoder.decode(
+                          event.getURI().toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()),
+                          encoding);
+                  SwingUtilities.invokeLater(
+                      () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
+                } catch (final UnsupportedEncodingException e) {
+                  throw new AssertionError(encoding + " is not a supported encoding!", e);
+                }
+              });
     }
 
     if (HttpProxy.isUsingSystemProxy()) {
@@ -143,11 +151,12 @@ public final class GameRunner {
     if (ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
       Services.loadAny(JavaFxClientRunner.class).start(args);
     } else {
-      SwingUtilities.invokeLater(() -> {
-        mainFrame = newMainFrame();
-        setupPanelModel.showSelectType();
-        new Thread(GameRunner::showMainFrame).start();
-      });
+      SwingUtilities.invokeLater(
+          () -> {
+            mainFrame = newMainFrame();
+            setupPanelModel.showSelectType();
+            new Thread(GameRunner::showMainFrame).start();
+          });
 
       LocalSystemChecker.launch();
       UpdateChecks.launch();
@@ -180,7 +189,6 @@ public final class GameRunner {
    * Creates a new modeless dialog with the specified title whose parent is the main frame window.
    *
    * @param title The dialog title.
-   *
    * @return A new modeless dialog.
    */
   public static JDialog newDialog(final String title) {
@@ -196,7 +204,8 @@ public final class GameRunner {
   /**
    * Opens a Swing FileChooser menu.
    *
-   * @return Empty optional if dialog is closed without selection, otherwise returns the user selection.
+   * @return Empty optional if dialog is closed without selection, otherwise returns the user
+   *     selection.
    */
   public static Optional<File> showFileChooser(final FileFilter fileFilter) {
     final JFileChooser fileChooser = new JFileChooser();
@@ -210,8 +219,8 @@ public final class GameRunner {
   }
 
   /**
-   * Opens a file selection dialog where a user can select/create a file for TripleA save game.
-   * An empty optional is returned if user just closes down the dialog window.
+   * Opens a file selection dialog where a user can select/create a file for TripleA save game. An
+   * empty optional is returned if user just closes down the dialog window.
    */
   public static Optional<File> showSaveGameFileChooser() {
     // Non-Mac platforms should use the normal Swing JFileChooser
@@ -232,8 +241,8 @@ public final class GameRunner {
   }
 
   /**
-   * Strong type for dialog titles. Keeps clear which data is for message body and title, avoids parameter swapping
-   * problem and makes refactoring easier.
+   * Strong type for dialog titles. Keeps clear which data is for message body and title, avoids
+   * parameter swapping problem and makes refactoring easier.
    */
   public static class Title {
     public final String value;
@@ -247,12 +256,13 @@ public final class GameRunner {
     }
   }
 
-  public static int showConfirmDialog(final String message, final Title title, final int optionType,
-      final int messageType) {
+  public static int showConfirmDialog(
+      final String message, final Title title, final int optionType, final int messageType) {
     return JOptionPane.showConfirmDialog(mainFrame, message, title.value, optionType, messageType);
   }
 
-  public static void showMessageDialog(final String message, final Title title, final int messageType) {
+  public static void showMessageDialog(
+      final String message, final Title title, final int messageType) {
     JOptionPane.showMessageDialog(mainFrame, message, title.value, messageType);
   }
 
@@ -261,15 +271,16 @@ public final class GameRunner {
   }
 
   /**
-   * Sets the 'main frame' to visible. In this context the main frame is the initial
-   * welcome (launch lobby/single player game etc..) screen presented to GUI enabled clients.
+   * Sets the 'main frame' to visible. In this context the main frame is the initial welcome (launch
+   * lobby/single player game etc..) screen presented to GUI enabled clients.
    */
   public static void showMainFrame() {
-    SwingUtilities.invokeLater(() -> {
-      mainFrame.requestFocus();
-      mainFrame.toFront();
-      mainFrame.setVisible(true);
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          mainFrame.requestFocus();
+          mainFrame.toFront();
+          mainFrame.setVisible(true);
+        });
     ProAi.gameOverClearCache();
 
     loadGame();
@@ -293,13 +304,12 @@ public final class GameRunner {
 
     final String downloadableMap = System.getProperty(TRIPLEA_MAP_DOWNLOAD, "");
     if (!downloadableMap.isEmpty()) {
-      SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
+      SwingUtilities.invokeLater(
+          () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
     }
   }
 
-  /**
-   * Returns the standard application icon typically displayed in a window's title bar.
-   */
+  /** Returns the standard application icon typically displayed in a window's title bar. */
   public static Image getGameIcon(final Window frame) {
     Image img = null;
     try {
@@ -317,22 +327,35 @@ public final class GameRunner {
     return img;
   }
 
-  /**
-   * Spawns a new process to host a network game.
-   */
-  public static void hostGame(final int port, final String playerName, final String comments, final String password,
+  /** Spawns a new process to host a network game. */
+  public static void hostGame(
+      final int port,
+      final String playerName,
+      final String comments,
+      final String password,
       final Messengers messengers) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
     commands.add("-D" + TRIPLEA_SERVER + "=true");
     commands.add("-D" + TRIPLEA_PORT + "=" + port);
     commands.add("-D" + TRIPLEA_NAME + "=" + playerName);
-    commands.add("-D" + LOBBY_HOST + "="
-        + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
-    commands.add("-D" + LOBBY_PORT + "="
-        + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
+    commands.add(
+        "-D"
+            + LOBBY_HOST
+            + "="
+            + messengers
+                .getMessenger()
+                .getRemoteServerSocketAddress()
+                .getAddress()
+                .getHostAddress());
+    commands.add(
+        "-D"
+            + LOBBY_PORT
+            + "="
+            + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
-    commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
+    commands.add(
+        "-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {
       commands.add("-D" + SERVER_PASSWORD + "=" + password);
     }
@@ -344,21 +367,24 @@ public final class GameRunner {
     ProcessRunnerUtil.exec(commands);
   }
 
-  /**
-   * Spawns a new process to join a network game.
-   */
-  public static void joinGame(final GameDescription description, final Messengers messengers, final Container parent) {
+  /** Spawns a new process to join a network game. */
+  public static void joinGame(
+      final GameDescription description, final Messengers messengers, final Container parent) {
     final GameDescription.GameStatus status = description.getStatus();
     if (GameDescription.GameStatus.LAUNCHING == status) {
       return;
     }
 
     final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
-    if (!GameEngineVersion.of(ClientContext.engineVersion()).isCompatibleWithEngineVersion(engineVersionOfGameToJoin)) {
-      JOptionPane.showMessageDialog(parent,
-          "Host is using version " + engineVersionOfGameToJoin.toStringFull()
+    if (!GameEngineVersion.of(ClientContext.engineVersion())
+        .isCompatibleWithEngineVersion(engineVersionOfGameToJoin)) {
+      JOptionPane.showMessageDialog(
+          parent,
+          "Host is using version "
+              + engineVersionOfGameToJoin.toStringFull()
               + ". You need to have a compatible engine version in order to join this game.",
-          "Incompatible TripleA engine", JOptionPane.ERROR_MESSAGE);
+          "Incompatible TripleA engine",
+          JOptionPane.ERROR_MESSAGE);
       return;
     }
 
@@ -367,25 +393,25 @@ public final class GameRunner {
     final String prefix = "-D";
     commands.add(prefix + TRIPLEA_CLIENT + "=true");
     commands.add(prefix + TRIPLEA_PORT + "=" + description.getPort());
-    commands.add(prefix + TRIPLEA_HOST + "=" + description.getHostedBy().getAddress().getHostAddress());
+    commands.add(
+        prefix + TRIPLEA_HOST + "=" + description.getHostedBy().getAddress().getHostAddress());
     commands.add(prefix + TRIPLEA_NAME + "=" + messengers.getMessenger().getLocalNode().getName());
     commands.add(Services.loadAny(ApplicationContext.class).getMainClass().getName());
     ProcessRunnerUtil.exec(commands);
   }
 
   public static void exitGameIfFinished() {
-    SwingUtilities.invokeLater(() -> {
-      final boolean allFramesClosed = Arrays.stream(Frame.getFrames())
-          .noneMatch(Component::isVisible);
-      if (allFramesClosed) {
-        ExitStatus.SUCCESS.exit();
-      }
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          final boolean allFramesClosed =
+              Arrays.stream(Frame.getFrames()).noneMatch(Component::isVisible);
+          if (allFramesClosed) {
+            ExitStatus.SUCCESS.exit();
+          }
+        });
   }
 
-  /**
-   * After the game has been left, call this.
-   */
+  /** After the game has been left, call this. */
   public static void clientLeftGame() {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("This method must not be called from the EDT");

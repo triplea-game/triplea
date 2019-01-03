@@ -4,9 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.util.IntegerMap;
 
-/**
- * A repair rule.
- */
+/** A repair rule. */
 public class RepairRule extends DefaultNamed {
   private static final long serialVersionUID = -45646671022993959L;
 
@@ -35,12 +33,11 @@ public class RepairRule extends DefaultNamed {
     costs.put(resource, quantity);
   }
 
-  /**
-   * Benefits must be a resource or a unit.
-   */
+  /** Benefits must be a resource or a unit. */
   protected void addResult(final NamedAttachable obj, final int quantity) {
     if (!(obj instanceof UnitType) && !(obj instanceof Resource)) {
-      throw new IllegalArgumentException("results must be units or resources, not:" + obj.getClass().getName());
+      throw new IllegalArgumentException(
+          "results must be units or resources, not:" + obj.getClass().getName());
     }
     results.put(obj, quantity);
   }

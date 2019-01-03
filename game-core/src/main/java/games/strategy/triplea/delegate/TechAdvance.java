@@ -20,12 +20,11 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.util.Tuple;
 
-/**
- * Superclass for all technology advances.
- */
+/** Superclass for all technology advances. */
 public abstract class TechAdvance extends NamedAttachable {
   private static final long serialVersionUID = -1076712297024403156L;
-  private static final Class<?>[] preDefinedTechConstructorParameter = new Class<?>[] {GameData.class};
+  private static final Class<?>[] preDefinedTechConstructorParameter =
+      new Class<?>[] {GameData.class};
   public static final String TECH_NAME_SUPER_SUBS = "Super subs";
   public static final String TECH_PROPERTY_SUPER_SUBS = "superSub";
   public static final String TECH_NAME_JET_POWER = "Jet Power";
@@ -44,8 +43,10 @@ public abstract class TechAdvance extends NamedAttachable {
   public static final String TECH_PROPERTY_ROCKETS = "rocket";
   public static final String TECH_NAME_PARATROOPERS = "Paratroopers";
   public static final String TECH_PROPERTY_PARATROOPERS = "paratroopers";
-  public static final String TECH_NAME_INCREASED_FACTORY_PRODUCTION = "Increased Factory Production";
-  public static final String TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION = "increasedFactoryProduction";
+  public static final String TECH_NAME_INCREASED_FACTORY_PRODUCTION =
+      "Increased Factory Production";
+  public static final String TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION =
+      "increasedFactoryProduction";
   public static final String TECH_NAME_WAR_BONDS = "War Bonds";
   public static final String TECH_PROPERTY_WAR_BONDS = "warBonds";
   public static final String TECH_NAME_MECHANIZED_INFANTRY = "Mechanized Infantry";
@@ -54,27 +55,40 @@ public abstract class TechAdvance extends NamedAttachable {
   public static final String TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY = "industrialTechnology";
   public static final String TECH_NAME_DESTROYER_BOMBARD = "Destroyer Bombard";
   public static final String TECH_PROPERTY_DESTROYER_BOMBARD = "destroyerBombard";
-  public static final List<String> ALL_PREDEFINED_TECHNOLOGY_NAMES = Collections.unmodifiableList(
-      Arrays.asList(TECH_NAME_SUPER_SUBS, TECH_NAME_JET_POWER, TECH_NAME_IMPROVED_SHIPYARDS, TECH_NAME_AA_RADAR,
-          TECH_NAME_LONG_RANGE_AIRCRAFT, TECH_NAME_HEAVY_BOMBER, TECH_NAME_IMPROVED_ARTILLERY_SUPPORT,
-          TECH_NAME_ROCKETS, TECH_NAME_PARATROOPERS, TECH_NAME_INCREASED_FACTORY_PRODUCTION, TECH_NAME_WAR_BONDS,
-          TECH_NAME_MECHANIZED_INFANTRY, TECH_NAME_INDUSTRIAL_TECHNOLOGY, TECH_NAME_DESTROYER_BOMBARD));
+  public static final List<String> ALL_PREDEFINED_TECHNOLOGY_NAMES =
+      Collections.unmodifiableList(
+          Arrays.asList(
+              TECH_NAME_SUPER_SUBS,
+              TECH_NAME_JET_POWER,
+              TECH_NAME_IMPROVED_SHIPYARDS,
+              TECH_NAME_AA_RADAR,
+              TECH_NAME_LONG_RANGE_AIRCRAFT,
+              TECH_NAME_HEAVY_BOMBER,
+              TECH_NAME_IMPROVED_ARTILLERY_SUPPORT,
+              TECH_NAME_ROCKETS,
+              TECH_NAME_PARATROOPERS,
+              TECH_NAME_INCREASED_FACTORY_PRODUCTION,
+              TECH_NAME_WAR_BONDS,
+              TECH_NAME_MECHANIZED_INFANTRY,
+              TECH_NAME_INDUSTRIAL_TECHNOLOGY,
+              TECH_NAME_DESTROYER_BOMBARD));
   private static final Map<String, Class<? extends TechAdvance>> ALL_PREDEFINED_TECHNOLOGIES =
       newPredefinedTechnologyMap();
 
   private static Map<String, Class<? extends TechAdvance>> newPredefinedTechnologyMap() {
-    final Map<String, Class<? extends TechAdvance>> preDefinedTechMap =
-        new HashMap<>();
+    final Map<String, Class<? extends TechAdvance>> preDefinedTechMap = new HashMap<>();
     preDefinedTechMap.put(TECH_PROPERTY_SUPER_SUBS, SuperSubsAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_JET_POWER, JetPowerAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_IMPROVED_SHIPYARDS, ImprovedShipyardsAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_AA_RADAR, AaRadarAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_LONG_RANGE_AIRCRAFT, LongRangeAircraftAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_HEAVY_BOMBER, HeavyBomberAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT, ImprovedArtillerySupportAdvance.class);
+    preDefinedTechMap.put(
+        TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT, ImprovedArtillerySupportAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_ROCKETS, RocketsAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_PARATROOPERS, ParatroopersAdvance.class);
-    preDefinedTechMap.put(TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION, IncreasedFactoryProductionAdvance.class);
+    preDefinedTechMap.put(
+        TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION, IncreasedFactoryProductionAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_WAR_BONDS, WarBondsAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_MECHANIZED_INFANTRY, MechanizedInfantryAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY, IndustrialTechnologyAdvance.class);
@@ -126,9 +140,7 @@ public abstract class TechAdvance extends NamedAttachable {
     tf.addAdvance(new MechanizedInfantryAdvance(tf.getData()));
   }
 
-  /**
-   * For the game parser only.
-   */
+  /** For the game parser only. */
   public static void createDefaultTechAdvances(final GameData data) {
     final TechnologyFrontier tf = data.getTechnologyFrontier();
     final boolean ww2v2 = Properties.getWW2V2(data);
@@ -145,7 +157,8 @@ public abstract class TechAdvance extends NamedAttachable {
     if (ww2v3) {
       final TechnologyFrontier an = new TechnologyFrontier("Air and Naval Advances", data);
       final TechnologyFrontier lp = new TechnologyFrontier("Land and Production Advances", data);
-      final Tuple<List<TechAdvance>, List<TechAdvance>> ww2v3advances = getWW2v3CategoriesWithTheirAdvances(data);
+      final Tuple<List<TechAdvance>, List<TechAdvance>> ww2v3advances =
+          getWW2v3CategoriesWithTheirAdvances(data);
       an.addAdvance(ww2v3advances.getFirst());
       lp.addAdvance(ww2v3advances.getSecond());
       frontiers.add(an);
@@ -164,30 +177,35 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   /**
-   * Creates and returns an instance of the well-known technology advance with the specified class name.
+   * Creates and returns an instance of the well-known technology advance with the specified class
+   * name.
    *
    * @param s The fully-qualified name of the technology advance class.
    * @param data
-   *
    * @throws IllegalArgumentException If {@code s} is not a well-known technology advance.
-   * @throws IllegalStateException If an error occurs while creating the new technology advance instance.
+   * @throws IllegalStateException If an error occurs while creating the new technology advance
+   *     instance.
    */
-  public static TechAdvance findDefinedAdvanceAndCreateAdvance(final String s, final GameData data) {
+  public static TechAdvance findDefinedAdvanceAndCreateAdvance(
+      final String s, final GameData data) {
     final Class<? extends TechAdvance> clazz = ALL_PREDEFINED_TECHNOLOGIES.get(s);
     if (clazz == null) {
       throw new IllegalArgumentException(s + " is not a valid technology");
     }
     final TechAdvance ta;
     try {
-      final Constructor<? extends TechAdvance> constructor = clazz.getConstructor(preDefinedTechConstructorParameter);
+      final Constructor<? extends TechAdvance> constructor =
+          clazz.getConstructor(preDefinedTechConstructorParameter);
       ta = constructor.newInstance(data);
     } catch (final Exception e) {
-      throw new IllegalStateException(s + " is not a valid technology or could not be instantiated", e);
+      throw new IllegalStateException(
+          s + " is not a valid technology or could not be instantiated", e);
     }
     return ta;
   }
 
-  static TechAdvance findAdvance(final String propertyString, final GameData data, final PlayerId player) {
+  static TechAdvance findAdvance(
+      final String propertyString, final GameData data, final PlayerId player) {
     for (final TechAdvance t : getTechAdvances(data, player)) {
       if (t.getProperty().equals(propertyString)) {
         return t;
@@ -197,10 +215,11 @@ public abstract class TechAdvance extends NamedAttachable {
   }
 
   /**
-   * Returns a tuple, where the first element contains air &amp; naval tech advances, and the second element contains
-   * land &amp; production tech advances.
+   * Returns a tuple, where the first element contains air &amp; naval tech advances, and the second
+   * element contains land &amp; production tech advances.
    */
-  private static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(final GameData data) {
+  private static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(
+      final GameData data) {
     data.acquireReadLock();
     final List<TechAdvance> allAdvances;
     try {
@@ -237,29 +256,27 @@ public abstract class TechAdvance extends NamedAttachable {
     return Tuple.of(airAndNaval, landAndProduction);
   }
 
-  /**
-   * Returns all tech advances possible in this game.
-   */
+  /** Returns all tech advances possible in this game. */
   public static List<TechAdvance> getTechAdvances(final GameData data) {
     return getTechAdvances(data, null);
   }
 
   /**
-   * Returns all tech advances that this player can possibly research. (Or if Player is null, returns all techs
-   * available in the game).
+   * Returns all tech advances that this player can possibly research. (Or if Player is null,
+   * returns all techs available in the game).
    */
   public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerId player) {
     final TechnologyFrontier technologyFrontier = data.getTechnologyFrontier();
     if (technologyFrontier != null && !technologyFrontier.isEmpty()) {
-      return (player != null) ? player.getTechnologyFrontierList().getAdvances() : technologyFrontier.getTechs();
+      return (player != null)
+          ? player.getTechnologyFrontierList().getAdvances()
+          : technologyFrontier.getTechs();
     }
     // the game has no techs, just return empty list
     return new ArrayList<>();
   }
 
-  /**
-   * Returns all possible tech categories for this player.
-   */
+  /** Returns all possible tech categories for this player. */
   public static List<TechnologyFrontier> getPlayerTechCategories(final PlayerId player) {
     checkNotNull(player);
 

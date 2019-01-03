@@ -30,21 +30,19 @@ import games.strategy.util.Interruptibles;
 public class SwingActionTest {
   private static final Object VALUE = new Object();
 
-  private static final Runnable RUNNABLE_THROWING_EXCEPTION = () -> {
-    throw new IllegalStateException();
-  };
+  private static final Runnable RUNNABLE_THROWING_EXCEPTION =
+      () -> {
+        throw new IllegalStateException();
+      };
 
-  private static final Supplier<?> SUPPLIER_THROWING_EXCEPTION = () -> {
-    throw new IllegalStateException();
-  };
-  @Mock
-  private Runnable action;
-  @Mock
-  private ActionEvent event;
-  @Mock
-  private ActionListener listener;
-  @Mock
-  private Consumer<KeyEvent> consumer;
+  private static final Supplier<?> SUPPLIER_THROWING_EXCEPTION =
+      () -> {
+        throw new IllegalStateException();
+      };
+  @Mock private Runnable action;
+  @Mock private ActionEvent event;
+  @Mock private ActionListener listener;
+  @Mock private Consumer<KeyEvent> consumer;
 
   @Test
   public void testActionOf() {
@@ -63,33 +61,38 @@ public class SwingActionTest {
   }
 
   @Test
-  public void testInvokeAndWait_ShouldInvokeActionWhenCalledOffEdt()
-      throws Exception {
+  public void testInvokeAndWait_ShouldInvokeActionWhenCalledOffEdt() throws Exception {
     SwingAction.invokeAndWait(action);
 
     verify(action).run();
   }
 
   @Test
-  public void testInvokeAndWait_ShouldInvokeActionWhenCalledOnEdt()
-      throws Exception {
-    SwingUtilities.invokeAndWait(() -> {
-      assertTrue(Interruptibles.await(() -> SwingAction.invokeAndWait(action)), "should not be interrupted");
-    });
+  public void testInvokeAndWait_ShouldInvokeActionWhenCalledOnEdt() throws Exception {
+    SwingUtilities.invokeAndWait(
+        () -> {
+          assertTrue(
+              Interruptibles.await(() -> SwingAction.invokeAndWait(action)),
+              "should not be interrupted");
+        });
 
     verify(action).run();
   }
 
   @Test
   public void testInvokeAndWait_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
-    assertThrows(IllegalStateException.class, () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION));
+    assertThrows(
+        IllegalStateException.class, () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION));
   }
 
   @Test
-  public void testInvokeAndWait_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt() throws Exception {
-    SwingUtilities.invokeAndWait(() -> assertThrows(
-        IllegalStateException.class,
-        () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION)));
+  public void testInvokeAndWait_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt()
+      throws Exception {
+    SwingUtilities.invokeAndWait(
+        () ->
+            assertThrows(
+                IllegalStateException.class,
+                () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION)));
   }
 
   @Test
@@ -99,23 +102,30 @@ public class SwingActionTest {
 
   @Test
   public void testInvokeAndWaitResult_ShouldReturnActionResultWhenCalledOnEdt() throws Exception {
-    SwingUtilities.invokeAndWait(() -> {
-      assertTrue(
-          Interruptibles.await(() -> assertEquals(VALUE, SwingAction.invokeAndWaitResult(() -> VALUE))),
-          "should not be interrupted");
-    });
+    SwingUtilities.invokeAndWait(
+        () -> {
+          assertTrue(
+              Interruptibles.await(
+                  () -> assertEquals(VALUE, SwingAction.invokeAndWaitResult(() -> VALUE))),
+              "should not be interrupted");
+        });
   }
 
   @Test
   public void testInvokeAndWaitResult_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
-    assertThrows(IllegalStateException.class, () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION));
+    assertThrows(
+        IllegalStateException.class,
+        () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION));
   }
 
   @Test
-  public void testInvokeAndWaitResult_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt() throws Exception {
-    SwingUtilities.invokeAndWait(() -> assertThrows(
-        IllegalStateException.class,
-        () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION)));
+  public void testInvokeAndWaitResult_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt()
+      throws Exception {
+    SwingUtilities.invokeAndWait(
+        () ->
+            assertThrows(
+                IllegalStateException.class,
+                () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION)));
   }
 
   @Test

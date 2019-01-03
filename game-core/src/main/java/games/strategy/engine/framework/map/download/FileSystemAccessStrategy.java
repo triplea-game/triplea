@@ -32,15 +32,20 @@ class FileSystemAccessStrategy {
     return (props.getVersion() == null) ? Optional.empty() : Optional.of(props.getVersion());
   }
 
-  static void remove(final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
-    SwingComponents.promptUser("Remove Maps?",
-        "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>"
-            + formatMapList(toRemove, DownloadFileDescription::getMapName) + "</html>",
+  static void remove(
+      final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
+    SwingComponents.promptUser(
+        "Remove Maps?",
+        "<html>Will remove "
+            + toRemove.size()
+            + " maps, are you sure? <br/>"
+            + formatMapList(toRemove, DownloadFileDescription::getMapName)
+            + "</html>",
         newRemoveMapAction(toRemove, listModel));
   }
 
-  private static Runnable newRemoveMapAction(final List<DownloadFileDescription> maps,
-      final DefaultListModel<String> listModel) {
+  private static Runnable newRemoveMapAction(
+      final List<DownloadFileDescription> maps, final DefaultListModel<String> listModel) {
     return () -> {
 
       // delete the map files
@@ -48,7 +53,10 @@ class FileSystemAccessStrategy {
         try {
           Files.delete(map.getInstallLocation().toPath());
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Failed to delete map: " + map.getInstallLocation().getAbsolutePath(), e);
+          log.log(
+              Level.SEVERE,
+              "Failed to delete map: " + map.getInstallLocation().getAbsolutePath(),
+              e);
         }
         map.getInstallLocation().delete();
       }
@@ -67,11 +75,11 @@ class FileSystemAccessStrategy {
         }
       }
 
-
       if (!deletes.isEmpty()) {
         showRemoveSuccessDialog("Successfully removed.", deletes);
         // only once we know for sure we deleted things, then delete the ".properties" file
-        deletes.stream()
+        deletes
+            .stream()
             .map(DownloadFileDescription::getInstallLocation)
             .map(location -> location + ".properties")
             .map(File::new)
@@ -81,37 +89,44 @@ class FileSystemAccessStrategy {
       }
 
       if (!fails.isEmpty()) {
-        showRemoveFailDialog("Unable to delete some of the maps files.<br />"
-            + "Manual removal of the files may be necessary:", fails);
+        showRemoveFailDialog(
+            "Unable to delete some of the maps files.<br />"
+                + "Manual removal of the files may be necessary:",
+            fails);
         fails.forEach(m -> m.getInstallLocation().deleteOnExit());
       }
     };
   }
 
-  private static void showRemoveFailDialog(final String failMessage, final List<DownloadFileDescription> mapList) {
+  private static void showRemoveFailDialog(
+      final String failMessage, final List<DownloadFileDescription> mapList) {
     final String message = newDialogMessage(failMessage, mapList);
     showDialog(message, mapList, (map) -> map.getInstallLocation().getAbsolutePath());
   }
 
-  private static void showRemoveSuccessDialog(final String successMessage,
-      final List<DownloadFileDescription> mapList) {
+  private static void showRemoveSuccessDialog(
+      final String successMessage, final List<DownloadFileDescription> mapList) {
     final String message = newDialogMessage(successMessage, mapList);
     showDialog(message, mapList, DownloadFileDescription::getMapName);
   }
 
-  private static void showDialog(final String message, final List<DownloadFileDescription> mapList,
+  private static void showDialog(
+      final String message,
+      final List<DownloadFileDescription> mapList,
       final Function<DownloadFileDescription, String> outputFunction) {
 
     SwingComponents.newMessageDialog(
         "<html>" + message + "<br /> " + formatMapList(mapList, outputFunction) + "</html>");
   }
 
-  private static String newDialogMessage(final String message, final List<DownloadFileDescription> mapList) {
+  private static String newDialogMessage(
+      final String message, final List<DownloadFileDescription> mapList) {
     final String plural = mapList.size() != 1 ? "s" : "";
     return message + " " + mapList.size() + " map" + plural;
   }
 
-  private static String formatMapList(final List<DownloadFileDescription> mapList,
+  private static String formatMapList(
+      final List<DownloadFileDescription> mapList,
       final Function<DownloadFileDescription, String> outputFunction) {
     final int maxMapsToList = 6;
     final StringBuilder sb = new StringBuilder("<ul>");

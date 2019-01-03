@@ -21,16 +21,19 @@ import com.google.common.collect.ImmutableMap;
 
 final class OpenJsonUtilsTest {
   private enum TestEnum {
-    FIRST, SECOND;
+    FIRST,
+    SECOND;
   }
 
   @Nested
   final class OptEnumTest {
     @Test
     void shouldReturnEnumValueWhenPresent() {
-      final JSONObject jsonObject = new JSONObject(ImmutableMap.of("name", TestEnum.FIRST.toString()));
+      final JSONObject jsonObject =
+          new JSONObject(ImmutableMap.of("name", TestEnum.FIRST.toString()));
 
-      final TestEnum value = OpenJsonUtils.optEnum(jsonObject, TestEnum.class, "name", TestEnum.SECOND);
+      final TestEnum value =
+          OpenJsonUtils.optEnum(jsonObject, TestEnum.class, "name", TestEnum.SECOND);
 
       assertThat(value, is(TestEnum.FIRST));
     }
@@ -39,7 +42,8 @@ final class OpenJsonUtilsTest {
     void shouldReturnDefaultValueWhenAbsent() {
       final JSONObject jsonObject = new JSONObject();
 
-      final TestEnum value = OpenJsonUtils.optEnum(jsonObject, TestEnum.class, "name", TestEnum.SECOND);
+      final TestEnum value =
+          OpenJsonUtils.optEnum(jsonObject, TestEnum.class, "name", TestEnum.SECOND);
 
       assertThat(value, is(TestEnum.SECOND));
     }
@@ -88,17 +92,20 @@ final class OpenJsonUtilsTest {
       final List<Object> expectedElements = Arrays.asList(new JSONArray(Arrays.asList(42)));
       final JSONArray jsonArray = new JSONArray(expectedElements);
 
-      final List<Object> actualElements = OpenJsonUtils.stream(jsonArray).collect(Collectors.toList());
+      final List<Object> actualElements =
+          OpenJsonUtils.stream(jsonArray).collect(Collectors.toList());
 
       assertThat(actualElements, is(expectedElements));
     }
 
     @Test
     void shouldNotConvertJsonObjectValue() {
-      final List<Object> expectedElements = Arrays.asList(new JSONObject(ImmutableMap.of("name", 42)));
+      final List<Object> expectedElements =
+          Arrays.asList(new JSONObject(ImmutableMap.of("name", 42)));
       final JSONArray jsonArray = new JSONArray(expectedElements);
 
-      final List<Object> actualElements = OpenJsonUtils.stream(jsonArray).collect(Collectors.toList());
+      final List<Object> actualElements =
+          OpenJsonUtils.stream(jsonArray).collect(Collectors.toList());
 
       assertThat(actualElements, is(expectedElements));
     }
@@ -130,7 +137,8 @@ final class OpenJsonUtilsTest {
 
       final List<Object> elements = OpenJsonUtils.toList(jsonArray);
 
-      // NB: need to test using reference equality because JSONObject#NULL#equals() is defined to be equal to null
+      // NB: need to test using reference equality because JSONObject#NULL#equals() is defined to be
+      // equal to null
       assertThat(elements.get(0), is(nullValue()));
     }
 
@@ -145,7 +153,8 @@ final class OpenJsonUtilsTest {
 
     @Test
     void shouldConvertJsonObjectValueToMap() {
-      final JSONArray jsonArray = new JSONArray(Arrays.asList(new JSONObject(ImmutableMap.of("name", 42))));
+      final JSONArray jsonArray =
+          new JSONArray(Arrays.asList(new JSONObject(ImmutableMap.of("name", 42))));
 
       final List<Object> elements = OpenJsonUtils.toList(jsonArray);
 
@@ -166,17 +175,12 @@ final class OpenJsonUtilsTest {
 
     @Test
     void shouldReturnMapContainingJsonObjectProperties() {
-      final JSONObject jsonObject = new JSONObject(ImmutableMap.of(
-          "name1", "value1",
-          "name2", 2,
-          "name3", 3.0));
+      final JSONObject jsonObject =
+          new JSONObject(ImmutableMap.of("name1", "value1", "name2", 2, "name3", 3.0));
 
       final Map<String, Object> properties = OpenJsonUtils.toMap(jsonObject);
 
-      assertThat(properties, is(ImmutableMap.of(
-          "name1", "value1",
-          "name2", 2,
-          "name3", 3.0)));
+      assertThat(properties, is(ImmutableMap.of("name1", "value1", "name2", 2, "name3", 3.0)));
     }
 
     @Test
@@ -185,14 +189,15 @@ final class OpenJsonUtilsTest {
 
       final Map<String, Object> properties = OpenJsonUtils.toMap(jsonObject);
 
-      // NB: need to test using reference equality because JSONObject#NULL#equals() is defined to be equal to null
+      // NB: need to test using reference equality because JSONObject#NULL#equals() is defined to be
+      // equal to null
       assertThat(properties.get("name"), is(nullValue()));
     }
 
     @Test
     void shouldConvertJsonArrayValueToList() {
-      final JSONObject jsonObject = new JSONObject(ImmutableMap.of(
-          "name", new JSONArray(Arrays.asList(42))));
+      final JSONObject jsonObject =
+          new JSONObject(ImmutableMap.of("name", new JSONArray(Arrays.asList(42))));
 
       final Map<String, Object> properties = OpenJsonUtils.toMap(jsonObject);
 
@@ -201,8 +206,8 @@ final class OpenJsonUtilsTest {
 
     @Test
     void shouldConvertJsonObjectValueToMap() {
-      final JSONObject jsonObject = new JSONObject(ImmutableMap.of(
-          "name", new JSONObject(ImmutableMap.of("childName", 42))));
+      final JSONObject jsonObject =
+          new JSONObject(ImmutableMap.of("name", new JSONObject(ImmutableMap.of("childName", 42))));
 
       final Map<String, Object> properties = OpenJsonUtils.toMap(jsonObject);
 

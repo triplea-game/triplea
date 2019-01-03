@@ -12,8 +12,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 /**
- * Builder for Swing text areas. Example usage:
- * <code><pre>
+ * Builder for Swing text areas. Example usage: <code><pre>
  *   JTextAreaBuilder textArea = JTextAreaBuilder.builder()
  *     .text(setting.description)
  *     .rows(2)
@@ -39,9 +38,8 @@ public final class JTextAreaBuilder {
   }
 
   /**
-   * Constructs a Swing JTextArea using current builder values.
-   * Values that must be set: text, rows, columns
-   * The JTextArea will have line wrapping turned on.
+   * Constructs a Swing JTextArea using current builder values. Values that must be set: text, rows,
+   * columns The JTextArea will have line wrapping turned on.
    */
   public JTextArea build() {
     Preconditions.checkArgument(rows > 0);
@@ -57,19 +55,21 @@ public final class JTextAreaBuilder {
     textArea.setBorder(new EmptyBorder(border, border, border, border));
 
     if (selectAllOnFocus) {
-      textArea.addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusGained(final FocusEvent e) {
-          selectAll(textArea);
-        }
-      });
+      textArea.addFocusListener(
+          new FocusAdapter() {
+            @Override
+            public void focusGained(final FocusEvent e) {
+              selectAll(textArea);
+            }
+          });
 
-      textArea.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(final MouseEvent e) {
-          selectAll(textArea);
-        }
-      });
+      textArea.addMouseListener(
+          new MouseAdapter() {
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+              selectAll(textArea);
+            }
+          });
     }
     return textArea;
   }
@@ -88,7 +88,6 @@ public final class JTextAreaBuilder {
    * Sets the number of text area rows.
    *
    * @param value The number of text area rows.
-   *
    * @throws IllegalArgumentException If {@code value} is not positive.
    */
   public JTextAreaBuilder rows(final int value) {
@@ -101,7 +100,6 @@ public final class JTextAreaBuilder {
    * Sets the number of text area columns.
    *
    * @param value The number of text area columns.
-   *
    * @throws IllegalArgumentException If {@code value} is not positive.
    */
   public JTextAreaBuilder columns(final int value) {

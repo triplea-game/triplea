@@ -17,16 +17,15 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.startup.mc.IServerStartupRemote;
 import lombok.extern.java.Log;
 
-/**
- * An action for changing game options across all network nodes from a client node.
- */
+/** An action for changing game options across all network nodes from a client node. */
 @Log
 public class ChangeGameOptionsClientAction extends AbstractAction {
   private static final long serialVersionUID = -6419002646689952824L;
   private final Component parent;
   private final IServerStartupRemote serverRemote;
 
-  public ChangeGameOptionsClientAction(final Component parent, final IServerStartupRemote serverRemote) {
+  public ChangeGameOptionsClientAction(
+      final Component parent, final IServerStartupRemote serverRemote) {
     super("Edit Game Options");
     this.parent = JOptionPane.getFrameForComponent(parent);
     this.serverRemote = serverRemote;
@@ -48,7 +47,8 @@ public class ChangeGameOptionsClientAction extends AbstractAction {
       final String ok = "OK";
       final String cancel = "Cancel";
       pane.setOptions(new Object[] {ok, cancel});
-      final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(parent), "Map Options");
+      final JDialog window =
+          pane.createDialog(JOptionPane.getFrameForComponent(parent), "Map Options");
       window.setVisible(true);
       final Object buttonPressed = pane.getValue();
       if (buttonPressed != null && !buttonPressed.equals(cancel)) {

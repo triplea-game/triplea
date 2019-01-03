@@ -33,16 +33,15 @@ import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLe
 import games.strategy.triplea.util.Stopwatch;
 import lombok.extern.java.Log;
 
-/**
- * A place to find images and map data for a ui.
- */
+/** A place to find images and map data for a ui. */
 @Log
 public class HeadedUiContext extends AbstractUiContext {
   protected MapData mapData;
   protected final TileImageFactory tileImageFactory = new TileImageFactory();
   protected final UnitImageFactory unitImageFactory = new UnitImageFactory();
   protected final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
-  protected final TerritoryEffectImageFactory territoryEffectImageFactory = new TerritoryEffectImageFactory();
+  protected final TerritoryEffectImageFactory territoryEffectImageFactory =
+      new TerritoryEffectImageFactory();
   protected final MapImage mapImage;
   protected final UnitIconImageFactory unitIconImageFactory = new UnitIconImageFactory();
   protected final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
@@ -79,13 +78,18 @@ public class HeadedUiContext extends AbstractUiContext {
     mapData = new MapData(resourceLoader);
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
-    final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
+    final double unitScale =
+        getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
     scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
     if (scale < 1) {
       setDrawTerritoryBordersAgainToMedium();
     }
-    unitImageFactory.setResourceLoader(resourceLoader, unitScale, mapData.getDefaultUnitWidth(),
-        mapData.getDefaultUnitHeight(), mapData.getDefaultUnitCounterOffsetWidth(),
+    unitImageFactory.setResourceLoader(
+        resourceLoader,
+        unitScale,
+        mapData.getDefaultUnitWidth(),
+        mapData.getDefaultUnitHeight(),
+        mapData.getDefaultUnitCounterOffsetWidth(),
         mapData.getDefaultUnitCounterOffsetHeight());
     // TODO: separate scale for resources
     resourceImageFactory.setResourceLoader(resourceLoader);
@@ -101,7 +105,8 @@ public class HeadedUiContext extends AbstractUiContext {
     drawTerritoryEffects = mapData.useTerritoryEffectMarkers();
     // load the sounds in a background thread,
     // avoids the pause where sounds dont load right away
-    // change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
+    // change the resource loader (this allows us to play sounds the map folder, rather than just
+    // default sounds)
     new Thread(() -> ClipPlayer.getInstance(resourceLoader), "TripleA sound loader").start();
     // load a new cursor
     cursor = Cursor.getDefaultCursor();
@@ -112,7 +117,8 @@ public class HeadedUiContext extends AbstractUiContext {
       try {
         final Image image = ImageIO.read(cursorUrl);
         if (image != null) {
-          final Point hotSpot = new Point(mapData.getMapCursorHotspotX(), mapData.getMapCursorHotspotY());
+          final Point hotSpot =
+              new Point(mapData.getMapCursorHotspotX(), mapData.getMapCursorHotspotY());
           cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");
         }
       } catch (final Exception e) {
@@ -138,10 +144,14 @@ public class HeadedUiContext extends AbstractUiContext {
   }
 
   @Override
-  public JLabel newUnitImageLabel(final UnitType type, final PlayerId player,
-      final UnitDamage damaged, final UnitEnable disabled) {
-    final Optional<ImageIcon> image = getUnitImageFactory().getIcon(type, player, damaged == UnitDamage.DAMAGED,
-        disabled == UnitEnable.DISABLED);
+  public JLabel newUnitImageLabel(
+      final UnitType type,
+      final PlayerId player,
+      final UnitDamage damaged,
+      final UnitEnable disabled) {
+    final Optional<ImageIcon> image =
+        getUnitImageFactory()
+            .getIcon(type, player, damaged == UnitDamage.DAMAGED, disabled == UnitEnable.DISABLED);
     final JLabel label = image.map(JLabel::new).orElseGet(JLabel::new);
     MapUnitTooltipManager.setUnitTooltip(label, type, player, 1);
     return label;
@@ -249,5 +259,4 @@ public class HeadedUiContext extends AbstractUiContext {
       log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
-
 }

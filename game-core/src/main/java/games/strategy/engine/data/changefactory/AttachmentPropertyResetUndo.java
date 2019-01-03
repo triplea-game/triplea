@@ -14,7 +14,10 @@ class AttachmentPropertyResetUndo extends Change {
   private final Object newValue;
   private final String property;
 
-  AttachmentPropertyResetUndo(final Attachable attachTo, final String attachmentName, final Object newValue,
+  AttachmentPropertyResetUndo(
+      final Attachable attachTo,
+      final String attachmentName,
+      final Object newValue,
       final String property) {
     this.attachmentName = attachmentName;
     attachedTo = attachTo;
@@ -43,7 +46,11 @@ class AttachmentPropertyResetUndo extends Change {
 
   @Override
   public String toString() {
-    return "AttachmentPropertyClearUndo attached to:" + attachedTo + " name:" + attachmentName + " new value:"
+    return "AttachmentPropertyClearUndo attached to:"
+        + attachedTo
+        + " name:"
+        + attachmentName
+        + " new value:"
         + newValue;
   }
 }

@@ -25,8 +25,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 @ExtendWith(MockitoExtension.class)
 public class UnitSeparatorTest {
 
-  @Mock
-  private MapData mockMapData;
+  @Mock private MapData mockMapData;
 
   @Test
   public void testGetSortedUnitCategories() throws Exception {
@@ -48,7 +47,8 @@ public class UnitSeparatorTest {
     units.addAll(GameDataTestUtil.truck(data).create(1, germans));
     GameDataTestUtil.addTo(northernGermany, units);
     when(mockMapData.shouldDrawUnit(ArgumentMatchers.anyString())).thenReturn(true);
-    final List<UnitCategory> categories = UnitSeparator.getSortedUnitCategories(northernGermany, mockMapData);
+    final List<UnitCategory> categories =
+        UnitSeparator.getSortedUnitCategories(northernGermany, mockMapData);
     final List<UnitCategory> expected = new ArrayList<>();
     expected.add(newUnitCategory("germanFactory", germans, data));
     expected.add(newUnitCategory("Truck", germans, data));
@@ -72,12 +72,14 @@ public class UnitSeparatorTest {
     units.addAll(GameDataTestUtil.italianInfantry(data).create(1, italians));
     GameDataTestUtil.addTo(northernGermany, units);
     when(mockMapData.shouldDrawUnit(ArgumentMatchers.anyString())).thenReturn(false);
-    final List<UnitCategory> categories = UnitSeparator.getSortedUnitCategories(northernGermany, mockMapData);
+    final List<UnitCategory> categories =
+        UnitSeparator.getSortedUnitCategories(northernGermany, mockMapData);
     final List<UnitCategory> expected = new ArrayList<>();
     assertEquals(expected, categories);
   }
 
-  private static UnitCategory newUnitCategory(final String unitName, final PlayerId player, final GameData data) {
+  private static UnitCategory newUnitCategory(
+      final String unitName, final PlayerId player, final GameData data) {
     return new UnitCategory(new UnitType(unitName, data), player);
   }
 }

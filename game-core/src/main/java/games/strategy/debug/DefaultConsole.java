@@ -35,10 +35,11 @@ import lombok.extern.java.Log;
 
 @Log
 final class DefaultConsole implements Console {
-  private static final ImmutableCollection<LogLevelItem> LOG_LEVEL_ITEMS = ImmutableList.of(
-      new LogLevelItem("Errors and Warnings", Level.WARNING),
-      new LogLevelItem("Errors, Warnings and Informational Messages", Level.INFO),
-      new LogLevelItem("All Messages", Level.ALL));
+  private static final ImmutableCollection<LogLevelItem> LOG_LEVEL_ITEMS =
+      ImmutableList.of(
+          new LogLevelItem("Errors and Warnings", Level.WARNING),
+          new LogLevelItem("Errors, Warnings and Informational Messages", Level.INFO),
+          new LogLevelItem("All Messages", Level.ALL));
 
   private final JTextArea textArea = new JTextArea(20, 50);
   private final JFrame frame = new JFrame("TripleA Console");
@@ -47,13 +48,15 @@ final class DefaultConsole implements Console {
   DefaultConsole() {
     setLogLevel(getDefaultLogLevel());
 
-    ClientSetting.showConsole.addListener(gameSetting -> {
-      if (gameSetting.getValueOrThrow()) {
-        SwingUtilities.invokeLater(() -> setVisible(true));
-      }
-    });
+    ClientSetting.showConsole.addListener(
+        gameSetting -> {
+          if (gameSetting.getValueOrThrow()) {
+            SwingUtilities.invokeLater(() -> setVisible(true));
+          }
+        });
 
-    SwingComponents.addWindowClosedListener(frame, () -> ClientSetting.showConsole.setValueAndFlush(false));
+    SwingComponents.addWindowClosedListener(
+        frame, () -> ClientSetting.showConsole.setValueAndFlush(false));
     LookAndFeelSwingFrameListener.register(frame);
     frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     frame.getContentPane().setLayout(new BorderLayout());
@@ -68,11 +71,14 @@ final class DefaultConsole implements Console {
     actions.add(threadDiagnoseAction);
     actions.add(SwingAction.of("Memory", e -> append(DebugUtils.getMemory())));
     actions.add(SwingAction.of("Properties", e -> append(DebugUtils.getProperties())));
-    actions.add(SwingAction.of("Copy to clipboard", e -> {
-      final String text = textArea.getText();
-      final StringSelection select = new StringSelection(text);
-      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
-    }));
+    actions.add(
+        SwingAction.of(
+            "Copy to clipboard",
+            e -> {
+              final String text = textArea.getText();
+              final StringSelection select = new StringSelection(text);
+              Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
+            }));
     actions.add(SwingAction.of("Clear", e -> textArea.setText("")));
     actions.add(newLogLevelButton());
     SwingUtilities.invokeLater(frame::pack);
@@ -87,8 +93,12 @@ final class DefaultConsole implements Console {
     try {
       return Level.parse(logLevelName);
     } catch (final IllegalArgumentException e) {
-      log.warning("Client setting " + ClientSetting.loggingVerbosity + " contains malformed log level ("
-          + logLevelName + "); defaulting to WARNING");
+      log.warning(
+          "Client setting "
+              + ClientSetting.loggingVerbosity
+              + " contains malformed log level ("
+              + logLevelName
+              + "); defaulting to WARNING");
       return Level.WARNING;
     }
   }
@@ -100,39 +110,44 @@ final class DefaultConsole implements Console {
 
   private AbstractButton newLogLevelButton() {
     final JToggleButton button = new JToggleButton("Log Level ▼");
-    button.addItemListener(e -> {
-      if (e.getStateChange() == ItemEvent.SELECTED) {
-        createAndShowLogLevelMenu((JComponent) e.getSource(), button);
-      }
-    });
+    button.addItemListener(
+        e -> {
+          if (e.getStateChange() == ItemEvent.SELECTED) {
+            createAndShowLogLevelMenu((JComponent) e.getSource(), button);
+          }
+        });
     return button;
   }
 
   private void createAndShowLogLevelMenu(final JComponent component, final AbstractButton button) {
     final JPopupMenu menu = new JPopupMenu();
-    menu.addPopupMenuListener(new PopupMenuListener() {
-      @Override
-      public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {}
+    menu.addPopupMenuListener(
+        new PopupMenuListener() {
+          @Override
+          public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {}
 
-      @Override
-      public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {
-        button.setSelected(false);
-      }
+          @Override
+          public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {
+            button.setSelected(false);
+          }
 
-      @Override
-      public void popupMenuCanceled(final PopupMenuEvent e) {
-        button.setSelected(false);
-      }
-    });
-    LOG_LEVEL_ITEMS.forEach(item -> {
-      final JMenuItem menuItem = new JRadioButtonMenuItem(item.label, item.level.equals(logLevel));
-      menuItem.addActionListener(e -> {
-        setLogLevel(item.level);
-        setDefaultLogLevel(item.level);
-        appendLn("Log level updated to: " + item.level);
-      });
-      menu.add(menuItem);
-    });
+          @Override
+          public void popupMenuCanceled(final PopupMenuEvent e) {
+            button.setSelected(false);
+          }
+        });
+    LOG_LEVEL_ITEMS.forEach(
+        item -> {
+          final JMenuItem menuItem =
+              new JRadioButtonMenuItem(item.label, item.level.equals(logLevel));
+          menuItem.addActionListener(
+              e -> {
+                setLogLevel(item.level);
+                setDefaultLogLevel(item.level);
+                appendLn("Log level updated to: " + item.level);
+              });
+          menu.add(menuItem);
+        });
     menu.show(component, 0, component.getHeight());
   }
 

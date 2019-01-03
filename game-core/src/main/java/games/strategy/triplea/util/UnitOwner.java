@@ -8,9 +8,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 
-/**
- * The combination of a unit type and its owner.
- */
+/** The combination of a unit type and its owner. */
 public final class UnitOwner {
   private final UnitType type;
   private final PlayerId owner;

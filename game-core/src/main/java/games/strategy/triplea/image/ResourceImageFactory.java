@@ -18,9 +18,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.util.IntegerMap;
 
-/**
- * Used to manage resource images.
- */
+/** Used to manage resource images. */
 public class ResourceImageFactory extends AbstractImageFactory {
 
   public static final int IMAGE_SIZE = 20;
@@ -37,9 +35,7 @@ public class ResourceImageFactory extends AbstractImageFactory {
     return getLabel(resource, String.valueOf(resources.getInt(resource)));
   }
 
-  /**
-   * Returns label with icon and text. If icon is missing then sets resource name.
-   */
+  /** Returns label with icon and text. If icon is missing then sets resource name. */
   public JLabel getLabel(final Resource resource, final String text) {
     final JLabel label = new JLabel();
     try {
@@ -60,7 +56,8 @@ public class ResourceImageFactory extends AbstractImageFactory {
     return getResourcesPanel(resources, true, player);
   }
 
-  private JPanel getResourcesPanel(final ResourceCollection resources, final boolean showEmpty, final PlayerId player) {
+  private JPanel getResourcesPanel(
+      final ResourceCollection resources, final boolean showEmpty, final PlayerId player) {
     final JPanel resourcePanel = new JPanel();
     final List<Resource> resourcesInOrder;
     final GameData data = resources.getData();
@@ -78,16 +75,27 @@ public class ResourceImageFactory extends AbstractImageFactory {
       }
       final JLabel resourceLabel = getLabel(resource, resources.getResourcesCopy());
       resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
-      resourcePanel.add(resourceLabel,
-          new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-              new Insets(0, 0, 0, 0), 0, 0));
+      resourcePanel.add(
+          resourceLabel,
+          new GridBagConstraints(
+              count++,
+              0,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, 0, 0),
+              0,
+              0));
     }
     return resourcePanel;
   }
 
   /**
-   * Returns button with resource amounts and given text. If resources is empty then returns
-   * button with just the text.
+   * Returns button with resource amounts and given text. If resources is empty then returns button
+   * with just the text.
    */
   public JButton getResourcesButton(final ResourceCollection resources, final String text) {
     if (resources.isEmpty()) {
@@ -98,11 +106,11 @@ public class ResourceImageFactory extends AbstractImageFactory {
     panel.add(new JLabel(text));
     panel.setSize(panel.getPreferredSize());
     panel.doLayout();
-    final BufferedImage image = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    final BufferedImage image =
+        new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
     final Graphics2D g = image.createGraphics();
     panel.paint(g);
     g.dispose();
     return new JButton(new ImageIcon(image));
   }
-
 }

@@ -47,8 +47,8 @@ import games.strategy.util.IntegerMap;
 import lombok.extern.java.Log;
 
 /**
- * A window used to display a textual summary of a particular history node, including all of its descendants, if
- * applicable.
+ * A window used to display a textual summary of a particular history node, including all of its
+ * descendants, if applicable.
  */
 @Log
 public class HistoryLog extends JFrame {
@@ -89,10 +89,11 @@ public class HistoryLog extends JFrame {
   }
 
   /**
-   * Adds details about the current turn for each player in {@code playersAllowed} to the log. Information about
-   * each step and event that occurred during the turn are included.
+   * Adds details about the current turn for each player in {@code playersAllowed} to the log.
+   * Information about each step and event that occurred during the turn are included.
    */
-  public void printFullTurn(final GameData data, final boolean verbose, final Collection<PlayerId> playersAllowed) {
+  public void printFullTurn(
+      final GameData data, final boolean verbose, final Collection<PlayerId> playersAllowed) {
     HistoryNode curNode = data.getHistory().getLastNode();
     final Collection<PlayerId> players = new HashSet<>();
     if (playersAllowed != null) {
@@ -166,10 +167,13 @@ public class HistoryLog extends JFrame {
   }
 
   /**
-   * Adds details about {@code printNode} and all its sibling and child nodes that are part of the current turn for each
-   * player in {@code playersAllowed} to the log.
+   * Adds details about {@code printNode} and all its sibling and child nodes that are part of the
+   * current turn for each player in {@code playersAllowed} to the log.
    */
-  public void printRemainingTurn(final HistoryNode printNode, final boolean verbose, final int diceSides,
+  public void printRemainingTurn(
+      final HistoryNode printNode,
+      final boolean verbose,
+      final int diceSides,
       final Collection<PlayerId> playersAllowed) {
     final PrintWriter logWriter = printWriter;
     final String moreIndent = "    ";
@@ -236,7 +240,8 @@ public class HistoryLog extends JFrame {
             } else {
               // dice roll
               logWriter.print(indent + moreIndent + diceMsg1);
-              final String hitDifferentialKey = parseHitDifferentialKeyFromDiceRollMessage(diceMsg1);
+              final String hitDifferentialKey =
+                  parseHitDifferentialKeyFromDiceRollMessage(diceMsg1);
               final DiceRoll diceRoll = (DiceRoll) details;
               final int hits = diceRoll.getHits();
               int rolls = 0;
@@ -244,8 +249,14 @@ public class HistoryLog extends JFrame {
                 rolls += diceRoll.getRolls(i).size();
               }
               final double expectedHits = diceRoll.getExpectedHits();
-              logWriter.println(" " + hits + "/" + rolls + " hits, "
-                  + String.format("%.2f", expectedHits) + " expected hits");
+              logWriter.println(
+                  " "
+                      + hits
+                      + "/"
+                      + rolls
+                      + " hits, "
+                      + String.format("%.2f", expectedHits)
+                      + " expected hits");
               final double hitDifferential = hits - expectedHits;
               hitDifferentialMap.merge(hitDifferentialKey, hitDifferential, Double::sum);
             }
@@ -270,11 +281,12 @@ public class HistoryLog extends JFrame {
                 final Collection<Unit> allUnitsInDetails = (Collection<Unit>) details;
                 // purchase/place units - don't need details
                 Unit unit = (Unit) obj;
-                if (title.matches("\\w+ buy .*") || title.matches("\\w+ attack with .*") || title
-                    .matches("\\w+ defend with .*")) {
+                if (title.matches("\\w+ buy .*")
+                    || title.matches("\\w+ attack with .*")
+                    || title.matches("\\w+ defend with .*")) {
                   logWriter.println(indent + title);
-                } else if (title.matches("\\d+ \\w+ owned by the .*? lost .*") || title
-                    .matches("\\d+ \\w+ owned by the .*? lost")) {
+                } else if (title.matches("\\d+ \\w+ owned by the .*? lost .*")
+                    || title.matches("\\d+ \\w+ owned by the .*? lost")) {
                   if (!verbose) {
                     continue;
                   }
@@ -282,7 +294,9 @@ public class HistoryLog extends JFrame {
                 } else if (title.startsWith("Battle casualty summary:")) {
                   // logWriter.println(indent+"CAS1: "+title);
                   logWriter.println(
-                      indent + conquerStr.toString() + ". Battle score "
+                      indent
+                          + conquerStr.toString()
+                          + ". Battle score "
                           + title.substring(title.indexOf("for attacker is")));
                   conquerStr = new StringBuilder();
                   // separate units by player and show casualty summary
@@ -293,14 +307,24 @@ public class HistoryLog extends JFrame {
                     unitCount.add(unit.getOwner(), 1);
                   }
                   for (final PlayerId player : unitCount.keySet()) {
-                    logWriter.println(indent + "Casualties for " + player.getName() + ": "
-                        + MyFormatter.unitsToTextNoOwner(allUnitsInDetails, player));
+                    logWriter.println(
+                        indent
+                            + "Casualties for "
+                            + player.getName()
+                            + ": "
+                            + MyFormatter.unitsToTextNoOwner(allUnitsInDetails, player));
                   }
-                } else if (title.matches(".*? placed in .*") || title.matches(".* owned by the \\w+ retreated to .*")) {
+                } else if (title.matches(".*? placed in .*")
+                    || title.matches(".* owned by the \\w+ retreated to .*")) {
                   logWriter.println(indent + title);
                 } else if (title.matches("\\w+ win")) {
-                  conquerStr = new StringBuilder(
-                      title + conquerStr + " with " + MyFormatter.unitsToTextNoOwner(allUnitsInDetails) + " remaining");
+                  conquerStr =
+                      new StringBuilder(
+                          title
+                              + conquerStr
+                              + " with "
+                              + MyFormatter.unitsToTextNoOwner(allUnitsInDetails)
+                              + " remaining");
                 } else {
                   logWriter.println(indent + title);
                 }
@@ -376,8 +400,8 @@ public class HistoryLog extends JFrame {
       logWriter.println("Combat Hit Differential Summary :");
       logWriter.println();
       for (final String player : hitDifferentialMap.keySet()) {
-        logWriter.println(moreIndent + player + " : "
-            + String.format("%.2f", hitDifferentialMap.get(player)));
+        logWriter.println(
+            moreIndent + player + " : " + String.format("%.2f", hitDifferentialMap.get(player)));
       }
     }
     logWriter.println();
@@ -410,8 +434,8 @@ public class HistoryLog extends JFrame {
   }
 
   /**
-   * Adds a territory summary for the player associated with {@code printNode} to the log. The summary includes each
-   * unit present in the territory.
+   * Adds a territory summary for the player associated with {@code printNode} to the log. The
+   * summary includes each unit present in the territory.
    */
   public void printTerritorySummary(final HistoryNode printNode, final GameData data) {
     final Collection<Territory> territories;
@@ -443,10 +467,11 @@ public class HistoryLog extends JFrame {
   }
 
   /**
-   * Adds a territory summary for each player in {@code allowedPlayers} to the log. The summary includes each unit
-   * present in the territory.
+   * Adds a territory summary for each player in {@code allowedPlayers} to the log. The summary
+   * includes each unit present in the territory.
    */
-  public void printTerritorySummary(final GameData data, final Collection<PlayerId> allowedPlayers) {
+  public void printTerritorySummary(
+      final GameData data, final Collection<PlayerId> allowedPlayers) {
     if (allowedPlayers == null || allowedPlayers.isEmpty()) {
       printTerritorySummary(data);
       return;
@@ -461,22 +486,25 @@ public class HistoryLog extends JFrame {
     printTerritorySummary(allowedPlayers, territories);
   }
 
-  private void printTerritorySummary(final Collection<PlayerId> players,
-      final Collection<Territory> territories) {
+  private void printTerritorySummary(
+      final Collection<PlayerId> players, final Collection<Territory> territories) {
     if (players == null || players.isEmpty() || territories == null || territories.isEmpty()) {
       return;
     }
     final PrintWriter logWriter = printWriter;
     // print all units in all territories, including "flags"
-    logWriter.println("Territory Summary for " + MyFormatter.defaultNamedToTextList(players) + " : \n");
+    logWriter.println(
+        "Territory Summary for " + MyFormatter.defaultNamedToTextList(players) + " : \n");
     for (final Territory t : territories) {
-      final List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
+      final List<Unit> ownedUnits =
+          t.getUnits().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
       // see if there's a flag
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
-      final boolean hasFlag = ta != null
-          && t.getOwner() != null
-          && players.contains(t.getOwner())
-          && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
+      final boolean hasFlag =
+          ta != null
+              && t.getOwner() != null
+              && players.contains(t.getOwner())
+              && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
       if (hasFlag || !ownedUnits.isEmpty()) {
         logWriter.print("    " + t.getName() + " : ");
         if (hasFlag && ownedUnits.isEmpty()) {
@@ -506,9 +534,7 @@ public class HistoryLog extends JFrame {
     textArea.setText(stringWriter.toString());
   }
 
-  /**
-   * Adds a production summary for each player in the game to the log.
-   */
+  /** Adds a production summary for each player in the game to the log. */
   public void printProductionSummary(final GameData data) {
     final PrintWriter logWriter = printWriter;
     final Collection<PlayerId> players;

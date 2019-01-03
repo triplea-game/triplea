@@ -15,7 +15,8 @@ class AddAvailableTech extends Change {
   private final TechnologyFrontier frontier;
   private final PlayerId player;
 
-  public AddAvailableTech(final TechnologyFrontier front, final TechAdvance tech, final PlayerId player) {
+  public AddAvailableTech(
+      final TechnologyFrontier front, final TechAdvance tech, final PlayerId player) {
     checkNotNull(front);
     checkNotNull(tech);
 
@@ -26,7 +27,8 @@ class AddAvailableTech extends Change {
 
   @Override
   public void perform(final GameData data) {
-    final TechnologyFrontier front = player.getTechnologyFrontierList().getTechnologyFrontier(frontier.getName());
+    final TechnologyFrontier front =
+        player.getTechnologyFrontierList().getTechnologyFrontier(frontier.getName());
     front.addAdvance(tech);
   }
 

@@ -20,8 +20,8 @@ import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 
 /**
- * Dummy implementation of {@link IDelegateBridge} used during a battle simulation to capture all changes generated
- * during the simulation.
+ * Dummy implementation of {@link IDelegateBridge} used during a battle simulation to capture all
+ * changes generated during the simulation.
  */
 public class ProDummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource randomSource = new PlainRandomSource();
@@ -29,7 +29,8 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   private final ISound soundChannel = new HeadlessSoundChannel();
   private final PlayerId player;
   private final ProAi proAi;
-  private final DelegateHistoryWriter writer = new DelegateHistoryWriter(new ProDummyGameModifiedChannel());
+  private final DelegateHistoryWriter writer =
+      new DelegateHistoryWriter(new ProDummyGameModifiedChannel());
   private final GameData gameData;
   private final CompositeChange allChanges = new CompositeChange();
 
@@ -68,13 +69,18 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerId player, final DiceType diceType,
+  public int[] getRandom(
+      final int max,
+      final int count,
+      final PlayerId player,
+      final DiceType diceType,
       final String annotation) {
     return randomSource.getRandom(max, count, annotation);
   }
 
   @Override
-  public int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation) {
+  public int getRandom(
+      final int max, final PlayerId player, final DiceType diceType, final String annotation) {
     return randomSource.getRandom(max, annotation);
   }
 

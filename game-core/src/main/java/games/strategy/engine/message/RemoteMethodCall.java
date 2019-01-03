@@ -12,9 +12,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 
-/**
- * All the info necessary to describe a method call in one handy serializable package.
- */
+/** All the info necessary to describe a method call in one handy serializable package. */
 public class RemoteMethodCall implements Externalizable {
   private static final long serialVersionUID = 4630825927685836207L;
   private String remoteName;
@@ -28,8 +26,12 @@ public class RemoteMethodCall implements Externalizable {
 
   public RemoteMethodCall() {}
 
-  public RemoteMethodCall(final String remoteName, final String methodName, final Object[] args,
-      final Class<?>[] argTypes, final Class<?> remoteInterface) {
+  public RemoteMethodCall(
+      final String remoteName,
+      final String methodName,
+      final Object[] args,
+      final Class<?>[] argTypes,
+      final Class<?> remoteInterface) {
     checkNotNull(argTypes);
     if (args == null && argTypes.length != 0) {
       throw new IllegalArgumentException("args but no types");
@@ -148,8 +150,8 @@ public class RemoteMethodCall implements Externalizable {
   }
 
   /**
-   * After we have been deserialized, we do not transmit enough information to determine the method without being told
-   * what class we operate on.
+   * After we have been deserialized, we do not transmit enough information to determine the method
+   * without being told what class we operate on.
    */
   public void resolve(final Class<?> remoteType) {
     if (methodName != null) {

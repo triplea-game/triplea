@@ -15,7 +15,8 @@ import games.strategy.ui.Util;
 
 class TerritoryOverLayDrawable implements IDrawable {
   enum Operation {
-    FILL, DRAW
+    FILL,
+    DRAW
   }
 
   private final String territoryName;
@@ -28,15 +29,21 @@ class TerritoryOverLayDrawable implements IDrawable {
     this.operation = operation;
   }
 
-  TerritoryOverLayDrawable(final Color color, final String name, final int alpha, final Operation operation) {
+  TerritoryOverLayDrawable(
+      final Color color, final String name, final int alpha, final Operation operation) {
     this.color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
     territoryName = name;
     this.operation = operation;
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData,
+      final AffineTransform unscaled,
+      final AffineTransform scaled) {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
     graphics.setColor(color);

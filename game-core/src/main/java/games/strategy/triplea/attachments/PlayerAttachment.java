@@ -25,15 +25,13 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
 
 /**
- * An attachment for instances of {@link PlayerId} that defines properties unrelated to rules (see the class
- * description of {@link AbstractPlayerRulesAttachment}).
+ * An attachment for instances of {@link PlayerId} that defines properties unrelated to rules (see
+ * the class description of {@link AbstractPlayerRulesAttachment}).
  */
 public class PlayerAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1880755875866426270L;
 
-  /**
-   * Convenience method. can be null
-   */
+  /** Convenience method. can be null */
   public static PlayerAttachment get(final PlayerId p) {
     // allow null
     return p.getPlayerAttachment();
@@ -42,7 +40,8 @@ public class PlayerAttachment extends DefaultAttachment {
   static PlayerAttachment get(final PlayerId p, final String nameOfAttachment) {
     final PlayerAttachment playerAttachment = p.getPlayerAttachment();
     if (playerAttachment == null) {
-      throw new IllegalStateException("No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
+      throw new IllegalStateException(
+          "No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
     }
     return playerAttachment;
   }
@@ -85,14 +84,17 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setPlacementLimit(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length < 3) {
-      throw new GameParseException("placementLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
+      throw new GameParseException(
+          "placementLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
     }
     final int max = getInt(s[0]);
     if (max < 0) {
-      throw new GameParseException("placementLimit count must have a positive number" + thisErrorMsg());
+      throw new GameParseException(
+          "placementLimit count must have a positive number" + thisErrorMsg());
     }
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
-      throw new GameParseException("placementLimit type must be: owned, allied, or total" + thisErrorMsg());
+      throw new GameParseException(
+          "placementLimit type must be: owned, allied, or total" + thisErrorMsg());
     }
     final Set<UnitType> types = new HashSet<>();
     if (s[2].equalsIgnoreCase("all")) {
@@ -124,14 +126,17 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setMovementLimit(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length < 3) {
-      throw new GameParseException("movementLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
+      throw new GameParseException(
+          "movementLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
     }
     final int max = getInt(s[0]);
     if (max < 0) {
-      throw new GameParseException("movementLimit count must have a positive number" + thisErrorMsg());
+      throw new GameParseException(
+          "movementLimit count must have a positive number" + thisErrorMsg());
     }
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
-      throw new GameParseException("movementLimit type must be: owned, allied, or total" + thisErrorMsg());
+      throw new GameParseException(
+          "movementLimit type must be: owned, allied, or total" + thisErrorMsg());
     }
     final Set<UnitType> types = new HashSet<>();
     if (s[2].equalsIgnoreCase("all")) {
@@ -163,14 +168,17 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setAttackingLimit(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length < 3) {
-      throw new GameParseException("attackingLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
+      throw new GameParseException(
+          "attackingLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
     }
     final int max = getInt(s[0]);
     if (max < 0) {
-      throw new GameParseException("attackingLimit count must have a positive number" + thisErrorMsg());
+      throw new GameParseException(
+          "attackingLimit count must have a positive number" + thisErrorMsg());
     }
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
-      throw new GameParseException("attackingLimit type must be: owned, allied, or total" + thisErrorMsg());
+      throw new GameParseException(
+          "attackingLimit type must be: owned, allied, or total" + thisErrorMsg());
     }
     final Set<UnitType> types = new HashSet<>();
     if (s[2].equalsIgnoreCase("all")) {
@@ -200,11 +208,15 @@ public class PlayerAttachment extends DefaultAttachment {
   }
 
   /**
-   * Returns {@code true} if the specified units can move into the specified territory without violating the specified
-   * stacking limit (movement, attack, or placement).
+   * Returns {@code true} if the specified units can move into the specified territory without
+   * violating the specified stacking limit (movement, attack, or placement).
    */
-  public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final String limitType,
-      final Collection<Unit> unitsMoving, final Territory toMoveInto, final PlayerId owner, final GameData data) {
+  public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(
+      final String limitType,
+      final Collection<Unit> unitsMoving,
+      final Territory toMoveInto,
+      final PlayerId owner,
+      final GameData data) {
     final PlayerAttachment pa = PlayerAttachment.get(owner);
     if (pa == null) {
       return true;
@@ -222,7 +234,8 @@ public class PlayerAttachment extends DefaultAttachment {
         break;
       default:
         throw new IllegalStateException(
-            "getCanTheseUnitsMoveWithoutViolatingStackingLimit does not allow limitType: " + limitType);
+            "getCanTheseUnitsMoveWithoutViolatingStackingLimit does not allow limitType: "
+                + limitType);
     }
     if (stackingLimits.isEmpty()) {
       return true;
@@ -236,19 +249,23 @@ public class PlayerAttachment extends DefaultAttachment {
       final Collection<Unit> currentInTerritory = toMoveInto.getUnits().getUnits();
       // first remove units that do not apply to our current type
       if (type.equals("owned")) {
-        currentInTerritory
-            .removeAll(CollectionUtils.getMatches(currentInTerritory, Matches.unitIsOwnedBy(owner).negate()));
-        copyUnitsMoving.removeAll(CollectionUtils.getMatches(copyUnitsMoving, Matches.unitIsOwnedBy(owner).negate()));
+        currentInTerritory.removeAll(
+            CollectionUtils.getMatches(currentInTerritory, Matches.unitIsOwnedBy(owner).negate()));
+        copyUnitsMoving.removeAll(
+            CollectionUtils.getMatches(copyUnitsMoving, Matches.unitIsOwnedBy(owner).negate()));
       } else if (type.equals("allied")) {
-        currentInTerritory
-            .removeAll(CollectionUtils.getMatches(currentInTerritory, Matches.alliedUnit(owner, data).negate()));
-        copyUnitsMoving
-            .removeAll(CollectionUtils.getMatches(copyUnitsMoving, Matches.alliedUnit(owner, data).negate()));
+        currentInTerritory.removeAll(
+            CollectionUtils.getMatches(
+                currentInTerritory, Matches.alliedUnit(owner, data).negate()));
+        copyUnitsMoving.removeAll(
+            CollectionUtils.getMatches(copyUnitsMoving, Matches.alliedUnit(owner, data).negate()));
       }
       // else if (type.equals("total"))
       // now remove units that are not part of our list
-      currentInTerritory.retainAll(CollectionUtils.getMatches(currentInTerritory, Matches.unitIsOfTypes(unitsToTest)));
-      copyUnitsMoving.retainAll(CollectionUtils.getMatches(copyUnitsMoving, Matches.unitIsOfTypes(unitsToTest)));
+      currentInTerritory.retainAll(
+          CollectionUtils.getMatches(currentInTerritory, Matches.unitIsOfTypes(unitsToTest)));
+      copyUnitsMoving.retainAll(
+          CollectionUtils.getMatches(copyUnitsMoving, Matches.unitIsOfTypes(unitsToTest)));
       // now test
       if (max < (currentInTerritory.size() + copyUnitsMoving.size())) {
         return false;
@@ -269,7 +286,8 @@ public class PlayerAttachment extends DefaultAttachment {
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
-        throw new GameParseException("suicideAttackTargets: no such unit called " + u + thisErrorMsg());
+        throw new GameParseException(
+            "suicideAttackTargets: no such unit called " + u + thisErrorMsg());
       }
       suicideAttackTargets.add(ut);
     }
@@ -290,11 +308,13 @@ public class PlayerAttachment extends DefaultAttachment {
   private void setSuicideAttackResources(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length != 2) {
-      throw new GameParseException("suicideAttackResources must have exactly 2 fields" + thisErrorMsg());
+      throw new GameParseException(
+          "suicideAttackResources must have exactly 2 fields" + thisErrorMsg());
     }
     final int attackValue = getInt(s[0]);
     if (attackValue < 0) {
-      throw new GameParseException("suicideAttackResources attack value must be positive" + thisErrorMsg());
+      throw new GameParseException(
+          "suicideAttackResources attack value must be positive" + thisErrorMsg());
     }
     final Resource r = getData().getResourceList().getResource(s[1]);
     if (r == null) {
@@ -505,91 +525,103 @@ public class PlayerAttachment extends DefaultAttachment {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("vps",
+        .put(
+            "vps",
             MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setVps,
-                this::getVps,
-                () -> 0))
-        .put("captureVps",
+                DefaultAttachment::getInt, this::setVps, this::getVps, () -> 0))
+        .put(
+            "captureVps",
             MutableProperty.of(
                 this::setCaptureVps,
                 this::setCaptureVps,
                 this::getCaptureVps,
                 this::resetCaptureVps))
-        .put("retainCapitalNumber",
+        .put(
+            "retainCapitalNumber",
             MutableProperty.of(
                 this::setRetainCapitalNumber,
                 this::setRetainCapitalNumber,
                 this::getRetainCapitalNumber,
                 this::resetRetainCapitalNumber))
-        .put("retainCapitalProduceNumber",
+        .put(
+            "retainCapitalProduceNumber",
             MutableProperty.of(
                 this::setRetainCapitalProduceNumber,
                 this::setRetainCapitalProduceNumber,
                 this::getRetainCapitalProduceNumber,
                 this::resetRetainCapitalProduceNumber))
-        .put("giveUnitControl",
+        .put(
+            "giveUnitControl",
             MutableProperty.of(
                 this::setGiveUnitControl,
                 this::setGiveUnitControl,
                 this::getGiveUnitControl,
                 this::resetGiveUnitControl))
-        .put("captureUnitOnEnteringBy",
+        .put(
+            "captureUnitOnEnteringBy",
             MutableProperty.of(
                 this::setCaptureUnitOnEnteringBy,
                 this::setCaptureUnitOnEnteringBy,
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
-        .put("shareTechnology",
+        .put(
+            "shareTechnology",
             MutableProperty.of(
                 this::setShareTechnology,
                 this::setShareTechnology,
                 this::getShareTechnology,
                 this::resetShareTechnology))
-        .put("helpPayTechCost",
+        .put(
+            "helpPayTechCost",
             MutableProperty.of(
                 this::setHelpPayTechCost,
                 this::setHelpPayTechCost,
                 this::getHelpPayTechCost,
                 this::resetHelpPayTechCost))
-        .put("destroysPUs",
+        .put(
+            "destroysPUs",
             MutableProperty.of(
                 this::setDestroysPUs,
                 this::setDestroysPUs,
                 this::getDestroysPUs,
                 this::resetDestroysPUs))
-        .put("immuneToBlockade",
+        .put(
+            "immuneToBlockade",
             MutableProperty.of(
                 this::setImmuneToBlockade,
                 this::setImmuneToBlockade,
                 this::getImmuneToBlockade,
                 this::resetImmuneToBlockade))
-        .put("suicideAttackResources",
+        .put(
+            "suicideAttackResources",
             MutableProperty.of(
                 this::setSuicideAttackResources,
                 this::setSuicideAttackResources,
                 this::getSuicideAttackResources,
                 this::resetSuicideAttackResources))
-        .put("suicideAttackTargets",
+        .put(
+            "suicideAttackTargets",
             MutableProperty.of(
                 this::setSuicideAttackTargets,
                 this::setSuicideAttackTargets,
                 this::getSuicideAttackTargets,
                 this::resetSuicideAttackTargets))
-        .put("placementLimit",
+        .put(
+            "placementLimit",
             MutableProperty.of(
                 this::setPlacementLimit,
                 this::setPlacementLimit,
                 this::getPlacementLimit,
                 this::resetPlacementLimit))
-        .put("movementLimit",
+        .put(
+            "movementLimit",
             MutableProperty.of(
                 this::setMovementLimit,
                 this::setMovementLimit,
                 this::getMovementLimit,
                 this::resetMovementLimit))
-        .put("attackingLimit",
+        .put(
+            "attackingLimit",
             MutableProperty.of(
                 this::setAttackingLimit,
                 this::setAttackingLimit,

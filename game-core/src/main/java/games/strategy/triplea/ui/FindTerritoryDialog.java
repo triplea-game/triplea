@@ -32,38 +32,40 @@ final class FindTerritoryDialog extends JDialog {
 
     final Collection<Territory> territories = owner.getGame().getData().getMap().getTerritories();
     final @Nullable Territory initialSelectedTerritory = mapPanel.getCurrentTerritory();
-    territoryComboBox = JComboBoxBuilder.builder(Territory.class)
-        .items(territories.stream().sorted().collect(Collectors.toList()))
-        .nullableSelectedItem(initialSelectedTerritory)
-        .enableAutoComplete()
-        .itemSelectedAction(mapPanel::highlightTerritory)
-        .build();
+    territoryComboBox =
+        JComboBoxBuilder.builder(Territory.class)
+            .items(territories.stream().sorted().collect(Collectors.toList()))
+            .nullableSelectedItem(initialSelectedTerritory)
+            .enableAutoComplete()
+            .itemSelectedAction(mapPanel::highlightTerritory)
+            .build();
     if (initialSelectedTerritory != null) {
       mapPanel.highlightTerritory(initialSelectedTerritory);
     }
 
-    final JButton okButton = JButtonBuilder.builder()
-        .okTitle()
-        .actionListener(() -> close(Result.OK))
-        .build();
+    final JButton okButton =
+        JButtonBuilder.builder().okTitle().actionListener(() -> close(Result.OK)).build();
     getRootPane().setDefaultButton(okButton);
 
-    add(JPanelBuilder.builder()
-        .borderEmpty(10)
-        .verticalBoxLayout()
-        .add(territoryComboBox)
-        .addVerticalStrut(20)
-        .add(JPanelBuilder.builder()
-            .horizontalBoxLayout()
-            .addHorizontalGlue()
-            .add(okButton)
-            .addHorizontalStrut(5)
-            .add(JButtonBuilder.builder()
-                .cancelTitle()
-                .actionListener(() -> close(Result.CANCEL))
-                .build())
-            .build())
-        .build());
+    add(
+        JPanelBuilder.builder()
+            .borderEmpty(10)
+            .verticalBoxLayout()
+            .add(territoryComboBox)
+            .addVerticalStrut(20)
+            .add(
+                JPanelBuilder.builder()
+                    .horizontalBoxLayout()
+                    .addHorizontalGlue()
+                    .add(okButton)
+                    .addHorizontalStrut(5)
+                    .add(
+                        JButtonBuilder.builder()
+                            .cancelTitle()
+                            .actionListener(() -> close(Result.CANCEL))
+                            .build())
+                    .build())
+            .build());
     pack();
     setLocation(getInitialLocation());
 
@@ -93,6 +95,7 @@ final class FindTerritoryDialog extends JDialog {
   }
 
   private enum Result {
-    OK, CANCEL
+    OK,
+    CANCEL
   }
 }

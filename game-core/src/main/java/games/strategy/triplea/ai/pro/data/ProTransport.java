@@ -9,9 +9,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import lombok.Getter;
 
-/**
- * The result of an AI amphibious movement analysis.
- */
+/** The result of an AI amphibious movement analysis. */
 @Getter
 public class ProTransport {
 
@@ -25,7 +23,8 @@ public class ProTransport {
     seaTransportMap = new HashMap<>();
   }
 
-  void addTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
+  void addTerritories(
+      final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
     for (final Territory attackTerritory : attackTerritories) {
       if (transportMap.containsKey(attackTerritory)) {
         transportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);
@@ -36,7 +35,8 @@ public class ProTransport {
     }
   }
 
-  void addSeaTerritories(final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
+  void addSeaTerritories(
+      final Set<Territory> attackTerritories, final Set<Territory> myUnitsToLoadTerritories) {
     for (final Territory attackTerritory : attackTerritories) {
       if (seaTransportMap.containsKey(attackTerritory)) {
         seaTransportMap.get(attackTerritory).addAll(myUnitsToLoadTerritories);

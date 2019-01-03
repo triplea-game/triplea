@@ -8,8 +8,8 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.util.Version;
 
 /**
- * Provides access to the product configuration. The product configuration applies to all components of the TripleA
- * application suite (e.g. game client, lobby server, etc.).
+ * Provides access to the product configuration. The product configuration applies to all components
+ * of the TripleA application suite (e.g. game client, lobby server, etc.).
  */
 public final class ProductConfiguration {
   private final PropertyReader propertyReader;

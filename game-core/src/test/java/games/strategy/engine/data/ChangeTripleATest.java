@@ -28,18 +28,23 @@ public class ChangeTripleATest {
   }
 
   private Change serialize(final Change change) throws Exception {
-    final byte[] bytes = IoUtils.writeToMemory(os -> {
-      try (ObjectOutputStream output = new GameObjectOutputStream(os)) {
-        output.writeObject(change);
-      }
-    });
-    return IoUtils.readFromMemory(bytes, is -> {
-      try (ObjectInputStream input = new GameObjectInputStream(new GameObjectStreamFactory(gameData), is)) {
-        return (Change) input.readObject();
-      } catch (final ClassNotFoundException e) {
-        throw new IOException(e);
-      }
-    });
+    final byte[] bytes =
+        IoUtils.writeToMemory(
+            os -> {
+              try (ObjectOutputStream output = new GameObjectOutputStream(os)) {
+                output.writeObject(change);
+              }
+            });
+    return IoUtils.readFromMemory(
+        bytes,
+        is -> {
+          try (ObjectInputStream input =
+              new GameObjectInputStream(new GameObjectStreamFactory(gameData), is)) {
+            return (Change) input.readObject();
+          } catch (final ClassNotFoundException e) {
+            throw new IOException(e);
+          }
+        });
   }
 
   @Test

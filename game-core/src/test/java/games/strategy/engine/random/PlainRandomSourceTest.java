@@ -26,12 +26,17 @@ public final class PlainRandomSourceTest {
   @Test
   public void getRandomSingle_ShouldReturnValueBetweenZeroInclusiveAndMaxExclusive() {
     IntStream.range(0, 5_000)
-        .forEach(i -> assertValueBetweenZeroInclusiveAndMaxExclusive(plainRandomSource.getRandom(MAX, ANNOTATION)));
+        .forEach(
+            i ->
+                assertValueBetweenZeroInclusiveAndMaxExclusive(
+                    plainRandomSource.getRandom(MAX, ANNOTATION)));
   }
 
   @Test
   public void getRandomSingle_ShouldThrowExceptionWhenMaxIsNotPositive() {
-    final Exception e = assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, ANNOTATION));
+    final Exception e =
+        assertThrows(
+            IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, ANNOTATION));
     assertThat(e.getMessage(), containsString("max"));
   }
 
@@ -51,16 +56,17 @@ public final class PlainRandomSourceTest {
   public void getRandomMany_ShouldThrowExceptionWhenMaxIsNotPositive() {
 
     final Exception e =
-        assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, 1, ANNOTATION));
+        assertThrows(
+            IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, 1, ANNOTATION));
 
-    assertThat(e.getMessage(),
-        containsString("max"));
+    assertThat(e.getMessage(), containsString("max"));
   }
 
   @Test
   public void getRandomMany_ShouldThrowExceptionWhenCountIsNotPositive() {
     final Exception e =
-        assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(MAX, 0, ANNOTATION));
+        assertThrows(
+            IllegalArgumentException.class, () -> plainRandomSource.getRandom(MAX, 0, ANNOTATION));
     assertThat(e.getMessage(), containsString("count"));
   }
 }

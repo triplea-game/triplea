@@ -37,19 +37,15 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
   @ExtendWith(TempDirectory.class)
   @Nested
   final class DownloadToFileTest {
-    @Mock
-    private CloseableHttpClient client;
+    @Mock private CloseableHttpClient client;
 
-    @Mock
-    private HttpEntity entity;
+    @Mock private HttpEntity entity;
 
     private File file;
 
-    @Mock
-    private CloseableHttpResponse response;
+    @Mock private CloseableHttpResponse response;
 
-    @Mock
-    private StatusLine statusLine;
+    @Mock private StatusLine statusLine;
 
     @BeforeEach
     void setUp(@TempDir final Path tempDirPath) throws Exception {

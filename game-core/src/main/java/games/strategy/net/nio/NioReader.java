@@ -20,9 +20,9 @@ import java.util.logging.Level;
 import lombok.extern.java.Log;
 
 /**
- * A thread that reads socket data using NIO from a collection of sockets.
- * Data is read in packets, and placed in the output queue.
- * Packets are placed in the output queue in order they are read from the socket.
+ * A thread that reads socket data using NIO from a collection of sockets. Data is read in packets,
+ * and placed in the output queue. Packets are placed in the output queue in order they are read
+ * from the socket.
  */
 @Log
 class NioReader {
@@ -111,8 +111,15 @@ class NioReader {
                   if (sa != null) {
                     remote = sa.toString();
                   }
-                  log.fine(" done reading from:" + remote + " size:" + packet.size() + " readCalls;"
-                      + packet.getReadCalls() + " total:" + totalBytes);
+                  log.fine(
+                      " done reading from:"
+                          + remote
+                          + " size:"
+                          + packet.size()
+                          + " readCalls;"
+                          + packet.getReadCalls()
+                          + " total:"
+                          + totalBytes);
                 }
                 enque(packet);
               }

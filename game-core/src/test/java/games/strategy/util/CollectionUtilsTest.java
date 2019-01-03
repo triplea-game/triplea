@@ -57,17 +57,36 @@ final class CollectionUtilsTest {
       assertEquals(Arrays.asList(), getNMatches(Arrays.asList(), 999, ALWAYS), "empty collection");
       assertEquals(Arrays.asList(), getNMatches(input, 0, NEVER), "max = 0");
       assertEquals(Arrays.asList(), getNMatches(input, input.size(), NEVER), "none match");
-      assertEquals(Arrays.asList(0), getNMatches(Arrays.asList(-1, 0, 0, 1), 1, IS_ZERO), "some match; max < count");
-      assertEquals(Arrays.asList(0, 0), getNMatches(Arrays.asList(-1, 0, 0, 1), 2, IS_ZERO), "some match; max = count");
-      assertEquals(Arrays.asList(0, 0), getNMatches(Arrays.asList(-1, 0, 0, 1), 3, IS_ZERO), "some match; max > count");
-      assertEquals(Arrays.asList(-1, 0), getNMatches(input, input.size() - 1, ALWAYS), "all match; max < count");
-      assertEquals(Arrays.asList(-1, 0, 1), getNMatches(input, input.size(), ALWAYS), "all match; max = count");
-      assertEquals(Arrays.asList(-1, 0, 1), getNMatches(input, input.size() + 1, ALWAYS), "all match; max > count");
+      assertEquals(
+          Arrays.asList(0),
+          getNMatches(Arrays.asList(-1, 0, 0, 1), 1, IS_ZERO),
+          "some match; max < count");
+      assertEquals(
+          Arrays.asList(0, 0),
+          getNMatches(Arrays.asList(-1, 0, 0, 1), 2, IS_ZERO),
+          "some match; max = count");
+      assertEquals(
+          Arrays.asList(0, 0),
+          getNMatches(Arrays.asList(-1, 0, 0, 1), 3, IS_ZERO),
+          "some match; max > count");
+      assertEquals(
+          Arrays.asList(-1, 0),
+          getNMatches(input, input.size() - 1, ALWAYS),
+          "all match; max < count");
+      assertEquals(
+          Arrays.asList(-1, 0, 1),
+          getNMatches(input, input.size(), ALWAYS),
+          "all match; max = count");
+      assertEquals(
+          Arrays.asList(-1, 0, 1),
+          getNMatches(input, input.size() + 1, ALWAYS),
+          "all match; max > count");
     }
 
     @Test
     void shouldThrowExceptionWhenMaxIsNegative() {
-      assertThrows(IllegalArgumentException.class, () -> getNMatches(Arrays.asList(-1, 0, 1), -1, ALWAYS));
+      assertThrows(
+          IllegalArgumentException.class, () -> getNMatches(Arrays.asList(-1, 0, 1), -1, ALWAYS));
     }
   }
 
@@ -75,23 +94,33 @@ final class CollectionUtilsTest {
   final class HaveEqualSizeAndEquivalentElementsTest {
     @Test
     void shouldReturnTrueWhenCollectionsAreEqual() {
-      assertThat(haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 3)), is(true));
+      assertThat(
+          haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 3)),
+          is(true));
     }
 
     @Test
     void shouldReturnTrueWhenCollectionsAreNotEqualButHaveSameSizeAndEquivalentElements() {
-      assertThat(haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 1), Arrays.asList(2, 1, 2)), is(true));
+      assertThat(
+          haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 1), Arrays.asList(2, 1, 2)),
+          is(true));
     }
 
     @Test
     void shouldReturnFalseWhenCollectionsHaveEquivalentElementsButDifferentSize() {
-      assertThat(haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2), Arrays.asList(1, 2, 2)), is(false));
+      assertThat(
+          haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2), Arrays.asList(1, 2, 2)),
+          is(false));
     }
 
     @Test
     void shouldReturnFalseWhenCollectionsHaveSameSizeButElementsAreNotEquivalent() {
-      assertThat(haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 2)), is(false));
-      assertThat(haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 2), Arrays.asList(1, 2, 3)), is(false));
+      assertThat(
+          haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 2)),
+          is(false));
+      assertThat(
+          haveEqualSizeAndEquivalentElements(Arrays.asList(1, 2, 2), Arrays.asList(1, 2, 3)),
+          is(false));
     }
   }
 }

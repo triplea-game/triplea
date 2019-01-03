@@ -10,13 +10,11 @@ import games.strategy.triplea.delegate.BattleResults;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
 /**
- * The Purpose of this class is to record various information about combat,
- * in order to use it for conditions and other things later.
+ * The Purpose of this class is to record various information about combat, in order to use it for
+ * conditions and other things later.
  */
 public class BattleRecord implements Serializable {
-  /**
-   * A summary description of the possible results of a battle.
-   */
+  /** A summary description of the possible results of a battle. */
   public enum BattleResultDescription {
     /** conquered without a fight. */
     BLITZED,
@@ -33,7 +31,10 @@ public class BattleRecord implements Serializable {
      */
     WON_WITH_ENEMY_LEFT,
 
-    /** have units left in the territory beside enemy defenders (like both sides have transports left). */
+    /**
+     * have units left in the territory beside enemy defenders (like both sides have transports
+     * left).
+     */
     STALEMATE,
 
     /** either lost the battle, or retreated. */
@@ -52,8 +53,8 @@ public class BattleRecord implements Serializable {
     AIR_BATTLE_STALEMATE,
 
     /**
-     * No battle was fought, possibly because the territory you were about to bomb was conquered before the
-     * bombing could begin, etc.
+     * No battle was fought, possibly because the territory you were about to bomb was conquered
+     * before the bombing could begin, etc.
      */
     NO_BATTLE
   }
@@ -68,11 +69,15 @@ public class BattleRecord implements Serializable {
   private final BattleType battleType;
   private BattleResults battleResults;
 
-
   @SerializationProxySupport
-  private BattleRecord(final Territory battleSite, final PlayerId attacker, final PlayerId defender,
+  private BattleRecord(
+      final Territory battleSite,
+      final PlayerId attacker,
+      final PlayerId defender,
       final int attackerLostTuv,
-      final int defenderLostTuv, final BattleResultDescription battleResultDescription, final BattleType battleType,
+      final int defenderLostTuv,
+      final BattleResultDescription battleResultDescription,
+      final BattleType battleType,
       final BattleResults battleResults) {
     this.battleSite = battleSite;
     this.attacker = attacker;
@@ -112,14 +117,19 @@ public class BattleRecord implements Serializable {
     }
 
     protected Object readResolve() {
-      return new BattleRecord(battleSite, attacker, defender, attackerLostTuv, defenderLostTuv, battleResultDescription,
-          battleType, battleResults);
+      return new BattleRecord(
+          battleSite,
+          attacker,
+          defender,
+          attackerLostTuv,
+          defenderLostTuv,
+          battleResultDescription,
+          battleType,
+          battleResults);
     }
   }
 
-  /**
-   * Convenience copy constructor.
-   */
+  /** Convenience copy constructor. */
   protected BattleRecord(final BattleRecord record) {
     battleSite = record.battleSite;
     attacker = record.attacker;
@@ -131,14 +141,19 @@ public class BattleRecord implements Serializable {
     battleResults = record.battleResults;
   }
 
-  protected BattleRecord(final Territory battleSite, final PlayerId attacker, final BattleType battleType) {
+  protected BattleRecord(
+      final Territory battleSite, final PlayerId attacker, final BattleType battleType) {
     this.battleSite = battleSite;
     this.attacker = attacker;
     this.battleType = battleType;
   }
 
-  protected void setResult(final PlayerId defender, final int attackerLostTuv, final int defenderLostTuv,
-      final BattleResultDescription battleResultDescription, final BattleResults battleResults) {
+  protected void setResult(
+      final PlayerId defender,
+      final int attackerLostTuv,
+      final int defenderLostTuv,
+      final BattleResultDescription battleResultDescription,
+      final BattleResults battleResults) {
     this.defender = defender;
     this.attackerLostTuv = attackerLostTuv;
     this.defenderLostTuv = defenderLostTuv;
@@ -193,7 +208,8 @@ public class BattleRecord implements Serializable {
       return false;
     }
     final BattleRecord other = (BattleRecord) o;
-    return other.battleSite.equals(this.battleSite) && other.battleType == this.battleType
+    return other.battleSite.equals(this.battleSite)
+        && other.battleType == this.battleType
         && other.attacker.equals(this.attacker);
   }
 

@@ -18,16 +18,12 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
-
-/**
- * Common property file class which should be extended.
- */
+/** Common property file class which should be extended. */
 @Log
 public abstract class PropertyFile {
 
-  protected static final Cache<Class<? extends PropertyFile>, PropertyFile> cache = CacheBuilder.newBuilder()
-      .expireAfterWrite(10, TimeUnit.SECONDS)
-      .build();
+  protected static final Cache<Class<? extends PropertyFile>, PropertyFile> cache =
+      CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();
 
   protected final Properties properties = new OrderedProperties();
 
@@ -55,12 +51,12 @@ public abstract class PropertyFile {
   }
 
   @SuppressWarnings("unchecked")
-  protected static <T extends PropertyFile> T getInstance(final Class<T> clazz, final Supplier<T> constructor) {
+  protected static <T extends PropertyFile> T getInstance(
+      final Class<T> clazz, final Supplier<T> constructor) {
     try {
       return (T) cache.get(clazz, constructor::get);
     } catch (final ExecutionException e) {
       throw new IllegalStateException("Error in constructor", e);
     }
   }
-
 }

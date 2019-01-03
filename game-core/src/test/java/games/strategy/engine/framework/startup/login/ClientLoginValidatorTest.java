@@ -40,7 +40,8 @@ final class ClientLoginValidatorTest {
     @Test
     void shouldReturnErrorWhenHmacSha512AuthenticationFailed() throws Exception {
       final Map<String, String> challenge = HmacSha512Authenticator.newChallenge();
-      final Map<String, String> response = HmacSha512Authenticator.newResponse(OTHER_PASSWORD, challenge);
+      final Map<String, String> response =
+          HmacSha512Authenticator.newResponse(OTHER_PASSWORD, challenge);
 
       final String errorMessage = clientLoginValidator.authenticate(challenge, response);
 

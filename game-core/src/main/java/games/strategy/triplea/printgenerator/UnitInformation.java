@@ -26,11 +26,13 @@ import lombok.extern.java.Log;
 class UnitInformation {
   private GameData data;
 
-  void saveToFile(final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
+  void saveToFile(
+      final PrintGenerationData printData, final Map<UnitType, UnitAttachment> unitInfoMap) {
     data = printData.getData();
     printData.getOutDir().mkdir();
     final File outFile = new File(printData.getOutDir(), "General Information.csv");
-    try (Writer unitInformation = Files.newBufferedWriter(outFile.toPath(), StandardCharsets.UTF_8)) {
+    try (Writer unitInformation =
+        Files.newBufferedWriter(outFile.toPath(), StandardCharsets.UTF_8)) {
       for (int i = 0; i < 8; i++) {
         unitInformation.write(",");
       }
@@ -39,9 +41,10 @@ class UnitInformation {
         unitInformation.write(",");
       }
       unitInformation.write("\r\n");
-      unitInformation.write("Unit,Cost,Movement,Attack,Defense,CanBlitz,Artillery?,ArtillerySupportable?"
-          + ",Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,Carrier Cost,"
-          + "Sea Unit?,Hit Points?,Transport Capacity,Carrier Capacity,Submarine?,Destroyer?");
+      unitInformation.write(
+          "Unit,Cost,Movement,Attack,Defense,CanBlitz,Artillery?,ArtillerySupportable?"
+              + ",Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,Carrier Cost,"
+              + "Sea Unit?,Hit Points?,Transport Capacity,Carrier Capacity,Submarine?,Destroyer?");
       unitInformation.write("\r\n");
       for (final Entry<UnitType, UnitAttachment> entry : unitInfoMap.entrySet()) {
         final UnitType currentType = entry.getKey();
@@ -52,29 +55,58 @@ class UnitInformation {
           unitInformation.write(StringUtils.capitalize(currentType.getName()) + ",");
         }
         unitInformation.write(getCostInformation(currentType) + ",");
-        unitInformation.write(currentAttachment.getMovement(PlayerId.NULL_PLAYERID) + ","
-            + currentAttachment.getAttack(PlayerId.NULL_PLAYERID) + ","
-            + currentAttachment.getDefense(PlayerId.NULL_PLAYERID) + ","
-            + (!currentAttachment.getCanBlitz(PlayerId.NULL_PLAYERID) ? "-" : "true") + ","
-            + (!currentAttachment.getArtillery() ? "-" : "true") + ","
-            + (!currentAttachment.getArtillerySupportable() ? "-" : "true") + ","
-            + (!currentAttachment.getCanProduceUnits() ? "-" : "true") + ","
-            + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine()) + ","
-            + (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
-            + (!Matches.unitTypeIsAaForAnything().test(currentType) ? "-" : "true") + ","
-            + (!currentAttachment.getIsAir() ? "-" : "true") + ","
-            + (!currentAttachment.getIsStrategicBomber() ? "-" : "true") + ","
-            + (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + ","
-            + (!currentAttachment.getIsSea() ? "-" : "true") + "," + currentAttachment.getHitPoints() + ","
-            + (currentAttachment.getTransportCapacity() == -1 ? "-" : currentAttachment.getTransportCapacity()) + ","
-            + (currentAttachment.getCarrierCapacity() == -1 ? "-" : currentAttachment.getCarrierCapacity()) + ","
-            + (!currentAttachment.getIsSub() ? "-" : "true") + ","
-            + (!currentAttachment.getIsDestroyer() ? "-" : "true"));
+        unitInformation.write(
+            currentAttachment.getMovement(PlayerId.NULL_PLAYERID)
+                + ","
+                + currentAttachment.getAttack(PlayerId.NULL_PLAYERID)
+                + ","
+                + currentAttachment.getDefense(PlayerId.NULL_PLAYERID)
+                + ","
+                + (!currentAttachment.getCanBlitz(PlayerId.NULL_PLAYERID) ? "-" : "true")
+                + ","
+                + (!currentAttachment.getArtillery() ? "-" : "true")
+                + ","
+                + (!currentAttachment.getArtillerySupportable() ? "-" : "true")
+                + ","
+                + (!currentAttachment.getCanProduceUnits() ? "-" : "true")
+                + ","
+                + (currentAttachment.getIsMarine() == 0 ? "-" : currentAttachment.getIsMarine())
+                + ","
+                + (currentAttachment.getTransportCost() == -1
+                    ? "-"
+                    : currentAttachment.getTransportCost())
+                + ","
+                + (!Matches.unitTypeIsAaForAnything().test(currentType) ? "-" : "true")
+                + ","
+                + (!currentAttachment.getIsAir() ? "-" : "true")
+                + ","
+                + (!currentAttachment.getIsStrategicBomber() ? "-" : "true")
+                + ","
+                + (currentAttachment.getCarrierCost() == -1
+                    ? "-"
+                    : currentAttachment.getCarrierCost())
+                + ","
+                + (!currentAttachment.getIsSea() ? "-" : "true")
+                + ","
+                + currentAttachment.getHitPoints()
+                + ","
+                + (currentAttachment.getTransportCapacity() == -1
+                    ? "-"
+                    : currentAttachment.getTransportCapacity())
+                + ","
+                + (currentAttachment.getCarrierCapacity() == -1
+                    ? "-"
+                    : currentAttachment.getCarrierCapacity())
+                + ","
+                + (!currentAttachment.getIsSub() ? "-" : "true")
+                + ","
+                + (!currentAttachment.getIsDestroyer() ? "-" : "true"));
         unitInformation.write("\r\n");
       }
       unitInformation.write("\r\n");
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "There was an error while trying to save File " + outFile.toString(), e);
+      log.log(
+          Level.SEVERE, "There was an error while trying to save File " + outFile.toString(), e);
     }
   }
 
@@ -90,7 +122,8 @@ class UnitInformation {
       }
     } else {
       if (TuvUtils.getCostsForTuv(data.getPlayerList().getPlayers().iterator().next(), data)
-          .getInt(type) > 0) {
+              .getInt(type)
+          > 0) {
         return TuvUtils.getCostsForTuv(data.getPlayerList().getPlayers().iterator().next(), data)
             .getInt(type);
       }

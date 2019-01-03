@@ -32,5 +32,4 @@ public class ProUtilsTest {
     final PlayerId pirates = data.getPlayerList().getPlayerId("Pirates");
     assertTrue(ProUtils.isNeutralPlayer(pirates));
   }
-
 }

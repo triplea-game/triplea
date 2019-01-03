@@ -61,7 +61,8 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     return new ArrayList<>();
   }
 
-  void layoutPlayerComponents(final JPanel panel, final List<PlayerSelectorRow> playerRows, final GameData data) {
+  void layoutPlayerComponents(
+      final JPanel panel, final List<PlayerSelectorRow> playerRows, final GameData data) {
     panel.removeAll();
     playerRows.clear();
     panel.setLayout(new GridBagLayout());
@@ -71,7 +72,8 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     }
 
     final Collection<String> disableable = data.getPlayerList().getPlayersThatMayBeDisabled();
-    final Map<String, Boolean> playersEnablementListing = data.getPlayerList().getPlayersEnabledListing();
+    final Map<String, Boolean> playersEnablementListing =
+        data.getPlayerList().getPlayersEnabledListing();
     final Map<String, String> reloadSelections = PlayerId.currentPlayers(data);
     final List<PlayerId> players = data.getPlayerList().getPlayers();
 
@@ -79,44 +81,159 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     int gridy = 1;
     if (!disableable.isEmpty() || playersEnablementListing.containsValue(Boolean.FALSE)) {
       final JLabel enableLabel = new JLabel("Use");
-      panel.add(enableLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+      panel.add(
+          enableLabel,
+          new GridBagConstraints(
+              gridx++,
+              gridy,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 5, 5, 0),
+              0,
+              0));
     }
     final JLabel setAllTypesLabel = new JLabel("Set All To:");
-    panel.add(setAllTypesLabel, new GridBagConstraints(gridx, gridy - 1, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(5, 5, 15, 0), 0, 0));
+    panel.add(
+        setAllTypesLabel,
+        new GridBagConstraints(
+            gridx,
+            gridy - 1,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.NONE,
+            new Insets(5, 5, 15, 0),
+            0,
+            0));
     final JLabel nameLabel = new JLabel("Name");
-    panel.add(nameLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+    panel.add(
+        nameLabel,
+        new GridBagConstraints(
+            gridx++,
+            gridy,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 5, 0),
+            0,
+            0));
     final JComboBox<String> setAllTypes = new JComboBox<>(PlayerType.playerTypes());
     setAllTypes.insertItemAt(SET_ALL_DEFAULT_LABEL, 0);
     setAllTypes.setSelectedIndex(-1);
-    panel.add(setAllTypes, new GridBagConstraints(gridx, gridy - 1, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 5, 15, 0), 0, 0));
+    panel.add(
+        setAllTypes,
+        new GridBagConstraints(
+            gridx,
+            gridy - 1,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 5, 15, 0),
+            0,
+            0));
     final JLabel typeLabel = new JLabel("Type");
-    panel.add(typeLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 5, 5, 0), 0, 0));
+    panel.add(
+        typeLabel,
+        new GridBagConstraints(
+            gridx++,
+            gridy,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 5, 0),
+            0,
+            0));
     final JLabel allianceLabel = new JLabel("Alliance");
-    panel.add(allianceLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 7, 5, 5), 0, 0));
+    panel.add(
+        allianceLabel,
+        new GridBagConstraints(
+            gridx++,
+            gridy,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 7, 5, 5),
+            0,
+            0));
     final JButton resourceModifiers = new JButton();
-    panel.add(resourceModifiers, new GridBagConstraints(gridx, gridy - 1, 3, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 5, 15, 0), 0, 0));
+    panel.add(
+        resourceModifiers,
+        new GridBagConstraints(
+            gridx,
+            gridy - 1,
+            3,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 5, 15, 0),
+            0,
+            0));
     final JLabel incomeLabel = new JLabel("Income");
-    panel.add(incomeLabel, new GridBagConstraints(gridx++, gridy, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
+    panel.add(
+        incomeLabel,
+        new GridBagConstraints(
+            gridx++,
+            gridy,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 20, 5, 0),
+            0,
+            0));
     incomeLabel.setVisible(false);
     gridx++;
     final JLabel puIncomeBonusLabel = new JLabel("Bonus Income");
-    panel.add(puIncomeBonusLabel, new GridBagConstraints(gridx, gridy, 2, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 20, 5, 0), 0, 0));
+    panel.add(
+        puIncomeBonusLabel,
+        new GridBagConstraints(
+            gridx,
+            gridy,
+            2,
+            1,
+            0,
+            0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 20, 5, 0),
+            0,
+            0));
     puIncomeBonusLabel.setVisible(false);
 
     // Add players in the order they were defined in the XML
     for (final PlayerId player : players) {
       final PlayerSelectorRow selector =
-          new PlayerSelectorRow(playerRows, player, reloadSelections, disableable, playersEnablementListing,
-              data.getAllianceTracker().getAlliancesPlayerIsIn(player), this, data.getProperties());
+          new PlayerSelectorRow(
+              playerRows,
+              player,
+              reloadSelections,
+              disableable,
+              playersEnablementListing,
+              data.getAllianceTracker().getAlliancesPlayerIsIn(player),
+              this,
+              data.getProperties());
       playerRows.add(selector);
       if (!player.isHidden()) {
         selector.layout(++gridy, panel);
@@ -124,23 +241,27 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
       }
     }
 
-    resourceModifiers.setAction(SwingAction.of("Resource Modifiers", e -> {
-      final boolean isVisible = incomeLabel.isVisible();
-      incomeLabel.setVisible(!isVisible);
-      puIncomeBonusLabel.setVisible(!isVisible);
-      playerRows.forEach(row -> row.setResourceModifiersVisble(!isVisible));
-    }));
+    resourceModifiers.setAction(
+        SwingAction.of(
+            "Resource Modifiers",
+            e -> {
+              final boolean isVisible = incomeLabel.isVisible();
+              incomeLabel.setVisible(!isVisible);
+              puIncomeBonusLabel.setVisible(!isVisible);
+              playerRows.forEach(row -> row.setResourceModifiersVisble(!isVisible));
+            }));
 
-    setAllTypes.addActionListener(e -> {
-      final String selectedType = (String) setAllTypes.getSelectedItem();
-      if (selectedType != null) {
-        if (SET_ALL_DEFAULT_LABEL.equals(selectedType)) {
-          playerRows.forEach(PlayerSelectorRow::setDefaultPlayerType);
-        } else {
-          playerRows.forEach(row -> row.setPlayerType(selectedType));
-        }
-      }
-    });
+    setAllTypes.addActionListener(
+        e -> {
+          final String selectedType = (String) setAllTypes.getSelectedItem();
+          if (selectedType != null) {
+            if (SET_ALL_DEFAULT_LABEL.equals(selectedType)) {
+              playerRows.forEach(PlayerSelectorRow::setDefaultPlayerType);
+            } else {
+              playerRows.forEach(row -> row.setPlayerType(selectedType));
+            }
+          }
+        });
 
     panel.validate();
     panel.repaint();

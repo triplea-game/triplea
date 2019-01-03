@@ -12,21 +12,25 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
 
-/**
- * Draws a black outline around the associated territory.
- */
+/** Draws a black outline around the associated territory. */
 public class OptionalExtraTerritoryBordersDrawable implements IDrawable {
   private final String territoryName;
   private final OptionalExtraBorderLevel level;
 
-  public OptionalExtraTerritoryBordersDrawable(final String territoryName, final OptionalExtraBorderLevel level) {
+  public OptionalExtraTerritoryBordersDrawable(
+      final String territoryName, final OptionalExtraBorderLevel level) {
     this.territoryName = territoryName;
     this.level = level;
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData,
+      final AffineTransform unscaled,
+      final AffineTransform scaled) {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
     graphics.setColor(Color.BLACK);

@@ -55,9 +55,9 @@ import games.strategy.ui.SwingAction;
 import lombok.extern.java.Log;
 
 /**
- * A panel for setting up Play by Email/Forum.
- * This panel listens to the GameSelectionModel so it can refresh when a new game is selected or save game loaded
- * The MainPanel also listens to this panel, and we notify it through the notifyObservers()
+ * A panel for setting up Play by Email/Forum. This panel listens to the GameSelectionModel so it
+ * can refresh when a new game is selected or save game loaded The MainPanel also listens to this
+ * panel, and we notify it through the notifyObservers()
  */
 @Log
 public class PbemSetupPanel extends SetupPanel implements Observer {
@@ -74,8 +74,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   /**
    * Creates a new instance.
    *
-   * @param model the GameSelectionModel, though which changes are obtained when new games are chosen, or save games
-   *        loaded
+   * @param model the GameSelectionModel, though which changes are obtained when new games are
+   *     chosen, or save games loaded
    */
   public PbemSetupPanel(final GameSelectorModel model) {
     gameSelectorModel = model;
@@ -90,19 +90,24 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
 
   private void createComponents() {
     final JScrollPane scrollPane = new JScrollPane(localPlayerPanel);
-    localPlayerPanel.addHierarchyListener(e -> {
-      final Window window = SwingUtilities.getWindowAncestor(localPlayerPanel);
-      if (window instanceof Dialog) {
-        final Dialog dialog = (Dialog) window;
-        if (!dialog.isResizable()) {
-          dialog.setResizable(true);
-          dialog.setMinimumSize(new Dimension(700, 700));
-        }
-      }
-    });
+    localPlayerPanel.addHierarchyListener(
+        e -> {
+          final Window window = SwingUtilities.getWindowAncestor(localPlayerPanel);
+          if (window instanceof Dialog) {
+            final Dialog dialog = (Dialog) window;
+            if (!dialog.isResizable()) {
+              dialog.setResizable(true);
+              dialog.setMinimumSize(new Dimension(700, 700));
+            }
+          }
+        });
     localPlayerSelection.addActionListener(
-        e -> JOptionPane.showMessageDialog(PbemSetupPanel.this, scrollPane, "Select Local Players and AI's",
-            JOptionPane.PLAIN_MESSAGE));
+        e ->
+            JOptionPane.showMessageDialog(
+                PbemSetupPanel.this,
+                scrollPane,
+                "Select Local Players and AI's",
+                JOptionPane.PLAIN_MESSAGE));
   }
 
   private void layoutComponents() {
@@ -111,23 +116,83 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     // Empty border works as margin
     setBorder(new EmptyBorder(10, 10, 10, 10));
     int row = 0;
-    add(diceServerEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.HORIZONTAL, new Insets(10, 0, 20, 0), 0, 0));
+    add(
+        diceServerEditor,
+        new GridBagConstraints(
+            0,
+            row++,
+            1,
+            1,
+            1.0d,
+            0d,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(10, 0, 20, 0),
+            0,
+            0));
     // the play by Forum settings
     forumPosterEditor.setBorder(new TitledBorder("Play By Forum"));
-    add(forumPosterEditor, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
+    add(
+        forumPosterEditor,
+        new GridBagConstraints(
+            0,
+            row++,
+            1,
+            1,
+            1.0d,
+            0d,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, 20, 0),
+            0,
+            0));
     final JPanel emailPanel = new JPanel(new GridBagLayout());
     emailPanel.setBorder(new TitledBorder("Play By Email"));
-    add(emailPanel, new GridBagConstraints(0, row++, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 0));
+    add(
+        emailPanel,
+        new GridBagConstraints(
+            0,
+            row++,
+            1,
+            1,
+            1.0d,
+            0d,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, 20, 0),
+            0,
+            0));
 
-    emailPanel.add(emailSenderEditor, new GridBagConstraints(0, 0, 1, 1, 1.0d, 0d,
-        GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
+    emailPanel.add(
+        emailSenderEditor,
+        new GridBagConstraints(
+            0,
+            0,
+            1,
+            1,
+            1.0d,
+            0d,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, 2, 0),
+            0,
+            0));
 
     // add selection of local players
-    add(localPlayerSelection, new GridBagConstraints(0, row, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHEAST,
-        GridBagConstraints.NONE, new Insets(10, 0, 10, 0), 0, 0));
+    add(
+        localPlayerSelection,
+        new GridBagConstraints(
+            0,
+            row,
+            1,
+            1,
+            1.0d,
+            0d,
+            GridBagConstraints.NORTHEAST,
+            GridBagConstraints.NONE,
+            new Insets(10, 0, 10, 0),
+            0,
+            0));
     layoutPlayerComponents(localPlayerPanel, playerTypes, gameSelectorModel.getGameData());
   }
 
@@ -137,7 +202,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   }
 
   private void setupListeners() {
-    // register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects
+    // register, so we get notified when the game model (GameData) changes (e.g if the user load a
+    // save game or selects
     // another game)
     gameSelectorModel.addObserver(this);
     // subscribe to editor changes, so we cannotify the MainPanel
@@ -156,10 +222,12 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * Load the dice rollers from cache, if the game was a save game, the dice roller store is selected.
+   * Load the dice rollers from cache, if the game was a save game, the dice roller store is
+   * selected.
    */
   private void loadDiceServer(final GameData data) {
-    final List<IRemoteDiceServer> diceRollers = new ArrayList<>(PropertiesDiceRoller.loadFromFile());
+    final List<IRemoteDiceServer> diceRollers =
+        new ArrayList<>(PropertiesDiceRoller.loadFromFile());
     diceRollers.add(new InternalDiceServer());
     for (final IRemoteDiceServer diceRoller : diceRollers) {
       final IRemoteDiceServer cached =
@@ -181,8 +249,9 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * Load the Forum poster that are stored in the GameData, and select it in the list.
-   * Sensitive information such as passwords are not stored in save games, so the are loaded from the LocalBeanCache
+   * Load the Forum poster that are stored in the GameData, and select it in the list. Sensitive
+   * information such as passwords are not stored in save games, so the are loaded from the
+   * LocalBeanCache
    */
   private void loadForumPosters(final GameData data) {
     // get the forum posters,
@@ -192,11 +261,14 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     forumPosters.add(useCacheIfAvailable(new TripleAForumPoster()));
     forumPosterEditor.setBeans(forumPosters);
     // now get the poster stored in the save game
-    final IForumPoster forumPoster = (IForumPoster) data.getProperties().get(PbemMessagePoster.FORUM_POSTER_PROP_NAME);
+    final IForumPoster forumPoster =
+        (IForumPoster) data.getProperties().get(PbemMessagePoster.FORUM_POSTER_PROP_NAME);
     if (forumPoster != null) {
-      // if we have a cached version, use the credentials from this, as each player has different forum login
+      // if we have a cached version, use the credentials from this, as each player has different
+      // forum login
       final IForumPoster cached =
-          (IForumPoster) LocalBeanCache.INSTANCE.getSerializable(forumPoster.getClass().getCanonicalName());
+          (IForumPoster)
+              LocalBeanCache.INSTANCE.getSerializable(forumPoster.getClass().getCanonicalName());
       if (cached != null) {
         forumPoster.setUsername(cached.getUsername());
         forumPoster.setPassword(cached.getPassword());
@@ -207,8 +279,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * Configures the list of Email senders. If the game was saved we use this email sender.
-   * Since passwords are not stored in save games, the LocalBeanCache is checked
+   * Configures the list of Email senders. If the game was saved we use this email sender. Since
+   * passwords are not stored in save games, the LocalBeanCache is checked
    *
    * @param data the game data
    */
@@ -221,10 +293,12 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     emailSenders.add(useCacheIfAvailable(new GenericEmailSender()));
     emailSenderEditor.setBeans(emailSenders);
     // now get the sender from the save game, update it with credentials from the cache, and set it
-    final IEmailSender sender = (IEmailSender) data.getProperties().get(PbemMessagePoster.EMAIL_SENDER_PROP_NAME);
+    final IEmailSender sender =
+        (IEmailSender) data.getProperties().get(PbemMessagePoster.EMAIL_SENDER_PROP_NAME);
     if (sender != null) {
       final IEmailSender cached =
-          (IEmailSender) LocalBeanCache.INSTANCE.getSerializable(sender.getClass().getCanonicalName());
+          (IEmailSender)
+              LocalBeanCache.INSTANCE.getSerializable(sender.getClass().getCanonicalName());
       if (cached != null) {
         sender.setUserName(cached.getUserName());
         sender.setPassword(cached.getPassword());
@@ -235,30 +309,26 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * Finds a cached instance of the same type as the given instance. If a cached version is not available,
-   * {@code instance} is returned.
+   * Finds a cached instance of the same type as the given instance. If a cached version is not
+   * available, {@code instance} is returned.
    *
    * @param instance The instance whose type is searched for in the cache.
-   *
    * @return A IBean loaded from the cache or {@code instance} if a cached version is not available.
    */
   private static <T extends IBean> T useCacheIfAvailable(final T instance) {
     @SuppressWarnings("unchecked")
-    final T cached = (T) LocalBeanCache.INSTANCE.getSerializable(instance.getClass().getCanonicalName());
+    final T cached =
+        (T) LocalBeanCache.INSTANCE.getSerializable(instance.getClass().getCanonicalName());
     return cached == null ? instance : cached;
   }
 
-  /**
-   * Called when the current game changes.
-   */
+  /** Called when the current game changes. */
   @Override
   public void cancel() {
     gameSelectorModel.deleteObserver(this);
   }
 
-  /**
-   * Called when the observers detect change, to see if the game is in a startable state.
-   */
+  /** Called when the observers detect change, to see if the game is in a startable state. */
   @Override
   public boolean canGameStart() {
     if (gameSelectorModel.getGameData() == null) {
@@ -267,7 +337,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     final boolean diceServerValid = diceServerEditor.isBeanValid();
     final boolean summaryValid = forumPosterEditor.isBeanValid();
     final boolean emailValid = emailSenderEditor.isBeanValid();
-    final boolean pbemReady = diceServerValid && summaryValid && emailValid && gameSelectorModel.getGameData() != null;
+    final boolean pbemReady =
+        diceServerValid && summaryValid && emailValid && gameSelectorModel.getGameData() != null;
     if (!pbemReady) {
       return false;
     }
@@ -284,7 +355,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     final IForumPoster poster = (IForumPoster) forumPosterEditor.getBean();
     if (poster != null) {
       // clone the poster, the remove sensitive info, and put the clone into the game data
-      // this was the sensitive info is not stored in the save game, but the user cache still has the password
+      // this was the sensitive info is not stored in the save game, but the user cache still has
+      // the password
       final IForumPoster summaryPoster = poster.doClone();
       summaryPoster.clearSensitiveInfo();
       data.getProperties().set(PbemMessagePoster.FORUM_POSTER_PROP_NAME, summaryPoster);
@@ -293,7 +365,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     IEmailSender sender = (IEmailSender) emailSenderEditor.getBean();
     if (sender != null) {
       // create a clone, delete the sensitive information in the clone, and use it in the game
-      // the locally cached version still has the password so the user doesn't have to enter it every time
+      // the locally cached version still has the password so the user doesn't have to enter it
+      // every time
       sender = sender.clone();
       sender.clearSensitiveInfo();
       data.getProperties().set(PbemMessagePoster.EMAIL_SENDER_PROP_NAME, sender);
@@ -305,22 +378,22 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * Is called in response to the GameSelectionModel being updated. It means the we have to reload the form
+   * Is called in response to the GameSelectionModel being updated. It means the we have to reload
+   * the form
    *
    * @param o always null
    * @param arg always null
    */
   @Override
   public void update(final Observable o, final Object arg) {
-    SwingAction.invokeNowOrLater(() -> {
-      loadAll();
-      layoutComponents();
-    });
+    SwingAction.invokeNowOrLater(
+        () -> {
+          loadAll();
+          layoutComponents();
+        });
   }
 
-  /**
-   * Called when the user hits play.
-   */
+  /** Called when the user hits play. */
   @Override
   public Optional<ILauncher> getLauncher() {
     // update local cache and write to disk before game starts
@@ -336,7 +409,8 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     LocalBeanCache.INSTANCE.storeSerializable(server.getDisplayName(), server);
     LocalBeanCache.INSTANCE.writeToDisk();
     // create local launcher
-    final PbemDiceRoller randomSource = new PbemDiceRoller((IRemoteDiceServer) diceServerEditor.getBean());
+    final PbemDiceRoller randomSource =
+        new PbemDiceRoller((IRemoteDiceServer) diceServerEditor.getBean());
     final Map<String, PlayerType> playerTypes = new HashMap<>();
     final Map<String, Boolean> playersEnabled = new HashMap<>();
     for (final PlayerSelectorRow player : this.playerTypes) {
@@ -347,8 +421,15 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     // disable-able players, or the alliances
     // list, for a local game
     final PlayerListing pl =
-        new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
-            gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
+        new PlayerListing(
+            null,
+            playersEnabled,
+            playerTypes,
+            gameSelectorModel.getGameData().getGameVersion(),
+            gameSelectorModel.getGameName(),
+            gameSelectorModel.getGameRound(),
+            null,
+            null);
     return Optional.of(new LocalLauncher(gameSelectorModel, randomSource, pl));
   }
 
@@ -358,9 +439,9 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
   }
 
   /**
-   * A cache for serialized beans that should be stored locally.
-   * This is used to store settings which are not game related, and should therefore not go into the options cache
-   * This is often used by editors to remember previous values
+   * A cache for serialized beans that should be stored locally. This is used to store settings
+   * which are not game related, and should therefore not go into the options cache This is often
+   * used by editors to remember previous values
    */
   @SuppressWarnings("ImmutableEnumChecker") // Enum singleton pattern
   private enum LocalBeanCache {
@@ -407,18 +488,16 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     /**
      * Adds a new Serializable to the cache.
      *
-     * @param key the key the serializable should be stored under. Take care not to override a serializable stored by
-     *        other code it is generally a good ide to use fully qualified class names, getClass().getCanonicalName() as
-     *        key
+     * @param key the key the serializable should be stored under. Take care not to override a
+     *     serializable stored by other code it is generally a good ide to use fully qualified class
+     *     names, getClass().getCanonicalName() as key
      * @param bean the bean
      */
     void storeSerializable(final String key, final IBean bean) {
       map.put(key, bean);
     }
 
-    /**
-     * Call to have the cache written to disk.
-     */
+    /** Call to have the cache written to disk. */
     void writeToDisk() {
       synchronized (mutex) {
         try (FileOutputStream fout = new FileOutputStream(file, false);

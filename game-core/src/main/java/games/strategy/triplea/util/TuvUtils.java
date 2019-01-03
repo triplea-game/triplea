@@ -25,19 +25,17 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
-/**
- * Utility class with static methods to assist in determining TUV.
- */
+/** Utility class with static methods to assist in determining TUV. */
 public class TuvUtils {
 
   private TuvUtils() {}
 
   /**
-   * Return map where keys are unit types and values are PU costs of that unit type, based on a player.
-   * Any production rule that produces multiple units
-   * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
-   * will have their costs rounded up on a per unit basis (so NWO artillery will become 4).
-   * Therefore, this map should NOT be used for Purchasing information!
+   * Return map where keys are unit types and values are PU costs of that unit type, based on a
+   * player. Any production rule that produces multiple units (like artillery in NWO, costs 7 but
+   * makes 2 artillery, meaning effective price is 3.5 each) will have their costs rounded up on a
+   * per unit basis (so NWO artillery will become 4). Therefore, this map should NOT be used for
+   * Purchasing information!
    *
    * @param player The player to get costs schedule for
    * @param data The game data.
@@ -64,11 +62,13 @@ public class TuvUtils {
         final int costPerGroup = rule.getCosts().getInt(pus);
         final int numberProduced = rule.getResults().getInt(type);
         // we average the cost for a single unit, rounding up
-        final int roundedCostPerSingle = (int) Math.ceil((double) costPerGroup / (double) numberProduced);
+        final int roundedCostPerSingle =
+            (int) Math.ceil((double) costPerGroup / (double) numberProduced);
         costs.put(type, roundedCostPerSingle);
       }
     }
-    // since our production frontier may not cover all the units we control, and not the enemy units,
+    // since our production frontier may not cover all the units we control, and not the enemy
+    // units,
     // we will add any unit types not in our list, based on the list for everyone
     final IntegerMap<UnitType> costsAll = getCostsForTuvForAllPlayersMergedAndAveraged(data);
     for (final UnitType ut : costsAll.keySet()) {
@@ -87,13 +87,13 @@ public class TuvUtils {
   }
 
   /**
-   * Return a map where key are unit types and values are the AVERAGED for all RULES (not for all players).
-   * Any production rule that produces multiple units
-   * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
-   * will have their costs rounded up on a per unit basis.
-   * Therefore, this map should NOT be used for Purchasing information!
+   * Return a map where key are unit types and values are the AVERAGED for all RULES (not for all
+   * players). Any production rule that produces multiple units (like artillery in NWO, costs 7 but
+   * makes 2 artillery, meaning effective price is 3.5 each) will have their costs rounded up on a
+   * per unit basis. Therefore, this map should NOT be used for Purchasing information!
    */
-  private static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
+  private static IntegerMap<UnitType> getCostsForTuvForAllPlayersMergedAndAveraged(
+      final GameData data) {
     data.acquireReadLock();
     final Resource pus;
     try {
@@ -104,7 +104,8 @@ public class TuvUtils {
     final IntegerMap<UnitType> costs = new IntegerMap<>();
     final Map<UnitType, List<Integer>> differentCosts = new HashMap<>();
     for (final ProductionRule rule : data.getProductionRuleList().getProductionRules()) {
-      // only works for the first result, so we are assuming each purchase frontier only gives one type of unit
+      // only works for the first result, so we are assuming each purchase frontier only gives one
+      // type of unit
       final NamedAttachable resourceOrUnit = rule.getResults().keySet().iterator().next();
       if (!(resourceOrUnit instanceof UnitType)) {
         continue;
@@ -113,7 +114,8 @@ public class TuvUtils {
       final int numberProduced = rule.getResults().getInt(ut);
       final int costPerGroup = rule.getCosts().getInt(pus);
       // we round up the cost
-      final int roundedCostPerSingle = (int) Math.ceil((double) costPerGroup / (double) numberProduced);
+      final int roundedCostPerSingle =
+          (int) Math.ceil((double) costPerGroup / (double) numberProduced);
       if (differentCosts.containsKey(ut)) {
         differentCosts.get(ut).add(roundedCostPerSingle);
       } else {
@@ -128,7 +130,8 @@ public class TuvUtils {
       for (final int cost : costsForType) {
         totalCosts += cost;
       }
-      final int averagedCost = (int) Math.round(((double) totalCosts / (double) costsForType.size()));
+      final int averagedCost =
+          (int) Math.round(((double) totalCosts / (double) costsForType.size()));
       costs.put(ut, averagedCost);
     }
 
@@ -143,8 +146,8 @@ public class TuvUtils {
     return costs;
   }
 
-  private static int getTotalTuv(final UnitType unitType, final IntegerMap<UnitType> costs,
-      final Set<UnitType> alreadyAdded) {
+  private static int getTotalTuv(
+      final UnitType unitType, final IntegerMap<UnitType> costs, final Set<UnitType> alreadyAdded) {
     final UnitAttachment ua = UnitAttachment.get(unitType);
     if (ua != null && ua.getTuv() > 0) {
       return ua.getTuv();
@@ -162,18 +165,18 @@ public class TuvUtils {
   }
 
   /**
-   * Return map where keys are unit types and values are resource costs of that unit type, based on a player.
-   * Any production rule that produces multiple units
-   * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
-   * will have their costs rounded up on a per unit basis.
-   * Therefore, this map should NOT be used for Purchasing information!
+   * Return map where keys are unit types and values are resource costs of that unit type, based on
+   * a player. Any production rule that produces multiple units (like artillery in NWO, costs 7 but
+   * makes 2 artillery, meaning effective price is 3.5 each) will have their costs rounded up on a
+   * per unit basis. Therefore, this map should NOT be used for Purchasing information!
    */
-  public static Map<PlayerId, Map<UnitType, ResourceCollection>> getResourceCostsForTuv(final GameData data,
-      final boolean includeAverageForMissingUnits) {
+  public static Map<PlayerId, Map<UnitType, ResourceCollection>> getResourceCostsForTuv(
+      final GameData data, final boolean includeAverageForMissingUnits) {
     final Map<PlayerId, Map<UnitType, ResourceCollection>> result = new LinkedHashMap<>();
-    final Map<UnitType, ResourceCollection> average = includeAverageForMissingUnits
-        ? TuvUtils.getResourceCostsForTuvForAllPlayersMergedAndAveraged(data)
-        : new HashMap<>();
+    final Map<UnitType, ResourceCollection> average =
+        includeAverageForMissingUnits
+            ? TuvUtils.getResourceCostsForTuvForAllPlayersMergedAndAveraged(data)
+            : new HashMap<>();
     final List<PlayerId> players = data.getPlayerList().getPlayers();
     players.add(PlayerId.NULL_PLAYERID);
     for (final PlayerId p : players) {
@@ -183,9 +186,13 @@ public class TuvUtils {
         result.put(p, average);
         continue;
       }
-      final Map<UnitType, ResourceCollection> current = result.computeIfAbsent(p, k -> new LinkedHashMap<>());
+      final Map<UnitType, ResourceCollection> current =
+          result.computeIfAbsent(p, k -> new LinkedHashMap<>());
       for (final ProductionRule rule : frontier.getRules()) {
-        if (rule == null || rule.getResults() == null || rule.getResults().isEmpty() || rule.getCosts() == null
+        if (rule == null
+            || rule.getResults() == null
+            || rule.getResults().isEmpty()
+            || rule.getCosts() == null
             || rule.getCosts().isEmpty()) {
           continue;
         }
@@ -211,7 +218,8 @@ public class TuvUtils {
           }
         }
       }
-      // since our production frontier may not cover all the units we control, and not the enemy units,
+      // since our production frontier may not cover all the units we control, and not the enemy
+      // units,
       // we will add any unit types not in our list, based on the list for everyone
       for (final UnitType ut : average.keySet()) {
         if (!current.keySet().contains(ut)) {
@@ -224,14 +232,13 @@ public class TuvUtils {
   }
 
   /**
-   * Return a map where key are unit types and values are the AVERAGED for all players.
-   * Any production rule that produces multiple units
-   * (like artillery in NWO, costs 7 but makes 2 artillery, meaning effective price is 3.5 each)
-   * will have their costs rounded up on a per unit basis.
-   * Therefore, this map should NOT be used for Purchasing information!
+   * Return a map where key are unit types and values are the AVERAGED for all players. Any
+   * production rule that produces multiple units (like artillery in NWO, costs 7 but makes 2
+   * artillery, meaning effective price is 3.5 each) will have their costs rounded up on a per unit
+   * basis. Therefore, this map should NOT be used for Purchasing information!
    */
-  private static Map<UnitType, ResourceCollection> getResourceCostsForTuvForAllPlayersMergedAndAveraged(
-      final GameData data) {
+  private static Map<UnitType, ResourceCollection>
+      getResourceCostsForTuvForAllPlayersMergedAndAveraged(final GameData data) {
     final Map<UnitType, ResourceCollection> average = new HashMap<>();
     final Resource pus;
     data.acquireReadLock();
@@ -246,7 +253,10 @@ public class TuvUtils {
     final Map<UnitType, List<ResourceCollection>> backups = new HashMap<>();
     final Map<UnitType, ResourceCollection> backupAveraged = new HashMap<>();
     for (final ProductionRule rule : data.getProductionRuleList().getProductionRules()) {
-      if (rule == null || rule.getResults() == null || rule.getResults().isEmpty() || rule.getCosts() == null
+      if (rule == null
+          || rule.getResults() == null
+          || rule.getResults().isEmpty()
+          || rule.getCosts() == null
           || rule.getCosts().isEmpty()) {
         continue;
       }
@@ -265,12 +275,14 @@ public class TuvUtils {
       final int totalProduced = unitMap.totalValues();
       if (totalProduced == 1) {
         final UnitType ut = units.iterator().next();
-        final List<ResourceCollection> current = backups.computeIfAbsent(ut, k -> new ArrayList<>());
+        final List<ResourceCollection> current =
+            backups.computeIfAbsent(ut, k -> new ArrayList<>());
         current.add(costPerGroup);
       } else if (totalProduced > 1) {
         costPerGroup.discount((double) 1 / (double) totalProduced);
         for (final UnitType ut : units) {
-          final List<ResourceCollection> current = backups.computeIfAbsent(ut, k -> new ArrayList<>());
+          final List<ResourceCollection> current =
+              backups.computeIfAbsent(ut, k -> new ArrayList<>());
           current.add(costPerGroup);
         }
       }
@@ -283,7 +295,8 @@ public class TuvUtils {
       }
       backupAveraged.put(entry.getKey(), avgCost);
     }
-    final Map<PlayerId, Map<UnitType, ResourceCollection>> allPlayersCurrent = getResourceCostsForTuv(data, false);
+    final Map<PlayerId, Map<UnitType, ResourceCollection>> allPlayersCurrent =
+        getResourceCostsForTuv(data, false);
     allPlayersCurrent.remove(null);
     for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes()) {
       final List<ResourceCollection> costs = new ArrayList<>();
@@ -334,10 +347,13 @@ public class TuvUtils {
    * @param costs An integer map of unit types to costs
    * @return the total unit value.
    */
-  public static int getTuv(final Collection<Unit> units, final PlayerId player, final IntegerMap<UnitType> costs,
+  public static int getTuv(
+      final Collection<Unit> units,
+      final PlayerId player,
+      final IntegerMap<UnitType> costs,
       final GameData data) {
-    final Collection<Unit> playerUnits = CollectionUtils.getMatches(units, Matches.alliedUnit(player, data));
+    final Collection<Unit> playerUnits =
+        CollectionUtils.getMatches(units, Matches.alliedUnit(player, data));
     return getTuv(playerUnits, costs);
   }
-
 }

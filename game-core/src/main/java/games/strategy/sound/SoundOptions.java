@@ -10,9 +10,7 @@ import javax.swing.JMenuItem;
 
 import games.strategy.engine.framework.ui.PropertiesSelector;
 
-/**
- * Sound option window framework.
- */
+/** Sound option window framework. */
 public final class SoundOptions {
 
   /**
@@ -35,8 +33,9 @@ public final class SoundOptions {
     final String selectNone = "None";
 
     final List<SoundOptionCheckBox> properties = SoundPath.getSoundOptions();
-    final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
-        ok, selectAll, selectNone, cancel);
+    final Object pressedButton =
+        PropertiesSelector.getButton(
+            parent, "Sound Options", properties, ok, selectAll, selectNone, cancel);
     if (pressedButton == null || pressedButton.equals(cancel)) {
       return;
     }

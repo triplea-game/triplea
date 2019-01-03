@@ -10,18 +10,14 @@ import java.util.function.Predicate;
 import com.google.common.base.Preconditions;
 import com.google.common.io.BaseEncoding;
 
-/**
- * Some utility methods for dealing with collections.
- */
+/** Some utility methods for dealing with collections. */
 public class Util {
 
   private static final String SHA_512 = "SHA-512";
 
   private Util() {}
 
-  /**
-   * allow multiple fully qualified email addresses separated by spaces, or a blank string.
-   */
+  /** allow multiple fully qualified email addresses separated by spaces, or a blank string. */
   public static boolean isMailValid(final String emailAddress) {
     final String quotedString = "\"(?:[^\"\\\\]|\\\\\\p{ASCII})*\"";
     final String atom = "[^()<>@,;:\\\\\".\\[\\] \\x28\\p{Cntrl}]+";
@@ -53,7 +49,8 @@ public class Util {
     Preconditions.checkNotNull(input);
     try {
       return BaseEncoding.base16()
-          .encode(MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8))).toLowerCase();
+          .encode(MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8)))
+          .toLowerCase();
     } catch (final NoSuchAlgorithmException e) {
       throw new IllegalStateException(SHA_512 + " is not supported!", e);
     }
@@ -63,7 +60,6 @@ public class Util {
    * Returns a predicate that represents the logical negation of the specified predicate.
    *
    * @param p The predicate to negate.
-   *
    * @return A predicate that represents the logical negation of the specified predicate.
    */
   public static <T> Predicate<T> not(final Predicate<T> p) {

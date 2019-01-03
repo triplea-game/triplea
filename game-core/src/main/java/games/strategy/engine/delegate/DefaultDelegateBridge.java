@@ -19,9 +19,7 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
 import games.strategy.sound.ISound;
 
-/**
- * Default implementation of DelegateBridge.
- */
+/** Default implementation of DelegateBridge. */
 public class DefaultDelegateBridge implements IDelegateBridge {
   private final GameData gameData;
   private final IGame game;
@@ -30,8 +28,12 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   private final DelegateExecutionManager delegateExecutionManager;
   private IRandomSource randomSource;
 
-  public DefaultDelegateBridge(final GameData data, final IGame game, final IDelegateHistoryWriter historyWriter,
-      final RandomStats randomStats, final DelegateExecutionManager delegateExecutionManager) {
+  public DefaultDelegateBridge(
+      final GameData data,
+      final IGame game,
+      final IDelegateHistoryWriter historyWriter,
+      final RandomStats randomStats,
+      final DelegateExecutionManager delegateExecutionManager) {
     gameData = data;
     this.game = game;
     this.historyWriter = historyWriter;
@@ -54,10 +56,12 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   /**
-   * All delegates should use random data that comes from both players so that neither player cheats.
+   * All delegates should use random data that comes from both players so that neither player
+   * cheats.
    */
   @Override
-  public int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation)
+  public int getRandom(
+      final int max, final PlayerId player, final DiceType diceType, final String annotation)
       throws IllegalArgumentException, IllegalStateException {
     final int random = randomSource.getRandom(max, annotation);
     randomStats.addRandom(random, player, diceType);
@@ -65,8 +69,13 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerId player, final DiceType diceType,
-      final String annotation) throws IllegalArgumentException, IllegalStateException {
+  public int[] getRandom(
+      final int max,
+      final int count,
+      final PlayerId player,
+      final DiceType diceType,
+      final String annotation)
+      throws IllegalArgumentException, IllegalStateException {
     final int[] randomValues = randomSource.getRandom(max, count, annotation);
     randomStats.addRandom(randomValues, player, diceType);
     return randomValues;
@@ -109,7 +118,8 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerId id) {
     try {
-      final Object implementor = game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(id, gameData));
+      final Object implementor =
+          game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(id, gameData));
       return (IRemotePlayer) getOutbound(implementor);
     } catch (final MessengerException me) {
       throw new GameOverException("Game Over!");
@@ -125,7 +135,8 @@ public class DefaultDelegateBridge implements IDelegateBridge {
 
   @Override
   public ISound getSoundChannelBroadcaster() {
-    final Object implementor = game.getChannelMessenger().getChannelBroadcaster(AbstractGame.getSoundChannel(gameData));
+    final Object implementor =
+        game.getChannelMessenger().getChannelBroadcaster(AbstractGame.getSoundChannel(gameData));
     return (ISound) getOutbound(implementor);
   }
 

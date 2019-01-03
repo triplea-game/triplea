@@ -24,9 +24,7 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.util.CollectionUtils;
 
-/**
- * Contains all the data to describe a move and to undo it.
- */
+/** Contains all the data to describe a move and to undo it. */
 public class UndoableMove extends AbstractUndoableMove {
   private static final long serialVersionUID = 8490182214651531358L;
 
@@ -108,11 +106,14 @@ public class UndoableMove extends AbstractUndoableMove {
         final Route routeUnitUsedToMove =
             DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, route.getStart());
         if (!battle.getBattleType().isBombingRun()) {
-          // route units used to move will be null in the case where an enemy sub is submerged in the territory, and
-          // another unit moved in to attack it, but some of the units in the original territory are moved out. Undoing
+          // route units used to move will be null in the case where an enemy sub is submerged in
+          // the territory, and
+          // another unit moved in to attack it, but some of the units in the original territory are
+          // moved out. Undoing
           // this last move, the route used to move into the battle zone will be null
           if (routeUnitUsedToMove != null) {
-            final Change change = battle.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), null);
+            final Change change =
+                battle.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), null);
             bridge.addChange(change);
           }
         } else {
@@ -120,19 +121,27 @@ public class UndoableMove extends AbstractUndoableMove {
           Unit target = null;
           if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
             final Territory end = routeUnitUsedToMove.getEnd();
-            final Collection<Unit> enemyTargetsTotal = end.getUnits().getMatches(
-                Matches.enemyUnit(bridge.getPlayerId(), data)
-                    .and(Matches.unitCanBeDamaged())
-                    .and(Matches.unitIsBeingTransported().negate()));
-            final Collection<Unit> enemyTargets = CollectionUtils.getMatches(enemyTargetsTotal,
-                Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(
-                    CollectionUtils.getMatches(Collections.singleton(unit), Matches.unitIsStrategicBomber()), data)));
+            final Collection<Unit> enemyTargetsTotal =
+                end.getUnits()
+                    .getMatches(
+                        Matches.enemyUnit(bridge.getPlayerId(), data)
+                            .and(Matches.unitCanBeDamaged())
+                            .and(Matches.unitIsBeingTransported().negate()));
+            final Collection<Unit> enemyTargets =
+                CollectionUtils.getMatches(
+                    enemyTargetsTotal,
+                    Matches.unitIsOfTypes(
+                        UnitAttachment.getAllowedBombingTargetsIntersection(
+                            CollectionUtils.getMatches(
+                                Collections.singleton(unit), Matches.unitIsStrategicBomber()),
+                            data)));
             if (enemyTargets.size() > 1
                 && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
                 && !Properties.getRaidsMayBePreceededByAirBattles(data)) {
               while (target == null) {
-                target = ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerId())).whatShouldBomberBomb(end,
-                    enemyTargets, Collections.singletonList(unit));
+                target =
+                    ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerId()))
+                        .whatShouldBomberBomb(end, enemyTargets, Collections.singletonList(unit));
               }
             } else if (!enemyTargets.isEmpty()) {
               target = enemyTargets.iterator().next();
@@ -142,7 +151,8 @@ public class UndoableMove extends AbstractUndoableMove {
               targets.put(target, new HashSet<>(Collections.singleton(unit)));
             }
           }
-          final Change change = battle.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), targets);
+          final Change change =
+              battle.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), targets);
           bridge.addChange(change);
         }
       }
@@ -158,7 +168,8 @@ public class UndoableMove extends AbstractUndoableMove {
    */
   public void initializeDependencies(final List<UndoableMove> undoableMoves) {
     for (final UndoableMove other : undoableMoves) {
-      // TODO: verify we do not depend on IllegalStateException here before converting this to a checkNotNull.
+      // TODO: verify we do not depend on IllegalStateException here before converting this to a
+      // checkNotNull.
       Preconditions.checkState(other != null, "other should not be null: " + undoableMoves);
 
       // if the other move has moves that depend on this
@@ -167,7 +178,8 @@ public class UndoableMove extends AbstractUndoableMove {
           || !CollectionUtils.intersection(other.units, this.loaded).isEmpty()
           // or we are moving through a previously conquered territory
           // we should be able to take this out later
-          // we need to add logic for this move to take over the same territories when the other move is undone
+          // we need to add logic for this move to take over the same territories when the other
+          // move is undone
           || !CollectionUtils.intersection(other.conquered, route.getAllTerritories()).isEmpty()
           // or we are unloading transports that have moved in another turn
           || !CollectionUtils.intersection(other.units, this.unloaded).isEmpty()

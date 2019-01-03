@@ -32,10 +32,11 @@ abstract class AbstractBattle implements IBattle {
 
   final GUID battleId = new GUID();
   /**
-   * In headless mode we should NOT access any Delegates. In headless mode we are just being used to calculate results
-   * for an odds calculator so we can skip some steps for efficiency.
+   * In headless mode we should NOT access any Delegates. In headless mode we are just being used to
+   * calculate results for an odds calculator so we can skip some steps for efficiency.
    */
   boolean headless = false;
+
   final Territory battleSite;
   final PlayerId attacker;
   PlayerId defender;
@@ -46,10 +47,11 @@ abstract class AbstractBattle implements IBattle {
   final BattleType battleType;
   boolean isOver = false;
   /**
-   * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent on
-   * then we lose the corresponding collection of units.
+   * Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent
+   * on then we lose the corresponding collection of units.
    */
   final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
+
   List<Unit> attackingUnits = new ArrayList<>();
   List<Unit> defendingUnits = new ArrayList<>();
   List<Unit> amphibiousLandAttackers = new ArrayList<>();
@@ -62,8 +64,13 @@ abstract class AbstractBattle implements IBattle {
 
   protected final GameData gameData;
 
-  AbstractBattle(final Territory battleSite, final PlayerId attacker, final BattleTracker battleTracker,
-      final boolean isBombingRun, final BattleType battleType, final GameData data) {
+  AbstractBattle(
+      final Territory battleSite,
+      final PlayerId attacker,
+      final BattleTracker battleTracker,
+      final boolean isBombingRun,
+      final BattleType battleType,
+      final GameData data) {
     this.battleTracker = battleTracker;
     this.attacker = attacker;
     this.battleSite = battleSite;
@@ -90,7 +97,8 @@ abstract class AbstractBattle implements IBattle {
 
   void clearTransportedBy(final IDelegateBridge bridge) {
     // Clear the transported_by for successfully off loaded units
-    final Collection<Unit> transports = CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport());
+    final Collection<Unit> transports =
+        CollectionUtils.getMatches(attackingUnits, Matches.unitIsTransport());
     if (!transports.isEmpty()) {
       final CompositeChange change = new CompositeChange();
       final Collection<Unit> dependents = getTransportDependents(transports);
@@ -106,16 +114,15 @@ abstract class AbstractBattle implements IBattle {
     }
   }
 
-  /**
-   * Figure out what units a transport is transporting and has to unloaded.
-   */
+  /** Figure out what units a transport is transporting and has to unloaded. */
   Collection<Unit> getTransportDependents(final Collection<Unit> targets) {
     if (headless) {
       return Collections.emptyList();
     } else if (targets.stream().noneMatch(Matches.unitCanTransport())) {
       return new ArrayList<>();
     }
-    return targets.stream()
+    return targets
+        .stream()
         .map(TransportTracker::transportingAndUnloaded)
         .flatMap(Collection::stream)
         .collect(Collectors.toList());
@@ -234,11 +241,9 @@ abstract class AbstractBattle implements IBattle {
   }
 
   /**
-   * 2 Battles are equal if they occur in the same territory,
-   * and are both of the same type (bombing / not-bombing),
-   * and are both of the same sub-type of bombing/normal
-   * (ex: MustFightBattle, or StrategicBombingRaidBattle, or StrategicBombingRaidPreBattle, or NonFightingBattle, etc).
-   * <br>
+   * 2 Battles are equal if they occur in the same territory, and are both of the same type (bombing
+   * / not-bombing), and are both of the same sub-type of bombing/normal (ex: MustFightBattle, or
+   * StrategicBombingRaidBattle, or StrategicBombingRaidPreBattle, or NonFightingBattle, etc). <br>
    * Equals in the sense that they should never occupy the same Set if these conditions are met.
    */
   @Override
@@ -247,17 +252,27 @@ abstract class AbstractBattle implements IBattle {
       return false;
     }
     final IBattle other = (IBattle) o;
-    return other.getTerritory().equals(this.battleSite) && other.isBombingRun() == this.isBombingRun()
+    return other.getTerritory().equals(this.battleSite)
+        && other.isBombingRun() == this.isBombingRun()
         && other.getBattleType() == this.getBattleType();
   }
 
   @Override
   public String toString() {
-    return "Battle in:" + battleSite + " battle type:" + battleType + " defender:" + defender.getName()
-        + " attacked by:" + attacker.getName() + " attacking with: " + attackingUnits;
+    return "Battle in:"
+        + battleSite
+        + " battle type:"
+        + battleType
+        + " defender:"
+        + defender.getName()
+        + " attacked by:"
+        + attacker.getName()
+        + " attacking with: "
+        + attackingUnits;
   }
 
-  static PlayerId findDefender(final Territory battleSite, final PlayerId attacker, final GameData data) {
+  static PlayerId findDefender(
+      final Territory battleSite, final PlayerId attacker, final GameData data) {
     if (battleSite == null) {
       return PlayerId.NULL_PLAYERID;
     }
@@ -272,7 +287,9 @@ abstract class AbstractBattle implements IBattle {
       }
       return defender;
     }
-    if (defender == null || battleSite.isWater() || !data.getRelationshipTracker().isAtWar(attacker, defender)) {
+    if (defender == null
+        || battleSite.isWater()
+        || !data.getRelationshipTracker().isAtWar(attacker, defender)) {
       // if water find the defender based on who has the most units in the territory
       final IntegerMap<PlayerId> players = battleSite.getUnits().getPlayerUnitCounts();
       int max = -1;

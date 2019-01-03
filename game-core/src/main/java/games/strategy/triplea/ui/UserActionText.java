@@ -12,9 +12,7 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
-/**
- * Same as PoliticsText but for user actions.
- */
+/** Same as PoliticsText but for user actions. */
 @Log
 public class UserActionText {
   // Filename

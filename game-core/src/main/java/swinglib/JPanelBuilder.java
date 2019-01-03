@@ -28,8 +28,7 @@ import swinglib.GridBagHelper.ColumnSpan;
 import swinglib.GridBagHelper.Fill;
 
 /**
- * Example usage:.
- * <code><pre>
+ * Example usage:. <code><pre>
  *   final JPanel panel = JPanelBuilder.builder()
  *       .gridLayout(2, 1)
  *       .add(new JLabel("")
@@ -55,8 +54,8 @@ public class JPanelBuilder {
   }
 
   /**
-   * Constructs a Swing JPanel using current builder values.
-   * Values that must be set: (requires no values to be set)
+   * Constructs a Swing JPanel using current builder values. Values that must be set: (requires no
+   * values to be set)
    */
   public JPanel build() {
     final JPanel panel = new JPanel();
@@ -68,7 +67,8 @@ public class JPanelBuilder {
     }
 
     if (layout == null && boxLayoutType != null) {
-      final int boxDirection = boxLayoutType == BoxLayoutType.HORIZONTAL ? BoxLayout.X_AXIS : BoxLayout.Y_AXIS;
+      final int boxDirection =
+          boxLayoutType == BoxLayoutType.HORIZONTAL ? BoxLayout.X_AXIS : BoxLayout.Y_AXIS;
       layout = new BoxLayout(panel, boxDirection);
     } else if (layout == null) {
       layout = new FlowLayout();
@@ -84,7 +84,6 @@ public class JPanelBuilder {
     for (final Pair<Component, PanelProperties> child : components) {
       Preconditions.checkNotNull(child.getFirst());
       Preconditions.checkNotNull(child.getSecond());
-
 
       final PanelProperties panelProperties = child.getSecond();
 
@@ -135,11 +134,12 @@ public class JPanelBuilder {
   }
 
   /**
-   * Sets the current layout manager to a GridBag. This helper method will do most of the work
-   * of the gridbag for you, but the number of columns in the grid needs to be specified. After
-   * this components can be added as normal, rows will wrap as needed when enough components are added.
+   * Sets the current layout manager to a GridBag. This helper method will do most of the work of
+   * the gridbag for you, but the number of columns in the grid needs to be specified. After this
+   * components can be added as normal, rows will wrap as needed when enough components are added.
    *
-   * @param gridBagHelperColumns The number of columns to be created before components will wrap to a new row.
+   * @param gridBagHelperColumns The number of columns to be created before components will wrap to
+   *     a new row.
    */
   public JPanelBuilder gridBagLayout(final int gridBagHelperColumns) {
     this.useGridBagHelper = true;
@@ -167,9 +167,7 @@ public class JPanelBuilder {
     return this;
   }
 
-  /**
-   * Toggles a border layout, adds a given component to the 'east' portion of the border layout.
-   */
+  /** Toggles a border layout, adds a given component to the 'east' portion of the border layout. */
   public JPanelBuilder addEast(final JComponent child) {
     layout = new BorderLayout();
     Preconditions.checkNotNull(child);
@@ -177,9 +175,7 @@ public class JPanelBuilder {
     return this;
   }
 
-  /**
-   * Toggles a border layout, adds a given component to the 'west' portion of the border layout.
-   */
+  /** Toggles a border layout, adds a given component to the 'west' portion of the border layout. */
   public JPanelBuilder addWest(final JComponent child) {
     layout = new BorderLayout();
     Preconditions.checkNotNull(child);
@@ -215,7 +211,8 @@ public class JPanelBuilder {
     return borderEmpty(borderWidth, borderWidth, borderWidth, borderWidth);
   }
 
-  public JPanelBuilder borderEmpty(final int top, final int left, final int bottom, final int right) {
+  public JPanelBuilder borderEmpty(
+      final int top, final int left, final int bottom, final int right) {
     border = BorderFactory.createEmptyBorder(top, left, bottom, right);
     return this;
   }
@@ -240,8 +237,8 @@ public class JPanelBuilder {
   }
 
   /**
-   * Adds {@code component} to the panel and ensures it will be left-justified in the final layout. Primarily for use
-   * with vertical box layouts.
+   * Adds {@code component} to the panel and ensures it will be left-justified in the final layout.
+   * Primarily for use with vertical box layouts.
    */
   public JPanelBuilder addLeftJustified(final Component component) {
     final Box box = Box.createHorizontalBox();
@@ -256,23 +253,21 @@ public class JPanelBuilder {
   }
 
   /**
-   * An 'add' method to be used with the grid bag layout, can specify how many columns the component should span.
+   * An 'add' method to be used with the grid bag layout, can specify how many columns the component
+   * should span.
    */
   public JPanelBuilder add(final Component component, final GridBagHelper.ColumnSpan columnSpan) {
     components.add(new Pair<>(component, new PanelProperties(columnSpan)));
     return this;
   }
 
-
-  public JPanelBuilder add(final Component component, final GridBagHelper.Anchor anchor,
-      final GridBagHelper.Fill fill) {
+  public JPanelBuilder add(
+      final Component component, final GridBagHelper.Anchor anchor, final GridBagHelper.Fill fill) {
     components.add(new Pair<>(component, new PanelProperties(anchor, fill)));
     return this;
   }
 
-  /**
-   * Adds a given component to the southern portion of a border layout.
-   */
+  /** Adds a given component to the southern portion of a border layout. */
   public JPanelBuilder addSouth(final JComponent child) {
     layout = new BorderLayout();
     Preconditions.checkNotNull(child);
@@ -286,11 +281,11 @@ public class JPanelBuilder {
   }
 
   /**
-   * use this when you want an empty space component that will take up extra space. For example, with a gridbag layout
-   * with 2 columns, if you have 2 components, the second will be stretched by default to fill all available space
-   * to the right. This right hand component would then resize with the window. If on the other hand a 3 column
-   * grid bag were used and the last element were a horizontal glue, then the 2nd component would then have a fixed
-   * size.
+   * use this when you want an empty space component that will take up extra space. For example,
+   * with a gridbag layout with 2 columns, if you have 2 components, the second will be stretched by
+   * default to fill all available space to the right. This right hand component would then resize
+   * with the window. If on the other hand a 3 column grid bag were used and the last element were a
+   * horizontal glue, then the 2nd component would then have a fixed size.
    */
   public JPanelBuilder addHorizontalGlue() {
     add(Box.createHorizontalGlue());
@@ -312,32 +307,34 @@ public class JPanelBuilder {
     return this;
   }
 
-
   public JPanelBuilder preferredHeight(final int height) {
     preferredHeight = height;
     return this;
   }
 
   /**
-   * BoxLayout needs a reference to the panel component that is using the layout, so we cannot create the layout
-   * until after we create the component. Thus we use a flag to create it, rather than creating and storing
-   * the layout manager directly as we do for the other layouts such as gridLayout.
+   * BoxLayout needs a reference to the panel component that is using the layout, so we cannot
+   * create the layout until after we create the component. Thus we use a flag to create it, rather
+   * than creating and storing the layout manager directly as we do for the other layouts such as
+   * gridLayout.
    */
   private enum BoxLayoutType {
-    NONE, HORIZONTAL, VERTICAL
+    NONE,
+    HORIZONTAL,
+    VERTICAL
   }
 
-  /**
-   * Swing border layout locations.
-   */
+  /** Swing border layout locations. */
   public enum BorderLayoutPosition {
-    DEFAULT, CENTER, SOUTH, NORTH, WEST, EAST
+    DEFAULT,
+    CENTER,
+    SOUTH,
+    NORTH,
+    WEST,
+    EAST
   }
 
-
-  /**
-   * Type-safe alias for magic values in {@code FlowLayout}.
-   */
+  /** Type-safe alias for magic values in {@code FlowLayout}. */
   @AllArgsConstructor
   public enum FlowLayoutJustification {
     DEFAULT(FlowLayout.CENTER),
@@ -355,16 +352,12 @@ public class JPanelBuilder {
     }
   }
 
-
-  /**
-   * Struct-like class for the various properties and styles that can be applied to a panel.
-   */
+  /** Struct-like class for the various properties and styles that can be applied to a panel. */
   private static final class PanelProperties {
     BorderLayoutPosition borderLayoutPosition = BorderLayoutPosition.DEFAULT;
     GridBagHelper.ColumnSpan columnSpan = GridBagHelper.ColumnSpan.of(1);
     GridBagHelper.Fill fill = Fill.NONE;
     GridBagHelper.Anchor anchor = Anchor.WEST;
-
 
     PanelProperties(final BorderLayoutPosition borderLayoutPosition) {
       this.borderLayoutPosition = borderLayoutPosition;

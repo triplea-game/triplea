@@ -11,9 +11,11 @@ class NotesPanel extends JPanel {
   private static final long serialVersionUID = 2746643868463714526L;
   protected final JEditorPane gameNotesPane;
 
-  // we now require passing a JEditorPane containing the notes in it, because we do not want to have multiple copies of
+  // we now require passing a JEditorPane containing the notes in it, because we do not want to have
+  // multiple copies of
   // it in memory for all the different ways the user can access the game notes
-  // so instead we keep the main copy in the TripleAMenuBar, and then give it to the notes tab. this prevents out of
+  // so instead we keep the main copy in the TripleAMenuBar, and then give it to the notes tab. this
+  // prevents out of
   // memory errors for maps with large images in their games notes.
   NotesPanel(final JEditorPane gameNotesPane) {
     this.gameNotesPane = gameNotesPane;

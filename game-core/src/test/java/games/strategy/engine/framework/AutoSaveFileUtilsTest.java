@@ -26,7 +26,9 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
       ClientSetting.saveGamesFolderPath.setValue(Paths.get("path", "to", "saves"));
 
       final String fileName = "savegame.tsvg";
-      assertThat(getAutoSaveFile(fileName), is(Paths.get("path", "to", "saves", "autoSave", fileName).toFile()));
+      assertThat(
+          getAutoSaveFile(fileName),
+          is(Paths.get("path", "to", "saves", "autoSave", fileName).toFile()));
     }
   }
 

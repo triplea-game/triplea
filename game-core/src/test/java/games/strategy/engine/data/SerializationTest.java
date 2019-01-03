@@ -28,18 +28,23 @@ public class SerializationTest {
   }
 
   private Object serialize(final Object anObject) throws Exception {
-    final byte[] bytes = IoUtils.writeToMemory(os -> {
-      try (ObjectOutputStream output = new GameObjectOutputStream(os)) {
-        output.writeObject(anObject);
-      }
-    });
-    return IoUtils.readFromMemory(bytes, is -> {
-      try (ObjectInputStream input = new GameObjectInputStream(new GameObjectStreamFactory(gameDataSource), is)) {
-        return input.readObject();
-      } catch (final ClassNotFoundException e) {
-        throw new IOException(e);
-      }
-    });
+    final byte[] bytes =
+        IoUtils.writeToMemory(
+            os -> {
+              try (ObjectOutputStream output = new GameObjectOutputStream(os)) {
+                output.writeObject(anObject);
+              }
+            });
+    return IoUtils.readFromMemory(
+        bytes,
+        is -> {
+          try (ObjectInputStream input =
+              new GameObjectInputStream(new GameObjectStreamFactory(gameDataSource), is)) {
+            return input.readObject();
+          } catch (final ClassNotFoundException e) {
+            throw new IOException(e);
+          }
+        });
   }
 
   @Test

@@ -19,15 +19,15 @@ import games.strategy.net.Messengers;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
-/**
- * Implementation of {@link ILauncher} for a headed local or network client game.
- */
+/** Implementation of {@link ILauncher} for a headed local or network client game. */
 @Log
 public class LocalLauncher extends AbstractLauncher {
   private final IRandomSource randomSource;
   private final PlayerListing playerListing;
 
-  public LocalLauncher(final GameSelectorModel gameSelectorModel, final IRandomSource randomSource,
+  public LocalLauncher(
+      final GameSelectorModel gameSelectorModel,
+      final IRandomSource randomSource,
       final PlayerListing playerListing) {
     super(gameSelectorModel);
     this.randomSource = randomSource;
@@ -41,7 +41,8 @@ public class LocalLauncher extends AbstractLauncher {
       game.ifPresent(ServerGame::startGame);
     } finally {
       // todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
-      // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused
+      // having an oddball issue with the zip stream being closed while parsing to load default
+      // game. might be caused
       // by closing of stream while unloading map resources.
       Interruptibles.sleep(100);
       gameSelectorModel.loadDefaultGameNewThread();
@@ -55,7 +56,8 @@ public class LocalLauncher extends AbstractLauncher {
       final Messengers messengers = new Messengers(new HeadlessServerMessenger());
       final Set<IGamePlayer> gamePlayers =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
-      final ServerGame game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers, headless);
+      final ServerGame game =
+          new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers, headless);
       game.setRandomSource(randomSource);
       gameData.getGameLoader().startGame(game, gamePlayers, headless, null);
       return Optional.of(game);

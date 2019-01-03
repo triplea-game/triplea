@@ -17,19 +17,24 @@ import games.strategy.util.IntegerMap;
 import lombok.extern.java.Log;
 
 /**
- * The purpose of this class is to separate the Rules Attachment variables and methods that affect Players,
- * from the Rules Attachment things that are part of conditions and national objectives. <br>
- * In other words, things like placementAnyTerritory (allows placing in any territory without need of a factory),
- * or movementRestrictionTerritories (restricts movement to certain territories), would go in This class.
- * While things like alliedOwnershipTerritories (a conditions for testing ownership of territories,
- * or objectiveValue (the money given if the condition is true), would NOT go in This class. <br>
- * Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
+ * The purpose of this class is to separate the Rules Attachment variables and methods that affect
+ * Players, from the Rules Attachment things that are part of conditions and national objectives.
+ * <br>
+ * In other words, things like placementAnyTerritory (allows placing in any territory without need
+ * of a factory), or movementRestrictionTerritories (restricts movement to certain territories),
+ * would go in This class. While things like alliedOwnershipTerritories (a conditions for testing
+ * ownership of territories, or objectiveValue (the money given if the condition is true), would NOT
+ * go in This class. <br>
+ * Please do not add new things to this class. Any new Player-Rules type of stuff should go in
+ * "PlayerAttachment".
  */
 @Log
 public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachment {
   private static final long serialVersionUID = 7224407193725789143L;
-  // Please do not add new things to this class. Any new Player-Rules type of stuff should go in "PlayerAttachment".
-  // These variables are related to a "rulesAttachment" that changes certain rules for the attached player. They are
+  // Please do not add new things to this class. Any new Player-Rules type of stuff should go in
+  // "PlayerAttachment".
+  // These variables are related to a "rulesAttachment" that changes certain rules for the attached
+  // player. They are
   // not related to conditions at all.
   protected String movementRestrictionType = null;
   protected String[] movementRestrictionTerritories = null;
@@ -56,21 +61,26 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   // maximum number of units that can be placed in each territory.
   protected int maxPlacePerTerritory = -1;
 
-  // It would wreck most map xmls to move the rulesAttachment's to another class, so don't move them out of here please!
-  // However, any new rules attachments that are not conditions, should be put into the "PlayerAttachment" class.
-  protected AbstractPlayerRulesAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  // It would wreck most map xmls to move the rulesAttachment's to another class, so don't move them
+  // out of here please!
+  // However, any new rules attachments that are not conditions, should be put into the
+  // "PlayerAttachment" class.
+  protected AbstractPlayerRulesAttachment(
+      final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
-  /**
-   * Get condition attachment for the given player and condition name.
-   */
-  public static ICondition getCondition(final String playerName, final String conditionName,
-      final GameData data) {
+  /** Get condition attachment for the given player and condition name. */
+  public static ICondition getCondition(
+      final String playerName, final String conditionName, final GameData data) {
     final PlayerId player = data.getPlayerList().getPlayerId(playerName);
     if (player == null) {
       // could be an old map, or an old save, so we don't want to stop the game from running.
-      log.severe("When trying to find condition: " + conditionName + ", player does not exist: " + playerName);
+      log.severe(
+          "When trying to find condition: "
+              + conditionName
+              + ", player does not exist: "
+              + playerName);
       return null;
     }
     final Collection<PlayerId> allPlayers = data.getPlayerList().getPlayers();
@@ -84,14 +94,24 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       } else if (conditionName.contains(Constants.POLITICALACTION_ATTACHMENT_PREFIX)) {
         attachment = PoliticalActionAttachment.get(player, conditionName, allPlayers);
       } else {
-        log.severe(conditionName + " attachment must begin with: " + Constants.RULES_OBJECTIVE_PREFIX
-            + " or " + Constants.RULES_CONDITION_PREFIX + " or " + Constants.TRIGGER_ATTACHMENT_PREFIX + " or "
-            + Constants.POLITICALACTION_ATTACHMENT_PREFIX);
+        log.severe(
+            conditionName
+                + " attachment must begin with: "
+                + Constants.RULES_OBJECTIVE_PREFIX
+                + " or "
+                + Constants.RULES_CONDITION_PREFIX
+                + " or "
+                + Constants.TRIGGER_ATTACHMENT_PREFIX
+                + " or "
+                + Constants.POLITICALACTION_ATTACHMENT_PREFIX);
         return null;
       }
     } catch (final Exception e) {
       // could be an old map, or an old save, so we don't want to stop the game from running.
-      log.log(Level.SEVERE, "Failed to getCondition: " + conditionName + ", for playerName: " + playerName, e);
+      log.log(
+          Level.SEVERE,
+          "Failed to getCondition: " + conditionName + ", for playerName: " + playerName,
+          e);
       return null;
     }
     if (attachment == null) {
@@ -128,7 +148,8 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
       return;
     }
     if (!(value.equals("disallowed") || value.equals("allowed"))) {
-      throw new GameParseException("movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
+      throw new GameParseException(
+          "movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
     }
     movementRestrictionType = value;
   }
@@ -145,7 +166,8 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     final String[] s = splitOnColon(value);
     if (s.length <= 0 || s.length > 2) {
       throw new GameParseException(
-          "productionPerXTerritories cannot be empty or have more than two fields" + thisErrorMsg());
+          "productionPerXTerritories cannot be empty or have more than two fields"
+              + thisErrorMsg());
     }
     final String unitTypeToProduce;
     if (s.length == 1) {
@@ -160,7 +182,8 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
     }
     final int n = getInt(s[0]);
     if (n <= 0) {
-      throw new GameParseException("productionPerXTerritories must be a positive integer" + thisErrorMsg());
+      throw new GameParseException(
+          "productionPerXTerritories must be a positive integer" + thisErrorMsg());
     }
     productionPerXTerritories.put(ut, n);
   }
@@ -330,72 +353,84 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("movementRestrictionType",
+        .put(
+            "movementRestrictionType",
             MutableProperty.ofString(
                 this::setMovementRestrictionType,
                 this::getMovementRestrictionType,
                 this::resetMovementRestrictionType))
-        .put("movementRestrictionTerritories",
+        .put(
+            "movementRestrictionTerritories",
             MutableProperty.of(
                 this::setMovementRestrictionTerritories,
                 this::setMovementRestrictionTerritories,
                 this::getMovementRestrictionTerritories,
                 this::resetMovementRestrictionTerritories))
-        .put("placementAnyTerritory",
+        .put(
+            "placementAnyTerritory",
             MutableProperty.of(
                 this::setPlacementAnyTerritory,
                 this::setPlacementAnyTerritory,
                 this::getPlacementAnyTerritory,
                 this::resetPlacementAnyTerritory))
-        .put("placementAnySeaZone",
+        .put(
+            "placementAnySeaZone",
             MutableProperty.of(
                 this::setPlacementAnySeaZone,
                 this::setPlacementAnySeaZone,
                 this::getPlacementAnySeaZone,
                 this::resetPlacementAnySeaZone))
-        .put("placementCapturedTerritory",
+        .put(
+            "placementCapturedTerritory",
             MutableProperty.of(
                 this::setPlacementCapturedTerritory,
                 this::setPlacementCapturedTerritory,
                 this::getPlacementCapturedTerritory,
                 this::resetPlacementCapturedTerritory))
-        .put("unlimitedProduction",
+        .put(
+            "unlimitedProduction",
             MutableProperty.of(
                 this::setUnlimitedProduction,
                 this::setUnlimitedProduction,
                 this::getUnlimitedProduction,
                 this::resetUnlimitedProduction))
-        .put("placementInCapitalRestricted",
+        .put(
+            "placementInCapitalRestricted",
             MutableProperty.of(
                 this::setPlacementInCapitalRestricted,
                 this::setPlacementInCapitalRestricted,
                 this::getPlacementInCapitalRestricted,
                 this::resetPlacementInCapitalRestricted))
-        .put("dominatingFirstRoundAttack",
+        .put(
+            "dominatingFirstRoundAttack",
             MutableProperty.of(
                 this::setDominatingFirstRoundAttack,
                 this::setDominatingFirstRoundAttack,
                 this::getDominatingFirstRoundAttack,
                 this::resetDominatingFirstRoundAttack))
-        .put("negateDominatingFirstRoundAttack",
+        .put(
+            "negateDominatingFirstRoundAttack",
             MutableProperty.of(
                 this::setNegateDominatingFirstRoundAttack,
                 this::setNegateDominatingFirstRoundAttack,
                 this::getNegateDominatingFirstRoundAttack,
                 this::resetNegateDominatingFirstRoundAttack))
-        .put("productionPerXTerritories",
+        .put(
+            "productionPerXTerritories",
             MutableProperty.of(
                 this::setProductionPerXTerritories,
                 this::setProductionPerXTerritories,
                 this::getProductionPerXTerritories,
                 this::resetProductionPerXTerritories))
-        .put("placementPerTerritory",
+        .put(
+            "placementPerTerritory",
             MutableProperty.of(
                 this::setPlacementPerTerritory,
                 this::setPlacementPerTerritory,
                 this::getPlacementPerTerritory,
                 this::resetPlacementPerTerritory))
-        .put("maxPlacePerTerritory",
+        .put(
+            "maxPlacePerTerritory",
             MutableProperty.of(
                 this::setMaxPlacePerTerritory,
                 this::setMaxPlacePerTerritory,

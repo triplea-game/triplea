@@ -3,10 +3,7 @@ package games.strategy.triplea;
 /**
  * Grouping of hardcoded URL constants.
  *
- * <p>
- * Typical usage:
- * </p>
- * <code><pre>
+ * <p>Typical usage: <code><pre>
  *   String someUrl = UrlConstants.toString();
  * </pre></code>
  */
@@ -17,7 +14,8 @@ public enum UrlConstants {
 
   LOBBY_PROPS("https://raw.githubusercontent.com/triplea-game/triplea/master/lobby_server.yaml"),
 
-  PAYPAL_DONATE("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GKZL7598EDZLN"),
+  PAYPAL_DONATE(
+      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GKZL7598EDZLN"),
 
   GITHUB_HELP("http://www.triplea-game.org/help/"),
 
@@ -37,7 +35,8 @@ public enum UrlConstants {
 
   RELEASE_NOTES("http://www.triplea-game.org/release_notes/"),
 
-  MAP_DOWNLOAD_LIST("https://raw.githubusercontent.com/triplea-game/triplea/master/triplea_maps.yaml"),
+  MAP_DOWNLOAD_LIST(
+      "https://raw.githubusercontent.com/triplea-game/triplea/master/triplea_maps.yaml"),
 
   MAP_MAKER_HELP(
       "https://github.com/triplea-game/triplea/blob/master/docs/map_making/map_and_map_skin_making_overview.md"),

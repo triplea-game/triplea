@@ -6,8 +6,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 
 /**
- * A game statistic, such as total resources, total unit value, etc. Statistics can be obtained per player or for all
- * players in an alliance.
+ * A game statistic, such as total resources, total unit value, etc. Statistics can be obtained per
+ * player or for all players in an alliance.
  */
 public interface IStat {
   String getName();

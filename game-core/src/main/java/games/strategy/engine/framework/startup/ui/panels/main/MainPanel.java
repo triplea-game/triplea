@@ -31,38 +31,36 @@ import swinglib.JButtonBuilder;
 import swinglib.JPanelBuilder;
 
 /**
- * When the game launches, the MainFrame is loaded which will contain the MainPanel. The contents of the MainPanel are
- * swapped out until a new game has been started (TODO: check if the lobby uses MainPanel at all).
+ * When the game launches, the MainFrame is loaded which will contain the MainPanel. The contents of
+ * the MainPanel are swapped out until a new game has been started (TODO: check if the lobby uses
+ * MainPanel at all).
  */
 public class MainPanel extends JPanel implements Observer, ScreenChangeListener {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(800, 620);
 
-  private final JButton playButton = JButtonBuilder.builder()
-      .title("Play")
-      .toolTip("<html>Start your game! <br>"
-          + "If not enabled, then you must select a way to play your game first: <br>"
-          + "Play Online, or Local Game, or PBEM, or Host Networked.</html>")
-      .build();
-  private final JButton cancelButton = JButtonBuilder.builder()
-      .title("Cancel")
-      .build();
+  private final JButton playButton =
+      JButtonBuilder.builder()
+          .title("Play")
+          .toolTip(
+              "<html>Start your game! <br>"
+                  + "If not enabled, then you must select a way to play your game first: <br>"
+                  + "Play Online, or Local Game, or PBEM, or Host Networked.</html>")
+          .build();
+  private final JButton cancelButton = JButtonBuilder.builder().title("Cancel").build();
 
-  private final JPanel gameSetupPanelHolder = JPanelBuilder.builder()
-      .borderLayout()
-      .build();
+  private final JPanel gameSetupPanelHolder = JPanelBuilder.builder().borderLayout().build();
   private final JPanel mainPanel;
   private final JSplitPane chatSplit;
-  private final JPanel chatPanelHolder = JPanelBuilder.builder()
-      .borderLayout()
-      .preferredHeight(62)
-      .build();
+  private final JPanel chatPanelHolder =
+      JPanelBuilder.builder().borderLayout().preferredHeight(62).build();
   private ISetupPanel gameSetupPanel;
   private boolean isChatShowing;
   private final Supplier<Optional<IChatPanel>> chatPanelSupplier;
 
   /**
-   * MainPanel is the full contents of the 'mainFrame'. This panel represents the welcome screen and subsequent screens.
+   * MainPanel is the full contents of the 'mainFrame'. This panel represents the welcome screen and
+   * subsequent screens.
    */
   MainPanel(
       final GameSelectorPanel gameSelectorPanel,
@@ -82,27 +80,33 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
     chatSplit.setOneTouchExpandable(false);
     chatSplit.setDividerSize(5);
 
-    mainPanel = JPanelBuilder.builder()
-        .borderEmpty()
-        .gridBagLayout(2)
-        .add(gameSelectorPanel, GridBagHelper.Anchor.WEST, GridBagHelper.Fill.VERTICAL)
-        .add(gameSetupPanelScroll, GridBagHelper.Anchor.CENTER, GridBagHelper.Fill.VERTICAL_AND_HORIZONTAL)
-        .build();
+    mainPanel =
+        JPanelBuilder.builder()
+            .borderEmpty()
+            .gridBagLayout(2)
+            .add(gameSelectorPanel, GridBagHelper.Anchor.WEST, GridBagHelper.Fill.VERTICAL)
+            .add(
+                gameSetupPanelScroll,
+                GridBagHelper.Anchor.CENTER,
+                GridBagHelper.Fill.VERTICAL_AND_HORIZONTAL)
+            .build();
 
     setLayout(new BorderLayout());
     addChat();
 
-    final JButton quitButton = JButtonBuilder.builder()
-        .title("Quit")
-        .toolTip("Close TripleA.")
-        .actionListener(GameRunner::quitGame)
-        .build();
-    final JPanel buttonsPanel = JPanelBuilder.builder()
-        .borderEtched()
-        .flowLayout(JPanelBuilder.FlowLayoutJustification.CENTER)
-        .add(playButton)
-        .add(quitButton)
-        .build();
+    final JButton quitButton =
+        JButtonBuilder.builder()
+            .title("Quit")
+            .toolTip("Close TripleA.")
+            .actionListener(GameRunner::quitGame)
+            .build();
+    final JPanel buttonsPanel =
+        JPanelBuilder.builder()
+            .borderEtched()
+            .flowLayout(JPanelBuilder.FlowLayoutJustification.CENTER)
+            .add(playButton)
+            .add(quitButton)
+            .build();
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
     setWidgetActivation();
@@ -124,9 +128,7 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
     isChatShowing = chat != null;
   }
 
-  /**
-   * This method will 'change' screens, swapping out one setup panel for another.
-   */
+  /** This method will 'change' screens, swapping out one setup panel for another. */
   @Override
   public void screenChangeEvent(final ISetupPanel panel) {
     gameSetupPanel = panel;
@@ -152,22 +154,25 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
     revalidate();
   }
 
-  private static void createUserActionMenu(final ISetupPanel gameSetupPanel, final JPanel cancelPanel) {
+  private static void createUserActionMenu(
+      final ISetupPanel gameSetupPanel, final JPanel cancelPanel) {
     // if we need this for something other than network, add a way to set it
     final JButton button = new JButton("Network...");
-    button.addActionListener(e -> {
-      final JPopupMenu menu = new JPopupMenu();
-      final List<Action> actions = gameSetupPanel.getUserActions();
-      for (final Action a : actions) {
-        menu.add(a);
-      }
-      menu.show(button, 0, button.getHeight());
-    });
+    button.addActionListener(
+        e -> {
+          final JPopupMenu menu = new JPopupMenu();
+          final List<Action> actions = gameSetupPanel.getUserActions();
+          for (final Action a : actions) {
+            menu.add(a);
+          }
+          menu.show(button, 0, button.getHeight());
+        });
     cancelPanel.add(button);
   }
 
   private void setWidgetActivation() {
-    SwingAction.invokeNowOrLater(() -> playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart()));
+    SwingAction.invokeNowOrLater(
+        () -> playButton.setEnabled(gameSetupPanel != null && gameSetupPanel.canGameStart()));
   }
 
   @Override

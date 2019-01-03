@@ -8,8 +8,8 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 
 /**
- * Runs background update checks and would prompt user if anything needs to be updated.
- * This class and related ones will control the frequency of how often we prompt the user.
+ * Runs background update checks and would prompt user if anything needs to be updated. This class
+ * and related ones will control the frequency of how often we prompt the user.
  */
 public class UpdateChecks {
 
@@ -34,7 +34,8 @@ public class UpdateChecks {
     return !System.getProperty(TRIPLEA_SERVER, "false").equalsIgnoreCase("true")
         && !System.getProperty(TRIPLEA_CLIENT, "false").equalsIgnoreCase("true")
         && !System.getProperty(DO_NOT_CHECK_FOR_UPDATES, "false").equalsIgnoreCase("true")
-        // if we are joining a game online, or hosting, or loading straight into a savegame, do not check
+        // if we are joining a game online, or hosting, or loading straight into a savegame, do not
+        // check
         && System.getProperty(TRIPLEA_GAME, "").isEmpty();
   }
 }

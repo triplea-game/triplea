@@ -20,8 +20,8 @@ import games.strategy.triplea.ui.logic.MapScrollUtil;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 /**
- * A small image that tracks a selection area within a small image. Generally
- * used in conjunction with a ImageScrollerLargeView.
+ * A small image that tracks a selection area within a small image. Generally used in conjunction
+ * with a ImageScrollerLargeView.
  */
 public class ImageScrollerSmallView extends JComponent {
   private static final long serialVersionUID = 7010099211049677928L;
@@ -29,7 +29,8 @@ public class ImageScrollerSmallView extends JComponent {
   private Image image;
   private final MapData mapData;
 
-  public ImageScrollerSmallView(final Image image, final ImageScrollModel model, final MapData mapData) {
+  public ImageScrollerSmallView(
+      final Image image, final ImageScrollModel model, final MapData mapData) {
     this.model = model;
     Util.ensureImageLoaded(image);
     setDoubleBuffered(false);
@@ -42,44 +43,44 @@ public class ImageScrollerSmallView extends JComponent {
     setPreferredSize(prefSize);
     setMinimumSize(prefSize);
     setMaximumSize(prefSize);
-    final MouseAdapter mouseListener = new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        // try to center around the click
-        final int x = (int) (e.getX() / getRatioX()) - (model.getBoxWidth() / 2);
-        final int y = (int) (e.getY() / getRatioY()) - (model.getBoxHeight() / 2);
-        model.set(x, y);
-      }
-    };
+    final MouseAdapter mouseListener =
+        new MouseAdapter() {
+          @Override
+          public void mouseClicked(final MouseEvent e) {
+            // try to center around the click
+            final int x = (int) (e.getX() / getRatioX()) - (model.getBoxWidth() / 2);
+            final int y = (int) (e.getY() / getRatioY()) - (model.getBoxHeight() / 2);
+            model.set(x, y);
+          }
+        };
     this.addMouseListener(mouseListener);
-    final MouseMotionListener mouseMotionListener = new MouseMotionAdapter() {
-      @Override
-      public void mouseDragged(final MouseEvent e) {
-        final long now = System.currentTimeMillis();
-        final long minUpdateDelay = 30;
-        if (now < lastUpdate + minUpdateDelay) {
-          return;
-        }
-        lastUpdate = now;
-        final Rectangle bounds = (Rectangle) getBounds().clone();
-        // if the mouse is a little off the screen, allow it to still scroll the screen
-        bounds.grow(30, 0);
-        if (!bounds.contains(e.getPoint())) {
-          return;
-        }
-        // try to center around the click
-        final int x = (int) (e.getX() / getRatioX()) - (model.getBoxWidth() / 2);
-        final int y = (int) (e.getY() / getRatioY()) - (model.getBoxHeight() / 2);
-        setSelection(x, y);
-      }
-    };
+    final MouseMotionListener mouseMotionListener =
+        new MouseMotionAdapter() {
+          @Override
+          public void mouseDragged(final MouseEvent e) {
+            final long now = System.currentTimeMillis();
+            final long minUpdateDelay = 30;
+            if (now < lastUpdate + minUpdateDelay) {
+              return;
+            }
+            lastUpdate = now;
+            final Rectangle bounds = (Rectangle) getBounds().clone();
+            // if the mouse is a little off the screen, allow it to still scroll the screen
+            bounds.grow(30, 0);
+            if (!bounds.contains(e.getPoint())) {
+              return;
+            }
+            // try to center around the click
+            final int x = (int) (e.getX() / getRatioX()) - (model.getBoxWidth() / 2);
+            final int y = (int) (e.getY() / getRatioY()) - (model.getBoxHeight() / 2);
+            setSelection(x, y);
+          }
+        };
     this.addMouseMotionListener(mouseMotionListener);
     model.addObserver((o, arg) -> repaint());
   }
 
-  /**
-   * Changes the image displayed in this view to {@code image}.
-   */
+  /** Changes the image displayed in this view to {@code image}. */
   public void changeImage(final Image image) {
     Util.ensureImageLoaded(image);
     setDoubleBuffered(false);
@@ -119,17 +120,16 @@ public class ImageScrollerSmallView extends JComponent {
     final double y = model.getY() * ratioY;
     final double width = model.getBoxWidth() * ratioX;
     final double height = model.getBoxHeight() * ratioY;
-    final Rectangle2D.Double mapBounds = new Rectangle2D.Double(0, 0,
-        model.getMaxWidth() * ratioX, model.getMaxHeight() * ratioY);
-    final Rectangle2D.Double rect = new Rectangle2D.Double(
-        x % mapBounds.width, y % mapBounds.height,
-        width, height);
+    final Rectangle2D.Double mapBounds =
+        new Rectangle2D.Double(0, 0, model.getMaxWidth() * ratioX, model.getMaxHeight() * ratioY);
+    final Rectangle2D.Double rect =
+        new Rectangle2D.Double(x % mapBounds.width, y % mapBounds.height, width, height);
     g.setClip(mapBounds);
     MapScrollUtil.getPossibleTranslations(
-        model.getScrollX(),
-        model.getScrollY(),
-        (int) Math.round(mapBounds.width),
-        (int) Math.round(mapBounds.height))
+            model.getScrollX(),
+            model.getScrollY(),
+            (int) Math.round(mapBounds.width),
+            (int) Math.round(mapBounds.height))
         .stream()
         .map(t -> t.createTransformedShape(rect))
         .map(Shape::getBounds2D)
@@ -137,7 +137,8 @@ public class ImageScrollerSmallView extends JComponent {
   }
 
   private void drawFilledRect(final Rectangle2D rect, final Graphics2D g) {
-    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, mapData.getSmallMapViewerFillAlpha()));
+    g.setComposite(
+        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, mapData.getSmallMapViewerFillAlpha()));
     g.setColor(mapData.getSmallMapViewerFillColor());
     g.fill(rect);
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));

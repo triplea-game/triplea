@@ -16,25 +16,24 @@ import games.strategy.security.CredentialManagerException;
 import lombok.extern.java.Log;
 
 /**
- * Abstract Forum poster that takes care of storing the username, password, and other common properties.
+ * Abstract Forum poster that takes care of storing the username, password, and other common
+ * properties.
  *
- * <p>
- * Instances of this class are saved as a property as part of a save game.
- * </p>
+ * <p>Instances of this class are saved as a property as part of a save game.
  *
- * <p>
- * This class has two fields per credential. One is transient and used while the game is running. The other is
- * persistent and "cleared" when the game starts. This is done for security reasons so save games will not include
- * credentials. The persistent password is used when the object is stored in the local cache.
- * </p>
+ * <p>This class has two fields per credential. One is transient and used while the game is running.
+ * The other is persistent and "cleared" when the game starts. This is done for security reasons so
+ * save games will not include credentials. The persistent password is used when the object is
+ * stored in the local cache.
  */
 @Log
 public abstract class AbstractForumPoster implements IForumPoster {
   /**
-   * The value assigned to a persistent credential that indicates it was cleared and the associated transient credential
-   * should be used instead.
+   * The value assigned to a persistent credential that indicates it was cleared and the associated
+   * transient credential should be used instead.
    */
   private static final String USE_TRANSIENT_CREDENTIAL = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
+
   private static final long serialVersionUID = -734015230309508040L;
 
   protected String username = null;

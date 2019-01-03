@@ -35,29 +35,41 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   // list of relationship changes to be performed if this action is performed sucessfully
   private List<String> relationshipChange = new ArrayList<>();
 
-  public PoliticalActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  public PoliticalActionAttachment(
+      final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
-  public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(final PlayerId player) {
-    return player.getAttachments().values().stream()
+  public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(
+      final PlayerId player) {
+    return player
+        .getAttachments()
+        .values()
+        .stream()
         .filter(a -> a.getName().startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
         .filter(PoliticalActionAttachment.class::isInstance)
         .map(PoliticalActionAttachment.class::cast)
         .collect(Collectors.toList());
   }
 
-  public static PoliticalActionAttachment get(final PlayerId player, final String nameOfAttachment) {
+  public static PoliticalActionAttachment get(
+      final PlayerId player, final String nameOfAttachment) {
     return get(player, nameOfAttachment, null);
   }
 
-  static PoliticalActionAttachment get(final PlayerId player, final String nameOfAttachment,
+  static PoliticalActionAttachment get(
+      final PlayerId player,
+      final String nameOfAttachment,
       final Collection<PlayerId> playersToSearch) {
-    PoliticalActionAttachment paa = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
+    PoliticalActionAttachment paa =
+        (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
     if (paa == null) {
       if (playersToSearch == null) {
         throw new IllegalStateException(
-            "PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+            "PoliticalActionAttachment: No attachment for:"
+                + player.getName()
+                + " with name: "
+                + nameOfAttachment);
       }
 
       for (final PlayerId otherPlayer : playersToSearch) {
@@ -70,7 +82,10 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
         }
       }
       throw new IllegalStateException(
-          "PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+          "PoliticalActionAttachment: No attachment for:"
+              + player.getName()
+              + " with name: "
+              + nameOfAttachment);
     }
     return paa;
   }
@@ -79,20 +94,41 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   void setRelationshipChange(final String relChange) throws GameParseException {
     final String[] s = splitOnColon(relChange);
     if (s.length != 3) {
-      throw new GameParseException("Invalid relationshipChange declaration: " + relChange
-          + " \n Use: player1:player2:newRelation\n" + thisErrorMsg());
+      throw new GameParseException(
+          "Invalid relationshipChange declaration: "
+              + relChange
+              + " \n Use: player1:player2:newRelation\n"
+              + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerId(s[0]) == null) {
-      throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0]
-          + " unknown in: " + getName() + thisErrorMsg());
+      throw new GameParseException(
+          "Invalid relationshipChange declaration: "
+              + relChange
+              + " \n player: "
+              + s[0]
+              + " unknown in: "
+              + getName()
+              + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerId(s[1]) == null) {
-      throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1]
-          + " unknown in: " + getName() + thisErrorMsg());
+      throw new GameParseException(
+          "Invalid relationshipChange declaration: "
+              + relChange
+              + " \n player: "
+              + s[1]
+              + " unknown in: "
+              + getName()
+              + thisErrorMsg());
     }
     if (!Matches.isValidRelationshipName(getData()).test(s[2])) {
-      throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: "
-          + s[2] + " unknown in: " + getName() + thisErrorMsg());
+      throw new GameParseException(
+          "Invalid relationshipChange declaration: "
+              + relChange
+              + " \n relationshipType: "
+              + s[2]
+              + " unknown in: "
+              + getName()
+              + thisErrorMsg());
     }
     relationshipChange.add(relChange);
   }
@@ -110,7 +146,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   public List<RelationshipChange> getRelationshipChanges() {
-    return relationshipChange.stream()
+    return relationshipChange
+        .stream()
         .map(this::parseRelationshipChange)
         .collect(Collectors.toList());
   }
@@ -125,9 +162,7 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
         gameData.getRelationshipTypeList().getRelationshipType(tokens[2]));
   }
 
-  /**
-   * Returns a set of all other players involved in this PoliticalAction.
-   */
+  /** Returns a set of all other players involved in this PoliticalAction. */
   public Set<PlayerId> getOtherPlayers() {
     final Set<PlayerId> otherPlayers = new LinkedHashSet<>();
     for (final String relationshipChange : this.relationshipChange) {
@@ -139,15 +174,14 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
     return otherPlayers;
   }
 
-  /**
-   * Returns the valid actions for this player.
-   */
-  public static Collection<PoliticalActionAttachment> getValidActions(final PlayerId player,
-      final Map<ICondition, Boolean> testedConditions, final GameData data) {
+  /** Returns the valid actions for this player. */
+  public static Collection<PoliticalActionAttachment> getValidActions(
+      final PlayerId player, final Map<ICondition, Boolean> testedConditions, final GameData data) {
     if (!Properties.getUsePolitics(data) || !player.amNotDeadYet(data)) {
       return new ArrayList<>();
     }
-    return CollectionUtils.getMatches(getPoliticalActionAttachments(player),
+    return CollectionUtils.getMatches(
+        getPoliticalActionAttachments(player),
         Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)
             .and(Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions)));
   }
@@ -164,7 +198,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("relationshipChange",
+        .put(
+            "relationshipChange",
             MutableProperty.of(
                 this::setRelationshipChange,
                 this::setRelationshipChange,
@@ -174,8 +209,8 @@ public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   }
 
   /**
-   * A relationship change specified in a political action attachment. Specifies the relationship type that will exist
-   * between two players after the action is successful.
+   * A relationship change specified in a political action attachment. Specifies the relationship
+   * type that will exist between two players after the action is successful.
    */
   @AllArgsConstructor(access = AccessLevel.PACKAGE)
   @EqualsAndHashCode

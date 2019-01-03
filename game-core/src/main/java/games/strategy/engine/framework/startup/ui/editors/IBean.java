@@ -5,8 +5,8 @@ import java.io.Serializable;
 import javax.annotation.Nullable;
 
 /**
- * An interface specifying that this component is a bean that can provide an editor
- * Beans must have a default constructor.
+ * An interface specifying that this component is a bean that can provide an editor Beans must have
+ * a default constructor.
  */
 public interface IBean extends Serializable {
   /**
@@ -31,8 +31,9 @@ public interface IBean extends Serializable {
   String getHelpText();
 
   /**
-   * Returns {@code true} if this bean is the same type as {@code other}. Note that this doesn't necessarily mean type
-   * in the sense of a Java class, but it may. This method is used to select a bean within a list of beans in the UI.
+   * Returns {@code true} if this bean is the same type as {@code other}. Note that this doesn't
+   * necessarily mean type in the sense of a Java class, but it may. This method is used to select a
+   * bean within a list of beans in the UI.
    */
   boolean isSameType(@Nullable IBean other);
 }

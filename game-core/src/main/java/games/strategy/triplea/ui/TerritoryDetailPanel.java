@@ -34,17 +34,21 @@ class TerritoryDetailPanel extends AbstractStatPanel {
   private @Nullable Territory currentTerritory;
   private final TripleAFrame frame;
 
-  TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final UiContext uiContext,
+  TerritoryDetailPanel(
+      final MapPanel mapPanel,
+      final GameData data,
+      final UiContext uiContext,
       final TripleAFrame frame) {
     super(data);
     this.frame = frame;
     this.uiContext = uiContext;
-    mapPanel.addMapSelectionListener(new DefaultMapSelectionListener() {
-      @Override
-      public void mouseEntered(final Territory territory) {
-        territoryChanged(territory);
-      }
-    });
+    mapPanel.addMapSelectionListener(
+        new DefaultMapSelectionListener() {
+          @Override
+          public void mouseEntered(final Territory territory) {
+            territoryChanged(territory);
+          }
+        });
 
     findTerritoryButton = new JButton(new FindTerritoryAction(frame));
     findTerritoryButton.setText(findTerritoryButton.getText() + " (Ctrl-F)");
@@ -83,8 +87,15 @@ class TerritoryDetailPanel extends AbstractStatPanel {
       labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
     }
     add(new JLabel(labelText));
-    add(new JLabel("Units: " + territory.getUnits().getUnits().stream()
-        .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName())).count()));
+    add(
+        new JLabel(
+            "Units: "
+                + territory
+                    .getUnits()
+                    .getUnits()
+                    .stream()
+                    .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName()))
+                    .count()));
     final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(territory, uiContext));
     scroll.setBorder(BorderFactory.createEmptyBorder());
     scroll.getVerticalScrollBar().setUnitIncrement(20);
@@ -92,13 +103,14 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     refresh();
   }
 
-  private static JPanel unitsInTerritoryPanel(final Territory territory, final UiContext uiContext) {
+  private static JPanel unitsInTerritoryPanel(
+      final Territory territory, final UiContext uiContext) {
     final JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    final List<UnitCategory> units = UnitSeparator.getSortedUnitCategories(territory, uiContext.getMapData());
-    @Nullable
-    PlayerId currentPlayer = null;
+    final List<UnitCategory> units =
+        UnitSeparator.getSortedUnitCategories(territory, uiContext.getMapData());
+    @Nullable PlayerId currentPlayer = null;
     for (final UnitCategory item : units) {
       // separate players with a separator
       if (!item.getOwner().equals(currentPlayer)) {
@@ -107,16 +119,31 @@ class TerritoryDetailPanel extends AbstractStatPanel {
       }
       // TODO Kev determine if we need to identify if the unit is hit/disabled
       final Optional<ImageIcon> unitIcon =
-          uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(),
-              item.hasDamageOrBombingUnitDamage(), item.getDisabled());
+          uiContext
+              .getUnitImageFactory()
+              .getIcon(
+                  item.getType(),
+                  item.getOwner(),
+                  item.hasDamageOrBombingUnitDamage(),
+                  item.getDisabled());
       if (unitIcon.isPresent()) {
         // overlay flag onto upper-right of icon
-        final ImageIcon flagIcon = new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
+        final ImageIcon flagIcon =
+            new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
         final Icon flaggedUnitIcon =
-            new OverlayIcon(unitIcon.get(), flagIcon, unitIcon.get().getIconWidth() - (flagIcon.getIconWidth() / 2), 0);
-        final JLabel label = new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
-        final String toolTipText = "<html>" + item.getType().getName() + ": "
-            + TooltipProperties.getInstance().getTooltip(item.getType(), currentPlayer) + "</html>";
+            new OverlayIcon(
+                unitIcon.get(),
+                flagIcon,
+                unitIcon.get().getIconWidth() - (flagIcon.getIconWidth() / 2),
+                0);
+        final JLabel label =
+            new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
+        final String toolTipText =
+            "<html>"
+                + item.getType().getName()
+                + ": "
+                + TooltipProperties.getInstance().getTooltip(item.getType(), currentPlayer)
+                + "</html>";
         label.setToolTipText(toolTipText);
         panel.add(label);
       }

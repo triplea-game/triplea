@@ -18,20 +18,17 @@ import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 
-/**
- * An abstraction of MoveDelegate in order to allow other delegates to extend this.
- */
+/** An abstraction of MoveDelegate in order to allow other delegates to extend this. */
 public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate {
   // A collection of UndoableMoves
   protected List<UndoableMove> movesToUndo = new ArrayList<>();
   // if we are in the process of doing a move. this instance will allow us to resume the move
   protected MovePerformer tempMovePerformer;
 
-  /**
-   * The type of move.
-   */
+  /** The type of move. */
   public enum MoveType {
-    DEFAULT, SPECIAL
+    DEFAULT,
+    SPECIAL
   }
 
   public AbstractMoveDelegate() {}
@@ -66,7 +63,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   public void loadState(final Serializable state) {
     final AbstractMoveExtendedDelegateState s = (AbstractMoveExtendedDelegateState) state;
     super.loadState(s.superState);
-    // if the undo state wasnt saved, then dont load it. prevents overwriting undo state when we restore from an undo
+    // if the undo state wasnt saved, then dont load it. prevents overwriting undo state when we
+    // restore from an undo
     // move
     if (s.movesToUndo != null) {
       movesToUndo = s.movesToUndo;
@@ -110,8 +108,11 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   protected PlayerId getUnitsOwner(final Collection<Unit> units) {
-    // if we are not in edit mode, return player. if we are in edit mode, we use whoever's units these are.
-    return (units.isEmpty() || !BaseEditDelegate.getEditMode(getData())) ? player : units.iterator().next().getOwner();
+    // if we are not in edit mode, return player. if we are in edit mode, we use whoever's units
+    // these are.
+    return (units.isEmpty() || !BaseEditDelegate.getEditMode(getData()))
+        ? player
+        : units.iterator().next().getOwner();
   }
 
   @Override
@@ -120,24 +121,35 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public String move(final Collection<Unit> units, final Route route,
+  public String move(
+      final Collection<Unit> units,
+      final Route route,
       final Collection<Unit> transportsThatCanBeLoaded) {
     return move(units, route, transportsThatCanBeLoaded, new HashMap<>());
   }
 
   @Override
-  public abstract String move(final Collection<Unit> units, final Route route,
-      final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
+  public abstract String move(
+      final Collection<Unit> units,
+      final Route route,
+      final Collection<Unit> transportsThatCanBeLoaded,
+      final Map<Unit, Collection<Unit>> newDependents);
 
-  public static MoveValidationResult validateMove(final MoveType moveType, final Collection<Unit> units,
-      final Route route, final PlayerId player, final Collection<Unit> transportsToLoad,
-      final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat,
-      final List<UndoableMove> undoableMoves, final GameData data) {
+  public static MoveValidationResult validateMove(
+      final MoveType moveType,
+      final Collection<Unit> units,
+      final Route route,
+      final PlayerId player,
+      final Collection<Unit> transportsToLoad,
+      final Map<Unit, Collection<Unit>> newDependents,
+      final boolean isNonCombat,
+      final List<UndoableMove> undoableMoves,
+      final GameData data) {
     if (moveType == MoveType.SPECIAL) {
       return SpecialMoveDelegate.validateMove(units, route, player, data);
     }
-    return MoveValidator.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves,
-        data);
+    return MoveValidator.validateMove(
+        units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves, data);
   }
 
   @Override
@@ -173,8 +185,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
    * @param end target territory
    * @return the route that a unit used to move into the given territory.
    */
-  public static Route getRouteUsedToMoveInto(final List<UndoableMove> undoableMoves, final Unit unit,
-      final Territory end) {
+  public static Route getRouteUsedToMoveInto(
+      final List<UndoableMove> undoableMoves, final Unit unit, final Territory end) {
     final ListIterator<UndoableMove> iter = undoableMoves.listIterator(undoableMoves.size());
     while (iter.hasPrevious()) {
       final UndoableMove move = iter.previous();
@@ -203,18 +215,15 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public boolean postTurnSummary(final PbemMessagePoster poster, final String title, final boolean includeSaveGame) {
+  public boolean postTurnSummary(
+      final PbemMessagePoster poster, final String title, final boolean includeSaveGame) {
     return poster.post(bridge.getHistoryWriter(), title, includeSaveGame);
   }
 
-  /**
-   * Returns the number of PUs that have been lost by bombing, rockets, etc.
-   */
+  /** Returns the number of PUs that have been lost by bombing, rockets, etc. */
   public abstract int pusAlreadyLost(final Territory t);
 
-  /**
-   * Add more PUs lost to a territory due to bombing, rockets, etc.
-   */
+  /** Add more PUs lost to a territory due to bombing, rockets, etc. */
   public abstract void pusLost(final Territory t, final int amt);
 
   @Override

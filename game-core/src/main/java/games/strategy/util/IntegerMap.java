@@ -25,9 +25,7 @@ public final class IntegerMap<T> implements Serializable {
     mapValues = new LinkedHashMap<>(map);
   }
 
-  /**
-   * Creates a shallow clone of the provided IntegerMap.
-   */
+  /** Creates a shallow clone of the provided IntegerMap. */
   public IntegerMap(final IntegerMap<T> integerMap) {
     this(integerMap.mapValues);
   }
@@ -40,9 +38,7 @@ public final class IntegerMap<T> implements Serializable {
     mapValues.put(key, value);
   }
 
-  /**
-   * returns 0 if no key found.
-   */
+  /** returns 0 if no key found. */
   public int getInt(final T key) {
     return mapValues.getOrDefault(key, 0);
   }
@@ -58,8 +54,7 @@ public final class IntegerMap<T> implements Serializable {
   }
 
   /**
-   * Will multiply all values by a given double.
-   * Rounds up the results when converting to an int.
+   * Will multiply all values by a given double. Rounds up the results when converting to an int.
    */
   public void multiplyAllValuesBy(final double multiplyBy) {
     mapValues.replaceAll((key, value) -> (int) Math.ceil(value * multiplyBy));
@@ -82,23 +77,19 @@ public final class IntegerMap<T> implements Serializable {
     return mapValues.values().stream().allMatch(value -> integer == value);
   }
 
-  /**
-   * Will return null if empty.
-   */
+  /** Will return null if empty. */
   public T lowestKey() {
-    return mapValues.entrySet().stream()
+    return mapValues
+        .entrySet()
+        .stream()
         .min(Comparator.comparing(Map.Entry::getValue))
         .map(Map.Entry::getKey)
         .orElse(null);
   }
 
-  /**
-   * Returns the sum of all keys.
-   */
+  /** Returns the sum of all keys. */
   public int totalValues() {
-    return mapValues.values().stream()
-        .mapToInt(value -> value)
-        .sum();
+    return mapValues.values().stream().mapToInt(value -> value).sum();
   }
 
   public void subtract(final IntegerMap<T> map) {
@@ -108,26 +99,21 @@ public final class IntegerMap<T> implements Serializable {
   }
 
   /**
-   * By >= we mean that each of our entries is greater than or equal to each entry in the other map. We do not take into
-   * account entries that are in our map but not in the second map. <br>
-   * It is possible that for two maps a and b
-   * a.greaterThanOrEqualTo(b) is false, and b.greaterThanOrEqualTo(a) is false, and that a and b are not equal.
+   * By >= we mean that each of our entries is greater than or equal to each entry in the other map.
+   * We do not take into account entries that are in our map but not in the second map. <br>
+   * It is possible that for two maps a and b a.greaterThanOrEqualTo(b) is false, and
+   * b.greaterThanOrEqualTo(a) is false, and that a and b are not equal.
    */
   public boolean greaterThanOrEqualTo(final IntegerMap<T> map) {
-    return map.entrySet().stream()
-        .allMatch(entry -> getInt(entry.getKey()) >= entry.getValue());
+    return map.entrySet().stream().allMatch(entry -> getInt(entry.getKey()) >= entry.getValue());
   }
 
-  /**
-   * True if all values are >= 0.
-   */
+  /** True if all values are >= 0. */
   public boolean isPositive() {
     return mapValues.values().stream().allMatch(value -> value >= 0);
   }
 
-  /**
-   * Add map * multiple.
-   */
+  /** Add map * multiple. */
   public void addMultiple(final IntegerMap<T> map, final int multiple) {
     for (final Map.Entry<T, Integer> entry : map.entrySet()) {
       add(entry.getKey(), entry.getValue() * multiple);
@@ -169,8 +155,8 @@ public final class IntegerMap<T> implements Serializable {
   }
 
   /**
-   * The equals method will only return true if both the keys and values
-   * match exactly. If a has entries that b doesn't have or vice versa, then a and b are not equal.
+   * The equals method will only return true if both the keys and values match exactly. If a has
+   * entries that b doesn't have or vice versa, then a and b are not equal.
    */
   @Override
   public boolean equals(final Object o) {

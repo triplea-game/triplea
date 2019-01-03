@@ -9,16 +9,15 @@ import games.strategy.triplea.delegate.Matches;
 /**
  * A comparator that sorts unit types in a meaningful order.
  *
- * <p>
- * The order is based on the following attributes of the unit type:
- * </p>
+ * <p>The order is based on the following attributes of the unit type:
+ *
  * <ul>
- * <li>infrastructure</li>
- * <li>anti-aircraft</li>
- * <li>air</li>
- * <li>sea</li>
- * <li>attack power</li>
- * <li>name</li>
+ *   <li>infrastructure
+ *   <li>anti-aircraft
+ *   <li>air
+ *   <li>sea
+ *   <li>attack power
+ *   <li>name
  * </ul>
  */
 public class UnitTypeComparator implements Comparator<UnitType>, Serializable {

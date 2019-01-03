@@ -22,9 +22,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.util.CollectionUtils;
 
-/**
- * Pro politics AI.
- */
+/** Pro politics AI. */
 class ProPoliticsAi {
 
   private final ProOddsCalculator calc;
@@ -45,11 +43,14 @@ class ProPoliticsAi {
 
     // Find valid war actions
     final List<PoliticalActionAttachment> actionChoicesTowardsWar =
-        AiPoliticalUtils.getPoliticalActionsTowardsWar(player, politicsDelegate.getTestedConditions(), data);
+        AiPoliticalUtils.getPoliticalActionsTowardsWar(
+            player, politicsDelegate.getTestedConditions(), data);
     ProLogger.trace("War options: " + actionChoicesTowardsWar);
     final List<PoliticalActionAttachment> validWarActions =
-        CollectionUtils.getMatches(actionChoicesTowardsWar,
-            Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions()));
+        CollectionUtils.getMatches(
+            actionChoicesTowardsWar,
+            Matches.abstractUserActionAttachmentCanBeAttempted(
+                politicsDelegate.getTestedConditions()));
     ProLogger.trace("Valid War options: " + validWarActions);
 
     // Divide war actions into enemy and neutral
@@ -57,12 +58,15 @@ class ProPoliticsAi {
     final Map<PoliticalActionAttachment, List<PlayerId>> neutralMap = new HashMap<>();
     for (final PoliticalActionAttachment action : validWarActions) {
       final List<PlayerId> warPlayers = new ArrayList<>();
-      for (final PoliticalActionAttachment.RelationshipChange relationshipChange : action.getRelationshipChanges()) {
+      for (final PoliticalActionAttachment.RelationshipChange relationshipChange :
+          action.getRelationshipChanges()) {
         final PlayerId player1 = relationshipChange.player1;
         final PlayerId player2 = relationshipChange.player2;
-        final RelationshipType oldRelation = data.getRelationshipTracker().getRelationshipType(player1, player2);
+        final RelationshipType oldRelation =
+            data.getRelationshipTracker().getRelationshipType(player1, player2);
         final RelationshipType newRelation = relationshipChange.relationshipType;
-        if (!oldRelation.equals(newRelation) && Matches.relationshipTypeIsAtWar().test(newRelation)
+        if (!oldRelation.equals(newRelation)
+            && Matches.relationshipTypeIsAtWar().test(newRelation)
             && (player1.equals(player) || player2.equals(player))) {
           PlayerId warPlayer = player2;
           if (warPlayer.equals(player)) {
@@ -86,8 +90,14 @@ class ProPoliticsAi {
 
       // Find all attack options
       territoryManager.populatePotentialAttackOptions();
-      final List<ProTerritory> attackOptions = territoryManager.removePotentialTerritoriesThatCantBeConquered();
-      ProLogger.trace(player.getName() + ", numAttackOptions=" + attackOptions.size() + ", options=" + attackOptions);
+      final List<ProTerritory> attackOptions =
+          territoryManager.removePotentialTerritoriesThatCantBeConquered();
+      ProLogger.trace(
+          player.getName()
+              + ", numAttackOptions="
+              + attackOptions.size()
+              + ", options="
+              + attackOptions);
 
       // Find attack options per war action
       final Map<PoliticalActionAttachment, Double> attackPercentageMap = new HashMap<>();
@@ -96,13 +106,15 @@ class ProPoliticsAi {
         final List<PlayerId> enemyPlayers = enemyMap.get(action);
         for (final ProTerritory patd : attackOptions) {
           if (Matches.isTerritoryOwnedBy(enemyPlayers).test(patd.getTerritory())
-              || Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(enemyPlayers)).test(patd.getTerritory())) {
+              || Matches.territoryHasUnitsThatMatch(Matches.unitOwnedBy(enemyPlayers))
+                  .test(patd.getTerritory())) {
             count++;
           }
         }
         final double attackPercentage = count / (attackOptions.size() + 1.0);
         attackPercentageMap.put(action, attackPercentage);
-        ProLogger.trace(enemyPlayers + ", count=" + count + ", attackPercentage=" + attackPercentage);
+        ProLogger.trace(
+            enemyPlayers + ", count=" + count + ", attackPercentage=" + attackPercentage);
       }
 
       // Decide whether to declare war on an enemy
@@ -110,7 +122,8 @@ class ProPoliticsAi {
       Collections.shuffle(options);
       for (final PoliticalActionAttachment action : options) {
         final double roundFactor = (round - 1) * .05; // 0, .05, .1, .15, etc
-        final double warChance = roundFactor + attackPercentageMap.get(action) * (1 + 10 * roundFactor);
+        final double warChance =
+            roundFactor + attackPercentageMap.get(action) * (1 + 10 * roundFactor);
         final double random = Math.random();
         ProLogger.trace(enemyMap.get(action) + ", warChance=" + warChance + ", random=" + random);
         if (random <= warChance) {
@@ -136,17 +149,21 @@ class ProPoliticsAi {
     // Old code used for non-war actions
     if (Math.random() < .5) {
       final List<PoliticalActionAttachment> actionChoicesOther =
-          AiPoliticalUtils.getPoliticalActionsOther(player, politicsDelegate.getTestedConditions(), data);
+          AiPoliticalUtils.getPoliticalActionsOther(
+              player, politicsDelegate.getTestedConditions(), data);
       if (actionChoicesOther != null && !actionChoicesOther.isEmpty()) {
         Collections.shuffle(actionChoicesOther);
         int i = 0;
         final double random = Math.random();
         final int maxOtherActionsPerTurn =
-            (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
+            (random < .3
+                ? 0
+                : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
         final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
         while (actionOtherIter.hasNext() && maxOtherActionsPerTurn > 0) {
           final PoliticalActionAttachment action = actionOtherIter.next();
-          if (!Matches.abstractUserActionAttachmentCanBeAttempted(politicsDelegate.getTestedConditions())
+          if (!Matches.abstractUserActionAttachmentCanBeAttempted(
+                  politicsDelegate.getTestedConditions())
               .test(action)) {
             continue;
           }

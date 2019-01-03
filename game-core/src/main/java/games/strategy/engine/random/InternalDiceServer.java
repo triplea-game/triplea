@@ -9,10 +9,10 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
- * This is not actually a dice server, it just uses the normal TripleA PlainRandomSource for dice roll
- * This way your dice rolls are not registered anywhere, and you do not rely on any external web based service rolling
- * the dice.
- * Because DiceServers must be serializable read resolve must be implemented
+ * This is not actually a dice server, it just uses the normal TripleA PlainRandomSource for dice
+ * roll This way your dice rolls are not registered anywhere, and you do not rely on any external
+ * web based service rolling the dice. Because DiceServers must be serializable read resolve must be
+ * implemented
  */
 public final class InternalDiceServer implements IRemoteDiceServer {
   private static final long serialVersionUID = -8369097763085658445L;
@@ -26,8 +26,10 @@ public final class InternalDiceServer implements IRemoteDiceServer {
   }
 
   @Override
-  public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId) {
-    // the interface is rather stupid, you have to return a string here, which is then passed back in getDice()
+  public String postRequest(
+      final int max, final int numDice, final String subjectMessage, final String gameId) {
+    // the interface is rather stupid, you have to return a string here, which is then passed back
+    // in getDice()
     final int[] ints = randomSource.getRandom(max, numDice, "Internal Dice Server");
     final StringBuilder sb = new StringBuilder();
     for (final int i : ints) {
@@ -38,7 +40,9 @@ public final class InternalDiceServer implements IRemoteDiceServer {
 
   @Override
   public int[] getDice(final String string, final int count) {
-    return Splitter.on(DICE_SEPARATOR).splitToList(string).stream()
+    return Splitter.on(DICE_SEPARATOR)
+        .splitToList(string)
+        .stream()
         .mapToInt(Integer::parseInt)
         .toArray();
   }

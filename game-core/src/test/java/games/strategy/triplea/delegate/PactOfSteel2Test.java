@@ -108,8 +108,10 @@ public class PactOfSteel2Test {
   // testIsCombatTransport
   //
   // testIsConstruction
-  // - isConstruction, constructionType, constructionsPerTerrPerTypePerTurn, maxConstructionsPerTypePerTerr,
-  // - "More Constructions with Factory", "More Constructions with Factory", "Unlimited Constructions"
+  // - isConstruction, constructionType, constructionsPerTerrPerTypePerTurn,
+  // maxConstructionsPerTypePerTerr,
+  // - "More Constructions with Factory", "More Constructions with Factory", "Unlimited
+  // Constructions"
   //
   // testMaxPlacePerTerritory
   //

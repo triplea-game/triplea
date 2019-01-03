@@ -27,16 +27,15 @@ final class UpdatedMapsCheckTest {
   @Nested
   final class IsMapUpdateCheckRequiredTest {
     private final LocalDate now = LocalDate.of(2008, 6, 1);
-    @Mock
-    private GameSetting<String> updateCheckDateSetting;
-    @Mock
-    private Runnable flushSetting;
+    @Mock private GameSetting<String> updateCheckDateSetting;
+    @Mock private Runnable flushSetting;
 
     private void givenMapUpdateCheckNeverRun() {
       when(updateCheckDateSetting.getValue()).thenReturn(Optional.empty());
     }
 
-    private void givenMapUpdateCheckLastRunRelativeToNow(final long amountToAdd, final TemporalUnit unit) {
+    private void givenMapUpdateCheckLastRunRelativeToNow(
+        final long amountToAdd, final TemporalUnit unit) {
       when(updateCheckDateSetting.getValue())
           .thenReturn(Optional.of(formatUpdateCheckDate(now.plus(amountToAdd, unit))));
     }

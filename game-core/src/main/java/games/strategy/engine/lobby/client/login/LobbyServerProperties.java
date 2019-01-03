@@ -33,9 +33,7 @@ public class LobbyServerProperties {
 
   @Nullable private final String serverErrorMessage;
 
-  /**
-   * Message from lobby, eg: "welcome, lobby rules are: xyz".
-   */
+  /** Message from lobby, eg: "welcome, lobby rules are: xyz". */
   @Nullable private final String serverMessage;
 
   public String getServerMessage() {

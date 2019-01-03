@@ -14,7 +14,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test fixture that verifies implementations of {@link GameSetting} obey the general contract of the interface.
+ * Test fixture that verifies implementations of {@link GameSetting} obey the general contract of
+ * the interface.
  */
 public abstract class AbstractGameSettingTestCase {
   private static final @Nullable Integer NO_VALUE = null;
@@ -30,13 +31,15 @@ public abstract class AbstractGameSettingTestCase {
    * @param value The current value or {@code null} if no current value.
    * @param defaultValue The default value or {@code null} if no default value.
    */
-  protected abstract GameSetting<Integer> newGameSetting(@Nullable Integer value, @Nullable Integer defaultValue);
+  protected abstract GameSetting<Integer> newGameSetting(
+      @Nullable Integer value, @Nullable Integer defaultValue);
 
   @Nested
   final class GetDefaultValueTest {
     @Test
     void shouldReturnDefaultValueWhenDefaultValuePresent() {
-      assertThat(newGameSetting(NO_VALUE, DEFAULT_VALUE).getDefaultValue(), isPresentAndIs(DEFAULT_VALUE));
+      assertThat(
+          newGameSetting(NO_VALUE, DEFAULT_VALUE).getDefaultValue(), isPresentAndIs(DEFAULT_VALUE));
     }
 
     @Test
@@ -87,7 +90,8 @@ public abstract class AbstractGameSettingTestCase {
 
     @Test
     void shouldThrowExceptionWhenValueAbsentAndDefaultValueAbsent() {
-      assertThrows(NoSuchElementException.class, () -> newGameSetting(NO_VALUE, NO_VALUE).getValueOrThrow());
+      assertThrows(
+          NoSuchElementException.class, () -> newGameSetting(NO_VALUE, NO_VALUE).getValueOrThrow());
     }
   }
 

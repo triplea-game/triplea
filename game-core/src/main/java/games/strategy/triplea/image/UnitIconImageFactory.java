@@ -8,16 +8,15 @@ import java.util.stream.Collectors;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.UnitIconProperties;
 
-/**
- * Retrieves and caches unit icon images.
- */
+/** Retrieves and caches unit icon images. */
 public class UnitIconImageFactory extends ImageFactory {
   private static final String PREFIX = "unitIcons/";
 
   public UnitIconImageFactory() {}
 
   public List<Image> getImages(final String player, final String unitType, final GameData data) {
-    return UnitIconProperties.getInstance(data).getImagePaths(player, unitType, data)
+    return UnitIconProperties.getInstance(data)
+        .getImagePaths(player, unitType, data)
         .stream()
         .map(imagePath -> getImage(PREFIX + imagePath, false))
         .filter(Objects::nonNull)

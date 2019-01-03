@@ -25,45 +25,57 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
   @Test
   public void argsTurnIntoSystemProps() {
-    assertThat("check precondition, system property for our test key should not be set yet.",
-        System.getProperty(TestData.propKey), nullValue());
+    assertThat(
+        "check precondition, system property for our test key should not be set yet.",
+        System.getProperty(TestData.propKey),
+        nullValue());
 
     ArgParser.handleCommandLineArgs(TestData.sampleArgInput);
 
-    assertThat("system property should now be set to our test value",
-        System.getProperty(TestData.propKey), is(TestData.propValue));
+    assertThat(
+        "system property should now be set to our test value",
+        System.getProperty(TestData.propKey),
+        is(TestData.propValue));
   }
 
   @Test
   public void emptySystemPropertiesCanBeSet() {
     ArgParser.handleCommandLineArgs("-Pa=");
-    assertThat("expecting the system property to be empty string instead of null",
-        System.getProperty("a"), is(""));
+    assertThat(
+        "expecting the system property to be empty string instead of null",
+        System.getProperty("a"),
+        is(""));
   }
 
   @Test
   public void singleFileArgIsAssumedToBeGameProperty() {
     ArgParser.handleCommandLineArgs(TestData.propValue);
-    assertThat("if we pass only one arg, it is assumed to mean we are specifying the 'game property'",
-        System.getProperty(TRIPLEA_GAME), is(TestData.propValue));
+    assertThat(
+        "if we pass only one arg, it is assumed to mean we are specifying the 'game property'",
+        System.getProperty(TRIPLEA_GAME),
+        is(TestData.propValue));
   }
 
   @Test
   public void singleUrlArgIsAssumedToBeMapDownloadProperty() {
     final String testUrl = "triplea:" + TestData.propValue;
     ArgParser.handleCommandLineArgs(testUrl);
-    assertThat("if we pass only one arg prefixed with 'triplea:',"
-        + " it's assumed to mean we are specifying the 'map download property'",
-        System.getProperty(TRIPLEA_MAP_DOWNLOAD), is(TestData.propValue));
+    assertThat(
+        "if we pass only one arg prefixed with 'triplea:',"
+            + " it's assumed to mean we are specifying the 'map download property'",
+        System.getProperty(TRIPLEA_MAP_DOWNLOAD),
+        is(TestData.propValue));
   }
 
   @Test
   public void singleUrlArgIsUrlDecoded() {
     final String testUrl = "triplea:Something%20with+spaces%20and%20Special%20chars%20%F0%9F%A4%94";
     ArgParser.handleCommandLineArgs(testUrl);
-    assertThat("if we pass only one arg prefixed with 'triplea:',"
-        + " it should be properly URL-decoded as it's probably coming from a browser",
-        System.getProperty(TRIPLEA_MAP_DOWNLOAD), is("Something with spaces and Special chars 🤔"));
+    assertThat(
+        "if we pass only one arg prefixed with 'triplea:',"
+            + " it should be properly URL-decoded as it's probably coming from a browser",
+        System.getProperty(TRIPLEA_MAP_DOWNLOAD),
+        is("Something with spaces and Special chars 🤔"));
   }
 
   @Test
@@ -76,8 +88,8 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
     ClientSetting.mapFolderOverride.setValue(Paths.get("some", "path"));
     final Path mapFolder = Paths.get("/path", "to", "maps");
 
-    ArgParser
-        .handleCommandLineArgs("-P" + HeadlessGameServerCliParam.MAP_FOLDER.getLabel() + "=" + mapFolder.toString());
+    ArgParser.handleCommandLineArgs(
+        "-P" + HeadlessGameServerCliParam.MAP_FOLDER.getLabel() + "=" + mapFolder.toString());
 
     assertThat(ClientSetting.mapFolderOverride.getValueOrThrow(), is(mapFolder));
   }
@@ -88,7 +100,9 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
 
     ArgParser.handleCommandLineArgs();
 
-    assertThat(ClientSetting.mapFolderOverride.getValue(), is(ClientSetting.mapFolderOverride.getDefaultValue()));
+    assertThat(
+        ClientSetting.mapFolderOverride.getValue(),
+        is(ClientSetting.mapFolderOverride.getDefaultValue()));
   }
 
   private interface TestData {

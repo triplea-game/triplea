@@ -22,9 +22,7 @@ import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
-/**
- * Responsible for rendering a single map tile.
- */
+/** Responsible for rendering a single map tile. */
 public class Tile {
   private boolean isDirty = true;
 
@@ -32,12 +30,14 @@ public class Tile {
   private final Rectangle bounds;
   private final double scale;
   private final Lock lock = new ReentrantLock();
-  private final Queue<IDrawable> contents = new PriorityQueue<>(Comparator.comparingInt(IDrawable::getLevel));
+  private final Queue<IDrawable> contents =
+      new PriorityQueue<>(Comparator.comparingInt(IDrawable::getLevel));
 
   Tile(final Rectangle bounds, final double scale) {
     this.bounds = bounds;
     this.scale = scale;
-    image = Util.newImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), true);
+    image =
+        Util.newImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), true);
   }
 
   public boolean isDirty() {
@@ -57,17 +57,18 @@ public class Tile {
     LockUtil.INSTANCE.releaseLock(lock);
   }
 
-  /**
-   * Returns the image representing this tile, re-rendering it first if the tile is dirty.
-   */
+  /** Returns the image representing this tile, re-rendering it first if the tile is dirty. */
   public Image getImage(final GameData data, final MapData mapData) {
     acquireLock();
     try {
       if (isDirty) {
         final Graphics2D g = (Graphics2D) image.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.setRenderingHint(
+            RenderingHints.KEY_ALPHA_INTERPOLATION,
+            RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        g.setRenderingHint(
+            RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         draw(g, data, mapData);
         g.dispose();
       }
@@ -78,8 +79,7 @@ public class Tile {
   }
 
   /**
-   * This image may not reflect our current drawables.
-   * Use getImage() to get a correct image
+   * This image may not reflect our current drawables. Use getImage() to get a correct image
    *
    * @return the image we currently have.
    */

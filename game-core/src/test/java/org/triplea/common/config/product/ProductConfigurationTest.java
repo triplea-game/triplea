@@ -11,7 +11,8 @@ import games.strategy.util.Version;
 
 final class ProductConfigurationTest {
   private final MemoryPropertyReader memoryPropertyReader = new MemoryPropertyReader();
-  private final ProductConfiguration productConfiguration = new ProductConfiguration(memoryPropertyReader);
+  private final ProductConfiguration productConfiguration =
+      new ProductConfiguration(memoryPropertyReader);
 
   @Test
   void getVersion() {

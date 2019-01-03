@@ -107,23 +107,29 @@ public class PacificTest extends AbstractDelegateTestCase {
     advanceToStep(bridge, "japaneseEndTurn");
     advanceToStep(bridge, "japaneseBattle");
     final List<Unit> infantryUs = infantry.create(1, americans);
-    final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(queensland);
+    final Collection<TerritoryEffect> territoryEffects =
+        TerritoryEffectHelper.getEffects(queensland);
     whenGetRandom(bridge)
         .thenAnswer(withValues(1)) // Defending US infantry hit on a 2 (0 base)
         .thenAnswer(withValues(1)) // Defending US marines hit on a 2 (0 base)
         .thenAnswer(withValues(1)); // Defending Chinese infantry hit on a 2 (0 base)
     // Defending US infantry
     DiceRoll roll =
-        DiceRoll.rollDice(infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+        DiceRoll.rollDice(
+            infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US marines
     final List<Unit> marineUs = marine.create(1, americans);
-    roll = DiceRoll.rollDice(marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Chinese units
     // Defending Chinese infantry
     final List<Unit> infantryChina = infantry.create(1, chinese);
-    roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
   }
 
@@ -135,7 +141,8 @@ public class PacificTest extends AbstractDelegateTestCase {
     }
     // >>> After patch normal to-hits will miss <<<
     final List<Unit> infantryUs = infantry.create(1, americans);
-    final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(queensland);
+    final Collection<TerritoryEffect> territoryEffects =
+        TerritoryEffectHelper.getEffects(queensland);
     whenGetRandom(bridge)
         .thenAnswer(withValues(1)) // Defending US infantry miss on a 2 (0 base)
         .thenAnswer(withValues(1)) // Defending US marines miss on a 2 (0 base)
@@ -145,26 +152,37 @@ public class PacificTest extends AbstractDelegateTestCase {
         .thenAnswer(withValues(1)); // Defending Chinese infantry still hit on a 2 (0 base)
     // Defending US infantry
     DiceRoll roll =
-        DiceRoll.rollDice(infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+        DiceRoll.rollDice(
+            infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(0, roll.getHits());
     // Defending US marines
     final List<Unit> marineUs = marine.create(1, americans);
-    roll = DiceRoll.rollDice(marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(0, roll.getHits());
     // Chinese units
     // Defending Chinese infantry
     final List<Unit> infantryChina = infantry.create(1, chinese);
-    roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US infantry
-    roll = DiceRoll.rollDice(infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            infantryUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Defending US marines
-    roll = DiceRoll.rollDice(marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            marineUs, true, americans, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
     // Chinese units
     // Defending Chinese infantry
-    roll = DiceRoll.rollDice(infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
+    roll =
+        DiceRoll.rollDice(
+            infantryChina, true, chinese, bridge, mock(IBattle.class), "", territoryEffects, null);
     assertEquals(1, roll.getHits());
   }
 
@@ -251,7 +269,10 @@ public class PacificTest extends AbstractDelegateTestCase {
     assertEquals(1, sz24.getUnits().size());
     // validate movement
     final String results =
-        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
+        delegate.move(
+            GameDataTestUtil.getUnits(map, route.getStart()),
+            route,
+            route.getEnd().getUnits().getUnits());
     assertValid(results);
     // verify unit counts after move
     assertEquals(1, bonin.getUnits().size());

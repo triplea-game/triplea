@@ -70,7 +70,8 @@ final class ClientLoginIntegrationTest {
     }
   }
 
-  private IClientMessenger newClientMessenger(final IConnectionLogin connectionLogin) throws Exception {
+  private IClientMessenger newClientMessenger(final IConnectionLogin connectionLogin)
+      throws Exception {
     return new ClientMessenger(
         "localhost",
         serverPort,
@@ -93,7 +94,8 @@ final class ClientLoginIntegrationTest {
     void shouldFailWhenPasswordDoesNotMatch() {
       final IConnectionLogin connectionLogin = new TestConnectionLogin(OTHER_PASSWORD);
 
-      assertThrows(CouldNotLogInException.class, () -> newClientMessenger(connectionLogin).shutDown());
+      assertThrows(
+          CouldNotLogInException.class, () -> newClientMessenger(connectionLogin).shutDown());
     }
   }
 }

@@ -18,7 +18,9 @@ final class SelectionComponentUiUtilsTest {
     void shouldReturnAbsolutePathWhenPresent() {
       final Path path = Paths.get(".");
 
-      assertThat(SelectionComponentUiUtils.toString(Optional.of(path)), is(path.toAbsolutePath().toString()));
+      assertThat(
+          SelectionComponentUiUtils.toString(Optional.of(path)),
+          is(path.toAbsolutePath().toString()));
     }
 
     @Test

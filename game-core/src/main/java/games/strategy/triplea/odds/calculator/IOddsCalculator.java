@@ -9,20 +9,33 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 
 /**
- * Interface to ensure different implementations of the odds calculator all have the same public methods.
+ * Interface to ensure different implementations of the odds calculator all have the same public
+ * methods.
  */
 public interface IOddsCalculator {
   void setGameData(final GameData data);
 
-  void setCalculateData(final PlayerId attacker, final PlayerId defender, final Territory location,
-      final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
-      final Collection<TerritoryEffect> territoryEffects, final int runCount);
+  void setCalculateData(
+      final PlayerId attacker,
+      final PlayerId defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> territoryEffects,
+      final int runCount);
 
   AggregateResults calculate();
 
-  AggregateResults setCalculateDataAndCalculate(final PlayerId attacker, final PlayerId defender,
-      final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
-      final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount);
+  AggregateResults setCalculateDataAndCalculate(
+      final PlayerId attacker,
+      final PlayerId defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> territoryEffects,
+      final int runCount);
 
   int getRunCount();
 

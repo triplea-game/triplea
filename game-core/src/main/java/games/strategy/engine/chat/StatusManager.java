@@ -20,25 +20,32 @@ public class StatusManager {
 
   public StatusManager(final Messengers messengers) {
     this.messengers = messengers;
-    statusChannelSubscriber = (node, status1) -> {
-      synchronized (mutex) {
-        if (status1 == null) {
-          StatusManager.this.status.remove(node);
-        } else {
-          StatusManager.this.status.put(node, status1);
-        }
-      }
-      notifyStatusChanged(node, status1);
-    };
+    statusChannelSubscriber =
+        (node, status1) -> {
+          synchronized (mutex) {
+            if (status1 == null) {
+              StatusManager.this.status.remove(node);
+            } else {
+              StatusManager.this.status.put(node, status1);
+            }
+          }
+          notifyStatusChanged(node, status1);
+        };
     if (messengers.getMessenger().isServer()
-        && !messengers.getRemoteMessenger().hasLocalImplementor(IStatusController.STATUS_CONTROLLER)) {
+        && !messengers
+            .getRemoteMessenger()
+            .hasLocalImplementor(IStatusController.STATUS_CONTROLLER)) {
       final StatusController controller = new StatusController(messengers);
-      messengers.getRemoteMessenger().registerRemote(controller, IStatusController.STATUS_CONTROLLER);
+      messengers
+          .getRemoteMessenger()
+          .registerRemote(controller, IStatusController.STATUS_CONTROLLER);
     }
-    this.messengers.getChannelMessenger().registerChannelSubscriber(statusChannelSubscriber,
-        IStatusChannel.STATUS_CHANNEL);
+    this.messengers
+        .getChannelMessenger()
+        .registerChannelSubscriber(statusChannelSubscriber, IStatusChannel.STATUS_CHANNEL);
     final IStatusController controller =
-        (IStatusController) this.messengers.getRemoteMessenger().getRemote(IStatusController.STATUS_CONTROLLER);
+        (IStatusController)
+            this.messengers.getRemoteMessenger().getRemote(IStatusController.STATUS_CONTROLLER);
     final Map<INode, String> values = controller.getAllStatus();
     synchronized (mutex) {
       status.putAll(values);
@@ -48,13 +55,12 @@ public class StatusManager {
   }
 
   public void shutDown() {
-    messengers.getChannelMessenger().unregisterChannelSubscriber(statusChannelSubscriber,
-        IStatusChannel.STATUS_CHANNEL);
+    messengers
+        .getChannelMessenger()
+        .unregisterChannelSubscriber(statusChannelSubscriber, IStatusChannel.STATUS_CHANNEL);
   }
 
-  /**
-   * Get the status for the given node.
-   */
+  /** Get the status for the given node. */
   public String getStatus(final INode node) {
     synchronized (mutex) {
       return status.get(node);
@@ -63,7 +69,8 @@ public class StatusManager {
 
   void setStatus(final String status) {
     final IStatusController controller =
-        (IStatusController) messengers.getRemoteMessenger().getRemote(IStatusController.STATUS_CONTROLLER);
+        (IStatusController)
+            messengers.getRemoteMessenger().getRemote(IStatusController.STATUS_CONTROLLER);
     controller.setStatus(status);
   }
 

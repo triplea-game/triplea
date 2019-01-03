@@ -7,19 +7,20 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.util.IntegerMap;
 
-/**
- * Logic for spending tech tokens.
- */
+/** Logic for spending tech tokens. */
 public interface ITechDelegate extends IRemote, IDelegate {
   /**
    * Rolls for the specified tech.
    *
    * @param rollCount the number of tech rolls
    * @param techToRollFor the tech category to roll for, should be null if the game does not support
-   *        rolling for certain techs
+   *     rolling for certain techs
    * @param newTokens if WW2V3TechModel is used it set rollCount
    * @return TechResults. If the tech could not be rolled, then a message saying why.
    */
-  TechResults rollTech(int rollCount, TechnologyFrontier techToRollFor, int newTokens,
+  TechResults rollTech(
+      int rollCount,
+      TechnologyFrontier techToRollFor,
+      int newTokens,
       IntegerMap<PlayerId> whoPaysHowMuch);
 }

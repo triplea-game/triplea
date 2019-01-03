@@ -37,11 +37,10 @@ public class IntegerMapTest {
 
   @Test
   void shouldBeEquatableAndHashable() {
-    EqualsVerifier.forClass(IntegerMap.class)
-        .suppress(Warning.NULL_FIELDS)
-        .verify();
+    EqualsVerifier.forClass(IntegerMap.class).suppress(Warning.NULL_FIELDS).verify();
 
-    // We need to explicitly test this case because EqualsVerifier's internal prefab values for LinkedHashMap use the
+    // We need to explicitly test this case because EqualsVerifier's internal prefab values for
+    // LinkedHashMap use the
     // same value for all key/value pairs
     assertThat(
         "should not be equal when keys are equal but values are not equal",

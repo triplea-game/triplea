@@ -19,22 +19,22 @@ class JButtonBuilderTest {
   @Test
   void title() {
     final String value = "testing title";
-    final JButton button = JButtonBuilder.builder()
-        .title(value)
-        .actionListener(Runnables.doNothing())
-        .build();
+    final JButton button =
+        JButtonBuilder.builder().title(value).actionListener(Runnables.doNothing()).build();
     assertThat(button.getText(), is(value));
   }
 
   @Test
   void checkActionListener() {
-    // button action will be to add one to our integer, we'll fire the button action and verify we get the +1
+    // button action will be to add one to our integer, we'll fire the button action and verify we
+    // get the +1
     final AtomicInteger integer = new AtomicInteger(0);
-    final JButton button = JButtonBuilder.builder()
-        .title("title")
-        .actionListener(integer::incrementAndGet)
-        .toolTip("toolTip")
-        .build();
+    final JButton button =
+        JButtonBuilder.builder()
+            .title("title")
+            .actionListener(integer::incrementAndGet)
+            .toolTip("toolTip")
+            .build();
 
     Arrays.stream(button.getActionListeners())
         .forEach(listener -> listener.actionPerformed(new ActionEvent(new Object(), 0, "")));
@@ -50,14 +50,15 @@ class JButtonBuilderTest {
 
   @Test
   void titleIsRequired() {
-    assertThrows(NullPointerException.class, () -> JButtonBuilder.builder()
-        .actionListener(Runnables.doNothing())
-        .build());
+    assertThrows(
+        NullPointerException.class,
+        () -> JButtonBuilder.builder().actionListener(Runnables.doNothing()).build());
   }
 
   @Test
   void actionListenerIsRequired() {
-    assertThrows(NullPointerException.class, () -> JButtonBuilder.builder().actionListener((Runnable) null));
+    assertThrows(
+        NullPointerException.class, () -> JButtonBuilder.builder().actionListener((Runnable) null));
   }
 
   @Test

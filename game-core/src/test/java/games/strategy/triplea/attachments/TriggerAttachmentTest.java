@@ -33,10 +33,8 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 public class TriggerAttachmentTest {
 
   private final Set<TriggerAttachment> satisfiedTriggers = new HashSet<>();
-  @Mock
-  private IDelegateBridge bridge;
-  @Mock
-  private IDelegateHistoryWriter historyWriter;
+  @Mock private IDelegateBridge bridge;
+  @Mock private IDelegateHistoryWriter historyWriter;
 
   @BeforeEach
   public void setUp() {
@@ -57,8 +55,8 @@ public class TriggerAttachmentTest {
     productionRuleList.addProductionRule(new ProductionRule("rule3", gameData));
 
     final ProductionFrontierList productionFrontierList = gameData.getProductionFrontierList();
-    productionFrontierList
-        .addProductionFrontier(new ProductionFrontier("frontier", gameData, Arrays.asList(productionRule2)));
+    productionFrontierList.addProductionFrontier(
+        new ProductionFrontier("frontier", gameData, Arrays.asList(productionRule2)));
   }
 
   @Test

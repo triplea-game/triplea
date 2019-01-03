@@ -1,8 +1,8 @@
 package games.strategy.security;
 
 /**
- * A checked exception that indicates an error occurred while using a {@link CredentialManager} (e.g. the failure to
- * protect/unprotect a credential).
+ * A checked exception that indicates an error occurred while using a {@link CredentialManager}
+ * (e.g. the failure to protect/unprotect a credential).
  */
 public final class CredentialManagerException extends Exception {
   private static final long serialVersionUID = -110629801418732489L;

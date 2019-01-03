@@ -9,8 +9,8 @@ import javax.annotation.concurrent.Immutable;
 import com.google.common.base.Strings;
 
 /**
- * Superclass for implementations of {@link PropertyReader} that provides standard behavior common to all property
- * sources.
+ * Superclass for implementations of {@link PropertyReader} that provides standard behavior common
+ * to all property sources.
  */
 @Immutable
 public abstract class AbstractPropertyReader implements PropertyReader {
@@ -28,9 +28,7 @@ public abstract class AbstractPropertyReader implements PropertyReader {
    * Reads the specified property.
    *
    * @param key The property key.
-   *
    * @return The property value or {@code null} if the key is not present.
-   *
    * @throws IllegalStateException If an error occurs reading the property source.
    */
   protected abstract @Nullable String readPropertyInternal(String key);

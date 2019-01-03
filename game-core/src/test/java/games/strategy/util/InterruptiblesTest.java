@@ -31,12 +31,10 @@ public final class InterruptiblesTest {
 
   @Nested
   public final class AwaitTest {
-    @Mock
-    private ThrowingRunnable<InterruptedException> runnable;
+    @Mock private ThrowingRunnable<InterruptedException> runnable;
 
     @Test
-    public void shouldReturnTrueWhenCompleted()
-        throws Exception {
+    public void shouldReturnTrueWhenCompleted() throws Exception {
       final boolean completed = Interruptibles.await(runnable);
 
       verify(runnable).run();
@@ -45,9 +43,11 @@ public final class InterruptiblesTest {
 
     @Test
     public void shouldReturnFalseWhenInterrupted() {
-      final boolean completed = Interruptibles.await(() -> {
-        throw new InterruptedException();
-      });
+      final boolean completed =
+          Interruptibles.await(
+              () -> {
+                throw new InterruptedException();
+              });
 
       assertThat(completed, is(false));
       assertThat(Thread.currentThread().isInterrupted(), is(true));
@@ -55,9 +55,13 @@ public final class InterruptiblesTest {
 
     @Test
     public void shouldRethrowRunnableUncheckedException() {
-      assertThrows(IllegalStateException.class, () -> Interruptibles.await(() -> {
-        throw new IllegalStateException();
-      }));
+      assertThrows(
+          IllegalStateException.class,
+          () ->
+              Interruptibles.await(
+                  () -> {
+                    throw new IllegalStateException();
+                  }));
     }
   }
 
@@ -83,9 +87,11 @@ public final class InterruptiblesTest {
 
     @Test
     public void shouldReturnInterruptedEmptyResultWhenInterrupted() {
-      final Interruptibles.Result<Object> result = Interruptibles.awaitResult(() -> {
-        throw new InterruptedException();
-      });
+      final Interruptibles.Result<Object> result =
+          Interruptibles.awaitResult(
+              () -> {
+                throw new InterruptedException();
+              });
 
       assertThat(result.completed, is(false));
       assertThat(result.result, is(Optional.empty()));
@@ -94,9 +100,13 @@ public final class InterruptiblesTest {
 
     @Test
     public void shouldRethrowSupplierUncheckedException() {
-      assertThrows(IllegalStateException.class, () -> Interruptibles.awaitResult(() -> {
-        throw new IllegalStateException();
-      }));
+      assertThrows(
+          IllegalStateException.class,
+          () ->
+              Interruptibles.awaitResult(
+                  () -> {
+                    throw new IllegalStateException();
+                  }));
     }
   }
 
@@ -106,9 +116,11 @@ public final class InterruptiblesTest {
     public void shouldWaitUntilLatchCountIsZero() {
       final CountDownLatch latch = new CountDownLatch(0);
 
-      assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> {
-        assertThat(Interruptibles.await(latch), is(true));
-      });
+      assertTimeoutPreemptively(
+          Duration.ofSeconds(5L),
+          () -> {
+            assertThat(Interruptibles.await(latch), is(true));
+          });
     }
   }
 
@@ -119,9 +131,11 @@ public final class InterruptiblesTest {
       final Thread thread = new Thread(Runnables.doNothing());
       thread.start();
 
-      assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> {
-        assertThat(Interruptibles.join(thread), is(true));
-      });
+      assertTimeoutPreemptively(
+          Duration.ofSeconds(5L),
+          () -> {
+            assertThat(Interruptibles.join(thread), is(true));
+          });
     }
   }
 

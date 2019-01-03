@@ -12,14 +12,16 @@ import games.strategy.util.Version;
 public class FileDownloadTest {
   @Test
   public void testBasicStartCancel() {
-    final DownloadFileDescription downloadFileDescription = new DownloadFileDescription(
-        "url",
-        "description",
-        "mapName",
-        new Version(0, 0),
-        DownloadFileDescription.DownloadType.MAP,
-        DownloadFileDescription.MapCategory.BEST);
-    final DownloadFile testObj = new DownloadFile(downloadFileDescription, mock(DownloadListener.class));
+    final DownloadFileDescription downloadFileDescription =
+        new DownloadFileDescription(
+            "url",
+            "description",
+            "mapName",
+            new Version(0, 0),
+            DownloadFileDescription.DownloadType.MAP,
+            DownloadFileDescription.MapCategory.BEST);
+    final DownloadFile testObj =
+        new DownloadFile(downloadFileDescription, mock(DownloadListener.class));
     assertThat(testObj.getDownloadState(), is(DownloadState.NOT_STARTED));
 
     testObj.startAsyncDownload();

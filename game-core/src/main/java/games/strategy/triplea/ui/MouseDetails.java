@@ -38,9 +38,7 @@ class MouseDetails {
     return mouseEvent.isAltDown();
   }
 
-  /**
-   * Returns this point is in the map coordinates, unscaled.
-   */
+  /** Returns this point is in the map coordinates, unscaled. */
   public Point getMapPoint() {
     return new Point((int) x, (int) y);
   }

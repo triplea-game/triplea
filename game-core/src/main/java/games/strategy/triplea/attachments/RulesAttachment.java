@@ -42,8 +42,8 @@ import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
 
 /**
- * An attachment for instances of {@link PlayerId} that defines various conditions for enabling certain rules (see the
- * class description of {@link AbstractPlayerRulesAttachment}).
+ * An attachment for instances of {@link PlayerId} that defines various conditions for enabling
+ * certain rules (see the class description of {@link AbstractPlayerRulesAttachment}).
  */
 public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private static final long serialVersionUID = 7301965634079412516L;
@@ -56,7 +56,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   // condition for being at war
   private Set<PlayerId> atWarPlayers = null;
   private int atWarCount = -1;
-  // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to
+  // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according
+  // to
   // the prices the defender pays for the units]
   private String destroyedTuv = null;
   // condition for having had a battle in some territory, attacker or defender, win
@@ -82,8 +83,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   /**
-   * Convenience method, for use with rules attachments, objectives, and condition attachments. Should return
-   * RulesAttachments.
+   * Convenience method, for use with rules attachments, objectives, and condition attachments.
+   * Should return RulesAttachments.
    *
    * @param player PlayerId
    * @param nameOfAttachment exact full name of attachment
@@ -93,14 +94,20 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return get(player, nameOfAttachment, null, false);
   }
 
-  static RulesAttachment get(final PlayerId player, final String nameOfAttachment,
-      final Collection<PlayerId> playersToSearch, final boolean allowNull) {
+  static RulesAttachment get(
+      final PlayerId player,
+      final String nameOfAttachment,
+      final Collection<PlayerId> playersToSearch,
+      final boolean allowNull) {
     RulesAttachment ra = (RulesAttachment) player.getAttachment(nameOfAttachment);
     if (ra == null) {
       if (playersToSearch == null) {
         if (!allowNull) {
           throw new IllegalStateException(
-              "Rules & Conditions: No rule attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+              "Rules & Conditions: No rule attachment for:"
+                  + player.getName()
+                  + " with name: "
+                  + nameOfAttachment);
         }
       } else {
         for (final PlayerId otherPlayer : playersToSearch) {
@@ -114,7 +121,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         }
         if (!allowNull) {
           throw new IllegalStateException(
-              "Rules & Conditions: No rule attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+              "Rules & Conditions: No rule attachment for:"
+                  + player.getName()
+                  + " with name: "
+                  + nameOfAttachment);
         }
       }
     }
@@ -122,12 +132,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   /**
-   * Convenience method, for use returning any RulesAttachment that begins with "objectiveAttachment"
-   * National Objectives are just conditions that also give money to a player during the end turn delegate. They can be
-   * used for testing by triggers as well.
-   * Conditions that do not give money are not prefixed with "objectiveAttachment",
-   * and the trigger attachment that uses these kinds of conditions gets them a different way because they are
-   * specifically named inside that trigger.
+   * Convenience method, for use returning any RulesAttachment that begins with
+   * "objectiveAttachment" National Objectives are just conditions that also give money to a player
+   * during the end turn delegate. They can be used for testing by triggers as well. Conditions that
+   * do not give money are not prefixed with "objectiveAttachment", and the trigger attachment that
+   * uses these kinds of conditions gets them a different way because they are specifically named
+   * inside that trigger.
    */
   public static Set<RulesAttachment> getNationalObjectives(final PlayerId player) {
     final Set<RulesAttachment> natObjs = new HashSet<>();
@@ -150,16 +160,20 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     final String[] s = splitOnColon(value);
     if (s.length != 2) {
-      throw new GameParseException("destroyedTUV must have 2 fields, value=currentRound/allRounds, count= the amount "
-          + "of TUV that this player must destroy" + thisErrorMsg());
+      throw new GameParseException(
+          "destroyedTUV must have 2 fields, value=currentRound/allRounds, count= the amount "
+              + "of TUV that this player must destroy"
+              + thisErrorMsg());
     }
     final int i = getInt(s[0]);
     if (i < -1) {
       throw new GameParseException(
-          "destroyedTUV count cannot be less than -1 [with -1 meaning the condition is not active]" + thisErrorMsg());
+          "destroyedTUV count cannot be less than -1 [with -1 meaning the condition is not active]"
+              + thisErrorMsg());
     }
     if (!(s[1].equals("currentRound") || s[1].equals("allRounds"))) {
-      throw new GameParseException("destroyedTUV value must be currentRound or allRounds" + thisErrorMsg());
+      throw new GameParseException(
+          "destroyedTUV value must be currentRound or allRounds" + thisErrorMsg());
     }
     destroyedTuv = value;
   }
@@ -176,7 +190,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final String[] s = splitOnColon(value);
     if (s.length < 5) {
       throw new GameParseException(
-          "battle must have at least 5 fields, attacker:defender:resultType:round:territory1..." + thisErrorMsg());
+          "battle must have at least 5 fields, attacker:defender:resultType:round:territory1..."
+              + thisErrorMsg());
     }
     final PlayerId attacker = getData().getPlayerList().getPlayerId(s[0]);
     if (attacker == null && !s[0].equalsIgnoreCase("any")) {
@@ -187,14 +202,16 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       throw new GameParseException("no player named: " + s[1] + thisErrorMsg());
     }
     if (!s[2].equalsIgnoreCase("any")) {
-      throw new GameParseException("battle allows the following for resultType: any" + thisErrorMsg());
+      throw new GameParseException(
+          "battle allows the following for resultType: any" + thisErrorMsg());
     }
     if (!s[3].equalsIgnoreCase("currentRound")) {
       try {
         getInt(splitOnHyphen(s[3])[0]);
         getInt(splitOnHyphen(s[3])[1]);
       } catch (final Exception e) {
-        throw new GameParseException("round must either be currentRound or two numbers like: 2-4" + thisErrorMsg());
+        throw new GameParseException(
+            "round must either be currentRound or two numbers like: 2-4" + thisErrorMsg());
       }
     }
     final List<Territory> terrs = new ArrayList<>();
@@ -236,22 +253,36 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     }
     if (getData().getPlayerList().getPlayerId(s[0]) == null) {
       throw new GameParseException(
-          "playername: " + s[0] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
+          "playername: "
+              + s[0]
+              + " isn't valid in condition with relationship: "
+              + value
+              + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerId(s[1]) == null) {
       throw new GameParseException(
-          "playername: " + s[1] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
+          "playername: "
+              + s[1]
+              + " isn't valid in condition with relationship: "
+              + value
+              + thisErrorMsg());
     }
     if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
         || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
         || Matches.isValidRelationshipName(getData()).test(s[2]))) {
       throw new GameParseException(
-          "relationship: " + s[2] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
+          "relationship: "
+              + s[2]
+              + " isn't valid in condition with relationship: "
+              + value
+              + thisErrorMsg());
     }
     if (s.length == 4 && Integer.parseInt(s[3]) < -1) {
-      throw new GameParseException("numberOfRoundsExisting should be a number between -1 and 100000.  -1 should be "
-          + "default value if you don't know what to put" + thisErrorMsg());
+      throw new GameParseException(
+          "numberOfRoundsExisting should be a number between -1 and 100000.  -1 should be "
+              + "default value if you don't know what to put"
+              + thisErrorMsg());
     }
     relationship.add((s.length == 3) ? (value + ":-1") : value);
   }
@@ -463,8 +494,10 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   private void setUnitPresence(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length <= 1) {
-      throw new GameParseException("unitPresence must have at least 2 fields. Format value=unit1 count=number, or "
-          + "value=unit1:unit2:unit3 count=number" + thisErrorMsg());
+      throw new GameParseException(
+          "unitPresence must have at least 2 fields. Format value=unit1 count=number, or "
+              + "value=unit1:unit2:unit3 count=number"
+              + thisErrorMsg());
     }
     final int n = getInt(s[0]);
     if (n < 0) {
@@ -568,7 +601,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
       }
       if (ta == null) {
-        throw new GameParseException("Technology not found :" + Arrays.toString(s) + thisErrorMsg());
+        throw new GameParseException(
+            "Technology not found :" + Arrays.toString(s) + thisErrorMsg());
       }
       techs.add(ta);
     }
@@ -595,7 +629,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   @Override
-  public boolean isSatisfied(final Map<ICondition, Boolean> testedConditions, final IDelegateBridge delegateBridge) {
+  public boolean isSatisfied(
+      final Map<ICondition, Boolean> testedConditions, final IDelegateBridge delegateBridge) {
     if (testedConditions != null) {
       if (testedConditions.containsKey(this)) {
         return testedConditions.get(this);
@@ -606,10 +641,16 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final GameData data = delegateBridge.getData();
     // check meta conditions (conditions which hold other conditions)
     if (conditions.size() > 0) {
-      final Map<ICondition, Boolean> actualTestedConditions = Optional.ofNullable(testedConditions)
-          .orElseGet(() -> testAllConditionsRecursive(
-              getAllConditionsRecursive(new HashSet<>(conditions), null), null, delegateBridge));
-      objectiveMet = areConditionsMet(new ArrayList<>(conditions), actualTestedConditions, conditionType);
+      final Map<ICondition, Boolean> actualTestedConditions =
+          Optional.ofNullable(testedConditions)
+              .orElseGet(
+                  () ->
+                      testAllConditionsRecursive(
+                          getAllConditionsRecursive(new HashSet<>(conditions), null),
+                          null,
+                          delegateBridge));
+      objectiveMet =
+          areConditionsMet(new ArrayList<>(conditions), actualTestedConditions, conditionType);
     }
     // check switch (on/off)
     if (objectiveMet) {
@@ -627,50 +668,85 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     if (objectiveMet && getDirectPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectPresenceTerritories();
-      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXml(terrs, players, data),
-          "direct", getTerritoryCount(), players, data);
+      objectiveMet =
+          checkUnitPresence(
+              getTerritoryListBasedOnInputFromXml(terrs, players, data),
+              "direct",
+              getTerritoryCount(),
+              players,
+              data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getAlliedPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedPresenceTerritories();
-      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXml(terrs, players, data),
-          "allied", getTerritoryCount(), players, data);
+      objectiveMet =
+          checkUnitPresence(
+              getTerritoryListBasedOnInputFromXml(terrs, players, data),
+              "allied",
+              getTerritoryCount(),
+              players,
+              data);
     }
     // Check for unit presence (Veqryn)
     if (objectiveMet && getEnemyPresenceTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemyPresenceTerritories();
-      objectiveMet = checkUnitPresence(getTerritoryListBasedOnInputFromXml(terrs, players, data), "enemy",
-          getTerritoryCount(), players, data);
+      objectiveMet =
+          checkUnitPresence(
+              getTerritoryListBasedOnInputFromXml(terrs, players, data),
+              "enemy",
+              getTerritoryCount(),
+              players,
+              data);
     }
     // Check for direct unit exclusions (veqryn)
     if (objectiveMet && getDirectExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getDirectExclusionTerritories();
-      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
-          "direct", getTerritoryCount(), players, data);
+      objectiveMet =
+          checkUnitExclusions(
+              getTerritoryListBasedOnInputFromXml(terrs, players, data),
+              "direct",
+              getTerritoryCount(),
+              players,
+              data);
     }
     // Check for allied unit exclusions
     if (objectiveMet && getAlliedExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getAlliedExclusionTerritories();
-      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
-          "allied", getTerritoryCount(), players, data);
+      objectiveMet =
+          checkUnitExclusions(
+              getTerritoryListBasedOnInputFromXml(terrs, players, data),
+              "allied",
+              getTerritoryCount(),
+              players,
+              data);
     }
     // Check for enemy unit exclusions (ANY UNITS)
     if (objectiveMet && getEnemyExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemyExclusionTerritories();
-      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
-          "enemy", getTerritoryCount(), players, data);
+      objectiveMet =
+          checkUnitExclusions(
+              getTerritoryListBasedOnInputFromXml(terrs, players, data),
+              "enemy",
+              getTerritoryCount(),
+              players,
+              data);
     }
     // Check for enemy unit exclusions (SURFACE UNITS with ATTACK POWER)
     if (objectiveMet && getEnemySurfaceExclusionTerritories() != null) {
       // Get the listed territories
       final String[] terrs = getEnemySurfaceExclusionTerritories();
-      objectiveMet = checkUnitExclusions(getTerritoryListBasedOnInputFromXml(terrs, players, data),
-          "enemy_surface", getTerritoryCount(), players, data);
+      objectiveMet =
+          checkUnitExclusions(
+              getTerritoryListBasedOnInputFromXml(terrs, players, data),
+              "enemy_surface",
+              getTerritoryCount(),
+              players,
+              data);
     }
     // Check for Territory Ownership rules
     if (objectiveMet && getAlliedOwnershipTerritories() != null) {
@@ -681,13 +757,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         switch (terrs[0]) {
           case "original":
             final Collection<PlayerId> allies =
-                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                CollectionUtils.getMatches(
+                    data.getPlayerList().getPlayers(),
                     Matches.isAlliedWithAnyOfThesePlayers(players, data));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
             break;
           case "enemy":
             final Collection<PlayerId> enemies =
-                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                CollectionUtils.getMatches(
+                    data.getPlayerList().getPlayers(),
                     Matches.isAtWarWithAnyOfThesePlayers(players, data));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
             break;
@@ -699,13 +777,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         switch (terrs[1]) {
           case "original":
             final Collection<PlayerId> allies =
-                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                CollectionUtils.getMatches(
+                    data.getPlayerList().getPlayers(),
                     Matches.isAlliedWithAnyOfThesePlayers(players, data));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, allies, data);
             break;
           case "enemy":
             final Collection<PlayerId> enemies =
-                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                CollectionUtils.getMatches(
+                    data.getPlayerList().getPlayers(),
                     Matches.isAtWarWithAnyOfThesePlayers(players, data));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
             break;
@@ -730,7 +810,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             break;
           case "enemy":
             final Collection<PlayerId> enemies =
-                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                CollectionUtils.getMatches(
+                    data.getPlayerList().getPlayers(),
                     Matches.isAtWarWithAnyOfThesePlayers(players, data));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
             break;
@@ -745,7 +826,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             break;
           case "enemy":
             final Collection<PlayerId> enemies =
-                CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
+                CollectionUtils.getMatches(
+                    data.getPlayerList().getPlayers(),
                     Matches.isAtWarWithAnyOfThesePlayers(players, data));
             listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
             break;
@@ -776,8 +858,14 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final int requiredDestroyedTuv = getInt(s[0]);
       if (requiredDestroyedTuv >= 0) {
         final boolean justCurrentRound = s[1].equals("currentRound");
-        final int destroyedTuvForThisRoundSoFar = BattleRecordsList.getTuvDamageCausedByPlayer(playerAttachedTo,
-            data.getBattleRecordsList(), 0, data.getSequence().getRound(), justCurrentRound, false);
+        final int destroyedTuvForThisRoundSoFar =
+            BattleRecordsList.getTuvDamageCausedByPlayer(
+                playerAttachedTo,
+                data.getBattleRecordsList(),
+                0,
+                data.getSequence().getRound(),
+                justCurrentRound,
+                false);
         if (requiredDestroyedTuv > destroyedTuvForThisRoundSoFar) {
           objectiveMet = false;
         }
@@ -805,8 +893,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           start = getInt(rounds[0]);
           end = getInt(rounds[1]);
         }
-        objectiveMet = BattleRecordsList.getWereThereBattlesInTerritoriesMatching(attacker, defender, resultType,
-            entry.getSecond(), brl, start, end, currentRound);
+        objectiveMet =
+            BattleRecordsList.getWereThereBattlesInTerritoriesMatching(
+                attacker, defender, resultType, entry.getSecond(), brl, start, end, currentRound);
         if (!objectiveMet) {
           break;
         }
@@ -817,7 +906,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final int diceSides = getChanceDiceSides();
     final int incrementOnFailure = this.getChanceIncrementOnFailure();
     final int decrementOnSuccess = this.getChanceDecrementOnSuccess();
-    if (objectiveMet && (hitTarget != diceSides || incrementOnFailure != 0 || decrementOnSuccess != 0)) {
+    if (objectiveMet
+        && (hitTarget != diceSides || incrementOnFailure != 0 || decrementOnSuccess != 0)) {
       if (diceSides <= 0 || hitTarget >= diceSides) {
         objectiveMet = true;
         changeChanceDecrementOrIncrementOnSuccessOrFailure(delegateBridge, objectiveMet, false);
@@ -825,17 +915,32 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
         objectiveMet = false;
         changeChanceDecrementOrIncrementOnSuccessOrFailure(delegateBridge, objectiveMet, false);
       } else {
-        // there is an issue with maps using thousands of chance triggers: they are causing the crypted random source
+        // there is an issue with maps using thousands of chance triggers: they are causing the
+        // crypted random source
         // (i.e.: live and pbem games) to lock up or error out
-        // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
+        // so we need to slow them down a bit, until we come up with a better solution (like
+        // aggregating all the chances
         // together, then getting a ton of random numbers at once instead of one at a time)
         Interruptibles.sleep(100);
-        final int rollResult = delegateBridge.getRandom(diceSides, null, DiceType.ENGINE,
-            "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
+        final int rollResult =
+            delegateBridge.getRandom(
+                    diceSides,
+                    null,
+                    DiceType.ENGINE,
+                    "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName()))
+                + 1;
         objectiveMet = rollResult <= hitTarget;
-        final String notificationMessage = (objectiveMet ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE)
-            + " (Rolled at " + hitTarget + " out of " + diceSides + " Result: " + rollResult + "  for "
-            + MyFormatter.attachmentNameToText(this.getName()) + ")";
+        final String notificationMessage =
+            (objectiveMet ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE)
+                + " (Rolled at "
+                + hitTarget
+                + " out of "
+                + diceSides
+                + " Result: "
+                + rollResult
+                + "  for "
+                + MyFormatter.attachmentNameToText(this.getName())
+                + ")";
         delegateBridge.getHistoryWriter().startEvent(notificationMessage);
         changeChanceDecrementOrIncrementOnSuccessOrFailure(delegateBridge, objectiveMet, true);
         ((ITripleAPlayer) delegateBridge.getRemotePlayer(delegateBridge.getPlayerId()))
@@ -856,36 +961,44 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final PlayerId p1 = getData().getPlayerList().getPlayerId(relationCheck[0]);
       final PlayerId p2 = getData().getPlayerList().getPlayerId(relationCheck[1]);
       final int relationshipsExistance = Integer.parseInt(relationCheck[3]);
-      final Relationship currentRelationship = getData().getRelationshipTracker().getRelationship(p1, p2);
+      final Relationship currentRelationship =
+          getData().getRelationshipTracker().getRelationship(p1, p2);
       final RelationshipType currentRelationshipType = currentRelationship.getRelationshipType();
       if (!relationShipExistsLongEnnough(currentRelationship, relationshipsExistance)) {
         return false;
       }
       if (!((relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
-          && Matches.relationshipTypeIsAllied().test(currentRelationshipType))
+              && Matches.relationshipTypeIsAllied().test(currentRelationshipType))
           || (relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL)
               && Matches.relationshipTypeIsNeutral().test(currentRelationshipType))
           || (relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR)
               && Matches.relationshipTypeIsAtWar().test(currentRelationshipType))
-          || currentRelationshipType
-              .equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2])))) {
+          || currentRelationshipType.equals(
+              getData().getRelationshipTypeList().getRelationshipType(relationCheck[2])))) {
         return false;
       }
     }
     return true;
   }
 
-  private boolean relationShipExistsLongEnnough(final Relationship r, final int relationshipsExistance) {
+  private boolean relationShipExistsLongEnnough(
+      final Relationship r, final int relationshipsExistance) {
     int roundCurrentRelationshipWasCreated = r.getRoundCreated();
     roundCurrentRelationshipWasCreated += Properties.getRelationshipsLastExtraRounds(getData());
-    return getData().getSequence().getRound() - roundCurrentRelationshipWasCreated >= relationshipsExistance;
+    return getData().getSequence().getRound() - roundCurrentRelationshipWasCreated
+        >= relationshipsExistance;
   }
 
   /**
-   * Checks for the collection of territories to see if they have units owned by the exclType alliance.
+   * Checks for the collection of territories to see if they have units owned by the exclType
+   * alliance.
    */
-  private boolean checkUnitPresence(final Collection<Territory> territories, final String exclType,
-      final int numberNeeded, final List<PlayerId> players, final GameData data) {
+  private boolean checkUnitPresence(
+      final Collection<Territory> territories,
+      final String exclType,
+      final int numberNeeded,
+      final List<PlayerId> players,
+      final GameData data) {
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
@@ -897,14 +1010,18 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       switch (exclType) {
         case "direct":
           allUnits.removeAll(
-              CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
+              CollectionUtils.getMatches(
+                  allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
           break;
         case "allied":
-          allUnits
-              .retainAll(CollectionUtils.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
+          allUnits.retainAll(
+              CollectionUtils.getMatches(
+                  allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
           break;
         case "enemy":
-          allUnits.retainAll(CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
+          allUnits.retainAll(
+              CollectionUtils.getMatches(
+                  allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
           break;
         default:
           return false;
@@ -927,9 +1044,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
             if (uc == null || uc.equals("ANY") || uc.equals("any")) {
               hasEnough = allUnits.size() >= unitsNeeded;
             } else {
-              final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(splitOnColon(uc));
+              final Set<UnitType> typesAllowed =
+                  data.getUnitTypeList().getUnitTypes(splitOnColon(uc));
               hasEnough =
-                  CollectionUtils.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() >= unitsNeeded;
+                  CollectionUtils.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size()
+                      >= unitsNeeded;
             }
             if (!hasEnough) {
               break;
@@ -954,16 +1073,21 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   /**
-   * Checks for the collection of territories to see if they have units owned by the exclType alliance.
-   * It doesn't yet threshold the data
+   * Checks for the collection of territories to see if they have units owned by the exclType
+   * alliance. It doesn't yet threshold the data
    */
-  private boolean checkUnitExclusions(final Collection<Territory> territories, final String exclType,
-      final int numberNeeded, final List<PlayerId> players, final GameData data) {
+  private boolean checkUnitExclusions(
+      final Collection<Territory> territories,
+      final String exclType,
+      final int numberNeeded,
+      final List<PlayerId> players,
+      final GameData data) {
     boolean useSpecific = false;
     if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty()) {
       useSpecific = true;
     }
-    // Go through the owned territories and see if there are any units owned by allied/enemy based on exclType
+    // Go through the owned territories and see if there are any units owned by allied/enemy based
+    // on exclType
     boolean satisfied = false;
     int numberMet = 0;
     for (final Territory terr : territories) {
@@ -971,23 +1095,31 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
       switch (exclType) {
         case "allied": // any allied units in the territory. (does not include owned units)
-          allUnits.removeAll(CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
-          allUnits
-              .retainAll(CollectionUtils.getMatches(allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
+          allUnits.removeAll(
+              CollectionUtils.getMatches(
+                  allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
+          allUnits.retainAll(
+              CollectionUtils.getMatches(
+                  allUnits, Matches.alliedUnitOfAnyOfThesePlayers(players, data)));
           break;
         case "direct":
           allUnits.removeAll(
-              CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
+              CollectionUtils.getMatches(
+                  allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).negate()));
           break;
         case "enemy": // any enemy units in the territory
-          allUnits.retainAll(CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
+          allUnits.retainAll(
+              CollectionUtils.getMatches(
+                  allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)));
           break;
         case "enemy_surface": // any enemy sea units (not trn/sub) in the territory
           allUnits.retainAll(
-              CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)
-                  .and(Matches.unitIsSea())
-                  .and(Matches.unitIsNotSub())
-                  .and(Matches.unitIsNotTransportButCouldBeCombatTransport())));
+              CollectionUtils.getMatches(
+                  allUnits,
+                  Matches.enemyUnitOfAnyOfThesePlayers(players, data)
+                      .and(Matches.unitIsSea())
+                      .and(Matches.unitIsNotSub())
+                      .and(Matches.unitIsNotTransportButCouldBeCombatTransport())));
           break;
         default:
           return false;
@@ -1009,8 +1141,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           if (uc == null || uc.equals("ANY") || uc.equals("any")) {
             hasLess = allUnits.size() <= unitsMax;
           } else {
-            final Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(splitOnColon(uc));
-            hasLess = CollectionUtils.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() <= unitsMax;
+            final Set<UnitType> typesAllowed =
+                data.getUnitTypeList().getUnitTypes(splitOnColon(uc));
+            hasLess =
+                CollectionUtils.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size()
+                    <= unitsMax;
           }
           if (!hasLess) {
             break;
@@ -1034,15 +1169,20 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   /**
-   * Checks for allied ownership of the collection of territories. Once the needed number threshold is reached, the
-   * satisfied flag is set to true and returned.
+   * Checks for allied ownership of the collection of territories. Once the needed number threshold
+   * is reached, the satisfied flag is set to true and returned.
    */
-  private boolean checkAlliedOwnership(final Collection<Territory> listedTerrs,
-      final int numberNeeded, final Collection<PlayerId> players, final GameData data) {
+  private boolean checkAlliedOwnership(
+      final Collection<Territory> listedTerrs,
+      final int numberNeeded,
+      final Collection<PlayerId> players,
+      final GameData data) {
     int numberMet = 0;
     boolean satisfied = false;
-    final Collection<PlayerId> allies = CollectionUtils.getMatches(data.getPlayerList().getPlayers(),
-        Matches.isAlliedWithAnyOfThesePlayers(players, data));
+    final Collection<PlayerId> allies =
+        CollectionUtils.getMatches(
+            data.getPlayerList().getPlayers(),
+            Matches.isAlliedWithAnyOfThesePlayers(players, data));
     for (final Territory listedTerr : listedTerrs) {
       // if the territory owner is an ally
       if (Matches.isTerritoryOwnedBy(allies).test(listedTerr)) {
@@ -1062,11 +1202,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   }
 
   /**
-   * Checks for direct ownership of the collection of territories. Once the needed number threshold is reached, return
-   * true.
+   * Checks for direct ownership of the collection of territories. Once the needed number threshold
+   * is reached, return true.
    */
-  private boolean checkDirectOwnership(final Collection<Territory> listedTerrs,
-      final int numberNeeded, final Collection<PlayerId> players) {
+  private boolean checkDirectOwnership(
+      final Collection<Territory> listedTerrs,
+      final int numberNeeded,
+      final Collection<PlayerId> players) {
     int numberMet = 0;
     boolean satisfied = false;
     for (final Territory listedTerr : listedTerrs) {
@@ -1086,7 +1228,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return satisfied;
   }
 
-  private boolean checkAtWar(final PlayerId player, final Set<PlayerId> enemies, final int count, final GameData data) {
+  private boolean checkAtWar(
+      final PlayerId player, final Set<PlayerId> enemies, final int count, final GameData data) {
     int found = 0;
     for (final PlayerId e : enemies) {
       if (data.getRelationshipTracker().isAtWar(player, e)) {
@@ -1135,94 +1278,98 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("techs",
-            MutableProperty.of(
-                this::setTechs,
-                this::setTechs,
-                this::getTechs,
-                this::resetTechs))
-        .put("techCount",
-            MutableProperty.ofReadOnly(this::getTechCount))
-        .put("relationship",
+        .put(
+            "techs",
+            MutableProperty.of(this::setTechs, this::setTechs, this::getTechs, this::resetTechs))
+        .put("techCount", MutableProperty.ofReadOnly(this::getTechCount))
+        .put(
+            "relationship",
             MutableProperty.of(
                 this::setRelationship,
                 this::setRelationship,
                 this::getRelationship,
                 this::resetRelationship))
-        .put("atWarPlayers",
+        .put(
+            "atWarPlayers",
             MutableProperty.of(
                 this::setAtWarPlayers,
                 this::setAtWarPlayers,
                 this::getAtWarPlayers,
                 this::resetAtWarPlayers))
-        .put("atWarCount",
-            MutableProperty.ofReadOnly(this::getAtWarCount))
-        .put("destroyedTUV",
+        .put("atWarCount", MutableProperty.ofReadOnly(this::getAtWarCount))
+        .put(
+            "destroyedTUV",
             MutableProperty.ofString(
-                this::setDestroyedTuv,
-                this::getDestroyedTuv,
-                this::resetDestroyedTuv))
-        .put("battle",
+                this::setDestroyedTuv, this::getDestroyedTuv, this::resetDestroyedTuv))
+        .put(
+            "battle",
             MutableProperty.of(
-                this::setBattle,
-                this::setBattle,
-                this::getBattle,
-                this::resetBattle))
-        .put("alliedOwnershipTerritories",
+                this::setBattle, this::setBattle, this::getBattle, this::resetBattle))
+        .put(
+            "alliedOwnershipTerritories",
             MutableProperty.of(
                 this::setAlliedOwnershipTerritories,
                 this::setAlliedOwnershipTerritories,
                 this::getAlliedOwnershipTerritories,
                 this::resetAlliedOwnershipTerritories))
-        .put("directOwnershipTerritories",
+        .put(
+            "directOwnershipTerritories",
             MutableProperty.of(
                 this::setDirectOwnershipTerritories,
                 this::setDirectOwnershipTerritories,
                 this::getDirectOwnershipTerritories,
                 this::resetDirectOwnershipTerritories))
-        .put("alliedExclusionTerritories",
+        .put(
+            "alliedExclusionTerritories",
             MutableProperty.of(
                 this::setAlliedExclusionTerritories,
                 this::setAlliedExclusionTerritories,
                 this::getAlliedExclusionTerritories,
                 this::resetAlliedExclusionTerritories))
-        .put("directExclusionTerritories",
+        .put(
+            "directExclusionTerritories",
             MutableProperty.of(
                 this::setDirectExclusionTerritories,
                 this::setDirectExclusionTerritories,
                 this::getDirectExclusionTerritories,
                 this::resetDirectExclusionTerritories))
-        .put("enemyExclusionTerritories",
+        .put(
+            "enemyExclusionTerritories",
             MutableProperty.of(
                 this::setEnemyExclusionTerritories,
                 this::setEnemyExclusionTerritories,
                 this::getEnemyExclusionTerritories,
                 this::resetEnemyExclusionTerritories))
-        .put("enemySurfaceExclusionTerritories",
+        .put(
+            "enemySurfaceExclusionTerritories",
             MutableProperty.of(
                 this::setEnemySurfaceExclusionTerritories,
                 this::setEnemySurfaceExclusionTerritories,
                 this::getEnemySurfaceExclusionTerritories,
                 this::resetEnemySurfaceExclusionTerritories))
-        .put("directPresenceTerritories",
+        .put(
+            "directPresenceTerritories",
             MutableProperty.of(
                 this::setDirectPresenceTerritories,
                 this::setDirectPresenceTerritories,
                 this::getDirectPresenceTerritories,
                 this::resetDirectPresenceTerritories))
-        .put("alliedPresenceTerritories",
+        .put(
+            "alliedPresenceTerritories",
             MutableProperty.of(
                 this::setAlliedPresenceTerritories,
                 this::setAlliedPresenceTerritories,
                 this::getAlliedPresenceTerritories,
                 this::resetAlliedPresenceTerritories))
-        .put("enemyPresenceTerritories",
+        .put(
+            "enemyPresenceTerritories",
             MutableProperty.of(
                 this::setEnemyPresenceTerritories,
                 this::setEnemyPresenceTerritories,
                 this::getEnemyPresenceTerritories,
                 this::resetEnemyPresenceTerritories))
-        .put("unitPresence",
+        .put(
+            "unitPresence",
             MutableProperty.of(
                 this::setUnitPresence,
                 this::setUnitPresence,

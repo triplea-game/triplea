@@ -6,7 +6,8 @@ import java.util.Comparator;
 import java.util.stream.IntStream;
 
 class RemoteInterfaceHelper {
-  static int getNumber(final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface) {
+  static int getNumber(
+      final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);
 
@@ -23,20 +24,20 @@ class RemoteInterfaceHelper {
     return methods[methodNumber];
   }
 
-  /**
-   * get methods does not guarantee an order, so sort.
-   */
-  private static final Comparator<Method> methodComparator = Comparator
-      .comparing(Method::getName)
-      .thenComparing(Method::getParameterTypes,
-          Comparator.comparingInt((final Class<?>[] a) -> a.length)
-              .thenComparing((o1, o2) -> {
-                for (int i = 0; i < o1.length; i++) {
-                  final int compareValue = o1[i].getName().compareTo(o2[i].getName());
-                  if (compareValue != 0) {
-                    return compareValue;
-                  }
-                }
-                return 0;
-              }));
+  /** get methods does not guarantee an order, so sort. */
+  private static final Comparator<Method> methodComparator =
+      Comparator.comparing(Method::getName)
+          .thenComparing(
+              Method::getParameterTypes,
+              Comparator.comparingInt((final Class<?>[] a) -> a.length)
+                  .thenComparing(
+                      (o1, o2) -> {
+                        for (int i = 0; i < o1.length; i++) {
+                          final int compareValue = o1[i].getName().compareTo(o2[i].getName());
+                          if (compareValue != 0) {
+                            return compareValue;
+                          }
+                        }
+                        return 0;
+                      }));
 }

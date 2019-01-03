@@ -49,57 +49,46 @@ public class JTextFieldBuilder {
   private boolean readOnly;
   private Consumer<JTextField> onFocusAction;
 
-
-  /**
-   * Builds the swing component.
-   */
+  /** Builds the swing component. */
   public JTextField build() {
     final JTextField textField = new JTextField(Strings.nullToEmpty(this.text));
 
-    Optional.ofNullable(columns)
-        .ifPresent(textField::setColumns);
+    Optional.ofNullable(columns).ifPresent(textField::setColumns);
 
     Optional.ofNullable(textEnteredAction)
         .ifPresent(action -> textField.addActionListener(e -> action.accept(textField.getText())));
 
-    Optional.ofNullable(maxLength)
-        .map(JTextFieldLimit::new)
-        .ifPresent(textField::setDocument);
+    Optional.ofNullable(maxLength).map(JTextFieldLimit::new).ifPresent(textField::setDocument);
 
-    Optional.ofNullable(componentName)
-        .ifPresent(textField::setName);
+    Optional.ofNullable(componentName).ifPresent(textField::setName);
 
     Optional.ofNullable(onFocusAction)
-        .ifPresent(action -> textField.addFocusListener(new FocusAdapter() {
-          @Override
-          public void focusGained(final FocusEvent e) {
-            action.accept(textField);
-          }
-        }));
+        .ifPresent(
+            action ->
+                textField.addFocusListener(
+                    new FocusAdapter() {
+                      @Override
+                      public void focusGained(final FocusEvent e) {
+                        action.accept(textField);
+                      }
+                    }));
 
-    Optional.ofNullable(text)
-        .ifPresent(textField::setText);
-    Optional.ofNullable(toolTip)
-        .ifPresent(textField::setToolTipText);
+    Optional.ofNullable(text).ifPresent(textField::setText);
+    Optional.ofNullable(toolTip).ifPresent(textField::setToolTipText);
 
     textField.setEnabled(enabled);
     textField.setEditable(!readOnly);
     return textField;
   }
 
-
-  /**
-   * Sets the initial value displayed on the text field.
-   */
+  /** Sets the initial value displayed on the text field. */
   public JTextFieldBuilder text(final String value) {
     Preconditions.checkNotNull(value);
     this.text = value;
     return this;
   }
 
-  /**
-   * Convenience method for setting the text value to a numeric value.
-   */
+  /** Convenience method for setting the text value to a numeric value. */
   public JTextFieldBuilder text(final int value) {
     this.text = String.valueOf(value);
     return this;
@@ -111,8 +100,8 @@ public class JTextFieldBuilder {
   }
 
   /**
-   * Defines the width of the text field. Value is passed directly to swing.
-   * TODO: list some typical/reasonable value examples
+   * Defines the width of the text field. Value is passed directly to swing. TODO: list some
+   * typical/reasonable value examples
    */
   public JTextFieldBuilder columns(final int columns) {
     Preconditions.checkArgument(columns > 0);
@@ -155,16 +144,16 @@ public class JTextFieldBuilder {
     }
   }
 
-
   public static JTextFieldBuilder builder() {
     return new JTextFieldBuilder();
   }
 
   /**
-   * Adds an action listener that is fired when the user presses enter after entering text into the text field.
+   * Adds an action listener that is fired when the user presses enter after entering text into the
+   * text field.
    *
    * @param textEnteredAction Action to fire on 'enter', input value is the current value of the
-   *        text field.
+   *     text field.
    */
   public JTextFieldBuilder actionListener(final Consumer<String> textEnteredAction) {
     Preconditions.checkNotNull(textEnteredAction);
@@ -172,28 +161,27 @@ public class JTextFieldBuilder {
     return this;
   }
 
-  /**
-   * Adds a listener action to the text field that is fired whenever a key is typed.
-   */
-  public static void keyTypedListener(final Consumer<KeyEvent> listener, final JTextField... fields) {
+  /** Adds a listener action to the text field that is fired whenever a key is typed. */
+  public static void keyTypedListener(
+      final Consumer<KeyEvent> listener, final JTextField... fields) {
     Preconditions.checkNotNull(listener);
     Preconditions.checkArgument(fields.length > 0);
     Preconditions.checkNotNull(fields[0]);
 
-    Arrays.asList(fields).forEach(field -> field.addKeyListener(SwingAction.keyReleaseListener(listener)));
+    Arrays.asList(fields)
+        .forEach(field -> field.addKeyListener(SwingAction.keyReleaseListener(listener)));
   }
 
   /**
-   * A ready only text field can't be changed, but the user can still click on it and select the text.
+   * A ready only text field can't be changed, but the user can still click on it and select the
+   * text.
    */
   public JTextFieldBuilder readOnly() {
     this.readOnly = true;
     return this;
   }
 
-  /**
-   * Disables a text field, can no longer be clicked on.
-   */
+  /** Disables a text field, can no longer be clicked on. */
   public JTextFieldBuilder disabled() {
     this.enabled = false;
     return this;
@@ -210,10 +198,10 @@ public class JTextFieldBuilder {
   }
 
   public JTextFieldBuilder selectAllTextOnFocus() {
-    onFocusAction(field -> {
-      field.select(0, field.getText().length());
-    });
+    onFocusAction(
+        field -> {
+          field.select(0, field.getText().length());
+        });
     return this;
   }
-
 }

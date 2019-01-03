@@ -5,9 +5,7 @@ import java.lang.reflect.Proxy;
 
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 
-/**
- * An implementation of IRemoteMessenger based on MessageManager and Messenger.
- */
+/** An implementation of IRemoteMessenger based on MessageManager and Messenger. */
 public class RemoteMessenger implements IRemoteMessenger {
   private final UnifiedMessenger unifiedMessenger;
 
@@ -23,9 +21,13 @@ public class RemoteMessenger implements IRemoteMessenger {
   @Override
   public IRemote getRemote(final RemoteName remoteName, final boolean ignoreResults) {
     final InvocationHandler ih =
-        new UnifiedInvocationHandler(unifiedMessenger, remoteName.getName(), ignoreResults, remoteName.getClazz());
-    return (IRemote) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-        new Class<?>[] {remoteName.getClazz()}, ih);
+        new UnifiedInvocationHandler(
+            unifiedMessenger, remoteName.getName(), ignoreResults, remoteName.getClazz());
+    return (IRemote)
+        Proxy.newProxyInstance(
+            Thread.currentThread().getContextClassLoader(),
+            new Class<?>[] {remoteName.getClazz()},
+            ih);
   }
 
   @Override

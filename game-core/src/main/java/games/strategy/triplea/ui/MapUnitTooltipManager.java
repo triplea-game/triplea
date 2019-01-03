@@ -25,12 +25,11 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.StringUtils;
 
-/**
- * Responsible for showing tool tips when hovering over units on the main map.
- */
+/** Responsible for showing tool tips when hovering over units on the main map. */
 public final class MapUnitTooltipManager implements ActionListener {
   private final JComponent parent;
-  private final WindowDeactivationObserver windowDeactivationObserver = new WindowDeactivationObserver();
+  private final WindowDeactivationObserver windowDeactivationObserver =
+      new WindowDeactivationObserver();
   private final Timer timer;
   private @Nullable String text;
   private @Nullable Popup popup;
@@ -104,8 +103,8 @@ public final class MapUnitTooltipManager implements ActionListener {
    * @param player The owner of the unit.
    * @param count The number of units.
    */
-  public static void setUnitTooltip(final JComponent component, final UnitType unitType, final PlayerId player,
-      final int count) {
+  public static void setUnitTooltip(
+      final JComponent component, final UnitType unitType, final PlayerId player, final int count) {
     final String text = getTooltipTextForUnit(unitType, player, count);
     component.setToolTipText("<html>" + text + "</html>");
   }
@@ -116,18 +115,23 @@ public final class MapUnitTooltipManager implements ActionListener {
    * @param unitType The type of unit.
    * @param player The owner of the unit.
    * @param count The number of units.
-   *
    * @return The tooltip text.
    */
-  public static String getTooltipTextForUnit(final UnitType unitType, final PlayerId player, final int count) {
+  public static String getTooltipTextForUnit(
+      final UnitType unitType, final PlayerId player, final int count) {
     final UnitAttachment ua = UnitAttachment.get(unitType);
-    final String firstLine = String.format("<b>%s%s (%s)</b><br />", count == 1 ? "" : (count + " "),
-        StringUtils.capitalize(unitType.getName()), player.getName());
+    final String firstLine =
+        String.format(
+            "<b>%s%s (%s)</b><br />",
+            count == 1 ? "" : (count + " "),
+            StringUtils.capitalize(unitType.getName()),
+            player.getName());
     return firstLine + ua.toStringShortAndOnlyImportantDifferences(player);
   }
 
   /**
-   * Updates the tooltip. The tooltip will show after 1s without another update if the text is not empty.
+   * Updates the tooltip. The tooltip will show after 1s without another update if the text is not
+   * empty.
    *
    * @param tipText The tooltip text to set or the empty string if it should be hidden.
    */

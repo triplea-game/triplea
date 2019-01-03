@@ -78,9 +78,8 @@ public final class MutableProperty<T> {
   /**
    * Sets the property value.
    *
-   * @param value The new property value. If a {@link String}, the value will be set using {@link #stringSetter};
-   *        otherwise the value will be set using {@link #setter}.
-   *
+   * @param value The new property value. If a {@link String}, the value will be set using {@link
+   *     #stringSetter}; otherwise the value will be set using {@link #setter}.
    * @throws InvalidValueException If the new property value is invalid.
    */
   public void setValue(final @Nullable Object value) throws InvalidValueException {
@@ -90,7 +89,8 @@ public final class MutableProperty<T> {
       try {
         setTypedValue(cast(value));
       } catch (final ClassCastException e) {
-        // NB: this will also catch ClassCastExceptions thrown by setTypedValue that may have nothing to do with "value"
+        // NB: this will also catch ClassCastExceptions thrown by setTypedValue that may have
+        // nothing to do with "value"
         throw new InvalidValueException("value has wrong type", e);
       }
     }
@@ -127,7 +127,8 @@ public final class MutableProperty<T> {
     return of(setter, stringSetter, noGetter(), noResetter());
   }
 
-  public static <T> MutableProperty<T> ofSimple(final ThrowingConsumer<T, Exception> setter, final Supplier<T> getter) {
+  public static <T> MutableProperty<T> ofSimple(
+      final ThrowingConsumer<T, Exception> setter, final Supplier<T> getter) {
     return of(setter, noStringSetter(), getter, noResetter());
   }
 
@@ -142,31 +143,36 @@ public final class MutableProperty<T> {
     return of(setter, setter, getter, resetter);
   }
 
-  public static MutableProperty<String> ofWriteOnlyString(final ThrowingConsumer<String, Exception> stringSetter) {
+  public static MutableProperty<String> ofWriteOnlyString(
+      final ThrowingConsumer<String, Exception> stringSetter) {
     return ofString(stringSetter, noGetter(), noResetter());
   }
 
   /**
-   * A special convinience method trying to keep everything slightly more functional.
-   * Instead of specifying 2 setters, one getter and a resetter with this method
-   * only one setter, one getter, a function mapping a String to the setters type
-   * and a Supplier supplying the default value that's getting fed in again using the setter
-   * are required. This keeps stuff more readable and more testable.
+   * A special convinience method trying to keep everything slightly more functional. Instead of
+   * specifying 2 setters, one getter and a resetter with this method only one setter, one getter, a
+   * function mapping a String to the setters type and a Supplier supplying the default value that's
+   * getting fed in again using the setter are required. This keeps stuff more readable and more
+   * testable.
    */
   public static <T> MutableProperty<T> ofMapper(
       final ThrowingFunction<String, T, Exception> mapper,
       final ThrowingConsumer<T, Exception> setter,
       final Supplier<T> getter,
       final Supplier<T> defaultValue) {
-    return new MutableProperty<>(setter, o -> setter.accept(mapper.apply(o)), getter, () -> {
-      try {
-        setter.accept(defaultValue.get());
-      } catch (final RuntimeException e) {
-        throw e;
-      } catch (final Exception e) {
-        throw new IllegalStateException("Unexpected Error while resetting value", e);
-      }
-    });
+    return new MutableProperty<>(
+        setter,
+        o -> setter.accept(mapper.apply(o)),
+        getter,
+        () -> {
+          try {
+            setter.accept(defaultValue.get());
+          } catch (final RuntimeException e) {
+            throw e;
+          } catch (final Exception e) {
+            throw new IllegalStateException("Unexpected Error while resetting value", e);
+          }
+        });
   }
 
   /**

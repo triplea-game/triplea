@@ -24,9 +24,7 @@ import games.strategy.util.Tuple;
 /**
  * chat logic.
  *
- * <p>
- * A chat can be bound to multiple chat panels.
- * </p>
+ * <p>A chat can be bound to multiple chat panels.
  */
 public class Chat {
   private final List<IChatListener> listeners = new CopyOnWriteArrayList<>();
@@ -39,7 +37,8 @@ public class Chat {
   // TODO: check if this mutex is used for something else as well
   private final Object mutexNodes = new Object();
   private final List<INode> nodes;
-  // this queue is filled ONLY in init phase when chatInitVersion is default (-1) and nodes should not be changed
+  // this queue is filled ONLY in init phase when chatInitVersion is default (-1) and nodes should
+  // not be changed
   // until end of initialization synchronizes access to queue
   private final Object mutexQueue = new Object();
   private List<Runnable> queuedInitMessages = new ArrayList<>();
@@ -50,15 +49,19 @@ public class Chat {
   private static final String TAG_MODERATOR = "[Mod]";
   private final ChatSoundProfile chatSoundProfile;
 
-  /**
-   * A profile defines the sounds to use for various chat events.
-   */
+  /** A profile defines the sounds to use for various chat events. */
   public enum ChatSoundProfile {
-    LOBBY_CHATROOM, GAME_CHATROOM, NO_SOUND
+    LOBBY_CHATROOM,
+    GAME_CHATROOM,
+    NO_SOUND
   }
 
-  public Chat(final IMessenger messenger, final String chatName, final IChannelMessenger channelMessenger,
-      final IRemoteMessenger remoteMessenger, final ChatSoundProfile chatSoundProfile) {
+  public Chat(
+      final IMessenger messenger,
+      final String chatName,
+      final IChannelMessenger channelMessenger,
+      final IRemoteMessenger remoteMessenger,
+      final ChatSoundProfile chatSoundProfile) {
 
     this.chatSoundProfile = chatSoundProfile;
     this.messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
@@ -72,14 +75,21 @@ public class Chat {
     // when we receive the response from our init(...) message, our channel
     // subscriber has been added, and will see any messages broadcasted by the server
     // 2 call the init message on the server remote. Any add or join messages sent from the server
-    // will queue until we receive the init return value (they queue since they see the init version is -1)
+    // will queue until we receive the init return value (they queue since they see the init version
+    // is -1)
     // 3 when we receive the init message response, acquire the lock, and initialize our state
-    // and run any queued messages. Queued messages may be ignored if the server version is incorrect.
+    // and run any queued messages. Queued messages may be ignored if the server version is
+    // incorrect.
     // this all seems a lot more involved than it needs to be.
-    final IChatController controller = (IChatController) messengers.getRemoteMessenger()
-        .getRemote(ChatController.getChatControlerRemoteName(chatName));
-    messengers.getChannelMessenger().registerChannelSubscriber(chatChannelSubscriber,
-        new RemoteName(chatChannelName, IChatChannel.class));
+    final IChatController controller =
+        (IChatController)
+            messengers
+                .getRemoteMessenger()
+                .getRemote(ChatController.getChatControlerRemoteName(chatName));
+    messengers
+        .getChannelMessenger()
+        .registerChannelSubscriber(
+            chatChannelSubscriber, new RemoteName(chatChannelName, IChatChannel.class));
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
     final Map<INode, Tag> chatters = init.getFirst();
     nodes = new ArrayList<>(chatters.keySet());
@@ -168,12 +178,12 @@ public class Chat {
     }
   }
 
-  /**
-   * Stop receiving events from the messenger.
-   */
+  /** Stop receiving events from the messenger. */
   public void shutdown() {
-    messengers.getChannelMessenger().unregisterChannelSubscriber(chatChannelSubscriber,
-        new RemoteName(chatChannelName, IChatChannel.class));
+    messengers
+        .getChannelMessenger()
+        .unregisterChannelSubscriber(
+            chatChannelSubscriber, new RemoteName(chatChannelName, IChatChannel.class));
     if (messengers.getMessenger().isConnected()) {
       final RemoteName chatControllerName = ChatController.getChatControlerRemoteName(chatName);
       final IChatController controller =
@@ -183,14 +193,20 @@ public class Chat {
   }
 
   void sendSlap(final String playerName) {
-    final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
-        .getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
+    final IChatChannel remote =
+        (IChatChannel)
+            messengers
+                .getChannelMessenger()
+                .getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
     remote.slapOccured(playerName);
   }
 
   public void sendMessage(final String message, final boolean meMessage) {
-    final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
-        .getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
+    final IChatChannel remote =
+        (IChatChannel)
+            messengers
+                .getChannelMessenger()
+                .getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
     if (meMessage) {
       remote.meMessageOccured(message);
     } else {
@@ -229,144 +245,146 @@ public class Chat {
     return new ArrayList<>(nodes);
   }
 
-  private final IChatChannel chatChannelSubscriber = new IChatChannel() {
-    private void assertMessageFromServer() {
-      final INode senderNode = MessageContext.getSender();
-      final INode serverNode = messengers.getMessenger().getServerNode();
-      // this will happen if the message is queued
-      // but to queue a message, we must first test where it came from
-      // so it is safe in this case to return ok
-      if (senderNode == null) {
-        return;
-      }
-      if (!senderNode.equals(serverNode)) {
-        throw new IllegalStateException("The node:" + senderNode + " sent a message as the server!");
-      }
-    }
-
-    @Override
-    public void chatOccured(final String message) {
-      final INode from = MessageContext.getSender();
-      if (isIgnored(from)) {
-        return;
-      }
-      synchronized (mutexNodes) {
-        chatHistory.add(new ChatMessage(message, from.getName(), false));
-        for (final IChatListener listener : listeners) {
-          listener.addMessage(message, from.getName(), false);
-        }
-        // limit the number of messages in our history.
-        while (chatHistory.size() > 1000) {
-          chatHistory.remove(0);
-        }
-      }
-    }
-
-    @Override
-    public void meMessageOccured(final String message) {
-      final INode from = MessageContext.getSender();
-      if (isIgnored(from)) {
-        return;
-      }
-      synchronized (mutexNodes) {
-        chatHistory.add(new ChatMessage(message, from.getName(), true));
-        for (final IChatListener listener : listeners) {
-          listener.addMessage(message, from.getName(), true);
-        }
-      }
-    }
-
-    @Override
-    public void speakerAdded(final INode node, final Tag tag, final long version) {
-      assertMessageFromServer();
-      if (chatInitVersion == -1) {
-        synchronized (mutexQueue) {
-          if (queuedInitMessages == null) {
-            speakerAdded(node, tag, version);
-          } else {
-            queuedInitMessages.add(() -> speakerAdded(node, tag, version));
+  private final IChatChannel chatChannelSubscriber =
+      new IChatChannel() {
+        private void assertMessageFromServer() {
+          final INode senderNode = MessageContext.getSender();
+          final INode serverNode = messengers.getMessenger().getServerNode();
+          // this will happen if the message is queued
+          // but to queue a message, we must first test where it came from
+          // so it is safe in this case to return ok
+          if (senderNode == null) {
+            return;
+          }
+          if (!senderNode.equals(serverNode)) {
+            throw new IllegalStateException(
+                "The node:" + senderNode + " sent a message as the server!");
           }
         }
-        return;
-      }
-      if (version > chatInitVersion) {
-        synchronized (mutexNodes) {
-          nodes.add(node);
-          addToNotesMap(node, tag);
-          updateConnections();
-        }
-        for (final IChatListener listener : listeners) {
-          listener.addStatusMessage(node.getName() + " has joined");
-          if (chatSoundProfile == ChatSoundProfile.GAME_CHATROOM) {
-            ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
+
+        @Override
+        public void chatOccured(final String message) {
+          final INode from = MessageContext.getSender();
+          if (isIgnored(from)) {
+            return;
+          }
+          synchronized (mutexNodes) {
+            chatHistory.add(new ChatMessage(message, from.getName(), false));
+            for (final IChatListener listener : listeners) {
+              listener.addMessage(message, from.getName(), false);
+            }
+            // limit the number of messages in our history.
+            while (chatHistory.size() > 1000) {
+              chatHistory.remove(0);
+            }
           }
         }
-      }
-    }
 
-    @Override
-    public void speakerRemoved(final INode node, final long version) {
-      assertMessageFromServer();
-      if (chatInitVersion == -1) {
-        synchronized (mutexQueue) {
-          if (queuedInitMessages == null) {
-            speakerRemoved(node, version);
-          } else {
-            queuedInitMessages.add(() -> speakerRemoved(node, version));
+        @Override
+        public void meMessageOccured(final String message) {
+          final INode from = MessageContext.getSender();
+          if (isIgnored(from)) {
+            return;
+          }
+          synchronized (mutexNodes) {
+            chatHistory.add(new ChatMessage(message, from.getName(), true));
+            for (final IChatListener listener : listeners) {
+              listener.addMessage(message, from.getName(), true);
+            }
           }
         }
-        return;
-      }
-      if (version > chatInitVersion) {
-        synchronized (mutexNodes) {
-          nodes.remove(node);
-          notesMap.remove(node);
-          updateConnections();
-        }
-        for (final IChatListener listener : listeners) {
-          listener.addStatusMessage(node.getName() + " has left");
-        }
-        playersThatLeftLast10.add(node);
-        if (playersThatLeftLast10.size() > 10) {
-          playersThatLeftLast10.remove(0);
-        }
-      }
-    }
 
-    @Override
-    public void speakerTagUpdated(final INode node, final Tag tag) {
-      synchronized (mutexNodes) {
-        notesMap.remove(node);
-        addToNotesMap(node, tag);
-        updateConnections();
-      }
-    }
-
-    @Override
-    public void slapOccured(final String to) {
-      final INode from = MessageContext.getSender();
-      if (isIgnored(from)) {
-        return;
-      }
-      synchronized (mutexNodes) {
-        if (to.equals(messengers.getChannelMessenger().getLocalNode().getName())) {
-          handleSlap("You were slapped by " + from.getName(), from);
-        } else if (from.equals(messengers.getChannelMessenger().getLocalNode())) {
-          handleSlap("You just slapped " + to, from);
+        @Override
+        public void speakerAdded(final INode node, final Tag tag, final long version) {
+          assertMessageFromServer();
+          if (chatInitVersion == -1) {
+            synchronized (mutexQueue) {
+              if (queuedInitMessages == null) {
+                speakerAdded(node, tag, version);
+              } else {
+                queuedInitMessages.add(() -> speakerAdded(node, tag, version));
+              }
+            }
+            return;
+          }
+          if (version > chatInitVersion) {
+            synchronized (mutexNodes) {
+              nodes.add(node);
+              addToNotesMap(node, tag);
+              updateConnections();
+            }
+            for (final IChatListener listener : listeners) {
+              listener.addStatusMessage(node.getName() + " has joined");
+              if (chatSoundProfile == ChatSoundProfile.GAME_CHATROOM) {
+                ClipPlayer.play(SoundPath.CLIP_CHAT_JOIN_GAME);
+              }
+            }
+          }
         }
-      }
-    }
 
-    private void handleSlap(final String message, final INode from) {
-      for (final IChatListener listener : listeners) {
-        chatHistory.add(new ChatMessage(message, from.getName(), false));
-        listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_CHAT_SLAP);
-      }
-    }
+        @Override
+        public void speakerRemoved(final INode node, final long version) {
+          assertMessageFromServer();
+          if (chatInitVersion == -1) {
+            synchronized (mutexQueue) {
+              if (queuedInitMessages == null) {
+                speakerRemoved(node, version);
+              } else {
+                queuedInitMessages.add(() -> speakerRemoved(node, version));
+              }
+            }
+            return;
+          }
+          if (version > chatInitVersion) {
+            synchronized (mutexNodes) {
+              nodes.remove(node);
+              notesMap.remove(node);
+              updateConnections();
+            }
+            for (final IChatListener listener : listeners) {
+              listener.addStatusMessage(node.getName() + " has left");
+            }
+            playersThatLeftLast10.add(node);
+            if (playersThatLeftLast10.size() > 10) {
+              playersThatLeftLast10.remove(0);
+            }
+          }
+        }
 
-    @Override
-    public void ping() {}
-  };
+        @Override
+        public void speakerTagUpdated(final INode node, final Tag tag) {
+          synchronized (mutexNodes) {
+            notesMap.remove(node);
+            addToNotesMap(node, tag);
+            updateConnections();
+          }
+        }
+
+        @Override
+        public void slapOccured(final String to) {
+          final INode from = MessageContext.getSender();
+          if (isIgnored(from)) {
+            return;
+          }
+          synchronized (mutexNodes) {
+            if (to.equals(messengers.getChannelMessenger().getLocalNode().getName())) {
+              handleSlap("You were slapped by " + from.getName(), from);
+            } else if (from.equals(messengers.getChannelMessenger().getLocalNode())) {
+              handleSlap("You just slapped " + to, from);
+            }
+          }
+        }
+
+        private void handleSlap(final String message, final INode from) {
+          for (final IChatListener listener : listeners) {
+            chatHistory.add(new ChatMessage(message, from.getName(), false));
+            listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_CHAT_SLAP);
+          }
+        }
+
+        @Override
+        public void ping() {}
+      };
 
   /**
    * While using this, you should synchronize on getMutex().

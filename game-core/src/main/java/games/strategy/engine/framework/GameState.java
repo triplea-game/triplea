@@ -1,8 +1,6 @@
 package games.strategy.engine.framework;
 
-/**
- * Holder for static 'game started' state.
- */
+/** Holder for static 'game started' state. */
 public enum GameState {
   ;
 

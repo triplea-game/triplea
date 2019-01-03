@@ -11,17 +11,16 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
-/**
- * A collection of methods for tracking which players have which technology advances.
- */
+/** A collection of methods for tracking which players have which technology advances. */
 public final class TechTracker {
   private TechTracker() {}
 
   /**
-   * Returns what tech advances this player already has successfully researched (including ones that may not be in their
-   * tech frontier).
+   * Returns what tech advances this player already has successfully researched (including ones that
+   * may not be in their tech frontier).
    */
-  public static Collection<TechAdvance> getCurrentTechAdvances(final PlayerId id, final GameData data) {
+  public static Collection<TechAdvance> getCurrentTechAdvances(
+      final PlayerId id, final GameData data) {
     final Collection<TechAdvance> techAdvances = new ArrayList<>();
     final TechAttachment attachment = TechAttachment.get(id);
     // search all techs
@@ -34,10 +33,11 @@ public final class TechTracker {
   }
 
   /**
-   * Returns what tech categories are no longer available for this player, because all techs in them have been
-   * successfully researched already.
+   * Returns what tech categories are no longer available for this player, because all techs in them
+   * have been successfully researched already.
    */
-  public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(final PlayerId id) {
+  public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(
+      final PlayerId id) {
     final Collection<TechnologyFrontier> technologyFrontiers = new ArrayList<>();
     final TechAttachment attachment = TechAttachment.get(id);
     for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(id)) {
@@ -55,30 +55,39 @@ public final class TechTracker {
     return technologyFrontiers;
   }
 
-  public static void addAdvance(final PlayerId player, final IDelegateBridge bridge, final TechAdvance advance) {
+  public static void addAdvance(
+      final PlayerId player, final IDelegateBridge bridge, final TechAdvance advance) {
     final Change attachmentChange;
-    if (advance instanceof GenericTechAdvance && ((GenericTechAdvance) advance).getAdvance() == null) {
-      attachmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
+    if (advance instanceof GenericTechAdvance
+        && ((GenericTechAdvance) advance).getAdvance() == null) {
+      attachmentChange =
+          ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
     } else {
       attachmentChange =
-          ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
+          ChangeFactory.attachmentPropertyChange(
+              TechAttachment.get(player), "true", advance.getProperty());
     }
     bridge.addChange(attachmentChange);
     advance.perform(player, bridge);
   }
 
-  static void removeAdvance(final PlayerId player, final IDelegateBridge bridge, final TechAdvance advance) {
+  static void removeAdvance(
+      final PlayerId player, final IDelegateBridge bridge, final TechAdvance advance) {
     final Change attachmentChange;
     if (advance instanceof GenericTechAdvance) {
       if (((GenericTechAdvance) advance).getAdvance() == null) {
-        attachmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), false, advance.getProperty());
+        attachmentChange =
+            ChangeFactory.genericTechChange(
+                TechAttachment.get(player), false, advance.getProperty());
       } else {
         attachmentChange =
-            ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "false", advance.getProperty());
+            ChangeFactory.attachmentPropertyChange(
+                TechAttachment.get(player), "false", advance.getProperty());
       }
     } else {
       attachmentChange =
-          ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "false", advance.getProperty());
+          ChangeFactory.attachmentPropertyChange(
+              TechAttachment.get(player), "false", advance.getProperty());
     }
     bridge.addChange(attachmentChange);
   }

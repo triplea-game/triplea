@@ -25,8 +25,7 @@ import games.strategy.util.IntegerMap;
 
 @ExtendWith(MockitoExtension.class)
 public final class ResourceCollectionUtilsTest {
-  @Mock
-  private GameData data;
+  @Mock private GameData data;
 
   private Resource pus;
 
@@ -58,7 +57,8 @@ public final class ResourceCollectionUtilsTest {
 
   private ResourceCollection newResourceCollection(final Resource... resources) {
     final ResourceCollection resourceCollection = new ResourceCollection(data);
-    resourceCollection.add(new IntegerMap<>(Arrays.stream(resources).collect(toMap(Function.identity(), r -> 42))));
+    resourceCollection.add(
+        new IntegerMap<>(Arrays.stream(resources).collect(toMap(Function.identity(), r -> 42))));
     return resourceCollection;
   }
 
@@ -77,7 +77,8 @@ public final class ResourceCollectionUtilsTest {
     givenGameResources(pus, vps);
     final ResourceCollection unfiltered = newResourceCollection(pus, techTokens, vps);
 
-    final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, pus.getName(), vps.getName());
+    final ResourceCollection filtered =
+        ResourceCollectionUtils.exclude(unfiltered, pus.getName(), vps.getName());
 
     assertThat(filtered.getQuantity(pus), is(0));
     assertThat(filtered.getQuantity(techTokens), is(unfiltered.getQuantity(techTokens)));

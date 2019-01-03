@@ -12,9 +12,7 @@ import games.strategy.engine.framework.startup.ui.editors.validators.EmailValida
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PbemDiceRoller;
 
-/**
- * An class for editing a Dice Server bean.
- */
+/** An class for editing a Dice Server bean. */
 public class DiceServerEditor extends EditorPanel {
   private static final long serialVersionUID = -451810815037661114L;
   private final JButton testDiceyButton = new JButton("Test Server");
@@ -36,41 +34,124 @@ public class DiceServerEditor extends EditorPanel {
     final int labelSpace = 2;
     int row = 0;
     if (remoteDiceServer.sendsEmail()) {
-      add(toLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(toAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
-          GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
+      add(
+          toLabel,
+          new GridBagConstraints(
+              0,
+              row,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, bottomSpace, labelSpace),
+              0,
+              0));
+      add(
+          toAddress,
+          new GridBagConstraints(
+              1,
+              row,
+              2,
+              1,
+              1.0,
+              0,
+              GridBagConstraints.EAST,
+              GridBagConstraints.HORIZONTAL,
+              new Insets(0, 0, bottomSpace, 0),
+              0,
+              0));
       toAddress.setText(remoteDiceServer.getToAddress());
       row++;
-      add(ccLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(ccAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
-          GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
+      add(
+          ccLabel,
+          new GridBagConstraints(
+              0,
+              row,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, bottomSpace, labelSpace),
+              0,
+              0));
+      add(
+          ccAddress,
+          new GridBagConstraints(
+              1,
+              row,
+              2,
+              1,
+              1.0,
+              0,
+              GridBagConstraints.EAST,
+              GridBagConstraints.HORIZONTAL,
+              new Insets(0, 0, bottomSpace, 0),
+              0,
+              0));
       ccAddress.setText(remoteDiceServer.getCcAddress());
       row++;
     }
     if (remoteDiceServer.supportsGameId()) {
       final JLabel gameIdLabel = new JLabel("Game ID:");
-      add(gameIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(gameId, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
+      add(
+          gameIdLabel,
+          new GridBagConstraints(
+              0,
+              row,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(0, 0, bottomSpace, labelSpace),
+              0,
+              0));
+      add(
+          gameId,
+          new GridBagConstraints(
+              1,
+              row,
+              2,
+              1,
+              1.0,
+              0,
+              GridBagConstraints.EAST,
+              GridBagConstraints.HORIZONTAL,
+              new Insets(0, 0, bottomSpace, 0),
+              0,
+              0));
       gameId.setText(remoteDiceServer.getGameId());
       row++;
     }
-    add(testDiceyButton, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
+    add(
+        testDiceyButton,
+        new GridBagConstraints(
+            2,
+            row,
+            1,
+            1,
+            0,
+            0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, bottomSpace, 0),
+            0,
+            0));
     setupListeners();
   }
 
-  /**
-   * Configures the listeners for the gui components.
-   */
+  /** Configures the listeners for the gui components. */
   private void setupListeners() {
-    testDiceyButton.addActionListener(e -> {
-      final PbemDiceRoller random = new PbemDiceRoller(getDiceServer());
-      random.test();
-    });
+    testDiceyButton.addActionListener(
+        e -> {
+          final PbemDiceRoller random = new PbemDiceRoller(getDiceServer());
+          random.test();
+        });
     final DocumentListener docListener = new EditorChangedFiringDocumentListener();
     toAddress.getDocument().addDocumentListener(docListener);
     ccAddress.getDocument().addDocumentListener(docListener);

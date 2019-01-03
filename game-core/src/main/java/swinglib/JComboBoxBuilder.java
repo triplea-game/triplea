@@ -13,8 +13,8 @@ import javax.swing.JComboBox;
 import com.google.common.base.Preconditions;
 
 /**
- * Builds a swing JComboBox that supports String values only. This is a pull down box with items that can be selected.
- * <br />
+ * Builds a swing JComboBox that supports String values only. This is a pull down box with items
+ * that can be selected. <br>
  * Example usage:
  *
  * <pre>
@@ -40,9 +40,7 @@ public final class JComboBoxBuilder<E> {
     this.itemType = itemType;
   }
 
-  /**
-   * Builds the swing component.
-   */
+  /** Builds the swing component. */
   public JComboBox<E> build() {
     Preconditions.checkState(items.size() > 0);
 
@@ -56,14 +54,17 @@ public final class JComboBoxBuilder<E> {
 
     final @Nullable Consumer<E> myAction = this.itemSelectedAction;
     if (myAction != null) {
-      comboBox.addItemListener(e -> {
-        // combo box will fire two events when you change selection, first a 'ItemEvent.DESELECTED' event and then
-        // a 'ItemEvent.SELECTED' event. We keep it simple for now and ignore the deselected event
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-          final @Nullable E selectionValue = itemType.cast(e.getItem());
-          myAction.accept(selectionValue);
-        }
-      });
+      comboBox.addItemListener(
+          e -> {
+            // combo box will fire two events when you change selection, first a
+            // 'ItemEvent.DESELECTED' event and then
+            // a 'ItemEvent.SELECTED' event. We keep it simple for now and ignore the deselected
+            // event
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+              final @Nullable E selectionValue = itemType.cast(e.getItem());
+              myAction.accept(selectionValue);
+            }
+          });
     }
 
     comboBox.setToolTipText(toolTip);
@@ -80,18 +81,14 @@ public final class JComboBoxBuilder<E> {
     return new JComboBoxBuilder<>(itemType);
   }
 
-  /**
-   * Adds a set of items to be displayed in the combo box.
-   */
+  /** Adds a set of items to be displayed in the combo box. */
   public JComboBoxBuilder<E> items(final Collection<E> items) {
     Preconditions.checkArgument(!items.isEmpty());
     this.items.addAll(items);
     return this;
   }
 
-  /**
-   * Adds a single item to be displayed in the combo box (additive with any existing).
-   */
+  /** Adds a single item to be displayed in the combo box (additive with any existing). */
   public JComboBoxBuilder<E> item(final E item) {
     Preconditions.checkNotNull(item);
     items.add(item);
@@ -99,8 +96,8 @@ public final class JComboBoxBuilder<E> {
   }
 
   /**
-   * Adds a listener that is fired when an item is selected. The input value
-   * to the passed in consumer is the value selected.
+   * Adds a listener that is fired when an item is selected. The input value to the passed in
+   * consumer is the value selected.
    */
   public JComboBoxBuilder<E> itemSelectedAction(final Consumer<E> itemSelectedAction) {
     Preconditions.checkNotNull(itemSelectedAction);

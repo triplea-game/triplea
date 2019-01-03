@@ -4,9 +4,7 @@ import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
-/**
- * Class to log messages to log window and console.
- */
+/** Class to log messages to log window and console. */
 public final class ProLogger {
   private ProLogger() {}
 
@@ -31,19 +29,18 @@ public final class ProLogger {
   }
 
   /**
-   * Some notes on using the Pro AI logger:
-   * First, to make the logs easily readable even when there are hundreds of lines, I want every considerable step down
-   * in the call stack to mean more log message indentation.
-   * For example, the base logs in the {@link games.strategy.triplea.ai.pro.ProAi} class have no indentation before
-   * them, but the base logs in the {@link games.strategy.triplea.ai.pro.ProCombatMoveAi} class will have two spaces
-   * inserted at the start, and the level below that, four spaces. In this way, when you're reading the log, you can
-   * skip over unimportant areas with speed because of the indentation.
-   * Second, I generally want the Fine logs to be messages that run less than 10 times each round, including almost all
-   * messages in the Pro AI class.
-   * Finest for messages showing details within a method that, for example, returns a value.
-   * (So, for example, the NCM_Task method IsTaskWorthwhile() would primarily use finest, as it just returns a boolean,
-   * and the logs within it are just for details)
-   * Finer for just about everything else. (There's also the SERVER, INFO, etc. levels)
+   * Some notes on using the Pro AI logger: First, to make the logs easily readable even when there
+   * are hundreds of lines, I want every considerable step down in the call stack to mean more log
+   * message indentation. For example, the base logs in the {@link
+   * games.strategy.triplea.ai.pro.ProAi} class have no indentation before them, but the base logs
+   * in the {@link games.strategy.triplea.ai.pro.ProCombatMoveAi} class will have two spaces
+   * inserted at the start, and the level below that, four spaces. In this way, when you're reading
+   * the log, you can skip over unimportant areas with speed because of the indentation. Second, I
+   * generally want the Fine logs to be messages that run less than 10 times each round, including
+   * almost all messages in the Pro AI class. Finest for messages showing details within a method
+   * that, for example, returns a value. (So, for example, the NCM_Task method IsTaskWorthwhile()
+   * would primarily use finest, as it just returns a boolean, and the logs within it are just for
+   * details) Finer for just about everything else. (There's also the SERVER, INFO, etc. levels)
    * Just keep these things in mind while adding new logging code.
    */
   public static void log(final Level level, final String message, final @Nullable Throwable t) {
@@ -62,9 +59,11 @@ public final class ProLogger {
   }
 
   /**
-   * Adds extra spaces to get logs to lineup correctly. (Adds two spaces to fine, one to finer, none to finest, etc.)
+   * Adds extra spaces to get logs to lineup correctly. (Adds two spaces to fine, one to finer, none
+   * to finest, etc.)
    */
-  private static String formatMessage(final String message, final @Nullable Throwable t, final Level level) {
+  private static String formatMessage(
+      final String message, final @Nullable Throwable t, final Level level) {
     final StringBuilder builder = new StringBuilder();
     final int compensateLength = (level.toString().length() - 4) * 2;
     for (int i = 0; i < compensateLength; i++) {

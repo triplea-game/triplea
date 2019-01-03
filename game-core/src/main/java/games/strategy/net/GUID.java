@@ -9,11 +9,11 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A globally unique id.
- * Backed by a java.rmi.dgc.VMID.
- * Written across the network often, so this class is externalizable to increase efficiency.
+ * A globally unique id. Backed by a java.rmi.dgc.VMID. Written across the network often, so this
+ * class is externalizable to increase efficiency.
  */
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next lobby-incompatible release
+@SuppressWarnings(
+    "checkstyle:AbbreviationAsWordInName") // rename upon next lobby-incompatible release
 public final class GUID implements Externalizable {
   private static final long serialVersionUID = 8426441559602874190L;
   // this prefix is unique across vms

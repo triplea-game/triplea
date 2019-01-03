@@ -16,23 +16,31 @@ final class SwingComponentsTest {
   final class AppendExtensionIfAbsentTest {
     @Test
     void shouldAppendExtensionWhenExtensionAbsent() {
-      assertThat(appendExtensionIfAbsent(new File("path/file.aaa"), "bbb"), is(new File("path/file.aaa.bbb")));
-      assertThat(appendExtensionIfAbsent(new File("path/filebbb"), "bbb"), is(new File("path/filebbb.bbb")));
+      assertThat(
+          appendExtensionIfAbsent(new File("path/file.aaa"), "bbb"),
+          is(new File("path/file.aaa.bbb")));
+      assertThat(
+          appendExtensionIfAbsent(new File("path/filebbb"), "bbb"),
+          is(new File("path/filebbb.bbb")));
     }
 
     @Test
     void shouldNotAppendExtensionWhenExtensionPresent() {
-      assertThat(appendExtensionIfAbsent(new File("path/file.bbb"), "bbb"), is(new File("path/file.bbb")));
+      assertThat(
+          appendExtensionIfAbsent(new File("path/file.bbb"), "bbb"), is(new File("path/file.bbb")));
     }
 
     @Test
     void shouldHandleExtensionThatStartsWithPeriod() {
-      assertThat(appendExtensionIfAbsent(new File("path/file.aaa"), ".bbb"), is(new File("path/file.aaa.bbb")));
+      assertThat(
+          appendExtensionIfAbsent(new File("path/file.aaa"), ".bbb"),
+          is(new File("path/file.aaa.bbb")));
     }
 
     @Test
     void shouldUseCaseInsensitiveComparisonForExtension() {
-      assertThat(appendExtensionIfAbsent(new File("path/file.bBb"), "BbB"), is(new File("path/file.bBb")));
+      assertThat(
+          appendExtensionIfAbsent(new File("path/file.bBb"), "BbB"), is(new File("path/file.bBb")));
     }
   }
 

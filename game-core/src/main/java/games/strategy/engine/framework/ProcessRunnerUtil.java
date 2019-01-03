@@ -11,22 +11,24 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.SystemProperties;
 import lombok.extern.java.Log;
 
-/**
- * To hold various static utility methods for running a java program.
- */
+/** To hold various static utility methods for running a java program. */
 @Log
 class ProcessRunnerUtil {
 
   static void populateBasicJavaArgs(final List<String> commands) {
-    final String javaCommand = SystemProperties.getJavaHome() + File.separator + "bin" + File.separator + "java";
+    final String javaCommand =
+        SystemProperties.getJavaHome() + File.separator + "bin" + File.separator + "java";
     commands.add(javaCommand);
     commands.add("-classpath");
     commands.add(SystemProperties.getJavaClassPath());
 
-    final Optional<String> maxMemory = ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-        .filter(s -> s.toLowerCase().startsWith("-xmx"))
-        .map(s -> s.substring(4))
-        .findFirst();
+    final Optional<String> maxMemory =
+        ManagementFactory.getRuntimeMXBean()
+            .getInputArguments()
+            .stream()
+            .filter(s -> s.toLowerCase().startsWith("-xmx"))
+            .map(s -> s.substring(4))
+            .findFirst();
     maxMemory.ifPresent(max -> commands.add("-Xmx" + max));
     if (SystemProperties.isMac()) {
       commands.add("-Dapple.laf.useScreenMenuBar=true");

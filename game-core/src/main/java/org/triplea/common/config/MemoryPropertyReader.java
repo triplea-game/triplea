@@ -10,9 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
-/**
- * Implementation of {@link PropertyReader} that uses a memory store as the property source.
- */
+/** Implementation of {@link PropertyReader} that uses a memory store as the property source. */
 @ThreadSafe
 public final class MemoryPropertyReader extends AbstractPropertyReader {
   private final Map<String, String> properties;

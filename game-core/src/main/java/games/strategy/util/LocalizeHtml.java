@@ -11,8 +11,8 @@ import games.strategy.triplea.ui.AbstractUiContext;
 import lombok.extern.java.Log;
 
 /**
- * Provides methods that convert relative links within a game description into absolute links that will work on the
- * local system.
+ * Provides methods that convert relative links within a game description into absolute links that
+ * will work on the local system.
  */
 @Log
 public class LocalizeHtml {
@@ -29,23 +29,25 @@ public class LocalizeHtml {
   /* Match the <img /> tag */
   public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
   /* Match the src attribute */
-  public static final String PATTERN_HTML_IMG_SRC_TAG = "\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
+  public static final String PATTERN_HTML_IMG_SRC_TAG =
+      "\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
 
   /**
-   * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be
-   * the last game's resource loader.
+   * This is only useful once we are IN a game. Before we go into the game, resource loader will
+   * either be null, or be the last game's resource loader.
    */
   public static String localizeImgLinksInHtml(final String htmlText) {
     return localizeImgLinksInHtml(htmlText, AbstractUiContext.getResourceLoader(), null);
   }
 
   /**
-   * Replaces relative image links within the HTML document {@code htmlText} with absolute links that point to the
-   * correct location on the local file system.
+   * Replaces relative image links within the HTML document {@code htmlText} with absolute links
+   * that point to the correct location on the local file system.
    */
-  public static String localizeImgLinksInHtml(final String htmlText, final ResourceLoader resourceLoader,
-      final String mapNameDir) {
-    if (htmlText == null || (resourceLoader == null && (mapNameDir == null || mapNameDir.trim().length() == 0))) {
+  public static String localizeImgLinksInHtml(
+      final String htmlText, final ResourceLoader resourceLoader, final String mapNameDir) {
+    if (htmlText == null
+        || (resourceLoader == null && (mapNameDir == null || mapNameDir.trim().length() == 0))) {
       return htmlText;
     }
     ResourceLoader ourResourceLoader = resourceLoader;
@@ -83,7 +85,8 @@ public class LocalizeHtml {
 
           if (replacementUrl == null || replacementUrl.toString().length() == 0) {
             log.severe("Could not find: " + mapNameDir + "/" + ASSET_IMAGE_FOLDER + imageFileName);
-            replacementUrl = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
+            replacementUrl =
+                ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
           }
           if (replacementUrl == null || replacementUrl.toString().length() == 0) {
             log.severe("Could not find: " + ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);

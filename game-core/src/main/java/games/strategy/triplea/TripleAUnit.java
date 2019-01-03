@@ -29,10 +29,8 @@ import games.strategy.util.Tuple;
 /**
  * Extended unit for triplea games.
  *
- * <p>
- * As with all game data components, changes made to this unit must be made through a Change instance. Calling setters
- * on this directly will not serialize the changes across the network.
- * </p>
+ * <p>As with all game data components, changes made to this unit must be made through a Change
+ * instance. Calling setters on this directly will not serialize the changes across the network.
  */
 public class TripleAUnit extends Unit {
   // compatable with 0.9.2
@@ -110,7 +108,8 @@ public class TripleAUnit extends Unit {
   }
 
   /**
-   * This is a very slow method because it checks all territories on the map. Try not to use this method if possible.
+   * This is a very slow method because it checks all territories on the map. Try not to use this
+   * method if possible.
    */
   public List<Unit> getTransporting() {
     // we don't store the units we are transporting
@@ -127,7 +126,8 @@ public class TripleAUnit extends Unit {
   public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible) {
     // we don't store the units we are transporting
     // rather we look at the transported by property of units
-    return CollectionUtils.getMatches(transportedUnitsPossible, o -> equals(get(o).getTransportedBy()));
+    return CollectionUtils.getMatches(
+        transportedUnitsPossible, o -> equals(get(o).getTransportedBy()));
   }
 
   public List<Unit> getUnloaded() {
@@ -190,20 +190,20 @@ public class TripleAUnit extends Unit {
     return bonusMovement;
   }
 
-  /**
-   * Does not account for any movement already made. Generally equal to UnitType movement
-   */
+  /** Does not account for any movement already made. Generally equal to UnitType movement */
   public int getMaxMovementAllowed() {
     return Math.max(0, bonusMovement + UnitAttachment.get(getType()).getMovement(getOwner()));
   }
 
   public int getMovementLeft() {
-    return Math.max(0, UnitAttachment.get(getType()).getMovement(getOwner()) + bonusMovement - alreadyMoved);
+    return Math.max(
+        0, UnitAttachment.get(getType()).getMovement(getOwner()) + bonusMovement - alreadyMoved);
   }
 
   /**
-   * Returns a tuple whose first element indicates the minimum movement remaining for the specified collection of units,
-   * and whose second element indicates the maximum movement remaining for the specified collection of units.
+   * Returns a tuple whose first element indicates the minimum movement remaining for the specified
+   * collection of units, and whose second element indicates the maximum movement remaining for the
+   * specified collection of units.
    */
   public static Tuple<Integer, Integer> getMinAndMaxMovementLeft(final Collection<Unit> units) {
     int min = 100000;
@@ -328,8 +328,8 @@ public class TripleAUnit extends Unit {
   }
 
   /**
-   * How much more damage can this unit take?
-   * Will return 0 if the unit cannot be damaged, or is at max damage.
+   * How much more damage can this unit take? Will return 0 if the unit cannot be damaged, or is at
+   * max damage.
    */
   public int getHowMuchMoreDamageCanThisUnitTake(final Unit u, final Territory t) {
     if (!Matches.unitCanBeDamaged().test(u)) {
@@ -342,8 +342,8 @@ public class TripleAUnit extends Unit {
   }
 
   /**
-   * How much damage is the max this unit can take, accounting for territory, etc.
-   * Will return -1 if the unit is of the type that cannot be damaged
+   * How much damage is the max this unit can take, accounting for territory, etc. Will return -1 if
+   * the unit is of the type that cannot be damaged
    */
   public int getHowMuchDamageCanThisUnitTakeTotal(final Unit u, final Territory t) {
     if (!Matches.unitCanBeDamaged().test(u)) {
@@ -361,7 +361,9 @@ public class TripleAUnit extends Unit {
 
       if (Matches.unitCanProduceUnits().test(u)) {
         // can use "production" or "unitProduction"
-        return (ua.getCanProduceXUnits() < 0) ? territoryUnitProduction * ua.getMaxDamage() : ua.getMaxDamage();
+        return (ua.getCanProduceXUnits() < 0)
+            ? territoryUnitProduction * ua.getMaxDamage()
+            : ua.getMaxDamage();
       }
 
       return ua.getMaxDamage();
@@ -371,32 +373,45 @@ public class TripleAUnit extends Unit {
   }
 
   public int getHowMuchCanThisUnitBeRepaired(final Unit u, final Territory t) {
-    return Math.max(0,
-        (this.getHowMuchDamageCanThisUnitTakeTotal(u, t) - this.getHowMuchMoreDamageCanThisUnitTake(u, t)));
+    return Math.max(
+        0,
+        (this.getHowMuchDamageCanThisUnitTakeTotal(u, t)
+            - this.getHowMuchMoreDamageCanThisUnitTake(u, t)));
   }
 
-  public static int getProductionPotentialOfTerritory(final Collection<Unit> unitsAtStartOfStepInTerritory,
-      final Territory producer, final PlayerId player, final GameData data, final boolean accountForDamage,
+  public static int getProductionPotentialOfTerritory(
+      final Collection<Unit> unitsAtStartOfStepInTerritory,
+      final Territory producer,
+      final PlayerId player,
+      final GameData data,
+      final boolean accountForDamage,
       final boolean mathMaxZero) {
     return getHowMuchCanUnitProduce(
-        getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, data, accountForDamage), producer, player,
-        data, accountForDamage, mathMaxZero);
+        getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, data, accountForDamage),
+        producer,
+        player,
+        data,
+        accountForDamage,
+        mathMaxZero);
   }
 
   /**
-   * Returns the unit from the specified collection that has the largest production capacity within the specified
-   * territory.
+   * Returns the unit from the specified collection that has the largest production capacity within
+   * the specified territory.
    *
-   * @param accountForDamage {@code true} if the production capacity should account for unit damage; otherwise
-   *        {@code false}.
+   * @param accountForDamage {@code true} if the production capacity should account for unit damage;
+   *     otherwise {@code false}.
    */
-  public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerId player,
-      final GameData data, final boolean accountForDamage) {
-    final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
-        .and(Matches.unitIsBeingTransported().negate())
-        .and(producer.isWater()
-            ? Matches.unitIsLand().negate()
-            : Matches.unitIsSea().negate());
+  public static Unit getBiggestProducer(
+      final Collection<Unit> units,
+      final Territory producer,
+      final PlayerId player,
+      final GameData data,
+      final boolean accountForDamage) {
+    final Predicate<Unit> factoryMatch =
+        Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
+            .and(Matches.unitIsBeingTransported().negate())
+            .and(producer.isWater() ? Matches.unitIsLand().negate() : Matches.unitIsSea().negate());
     final Collection<Unit> factories = CollectionUtils.getMatches(units, factoryMatch);
     if (factories.isEmpty()) {
       return null;
@@ -405,7 +420,8 @@ public class TripleAUnit extends Unit {
     Unit highestUnit = factories.iterator().next();
     int highestCapacity = Integer.MIN_VALUE;
     for (final Unit u : factories) {
-      final int capacity = getHowMuchCanUnitProduce(u, producer, player, data, accountForDamage, false);
+      final int capacity =
+          getHowMuchCanUnitProduce(u, producer, player, data, accountForDamage, false);
       productionPotential.put(u, capacity);
       if (capacity > highestCapacity) {
         highestCapacity = capacity;
@@ -418,13 +434,18 @@ public class TripleAUnit extends Unit {
   /**
    * Returns the production capacity for the specified unit within the specified territory.
    *
-   * @param accountForDamage {@code true} if the production capacity should account for unit damage; otherwise
-   *        {@code false}.
-   * @param mathMaxZero {@code true} if a negative production capacity should be rounded to zero; {@code false} to allow
-   *        a negative production capacity.
+   * @param accountForDamage {@code true} if the production capacity should account for unit damage;
+   *     otherwise {@code false}.
+   * @param mathMaxZero {@code true} if a negative production capacity should be rounded to zero;
+   *     {@code false} to allow a negative production capacity.
    */
-  public static int getHowMuchCanUnitProduce(final Unit u, final Territory producer, final PlayerId player,
-      final GameData data, final boolean accountForDamage, final boolean mathMaxZero) {
+  public static int getHowMuchCanUnitProduce(
+      final Unit u,
+      final Territory producer,
+      final PlayerId player,
+      final GameData data,
+      final boolean accountForDamage,
+      final boolean mathMaxZero) {
     if (u == null) {
       return 0;
     }
@@ -454,9 +475,7 @@ public class TripleAUnit extends Unit {
       } else {
         productionCapacity = territoryProduction;
         if (productionCapacity < 1) {
-          productionCapacity =
-              (Properties.getWW2V2(data) || Properties.getWW2V3(data)) ? 0
-                  : 1;
+          productionCapacity = (Properties.getWW2V2(data) || Properties.getWW2V3(data)) ? 0 : 1;
         }
       }
     } else {
@@ -471,26 +490,27 @@ public class TripleAUnit extends Unit {
       }
       if (productionCapacity < 1
           && !Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-        productionCapacity =
-            (Properties.getWW2V2(data) || Properties.getWW2V3(data)) ? 0
-                : 1;
+        productionCapacity = (Properties.getWW2V2(data) || Properties.getWW2V3(data)) ? 0 : 1;
       }
     }
     // Increase production if have industrial technology
-    if (territoryProduction >= TechAbilityAttachment.getMinimumTerritoryValueForProductionBonus(player, data)) {
+    if (territoryProduction
+        >= TechAbilityAttachment.getMinimumTerritoryValueForProductionBonus(player, data)) {
       productionCapacity += TechAbilityAttachment.getProductionBonus(u.getType(), player, data);
     }
     return mathMaxZero ? Math.max(0, productionCapacity) : productionCapacity;
   }
 
   /**
-   * Currently made for translating unit damage from one unit to another unit. Will adjust damage to be within max
-   * damage for the new units.
+   * Currently made for translating unit damage from one unit to another unit. Will adjust damage to
+   * be within max damage for the new units.
    *
    * @return change for unit's properties
    */
-  public static Change translateAttributesToOtherUnits(final Unit unitGivingAttributes,
-      final Collection<Unit> unitsThatWillGetAttributes, final Territory t) {
+  public static Change translateAttributesToOtherUnits(
+      final Unit unitGivingAttributes,
+      final Collection<Unit> unitsThatWillGetAttributes,
+      final Territory t) {
     final CompositeChange changes = new CompositeChange();
     // must look for hits, unitDamage,
     final TripleAUnit taUnit = (TripleAUnit) unitGivingAttributes;
@@ -527,90 +547,50 @@ public class TripleAUnit extends Unit {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("transportedBy",
+        .put(
+            "transportedBy",
+            MutableProperty.ofSimple(this::setTransportedBy, this::getTransportedBy))
+        .put("unloaded", MutableProperty.ofSimple(this::setUnloaded, this::getUnloaded))
+        .put(
+            "wasLoadedThisTurn",
+            MutableProperty.ofSimple(this::setWasLoadedThisTurn, this::getWasLoadedThisTurn))
+        .put("unloadedTo", MutableProperty.ofSimple(this::setUnloadedTo, this::getUnloadedTo))
+        .put(
+            "wasUnloadedInCombatPhase",
             MutableProperty.ofSimple(
-                this::setTransportedBy,
-                this::getTransportedBy))
-        .put("unloaded",
-            MutableProperty.ofSimple(
-                this::setUnloaded,
-                this::getUnloaded))
-        .put("wasLoadedThisTurn",
-            MutableProperty.ofSimple(
-                this::setWasLoadedThisTurn,
-                this::getWasLoadedThisTurn))
-        .put("unloadedTo",
-            MutableProperty.ofSimple(
-                this::setUnloadedTo,
-                this::getUnloadedTo))
-        .put("wasUnloadedInCombatPhase",
-            MutableProperty.ofSimple(
-                this::setWasUnloadedInCombatPhase,
-                this::getWasUnloadedInCombatPhase))
-        .put("alreadyMoved",
-            MutableProperty.ofSimple(
-                this::setAlreadyMoved,
-                this::getAlreadyMoved))
-        .put("bonusMovement",
-            MutableProperty.ofSimple(
-                this::setBonusMovement,
-                this::getBonusMovement))
-        .put("unitDamage",
-            MutableProperty.ofSimple(
-                this::setUnitDamage,
-                this::getUnitDamage))
-        .put("submerged",
-            MutableProperty.ofSimple(
-                this::setSubmerged,
-                this::getSubmerged))
-        .put("originalOwner",
-            MutableProperty.ofSimple(
-                this::setOriginalOwner,
-                this::getOriginalOwner))
-        .put("wasInCombat",
-            MutableProperty.ofSimple(
-                this::setWasInCombat,
-                this::getWasInCombat))
-        .put("wasLoadedAfterCombat",
-            MutableProperty.ofSimple(
-                this::setWasLoadedAfterCombat,
-                this::getWasLoadedAfterCombat))
-        .put("wasAmphibious",
-            MutableProperty.ofSimple(
-                this::setWasAmphibious,
-                this::getWasAmphibious))
-        .put("originatedFrom",
-            MutableProperty.ofSimple(
-                this::setOriginatedFrom,
-                this::getOriginatedFrom))
-        .put("wasScrambled",
-            MutableProperty.ofSimple(
-                this::setWasScrambled,
-                this::getWasScrambled))
-        .put("maxScrambleCount",
-            MutableProperty.ofSimple(
-                this::setMaxScrambleCount,
-                this::getMaxScrambleCount))
-        .put("wasInAirBattle",
-            MutableProperty.ofSimple(
-                this::setWasInAirBattle,
-                this::getWasInAirBattle))
-        .put("disabled",
-            MutableProperty.ofSimple(
-                this::setDisabled,
-                this::getDisabled))
-        .put("launched",
-            MutableProperty.ofSimple(
-                this::setLaunched,
-                this::getLaunched))
-        .put("airborne",
-            MutableProperty.ofSimple(
-                this::setAirborne,
-                this::getAirborne))
-        .put("chargedFlatFuelCost",
-            MutableProperty.ofSimple(
-                this::setChargedFlatFuelCost,
-                this::getChargedFlatFuelCost))
+                this::setWasUnloadedInCombatPhase, this::getWasUnloadedInCombatPhase))
+        .put("alreadyMoved", MutableProperty.ofSimple(this::setAlreadyMoved, this::getAlreadyMoved))
+        .put(
+            "bonusMovement",
+            MutableProperty.ofSimple(this::setBonusMovement, this::getBonusMovement))
+        .put("unitDamage", MutableProperty.ofSimple(this::setUnitDamage, this::getUnitDamage))
+        .put("submerged", MutableProperty.ofSimple(this::setSubmerged, this::getSubmerged))
+        .put(
+            "originalOwner",
+            MutableProperty.ofSimple(this::setOriginalOwner, this::getOriginalOwner))
+        .put("wasInCombat", MutableProperty.ofSimple(this::setWasInCombat, this::getWasInCombat))
+        .put(
+            "wasLoadedAfterCombat",
+            MutableProperty.ofSimple(this::setWasLoadedAfterCombat, this::getWasLoadedAfterCombat))
+        .put(
+            "wasAmphibious",
+            MutableProperty.ofSimple(this::setWasAmphibious, this::getWasAmphibious))
+        .put(
+            "originatedFrom",
+            MutableProperty.ofSimple(this::setOriginatedFrom, this::getOriginatedFrom))
+        .put("wasScrambled", MutableProperty.ofSimple(this::setWasScrambled, this::getWasScrambled))
+        .put(
+            "maxScrambleCount",
+            MutableProperty.ofSimple(this::setMaxScrambleCount, this::getMaxScrambleCount))
+        .put(
+            "wasInAirBattle",
+            MutableProperty.ofSimple(this::setWasInAirBattle, this::getWasInAirBattle))
+        .put("disabled", MutableProperty.ofSimple(this::setDisabled, this::getDisabled))
+        .put("launched", MutableProperty.ofSimple(this::setLaunched, this::getLaunched))
+        .put("airborne", MutableProperty.ofSimple(this::setAirborne, this::getAirborne))
+        .put(
+            "chargedFlatFuelCost",
+            MutableProperty.ofSimple(this::setChargedFlatFuelCost, this::getChargedFlatFuelCost))
         .build();
   }
 }

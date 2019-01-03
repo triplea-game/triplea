@@ -6,11 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 
 /**
- * Utility class for timing.
- * Use,
- * Stopwatch someTask = new StopWatch(someLogger, someLevel, taskDescriptiopn);
- * ...do stuff
- * someTask.done();
+ * Utility class for timing. Use, Stopwatch someTask = new StopWatch(someLogger, someLevel,
+ * taskDescriptiopn); ...do stuff someTask.done();
  */
 @AllArgsConstructor
 @Log
@@ -19,7 +16,10 @@ public class Stopwatch {
   private final String taskDescription;
 
   public void done() {
-    log.info(() -> String.format("%s took %s ms",
-        taskDescription, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime)));
+    log.info(
+        () ->
+            String.format(
+                "%s took %s ms",
+                taskDescription, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime)));
   }
 }

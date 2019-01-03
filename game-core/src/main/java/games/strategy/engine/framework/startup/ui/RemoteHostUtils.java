@@ -24,7 +24,8 @@ final class RemoteHostUtils implements IRemoteHostUtils {
       return "Not accepted!";
     }
     if (serverMessenger != null) {
-      final StringBuilder sb = new StringBuilder("Connected: " + serverMessenger.isConnected() + "\n" + "Nodes: \n");
+      final StringBuilder sb =
+          new StringBuilder("Connected: " + serverMessenger.isConnected() + "\n" + "Nodes: \n");
       final Set<INode> nodes = serverMessenger.getNodes();
       if (nodes == null) {
         sb.append("  null\n");
@@ -51,8 +52,11 @@ final class RemoteHostUtils implements IRemoteHostUtils {
   }
 
   @Override
-  public String mutePlayerHeadlessHostBot(final String playerNameToBeMuted, final int minutes,
-      final String hashedPassword, final String salt) {
+  public String mutePlayerHeadlessHostBot(
+      final String playerNameToBeMuted,
+      final int minutes,
+      final String hashedPassword,
+      final String salt) {
     if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
@@ -64,8 +68,8 @@ final class RemoteHostUtils implements IRemoteHostUtils {
   }
 
   @Override
-  public String bootPlayerHeadlessHostBot(final String playerNameToBeBooted, final String hashedPassword,
-      final String salt) {
+  public String bootPlayerHeadlessHostBot(
+      final String playerNameToBeBooted, final String hashedPassword, final String salt) {
     if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
@@ -77,8 +81,11 @@ final class RemoteHostUtils implements IRemoteHostUtils {
   }
 
   @Override
-  public String banPlayerHeadlessHostBot(final String playerNameToBeBanned, final int hours,
-      final String hashedPassword, final String salt) {
+  public String banPlayerHeadlessHostBot(
+      final String playerNameToBeBanned,
+      final int hours,
+      final String hashedPassword,
+      final String salt) {
     if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }

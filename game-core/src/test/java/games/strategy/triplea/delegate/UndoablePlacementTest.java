@@ -20,12 +20,14 @@ final class UndoablePlacementTest {
   private final GameData gameData = new GameData();
   private final Territory placeTerritory = new Territory("placeTerritory", gameData);
 
-  private UndoablePlacement newUndoablePlacement(final Territory producerTerritory, final Territory placeTerritory) {
+  private UndoablePlacement newUndoablePlacement(
+      final Territory producerTerritory, final Territory placeTerritory) {
     return new UndoablePlacement(
         new CompositeChange(),
         producerTerritory,
         placeTerritory,
-        Collections.singletonList(new Unit(new UnitType(UNIT_TYPE_NAME, gameData), null, gameData)));
+        Collections.singletonList(
+            new Unit(new UnitType(UNIT_TYPE_NAME, gameData), null, gameData)));
   }
 
   @Nested
@@ -33,7 +35,8 @@ final class UndoablePlacementTest {
     @Test
     void shouldUsePlaceTerritoryWhenPlaceTerritoryEqualsProducerTerritory() {
       final Territory producerTerritory = new Territory(placeTerritory.getName(), gameData);
-      final UndoablePlacement undoablePlacement = newUndoablePlacement(producerTerritory, placeTerritory);
+      final UndoablePlacement undoablePlacement =
+          newUndoablePlacement(producerTerritory, placeTerritory);
 
       assertThat(undoablePlacement.getMoveLabel(), is(placeTerritory.getName()));
     }
@@ -41,9 +44,12 @@ final class UndoablePlacementTest {
     @Test
     void shouldUsePlaceTerritoryAndProducerTerritoryWhenPlaceTerritoryNotEqualsProducerTerritory() {
       final Territory producerTerritory = new Territory("producerTerritory", gameData);
-      final UndoablePlacement undoablePlacement = newUndoablePlacement(producerTerritory, placeTerritory);
+      final UndoablePlacement undoablePlacement =
+          newUndoablePlacement(producerTerritory, placeTerritory);
 
-      assertThat(undoablePlacement.getMoveLabel(), is(producerTerritory.getName() + " -> " + placeTerritory.getName()));
+      assertThat(
+          undoablePlacement.getMoveLabel(),
+          is(producerTerritory.getName() + " -> " + placeTerritory.getName()));
     }
   }
 
@@ -52,19 +58,27 @@ final class UndoablePlacementTest {
     @Test
     void shouldUsePlaceTerritoryWhenPlaceTerritoryEqualsProducerTerritory() {
       final Territory producerTerritory = new Territory(placeTerritory.getName(), gameData);
-      final UndoablePlacement undoablePlacement = newUndoablePlacement(producerTerritory, placeTerritory);
+      final UndoablePlacement undoablePlacement =
+          newUndoablePlacement(producerTerritory, placeTerritory);
 
-      assertThat(undoablePlacement.toString(), is(placeTerritory.getName() + ": 1 " + UNIT_TYPE_NAME));
+      assertThat(
+          undoablePlacement.toString(), is(placeTerritory.getName() + ": 1 " + UNIT_TYPE_NAME));
     }
 
     @Test
     void shouldUsePlaceTerritoryAndProducerTerritoryWhenPlaceTerritoryNotEqualsProducerTerritory() {
       final Territory producerTerritory = new Territory("producerTerritory", gameData);
-      final UndoablePlacement undoablePlacement = newUndoablePlacement(producerTerritory, placeTerritory);
+      final UndoablePlacement undoablePlacement =
+          newUndoablePlacement(producerTerritory, placeTerritory);
 
       assertThat(
           undoablePlacement.toString(),
-          is(producerTerritory.getName() + " produces in " + placeTerritory.getName() + ": 1 " + UNIT_TYPE_NAME));
+          is(
+              producerTerritory.getName()
+                  + " produces in "
+                  + placeTerritory.getName()
+                  + ": 1 "
+                  + UNIT_TYPE_NAME));
     }
   }
 }

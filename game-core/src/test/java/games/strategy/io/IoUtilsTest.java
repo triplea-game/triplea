@@ -19,10 +19,8 @@ import games.strategy.util.function.ThrowingFunction;
 @ExtendWith(MockitoExtension.class)
 public final class IoUtilsTest {
   private final byte[] bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-  @Mock
-  private ThrowingConsumer<InputStream, IOException> consumer;
-  @Mock
-  private ThrowingFunction<InputStream, ?, IOException> function;
+  @Mock private ThrowingConsumer<InputStream, IOException> consumer;
+  @Mock private ThrowingFunction<InputStream, ?, IOException> function;
 
   private void thenStreamContainsExpectedBytes(final InputStream is) throws Exception {
     final byte[] bytesRead = new byte[bytes.length];
@@ -35,7 +33,8 @@ public final class IoUtilsTest {
   public void consumeFromMemory_ShouldPassBytesToConsumer() throws Exception {
     IoUtils.consumeFromMemory(bytes, consumer);
 
-    final ArgumentCaptor<InputStream> inputStreamCaptor = ArgumentCaptor.forClass(InputStream.class);
+    final ArgumentCaptor<InputStream> inputStreamCaptor =
+        ArgumentCaptor.forClass(InputStream.class);
     verify(consumer).accept(inputStreamCaptor.capture());
     thenStreamContainsExpectedBytes(inputStreamCaptor.getValue());
   }
@@ -44,7 +43,8 @@ public final class IoUtilsTest {
   public void readFromMemory_ShouldPassBytesToFunction() throws Exception {
     IoUtils.readFromMemory(bytes, function);
 
-    final ArgumentCaptor<InputStream> inputStreamCaptor = ArgumentCaptor.forClass(InputStream.class);
+    final ArgumentCaptor<InputStream> inputStreamCaptor =
+        ArgumentCaptor.forClass(InputStream.class);
     verify(function).apply(inputStreamCaptor.capture());
     thenStreamContainsExpectedBytes(inputStreamCaptor.getValue());
   }

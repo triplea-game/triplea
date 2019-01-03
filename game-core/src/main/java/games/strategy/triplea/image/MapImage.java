@@ -17,8 +17,8 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 
 /**
- * Responsible for drawing countries on the map.
- * Is not responsible for drawing things on top of the map, such as units, routes etc.
+ * Responsible for drawing countries on the map. Is not responsible for drawing things on top of the
+ * map, such as units, routes etc.
  */
 public class MapImage {
 
@@ -37,10 +37,14 @@ public class MapImage {
       "PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR";
   private static final String PROPERTY_UNIT_COUNT_COLOR_STRING = "PROPERTY_UNIT_COUNT_COLOR";
   private static final String PROPERTY_UNIT_COUNT_OUTLINE_STRING = "PROPERTY_UNIT_COUNT_OUTLINE";
-  private static final String PROPERTY_UNIT_FACTORY_DAMAGE_COLOR_STRING = "PROPERTY_UNIT_FACTORY_DAMAGE_COLOR";
-  private static final String PROPERTY_UNIT_FACTORY_DAMAGE_OUTLINE_STRING = "PROPERTY_UNIT_FACTORY_DAMAGE_OUTLINE";
-  private static final String PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING = "PROPERTY_UNIT_HIT_DAMAGE_COLOR";
-  private static final String PROPERTY_UNIT_HIT_DAMAGE_OUTLINE_STRING = "PROPERTY_UNIT_HIT_DAMAGE_OUTLINE";
+  private static final String PROPERTY_UNIT_FACTORY_DAMAGE_COLOR_STRING =
+      "PROPERTY_UNIT_FACTORY_DAMAGE_COLOR";
+  private static final String PROPERTY_UNIT_FACTORY_DAMAGE_OUTLINE_STRING =
+      "PROPERTY_UNIT_FACTORY_DAMAGE_OUTLINE";
+  private static final String PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING =
+      "PROPERTY_UNIT_HIT_DAMAGE_COLOR";
+  private static final String PROPERTY_UNIT_HIT_DAMAGE_OUTLINE_STRING =
+      "PROPERTY_UNIT_HIT_DAMAGE_OUTLINE";
 
   private static final int MAP_FONT_SIZE_DEFAULT = 12;
   private static final Color TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_DEFAULT = Color.BLACK;
@@ -51,11 +55,14 @@ public class MapImage {
   private static final Color UNIT_HIT_DAMAGE_COLOR_DEFAULT = Color.BLACK;
   private static final Color UNIT_HIT_DAMAGE_OUTLINE_DEFAULT = Color.LIGHT_GRAY;
 
-
   public static Font getPropertyMapFont() {
     if (propertyMapFont == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-      propertyMapFont = new Font("Ariel", Font.BOLD, pref.getInt(PROPERTY_MAP_FONT_SIZE_STRING, MAP_FONT_SIZE_DEFAULT));
+      propertyMapFont =
+          new Font(
+              "Ariel",
+              Font.BOLD,
+              pref.getInt(PROPERTY_MAP_FONT_SIZE_STRING, MAP_FONT_SIZE_DEFAULT));
     }
     return propertyMapFont;
   }
@@ -64,8 +71,10 @@ public class MapImage {
     if (propertyTerritoryNameAndPuAndCommentColor == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
       propertyTerritoryNameAndPuAndCommentColor =
-          new Color(pref.getInt(PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_STRING,
-              TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_DEFAULT.getRGB()));
+          new Color(
+              pref.getInt(
+                  PROPERTY_TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_STRING,
+                  TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_DEFAULT.getRGB()));
     }
     return propertyTerritoryNameAndPuAndCommentColor;
   }
@@ -74,7 +83,8 @@ public class MapImage {
     if (propertyUnitCountColor == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
       propertyUnitCountColor =
-          new Color(pref.getInt(PROPERTY_UNIT_COUNT_COLOR_STRING, UNIT_COUNT_COLOR_DEFAULT.getRGB()));
+          new Color(
+              pref.getInt(PROPERTY_UNIT_COUNT_COLOR_STRING, UNIT_COUNT_COLOR_DEFAULT.getRGB()));
     }
     return propertyUnitCountColor;
   }
@@ -83,7 +93,8 @@ public class MapImage {
     if (propertyUnitCountOutline == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
       propertyUnitCountOutline =
-          new Color(pref.getInt(PROPERTY_UNIT_COUNT_OUTLINE_STRING, UNIT_COUNT_OUTLINE_DEFAULT.getRGB()));
+          new Color(
+              pref.getInt(PROPERTY_UNIT_COUNT_OUTLINE_STRING, UNIT_COUNT_OUTLINE_DEFAULT.getRGB()));
     }
     return propertyUnitCountOutline;
   }
@@ -92,7 +103,10 @@ public class MapImage {
     if (propertyUnitFactoryDamageColor == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
       propertyUnitFactoryDamageColor =
-          new Color(pref.getInt(PROPERTY_UNIT_FACTORY_DAMAGE_COLOR_STRING, UNIT_FACTORY_DAMAGE_COLOR_DEFAULT.getRGB()));
+          new Color(
+              pref.getInt(
+                  PROPERTY_UNIT_FACTORY_DAMAGE_COLOR_STRING,
+                  UNIT_FACTORY_DAMAGE_COLOR_DEFAULT.getRGB()));
     }
     return propertyUnitFactoryDamageColor;
   }
@@ -102,7 +116,9 @@ public class MapImage {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
       propertyUnitFactoryDamageOutline =
           new Color(
-              pref.getInt(PROPERTY_UNIT_FACTORY_DAMAGE_OUTLINE_STRING, UNIT_FACTORY_DAMAGE_OUTLINE_DEFAULT.getRGB()));
+              pref.getInt(
+                  PROPERTY_UNIT_FACTORY_DAMAGE_OUTLINE_STRING,
+                  UNIT_FACTORY_DAMAGE_OUTLINE_DEFAULT.getRGB()));
     }
     return propertyUnitFactoryDamageOutline;
   }
@@ -111,7 +127,9 @@ public class MapImage {
     if (propertyUnitHitDamageColor == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
       propertyUnitHitDamageColor =
-          new Color(pref.getInt(PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING, UNIT_HIT_DAMAGE_COLOR_DEFAULT.getRGB()));
+          new Color(
+              pref.getInt(
+                  PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING, UNIT_HIT_DAMAGE_COLOR_DEFAULT.getRGB()));
     }
     return propertyUnitHitDamageColor;
   }
@@ -120,7 +138,10 @@ public class MapImage {
     if (propertyUnitHitDamageOutline == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
       propertyUnitHitDamageOutline =
-          new Color(pref.getInt(PROPERTY_UNIT_HIT_DAMAGE_OUTLINE_STRING, UNIT_HIT_DAMAGE_OUTLINE_DEFAULT.getRGB()));
+          new Color(
+              pref.getInt(
+                  PROPERTY_UNIT_HIT_DAMAGE_OUTLINE_STRING,
+                  UNIT_HIT_DAMAGE_OUTLINE_DEFAULT.getRGB()));
     }
     return propertyUnitHitDamageOutline;
   }
@@ -225,15 +246,18 @@ public class MapImage {
   }
 
   public void loadMaps(final ResourceLoader loader) {
-    final Image smallFromFile = loadImage(loader, Constants.SMALL_MAP_FILENAME, Constants.SMALL_MAP_EXTENSIONS);
-    smallMapImage = Util.newImage(smallFromFile.getWidth(null), smallFromFile.getHeight(null), false);
+    final Image smallFromFile =
+        loadImage(loader, Constants.SMALL_MAP_FILENAME, Constants.SMALL_MAP_EXTENSIONS);
+    smallMapImage =
+        Util.newImage(smallFromFile.getWidth(null), smallFromFile.getHeight(null), false);
     final Graphics g = smallMapImage.getGraphics();
     g.drawImage(smallFromFile, 0, 0, null);
     g.dispose();
     smallFromFile.flush();
   }
 
-  private static Image loadImage(final ResourceLoader loader, final String name, final String[] extensions) {
+  private static Image loadImage(
+      final ResourceLoader loader, final String name, final String[] extensions) {
     URL mapFileUrl = null;
     for (final String extension : extensions) {
       mapFileUrl = loader.getResource(name + "." + extension);
@@ -242,7 +266,8 @@ public class MapImage {
       }
     }
     if (mapFileUrl == null) {
-      throw new IllegalStateException("File not found: " + name + " with extensions: " + Arrays.toString(extensions));
+      throw new IllegalStateException(
+          "File not found: " + name + " with extensions: " + Arrays.toString(extensions));
     }
     try {
       return ImageIO.read(mapFileUrl);

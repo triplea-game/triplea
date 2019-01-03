@@ -15,22 +15,19 @@ import com.google.common.html.HtmlEscapers;
 
 import lombok.extern.java.Log;
 
-/**
- * A class for loading help files from the classpath.
- */
+/** A class for loading help files from the classpath. */
 @Log
 public final class HelpSupport {
   private HelpSupport() {}
 
   /**
-   * Returns the HTML help text stored in the specified file. The file is assumed to be located on the classpath within
-   * the {@code games.strategy.triplea.help} package.
+   * Returns the HTML help text stored in the specified file. The file is assumed to be located on
+   * the classpath within the {@code games.strategy.triplea.help} package.
    */
   public static String loadHelp(final String fileName) {
     checkNotNull(fileName);
 
-    try (@Nullable
-    InputStream is = HelpSupport.class.getResourceAsStream(fileName)) {
+    try (@Nullable InputStream is = HelpSupport.class.getResourceAsStream(fileName)) {
       if (is == null) {
         final String message = "Help file '" + fileName + "' does not exist";
         log.warning(message);

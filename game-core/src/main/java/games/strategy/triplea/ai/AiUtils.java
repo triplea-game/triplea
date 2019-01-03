@@ -19,14 +19,10 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 
-/**
- * Handy utility methods for the writers of an AI.
- */
+/** Handy utility methods for the writers of an AI. */
 public class AiUtils {
 
-  /**
-   * Returns a comparator that sorts cheaper units before expensive ones.
-   */
+  /** Returns a comparator that sorts cheaper units before expensive ones. */
   public static Comparator<Unit> getCostComparator() {
     return Comparator.comparingInt(o -> getCost(o.getType(), o.getOwner(), o.getData()));
   }
@@ -34,9 +30,7 @@ public class AiUtils {
   /**
    * How many PU's does it cost the given player to produce the given unit type.
    *
-   * <p>
-   * If the player cannot produce the given unit, return Integer.MAX_VALUE
-   * </p>
+   * <p>If the player cannot produce the given unit, return Integer.MAX_VALUE
    */
   static int getCost(final UnitType unitType, final PlayerId player, final GameData data) {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
@@ -47,9 +41,7 @@ public class AiUtils {
   /**
    * Get the production rule for the given player, for the given unit type.
    *
-   * <p>
-   * If no such rule can be found, then return null.
-   * </p>
+   * <p>If no such rule can be found, then return null.
    */
   private static ProductionRule getProductionRule(final UnitType unitType, final PlayerId player) {
     final ProductionFrontier frontier = player.getProductionFrontier();
@@ -71,7 +63,8 @@ public class AiUtils {
    * @param attacking - are the units on attack or defense
    * @param sea - calculate the strength of the units in a sea or land battle?
    */
-  public static float strength(final Collection<Unit> units, final boolean attacking, final boolean sea) {
+  public static float strength(
+      final Collection<Unit> units, final boolean attacking, final boolean sea) {
     float strength = 0;
     for (final Unit u : units) {
       final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
@@ -97,13 +90,15 @@ public class AiUtils {
     }
     if (attacking) {
       final int art = CollectionUtils.countMatches(units, Matches.unitIsArtillery());
-      final int artSupport = CollectionUtils.countMatches(units, Matches.unitIsArtillerySupportable());
+      final int artSupport =
+          CollectionUtils.countMatches(units, Matches.unitIsArtillerySupportable());
       strength += Math.min(art, artSupport);
     }
     return strength;
   }
 
-  public static Unit getLastUnitMatching(final List<Unit> units, final Predicate<Unit> match, final int endIndex) {
+  public static Unit getLastUnitMatching(
+      final List<Unit> units, final Predicate<Unit> match, final int endIndex) {
     final int index = getIndexOfLastUnitMatching(units, match, endIndex);
     if (index == -1) {
       return null;
@@ -111,8 +106,8 @@ public class AiUtils {
     return units.get(index);
   }
 
-  public static int getIndexOfLastUnitMatching(final List<Unit> units, final Predicate<Unit> match,
-      final int endIndex) {
+  public static int getIndexOfLastUnitMatching(
+      final List<Unit> units, final Predicate<Unit> match, final int endIndex) {
     for (int i = endIndex; i >= 0; i--) {
       final Unit unit = units.get(i);
       if (match.test(unit)) {
@@ -141,8 +136,11 @@ public class AiUtils {
       if (ua.getCarrierCost() > 0) {
         // If this is the first carrier seek
         if (seekedCarrier == null) {
-          final int seekedCarrierIndex = getIndexOfLastUnitMatching(result,
-              Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)), result.size() - 1);
+          final int seekedCarrierIndex =
+              getIndexOfLastUnitMatching(
+                  result,
+                  Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)),
+                  result.size() - 1);
           if (seekedCarrierIndex == -1) {
             // No carriers left
             break;
@@ -150,13 +148,15 @@ public class AiUtils {
           seekedCarrier = result.get(seekedCarrierIndex);
           // Tell the code to insert carrier to the right of this plane
           indexToPlaceCarrierAt = i + 1;
-          spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
+          spaceLeftOnSeekedCarrier =
+              UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
         }
         spaceLeftOnSeekedCarrier -= ua.getCarrierCost();
         // If the carrier has been filled or overflowed
         if (spaceLeftOnSeekedCarrier <= 0) {
           if (spaceLeftOnSeekedCarrier < 0) {
-            // Move current unit index up one, so we re-process this unit (since it can't fit on the current seeked
+            // Move current unit index up one, so we re-process this unit (since it can't fit on the
+            // current seeked
             // carrier)
             i++;
           }
@@ -170,15 +170,20 @@ public class AiUtils {
             i--;
             filledCarriers.add(seekedCarrier);
             // Find the next carrier
-            seekedCarrier = getLastUnitMatching(result,
-                Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)), result.size() - 1);
+            seekedCarrier =
+                getLastUnitMatching(
+                    result,
+                    Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)),
+                    result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
               break;
             }
-            // Place next carrier right before this plane (which just filled the old carrier that was just moved)
+            // Place next carrier right before this plane (which just filled the old carrier that
+            // was just moved)
             indexToPlaceCarrierAt = i;
-            spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
+            spaceLeftOnSeekedCarrier =
+                UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
           } else { // If it's later in the list
             final int oldIndex = result.indexOf(seekedCarrier);
             int carrierPlaceLocation = indexToPlaceCarrierAt;
@@ -203,25 +208,30 @@ public class AiUtils {
             int planeMoveCount = 0;
             for (final Unit plane : planesBetweenHereAndCarrier) {
               result.remove(plane);
-              // Insert each plane right before carrier (index decreased cause removal of carrier reduced indexes)
+              // Insert each plane right before carrier (index decreased cause removal of carrier
+              // reduced indexes)
               result.add(carrierPlaceLocation - 1, plane);
               planeMoveCount++;
             }
             // Find the next carrier
-            seekedCarrier = getLastUnitMatching(result,
-                Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)), result.size() - 1);
+            seekedCarrier =
+                getLastUnitMatching(
+                    result,
+                    Matches.unitIsCarrier().and(Matches.isNotInList(filledCarriers)),
+                    result.size() - 1);
             if (seekedCarrier == null) {
               // No carriers left
               break;
             }
-            // Since we only moved planes up, just reduce next carrier place index by plane move count
+            // Since we only moved planes up, just reduce next carrier place index by plane move
+            // count
             indexToPlaceCarrierAt = carrierPlaceLocation - planeMoveCount;
-            spaceLeftOnSeekedCarrier = UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
+            spaceLeftOnSeekedCarrier =
+                UnitAttachment.get(seekedCarrier.getType()).getCarrierCapacity();
           }
         }
       }
     }
     return result;
   }
-
 }

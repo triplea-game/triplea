@@ -42,8 +42,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
       return false;
     }
     // make sure at least 1 player is enabled
-    return playerTypes.stream()
-        .anyMatch(PlayerSelectorRow::isPlayerEnabled);
+    return playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
   }
 
   @Override
@@ -59,7 +58,8 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public void update(final Observable o, final Object arg) {
-    SwingAction.invokeNowOrLater(() -> layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData()));
+    SwingAction.invokeNowOrLater(
+        () -> layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData()));
   }
 
   @Override

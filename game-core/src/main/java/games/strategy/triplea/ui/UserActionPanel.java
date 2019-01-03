@@ -34,9 +34,7 @@ import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.ui.SwingAction;
 
-/**
- * Similar to PoliticsPanel, but for UserActionAttachment/Delegate.
- */
+/** Similar to PoliticsPanel, but for UserActionAttachment/Delegate. */
 public class UserActionPanel extends ActionPanel {
   private static final long serialVersionUID = -2735582890226625860L;
   private final JLabel actionLabel = new JLabel();
@@ -61,18 +59,19 @@ public class UserActionPanel extends ActionPanel {
   public void display(final PlayerId id) {
     super.display(id);
     choice = null;
-    SwingUtilities.invokeLater(() -> {
-      removeAll();
-      actionLabel.setText(id.getName() + " Actions and Operations");
-      add(actionLabel);
-      selectUserActionButton = new JButton(selectUserActionAction);
-      selectUserActionButton.setEnabled(false);
-      add(selectUserActionButton);
-      doneButton = new JButton(dontBotherAction);
-      doneButton.setEnabled(false);
-      SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
-      add(doneButton);
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          removeAll();
+          actionLabel.setText(id.getName() + " Actions and Operations");
+          add(actionLabel);
+          selectUserActionButton = new JButton(selectUserActionAction);
+          selectUserActionButton.setEnabled(false);
+          add(selectUserActionButton);
+          doneButton = new JButton(dontBotherAction);
+          doneButton.setEnabled(false);
+          SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
+          add(doneButton);
+        });
   }
 
   /**
@@ -80,8 +79,8 @@ public class UserActionPanel extends ActionPanel {
    *
    * @return the choice of action
    */
-  public UserActionAttachment waitForUserActionAction(final boolean firstRun,
-      final IUserActionDelegate userActionsDelegate) {
+  public UserActionAttachment waitForUserActionAction(
+      final boolean firstRun, final IUserActionDelegate userActionsDelegate) {
     this.firstRun = firstRun;
 
     validUserActions = new ArrayList<>(userActionsDelegate.getValidActions());
@@ -94,53 +93,82 @@ public class UserActionPanel extends ActionPanel {
     if (this.firstRun) {
       ClipPlayer.play(SoundPath.CLIP_PHASE_USER_ACTIONS, getCurrentPlayer());
     }
-    SwingUtilities.invokeLater(() -> {
-      selectUserActionButton.setEnabled(true);
-      doneButton.setEnabled(true);
-      // press the user action button for us.
-      selectUserActionAction.actionPerformed(null);
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          selectUserActionButton.setEnabled(true);
+          doneButton.setEnabled(true);
+          // press the user action button for us.
+          selectUserActionAction.actionPerformed(null);
+        });
 
     waitForRelease();
     return choice;
   }
 
   /**
-   * Fires up a JDialog showing valid actions,
-   * choosing an action will release this model and trigger waitForRelease().
+   * Fires up a JDialog showing valid actions, choosing an action will release this model and
+   * trigger waitForRelease().
    */
-  private final Action selectUserActionAction = new AbstractAction("Take Action...") {
-    private static final long serialVersionUID = 2389485901611958851L;
+  private final Action selectUserActionAction =
+      new AbstractAction("Take Action...") {
+        private static final long serialVersionUID = 2389485901611958851L;
 
-    @Override
-    public void actionPerformed(final ActionEvent event) {
-      final JDialog userChoiceDialog = new JDialog(parent, "Actions and Operations", true);
+        @Override
+        public void actionPerformed(final ActionEvent event) {
+          final JDialog userChoiceDialog = new JDialog(parent, "Actions and Operations", true);
 
-      final JPanel userChoicePanel = new JPanel();
-      userChoicePanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-      userChoicePanel.setLayout(new GridBagLayout());
+          final JPanel userChoicePanel = new JPanel();
+          userChoicePanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+          userChoicePanel.setLayout(new GridBagLayout());
 
-      int row = 0;
-      final JScrollPane choiceScroll = new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
-      choiceScroll.setBorder(BorderFactory.createEtchedBorder());
-      userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER,
-          GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+          int row = 0;
+          final JScrollPane choiceScroll =
+              new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
+          choiceScroll.setBorder(BorderFactory.createEtchedBorder());
+          userChoicePanel.add(
+              choiceScroll,
+              new GridBagConstraints(
+                  0,
+                  row++,
+                  2,
+                  1,
+                  1,
+                  1,
+                  GridBagConstraints.CENTER,
+                  GridBagConstraints.BOTH,
+                  new Insets(0, 0, 0, 0),
+                  0,
+                  0));
 
-      final JButton noActionButton = new JButton(SwingAction.of("No Actions", e -> userChoiceDialog.setVisible(false)));
-      SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
-      userChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 2, 1, 0.0, 0.0, GridBagConstraints.EAST,
-          GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
+          final JButton noActionButton =
+              new JButton(SwingAction.of("No Actions", e -> userChoiceDialog.setVisible(false)));
+          SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
+          userChoicePanel.add(
+              noActionButton,
+              new GridBagConstraints(
+                  0,
+                  row,
+                  2,
+                  1,
+                  0.0,
+                  0.0,
+                  GridBagConstraints.EAST,
+                  GridBagConstraints.NONE,
+                  new Insets(12, 0, 0, 0),
+                  0,
+                  0));
 
-      userChoiceDialog.setContentPane(userChoicePanel);
-      userChoiceDialog.pack();
-      userChoiceDialog.setLocationRelativeTo(parent);
-      userChoiceDialog.setVisible(true);
-      userChoiceDialog.dispose();
-    }
-  };
+          userChoiceDialog.setContentPane(userChoicePanel);
+          userChoiceDialog.pack();
+          userChoiceDialog.setLocationRelativeTo(parent);
+          userChoiceDialog.setVisible(true);
+          userChoiceDialog.dispose();
+        }
+      };
 
   @VisibleForTesting
-  static boolean canSpendResourcesOnUserActions(final Collection<UserActionAttachment> userActions) {
+  static boolean canSpendResourcesOnUserActions(
+      final Collection<UserActionAttachment> userActions) {
     return userActions.stream().anyMatch(userAction -> !userAction.getCostResources().isEmpty());
   }
 
@@ -157,28 +185,69 @@ public class UserActionPanel extends ActionPanel {
       final int bottomInset = (row == lastRow) ? 0 : 4;
       final boolean canPlayerAffordUserAction = canPlayerAffordUserAction(getCurrentPlayer(), uaa);
 
-      userActionButtonPanel.add(getOtherPlayerFlags(uaa), new GridBagConstraints(0, row, 1, 1, 0.0, 0.0,
-          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(topInset, 0, bottomInset, 4), 0, 0));
+      userActionButtonPanel.add(
+          getOtherPlayerFlags(uaa),
+          new GridBagConstraints(
+              0,
+              row,
+              1,
+              1,
+              0.0,
+              0.0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.HORIZONTAL,
+              new Insets(topInset, 0, bottomInset, 4),
+              0,
+              0));
 
-      final JButton button = getMap().getUiContext().getResourceImageFactory().getResourcesButton(
-          new ResourceCollection(getData(), uaa.getCostResources()),
-          UserActionText.getInstance().getButtonText(uaa.getText()));
-      button.addActionListener(ae -> {
-        selectUserActionButton.setEnabled(false);
-        doneButton.setEnabled(false);
-        validUserActions = Collections.emptyList();
-        choice = uaa;
-        parent.setVisible(false);
-        release();
-      });
+      final JButton button =
+          getMap()
+              .getUiContext()
+              .getResourceImageFactory()
+              .getResourcesButton(
+                  new ResourceCollection(getData(), uaa.getCostResources()),
+                  UserActionText.getInstance().getButtonText(uaa.getText()));
+      button.addActionListener(
+          ae -> {
+            selectUserActionButton.setEnabled(false);
+            doneButton.setEnabled(false);
+            validUserActions = Collections.emptyList();
+            choice = uaa;
+            parent.setVisible(false);
+            release();
+          });
       button.setEnabled(canPlayerAffordUserAction);
-      userActionButtonPanel.add(button, new GridBagConstraints(1, row, 1, 1, 0.0, 0.0,
-          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(topInset, 4, bottomInset, 4), 0, 0));
+      userActionButtonPanel.add(
+          button,
+          new GridBagConstraints(
+              1,
+              row,
+              1,
+              1,
+              0.0,
+              0.0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.HORIZONTAL,
+              new Insets(topInset, 4, bottomInset, 4),
+              0,
+              0));
 
       final JLabel descriptionLabel = getActionDescriptionLabel(uaa);
       descriptionLabel.setEnabled(canPlayerAffordUserAction);
-      userActionButtonPanel.add(descriptionLabel, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0,
-          GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(topInset, 4, bottomInset, 0), 0, 0));
+      userActionButtonPanel.add(
+          descriptionLabel,
+          new GridBagConstraints(
+              2,
+              row,
+              1,
+              1,
+              0.0,
+              0.0,
+              GridBagConstraints.WEST,
+              GridBagConstraints.HORIZONTAL,
+              new Insets(topInset, 4, bottomInset, 0),
+              0,
+              0));
 
       row++;
     }
@@ -187,21 +256,27 @@ public class UserActionPanel extends ActionPanel {
   }
 
   @VisibleForTesting
-  static boolean canPlayerAffordUserAction(final PlayerId player, final UserActionAttachment userAction) {
+  static boolean canPlayerAffordUserAction(
+      final PlayerId player, final UserActionAttachment userAction) {
     return player.getResources().has(userAction.getCostResources());
   }
 
-  /**
-   * This will stop the user action Phase.
-   */
-  private final Action dontBotherAction = SwingAction.of("Done", e -> {
-    if (!firstRun || JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this),
-        "Are you sure you dont want to do anything?", "End Actions",
-        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      choice = null;
-      release();
-    }
-  });
+  /** This will stop the user action Phase. */
+  private final Action dontBotherAction =
+      SwingAction.of(
+          "Done",
+          e -> {
+            if (!firstRun
+                || JOptionPane.showConfirmDialog(
+                        JOptionPane.getFrameForComponent(UserActionPanel.this),
+                        "Are you sure you dont want to do anything?",
+                        "End Actions",
+                        JOptionPane.YES_NO_OPTION)
+                    == JOptionPane.YES_OPTION) {
+              choice = null;
+              release();
+            }
+          });
 
   /**
    * Convenient method to get a JCompenent showing the flags involved in this action.
@@ -212,14 +287,17 @@ public class UserActionPanel extends ActionPanel {
   private JPanel getOtherPlayerFlags(final UserActionAttachment uaa) {
     final JPanel panel = new JPanel();
     for (final PlayerId p : uaa.getOtherPlayers()) {
-      panel.add(new JLabel(new ImageIcon(this.getMap().getUiContext().getFlagImageFactory().getFlag(p))));
+      panel.add(
+          new JLabel(new ImageIcon(this.getMap().getUiContext().getFlagImageFactory().getFlag(p))));
     }
     return panel;
   }
 
   private static JLabel getActionDescriptionLabel(final UserActionAttachment paa) {
-    final String chanceString = paa.getChanceToHit() >= paa.getChanceDiceSides() ? ""
-        : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
+    final String chanceString =
+        paa.getChanceToHit() >= paa.getChanceDiceSides()
+            ? ""
+            : "[" + paa.getChanceToHit() + "/" + paa.getChanceDiceSides() + "] ";
     return new JLabel(chanceString + UserActionText.getInstance().getDescription(paa.getText()));
   }
 }

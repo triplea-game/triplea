@@ -48,13 +48,17 @@ public class RemoteMessengerTest {
     // simple set up for non networked testing
     final List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
     doAnswer(invocation -> connectionListeners.add(invocation.getArgument(0)))
-        .when(serverMessenger).addConnectionChangeListener(any());
-    doAnswer(invocation -> {
-      for (final IConnectionChangeListener listener : connectionListeners) {
-        listener.connectionRemoved(invocation.getArgument(0));
-      }
-      return null;
-    }).when(serverMessenger).removeConnection(any());
+        .when(serverMessenger)
+        .addConnectionChangeListener(any());
+    doAnswer(
+            invocation -> {
+              for (final IConnectionChangeListener listener : connectionListeners) {
+                listener.connectionRemoved(invocation.getArgument(0));
+              }
+              return null;
+            })
+        .when(serverMessenger)
+        .removeConnection(any());
     final Node dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
     when(serverMessenger.getLocalNode()).thenReturn(dummyNode);
     when(serverMessenger.getServerNode()).thenReturn(dummyNode);
@@ -141,14 +145,17 @@ public class RemoteMessengerTest {
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       unifiedMessengerHub = serverUnifiedMessenger.getHub();
       final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
-      final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
+      final RemoteMessenger clientRemoteMessenger =
+          new RemoteMessenger(new UnifiedMessenger(client));
       // register it on the server
       final TestRemote testRemote = new TestRemote();
       serverRemoteMessenger.registerRemote(testRemote, test);
-      // since the registration must go over a socket and through a couple threads, wait for the client to get it
+      // since the registration must go over a socket and through a couple threads, wait for the
+      // client to get it
       await().until(() -> unifiedMessengerHub.hasImplementors(test.getName()), is(true));
       // call it on the client
-      final int incrementedValue = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
+      final int incrementedValue =
+          ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
       assertEquals(2, incrementedValue);
       assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
     } finally {
@@ -156,7 +163,8 @@ public class RemoteMessengerTest {
     }
   }
 
-  private static void shutdownServerAndClient(final IServerMessenger server, final ClientMessenger client) {
+  private static void shutdownServerAndClient(
+      final IServerMessenger server, final ClientMessenger client) {
     if (server != null) {
       server.shutDown();
     }
@@ -176,14 +184,17 @@ public class RemoteMessengerTest {
       final int serverPort = server.getLocalNode().getSocketAddress().getPort();
       final String mac = MacFinder.getHashedMacAddress();
       client = new ClientMessenger("localhost", serverPort, "client", mac);
-      final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(server));
+      final RemoteMessenger serverRemoteMessenger =
+          new RemoteMessenger(new UnifiedMessenger(server));
       final TestRemote testRemote = new TestRemote();
       serverRemoteMessenger.registerRemote(testRemote, test);
-      final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
+      final RemoteMessenger clientRemoteMessenger =
+          new RemoteMessenger(new UnifiedMessenger(client));
       // call it on the client
       // should be no need to wait since the constructor should not
       // return until the initial state of the messenger is good
-      final int incrementedValue = ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
+      final int incrementedValue =
+          ((ITestRemote) clientRemoteMessenger.getRemote(test)).increment(1);
       assertEquals(2, incrementedValue);
       assertEquals(testRemote.getLastSenderNode(), client.getLocalNode());
     } finally {
@@ -204,11 +215,14 @@ public class RemoteMessengerTest {
       final String mac = MacFinder.getHashedMacAddress();
       client = new ClientMessenger("localhost", serverPort, "client", mac);
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
-      final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
+      final RemoteMessenger clientRemoteMessenger =
+          new RemoteMessenger(new UnifiedMessenger(client));
       clientRemoteMessenger.registerRemote(new TestRemote(), test);
-      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(true));
+      await()
+          .until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(true));
       client.shutDown();
-      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(false));
+      await()
+          .until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(false));
     } finally {
       shutdownServerAndClient(server, client);
     }
@@ -228,19 +242,24 @@ public class RemoteMessengerTest {
       client = new ClientMessenger("localhost", serverPort, "client", mac);
       final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(server);
       final RemoteMessenger serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
-      final RemoteMessenger clientRemoteMessenger = new RemoteMessenger(new UnifiedMessenger(client));
+      final RemoteMessenger clientRemoteMessenger =
+          new RemoteMessenger(new UnifiedMessenger(client));
       final CountDownLatch clientReadySignal = new CountDownLatch(1);
       final CountDownLatch testCompleteSignal = new CountDownLatch(1);
-      final IFoo foo = () -> {
-        clientReadySignal.countDown();
-        Interruptibles.await(testCompleteSignal);
-      };
+      final IFoo foo =
+          () -> {
+            clientReadySignal.countDown();
+            Interruptibles.await(testCompleteSignal);
+          };
       clientRemoteMessenger.registerRemote(foo, test);
-      await().until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(true));
-      final CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-        final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
-        remoteFoo.foo();
-      });
+      await()
+          .until(() -> serverUnifiedMessenger.getHub().hasImplementors(test.getName()), is(true));
+      final CompletableFuture<Void> future =
+          CompletableFuture.runAsync(
+              () -> {
+                final IFoo remoteFoo = (IFoo) serverRemoteMessenger.getRemote(test);
+                remoteFoo.foo();
+              });
       // wait for client to start
       Interruptibles.await(clientReadySignal);
       client.shutDown();

@@ -23,7 +23,10 @@ public final class AutoSaveFileUtils {
 
   @VisibleForTesting
   static File getAutoSaveFile(final String fileName) {
-    return ClientSetting.saveGamesFolderPath.getValueOrThrow().resolve(Paths.get("autoSave", fileName)).toFile();
+    return ClientSetting.saveGamesFolderPath
+        .getValueOrThrow()
+        .resolve(Paths.get("autoSave", fileName))
+        .toFile();
   }
 
   private static File getAutoSaveFile(final String baseFileName, final boolean headless) {
@@ -33,7 +36,8 @@ public final class AutoSaveFileUtils {
   @VisibleForTesting
   static String getAutoSaveFileName(final String baseFileName, final boolean headless) {
     if (headless) {
-      final String prefix = System.getProperty(TRIPLEA_NAME, System.getProperty(LOBBY_GAME_HOSTED_BY, ""));
+      final String prefix =
+          System.getProperty(TRIPLEA_NAME, System.getProperty(LOBBY_GAME_HOSTED_BY, ""));
       if (!prefix.isEmpty()) {
         return prefix + "_" + baseFileName;
       }
@@ -57,7 +61,9 @@ public final class AutoSaveFileUtils {
     checkNotNull(localDateTime);
 
     return getAutoSaveFile(
-        addExtension("connection_lost_on_" + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm").format(localDateTime)));
+        addExtension(
+            "connection_lost_on_"
+                + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm").format(localDateTime)));
   }
 
   public static File getBeforeStepAutoSaveFile(final String stepName, final boolean headless) {

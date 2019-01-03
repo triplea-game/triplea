@@ -26,11 +26,10 @@ import com.google.common.base.Splitter;
 /**
  * Default implementation of {@link CredentialManager}.
  *
- * <p>
- * This implementation stores the user's master password unencrypted in the user's preference tree. Thus, the master
- * password is in an area of the user's system that has the required permissions to ensure access only by the user. The
- * master password will automatically be created if it does not exist.
- * </p>
+ * <p>This implementation stores the user's master password unencrypted in the user's preference
+ * tree. Thus, the master password is in an area of the user's system that has the required
+ * permissions to ensure access only by the user. The master password will automatically be created
+ * if it does not exist.
  */
 final class DefaultCredentialManager implements CredentialManager {
   private static final String CIPHER_ALGORITHM = "AES";
@@ -45,16 +44,15 @@ final class DefaultCredentialManager implements CredentialManager {
   }
 
   /**
-   * Creates a new instance of the {@code CredentialManager} class using the default master password for the user.
+   * Creates a new instance of the {@code CredentialManager} class using the default master password
+   * for the user.
    *
-   * <p>
-   * If the user has a saved master password, it will be used. Otherwise, a new master password will be created for the
-   * user and saved.
-   * </p>
+   * <p>If the user has a saved master password, it will be used. Otherwise, a new master password
+   * will be created for the user and saved.
    *
    * @return A new credential manager.
-   *
-   * @throws CredentialManagerException If no saved master password exists and a new master password cannot be created.
+   * @throws CredentialManagerException If no saved master password exists and a new master password
+   *     cannot be created.
    */
   static DefaultCredentialManager newInstance() throws CredentialManagerException {
     try {
@@ -84,7 +82,8 @@ final class DefaultCredentialManager implements CredentialManager {
   }
 
   private static @Nullable char[] loadMasterPassword(final Preferences preferences) {
-    final byte[] encodedMasterPassword = preferences.getByteArray(PREFERENCE_KEY_MASTER_PASSWORD, null);
+    final byte[] encodedMasterPassword =
+        preferences.getByteArray(PREFERENCE_KEY_MASTER_PASSWORD, null);
     if (encodedMasterPassword == null) {
       return null;
     }
@@ -124,7 +123,8 @@ final class DefaultCredentialManager implements CredentialManager {
     SecureRandom.getInstance("SHA1PRNG").nextBytes(bytes);
   }
 
-  private static void saveMasterPassword(final Preferences preferences, final char[] masterPassword) {
+  private static void saveMasterPassword(
+      final Preferences preferences, final char[] masterPassword) {
     preferences.putByteArray(PREFERENCE_KEY_MASTER_PASSWORD, encodeCharsToBytes(masterPassword));
   }
 
@@ -143,7 +143,8 @@ final class DefaultCredentialManager implements CredentialManager {
   }
 
   @Override
-  public String protect(final String unprotectedCredentialAsString) throws CredentialManagerException {
+  public String protect(final String unprotectedCredentialAsString)
+      throws CredentialManagerException {
     checkNotNull(unprotectedCredentialAsString);
 
     final char[] unprotectedCredential = unprotectedCredentialAsString.toCharArray();
@@ -178,7 +179,8 @@ final class DefaultCredentialManager implements CredentialManager {
     return salt;
   }
 
-  private byte[] encrypt(final byte[] plaintext, final byte[] salt) throws GeneralSecurityException {
+  private byte[] encrypt(final byte[] plaintext, final byte[] salt)
+      throws GeneralSecurityException {
     return newCipher(Cipher.ENCRYPT_MODE, salt).doFinal(plaintext);
   }
 
@@ -192,7 +194,8 @@ final class DefaultCredentialManager implements CredentialManager {
     // https://security.stackexchange.com/questions/3959/recommended-of-iterations-when-using-pkbdf2-sha256
     final int iterationCount = 20_000;
 
-    // Oracle Java 8 limited to AES-128 without JCE Unlimited Strength Jurisdiction Policy installed on end-user
+    // Oracle Java 8 limited to AES-128 without JCE Unlimited Strength Jurisdiction Policy installed
+    // on end-user
     // machine. Oracle Java 9 will not have this limitation. OpenJDK does not have this limitation.
     final int keyLengthInBits = 128;
 
@@ -209,7 +212,8 @@ final class DefaultCredentialManager implements CredentialManager {
   }
 
   @Override
-  public String unprotectToString(final String protectedCredential) throws CredentialManagerException {
+  public String unprotectToString(final String protectedCredential)
+      throws CredentialManagerException {
     checkNotNull(protectedCredential);
 
     final char[] unprotectedCredential = unprotect(protectedCredential);
@@ -247,7 +251,8 @@ final class DefaultCredentialManager implements CredentialManager {
     return new CiphertextAndSalt(ciphertext, salt);
   }
 
-  private byte[] decrypt(final byte[] ciphertext, final byte[] salt) throws GeneralSecurityException {
+  private byte[] decrypt(final byte[] ciphertext, final byte[] salt)
+      throws GeneralSecurityException {
     return newCipher(Cipher.DECRYPT_MODE, salt).doFinal(ciphertext);
   }
 
@@ -255,7 +260,8 @@ final class DefaultCredentialManager implements CredentialManager {
     scrub(bytes, 0, bytes.length);
   }
 
-  private static void scrub(final byte[] bytes, final int fromIndexInclusive, final int toIndexExclusive) {
+  private static void scrub(
+      final byte[] bytes, final int fromIndexInclusive, final int toIndexExclusive) {
     Arrays.fill(bytes, fromIndexInclusive, toIndexExclusive, (byte) 0);
   }
 
@@ -263,7 +269,8 @@ final class DefaultCredentialManager implements CredentialManager {
     scrub(chars, 0, chars.length);
   }
 
-  private static void scrub(final char[] chars, final int fromIndexInclusive, final int toIndexExclusive) {
+  private static void scrub(
+      final char[] chars, final int fromIndexInclusive, final int toIndexExclusive) {
     Arrays.fill(chars, fromIndexInclusive, toIndexExclusive, '\0');
   }
 

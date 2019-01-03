@@ -53,18 +53,19 @@ class TechPanel extends ActionPanel {
   @Override
   public void display(final PlayerId id) {
     super.display(id);
-    SwingUtilities.invokeLater(() -> {
-      removeAll();
-      actionLabel.setText(id.getName() + " Tech Roll");
-      add(actionLabel);
-      if (isWW2V3TechModel()) {
-        add(new JButton(getTechTokenAction));
-        add(new JButton(justRollTech));
-      } else {
-        add(new JButton(getTechRollsAction));
-        add(new JButton(dontBother));
-      }
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          removeAll();
+          actionLabel.setText(id.getName() + " Tech Roll");
+          add(actionLabel);
+          if (isWW2V3TechModel()) {
+            add(new JButton(getTechTokenAction));
+            add(new JButton(justRollTech));
+          } else {
+            add(new JButton(getTechRollsAction));
+            add(new JButton(dontBother));
+          }
+        });
   }
 
   @Override
@@ -87,156 +88,197 @@ class TechPanel extends ActionPanel {
   }
 
   private List<TechAdvance> getAvailableTechs() {
-    final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(getCurrentPlayer(), getData());
-    final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData(), getCurrentPlayer());
+    final Collection<TechAdvance> currentAdvances =
+        TechTracker.getCurrentTechAdvances(getCurrentPlayer(), getData());
+    final Collection<TechAdvance> allAdvances =
+        TechAdvance.getTechAdvances(getData(), getCurrentPlayer());
     return CollectionUtils.difference(allAdvances, currentAdvances);
   }
 
   private List<TechnologyFrontier> getAvailableCategories() {
     final Collection<TechnologyFrontier> currentAdvances =
         TechTracker.getFullyResearchedPlayerTechCategories(getCurrentPlayer());
-    final Collection<TechnologyFrontier> allAdvances = TechAdvance.getPlayerTechCategories(getCurrentPlayer());
+    final Collection<TechnologyFrontier> allAdvances =
+        TechAdvance.getPlayerTechCategories(getCurrentPlayer());
     return CollectionUtils.difference(allAdvances, currentAdvances);
   }
 
-  private final Action getTechRollsAction = SwingAction.of("Roll Tech...", e -> {
-    TechAdvance advance = null;
-    if (isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel())) {
-      final List<TechAdvance> available = getAvailableTechs();
-      if (available.isEmpty()) {
-        JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
-        return;
-      }
-      final JList<TechAdvance> list = new JList<>(SwingComponents.newListModel(available));
-      final JPanel panel = new JPanel();
-      panel.setLayout(new BorderLayout());
-      panel.add(list, BorderLayout.CENTER);
-      panel.add(new JLabel("Select the tech you want to roll for"), BorderLayout.NORTH);
-      list.setSelectedIndex(0);
-      final int choice = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel,
-          "Select advance", JOptionPane.DEFAULT_OPTION);
-      if (choice != JOptionPane.OK_OPTION) {
-        return;
-      }
-      advance = list.getSelectedValue();
-    }
-    final int pus = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
-    final String message = "Roll Tech";
-    final TechRollPanel techRollPanel = new TechRollPanel(pus, getCurrentPlayer());
-    final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techRollPanel, message,
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
-    if (choice != JOptionPane.OK_OPTION) {
-      return;
-    }
-    final int quantity = techRollPanel.getValue();
-    if (advance == null) {
-      techRoll = new TechRoll(null, quantity);
-    } else {
-      try {
-        getData().acquireReadLock();
-        final TechnologyFrontier front = new TechnologyFrontier("", getData());
-        front.addAdvance(advance);
-        techRoll = new TechRoll(front, quantity);
-      } finally {
-        getData().releaseReadLock();
-      }
-    }
-    release();
-  });
-
-  private final Action dontBother = SwingAction.of("Done", e -> {
-    techRoll = null;
-    release();
-  });
-
-  private final Action getTechTokenAction = SwingAction.of("Buy Tech Tokens...", e -> {
-    final PlayerId currentPlayer = getCurrentPlayer();
-    currTokens = currentPlayer.getResources().getQuantity(Constants.TECH_TOKENS);
-    // Notify user if there are no more techs to acheive
-    final List<TechnologyFrontier> techCategories = getAvailableCategories();
-
-
-    if (techCategories.isEmpty()) {
-      JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
-      return;
-    }
-    final JList<TechnologyFrontier> list = new JList<TechnologyFrontier>(SwingComponents.newListModel(techCategories)) {
-      private static final long serialVersionUID = 35094445315520702L;
-
-      @Override
-      public String getToolTipText(final MouseEvent e) {
-        final int index = locationToIndex(e.getPoint());
-        return (-1 < index) ? getTechListToolTipText(getModel().getElementAt(index)) : null;
-      }
-    };
-    final JPanel panel = new JPanel();
-    panel.setLayout(new BorderLayout());
-    panel.add(list, BorderLayout.CENTER);
-    panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
-    list.setSelectedIndex(0);
-    JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart",
-        JOptionPane.PLAIN_MESSAGE);
-    final TechnologyFrontier category = list.getSelectedValue();
-
-    final int pus = currentPlayer.getResources().getQuantity(Constants.PUS);
-    // see if anyone will help us to pay
-    final Collection<PlayerId> helpPay;
-    final PlayerAttachment pa = PlayerAttachment.get(currentPlayer);
-    if (pa != null) {
-      helpPay = pa.getHelpPayTechCost();
-    } else {
-      helpPay = null;
-    }
-    final TechTokenPanel techTokenPanel = new TechTokenPanel(pus, currTokens, currentPlayer, helpPay);
-    final String message = "Purchase Tech Tokens";
-    final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techTokenPanel, message,
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
-    if (choice != JOptionPane.OK_OPTION) {
-      return;
-    }
-    quantity = techTokenPanel.getValue();
-    whoPaysHowMuch = techTokenPanel.getWhoPaysHowMuch();
-    currTokens += quantity;
-    techRoll = new TechRoll(category, currTokens, quantity, whoPaysHowMuch);
-    techRoll.setNewTokens(quantity);
-    release();
-
-
-  });
-
-  private final Action justRollTech = SwingAction.of("Done/Roll Current Tokens", e -> {
-    currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
-    // If this player has tokens, roll them.
-    if (currTokens > 0) {
-      final List<TechnologyFrontier> techCategories = getAvailableCategories();
-      if (techCategories.isEmpty()) {
-        return;
-      }
-      final JList<TechnologyFrontier> list =
-          new JList<TechnologyFrontier>(SwingComponents.newListModel(techCategories)) {
-            private static final long serialVersionUID = -8415987764855418565L;
-
-            @Override
-            public String getToolTipText(final MouseEvent e) {
-              final int index = locationToIndex(e.getPoint());
-              return (-1 < index) ? getTechListToolTipText(getModel().getElementAt(index)) : null;
+  private final Action getTechRollsAction =
+      SwingAction.of(
+          "Roll Tech...",
+          e -> {
+            TechAdvance advance = null;
+            if (isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel())) {
+              final List<TechAdvance> available = getAvailableTechs();
+              if (available.isEmpty()) {
+                JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
+                return;
+              }
+              final JList<TechAdvance> list = new JList<>(SwingComponents.newListModel(available));
+              final JPanel panel = new JPanel();
+              panel.setLayout(new BorderLayout());
+              panel.add(list, BorderLayout.CENTER);
+              panel.add(new JLabel("Select the tech you want to roll for"), BorderLayout.NORTH);
+              list.setSelectedIndex(0);
+              final int choice =
+                  JOptionPane.showConfirmDialog(
+                      JOptionPane.getFrameForComponent(TechPanel.this),
+                      panel,
+                      "Select advance",
+                      JOptionPane.DEFAULT_OPTION);
+              if (choice != JOptionPane.OK_OPTION) {
+                return;
+              }
+              advance = list.getSelectedValue();
             }
-          };
-      final JPanel panel = new JPanel();
-      panel.setLayout(new BorderLayout());
-      panel.add(list, BorderLayout.CENTER);
-      panel.add(new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
-      list.setSelectedIndex(0);
-      JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart",
-          JOptionPane.PLAIN_MESSAGE);
-      final TechnologyFrontier category = list.getSelectedValue();
-      techRoll = new TechRoll(category, currTokens);
-    } else {
-      techRoll = null;
-    }
-    release();
+            final int pus = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
+            final String message = "Roll Tech";
+            final TechRollPanel techRollPanel = new TechRollPanel(pus, getCurrentPlayer());
+            final int choice =
+                JOptionPane.showConfirmDialog(
+                    getTopLevelAncestor(),
+                    techRollPanel,
+                    message,
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null);
+            if (choice != JOptionPane.OK_OPTION) {
+              return;
+            }
+            final int quantity = techRollPanel.getValue();
+            if (advance == null) {
+              techRoll = new TechRoll(null, quantity);
+            } else {
+              try {
+                getData().acquireReadLock();
+                final TechnologyFrontier front = new TechnologyFrontier("", getData());
+                front.addAdvance(advance);
+                techRoll = new TechRoll(front, quantity);
+              } finally {
+                getData().releaseReadLock();
+              }
+            }
+            release();
+          });
 
-  });
+  private final Action dontBother =
+      SwingAction.of(
+          "Done",
+          e -> {
+            techRoll = null;
+            release();
+          });
+
+  private final Action getTechTokenAction =
+      SwingAction.of(
+          "Buy Tech Tokens...",
+          e -> {
+            final PlayerId currentPlayer = getCurrentPlayer();
+            currTokens = currentPlayer.getResources().getQuantity(Constants.TECH_TOKENS);
+            // Notify user if there are no more techs to acheive
+            final List<TechnologyFrontier> techCategories = getAvailableCategories();
+
+            if (techCategories.isEmpty()) {
+              JOptionPane.showMessageDialog(TechPanel.this, "No more available tech advances");
+              return;
+            }
+            final JList<TechnologyFrontier> list =
+                new JList<TechnologyFrontier>(SwingComponents.newListModel(techCategories)) {
+                  private static final long serialVersionUID = 35094445315520702L;
+
+                  @Override
+                  public String getToolTipText(final MouseEvent e) {
+                    final int index = locationToIndex(e.getPoint());
+                    return (-1 < index)
+                        ? getTechListToolTipText(getModel().getElementAt(index))
+                        : null;
+                  }
+                };
+            final JPanel panel = new JPanel();
+            panel.setLayout(new BorderLayout());
+            panel.add(list, BorderLayout.CENTER);
+            panel.add(
+                new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
+            list.setSelectedIndex(0);
+            JOptionPane.showMessageDialog(
+                JOptionPane.getFrameForComponent(TechPanel.this),
+                panel,
+                "Select chart",
+                JOptionPane.PLAIN_MESSAGE);
+            final TechnologyFrontier category = list.getSelectedValue();
+
+            final int pus = currentPlayer.getResources().getQuantity(Constants.PUS);
+            // see if anyone will help us to pay
+            final Collection<PlayerId> helpPay;
+            final PlayerAttachment pa = PlayerAttachment.get(currentPlayer);
+            if (pa != null) {
+              helpPay = pa.getHelpPayTechCost();
+            } else {
+              helpPay = null;
+            }
+            final TechTokenPanel techTokenPanel =
+                new TechTokenPanel(pus, currTokens, currentPlayer, helpPay);
+            final String message = "Purchase Tech Tokens";
+            final int choice =
+                JOptionPane.showConfirmDialog(
+                    getTopLevelAncestor(),
+                    techTokenPanel,
+                    message,
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null);
+            if (choice != JOptionPane.OK_OPTION) {
+              return;
+            }
+            quantity = techTokenPanel.getValue();
+            whoPaysHowMuch = techTokenPanel.getWhoPaysHowMuch();
+            currTokens += quantity;
+            techRoll = new TechRoll(category, currTokens, quantity, whoPaysHowMuch);
+            techRoll.setNewTokens(quantity);
+            release();
+          });
+
+  private final Action justRollTech =
+      SwingAction.of(
+          "Done/Roll Current Tokens",
+          e -> {
+            currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
+            // If this player has tokens, roll them.
+            if (currTokens > 0) {
+              final List<TechnologyFrontier> techCategories = getAvailableCategories();
+              if (techCategories.isEmpty()) {
+                return;
+              }
+              final JList<TechnologyFrontier> list =
+                  new JList<TechnologyFrontier>(SwingComponents.newListModel(techCategories)) {
+                    private static final long serialVersionUID = -8415987764855418565L;
+
+                    @Override
+                    public String getToolTipText(final MouseEvent e) {
+                      final int index = locationToIndex(e.getPoint());
+                      return (-1 < index)
+                          ? getTechListToolTipText(getModel().getElementAt(index))
+                          : null;
+                    }
+                  };
+              final JPanel panel = new JPanel();
+              panel.setLayout(new BorderLayout());
+              panel.add(list, BorderLayout.CENTER);
+              panel.add(
+                  new JLabel("Select which tech chart you want to roll for"), BorderLayout.NORTH);
+              list.setSelectedIndex(0);
+              JOptionPane.showMessageDialog(
+                  JOptionPane.getFrameForComponent(TechPanel.this),
+                  panel,
+                  "Select chart",
+                  JOptionPane.PLAIN_MESSAGE);
+              final TechnologyFrontier category = list.getSelectedValue();
+              techRoll = new TechRoll(category, currTokens);
+            } else {
+              techRoll = null;
+            }
+            release();
+          });
 
   private static String getTechListToolTipText(final TechnologyFrontier techCategory) {
     final List<TechAdvance> techList = techCategory.getTechs();
@@ -253,7 +295,9 @@ class TechPanel extends ActionPanel {
       }
       listedAlready.add(advance);
       final int freq = Collections.frequency(techList, advance);
-      strTechCategory.append(advance.getName()).append(freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
+      strTechCategory
+          .append(advance.getName())
+          .append(freq > 1 ? " (" + freq + "/" + techList.size() + ")" : "");
       if (iterTechList.hasNext()) {
         strTechCategory.append(", ");
       }
@@ -281,14 +325,62 @@ class TechPanel extends ActionPanel {
       final JLabel costLabel = new JLabel("x" + TechTracker.getTechCost(this.player));
       setLabel(pus);
       final int space = 0;
-      add(title, new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(5, 5, space, space), 0, 0));
-      add(textField, new GridBagConstraints(0, 1, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          new Insets(8, 10, space, space), 0, 0));
-      add(costLabel, new GridBagConstraints(1, 1, 1, 1, 0.5, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(8, 5, space, 2), 0, 0));
-      add(left, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(10, 5, space, space), 0, 0));
+      add(
+          title,
+          new GridBagConstraints(
+              0,
+              0,
+              3,
+              1,
+              1,
+              1,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(5, 5, space, space),
+              0,
+              0));
+      add(
+          textField,
+          new GridBagConstraints(
+              0,
+              1,
+              1,
+              1,
+              0.5,
+              1,
+              GridBagConstraints.EAST,
+              GridBagConstraints.NONE,
+              new Insets(8, 10, space, space),
+              0,
+              0));
+      add(
+          costLabel,
+          new GridBagConstraints(
+              1,
+              1,
+              1,
+              1,
+              0.5,
+              1,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(8, 5, space, 2),
+              0,
+              0));
+      add(
+          left,
+          new GridBagConstraints(
+              0,
+              2,
+              3,
+              1,
+              1,
+              1,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(10, 5, space, space),
+              0,
+              0));
     }
 
     private void setLabel(final int pus) {
@@ -312,7 +404,11 @@ class TechPanel extends ActionPanel {
     final ScrollableTextField textField;
     Map<PlayerId, ScrollableTextField> whoPaysTextFields = null;
 
-    TechTokenPanel(final int pus, final int currTokens, final PlayerId player, final Collection<PlayerId> helpPay) {
+    TechTokenPanel(
+        final int pus,
+        final int currTokens,
+        final PlayerId player,
+        final Collection<PlayerId> helpPay) {
       playerPus = pus;
       totalPus = pus;
       if (helpPay != null && !helpPay.isEmpty()) {
@@ -329,43 +425,163 @@ class TechPanel extends ActionPanel {
       title.setBorder(new EmptyBorder(5, 5, 5, 5));
       final int techCost = TechTracker.getTechCost(this.player);
       textField = new ScrollableTextField(0, totalPus / techCost);
-      final ScrollableTextFieldListener listener = stf -> {
-        setLabel(TechTracker.getTechCost(this.player) * textField.getValue());
-        setWidgetActivation();
-      };
+      final ScrollableTextFieldListener listener =
+          stf -> {
+            setLabel(TechTracker.getTechCost(this.player) * textField.getValue());
+            setWidgetActivation();
+          };
       textField.addChangeListener(listener);
       final JLabel costLabel = new JLabel("x" + techCost + " cost per token");
       setLabel(0);
       setTokens(currTokens);
       final int space = 0;
-      add(title, new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(5, 5, space, space), 0, 0));
-      add(textField, new GridBagConstraints(0, 1, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          new Insets(8, 10, space, space), 0, 0));
-      add(costLabel, new GridBagConstraints(1, 1, 1, 1, 0.5, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(8, 5, space, 2), 0, 0));
-      add(left, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(10, 5, space, space), 0, 0));
-      add(right, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(10, 130, space, space), 0, 0));
-      add(totalCost, new GridBagConstraints(0, 3, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(10, 5, space, space), 0, 0));
+      add(
+          title,
+          new GridBagConstraints(
+              0,
+              0,
+              3,
+              1,
+              1,
+              1,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(5, 5, space, space),
+              0,
+              0));
+      add(
+          textField,
+          new GridBagConstraints(
+              0,
+              1,
+              1,
+              1,
+              0.5,
+              1,
+              GridBagConstraints.EAST,
+              GridBagConstraints.NONE,
+              new Insets(8, 10, space, space),
+              0,
+              0));
+      add(
+          costLabel,
+          new GridBagConstraints(
+              1,
+              1,
+              1,
+              1,
+              0.5,
+              1,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(8, 5, space, 2),
+              0,
+              0));
+      add(
+          left,
+          new GridBagConstraints(
+              0,
+              2,
+              3,
+              1,
+              1,
+              1,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(10, 5, space, space),
+              0,
+              0));
+      add(
+          right,
+          new GridBagConstraints(
+              0,
+              2,
+              3,
+              1,
+              1,
+              1,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(10, 130, space, space),
+              0,
+              0));
+      add(
+          totalCost,
+          new GridBagConstraints(
+              0,
+              3,
+              3,
+              1,
+              1,
+              1,
+              GridBagConstraints.WEST,
+              GridBagConstraints.NONE,
+              new Insets(10, 5, space, space),
+              0,
+              0));
       if (helpPay != null && !helpPay.isEmpty()) {
         if (whoPaysTextFields == null) {
           whoPaysTextFields = new HashMap<>();
         }
         helpPay.remove(player);
         int row = 4;
-        add(new JLabel("Nations Paying How Much:"),
-            new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.EAST,
-                GridBagConstraints.NONE, new Insets(30, 6, 6, 6), 0, 0));
+        add(
+            new JLabel("Nations Paying How Much:"),
+            new GridBagConstraints(
+                0,
+                row,
+                1,
+                1,
+                0.5,
+                1,
+                GridBagConstraints.EAST,
+                GridBagConstraints.NONE,
+                new Insets(30, 6, 6, 6),
+                0,
+                0));
         row++;
-        add(new JLabel(player.getName()), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
-            GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
-        add(playerPuField, new GridBagConstraints(1, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
-            GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
-        add(new JLabel("PUs"), new GridBagConstraints(2, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
-            GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+        add(
+            new JLabel(player.getName()),
+            new GridBagConstraints(
+                0,
+                row,
+                1,
+                1,
+                0.5,
+                1,
+                GridBagConstraints.CENTER,
+                GridBagConstraints.NONE,
+                new Insets(6, 6, 6, 6),
+                0,
+                0));
+        add(
+            playerPuField,
+            new GridBagConstraints(
+                1,
+                row,
+                1,
+                1,
+                0.5,
+                1,
+                GridBagConstraints.CENTER,
+                GridBagConstraints.NONE,
+                new Insets(6, 6, 6, 6),
+                0,
+                0));
+        add(
+            new JLabel("PUs"),
+            new GridBagConstraints(
+                2,
+                row,
+                1,
+                1,
+                0.5,
+                1,
+                GridBagConstraints.CENTER,
+                GridBagConstraints.NONE,
+                new Insets(6, 6, 6, 6),
+                0,
+                0));
         row++;
         for (final PlayerId p : helpPay) {
           final int helperPUs = p.getResources().getQuantity(Constants.PUS);
@@ -374,12 +590,48 @@ class TechPanel extends ActionPanel {
             whoPaysTextField.addChangeListener(setWidgetAction());
             whoPaysTextFields.put(p, whoPaysTextField);
             // TODO: force players to pay if it goes above the cost player can afford.
-            add(new JLabel(p.getName()), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
-                GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
-            add(whoPaysTextField, new GridBagConstraints(1, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
-                GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
-            add(new JLabel("PUs"), new GridBagConstraints(2, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER,
-                GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+            add(
+                new JLabel(p.getName()),
+                new GridBagConstraints(
+                    0,
+                    row,
+                    1,
+                    1,
+                    0.5,
+                    1,
+                    GridBagConstraints.CENTER,
+                    GridBagConstraints.NONE,
+                    new Insets(6, 6, 6, 6),
+                    0,
+                    0));
+            add(
+                whoPaysTextField,
+                new GridBagConstraints(
+                    1,
+                    row,
+                    1,
+                    1,
+                    0.5,
+                    1,
+                    GridBagConstraints.CENTER,
+                    GridBagConstraints.NONE,
+                    new Insets(6, 6, 6, 6),
+                    0,
+                    0));
+            add(
+                new JLabel("PUs"),
+                new GridBagConstraints(
+                    2,
+                    row,
+                    1,
+                    1,
+                    0.5,
+                    1,
+                    GridBagConstraints.CENTER,
+                    GridBagConstraints.NONE,
+                    new Insets(6, 6, 6, 6),
+                    0,
+                    0));
             row++;
           }
         }
@@ -397,7 +649,8 @@ class TechPanel extends ActionPanel {
       }
       final int totalPaidByPlayer = Math.max(0, cost - totalPaidByOthers);
       int amountOver = -1 * (playerPus - totalPaidByPlayer);
-      final Iterator<Entry<PlayerId, ScrollableTextField>> otherPayers = whoPaysTextFields.entrySet().iterator();
+      final Iterator<Entry<PlayerId, ScrollableTextField>> otherPayers =
+          whoPaysTextFields.entrySet().iterator();
       while (amountOver > 0 && otherPayers.hasNext()) {
         final Entry<PlayerId, ScrollableTextField> entry = otherPayers.next();
         int current = entry.getValue().getValue();
@@ -415,7 +668,8 @@ class TechPanel extends ActionPanel {
         totalPaidByOthers += Math.max(0, entry.getValue().getValue());
       }
       int amountUnder = -1 * (cost - totalPaidByOthers);
-      final Iterator<Entry<PlayerId, ScrollableTextField>> otherPayers2 = whoPaysTextFields.entrySet().iterator();
+      final Iterator<Entry<PlayerId, ScrollableTextField>> otherPayers2 =
+          whoPaysTextFields.entrySet().iterator();
       while (amountUnder > 0 && otherPayers2.hasNext()) {
         final Entry<PlayerId, ScrollableTextField> entry = otherPayers2.next();
         int current = entry.getValue().getValue();

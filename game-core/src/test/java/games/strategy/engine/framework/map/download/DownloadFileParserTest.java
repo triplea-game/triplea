@@ -57,34 +57,37 @@ public class DownloadFileParserTest {
   }
 
   private static byte[] buildTestData() {
-    final String xml = ""
-        + "- url: http://example.com/games/game.zip\n"
-        + "  mapName: " + GAME_NAME + "\n"
-        + "  version: 1\n"
-        + newTypeTag(DownloadFileDescription.DownloadType.MAP)
-        + "  description: |\n"
-        + "     <pre>Some notes about the game, simple html allowed.\n"
-        + "     </pre>\n"
-        + "- url: http://example.com/games/mod.zip\n"
-        + "  mapName: modName\n"
-        + "  version: 1\n"
-        // missing map type defaults to map
-        + "  description: |\n"
-        + "      map mod\n"
-        + "- url: http://example.com/games/skin.zip\n"
-        + "  mapName: skin\n"
-        + "  version: 1\n"
-        + newTypeTag(DownloadFileDescription.DownloadType.MAP_SKIN)
-        + "  description: |\n"
-        + "      map skin\n"
-        + "- url: http://example.com/games/tool.zip\n"
-        + "  mapName: mapToolName\n"
-        + "  version: 1\n"
-        + newTypeTag(DownloadFileDescription.DownloadType.MAP_TOOL)
-        + "  description: |\n"
-        + "       <pre>\n"
-        + "       this is a map tool"
-        + "    </pre>\n";
+    final String xml =
+        ""
+            + "- url: http://example.com/games/game.zip\n"
+            + "  mapName: "
+            + GAME_NAME
+            + "\n"
+            + "  version: 1\n"
+            + newTypeTag(DownloadFileDescription.DownloadType.MAP)
+            + "  description: |\n"
+            + "     <pre>Some notes about the game, simple html allowed.\n"
+            + "     </pre>\n"
+            + "- url: http://example.com/games/mod.zip\n"
+            + "  mapName: modName\n"
+            + "  version: 1\n"
+            // missing map type defaults to map
+            + "  description: |\n"
+            + "      map mod\n"
+            + "- url: http://example.com/games/skin.zip\n"
+            + "  mapName: skin\n"
+            + "  version: 1\n"
+            + newTypeTag(DownloadFileDescription.DownloadType.MAP_SKIN)
+            + "  description: |\n"
+            + "      map skin\n"
+            + "- url: http://example.com/games/tool.zip\n"
+            + "  mapName: mapToolName\n"
+            + "  version: 1\n"
+            + newTypeTag(DownloadFileDescription.DownloadType.MAP_TOOL)
+            + "  description: |\n"
+            + "       <pre>\n"
+            + "       this is a map tool"
+            + "    </pre>\n";
     return xml.getBytes(StandardCharsets.UTF_8);
   }
 
@@ -98,12 +101,15 @@ public class DownloadFileParserTest {
   }
 
   private static byte[] newSimpleGameXmlWithNoTypeTag() {
-    final String xml = ""
-        + "- url: http://example.com/games/mod.zip\n"
-        + "  mapName: " + GAME_NAME + "\n"
-        + "  version: 1\n"
-        + "  description: |\n"
-        + "      description\n";
+    final String xml =
+        ""
+            + "- url: http://example.com/games/mod.zip\n"
+            + "  mapName: "
+            + GAME_NAME
+            + "\n"
+            + "  version: 1\n"
+            + "  description: |\n"
+            + "      description\n";
     return xml.getBytes(StandardCharsets.UTF_8);
   }
 }

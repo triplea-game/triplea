@@ -38,17 +38,12 @@ import games.strategy.triplea.ui.menubar.LobbyMenu;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
 
-/**
- * The top-level frame window for the lobby client UI.
- */
+/** The top-level frame window for the lobby client UI. */
 public class LobbyFrame extends JFrame {
   private static final long serialVersionUID = -388371674076362572L;
 
-  private static final List<String> banOrMuteOptions = ImmutableList.of(
-      "Mac Address Only",
-      "User Name only",
-      "Name and Mac",
-      "Cancel");
+  private static final List<String> banOrMuteOptions =
+      ImmutableList.of("Mac Address Only", "User Name only", "Name and Mac", "Cancel");
 
   private final LobbyClient client;
   private final ChatMessagePanel chatMessagePanel;
@@ -59,8 +54,13 @@ public class LobbyFrame extends JFrame {
     setIconImage(GameRunner.getGameIcon(this));
     this.client = client;
     setJMenuBar(new LobbyMenu(this));
-    final Chat chat = new Chat(this.client.getMessenger(), LobbyConstants.LOBBY_CHAT,
-        this.client.getChannelMessenger(), this.client.getRemoteMessenger(), Chat.ChatSoundProfile.LOBBY_CHATROOM);
+    final Chat chat =
+        new Chat(
+            this.client.getMessenger(),
+            LobbyConstants.LOBBY_CHAT,
+            this.client.getChannelMessenger(),
+            this.client.getRemoteMessenger(),
+            Chat.ChatSoundProfile.LOBBY_CHATROOM);
     chatMessagePanel = new ChatMessagePanel(chat);
     showServerMessage(lobbyServerProperties);
     chatMessagePanel.setShowTime(true);
@@ -87,12 +87,13 @@ public class LobbyFrame extends JFrame {
     chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
     this.client.getMessenger().addErrorListener((reason) -> connectionToServerLost());
-    addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(final WindowEvent e) {
-        shutdown();
-      }
-    });
+    addWindowListener(
+        new WindowAdapter() {
+          @Override
+          public void windowClosing(final WindowEvent e) {
+            shutdown();
+          }
+        });
   }
 
   public ChatMessagePanel getChatMessagePanel() {
@@ -112,102 +113,141 @@ public class LobbyFrame extends JFrame {
     if (clickedOn.equals(client.getMessenger().getLocalNode())) {
       return Collections.emptyList();
     }
-    final IModeratorController controller = (IModeratorController) client.getRemoteMessenger()
-        .getRemote(IModeratorController.REMOTE_NAME);
+    final IModeratorController controller =
+        (IModeratorController)
+            client.getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
     final List<Action> actions = new ArrayList<>();
-    actions.add(SwingAction.of("Boot " + clickedOn.getName(), e -> {
-      if (!confirm("Boot " + clickedOn.getName())) {
-        return;
-      }
-      controller.boot(clickedOn);
-    }));
-    actions.add(SwingAction.of("Ban Player", e -> {
-      final int resultBanType = JOptionPane.showOptionDialog(LobbyFrame.this,
-          "Select the type of ban:",
-          "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-          banOrMuteOptions.toArray(), banOrMuteOptions.get(banOrMuteOptions.size() - 1));
-      if (resultBanType < 0) {
-        return;
-      }
-      final String selectedBanType = banOrMuteOptions.get(resultBanType);
-      if (selectedBanType.equals("Cancel")) {
-        return;
-      }
+    actions.add(
+        SwingAction.of(
+            "Boot " + clickedOn.getName(),
+            e -> {
+              if (!confirm("Boot " + clickedOn.getName())) {
+                return;
+              }
+              controller.boot(clickedOn);
+            }));
+    actions.add(
+        SwingAction.of(
+            "Ban Player",
+            e -> {
+              final int resultBanType =
+                  JOptionPane.showOptionDialog(
+                      LobbyFrame.this,
+                      "Select the type of ban:",
+                      "Select Ban Type",
+                      JOptionPane.OK_CANCEL_OPTION,
+                      JOptionPane.QUESTION_MESSAGE,
+                      null,
+                      banOrMuteOptions.toArray(),
+                      banOrMuteOptions.get(banOrMuteOptions.size() - 1));
+              if (resultBanType < 0) {
+                return;
+              }
+              final String selectedBanType = banOrMuteOptions.get(resultBanType);
+              if (selectedBanType.equals("Cancel")) {
+                return;
+              }
 
-      TimespanDialog.prompt(this, "Select Timespan",
-          "Please consult other admins before banning longer than 1 day. \n"
-              + "And please remember to report this ban.",
-          date -> {
-            if (selectedBanType.toLowerCase().contains("name")) {
-              controller.banUsername(clickedOn, date);
-            }
-            if (selectedBanType.toLowerCase().contains("mac")) {
-              controller.banMac(clickedOn, date);
-            }
-            // Should we keep this auto?
-            controller.boot(clickedOn);
-          });
-    }));
+              TimespanDialog.prompt(
+                  this,
+                  "Select Timespan",
+                  "Please consult other admins before banning longer than 1 day. \n"
+                      + "And please remember to report this ban.",
+                  date -> {
+                    if (selectedBanType.toLowerCase().contains("name")) {
+                      controller.banUsername(clickedOn, date);
+                    }
+                    if (selectedBanType.toLowerCase().contains("mac")) {
+                      controller.banMac(clickedOn, date);
+                    }
+                    // Should we keep this auto?
+                    controller.boot(clickedOn);
+                  });
+            }));
 
-    actions.add(SwingAction.of("Mute Player", e -> {
-      final int resultMuteType = JOptionPane.showOptionDialog(LobbyFrame.this,
-          "<html>Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
-          "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-          banOrMuteOptions.toArray(), banOrMuteOptions.get(banOrMuteOptions.size() - 1));
-      if (resultMuteType < 0) {
-        return;
-      }
-      final String selectedMuteType = banOrMuteOptions.get(resultMuteType);
-      if (selectedMuteType.equals("Cancel")) {
-        return;
-      }
-      TimespanDialog.prompt(this, "Select Timespan",
-          "Please consult other admins before muting longer than 1 day. \n"
-              + "And please remember to report this mute.",
-          date -> {
-            if (selectedMuteType.toLowerCase().contains("name")) {
-              controller.muteUsername(clickedOn, date);
-            }
-            if (selectedMuteType.toLowerCase().contains("mac")) {
-              controller.muteMac(clickedOn, date);
-            }
-          });
-    }));
-    actions.add(SwingAction.of("Quick Mute", e -> {
-      final JLabel label = new JLabel("How many minutes should this player be muted?");
-      final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 0, 60 * 24 * 2, 1));
-      final JPanel panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-      panel.add(label);
-      panel.add(spinner);
-      if (JOptionPane.showConfirmDialog(LobbyFrame.this, panel, "Mute Player",
-          JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-        final Object value = spinner.getValue();
-        if (value == null) {
-          return;
-        }
-        final long resultMuteLengthInMinutes = Long.parseLong(value.toString());
-        if (resultMuteLengthInMinutes < 0) {
-          return;
-        }
-        final Instant expire = Instant.now().plus(Duration.ofMinutes(resultMuteLengthInMinutes));
-        controller.muteUsername(clickedOn, Date.from(expire));
-        controller.muteMac(clickedOn, Date.from(expire));
-      }
-    }));
-    actions.add(SwingAction.of("Show player information", e -> {
-      final String text = controller.getInformationOn(clickedOn);
-      final JTextPane textPane = new JTextPane();
-      textPane.setEditable(false);
-      textPane.setText(text);
-      JOptionPane.showMessageDialog(null, textPane, "Player Info", JOptionPane.INFORMATION_MESSAGE);
-    }));
+    actions.add(
+        SwingAction.of(
+            "Mute Player",
+            e -> {
+              final int resultMuteType =
+                  JOptionPane.showOptionDialog(
+                      LobbyFrame.this,
+                      "<html>Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
+                      "Select Mute Type",
+                      JOptionPane.OK_CANCEL_OPTION,
+                      JOptionPane.QUESTION_MESSAGE,
+                      null,
+                      banOrMuteOptions.toArray(),
+                      banOrMuteOptions.get(banOrMuteOptions.size() - 1));
+              if (resultMuteType < 0) {
+                return;
+              }
+              final String selectedMuteType = banOrMuteOptions.get(resultMuteType);
+              if (selectedMuteType.equals("Cancel")) {
+                return;
+              }
+              TimespanDialog.prompt(
+                  this,
+                  "Select Timespan",
+                  "Please consult other admins before muting longer than 1 day. \n"
+                      + "And please remember to report this mute.",
+                  date -> {
+                    if (selectedMuteType.toLowerCase().contains("name")) {
+                      controller.muteUsername(clickedOn, date);
+                    }
+                    if (selectedMuteType.toLowerCase().contains("mac")) {
+                      controller.muteMac(clickedOn, date);
+                    }
+                  });
+            }));
+    actions.add(
+        SwingAction.of(
+            "Quick Mute",
+            e -> {
+              final JLabel label = new JLabel("How many minutes should this player be muted?");
+              final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 0, 60 * 24 * 2, 1));
+              final JPanel panel = new JPanel();
+              panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+              panel.add(label);
+              panel.add(spinner);
+              if (JOptionPane.showConfirmDialog(
+                      LobbyFrame.this, panel, "Mute Player", JOptionPane.OK_CANCEL_OPTION)
+                  == JOptionPane.OK_OPTION) {
+                final Object value = spinner.getValue();
+                if (value == null) {
+                  return;
+                }
+                final long resultMuteLengthInMinutes = Long.parseLong(value.toString());
+                if (resultMuteLengthInMinutes < 0) {
+                  return;
+                }
+                final Instant expire =
+                    Instant.now().plus(Duration.ofMinutes(resultMuteLengthInMinutes));
+                controller.muteUsername(clickedOn, Date.from(expire));
+                controller.muteMac(clickedOn, Date.from(expire));
+              }
+            }));
+    actions.add(
+        SwingAction.of(
+            "Show player information",
+            e -> {
+              final String text = controller.getInformationOn(clickedOn);
+              final JTextPane textPane = new JTextPane();
+              textPane.setEditable(false);
+              textPane.setText(text);
+              JOptionPane.showMessageDialog(
+                  null, textPane, "Player Info", JOptionPane.INFORMATION_MESSAGE);
+            }));
     return actions;
   }
 
   private boolean confirm(final String question) {
-    final int selectionOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(this), question,
-        "Question", JOptionPane.OK_CANCEL_OPTION);
+    final int selectionOption =
+        JOptionPane.showConfirmDialog(
+            JOptionPane.getFrameForComponent(this),
+            question,
+            "Question",
+            JOptionPane.OK_CANCEL_OPTION);
     return selectionOption == JOptionPane.OK_OPTION;
   }
 
@@ -224,16 +264,20 @@ public class LobbyFrame extends JFrame {
   public void shutdown() {
     setVisible(false);
     dispose();
-    new Thread(() -> {
-      GameRunner.showMainFrame();
-      client.getMessenger().shutDown();
-      GameRunner.exitGameIfFinished();
-    }).start();
+    new Thread(
+            () -> {
+              GameRunner.showMainFrame();
+              client.getMessenger().shutDown();
+              GameRunner.exitGameIfFinished();
+            })
+        .start();
   }
 
   private void connectionToServerLost() {
-    EventThreadJOptionPane.showMessageDialog(LobbyFrame.this,
-        "Connection to Server Lost.  Please close this instance and reconnect to the lobby.", "Connection Lost",
+    EventThreadJOptionPane.showMessageDialog(
+        LobbyFrame.this,
+        "Connection to Server Lost.  Please close this instance and reconnect to the lobby.",
+        "Connection Lost",
         JOptionPane.ERROR_MESSAGE);
   }
 }

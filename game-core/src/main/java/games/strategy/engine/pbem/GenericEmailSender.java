@@ -39,31 +39,30 @@ import lombok.extern.java.Log;
 /**
  * A PBEM (play by email) sender that will email turn summary and save game.
  *
- * <p>
- * Instances of this class are saved as a property as part of a save game.
- * </p>
+ * <p>Instances of this class are saved as a property as part of a save game.
  *
- * <p>
- * This class has two fields per credential. One is transient and used while the game is running. The other is
- * persistent and "cleared" when the game starts. This is done for security reasons so save games will not include
- * credentials. The persistent password is used when the object is stored in the local cache.
- * </p>
+ * <p>This class has two fields per credential. One is transient and used while the game is running.
+ * The other is persistent and "cleared" when the game starts. This is done for security reasons so
+ * save games will not include credentials. The persistent password is used when the object is
+ * stored in the local cache.
  */
 @Log
 public class GenericEmailSender implements IEmailSender {
   private static final long serialVersionUID = 4644748856027574157L;
 
   /**
-   * The value assigned to a persistent credential that indicates it was cleared and the associated transient credential
-   * should be used instead.
+   * The value assigned to a persistent credential that indicates it was cleared and the associated
+   * transient credential should be used instead.
    */
   private static final String USE_TRANSIENT_CREDENTIAL = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
 
   /**
-   * Currently only message encryption is allowed. Later connect based encryption through SSL may be implemented.
+   * Currently only message encryption is allowed. Later connect based encryption through SSL may be
+   * implemented.
    */
   public enum Encryption {
-    NONE, TLS
+    NONE,
+    TLS
   }
 
   private long timeout = TimeUnit.SECONDS.toMillis(60);
@@ -127,7 +126,11 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   @Override
-  public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String saveGameName)
+  public void sendEmail(
+      final String subject,
+      final String htmlMessage,
+      final File saveGame,
+      final String saveGameName)
       throws IOException {
     // this is the last step and we create the email to send
     if (toAddress == null) {
@@ -199,12 +202,11 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Returns {@code true} if the email provider requires authentication; otherwise returns {@code false}.
+   * Returns {@code true} if the email provider requires authentication; otherwise returns {@code
+   * false}.
    *
-   * <p>
-   * Subclasses may override and are not required to call the superclass implementation. This implementation always
-   * returns {@code false}.
-   * </p>
+   * <p>Subclasses may override and are not required to call the superclass implementation. This
+   * implementation always returns {@code false}.
    */
   public boolean isAuthenticationRequired() {
     return false;
@@ -254,8 +256,8 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Set the send timeout, after the Email sender is connected to the SMTP server this is the maximum amount of time
-   * it will wait before aborting the send operation.
+   * Set the send timeout, after the Email sender is connected to the SMTP server this is the
+   * maximum amount of time it will wait before aborting the send operation.
    *
    * @param timeout the timeout in milli seconds. The default is 60 seconds (60000 milli seconds)
    */
@@ -318,7 +320,8 @@ public class GenericEmailSender implements IEmailSender {
   }
 
   /**
-   * Sets the to address field, if multiple email addresses are given they must be separated by space.
+   * Sets the to address field, if multiple email addresses are given they must be separated by
+   * space.
    *
    * @param to the to addresses
    */
@@ -388,8 +391,21 @@ public class GenericEmailSender implements IEmailSender {
 
   @Override
   public String toString() {
-    return "GenericEmailSender{" + "toAddress='" + toAddress + '\'' + ", username='" + username + '\''
-        + ", host='" + host + '\'' + ", port=" + port + ", encryption=" + encryption + '}';
+    return "GenericEmailSender{"
+        + "toAddress='"
+        + toAddress
+        + '\''
+        + ", username='"
+        + username
+        + '\''
+        + ", host='"
+        + host
+        + '\''
+        + ", port="
+        + port
+        + ", encryption="
+        + encryption
+        + '}';
   }
 
   @Override

@@ -5,9 +5,7 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
 
-/**
- * Setup panel model for headless server.
- */
+/** Setup panel model for headless server. */
 class HeadlessServerSetupPanelModel extends SetupPanelModel {
   HeadlessServerSetupPanelModel(final GameSelectorModel gameSelectorModel) {
     super(gameSelectorModel);
@@ -15,7 +13,8 @@ class HeadlessServerSetupPanelModel extends SetupPanelModel {
 
   @Override
   public void showSelectType() {
-    final ServerModel model = new ServerModel(gameSelectorModel, this, ServerModel.InteractionMode.HEADLESS);
+    final ServerModel model =
+        new ServerModel(gameSelectorModel, this, ServerModel.InteractionMode.HEADLESS);
     if (!model.createServerMessenger(null)) {
       model.cancel();
       return;

@@ -21,9 +21,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.SettingsWindow;
 import lombok.extern.java.Log;
 
-/**
- * Provides methods for working with the Swing Look-And-Feel.
- */
+/** Provides methods for working with the Swing Look-And-Feel. */
 @Log
 public final class LookAndFeel {
   private LookAndFeel() {}
@@ -31,28 +29,27 @@ public final class LookAndFeel {
   /**
    * Initializes the Swing Look-And-Feel subsystem.
    *
-   * <p>
-   * Sets the user's preferred Look-And-Feel. If not available, the system Look-And-Feel will be used.
-   * </p>
-   * <p>
-   * This method must be called before creating the first UI component but after initializing the client settings
-   * framework.
-   * </p>
+   * <p>Sets the user's preferred Look-And-Feel. If not available, the system Look-And-Feel will be
+   * used.
+   *
+   * <p>This method must be called before creating the first UI component but after initializing the
+   * client settings framework.
    *
    * @throws IllegalStateException If this method is not called from the EDT.
    */
   public static void initialize() {
     getSubstanceLookAndFeelManager().ifPresent(SubstanceLookAndFeelManager::initialize);
-    ClientSetting.lookAndFeel.addListener(gameSetting -> {
-      setupLookAndFeel(gameSetting.getValueOrThrow());
-      SettingsWindow.updateLookAndFeel();
-      JOptionPane.showMessageDialog(
-          null,
-          "Look and feel changes can cause instability.\n"
-              + "Please restart all running TripleA instances.",
-          "Close TripleA and Restart",
-          JOptionPane.WARNING_MESSAGE);
-    });
+    ClientSetting.lookAndFeel.addListener(
+        gameSetting -> {
+          setupLookAndFeel(gameSetting.getValueOrThrow());
+          SettingsWindow.updateLookAndFeel();
+          JOptionPane.showMessageDialog(
+              null,
+              "Look and feel changes can cause instability.\n"
+                  + "Please restart all running TripleA instances.",
+              "Close TripleA and Restart",
+              JOptionPane.WARNING_MESSAGE);
+        });
     setupLookAndFeel(ClientSetting.lookAndFeel.getValueOrThrow());
   }
 
@@ -88,7 +85,8 @@ public final class LookAndFeel {
   private static void setupLookAndFeel(final String lookAndFeelName) {
     checkState(SwingUtilities.isEventDispatchThread());
 
-    // On Mac, have the menubar appear at the top of the screen to match how Mac apps are expected to behave.
+    // On Mac, have the menubar appear at the top of the screen to match how Mac apps are expected
+    // to behave.
     if (SystemProperties.isMac()) {
       System.setProperty("apple.laf.useScreenMenuBar", "true");
     }

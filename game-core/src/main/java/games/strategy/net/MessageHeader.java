@@ -3,8 +3,8 @@ package games.strategy.net;
 import java.io.Serializable;
 
 /**
- * The envelope for a message consisting of both the header and payload. The header specifies the source and
- * destination nodes of the message.
+ * The envelope for a message consisting of both the header and payload. The header specifies the
+ * source and destination nodes of the message.
  */
 public class MessageHeader {
   // if null, then a broadcast
@@ -12,9 +12,7 @@ public class MessageHeader {
   private final Serializable message;
   private final INode from;
 
-  /**
-   * Creates a broadcast message.
-   */
+  /** Creates a broadcast message. */
   public MessageHeader(final INode from, final Serializable message) {
     this(null, from, message);
   }
@@ -27,9 +25,7 @@ public class MessageHeader {
     this.message = message;
   }
 
-  /**
-   * null if a broadcast.
-   */
+  /** null if a broadcast. */
   public INode getFor() {
     return to;
   }

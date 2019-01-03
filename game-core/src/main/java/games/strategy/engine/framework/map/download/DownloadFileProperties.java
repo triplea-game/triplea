@@ -29,7 +29,8 @@ class DownloadFileProperties {
     try (InputStream fis = new FileInputStream(fromZip(zipFile))) {
       downloadFileProperties.props.load(fis);
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
+      log.log(
+          Level.SEVERE, "Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
     }
     return downloadFileProperties;
   }
@@ -38,7 +39,10 @@ class DownloadFileProperties {
     try (OutputStream fos = new FileOutputStream(fromZip(zipFile))) {
       props.props.store(fos, null);
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(), e);
+      log.log(
+          Level.SEVERE,
+          "Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(),
+          e);
     }
   }
 

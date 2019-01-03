@@ -13,9 +13,7 @@ import javax.swing.border.Border;
 /**
  * A builder for incrementally creating instances of {@link JScrollPane}.
  *
- * <p>
- * Example usage:
- * </p>
+ * <p>Example usage:
  *
  * <pre>
  * <code>
@@ -75,7 +73,6 @@ public final class JScrollPaneBuilder {
    * Creates a new scroll pane using the builder's current state.
    *
    * @return A new scroll pane.
-   *
    * @throws IllegalStateException If {@code view} is unspecified.
    */
   public JScrollPane build() {

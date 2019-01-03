@@ -12,12 +12,13 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.ui.SwingComponents;
 
 /**
- * Provides a builder API for creating a JFrame that will include project specific defaults when constructed.
- * Defaults provided:
+ * Provides a builder API for creating a JFrame that will include project specific defaults when
+ * constructed. Defaults provided:
+ *
  * <ul>
- * <li>min size (can be changed)</li>
- * <li>system-menu triplea application icon (default is otherwise a generic java icon)</li>
- * <li>JFrame dispose on close</li>
+ *   <li>min size (can be changed)
+ *   <li>system-menu triplea application icon (default is otherwise a generic java icon)
+ *   <li>JFrame dispose on close
  * </ul>
  */
 public class JFrameBuilder {
@@ -38,11 +39,12 @@ public class JFrameBuilder {
   private JFrameBuilder() {}
 
   /**
-   * Constructs the JFrame instance. It will not be visible.
-   * on the other we do not set the JFrame to visible explicitly for testing.
+   * Constructs the JFrame instance. It will not be visible. on the other we do not set the JFrame
+   * to visible explicitly for testing.
    */
   public JFrame build() {
-    // note: we use the two arg JFrame constructor to avoid the headless check that is in the single arg constructor.
+    // note: we use the two arg JFrame constructor to avoid the headless check that is in the single
+    // arg constructor.
     final JFrame frame = new JFrame(title, null);
     frame.setMinimumSize(new Dimension(minWidth, minHeight));
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -89,7 +91,8 @@ public class JFrameBuilder {
   }
 
   /**
-   * Adds a component to the frame, can be called multiple times and will keep appending to the current frame.
+   * Adds a component to the frame, can be called multiple times and will keep appending to the
+   * current frame.
    */
   public JFrameBuilder add(final Component componentToAdd) {
     children.add(componentToAdd);

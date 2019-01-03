@@ -10,9 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import lombok.Getter;
 
-/**
- * The result of an AI movement analysis for its own possible moves.
- */
+/** The result of an AI movement analysis for its own possible moves. */
 @Getter
 public class ProMyMoveOptions {
 

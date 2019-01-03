@@ -18,7 +18,8 @@ import games.strategy.triplea.image.DiceImageFactory;
 import games.strategy.ui.SwingAction;
 
 /**
- * A UI component used to display a dice roll. One image is displayed per die in a horizontal layout.
+ * A UI component used to display a dice roll. One image is displayed per die in a horizontal
+ * layout.
  */
 public class DicePanel extends JPanel {
   private static final long serialVersionUID = -7544999867518263506L;
@@ -39,26 +40,25 @@ public class DicePanel extends JPanel {
     invalidate();
   }
 
-  /**
-   * Sets the dice roll to display.
-   */
+  /** Sets the dice roll to display. */
   public void setDiceRoll(final DiceRoll diceRoll) {
-    SwingAction.invokeNowOrLater(() -> {
-      removeAll();
-      for (int i = 1; i <= data.getDiceSides(); i++) {
-        final List<Die> dice = diceRoll.getRolls(i);
-        if (dice.isEmpty()) {
-          continue;
-        }
-        add(new JLabel("Rolled at " + i + ":"));
-        add(create(diceRoll.getRolls(i)));
-      }
-      add(Box.createVerticalGlue());
-      add(new JLabel("Total hits:" + diceRoll.getHits()));
-      validate();
-      invalidate();
-      repaint();
-    });
+    SwingAction.invokeNowOrLater(
+        () -> {
+          removeAll();
+          for (int i = 1; i <= data.getDiceSides(); i++) {
+            final List<Die> dice = diceRoll.getRolls(i);
+            if (dice.isEmpty()) {
+              continue;
+            }
+            add(new JLabel("Rolled at " + i + ":"));
+            add(create(diceRoll.getRolls(i)));
+          }
+          add(Box.createVerticalGlue());
+          add(new JLabel("Total hits:" + diceRoll.getHits()));
+          validate();
+          invalidate();
+          repaint();
+        });
   }
 
   private JComponent create(final List<Die> dice) {
@@ -73,11 +73,15 @@ public class DicePanel extends JPanel {
     final JScrollPane scroll = new JScrollPane(dicePanel);
     scroll.setBorder(null);
     scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-    // we're adding to a box layout, so to prevent the component from grabbing extra space, set the max height.
+    // we're adding to a box layout, so to prevent the component from grabbing extra space, set the
+    // max height.
     // allow room for a dice and a scrollbar
-    scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, DiceImageFactory.DIE_HEIGHT + 17));
-    scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, DiceImageFactory.DIE_HEIGHT + 17));
-    scroll.setPreferredSize(new Dimension(scroll.getPreferredSize().width, DiceImageFactory.DIE_HEIGHT + 17));
+    scroll.setMinimumSize(
+        new Dimension(scroll.getMinimumSize().width, DiceImageFactory.DIE_HEIGHT + 17));
+    scroll.setMaximumSize(
+        new Dimension(scroll.getMaximumSize().width, DiceImageFactory.DIE_HEIGHT + 17));
+    scroll.setPreferredSize(
+        new Dimension(scroll.getPreferredSize().width, DiceImageFactory.DIE_HEIGHT + 17));
     return scroll;
   }
 }

@@ -40,7 +40,9 @@ final class InternalDiceServerTest {
 
     private Integer[] getDice(final String string) {
       final int ignoredCount = -1;
-      return Arrays.stream(internalDiceServer.getDice(string, ignoredCount)).boxed().toArray(Integer[]::new);
+      return Arrays.stream(internalDiceServer.getDice(string, ignoredCount))
+          .boxed()
+          .toArray(Integer[]::new);
     }
 
     @Test

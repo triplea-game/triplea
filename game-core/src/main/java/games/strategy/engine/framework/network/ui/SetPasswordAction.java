@@ -13,16 +13,16 @@ import javax.swing.JPasswordField;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 
-/**
- * An action for setting the network game password.
- */
+/** An action for setting the network game password. */
 public class SetPasswordAction extends AbstractAction {
   private static final long serialVersionUID = -7767288210554177480L;
   private final ClientLoginValidator validator;
   private final Component parent;
   private final InGameLobbyWatcherWrapper lobbyWatcher;
 
-  public SetPasswordAction(final Component parent, final InGameLobbyWatcherWrapper watcher,
+  public SetPasswordAction(
+      final Component parent,
+      final InGameLobbyWatcherWrapper watcher,
       final ClientLoginValidator validator) {
     super("Set Game Password");
     this.validator = validator;
@@ -38,8 +38,16 @@ public class SetPasswordAction extends AbstractAction {
     panel.setLayout(new BorderLayout());
     panel.add(label, BorderLayout.NORTH);
     panel.add(passwordField, BorderLayout.CENTER);
-    final int selectedOption = JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(parent), panel,
-        "Enter Password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+    final int selectedOption =
+        JOptionPane.showOptionDialog(
+            JOptionPane.getFrameForComponent(parent),
+            panel,
+            "Enter Password",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            null);
     if (selectedOption != JOptionPane.OK_OPTION) {
       return;
     }

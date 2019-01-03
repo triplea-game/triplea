@@ -12,9 +12,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.util.Tuple;
 
-/**
- * An object to hold all the map.properties values.
- */
+/** An object to hold all the map.properties values. */
 public class MapProperties {
   public Map<String, Color> colorMap = new TreeMap<>();
   public double unitsScale = 0.75;
@@ -66,7 +64,8 @@ public class MapProperties {
     colorMap.put(Constants.PLAYER_NAME_IMPASSABLE, new Color(0xD8BA7C));
   }
 
-  public Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> propertyWrapperUi(final boolean editable) {
+  public Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> propertyWrapperUi(
+      final boolean editable) {
     return MapPropertyWrapper.newPropertiesUi(this, editable);
   }
 
@@ -85,14 +84,18 @@ public class MapProperties {
   public String outColorMap() {
     final StringBuilder buf = new StringBuilder();
     for (final Entry<String, Color> entry : colorMap.entrySet()) {
-      buf.append(MapData.PROPERTY_COLOR_PREFIX).append(entry.getKey()).append("=").append(colorToHex(entry.getValue()))
+      buf.append(MapData.PROPERTY_COLOR_PREFIX)
+          .append(entry.getKey())
+          .append("=")
+          .append(colorToHex(entry.getValue()))
           .append("\r\n");
     }
     return buf.toString();
   }
 
   private static String colorToHex(final Color color) {
-    final StringBuilder hexString = new StringBuilder(Integer.toHexString(color.getRGB() & 0x00FFFFFF));
+    final StringBuilder hexString =
+        new StringBuilder(Integer.toHexString(color.getRGB() & 0x00FFFFFF));
     while (hexString.length() < 6) {
       hexString.insert(0, "0");
     }
@@ -106,10 +109,8 @@ public class MapProperties {
   /**
    * Sets the value of the {@code units.scale} map property.
    *
-   * <p>
-   * The implementation accounts for small rounding errors when {@code value} is one of the standard units scale
-   * values: 0.5, 0.5625, 0.6666, 0.75, 0.8333, 0.875, 1.0, 1.25.
-   * </p>
+   * <p>The implementation accounts for small rounding errors when {@code value} is one of the
+   * standard units scale values: 0.5, 0.5625, 0.6666, 0.75, 0.8333, 0.875, 1.0, 1.25.
    */
   public void setUnitsScale(final double value) {
     final double dvalue = Math.max(0.0, Math.min(2.0, value));
@@ -303,7 +304,10 @@ public class MapProperties {
   }
 
   public String outMapUseTerritoryEffectMarkers() {
-    return MapData.PROPERTY_MAP_USETERRITORYEFFECTMARKERS + "=" + mapUseTerritoryEffectMarkers + "\r\n";
+    return MapData.PROPERTY_MAP_USETERRITORYEFFECTMARKERS
+        + "="
+        + mapUseTerritoryEffectMarkers
+        + "\r\n";
   }
 
   public boolean getMapShowTerritoryNames() {
@@ -472,7 +476,10 @@ public class MapProperties {
   }
 
   public String outScreenshotTitleColor() {
-    return MapData.PROPERTY_SCREENSHOT_TITLE_COLOR + "=" + colorToHex(screenshotTitleColor) + "\r\n";
+    return MapData.PROPERTY_SCREENSHOT_TITLE_COLOR
+        + "="
+        + colorToHex(screenshotTitleColor)
+        + "\r\n";
   }
 
   public int getScreenshotTitleFontSize() {

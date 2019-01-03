@@ -14,21 +14,30 @@ import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
 /**
- * Extension of {@link IDisplay} that expands the set of game events that may be displayed to a game player.
+ * Extension of {@link IDisplay} that expands the set of game events that may be displayed to a game
+ * player.
  */
 public interface ITripleADisplay extends IDisplay {
   /**
    * Sends a message to all TripleAFrame that have joined the game, possibly including observers.
    */
-  void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost,
-      final boolean doNotIncludeClients, final boolean doNotIncludeObservers);
+  void reportMessageToAll(
+      final String message,
+      final String title,
+      final boolean doNotIncludeHost,
+      final boolean doNotIncludeClients,
+      final boolean doNotIncludeObservers);
 
   /**
-   * Sends a message to all TripleAFrame's that are playing AND are controlling one or more of the players listed but
-   * NOT any of the players listed as butNotThesePlayers. (No message to any observers or players not in the list.)
+   * Sends a message to all TripleAFrame's that are playing AND are controlling one or more of the
+   * players listed but NOT any of the players listed as butNotThesePlayers. (No message to any
+   * observers or players not in the list.)
    */
-  void reportMessageToPlayers(final Collection<PlayerId> playersToSendTo,
-      final Collection<PlayerId> butNotThesePlayers, final String message, final String title);
+  void reportMessageToPlayers(
+      final Collection<PlayerId> playersToSendTo,
+      final Collection<PlayerId> butNotThesePlayers,
+      final String message,
+      final String title);
 
   /**
    * Display info about the battle. This is the first message to be displayed in a battle.
@@ -43,10 +52,20 @@ public interface ITripleADisplay extends IDisplay {
    * @param attacker - PlayerId of attacker
    * @param defender - PlayerId of defender
    */
-  void showBattle(GUID battleId, Territory location, String battleTitle, Collection<Unit> attackingUnits,
-      Collection<Unit> defendingUnits, Collection<Unit> killedUnits, Collection<Unit> attackingWaitingToDie,
-      Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerId attacker,
-      final PlayerId defender, final boolean isAmphibious, final BattleType battleType,
+  void showBattle(
+      GUID battleId,
+      Territory location,
+      String battleTitle,
+      Collection<Unit> attackingUnits,
+      Collection<Unit> defendingUnits,
+      Collection<Unit> killedUnits,
+      Collection<Unit> attackingWaitingToDie,
+      Collection<Unit> defendingWaitingToDie,
+      Map<Unit, Collection<Unit>> dependentUnits,
+      final PlayerId attacker,
+      final PlayerId defender,
+      final boolean isAmphibious,
+      final BattleType battleType,
       final Collection<Unit> amphibiousLandAttackers);
 
   /**
@@ -57,41 +76,42 @@ public interface ITripleADisplay extends IDisplay {
    */
   void listBattleSteps(GUID battleId, List<String> steps);
 
-  /**
-   * The given battle has ended.
-   */
+  /** The given battle has ended. */
   void battleEnd(GUID battleId, String message);
 
-  /**
-   * Notify that the casualties occurred.
-   */
-  void casualtyNotification(GUID battleId, String step, DiceRoll dice, PlayerId player, Collection<Unit> killed,
-      Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents);
-
-  /**
-   * Notify that the casualties occurred, and only the casualty.
-   */
-  void deadUnitNotification(GUID battleId, PlayerId player, Collection<Unit> dead,
+  /** Notify that the casualties occurred. */
+  void casualtyNotification(
+      GUID battleId,
+      String step,
+      DiceRoll dice,
+      PlayerId player,
+      Collection<Unit> killed,
+      Collection<Unit> damaged,
       Map<Unit, Collection<Unit>> dependents);
 
-  void changedUnitsNotification(GUID battleId, PlayerId player, Collection<Unit> removedUnits,
-      Collection<Unit> addedUnits, Map<Unit, Collection<Unit>> dependents);
+  /** Notify that the casualties occurred, and only the casualty. */
+  void deadUnitNotification(
+      GUID battleId,
+      PlayerId player,
+      Collection<Unit> dead,
+      Map<Unit, Collection<Unit>> dependents);
 
-  /**
-   * Notification of the results of a bombing raid.
-   */
+  void changedUnitsNotification(
+      GUID battleId,
+      PlayerId player,
+      Collection<Unit> removedUnits,
+      Collection<Unit> addedUnits,
+      Map<Unit, Collection<Unit>> dependents);
+
+  /** Notification of the results of a bombing raid. */
   void bombingResults(GUID battleId, List<Die> dice, int cost);
 
-  /**
-   * Notify that the given player has retreated some or all of his units.
-   */
+  /** Notify that the given player has retreated some or all of his units. */
   void notifyRetreat(String shortMessage, String message, String step, PlayerId retreatingPlayer);
 
   void notifyRetreat(GUID battleId, Collection<Unit> retreating);
 
-  /**
-   * Show dice for the given battle and step.
-   */
+  /** Show dice for the given battle and step. */
   void notifyDice(DiceRoll dice, String stepName);
 
   void gotoBattleStep(GUID battleId, String step);

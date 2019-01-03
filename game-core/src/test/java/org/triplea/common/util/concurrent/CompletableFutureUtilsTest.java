@@ -22,8 +22,7 @@ final class CompletableFutureUtilsTest {
   final class LogExceptionWhenCompleteTest {
     private static final String ERROR_MESSAGE = "error message";
 
-    @Mock
-    private Logger logger;
+    @Mock private Logger logger;
 
     @Test
     void shouldNotWriteLogWhenFutureCompletesNormally() {

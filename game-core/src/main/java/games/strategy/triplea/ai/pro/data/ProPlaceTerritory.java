@@ -9,9 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * The result of an AI placement analysis for a single territory.
- */
+/** The result of an AI placement analysis for a single territory. */
 @EqualsAndHashCode(of = "territory")
 @Getter
 @Setter

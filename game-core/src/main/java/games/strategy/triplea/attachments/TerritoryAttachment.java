@@ -33,9 +33,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/**
- * An attachment for instances of {@link Territory}.
- */
+/** An attachment for instances of {@link Territory}. */
 public class TerritoryAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 9102862080104655281L;
 
@@ -60,13 +58,16 @@ public class TerritoryAttachment extends DefaultAttachment {
   private List<String> whenCapturedByGoesTo = new ArrayList<>();
   private ResourceCollection resources = null;
 
-  public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  public TerritoryAttachment(
+      final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
-  public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerId player, final GameData data) {
+  public static boolean doWeHaveEnoughCapitalsToProduce(
+      final PlayerId player, final GameData data) {
     final List<Territory> capitalsListOriginal = TerritoryAttachment.getAllCapitals(player, data);
-    final List<Territory> capitalsListOwned = TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data);
+    final List<Territory> capitalsListOwned =
+        TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data);
     final PlayerAttachment pa = PlayerAttachment.get(player);
 
     if (pa == null) {
@@ -76,13 +77,11 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * If we own one of our capitals, return the first one found, otherwise return the first capital we find that we don't
-   * own.
-   * If a capital has no neighbor connections, it will be sent last.
+   * If we own one of our capitals, return the first one found, otherwise return the first capital
+   * we find that we don't own. If a capital has no neighbor connections, it will be sent last.
    */
   public static @Nullable Territory getFirstOwnedCapitalOrFirstUnownedCapital(
-      final PlayerId player,
-      final GameData data) {
+      final PlayerId player, final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
     final List<Territory> noNeighborCapitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
@@ -117,9 +116,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     throw new IllegalStateException("Capital not found for:" + player);
   }
 
-  /**
-   * will return empty list if none controlled, never returns null.
-   */
+  /** will return empty list if none controlled, never returns null. */
   public static List<Territory> getAllCapitals(final PlayerId player, final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
@@ -144,10 +141,9 @@ public class TerritoryAttachment extends DefaultAttachment {
     throw new IllegalStateException("Capital not found for:" + player);
   }
 
-  /**
-   * will return empty list if none controlled, never returns null.
-   */
-  public static List<Territory> getAllCurrentlyOwnedCapitals(final PlayerId player, final GameData data) {
+  /** will return empty list if none controlled, never returns null. */
+  public static List<Territory> getAllCurrentlyOwnedCapitals(
+      final PlayerId player, final GameData data) {
     final List<Territory> capitals = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(current);
@@ -164,17 +160,17 @@ public class TerritoryAttachment extends DefaultAttachment {
     return capitals;
   }
 
-  /**
-   * Convenience method. Can return null.
-   */
+  /** Convenience method. Can return null. */
   public static TerritoryAttachment get(final Territory t) {
     return (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
   }
 
   static TerritoryAttachment get(final Territory t, final String nameOfAttachment) {
-    final TerritoryAttachment territoryAttachment = (TerritoryAttachment) t.getAttachment(nameOfAttachment);
+    final TerritoryAttachment territoryAttachment =
+        (TerritoryAttachment) t.getAttachment(nameOfAttachment);
     if (territoryAttachment == null && !t.isWater()) {
-      throw new IllegalStateException("No territory attachment for:" + t.getName() + " with name:" + nameOfAttachment);
+      throw new IllegalStateException(
+          "No territory attachment for:" + t.getName() + " with name:" + nameOfAttachment);
     }
     return territoryAttachment;
   }
@@ -203,9 +199,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     territory.removeAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
   }
 
-  /**
-   * Convenience method since TerritoryAttachment.get could return null.
-   */
+  /** Convenience method since TerritoryAttachment.get could return null. */
   public static int getProduction(final Territory t) {
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta == null) {
@@ -218,9 +212,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     return production;
   }
 
-  /**
-   * Convenience method since TerritoryAttachment.get could return null.
-   */
+  /** Convenience method since TerritoryAttachment.get could return null. */
   public static int getUnitProduction(final Territory t) {
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta == null) {
@@ -244,7 +236,8 @@ public class TerritoryAttachment extends DefaultAttachment {
     final String[] s = splitOnColon(value);
     final int amount = getInt(s[0]);
     if (s[1].equals(Constants.PUS)) {
-      throw new GameParseException("Please set PUs using production, not resource" + thisErrorMsg());
+      throw new GameParseException(
+          "Please set PUs using production, not resource" + thisErrorMsg());
     }
     final Resource resource = getData().getResourceList().getResource(s[1]);
     if (resource == null) {
@@ -330,8 +323,9 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Sets production and unitProduction (or just "production" in a map xml) of a territory to be equal to the string
-   * value passed. This method is used when parsing game XML since it passes string values.
+   * Sets production and unitProduction (or just "production" in a map xml) of a territory to be
+   * equal to the string value passed. This method is used when parsing game XML since it passes
+   * string values.
    */
   private void setProduction(final String value) {
     production = getInt(value);
@@ -340,8 +334,9 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Sets production and unitProduction (or just "production" in a map xml) of a territory to be equal to the Integer
-   * value passed. This method is used when working with game history since it passes Integer values.
+   * Sets production and unitProduction (or just "production" in a map xml) of a territory to be
+   * equal to the Integer value passed. This method is used when working with game history since it
+   * passes Integer values.
    */
   private void setProduction(final Integer value) {
     production = value;
@@ -350,7 +345,8 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Resets production and unitProduction (or just "production" in a map xml) of a territory to the default value.
+   * Resets production and unitProduction (or just "production" in a map xml) of a territory to the
+   * default value.
    */
   private void resetProduction() {
     production = 0;
@@ -358,9 +354,7 @@ public class TerritoryAttachment extends DefaultAttachment {
     unitProduction = production;
   }
 
-  /**
-   * Sets only production.
-   */
+  /** Sets only production. */
   private void setProductionOnly(final String value) {
     production = getInt(value);
   }
@@ -370,7 +364,8 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Should not be set by a game xml during attachment parsing, but CAN be set by initialization parsing.
+   * Should not be set by a game xml during attachment parsing, but CAN be set by initialization
+   * parsing.
    */
   public void setOriginalOwner(final PlayerId player) {
     originalOwner = player;
@@ -490,12 +485,14 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   public Collection<CaptureOwnershipChange> getCaptureOwnershipChanges() {
-    return whenCapturedByGoesTo.stream()
+    return whenCapturedByGoesTo
+        .stream()
         .map(this::parseCaptureOwnershipChange)
         .collect(Collectors.toList());
   }
 
-  private CaptureOwnershipChange parseCaptureOwnershipChange(final String encodedCaptureOwnershipChange) {
+  private CaptureOwnershipChange parseCaptureOwnershipChange(
+      final String encodedCaptureOwnershipChange) {
     final String[] tokens = splitOnColon(encodedCaptureOwnershipChange);
     assert tokens.length == 2;
     final GameData gameData = getData();
@@ -618,10 +615,11 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Returns the collection of territories that make up the convoy route containing the specified territory or
-   * {@code null} if the specified territory is not part of a convoy route.
+   * Returns the collection of territories that make up the convoy route containing the specified
+   * territory or {@code null} if the specified territory is not part of a convoy route.
    */
-  public static Set<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(final Territory t, final GameData data) {
+  public static Set<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(
+      final Territory t, final GameData data) {
     final TerritoryAttachment ta = TerritoryAttachment.get(t);
     if (ta == null || !ta.getConvoyRoute()) {
       return null;
@@ -640,7 +638,8 @@ public class TerritoryAttachment extends DefaultAttachment {
   }
 
   /**
-   * Returns a string suitable for display describing the territory to which this attachment is attached.
+   * Returns a string suitable for display describing the territory to which this attachment is
+   * attached.
    */
   public String toStringForInfo(final boolean useHtml, final boolean includeAttachedToName) {
     final StringBuilder sb = new StringBuilder();
@@ -703,7 +702,9 @@ public class TerritoryAttachment extends DefaultAttachment {
       }
       final Set<Territory> requiredBy = getWhatTerritoriesThisIsUsedInConvoysFor(t, getData());
       if (!requiredBy.isEmpty()) {
-        sb.append("Required By: ").append(MyFormatter.defaultNamedToTextList(requiredBy)).append(br);
+        sb.append("Required By: ")
+            .append(MyFormatter.defaultNamedToTextList(requiredBy))
+            .append(br);
       }
     }
     if (changeUnitOwners != null && !changeUnitOwners.isEmpty()) {
@@ -724,7 +725,8 @@ public class TerritoryAttachment extends DefaultAttachment {
       }
     }
     sb.append(br);
-    if (!t.isWater() && unitProduction > 0
+    if (!t.isWater()
+        && unitProduction > 0
         && Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData())) {
       sb.append("Base Unit Production: ");
       sb.append(unitProduction);
@@ -740,7 +742,8 @@ public class TerritoryAttachment extends DefaultAttachment {
       if (resources != null) {
         if (useHtml) {
           sb.append("&nbsp;&nbsp;&nbsp;&nbsp;")
-              .append(resources.toStringForHtml().replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
+              .append(
+                  resources.toStringForHtml().replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
         } else {
           sb.append(resources.toString());
         }
@@ -751,10 +754,12 @@ public class TerritoryAttachment extends DefaultAttachment {
       sb.append("Territory Effects: ");
       sb.append(br);
     }
-    sb.append(territoryEffect.stream()
-        .map(TerritoryEffect::getName)
-        .map(name -> "&nbsp;&nbsp;&nbsp;&nbsp;" + name + br)
-        .collect(Collectors.joining()));
+    sb.append(
+        territoryEffect
+            .stream()
+            .map(TerritoryEffect::getName)
+            .map(name -> "&nbsp;&nbsp;&nbsp;&nbsp;" + name + br)
+            .collect(Collectors.joining()));
 
     return sb.toString();
   }
@@ -765,121 +770,123 @@ public class TerritoryAttachment extends DefaultAttachment {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("capital",
-            MutableProperty.ofString(
-                this::setCapital,
-                this::getCapital,
-                this::resetCapital))
-        .put("originalFactory",
+        .put(
+            "capital",
+            MutableProperty.ofString(this::setCapital, this::getCapital, this::resetCapital))
+        .put(
+            "originalFactory",
             MutableProperty.of(
                 this::setOriginalFactory,
                 this::setOriginalFactory,
                 this::getOriginalFactory,
                 this::resetOriginalFactory))
-        .put("production",
+        .put(
+            "production",
             MutableProperty.of(
                 this::setProduction,
                 this::setProduction,
                 this::getProduction,
                 this::resetProduction))
-        .put("productionOnly",
-            MutableProperty.ofWriteOnlyString(
-                this::setProductionOnly))
-        .put("victoryCity",
+        .put("productionOnly", MutableProperty.ofWriteOnlyString(this::setProductionOnly))
+        .put(
+            "victoryCity",
             MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setVictoryCity,
-                this::getVictoryCity,
-                () -> 0))
-        .put("isImpassable",
+                DefaultAttachment::getInt, this::setVictoryCity, this::getVictoryCity, () -> 0))
+        .put(
+            "isImpassable",
             MutableProperty.of(
                 this::setIsImpassable,
                 this::setIsImpassable,
                 this::getIsImpassable,
                 this::resetIsImpassable))
-        .put("originalOwner",
+        .put(
+            "originalOwner",
             MutableProperty.of(
                 this::setOriginalOwner,
                 this::setOriginalOwner,
                 this::getOriginalOwner,
                 this::resetOriginalOwner))
-        .put("convoyRoute",
+        .put(
+            "convoyRoute",
             MutableProperty.of(
                 this::setConvoyRoute,
                 this::setConvoyRoute,
                 this::getConvoyRoute,
                 this::resetConvoyRoute))
-        .put("convoyAttached",
+        .put(
+            "convoyAttached",
             MutableProperty.of(
                 this::setConvoyAttached,
                 this::setConvoyAttached,
                 this::getConvoyAttached,
                 this::resetConvoyAttached))
-        .put("changeUnitOwners",
+        .put(
+            "changeUnitOwners",
             MutableProperty.of(
                 this::setChangeUnitOwners,
                 this::setChangeUnitOwners,
                 this::getChangeUnitOwners,
                 this::resetChangeUnitOwners))
-        .put("captureUnitOnEnteringBy",
+        .put(
+            "captureUnitOnEnteringBy",
             MutableProperty.of(
                 this::setCaptureUnitOnEnteringBy,
                 this::setCaptureUnitOnEnteringBy,
                 this::getCaptureUnitOnEnteringBy,
                 this::resetCaptureUnitOnEnteringBy))
-        .put("navalBase",
+        .put(
+            "navalBase",
             MutableProperty.of(
-                this::setNavalBase,
-                this::setNavalBase,
-                this::getNavalBase,
-                this::resetNavalBase))
-        .put("airBase",
+                this::setNavalBase, this::setNavalBase, this::getNavalBase, this::resetNavalBase))
+        .put(
+            "airBase",
             MutableProperty.of(
-                this::setAirBase,
-                this::setAirBase,
-                this::getAirBase,
-                this::resetAirBase))
-        .put("kamikazeZone",
+                this::setAirBase, this::setAirBase, this::getAirBase, this::resetAirBase))
+        .put(
+            "kamikazeZone",
             MutableProperty.of(
                 this::setKamikazeZone,
                 this::setKamikazeZone,
                 this::getKamikazeZone,
                 this::resetKamikazeZone))
-        .put("unitProduction",
+        .put(
+            "unitProduction",
             MutableProperty.ofMapper(
                 DefaultAttachment::getInt,
                 this::setUnitProduction,
                 this::getUnitProduction,
                 () -> 0))
-        .put("blockadeZone",
+        .put(
+            "blockadeZone",
             MutableProperty.of(
                 this::setBlockadeZone,
                 this::setBlockadeZone,
                 this::getBlockadeZone,
                 this::resetBlockadeZone))
-        .put("territoryEffect",
+        .put(
+            "territoryEffect",
             MutableProperty.of(
                 this::setTerritoryEffect,
                 this::setTerritoryEffect,
                 this::getTerritoryEffect,
                 this::resetTerritoryEffect))
-        .put("whenCapturedByGoesTo",
+        .put(
+            "whenCapturedByGoesTo",
             MutableProperty.of(
                 this::setWhenCapturedByGoesTo,
                 this::setWhenCapturedByGoesTo,
                 this::getWhenCapturedByGoesTo,
                 this::resetWhenCapturedByGoesTo))
-        .put("resources",
+        .put(
+            "resources",
             MutableProperty.of(
-                this::setResources,
-                this::setResources,
-                this::getResources,
-                this::resetResources))
+                this::setResources, this::setResources, this::getResources, this::resetResources))
         .build();
   }
 
   /**
-   * Specifies the player that will take ownership of a territory when it is captured by another player.
+   * Specifies the player that will take ownership of a territory when it is captured by another
+   * player.
    */
   @AllArgsConstructor(access = AccessLevel.PACKAGE)
   @EqualsAndHashCode

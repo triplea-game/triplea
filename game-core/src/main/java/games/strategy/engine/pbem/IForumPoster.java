@@ -5,8 +5,8 @@ import java.io.File;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
 /**
- * An interface for classes that can post a turn summary, the summary may also include a save game if the
- * implementing class supports this.
+ * An interface for classes that can post a turn summary, the summary may also include a save game
+ * if the implementing class supports this.
  */
 public interface IForumPoster extends IBean {
   /**
@@ -26,8 +26,8 @@ public interface IForumPoster extends IBean {
   String getTurnSummaryRef();
 
   /**
-   * Should the summary include the save game. When this is true the client must call addSaveGame prior to calling
-   * postSummary
+   * Should the summary include the save game. When this is true the client must call addSaveGame
+   * prior to calling postSummary
    *
    * @return true if the save game should be included in the summary
    */
@@ -55,7 +55,8 @@ public interface IForumPoster extends IBean {
   void setAlsoPostAfterCombatMove(boolean postAlso);
 
   /**
-   * Called to add the save game to the summary, this should only be called if getIncludeSaveGame returns true.
+   * Called to add the save game to the summary, this should only be called if getIncludeSaveGame
+   * returns true.
    *
    * @param saveGame the save game file
    */
@@ -75,9 +76,7 @@ public interface IForumPoster extends IBean {
    */
   boolean supportsSaveGame();
 
-  /**
-   * Can you view the forum post with this poster.
-   */
+  /** Can you view the forum post with this poster. */
   boolean getCanViewPosted();
 
   @Override
@@ -107,8 +106,8 @@ public interface IForumPoster extends IBean {
   /**
    * Indicates the credentials will be saved with the poster.
    *
-   * @return {@code true} if the credentials will be saved with the poster or {@code false} if the credentials are not
-   *         saved.
+   * @return {@code true} if the credentials will be saved with the poster or {@code false} if the
+   *     credentials are not saved.
    */
   boolean areCredentialsSaved();
 
@@ -136,18 +135,17 @@ public interface IForumPoster extends IBean {
   /**
    * Indicate the credentials should be saved with the poster.
    *
-   * @param credentialsSaved {@code true} if the credentials should be saved with the poster or {@code false} if the
-   *        credentials should not be saved.
+   * @param credentialsSaved {@code true} if the credentials should be saved with the poster or
+   *     {@code false} if the credentials should not be saved.
    */
   void setCredentialsSaved(boolean credentialsSaved);
 
-  /**
-   * Opens a browser and go to the forum post, identified by the forumId.
-   */
+  /** Opens a browser and go to the forum post, identified by the forumId. */
   void viewPosted();
 
   /**
-   * Remove any sensitive information, like passwords before this object is saved in as a game properties.
+   * Remove any sensitive information, like passwords before this object is saved in as a game
+   * properties.
    */
   void clearSensitiveInfo();
 

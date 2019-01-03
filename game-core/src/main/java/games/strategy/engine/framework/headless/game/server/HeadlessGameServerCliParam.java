@@ -15,7 +15,6 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 public enum HeadlessGameServerCliParam {
-
   TRIPLEA_NAME("triplea.name"),
 
   TRIPLEA_PORT("triplea.port"),
@@ -36,8 +35,7 @@ public enum HeadlessGameServerCliParam {
 
   SERVER_PASSWORD("triplea.server.password", Required.NOT_REQUIRED);
 
-  @Getter
-  private final String label;
+  @Getter private final String label;
   private final Required required;
 
   HeadlessGameServerCliParam(final String label) {
@@ -57,11 +55,16 @@ public enum HeadlessGameServerCliParam {
   public static ArgValidationResult validateArgs(final String... args) {
     final Properties properties = ArgParsingHelper.getTripleaProperties(args);
 
-    return new ArgValidationResult(Arrays.stream(values())
-        .filter(param -> param.required == Required.REQUIRED)
-        .filter(param -> properties.getProperty(param.label) == null)
-        .map(param -> "Did not find param: -" + ArgParsingHelper.TRIPLEA_PROPERTY_PREFIX + param.label)
-        .collect(Collectors.toList()));
+    return new ArgValidationResult(
+        Arrays.stream(values())
+            .filter(param -> param.required == Required.REQUIRED)
+            .filter(param -> properties.getProperty(param.label) == null)
+            .map(
+                param ->
+                    "Did not find param: -"
+                        + ArgParsingHelper.TRIPLEA_PROPERTY_PREFIX
+                        + param.label)
+            .collect(Collectors.toList()));
   }
 
   public static String exampleUsage() {
@@ -70,18 +73,17 @@ public enum HeadlessGameServerCliParam {
         + example(LOBBY_HOST, "lobby.triplea-game.org")
         + example(LOBBY_PORT, "3304")
         + example(MAP_FOLDER, "/home/triplea/maps")
-        + "\nFor latest lobby host/port, check: " + UrlConstants.LOBBY_PROPS;
+        + "\nFor latest lobby host/port, check: "
+        + UrlConstants.LOBBY_PROPS;
   }
 
   private static String example(final HeadlessGameServerCliParam param, final String value) {
     return "-" + ArgParsingHelper.TRIPLEA_PROPERTY_PREFIX + param.label + "=" + value + " ";
   }
 
-
   private enum Required {
     REQUIRED,
 
     NOT_REQUIRED;
   }
-
 }

@@ -24,10 +24,10 @@ import games.strategy.net.Node;
 import games.strategy.net.TestServerMessenger;
 
 /**
- * Comment(KG): This test is broken, If you run each test individually they all work, but when running all test in the
- * class some will fail.
- * This is because the lifecycle of the UnifiedMessenger (and internal classes such as NioReader/Writer) are broken.
- * The UnifiedMessenger will create a new ThreadPool with each instantiation, and this pool is never shutdown.
+ * Comment(KG): This test is broken, If you run each test individually they all work, but when
+ * running all test in the class some will fail. This is because the lifecycle of the
+ * UnifiedMessenger (and internal classes such as NioReader/Writer) are broken. The UnifiedMessenger
+ * will create a new ThreadPool with each instantiation, and this pool is never shutdown.
  */
 public class VaultTest {
   private IServerMessenger serverMessenger;
@@ -70,8 +70,8 @@ public class VaultTest {
   }
 
   /**
-   * Passes when run individually.
-   * Fails when run as part of a suite that consists of multiple server/vault tests.
+   * Passes when run individually. Fails when run as part of a suite that consists of multiple
+   * server/vault tests.
    */
   public void temporarilyDisabledSoPleaseRunManuallytestServerLock() throws NotUnlockedException {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
@@ -101,8 +101,8 @@ public class VaultTest {
   }
 
   /**
-   * Passes when run individually.
-   * Fails when run as part of a suite that consists of multiple server/vault tests.
+   * Passes when run individually. Fails when run as part of a suite that consists of multiple
+   * server/vault tests.
    */
   public void temporarilyDisabledSoPleaseRunManuallytestMultiple() throws NotUnlockedException {
     final byte[] data1 = new byte[] {0, 1, 2, 3, 4, 5};
@@ -129,6 +129,7 @@ public class VaultTest {
   public void testJoin() {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final byte[] joined = Vault.joinDataAndKnown(data);
-    assertArrayEquals(new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE, 0, 1, 2, 3, 4, 5}, joined);
+    assertArrayEquals(
+        new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE, 0, 1, 2, 3, 4, 5}, joined);
   }
 }

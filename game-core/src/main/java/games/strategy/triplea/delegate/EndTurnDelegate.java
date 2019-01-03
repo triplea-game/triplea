@@ -39,9 +39,7 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Interruptibles;
 
-/**
- * At the end of the turn collect income.
- */
+/** At the end of the turn collect income. */
 @AutoSave(afterStepStart = true)
 public class EndTurnDelegate extends AbstractEndTurnDelegate {
   @Override
@@ -75,10 +73,12 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final StringBuilder endTurnReport = new StringBuilder();
     final GameData data = getData();
     final PlayerId player = data.getSequence().getStep().getPlayerId();
-    final Predicate<Unit> myCreatorsMatch = Matches.unitIsOwnedBy(player).and(Matches.unitCreatesUnits());
+    final Predicate<Unit> myCreatorsMatch =
+        Matches.unitIsOwnedBy(player).and(Matches.unitCreatesUnits());
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+      final Collection<Unit> myCreators =
+          CollectionUtils.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
       if (myCreators != null && !myCreators.isEmpty()) {
         final Collection<Unit> toAdd = new ArrayList<>();
         final Collection<Unit> toAddSea = new ArrayList<>();
@@ -90,7 +90,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           for (final UnitType ut : willBeCreated) {
             if (UnitAttachment.get(ut).getIsSea() && Matches.territoryIsLand().test(t)) {
               toAddSea.addAll(ut.create(createsUnitsMap.getInt(ut), player));
-            } else if (!UnitAttachment.get(ut).getIsSea() && !UnitAttachment.get(ut).getIsAir()
+            } else if (!UnitAttachment.get(ut).getIsSea()
+                && !UnitAttachment.get(ut).getIsAir()
                 && Matches.territoryIsWater().test(t)) {
               toAddLand.addAll(ut.create(createsUnitsMap.getInt(ut), player));
             } else {
@@ -100,7 +101,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         }
         if (!toAdd.isEmpty()) {
           final String transcriptText =
-              player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAdd) + " in " + t.getName();
+              player.getName()
+                  + " creates "
+                  + MyFormatter.unitsToTextNoOwner(toAdd)
+                  + " in "
+                  + t.getName();
           bridge.getHistoryWriter().startEvent(transcriptText, toAdd);
           endTurnReport.append(transcriptText).append("<br />");
           final Change place = ChangeFactory.addUnits(t, toAdd);
@@ -112,7 +117,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           if (waterNeighbors != null && !waterNeighbors.isEmpty()) {
             final Territory tw = getRandomTerritory(waterNeighbors, bridge);
             final String transcriptText =
-                player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddSea) + " in " + tw.getName();
+                player.getName()
+                    + " creates "
+                    + MyFormatter.unitsToTextNoOwner(toAddSea)
+                    + " in "
+                    + tw.getName();
             bridge.getHistoryWriter().startEvent(transcriptText, toAddSea);
             endTurnReport.append(transcriptText).append("<br />");
             final Change place = ChangeFactory.addUnits(tw, toAddSea);
@@ -120,12 +129,17 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
           }
         }
         if (!toAddLand.isEmpty()) {
-          final Predicate<Territory> myTerrs = Matches.isTerritoryOwnedBy(player).and(Matches.territoryIsLand());
+          final Predicate<Territory> myTerrs =
+              Matches.isTerritoryOwnedBy(player).and(Matches.territoryIsLand());
           final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
           if (landNeighbors != null && !landNeighbors.isEmpty()) {
             final Territory tl = getRandomTerritory(landNeighbors, bridge);
             final String transcriptText =
-                player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddLand) + " in " + tl.getName();
+                player.getName()
+                    + " creates "
+                    + MyFormatter.unitsToTextNoOwner(toAddLand)
+                    + " in "
+                    + tl.getName();
             bridge.getHistoryWriter().startEvent(transcriptText, toAddLand);
             endTurnReport.append(transcriptText).append("<br />");
             final Change place = ChangeFactory.addUnits(tl, toAddLand);
@@ -140,22 +154,26 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return endTurnReport.toString();
   }
 
-  private static Territory getRandomTerritory(final Collection<Territory> territories, final IDelegateBridge bridge) {
+  private static Territory getRandomTerritory(
+      final Collection<Territory> territories, final IDelegateBridge bridge) {
     if (territories == null || territories.isEmpty()) {
       return null;
     }
     if (territories.size() == 1) {
       return territories.iterator().next();
     }
-    // there is an issue with maps that have lots of rolls without any pause between them: they are causing the cypted
+    // there is an issue with maps that have lots of rolls without any pause between them: they are
+    // causing the cypted
     // random source (ie: live and pbem games) to lock up or error out
-    // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
+    // so we need to slow them down a bit, until we come up with a better solution (like aggregating
+    // all the chances
     // together, then getting a ton of random numbers at once instead of one at a time)
     Interruptibles.sleep(100);
     final List<Territory> list = new ArrayList<>(territories);
     final int random =
         // ZERO BASED
-        bridge.getRandom(list.size(), null, DiceType.ENGINE, "Random territory selection for creating units");
+        bridge.getRandom(
+            list.size(), null, DiceType.ENGINE, "Random territory selection for creating units");
     return list.get(random);
   }
 
@@ -179,8 +197,17 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         toAdd -= total;
         total = 0;
       }
-      final String transcriptText = "Units generate " + toAdd + " " + resource.getName() + "; " + player.getName()
-          + " end with " + total + " " + resource.getName();
+      final String transcriptText =
+          "Units generate "
+              + toAdd
+              + " "
+              + resource.getName()
+              + "; "
+              + player.getName()
+              + " end with "
+              + total
+              + " "
+              + resource.getName();
       bridge.getHistoryWriter().startEvent(transcriptText);
       endTurnReport.append(transcriptText).append("<br />");
       final Change resources = ChangeFactory.changeResourcesChange(player, resource, toAdd);
@@ -193,16 +220,18 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return endTurnReport.toString();
   }
 
-  /**
-   * Find all of the resources that will be created by units on the map.
-   */
-  public static IntegerMap<Resource> findUnitCreatedResources(final PlayerId player, final GameData data) {
+  /** Find all of the resources that will be created by units on the map. */
+  public static IntegerMap<Resource> findUnitCreatedResources(
+      final PlayerId player, final GameData data) {
     final IntegerMap<Resource> resourceTotalsMap = new IntegerMap<>();
-    final Predicate<Unit> myCreatorsMatch = Matches.unitIsOwnedBy(player).and(Matches.unitCreatesResources());
+    final Predicate<Unit> myCreatorsMatch =
+        Matches.unitIsOwnedBy(player).and(Matches.unitCreatesResources());
     for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+      final Collection<Unit> myCreators =
+          CollectionUtils.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
       for (final Unit unit : myCreators) {
-        final IntegerMap<Resource> generatedResourcesMap = UnitAttachment.get(unit.getType()).getCreatesResourcesList();
+        final IntegerMap<Resource> generatedResourcesMap =
+            UnitAttachment.get(unit.getType()).getCreatesResourcesList();
         resourceTotalsMap.add(generatedResourcesMap);
       }
     }
@@ -213,11 +242,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return resourceTotalsMap;
   }
 
-  /**
-   * Find the resources generated by national objectives and triggers that are currently met.
-   */
-  public static IntegerMap<Resource> findNationalObjectiveAndTriggerResources(final PlayerId player,
-      final GameData data) {
+  /** Find the resources generated by national objectives and triggers that are currently met. */
+  public static IntegerMap<Resource> findNationalObjectiveAndTriggerResources(
+      final PlayerId player, final GameData data) {
     final IDelegateBridge bridge = new ObjectiveDummyDelegateBridge(data);
 
     // Find and test all the conditions for triggers and national objectives
@@ -230,8 +257,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final IntegerMap<Resource> resources;
     final boolean useTriggers = Properties.getTriggers(data);
     if (useTriggers && !triggers.isEmpty()) {
-      final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-          CollectionUtils.getMatches(triggers, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+      final Set<TriggerAttachment> toFireTestedAndSatisfied =
+          new HashSet<>(
+              CollectionUtils.getMatches(
+                  triggers, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
       resources = TriggerAttachment.findResourceIncome(toFireTestedAndSatisfied, bridge);
     } else {
       resources = new IntegerMap<>();
@@ -251,9 +280,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     return resources;
   }
 
-  /**
-   * Determine if National Objectives have been met, and then do them.
-   */
+  /** Determine if National Objectives have been met, and then do them. */
   private String determineNationalObjectives(final IDelegateBridge bridge) {
     final GameData data = getData();
     final PlayerId player = data.getSequence().getStep().getPlayerId();
@@ -268,10 +295,15 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final StringBuilder endTurnReport = new StringBuilder();
     final boolean useTriggers = Properties.getTriggers(data);
     if (useTriggers && !triggers.isEmpty()) {
-      final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-          CollectionUtils.getMatches(triggers, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
-      endTurnReport.append(TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null, true,
-          true, true, true)).append("<br />");
+      final Set<TriggerAttachment> toFireTestedAndSatisfied =
+          new HashSet<>(
+              CollectionUtils.getMatches(
+                  triggers, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+      endTurnReport
+          .append(
+              TriggerAttachment.triggerResourceChange(
+                  toFireTestedAndSatisfied, bridge, null, null, true, true, true, true))
+          .append("<br />");
     }
 
     // Execute national objectives
@@ -289,50 +321,68 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         total = 0;
       }
       final Change change =
-          ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(Constants.PUS), toAdd);
+          ChangeFactory.changeResourcesChange(
+              player, data.getResourceList().getResource(Constants.PUS), toAdd);
       bridge.addChange(change);
       if (uses > 0) {
         uses--;
-        final Change use = ChangeFactory.attachmentPropertyChange(rule, Integer.toString(uses), "uses");
+        final Change use =
+            ChangeFactory.attachmentPropertyChange(rule, Integer.toString(uses), "uses");
         bridge.addChange(use);
       }
-      final String puMessage = MyFormatter.attachmentNameToText(rule.getName()) + ": " + player.getName()
-          + " met a national objective for an additional " + toAdd + MyFormatter.pluralize(" PU", toAdd) + "; end with "
-          + total + MyFormatter.pluralize(" PU", total);
+      final String puMessage =
+          MyFormatter.attachmentNameToText(rule.getName())
+              + ": "
+              + player.getName()
+              + " met a national objective for an additional "
+              + toAdd
+              + MyFormatter.pluralize(" PU", toAdd)
+              + "; end with "
+              + total
+              + MyFormatter.pluralize(" PU", total);
       bridge.getHistoryWriter().startEvent(puMessage);
       endTurnReport.append(puMessage).append("<br />");
     }
     return endTurnReport.toString();
   }
 
-  private static Map<ICondition, Boolean> testNationalObjectivesAndTriggers(final PlayerId player,
-      final GameData data, final IDelegateBridge bridge, final Set<TriggerAttachment> triggers,
+  private static Map<ICondition, Boolean> testNationalObjectivesAndTriggers(
+      final PlayerId player,
+      final GameData data,
+      final IDelegateBridge bridge,
+      final Set<TriggerAttachment> triggers,
       final List<RulesAttachment> objectives) {
 
-    // First figure out all the conditions that will be tested, so we can test them all at the same time.
+    // First figure out all the conditions that will be tested, so we can test them all at the same
+    // time.
     final Set<ICondition> allConditionsNeeded = new HashSet<>();
     final boolean useTriggers = Properties.getTriggers(data);
     if (useTriggers) {
 
       // Add conditions required for triggers
-      final Predicate<TriggerAttachment> endTurnDelegateTriggerMatch = AbstractTriggerAttachment.availableUses
-          .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
-          .and(TriggerAttachment.resourceMatch());
-      triggers.addAll(TriggerAttachment.collectForAllTriggersMatching(new HashSet<>(Collections.singleton(player)),
-          endTurnDelegateTriggerMatch));
-      allConditionsNeeded
-          .addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(triggers), null));
+      final Predicate<TriggerAttachment> endTurnDelegateTriggerMatch =
+          AbstractTriggerAttachment.availableUses
+              .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
+              .and(TriggerAttachment.resourceMatch());
+      triggers.addAll(
+          TriggerAttachment.collectForAllTriggersMatching(
+              new HashSet<>(Collections.singleton(player)), endTurnDelegateTriggerMatch));
+      allConditionsNeeded.addAll(
+          AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(triggers), null));
     }
 
     // Add conditions required for national objectives (nat objs that have uses left)
-    objectives.addAll(CollectionUtils.getMatches(RulesAttachment.getNationalObjectives(player), availableUses));
-    allConditionsNeeded.addAll(AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(objectives), null));
+    objectives.addAll(
+        CollectionUtils.getMatches(RulesAttachment.getNationalObjectives(player), availableUses));
+    allConditionsNeeded.addAll(
+        AbstractConditionsAttachment.getAllConditionsRecursive(new HashSet<>(objectives), null));
     if (allConditionsNeeded.isEmpty()) {
       return new HashMap<>();
     }
 
     // Now test all the conditions
-    return AbstractConditionsAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
+    return AbstractConditionsAttachment.testAllConditionsRecursive(
+        allConditionsNeeded, null, bridge);
   }
 
   private boolean isNationalObjectives() {
@@ -357,8 +407,16 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
         total = 0;
       }
       final String resourceText =
-          player.getName() + " collects " + toAdd + " " + MyFormatter.pluralize(r.getName(), toAdd) + "; ends with "
-              + total + " " + MyFormatter.pluralize(r.getName(), total) + " total";
+          player.getName()
+              + " collects "
+              + toAdd
+              + " "
+              + MyFormatter.pluralize(r.getName(), toAdd)
+              + "; ends with "
+              + total
+              + " "
+              + MyFormatter.pluralize(r.getName(), total)
+              + " total";
       bridge.getHistoryWriter().startEvent(resourceText);
       endTurnReport.append(resourceText).append("<br />");
       change.add(ChangeFactory.changeResourcesChange(player, r, toAdd));
@@ -373,8 +431,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
    * Since territory resource may contain any resource except PUs (PUs use "getProduction" instead),
    * we will now figure out the total production of non-PUs resources.
    */
-  public static IntegerMap<Resource> getResourceProduction(final Collection<Territory> territories,
-      final GameData data) {
+  public static IntegerMap<Resource> getResourceProduction(
+      final Collection<Territory> territories, final GameData data) {
     final IntegerMap<Resource> resources = new IntegerMap<>();
     for (final Territory current : territories) {
       final TerritoryAttachment attachment = TerritoryAttachment.get(current);

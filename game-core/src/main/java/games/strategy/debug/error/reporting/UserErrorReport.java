@@ -12,9 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-/**
- * Represents the data a user has entered into a swing GUI.
- */
+/** Represents the data a user has entered into a swing GUI. */
 @Builder
 @EqualsAndHashCode
 @ToString
@@ -25,11 +23,12 @@ class UserErrorReport {
   private final LogRecord logRecord;
 
   ErrorReport toErrorReport() {
-    return new ErrorReport(ErrorReportDetails.builder()
-        .gameVersion(ClientContext.engineVersion().getExactVersion())
-        .logRecord(logRecord)
-        .title(title)
-        .description(description)
-        .build());
+    return new ErrorReport(
+        ErrorReportDetails.builder()
+            .gameVersion(ClientContext.engineVersion().getExactVersion())
+            .logRecord(logRecord)
+            .title(title)
+            .description(description)
+            .build());
   }
 }

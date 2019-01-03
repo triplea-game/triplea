@@ -6,9 +6,7 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 
-/**
- * Logic for performing political actions.
- */
+/** Logic for performing political actions. */
 public interface IPoliticsDelegate extends IRemote, IDelegate {
   void attemptAction(PoliticalActionAttachment actionChoice);
 

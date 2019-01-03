@@ -19,17 +19,15 @@ import games.strategy.triplea.settings.GameSetting;
 import games.strategy.util.Version;
 import lombok.extern.java.Log;
 
-/**
- * Fetches the lobby server properties from the remote Source of Truth.
- */
+/** Fetches the lobby server properties from the remote Source of Truth. */
 @Log
 public final class LobbyServerPropertiesFetcher {
   private final Function<String, Optional<File>> fileDownloader;
 
   /**
-   * Default constructor with default (prod) dependencies.
-   * This allows us to fetch a remote file and parse it for lobby properties.
-   * Those properties then tell the game client how/where to connect to the lobby.
+   * Default constructor with default (prod) dependencies. This allows us to fetch a remote file and
+   * parse it for lobby properties. Those properties then tell the game client how/where to connect
+   * to the lobby.
    */
   public LobbyServerPropertiesFetcher() {
     this(url -> DownloadConfiguration.contentReader().downloadToFile(url));
@@ -41,19 +39,18 @@ public final class LobbyServerPropertiesFetcher {
   }
 
   /**
-   * Fetches LobbyServerProperties based on values read from configuration.
-   * LobbyServerProperties are based on a properties file hosted on github which can be updated live.
-   * This properties file tells the game client how to connect to the lobby and provides a welcome message.
-   * In case Github is not available, we also have a backup hardcoded lobby host address in the client
+   * Fetches LobbyServerProperties based on values read from configuration. LobbyServerProperties
+   * are based on a properties file hosted on github which can be updated live. This properties file
+   * tells the game client how to connect to the lobby and provides a welcome message. In case
+   * Github is not available, we also have a backup hardcoded lobby host address in the client
    * configuration that we would pass back in case github is not available.
    *
-   * <p>
-   * The lobby server properties may be overridden by setting values for {@link ClientSetting#testLobbyHost} and
-   * {@link ClientSetting#testLobbyPort} simultaneously. Setting only one or the other will cause them to be ignored.
-   * </p>
+   * <p>The lobby server properties may be overridden by setting values for {@link
+   * ClientSetting#testLobbyHost} and {@link ClientSetting#testLobbyPort} simultaneously. Setting
+   * only one or the other will cause them to be ignored.
    *
-   * @return LobbyServerProperties as fetched and parsed from github hosted remote URL.
-   *         Otherwise backup values from client config.
+   * @return LobbyServerProperties as fetched and parsed from github hosted remote URL. Otherwise
+   *     backup values from client config.
    */
   public Optional<LobbyServerProperties> fetchLobbyServerProperties() {
     final Optional<LobbyServerProperties> userOverride = getTestOverrideProperties();
@@ -66,10 +63,11 @@ public final class LobbyServerPropertiesFetcher {
       return fromHostedFile;
     }
 
-    return Optional.of(LobbyServerProperties.builder()
-        .host(ClientSetting.lobbyLastUsedHost.getValueOrThrow())
-        .port(ClientSetting.lobbyLastUsedPort.getValueOrThrow())
-        .build());
+    return Optional.of(
+        LobbyServerProperties.builder()
+            .host(ClientSetting.lobbyLastUsedHost.getValueOrThrow())
+            .port(ClientSetting.lobbyLastUsedPort.getValueOrThrow())
+            .build());
   }
 
   private static Optional<LobbyServerProperties> getTestOverrideProperties() {
@@ -96,14 +94,15 @@ public final class LobbyServerPropertiesFetcher {
 
     final Version currentVersion = ClientContext.engineVersion();
 
-    final Optional<LobbyServerProperties> lobbyProps = downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion,
-        LobbyPropertyFileParser::parse);
+    final Optional<LobbyServerProperties> lobbyProps =
+        downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion, LobbyPropertyFileParser::parse);
 
-    lobbyProps.ifPresent(props -> {
-      ClientSetting.lobbyLastUsedHost.setValue(props.getHost());
-      ClientSetting.lobbyLastUsedPort.setValue(props.getPort());
-      ClientSetting.flush();
-    });
+    lobbyProps.ifPresent(
+        props -> {
+          ClientSetting.lobbyLastUsedHost.setValue(props.getHost());
+          ClientSetting.lobbyLastUsedPort.setValue(props.getPort());
+          ClientSetting.flush();
+        });
 
     return lobbyProps;
   }
@@ -112,33 +111,43 @@ public final class LobbyServerPropertiesFetcher {
    * Downloads the lobby properties file from the specified URL and returns the parsed properties.
    *
    * @param lobbyPropFileUrl The target URL to scrape for a lobby properties file.
-   * @param currentVersion Our current engine version. The properties file can contain
-   *        multiple listings for different versions.
-   * @return Parsed LobbyServerProperties object from the data we found at the remote url,
-   *         or an empty optional if there were any errors downloading the properties file.
+   * @param currentVersion Our current engine version. The properties file can contain multiple
+   *     listings for different versions.
+   * @return Parsed LobbyServerProperties object from the data we found at the remote url, or an
+   *     empty optional if there were any errors downloading the properties file.
    */
   @VisibleForTesting
   Optional<LobbyServerProperties> downloadAndParseRemoteFile(
       final String lobbyPropFileUrl,
       final Version currentVersion,
       final BiFunction<String, Version, LobbyServerProperties> propertyParser) {
-    return fileDownloader.apply(lobbyPropFileUrl).map(downloadFile -> {
-      try {
-        final String yamlContent = new String(Files.readAllBytes(downloadFile.toPath()), StandardCharsets.UTF_8);
+    return fileDownloader
+        .apply(lobbyPropFileUrl)
+        .map(
+            downloadFile -> {
+              try {
+                final String yamlContent =
+                    new String(Files.readAllBytes(downloadFile.toPath()), StandardCharsets.UTF_8);
 
-        final LobbyServerProperties properties =
-            propertyParser.apply(yamlContent, currentVersion);
+                final LobbyServerProperties properties =
+                    propertyParser.apply(yamlContent, currentVersion);
 
-        if (!downloadFile.delete()) {
-          downloadFile.deleteOnExit();
-        }
+                if (!downloadFile.delete()) {
+                  downloadFile.deleteOnExit();
+                }
 
-        return properties;
-      } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed loading file: " + lobbyPropFileUrl + ", please try again, if the "
-            + "problem does not go away please report a bug: " + UrlConstants.GITHUB_ISSUES, e);
-        return null;
-      }
-    });
+                return properties;
+              } catch (final IOException e) {
+                log.log(
+                    Level.SEVERE,
+                    "Failed loading file: "
+                        + lobbyPropFileUrl
+                        + ", please try again, if the "
+                        + "problem does not go away please report a bug: "
+                        + UrlConstants.GITHUB_ISSUES,
+                    e);
+                return null;
+              }
+            });
   }
 }

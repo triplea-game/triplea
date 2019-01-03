@@ -13,9 +13,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import lombok.ToString;
 
-/**
- * Wrapper around the set of players in a game to provide utility functions and methods.
- */
+/** Wrapper around the set of players in a game to provide utility functions and methods. */
 @ToString
 public class PlayerList extends GameDataComponent implements Iterable<PlayerId> {
   private static final long serialVersionUID = -3895068111754745446L;
@@ -47,16 +45,16 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerId> 
     return new ArrayList<>(players.values());
   }
 
-  /**
-   * an iterator of a new arraylist copy of the players.
-   */
+  /** an iterator of a new arraylist copy of the players. */
   @Override
   public Iterator<PlayerId> iterator() {
     return getPlayers().iterator();
   }
 
   public Collection<String> getPlayersThatMayBeDisabled() {
-    return players.values().stream()
+    return players
+        .values()
+        .stream()
         .filter(PlayerId::getCanBeDisabled)
         .filter(p -> !p.getIsDisabled())
         .map(DefaultNamed::getName)

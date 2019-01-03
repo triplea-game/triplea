@@ -36,10 +36,15 @@ class DummyPlayer extends AbstractAi {
   private final boolean isAttacker;
   private final List<Unit> orderOfLosses;
 
-  DummyPlayer(final DummyDelegateBridge dummyDelegateBridge, final boolean attacker, final String name,
-      final List<Unit> orderOfLosses, final boolean keepAtLeastOneLand,
+  DummyPlayer(
+      final DummyDelegateBridge dummyDelegateBridge,
+      final boolean attacker,
+      final String name,
+      final List<Unit> orderOfLosses,
+      final boolean keepAtLeastOneLand,
       final int retreatAfterRound,
-      final int retreatAfterXUnitsLeft, final boolean retreatWhenOnlyAirLeft) {
+      final int retreatAfterXUnitsLeft,
+      final boolean retreatWhenOnlyAirLeft) {
     super(name);
     this.keepAtLeastOneLand = keepAtLeastOneLand;
     this.retreatAfterRound = retreatAfterRound;
@@ -76,20 +81,30 @@ class DummyPlayer extends AbstractAi {
   }
 
   @Override
-  protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data,
+  protected void move(
+      final boolean nonCombat,
+      final IMoveDelegate moveDel,
+      final GameData data,
       final PlayerId player) {}
 
   @Override
-  protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
+  protected void place(
+      final boolean placeForBid,
+      final IAbstractPlaceDelegate placeDelegate,
+      final GameData data,
       final PlayerId player) {}
 
   @Override
-  protected void purchase(final boolean purcahseForBid, final int pusToSpend,
+  protected void purchase(
+      final boolean purcahseForBid,
+      final int pusToSpend,
       final IPurchaseDelegate purchaseDelegate,
-      final GameData data, final PlayerId player) {}
+      final GameData data,
+      final PlayerId player) {}
 
   @Override
-  protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerId player) {}
+  protected void tech(
+      final ITechDelegate techDelegate, final GameData data, final PlayerId player) {}
 
   @Override
   public boolean confirmMoveInFaceOfAa(final Collection<Territory> aaFiringTerritories) {
@@ -97,19 +112,24 @@ class DummyPlayer extends AbstractAi {
   }
 
   @Override
-  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved,
-      final Territory from) {
+  public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(
+      final Collection<Unit> fightersThatCanBeMoved, final Territory from) {
     throw new UnsupportedOperationException();
   }
 
   /**
    * The battle calc doesn't actually care if you have available territories to retreat to or not.
-   * It will always let you retreat to the 'current' territory (the battle territory), even if that is illegal.
-   * This is because the battle calc does not know where the attackers are actually coming from.
+   * It will always let you retreat to the 'current' territory (the battle territory), even if that
+   * is illegal. This is because the battle calc does not know where the attackers are actually
+   * coming from.
    */
   @Override
-  public Territory retreatQuery(final GUID battleId, final boolean submerge, final Territory battleSite,
-      final Collection<Territory> possibleTerritories, final String message) {
+  public Territory retreatQuery(
+      final GUID battleId,
+      final boolean submerge,
+      final Territory battleSite,
+      final Collection<Territory> possibleTerritories,
+      final String message) {
     // null = do not retreat
     if (possibleTerritories.isEmpty()) {
       return null;
@@ -117,13 +137,16 @@ class DummyPlayer extends AbstractAi {
     if (submerge) {
       // submerge if all air vs subs
       final Predicate<Unit> seaSub = Matches.unitIsSea().and(Matches.unitIsSub());
-      final Predicate<Unit> planeNotDestroyer = Matches.unitIsAir().and(Matches.unitIsDestroyer().negate());
+      final Predicate<Unit> planeNotDestroyer =
+          Matches.unitIsAir().and(Matches.unitIsDestroyer().negate());
       final List<Unit> ourUnits = getOurUnits();
       final List<Unit> enemyUnits = getEnemyUnits();
       if (ourUnits == null || enemyUnits == null) {
         return null;
       }
-      if (!enemyUnits.isEmpty() && enemyUnits.stream().allMatch(planeNotDestroyer) && !ourUnits.isEmpty()
+      if (!enemyUnits.isEmpty()
+          && enemyUnits.stream().allMatch(planeNotDestroyer)
+          && !ourUnits.isEmpty()
           && ourUnits.stream().allMatch(seaSub)) {
         return possibleTerritories.iterator().next();
       }
@@ -140,13 +163,16 @@ class DummyPlayer extends AbstractAi {
     if (!retreatWhenOnlyAirLeft && retreatAfterXUnitsLeft <= -1) {
       return null;
     }
-    final Collection<Unit> unitsLeft = isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
+    final Collection<Unit> unitsLeft =
+        isAttacker ? battle.getAttackingUnits() : battle.getDefendingUnits();
     final Collection<Unit> airLeft = CollectionUtils.getMatches(unitsLeft, Matches.unitIsAir());
     if (retreatWhenOnlyAirLeft) {
       // lets say we have a bunch of 3 attack air unit, and a 4 attack non-air unit,
-      // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets taken
+      // and we want to retreat when we have all air units left + that 4 attack non-air (cus it gets
+      // taken
       // casualty last)
-      // then we add the number of air, to the retreat after X left number (which we would set to '1')
+      // then we add the number of air, to the retreat after X left number (which we would set to
+      // '1')
       int retreatNum = airLeft.size();
       if (retreatAfterXUnitsLeft > 0) {
         retreatNum += retreatAfterXUnitsLeft;
@@ -163,11 +189,21 @@ class DummyPlayer extends AbstractAi {
 
   // Added new collection autoKilled to handle killing units prior to casualty selection
   @Override
-  public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
-      final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-      final PlayerId hit, final Collection<Unit> friendlyUnits, final PlayerId enemyPlayer,
-      final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
-      final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
+  public CasualtyDetails selectCasualties(
+      final Collection<Unit> selectFrom,
+      final Map<Unit, Collection<Unit>> dependents,
+      final int count,
+      final String message,
+      final DiceRoll dice,
+      final PlayerId hit,
+      final Collection<Unit> friendlyUnits,
+      final PlayerId enemyPlayer,
+      final Collection<Unit> enemyUnits,
+      final boolean amphibious,
+      final Collection<Unit> amphibiousLandAttackers,
+      final CasualtyList defaultCasualties,
+      final GUID battleId,
+      final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     final List<Unit> damagedUnits = new ArrayList<>(defaultCasualties.getDamaged());
     final List<Unit> killedUnits = new ArrayList<>(defaultCasualties.getKilled());
@@ -178,7 +214,8 @@ class DummyPlayer extends AbstractAi {
       if (notKilled.stream().noneMatch(Matches.unitIsLand())
           && notKilled.stream().anyMatch(Matches.unitIsNotLand())
           && killedUnits.stream().anyMatch(Matches.unitIsLand())) {
-        final List<Unit> notKilledAndNotLand = CollectionUtils.getMatches(notKilled, Matches.unitIsNotLand());
+        final List<Unit> notKilledAndNotLand =
+            CollectionUtils.getMatches(notKilled, Matches.unitIsNotLand());
         // sort according to cost
         notKilledAndNotLand.sort(AiUtils.getCostComparator());
         // remove the last killed unit, this should be the strongest
@@ -213,7 +250,8 @@ class DummyPlayer extends AbstractAi {
   }
 
   @Override
-  public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates,
+  public Territory selectTerritoryForAirToLand(
+      final Collection<Territory> candidates,
       final Territory currentTerritory,
       final String unitMessage) {
     throw new UnsupportedOperationException();
@@ -225,7 +263,9 @@ class DummyPlayer extends AbstractAi {
   }
 
   @Override
-  public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets,
+  public Unit whatShouldBomberBomb(
+      final Territory territory,
+      final Collection<Unit> potentialTargets,
       final Collection<Unit> bombers) {
     throw new UnsupportedOperationException();
   }

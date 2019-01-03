@@ -28,13 +28,12 @@ import games.strategy.triplea.util.UnitSeparator;
 /**
  * A UI component that displays details about the currently-selected history node.
  *
- * <p>
- * The history node details include:
- * </p>
+ * <p>The history node details include:
+ *
  * <ul>
- * <li>The textual description of the node.</li>
- * <li>A custom UI component provided by the node that provides graphical details. For example, a purchase event may
- * display the icons (and counts) for each unit purchased.</li>
+ *   <li>The textual description of the node.
+ *   <li>A custom UI component provided by the node that provides graphical details. For example, a
+ *       purchase event may display the icons (and counts) for each unit purchased.
  * </ul>
  */
 public class HistoryDetailsPanel extends JPanel {
@@ -62,10 +61,13 @@ public class HistoryDetailsPanel extends JPanel {
     mapPanel.setRoute(null);
     final Insets insets = new Insets(5, 0, 0, 0);
     title.setText(node.getTitle());
-    add(scroll,
-        new GridBagConstraints(0, 0, 1, 1, 1, 0.1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0));
+    add(
+        scroll,
+        new GridBagConstraints(
+            0, 0, 1, 1, 1, 0.1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0));
     final GridBagConstraints mainConstraints =
-        new GridBagConstraints(0, 1, 1, 1, 1, 0.9, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0);
+        new GridBagConstraints(
+            0, 1, 1, 1, 1, 0.9, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0);
     if (node instanceof Renderable) {
       final Object details = ((Renderable) node).getRenderingData();
       if (details instanceof DiceRoll) {

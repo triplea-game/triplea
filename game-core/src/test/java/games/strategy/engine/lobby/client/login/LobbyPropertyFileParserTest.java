@@ -34,9 +34,7 @@ class LobbyPropertyFileParserTest {
     testPropsMatch.message = "";
     testPropsMatch.version = TestData.clientCurrentVersion;
 
-    return new TestProps[] {
-        testProps1, testProps2, testPropsMatch
-    };
+    return new TestProps[] {testProps1, testProps2, testPropsMatch};
   }
 
   /**
@@ -63,14 +61,12 @@ class LobbyPropertyFileParserTest {
   }
 
   private static String newYaml(final TestProps... testProps) {
-    return Arrays.stream(testProps)
-        .map(TestProps::toYaml)
-        .collect(Collectors.joining("\n"));
+    return Arrays.stream(testProps).map(TestProps::toYaml).collect(Collectors.joining("\n"));
   }
 
   /**
-   * YAML config has multple lobby configs depending on client version. Here we make sure the version checks
-   * line up and we get the expected lobby config back.
+   * YAML config has multple lobby configs depending on client version. Here we make sure the
+   * version checks line up and we get the expected lobby config back.
    */
   @Test
   void checkVersionSelection() {
@@ -97,9 +93,7 @@ class LobbyPropertyFileParserTest {
     String clientCurrentVersion = "2.0.0.0";
   }
 
-  /**
-   * Simple struct-like object to keep our test data together and form a YAML more easily.
-   */
+  /** Simple struct-like object to keep our test data together and form a YAML more easily. */
   private static class TestProps {
     String host;
     String port;
@@ -109,11 +103,19 @@ class LobbyPropertyFileParserTest {
 
     String toYaml() {
       final String printVersion = (version == null) ? "" : "  version: " + version + "\n";
-      return "- host: " + host + "\n"
+      return "- host: "
+          + host
+          + "\n"
           + printVersion
-          + "  port: " + port + "\n"
-          + "  message: " + message + "\n"
-          + "  error_message: " + errorMessage + "\n";
+          + "  port: "
+          + port
+          + "\n"
+          + "  message: "
+          + message
+          + "\n"
+          + "  error_message: "
+          + errorMessage
+          + "\n";
     }
   }
 }

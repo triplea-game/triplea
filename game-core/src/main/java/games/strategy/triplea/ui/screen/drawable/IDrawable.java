@@ -11,8 +11,9 @@ import games.strategy.engine.data.GameData;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 /**
- * A service responsible for drawing a single layer of the map. The map is rendered as a sequence of layers (or
- * levels). The lowest layer is drawn first with each successive layer drawn on top of it.
+ * A service responsible for drawing a single layer of the map. The map is rendered as a sequence of
+ * layers (or levels). The lowest layer is drawn first with each successive layer drawn on top of
+ * it.
  */
 public interface IDrawable {
   int BASE_MAP_LEVEL = 1;
@@ -29,27 +30,34 @@ public interface IDrawable {
   int UNITS_LEVEL = 15;
   int TERRITORY_OVERLAY_LEVEL = 16;
 
-  /**
-   * This is for the optional extra territory borders. LOW means off
-   */
+  /** This is for the optional extra territory borders. LOW means off */
   enum OptionalExtraBorderLevel {
-    LOW, MEDIUM, HIGH
+    LOW,
+    MEDIUM,
+    HIGH
   }
 
   /**
    * Draw the tile. If the graphics are scaled, then unscaled and scaled will be non null.
    *
-   * <p>
-   * The affine transform will be set to the scaled version.
-   * </p>
+   * <p>The affine transform will be set to the scaled version.
    */
-  void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled,
+  void draw(
+      Rectangle bounds,
+      GameData data,
+      Graphics2D graphics,
+      MapData mapData,
+      AffineTransform unscaled,
       AffineTransform scaled);
 
   int getLevel();
 
-  default void drawImage(final Graphics2D graphics, final Optional<Image> image, final Point location,
+  default void drawImage(
+      final Graphics2D graphics,
+      final Optional<Image> image,
+      final Point location,
       final Rectangle bounds) {
-    image.ifPresent(image1 -> graphics.drawImage(image1, location.x - bounds.x, location.y - bounds.y, null));
+    image.ifPresent(
+        image1 -> graphics.drawImage(image1, location.x - bounds.x, location.y - bounds.y, null));
   }
 }

@@ -23,14 +23,11 @@ public final class ClientFileSystemHelperTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   public final class GetFolderContainingFileWithNameTest {
-    @Mock
-    private File file;
+    @Mock private File file;
 
-    @Mock
-    private File parentFolder;
+    @Mock private File parentFolder;
 
-    @Mock
-    private File startFolder;
+    @Mock private File startFolder;
 
     private File getFolderContainingFileWithName() throws Exception {
       return ClientFileSystemHelper.getFolderContainingFileWithName(file.getName(), startFolder);
@@ -72,10 +69,8 @@ public final class ClientFileSystemHelperTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class GetUserMapsFolderTest {
-    @Mock
-    private GameSetting<Path> currentSetting;
-    @Mock
-    private GameSetting<Path> overrideSetting;
+    @Mock private GameSetting<Path> currentSetting;
+    @Mock private GameSetting<Path> overrideSetting;
 
     private Path getUserMapsFolder() {
       return ClientFileSystemHelper.getUserMapsFolder(currentSetting, overrideSetting);

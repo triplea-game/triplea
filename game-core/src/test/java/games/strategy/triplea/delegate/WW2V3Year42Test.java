@@ -79,9 +79,13 @@ public class WW2V3Year42Test {
     // remove the russian units
     removeFrom(karrelia, karrelia.getUnits().getMatches(Matches.unitCanBeDamaged().negate()));
     // move the bomber to attack
-    move(germany.getUnits().getMatches(Matches.unitIsStrategicBomber()), new Route(germany, sz5, karrelia));
+    move(
+        germany.getUnits().getMatches(Matches.unitIsStrategicBomber()),
+        new Route(germany, sz5, karrelia));
     // move an infantry to invade
-    move(baltic.getUnits().getMatches(Matches.unitIsLandTransportable()), new Route(baltic, karrelia));
+    move(
+        baltic.getUnits().getMatches(Matches.unitIsLandTransportable()),
+        new Route(baltic, karrelia));
     final BattleTracker battleTracker = MoveDelegate.getBattleTracker(gameData);
     // we should have a pending land battle, and a pending bombing raid
     assertNotNull(battleTracker.getPendingBattle(karrelia, false, null));
@@ -109,7 +113,8 @@ public class WW2V3Year42Test {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle
     final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
+        (MustFightBattle)
+            MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
     assertEquals(5, mfb.getAttackingUnits().size());
   }
 
@@ -135,7 +140,8 @@ public class WW2V3Year42Test {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle except the italian carrier
     final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
+        (MustFightBattle)
+            MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
     assertEquals(6, mfb.getAttackingUnits().size());
   }
 
@@ -160,7 +166,8 @@ public class WW2V3Year42Test {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle
     final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
+        (MustFightBattle)
+            MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
     assertEquals(4, mfb.getAttackingUnits().size());
   }
 }

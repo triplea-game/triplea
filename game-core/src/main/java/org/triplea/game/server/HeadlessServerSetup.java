@@ -21,9 +21,7 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.util.Interruptibles;
 
-/**
- * Server setup model.
- */
+/** Server setup model. */
 class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   private final List<Observer> listeners = new CopyOnWriteArrayList<>();
   private final ServerModel model;
@@ -39,8 +37,9 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   }
 
   private void createLobbyWatcher() {
-    lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), null,
-        lobbyWatcher.getInGameLobbyWatcher()));
+    lobbyWatcher.setInGameLobbyWatcher(
+        InGameLobbyWatcher.newInGameLobbyWatcher(
+            model.getMessenger(), null, lobbyWatcher.getInGameLobbyWatcher()));
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
   }
 
@@ -99,11 +98,13 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
 
   @Override
   public synchronized Optional<ILauncher> getLauncher() {
-    return model.getLauncher()
-        .map(launcher -> {
-          launcher.setInGameLobbyWatcher(lobbyWatcher);
-          return launcher;
-        });
+    return model
+        .getLauncher()
+        .map(
+            launcher -> {
+              launcher.setInGameLobbyWatcher(lobbyWatcher);
+              return launcher;
+            });
   }
 
   @Override
@@ -134,8 +135,9 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
 
   @Override
   public JComponent getDrawable() {
-    throw new UnsupportedOperationException("HeadlessServerSetup should not use UI components. "
-        + "Bot setup code should not execute this code path.");
+    throw new UnsupportedOperationException(
+        "HeadlessServerSetup should not use UI components. "
+            + "Bot setup code should not execute this code path.");
   }
 
   @Override

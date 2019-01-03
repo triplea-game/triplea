@@ -29,9 +29,7 @@ import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 
-/**
- * Panel showing full list of units for a player in a given battle simulation.
- */
+/** Panel showing full list of units for a player in a given battle simulation. */
 public class PlayerUnitsPanel extends JPanel {
   private static final long serialVersionUID = -1206338960403314681L;
   private final GameData data;
@@ -68,37 +66,40 @@ public class PlayerUnitsPanel extends JPanel {
     return categories;
   }
 
-  /**
-   * Sets up components to an initial state.
-   */
+  /** Sets up components to an initial state. */
   public void init(final PlayerId id, final List<Unit> units, final boolean land) {
     isLand = land;
     categories = new ArrayList<>(categorize(id, units));
-    categories.sort(Comparator.comparing(UnitCategory::getType, (ut1, ut2) -> {
-      final UnitAttachment u1 = UnitAttachment.get(ut1);
-      final UnitAttachment u2 = UnitAttachment.get(ut2);
-      // For land battles, sort by land, air, can't combat move (AA), bombarding
-      if (land) {
-        if (u1.getIsSea() != u2.getIsSea()) {
-          return u1.getIsSea() ? 1 : -1;
-        }
-        final boolean u1CanNotCombatMove =
-            Matches.unitTypeCanNotMoveDuringCombatMove().test(ut1) || !Matches.unitTypeCanMove(id).test(ut1);
-        final boolean u2CanNotCombatMove =
-            Matches.unitTypeCanNotMoveDuringCombatMove().test(ut2) || !Matches.unitTypeCanMove(id).test(ut2);
-        if (u1CanNotCombatMove != u2CanNotCombatMove) {
-          return u1CanNotCombatMove ? 1 : -1;
-        }
-        if (u1.getIsAir() != u2.getIsAir()) {
-          return u1.getIsAir() ? 1 : -1;
-        }
-      } else {
-        if (u1.getIsSea() != u2.getIsSea()) {
-          return u1.getIsSea() ? -1 : 1;
-        }
-      }
-      return u1.getName().compareTo(u2.getName());
-    }));
+    categories.sort(
+        Comparator.comparing(
+            UnitCategory::getType,
+            (ut1, ut2) -> {
+              final UnitAttachment u1 = UnitAttachment.get(ut1);
+              final UnitAttachment u2 = UnitAttachment.get(ut2);
+              // For land battles, sort by land, air, can't combat move (AA), bombarding
+              if (land) {
+                if (u1.getIsSea() != u2.getIsSea()) {
+                  return u1.getIsSea() ? 1 : -1;
+                }
+                final boolean u1CanNotCombatMove =
+                    Matches.unitTypeCanNotMoveDuringCombatMove().test(ut1)
+                        || !Matches.unitTypeCanMove(id).test(ut1);
+                final boolean u2CanNotCombatMove =
+                    Matches.unitTypeCanNotMoveDuringCombatMove().test(ut2)
+                        || !Matches.unitTypeCanMove(id).test(ut2);
+                if (u1CanNotCombatMove != u2CanNotCombatMove) {
+                  return u1CanNotCombatMove ? 1 : -1;
+                }
+                if (u1.getIsAir() != u2.getIsAir()) {
+                  return u1.getIsAir() ? 1 : -1;
+                }
+              } else {
+                if (u1.getIsSea() != u2.getIsSea()) {
+                  return u1.getIsSea() ? -1 : 1;
+                }
+              }
+              return u1.getName().compareTo(u2.getName());
+            }));
     removeAll();
     final Predicate<UnitType> predicate;
     if (land) {
@@ -132,8 +133,9 @@ public class PlayerUnitsPanel extends JPanel {
   }
 
   /**
-   * Get all unit type categories that can be in combat first in the order of the player's production frontier and then
-   * any unit types the player owns on the map. Then populate the list of units into the categories.
+   * Get all unit type categories that can be in combat first in the order of the player's
+   * production frontier and then any unit types the player owns on the map. Then populate the list
+   * of units into the categories.
    */
   private Set<UnitCategory> categorize(final PlayerId id, final List<Unit> units) {
 
@@ -159,8 +161,8 @@ public class PlayerUnitsPanel extends JPanel {
   }
 
   /**
-   * Return all the unit types available for the given player. A unit type is
-   * available if the unit can be purchased or if a player has one on the map.
+   * Return all the unit types available for the given player. A unit type is available if the unit
+   * can be purchased or if a player has one on the map.
    */
   private Collection<UnitType> getUnitTypes(final PlayerId player) {
     Collection<UnitType> unitTypes = new LinkedHashSet<>();
@@ -182,9 +184,12 @@ public class PlayerUnitsPanel extends JPanel {
       }
     }
 
-    // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
-    unitTypes = CollectionUtils.getMatches(unitTypes,
-        Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, false, false, false));
+    // Filter out anything like factories, or units that have no combat ability AND cannot be taken
+    // casualty
+    unitTypes =
+        CollectionUtils.getMatches(
+            unitTypes,
+            Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, false, false, false));
 
     return unitTypes;
   }

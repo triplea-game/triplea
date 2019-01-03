@@ -30,7 +30,8 @@ class CountryChart {
   void saveToFile(final PlayerId player, final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
     final Collection<Territory> terrCollection =
-        CollectionUtils.getMatches(gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+        CollectionUtils.getMatches(
+            gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
     Iterator<Territory> terrIterator = terrCollection.iterator();
     Iterator<UnitType> availableUnits = gameData.getUnitTypeList().iterator();
     while (terrIterator.hasNext()) {
@@ -48,10 +49,12 @@ class CountryChart {
       availableUnits = gameData.getUnitTypeList().iterator();
     }
     final File outFile = new File(printData.getOutDir(), player.getName() + ".csv");
-    try (Writer countryFileWriter = Files.newBufferedWriter(
-        outFile.toPath(),
-        StandardCharsets.UTF_8,
-        StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+    try (Writer countryFileWriter =
+        Files.newBufferedWriter(
+            outFile.toPath(),
+            StandardCharsets.UTF_8,
+            StandardOpenOption.CREATE,
+            StandardOpenOption.APPEND)) {
       // Print Title
       final int numUnits = gameData.getUnitTypeList().size();
       for (int i = 0; i < numUnits / 2 - 1 + numUnits % 2; i++) {
@@ -69,8 +72,10 @@ class CountryChart {
       }
       countryFileWriter.write("\r\n");
       // Print Territories and Info
-      terrIterator = CollectionUtils
-          .getMatches(gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player)).iterator();
+      terrIterator =
+          CollectionUtils.getMatches(
+                  gameData.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player))
+              .iterator();
       while (terrIterator.hasNext()) {
         final Territory currentTerritory = terrIterator.next();
         countryFileWriter.write(currentTerritory.getName());

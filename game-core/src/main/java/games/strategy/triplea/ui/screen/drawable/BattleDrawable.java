@@ -17,8 +17,8 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 /**
- * Draws a black outline around the associated territory and draws diagonal stripes over the territory interior if a
- * battle is pending within the territory.
+ * Draws a black outline around the associated territory and draws diagonal stripes over the
+ * territory interior if a battle is pending within the territory.
  */
 public class BattleDrawable extends TerritoryDrawable implements IDrawable {
   private final String territoryName;
@@ -28,8 +28,13 @@ public class BattleDrawable extends TerritoryDrawable implements IDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData,
+      final AffineTransform unscaled,
+      final AffineTransform scaled) {
     final Set<PlayerId> players = new HashSet<>();
     for (final Unit u : data.getMap().getTerritory(territoryName).getUnits()) {
       if (!TripleAUnit.get(u).getSubmerged()) {
@@ -71,9 +76,15 @@ public class BattleDrawable extends TerritoryDrawable implements IDrawable {
       } else {
         stripeColor = mapData.getPlayerColor(attacker.getName());
       }
-      final Paint paint = new GradientPaint(0 - (float) bounds.getX(), 0 - (float) bounds.getY(),
-          new Color(stripeColor.getRed(), stripeColor.getGreen(), stripeColor.getBlue(), 120),
-          30 - (float) bounds.getX(), 50 - (float) bounds.getY(), new Color(0, 0, 0, 0), true);
+      final Paint paint =
+          new GradientPaint(
+              0 - (float) bounds.getX(),
+              0 - (float) bounds.getY(),
+              new Color(stripeColor.getRed(), stripeColor.getGreen(), stripeColor.getBlue(), 120),
+              30 - (float) bounds.getX(),
+              50 - (float) bounds.getY(),
+              new Color(0, 0, 0, 0),
+              true);
       draw(bounds, graphics, mapData, territory, paint);
     }
   }

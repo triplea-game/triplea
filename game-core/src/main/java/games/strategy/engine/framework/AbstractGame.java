@@ -28,8 +28,10 @@ import games.strategy.sound.ISound;
  * This abstract class keeps common variables and methods from a game (ClientGame or ServerGame).
  */
 public abstract class AbstractGame implements IGame {
-  protected static final String DISPLAY_CHANNEL = "games.strategy.engine.framework.AbstractGame.DISPLAY_CHANNEL";
-  protected static final String SOUND_CHANNEL = "games.strategy.engine.framework.AbstractGame.SOUND_CHANNEL";
+  protected static final String DISPLAY_CHANNEL =
+      "games.strategy.engine.framework.AbstractGame.DISPLAY_CHANNEL";
+  protected static final String SOUND_CHANNEL =
+      "games.strategy.engine.framework.AbstractGame.SOUND_CHANNEL";
   protected final GameData gameData;
   protected final IMessenger messenger;
   protected final IRemoteMessenger remoteMessenger;
@@ -42,8 +44,11 @@ public abstract class AbstractGame implements IGame {
   protected boolean firstRun = true;
   protected final List<GameStepListener> gameStepListeners = new CopyOnWriteArrayList<>();
 
-  protected AbstractGame(final GameData data, final Set<IGamePlayer> gamePlayers,
-      final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
+  protected AbstractGame(
+      final GameData data,
+      final Set<IGamePlayer> gamePlayers,
+      final Map<String, INode> remotePlayerMapping,
+      final Messengers messengers) {
     gameData = data;
     messenger = messengers.getMessenger();
     remoteMessenger = messengers.getRemoteMessenger();
@@ -70,11 +75,13 @@ public abstract class AbstractGame implements IGame {
     }
   }
 
-  /**
-   * Notifies game step listeners that a game step has changed.
-   */
-  protected void notifyGameStepListeners(final String stepName, final String delegateName, final PlayerId player,
-      final int round, final String displayName) {
+  /** Notifies game step listeners that a game step has changed. */
+  protected void notifyGameStepListeners(
+      final String stepName,
+      final String delegateName,
+      final PlayerId player,
+      final int round,
+      final String displayName) {
     for (final GameStepListener listener : gameStepListeners) {
       listener.gameStepChanged(stepName, delegateName, player, round, displayName);
     }

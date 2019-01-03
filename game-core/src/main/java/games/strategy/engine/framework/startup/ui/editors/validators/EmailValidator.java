@@ -2,9 +2,7 @@ package games.strategy.engine.framework.startup.ui.editors.validators;
 
 import games.strategy.util.Util;
 
-/**
- * A validator which validates that a text string is an email.
- */
+/** A validator which validates that a text string is an email. */
 public class EmailValidator implements IValidator {
   private final boolean validIfEmpty;
 

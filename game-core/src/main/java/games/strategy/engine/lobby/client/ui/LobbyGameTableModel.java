@@ -29,7 +29,16 @@ class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
 
   enum Column {
-    Host, Name, GV, Round, Players, P, Status, Comments, Started, GUID
+    Host,
+    Name,
+    GV,
+    Round,
+    Players,
+    P,
+    Status,
+    Comments,
+    Started,
+    GUID
   }
 
   private final IMessenger messenger;
@@ -37,55 +46,62 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   // these must only be accessed in the swing event thread
   private final List<Tuple<GUID, GameDescription>> gameList = new ArrayList<>();
-  private final ILobbyGameBroadcaster lobbyGameBroadcaster = new ILobbyGameBroadcaster() {
-    @Override
-    public void gameUpdated(final GUID gameId, final GameDescription description) {
-      assertSentFromServer();
-      updateGame(gameId, description);
-    }
+  private final ILobbyGameBroadcaster lobbyGameBroadcaster =
+      new ILobbyGameBroadcaster() {
+        @Override
+        public void gameUpdated(final GUID gameId, final GameDescription description) {
+          assertSentFromServer();
+          updateGame(gameId, description);
+        }
 
-    @Override
-    public void gameRemoved(final GUID gameId) {
-      assertSentFromServer();
-      removeGame(gameId);
-    }
-  };
+        @Override
+        public void gameRemoved(final GUID gameId) {
+          assertSentFromServer();
+          removeGame(gameId);
+        }
+      };
 
-  LobbyGameTableModel(final boolean admin, final IMessenger messenger, final IChannelMessenger channelMessenger,
+  LobbyGameTableModel(
+      final boolean admin,
+      final IMessenger messenger,
+      final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
     this.messenger = messenger;
     this.admin = admin;
-    channelMessenger.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.REMOTE_NAME);
+    channelMessenger.registerChannelSubscriber(
+        lobbyGameBroadcaster, ILobbyGameBroadcaster.REMOTE_NAME);
 
     final Map<GUID, GameDescription> games =
-        ((ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME)).listGames();
+        ((ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME))
+            .listGames();
     for (final GUID id : games.keySet()) {
       updateGame(id, games.get(id));
     }
   }
 
   private void removeGame(final GUID gameId) {
-    SwingUtilities.invokeLater(() -> {
-      if (gameId == null) {
-        return;
-      }
+    SwingUtilities.invokeLater(
+        () -> {
+          if (gameId == null) {
+            return;
+          }
 
-      final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
-      if (gameToRemove != null) {
-        final int index = gameList.indexOf(gameToRemove);
-        gameList.remove(gameToRemove);
-        fireTableRowsDeleted(index, index);
-      }
-    });
+          final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
+          if (gameToRemove != null) {
+            final int index = gameList.indexOf(gameToRemove);
+            gameList.remove(gameToRemove);
+            fireTableRowsDeleted(index, index);
+          }
+        });
   }
 
   private Tuple<GUID, GameDescription> findGame(final GUID gameId) {
-    return gameList.stream()
+    return gameList
+        .stream()
         .filter(game -> game.getFirst().equals(gameId))
         .findFirst()
         .orElse(null);
   }
-
 
   protected ILobbyGameBroadcaster getLobbyGameBroadcaster() {
     return lobbyGameBroadcaster;
@@ -102,21 +118,22 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private void updateGame(final GUID gameId, final GameDescription description) {
-    SwingUtilities.invokeLater(() -> {
-      if (gameId == null) {
-        return;
-      }
+    SwingUtilities.invokeLater(
+        () -> {
+          if (gameId == null) {
+            return;
+          }
 
-      final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
-      if (toReplace == null) {
-        gameList.add(Tuple.of(gameId, description));
-        fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
-      } else {
-        final int replaceIndex = gameList.indexOf(toReplace);
-        gameList.set(replaceIndex, Tuple.of(gameId, description));
-        fireTableRowsUpdated(replaceIndex, replaceIndex);
-      }
-    });
+          final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
+          if (toReplace == null) {
+            gameList.add(Tuple.of(gameId, description));
+            fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
+          } else {
+            final int replaceIndex = gameList.indexOf(toReplace);
+            gameList.set(replaceIndex, Tuple.of(gameId, description));
+            fireTableRowsUpdated(replaceIndex, replaceIndex);
+          }
+        });
   }
 
   @Override
@@ -173,7 +190,9 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   @VisibleForTesting
   static String formatBotStartTime(final Instant instant) {
-    return new DateTimeFormatterBuilder().appendLocalized(null, FormatStyle.SHORT).toFormatter()
+    return new DateTimeFormatterBuilder()
+        .appendLocalized(null, FormatStyle.SHORT)
+        .toFormatter()
         .format(LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault()));
   }
 }

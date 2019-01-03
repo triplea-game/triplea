@@ -5,9 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
-/**
- * Fake implementation of {@link TechAdvance} useful for testing.
- */
+/** Fake implementation of {@link TechAdvance} useful for testing. */
 public final class FakeTechAdvance extends TechAdvance {
   private static final long serialVersionUID = -7878431004713814054L;
 

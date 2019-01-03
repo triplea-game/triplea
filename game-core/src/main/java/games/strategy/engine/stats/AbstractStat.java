@@ -8,15 +8,17 @@ import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
 
 /**
- * Returns an intelligent formatter, and returns value for alliances
- * by summing our value for all players in the alliance.
+ * Returns an intelligent formatter, and returns value for alliances by summing our value for all
+ * players in the alliance.
  */
 public abstract class AbstractStat implements IStat {
   protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##0.##");
 
   @Override
   public double getValue(final String alliance, final GameData data) {
-    return data.getAllianceTracker().getPlayersInAlliance(alliance).stream()
+    return data.getAllianceTracker()
+        .getPlayersInAlliance(alliance)
+        .stream()
         .mapToDouble(player -> getValue(player, data))
         .sum();
   }

@@ -13,9 +13,7 @@ import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
 
-/**
- * Wrapper for properties selection window.
- */
+/** Wrapper for properties selection window. */
 public class PropertiesSelector {
   /**
    * Displays a property selection window.
@@ -25,15 +23,22 @@ public class PropertiesSelector {
    * @param buttonOptions button options. They will be displayed in a row on the bottom
    * @return pressed button
    */
-  public static Object getButton(final JComponent parent, final String title,
-      final List<? extends IEditableProperty<?>> properties, final Object... buttonOptions) {
+  public static Object getButton(
+      final JComponent parent,
+      final String title,
+      final List<? extends IEditableProperty<?>> properties,
+      final Object... buttonOptions) {
     final Supplier<Object> action = () -> showDialog(parent, title, properties, buttonOptions);
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action)).result
+    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(action))
+        .result
         .orElse(JOptionPane.UNINITIALIZED_VALUE);
   }
 
-  private static Object showDialog(final JComponent parent, final String title,
-      final List<? extends IEditableProperty<?>> properties, final Object... buttonOptions) {
+  private static Object showDialog(
+      final JComponent parent,
+      final String title,
+      final List<? extends IEditableProperty<?>> properties,
+      final Object... buttonOptions) {
     final PropertiesUi panel = new PropertiesUi(properties, true);
     final JScrollPane scroll = new JScrollPane(panel);
     scroll.setBorder(null);

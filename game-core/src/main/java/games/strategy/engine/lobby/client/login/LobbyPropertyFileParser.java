@@ -14,13 +14,13 @@ import games.strategy.util.OpenJsonUtils;
 import games.strategy.util.Version;
 
 /**
- * Parses a downloaded lobby properties file (yaml format expected).
- * Lobby properties include IP address and port of the lobby.
+ * Parses a downloaded lobby properties file (yaml format expected). Lobby properties include IP
+ * address and port of the lobby.
  */
 class LobbyPropertyFileParser {
 
-
-  public static LobbyServerProperties parse(final String fileContents, final Version currentVersion) {
+  public static LobbyServerProperties parse(
+      final String fileContents, final Version currentVersion) {
     final Map<String, Object> yamlProps =
         OpenJsonUtils.toMap(matchCurrentVersion(loadYaml(fileContents), currentVersion));
 
@@ -32,7 +32,8 @@ class LobbyPropertyFileParser {
         .build();
   }
 
-  private static JSONObject matchCurrentVersion(final JSONArray lobbyProps, final Version currentVersion) {
+  private static JSONObject matchCurrentVersion(
+      final JSONArray lobbyProps, final Version currentVersion) {
     checkNotNull(lobbyProps);
 
     return OpenJsonUtils.stream(lobbyProps)

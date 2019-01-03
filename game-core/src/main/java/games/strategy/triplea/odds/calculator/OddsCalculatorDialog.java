@@ -17,8 +17,8 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.ui.SwingComponents;
 
 /**
- * A dialog that allows the user to set up an arbitrary battle and calculate the attacker's odds of successfully winning
- * the battle. Also known as the Battle Calculator.
+ * A dialog that allows the user to set up an arbitrary battle and calculate the attacker's odds of
+ * successfully winning the battle. Also known as the Battle Calculator.
  */
 public class OddsCalculatorDialog extends JDialog {
   private static final long serialVersionUID = -7625420355087851930L;
@@ -28,25 +28,29 @@ public class OddsCalculatorDialog extends JDialog {
   private final OddsCalculatorPanel panel;
 
   /**
-   * Shows the Odds Calculator dialog and initializes it using the current state of the specified territory.
+   * Shows the Odds Calculator dialog and initializes it using the current state of the specified
+   * territory.
    */
   public static void show(final TripleAFrame taFrame, final Territory t) {
     final OddsCalculatorDialog dialog =
         new OddsCalculatorDialog(taFrame.getGame().getData(), taFrame.getUiContext(), taFrame, t);
     dialog.pack();
-    dialog.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosed(final WindowEvent e) {
-        if (taFrame.getUiContext() != null && !taFrame.getUiContext().isShutDown()) {
-          taFrame.getUiContext().removeShutdownWindow(dialog);
-        }
-      }
-    });
+    dialog.addWindowListener(
+        new WindowAdapter() {
+          @Override
+          public void windowClosed(final WindowEvent e) {
+            if (taFrame.getUiContext() != null && !taFrame.getUiContext().isShutDown()) {
+              taFrame.getUiContext().removeShutdownWindow(dialog);
+            }
+          }
+        });
     // close when hitting the escape key
-    SwingComponents.addEscapeKeyListener(dialog, () -> {
-      dialog.setVisible(false);
-      dialog.dispose();
-    });
+    SwingComponents.addEscapeKeyListener(
+        dialog,
+        () -> {
+          dialog.setVisible(false);
+          dialog.dispose();
+        });
 
     dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     if (lastPosition == null) {
@@ -62,7 +66,11 @@ public class OddsCalculatorDialog extends JDialog {
     taFrame.getUiContext().addShutdownWindow(dialog);
   }
 
-  OddsCalculatorDialog(final GameData data, final UiContext uiContext, final JFrame parent, final Territory location) {
+  OddsCalculatorDialog(
+      final GameData data,
+      final UiContext uiContext,
+      final JFrame parent,
+      final Territory location) {
     super(parent, "Odds Calculator");
     panel = new OddsCalculatorPanel(data, uiContext, location, this);
     getContentPane().setLayout(new BorderLayout());

@@ -21,8 +21,7 @@ final class ConsoleHandlerTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class PublishTest {
-    @Mock
-    private Console console;
+    @Mock private Console console;
     private ConsoleHandler consoleHandler;
     private final LogRecord record = new LogRecord(Level.SEVERE, "message");
 
@@ -32,7 +31,8 @@ final class ConsoleHandlerTest {
     }
 
     @Test
-    void shouldAppendFormattedMessageToConsoleWhenRecordIsLoggable(@Mock final Formatter formatter) {
+    void shouldAppendFormattedMessageToConsoleWhenRecordIsLoggable(
+        @Mock final Formatter formatter) {
       final String formattedMessage = "formattedMessage";
       when(formatter.format(record)).thenReturn(formattedMessage);
       consoleHandler.setFormatter(formatter);

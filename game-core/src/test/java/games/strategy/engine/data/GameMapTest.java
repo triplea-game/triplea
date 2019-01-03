@@ -19,7 +19,8 @@ final class GameMapTest {
       final Territory start = new Territory("territory", gameData);
       final Territory end = new Territory("territory", gameData);
 
-      assertThat(gameMap.getCompositeRoute(start, end, Collections.emptyMap()), is(new Route(start)));
+      assertThat(
+          gameMap.getCompositeRoute(start, end, Collections.emptyMap()), is(new Route(start)));
     }
   }
 

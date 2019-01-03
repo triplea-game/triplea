@@ -57,15 +57,11 @@ import lombok.extern.java.Log;
  * javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
  * </pre>
  *
- * <p>
- * In the above example, we are going to map the String value "games.strategy.triplea.attachments.TerritoryAttachment"
- * to a class constructor.
- * </p>
+ * <p>In the above example, we are going to map the String value
+ * "games.strategy.triplea.attachments.TerritoryAttachment" to a class constructor.
  *
- * <p>
- * Note: attachments and delegates are initialized slightly differently, one is is no-arg the other has initialization
- * parameters.
- * </p>
+ * <p>Note: attachments and delegates are initialized slightly differently, one is is no-arg the
+ * other has initialization parameters.
  */
 @Log
 public final class XmlGameElementMapper {
@@ -113,7 +109,8 @@ public final class XmlGameElementMapper {
         .build();
   }
 
-  @SuppressWarnings("deprecation") // required for map compatibility; remove upon next map-incompatible release
+  @SuppressWarnings(
+      "deprecation") // required for map compatibility; remove upon next map-incompatible release
   private static ImmutableMap<String, Supplier<IDelegate>> newTwoIfBySeaDelegateFactories() {
     return ImmutableMap.<String, Supplier<IDelegate>>builder()
         .put(
@@ -144,14 +141,14 @@ public final class XmlGameElementMapper {
         .build();
   }
 
-  /**
-   * Returns a new delegate of the type associated with the specified name.
-   */
+  /** Returns a new delegate of the type associated with the specified name. */
   public Optional<IDelegate> newDelegate(final String typeName) {
     checkNotNull(typeName);
 
-    final String normalizedTypeName = typeName.replaceAll("^games\\.strategy\\.triplea\\.delegate\\.", "");
-    final @Nullable Supplier<IDelegate> delegateFactory = delegateFactoriesByTypeName.get(normalizedTypeName);
+    final String normalizedTypeName =
+        typeName.replaceAll("^games\\.strategy\\.triplea\\.delegate\\.", "");
+    final @Nullable Supplier<IDelegate> delegateFactory =
+        delegateFactoriesByTypeName.get(normalizedTypeName);
     if (delegateFactory != null) {
       return Optional.of(delegateFactory.get());
     }
@@ -161,15 +158,20 @@ public final class XmlGameElementMapper {
   }
 
   private static void handleMissingObject(final String objectTypeName, final String objectName) {
-    log.severe("Could not find " + objectTypeName + " '" + objectName + "'. This can be a map configuration "
-        + "problem, and would need to be fixed in the map XML. Or the map XML is using a feature from a newer game "
-        + "engine version, and you will need to install the latest TripleA for it to be enabled. Meanwhile, the "
-        + "functionality provided by this " + objectTypeName + " will not available.");
+    log.severe(
+        "Could not find "
+            + objectTypeName
+            + " '"
+            + objectName
+            + "'. This can be a map configuration "
+            + "problem, and would need to be fixed in the map XML. Or the map XML is using a feature from a newer game "
+            + "engine version, and you will need to install the latest TripleA for it to be enabled. Meanwhile, the "
+            + "functionality provided by this "
+            + objectTypeName
+            + " will not available.");
   }
 
-  /**
-   * Returns a new attachment of the type associated with the specified name.
-   */
+  /** Returns a new attachment of the type associated with the specified name. */
   public Optional<IAttachment> newAttachment(
       final String typeName,
       final String name,
@@ -177,8 +179,10 @@ public final class XmlGameElementMapper {
       final GameData gameData) {
     checkNotNull(typeName);
 
-    final String normalizedTypeName = typeName.replaceAll("^games\\.strategy\\.triplea\\.attachments\\.", "");
-    final @Nullable AttachmentFactory attachmentFactory = attachmentFactoriesByTypeName.get(normalizedTypeName);
+    final String normalizedTypeName =
+        typeName.replaceAll("^games\\.strategy\\.triplea\\.attachments\\.", "");
+    final @Nullable AttachmentFactory attachmentFactory =
+        attachmentFactoriesByTypeName.get(normalizedTypeName);
     if (attachmentFactory != null) {
       return Optional.of(attachmentFactory.newAttachment(name, attachable, gameData));
     }
@@ -187,9 +191,7 @@ public final class XmlGameElementMapper {
     return Optional.empty();
   }
 
-  /**
-   * A factory for creating instances of {@link IAttachment}.
-   */
+  /** A factory for creating instances of {@link IAttachment}. */
   @FunctionalInterface
   @VisibleForTesting
   public interface AttachmentFactory {

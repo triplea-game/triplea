@@ -18,8 +18,9 @@ import org.junitpioneer.jupiter.TempDirectory.TempDir;
 import games.strategy.util.Version;
 
 /**
- * For transition reasons we use a DownloadFileProperties to read a properties file for each map that we download.
- * Reading XMLs in Zips is can be fast, so one day we should just read the versions directly from the map zip files.
+ * For transition reasons we use a DownloadFileProperties to read a properties file for each map
+ * that we download. Reading XMLs in Zips is can be fast, so one day we should just read the
+ * versions directly from the map zip files.
  */
 @ExtendWith(TempDirectory.class)
 public class FileSystemStrategyTest {
@@ -32,7 +33,8 @@ public class FileSystemStrategyTest {
     final String text = DownloadFileProperties.VERSION_PROPERTY + " = 1.2";
     final Path mapPath = Files.createTempFile(tempDirPath, null, null);
     mapFile = mapPath.toFile();
-    final Path mapPropsPath = Files.createFile(mapPath.resolveSibling(mapPath.getFileName() + ".properties"));
+    final Path mapPropsPath =
+        Files.createFile(mapPath.resolveSibling(mapPath.getFileName() + ".properties"));
     Files.write(mapPropsPath, text.getBytes(StandardCharsets.UTF_8));
   }
 
@@ -43,6 +45,7 @@ public class FileSystemStrategyTest {
 
   @Test
   public void testMapFileFound() {
-    assertThat(testObj.getMapVersion(mapFile.getAbsolutePath()), is(Optional.of(new Version(1, 2))));
+    assertThat(
+        testObj.getMapVersion(mapFile.getAbsolutePath()), is(Optional.of(new Version(1, 2))));
   }
 }

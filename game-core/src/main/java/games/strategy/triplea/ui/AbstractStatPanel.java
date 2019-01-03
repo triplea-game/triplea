@@ -15,9 +15,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.stats.AbstractStat;
 import games.strategy.triplea.util.PlayerOrderComparator;
 
-/**
- * Hold some common things like GameData for stats panels and other tab panels.
- */
+/** Hold some common things like GameData for stats panels and other tab panels. */
 public abstract class AbstractStatPanel extends JPanel {
   private static final long serialVersionUID = 1906611524937548809L;
   protected GameData gameData;
@@ -26,9 +24,7 @@ public abstract class AbstractStatPanel extends JPanel {
     gameData = data;
   }
 
-  /**
-   * Returns all the alliances with more than one player.
-   */
+  /** Returns all the alliances with more than one player. */
   public Collection<String> getAlliances() {
     return getAllianceMap().keySet();
   }

@@ -17,8 +17,9 @@ import javax.swing.JPanel;
 import games.strategy.engine.framework.system.SystemProperties;
 
 /**
- * A UI component that displays a scrollable text field for inputting integers. Four buttons are provided to change the
- * text field value: set maximum value, increment value, decrement value, and set minimum value.
+ * A UI component that displays a scrollable text field for inputting integers. Four buttons are
+ * provided to change the text field value: set maximum value, increment value, decrement value, and
+ * set minimum value.
  */
 public class ScrollableTextField extends JPanel {
   private static final long serialVersionUID = 6940592988573672224L;
@@ -46,60 +47,64 @@ public class ScrollableTextField extends JPanel {
       inset = new Insets(2, 0, 2, 0);
     }
     upButton = new JButton(up);
-    final Action incrementAction = new AbstractAction("inc") {
-      private static final long serialVersionUID = 2125871167112459475L;
+    final Action incrementAction =
+        new AbstractAction("inc") {
+          private static final long serialVersionUID = 2125871167112459475L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (text.isEnabled()) {
-          text.setValue(text.getValue() + 1);
-          setWidgetActivation();
-        }
-      }
-    };
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            if (text.isEnabled()) {
+              text.setValue(text.getValue() + 1);
+              setWidgetActivation();
+            }
+          }
+        };
     upButton.addActionListener(incrementAction);
     upButton.setMargin(inset);
     downButton = new JButton(down);
     downButton.setMargin(inset);
-    final Action decrementAction = new AbstractAction("dec") {
-      private static final long serialVersionUID = 787758939168986726L;
+    final Action decrementAction =
+        new AbstractAction("dec") {
+          private static final long serialVersionUID = 787758939168986726L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (text.isEnabled()) {
-          text.setValue(text.getValue() - 1);
-          setWidgetActivation();
-        }
-      }
-    };
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            if (text.isEnabled()) {
+              text.setValue(text.getValue() - 1);
+              setWidgetActivation();
+            }
+          }
+        };
     downButton.addActionListener(decrementAction);
     maxButton = new JButton(max);
     maxButton.setMargin(inset);
-    final Action maxAction = new AbstractAction("max") {
-      private static final long serialVersionUID = -3899827439573519512L;
+    final Action maxAction =
+        new AbstractAction("max") {
+          private static final long serialVersionUID = -3899827439573519512L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (text.isEnabled()) {
-          text.setValue(text.getMax());
-          setWidgetActivation();
-        }
-      }
-    };
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            if (text.isEnabled()) {
+              text.setValue(text.getMax());
+              setWidgetActivation();
+            }
+          }
+        };
     maxButton.addActionListener(maxAction);
     minButton = new JButton(min);
     minButton.setMargin(inset);
-    final Action minAction = new AbstractAction("min") {
-      private static final long serialVersionUID = 5785321239855254848L;
+    final Action minAction =
+        new AbstractAction("min") {
+          private static final long serialVersionUID = 5785321239855254848L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (text.isEnabled()) {
-          text.setValue(text.getMin());
-          setWidgetActivation();
-        }
-      }
-    };
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            if (text.isEnabled()) {
+              text.setValue(text.getMin());
+              setWidgetActivation();
+            }
+          }
+        };
     minButton.addActionListener(minAction);
     final JPanel upDown = new JPanel();
     upDown.setLayout(new BoxLayout(upDown, BoxLayout.Y_AXIS));
@@ -126,7 +131,6 @@ public class ScrollableTextField extends JPanel {
     min = new ImageIcon(ScrollableTextField.class.getResource("images/min.gif"));
     imagesLoaded = true;
   }
-
 
   public void setMax(final int max) {
     text.setMax(max);

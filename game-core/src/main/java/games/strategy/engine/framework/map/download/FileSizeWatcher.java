@@ -6,8 +6,8 @@ import java.util.function.Consumer;
 import games.strategy.util.Interruptibles;
 
 /**
- * A class that will monitor the size of a file. Inputs are a file and a consumer,
- * the file is polled in a new thread for its file size which is then passed to the consumer.
+ * A class that will monitor the size of a file. Inputs are a file and a consumer, the file is
+ * polled in a new thread for its file size which is then passed to the consumer.
  */
 final class FileSizeWatcher {
   private final File fileToWatch;

@@ -15,7 +15,6 @@ class MoveForumPosterPanel extends AbstractForumPosterPanel {
     super(data, map);
     final Action doneAction = SwingAction.of("Done", e -> release());
     forumPosterComponent = new ForumPosterComponent(getData(), doneAction, getTitle());
-
   }
 
   @Override
@@ -60,7 +59,8 @@ class MoveForumPosterPanel extends AbstractForumPosterPanel {
 
   @Override
   protected boolean getHasPostedTurnSummary() {
-    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
+    final IAbstractForumPosterDelegate delegate =
+        (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
     return delegate.getHasPostedTurnSummary();
   }
 

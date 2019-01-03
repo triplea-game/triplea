@@ -18,14 +18,18 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 public class DbUserTest {
 
   private static void verifyValid(final DBUser validDbUser) {
-    assertThat("Expecting no validation error messages: " + validDbUser.getValidationErrorMessage(),
-        validDbUser.getValidationErrorMessage(), nullValue());
+    assertThat(
+        "Expecting no validation error messages: " + validDbUser.getValidationErrorMessage(),
+        validDbUser.getValidationErrorMessage(),
+        nullValue());
     assertThat(validDbUser.isValid(), is(true));
   }
 
   private static void verifyInvalid(final DBUser invalidDbUser) {
-    assertThat("DBUser values were expected to be invalid: " + invalidDbUser,
-        invalidDbUser.isValid(), is(false));
+    assertThat(
+        "DBUser values were expected to be invalid: " + invalidDbUser,
+        invalidDbUser.isValid(),
+        is(false));
     assertThat(invalidDbUser.getValidationErrorMessage(), not(emptyString()));
   }
 
@@ -36,9 +40,8 @@ public class DbUserTest {
 
   @Test
   public void valueObjectPropertiesAreSet() {
-    final DBUser admin = new DBUser(
-        new DBUser.UserName(TestData.name),
-        new DBUser.UserEmail(TestData.email));
+    final DBUser admin =
+        new DBUser(new DBUser.UserName(TestData.name), new DBUser.UserEmail(TestData.email));
 
     assertThat(admin.getName(), is(TestData.name));
     assertThat(admin.getEmail(), is(TestData.email));
@@ -47,20 +50,22 @@ public class DbUserTest {
 
   @Test
   public void notAdmin() {
-    final DBUser notAdmin = new DBUser(
-        new DBUser.UserName(TestData.name),
-        new DBUser.UserEmail(TestData.email),
-        DBUser.Role.NOT_ADMIN);
+    final DBUser notAdmin =
+        new DBUser(
+            new DBUser.UserName(TestData.name),
+            new DBUser.UserEmail(TestData.email),
+            DBUser.Role.NOT_ADMIN);
 
     assertThat(notAdmin.isAdmin(), is(false));
   }
 
   @Test
   public void admin() {
-    final DBUser admin = new DBUser(
-        new DBUser.UserName(TestData.name),
-        new DBUser.UserEmail(TestData.email),
-        DBUser.Role.ADMIN);
+    final DBUser admin =
+        new DBUser(
+            new DBUser.UserName(TestData.name),
+            new DBUser.UserEmail(TestData.email),
+            DBUser.Role.ADMIN);
 
     assertThat(admin.isAdmin(), is(true));
   }
@@ -68,78 +73,84 @@ public class DbUserTest {
   @Test
   public void validDbUser() {
     verifyValid(
-        new DBUser(
-            new DBUser.UserName(TestData.name),
-            new DBUser.UserEmail(TestData.email)));
+        new DBUser(new DBUser.UserName(TestData.name), new DBUser.UserEmail(TestData.email)));
   }
 
   @Test
   public void inValidDbUser() {
-    verifyInvalid(
-        new DBUser(
-            new DBUser.UserName(TestData.name),
-            new DBUser.UserEmail("")));
+    verifyInvalid(new DBUser(new DBUser.UserName(TestData.name), new DBUser.UserEmail("")));
 
-    verifyInvalid(
-        new DBUser(
-            new DBUser.UserName(""),
-            new DBUser.UserEmail(TestData.email)));
+    verifyInvalid(new DBUser(new DBUser.UserName(""), new DBUser.UserEmail(TestData.email)));
   }
 
   @Test
   public void userNameValidationWithInvalidNames() {
     Arrays.asList(
-        null,
-        "",
-        "a",
-        "ab", // still too short
-        Strings.repeat("a", DBUser.UserName.MAX_LENGTH + 1),
-        "ab*", // no special characters other than '-' and '_'
-        "ab$",
-        ".ab",
-        "a,b",
-        "ab?",
-        "   ", // no spaces
-        "a b").forEach(invalidName -> {
-          assertThat("Expected name to be marked as invalid: " + invalidName,
-              DBUser.isValidUserName(invalidName), is(false));
-          assertThat("Expected name to have validation error messages: " + invalidName,
-              DBUser.getUserNameValidationErrorMessage(invalidName), not(emptyString()));
-        });
+            null,
+            "",
+            "a",
+            "ab", // still too short
+            Strings.repeat("a", DBUser.UserName.MAX_LENGTH + 1),
+            "ab*", // no special characters other than '-' and '_'
+            "ab$",
+            ".ab",
+            "a,b",
+            "ab?",
+            "   ", // no spaces
+            "a b")
+        .forEach(
+            invalidName -> {
+              assertThat(
+                  "Expected name to be marked as invalid: " + invalidName,
+                  DBUser.isValidUserName(invalidName),
+                  is(false));
+              assertThat(
+                  "Expected name to have validation error messages: " + invalidName,
+                  DBUser.getUserNameValidationErrorMessage(invalidName),
+                  not(emptyString()));
+            });
 
-    Arrays.asList(
-        LobbyConstants.LOBBY_WATCHER_NAME,
-        LobbyConstants.ADMIN_USERNAME).forEach(invalidNamePart -> {
-          assertThat("user names cannot contain anything from the forbidden name list",
-              DBUser.isValidUserName(invalidNamePart), is(false));
-          assertThat("verify we are doing a contains match to make sure "
-              + "user name does not contain anything forbidden.",
-              DBUser.isValidUserName("xyz" + invalidNamePart + "abc"), is(false));
+    Arrays.asList(LobbyConstants.LOBBY_WATCHER_NAME, LobbyConstants.ADMIN_USERNAME)
+        .forEach(
+            invalidNamePart -> {
+              assertThat(
+                  "user names cannot contain anything from the forbidden name list",
+                  DBUser.isValidUserName(invalidNamePart),
+                  is(false));
+              assertThat(
+                  "verify we are doing a contains match to make sure "
+                      + "user name does not contain anything forbidden.",
+                  DBUser.isValidUserName("xyz" + invalidNamePart + "abc"),
+                  is(false));
 
-          assertThat("case insensitive on our matches.",
-              DBUser.isValidUserName(invalidNamePart.toUpperCase()), is(false));
-          assertThat("case insensitive on our matches.",
-              DBUser.isValidUserName(invalidNamePart.toLowerCase()), is(false));
-        });
+              assertThat(
+                  "case insensitive on our matches.",
+                  DBUser.isValidUserName(invalidNamePart.toUpperCase()),
+                  is(false));
+              assertThat(
+                  "case insensitive on our matches.",
+                  DBUser.isValidUserName(invalidNamePart.toLowerCase()),
+                  is(false));
+            });
   }
 
   @Test
   public void userNameValidationWithValidNames() {
-    Arrays.asList(
-        "abc",
-        Strings.repeat("a", DBUser.UserName.MAX_LENGTH),
-        "123",
-        "---")
-        .forEach(validName -> {
-          assertThat(
-              "Expected name to be marked as valid: " + validName,
-              DBUser.isValidUserName(validName), is(true));
+    Arrays.asList("abc", Strings.repeat("a", DBUser.UserName.MAX_LENGTH), "123", "---")
+        .forEach(
+            validName -> {
+              assertThat(
+                  "Expected name to be marked as valid: " + validName,
+                  DBUser.isValidUserName(validName),
+                  is(true));
 
-          assertThat(
-              String.format("Expected name: %s, to have no validation error messages, but had %s",
-                  validName, DBUser.getUserNameValidationErrorMessage(validName)),
-              DBUser.getUserNameValidationErrorMessage(validName), nullValue());
-        });
+              assertThat(
+                  String.format(
+                      "Expected name: %s, to have no validation error messages, but had %s",
+                      validName, DBUser.getUserNameValidationErrorMessage(validName)),
+                  DBUser.getUserNameValidationErrorMessage(validName),
+                  nullValue());
+            });
   }
 
   private interface TestData {

@@ -11,9 +11,9 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.ui.mapdata.MapData;
 
 /**
- * Draws a black outline around the associated territory and draws a solid color over the territory interior. The
- * color is based on the territory owner and whether or not the territory is impassable. Intended only for use with land
- * territories.
+ * Draws a black outline around the associated territory and draws a solid color over the territory
+ * interior. The color is based on the territory owner and whether or not the territory is
+ * impassable. Intended only for use with land territories.
  */
 public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable {
   private final String territoryName;
@@ -23,15 +23,22 @@ public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawabl
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData,
+      final AffineTransform unscaled,
+      final AffineTransform scaled) {
     draw(bounds, data, graphics, mapData, 1.0f);
   }
 
-  /**
-   * Determine territory color and set saturation to then draw the territory.
-   */
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
+  /** Determine territory color and set saturation to then draw the territory. */
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData,
       final float saturation) {
     final Territory territory = data.getMap().getTerritory(territoryName);
     Color territoryColor;
@@ -42,7 +49,8 @@ public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawabl
       territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
     }
     final float[] values =
-        Color.RGBtoHSB(territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), null);
+        Color.RGBtoHSB(
+            territoryColor.getRed(), territoryColor.getGreen(), territoryColor.getBlue(), null);
     values[1] = values[1] * saturation;
     territoryColor = Color.getHSBColor(values[0], values[1], values[2]);
     draw(bounds, graphics, mapData, territory, territoryColor);

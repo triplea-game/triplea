@@ -5,9 +5,7 @@ import java.util.Collection;
 
 import games.strategy.engine.data.Unit;
 
-/**
- * The result of validating a unit placement action.
- */
+/** The result of validating a unit placement action. */
 public class PlaceableUnits implements Serializable {
   private static final long serialVersionUID = 6572719978603199091L;
   private String errorMessage;
@@ -27,9 +25,7 @@ public class PlaceableUnits implements Serializable {
     return units;
   }
 
-  /**
-   * Returns the maximum number of units that can be placed or -1 if no limit.
-   */
+  /** Returns the maximum number of units that can be placed or -1 if no limit. */
   public int getMaxUnits() {
     return maxUnits;
   }

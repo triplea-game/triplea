@@ -14,11 +14,13 @@ final class HistoryLogTest {
     void shouldReturnPlayerNameAndRegularDiceTypeWhenMessageContainsRegularDiceRoll() {
       assertThat(
           "player name with only word characters",
-          parseHitDifferentialKeyFromDiceRollMessage("Russians roll dice for 1 fighter in Karelia S.S.R., round 3 :"),
+          parseHitDifferentialKeyFromDiceRollMessage(
+              "Russians roll dice for 1 fighter in Karelia S.S.R., round 3 :"),
           is("Russians regular"));
       assertThat(
           "player name with spaces",
-          parseHitDifferentialKeyFromDiceRollMessage("West Germans roll dice for 1 fighter in Germany, round 2 :"),
+          parseHitDifferentialKeyFromDiceRollMessage(
+              "West Germans roll dice for 1 fighter in Germany, round 2 :"),
           is("West Germans regular"));
     }
 

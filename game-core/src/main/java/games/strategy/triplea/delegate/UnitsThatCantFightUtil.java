@@ -10,9 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.util.PredicateBuilder;
 
-/**
- * Utility for detecting and removing units that can't land at the end of a phase.
- */
+/** Utility for detecting and removing units that can't land at the end of a phase. */
 public class UnitsThatCantFightUtil {
   private final GameData gameData;
 
@@ -21,17 +19,20 @@ public class UnitsThatCantFightUtil {
   }
 
   Collection<Territory> getTerritoriesWhereUnitsCantFight(final PlayerId player) {
-    final Predicate<Unit> enemyAttackUnits = Matches.enemyUnit(player, gameData).and(Matches.unitCanAttack(player));
+    final Predicate<Unit> enemyAttackUnits =
+        Matches.enemyUnit(player, gameData).and(Matches.unitCanAttack(player));
     final Collection<Territory> cantFight = new ArrayList<>();
     for (final Territory current : gameData.getMap()) {
-      final Predicate<Unit> ownedUnitsMatch = PredicateBuilder
-          .of(Matches.unitIsInfrastructure().negate())
-          .andIf(current.isWater(), Matches.unitIsLand().negate())
-          .and(Matches.unitIsOwnedBy(player))
-          .build();
+      final Predicate<Unit> ownedUnitsMatch =
+          PredicateBuilder.of(Matches.unitIsInfrastructure().negate())
+              .andIf(current.isWater(), Matches.unitIsLand().negate())
+              .and(Matches.unitIsOwnedBy(player))
+              .build();
       final int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
       final Collection<Unit> nonCombatUnits =
-          current.getUnits().getMatches(ownedUnitsMatch.and(Matches.unitCanAttack(player).negate()));
+          current
+              .getUnits()
+              .getMatches(ownedUnitsMatch.and(Matches.unitCanAttack(player).negate()));
       if (nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits) {
         continue;
       }

@@ -50,9 +50,7 @@ import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.io.FileUtils;
 import lombok.extern.java.Log;
 
-/**
- * A pbem dice roller that reads its configuration from a properties file.
- */
+/** A pbem dice roller that reads its configuration from a properties file. */
 @Log
 public final class PropertiesDiceRoller implements IRemoteDiceServer {
   private static final long serialVersionUID = 6481409417543119539L;
@@ -77,7 +75,8 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
             propFiles.add(props);
           }
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Failed to read dice server properties: " + file.getAbsolutePath(), e);
+          log.log(
+              Level.SEVERE, "Failed to read dice server properties: " + file.getAbsolutePath(), e);
         }
       }
     }
@@ -119,7 +118,8 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId)
+  public String postRequest(
+      final int max, final int numDice, final String subjectMessage, final String gameId)
       throws IOException {
     final String normalizedGameId = gameId.trim().isEmpty() ? "TripleA" : gameId;
     String message = normalizedGameId + ":" + subjectMessage;
@@ -130,12 +130,13 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
     try (CloseableHttpClient httpClient =
         HttpClientBuilder.create().setRedirectStrategy(new AdvancedRedirectStrategy()).build()) {
       final HttpPost httpPost = new HttpPost(props.getProperty("path"));
-      final List<NameValuePair> params = ImmutableList.of(
-          new BasicNameValuePair("numdice", String.valueOf(numDice)),
-          new BasicNameValuePair("numsides", String.valueOf(max)),
-          new BasicNameValuePair("subject", message),
-          new BasicNameValuePair("roller", getToAddress()),
-          new BasicNameValuePair("gm", getCcAddress()));
+      final List<NameValuePair> params =
+          ImmutableList.of(
+              new BasicNameValuePair("numdice", String.valueOf(numDice)),
+              new BasicNameValuePair("numsides", String.valueOf(max)),
+              new BasicNameValuePair("subject", message),
+              new BasicNameValuePair("roller", getToAddress()),
+              new BasicNameValuePair("gm", getCcAddress()));
       httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
       httpPost.addHeader("User-Agent", "triplea/" + ClientContext.engineVersion());
       final String host = props.getProperty("host");
@@ -155,15 +156,19 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public int[] getDice(final String string, final int count) throws IOException, InvocationTargetException {
+  public int[] getDice(final String string, final int count)
+      throws IOException, InvocationTargetException {
     final String errorStartString = props.getProperty("error.start");
     final String errorEndString = props.getProperty("error.end");
     // if the error strings are defined
-    if (errorStartString != null && errorStartString.length() > 0 && errorEndString != null
+    if (errorStartString != null
+        && errorStartString.length() > 0
+        && errorEndString != null
         && errorEndString.length() > 0) {
       final int startIndex = string.indexOf(errorStartString);
       if (startIndex >= 0) {
-        final int endIndex = string.indexOf(errorEndString, (startIndex + errorStartString.length()));
+        final int endIndex =
+            string.indexOf(errorEndString, (startIndex + errorStartString.length()));
         if (endIndex > 0) {
           final String error = string.substring(startIndex + errorStartString.length(), endIndex);
           throw new InvocationTargetException(null, error);
@@ -189,8 +194,7 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
       throw new IOException("Could not find end index");
     }
     try {
-      return Splitter
-          .on(',')
+      return Splitter.on(',')
           .omitEmptyStrings()
           .trimResults()
           .splitToList(string.substring(startIndex, endIndex))
@@ -248,7 +252,8 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
 
   @Override
   public boolean isSameType(final @Nullable IBean other) {
-    return other instanceof PropertiesDiceRoller && Objects.equals(getDisplayName(), other.getDisplayName());
+    return other instanceof PropertiesDiceRoller
+        && Objects.equals(getDisplayName(), other.getDisplayName());
   }
 
   @VisibleForTesting
@@ -259,9 +264,8 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
   private static class AdvancedRedirectStrategy extends LaxRedirectStrategy {
     @Override
     public HttpUriRequest getRedirect(
-        final HttpRequest request,
-        final HttpResponse response,
-        final HttpContext context) throws ProtocolException {
+        final HttpRequest request, final HttpResponse response, final HttpContext context)
+        throws ProtocolException {
       final URI uri = getLocationURI(request, response, context);
       final String method = request.getRequestLine().getMethod();
       if (method.equalsIgnoreCase(HttpHead.METHOD_NAME)) {
@@ -270,7 +274,8 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
         return new HttpGet(uri);
       } else {
         final int status = response.getStatusLine().getStatusCode();
-        if (status == HttpStatus.SC_TEMPORARY_REDIRECT || status == HttpStatus.SC_MOVED_PERMANENTLY
+        if (status == HttpStatus.SC_TEMPORARY_REDIRECT
+            || status == HttpStatus.SC_MOVED_PERMANENTLY
             || status == HttpStatus.SC_MOVED_TEMPORARILY) {
           return RequestBuilder.copy(request).setUri(uri).build();
         }

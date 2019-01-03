@@ -19,9 +19,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.UiContext;
 import lombok.extern.java.Log;
 
-/**
- * A prototype for units.
- */
+/** A prototype for units. */
 @Log
 public class UnitType extends NamedAttachable {
   private static final long serialVersionUID = 4885339076798905247L;
@@ -38,14 +36,22 @@ public class UnitType extends NamedAttachable {
     return create(quantity, owner, isTemp, 0, 0);
   }
 
-  List<Unit> create(final int quantity, final PlayerId owner, final boolean isTemp, final int hitsTaken,
+  List<Unit> create(
+      final int quantity,
+      final PlayerId owner,
+      final boolean isTemp,
+      final int hitsTaken,
       final int bombingUnitDamage) {
     return IntStream.range(0, quantity)
         .mapToObj(i -> create(owner, isTemp, hitsTaken, bombingUnitDamage))
         .collect(Collectors.toList());
   }
 
-  private Unit create(final PlayerId owner, final boolean isTemp, final int hitsTaken, final int bombingUnitDamage) {
+  private Unit create(
+      final PlayerId owner,
+      final boolean isTemp,
+      final int hitsTaken,
+      final int bombingUnitDamage) {
     final Unit u = getData().getGameLoader().newUnit(this, owner, getData());
     u.setHits(hitsTaken);
     if (u instanceof TripleAUnit) {
@@ -71,11 +77,9 @@ public class UnitType extends NamedAttachable {
     return Objects.hashCode(getName());
   }
 
-  /**
-   * Will return a key of NULL for any units which we do not have art for.
-   */
-  public static Map<PlayerId, List<UnitType>> getAllPlayerUnitsWithImages(final GameData data,
-      final UiContext uiContext, final boolean forceIncludeNeutralPlayer) {
+  /** Will return a key of NULL for any units which we do not have art for. */
+  public static Map<PlayerId, List<UnitType>> getAllPlayerUnitsWithImages(
+      final GameData data, final UiContext uiContext, final boolean forceIncludeNeutralPlayer) {
     final LinkedHashMap<PlayerId, List<UnitType>> unitTypes = new LinkedHashMap<>();
     data.acquireReadLock();
     try {
@@ -89,7 +93,9 @@ public class UnitType extends NamedAttachable {
       final Set<UnitType> all = data.getUnitTypeList().getAllUnitTypes();
       all.removeAll(unitsSoFar);
       if (forceIncludeNeutralPlayer || !all.isEmpty()) {
-        unitTypes.put(PlayerId.NULL_PLAYERID, getPlayerUnitsWithImages(PlayerId.NULL_PLAYERID, data, uiContext));
+        unitTypes.put(
+            PlayerId.NULL_PLAYERID,
+            getPlayerUnitsWithImages(PlayerId.NULL_PLAYERID, data, uiContext));
         unitsSoFar.addAll(unitTypes.get(PlayerId.NULL_PLAYERID));
         all.removeAll(unitsSoFar);
         if (!all.isEmpty()) {
@@ -102,15 +108,16 @@ public class UnitType extends NamedAttachable {
     return unitTypes;
   }
 
-  private static List<UnitType> getPlayerUnitsWithImages(final PlayerId player, final GameData data,
-      final UiContext uiContext) {
+  private static List<UnitType> getPlayerUnitsWithImages(
+      final PlayerId player, final GameData data, final UiContext uiContext) {
     final List<UnitType> unitTypes = new ArrayList<>();
     data.acquireReadLock();
     try {
       // add first based on current production ability
       if (player.getProductionFrontier() != null) {
         for (final ProductionRule productionRule : player.getProductionFrontier()) {
-          for (final Entry<NamedAttachable, Integer> entry : productionRule.getResults().entrySet()) {
+          for (final Entry<NamedAttachable, Integer> entry :
+              productionRule.getResults().entrySet()) {
             if (UnitType.class.isAssignableFrom(entry.getKey().getClass())) {
               final UnitType ut = (UnitType) entry.getKey();
               if (!unitTypes.contains(ut)) {
@@ -120,8 +127,10 @@ public class UnitType extends NamedAttachable {
           }
         }
       }
-      // this next part is purely to allow people to "add" neutral (null player) units to territories.
-      // This is because the null player does not have a production frontier, and we also do not know what units we have
+      // this next part is purely to allow people to "add" neutral (null player) units to
+      // territories.
+      // This is because the null player does not have a production frontier, and we also do not
+      // know what units we have
       // art for, so only use the units on a map.
       for (final Territory t : data.getMap()) {
         for (final Unit u : t.getUnits()) {

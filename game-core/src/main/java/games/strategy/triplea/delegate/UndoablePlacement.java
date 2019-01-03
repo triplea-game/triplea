@@ -12,17 +12,18 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.data.PlacementDescription;
 import games.strategy.triplea.formatter.MyFormatter;
 
-/**
- * Contains all the data to describe a placement and to undo it.
- */
+/** Contains all the data to describe a placement and to undo it. */
 public class UndoablePlacement extends AbstractUndoableMove {
   private static final long serialVersionUID = -1493488646587233451L;
 
   private final Territory placeTerritory;
   private Territory producerTerritory;
 
-  public UndoablePlacement(final CompositeChange change, final Territory producerTerritory,
-      final Territory placeTerritory, final Collection<Unit> units) {
+  public UndoablePlacement(
+      final CompositeChange change,
+      final Territory producerTerritory,
+      final Territory placeTerritory,
+      final Collection<Unit> units) {
     super(change, units);
     this.placeTerritory = placeTerritory;
     this.producerTerritory = producerTerritory;
@@ -43,7 +44,8 @@ public class UndoablePlacement extends AbstractUndoableMove {
   @Override
   protected final void undoSpecific(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
-    final AbstractPlaceDelegate currentDelegate = (AbstractPlaceDelegate) data.getSequence().getStep().getDelegate();
+    final AbstractPlaceDelegate currentDelegate =
+        (AbstractPlaceDelegate) data.getSequence().getStep().getDelegate();
     final Map<Territory, Collection<Unit>> produced = currentDelegate.getProduced();
     final Collection<Unit> units = produced.get(producerTerritory);
     units.removeAll(getUnits());

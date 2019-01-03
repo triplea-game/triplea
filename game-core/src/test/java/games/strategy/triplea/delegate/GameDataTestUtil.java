@@ -23,9 +23,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.util.IntegerMap;
 import junit.framework.AssertionFailedError;
 
-/**
- * A utility class for GameData test classes.
- */
+/** A utility class for GameData test classes. */
 public final class GameDataTestUtil {
   private GameDataTestUtil() {}
 
@@ -140,86 +138,62 @@ public final class GameDataTestUtil {
     return t;
   }
 
-  /**
-   * Returns an armor UnitType object for the specified GameData object.
-   */
+  /** Returns an armor UnitType object for the specified GameData object. */
   public static UnitType armour(final GameData data) {
     return unitType(Constants.UNIT_TYPE_ARMOUR, data);
   }
 
-  /**
-   * Returns an aaGun UnitType object for the specified GameData object.
-   */
+  /** Returns an aaGun UnitType object for the specified GameData object. */
   public static UnitType aaGun(final GameData data) {
     return unitType(Constants.UNIT_TYPE_AAGUN, data);
   }
 
-  /**
-   * Returns a transport UnitType object for the specified GameData object.
-   */
+  /** Returns a transport UnitType object for the specified GameData object. */
   public static UnitType transport(final GameData data) {
     return unitType(Constants.UNIT_TYPE_TRANSPORT, data);
   }
 
-  /**
-   * Returns a battleship UnitType object for the specified GameData object.
-   */
+  /** Returns a battleship UnitType object for the specified GameData object. */
   public static UnitType battleship(final GameData data) {
     return unitType(Constants.UNIT_TYPE_BATTLESHIP, data);
   }
 
-  /**
-   * Returns a germanBattleship UnitType object for the specified GameData object.
-   */
+  /** Returns a germanBattleship UnitType object for the specified GameData object. */
   public static UnitType germanBattleship(final GameData data) {
     return unitType("germanBattleship", data);
   }
 
-  /**
-   * Returns a carrier UnitType object for the specified GameData object.
-   */
+  /** Returns a carrier UnitType object for the specified GameData object. */
   public static UnitType carrier(final GameData data) {
     return unitType(Constants.UNIT_TYPE_CARRIER, data);
   }
 
-  /**
-   * Returns a tacBomber UnitType object for the specified GameData object.
-   */
+  /** Returns a tacBomber UnitType object for the specified GameData object. */
   static UnitType tacBomber(final GameData data) {
     return unitType("tactical_bomber", data);
   }
 
-  /**
-   * Returns a fighter UnitType object for the specified GameData object.
-   */
+  /** Returns a fighter UnitType object for the specified GameData object. */
   public static UnitType fighter(final GameData data) {
     return unitType(Constants.UNIT_TYPE_FIGHTER, data);
   }
 
-  /**
-   * Returns a destroyer UnitType object for the specified GameData object.
-   */
+  /** Returns a destroyer UnitType object for the specified GameData object. */
   public static UnitType destroyer(final GameData data) {
     return unitType(Constants.UNIT_TYPE_DESTROYER, data);
   }
 
-  /**
-   * Returns a submarine UnitType object for the specified GameData object.
-   */
+  /** Returns a submarine UnitType object for the specified GameData object. */
   public static UnitType submarine(final GameData data) {
     return unitType(Constants.UNIT_TYPE_SUBMARINE, data);
   }
 
-  /**
-   * Returns an infantry UnitType object for the specified GameData object.
-   */
+  /** Returns an infantry UnitType object for the specified GameData object. */
   public static UnitType infantry(final GameData data) {
     return unitType(Constants.UNIT_TYPE_INFANTRY, data);
   }
 
-  /**
-   * Returns a germanInfantry UnitType object for the specified GameData object.
-   */
+  /** Returns a germanInfantry UnitType object for the specified GameData object. */
   public static UnitType germanInfantry(final GameData data) {
     return unitType("germanInfantry", data);
   }
@@ -232,23 +206,17 @@ public final class GameDataTestUtil {
     return unitType("britishInfantry", data);
   }
 
-  /**
-   * Returns a bomber UnitType object for the specified GameData object.
-   */
+  /** Returns a bomber UnitType object for the specified GameData object. */
   public static UnitType bomber(final GameData data) {
     return unitType(Constants.UNIT_TYPE_BOMBER, data);
   }
 
-  /**
-   * Returns a factory UnitType object for the specified GameData object.
-   */
+  /** Returns a factory UnitType object for the specified GameData object. */
   public static UnitType factory(final GameData data) {
     return unitType(Constants.UNIT_TYPE_FACTORY, data);
   }
 
-  /**
-   * Returns a germanFactory UnitType object for the specified GameData object.
-   */
+  /** Returns a germanFactory UnitType object for the specified GameData object. */
   public static UnitType germanFactory(final GameData data) {
     return unitType("germanFactory", data);
   }
@@ -261,93 +229,67 @@ public final class GameDataTestUtil {
     return unitType("britishFactory", data);
   }
 
-  /**
-   * Returns a germanFortification UnitType object for the specified GameData object.
-   */
+  /** Returns a germanFortification UnitType object for the specified GameData object. */
   public static UnitType germanFortification(final GameData data) {
     return unitType("germanFortification", data);
   }
 
-  /**
-   * Returns a truck UnitType object for the specified GameData object.
-   */
+  /** Returns a truck UnitType object for the specified GameData object. */
   public static UnitType truck(final GameData data) {
     return unitType("Truck", data);
   }
 
-  /**
-   * Returns a large truck UnitType object for the specified GameData object.
-   */
+  /** Returns a large truck UnitType object for the specified GameData object. */
   public static UnitType largeTruck(final GameData data) {
     return unitType("LargeTruck", data);
   }
 
-  /**
-   * Returns a germanTrain UnitType object for the specified GameData object.
-   */
+  /** Returns a germanTrain UnitType object for the specified GameData object. */
   public static UnitType germanTrain(final GameData data) {
     return unitType("germanTrain", data);
   }
 
-  /**
-   * Returns a germanRail UnitType object for the specified GameData object.
-   */
+  /** Returns a germanRail UnitType object for the specified GameData object. */
   public static UnitType germanRail(final GameData data) {
     return unitType("germanRail", data);
   }
 
-  /**
-   * Returns a germanMine UnitType object for the specified GameData object.
-   */
+  /** Returns a germanMine UnitType object for the specified GameData object. */
   public static UnitType germanMine(final GameData data) {
     return unitType("germanMine", data);
   }
 
-  /**
-   * Returns a germanAntiTankGun UnitType object for the specified GameData object.
-   */
+  /** Returns a germanAntiTankGun UnitType object for the specified GameData object. */
   public static UnitType germanAntiTankGun(final GameData data) {
     return unitType("germanAntiTankGun", data);
   }
 
-  /**
-   * Returns a germanATSupport UnitType object for the specified GameData object.
-   */
+  /** Returns a germanATSupport UnitType object for the specified GameData object. */
   public static UnitType germanAtSupport(final GameData data) {
     return unitType("germanATSupport", data);
   }
 
-  /**
-   * Returns a americanTank UnitType object for the specified GameData object.
-   */
+  /** Returns a americanTank UnitType object for the specified GameData object. */
   public static UnitType americanAtCounter(final GameData data) {
     return unitType("americanATCounter", data);
   }
 
-  /**
-   * Returns a americanTank UnitType object for the specified GameData object.
-   */
+  /** Returns a americanTank UnitType object for the specified GameData object. */
   public static UnitType americanTank(final GameData data) {
     return unitType("americanTank", data);
   }
 
-  /**
-   * Returns a americanCruiser UnitType object for the specified GameData object.
-   */
+  /** Returns a americanCruiser UnitType object for the specified GameData object. */
   public static UnitType americanCruiser(final GameData data) {
     return unitType("americanCruiser", data);
   }
 
-  /**
-   * Returns a americanStrategicBomber UnitType object for the specified GameData object.
-   */
+  /** Returns a americanStrategicBomber UnitType object for the specified GameData object. */
   public static UnitType americanStrategicBomber(final GameData data) {
     return unitType("americanStrategicBomber", data);
   }
 
-  /**
-   * Returns a factory_upgrade UnitType object for the specified GameData object.
-   */
+  /** Returns a factory_upgrade UnitType object for the specified GameData object. */
   public static UnitType factoryUpgrade(final GameData data) {
     return unitType("factory_upgrade", data);
   }
@@ -359,65 +301,47 @@ public final class GameDataTestUtil {
     return data.getUnitTypeList().getUnitType(name);
   }
 
-  /**
-   * Removes all units from the given Collection from the given Territory.
-   */
+  /** Removes all units from the given Collection from the given Territory. */
   static void removeFrom(final Territory t, final Collection<Unit> units) {
     t.getData().performChange(ChangeFactory.removeUnits(t, units));
   }
 
-  /**
-   * Adds all units from the given Collection to the given Territory.
-   */
+  /** Adds all units from the given Collection to the given Territory. */
   public static void addTo(final Territory t, final Collection<Unit> units) {
     t.getData().performChange(ChangeFactory.addUnits(t, units));
   }
 
-  /**
-   * Adds all units from the given Collection to the given PlayerId.
-   */
+  /** Adds all units from the given Collection to the given PlayerId. */
   static void addTo(final PlayerId t, final Collection<Unit> units, final GameData data) {
     data.performChange(ChangeFactory.addUnits(t, units));
   }
 
-  /**
-   * Returns a PlaceDelegate from the given GameData object.
-   */
+  /** Returns a PlaceDelegate from the given GameData object. */
   static PlaceDelegate placeDelegate(final GameData data) {
     return (PlaceDelegate) data.getDelegateList().getDelegate("place");
   }
 
-  /**
-   * Returns a BattleDelegate from the given GameData object.
-   */
+  /** Returns a BattleDelegate from the given GameData object. */
   static BattleDelegate battleDelegate(final GameData data) {
     return (BattleDelegate) data.getDelegateList().getDelegate("battle");
   }
 
-  /**
-   * Returns a MoveDelegate from the given GameData object.
-   */
+  /** Returns a MoveDelegate from the given GameData object. */
   static MoveDelegate moveDelegate(final GameData data) {
     return (MoveDelegate) data.getDelegateList().getDelegate("move");
   }
 
-  /**
-   * Returns a TechnologyDelegate from the given GameData object.
-   */
+  /** Returns a TechnologyDelegate from the given GameData object. */
   static TechnologyDelegate techDelegate(final GameData data) {
     return (TechnologyDelegate) data.getDelegateList().getDelegate("tech");
   }
 
-  /**
-   * Returns a PurchaseDelegate from the given GameData object.
-   */
+  /** Returns a PurchaseDelegate from the given GameData object. */
   static PurchaseDelegate purchaseDelegate(final GameData data) {
     return (PurchaseDelegate) data.getDelegateList().getDelegate("purchase");
   }
 
-  /**
-   * Returns a BidPlaceDelegate from the given GameData object.
-   */
+  /** Returns a BidPlaceDelegate from the given GameData object. */
   static BidPlaceDelegate bidPlaceDelegate(final GameData data) {
     return (BidPlaceDelegate) data.getDelegateList().getDelegate("placeBid");
   }
@@ -428,7 +352,10 @@ public final class GameDataTestUtil {
     }
     final MoveDelegate moveDelegate = moveDelegate(route.getStart().getData());
     final Collection<Unit> transports =
-        route.getEnd().getUnits().getMatches(Matches.unitIsOwnedBy(units.iterator().next().getOwner()));
+        route
+            .getEnd()
+            .getUnits()
+            .getMatches(Matches.unitIsOwnedBy(units.iterator().next().getOwner()));
     final String error = moveDelegate.move(units, route, transports);
     if (error != null) {
       throw new AssertionFailedError("Illegal move:" + error);
@@ -497,36 +424,36 @@ public final class GameDataTestUtil {
     TechAttachment.get(player).setAaRadar(Boolean.TRUE.toString());
   }
 
-  /**
-   * Helper method to check if a String is null and otherwise print the String.
-   */
+  /** Helper method to check if a String is null and otherwise print the String. */
   static void assertValid(final String string) {
     Assertions.assertNull(string, string);
   }
 
   /**
-   * Helper method to check if a String is not null.
-   * In this scenario used to verify an error message exists.
+   * Helper method to check if a String is not null. In this scenario used to verify an error
+   * message exists.
    */
   static void assertError(final String string) {
     Assertions.assertNotNull(string);
   }
 
   /**
-   * Gets a collection of units from the specified unit holder (e.g. territory, player, etc.) consisting of up to the
-   * specified maximum count of each specified unit type.
+   * Gets a collection of units from the specified unit holder (e.g. territory, player, etc.)
+   * consisting of up to the specified maximum count of each specified unit type.
    *
-   * @param maxUnitCountsByType The maximum count of each type of unit to include in the returned collection. The key is
-   *        the unit type. The value is the maximum unit count.
+   * @param maxUnitCountsByType The maximum count of each type of unit to include in the returned
+   *     collection. The key is the unit type. The value is the maximum unit count.
    * @param from The territory from which the units are to be collected.
-   *
    * @return A collection of units from the specified unit holder.
    */
-  public static Collection<Unit> getUnits(final IntegerMap<UnitType> maxUnitCountsByType, final UnitHolder from) {
+  public static Collection<Unit> getUnits(
+      final IntegerMap<UnitType> maxUnitCountsByType, final UnitHolder from) {
     checkNotNull(maxUnitCountsByType);
     checkNotNull(from);
 
-    return maxUnitCountsByType.entrySet().stream()
+    return maxUnitCountsByType
+        .entrySet()
+        .stream()
         .flatMap(entry -> from.getUnits().getUnits(entry.getKey(), entry.getValue()).stream())
         .collect(Collectors.toList());
   }

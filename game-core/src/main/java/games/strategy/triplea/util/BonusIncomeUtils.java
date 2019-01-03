@@ -8,9 +8,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.util.IntegerMap;
 
-/**
- * Provides methods that assist with player bonus income.
- */
+/** Provides methods that assist with player bonus income. */
 public class BonusIncomeUtils {
 
   /**
@@ -18,8 +16,8 @@ public class BonusIncomeUtils {
    *
    * @return string that summarizes all the changes
    */
-  public static String addBonusIncome(final IntegerMap<Resource> income, final IDelegateBridge bridge,
-      final PlayerId player) {
+  public static String addBonusIncome(
+      final IntegerMap<Resource> income, final IDelegateBridge bridge, final PlayerId player) {
     final StringBuilder sb = new StringBuilder();
     for (final Resource resource : income.keySet()) {
       final int amount = income.getInt(resource);
@@ -29,7 +27,8 @@ public class BonusIncomeUtils {
         puIncomeBonus = Properties.getPuIncomeBonus(player, bridge.getData());
       }
       final int bonusIncome =
-          (int) Math.round(((double) amount * (double) (incomePercent - 100) / 100)) + puIncomeBonus;
+          (int) Math.round(((double) amount * (double) (incomePercent - 100) / 100))
+              + puIncomeBonus;
       if (bonusIncome == 0) {
         continue;
       }
@@ -50,5 +49,4 @@ public class BonusIncomeUtils {
     }
     return sb.toString();
   }
-
 }

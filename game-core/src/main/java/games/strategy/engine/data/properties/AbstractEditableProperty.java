@@ -51,7 +51,8 @@ public abstract class AbstractEditableProperty<T>
 
   @Override
   public boolean equals(final Object other) {
-    return other instanceof AbstractEditableProperty && ((AbstractEditableProperty<?>) other).name.equals(name);
+    return other instanceof AbstractEditableProperty
+        && ((AbstractEditableProperty<?>) other).name.equals(name);
   }
 
   @Override

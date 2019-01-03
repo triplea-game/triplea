@@ -13,9 +13,8 @@ import games.strategy.triplea.ResourceLoader;
 /**
  * Superclass for all image factories.
  *
- * <p>
- * Instances of this class are not thread safe, and its methods are intended to be called from the EDT.
- * </p>
+ * <p>Instances of this class are not thread safe, and its methods are intended to be called from
+ * the EDT.
  */
 public class ImageFactory {
   private final Map<String, Image> images = new HashMap<>();

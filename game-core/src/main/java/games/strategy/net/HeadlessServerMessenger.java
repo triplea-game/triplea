@@ -8,9 +8,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-/**
- * Implementation of {@link IServerMessenger} for a headless game server.
- */
+/** Implementation of {@link IServerMessenger} for a headless game server. */
 public class HeadlessServerMessenger implements IServerMessenger {
 
   private final INode node;
@@ -103,7 +101,8 @@ public class HeadlessServerMessenger implements IServerMessenger {
   public void notifyMacMiniBanningOfPlayer(final String mac, final @Nullable Instant expires) {}
 
   @Override
-  public void notifyUsernameMiniBanningOfPlayer(final String username, final @Nullable Instant expires) {}
+  public void notifyUsernameMiniBanningOfPlayer(
+      final String username, final @Nullable Instant expires) {}
 
   @Override
   public @Nullable String getPlayerMac(final String name) {
@@ -111,7 +110,8 @@ public class HeadlessServerMessenger implements IServerMessenger {
   }
 
   @Override
-  public void notifyUsernameMutingOfPlayer(final String username, final @Nullable Instant muteExpires) {}
+  public void notifyUsernameMutingOfPlayer(
+      final String username, final @Nullable Instant muteExpires) {}
 
   @Override
   public void notifyMacMutingOfPlayer(final String mac, final @Nullable Instant muteExpires) {}

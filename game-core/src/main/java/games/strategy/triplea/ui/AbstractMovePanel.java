@@ -34,11 +34,8 @@ abstract class AbstractMovePanel extends ActionPanel {
   private MoveDescription moveMessage;
   private List<UndoableMove> undoableMoves;
 
-
-  private final JButton cancelMoveButton = JButtonBuilder.builder()
-      .title("Cancel")
-      .actionListener(this::cancelMove)
-      .build();
+  private final JButton cancelMoveButton =
+      JButtonBuilder.builder().title("Cancel").actionListener(this::cancelMove).build();
 
   AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
@@ -56,7 +53,6 @@ abstract class AbstractMovePanel extends ActionPanel {
    * sub-classes method for cancel handling
    */
   protected abstract void cancelMoveAction();
-
 
   AbstractUndoableMovesPanel undoableMovesPanel;
   private IPlayerBridge bridge;
@@ -132,7 +128,8 @@ abstract class AbstractMovePanel extends ActionPanel {
     // undo the move
     final String error = getMoveDelegate().undoMove(moveIndex);
     if (error != null && !suppressError) {
-      JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(
+          getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
     } else {
       updateMoves();
     }
@@ -143,10 +140,8 @@ abstract class AbstractMovePanel extends ActionPanel {
   /**
    * Executes an undo move for any of the units passed in as a parameter.
    *
-   * <p>
-   * "Cannot undo" Error messages are suppressed if any moves cannot be undone (at least until we come up with a way to
-   * deal with "n" reasons for an undo failure rather than just one)
-   * </p>
+   * <p>"Cannot undo" Error messages are suppressed if any moves cannot be undone (at least until we
+   * come up with a way to deal with "n" reasons for an undo failure rather than just one)
    */
   void undoMoves(final Set<Unit> units) {
     final Set<UndoableMove> movesToUndo = getMovesToUndo(units, getMoveDelegate().getMovesMade());
@@ -154,14 +149,16 @@ abstract class AbstractMovePanel extends ActionPanel {
     if (movesToUndo.size() == 0) {
       final String error =
           "Could not undo any moves, check that the unit has moved and that you can undo the move normally";
-      JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(
+          getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
       return;
     }
 
     undoMovesInReverseOrder(movesToUndo);
   }
 
-  private static Set<UndoableMove> getMovesToUndo(final Set<Unit> units, final List<UndoableMove> movesMade) {
+  private static Set<UndoableMove> getMovesToUndo(
+      final Set<Unit> units, final List<UndoableMove> movesMade) {
     final Set<UndoableMove> movesToUndo = new HashSet<>();
 
     if (movesMade != null) {
@@ -196,23 +193,22 @@ abstract class AbstractMovePanel extends ActionPanel {
     return moveIndexes;
   }
 
-  /**
-   * sub-classes method for undo handling.
-   */
+  /** sub-classes method for undo handling. */
   protected abstract void undoMoveSpecific();
 
   final void cleanUp() {
-    SwingUtilities.invokeLater(() -> {
-      if (!listening) {
-        throw new IllegalStateException("Not listening");
-      }
-      listening = false;
-      cleanUpSpecific();
-      bridge = null;
-      disableCancelButton();
-      removeAll();
-      refresh.run();
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          if (!listening) {
+            throw new IllegalStateException("Not listening");
+          }
+          listening = false;
+          cleanUpSpecific();
+          bridge = null;
+          disableCancelButton();
+          removeAll();
+          refresh.run();
+        });
   }
 
   /*
@@ -228,25 +224,31 @@ abstract class AbstractMovePanel extends ActionPanel {
 
   protected final void display(final PlayerId id, final String actionLabel) {
     super.display(id);
-    SwingUtilities.invokeLater(() -> {
-      removeAll();
-      this.actionLabel.setText(id.getName() + actionLabel);
-      add(leftBox(this.actionLabel));
-      if (setCancelButton()) {
-        add(leftBox(cancelMoveButton));
-      }
-      add(leftBox(new JButton(SwingAction.of("Done", e -> {
-        if (doneMoveAction()) {
-          moveMessage = null;
-          release();
-        }
-      }))));
-      addAdditionalButtons();
-      add(Box.createVerticalStrut(entryPadding));
-      add(undoableMovesPanel);
-      add(Box.createGlue());
-      SwingUtilities.invokeLater(refresh);
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          removeAll();
+          this.actionLabel.setText(id.getName() + actionLabel);
+          add(leftBox(this.actionLabel));
+          if (setCancelButton()) {
+            add(leftBox(cancelMoveButton));
+          }
+          add(
+              leftBox(
+                  new JButton(
+                      SwingAction.of(
+                          "Done",
+                          e -> {
+                            if (doneMoveAction()) {
+                              moveMessage = null;
+                              release();
+                            }
+                          }))));
+          addAdditionalButtons();
+          add(Box.createVerticalStrut(entryPadding));
+          add(undoableMovesPanel);
+          add(Box.createGlue());
+          SwingUtilities.invokeLater(refresh);
+        });
   }
 
   protected void addAdditionalButtons() {}
@@ -261,18 +263,19 @@ abstract class AbstractMovePanel extends ActionPanel {
   }
 
   protected final void setUp(final IPlayerBridge bridge) {
-    SwingUtilities.invokeLater(() -> {
-      setUpSpecific();
-      this.bridge = bridge;
-      updateMoves();
-      if (listening) {
-        throw new IllegalStateException("Not listening");
-      }
-      listening = true;
-      if (getRootPane() != null) {
-        SwingComponents.addEscapeKeyListener(this, this::cancelMove);
-      }
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          setUpSpecific();
+          this.bridge = bridge;
+          updateMoves();
+          if (listening) {
+            throw new IllegalStateException("Not listening");
+          }
+          listening = true;
+          if (getRootPane() != null) {
+            SwingComponents.addEscapeKeyListener(this, this::cancelMove);
+          }
+        });
   }
 
   /*

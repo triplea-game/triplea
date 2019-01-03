@@ -9,15 +9,16 @@ import com.google.common.collect.ImmutableList;
 
 final class DefaultColors {
   @VisibleForTesting
-  static final ImmutableList<Color> COLORS = ImmutableList.of(
-      Color.RED,
-      Color.MAGENTA,
-      Color.YELLOW,
-      Color.ORANGE,
-      Color.CYAN,
-      Color.GREEN,
-      Color.PINK,
-      Color.GRAY);
+  static final ImmutableList<Color> COLORS =
+      ImmutableList.of(
+          Color.RED,
+          Color.MAGENTA,
+          Color.YELLOW,
+          Color.ORANGE,
+          Color.CYAN,
+          Color.GREEN,
+          Color.PINK,
+          Color.GRAY);
 
   private final Iterator<Color> colorIterator = COLORS.iterator();
 

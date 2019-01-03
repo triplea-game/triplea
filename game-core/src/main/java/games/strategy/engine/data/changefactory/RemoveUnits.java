@@ -35,8 +35,13 @@ class RemoveUnits extends Change {
   protected void perform(final GameData data) {
     final UnitHolder holder = data.getUnitHolder(name, type);
     if (!holder.getUnits().containsAll(units)) {
-      throw new IllegalStateException("Not all units present in:" + name + ".  Trying to remove:" + units
-          + " present:" + holder.getUnits().getUnits());
+      throw new IllegalStateException(
+          "Not all units present in:"
+              + name
+              + ".  Trying to remove:"
+              + units
+              + " present:"
+              + holder.getUnits().getUnits());
     }
     holder.getUnits().removeAll(units);
   }

@@ -21,15 +21,14 @@ import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;
 
-/**
- * Provides some static methods for validating game edits.
- */
+/** Provides some static methods for validating game edits. */
 class EditValidator {
   private static String validateTerritoryBasic(final GameData data, final Territory territory) {
     // territory cannot be in an UndoableMove route
     final List<UndoableMove> moves = DelegateFinder.moveDelegate(data).getMovesMade();
     for (final UndoableMove move : moves) {
-      if (move.getRoute().getStart().equals(territory) || move.getRoute().getEnd().equals(territory)) {
+      if (move.getRoute().getStart().equals(territory)
+          || move.getRoute().getEnd().equals(territory)) {
         return "Territory is start or end of a pending move";
       }
     }
@@ -37,14 +36,16 @@ class EditValidator {
   }
 
   static String validateChangeTerritoryOwner(final GameData data, final Territory territory) {
-    if (Matches.territoryIsWater().test(territory) && territory.getOwner().equals(PlayerId.NULL_PLAYERID)
+    if (Matches.territoryIsWater().test(territory)
+        && territory.getOwner().equals(PlayerId.NULL_PLAYERID)
         && TerritoryAttachment.get(territory) == null) {
       return "Territory is water and has no attachment";
     }
     return validateTerritoryBasic(data, territory);
   }
 
-  static String validateAddUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
+  static String validateAddUnits(
+      final GameData data, final Territory territory, final Collection<Unit> units) {
     if (units.isEmpty()) {
       return "No units selected";
     }
@@ -56,37 +57,47 @@ class EditValidator {
           if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
-          final Predicate<Unit> friendlySeaTransports = Matches.unitIsTransport()
-              .and(Matches.unitIsSea())
-              .and(Matches.alliedUnit(player, data));
-          final Collection<Unit> seaTransports = CollectionUtils.getMatches(units, friendlySeaTransports);
-          final Collection<Unit> landUnitsToAdd = CollectionUtils.getMatches(units, Matches.unitIsLand());
-          if (landUnitsToAdd.isEmpty() || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
+          final Predicate<Unit> friendlySeaTransports =
+              Matches.unitIsTransport()
+                  .and(Matches.unitIsSea())
+                  .and(Matches.alliedUnit(player, data));
+          final Collection<Unit> seaTransports =
+              CollectionUtils.getMatches(units, friendlySeaTransports);
+          final Collection<Unit> landUnitsToAdd =
+              CollectionUtils.getMatches(units, Matches.unitIsLand());
+          if (landUnitsToAdd.isEmpty()
+              || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }
           seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));
           if (seaTransports.isEmpty()) {
             return "Can't add land units to water without enough transports";
           }
-          final Map<Unit, Unit> mapLoading = TransportUtils.mapTransportsToLoad(landUnitsToAdd, seaTransports);
+          final Map<Unit, Unit> mapLoading =
+              TransportUtils.mapTransportsToLoad(landUnitsToAdd, seaTransports);
           if (!mapLoading.keySet().containsAll(landUnitsToAdd)) {
             return "Can't add land units to water without enough transports";
           }
         }
         if (units.stream().anyMatch(Matches.unitIsAir())) {
-          if (units.stream().anyMatch(Matches.unitIsAir()
-              .and(Matches.unitCanLandOnCarrier().negate()))) {
+          if (units
+              .stream()
+              .anyMatch(Matches.unitIsAir().and(Matches.unitCanLandOnCarrier().negate()))) {
             return "Cannot add air to water unless it can land on carriers";
           }
           // Set up matches
-          final Predicate<Unit> friendlyCarriers = Matches.unitIsCarrier().and(Matches.alliedUnit(player, data));
-          final Predicate<Unit> friendlyAirUnits = Matches.unitIsAir().and(Matches.alliedUnit(player, data));
+          final Predicate<Unit> friendlyCarriers =
+              Matches.unitIsCarrier().and(Matches.alliedUnit(player, data));
+          final Predicate<Unit> friendlyAirUnits =
+              Matches.unitIsAir().and(Matches.alliedUnit(player, data));
           // Determine transport capacity
           final int carrierCapacityTotal =
-              AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)
+              AirMovementValidator.carrierCapacity(
+                      territory.getUnits().getMatches(friendlyCarriers), territory)
                   + AirMovementValidator.carrierCapacity(units, territory);
-          final int carrierCost = AirMovementValidator.carrierCost(territory.getUnits().getMatches(friendlyAirUnits))
-              + AirMovementValidator.carrierCost(units);
+          final int carrierCost =
+              AirMovementValidator.carrierCost(territory.getUnits().getMatches(friendlyAirUnits))
+                  + AirMovementValidator.carrierCost(units);
           if (carrierCapacityTotal < carrierCost) {
             return "Can't add more air units to water without sufficient space";
           }
@@ -99,7 +110,8 @@ class EditValidator {
     return validateTerritoryBasic(data, territory);
   }
 
-  static String validateRemoveUnits(final GameData data, final Territory territory, final Collection<Unit> units) {
+  static String validateRemoveUnits(
+      final GameData data, final Territory territory, final Collection<Unit> units) {
     if (units.isEmpty()) {
       return "No units selected";
     }
@@ -130,7 +142,8 @@ class EditValidator {
     return null;
   }
 
-  static String validateAddTech(final GameData data, final Collection<TechAdvance> techs, final PlayerId player) {
+  static String validateAddTech(
+      final GameData data, final Collection<TechAdvance> techs, final PlayerId player) {
     final String result = null;
     if (techs == null) {
       return "No tech selected";
@@ -155,7 +168,8 @@ class EditValidator {
     return result;
   }
 
-  static String validateRemoveTech(final GameData data, final Collection<TechAdvance> techs, final PlayerId player) {
+  static String validateRemoveTech(
+      final GameData data, final Collection<TechAdvance> techs, final PlayerId player) {
     final String result = null;
     if (techs == null) {
       return "No tech selected";
@@ -183,8 +197,8 @@ class EditValidator {
     return result;
   }
 
-  static String validateChangeHitDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
-      final Territory territory) {
+  static String validateChangeHitDamage(
+      final GameData data, final IntegerMap<Unit> unitDamageMap, final Territory territory) {
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
       return "Damage map is empty";
     }
@@ -214,8 +228,8 @@ class EditValidator {
     return null;
   }
 
-  static String validateChangeBombingDamage(final GameData data, final IntegerMap<Unit> unitDamageMap,
-      final Territory territory) {
+  static String validateChangeBombingDamage(
+      final GameData data, final IntegerMap<Unit> unitDamageMap, final Territory territory) {
     if (unitDamageMap == null || unitDamageMap.isEmpty()) {
       return "Damage map is empty";
     }
@@ -253,7 +267,8 @@ class EditValidator {
     if (relationshipChanges == null || relationshipChanges.isEmpty()) {
       return "Relationship Changes are empty";
     }
-    for (final Triple<PlayerId, PlayerId, RelationshipType> relationshipChange : relationshipChanges) {
+    for (final Triple<PlayerId, PlayerId, RelationshipType> relationshipChange :
+        relationshipChanges) {
       if (relationshipChange.getFirst() == null || relationshipChange.getSecond() == null) {
         return "Players are null";
       }

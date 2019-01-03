@@ -12,10 +12,12 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 
-// TODO: make the Comparator be serializable. To get there all class members need to be serializable or removed.
+// TODO: make the Comparator be serializable. To get there all class members need to be serializable
+// or removed.
 
 /**
- * A comparator that sorts units in order from most likely to least likely to be chosen as a battle loss.
+ * A comparator that sorts units in order from most likely to least likely to be chosen as a battle
+ * loss.
  */
 public class UnitBattleComparator implements Comparator<Unit> {
   private final boolean defending;
@@ -26,8 +28,12 @@ public class UnitBattleComparator implements Comparator<Unit> {
   private final Collection<TerritoryEffect> territoryEffects;
   private final Collection<UnitType> multiHitpointCanRepair = new HashSet<>();
 
-  public UnitBattleComparator(final boolean defending, final IntegerMap<UnitType> costs,
-      final Collection<TerritoryEffect> territoryEffects, final GameData data, final boolean bonus,
+  public UnitBattleComparator(
+      final boolean defending,
+      final IntegerMap<UnitType> costs,
+      final Collection<TerritoryEffect> territoryEffects,
+      final GameData data,
+      final boolean bonus,
       final boolean ignorePrimaryPower) {
     this.defending = defending;
     this.costs = costs;
@@ -64,17 +70,25 @@ public class UnitBattleComparator implements Comparator<Unit> {
       }
       return 0;
     }
-    final boolean airOrCarrierOrTransport1 = Matches.unitIsAir().test(u1) || Matches.unitIsCarrier().test(u1)
-        || (!transporting1 && Matches.unitIsTransport().test(u1));
-    final boolean airOrCarrierOrTransport2 = Matches.unitIsAir().test(u2) || Matches.unitIsCarrier().test(u2)
-        || (!transporting2 && Matches.unitIsTransport().test(u2));
-    final boolean subDestroyer1 = Matches.unitIsSub().test(u1) || Matches.unitIsDestroyer().test(u1);
-    final boolean subDestroyer2 = Matches.unitIsSub().test(u2) || Matches.unitIsDestroyer().test(u2);
+    final boolean airOrCarrierOrTransport1 =
+        Matches.unitIsAir().test(u1)
+            || Matches.unitIsCarrier().test(u1)
+            || (!transporting1 && Matches.unitIsTransport().test(u1));
+    final boolean airOrCarrierOrTransport2 =
+        Matches.unitIsAir().test(u2)
+            || Matches.unitIsCarrier().test(u2)
+            || (!transporting2 && Matches.unitIsTransport().test(u2));
+    final boolean subDestroyer1 =
+        Matches.unitIsSub().test(u1) || Matches.unitIsDestroyer().test(u1);
+    final boolean subDestroyer2 =
+        Matches.unitIsSub().test(u2) || Matches.unitIsDestroyer().test(u2);
     final boolean multiHpCanRepair1 = multiHitpointCanRepair.contains(u1.getType());
     final boolean multiHpCanRepair2 = multiHitpointCanRepair.contains(u2.getType());
     if (!ignorePrimaryPower) {
-      int power1 = 8 * BattleCalculator.getUnitPowerForSorting(u1, defending, gameData, territoryEffects);
-      int power2 = 8 * BattleCalculator.getUnitPowerForSorting(u2, defending, gameData, territoryEffects);
+      int power1 =
+          8 * BattleCalculator.getUnitPowerForSorting(u1, defending, gameData, territoryEffects);
+      int power2 =
+          8 * BattleCalculator.getUnitPowerForSorting(u2, defending, gameData, territoryEffects);
       if (bonus) {
         if (subDestroyer1 && !subDestroyer2) {
           power1 += 4;
@@ -109,8 +123,10 @@ public class UnitBattleComparator implements Comparator<Unit> {
       }
     }
     {
-      int power1reverse = 8 * BattleCalculator.getUnitPowerForSorting(u1, !defending, gameData, territoryEffects);
-      int power2reverse = 8 * BattleCalculator.getUnitPowerForSorting(u2, !defending, gameData, territoryEffects);
+      int power1reverse =
+          8 * BattleCalculator.getUnitPowerForSorting(u1, !defending, gameData, territoryEffects);
+      int power2reverse =
+          8 * BattleCalculator.getUnitPowerForSorting(u2, !defending, gameData, territoryEffects);
       if (bonus) {
         if (subDestroyer1 && !subDestroyer2) {
           power1reverse += 4;

@@ -7,8 +7,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 /**
- * A Dialog window which has a single component, and a number of buttons.
- * This is a wrapper around JOptionPane.showOptionDialog, that allows you to use any names for the button
+ * A Dialog window which has a single component, and a number of buttons. This is a wrapper around
+ * JOptionPane.showOptionDialog, that allows you to use any names for the button
  */
 public class JButtonDialog {
   /**
@@ -20,9 +20,17 @@ public class JButtonDialog {
    * @param buttons the string button options (may not be null)
    * @return the option pressed or null if the dialog is closed without pressing a button
    */
-  public static String showDialog(final Component component, final String title, final Object message,
+  public static String showDialog(
+      final Component component,
+      final String title,
+      final Object message,
       final String... buttons) {
-    return showDialog(JOptionPane.getFrameForComponent(component), title, message, JOptionPane.PLAIN_MESSAGE, buttons);
+    return showDialog(
+        JOptionPane.getFrameForComponent(component),
+        title,
+        message,
+        JOptionPane.PLAIN_MESSAGE,
+        buttons);
   }
 
   /**
@@ -35,7 +43,11 @@ public class JButtonDialog {
    * @param messageType the message type see <code>JOptionPane.PLAIN_MESSAGE, </code>
    * @return the option pressed or null if the dialog is closed without pressing a button
    */
-  public static String showDialog(final Frame frame, final String title, final Object message, final int messageType,
+  public static String showDialog(
+      final Frame frame,
+      final String title,
+      final Object message,
+      final int messageType,
       final String... buttons) {
     final Object[] options = new Object[buttons.length];
     for (int i = 0, buttonsLength = buttons.length; i < buttonsLength; i++) {

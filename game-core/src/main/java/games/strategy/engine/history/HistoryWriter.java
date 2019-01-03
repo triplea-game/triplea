@@ -8,9 +8,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.PlayerId;
 import lombok.extern.java.Log;
 
-/**
- * Used to write to a history object. Delegates should use a DelegateHistoryWriter.
- */
+/** Used to write to a history object. Delegates should use a DelegateHistoryWriter. */
 @Log
 public class HistoryWriter implements Serializable {
   private static final long serialVersionUID = 4230519614567508061L;
@@ -23,15 +21,17 @@ public class HistoryWriter implements Serializable {
   }
 
   private void assertCorrectThread() {
-    if (history.getGameData().areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
+    if (history.getGameData().areChangesOnlyInSwingEventThread()
+        && !SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
   }
 
-  /**
-   * Can only be called if we are currently in a round or a step.
-   */
-  public void startNextStep(final String stepName, final String delegateName, final PlayerId player,
+  /** Can only be called if we are currently in a round or a step. */
+  public void startNextStep(
+      final String stepName,
+      final String delegateName,
+      final PlayerId player,
       final String stepDisplayName) {
     assertCorrectThread();
     // we are being called for the first time
@@ -47,15 +47,19 @@ public class HistoryWriter implements Serializable {
     }
     if (!isCurrentRound()) {
       throw new IllegalStateException(
-          "Not in a round, but trying to add step: " + stepName + ". Current history node is: " + current);
+          "Not in a round, but trying to add step: "
+              + stepName
+              + ". Current history node is: "
+              + current);
     }
-    final Step currentStep = new Step(stepName, delegateName, player, history.getChanges().size(), stepDisplayName);
+    final Step currentStep =
+        new Step(stepName, delegateName, player, history.getChanges().size(), stepDisplayName);
     addToAndSetCurrent(currentStep);
   }
 
   /**
-   * Prepares to write a new round. Any current event, step, or round will be automatically closed before beginning the
-   * new round.
+   * Prepares to write a new round. Any current event, step, or round will be automatically closed
+   * before beginning the new round.
    */
   public void startNextRound(final int round) {
     assertCorrectThread();
@@ -118,7 +122,10 @@ public class HistoryWriter implements Serializable {
     }
     if (!isCurrentStep()) {
       throw new IllegalStateException(
-          "Not in a step, but trying to add event: " + eventName + ". Current history node is: " + current);
+          "Not in a step, but trying to add event: "
+              + eventName
+              + ". Current history node is: "
+              + current);
     }
     final Event event = new Event(eventName, history.getChanges().size());
     addToAndSetCurrent(event);
@@ -136,38 +143,43 @@ public class HistoryWriter implements Serializable {
     return current instanceof Step;
   }
 
-  /**
-   * Add a child to the current event.
-   */
+  /** Add a child to the current event. */
   public void addChildToEvent(final EventChild node) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      log.severe("Not in an event, but trying to add child: " + node + ". Current history node is: " + current);
+      log.severe(
+          "Not in an event, but trying to add child: "
+              + node
+              + ". Current history node is: "
+              + current);
       startEvent("Filler event for child: " + node);
     }
     addToCurrent(node);
   }
 
-  /**
-   * Add a change to the current event.
-   */
+  /** Add a change to the current event. */
   public void addChange(final Change change) {
     assertCorrectThread();
     if (!isCurrentEvent() && !isCurrentStep()) {
       log.severe(
-          "Not in an event or step, but trying to add change: " + change + ". Current history node is: " + current);
+          "Not in an event or step, but trying to add change: "
+              + change
+              + ". Current history node is: "
+              + current);
       startEvent("Filler event for change: " + change);
     }
     history.changeAdded(change);
   }
 
-  /**
-   * Sets the rendering data for the current event.
-   */
+  /** Sets the rendering data for the current event. */
   public void setRenderingData(final Object details) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      log.severe("Not in an event, but trying to set details: " + details + ". Current history node is: " + current);
+      log.severe(
+          "Not in an event, but trying to set details: "
+              + details
+              + ". Current history node is: "
+              + current);
       startEvent("Filler event for details: " + details);
     }
     history.getGameData().acquireWriteLock();

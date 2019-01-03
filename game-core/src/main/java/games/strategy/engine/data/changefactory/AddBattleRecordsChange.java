@@ -22,14 +22,16 @@ class AddBattleRecordsChange extends Change {
 
   AddBattleRecordsChange(final BattleRecords battleRecords, final int round) {
     this.round = round;
-    // do not make a copy, this is only called from RemoveBattleRecordsChange, and we make a copy when we
+    // do not make a copy, this is only called from RemoveBattleRecordsChange, and we make a copy
+    // when we
     // perform, so no need for another copy.
     recordsToAdd = battleRecords;
   }
 
   @Override
   protected void perform(final GameData data) {
-    final Map<Integer, BattleRecords> currentRecords = data.getBattleRecordsList().getBattleRecordsMap();
+    final Map<Integer, BattleRecords> currentRecords =
+        data.getBattleRecordsList().getBattleRecordsMap();
     // make a copy because otherwise ours will be cleared when we RemoveBattleRecordsChange
     BattleRecordsList.addRecords(currentRecords, round, new BattleRecords(recordsToAdd));
   }

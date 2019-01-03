@@ -7,8 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
 /**
- * A JTabbedPane that whose tabs have a fixed width.
- * Swing default is to use minimum sized tab for each tab.
+ * A JTabbedPane that whose tabs have a fixed width. Swing default is to use minimum sized tab for
+ * each tab.
  */
 public class JTabbedPaneWithFixedWidthTabs extends JTabbedPane {
 
@@ -18,7 +18,6 @@ public class JTabbedPaneWithFixedWidthTabs extends JTabbedPane {
 
   private int tabIndex = 0;
   private final Dimension tabDimension;
-
 
   public JTabbedPaneWithFixedWidthTabs() {
     this(DEFAULT_TAB_WIDTH, DEFAULT_TAB_HEIGHT);

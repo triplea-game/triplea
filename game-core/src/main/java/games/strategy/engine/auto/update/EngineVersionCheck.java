@@ -26,14 +26,19 @@ final class EngineVersionCheck {
         return;
       }
 
-      final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
+      final EngineVersionProperties latestEngineOut =
+          EngineVersionProperties.contactServerForEngineVersionProperties();
       if (latestEngineOut == null) {
         return;
       }
       if (ClientContext.engineVersion().isLessThan(latestEngineOut.getLatestVersionOut())) {
-        SwingUtilities
-            .invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(),
-                "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE));
+        SwingUtilities.invokeLater(
+            () ->
+                EventThreadJOptionPane.showMessageDialog(
+                    null,
+                    latestEngineOut.getOutOfDateComponent(),
+                    "Please Update TripleA",
+                    JOptionPane.INFORMATION_MESSAGE));
       }
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Error while checking for engine updates", e);
@@ -54,11 +59,16 @@ final class EngineVersionCheck {
       final GameSetting<Boolean> firstRunSetting,
       final GameSetting<String> updateCheckDateSetting,
       final Runnable flushSetting) {
-    // check at most once per 2 days (but still allow a 'first run message' for a new version of TripleA)
-    final boolean updateCheckRequired = firstRunSetting.getValueOrThrow()
-        || updateCheckDateSetting.getValue()
-            .map(encodedUpdateCheckDate -> !parseUpdateCheckDate(encodedUpdateCheckDate).isAfter(now.minusDays(2)))
-            .orElse(true);
+    // check at most once per 2 days (but still allow a 'first run message' for a new version of
+    // TripleA)
+    final boolean updateCheckRequired =
+        firstRunSetting.getValueOrThrow()
+            || updateCheckDateSetting
+                .getValue()
+                .map(
+                    encodedUpdateCheckDate ->
+                        !parseUpdateCheckDate(encodedUpdateCheckDate).isAfter(now.minusDays(2)))
+                .orElse(true);
     if (!updateCheckRequired) {
       return false;
     }

@@ -18,7 +18,8 @@ final class MapPropertyWrapperTest {
   final class GetPropertyFieldTest {
     @Test
     void shouldReturnFieldWhenFieldExistsInTargetClass() {
-      final Field field = MapPropertyWrapper.getPropertyField("doubleValue", ExampleChildAttachment.class);
+      final Field field =
+          MapPropertyWrapper.getPropertyField("doubleValue", ExampleChildAttachment.class);
 
       assertThat(field.getName(), is("doubleValue"));
       assertThat(field.getDeclaringClass(), is(ExampleChildAttachment.class));
@@ -26,7 +27,8 @@ final class MapPropertyWrapperTest {
 
     @Test
     void shouldReturnFieldWhenFieldExistsInAncestorClass() {
-      final Field field = MapPropertyWrapper.getPropertyField("intValue", ExampleChildAttachment.class);
+      final Field field =
+          MapPropertyWrapper.getPropertyField("intValue", ExampleChildAttachment.class);
 
       assertThat(field.getName(), is("intValue"));
       assertThat(field.getDeclaringClass(), is(ExampleParentAttachment.class));
@@ -34,7 +36,9 @@ final class MapPropertyWrapperTest {
 
     @Test
     void shouldThrowExceptionWhenFieldDoesNotExist() {
-      assertThrows(IllegalStateException.class, () -> MapPropertyWrapper.getPropertyField("xxx", TestAttachment.class));
+      assertThrows(
+          IllegalStateException.class,
+          () -> MapPropertyWrapper.getPropertyField("xxx", TestAttachment.class));
     }
   }
 
@@ -43,7 +47,8 @@ final class MapPropertyWrapperTest {
 
     int intValue;
 
-    ExampleParentAttachment(final String name, final Attachable attachable, final GameData gameData) {
+    ExampleParentAttachment(
+        final String name, final Attachable attachable, final GameData gameData) {
       super(name, attachable, gameData);
     }
   }
@@ -53,7 +58,8 @@ final class MapPropertyWrapperTest {
 
     double doubleValue;
 
-    ExampleChildAttachment(final String name, final Attachable attachable, final GameData gameData) {
+    ExampleChildAttachment(
+        final String name, final Attachable attachable, final GameData gameData) {
       super(name, attachable, gameData);
     }
   }

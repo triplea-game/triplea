@@ -23,16 +23,20 @@ class MapDownloadList {
   }
 
   @VisibleForTesting
-  MapDownloadList(final Collection<DownloadFileDescription> downloads, final FileSystemAccessStrategy strategy) {
+  MapDownloadList(
+      final Collection<DownloadFileDescription> downloads,
+      final FileSystemAccessStrategy strategy) {
     for (final DownloadFileDescription download : downloads) {
       if (download == null) {
         return;
       }
-      final Optional<Version> mapVersion = strategy.getMapVersion(download.getInstallLocation().getAbsolutePath());
+      final Optional<Version> mapVersion =
+          strategy.getMapVersion(download.getInstallLocation().getAbsolutePath());
 
       if (mapVersion.isPresent()) {
         installed.add(download);
-        if (download.getVersion() != null && download.getVersion().isGreaterThan(mapVersion.get())) {
+        if (download.getVersion() != null
+            && download.getVersion().isGreaterThan(mapVersion.get())) {
           outOfDate.add(download);
         }
       } else {
@@ -45,10 +49,9 @@ class MapDownloadList {
     return available;
   }
 
-  List<DownloadFileDescription> getAvailableExcluding(final Collection<DownloadFileDescription> excluded) {
-    return available.stream()
-        .filter(not(excluded::contains))
-        .collect(Collectors.toList());
+  List<DownloadFileDescription> getAvailableExcluding(
+      final Collection<DownloadFileDescription> excluded) {
+    return available.stream().filter(not(excluded::contains)).collect(Collectors.toList());
   }
 
   List<DownloadFileDescription> getInstalled() {
@@ -59,10 +62,9 @@ class MapDownloadList {
     return outOfDate;
   }
 
-  List<DownloadFileDescription> getOutOfDateExcluding(final Collection<DownloadFileDescription> excluded) {
-    return outOfDate.stream()
-        .filter(not(excluded::contains))
-        .collect(Collectors.toList());
+  List<DownloadFileDescription> getOutOfDateExcluding(
+      final Collection<DownloadFileDescription> excluded) {
+    return outOfDate.stream().filter(not(excluded::contains)).collect(Collectors.toList());
   }
 
   boolean isInstalled(final DownloadFileDescription download) {

@@ -2,9 +2,7 @@ package games.strategy.triplea;
 
 import games.strategy.engine.data.PlayerId;
 
-/**
- * Constants used throughout the game.
- */
+/** Constants used throughout the game. */
 public interface Constants {
   // Player names
   String PLAYER_NAME_AMERICANS = "Americans";
@@ -82,8 +80,7 @@ public interface Constants {
   String ALLIED_AIR_INDEPENDENT = "Allied Air Independent";
   String DEFENDING_SUBS_SNEAK_ATTACK = "Defending Subs Sneak Attack";
   String ATTACKER_RETREAT_PLANES = "Attacker Retreat Planes";
-  String NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE_RESTRICTED =
-      "Naval Bombard Casualties Return Fire";
+  String NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE_RESTRICTED = "Naval Bombard Casualties Return Fire";
   String SURVIVING_AIR_MOVE_TO_LAND = "Surviving Air Move To Land";
   String BLITZ_THROUGH_FACTORIES_AND_AA_RESTRICTED = "Blitz Through Factories And AA Restricted";
   String AIR_ATTACK_SUB_RESTRICTED = "Air Attack Sub Restricted";
@@ -258,5 +255,4 @@ public interface Constants {
   static String getPuIncomeBonus(final PlayerId playerId) {
     return playerId.getName() + "PU Income Bonus";
   }
-
 }

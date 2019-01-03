@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 public class GridBagHelperTest {
 
-
   @Test
   public void gridBagHelperTest() {
     final JComponent component = new JPanel();
@@ -20,15 +19,15 @@ public class GridBagHelperTest {
     assertThat(helper.nextConstraint().gridx, is(0));
     assertThat(helper.nextConstraint().gridy, is(0));
 
-    assertThat("verify that values do not change until we start adding components.",
-        helper.nextConstraint().gridx, is(0));
+    assertThat(
+        "verify that values do not change until we start adding components.",
+        helper.nextConstraint().gridx,
+        is(0));
     assertThat(helper.nextConstraint().gridy, is(0));
-
 
     helper.add(buildComponent());
     assertThat(helper.nextConstraint().gridx, is(1));
     assertThat(helper.nextConstraint().gridy, is(0));
-
 
     helper.add(buildComponent());
     assertThat(helper.nextConstraint().gridx, is(2));

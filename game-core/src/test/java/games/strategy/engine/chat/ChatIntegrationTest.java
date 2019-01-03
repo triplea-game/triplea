@@ -81,50 +81,53 @@ public final class ChatIntegrationTest {
 
   @Test
   public void shouldBeAbleToChatAcrossMultipleNodes() {
-    runChatTest((server, client1, client2) -> {
-      sendMessagesFrom(client2);
-      sendMessagesFrom(server);
-      sendMessagesFrom(client1);
-      waitFor(this::allMessagesToArrive);
-    });
+    runChatTest(
+        (server, client1, client2) -> {
+          sendMessagesFrom(client2);
+          sendMessagesFrom(server);
+          sendMessagesFrom(client1);
+          waitFor(this::allMessagesToArrive);
+        });
   }
 
   private void runChatTest(final ChatTest chatTest) {
-    assertTimeoutPreemptively(Duration.ofSeconds(15), () -> {
-      final ChatController controller = newChatController();
-      final Chat server = newChat(serverMessenger, serverChannelMessenger, serverRemoteMessenger);
-      server.addChatListener(serverChatListener);
-      final Chat client1 = newChat(client1Messenger, client1ChannelMessenger, client1RemoteMessenger);
-      client1.addChatListener(client1ChatListener);
-      final Chat client2 = newChat(client2Messenger, client2ChannelMessenger, client2RemoteMessenger);
-      client2.addChatListener(client2ChatListener);
-      waitFor(this::allNodesToConnect);
+    assertTimeoutPreemptively(
+        Duration.ofSeconds(15),
+        () -> {
+          final ChatController controller = newChatController();
+          final Chat server =
+              newChat(serverMessenger, serverChannelMessenger, serverRemoteMessenger);
+          server.addChatListener(serverChatListener);
+          final Chat client1 =
+              newChat(client1Messenger, client1ChannelMessenger, client1RemoteMessenger);
+          client1.addChatListener(client1ChatListener);
+          final Chat client2 =
+              newChat(client2Messenger, client2ChannelMessenger, client2RemoteMessenger);
+          client2.addChatListener(client2ChatListener);
+          waitFor(this::allNodesToConnect);
 
-      chatTest.run(server, client1, client2);
+          chatTest.run(server, client1, client2);
 
-      client1.shutdown();
-      client2.shutdown();
-      waitFor(this::clientNodesToDisconnect);
+          client1.shutdown();
+          client2.shutdown();
+          waitFor(this::clientNodesToDisconnect);
 
-      controller.deactivate();
-      waitFor(this::serverNodeToDisconnect);
-    });
+          controller.deactivate();
+          waitFor(this::serverNodeToDisconnect);
+        });
   }
 
   private ChatController newChatController() {
     return new ChatController(
-        CHAT_NAME,
-        serverMessenger,
-        serverRemoteMessenger,
-        serverChannelMessenger,
-        node -> false);
+        CHAT_NAME, serverMessenger, serverRemoteMessenger, serverChannelMessenger, node -> false);
   }
 
   private static Chat newChat(
       final IMessenger messenger,
       final IChannelMessenger channelMessenger,
       final IRemoteMessenger remoteMessenger) {
-    return new Chat(messenger, CHAT_NAME, channelMessenger, remoteMessenger, Chat.ChatSoundProfile.NO_SOUND);
+    return new Chat(
+        messenger, CHAT_NAME, channelMessenger, remoteMessenger, Chat.ChatSoundProfile.NO_SOUND);
   }
 
   private static void waitFor(final Runnable assertion) throws InterruptedException {
@@ -163,31 +166,43 @@ public final class ChatIntegrationTest {
   }
 
   private static void sendMessagesFrom(final Chat node) {
-    new Thread(() -> {
-      IntStream.range(0, MESSAGE_COUNT).forEach(i -> node.sendMessage("Test", false));
-    }).start();
+    new Thread(
+            () -> {
+              IntStream.range(0, MESSAGE_COUNT).forEach(i -> node.sendMessage("Test", false));
+            })
+        .start();
   }
 
   @Test
   public void shouldBeAbleToMuteNodeByUsername() {
-    runChatTest((server, client1, client2) -> {
-      serverMessenger.notifyUsernameMutingOfPlayer(client1.getLocalNode().getName(), null);
-      client1.sendMessage("Test", false);
-      waitFor(() -> nodeToReceiveMessage(client1ChatListener, TestServerMessenger.ADMINISTRATIVE_MUTE_CHAT_MESSAGE));
-    });
+    runChatTest(
+        (server, client1, client2) -> {
+          serverMessenger.notifyUsernameMutingOfPlayer(client1.getLocalNode().getName(), null);
+          client1.sendMessage("Test", false);
+          waitFor(
+              () ->
+                  nodeToReceiveMessage(
+                      client1ChatListener, TestServerMessenger.ADMINISTRATIVE_MUTE_CHAT_MESSAGE));
+        });
   }
 
-  private static void nodeToReceiveMessage(final TestChatListener chatListener, final String message) {
+  private static void nodeToReceiveMessage(
+      final TestChatListener chatListener, final String message) {
     assertThat(chatListener.lastMessageReceived.get(), is(message));
   }
 
   @Test
   public void shouldBeAbleToMuteNodeByMac() {
-    runChatTest((server, client1, client2) -> {
-      serverMessenger.notifyMacMutingOfPlayer(serverMessenger.getPlayerMac(client1.getLocalNode().getName()), null);
-      client1.sendMessage("Test", false);
-      waitFor(() -> nodeToReceiveMessage(client1ChatListener, TestServerMessenger.ADMINISTRATIVE_MUTE_CHAT_MESSAGE));
-    });
+    runChatTest(
+        (server, client1, client2) -> {
+          serverMessenger.notifyMacMutingOfPlayer(
+              serverMessenger.getPlayerMac(client1.getLocalNode().getName()), null);
+          client1.sendMessage("Test", false);
+          waitFor(
+              () ->
+                  nodeToReceiveMessage(
+                      client1ChatListener, TestServerMessenger.ADMINISTRATIVE_MUTE_CHAT_MESSAGE));
+        });
   }
 
   @FunctionalInterface
@@ -206,8 +221,8 @@ public final class ChatIntegrationTest {
     }
 
     @Override
-    public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
-        final String sound) {
+    public void addMessageWithSound(
+        final String message, final String from, final boolean thirdperson, final String sound) {
       lastMessageReceived.set(message);
       messageCount.incrementAndGet();
     }

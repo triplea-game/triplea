@@ -18,12 +18,14 @@ import org.junit.jupiter.api.Test;
 
 public final class Md5CryptTest {
   @Nested
-  @SuppressWarnings("deprecation") // required for testing; remove upon next lobby-incompatible release
+  @SuppressWarnings(
+      "deprecation") // required for testing; remove upon next lobby-incompatible release
   public final class HashPasswordTest {
     @Test
     public void shouldReturnHashedPassword() {
-      final String password = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-          + "[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F";
+      final String password =
+          " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+              + "[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F";
       final String salt = "wwmV2glD";
       assertThat(hashPassword(password, salt), is("$1$wwmV2glD$J5dZUS3L8DAMUim4wdL/11"));
     }
@@ -34,18 +36,24 @@ public final class Md5CryptTest {
     @Test
     public void shouldReturnHashedValue() {
       Arrays.asList(
-          Triple.of("", "ll5ESPtE", "$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0"),
-          Triple.of("value", "Eim8FgMk", "$1$Eim8FgMk$TYixIMiLc1BA6XHJBw66y0"),
-          Triple.of("the quick brown fox", "XlnQ6h98", "$1$XlnQ6h98$iIDgBB73DNCK/RwmzU0kv."),
-          Triple.of("ABYZabyz0189", "3lvJqBhy", "$1$3lvJqBhy$ZjNcN3vfMfRdNcDyzQbQq."),
-          Triple.of(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-              + "[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F", "wwmV2glD", "$1$wwmV2glD$J5dZUS3L8DAMUim4wdL/11"))
-          .forEach(t -> {
-            final String value = t.getFirst();
-            final String salt = t.getSecond();
-            final String hashedValue = t.getThird();
-            assertThat(String.format("wrong hashed value for '%s'", value), hash(value, salt), is(hashedValue));
-          });
+              Triple.of("", "ll5ESPtE", "$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0"),
+              Triple.of("value", "Eim8FgMk", "$1$Eim8FgMk$TYixIMiLc1BA6XHJBw66y0"),
+              Triple.of("the quick brown fox", "XlnQ6h98", "$1$XlnQ6h98$iIDgBB73DNCK/RwmzU0kv."),
+              Triple.of("ABYZabyz0189", "3lvJqBhy", "$1$3lvJqBhy$ZjNcN3vfMfRdNcDyzQbQq."),
+              Triple.of(
+                  " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                      + "[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F",
+                  "wwmV2glD", "$1$wwmV2glD$J5dZUS3L8DAMUim4wdL/11"))
+          .forEach(
+              t -> {
+                final String value = t.getFirst();
+                final String salt = t.getSecond();
+                final String hashedValue = t.getThird();
+                assertThat(
+                    String.format("wrong hashed value for '%s'", value),
+                    hash(value, salt),
+                    is(hashedValue));
+              });
     }
 
     @Test
@@ -106,44 +114,46 @@ public final class Md5CryptTest {
     @Test
     public void shouldReturnTrueWhenHashedValueIsLegal() {
       Arrays.asList(
-          "$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0",
-          "$1$Eim8FgMk$Y7Rv7y5WCc7rARI/g7xgH1",
-          "$1$XlnQ6h98$iIDgBB73DNCK/RwmzU0kv.",
-          "$1$3lvJqBhy$ZjNcN3vfMfRdNcDyzQbQq.",
-          "$1$wwmV2glD$J5dZUS3L8DAMUim4wdL/11",
-          "$1$A$KnCRC85Rudn6P3cpfe3LR/",
-          "$1$AB$4jo772pXjQ9qCwNdBde3d1",
-          "$1$ABC$3tP1DHUbEbG4bd67/3fFu/",
-          "$1$ABCD$dQqZjlWf5HeY7rWTLu23s.",
-          "$1$ABCDE$ACfvKmv8y/KjlzX1R.tBw.",
-          "$1$ABCDEF$f.URqvCLElutKgCndKcMI1",
-          "$1$ABCDEFG$mN7iGIbBXdAAjJtrJG2ia1",
-          "$1$ABCDEFGH$hGGndps75hhROKqu/zh9q1")
-          .forEach(value -> {
-            assertThat(
-                String.format("expected legal hashed value '%s'", value),
-                isLegalHashedValue(value),
-                is(true));
-          });
+              "$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0",
+              "$1$Eim8FgMk$Y7Rv7y5WCc7rARI/g7xgH1",
+              "$1$XlnQ6h98$iIDgBB73DNCK/RwmzU0kv.",
+              "$1$3lvJqBhy$ZjNcN3vfMfRdNcDyzQbQq.",
+              "$1$wwmV2glD$J5dZUS3L8DAMUim4wdL/11",
+              "$1$A$KnCRC85Rudn6P3cpfe3LR/",
+              "$1$AB$4jo772pXjQ9qCwNdBde3d1",
+              "$1$ABC$3tP1DHUbEbG4bd67/3fFu/",
+              "$1$ABCD$dQqZjlWf5HeY7rWTLu23s.",
+              "$1$ABCDE$ACfvKmv8y/KjlzX1R.tBw.",
+              "$1$ABCDEF$f.URqvCLElutKgCndKcMI1",
+              "$1$ABCDEFG$mN7iGIbBXdAAjJtrJG2ia1",
+              "$1$ABCDEFGH$hGGndps75hhROKqu/zh9q1")
+          .forEach(
+              value -> {
+                assertThat(
+                    String.format("expected legal hashed value '%s'", value),
+                    isLegalHashedValue(value),
+                    is(true));
+              });
     }
 
     @Test
     public void shouldReturnFalseWhenHashedValueIsIlegal() {
       Arrays.asList(
-          "1$A$KnCRC85Rudn6P3cpfe3LR/",
-          "$$AB$4jo772pXjQ9qCwNdBde3d1",
-          "$1ABC$3tP1DHUbEbG4bd67/3fFu/",
-          "$1$$dQqZjlWf5HeY7rWTLu23s.",
-          "$1$ABCDEFGHI$ACfvKmv8y/KjlzX1R.tBw.",
-          "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw_",
-          "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw",
-          "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw..")
-          .forEach(value -> {
-            assertThat(
-                String.format("expected illegal hashed value '%s'", value),
-                isLegalHashedValue(value),
-                is(false));
-          });
+              "1$A$KnCRC85Rudn6P3cpfe3LR/",
+              "$$AB$4jo772pXjQ9qCwNdBde3d1",
+              "$1ABC$3tP1DHUbEbG4bd67/3fFu/",
+              "$1$$dQqZjlWf5HeY7rWTLu23s.",
+              "$1$ABCDEFGHI$ACfvKmv8y/KjlzX1R.tBw.",
+              "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw_",
+              "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw",
+              "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw..")
+          .forEach(
+              value -> {
+                assertThat(
+                    String.format("expected illegal hashed value '%s'", value),
+                    isLegalHashedValue(value),
+                    is(false));
+              });
     }
   }
 

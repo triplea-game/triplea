@@ -35,9 +35,7 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.ui.UiContext;
 
-/**
- * Shows the history as a tree.
- */
+/** Shows the history as a tree. */
 public class HistoryPanel extends JPanel {
   private static final long serialVersionUID = -8353246449552215276L;
   private final GameData data;
@@ -46,30 +44,34 @@ public class HistoryPanel extends JPanel {
   private HistoryNode currentPopupNode;
   private final JPopupMenu popup;
 
-  public HistoryPanel(final GameData data, final HistoryDetailsPanel details, final JPopupMenu popup,
+  public HistoryPanel(
+      final GameData data,
+      final HistoryDetailsPanel details,
+      final JPopupMenu popup,
       final UiContext uiContext) {
     mouseOverPanel = false;
     mouseWasOverPanel = false;
-    final MouseListener mouseFocusListener = new MouseListener() {
-      @Override
-      public void mouseReleased(final MouseEvent e) {}
+    final MouseListener mouseFocusListener =
+        new MouseListener() {
+          @Override
+          public void mouseReleased(final MouseEvent e) {}
 
-      @Override
-      public void mousePressed(final MouseEvent e) {}
+          @Override
+          public void mousePressed(final MouseEvent e) {}
 
-      @Override
-      public void mouseClicked(final MouseEvent e) {}
+          @Override
+          public void mouseClicked(final MouseEvent e) {}
 
-      @Override
-      public void mouseExited(final MouseEvent e) {
-        mouseOverPanel = false;
-      }
+          @Override
+          public void mouseExited(final MouseEvent e) {
+            mouseOverPanel = false;
+          }
 
-      @Override
-      public void mouseEntered(final MouseEvent e) {
-        mouseOverPanel = true;
-      }
-    };
+          @Override
+          public void mouseEntered(final MouseEvent e) {
+            mouseOverPanel = true;
+          }
+        };
     addMouseListener(mouseFocusListener);
     this.data = data;
     this.details = details;
@@ -82,18 +84,19 @@ public class HistoryPanel extends JPanel {
     tree.expandRow(0);
     this.popup = popup;
     tree.add(this.popup);
-    this.popup.addPopupMenuListener(new PopupMenuListener() {
-      @Override
-      public void popupMenuCanceled(final PopupMenuEvent pme) {
-        currentPopupNode = null;
-      }
+    this.popup.addPopupMenuListener(
+        new PopupMenuListener() {
+          @Override
+          public void popupMenuCanceled(final PopupMenuEvent pme) {
+            currentPopupNode = null;
+          }
 
-      @Override
-      public void popupMenuWillBecomeInvisible(final PopupMenuEvent pme) {}
+          @Override
+          public void popupMenuWillBecomeInvisible(final PopupMenuEvent pme) {}
 
-      @Override
-      public void popupMenuWillBecomeVisible(final PopupMenuEvent pme) {}
-    });
+          @Override
+          public void popupMenuWillBecomeVisible(final PopupMenuEvent pme) {}
+        });
     final HistoryTreeCellRenderer renderer = new HistoryTreeCellRenderer(uiContext);
     renderer.setLeafIcon(null);
     renderer.setClosedIcon(null);
@@ -123,51 +126,81 @@ public class HistoryPanel extends JPanel {
     nextButton.addActionListener(e -> next());
     final JPanel buttons = new JPanel();
     buttons.setLayout(new GridBagLayout());
-    buttons.add(previousButton, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.WEST,
-        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    buttons.add(nextButton, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-        new Insets(0, 0, 0, 0), 0, 0));
+    buttons.add(
+        previousButton,
+        new GridBagConstraints(
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            GridBagConstraints.WEST,
+            GridBagConstraints.BOTH,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    buttons.add(
+        nextButton,
+        new GridBagConstraints(
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            GridBagConstraints.WEST,
+            GridBagConstraints.BOTH,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
     add(buttons, BorderLayout.SOUTH);
-    tree.addMouseListener(new MouseListener() {
-      @Override
-      public void mouseClicked(final MouseEvent me) {
-        if (SwingUtilities.isRightMouseButton(me)) {
-          currentPopupNode =
-              (HistoryNode) tree.getClosestPathForLocation(me.getX(), me.getY()).getLastPathComponent();
-          HistoryPanel.this.popup.show(me.getComponent(), me.getX(), me.getY());
-        } else if (mouseWasOverPanel) {
-          final TreePath clickedPath = new TreePath(
-              ((HistoryNode) tree.getClosestPathForLocation(me.getX(), me.getY()).getLastPathComponent()).getPath());
-          adaptStayExpandedPathsOnClickedPath(clickedPath);
-        }
-      }
+    tree.addMouseListener(
+        new MouseListener() {
+          @Override
+          public void mouseClicked(final MouseEvent me) {
+            if (SwingUtilities.isRightMouseButton(me)) {
+              currentPopupNode =
+                  (HistoryNode)
+                      tree.getClosestPathForLocation(me.getX(), me.getY()).getLastPathComponent();
+              HistoryPanel.this.popup.show(me.getComponent(), me.getX(), me.getY());
+            } else if (mouseWasOverPanel) {
+              final TreePath clickedPath =
+                  new TreePath(
+                      ((HistoryNode)
+                              tree.getClosestPathForLocation(me.getX(), me.getY())
+                                  .getLastPathComponent())
+                          .getPath());
+              adaptStayExpandedPathsOnClickedPath(clickedPath);
+            }
+          }
 
-      private void adaptStayExpandedPathsOnClickedPath(final TreePath clickedPath) {
-        if (stayExpandedPaths.contains(clickedPath)) {
-          stayExpandedPaths.remove(clickedPath);
-          tree.collapsePath(clickedPath);
-        } else {
-          stayExpandedPaths.add(clickedPath);
-          tree.expandPath(clickedPath);
-        }
-      }
+          private void adaptStayExpandedPathsOnClickedPath(final TreePath clickedPath) {
+            if (stayExpandedPaths.contains(clickedPath)) {
+              stayExpandedPaths.remove(clickedPath);
+              tree.collapsePath(clickedPath);
+            } else {
+              stayExpandedPaths.add(clickedPath);
+              tree.expandPath(clickedPath);
+            }
+          }
 
-      @Override
-      public void mouseEntered(final MouseEvent me) {
-        mouseOverPanel = true;
-      }
+          @Override
+          public void mouseEntered(final MouseEvent me) {
+            mouseOverPanel = true;
+          }
 
-      @Override
-      public void mouseExited(final MouseEvent me) {
-        mouseOverPanel = false;
-      }
+          @Override
+          public void mouseExited(final MouseEvent me) {
+            mouseOverPanel = false;
+          }
 
-      @Override
-      public void mousePressed(final MouseEvent me) {}
+          @Override
+          public void mousePressed(final MouseEvent me) {}
 
-      @Override
-      public void mouseReleased(final MouseEvent me) {}
-    });
+          @Override
+          public void mouseReleased(final MouseEvent me) {}
+        });
     tree.addTreeSelectionListener(this::treeSelectionChanged);
   }
 
@@ -222,7 +255,8 @@ public class HistoryPanel extends JPanel {
     final TreePath path = tree.getSelectionPath();
     final TreeNode selected = (TreeNode) path.getLastPathComponent();
     @SuppressWarnings("unchecked")
-    final Enumeration<TreeNode> nodeEnum = ((DefaultMutableTreeNode) tree.getModel().getRoot()).preorderEnumeration();
+    final Enumeration<TreeNode> nodeEnum =
+        ((DefaultMutableTreeNode) tree.getModel().getRoot()).preorderEnumeration();
     TreeNode next = null;
     boolean foundSelected = false;
     while (nodeEnum.hasMoreElements()) {
@@ -290,13 +324,15 @@ public class HistoryPanel extends JPanel {
   }
 
   /**
-   * collapses parents of last path if it is not in the list of expanded path until the new path is a descendant.
+   * collapses parents of last path if it is not in the list of expanded path until the new path is
+   * a descendant.
    *
    * @param newPath new path
    */
   private void collapseUpFromLastParent(final TreePath newPath) {
     TreePath currentParent = lastParent;
-    while (currentParent != null && !currentParent.isDescendant(newPath)
+    while (currentParent != null
+        && !currentParent.isDescendant(newPath)
         && !stayExpandedContainsDescendantOf(currentParent)) {
       tree.collapsePath(currentParent);
       currentParent = currentParent.getParentPath();
@@ -350,9 +386,7 @@ public class HistoryPanel extends JPanel {
     }
   }
 
-  /**
-   * Selects the most recent history node, expanding the tree if necessary.
-   */
+  /** Selects the most recent history node, expanding the tree if necessary. */
   public void goToEnd() {
     final HistoryNode last;
     try {
@@ -405,8 +439,14 @@ public class HistoryPanel extends JPanel {
     }
 
     @Override
-    public Component getTreeCellRendererComponent(final JTree tree, final Object value, final boolean sel,
-        final boolean expanded, final boolean leaf, final int row, final boolean haveFocus) {
+    public Component getTreeCellRendererComponent(
+        final JTree tree,
+        final Object value,
+        final boolean sel,
+        final boolean expanded,
+        final boolean leaf,
+        final int row,
+        final boolean haveFocus) {
       if (value instanceof Step) {
         final PlayerId player = ((Step) value).getPlayerId();
         if (player != null) {

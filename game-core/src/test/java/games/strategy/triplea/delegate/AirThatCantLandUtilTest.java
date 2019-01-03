@@ -38,8 +38,10 @@ public class AirThatCantLandUtilTest {
     return MockDelegateBridge.newInstance(gameData, player);
   }
 
-  private static String fight(final BattleDelegate battle, final Territory territory, final boolean bombing) {
-    for (final Entry<BattleType, Collection<Territory>> entry : battle.getBattles().getBattles().entrySet()) {
+  private static String fight(
+      final BattleDelegate battle, final Territory territory, final boolean bombing) {
+    for (final Entry<BattleType, Collection<Territory>> entry :
+        battle.getBattles().getBattles().entrySet()) {
       if (entry.getKey().isBombingRun() == bombing) {
         if (entry.getValue().contains(territory)) {
           return battle.fightBattle(territory, bombing, entry.getKey());
@@ -47,7 +49,10 @@ public class AirThatCantLandUtilTest {
       }
     }
     throw new IllegalStateException(
-        "Could not find " + (bombing ? "bombing" : "normal") + " battle in: " + territory.getName());
+        "Could not find "
+            + (bombing ? "bombing" : "normal")
+            + " battle in: "
+            + territory.getName());
   }
 
   @Test
@@ -67,7 +72,8 @@ public class AirThatCantLandUtilTest {
     final Change addAir = ChangeFactory.addUnits(balkans, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
-    final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
+    final Collection<Territory> cantLand =
+        airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
     assertEquals(balkans, cantLand.iterator().next());
     airThatCantLandUtil.removeAirThatCantLand(player, false);
@@ -83,7 +89,8 @@ public class AirThatCantLandUtilTest {
     final Change addAir = ChangeFactory.addUnits(sz55, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
-    final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
+    final Collection<Territory> cantLand =
+        airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
     assertEquals(sz55, cantLand.iterator().next());
     airThatCantLandUtil.removeAirThatCantLand(player, false);
@@ -111,7 +118,8 @@ public class AirThatCantLandUtilTest {
     final Change addAir = ChangeFactory.addUnits(sz52, fighterType.create(2, player));
     gameData.performChange(addAir);
     final AirThatCantLandUtil airThatCantLandUtil = new AirThatCantLandUtil(bridge);
-    final Collection<Territory> cantLand = airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
+    final Collection<Territory> cantLand =
+        airThatCantLandUtil.getTerritoriesWhereAirCantLand(player);
     assertEquals(1, cantLand.size());
     assertEquals(sz52, cantLand.iterator().next());
     airThatCantLandUtil.removeAirThatCantLand(player, false);
@@ -205,9 +213,7 @@ public class AirThatCantLandUtilTest {
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
-    whenGetRandom(bridge)
-        .thenAnswer(withValues(0, 0))
-        .thenAnswer(withValues(0, 0, 0));
+    whenGetRandom(bridge).thenAnswer(withValues(0, 0)).thenAnswer(withValues(0, 0, 0));
     battle.start();
     battle.end();
     // Get the total number of units that should be left after the planes retreat
@@ -300,15 +306,14 @@ public class AirThatCantLandUtilTest {
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz11.getUnits().getUnits(), gameData.getMap().getRoute(sz11, sz9));
-    moveDelegate.move(sz9.getUnits().getUnits(infantryType, 1), gameData.getMap().getRoute(sz9, eastCanada));
+    moveDelegate.move(
+        sz9.getUnits().getUnits(infantryType, 1), gameData.getMap().getRoute(sz9, eastCanada));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
-    whenGetRandom(bridge)
-        .thenAnswer(withValues(0))
-        .thenAnswer(withValues(0, 0));
+    whenGetRandom(bridge).thenAnswer(withValues(0)).thenAnswer(withValues(0, 0));
     fight(battle, sz9, false);
     battle.end();
     // Get the total number of units that should be left after the planes retreat

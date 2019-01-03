@@ -22,7 +22,8 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
   private boolean gameDataFullyLoaded = false;
   private final String gameNameAndMapNameProperty;
 
-  DefaultGameChooserEntry(final URI uri) throws IOException, GameParseException, EngineVersionException {
+  DefaultGameChooserEntry(final URI uri)
+      throws IOException, GameParseException, EngineVersionException {
     url = uri;
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
@@ -40,7 +41,8 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
 
   @Override
   public GameData fullyParseGameData() throws GameParseException {
-    // TODO: We should be setting this in the the constructor. At this point, you have to call methods in the
+    // TODO: We should be setting this in the the constructor. At this point, you have to call
+    // methods in the
     // correct order for things to work, and that is bads.
     gameData = null;
 
@@ -75,7 +77,8 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     return gameData.getGameName();
   }
 
-  // the user may have selected a map skin instead of this map folder, so don't use this for anything except our
+  // the user may have selected a map skin instead of this map folder, so don't use this for
+  // anything except our
   // equals/hashcode below
   private String getMapNameProperty() {
     final String mapName = (String) gameData.getProperties().get(Constants.MAP_NAME);
@@ -122,7 +125,8 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     if (gameData == null && other.gameData != null) {
       return false;
     }
-    return other.gameData != null && this.gameNameAndMapNameProperty.equals(other.gameNameAndMapNameProperty);
+    return other.gameData != null
+        && this.gameNameAndMapNameProperty.equals(other.gameNameAndMapNameProperty);
   }
 
   @Override

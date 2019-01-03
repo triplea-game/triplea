@@ -64,7 +64,8 @@ public class AbstractConditionsAttachmentTest {
     assertThrows(GameParseException.class, () -> instance.setConditionType("-9"));
     assertThrows(GameParseException.class, () -> instance.setConditionType("-0"));
     assertThrows(GameParseException.class, () -> instance.setConditionType("0-0"));
-    assertThrows(GameParseException.class, () -> instance.setConditionType("1234567890-0987654321"));
+    assertThrows(
+        GameParseException.class, () -> instance.setConditionType("1234567890-0987654321"));
     assertThrows(GameParseException.class, () -> instance.setConditionType("-1-0"));
     assertThrows(GameParseException.class, () -> instance.setConditionType("1--0"));
   }

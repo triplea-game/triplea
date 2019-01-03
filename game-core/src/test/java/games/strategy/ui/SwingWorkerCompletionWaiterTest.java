@@ -17,8 +17,7 @@ public final class SwingWorkerCompletionWaiterTest {
 
   private SwingWorkerCompletionWaiter waiter;
 
-  @Mock
-  private SwingWorkerCompletionWaiter.ProgressWindow progressWindow;
+  @Mock private SwingWorkerCompletionWaiter.ProgressWindow progressWindow;
 
   @BeforeEach
   public void setUp() {
@@ -41,7 +40,10 @@ public final class SwingWorkerCompletionWaiterTest {
 
   private static PropertyChangeEvent newSwingWorkerStateEvent(
       final SwingWorker.StateValue stateValue) {
-    return new PropertyChangeEvent(new Object(), SwingWorkerCompletionWaiter.SWING_WORKER_STATE_PROPERTY_NAME, null,
+    return new PropertyChangeEvent(
+        new Object(),
+        SwingWorkerCompletionWaiter.SWING_WORKER_STATE_PROPERTY_NAME,
+        null,
         stateValue);
   }
 }

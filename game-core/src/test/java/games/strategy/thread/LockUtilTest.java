@@ -23,8 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public final class LockUtilTest {
   private final LockUtil lockUtil = LockUtil.INSTANCE;
 
-  @Mock
-  private LockUtil.ErrorReporter errorReporter;
+  @Mock private LockUtil.ErrorReporter errorReporter;
 
   private LockUtil.ErrorReporter oldErrorReporter;
 

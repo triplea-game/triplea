@@ -27,12 +27,9 @@ final class EngineVersionCheckTest {
   @Nested
   final class IsEngineUpdateCheckRequiredTest {
     private final LocalDate now = LocalDate.of(2008, 6, 1);
-    @Mock
-    private GameSetting<Boolean> firstRunSetting;
-    @Mock
-    private GameSetting<String> updateCheckDateSetting;
-    @Mock
-    private Runnable flushSetting;
+    @Mock private GameSetting<Boolean> firstRunSetting;
+    @Mock private GameSetting<String> updateCheckDateSetting;
+    @Mock private Runnable flushSetting;
 
     private void givenFirstRun() {
       when(firstRunSetting.getValueOrThrow()).thenReturn(true);
@@ -46,13 +43,15 @@ final class EngineVersionCheckTest {
       when(updateCheckDateSetting.getValue()).thenReturn(Optional.empty());
     }
 
-    private void givenEngineUpdateCheckLastRunRelativeToNow(final long amountToAdd, final TemporalUnit unit) {
+    private void givenEngineUpdateCheckLastRunRelativeToNow(
+        final long amountToAdd, final TemporalUnit unit) {
       when(updateCheckDateSetting.getValue())
           .thenReturn(Optional.of(formatUpdateCheckDate(now.plus(amountToAdd, unit))));
     }
 
     private boolean whenIsEngineUpdateCheckRequired() {
-      return EngineVersionCheck.isEngineUpdateCheckRequired(now, firstRunSetting, updateCheckDateSetting, flushSetting);
+      return EngineVersionCheck.isEngineUpdateCheckRequired(
+          now, firstRunSetting, updateCheckDateSetting, flushSetting);
     }
 
     @Test

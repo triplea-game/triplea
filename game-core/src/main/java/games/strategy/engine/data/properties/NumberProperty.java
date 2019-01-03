@@ -4,9 +4,7 @@ import javax.swing.JComponent;
 
 import games.strategy.ui.IntTextField;
 
-/**
- * Implementation of {@link IEditableProperty} for an integer value.
- */
+/** Implementation of {@link IEditableProperty} for an integer value. */
 public class NumberProperty extends AbstractEditableProperty<Integer> {
   private static final long serialVersionUID = 6826763550643504789L;
 
@@ -20,7 +18,8 @@ public class NumberProperty extends AbstractEditableProperty<Integer> {
 
   private int value;
 
-  public NumberProperty(final String name, final String description, final int max, final int min, final int def) {
+  public NumberProperty(
+      final String name, final String description, final int max, final int min, final int def) {
     super(name, description);
     if (max < min) {
       throw new IllegalThreadStateException("Max must be greater than min");

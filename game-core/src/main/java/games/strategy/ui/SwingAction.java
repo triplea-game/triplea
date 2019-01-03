@@ -21,9 +21,7 @@ import com.google.common.base.Throwables;
 /**
  * Builder class for using Lambda expressions to create 'AbstractAction'.
  *
- * <p>
- * For example, instead of:
- * </p>
+ * <p>For example, instead of:
  *
  * <pre>
  *   new AbstractionAction("text") {
@@ -32,9 +30,7 @@ import com.google.common.base.Throwables;
  *   }
  * </pre>
  *
- * <p>
- * You can rewrite the above using 'SwingAction.of(..)':
- * </p>
+ * <p>You can rewrite the above using 'SwingAction.of(..)':
  *
  * <pre>
  * SwingAction.of(e -> doSomething());
@@ -54,7 +50,8 @@ public final class SwingAction {
    * </pre>
    *
    * @param name Name for the abstract action, passed along to the AbstractAction constructor.
-   * @param swingAction Lambda java.tools.function.Consumer object, accepts one arg and returns void.
+   * @param swingAction Lambda java.tools.function.Consumer object, accepts one arg and returns
+   *     void.
    */
   public static Action of(final String name, final ActionListener swingAction) {
     return new AbstractAction(name) {
@@ -77,37 +74,34 @@ public final class SwingAction {
   /**
    * Synchronously executes the specified action on the Swing event dispatch thread.
    *
-   * <p>
-   * This method may safely be called from any thread, including the Swing event dispatch thread.
-   * </p>
+   * <p>This method may safely be called from any thread, including the Swing event dispatch thread.
    *
    * @param action The action to execute.
-   *
    * @throws RuntimeException If the action throws an unchecked exception.
-   * @throws InterruptedException If the current thread is interrupted while waiting for the action to complete.
+   * @throws InterruptedException If the current thread is interrupted while waiting for the action
+   *     to complete.
    */
   public static void invokeAndWait(final Runnable action) throws InterruptedException {
     checkNotNull(action);
 
-    invokeAndWaitResult(() -> {
-      action.run();
-      return null;
-    });
+    invokeAndWaitResult(
+        () -> {
+          action.run();
+          return null;
+        });
   }
 
   /**
-   * Synchronously executes the specified action on the Swing event dispatch thread and returns the value it supplies.
+   * Synchronously executes the specified action on the Swing event dispatch thread and returns the
+   * value it supplies.
    *
-   * <p>
-   * This method may safely be called from any thread, including the Swing event dispatch thread.
-   * </p>
+   * <p>This method may safely be called from any thread, including the Swing event dispatch thread.
    *
    * @param action The action to execute.
-   *
    * @return The value supplied by the action.
-   *
    * @throws RuntimeException If the action throws an unchecked exception.
-   * @throws InterruptedException If the current thread is interrupted while waiting for the action to complete.
+   * @throws InterruptedException If the current thread is interrupted while waiting for the action
+   *     to complete.
    */
   public static <T> T invokeAndWaitResult(final Supplier<T> action) throws InterruptedException {
     checkNotNull(action);
@@ -128,12 +122,10 @@ public final class SwingAction {
   }
 
   /**
-   * Synchronously executes the specified action if called from the Swing event dispatch thread. Otherwise,
-   * asynchronously executes the specified action on the Swing event dispatch thread.
+   * Synchronously executes the specified action if called from the Swing event dispatch thread.
+   * Otherwise, asynchronously executes the specified action on the Swing event dispatch thread.
    *
-   * <p>
-   * This method may safely be called from any thread, including the Swing event dispatch thread.
-   * </p>
+   * <p>This method may safely be called from any thread, including the Swing event dispatch thread.
    *
    * @param action The action to execute.
    */
@@ -150,7 +142,8 @@ public final class SwingAction {
   /**
    * Creates a new KeyListener that is executed on key release event.
    *
-   * @param eventConsumer We will pass a key event to this consumer whenever there is a key released event.
+   * @param eventConsumer We will pass a key event to this consumer whenever there is a key released
+   *     event.
    * @return A Swing KeyListener object, can be attached to swing component objects.
    */
   public static KeyListener keyReleaseListener(final Consumer<KeyEvent> eventConsumer) {

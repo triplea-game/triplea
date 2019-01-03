@@ -23,11 +23,9 @@ import games.strategy.triplea.UrlConstants;
 /**
  * The client side of the lobby authentication protocol.
  *
- * <p>
- * The client is responsible for sending the initial authentication request to the server containing the user's name.
- * The server will send back an authentication challenge. The client then sends a response to the challenge to prove the
- * user knows the correct password.
- * </p>
+ * <p>The client is responsible for sending the initial authentication request to the server
+ * containing the user's name. The server will send back an authentication challenge. The client
+ * then sends a response to the challenge to prove the user knows the correct password.
  */
 public class LobbyLogin {
   private final Window parentWindow;
@@ -41,9 +39,7 @@ public class LobbyLogin {
   /**
    * Attempt to login to the LobbyServer.
    *
-   * <p>
-   * If we could not login, return null.
-   * </p>
+   * <p>If we could not login, return null.
    */
   public @Nullable LobbyClient login() {
     if (!lobbyServerProperties.isServerAvailable()) {
@@ -51,9 +47,11 @@ public class LobbyLogin {
       return null;
     }
     if (lobbyServerProperties.getPort() == -1) {
-      showError("Could not connect to server",
+      showError(
+          "Could not connect to server",
           "<html>Could not find lobby server for this version of TripleA, <br>"
-              + "Please make sure you are using the latest version: " + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
+              + "Please make sure you are using the latest version: "
+              + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
               + "</html>");
       return null;
     }
@@ -62,10 +60,12 @@ public class LobbyLogin {
 
   private @Nullable LobbyClient login(final LoginPanel panel) {
     try {
-      final IMessenger messenger = GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
-          "Connecting to lobby...",
-          () -> login(panel.getUserName(), panel.getPassword(), panel.isAnonymousLogin()),
-          IOException.class);
+      final IMessenger messenger =
+          GameRunner.newBackgroundTaskRunner()
+              .runInBackgroundAndReturn(
+                  "Connecting to lobby...",
+                  () -> login(panel.getUserName(), panel.getPassword(), panel.isAnonymousLogin()),
+                  IOException.class);
       panel.getLobbyLoginPreferences().save();
       return new LobbyClient(messenger, panel.isAnonymousLogin());
     } catch (final CouldNotLogInException e) {
@@ -80,7 +80,8 @@ public class LobbyLogin {
     }
   }
 
-  private IMessenger login(final String userName, final String password, final boolean anonymousLogin)
+  private IMessenger login(
+      final String userName, final String password, final boolean anonymousLogin)
       throws IOException {
     return new ClientMessenger(
         lobbyServerProperties.getHost(),
@@ -94,7 +95,8 @@ public class LobbyLogin {
           } else {
             response.putAll(RsaAuthenticator.newResponse(challenge, password));
           }
-          response.put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+          response.put(
+              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
           return response;
         });
   }
@@ -138,10 +140,12 @@ public class LobbyLogin {
 
   private @Nullable LobbyClient createAccount(final CreateUpdateAccountPanel panel) {
     try {
-      final IMessenger messenger = GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
-          "Connecting to lobby...",
-          () -> createAccount(panel.getUserName(), panel.getPassword(), panel.getEmail()),
-          IOException.class);
+      final IMessenger messenger =
+          GameRunner.newBackgroundTaskRunner()
+              .runInBackgroundAndReturn(
+                  "Connecting to lobby...",
+                  () -> createAccount(panel.getUserName(), panel.getPassword(), panel.getEmail()),
+                  IOException.class);
       panel.getLobbyLoginPreferences().save();
       return new LobbyClient(messenger, false);
     } catch (final CouldNotLogInException e) {
@@ -168,7 +172,8 @@ public class LobbyLogin {
           response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
           response.put(LobbyLoginResponseKeys.EMAIL, email);
           response.putAll(RsaAuthenticator.newResponse(challenge, password));
-          response.put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+          response.put(
+              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
           return response;
         });
   }

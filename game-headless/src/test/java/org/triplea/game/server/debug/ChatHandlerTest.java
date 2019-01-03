@@ -23,8 +23,7 @@ final class ChatHandlerTest {
   @Nested
   final class PublishTest {
     private final ChatHandler chatHandler = new ChatHandler();
-    @Mock
-    private Consumer<String> sendChatMessage;
+    @Mock private Consumer<String> sendChatMessage;
 
     private LogRecord newLoggableLogRecord() {
       return new LogRecord(Level.WARNING, "message");
@@ -63,10 +62,13 @@ final class ChatHandlerTest {
 
     @Test
     void shouldNotSendChatMessageWhenRecordIsLoggableAndCallIsReentrant() {
-      doAnswer(invocation -> {
-        publish(newLoggableLogRecord());
-        return null;
-      }).when(sendChatMessage).accept(anyString());
+      doAnswer(
+              invocation -> {
+                publish(newLoggableLogRecord());
+                return null;
+              })
+          .when(sendChatMessage)
+          .accept(anyString());
 
       publish(newLoggableLogRecord());
 

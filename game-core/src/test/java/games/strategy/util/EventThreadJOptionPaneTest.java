@@ -23,77 +23,95 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public final class EventThreadJOptionPaneTest {
   private static final Duration timeout = Duration.ofSeconds(5);
 
-  @Spy
-  private final CountDownLatchHandler latchHandler = new CountDownLatchHandler();
+  @Spy private final CountDownLatchHandler latchHandler = new CountDownLatchHandler();
 
   @Test
   public void testShouldRunSupplierOnEventDispatchThreadWhenNotCalledFromEventDispatchThread() {
-    assertTimeoutPreemptively(timeout, () -> {
-      final CountDownLatch latch = new CountDownLatch(1);
-      final AtomicBoolean runOnEventDispatchThread = new AtomicBoolean(false);
+    assertTimeoutPreemptively(
+        timeout,
+        () -> {
+          final CountDownLatch latch = new CountDownLatch(1);
+          final AtomicBoolean runOnEventDispatchThread = new AtomicBoolean(false);
 
-      new Thread(() -> {
-        EventThreadJOptionPane.invokeAndWait(latchHandler, () -> {
-          runOnEventDispatchThread.set(SwingUtilities.isEventDispatchThread());
-          return Optional.empty();
+          new Thread(
+                  () -> {
+                    EventThreadJOptionPane.invokeAndWait(
+                        latchHandler,
+                        () -> {
+                          runOnEventDispatchThread.set(SwingUtilities.isEventDispatchThread());
+                          return Optional.empty();
+                        });
+                    latch.countDown();
+                  })
+              .start();
+          latch.await();
+
+          assertThat(runOnEventDispatchThread.get(), is(true));
         });
-        latch.countDown();
-      }).start();
-      latch.await();
-
-      assertThat(runOnEventDispatchThread.get(), is(true));
-    });
   }
 
   @Test
   public void testShouldNotDeadlockWhenCalledFromEventDispatchThread() {
-    assertTimeoutPreemptively(timeout, () -> {
-      final CountDownLatch latch = new CountDownLatch(1);
-      final AtomicBoolean run = new AtomicBoolean(false);
+    assertTimeoutPreemptively(
+        timeout,
+        () -> {
+          final CountDownLatch latch = new CountDownLatch(1);
+          final AtomicBoolean run = new AtomicBoolean(false);
 
-      SwingUtilities.invokeLater(() -> {
-        EventThreadJOptionPane.invokeAndWait(latchHandler, () -> {
-          run.set(true);
-          return Optional.empty();
+          SwingUtilities.invokeLater(
+              () -> {
+                EventThreadJOptionPane.invokeAndWait(
+                    latchHandler,
+                    () -> {
+                      run.set(true);
+                      return Optional.empty();
+                    });
+                latch.countDown();
+              });
+          latch.await();
+
+          assertThat(run.get(), is(true));
         });
-        latch.countDown();
-      });
-      latch.await();
-
-      assertThat(run.get(), is(true));
-    });
   }
 
   @Test
   public void testShouldReturnSupplierResult() {
-    assertTimeoutPreemptively(timeout, () -> {
-      final Object expectedResult = new Object();
+    assertTimeoutPreemptively(
+        timeout,
+        () -> {
+          final Object expectedResult = new Object();
 
-      final Object actualResult =
-          EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.of(expectedResult)).get();
+          final Object actualResult =
+              EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.of(expectedResult))
+                  .get();
 
-      assertThat(actualResult, is(expectedResult));
-    });
+          assertThat(actualResult, is(expectedResult));
+        });
   }
 
   @Test
   public void testShouldRegisterAndUnregisterLatchWithLatchHandler() {
-    assertTimeoutPreemptively(timeout, () -> {
-      EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.empty());
+    assertTimeoutPreemptively(
+        timeout,
+        () -> {
+          EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.empty());
 
-      verify(latchHandler, times(1)).addShutdownLatch(any(CountDownLatch.class));
-      verify(latchHandler, times(1)).removeShutdownLatch(any(CountDownLatch.class));
-    });
+          verify(latchHandler, times(1)).addShutdownLatch(any(CountDownLatch.class));
+          verify(latchHandler, times(1)).removeShutdownLatch(any(CountDownLatch.class));
+        });
   }
 
   @Test
   public void testShouldReturnIntSupplierResult() {
-    assertTimeoutPreemptively(timeout, () -> {
-      final int expectedResult = 42;
+    assertTimeoutPreemptively(
+        timeout,
+        () -> {
+          final int expectedResult = 42;
 
-      final int actualResult = EventThreadJOptionPane.invokeAndWait(latchHandler, () -> expectedResult);
+          final int actualResult =
+              EventThreadJOptionPane.invokeAndWait(latchHandler, () -> expectedResult);
 
-      assertThat(actualResult, is(expectedResult));
-    });
+          assertThat(actualResult, is(expectedResult));
+        });
   }
 }

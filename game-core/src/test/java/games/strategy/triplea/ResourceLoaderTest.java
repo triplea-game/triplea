@@ -43,7 +43,8 @@ final class ResourceLoaderTest {
     @Test
     void shouldIncludeGithubNameThenMap() {
       final List<File> candidates = ResourceLoader.getMapDirectoryCandidates("MapName");
-      assertThat(candidates, containsDirectoryEndingWith("map_name-master" + File.separator + "map"));
+      assertThat(
+          candidates, containsDirectoryEndingWith("map_name-master" + File.separator + "map"));
     }
 
     @Test
@@ -80,18 +81,22 @@ final class ResourceLoaderTest {
   private static Matcher<Iterable<File>> containsDirectoryEndingWith(final String name) {
     return CustomMatcher.<Iterable<File>>builder()
         .description("iterable with directory ending with: " + name)
-        .checkCondition(files -> StreamSupport.stream(files.spliterator(), false)
-            .map(File::getPath)
-            .anyMatch(p -> p.endsWith(name)))
+        .checkCondition(
+            files ->
+                StreamSupport.stream(files.spliterator(), false)
+                    .map(File::getPath)
+                    .anyMatch(p -> p.endsWith(name)))
         .build();
   }
 
   private static Matcher<Iterable<File>> containsFileWithName(final String name) {
     return CustomMatcher.<Iterable<File>>builder()
         .description("iterable containing file with name " + name)
-        .checkCondition(files -> StreamSupport.stream(files.spliterator(), false)
-            .map(File::getName)
-            .anyMatch(name::equals))
+        .checkCondition(
+            files ->
+                StreamSupport.stream(files.spliterator(), false)
+                    .map(File::getName)
+                    .anyMatch(name::equals))
         .build();
   }
 
@@ -129,7 +134,8 @@ final class ResourceLoaderTest {
       final File targetDir = new File(startDir, TARGET_DIR_NAME);
       targetDir.mkdirs();
 
-      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.of(targetDir)));
+      assertThat(
+          ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.of(targetDir)));
     }
 
     @Test
@@ -145,7 +151,8 @@ final class ResourceLoaderTest {
       final File targetDir = new File(startDir.getParentFile(), TARGET_DIR_NAME);
       targetDir.mkdirs();
 
-      assertThat(ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.of(targetDir)));
+      assertThat(
+          ResourceLoader.findDirectory(startDir, TARGET_DIR_NAME), is(Optional.of(targetDir)));
     }
 
     @Test

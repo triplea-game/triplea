@@ -13,13 +13,14 @@ import games.strategy.net.Node;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
-/**
- * Client-side implementation of {@link QuarantineConversation}.
- */
+/** Client-side implementation of {@link QuarantineConversation}. */
 @Log
 public class ClientQuarantineConversation extends QuarantineConversation {
   private enum Step {
-    READ_CHALLENGE, READ_ERROR, READ_NAMES, READ_ADDRESS
+    READ_CHALLENGE,
+    READ_ERROR,
+    READ_NAMES,
+    READ_ADDRESS
   }
 
   private final IConnectionLogin login;
@@ -37,8 +38,12 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   private volatile boolean isClosed = false;
   private volatile String errorMessage;
 
-  public ClientQuarantineConversation(final IConnectionLogin login, final SocketChannel channel, final NioSocket socket,
-      final String localName, final String mac) {
+  public ClientQuarantineConversation(
+      final IConnectionLogin login,
+      final SocketChannel channel,
+      final NioSocket socket,
+      final String localName,
+      final String mac) {
     this.login = login;
     this.localName = localName;
     this.socket = socket;
@@ -61,12 +66,12 @@ public class ClientQuarantineConversation extends QuarantineConversation {
     return serverName;
   }
 
-  /**
-   * Prompts the user to enter their credentials.
-   */
+  /** Prompts the user to enter their credentials. */
   public void showCredentials() {
-    // We need to do this in the thread that created the socket, since the thread that creates the socket will often be,
-    // or will block the swing event thread, but the getting of a username/password must be done in the swing event
+    // We need to do this in the thread that created the socket, since the thread that creates the
+    // socket will often be,
+    // or will block the swing event thread, but the getting of a username/password must be done in
+    // the swing event
     // thread. So we have complex code to switch back and forth.
     Interruptibles.await(showLatch);
 

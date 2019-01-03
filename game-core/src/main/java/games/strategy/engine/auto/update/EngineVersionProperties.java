@@ -43,17 +43,18 @@ class EngineVersionProperties {
     changelogLink = props.getProperty("CHANGELOG", UrlConstants.RELEASE_NOTES.toString());
   }
 
-
   static EngineVersionProperties contactServerForEngineVersionProperties() {
     // sourceforge sometimes takes a long while to return results
     // so run a couple requests in parallel, starting with delays to try and get a response quickly
     final AtomicReference<EngineVersionProperties> ref = new AtomicReference<>();
     final CountDownLatch latch = new CountDownLatch(1);
     for (int i = 0; i < 5; i++) {
-      new Thread(() -> {
-        ref.set(new EngineVersionProperties());
-        latch.countDown();
-      }).start();
+      new Thread(
+              () -> {
+                ref.set(new EngineVersionProperties());
+                latch.countDown();
+              })
+          .start();
       try {
         latch.await(2, TimeUnit.SECONDS);
       } catch (final InterruptedException e) {
@@ -87,11 +88,17 @@ class EngineVersionProperties {
   }
 
   private String getOutOfDateMessage() {
-    return "<html>" + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
-        + "<br />Your current version: " + ClientContext.engineVersion().getExactVersion()
-        + "<br />Latest version available for download: " + getLatestVersionOut()
-        + "<br /><br />Click to download: <a class=\"external\" href=\"" + link
-        + "\">" + link + "</a>"
+    return "<html>"
+        + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
+        + "<br />Your current version: "
+        + ClientContext.engineVersion().getExactVersion()
+        + "<br />Latest version available for download: "
+        + getLatestVersionOut()
+        + "<br /><br />Click to download: <a class=\"external\" href=\""
+        + link
+        + "\">"
+        + link
+        + "</a>"
         + "<br /><br />Please note that installing a new version of TripleA will not remove any old copies of "
         + "TripleA."
         + "<br />So be sure to either manually uninstall all older versions of TripleA, or change your "
@@ -101,8 +108,12 @@ class EngineVersionProperties {
   }
 
   private String getOutOfDateReleaseUpdates() {
-    return "<html><body>" + "Link to full Change Log:<br /><a class=\"external\" href=\"" + changelogLink + "\">"
-        + changelogLink + "</a><br />"
+    return "<html><body>"
+        + "Link to full Change Log:<br /><a class=\"external\" href=\""
+        + changelogLink
+        + "\">"
+        + changelogLink
+        + "</a><br />"
         + "</body></html>";
   }
 
@@ -112,11 +123,12 @@ class EngineVersionProperties {
     intro.setEditable(false);
     intro.setOpaque(false);
     intro.setBorder(BorderFactory.createEmptyBorder());
-    final HyperlinkListener hyperlinkListener = e -> {
-      if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-        OpenFileUtility.openUrl(e.getDescription());
-      }
-    };
+    final HyperlinkListener hyperlinkListener =
+        e -> {
+          if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
+            OpenFileUtility.openUrl(e.getDescription());
+          }
+        };
     intro.addHyperlinkListener(hyperlinkListener);
     panel.add(intro, BorderLayout.NORTH);
     final JEditorPane updates = new JEditorPane("text/html", getOutOfDateReleaseUpdates());

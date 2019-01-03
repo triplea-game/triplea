@@ -11,18 +11,17 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.data.AbstractMoveDescription;
 
-/**
- * Contains all the data to describe an abstract move (move or placement) and to undo it.
- */
+/** Contains all the data to describe an abstract move (move or placement) and to undo it. */
 public abstract class AbstractUndoableMove implements Serializable {
   private static final long serialVersionUID = -3164832285286161069L;
 
   /**
-   * Stores the serialized state of the move and battle delegates (just as if they were saved), and a CompositeChange
-   * that represents all the changes that were made during the move.
-   * Some moves (such as those following an aa fire) can't be undone.
+   * Stores the serialized state of the move and battle delegates (just as if they were saved), and
+   * a CompositeChange that represents all the changes that were made during the move. Some moves
+   * (such as those following an aa fire) can't be undone.
    */
   protected final CompositeChange change;
+
   protected int index;
   protected final Collection<Unit> units;
 
@@ -49,8 +48,11 @@ public abstract class AbstractUndoableMove implements Serializable {
 
   final void undo(final IDelegateBridge delegateBridge) {
     // undo any changes to the game data
-    delegateBridge.getHistoryWriter().startEvent(
-        delegateBridge.getPlayerId().getName() + " undo move " + (getIndex() + 1) + ".", getDescriptionObject());
+    delegateBridge
+        .getHistoryWriter()
+        .startEvent(
+            delegateBridge.getPlayerId().getName() + " undo move " + (getIndex() + 1) + ".",
+            getDescriptionObject());
     delegateBridge.addChange(change.invert());
     undoSpecific(delegateBridge);
   }

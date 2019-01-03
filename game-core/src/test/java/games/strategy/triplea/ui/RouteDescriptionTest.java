@@ -23,8 +23,7 @@ final class RouteDescriptionTest {
     private final Route route = new Route();
     private final Point start = new Point();
     private final Point end = new Point();
-    @Mock
-    private Image image;
+    @Mock private Image image;
 
     @Test
     void shouldReturnFalseWhenOtherIsNotInstanceOfRouteDescription() {

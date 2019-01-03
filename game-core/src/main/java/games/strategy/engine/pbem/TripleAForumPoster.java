@@ -6,9 +6,7 @@ import games.strategy.triplea.help.HelpSupport;
 /**
  * Posts turn summaries to forums.triplea-game.org.
  *
- * <p>
- * URL format is {@code https://forums.triplea-game.org/api/v2/topics/<topicID>}.
- * </p>
+ * <p>URL format is {@code https://forums.triplea-game.org/api/v2/topics/<topicID>}.
  */
 public class TripleAForumPoster extends NodeBbForumPoster {
   private static final long serialVersionUID = -3380344469767981030L;

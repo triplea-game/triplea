@@ -6,8 +6,8 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
 /**
- * A technology advance that allows the player to build two more units than the value of the area at a factory, and it
- * also halves the cost of repairing strategic bombing damage.
+ * A technology advance that allows the player to build two more units than the value of the area at
+ * a factory, and it also halves the cost of repairing strategic bombing damage.
  */
 public final class IncreasedFactoryProductionAdvance extends TechAdvance {
   private static final long serialVersionUID = 987606878563485763L;

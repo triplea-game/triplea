@@ -15,8 +15,10 @@ final class MacFinderTest {
   final class GetHashedMacAddressForBytesTest {
     @Test
     void shouldThrowExceptionWhenMacAddressLengthInvalid() {
-      assertThrows(IllegalArgumentException.class, () -> MacFinder.getHashedMacAddress(new byte[5]));
-      assertThrows(IllegalArgumentException.class, () -> MacFinder.getHashedMacAddress(new byte[7]));
+      assertThrows(
+          IllegalArgumentException.class, () -> MacFinder.getHashedMacAddress(new byte[5]));
+      assertThrows(
+          IllegalArgumentException.class, () -> MacFinder.getHashedMacAddress(new byte[7]));
     }
 
     @Test
@@ -38,11 +40,13 @@ final class MacFinderTest {
     @Test
     void shouldReturnFalseWhenNotValidMd5CryptedValue() {
       Arrays.asList(
-          "$1$MH$ABCDWXYZabcdwxyz0189.",
-          "$1$MH$ABCDWXYZabcdwxyz0189./1",
-          "1$MH$ABCDWXYZabcdwxyz0189./1",
-          "$1$MH$ABCDWXYZabcdwxyz0189._")
-          .forEach(hashedMacAddress -> assertThat(MacFinder.isValidHashedMacAddress(hashedMacAddress), is(false)));
+              "$1$MH$ABCDWXYZabcdwxyz0189.",
+              "$1$MH$ABCDWXYZabcdwxyz0189./1",
+              "1$MH$ABCDWXYZabcdwxyz0189./1",
+              "$1$MH$ABCDWXYZabcdwxyz0189._")
+          .forEach(
+              hashedMacAddress ->
+                  assertThat(MacFinder.isValidHashedMacAddress(hashedMacAddress), is(false)));
     }
 
     @Test
@@ -55,12 +59,15 @@ final class MacFinderTest {
   final class TrimHashedMacAddressPrefixTest {
     @Test
     void shouldReturnHashedMacAddressWithoutPrefixWhenValid() {
-      assertThat(MacFinder.trimHashedMacAddressPrefix("$1$MH$ABCDWXYZabcdwxyz0189./"), is("ABCDWXYZabcdwxyz0189./"));
+      assertThat(
+          MacFinder.trimHashedMacAddressPrefix("$1$MH$ABCDWXYZabcdwxyz0189./"),
+          is("ABCDWXYZabcdwxyz0189./"));
     }
 
     @Test
     void shouldThrowExceptionWhenInvalid() {
-      assertThrows(IllegalArgumentException.class, () -> MacFinder.trimHashedMacAddressPrefix("invalid"));
+      assertThrows(
+          IllegalArgumentException.class, () -> MacFinder.trimHashedMacAddressPrefix("invalid"));
     }
   }
 }

@@ -10,9 +10,8 @@ import lombok.extern.java.Log;
 /**
  * A packet of data being read over the network.
  *
- * <p>
- * A Packet does not correspond to a network packet, rather it is the bytes for 1 serialized java object.
- * </p>
+ * <p>A Packet does not correspond to a network packet, rather it is the bytes for 1 serialized java
+ * object.
  */
 @Log
 class SocketReadData {
@@ -37,9 +36,7 @@ class SocketReadData {
   /**
    * Read data from the channel, returning true if this packet is done.
    *
-   * <p>
-   * If we detect the socket is closed, we will throw an IOExcpetion
-   * </p>
+   * <p>If we detect the socket is closed, we will throw an IOExcpetion
    */
   public boolean read(final SocketChannel channel) throws IOException {
     readCalls++;
@@ -87,10 +84,7 @@ class SocketReadData {
     return channel;
   }
 
-  /**
-   * Get the data as a byte[].
-   * This method can only be called once.
-   */
+  /** Get the data as a byte[]. This method can only be called once. */
   public byte[] getData() {
     final byte[] data = new byte[contentBuffer.capacity()];
     contentBuffer.flip();

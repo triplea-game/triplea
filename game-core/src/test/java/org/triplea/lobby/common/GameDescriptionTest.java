@@ -16,7 +16,8 @@ final class GameDescriptionTest {
     @Test
     void shouldReturnBotSupportEmailWhenBotSupportEmailIsNotEmpty() {
       final String botSupportEmail = "bot@me.com";
-      final GameDescription gameDescription = GameDescription.builder().botSupportEmail(botSupportEmail).build();
+      final GameDescription gameDescription =
+          GameDescription.builder().botSupportEmail(botSupportEmail).build();
 
       assertThat(gameDescription.getBotSupportEmail(), is(Optional.of(botSupportEmail)));
     }
@@ -33,7 +34,8 @@ final class GameDescriptionTest {
   final class IsBotTest {
     @Test
     void shouldReturnTrueWhenBotSupportEmailIsNotEmpty() {
-      final GameDescription gameDescription = GameDescription.builder().botSupportEmail("bot@me.com").build();
+      final GameDescription gameDescription =
+          GameDescription.builder().botSupportEmail("bot@me.com").build();
 
       assertThat(gameDescription.isBot(), is(true));
     }

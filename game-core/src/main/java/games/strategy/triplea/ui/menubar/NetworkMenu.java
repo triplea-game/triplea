@@ -65,7 +65,9 @@ final class NetworkMenu extends JMenu {
   }
 
   private void addSetGamePassword(final InGameLobbyWatcherWrapper watcher) {
-    add(new SetPasswordAction(this, watcher, (ClientLoginValidator) getServerMessenger().getLoginValidator()));
+    add(
+        new SetPasswordAction(
+            this, watcher, (ClientLoginValidator) getServerMessenger().getLoginValidator()));
   }
 
   private void addShowPlayers() {

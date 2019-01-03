@@ -16,15 +16,17 @@ class StatusController implements IStatusController {
 
   StatusController(final Messengers messengers) {
     this.messengers = messengers;
-    ((IServerMessenger) this.messengers.getMessenger()).addConnectionChangeListener(new IConnectionChangeListener() {
-      @Override
-      public void connectionRemoved(final INode to) {
-        StatusController.this.connectionRemoved(to);
-      }
+    ((IServerMessenger) this.messengers.getMessenger())
+        .addConnectionChangeListener(
+            new IConnectionChangeListener() {
+              @Override
+              public void connectionRemoved(final INode to) {
+                StatusController.this.connectionRemoved(to);
+              }
 
-      @Override
-      public void connectionAdded(final INode to) {}
-    });
+              @Override
+              public void connectionAdded(final INode to) {}
+            });
   }
 
   private void connectionRemoved(final INode to) {
@@ -32,7 +34,8 @@ class StatusController implements IStatusController {
       status.remove(to);
     }
     final IStatusChannel channel =
-        (IStatusChannel) messengers.getChannelMessenger().getChannelBroadcaster(IStatusChannel.STATUS_CHANNEL);
+        (IStatusChannel)
+            messengers.getChannelMessenger().getChannelBroadcaster(IStatusChannel.STATUS_CHANNEL);
     channel.statusChanged(to, null);
   }
 
@@ -50,7 +53,8 @@ class StatusController implements IStatusController {
       status.put(node, newStatus);
     }
     final IStatusChannel channel =
-        (IStatusChannel) messengers.getChannelMessenger().getChannelBroadcaster(IStatusChannel.STATUS_CHANNEL);
+        (IStatusChannel)
+            messengers.getChannelMessenger().getChannelBroadcaster(IStatusChannel.STATUS_CHANNEL);
     channel.statusChanged(node, newStatus);
   }
 }

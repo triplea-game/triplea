@@ -9,9 +9,7 @@ import java.util.Set;
 
 import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
-/**
- * A collection of relationships between any two players.
- */
+/** A collection of relationships between any two players. */
 public class RelationshipTracker extends RelationshipInterpreter {
   private static final long serialVersionUID = -4740671761925519069L;
 
@@ -23,20 +21,24 @@ public class RelationshipTracker extends RelationshipInterpreter {
   }
 
   /**
-   * Method for setting a relationship between two players, this should only be called through the Change Factory.
+   * Method for setting a relationship between two players, this should only be called through the
+   * Change Factory.
    *
    * @param p1 Player1 that will get the relationship
    * @param p2 Player2 that will get the relationship
    * @param relationshipType the RelationshipType between those two players that will be set.
    */
-  public void setRelationship(final PlayerId p1, final PlayerId p2, final RelationshipType relationshipType) {
+  public void setRelationship(
+      final PlayerId p1, final PlayerId p2, final RelationshipType relationshipType) {
     relationships.put(new RelatedPlayers(p1, p2), new Relationship(relationshipType));
   }
 
   /**
-   * Method for setting a relationship between two players, this should only be called during the Game Parser.
+   * Method for setting a relationship between two players, this should only be called during the
+   * Game Parser.
    */
-  protected void setRelationship(final PlayerId p1, final PlayerId p2, final RelationshipType r, final int roundValue) {
+  protected void setRelationship(
+      final PlayerId p1, final PlayerId p2, final RelationshipType r, final int roundValue) {
     relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
   }
 
@@ -65,15 +67,16 @@ public class RelationshipTracker extends RelationshipInterpreter {
   }
 
   /**
-   * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two
-   * players.
+   * Convenience method to directly access relationshipTypeAttachment on the relationship that
+   * exists between two players.
    *
    * @param p1 Player 1 in the relationship
    * @param p2 Player 2 in the relationship
-   * @return the current RelationshipTypeAttachment attached to the current relationship that exists between those 2
-   *         players
+   * @return the current RelationshipTypeAttachment attached to the current relationship that exists
+   *     between those 2 players
    */
-  protected RelationshipTypeAttachment getRelationshipTypeAttachment(final PlayerId p1, final PlayerId p2) {
+  protected RelationshipTypeAttachment getRelationshipTypeAttachment(
+      final PlayerId p1, final PlayerId p2) {
     final RelationshipType relation = getRelationshipType(p1, p2);
     return RelationshipTypeAttachment.get(relation);
   }
@@ -90,8 +93,8 @@ public class RelationshipTracker extends RelationshipInterpreter {
   }
 
   /**
-   * This methods will create all relationship of all players with the NullPlayer.
-   * This method should only be called once.
+   * This methods will create all relationship of all players with the NullPlayer. This method
+   * should only be called once.
    */
   protected void setNullPlayerRelations() {
     for (final PlayerId p : getData().getPlayerList().getPlayers()) {
@@ -104,7 +107,10 @@ public class RelationshipTracker extends RelationshipInterpreter {
     return getData().getRelationshipTypeList().getSelfRelation();
   }
 
-  /** convenience method to get the NullRelationshipType (relationship with the Nullplayer) added for readability. */
+  /**
+   * convenience method to get the NullRelationshipType (relationship with the Nullplayer) added for
+   * readability.
+   */
   private RelationshipType getNullRelationshipType() {
     return getData().getRelationshipTypeList().getNullRelation();
   }
@@ -112,11 +118,10 @@ public class RelationshipTracker extends RelationshipInterpreter {
   /**
    * Two players that are related; used in relationships.
    *
-   * <p>
-   * This class overrides {@link #equals(Object)} and {@link #hashCode()} such that the order of the players is not
-   * considered when instances of this class are used as keys in a hash container. For example, if you added an entry
-   * with the key (p1, p2), you can retrieve it with either the key (p1, p2) or (p2, p1).
-   * </p>
+   * <p>This class overrides {@link #equals(Object)} and {@link #hashCode()} such that the order of
+   * the players is not considered when instances of this class are used as keys in a hash
+   * container. For example, if you added an entry with the key (p1, p2), you can retrieve it with
+   * either the key (p1, p2) or (p2, p1).
    */
   public static final class RelatedPlayers implements Serializable {
     private static final long serialVersionUID = 2124258606502106751L;
@@ -150,23 +155,17 @@ public class RelationshipTracker extends RelationshipInterpreter {
     }
   }
 
-  /**
-   * Represents the establishment of a particular type of relationship within the game.
-   */
+  /** Represents the establishment of a particular type of relationship within the game. */
   public class Relationship implements Serializable {
     private static final long serialVersionUID = -6718866176901627180L;
 
-    /**
-     * This should never be called outside of the change factory.
-     */
+    /** This should never be called outside of the change factory. */
     public Relationship(final RelationshipType relationshipType) {
       this.relationshipType = relationshipType;
       this.roundCreated = getData().getSequence().getRound();
     }
 
-    /**
-     * This should never be called outside of the game parser.
-     */
+    /** This should never be called outside of the game parser. */
     public Relationship(final RelationshipType relationshipType, final int roundValue) {
       this.relationshipType = relationshipType;
       this.roundCreated = roundValue;

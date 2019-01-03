@@ -6,9 +6,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.triplea.ui.TripleAFrame;
 
-/**
- * Class to manage log window display.
- */
+/** Class to manage log window display. */
 public class ProLogUi {
   private static ProLogWindow settingsWindow = null;
   private static String currentName = "";

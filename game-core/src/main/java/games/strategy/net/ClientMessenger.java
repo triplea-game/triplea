@@ -30,9 +30,7 @@ import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
-/**
- * Default implementation of {@link IClientMessenger}.
- */
+/** Default implementation of {@link IClientMessenger}. */
 @Log
 public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private INode node;
@@ -46,18 +44,22 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private volatile boolean shutDown = false;
 
   /**
-   * Note, the name parameter passed in here may not match the name of the
-   * ClientMessenger after it has been constructed.
+   * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
+   * has been constructed.
    */
-  public ClientMessenger(final String host, final int port, final String name, final String mac,
-      final IConnectionLogin login) throws IOException {
+  public ClientMessenger(
+      final String host,
+      final int port,
+      final String name,
+      final String mac,
+      final IConnectionLogin login)
+      throws IOException {
     this(host, port, name, mac, new DefaultObjectStreamFactory(), login);
   }
 
-
   /**
-   * Note, the name parameter passed in here may not match the name of the
-   * ClientMessenger after it has been constructed.
+   * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
+   * has been constructed.
    */
   @VisibleForTesting
   public ClientMessenger(final String host, final int port, final String name, final String mac)
@@ -66,11 +68,16 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   /**
-   * Note, the name parameter passed in here may not match the name of the
-   * ClientMessenger after it has been constructed.
+   * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
+   * has been constructed.
    */
-  public ClientMessenger(final String host, final int port, final String name, final String mac,
-      final IObjectStreamFactory streamFact, final IConnectionLogin login)
+  public ClientMessenger(
+      final String host,
+      final int port,
+      final String name,
+      final String mac,
+      final IObjectStreamFactory streamFact,
+      final IConnectionLogin login)
       throws IOException {
     Preconditions.checkNotNull(mac);
     Preconditions.checkArgument(MacFinder.isValidHashedMacAddress(mac), "Not a valid mac: " + mac);
@@ -90,8 +97,10 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
             break;
           }
         } catch (final ConnectException e) {
-          throw new RuntimeException(String.format("Could not connect host: %s, port: %s, name: %s, mac: %s",
-              host, port, name, mac), e);
+          throw new RuntimeException(
+              String.format(
+                  "Could not connect host: %s, port: %s, name: %s, mac: %s", host, port, name, mac),
+              e);
         }
         if (!Interruptibles.sleep(50)) {
           shutDown();
@@ -210,7 +219,8 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public void socketUnqaurantined(final SocketChannel channel, final QuarantineConversation converstaion2) {
+  public void socketUnqaurantined(
+      final SocketChannel channel, final QuarantineConversation converstaion2) {
     final ClientQuarantineConversation conversation = (ClientQuarantineConversation) converstaion2;
     // all ids are based on the socket address of nodes in the network
     // but the address of a node changes depending on who is looking at it

@@ -6,7 +6,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * Superclass for all game data components (i.e. any domain object contained in an instance of {@link GameData}).
+ * Superclass for all game data components (i.e. any domain object contained in an instance of
+ * {@link GameData}).
  */
 public class GameDataComponent implements Serializable {
   private static final long serialVersionUID = -2066504666509851740L;
@@ -31,7 +32,8 @@ public class GameDataComponent implements Serializable {
     stream.writeObject(gameData);
   }
 
-  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+  private void readObject(final ObjectInputStream stream)
+      throws IOException, ClassNotFoundException {
     if (stream instanceof GameObjectInputStream) {
       final GameObjectInputStream in = (GameObjectInputStream) stream;
       gameData = in.getData();

@@ -25,9 +25,7 @@ import games.strategy.util.Tuple;
 /**
  * Superclass for all attachments that trigger an action based on an event.
  *
- * <p>
- * TODO: Merge with {@link TriggerAttachment}, as that is the only subclass.
- * </p>
+ * <p>TODO: Merge with {@link TriggerAttachment}, as that is the only subclass.
  */
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment {
   private static final long serialVersionUID = 5866039180681962697L;
@@ -35,20 +33,23 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";
   public static final String BEFORE = "before";
-  // "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for
+  // "setTrigger" is also a valid setter, and it just calls "setConditions" in
+  // AbstractConditionsAttachment. Kept for
   // backwards compatibility.
   private int uses = -1;
   private boolean usedThisRound = false;
   private String notification = null;
   private List<Tuple<String, String>> when = new ArrayList<>();
 
-  protected AbstractTriggerAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  protected AbstractTriggerAttachment(
+      final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
   /**
-   * Returns a new change that marks all trigger attachments for the specified player has having been used this round.
-   * If any trigger attachment has already been marked as used, it will not be modified.
+   * Returns a new change that marks all trigger attachments for the specified player has having
+   * been used this round. If any trigger attachment has already been marked as used, it will not be
+   * modified.
    */
   public static CompositeChange triggerSetUsedForThisRound(final PlayerId player) {
     final CompositeChange change = new CompositeChange();
@@ -56,7 +57,9 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
       if (ta.getUsedThisRound()) {
         final int currentUses = ta.getUses();
         if (currentUses > 0) {
-          change.add(ChangeFactory.attachmentPropertyChange(ta, Integer.toString(currentUses - 1), "uses"));
+          change.add(
+              ChangeFactory.attachmentPropertyChange(
+                  ta, Integer.toString(currentUses - 1), "uses"));
           change.add(ChangeFactory.attachmentPropertyChange(ta, false, "usedThisRound"));
         }
       }
@@ -121,10 +124,12 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   private void setWhen(final String when) throws GameParseException {
     final String[] s = splitOnColon(when);
     if (s.length != 2) {
-      throw new GameParseException("when must exist in 2 parts: \"before/after:stepName\"." + thisErrorMsg());
+      throw new GameParseException(
+          "when must exist in 2 parts: \"before/after:stepName\"." + thisErrorMsg());
     }
     if (!(s[0].equals(AFTER) || s[0].equals(BEFORE))) {
-      throw new GameParseException("when must start with: " + BEFORE + " or " + AFTER + thisErrorMsg());
+      throw new GameParseException(
+          "when must start with: " + BEFORE + " or " + AFTER + thisErrorMsg());
     }
     this.when.add(Tuple.of(s[0], s[1]));
   }
@@ -158,10 +163,13 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   }
 
   protected void use(final IDelegateBridge bridge) {
-    // instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this
+    // instead of using up a "use" with every action, we will instead use up a "use" if the trigger
+    // is fired during this
     // round
-    // this is in order to let a trigger that contains multiple actions, fire all of them in a single use
-    // we only do this for things that do not have when set. triggers with when set have their uses modified
+    // this is in order to let a trigger that contains multiple actions, fire all of them in a
+    // single use
+    // we only do this for things that do not have when set. triggers with when set have their uses
+    // modified
     // elsewhere.
     if (!usedThisRound && uses > 0 && when.isEmpty()) {
       bridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
@@ -179,25 +187,41 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
       changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, false, false);
       return false;
     }
-    // there is an issue with maps using thousands of chance triggers: they are causing the cypted random source (ie:
+    // there is an issue with maps using thousands of chance triggers: they are causing the cypted
+    // random source (ie:
     // live and pbem games) to lock up or error out
-    // so we need to slow them down a bit, until we come up with a better solution (like aggregating all the chances
+    // so we need to slow them down a bit, until we come up with a better solution (like aggregating
+    // all the chances
     // together, then getting a ton of random numbers at once instead of one at a time)
     Interruptibles.sleep(100);
-    final int rollResult = bridge.getRandom(diceSides, null, DiceType.ENGINE,
-        "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
+    final int rollResult =
+        bridge.getRandom(
+                diceSides,
+                null,
+                DiceType.ENGINE,
+                "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName()))
+            + 1;
     final boolean testChance = rollResult <= hitTarget;
     final String notificationMessage =
-        (testChance ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE) + " (Rolled at " + hitTarget + " out of "
-            + diceSides + " Result: " + rollResult + "  for " + MyFormatter.attachmentNameToText(this.getName()) + ")";
+        (testChance ? TRIGGER_CHANCE_SUCCESSFUL : TRIGGER_CHANCE_FAILURE)
+            + " (Rolled at "
+            + hitTarget
+            + " out of "
+            + diceSides
+            + " Result: "
+            + rollResult
+            + "  for "
+            + MyFormatter.attachmentNameToText(this.getName())
+            + ")";
     bridge.getHistoryWriter().startEvent(notificationMessage);
     changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, testChance, true);
-    ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerId())).reportMessage(notificationMessage,
-        notificationMessage);
+    ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerId()))
+        .reportMessage(notificationMessage, notificationMessage);
     return testChance;
   }
 
-  public static Predicate<TriggerAttachment> isSatisfiedMatch(final Map<ICondition, Boolean> testedConditions) {
+  public static Predicate<TriggerAttachment> isSatisfiedMatch(
+      final Map<ICondition, Boolean> testedConditions) {
     return t -> t.isSatisfied(testedConditions);
   }
 
@@ -207,10 +231,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
    *
    * @param beforeOrAfter can be null, or must be "before" or "after"
    * @param stepName can be null, or must be exact name of a specific stepName
-   * @return true if when and both args are null, and true if all are not null and when matches the args, otherwise
-   *         false
+   * @return true if when and both args are null, and true if all are not null and when matches the
+   *     args, otherwise false
    */
-  public static Predicate<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName) {
+  public static Predicate<TriggerAttachment> whenOrDefaultMatch(
+      final String beforeOrAfter, final String stepName) {
     return t -> {
       if (beforeOrAfter == null && stepName == null && t.getWhen().isEmpty()) {
         return true;
@@ -266,30 +291,26 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("uses",
+        .put(
+            "uses",
             MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setUses,
-                this::getUses,
-                () -> -1))
-        .put("usedThisRound",
+                DefaultAttachment::getInt, this::setUses, this::getUses, () -> -1))
+        .put(
+            "usedThisRound",
             MutableProperty.of(
                 this::setUsedThisRound,
                 this::setUsedThisRound,
                 this::getUsedThisRound,
                 this::resetUsedThisRound))
-        .put("notification",
+        .put(
+            "notification",
             MutableProperty.ofString(
-                this::setNotification,
-                this::getNotification,
-                this::resetNotification))
-        .put("when",
-            MutableProperty.of(
-                this::setWhen,
-                this::setWhen,
-                this::getWhen,
-                this::resetWhen))
-        .put("trigger",
+                this::setNotification, this::getNotification, this::resetNotification))
+        .put(
+            "when",
+            MutableProperty.of(this::setWhen, this::setWhen, this::getWhen, this::resetWhen))
+        .put(
+            "trigger",
             MutableProperty.of(
                 l -> {
                   throw new IllegalStateException("Can't set trigger directly");

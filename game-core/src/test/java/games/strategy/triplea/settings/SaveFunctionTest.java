@@ -33,52 +33,64 @@ final class SaveFunctionTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class SaveSettingsTest {
-    @Mock
-    private SelectionComponent<JComponent> mockSelectionComponent;
-    @Mock
-    private SelectionComponent<JComponent> mockSelectionComponent2;
-    @Mock
-    private GameSetting<String> mockSetting;
+    @Mock private SelectionComponent<JComponent> mockSelectionComponent;
+    @Mock private SelectionComponent<JComponent> mockSelectionComponent2;
+    @Mock private GameSetting<String> mockSetting;
 
     @Test
     void messageOnValidIsInformation() {
       givenValidationResults(true, true);
 
-      final SaveFunction.SaveResult result = SaveFunction.saveSettings(
-          Arrays.asList(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
+      final SaveFunction.SaveResult result =
+          SaveFunction.saveSettings(
+              Arrays.asList(mockSelectionComponent, mockSelectionComponent2),
+              Runnables.doNothing());
 
-      assertThat("There will always be a message back to the user", result.message, is(not(emptyString())));
-      assertThat("All valid, message type should informational", result.dialogType,
+      assertThat(
+          "There will always be a message back to the user",
+          result.message,
+          is(not(emptyString())));
+      assertThat(
+          "All valid, message type should informational",
+          result.dialogType,
           is(JOptionPane.INFORMATION_MESSAGE));
     }
 
     private void givenValidationResults(final boolean first, final boolean second) {
       when(mockSelectionComponent.isValid()).thenReturn(first);
-      whenSelectionComponentSave(mockSelectionComponent, context -> context.setValue(mockSetting, TestData.fakeValue));
+      whenSelectionComponentSave(
+          mockSelectionComponent, context -> context.setValue(mockSetting, TestData.fakeValue));
       if (first) {
         when(mockSetting.getValue()).thenReturn(Optional.empty());
       }
 
       when(mockSelectionComponent2.isValid()).thenReturn(second);
-      whenSelectionComponentSave(mockSelectionComponent2, context -> context.setValue(mockSetting, "abc"));
+      whenSelectionComponentSave(
+          mockSelectionComponent2, context -> context.setValue(mockSetting, "abc"));
     }
 
     private void whenSelectionComponentSave(
         final SelectionComponent<?> selectionComponent,
         final Consumer<SelectionComponent.SaveContext> action) {
-      doAnswer(invocation -> {
-        final SelectionComponent.SaveContext context = (SelectionComponent.SaveContext) invocation.getArgument(0);
-        action.accept(context);
-        return null;
-      }).when(selectionComponent).save(any(SelectionComponent.SaveContext.class));
+      doAnswer(
+              invocation -> {
+                final SelectionComponent.SaveContext context =
+                    (SelectionComponent.SaveContext) invocation.getArgument(0);
+                action.accept(context);
+                return null;
+              })
+          .when(selectionComponent)
+          .save(any(SelectionComponent.SaveContext.class));
     }
 
     @Test
     void messageOnNotValidResultIsWarning() {
       givenValidationResults(false, false);
 
-      final SaveFunction.SaveResult result = SaveFunction.saveSettings(
-          Arrays.asList(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
+      final SaveFunction.SaveResult result =
+          SaveFunction.saveSettings(
+              Arrays.asList(mockSelectionComponent, mockSelectionComponent2),
+              Runnables.doNothing());
 
       assertThat(result.message, is(not(emptyString())));
       assertThat(result.dialogType, is(JOptionPane.WARNING_MESSAGE));
@@ -88,22 +100,28 @@ final class SaveFunctionTest {
     void messageOnMixedResultIsWarning() {
       givenValidationResults(true, false);
 
-      final SaveFunction.SaveResult result = SaveFunction.saveSettings(
-          Arrays.asList(mockSelectionComponent, mockSelectionComponent2), Runnables.doNothing());
+      final SaveFunction.SaveResult result =
+          SaveFunction.saveSettings(
+              Arrays.asList(mockSelectionComponent, mockSelectionComponent2),
+              Runnables.doNothing());
 
       assertThat(result.message, is(not(emptyString())));
-      assertThat("At least one value was not updated, should be warning message type",
-          result.dialogType, is(JOptionPane.WARNING_MESSAGE));
+      assertThat(
+          "At least one value was not updated, should be warning message type",
+          result.dialogType,
+          is(JOptionPane.WARNING_MESSAGE));
     }
 
     @Test
     void valueSavedWhenValid(@Mock final Runnable flushSettingsAction) {
       when(mockSelectionComponent.isValid()).thenReturn(true);
-      whenSelectionComponentSave(mockSelectionComponent, context -> context.setValue(mockSetting, TestData.fakeValue));
+      whenSelectionComponentSave(
+          mockSelectionComponent, context -> context.setValue(mockSetting, TestData.fakeValue));
       when(mockSetting.getValue()).thenReturn(Optional.empty());
       when(mockSelectionComponent2.isValid()).thenReturn(false);
 
-      SaveFunction.saveSettings(Arrays.asList(mockSelectionComponent, mockSelectionComponent2), flushSettingsAction);
+      SaveFunction.saveSettings(
+          Arrays.asList(mockSelectionComponent, mockSelectionComponent2), flushSettingsAction);
 
       verify(flushSettingsAction).run();
       verify(mockSetting).setValue(TestData.fakeValue);
@@ -113,7 +131,8 @@ final class SaveFunctionTest {
     void noSettingsSavedIfAllInvalid(@Mock final Runnable flushSettingsAction) {
       when(mockSelectionComponent.isValid()).thenReturn(false);
 
-      SaveFunction.saveSettings(Collections.singletonList(mockSelectionComponent), flushSettingsAction);
+      SaveFunction.saveSettings(
+          Collections.singletonList(mockSelectionComponent), flushSettingsAction);
 
       verify(flushSettingsAction, never()).run();
     }
@@ -174,12 +193,14 @@ final class SaveFunctionTest {
     final class WhenValueTypeIsCharArray {
       @Test
       void shouldReturnValueWhenInsensitive() {
-        assertThat(toDisplayString(new char[] {'v', 'a', 'l', 'u', 'e'}, null, INSENSITIVE), is("value"));
+        assertThat(
+            toDisplayString(new char[] {'v', 'a', 'l', 'u', 'e'}, null, INSENSITIVE), is("value"));
       }
 
       @Test
       void shouldReturnMaskedValueWhenSenstive() {
-        assertThat(toDisplayString(new char[] {'v', 'a', 'l', 'u', 'e'}, null, SENSITIVE), is("*****"));
+        assertThat(
+            toDisplayString(new char[] {'v', 'a', 'l', 'u', 'e'}, null, SENSITIVE), is("*****"));
       }
     }
 

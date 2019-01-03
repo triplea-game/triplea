@@ -20,9 +20,7 @@ import games.strategy.net.Messengers;
 import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
-/**
- * Default implementation of {@link IChatController}.
- */
+/** Default implementation of {@link IChatController}. */
 @Log
 public class ChatController implements IChatController {
   private static final String CHAT_REMOTE = "_ChatRmt";
@@ -37,19 +35,20 @@ public class ChatController implements IChatController {
   private final String chatChannel;
   private long version;
   private final ScheduledExecutorService pingThread = Executors.newScheduledThreadPool(1);
-  private final IConnectionChangeListener connectionChangeListener = new IConnectionChangeListener() {
-    @Override
-    public void connectionAdded(final INode to) {}
+  private final IConnectionChangeListener connectionChangeListener =
+      new IConnectionChangeListener() {
+        @Override
+        public void connectionAdded(final INode to) {}
 
-    @Override
-    public void connectionRemoved(final INode to) {
-      synchronized (mutex) {
-        if (chatters.keySet().contains(to)) {
-          leaveChatInternal(to);
+        @Override
+        public void connectionRemoved(final INode to) {
+          synchronized (mutex) {
+            if (chatters.keySet().contains(to)) {
+              leaveChatInternal(to);
+            }
+          }
         }
-      }
-    }
-  };
+      };
 
   static RemoteName getChatControlerRemoteName(final String chatName) {
     return new RemoteName(CHAT_REMOTE + chatName, IChatController.class);
@@ -59,8 +58,12 @@ public class ChatController implements IChatController {
     return CHAT_CHANNEL + chatName;
   }
 
-  public ChatController(final String name, final IMessenger messenger, final IRemoteMessenger remoteMessenger,
-      final IChannelMessenger channelMessenger, final Predicate<INode> isModerator) {
+  public ChatController(
+      final String name,
+      final IMessenger messenger,
+      final IRemoteMessenger remoteMessenger,
+      final IChannelMessenger channelMessenger,
+      final Predicate<INode> isModerator) {
     chatName = name;
     this.messenger = messenger;
     this.remoteMessenger = remoteMessenger;
@@ -72,19 +75,31 @@ public class ChatController implements IChatController {
     startPinger();
   }
 
-  public ChatController(final String name, final Messengers messenger, final Predicate<INode> isModerator) {
-    this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger(), isModerator);
+  public ChatController(
+      final String name, final Messengers messenger, final Predicate<INode> isModerator) {
+    this(
+        name,
+        messenger.getMessenger(),
+        messenger.getRemoteMessenger(),
+        messenger.getChannelMessenger(),
+        isModerator);
   }
 
-  @SuppressWarnings("FutureReturnValueIgnored") // false positive; see https://github.com/google/error-prone/issues/883
+  @SuppressWarnings(
+      "FutureReturnValueIgnored") // false positive; see
+                                  // https://github.com/google/error-prone/issues/883
   private void startPinger() {
-    pingThread.scheduleAtFixedRate(() -> {
-      try {
-        getChatBroadcaster().ping();
-      } catch (final Exception e) {
-        log.log(Level.SEVERE, "Error pinging", e);
-      }
-    }, 180, 60, TimeUnit.SECONDS);
+    pingThread.scheduleAtFixedRate(
+        () -> {
+          try {
+            getChatBroadcaster().ping();
+          } catch (final Exception e) {
+            log.log(Level.SEVERE, "Error pinging", e);
+          }
+        },
+        180,
+        60,
+        TimeUnit.SECONDS);
   }
 
   // clean up
@@ -102,7 +117,8 @@ public class ChatController implements IChatController {
   }
 
   private IChatChannel getChatBroadcaster() {
-    return (IChatChannel) channelMessenger.getChannelBroadcaster(new RemoteName(chatChannel, IChatChannel.class));
+    return (IChatChannel)
+        channelMessenger.getChannelBroadcaster(new RemoteName(chatChannel, IChatChannel.class));
   }
 
   // a player has joined

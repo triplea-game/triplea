@@ -5,15 +5,15 @@ import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.message.IChannelMessenger;
 
 /**
- * Has a subset of the historyWriters functionality.
- * Delegates should only have access to these functions.
- * The rest of the history writers functions should only be used by the GameData.
+ * Has a subset of the historyWriters functionality. Delegates should only have access to these
+ * functions. The rest of the history writers functions should only be used by the GameData.
  */
 public class DelegateHistoryWriter implements IDelegateHistoryWriter {
   private final IGameModifiedChannel channel;
 
   public DelegateHistoryWriter(final IChannelMessenger messenger) {
-    channel = (IGameModifiedChannel) messenger.getChannelBroadcaster(IGame.GAME_MODIFICATION_CHANNEL);
+    channel =
+        (IGameModifiedChannel) messenger.getChannelBroadcaster(IGame.GAME_MODIFICATION_CHANNEL);
   }
 
   public DelegateHistoryWriter(final IGameModifiedChannel channel) {

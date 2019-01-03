@@ -21,6 +21,8 @@ public final class DefaultColorsTest {
   public void nextColor_ShouldThrowExceptionWhenNoColorsAvailable() {
     assertThrows(
         NoSuchElementException.class,
-        () -> IntStream.range(0, DefaultColors.COLORS.size() + 1).forEach(i -> defaultColors.nextColor()));
+        () ->
+            IntStream.range(0, DefaultColors.COLORS.size() + 1)
+                .forEach(i -> defaultColors.nextColor()));
   }
 }

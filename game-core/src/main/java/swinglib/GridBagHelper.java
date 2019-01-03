@@ -13,16 +13,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Helper class for GridBag layouts with a fixed number of columns.
- * <br />
- * Instead of adding a GridBagLayout, you can instantiate this helper
- * with your Swing component instead, then add children to the helper.
- * <br />
- * Child components will wrap to the next row as needed.
- * <br />
- * Example usage:
- * </p>
- * <code><pre>
+ * Helper class for GridBag layouts with a fixed number of columns. <br>
+ * Instead of adding a GridBagLayout, you can instantiate this helper with your Swing component
+ * instead, then add children to the helper. <br>
+ * Child components will wrap to the next row as needed. <br>
+ * Example usage: <code><pre>
  * // precondition stuff
  * JPanel panelToHaveGridBag = new JPanel();
  * int columnCount = 2;
@@ -41,7 +36,6 @@ public final class GridBagHelper {
   private final GridBagConstraints constraints;
   private int elementCount = 0;
 
-
   public GridBagHelper(final JComponent parent, final int columns) {
     this.parent = parent;
     parent.setLayout(new GridBagLayout());
@@ -56,10 +50,7 @@ public final class GridBagHelper {
    * @param columnSpan The number of columns to span.
    */
   void add(
-      final Component child,
-      final ColumnSpan columnSpan,
-      final Anchor anchor,
-      final Fill fill) {
+      final Component child, final ColumnSpan columnSpan, final Anchor anchor, final Fill fill) {
     Preconditions.checkNotNull(child);
     Preconditions.checkNotNull(columnSpan);
 
@@ -72,16 +63,15 @@ public final class GridBagHelper {
   }
 
   /**
-   * Adds a child component to the parent component passed in to the GridBagHelper constructor. The child component is
-   * added to the grid bag layout at the next column (left to right), wrapping to the next row when needed.
+   * Adds a child component to the parent component passed in to the GridBagHelper constructor. The
+   * child component is added to the grid bag layout at the next column (left to right), wrapping to
+   * the next row when needed.
    */
   public void add(final Component child) {
     addAll(child);
   }
 
-  /**
-   * Gets the next constraint that would be applied to the next component added.
-   */
+  /** Gets the next constraint that would be applied to the next component added. */
   @VisibleForTesting
   GridBagConstraints nextConstraint() {
     return nextConstraint(Anchor.WEST, Fill.NONE);
@@ -109,7 +99,6 @@ public final class GridBagHelper {
     return constraints;
   }
 
-
   /**
    * Adds many components in one go, a convenience API.
    *
@@ -122,7 +111,6 @@ public final class GridBagHelper {
       elementCount++;
     }
   }
-
 
   /**
    * Type safe 'anchor' values, these are aliases for magic values in {@code GridBagConstraints}.
@@ -139,8 +127,8 @@ public final class GridBagHelper {
   }
 
   /**
-   * Type safe 'Fill' values, these are aliases for magic values in {@code GridBagConstraints}
-   * Fill defines how a component stretches into available space.
+   * Type safe 'Fill' values, these are aliases for magic values in {@code GridBagConstraints} Fill
+   * defines how a component stretches into available space.
    */
   @AllArgsConstructor
   @Getter
@@ -161,7 +149,8 @@ public final class GridBagHelper {
   }
 
   /**
-   * Value class wrapper, represents how many columns a given cell should span in a {@code GridBagLayout}.
+   * Value class wrapper, represents how many columns a given cell should span in a {@code
+   * GridBagLayout}.
    */
   public static class ColumnSpan {
 

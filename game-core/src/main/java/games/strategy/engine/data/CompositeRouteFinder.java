@@ -13,12 +13,12 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 
 /**
- * This class can find composite routes between two territories.
- * Example set of matches: [Friendly Land, score: 1] [Enemy Land, score: 2] [Neutral Land, score = 4]
- * With this example set, an 8 length friendly route is considered equal in score to a 4 length enemy route and a 2
- * length neutral route.
- * This is because the friendly route score is 1/2 of the enemy route score and 1/4 of the neutral route score.
- * Note that you can choose whatever scores you want, and that the matches can mix and match with each other in any way.
+ * This class can find composite routes between two territories. Example set of matches: [Friendly
+ * Land, score: 1] [Enemy Land, score: 2] [Neutral Land, score = 4] With this example set, an 8
+ * length friendly route is considered equal in score to a 4 length enemy route and a 2 length
+ * neutral route. This is because the friendly route score is 1/2 of the enemy route score and 1/4
+ * of the neutral route score. Note that you can choose whatever scores you want, and that the
+ * matches can mix and match with each other in any way.
  */
 public class CompositeRouteFinder {
   private final GameMap map;
@@ -28,7 +28,8 @@ public class CompositeRouteFinder {
    * Initializes a new instance of the CompositeRouteFinder class.
    *
    * @param map - Game map found through &lt;gamedata>.getMap()
-   * @param matches - Set of matches and scores. The lower a match is scored, the more favorable it is.
+   * @param matches - Set of matches and scores. The lower a match is scored, the more favorable it
+   *     is.
    */
   public CompositeRouteFinder(final GameMap map, final Map<Predicate<Territory>, Integer> matches) {
     this.map = map;
@@ -36,13 +37,16 @@ public class CompositeRouteFinder {
   }
 
   Route findRoute(final Territory start, final Territory end) {
-    final Set<Territory> allMatchingTers = new HashSet<>(
-        CollectionUtils.getMatches(map.getTerritories(), t -> matches.keySet().stream().anyMatch(p -> p.test(t))));
+    final Set<Territory> allMatchingTers =
+        new HashSet<>(
+            CollectionUtils.getMatches(
+                map.getTerritories(), t -> matches.keySet().stream().anyMatch(p -> p.test(t))));
     final Map<Territory, Integer> terScoreMap = newScoreMap();
     final Map<Territory, Integer> routeScoreMap = new HashMap<>();
     final Map<Territory, Territory> previous = new HashMap<>();
     List<Territory> routeLeadersToProcess = new ArrayList<>();
-    for (final Territory ter : map.getNeighbors(start, Matches.territoryIsInList(allMatchingTers))) {
+    for (final Territory ter :
+        map.getNeighbors(start, Matches.territoryIsInList(allMatchingTers))) {
       final int routeScore = terScoreMap.get(start) + terScoreMap.get(ter);
       routeScoreMap.put(ter, routeScore);
       routeLeadersToProcess.add(ter);
@@ -52,7 +56,8 @@ public class CompositeRouteFinder {
     while (routeLeadersToProcess.size() > 0) {
       final List<Territory> newLeaders = new ArrayList<>();
       for (final Territory oldLeader : routeLeadersToProcess) {
-        for (final Territory ter : map.getNeighbors(oldLeader, Matches.territoryIsInList(allMatchingTers))) {
+        for (final Territory ter :
+            map.getNeighbors(oldLeader, Matches.territoryIsInList(allMatchingTers))) {
           final int routeScore = routeScoreMap.get(oldLeader) + terScoreMap.get(ter);
           if (routeLeadersToProcess.contains(ter) || ter.equals(start)) {
             continue;
@@ -82,8 +87,8 @@ public class CompositeRouteFinder {
     return assembleRoute(start, end, previous);
   }
 
-  private static Route assembleRoute(final Territory start, final Territory end,
-      final Map<Territory, Territory> previous) {
+  private static Route assembleRoute(
+      final Territory start, final Territory end, final Map<Territory, Territory> previous) {
     final List<Territory> routeTers = new ArrayList<>();
     Territory curTer = end;
     while (previous.containsKey(curTer)) {
@@ -103,9 +108,7 @@ public class CompositeRouteFinder {
     return result;
   }
 
-  /**
-   * Returns the score of the best match that matches this territory.
-   */
+  /** Returns the score of the best match that matches this territory. */
   private int getTerScore(final Territory ter) {
     int bestMatchingScore = Integer.MAX_VALUE;
     for (final Predicate<Territory> match : matches.keySet()) {

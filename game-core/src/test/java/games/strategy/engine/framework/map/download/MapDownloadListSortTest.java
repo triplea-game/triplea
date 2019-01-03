@@ -21,7 +21,12 @@ public class MapDownloadListSortTest {
   private static DownloadFileDescription newDownload(final String mapName, final String url) {
     final String description = "fake";
     final Version version = new Version("1");
-    return new DownloadFileDescription(url, description, mapName, version, DownloadFileDescription.DownloadType.MAP,
+    return new DownloadFileDescription(
+        url,
+        description,
+        mapName,
+        version,
+        DownloadFileDescription.DownloadType.MAP,
         DownloadFileDescription.MapCategory.EXPERIMENTAL);
   }
 
@@ -45,5 +50,4 @@ public class MapDownloadListSortTest {
     final List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertSorted(sorted);
   }
-
 }

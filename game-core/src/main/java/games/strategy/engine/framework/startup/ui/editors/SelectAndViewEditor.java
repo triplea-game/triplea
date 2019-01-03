@@ -24,11 +24,10 @@ import games.strategy.triplea.help.HelpSupport;
 import games.strategy.triplea.ui.JButtonDialog;
 
 /**
- * Allows you put multiple beans in a list and use drop down to select which bean to configure.
- * The bean's editor is displayed below the dropdown.
- * Use <code>setBeans</code> to set the beans edited by this editor, and <code>setSelectedBean</code> to select a
- * specific bean
- * The editor automatically realigns the label of nested editors
+ * Allows you put multiple beans in a list and use drop down to select which bean to configure. The
+ * bean's editor is displayed below the dropdown. Use <code>setBeans</code> to set the beans edited
+ * by this editor, and <code>setSelectedBean</code> to select a specific bean The editor
+ * automatically realigns the label of nested editors
  */
 public class SelectAndViewEditor extends EditorPanel {
   private static final long serialVersionUID = 1580648148539524876L;
@@ -53,21 +52,70 @@ public class SelectAndViewEditor extends EditorPanel {
     helpButton.setFont(new Font(oldFont.getName(), Font.BOLD, oldFont.getSize()));
     view.setLayout(new GridBagLayout());
     selectorLabel = new JLabel(labelTitle + ":");
-    add(selectorLabel, new GridBagConstraints(0, 0, 1, 1, 0d, 0, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.NONE, new Insets(0, 0, 1, 2), 0, 0));
-    add(selector, new GridBagConstraints(1, 0, 1, 1, 1.0, 0, GridBagConstraints.NORTHWEST,
-        GridBagConstraints.HORIZONTAL, new Insets(0, 0, 1, 0), 0, 0));
-    add(helpButton, new GridBagConstraints(2, 0, 1, 1, 0d, 0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE,
-        new Insets(0, 0, 1, 0), 0, 0));
-    add(view, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-        new Insets(0, 0, 0, 0), 0, 0));
+    add(
+        selectorLabel,
+        new GridBagConstraints(
+            0,
+            0,
+            1,
+            1,
+            0d,
+            0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 1, 2),
+            0,
+            0));
+    add(
+        selector,
+        new GridBagConstraints(
+            1,
+            0,
+            1,
+            1,
+            1.0,
+            0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, 1, 0),
+            0,
+            0));
+    add(
+        helpButton,
+        new GridBagConstraints(
+            2,
+            0,
+            1,
+            1,
+            0d,
+            0,
+            GridBagConstraints.NORTHEAST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 1, 0),
+            0,
+            0));
+    add(
+        view,
+        new GridBagConstraints(
+            0,
+            1,
+            3,
+            1,
+            1.0,
+            1.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
     selector.setRenderer(new DisplayNameComboBoxRender());
-    selector.addItemListener(e -> {
-      if (e.getStateChange() == ItemEvent.SELECTED || selector.getSelectedItem() == null) {
-        updateView();
-        fireEditorChanged();
-      }
-    });
+    selector.addItemListener(
+        e -> {
+          if (e.getStateChange() == ItemEvent.SELECTED || selector.getSelectedItem() == null) {
+            updateView();
+            fireEditorChanged();
+          }
+        });
     propertyChangeListener = evt -> fireEditorChanged();
     helpPanel = new JEditorPane();
     helpPanel.setEditable(false);
@@ -81,22 +129,21 @@ public class SelectAndViewEditor extends EditorPanel {
     notesScroll.setViewportView(helpPanel);
     notesScroll.setBorder(null);
     notesScroll.getViewport().setBorder(null);
-    helpButton.addActionListener(e -> {
-      final String helpText;
-      if (getBean() == null) {
-        helpText = HelpSupport.loadHelp(this.defaultHelp);
-      } else {
-        helpText = getBean().getHelpText();
-      }
-      helpPanel.setText(helpText);
-      helpPanel.setCaretPosition(0);
-      JButtonDialog.showDialog(SelectAndViewEditor.this, "Help", notesScroll, "Close");
-    });
+    helpButton.addActionListener(
+        e -> {
+          final String helpText;
+          if (getBean() == null) {
+            helpText = HelpSupport.loadHelp(this.defaultHelp);
+          } else {
+            helpText = getBean().getHelpText();
+          }
+          helpPanel.setText(helpText);
+          helpPanel.setCaretPosition(0);
+          JButtonDialog.showDialog(SelectAndViewEditor.this, "Help", notesScroll, "Close");
+        });
   }
 
-  /**
-   * Updates the view panel below the combo box.
-   */
+  /** Updates the view panel below the combo box. */
   private void updateView() {
     // todo(kg) Have the View use a card layout instead of removing all content
     // remove listeners from old editor, to avoid memory leak
@@ -104,12 +151,25 @@ public class SelectAndViewEditor extends EditorPanel {
       editor.removePropertyChangeListener(propertyChangeListener);
     }
     view.removeAll();
-    editor = Optional.ofNullable((IBean) selector.getSelectedItem()).map(IBean::getEditor).orElse(null);
+    editor =
+        Optional.ofNullable((IBean) selector.getSelectedItem()).map(IBean::getEditor).orElse(null);
     if (editor != null) {
       // register a property change listener so we can re-notify our listeners
       editor.addPropertyChangeListener(propertyChangeListener);
-      view.add(editor, new GridBagConstraints(0, 0, 1, 1, 1.0, 0, GridBagConstraints.NORTHWEST,
-          GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+      view.add(
+          editor,
+          new GridBagConstraints(
+              0,
+              0,
+              1,
+              1,
+              1.0,
+              0,
+              GridBagConstraints.NORTHWEST,
+              GridBagConstraints.HORIZONTAL,
+              new Insets(0, 0, 0, 0),
+              0,
+              0));
       editor.isBeanValid();
     }
     revalidate();
@@ -168,9 +228,8 @@ public class SelectAndViewEditor extends EditorPanel {
   }
 
   /**
-   * Sets the bean on this editor.
-   * If an editor of the same class is found, it is selected an modified to match
-   * If no bean of this type is found, it is added to the list
+   * Sets the bean on this editor. If an editor of the same class is found, it is selected an
+   * modified to match If no bean of this type is found, it is added to the list
    *
    * @param bean the bean
    */
@@ -180,7 +239,8 @@ public class SelectAndViewEditor extends EditorPanel {
     boolean found = false;
     for (int i = 0; i < model.getSize(); i++) {
       final @Nullable IBean candidate = model.getElementAt(i);
-      if (((candidate == null) && (bean == null)) || ((candidate != null) && candidate.isSameType(bean))) {
+      if (((candidate == null) && (bean == null))
+          || ((candidate != null) && candidate.isSameType(bean))) {
         found = true;
         newModel.addElement(bean);
       } else {

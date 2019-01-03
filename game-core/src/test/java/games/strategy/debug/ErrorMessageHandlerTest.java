@@ -20,14 +20,14 @@ final class ErrorMessageHandlerTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class PublishTest {
-    @Mock
-    private Consumer<LogRecord> consumer;
+    @Mock private Consumer<LogRecord> consumer;
     private final ErrorMessageHandler errorMessageHandler = new ErrorMessageHandler();
 
     private LogRecord newLogRecord(final int levelValue) {
-      final Level level = new Level("name", levelValue) {
-        private static final long serialVersionUID = 1L;
-      };
+      final Level level =
+          new Level("name", levelValue) {
+            private static final long serialVersionUID = 1L;
+          };
       return new LogRecord(level, "message");
     }
 

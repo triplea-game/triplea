@@ -7,9 +7,7 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
 
-/**
- * Provides information about a client connection to a lobby server.
- */
+/** Provides information about a client connection to a lobby server. */
 public class LobbyClient {
   private final Messengers messengers;
   private final boolean isAnonymousLogin;
@@ -22,8 +20,9 @@ public class LobbyClient {
 
   public boolean isAdmin() {
     if (isAdmin == null) {
-      final IModeratorController controller = (IModeratorController) messengers.getRemoteMessenger()
-          .getRemote(IModeratorController.REMOTE_NAME);
+      final IModeratorController controller =
+          (IModeratorController)
+              messengers.getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
       isAdmin = controller.isAdmin();
     }
     return isAdmin;

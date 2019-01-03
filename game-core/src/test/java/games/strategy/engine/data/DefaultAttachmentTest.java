@@ -24,10 +24,8 @@ final class DefaultAttachmentTest {
     private static final String NAME = "attachment";
     private static final String OTHER_NAME = "otherAttachment";
 
-    @Mock
-    private Attachable attachable;
-    @Mock
-    private Attachable otherAttachable;
+    @Mock private Attachable attachable;
+    @Mock private Attachable otherAttachable;
     private final GameData gameData = new GameData();
 
     private class TestDefaultAttachment extends DefaultAttachment {
@@ -64,9 +62,7 @@ final class DefaultAttachmentTest {
     }
 
     private DefaultAttachment givenAttachment(
-        final String name,
-        final Attachable attachable,
-        final String stringValue) {
+        final String name, final Attachable attachable, final String stringValue) {
       return new TestDefaultAttachment(name, attachable, gameData, stringValue);
     }
 
@@ -89,9 +85,10 @@ final class DefaultAttachmentTest {
     @Test
     void shouldReturnFalseWhenOtherIsDifferentClass() {
       final DefaultAttachment attachment = givenAttachment(NAME, attachable);
-      final DefaultAttachment otherAttachment = new TestDefaultAttachment(NAME, attachable, gameData, NAME) {
-        private static final long serialVersionUID = 1L;
-      };
+      final DefaultAttachment otherAttachment =
+          new TestDefaultAttachment(NAME, attachable, gameData, NAME) {
+            private static final long serialVersionUID = 1L;
+          };
 
       assertThat(attachment.equals(otherAttachment), is(false));
     }
@@ -147,7 +144,8 @@ final class DefaultAttachmentTest {
     @Test
     void shouldReturnTrueWhenAttachableEqualAndNameNotEqualAndToStringEqual() {
       final DefaultAttachment attachment = givenAttachment(NAME, attachable, "stringValue");
-      final DefaultAttachment otherAttachment = givenAttachment(OTHER_NAME, attachable, "stringValue");
+      final DefaultAttachment otherAttachment =
+          givenAttachment(OTHER_NAME, attachable, "stringValue");
 
       assertThat(attachment.equals(otherAttachment), is(true));
     }
@@ -156,8 +154,7 @@ final class DefaultAttachmentTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class GetAttachmentTest {
-    @Mock
-    private NamedAttachable namedAttachable;
+    @Mock private NamedAttachable namedAttachable;
 
     @Test
     void shouldReturnAttachmentWhenAttachmentIsPresent() {
@@ -175,16 +172,22 @@ final class DefaultAttachmentTest {
     void shouldThrowExceptionWhenAttachmentIsAbsent() {
       when(namedAttachable.getAttachment(any())).thenReturn(null);
 
-      assertThrows(IllegalStateException.class,
-          () -> DefaultAttachment.getAttachment(namedAttachable, "attachmentName", FakeAttachment.class));
+      assertThrows(
+          IllegalStateException.class,
+          () ->
+              DefaultAttachment.getAttachment(
+                  namedAttachable, "attachmentName", FakeAttachment.class));
     }
 
     @Test
     void shouldThrowExceptionWhenAttachmentHasWrongType() {
       when(namedAttachable.getAttachment(any())).thenReturn(mock(IAttachment.class));
 
-      assertThrows(ClassCastException.class,
-          () -> DefaultAttachment.getAttachment(namedAttachable, "attachmentName", FakeAttachment.class));
+      assertThrows(
+          ClassCastException.class,
+          () ->
+              DefaultAttachment.getAttachment(
+                  namedAttachable, "attachmentName", FakeAttachment.class));
     }
   }
 

@@ -18,8 +18,7 @@ public final class FileUtilsTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   public final class ListFilesTest {
-    @Mock
-    private File directory;
+    @Mock private File directory;
 
     @Test
     public void shouldReturnFileCollectionWhenTargetIsDirectory() {

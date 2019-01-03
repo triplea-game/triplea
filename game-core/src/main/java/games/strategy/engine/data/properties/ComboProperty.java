@@ -27,7 +27,8 @@ public class ComboProperty<T> extends AbstractEditableProperty<T> {
    * @param defaultValue default string value
    * @param possibleValues collection of values
    */
-  public ComboProperty(final String name,
+  public ComboProperty(
+      final String name,
       final String description,
       final T defaultValue,
       final Collection<T> possibleValues) {

@@ -11,9 +11,7 @@ final class GuidTest {
   final class EqualsAndHashCodeTest {
     @Test
     void shouldBeEquatableAndHashable() {
-      EqualsVerifier.forClass(GUID.class)
-          .suppress(Warning.NONFINAL_FIELDS)
-          .verify();
+      EqualsVerifier.forClass(GUID.class).suppress(Warning.NONFINAL_FIELDS).verify();
     }
   }
 }

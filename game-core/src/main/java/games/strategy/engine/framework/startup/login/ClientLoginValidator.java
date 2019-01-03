@@ -22,11 +22,9 @@ import games.strategy.util.Version;
 /**
  * The server side of the peer-to-peer network game authentication protocol.
  *
- * <p>
- * In the peer-to-peer network game authentication protocol, the server sends a challenge to the client. Upon receiving
- * the client's response, the server determines if the client knows the game password and gives them access to the game
- * if authentication is successful.
- * </p>
+ * <p>In the peer-to-peer network game authentication protocol, the server sends a challenge to the
+ * client. Upon receiving the client's response, the server determines if the client knows the game
+ * password and gives them access to the game if authentication is successful.
  */
 public final class ClientLoginValidator implements ILoginValidator {
   static final String PASSWORD_REQUIRED_PROPERTY = "Password Required";
@@ -47,9 +45,7 @@ public final class ClientLoginValidator implements ILoginValidator {
     this.serverMessenger = serverMessenger;
   }
 
-  /**
-   * Set the password required for the game. If {@code null} or empty, no password is required.
-   */
+  /** Set the password required for the game. If {@code null} or empty, no password is required. */
   public void setGamePassword(final @Nullable String password) {
     // TODO do not store the plain password, but the hash instead in the next incompatible release
     this.password = password;
@@ -79,14 +75,18 @@ public final class ClientLoginValidator implements ILoginValidator {
       final String hashedMac,
       final SocketAddress remoteAddress) {
     final String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);
-    if (versionString == null || versionString.length() > 20 || versionString.trim().length() == 0) {
+    if (versionString == null
+        || versionString.length() > 20
+        || versionString.trim().length() == 0) {
       return "Invalid version " + versionString;
     }
 
     // check for version
     final Version clientVersion = new Version(versionString);
-    if (!GameEngineVersion.of(ClientContext.engineVersion()).isCompatibleWithEngineVersion(clientVersion)) {
-      return String.format("Client is using %s but the server requires a version compatible with version %s",
+    if (!GameEngineVersion.of(ClientContext.engineVersion())
+        .isCompatibleWithEngineVersion(clientVersion)) {
+      return String.format(
+          "Client is using %s but the server requires a version compatible with version %s",
           clientVersion, ClientContext.engineVersion());
     }
 

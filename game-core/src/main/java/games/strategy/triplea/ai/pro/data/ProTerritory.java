@@ -18,9 +18,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.util.CollectionUtils;
 
-/**
- * The result of an AI territory analysis.
- */
+/** The result of an AI territory analysis. */
 public class ProTerritory {
 
   private final Territory territory;
@@ -268,7 +266,8 @@ public class ProTerritory {
     this.battleResult = battleResult;
     if (battleResult == null) {
       currentlyWins = false;
-    } else if (battleResult.getWinPercentage() >= ProData.winPercentage && battleResult.isHasLandUnitRemaining()) {
+    } else if (battleResult.getWinPercentage() >= ProData.winPercentage
+        && battleResult.isHasLandUnitRemaining()) {
       currentlyWins = true;
     }
   }
@@ -277,9 +276,7 @@ public class ProTerritory {
     return battleResult;
   }
 
-  /**
-   * Returns a description of the battle result in this territory.
-   */
+  /** Returns a description of the battle result in this territory. */
   public String getResultString() {
     final StringBuilder sb = new StringBuilder();
     sb.append("territory=").append(territory.getName());

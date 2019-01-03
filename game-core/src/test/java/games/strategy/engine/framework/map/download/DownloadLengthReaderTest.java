@@ -38,8 +38,7 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class GetDownloadLengthFromCacheTest {
-    @Mock
-    private DownloadLengthReader.DownloadLengthSupplier downloadLengthSupplier;
+    @Mock private DownloadLengthReader.DownloadLengthSupplier downloadLengthSupplier;
 
     @BeforeEach
     void setUp() {
@@ -62,7 +61,8 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
     }
 
     private Optional<Long> getDownloadLengthFromCache() {
-      return DownloadConfiguration.downloadLengthReader().getDownloadLengthFromCache(URI, downloadLengthSupplier);
+      return DownloadConfiguration.downloadLengthReader()
+          .getDownloadLengthFromCache(URI, downloadLengthSupplier);
     }
 
     @Test
@@ -82,24 +82,21 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
       final Optional<Long> downloadLength = getDownloadLengthFromCache();
 
       assertThat(downloadLength, is(Optional.empty()));
-      assertThat(DownloadConfiguration.downloadLengthReader().downloadLengthsByUri, is(anEmptyMap()));
+      assertThat(
+          DownloadConfiguration.downloadLengthReader().downloadLengthsByUri, is(anEmptyMap()));
     }
   }
 
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class GetDownloadLengthFromHostTest {
-    @Mock
-    private CloseableHttpClient client;
+    @Mock private CloseableHttpClient client;
 
-    @Mock
-    private Header contentLengthHeader;
+    @Mock private Header contentLengthHeader;
 
-    @Mock
-    private CloseableHttpResponse response;
+    @Mock private CloseableHttpResponse response;
 
-    @Mock
-    private StatusLine statusLine;
+    @Mock private StatusLine statusLine;
 
     @BeforeEach
     void setUp() throws Exception {

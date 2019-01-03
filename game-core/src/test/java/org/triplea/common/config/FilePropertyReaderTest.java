@@ -20,7 +20,8 @@ final class FilePropertyReaderTest {
   final class ConstructorTest {
     @Test
     void shouldThrowExceptionWhenFileDoesNotExist() {
-      assertThrows(IllegalArgumentException.class, () -> new FilePropertyReader("path/to/nonexistent/file"));
+      assertThrows(
+          IllegalArgumentException.class, () -> new FilePropertyReader("path/to/nonexistent/file"));
     }
   }
 
@@ -28,7 +29,8 @@ final class FilePropertyReaderTest {
   @Nested
   final class NewInputStreamTest {
     @Test
-    void shouldReturnInputStreamForPropertySource(@TempDir final Path tempDirPath) throws Exception {
+    void shouldReturnInputStreamForPropertySource(@TempDir final Path tempDirPath)
+        throws Exception {
       final Path path = Files.createTempFile(tempDirPath, null, null);
       try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
         writer.write("key=value");

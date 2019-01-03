@@ -42,11 +42,14 @@ final class MockDelegateBridge {
    */
   static IDelegateBridge newInstance(final GameData gameData, final PlayerId playerId) {
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    doAnswer(invocation -> {
-      final Change change = invocation.getArgument(0);
-      gameData.performChange(change);
-      return null;
-    }).when(delegateBridge).addChange(any());
+    doAnswer(
+            invocation -> {
+              final Change change = invocation.getArgument(0);
+              gameData.performChange(change);
+              return null;
+            })
+        .when(delegateBridge)
+        .addChange(any());
     when(delegateBridge.getData()).thenReturn(gameData);
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(ITripleADisplay.class));
     final IDelegateHistoryWriter delegateHistoryWriter = newFakeDelegateHistoryWriter(gameData);
@@ -64,7 +67,8 @@ final class MockDelegateBridge {
     historyWriter.startNextStep("", "", PlayerId.NULL_PLAYERID, "");
     final IServerMessenger serverMessenger = mock(IServerMessenger.class);
     try {
-      when(serverMessenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
+      when(serverMessenger.getLocalNode())
+          .thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
     } catch (final UnknownHostException e) {
       throw new IllegalStateException("test cannot run without network interface", e);
     }
@@ -85,9 +89,9 @@ final class MockDelegateBridge {
   }
 
   static void thenGetRandomShouldHaveBeenCalled(
-      final IDelegateBridge delegateBridge,
-      final VerificationMode verificationMode) {
-    verify(delegateBridge, verificationMode).getRandom(anyInt(), anyInt(), any(), any(), anyString());
+      final IDelegateBridge delegateBridge, final VerificationMode verificationMode) {
+    verify(delegateBridge, verificationMode)
+        .getRandom(anyInt(), anyInt(), any(), any(), anyString());
   }
 
   static ITripleAPlayer withRemotePlayer(final IDelegateBridge delegateBridge) {

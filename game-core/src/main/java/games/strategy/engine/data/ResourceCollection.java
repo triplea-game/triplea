@@ -3,9 +3,7 @@ package games.strategy.engine.data;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
-/**
- * A collection of {@link Resource}s.
- */
+/** A collection of {@link Resource}s. */
 public class ResourceCollection extends GameDataComponent {
   private static final long serialVersionUID = -1247795977888113757L;
 
@@ -51,8 +49,13 @@ public class ResourceCollection extends GameDataComponent {
     }
     final int current = getQuantity(resource);
     if ((current - quantity) < 0) {
-      throw new IllegalArgumentException("Cant remove more than player has of resource: " + resource.getName()
-          + ". current:" + current + " toRemove: " + quantity);
+      throw new IllegalArgumentException(
+          "Cant remove more than player has of resource: "
+              + resource.getName()
+              + ". current:"
+              + current
+              + " toRemove: "
+              + quantity);
     }
     change(resource, -quantity);
   }
@@ -65,9 +68,7 @@ public class ResourceCollection extends GameDataComponent {
     resources.add(resource, quantity);
   }
 
-  /**
-   * Overwrites any current resource with the same name.
-   */
+  /** Overwrites any current resource with the same name. */
   public void putResource(final Resource resource, final int quantity) {
     if (quantity < 0) {
       throw new IllegalArgumentException("quantity must be positive");
@@ -100,9 +101,7 @@ public class ResourceCollection extends GameDataComponent {
     return resources.greaterThanOrEqualTo(map);
   }
 
-  /**
-   * Returns new ResourceCollection containing the difference between both collections.
-   */
+  /** Returns new ResourceCollection containing the difference between both collections. */
   public ResourceCollection difference(final ResourceCollection otherCollection) {
     final ResourceCollection returnCollection = new ResourceCollection(getData(), resources);
     returnCollection.subtract(otherCollection);
@@ -136,15 +135,14 @@ public class ResourceCollection extends GameDataComponent {
   }
 
   /**
-   * Will apply a discount if giving a fractional double (ie: 0.5 = 50% discount). Will round up remainder.
+   * Will apply a discount if giving a fractional double (ie: 0.5 = 50% discount). Will round up
+   * remainder.
    */
   public void discount(final double discount) {
     resources.multiplyAllValuesBy(discount);
   }
 
-  /**
-   * Returns 10,000 if it can fit more times than 10000 or if cost is zero.
-   */
+  /** Returns 10,000 if it can fit more times than 10000 or if cost is zero. */
   public int fitsHowOften(final IntegerMap<Resource> cost) {
     if (cost.size() == 0 || (cost.totalValues() <= 0 && cost.isPositive())) {
       return 10000;
@@ -154,7 +152,8 @@ public class ResourceCollection extends GameDataComponent {
       try {
         resources.subtract(cost);
       } catch (final IllegalArgumentException iae) {
-        // when the subtraction isn't possible it will throw an exception, which means we can return i;
+        // when the subtraction isn't possible it will throw an exception, which means we can return
+        // i;
         return i;
       }
     }
@@ -170,8 +169,8 @@ public class ResourceCollection extends GameDataComponent {
     return toString(resources, data, ", ");
   }
 
-  private static String toString(final IntegerMap<Resource> resources, final GameData data,
-      final String lineSeparator) {
+  private static String toString(
+      final IntegerMap<Resource> resources, final GameData data, final String lineSeparator) {
     if (resources == null || resources.allValuesEqual(0)) {
       return "nothing";
     }
@@ -181,7 +180,8 @@ public class ResourceCollection extends GameDataComponent {
     try {
       pus = data.getResourceList().getResource(Constants.PUS);
     } catch (final NullPointerException e) {
-      // we are getting null pointers here occasionally on deserializing game saves, because data.getResourceList() is
+      // we are getting null pointers here occasionally on deserializing game saves, because
+      // data.getResourceList() is
       // still null at this point
       for (final Resource r : resources.keySet()) {
         if (r.getName().equals(Constants.PUS)) {
