@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
@@ -28,7 +29,7 @@ import lombok.extern.java.Log;
 @Log
 @AllArgsConstructor
 // TODO: testing, break up DownloadUtilsTest to test this component individually from DownloadUtils.
-final class ContentReader {
+public final class ContentReader {
   private final Supplier<CloseableHttpClient> httpClientFactory;
 
   /**
@@ -36,12 +37,12 @@ final class ContentReader {
    *
    * @param uri The URI whose contents will be downloaded
    */
-  DownloadUtils.FileDownloadResult downloadToFile(final String uri) {
+  public Optional<File> downloadToFile(final String uri) {
     final File file = ClientFileSystemHelper.newTempFile();
     file.deleteOnExit();
     try {
       downloadToFile(uri, file);
-      return DownloadUtils.FileDownloadResult.success(file);
+      return Optional.of(file);
     } catch (final IOException e) {
       log.log(
           Level.SEVERE,
@@ -50,7 +51,7 @@ final class ContentReader {
               + ", will attempt to use backup values where available. "
               + "Please check your network connection.",
           e);
-      return DownloadUtils.FileDownloadResult.FAILURE;
+      return Optional.empty();
     }
   }
 

@@ -1,8 +1,9 @@
 package games.strategy.engine.lobby.client.login;
 
-import com.google.common.annotations.VisibleForTesting;
+import java.io.File;
+import java.util.Optional;
 
-import games.strategy.engine.framework.map.download.DownloadUtils;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Humble object pattern. Wraps file downloading.
@@ -10,8 +11,5 @@ import games.strategy.engine.framework.map.download.DownloadUtils;
 @FunctionalInterface
 @VisibleForTesting
 interface LobbyLocationFileDownloader {
-
-  DownloadUtils.FileDownloadResult download(final String url);
-
-  LobbyLocationFileDownloader defaultDownloader = DownloadUtils::downloadToFile;
+  Optional<File> download(final String url);
 }

@@ -3,11 +3,8 @@ package games.strategy.engine.lobby.client.login;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.io.File;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -55,25 +52,20 @@ class LobbyPropertyFileParserTest {
     testProps.message = TestData.message;
     testProps.version = TestData.clientCurrentVersion;
 
-    final File testFile = newTempFile(testProps);
+    final String yamlContents = newYaml(testProps);
 
     final LobbyServerProperties result =
-        LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
+        LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));
     assertThat(result.getHost(), is(TestData.host));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.port)));
     assertThat(result.getServerMessage(), is(TestData.message));
     assertThat(result.getServerErrorMessage(), is(TestData.errorMessage));
   }
 
-  private static File newTempFile(final TestProps... testProps) throws Exception {
-    final File f = File.createTempFile("testing", ".tmp");
-    try (Writer writer = Files.newBufferedWriter(f.toPath(), StandardCharsets.UTF_8)) {
-      for (final TestProps testProp : Arrays.asList(testProps)) {
-        writer.write(testProp.toYaml());
-      }
-    }
-    f.deleteOnExit();
-    return f;
+  private static String newYaml(final TestProps... testProps) throws Exception {
+    return Arrays.stream(testProps)
+        .map(TestProps::toYaml)
+        .collect(Collectors.joining("\n"));
   }
 
   /**
@@ -82,7 +74,7 @@ class LobbyPropertyFileParserTest {
    */
   @Test
   void checkVersionSelection() throws Exception {
-    final File testFile = newTempFile(testDataSet());
+    final String testFile = newYaml(testDataSet());
 
     final LobbyServerProperties result =
         LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
