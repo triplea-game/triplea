@@ -44,7 +44,7 @@ class LobbyPropertyFileParserTest {
    * straight forward 1:1
    */
   @Test
-  void parseWithSimpleCase() throws Exception {
+  void parseWithSimpleCase() {
     final TestProps testProps = new TestProps();
     testProps.host = TestData.host;
     testProps.port = TestData.port;
@@ -62,7 +62,7 @@ class LobbyPropertyFileParserTest {
     assertThat(result.getServerErrorMessage(), is(TestData.errorMessage));
   }
 
-  private static String newYaml(final TestProps... testProps) throws Exception {
+  private static String newYaml(final TestProps... testProps) {
     return Arrays.stream(testProps)
         .map(TestProps::toYaml)
         .collect(Collectors.joining("\n"));
@@ -73,11 +73,11 @@ class LobbyPropertyFileParserTest {
    * line up and we get the expected lobby config back.
    */
   @Test
-  void checkVersionSelection() throws Exception {
-    final String testFile = newYaml(testDataSet());
+  void checkVersionSelection() {
+    final String yamlContents = newYaml(testDataSet());
 
     final LobbyServerProperties result =
-        LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
+        LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));
 
     assertThat(result.getHost(), is(TestData.hostOther));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.portOther)));
