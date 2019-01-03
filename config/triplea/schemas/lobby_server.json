@@ -28,6 +28,15 @@
         "minimum": 0,
         "maximum": 65535
       },
+      "http_server_uri": {
+        "description": "The http lobby server host URI",
+        "type": "string",
+        "anyOf": [
+          { "format": "host-name" },
+          { "format": "ipv4" },
+          { "format": "ipv6" }
+        ]
+      },
       "message": {
         "description": "The message displayed when a user connects to an available lobby server",
         "type": ["string", "null"]

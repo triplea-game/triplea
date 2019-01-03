@@ -1,5 +1,7 @@
 package games.strategy.engine.lobby.client.login;
 
+import java.net.URI;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -29,7 +31,8 @@ public class LobbyServerProperties {
   /** The port the lobby is listening on. */
   @Nonnull private final Integer port;
 
-  @Nullable private final String version;
+  /** URI for the http lobby server. */
+  @Nullable private final URI httpServerUri;
 
   @Nullable private final String serverErrorMessage;
 

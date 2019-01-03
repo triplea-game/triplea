@@ -67,7 +67,7 @@ class SparkServerSystemTest {
   @Test
   void errorReportEndpont() {
     final ServiceClient<ErrorReport, ErrorReportResponse> client =
-        new ErrorReportClientFactory().newErrorUploader();
+        ErrorReportClientFactory.newErrorUploader();
 
     when(errorUploadStrategy.apply(ERROR_REPORT))
         .thenReturn(ErrorReportResponse.builder()
