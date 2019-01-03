@@ -40,7 +40,7 @@ public class DownloadRunnable {
     try {
       final File tempFile = ClientFileSystemHelper.newTempFile();
       tempFile.deleteOnExit();
-      DownloadUtils.downloadToFile(urlString, tempFile);
+      DownloadConfiguration.contentReader().downloadToFile(urlString, tempFile);
       final byte[] contents = Files.readAllBytes(tempFile.toPath());
       return IoUtils.readFromMemory(contents, DownloadFileParser::parse);
     } catch (final IOException e) {

@@ -39,7 +39,8 @@ final class MapDownloadProgressListener {
   }
 
   private void requestDownloadLength() {
-    new Thread(() -> downloadLength = DownloadUtils.getDownloadLength(download.getUrl())).start();
+    new Thread(() -> downloadLength = DownloadConfiguration.downloadLengthReader().getDownloadLength(download.getUrl()))
+        .start();
   }
 
   void downloadStarted() {
