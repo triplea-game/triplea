@@ -16,8 +16,9 @@ with FlyWay.
   followed by checking in an updated version number to infrastructure
   [host_control.sh](https://github.com/triplea-game/infrastructure/blob/master/roles/host_control.sh)
 
-- Following that, when the [infastructure master branch] is merged to [infrastructure prod branch], then
-  production servers will see the live updates triggering this sequence:
+- Following that, when the [infastructure master branch](https://github.com/triplea-game/infrastructure/tree/master) 
+  is merged to [infrastructure prod branch](https://github.com/triplea-game/infrastructure/tree/prod), 
+  then production servers will see the live updates triggering this sequence:
     - DB will download the flyway migration artifact created during travis builds
     - flyway is executed which triggers the checked-in database updates
 
@@ -27,11 +28,10 @@ with FlyWay.
 
 ## Dev Setup
 
-pre-requirements:
-- docker installed
 
+### pre-requirements:
+- Docker installed
 
-## Docker
 
 There is a Dockerfile in this project for building a lobby database image that can be used for development/testing.
 
