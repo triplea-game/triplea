@@ -59,10 +59,10 @@ class LobbyPropertyFileParserTest {
 
     final LobbyServerProperties result =
         LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
-    assertThat(result.host, is(TestData.host));
-    assertThat(result.port, is(Integer.valueOf(TestData.port)));
-    assertThat(result.serverMessage, is(TestData.message));
-    assertThat(result.serverErrorMessage, is(TestData.errorMessage));
+    assertThat(result.getHost(), is(TestData.host));
+    assertThat(result.getPort(), is(Integer.valueOf(TestData.port)));
+    assertThat(result.getServerMessage(), is(TestData.message));
+    assertThat(result.getServerErrorMessage(), is(TestData.errorMessage));
   }
 
   private static File newTempFile(final TestProps... testProps) throws Exception {
@@ -87,10 +87,10 @@ class LobbyPropertyFileParserTest {
     final LobbyServerProperties result =
         LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
 
-    assertThat(result.host, is(TestData.hostOther));
-    assertThat(result.port, is(Integer.valueOf(TestData.portOther)));
-    assertThat(result.serverMessage, is(""));
-    assertThat(result.serverErrorMessage, is(""));
+    assertThat(result.getHost(), is(TestData.hostOther));
+    assertThat(result.getPort(), is(Integer.valueOf(TestData.portOther)));
+    assertThat(result.getServerMessage(), is(""));
+    assertThat(result.getServerErrorMessage(), is(""));
   }
 
   private interface TestData {

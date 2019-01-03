@@ -1,61 +1,51 @@
 package games.strategy.engine.lobby.client.login;
 
-import java.util.Map;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
+
+import lombok.Builder;
+import lombok.Getter;
 
 /**
  * Server properties.
  *
- * <p>
- * Generally there is one lobby server, but that server may move.
- * </p>
+ * <p>Generally there is one lobby server, but that server may move.
  *
- * <p>
- * To keep track of this, we always have a properties file in a constant location that points to the current lobby
- * server.
- * </p>
+ * <p>To keep track of this, we always have a properties file in a constant location that points to
+ * the current lobby server.
  *
- * <p>
- * The properties file may indicate that the server is not available using the ERROR_MESSAGE key.
- * </p>
+ * <p>The properties file may indicate that the server is not available using the ERROR_MESSAGE key.
  */
+@Builder
+@Getter
 public class LobbyServerProperties {
-  public final String host;
-  public final int port;
-  public final String serverErrorMessage;
-  public final String serverMessage;
+  /** The host address of the lobby, typically an IP address. */
+  @Nonnull private final String host;
+
+  /** The port the lobby is listening on. */
+  @Nonnull private final Integer port;
+
+  @Nullable private final String version;
+
+  @Nullable private final String serverErrorMessage;
 
   /**
-   * Inits a bare-bones object without server message.
-   *
-   * @param host The host address of the lobby, typically an IP address
-   * @param port The port the lobby is listening on
+   * Message from lobby, eg: "welcome, lobby rules are: xyz".
    */
-  LobbyServerProperties(final String host, final int port) {
-    this.host = host;
-    this.port = port;
-    this.serverErrorMessage = "";
-    this.serverMessage = "";
+  @Nullable private final String serverMessage;
+
+  public String getServerMessage() {
+    return Strings.nullToEmpty(serverMessage);
   }
 
-  /**
-   * Typical constructor for lobby properties based on a yaml object. Parses lobby
-   * host, port, message, and an error message used to indicate potential down times to the user.
-   *
-   * @param yamlProps Yaml object with lobby properties from the point of view of the game client.
-   */
-  LobbyServerProperties(final Map<String, Object> yamlProps) {
-    this.host = (String) yamlProps.get("host");
-    this.port = (Integer) yamlProps.get("port");
-    this.serverMessage = Strings.nullToEmpty((String) yamlProps.get("message"));
-    this.serverErrorMessage = Strings.nullToEmpty((String) yamlProps.get("error_message"));
+  public String getServerErrorMessage() {
+    return Strings.nullToEmpty(serverErrorMessage);
   }
 
-  /**
-   * Returns true if the server is available. If not then see <code>serverErrorMessage</code>
-   */
+  /** Returns true if the server is available. If not then see <code>serverErrorMessage</code> */
   public boolean isServerAvailable() {
-    return serverErrorMessage.isEmpty();
+    return Strings.nullToEmpty(serverErrorMessage).isEmpty();
   }
 }

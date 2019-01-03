@@ -100,8 +100,8 @@ public class LobbyFrame extends JFrame {
   }
 
   private void showServerMessage(final LobbyServerProperties props) {
-    if (!props.serverMessage.isEmpty()) {
-      chatMessagePanel.addServerMessage(props.serverMessage);
+    if (!props.getServerMessage().isEmpty()) {
+      chatMessagePanel.addServerMessage(props.getServerMessage());
     }
   }
 

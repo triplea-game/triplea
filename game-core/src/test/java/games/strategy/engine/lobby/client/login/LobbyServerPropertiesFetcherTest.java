@@ -112,8 +112,8 @@ class LobbyServerPropertiesFetcherTest {
       OptionalUtils.ifPresentOrElse(
           result,
           it -> {
-            assertThat(it.host, is(host));
-            assertThat(it.port, is(port));
+            assertThat(it.getHost(), is(host));
+            assertThat(it.getPort(), is(port));
           },
           () -> fail("expected non-empty properties, but was empty"));
     }
@@ -160,6 +160,7 @@ class LobbyServerPropertiesFetcherTest {
   private interface TestData {
     Version version = new Version("0.0.0.0");
     String url = "someUrl";
-    LobbyServerProperties lobbyServerProperties = new LobbyServerProperties("host", 123);
+    LobbyServerProperties lobbyServerProperties =
+        LobbyServerProperties.builder().host("host").port(123).build();
   }
 }

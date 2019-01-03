@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -26,7 +27,15 @@ class LobbyPropertyFileParser {
 
   public static LobbyServerProperties parse(final File file, final Version currentVersion) {
     try {
-      return new LobbyServerProperties(OpenJsonUtils.toMap(matchCurrentVersion(loadYaml(file), currentVersion)));
+      final Map<String, Object> yamlProps =
+          OpenJsonUtils.toMap(matchCurrentVersion(loadYaml(file), currentVersion));
+
+      return LobbyServerProperties.builder()
+          .host((String) yamlProps.get("host"))
+          .port((Integer) yamlProps.get("port"))
+          .serverMessage((String) yamlProps.get("message"))
+          .serverErrorMessage((String) yamlProps.get("error_message"))
+          .build();
     } catch (final IOException e) {
       throw new RuntimeException("Failed loading file: " + file.getAbsolutePath() + ", please try again, if the "
           + "problem does not go away please report a bug: " + UrlConstants.GITHUB_ISSUES);
