@@ -46,6 +46,7 @@ import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.util.ExitStatus;
 
 /** Setup panel displayed for hosting a non-lobby network game (using host option from main panel). */
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener {
@@ -81,6 +82,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
               "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             OpenFileUtility.openUrl(UrlConstants.HOSTING_GUIDE.toString());
           }
+          ExitStatus.FAILURE.exit();
         });
       }
 

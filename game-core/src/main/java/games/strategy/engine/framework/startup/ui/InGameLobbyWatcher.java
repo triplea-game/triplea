@@ -40,7 +40,6 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
-import games.strategy.util.ExitStatus;
 import lombok.extern.java.Log;
 
 /**
@@ -246,7 +245,6 @@ public class InGameLobbyWatcher {
               + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
               + "The server tried to connect to your external ip: " + addressUsed;
           handler.reportError(message);
-          ExitStatus.FAILURE.exit();
         }
       }
     }).start();

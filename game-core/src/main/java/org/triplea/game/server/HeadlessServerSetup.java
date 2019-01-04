@@ -21,6 +21,7 @@ import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.pbem.PbemMessagePoster;
+import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
@@ -47,6 +48,7 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
       @Override
       public void reportError(final String message) {
         log.severe(message);
+        ExitStatus.FAILURE.exit();
       }
 
       @Override
