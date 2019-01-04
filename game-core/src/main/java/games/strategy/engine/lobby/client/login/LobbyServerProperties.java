@@ -24,12 +24,12 @@ import lombok.Getter;
 @Builder
 @Getter
 @EqualsAndHashCode
-public class LobbyServerProperties {
+public final class LobbyServerProperties {
   /** The host address of the lobby, typically an IP address. */
   @Nonnull private final String host;
 
   /** The port the lobby is listening on. */
-  @Nonnull private final Integer port;
+  private final int port;
 
   /** URI for the http lobby server. */
   @Nullable private final URI httpServerUri;
