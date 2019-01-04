@@ -1933,7 +1933,7 @@
     Beta Version of a large world war one map. Please provide feedback.
 - mapName: Map Making Tutorial
   url: https://github.com/triplea-maps/map_making_tutorial/archive/master.zip
-  version: 1
+  version: 2
   mapType: MAP_TOOL
   img: https://raw.githubusercontent.com/triplea-maps/map_making_tutorial/master/description/MapMakingTutorial_mini.png
   description: |
