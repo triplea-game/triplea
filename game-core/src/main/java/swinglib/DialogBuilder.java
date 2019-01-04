@@ -157,16 +157,24 @@ public class DialogBuilder {
         return;
       }
 
-      final int result = JOptionPane.showConfirmDialog(
-          withConfirmActionBuilder.withMessageBuilder.withTitleBuilder.withParentBuilder.parent,
-          withConfirmActionBuilder.withMessageBuilder.message,
-          withConfirmActionBuilder.withMessageBuilder.withTitleBuilder.title,
-          JOptionPane.YES_NO_OPTION,
-          JOptionPane.QUESTION_MESSAGE);
+      SwingAction.invokeNowOrLater(
+          () -> {
+            final int result =
+                JOptionPane.showConfirmDialog(
+                    withConfirmActionBuilder
+                        .withMessageBuilder
+                        .withTitleBuilder
+                        .withParentBuilder
+                        .parent,
+                    withConfirmActionBuilder.withMessageBuilder.message,
+                    withConfirmActionBuilder.withMessageBuilder.withTitleBuilder.title,
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
 
-      if (result == JOptionPane.YES_OPTION) {
-        withConfirmActionBuilder.confirmAction.run();
-      }
+            if (result == JOptionPane.YES_OPTION) {
+              withConfirmActionBuilder.confirmAction.run();
+            }
+          });
     }
   }
 }
