@@ -14,7 +14,7 @@
 - Use singular names, eg: `user` instead of `users`
 - Spaces, no tabs
 - Line break on SQL keywords "select, join, where, having, group by, order by"
-- line continuations are 4 space indented
+- Line continuations are 4 space indented
 
 ### Primary Key Columns
 - Favor using a PK column that is a number
