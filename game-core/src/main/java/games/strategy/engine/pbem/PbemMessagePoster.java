@@ -52,7 +52,7 @@ public class PbemMessagePoster implements Serializable {
   }
 
   public boolean hasMessengers() {
-    return gameProperties.get(IForumPoster.NAME) != null && gameProperties.get(IEmailSender.SUBJECT) != null;
+    return gameProperties.get(IForumPoster.NAME) != null || gameProperties.get(IEmailSender.SUBJECT) != null;
   }
 
   public static boolean gameDataHasPlayByEmailOrForumMessengers(final GameData gameData) {
