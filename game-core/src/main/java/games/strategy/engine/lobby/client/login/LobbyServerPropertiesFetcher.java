@@ -9,6 +9,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
@@ -25,6 +27,8 @@ import lombok.extern.java.Log;
 @Log
 public final class LobbyServerPropertiesFetcher {
   private final Function<String, Optional<File>> fileDownloader;
+  @Nullable private LobbyServerProperties lobbyServerProperties;
+
 
   /**
    * Default constructor with default (prod) dependencies.
@@ -56,6 +60,14 @@ public final class LobbyServerPropertiesFetcher {
    *         Otherwise backup values from client config.
    */
   public Optional<LobbyServerProperties> fetchLobbyServerProperties() {
+    if (lobbyServerProperties == null) {
+      final Optional<LobbyServerProperties> props = fetchProperties();
+      props.ifPresent(lobbyProps -> lobbyServerProperties = lobbyProps);
+    }
+    return Optional.ofNullable(lobbyServerProperties);
+  }
+  
+  private Optional<LobbyServerProperties> fetchProperties() {
     final Optional<LobbyServerProperties> userOverride = getTestOverrideProperties();
     if (userOverride.isPresent()) {
       return userOverride;
