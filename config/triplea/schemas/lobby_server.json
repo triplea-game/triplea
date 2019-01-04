@@ -32,9 +32,7 @@
         "description": "The http lobby server host URI",
         "type": "string",
         "anyOf": [
-          { "format": "host-name" },
-          { "format": "ipv4" },
-          { "format": "ipv6" }
+          { "format": "uri" }
         ]
       },
       "message": {
