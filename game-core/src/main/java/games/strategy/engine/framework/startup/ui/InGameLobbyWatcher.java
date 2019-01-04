@@ -70,9 +70,16 @@ public class InGameLobbyWatcher {
   private final IMessengerErrorListener messengerErrorListener;
   private final boolean isHandlerPlayer;
 
+
+  /**
+   * Helper interface to keep the logging logic outside of this class
+   * to ensure headless clients don't need to depend on UI classes.
+   */
   public interface LobbyWatcherHandler {
     void reportError(final String message);
+
     String getSupportEmail();
+
     boolean isPlayer();
   }
 
