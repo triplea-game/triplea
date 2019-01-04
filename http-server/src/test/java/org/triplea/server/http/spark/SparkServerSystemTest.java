@@ -67,7 +67,7 @@ class SparkServerSystemTest {
   @Test
   void errorReportEndpont() {
     final ServiceClient<ErrorReport, ErrorReportResponse> client =
-        ErrorReportClientFactory.newErrorUploader();
+        ErrorReportClientFactory.newErrorUploader(LOCAL_HOST);
 
     when(errorUploadStrategy.apply(ERROR_REPORT))
         .thenReturn(ErrorReportResponse.builder()
@@ -75,7 +75,7 @@ class SparkServerSystemTest {
             .build());
 
     final ServiceResponse<ErrorReportResponse> response =
-        client.apply(LOCAL_HOST, ERROR_REPORT);
+        client.apply(ERROR_REPORT);
 
     assertThat(response.getSendResult(), is(SendResult.SENT));
     assertThat(response.getPayload(), isPresent());

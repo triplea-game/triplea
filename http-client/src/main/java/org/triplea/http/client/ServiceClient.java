@@ -1,7 +1,6 @@
 package org.triplea.http.client;
 
-import java.net.URI;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,15 +12,14 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class ServiceClient<RequestT, ResponseT>
-    implements BiFunction<URI, RequestT, ServiceResponse<ResponseT>> {
+    implements Function<RequestT, ServiceResponse<ResponseT>> {
 
   private final HttpClient<?, RequestT, ResponseT> client;
 
   @Override
   public ServiceResponse<ResponseT> apply(
-      final URI hostUri,
       final RequestT requestToSend) {
 
-    return client.apply(hostUri, requestToSend);
+    return client.apply(requestToSend);
   }
 }

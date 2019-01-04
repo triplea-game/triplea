@@ -1,5 +1,7 @@
 package org.triplea.http.client.error.report;
 
+import java.net.URI;
+
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.ServiceClient;
 import org.triplea.http.client.error.report.create.ErrorReport;
@@ -13,9 +15,10 @@ public class ErrorReportClientFactory {
   /**
    * Creates an error report uploader clients, sends error reports and gets a response back.
    */
-  public static ServiceClient<ErrorReport, ErrorReportResponse> newErrorUploader() {
+  public static ServiceClient<ErrorReport, ErrorReportResponse> newErrorUploader(final URI uri) {
     return new ServiceClient<>(new HttpClient<>(
         ErrorReportClient.class,
-        ErrorReportClient::sendErrorReport));
+        ErrorReportClient::sendErrorReport,
+        uri));
   }
 }

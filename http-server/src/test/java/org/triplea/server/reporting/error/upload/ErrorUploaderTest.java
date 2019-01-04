@@ -3,7 +3,6 @@ package org.triplea.server.reporting.error.upload;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.net.URI;
 import java.util.function.Function;
 
 import org.hamcrest.core.IsSame;
@@ -21,8 +20,6 @@ import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorUploaderTest {
-
-  private static final URI SAMPLE_URI = URI.create("https://example");
 
   @Mock
   private ServiceClient<CreateIssueRequest, CreateIssueResponse> serviceClient;
@@ -47,7 +44,6 @@ class ErrorUploaderTest {
     errorUploader = ErrorUploadStrategy.builder()
         .responseAdapter(responseAdapter)
         .requestAdapter(requestAdapter)
-        .hostUri(SAMPLE_URI)
         .createIssueClient(serviceClient)
         .build();
   }
@@ -55,7 +51,7 @@ class ErrorUploaderTest {
   @Test
   void apply() {
     when(requestAdapter.apply(errorReport)).thenReturn(createIssueRequest);
-    when(serviceClient.apply(SAMPLE_URI, createIssueRequest)).thenReturn(serviceResponse);
+    when(serviceClient.apply(createIssueRequest)).thenReturn(serviceResponse);
     when(responseAdapter.apply(serviceResponse)).thenReturn(errorReportResponse);
 
     final ErrorReportResponse response = errorUploader.apply(errorReport);

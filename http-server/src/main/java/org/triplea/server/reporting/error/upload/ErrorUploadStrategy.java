@@ -1,6 +1,5 @@
 package org.triplea.server.reporting.error.upload;
 
-import java.net.URI;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
@@ -25,14 +24,12 @@ public class ErrorUploadStrategy implements Function<ErrorReport, ErrorReportRes
   private final Function<ServiceResponse<CreateIssueResponse>, ErrorReportResponse> responseAdapter;
   @Nonnull
   private final ServiceClient<CreateIssueRequest, CreateIssueResponse> createIssueClient;
-  @Nonnull
-  private final URI hostUri;
 
   @Override
   public ErrorReportResponse apply(final ErrorReport errorReport) {
     final CreateIssueRequest createIssueRequest = requestAdapter.apply(errorReport);
     // TODO: have we done the appropriate filtering to not create bad requests?
-    final ServiceResponse<CreateIssueResponse> response = createIssueClient.apply(hostUri, createIssueRequest);
+    final ServiceResponse<CreateIssueResponse> response = createIssueClient.apply(createIssueRequest);
     return responseAdapter.apply(response);
   }
 }

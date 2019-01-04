@@ -24,10 +24,10 @@ public class ErrorUploadConfiguration {
         new GithubIssueClientFactory().newGithubIssueCreator(
             environmentConfiguration.getGithubAuthToken(),
             environmentConfiguration.getGithubOrg(),
-            environmentConfiguration.getGithubRepo());
+            environmentConfiguration.getGithubRepo(),
+            environmentConfiguration.getGithubHost());
 
     return ErrorUploadStrategy.builder()
-        .hostUri(environmentConfiguration.getGithubHost())
         .createIssueClient(createIssueClient)
         .requestAdapter(new ErrorReportRequestAdapter())
         .responseAdapter(new ErrorReportResponseAdapter())
