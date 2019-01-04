@@ -1,4 +1,4 @@
-package org.triplea.server.reporting.error.upload;
+package org.triplea.server.reporting.error;
 
 import java.util.function.Function;
 
