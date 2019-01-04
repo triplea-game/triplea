@@ -3,6 +3,7 @@ package org.triplea.http.client;
 import java.net.URI;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +20,15 @@ import lombok.RequiredArgsConstructor;
 // TODO: verify testing.
 @RequiredArgsConstructor
 public class HttpClient<ClientTypeT, RequestT, ResponseT>
-    implements BiFunction<URI, RequestT, ServiceResponse<ResponseT>> {
+    implements Function<RequestT, ServiceResponse<ResponseT>> {
 
   private final Consumer<RequestT> rateLimiter = new RateLimiter<>();
   private final Class<ClientTypeT> classType;
   private final BiFunction<ClientTypeT, RequestT, ResponseT> sendFunction;
+  private final URI hostUri;
 
   @Override
   public ServiceResponse<ResponseT> apply(
-      final URI hostUri,
       final RequestT requestToSend) {
     try {
       rateLimiter.accept(requestToSend);
