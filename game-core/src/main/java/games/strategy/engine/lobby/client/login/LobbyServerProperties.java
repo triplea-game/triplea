@@ -1,11 +1,14 @@
 package games.strategy.engine.lobby.client.login;
 
+import java.net.URI;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -20,6 +23,7 @@ import lombok.Getter;
  */
 @Builder
 @Getter
+@EqualsAndHashCode
 public class LobbyServerProperties {
   /** The host address of the lobby, typically an IP address. */
   @Nonnull private final String host;
@@ -27,7 +31,8 @@ public class LobbyServerProperties {
   /** The port the lobby is listening on. */
   @Nonnull private final Integer port;
 
-  @Nullable private final String version;
+  /** URI for the http lobby server. */
+  @Nullable private final URI httpServerUri;
 
   @Nullable private final String serverErrorMessage;
 

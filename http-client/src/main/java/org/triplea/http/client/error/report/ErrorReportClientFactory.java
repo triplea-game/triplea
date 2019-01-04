@@ -13,7 +13,7 @@ public class ErrorReportClientFactory {
   /**
    * Creates an error report uploader clients, sends error reports and gets a response back.
    */
-  public ServiceClient<ErrorReport, ErrorReportResponse> newErrorUploader() {
+  public static ServiceClient<ErrorReport, ErrorReportResponse> newErrorUploader() {
     return new ServiceClient<>(new HttpClient<>(
         ErrorReportClient.class,
         ErrorReportClient::sendErrorReport));

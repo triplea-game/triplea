@@ -25,7 +25,6 @@ import lombok.extern.java.Log;
 /** Can execute an http head request to determine the size of a file download from URI. */
 @Log
 @AllArgsConstructor
-// TODO: testing, break up DownloadUtilsTest to test this component individually from DownloadUtils.
 final class DownloadLengthReader {
 
   private final Supplier<CloseableHttpClient> httpClientFactory;

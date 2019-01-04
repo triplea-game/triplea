@@ -121,7 +121,7 @@ public class ServerLauncher extends AbstractLauncher {
       final Set<IGamePlayer> localPlayerSet =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
       final Messengers messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
-      serverGame = new ServerGame(gameData, localPlayerSet, remotePlayers, messengers);
+      serverGame = new ServerGame(gameData, localPlayerSet, remotePlayers, messengers, headless);
       serverGame.setInGameLobbyWatcher(inGameLobbyWatcher);
       if (headless) {
         HeadlessGameServer.setServerGame(serverGame);

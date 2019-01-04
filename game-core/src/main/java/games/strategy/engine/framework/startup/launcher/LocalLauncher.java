@@ -55,7 +55,7 @@ public class LocalLauncher extends AbstractLauncher {
       final Messengers messengers = new Messengers(new HeadlessServerMessenger());
       final Set<IGamePlayer> gamePlayers =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
-      final ServerGame game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers);
+      final ServerGame game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers, headless);
       game.setRandomSource(randomSource);
       gameData.getGameLoader().startGame(game, gamePlayers, headless, null);
       return Optional.of(game);

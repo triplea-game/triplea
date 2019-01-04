@@ -58,7 +58,7 @@ final class DownloadFile {
           tempFile,
           bytesReceived -> downloadListener.downloadUpdated(download, bytesReceived));
       try {
-        DownloadUtils.downloadToFile(download.getUrl(), tempFile);
+        DownloadConfiguration.contentReader().downloadToFile(download.getUrl(), tempFile);
       } catch (final IOException e) {
         log.log(Level.SEVERE, "Failed to download: " + download.getUrl(), e);
         return;
