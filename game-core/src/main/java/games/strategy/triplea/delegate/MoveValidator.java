@@ -1528,6 +1528,15 @@ public class MoveValidator {
         notEnemyOwned.and(noEnemyUnits),
         noEnemyUnits,
         noAa));
+
+    // Determine max distance route is willing to accept
+    final List<Unit> landUnits =
+        CollectionUtils.getMatches(unitsWhichAreNotBeingTransportedOrDependent, Matches.unitIsLand());
+    final int maxLandMoves = landUnits.isEmpty() ? 0 : getMaxMovement(landUnits);
+    final int maxSteps = GameStepPropertiesHelper.isCombatMove(data) ? defaultRoute.numberOfSteps()
+        : Math.max(defaultRoute.numberOfSteps(), maxLandMoves);
+
+    // Try to find preferred route
     for (final Predicate<Territory> movePreference : prioritizedMovePreferences) {
       final Predicate<Territory> moveCondition;
       if (mustGoLand) {
@@ -1537,11 +1546,12 @@ public class MoveValidator {
       } else {
         moveCondition = movePreference.and(noImpassableOrRestrictedOrNeutral);
       }
-      final Route testRoute = data.getMap().getRouteIgnoreEndValidatingCanals(start, end, moveCondition, units, player);
-      if ((testRoute != null) && (testRoute.numberOfSteps() <= defaultRoute.numberOfSteps())) {
-        return testRoute;
+      final Route route = data.getMap().getRouteIgnoreEndValidatingCanals(start, end, moveCondition, units, player);
+      if ((route != null) && (route.numberOfSteps() <= maxSteps)) {
+        return route;
       }
     }
+
     return defaultRoute;
   }
 
