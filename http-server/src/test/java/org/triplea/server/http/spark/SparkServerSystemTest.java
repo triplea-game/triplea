@@ -76,7 +76,7 @@ class SparkServerSystemTest {
     final ServiceClient<ErrorReport, ErrorReportResponse> client =
         ErrorReportClientFactory.newErrorUploader(LOCAL_HOST);
 
-    when(errorUploadStrategy.apply(ERROR_REPORT))
+    when(errorUploadStrategy.apply(Mockito.any()))
         .thenReturn(ErrorReportResponse.builder()
             .githubIssueLink(LINK)
             .build());
