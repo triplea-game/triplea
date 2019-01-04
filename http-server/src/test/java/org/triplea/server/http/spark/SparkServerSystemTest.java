@@ -22,7 +22,8 @@ import org.triplea.http.client.error.report.create.ErrorReport;
 import org.triplea.http.client.error.report.create.ErrorReportDetails;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
 import org.triplea.server.ServerConfiguration;
-import org.triplea.server.reporting.error.upload.ErrorUploadStrategy;
+import org.triplea.server.reporting.error.ErrorReportRequest;
+import org.triplea.server.reporting.error.ErrorUploadStrategy;
 import org.triplea.test.common.Integration;
 
 import spark.Spark;
@@ -81,7 +82,7 @@ class SparkServerSystemTest {
             .build());
 
     final ServiceResponse<ErrorReportResponse> response =
-        client.apply(ERROR_REPORT);
+        client.apply(ERROR_REPORT.getErrorReport());
 
     assertThat(response.getSendResult(), is(SendResult.SENT));
     assertThat(response.getPayload(), isPresent());

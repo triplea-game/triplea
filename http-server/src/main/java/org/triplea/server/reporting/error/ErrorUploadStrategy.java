@@ -32,7 +32,7 @@ public class ErrorUploadStrategy implements Function<ErrorReportRequest, ErrorRe
     if (allowErrorReport.test(errorReport)) {
       final CreateIssueRequest createIssueRequest = requestAdapter.apply(errorReport);
       final ServiceResponse<CreateIssueResponse> response =
-          createIssueClient.apply(hostUri, createIssueRequest);
+          createIssueClient.apply(createIssueRequest);
       return responseAdapter.apply(response);
     }
 
