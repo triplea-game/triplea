@@ -95,6 +95,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Boolean> showConsole = new BooleanClientSetting("SHOW_CONSOLE", false);
   public static final ClientSetting<String> testLobbyHost = new StringClientSetting("TEST_LOBBY_HOST");
   public static final ClientSetting<Integer> testLobbyPort = new IntegerClientSetting("TEST_LOBBY_PORT");
+  public static final ClientSetting<String> httpLobbyUriOverride = new StringClientSetting("TEST_HTTP_LOBBY_URI");
   public static final ClientSetting<Boolean> firstTimeThisVersion =
       new BooleanClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
   public static final ClientSetting<String> lastCheckForEngineUpdate =

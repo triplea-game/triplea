@@ -1,7 +1,6 @@
 package games.strategy.debug.error.reporting;
 
 import java.awt.Component;
-import java.util.function.BiConsumer;
 import java.util.logging.LogRecord;
 
 import javax.swing.JFrame;
@@ -14,16 +13,12 @@ public final class ReportWindowController {
 
   private ReportWindowController() {}
 
-  // TODO: replace no-op report handler with 'new ReportUploadProcess()'
-  private static final BiConsumer<JFrame, UserErrorReport> reportHandler = (frame, report) -> {
-  };
-
   public static void showWindow(final Component parent) {
     showWindow(parent, null);
   }
 
   public static void showWindow(final Component parent, final LogRecord logRecord) {
-    final JFrame frame = new ErrorReportWindow(reportHandler)
+    final JFrame frame = new ErrorReportWindow(ErrorReportConfiguration.newReportHandler())
         .buildWindow(parent, logRecord);
     frame.setVisible(true);
   }

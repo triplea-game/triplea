@@ -228,6 +228,16 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
+  TEST_HTTP_LOBBY_URI(
+      "Http Lobby URI",
+      SettingType.TESTING,
+      "Specifies host and port for connecting to a test http lobby.") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return textField(ClientSetting.httpLobbyUriOverride);
+    }
+  },
+
   TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY_BINDING(
       "Show First Time Prompts",
       SettingType.GAME,
