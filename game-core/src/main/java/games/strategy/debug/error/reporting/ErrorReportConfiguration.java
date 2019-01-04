@@ -35,10 +35,9 @@ class ErrorReportConfiguration {
   private static Optional<BiConsumer<JFrame, UserErrorReport>> newFromRemoteProperties() {
     return LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
         .fetchLobbyServerProperties()
-        .<BiConsumer<JFrame, UserErrorReport>>map(
-            lobbyServerProperties ->
+        .map(
+            props ->
                 new ErrorReportUploadAction(
-                    ErrorReportClientFactory.newErrorUploader(
-                        lobbyServerProperties.getHttpServerUri())));
+                    ErrorReportClientFactory.newErrorUploader(props.getHttpServerUri())));
   }
 }
