@@ -1,6 +1,5 @@
 package games.strategy.util;
 
-import static games.strategy.util.Md5Crypt.getHash;
 import static games.strategy.util.Md5Crypt.getSalt;
 import static games.strategy.util.Md5Crypt.hash;
 import static games.strategy.util.Md5Crypt.hashPassword;
@@ -71,19 +70,6 @@ public final class Md5CryptTest {
     @Test
     public void shouldSilentlyReplaceIllegalCharactersInSaltWithPeriod() {
       assertThat(hash("value", "ABC!@DEF"), is(hash("value", "ABC..DEF")));
-    }
-  }
-
-  @Nested
-  public final class GetHashTest {
-    @Test
-    public void shouldReturnHashWhenHashedValueIsLegal() {
-      assertThat(getHash("$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0"), is("KsXRew.PuhVQTNMKSXQZx0"));
-    }
-
-    @Test
-    public void shouldThrowExceptionWhenHashedValueIsIllegal() {
-      assertThrows(IllegalArgumentException.class, () -> getHash("1$A$KnCRC85Rudn6P3cpfe3LR/"));
     }
   }
 

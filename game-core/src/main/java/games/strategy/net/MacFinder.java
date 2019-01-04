@@ -301,19 +301,4 @@ public final class MacFinder {
       return false;
     }
   }
-
-  /**
-   * Removes the prefix from the specified hashed MAC address.
-   *
-   * @param hashedMacAddress The hashed MAC address whose prefix is to be removed.
-   *
-   * @return The hashed MAC address without its prefix.
-   *
-   * @throws IllegalArgumentException If {@code hashedMacAddress} is not a valid hashed MAC address.
-   */
-  public static String trimHashedMacAddressPrefix(final String hashedMacAddress) {
-    checkNotNull(hashedMacAddress);
-
-    return Md5Crypt.getHash(hashedMacAddress);
-  }
 }

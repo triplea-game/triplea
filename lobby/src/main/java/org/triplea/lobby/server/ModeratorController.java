@@ -350,10 +350,11 @@ final class ModeratorController implements IModeratorController {
     builder.append("\r\nHashed Mac: ");
     if (UNKNOWN_HASHED_MAC_ADDRESS.equals(mac)) {
       builder.append("(Unknown)");
-    } else if (MacFinder.isValidHashedMacAddress(mac)) {
-      builder.append(MacFinder.trimHashedMacAddressPrefix(mac));
     } else {
-      builder.append(mac).append(" (Invalid)");
+      builder.append(mac);
+      if (!MacFinder.isValidHashedMacAddress(mac)) {
+        builder.append(" (Invalid)");
+      }
     }
     builder.append("\r\nAliases: ").append(getAliasesFor(node));
     return builder.toString();

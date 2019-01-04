@@ -82,24 +82,6 @@ public final class Md5Crypt {
   }
 
   /**
-   * Gets the hash for the specified hashed value.
-   *
-   * @param hashedValue The hashed value from a previous call to {@link #hash(String, String)} whose hash is to be
-   *        returned.
-   *
-   * @return The hash for the specified hashed value.
-   *
-   * @throws IllegalArgumentException If {@code hashedValue} is not an MD5-crypt hashed value.
-   */
-  public static String getHash(final String hashedValue) {
-    checkNotNull(hashedValue);
-
-    final Matcher matcher = HASHED_VALUE_PATTERN.matcher(hashedValue);
-    checkArgument(matcher.matches(), "'" + hashedValue + "' is not an MD5-crypt hashed value");
-    return matcher.group(2);
-  }
-
-  /**
    * Gets the salt for the specified hashed value.
    *
    * @param hashedValue The hashed value from a previous call to {@link #hash(String, String)} whose salt is to be

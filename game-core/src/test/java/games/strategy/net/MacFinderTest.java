@@ -50,17 +50,4 @@ final class MacFinderTest {
       assertThat(MacFinder.isValidHashedMacAddress("$1$SALT$ABCDWXYZabcdwxyz0189./"), is(false));
     }
   }
-
-  @Nested
-  final class TrimHashedMacAddressPrefixTest {
-    @Test
-    void shouldReturnHashedMacAddressWithoutPrefixWhenValid() {
-      assertThat(MacFinder.trimHashedMacAddressPrefix("$1$MH$ABCDWXYZabcdwxyz0189./"), is("ABCDWXYZabcdwxyz0189./"));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenInvalid() {
-      assertThrows(IllegalArgumentException.class, () -> MacFinder.trimHashedMacAddressPrefix("invalid"));
-    }
-  }
 }
