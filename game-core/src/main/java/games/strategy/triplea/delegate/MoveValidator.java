@@ -1521,23 +1521,23 @@ public class MoveValidator {
         .and(Matches.territoryWasFoughOver(AbstractMoveDelegate.getBattleTracker(data)).negate());
     final Predicate<Territory> noEnemyUnits = Matches.territoryHasNoEnemyUnits(player, data);
     final Predicate<Territory> noAa = Matches.territoryHasEnemyAaForFlyOver(player, data).negate();
-    final List<Predicate<Territory>> tests = new ArrayList<>(Arrays.asList(
+    final List<Predicate<Territory>> prioritizedMovePreferences = new ArrayList<>(Arrays.asList(
         hasRequiredUnitsToMove.and(notEnemyOwned).and(noEnemyUnits),
         hasRequiredUnitsToMove.and(noEnemyUnits),
         hasRequiredUnitsToMove.and(noAa),
         notEnemyOwned.and(noEnemyUnits),
         noEnemyUnits,
         noAa));
-    for (final Predicate<Territory> t : tests) {
-      final Predicate<Territory> testMatch;
+    for (final Predicate<Territory> movePreference : prioritizedMovePreferences) {
+      final Predicate<Territory> moveCondition;
       if (mustGoLand) {
-        testMatch = t.and(Matches.territoryIsLand()).and(noImpassableOrRestrictedOrNeutral);
+        moveCondition = movePreference.and(Matches.territoryIsLand()).and(noImpassableOrRestrictedOrNeutral);
       } else if (mustGoSea) {
-        testMatch = t.and(Matches.territoryIsWater()).and(noImpassableOrRestrictedOrNeutral);
+        moveCondition = movePreference.and(Matches.territoryIsWater()).and(noImpassableOrRestrictedOrNeutral);
       } else {
-        testMatch = t.and(noImpassableOrRestrictedOrNeutral);
+        moveCondition = movePreference.and(noImpassableOrRestrictedOrNeutral);
       }
-      final Route testRoute = data.getMap().getRouteIgnoreEndValidatingCanals(start, end, testMatch, units, player);
+      final Route testRoute = data.getMap().getRouteIgnoreEndValidatingCanals(start, end, moveCondition, units, player);
       if ((testRoute != null) && (testRoute.numberOfSteps() <= defaultRoute.numberOfSteps())) {
         return testRoute;
       }
