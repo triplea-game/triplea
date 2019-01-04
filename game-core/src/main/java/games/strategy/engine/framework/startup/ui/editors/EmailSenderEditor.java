@@ -122,13 +122,13 @@ public class EmailSenderEditor extends EditorPanel {
 
   public void applyToGameProperties(final GameProperties properties) {
     properties.set(IEmailSender.SUBJECT, subject.getText());
-    properties.set(IEmailSender.OPPONENT, toAddress.getText());
+    properties.set(IEmailSender.RECIPIENTS, toAddress.getText());
     properties.set(IEmailSender.POST_AFTER_COMBAT, alsoPostAfterCombatMove.isSelected());
   }
 
   public void populateFromGameProperties(final GameProperties properties) {
     subject.setText(properties.get(IEmailSender.SUBJECT, ""));
-    toAddress.setText(properties.get(IEmailSender.OPPONENT, ""));
+    toAddress.setText(properties.get(IEmailSender.RECIPIENTS, ""));
     alsoPostAfterCombatMove.setSelected(properties.get(IEmailSender.POST_AFTER_COMBAT, false));
   }
 

@@ -78,7 +78,7 @@ public class PbemMessagePoster implements Serializable {
     if (subject.isEmpty()) {
       return Optional.empty();
     }
-    return Optional.of(IEmailSender.newInstance(subject, gameProperties.get(IEmailSender.OPPONENT, "")));
+    return Optional.of(IEmailSender.newInstance(subject, gameProperties.get(IEmailSender.RECIPIENTS, "")));
   }
 
   /**
@@ -115,7 +115,7 @@ public class PbemMessagePoster implements Serializable {
       try {
         sender.sendEmail(currentPlayer.getName() + " - round " + roundNumber,
             convertToHtml((gameNameAndInfo + "\n\n" + turnSummary)), saveGameFile, saveGameName);
-        emailSendStatus = "Success, sent to " + gameProperties.get(IEmailSender.OPPONENT);
+        emailSendStatus = "Success, sent to " + gameProperties.get(IEmailSender.RECIPIENTS);
         return true;
       } catch (final IOException e) {
         emailSendStatus = "Failed! Error " + e.getMessage();
@@ -131,7 +131,7 @@ public class PbemMessagePoster implements Serializable {
       }
       if (emailSender.isPresent()) {
         sb.append(forumPoster.isPresent() ? " and to " : " to ");
-        sb.append(gameProperties.get(IEmailSender.OPPONENT)).append(" success = ").append(emailSuccess);
+        sb.append(gameProperties.get(IEmailSender.RECIPIENTS)).append(" success = ").append(emailSuccess);
       }
       historyWriter.startEvent(sb.toString());
     }
@@ -171,7 +171,7 @@ public class PbemMessagePoster implements Serializable {
       }
       sb.append("to ").append(displayName).append("?\n");
     }
-    final String opponent = gameProperties.get(IEmailSender.OPPONENT, "");
+    final String opponent = gameProperties.get(IEmailSender.RECIPIENTS, "");
     if (!opponent.isEmpty()) {
       sb.append("Send email to ").append(opponent).append("?\n");
     }
@@ -185,7 +185,6 @@ public class PbemMessagePoster implements Serializable {
       final ProgressWindow progressWindow = new ProgressWindow(frame, "Posting " + title + "...");
       progressWindow.setVisible(true);
       // start a new thread for posting the summary.
-      // FIXME swap opponent here (so the opponent is always not you)
       new Thread(() -> {
         boolean postOk = true;
         File saveGameFile = null;

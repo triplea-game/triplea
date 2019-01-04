@@ -20,7 +20,7 @@ import lombok.Getter;
 public interface IEmailSender {
 
   String SUBJECT = "PBEM_SUBJECT";
-  String OPPONENT = "PBEM_OPPONENT";
+  String RECIPIENTS = "PBEM_RECIPIENTS";
   String POST_AFTER_COMBAT = "PBEM_POST_AFTER_COMBAT";
 
   /**

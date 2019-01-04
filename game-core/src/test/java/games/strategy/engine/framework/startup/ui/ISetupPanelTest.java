@@ -25,7 +25,7 @@ class ISetupPanelTest {
     verify(properties).set(IForumPoster.INCLUDE_SAVEGAME, null);
     verify(properties).set(IForumPoster.POST_AFTER_COMBAT, null);
     verify(properties).set(IEmailSender.SUBJECT, null);
-    verify(properties).set(IEmailSender.OPPONENT, null);
+    verify(properties).set(IEmailSender.RECIPIENTS, null);
     verify(properties).set(IEmailSender.POST_AFTER_COMBAT, null);
   }
 }

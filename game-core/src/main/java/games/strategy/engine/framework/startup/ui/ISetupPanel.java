@@ -64,7 +64,7 @@ public interface ISetupPanel {
     properties.set(IForumPoster.INCLUDE_SAVEGAME, null);
     properties.set(IForumPoster.POST_AFTER_COMBAT, null);
     properties.set(IEmailSender.SUBJECT, null);
-    properties.set(IEmailSender.OPPONENT, null);
+    properties.set(IEmailSender.RECIPIENTS, null);
     properties.set(IEmailSender.POST_AFTER_COMBAT, null);
   }
 }
