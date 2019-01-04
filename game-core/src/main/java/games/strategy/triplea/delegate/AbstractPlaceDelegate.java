@@ -861,7 +861,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       } else if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLhtrCarrierProduction(getData()))
           && allProducedUnits.stream().anyMatch(Matches.unitIsCarrier()))
           || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLhtrCarrierProduction(getData()))
-              && to.getUnits().anyMatch(Matches.unitIsCarrier()))) {
+              && to.getUnits().anyMatch(Matches.unitIsCarrier().and(Matches
+                  .unitIsOwnedByOfAnyOfThesePlayers(GameStepPropertiesHelper.getCombinedTurns(getData(), player)))))) {
         placeableUnits
             .addAll(CollectionUtils.getMatches(units, Matches.unitIsAir().and(Matches.unitCanLandOnCarrier())));
       }
