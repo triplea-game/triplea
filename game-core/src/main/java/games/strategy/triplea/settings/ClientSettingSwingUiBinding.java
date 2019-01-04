@@ -229,9 +229,9 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   },
 
   TEST_HTTP_LOBBY_URI(
-      "Http Lobby URI",
+      "HTTP Lobby URI",
       SettingType.TESTING,
-      "Specifies host and port for connecting to a test http lobby.") {
+      "Specifies host and port for connecting to a test HTTP lobby.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return textField(ClientSetting.httpLobbyUriOverride);
