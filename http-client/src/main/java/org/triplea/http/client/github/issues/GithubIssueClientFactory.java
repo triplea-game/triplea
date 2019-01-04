@@ -1,5 +1,7 @@
 package org.triplea.http.client.github.issues;
 
+import java.net.URI;
+
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.ServiceClient;
 import org.triplea.http.client.github.issues.create.CreateIssueRequest;
@@ -20,8 +22,12 @@ public class GithubIssueClientFactory {
   public ServiceClient<CreateIssueRequest, CreateIssueResponse> newGithubIssueCreator(
       final String authToken,
       final String githubOrg,
-      final String githubRepo) {
-    return new ServiceClient<>(new HttpClient<>(GithubIssueClient.class,
-        (client, request) -> client.newIssue(authToken, githubOrg, githubRepo, request)));
+      final String githubRepo,
+      final URI uri) {
+    return new ServiceClient<>(
+        new HttpClient<>(
+            GithubIssueClient.class,
+            (client, request) -> client.newIssue(authToken, githubOrg, githubRepo, request),
+            uri));
   }
 }

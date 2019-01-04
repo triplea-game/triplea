@@ -63,7 +63,7 @@ class ErrorUploaderTest {
   void apply() {
     when(requestAdapter.apply(errorReport)).thenReturn(createIssueRequest);
     when(allowErrorReport.test(errorReport)).thenReturn(true);
-    when(serviceClient.apply(SAMPLE_URI, createIssueRequest)).thenReturn(serviceResponse);
+    when(serviceClient.apply(createIssueRequest)).thenReturn(serviceResponse);
     when(responseAdapter.apply(serviceResponse)).thenReturn(errorReportResponse);
 
     final ErrorReportResponse response = errorUploader.apply(errorReport);

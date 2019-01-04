@@ -15,14 +15,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.triplea.http.client.SendResult;
+import org.triplea.http.client.ServiceClient;
 import org.triplea.http.client.ServiceResponse;
 import org.triplea.http.client.error.report.ErrorReportClientFactory;
 import org.triplea.http.client.error.report.create.ErrorReport;
 import org.triplea.http.client.error.report.create.ErrorReportDetails;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
 import org.triplea.server.ServerConfiguration;
-import org.triplea.server.reporting.error.ErrorReportRequest;
-import org.triplea.server.reporting.error.ErrorUploadStrategy;
+import org.triplea.server.reporting.error.upload.ErrorUploadStrategy;
 import org.triplea.test.common.Integration;
 
 import spark.Spark;
@@ -71,14 +71,17 @@ class SparkServerSystemTest {
   private static final String LINK = "http://fictitious-link";
 
   @Test
-  void errorReportEndpoint() {
-    when(errorUploadStrategy.apply(Mockito.any(ErrorReportRequest.class)))
-        .thenReturn(ErrorReportResponse.builder().githubIssueLink(LINK).build());
+  void errorReportEndpont() {
+    final ServiceClient<ErrorReport, ErrorReportResponse> client =
+        ErrorReportClientFactory.newErrorUploader(LOCAL_HOST);
+
+    when(errorUploadStrategy.apply(ERROR_REPORT))
+        .thenReturn(ErrorReportResponse.builder()
+            .githubIssueLink(LINK)
+            .build());
 
     final ServiceResponse<ErrorReportResponse> response =
-        new ErrorReportClientFactory()
-            .newErrorUploader()
-            .apply(LOCAL_HOST, ERROR_REPORT.getErrorReport());
+        client.apply(ERROR_REPORT);
 
     assertThat(response.getSendResult(), is(SendResult.SENT));
     assertThat(response.getPayload(), isPresent());
