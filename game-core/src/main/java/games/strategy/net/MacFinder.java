@@ -301,4 +301,18 @@ public final class MacFinder {
       return false;
     }
   }
+
+  /**
+   * Returns {@code value} with a hashed MAC address prefix if one is not already present.
+   *
+   * @return The returned value may not be a valid hashed MAC address and should be validated using
+   *         {@link #isValidHashedMacAddress(String)}.
+   */
+  public static String withPrefix(final String value) {
+    checkNotNull(value);
+
+    return isValidHashedMacAddress(value)
+        ? value
+        : Md5Crypt.fromSaltAndHash(HASHED_MAC_ADDRESS_SALT, value);
+  }
 }

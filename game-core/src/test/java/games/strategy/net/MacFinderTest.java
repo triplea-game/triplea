@@ -50,4 +50,17 @@ final class MacFinderTest {
       assertThat(MacFinder.isValidHashedMacAddress("$1$SALT$ABCDWXYZabcdwxyz0189./"), is(false));
     }
   }
+
+  @Nested
+  final class WithPrefixTest {
+    @Test
+    void shouldReturnValueUnchangedWhenPrefixPresent() {
+      assertThat(MacFinder.withPrefix("$1$MH$ABCDWXYZabcdwxyz0189./"), is("$1$MH$ABCDWXYZabcdwxyz0189./"));
+    }
+
+    @Test
+    void shouldReturnValueWithPrefixWhenPrefixAbsent() {
+      assertThat(MacFinder.withPrefix("ABCDWXYZabcdwxyz0189./"), is("$1$MH$ABCDWXYZabcdwxyz0189./"));
+    }
+  }
 }

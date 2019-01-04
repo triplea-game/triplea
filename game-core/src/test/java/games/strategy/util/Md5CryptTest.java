@@ -1,5 +1,6 @@
 package games.strategy.util;
 
+import static games.strategy.util.Md5Crypt.fromSaltAndHash;
 import static games.strategy.util.Md5Crypt.getSalt;
 import static games.strategy.util.Md5Crypt.hash;
 import static games.strategy.util.Md5Crypt.hashPassword;
@@ -130,6 +131,14 @@ public final class Md5CryptTest {
                 isLegalHashedValue(value),
                 is(false));
           });
+    }
+  }
+
+  @Nested
+  final class FromSaltAndHashTest {
+    @Test
+    void shouldReturnHashedValue() {
+      assertThat(fromSaltAndHash("salt", "hash"), is("$1$salt$hash"));
     }
   }
 

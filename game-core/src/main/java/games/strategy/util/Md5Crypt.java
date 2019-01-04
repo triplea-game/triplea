@@ -111,4 +111,17 @@ public final class Md5Crypt {
 
     return HASHED_VALUE_PATTERN.matcher(value).matches();
   }
+
+  /**
+   * Creates a new hashed value from the specified salt and hash components.
+   *
+   * @return The returned value may not be a legal MD5-crypt hashed value if either {@code salt} or {@code hash} are
+   *         illegal and should be validated using {@link #isLegalHashedValue(String)}.
+   */
+  public static String fromSaltAndHash(final String salt, final String hash) {
+    checkNotNull(salt);
+    checkNotNull(hash);
+
+    return String.format("%s%s$%s", MAGIC, salt, hash);
+  }
 }

@@ -163,8 +163,7 @@ public final class LobbyMenu extends JMenuBar {
   }
 
   private boolean validateUsername(final @Nullable String username) {
-    if (Strings.isNullOrEmpty(username)) {
-      // user canceled operation
+    if (wasInputDialogCanceled(username)) {
       return false;
     } else if (!DBUser.isValidUserName(username)) {
       showErrorDialog("The username you entered is invalid.", "Invalid Username");
@@ -172,6 +171,10 @@ public final class LobbyMenu extends JMenuBar {
     }
 
     return true;
+  }
+
+  private static boolean wasInputDialogCanceled(final @Nullable String result) {
+    return Strings.isNullOrEmpty(result);
   }
 
   private void showErrorDialog(final String message, final String title) {
@@ -201,9 +204,8 @@ public final class LobbyMenu extends JMenuBar {
   private void addBanMacAddressMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Ban Hashed Mac Address");
     menuItem.addActionListener(e -> {
-      final @Nullable String hashedMacAddress = showInputDialog(
-          "Enter the hashed Mac Address that you want to ban from the lobby.\n\n"
-              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
+      final @Nullable String hashedMacAddress =
+          showHashedMacAddressInputDialog("Enter the hashed Mac address that you want to ban from the lobby.");
       if (validateHashedMacAddress(hashedMacAddress)) {
         showTimespanDialog(
             "Please consult other admins before banning longer than 1 day.",
@@ -213,9 +215,17 @@ public final class LobbyMenu extends JMenuBar {
     parentMenu.add(menuItem);
   }
 
+  private @Nullable String showHashedMacAddressInputDialog(final String message) {
+    final @Nullable String hashedMacAddress = showInputDialog(message + "\n"
+        + "\n"
+        + "Hashed Mac addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
+    return wasInputDialogCanceled(hashedMacAddress)
+        ? hashedMacAddress
+        : MacFinder.withPrefix(hashedMacAddress);
+  }
+
   private boolean validateHashedMacAddress(final @Nullable String hashedMacAddress) {
-    if (Strings.isNullOrEmpty(hashedMacAddress)) {
-      // user canceled operation
+    if (wasInputDialogCanceled(hashedMacAddress)) {
       return false;
     } else if (!MacFinder.isValidHashedMacAddress(hashedMacAddress)) {
       showErrorDialog("The hashed Mac Address you entered is invalid.", "Invalid Hashed Mac");
@@ -239,9 +249,8 @@ public final class LobbyMenu extends JMenuBar {
   private void addUnbanMacAddressMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Unban Hashed Mac Address");
     menuItem.addActionListener(e -> {
-      final @Nullable String hashedMacAddress = showInputDialog(
-          "Enter the hashed Mac Address that you want to unban from the lobby.\n\n"
-              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3");
+      final @Nullable String hashedMacAddress =
+          showHashedMacAddressInputDialog("Enter the hashed Mac address that you want to unban from the lobby.");
       if (validateHashedMacAddress(hashedMacAddress)) {
         getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, Date.from(Instant.EPOCH));
       }
