@@ -2,6 +2,9 @@ package games.strategy.engine.pbem;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -24,9 +27,12 @@ import lombok.extern.java.Log;
 /**
  * This class is responsible for posting turn summary and email at the end of each round in a PBEM game.
  * A new instance is created at end of turn, based on the Email and a forum poster stored in the game data.
+ * This class does only implement {@link Serializable} because otherwise the delegate would reject it,
+ * even though this class is for local use only.
  */
 @Log
-public class PbemMessagePoster {
+public class PbemMessagePoster implements Serializable {
+  private static final long serialVersionUID = -1L;
   private final GameProperties gameProperties;
   private File saveGameFile = null;
   private String turnSummary = null;
@@ -243,5 +249,13 @@ public class PbemMessagePoster {
         });
       }).start();
     }
+  }
+
+  private void readObject(final ObjectInputStream stream) {
+    throw new UnsupportedOperationException("This class shouldn't get de-serialized!");
+  }
+
+  private void writeObject(final ObjectOutputStream stream) {
+    throw new UnsupportedOperationException("This class shouldn't get serialized!");
   }
 }
