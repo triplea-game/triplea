@@ -30,10 +30,7 @@
       },
       "http_server_uri": {
         "description": "The http lobby server host URI",
-        "type": "string",
-        "anyOf": [
-          { "format": "uri" }
-        ]
+        "format": "uri"
       },
       "message": {
         "description": "The message displayed when a user connects to an available lobby server",
