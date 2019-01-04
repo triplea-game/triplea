@@ -24,7 +24,7 @@ import lombok.Getter;
 @Builder
 @Getter
 @EqualsAndHashCode
-public class LobbyServerProperties {
+public final class LobbyServerProperties {
   /** The host address of the lobby, typically an IP address. */
   @Nonnull private final String host;
 
