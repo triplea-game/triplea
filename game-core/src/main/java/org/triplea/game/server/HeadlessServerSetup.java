@@ -1,5 +1,7 @@
 package org.triplea.game.server;
 
+import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_EMAIL;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
@@ -19,11 +21,14 @@ import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.pbem.PbemMessagePoster;
+import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
+import lombok.extern.java.Log;
 
 /**
  * Server setup model.
  */
+@Log
 class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   private final List<Observer> listeners = new CopyOnWriteArrayList<>();
   private final ServerModel model;
@@ -39,7 +44,24 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   }
 
   private void createLobbyWatcher() {
-    lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), null,
+    final InGameLobbyWatcher.LobbyWatcherHandler handler = new InGameLobbyWatcher.LobbyWatcherHandler() {
+      @Override
+      public void reportError(final String message) {
+        log.severe(message);
+        ExitStatus.FAILURE.exit();
+      }
+
+      @Override
+      public String getSupportEmail() {
+        return System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "");
+      }
+
+      @Override
+      public boolean isPlayer() {
+        return false;
+      }
+    };
+    lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), handler,
         lobbyWatcher.getInGameLobbyWatcher()));
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
   }
