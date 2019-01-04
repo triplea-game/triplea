@@ -33,7 +33,6 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.ui.SwingAction;
-import games.strategy.util.Interruptibles;
 import swinglib.JButtonBuilder;
 
 /**
@@ -266,11 +265,11 @@ public final class GameSelectorPanel extends JPanel implements Observer {
 
   private void selectSavedGameFile() {
     GameFileSelector.selectGameFile()
-        .ifPresent(file -> Interruptibles
-            .await(() -> GameRunner.newBackgroundTaskRunner().runInBackground("Loading savegame...", () -> {
+        .ifPresent(
+            file -> GameRunner.newBackgroundTaskRunner().awaitRunInBackground("Loading savegame...", () -> {
               model.load(file);
               setOriginalPropertiesMap(model.getGameData());
-            })));
+            }));
   }
 
   private void selectGameFile() {
