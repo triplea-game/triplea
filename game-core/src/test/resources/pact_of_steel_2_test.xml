@@ -4180,7 +4180,6 @@
                 relationshipChange                  value:     the relationshipType that will exist after the action is succesful between the player and the otherPlayer format: "player1:player2:relationship"
                                                                 You can add multiple relationshipchanges per attachment
                 chance                              value:     diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
-                costPU                              value:     ammount of PU you will be charged to attempt this action
                 text                                value:     a KEY referring to politicstext.properties to indicate the texts used for regarding this action
                 actionAccept                        value:     a list of players that must accept this action before it takes effect (handy for peacetreaties)
                 attemptsPerTurn                     value:     the number of times this action can be attempted per round (default: 1)
@@ -4190,7 +4189,7 @@
                         <option name="relationshipChange" value="Italians:Russians:War"/>
                         <option name="text" value="ITALY_DECLAREWAR_RUSSIA"/>
                         <option name="chance" value="6:6"/>
-                        <option name="costPU" value="0"/>
+                        <option name="costResources" value="PUs" count="0"/>
                         <option name="attemptsPerTurn" value="1"/>
                 </attachment>
                 <attachment name="politicalActionAttachmentItaliansProposeCeasefireRussians" attachTo="Italians" javaClass="games.strategy.triplea.attachments.PoliticalActionAttachment" type="player">
@@ -4198,7 +4197,7 @@
                         <option name="relationshipChange" value="Italians:Russians:Neutrality"/>
                         <option name="text" value="ITALY_PROPOSEPEACE_RUSSIA"/>
                         <option name="chance" value="6:6"/>
-                        <option name="costPU" value="0"/>
+                        <option name="costResources" value="PUs" count="0"/>
                         <option name="actionAccept" value="Russians"/>
                         <option name="attemptsPerTurn" value="1"/>
                 </attachment>
@@ -4208,7 +4207,7 @@
                         <option name="relationshipChange" value="Italians:Americans:War"/>
                         <option name="text" value="ITALY_DECLAREWAR_CHINA_USA"/>
                         <option name="chance" value="2:6"/>
-                        <option name="costPU" value="0"/>
+                        <option name="costResources" value="PUs" count="0"/>
                         <option name="attemptsPerTurn" value="1"/>
                 </attachment>
                 <attachment name="politicalActionAttachmentJapaneseDeclareWarOnRussians" attachTo="Japanese" javaClass="games.strategy.triplea.attachments.PoliticalActionAttachment" type="player">
@@ -4216,7 +4215,7 @@
                         <option name="relationshipChange" value="Japanese:Russians:War"/>
                         <option name="text" value="JAPANESE_DECLAREWAR_RUSSIANS"/>
                         <option name="chance" value="6:6"/>
-                        <option name="costPU" value="0"/>
+                        <option name="costResources" value="PUs" count="0"/>
                         <option name="attemptsPerTurn" value="1"/>
                 </attachment>
                 <attachment name="politicalActionAttachmentRussiansDeclareWarOnItalians" attachTo="Russians" javaClass="games.strategy.triplea.attachments.PoliticalActionAttachment" type="player">
@@ -4224,7 +4223,7 @@
                         <option name="relationshipChange" value="Italians:Russians:War"/>
                         <option name="text" value="RUSSIANS_DECLAREWAR_ITALIANS"/>
                         <option name="chance" value="6:6"/>
-                        <option name="costPU" value="0"/>
+                        <option name="costResources" value="PUs" count="0"/>
                         <option name="attemptsPerTurn" value="1"/>
                 </attachment>
                 <attachment name="politicalActionAttachmentRussiansDeclareWarOnJapanese" attachTo="Russians" javaClass="games.strategy.triplea.attachments.PoliticalActionAttachment" type="player">
@@ -4232,7 +4231,7 @@
                         <option name="relationshipChange" value="Japanese:Russians:War"/>
                         <option name="text" value="RUSSIANS_DECLAREWAR_JAPANESE"/>
                         <option name="chance" value="6:6"/>
-                        <option name="costPU" value="0"/>
+                        <option name="costResources" value="PUs" count="0"/>
                         <option name="attemptsPerTurn" value="1"/>
                 </attachment>
                 <attachment name="politicalActionAttachmentRussiansAllyWithAmericansAndBritish" attachTo="Russians" javaClass="games.strategy.triplea.attachments.PoliticalActionAttachment" type="player">
@@ -4241,7 +4240,7 @@
                         <option name="relationshipChange" value="British:Russians:Allied"/>
                         <option name="text" value="RUSSIANS_ALLY_AMERICANS_BRITISH"/>
                         <option name="chance" value="6:6"/>
-                        <option name="costPU" value="1"/>
+                        <option name="costResources" value="PUs" count="1"/>
                         <option name="attemptsPerTurn" value="1"/>
                         <option name="actionAccept" value="Americans:British"/>
                 </attachment>
@@ -4251,7 +4250,7 @@
                         <option name="relationshipChange" value="British:Russians:Allied"/>
                         <option name="text" value="AMERICANS_BRITISH_ALLY_RUSSIANS"/>
                         <option name="chance" value="6:6"/>
-                        <option name="costPU" value="2"/>
+                        <option name="costResources" value="PUs" count="2"/>
                         <option name="attemptsPerTurn" value="1"/>
                         <option name="actionAccept" value="Russians"/>
                 </attachment>
@@ -4261,7 +4260,7 @@
                         <option name="relationshipChange" value="British:Russians:Allied"/>
                         <option name="text" value="AMERICANS_BRITISH_ALLY_RUSSIANS"/>
                         <option name="chance" value="6:6"/>
-                        <option name="costPU" value="3"/>
+                        <option name="costResources" value="PUs" count="3"/>
                         <option name="attemptsPerTurn" value="1"/>
                         <option name="actionAccept" value="Russians"/>
                 </attachment>
