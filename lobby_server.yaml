@@ -15,7 +15,7 @@
 - version: "1.10"
   host: lobby.triplea-game.org
   port: 3304
-  http_server_uri: "http://lobby-staging.triplea-game.org:4567"
+  http_server_uri: "http://prerelease.triplea-game.org:4567"
   message: |
     Welcome to TripleA 1.10 - Got a question, please visit the forums: https://forums.triplea-game.org/
     No talking politics in the lobby! Take your political comments to a private game!
