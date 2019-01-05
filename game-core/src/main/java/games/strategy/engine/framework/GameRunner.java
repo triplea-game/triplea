@@ -70,6 +70,7 @@ import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -124,11 +125,11 @@ public final class GameRunner {
     ArgParser.handleCommandLineArgs(args);
 
     if (SystemProperties.isMac()) {
-      com.apple.eawt.Application.getApplication().setOpenURIHandler(event -> {
+      MacOsIntegration.addOpenUriHandler(uri -> {
         final String encoding = StandardCharsets.UTF_8.displayName();
         try {
           final String mapName = URLDecoder.decode(
-              event.getURI().toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()), encoding);
+              uri.toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()), encoding);
           SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
         } catch (final UnsupportedEncodingException e) {
           throw new AssertionError(encoding + " is not a supported encoding!", e);

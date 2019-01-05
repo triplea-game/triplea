@@ -31,6 +31,10 @@ public final class SystemProperties {
     return checkNotNull(System.getProperty("java.runtime.version"));
   }
 
+  public static String getJavaSpecificationVersion() {
+    return checkNotNull(System.getProperty("java.specification.version"));
+  }
+
   private static String getOsName() {
     return checkNotNull(System.getProperty("os.name"));
   }

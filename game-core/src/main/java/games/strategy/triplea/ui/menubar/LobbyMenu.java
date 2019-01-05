@@ -33,7 +33,6 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
-import games.strategy.engine.lobby.client.ui.MacLobbyWrapper;
 import games.strategy.engine.lobby.client.ui.TimespanDialog;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.INode;
@@ -41,6 +40,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 
@@ -58,7 +58,7 @@ public final class LobbyMenu extends JMenuBar {
     if (!SystemProperties.isMac()) {
       createFileMenu(this);
     } else {
-      MacLobbyWrapper.registerMacShutdownHandler(lobbyFrame);
+      MacOsIntegration.addQuitHandler(lobbyFrame::shutdown);
     }
     createAccountMenu(this);
     if (lobbyFrame.getLobbyClient().isAdmin()) {

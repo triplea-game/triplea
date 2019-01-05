@@ -16,7 +16,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
-import games.strategy.triplea.ui.MacQuitMenuWrapper;
+import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.SwingAction;
@@ -98,10 +98,11 @@ final class FileMenu extends JMenu {
           KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     }
     add(leaveGameMenuExit);
+
     // Mac OS X automatically creates a Quit menu item under the TripleA menu,
     // so all we need to do is register that menu item with triplea's shutdown mechanism
     if (isMac) {
-      MacQuitMenuWrapper.registerMacShutdownHandler(frame);
+      MacOsIntegration.addQuitHandler(frame::shutdown);
     } else { // On non-Mac operating systems, we need to manually create an Exit menu item
       final JMenuItem menuFileExit = new JMenuItem(SwingAction.of("Exit Program", e -> frame.shutdown()));
       menuFileExit.setMnemonic(KeyEvent.VK_E);

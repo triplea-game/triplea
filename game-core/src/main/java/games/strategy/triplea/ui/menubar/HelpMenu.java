@@ -30,8 +30,6 @@ import javax.swing.SwingUtilities;
 
 import org.triplea.common.util.concurrent.CompletableFutureUtils;
 
-import com.apple.eawt.Application;
-
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -40,6 +38,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
@@ -330,7 +329,7 @@ public final class HelpMenu extends JMenu {
       add(SwingAction.of("About", e -> JOptionPane.showMessageDialog(null, label,
           "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE))).setMnemonic(KeyEvent.VK_A);
     } else { // On Mac OS X, put the About menu where Mac users expect it to be
-      Application.getApplication().setAboutHandler(paramAboutEvent -> JOptionPane.showMessageDialog(null, label,
+      MacOsIntegration.addAboutHandler(() -> JOptionPane.showMessageDialog(null, label,
           "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE));
     }
   }
