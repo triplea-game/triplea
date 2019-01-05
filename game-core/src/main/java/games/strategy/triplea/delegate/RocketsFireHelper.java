@@ -69,7 +69,7 @@ public class RocketsFireHelper implements Serializable {
 
   /**
    * Fire rockets if we are v1
-   * In this rule set, each player only gets one rocket attack per turn. 
+   * In this rule set, each player only gets one rocket attack per turn.
    */
   public static void fireWW2V1IfNeeded(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();

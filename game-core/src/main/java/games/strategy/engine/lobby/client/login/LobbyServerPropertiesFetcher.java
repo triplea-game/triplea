@@ -66,7 +66,7 @@ public final class LobbyServerPropertiesFetcher {
     }
     return Optional.ofNullable(lobbyServerProperties);
   }
-  
+
   private Optional<LobbyServerProperties> fetchProperties() {
     final Optional<LobbyServerProperties> userOverride = getTestOverrideProperties();
     if (userOverride.isPresent()) {
