@@ -38,6 +38,15 @@ class ErrorReportUploadAction implements BiConsumer<JFrame, UserErrorReport> {
   }
 
   private void sendErrorReport(final JFrame frame, final ErrorReport errorReport) {
+    if(errorReport.isEmpty()) {
+      DialogBuilder.builder()
+          .parent(frame)
+          .title("Error: Missing data")
+          .errorMessage("please fill in both a title and description of the problem.")
+          .showDialog();
+      return;
+    }
+
     final ServiceResponse<ErrorReportResponse> response = serviceClient.apply(errorReport);
     final URI githubLink =
         response.getPayload().map(pay -> pay.getGithubIssueLink().orElse(null)).orElse(null);

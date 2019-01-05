@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import com.google.common.base.Strings;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -59,4 +60,7 @@ public class ErrorReport {
         .orElse("");
   }
 
+  public boolean isEmpty() {
+    return (Strings.emptyToNull(title) == null) || (Strings.emptyToNull(description) == null);
+  }
 }
