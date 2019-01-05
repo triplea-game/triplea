@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import org.triplea.http.client.error.report.ErrorReportClientFactory;
 
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
+import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.triplea.settings.ClientSetting;
 
 class ErrorReportConfiguration {
@@ -20,8 +21,7 @@ class ErrorReportConfiguration {
    */
   static BiConsumer<JFrame, UserErrorReport> newReportHandler() {
     return newFromUserOverride()
-        .orElseGet(
-            () -> newFromRemoteProperties().orElse(ErrorReportUploadAction.OFFLINE_STRATEGY));
+        .orElseGet(ErrorReportConfiguration::newFromRemoteProperties);
   }
 
   private static Optional<BiConsumer<JFrame, UserErrorReport>> newFromUserOverride() {
@@ -32,12 +32,9 @@ class ErrorReportConfiguration {
         .map(ErrorReportUploadAction::new);
   }
 
-  private static Optional<BiConsumer<JFrame, UserErrorReport>> newFromRemoteProperties() {
-    return LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
-        .fetchLobbyServerProperties()
-        .map(
-            props ->
-                new ErrorReportUploadAction(
-                    ErrorReportClientFactory.newErrorUploader(props.getHttpServerUri())));
+  private static BiConsumer<JFrame, UserErrorReport> newFromRemoteProperties() {
+    final LobbyServerProperties props =
+        LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher().fetchLobbyServerProperties();
+    return new ErrorReportUploadAction(ErrorReportClientFactory.newErrorUploader(props.getHttpServerUri()));
   }
 }

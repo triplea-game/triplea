@@ -59,29 +59,28 @@ public final class LobbyServerPropertiesFetcher {
    * @return LobbyServerProperties as fetched and parsed from github hosted remote URL.
    *         Otherwise backup values from client config.
    */
-  public Optional<LobbyServerProperties> fetchLobbyServerProperties() {
+  public LobbyServerProperties fetchLobbyServerProperties() {
     if (lobbyServerProperties == null) {
-      final Optional<LobbyServerProperties> props = fetchProperties();
-      props.ifPresent(lobbyProps -> lobbyServerProperties = lobbyProps);
+      lobbyServerProperties = fetchProperties();
     }
-    return Optional.ofNullable(lobbyServerProperties);
+    return lobbyServerProperties;
   }
   
-  private Optional<LobbyServerProperties> fetchProperties() {
+  private LobbyServerProperties fetchProperties() {
     final Optional<LobbyServerProperties> userOverride = getTestOverrideProperties();
     if (userOverride.isPresent()) {
-      return userOverride;
+      return userOverride.get();
     }
 
     final Optional<LobbyServerProperties> fromHostedFile = getRemoteProperties();
     if (fromHostedFile.isPresent()) {
-      return fromHostedFile;
+      return fromHostedFile.get();
     }
 
-    return Optional.of(LobbyServerProperties.builder()
+    return LobbyServerProperties.builder()
         .host(ClientSetting.lobbyLastUsedHost.getValueOrThrow())
         .port(ClientSetting.lobbyLastUsedPort.getValueOrThrow())
-        .build());
+        .build();
   }
 
   private static Optional<LobbyServerProperties> getTestOverrideProperties() {

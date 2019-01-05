@@ -19,6 +19,7 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.ScreenChangeListener;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
+import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -105,18 +106,15 @@ public class SetupPanelModel {
    * @param uiParent Used to center pop-up's prompting user for their lobby credentials.
    */
   public void login(final Component uiParent) {
-    LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher().fetchLobbyServerProperties()
-        .ifPresent(lobbyServerProperties -> {
-          final LobbyLogin login =
-              new LobbyLogin(JOptionPane.getFrameForComponent(uiParent), lobbyServerProperties);
-
-          Optional.ofNullable(login.login())
-              .ifPresent(
-                  lobbyClient -> {
-                    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyServerProperties);
-                    GameRunner.hideMainFrame();
-                    lobbyFrame.setVisible(true);
-                  });
-        });
+    final LobbyServerProperties lobbyServerProperties =
+        LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher().fetchLobbyServerProperties();
+    final LobbyLogin login = new LobbyLogin(JOptionPane.getFrameForComponent(uiParent), lobbyServerProperties);
+    Optional.ofNullable(login.login())
+        .ifPresent(
+            lobbyClient -> {
+              final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyServerProperties);
+              GameRunner.hideMainFrame();
+              lobbyFrame.setVisible(true);
+            });
   }
 }

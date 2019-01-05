@@ -17,17 +17,6 @@ import swinglib.DialogBuilder;
 
 @AllArgsConstructor
 class ErrorReportUploadAction implements BiConsumer<JFrame, UserErrorReport> {
-
-  static final BiConsumer<JFrame, UserErrorReport> OFFLINE_STRATEGY =
-      (frame, report) ->
-          DialogBuilder.builder()
-              .parent(frame)
-              .title("Unable to connect to server")
-              .errorMessage(
-                  "TripleA is unable to get the servers network adddress, please restart "
-                      + "Triplea and try again, if this problem keeps happening please contact Triplea")
-              .showDialog();
-
   private final ServiceClient<ErrorReport, ErrorReportResponse> serviceClient;
 
   @Override
