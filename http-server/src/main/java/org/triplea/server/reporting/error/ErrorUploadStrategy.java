@@ -1,6 +1,5 @@
 package org.triplea.server.reporting.error;
 
-import java.net.URI;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -24,8 +23,6 @@ public class ErrorUploadStrategy implements Function<ErrorReportRequest, ErrorRe
 
   @Nonnull private final ServiceClient<CreateIssueRequest, CreateIssueResponse> createIssueClient;
   @Nonnull private final Predicate<ErrorReportRequest> allowErrorReport;
-
-  @Nonnull private final URI hostUri;
 
   @Override
   public ErrorReportResponse apply(final ErrorReportRequest errorReport) {
