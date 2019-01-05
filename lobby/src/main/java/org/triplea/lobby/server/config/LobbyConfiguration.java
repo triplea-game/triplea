@@ -1,65 +1,28 @@
 package org.triplea.lobby.server.config;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.triplea.lobby.server.EnvironmentVariable;
 
-import org.triplea.common.config.PropertyReader;
-
-import com.google.common.annotations.VisibleForTesting;
+import lombok.Getter;
 
 /**
  * Provides access to the lobby configuration.
  */
+@Getter
 public final class LobbyConfiguration {
-  private final PropertyReader propertyReader;
 
-  public LobbyConfiguration(final PropertyReader propertyReader) {
-    checkNotNull(propertyReader);
+  private final int port;
+  private final String postgresHost;
+  private final int postgresPort;
+  private final String postgresDatabase;
+  private final String postgresUser;
+  private final String postgresPassword;
 
-    this.propertyReader = propertyReader;
-  }
-
-  public int getPort() {
-    return propertyReader.readIntegerPropertyOrDefault(PropertyKeys.PORT, DefaultValues.PORT);
-  }
-
-  public String getPostgresDatabase() {
-    return propertyReader.readPropertyOrDefault(PropertyKeys.POSTGRES_DATABASE, DefaultValues.POSTGRES_DATABASE);
-  }
-
-  public String getPostgresHost() {
-    return propertyReader.readPropertyOrDefault(PropertyKeys.POSTGRES_HOST, DefaultValues.POSTGRES_HOST);
-  }
-
-  public String getPostgresPassword() {
-    return propertyReader.readProperty(PropertyKeys.POSTGRES_PASSWORD);
-  }
-
-  public int getPostgresPort() {
-    return propertyReader.readIntegerPropertyOrDefault(PropertyKeys.POSTGRES_PORT, DefaultValues.POSTGRES_PORT);
-  }
-
-  public String getPostgresUser() {
-    return propertyReader.readProperty(PropertyKeys.POSTGRES_USER);
-  }
-
-  /**
-   * The valid lobby property keys.
-   */
-  @VisibleForTesting
-  public interface PropertyKeys {
-    String PORT = "port";
-    String POSTGRES_DATABASE = "postgres_database";
-    String POSTGRES_HOST = "postgres_host";
-    String POSTGRES_PASSWORD = "postgres_password";
-    String POSTGRES_PORT = "postgres_port";
-    String POSTGRES_USER = "postgres_user";
-  }
-
-  @VisibleForTesting
-  interface DefaultValues {
-    int PORT = 3304;
-    String POSTGRES_DATABASE = "ta_users";
-    String POSTGRES_HOST = "localhost";
-    int POSTGRES_PORT = 5432;
+  public LobbyConfiguration() {
+    postgresDatabase = "ta_users";
+    postgresHost = EnvironmentVariable.POSTGRES_HOST.getValue();
+    postgresPassword = EnvironmentVariable.POSTGRES_PASSWORD.getValue();
+    postgresUser = EnvironmentVariable.POSTGRES_USER.getValue();
+    port = Integer.valueOf(EnvironmentVariable.PORT.getValue());
+    postgresPort = Integer.valueOf(EnvironmentVariable.POSTGRES_PORT.getValue());
   }
 }
