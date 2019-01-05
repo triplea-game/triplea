@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.when;
 
-import java.net.URI;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -24,9 +23,6 @@ import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorUploaderTest {
-
-  private static final URI SAMPLE_URI = URI.create("https://example");
-
   @Mock
   private ServiceClient<CreateIssueRequest, CreateIssueResponse> serviceClient;
   @Mock
@@ -53,7 +49,6 @@ class ErrorUploaderTest {
     errorUploader = ErrorUploadStrategy.builder()
         .responseAdapter(responseAdapter)
         .requestAdapter(requestAdapter)
-        .hostUri(SAMPLE_URI)
         .createIssueClient(serviceClient)
         .allowErrorReport(allowErrorReport)
         .build();
