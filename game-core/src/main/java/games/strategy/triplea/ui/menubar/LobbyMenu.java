@@ -7,7 +7,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
+import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -23,6 +26,8 @@ import javax.swing.WindowConstants;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IUserManager;
 import org.triplea.lobby.common.login.RsaAuthenticator;
+
+import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
@@ -82,29 +87,30 @@ public final class LobbyMenu extends JMenuBar {
     addDisplayPlayersInformationMenu(diagnostics);
   }
 
-  private void createToolboxMenu(final JMenu menuBar) {
-    final JMenu toolbox = new JMenu("Toolbox");
-    menuBar.add(toolbox);
-    addBanUsernameMenu(toolbox);
-    addBanMacAddressMenu(toolbox);
-    addUnbanUsernameMenu(toolbox);
-    addUnbanMacAddressMenu(toolbox);
+  private void createToolboxMenu(final JMenu parentMenu) {
+    final JMenu toolboxMenu = new JMenu("Toolbox");
+    parentMenu.add(toolboxMenu);
+    addBanUsernameMenuItem(toolboxMenu);
+    addBanMacAddressMenuItem(toolboxMenu);
+    addUnbanUsernameMenuItem(toolboxMenu);
+    addUnbanMacAddressMenuItem(toolboxMenu);
+    toolboxMenu.addSeparator();
+    addMuteUsernameMenuItem(toolboxMenu);
+    addUnmuteUsernameMenuItem(toolboxMenu);
   }
 
   private void addDisplayPlayersInformationMenu(final JMenu parentMenu) {
-    final JMenuItem revive = new JMenuItem("Display Players Information");
-    revive.setEnabled(true);
-    revive.addActionListener(event -> new Thread(() -> {
-      final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-          .getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
+    final JMenuItem menuItem = new JMenuItem("Display Players Information");
+    menuItem.addActionListener(event -> new Thread(() -> {
+      final IModeratorController controller = getModeratorController();
       final StringBuilder builder = new StringBuilder();
-      builder.append("Online Players:\r\n\r\n");
+      builder.append("Online Players:\n\n");
       for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getOnlinePlayers()) {
-        builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
+        builder.append(controller.getInformationOn(player)).append("\n\n");
       }
-      builder.append("Players That Have Left (Last 10):\r\n\r\n");
+      builder.append("Players That Have Left (Last 10):\n\n");
       for (final INode player : lobbyFrame.getChatMessagePanel().getChat().getPlayersThatLeft_Last10()) {
-        builder.append(controller.getInformationOn(player)).append("\r\n\r\n");
+        builder.append(controller.getInformationOn(player)).append("\n\n");
       }
       SwingUtilities.invokeLater(() -> {
         final JDialog dialog = new JDialog(lobbyFrame, "Players Information");
@@ -135,33 +141,52 @@ public final class LobbyMenu extends JMenuBar {
         dialog.setVisible(true);
       });
     }).start());
-    parentMenu.add(revive);
+    parentMenu.add(menuItem);
   }
 
-  private void addBanUsernameMenu(final JMenu parentMenu) {
-    final JMenuItem item = new JMenuItem("Ban Username");
-    item.addActionListener(e -> {
-      final String name = JOptionPane.showInputDialog(null,
-          "Enter the username that you want to ban from the lobby.\r\n\r\n"
-              + "Note that this ban is effective on any username, registered or anonymous, online or offline.",
-          "");
-      if (name == null || name.length() < 1) {
-        return;
-      }
-      if (!DBUser.isValidUserName(name)) {
-        JOptionPane.showMessageDialog(lobbyFrame, "The username you entered is invalid.", "Invalid Username",
-            JOptionPane.ERROR_MESSAGE);
-        return;
-      }
-      TimespanDialog.prompt(lobbyFrame, "Select Timespan",
-          "Please consult other admins before banning longer than 1 day.", date -> {
-            final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-                .getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
-            controller.banUsername(newDummyNode(name), date);
-          });
+  private void addBanUsernameMenuItem(final JMenu parentMenu) {
+    final JMenuItem menuItem = new JMenuItem("Ban Username");
+    menuItem.addActionListener(e -> {
+      final String message = "Enter the username that you want to ban from the lobby.\n"
+          + "\n"
+          + "Note that this ban is effective on any username, registered or anonymous, online or offline.";
+      showInputDialog(message)
+          .filter(this::validateUsername)
+          .ifPresent(username -> showTimespanDialog(
+              "Please consult other admins before banning longer than 1 day.",
+              date -> getModeratorController().banUsername(newDummyNode(username), date)));
     });
-    item.setEnabled(true);
-    parentMenu.add(item);
+    parentMenu.add(menuItem);
+  }
+
+  private Optional<String> showInputDialog(final String message) {
+    final @Nullable String result = JOptionPane.showInputDialog(lobbyFrame, message);
+    return Strings.isNullOrEmpty(result) ? Optional.empty() : Optional.of(result);
+  }
+
+  private boolean validateUsername(final @Nullable String username) {
+    if (!DBUser.isValidUserName(username)) {
+      showErrorDialog("The username you entered is invalid.", "Invalid Username");
+      return false;
+    }
+
+    return true;
+  }
+
+  private void showErrorDialog(final String message, final String title) {
+    JOptionPane.showMessageDialog(lobbyFrame, message, title, JOptionPane.ERROR_MESSAGE);
+  }
+
+  private void showTimespanDialog(final String message, final Consumer<Date> action) {
+    TimespanDialog.prompt(lobbyFrame, "Select Timespan", message, action);
+  }
+
+  private IModeratorController getModeratorController() {
+    return (IModeratorController) lobbyFrame
+        .getLobbyClient()
+        .getMessengers()
+        .getRemoteMessenger()
+        .getRemote(IModeratorController.REMOTE_NAME);
   }
 
   private static INode newDummyNode(final String name) {
@@ -172,72 +197,80 @@ public final class LobbyMenu extends JMenuBar {
     }
   }
 
-  private void addBanMacAddressMenu(final JMenu parentMenu) {
-    final JMenuItem item = new JMenuItem("Ban Hashed Mac Address");
-    item.addActionListener(e -> {
-      final String mac =
-          JOptionPane.showInputDialog(null, "Enter the hashed Mac Address that you want to ban from the lobby.\r\n\r\n"
-              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3", "");
-      if (mac == null || mac.length() < 1) {
-        return;
-      }
-      if (!MacFinder.isValidHashedMacAddress(mac)) {
-        JOptionPane.showMessageDialog(lobbyFrame, "The hashed Mac Address you entered is invalid.",
-            "Invalid Hashed Mac", JOptionPane.ERROR_MESSAGE);
-        return;
-      }
-      TimespanDialog.prompt(lobbyFrame, "Select Timespan",
-          "Please consult other admins before banning longer than 1 day.", date -> {
-            final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-                .getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
-            controller.banMac(newDummyNode("__unknown__"), mac, date);
-          });
+  private void addBanMacAddressMenuItem(final JMenu parentMenu) {
+    final JMenuItem menuItem = new JMenuItem("Ban Hashed Mac Address");
+    menuItem.addActionListener(e -> {
+      showHashedMacAddressInputDialog("Enter the hashed Mac address that you want to ban from the lobby.")
+          .filter(this::validateHashedMacAddress)
+          .ifPresent(hashedMacAddress -> showTimespanDialog(
+              "Please consult other admins before banning longer than 1 day.",
+              date -> getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, date)));
     });
-    item.setEnabled(true);
-    parentMenu.add(item);
+    parentMenu.add(menuItem);
   }
 
-  private void addUnbanUsernameMenu(final JMenu parentMenu) {
-    final JMenuItem item = new JMenuItem("Unban Username");
-    item.addActionListener(e -> {
-      final String name =
-          JOptionPane.showInputDialog(null, "Enter the username that you want to unban from the lobby.", "");
-      if (name == null || name.length() < 1) {
-        return;
-      }
-      if (!DBUser.isValidUserName(name)) {
-        JOptionPane.showMessageDialog(lobbyFrame, "The username you entered is invalid.", "Invalid Username",
-            JOptionPane.ERROR_MESSAGE);
-        return;
-      }
-      final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-          .getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
-      controller.banUsername(newDummyNode(name), Date.from(Instant.EPOCH));
-    });
-    item.setEnabled(true);
-    parentMenu.add(item);
+  private Optional<String> showHashedMacAddressInputDialog(final String message) {
+    final String completeMessage = message + "\n"
+        + "\n"
+        + "Hashed Mac addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3";
+    return showInputDialog(completeMessage).map(MacFinder::withPrefix);
   }
 
-  private void addUnbanMacAddressMenu(final JMenu parentMenu) {
-    final JMenuItem item = new JMenuItem("Unban Hashed Mac Address");
-    item.addActionListener(e -> {
-      final String mac =
-          JOptionPane.showInputDialog(null, "Enter the hashed Mac Address that you want to unban from the lobby.\n\n"
-              + "Hashed Mac Addresses should be entered in this format: $1$MH$345ntXD4G3AKpAeHZdaGe3", "");
-      if (mac == null || mac.length() < 1) {
-        return;
-      }
-      if (!MacFinder.isValidHashedMacAddress(mac)) {
-        JOptionPane.showMessageDialog(lobbyFrame, "The hashed Mac Address you entered is invalid.",
-            "Invalid Hashed Mac", JOptionPane.ERROR_MESSAGE);
-        return;
-      }
-      final IModeratorController controller = (IModeratorController) lobbyFrame.getLobbyClient().getMessengers()
-          .getRemoteMessenger().getRemote(IModeratorController.REMOTE_NAME);
-      controller.banMac(newDummyNode("__unknown__"), mac, Date.from(Instant.EPOCH));
+  private boolean validateHashedMacAddress(final @Nullable String hashedMacAddress) {
+    if (!MacFinder.isValidHashedMacAddress(hashedMacAddress)) {
+      showErrorDialog("The hashed Mac Address you entered is invalid.", "Invalid Hashed Mac");
+      return false;
+    }
+
+    return true;
+  }
+
+  private void addUnbanUsernameMenuItem(final JMenu parentMenu) {
+    final JMenuItem menuItem = new JMenuItem("Unban Username");
+    menuItem.addActionListener(e -> {
+      showInputDialog("Enter the username that you want to unban from the lobby.")
+          .filter(this::validateUsername)
+          .ifPresent(username -> getModeratorController()
+              .banUsername(newDummyNode(username), Date.from(Instant.EPOCH)));
     });
-    item.setEnabled(true);
-    parentMenu.add(item);
+    parentMenu.add(menuItem);
+  }
+
+  private void addUnbanMacAddressMenuItem(final JMenu parentMenu) {
+    final JMenuItem menuItem = new JMenuItem("Unban Hashed Mac Address");
+    menuItem.addActionListener(e -> {
+      showHashedMacAddressInputDialog("Enter the hashed Mac address that you want to unban from the lobby.")
+          .filter(this::validateHashedMacAddress)
+          .ifPresent(hashedMacAddress -> getModeratorController()
+              .banMac(newDummyNode("__unknown__"), hashedMacAddress, Date.from(Instant.EPOCH)));
+    });
+    parentMenu.add(menuItem);
+  }
+
+  private void addMuteUsernameMenuItem(final JMenu parentMenu) {
+    final JMenuItem menuItem = new JMenuItem("Mute Username");
+    menuItem.addActionListener(e -> {
+      final String message = "Enter the username that you want to mute in the lobby.\n"
+          + "\n"
+          + "Note that this mute is effective on any username, registered or anonymous, online or offline.";
+      showInputDialog(message)
+          .filter(this::validateUsername)
+          .ifPresent(username -> showTimespanDialog(
+              "Please consult other admins before muting longer than 1 day.",
+              date -> getModeratorController().muteUsername(newDummyNode(username), date)));
+    });
+    parentMenu.add(menuItem);
+  }
+
+  private void addUnmuteUsernameMenuItem(final JMenu parentMenu) {
+    final JMenuItem menuItem = new JMenuItem("Unmute Username");
+    menuItem.addActionListener(e -> {
+      showInputDialog("Enter the username that you want to unmute in the lobby.")
+          .filter(this::validateUsername)
+          .ifPresent(username -> getModeratorController()
+              .muteUsername(newDummyNode(username), Date.from(Instant.EPOCH)));
+    });
+    parentMenu.add(menuItem);
   }
 
   private void createSettingsMenu(final LobbyMenu menuBar) {
@@ -264,8 +297,7 @@ public final class LobbyMenu extends JMenuBar {
     parentMenu.add(helpPageLink);
 
     final JMenuItem lobbyRules = new JMenuItem("Lobby Rules");
-    lobbyRules.addActionListener(
-        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES));
+    lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES));
     parentMenu.add(lobbyRules);
 
     final JMenuItem warClub = new JMenuItem("TripleA Forum");
@@ -293,7 +325,7 @@ public final class LobbyMenu extends JMenuBar {
         (IUserManager) lobbyFrame.getLobbyClient().getRemoteMessenger().getRemote(IUserManager.REMOTE_NAME);
     final DBUser user = manager.getUserInfo(lobbyFrame.getLobbyClient().getMessenger().getLocalNode().getName());
     if (user == null) {
-      JOptionPane.showMessageDialog(this, "No user info found", "Error", JOptionPane.ERROR_MESSAGE);
+      showErrorDialog("No user info found", "Error");
       return;
     }
 
@@ -307,7 +339,7 @@ public final class LobbyMenu extends JMenuBar {
         panel.getEmail(),
         RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()));
     if (error != null) {
-      JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
+      showErrorDialog(error, "Error");
       return;
     }
 

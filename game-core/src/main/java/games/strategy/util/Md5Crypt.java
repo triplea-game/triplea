@@ -82,24 +82,6 @@ public final class Md5Crypt {
   }
 
   /**
-   * Gets the hash for the specified hashed value.
-   *
-   * @param hashedValue The hashed value from a previous call to {@link #hash(String, String)} whose hash is to be
-   *        returned.
-   *
-   * @return The hash for the specified hashed value.
-   *
-   * @throws IllegalArgumentException If {@code hashedValue} is not an MD5-crypt hashed value.
-   */
-  public static String getHash(final String hashedValue) {
-    checkNotNull(hashedValue);
-
-    final Matcher matcher = HASHED_VALUE_PATTERN.matcher(hashedValue);
-    checkArgument(matcher.matches(), "'" + hashedValue + "' is not an MD5-crypt hashed value");
-    return matcher.group(2);
-  }
-
-  /**
    * Gets the salt for the specified hashed value.
    *
    * @param hashedValue The hashed value from a previous call to {@link #hash(String, String)} whose salt is to be
@@ -128,5 +110,18 @@ public final class Md5Crypt {
     checkNotNull(value);
 
     return HASHED_VALUE_PATTERN.matcher(value).matches();
+  }
+
+  /**
+   * Creates a new hashed value from the specified salt and hash components.
+   *
+   * @return The returned value may not be a legal MD5-crypt hashed value if either {@code salt} or {@code hash} are
+   *         illegal and should be validated using {@link #isLegalHashedValue(String)}.
+   */
+  public static String fromSaltAndHash(final String salt, final String hash) {
+    checkNotNull(salt);
+    checkNotNull(hash);
+
+    return String.format("%s%s$%s", MAGIC, salt, hash);
   }
 }

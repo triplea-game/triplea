@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
-import java.util.Optional;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -19,7 +18,6 @@ import javax.swing.JPanel;
 import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.ui.SwingAction;
 
 abstract class SetupPanel extends JPanel implements ISetupPanel {
@@ -43,17 +41,6 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
   @Override
   public IChatPanel getChatPanel() {
     return null;
-  }
-
-  @Override
-  public void preStartGame() {}
-
-  @Override
-  public void postStartGame() {}
-
-  @Override
-  public Optional<ILauncher> getLauncher() {
-    throw new IllegalStateException("NOt implemented");
   }
 
   @Override

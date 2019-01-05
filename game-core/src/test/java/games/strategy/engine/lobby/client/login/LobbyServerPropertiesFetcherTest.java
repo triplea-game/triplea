@@ -1,15 +1,15 @@
 package games.strategy.engine.lobby.client.login;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -18,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import games.strategy.engine.framework.map.download.DownloadUtils;
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.util.OptionalUtils;
 import games.strategy.util.Version;
@@ -26,7 +25,7 @@ import games.strategy.util.Version;
 @ExtendWith(MockitoExtension.class)
 class LobbyServerPropertiesFetcherTest {
   @Mock
-  private LobbyLocationFileDownloader mockFileDownloader;
+  private Function<String, Optional<File>> mockFileDownloader;
 
   private LobbyServerPropertiesFetcher testObj;
 
@@ -35,7 +34,6 @@ class LobbyServerPropertiesFetcherTest {
     testObj = new LobbyServerPropertiesFetcher(mockFileDownloader);
   }
 
-  @ExtendWith(MockitoExtension.class)
   @Nested
   final class DownloadAndParseRemoteFileTest {
     /**
@@ -45,29 +43,29 @@ class LobbyServerPropertiesFetcherTest {
     void happyCase() throws Exception {
       givenHappyCase();
 
-      final LobbyServerProperties result = testObj.downloadAndParseRemoteFile(TestData.url,
+      final Optional<LobbyServerProperties> result = testObj.downloadAndParseRemoteFile(TestData.url,
           TestData.version, (a, b) -> TestData.lobbyServerProperties);
 
-      assertThat(result, sameInstance(TestData.lobbyServerProperties));
+      assertThat(result, isPresentAndIs(TestData.lobbyServerProperties));
     }
 
     private void givenHappyCase() throws Exception {
       final File temp = File.createTempFile("temp", "tmp");
       temp.deleteOnExit();
-      when(mockFileDownloader.download(TestData.url)).thenReturn(DownloadUtils.FileDownloadResult.success(temp));
+      when(mockFileDownloader.apply(TestData.url)).thenReturn(Optional.of(temp));
     }
 
     @Test
     void throwsOnDownloadFailure() {
-      assertThrows(IOException.class, () -> {
-        when(mockFileDownloader.download(TestData.url)).thenReturn(DownloadUtils.FileDownloadResult.FAILURE);
+      when(mockFileDownloader.apply(TestData.url)).thenReturn(Optional.empty());
 
-        testObj.downloadAndParseRemoteFile(TestData.url, TestData.version, (a, b) -> TestData.lobbyServerProperties);
-      });
+      final Optional<LobbyServerProperties> result =
+          testObj.downloadAndParseRemoteFile(TestData.url, TestData.version, (a, b) -> TestData.lobbyServerProperties);
+
+      assertThat(result, isEmpty());
     }
   }
 
-  @ExtendWith(MockitoExtension.class)
   @Nested
   final class GetTestOverridePropertiesTest {
     @Mock
@@ -112,8 +110,8 @@ class LobbyServerPropertiesFetcherTest {
       OptionalUtils.ifPresentOrElse(
           result,
           it -> {
-            assertThat(it.host, is(host));
-            assertThat(it.port, is(port));
+            assertThat(it.getHost(), is(host));
+            assertThat(it.getPort(), is(port));
           },
           () -> fail("expected non-empty properties, but was empty"));
     }
@@ -160,6 +158,7 @@ class LobbyServerPropertiesFetcherTest {
   private interface TestData {
     Version version = new Version("0.0.0.0");
     String url = "someUrl";
-    LobbyServerProperties lobbyServerProperties = new LobbyServerProperties("host", 123);
+    LobbyServerProperties lobbyServerProperties =
+        LobbyServerProperties.builder().host("host").port(123).build();
   }
 }

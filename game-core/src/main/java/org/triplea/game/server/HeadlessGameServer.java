@@ -232,23 +232,6 @@ public class HeadlessGameServer {
     }
   }
 
-  /**
-   * Sends a chat message to all nodes except the originating node.
-   */
-  public static synchronized void sendChat(final String chatString) {
-    final HeadlessGameServer instance = getInstance();
-    if (instance != null) {
-      final Chat chat = instance.getChat();
-      if (chat != null) {
-        try {
-          chat.sendMessage(chatString, false);
-        } catch (final Exception e) {
-          log.log(Level.SEVERE, "Failed to send chat", e);
-        }
-      }
-    }
-  }
-
   public String getSalt() {
     return BCrypt.gensalt();
   }
@@ -543,7 +526,6 @@ public class HeadlessGameServer {
       if (setupPanelModel != null && setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart()) {
         log.info("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName()
             + ", Round: " + setupPanelModel.getGameSelectorModel().getGameData().getSequence().getRound());
-        setupPanelModel.getPanel().preStartGame();
 
         final boolean launched = setupPanelModel.getPanel().getLauncher()
             .map(launcher -> {
@@ -610,13 +592,12 @@ public class HeadlessGameServer {
   public static void start(final String[] args) {
     final ArgValidationResult validation = HeadlessGameServerCliParam.validateArgs(args);
     if (!validation.isValid()) {
-      log.log(Level.SEVERE,
-          String.format("Failed to start, improper args: %s\n"
-              + "Errors:\n- %s\n"
-              + "Example usage: %s",
-              Arrays.toString(args),
-              String.join("\n- ", validation.getErrorMessages()),
-              HeadlessGameServerCliParam.exampleUsage()));
+      log.severe(String.format("Failed to start, improper args: %s\n"
+          + "Errors:\n- %s\n"
+          + "Example usage: %s",
+          Arrays.toString(args),
+          String.join("\n- ", validation.getErrorMessages()),
+          HeadlessGameServerCliParam.exampleUsage()));
       return;
     }
 

@@ -71,4 +71,9 @@ public class Util {
 
     return p.negate();
   }
+
+  public static boolean isInt(final String string) {
+    Preconditions.checkNotNull(string);
+    return string.matches("^-?\\d+$");
+  }
 }

@@ -14,7 +14,6 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 /**
@@ -26,13 +25,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   // a key referring to politicaltexts.properties or other .properties for all the UI messages belonging to this action.
   protected String text = "";
-  /**
-   * The cost in PUs to attempt this action.
-   *
-   * @deprecated Replaced by costResources.
-   */
-  @Deprecated
-  protected int costPu = 0;
   // cost in any resources to attempt this action
   protected IntegerMap<Resource> costResources = new IntegerMap<>();
   // how many times can you perform this action each round?
@@ -69,27 +61,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
 
   private void resetText() {
     text = "";
-  }
-
-  @Deprecated
-  private void setCostPu(final String s) {
-    setCostPu(getInt(s));
-  }
-
-  @Deprecated
-  public void setCostPu(final Integer s) {
-    final Resource r = getData().getResourceList().getResource(Constants.PUS);
-    costResources.put(r, s);
-  }
-
-  @Deprecated
-  public int getCostPu() {
-    return costPu;
-  }
-
-  @Deprecated
-  private void resetCostPu() {
-    costPu = 0;
   }
 
   private void setCostResources(final String value) throws GameParseException {
@@ -219,12 +190,6 @@ public abstract class AbstractUserActionAttachment extends AbstractConditionsAtt
                 this::setText,
                 this::getText,
                 this::resetText))
-        .put("costPU",
-            MutableProperty.of(
-                this::setCostPu,
-                this::setCostPu,
-                this::getCostPu,
-                this::resetCostPu))
         .put("costResources",
             MutableProperty.of(
                 this::setCostResources,

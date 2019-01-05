@@ -2,14 +2,19 @@ package games.strategy.engine.lobby.client.login;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.logging.Level;
+
+import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.framework.map.download.DownloadUtils;
+import games.strategy.engine.framework.map.download.DownloadConfiguration;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
@@ -21,7 +26,9 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class LobbyServerPropertiesFetcher {
-  private final LobbyLocationFileDownloader fileDownloader;
+  private final Function<String, Optional<File>> fileDownloader;
+  @Nullable private LobbyServerProperties lobbyServerProperties;
+
 
   /**
    * Default constructor with default (prod) dependencies.
@@ -29,11 +36,11 @@ public final class LobbyServerPropertiesFetcher {
    * Those properties then tell the game client how/where to connect to the lobby.
    */
   public LobbyServerPropertiesFetcher() {
-    this(LobbyLocationFileDownloader.defaultDownloader);
+    this(url -> DownloadConfiguration.contentReader().downloadToFile(url));
   }
 
   @VisibleForTesting
-  LobbyServerPropertiesFetcher(final LobbyLocationFileDownloader fileDownloader) {
+  LobbyServerPropertiesFetcher(final Function<String, Optional<File>> fileDownloader) {
     this.fileDownloader = fileDownloader;
   }
 
@@ -52,8 +59,29 @@ public final class LobbyServerPropertiesFetcher {
    * @return LobbyServerProperties as fetched and parsed from github hosted remote URL.
    *         Otherwise backup values from client config.
    */
-  public LobbyServerProperties fetchLobbyServerProperties() {
-    return getTestOverrideProperties().orElseGet(this::getRemoteProperties);
+  public Optional<LobbyServerProperties> fetchLobbyServerProperties() {
+    if (lobbyServerProperties == null) {
+      final Optional<LobbyServerProperties> props = fetchProperties();
+      props.ifPresent(lobbyProps -> lobbyServerProperties = lobbyProps);
+    }
+    return Optional.ofNullable(lobbyServerProperties);
+  }
+  
+  private Optional<LobbyServerProperties> fetchProperties() {
+    final Optional<LobbyServerProperties> userOverride = getTestOverrideProperties();
+    if (userOverride.isPresent()) {
+      return userOverride;
+    }
+
+    final Optional<LobbyServerProperties> fromHostedFile = getRemoteProperties();
+    if (fromHostedFile.isPresent()) {
+      return fromHostedFile;
+    }
+
+    return Optional.of(LobbyServerProperties.builder()
+        .host(ClientSetting.lobbyLastUsedHost.getValueOrThrow())
+        .port(ClientSetting.lobbyLastUsedPort.getValueOrThrow())
+        .build());
   }
 
   private static Optional<LobbyServerProperties> getTestOverrideProperties() {
@@ -65,44 +93,31 @@ public final class LobbyServerPropertiesFetcher {
       final GameSetting<String> testLobbyHostSetting,
       final GameSetting<Integer> testLobbyPortSetting) {
     if (testLobbyHostSetting.isSet() && testLobbyPortSetting.isSet()) {
-      return Optional.of(new LobbyServerProperties(
-          testLobbyHostSetting.getValueOrThrow(),
-          testLobbyPortSetting.getValueOrThrow()));
+      return Optional.of(
+          LobbyServerProperties.builder()
+              .host(testLobbyHostSetting.getValueOrThrow())
+              .port(testLobbyPortSetting.getValueOrThrow())
+              .build());
     }
 
     return Optional.empty();
   }
 
-  private LobbyServerProperties getRemoteProperties() {
+  private Optional<LobbyServerProperties> getRemoteProperties() {
     final String lobbyPropsUrl = UrlConstants.LOBBY_PROPS.toString();
 
     final Version currentVersion = ClientContext.engineVersion();
 
-    try {
-      final LobbyServerProperties downloadedProps = downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion,
-          LobbyPropertyFileParser::parse);
-      ClientSetting.lobbyLastUsedHost.setValue(downloadedProps.host);
-      ClientSetting.lobbyLastUsedPort.setValue(downloadedProps.port);
-      ClientSetting.flush();
-      return downloadedProps;
-    } catch (final IOException e) {
-      if (!ClientSetting.lobbyLastUsedHost.isSet() || !ClientSetting.lobbyLastUsedPort.isSet()) {
-        log.log(Level.SEVERE,
-            String.format("Failed to download lobby server property file from %s; "
-                + "Please verify your internet connection and try again.",
-                lobbyPropsUrl),
-            e);
-        throw new RuntimeException(e);
-      }
+    final Optional<LobbyServerProperties> lobbyProps = downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion,
+        LobbyPropertyFileParser::parse);
 
-      // graceful recovery case, use the last lobby address we knew about
-      log.log(Level.SEVERE, "Encountered an error while downloading lobby property file: " + lobbyPropsUrl
-          + ", will attempt to connect to the lobby at its last known address. If this problem keeps happening, "
-          + "you may be seeing network troubles, or the lobby may not be available.", e);
-      return new LobbyServerProperties(
-          ClientSetting.lobbyLastUsedHost.getValueOrThrow(),
-          ClientSetting.lobbyLastUsedPort.getValueOrThrow());
-    }
+    lobbyProps.ifPresent(props -> {
+      ClientSetting.lobbyLastUsedHost.setValue(props.getHost());
+      ClientSetting.lobbyLastUsedPort.setValue(props.getPort());
+      ClientSetting.flush();
+    });
+
+    return lobbyProps;
   }
 
   /**
@@ -111,28 +126,31 @@ public final class LobbyServerPropertiesFetcher {
    * @param lobbyPropFileUrl The target URL to scrape for a lobby properties file.
    * @param currentVersion Our current engine version. The properties file can contain
    *        multiple listings for different versions.
-   * @return Parsed LobbyServerProperties object from the data we found at the remote url.
-   * @throws IOException Thrown if there is a failure doing the remote network fetching
-   *         or IO problem once we downloaded the remote file to a temp file and are then reading it.
+   * @return Parsed LobbyServerProperties object from the data we found at the remote url,
+   *         or an empty optional if there were any errors downloading the properties file.
    */
   @VisibleForTesting
-  LobbyServerProperties downloadAndParseRemoteFile(
+  Optional<LobbyServerProperties> downloadAndParseRemoteFile(
       final String lobbyPropFileUrl,
       final Version currentVersion,
-      final BiFunction<File, Version, LobbyServerProperties> propertyParser)
-      throws IOException {
-    final DownloadUtils.FileDownloadResult fileDownloadResult = fileDownloader.download(lobbyPropFileUrl);
+      final BiFunction<String, Version, LobbyServerProperties> propertyParser) {
+    return fileDownloader.apply(lobbyPropFileUrl).map(downloadFile -> {
+      try {
+        final String yamlContent = new String(Files.readAllBytes(downloadFile.toPath()), StandardCharsets.UTF_8);
 
-    if (!fileDownloadResult.wasSuccess) {
-      throw new IOException("Failed to download: " + lobbyPropFileUrl);
-    }
+        final LobbyServerProperties properties =
+            propertyParser.apply(yamlContent, currentVersion);
 
-    final LobbyServerProperties properties =
-        propertyParser.apply(fileDownloadResult.downloadedFile, currentVersion);
+        if (!downloadFile.delete()) {
+          downloadFile.deleteOnExit();
+        }
 
-    // delete file after it has been used. If there there was an IOException, the 'deleteOnExit' should
-    // kick in and delete the file. (hence there is no try/catch/finally block here)
-    fileDownloadResult.downloadedFile.delete();
-    return properties;
+        return properties;
+      } catch (final IOException e) {
+        log.log(Level.SEVERE, "Failed loading file: " + lobbyPropFileUrl + ", please try again, if the "
+            + "problem does not go away please report a bug: " + UrlConstants.GITHUB_ISSUES, e);
+        return null;
+      }
+    });
   }
 }

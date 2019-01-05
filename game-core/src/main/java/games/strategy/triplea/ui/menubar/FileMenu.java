@@ -74,7 +74,7 @@ final class FileMenu extends JMenu {
         final HistoryLog historyLog = new HistoryLog();
         historyLog.printFullTurn(gameData, true, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));
         final PbemMessagePoster poster = new PbemMessagePoster(gameData, currentPlayer, round, title);
-        PbemMessagePoster.postTurn(title, historyLog, true, poster, null, frame, null);
+        poster.postTurn(title, historyLog, true, null, frame, null);
       } finally {
         gameData.releaseReadLock();
       }

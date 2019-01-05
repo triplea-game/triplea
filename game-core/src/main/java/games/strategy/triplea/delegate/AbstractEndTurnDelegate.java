@@ -495,8 +495,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
   }
 
   @Override
-  public boolean postTurnSummary(final PbemMessagePoster poster, final String title, final boolean includeSaveGame) {
-    hasPostedTurnSummary = poster.post(bridge.getHistoryWriter(), title, includeSaveGame);
+  public boolean postTurnSummary(final PbemMessagePoster poster, final String title) {
+    hasPostedTurnSummary = poster.post(bridge.getHistoryWriter(), title);
     return hasPostedTurnSummary;
   }
 

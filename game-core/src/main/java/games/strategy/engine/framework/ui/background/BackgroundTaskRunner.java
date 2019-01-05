@@ -14,6 +14,7 @@ import javax.swing.SwingWorker;
 
 import com.google.common.base.Throwables;
 
+import games.strategy.util.Interruptibles;
 import games.strategy.util.function.ThrowingSupplier;
 
 /**
@@ -50,6 +51,13 @@ public final class BackgroundTaskRunner {
       backgroundAction.run();
       return null;
     });
+  }
+
+  /**
+   * Similar to 'runInBackground' except uses Interruptibles#await to suppress the {@code InterruptedException}.
+   */
+  public void awaitRunInBackground(final String message, final Runnable backgroundAction) {
+    Interruptibles.await(() -> runInBackground(message, backgroundAction));
   }
 
   /**

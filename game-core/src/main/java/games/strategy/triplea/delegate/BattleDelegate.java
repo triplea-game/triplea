@@ -996,8 +996,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           historyText =
               "Moving scrambled unit from " + t.getName() + " back to originating territory: " + landingTerr.getName();
         }
-        // if null, we leave it to die
-        if (landingTerr != null) {
+        if (landingTerr != null && !landingTerr.equals(t)) {
           change.add(ChangeFactory.moveUnits(t, landingTerr, Collections.singletonList(u)));
           change.add(Route.getFuelChanges(Collections.singleton(u), new Route(t, landingTerr), u.getOwner(), data));
         }

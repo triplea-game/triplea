@@ -264,7 +264,10 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
-    final String message = Ascii.truncate(originalMessage, 200, "...");
+    // we don't want to truncate messages from the server as those may be logs with accompanying stack traces
+    final String message = from.equals(chat.getServerNode().getName())
+        ? originalMessage
+        : Ascii.truncate(originalMessage, 200, "...");
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final Document doc = text.getDocument();
     try {

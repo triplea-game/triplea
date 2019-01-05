@@ -163,7 +163,7 @@ public class UnifiedMessenger {
   }
 
   /**
-   * Get the 1 and only implementor for the end point. throws an exception if there are not exactly 1 implementors.
+   * Get the 1 and only implementor for the end point. Throws an exception if there are not exactly 1 implementors.
    */
   public Object getImplementor(final String name) {
     synchronized (endPointMutex) {

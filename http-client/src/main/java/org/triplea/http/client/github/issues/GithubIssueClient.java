@@ -32,13 +32,10 @@ interface GithubIssueClient {
 
 
   default CreateIssueResponse newIssue(
-      final String authToken,
-      final String org,
-      final String repo,
+      final IssueClientParams params ,
       final CreateIssueRequest createIssueRequest) {
-
     final Map<String, Object> tokens = new HashMap<>();
-    tokens.put("Authorization", "token " + authToken);
-    return newIssue(tokens, org, repo, createIssueRequest);
+    tokens.put("Authorization", "token " + params.getAuthToken());
+    return newIssue(tokens, params.getGithubOrg(), params.getGithubRepo(), createIssueRequest);
   }
 }

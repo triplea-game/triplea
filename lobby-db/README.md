@@ -1,140 +1,61 @@
-## lobby-db
+# lobby-db
 
-A project that contains the migration scripts for the lobby postgres database.
-
-### Prod Deployments
-- Clone the project to lobby server
-- cd to the `lobby-db` project folder
-
-- run: `./prod_check_flyway.sh`
-  - Follow prompts and add user+password to creds file if not already done.
-
-First time you should see output like this:
-```
-triplea@triplea-server:~/lobby-db$ ./prod_run_flyway.sh 
- Error: Creds file does not exist at: /home/triplea/lobby.db.creds
-I have created the file for you, it contains:
-user=
-pass=
-
-Please update the file with valid database username and password and re-run this script
-```
-
-Now to run migrations:
-- run: `./prod_run_flyway.sh`
-
-If everything went well, it should all look like this:
-```
-triplea@triplea-lobby:~/lobby-db$ ./prod_run_flyway.sh 
-Using user: postgres
-
-BUILD SUCCESSFUL in 1s
-1 actionable task: 1 executed
-triplea@triplea-lobby:~/work/triplea/lobby-db$ ./prod_check_flyway.sh 
-
-> Task :lobby-db:flywayInfo 
-Schema version: 1.06
-+-----------+---------+-------------------------------------+------+---------------------+---------+
-| Category  | Version | Description                         | Type | Installed On        | State   |
-+-----------+---------+-------------------------------------+------+---------------------+---------+
-| Versioned | 1.00    | create tables                       | SQL  | 2018-03-14 21:14:11 | Success |
-| Versioned | 1.01    | update tables                       | SQL  | 2018-03-14 21:14:11 | Success |
-| Versioned | 1.02    | add bcrypt password column          | SQL  | 2018-03-14 21:14:11 | Success |
-| Versioned | 1.03    | audit bans                          | SQL  | 2018-03-14 21:14:11 | Success |
-| Versioned | 1.04    | audit mutes                         | SQL  | 2018-03-14 21:14:11 | Success |
-| Versioned | 1.05    | add all user info to bans and mutes | SQL  | 2018-03-14 21:14:11 | Success |
-| Versioned | 1.06    | add access log                      | SQL  | 2018-03-14 21:14:11 | Success |
-+-----------+---------+-------------------------------------+------+---------------------+---------+
+This component is responsible for:
+1. Creates a build artifact, a zip file, with DB migration files. This is eventually executed against
+   the production database to 'deploy' those changes and make them live.
+2. Support local development, provide tools and environment to run a DB locally (docker)
 
 
+## Prod Deployments
 
-BUILD SUCCESSFUL in 0s
-1 actionable task: 1 executed
+We use [FlyWay](https://flywaydb.org/)
+  - DB is not updated 'by-hand', anything to be run is checked in to 'migration files'
 
-```
+
+### Making Production Changes
+- DB changes, are checked in to files here: [flyway migrations folder](https://github.com/triplea-game/triplea/tree/master/lobby-db/src/main/resources/db/migration)
+- Artifact build is automatically triggered on merge, which includes:
+   - [Travis](https://github.com/triplea-game/triplea/blob/master/.travis.yml) 
+     invokes [Gradle](https://github.com/triplea-game/triplea/blob/master/build.gradle) to build a zip file
+     of the flyway migration folder
+   - Travis then pushes that zip file to [Github releases](https://github.com/triplea-game/triplea/releases)
+
+Servers are 'listening' to the [infrastructure host_control.sh file](https://github.com/triplea-game/infrastructure/blob/master/roles/host_control.sh)
+on the  [infrastructure prod branch](https://github.com/triplea-game/infrastructure/tree/prod)
+ 
+Updating the lobby-db version on the control file will trigger servers to download that specific
+migrations zip file and then execute flyway (which then runs any new SQL files not yet run against the DB).
+
 
 ## Dev Setup
 
-### Install psql
+### Prerequisites
+- Docker
+- `psql` (postgres-client) command 
 
-- need a postgres client so you can connect to your local database
-
-#### Windows psql client
-??
-
-#### Mac psql client
-brew install postgresql
-
-#### Linux psql client
-
-sudo apt install psql
-
-
-### Install docker
-
-- we'll use docker to launch a local postgres DB. Steps for that are given below in the [Docker](#docker) section.
-
-
-### How to use for developers
-
-
-Convenience scripts for executing common commands are included. You will need to install
-a postgres database first locally.
-
-
-Typical commands:
-```
-## drops+creates empty database (no tables)
-./drop_db.sh  
-
-## runs flyway migrations (creates tables)
-./run_flyway.sh 
-
-## util script to connect to a local DB
-./connect_to_db.sh
-  
-## common psql commands
-\l  ## list databases
-\c ta_users   ## connect to 'ta_users' DB
-\d ## show tables
-```
-
-
-### Future TODOs
-
-- Parameterize the gradle build so we can supply a different username+password
-- Create a `deploy_prod.sh $DB_USER $DB_PASS` script that can be run from within the production server
-  - this implies we'll do a local clone
-  - user+pass can be supplied as command line args, or we can put a magic file in home directory with properties 
-  - keep the script to be a local host on the production DB so we do not have to worry about opening up DB to public.
-
-### References
-
-- https://flywaydb.org/documentation
-- https://flywaydb.org/documentation/gradle/migrate
-- https://github.com/triplea-game/lobby
-
-## Docker
-
-There is a Dockerfile in this project for building a lobby database image that can be used for development/testing.
-
-### Build
-
-Build the lobby database image using the following command (run from this directory):
-
-```
-$ docker build --tag triplea/lobby-db:latest .
-```
-
-### Run
-
-Start a new lobby database container using the following command:
-
-```
-$ docker run -d --name=triplea-lobby-db -p 5432:5432 triplea/lobby-db
-```
 
 ### Usage
+
+A [Dockerfile](https://github.com/triplea-game/triplea/blob/master/lobby-db/Dockerfile) 
+with a lobby database image is used for development/testing. Convenience scripts are
+provided, a typical flow looks like this:
+
+```
+      ## Create docker container
+$ ./build-docker.sh
+      ## Run docker Container
+$ ./run-docker.sh
+      ## Connect to running DB with `psql`
+$ ./connect_to_db.sh
+      ## Delete all data in DB
+$ ./drop_db.sh
+      ## Re-run fly migrations.
+      ## Includes any new in-development files.
+$ ./run_flyway.sh
+```
+
+
+## Connection Configuration
 
 A lobby server running on the same host as the lobby database container may connect to the database using the following properties:
 
@@ -144,3 +65,4 @@ User | `postgres` |
 Password | _&lt;any&gt;_ | The lobby database is configured with authentication disabled, thus any password may be used.
 Host | `localhost` |
 Port | `5432` |
+

@@ -47,12 +47,14 @@ public class FinishedBattle extends AbstractBattle {
 
   @Override
   public void fight(final IDelegateBridge bridge) {
-    if (!headless) {
-      battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender, attackerLostTuv,
-          defenderLostTuv, battleResultDescription, new BattleResults(this, gameData));
-    }
-    battleTracker.removeBattle(this, bridge.getData());
     isOver = true;
+    battleTracker.removeBattle(this, bridge.getData());
+    if (headless) {
+      return;
+    }
+    clearTransportedBy(bridge);
+    battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender, attackerLostTuv, defenderLostTuv,
+        battleResultDescription, new BattleResults(this, gameData));
   }
 
   @Override

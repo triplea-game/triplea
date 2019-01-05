@@ -60,4 +60,15 @@ public class UtilTest {
     assertThat(Util.not(it -> false).test(t), is(true));
     assertThat(Util.not(it -> true).test(t), is(false));
   }
+
+  @Test
+  void testIsInt() {
+    assertThat(Util.isInt(""), is(false));
+    assertThat(Util.isInt("12 34"), is(false));
+    assertThat(Util.isInt("12.34"), is(false));
+    assertThat(Util.isInt("1234"), is(true));
+    assertThat(Util.isInt("0000000000000"), is(true));
+    assertThat(Util.isInt("-0"), is(true));
+    assertThat(Util.isInt("-4321"), is(true));
+  }
 }

@@ -47,10 +47,10 @@ public class LobbyLogin {
    */
   public @Nullable LobbyClient login() {
     if (!lobbyServerProperties.isServerAvailable()) {
-      showError("Could not connect to server", lobbyServerProperties.serverErrorMessage);
+      showError("Could not connect to server", lobbyServerProperties.getServerErrorMessage());
       return null;
     }
-    if (lobbyServerProperties.port == -1) {
+    if (lobbyServerProperties.getPort() == -1) {
       showError("Could not connect to server",
           "<html>Could not find lobby server for this version of TripleA, <br>"
               + "Please make sure you are using the latest version: " + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
@@ -83,8 +83,8 @@ public class LobbyLogin {
   private IMessenger login(final String userName, final String password, final boolean anonymousLogin)
       throws IOException {
     return new ClientMessenger(
-        lobbyServerProperties.host,
-        lobbyServerProperties.port,
+        lobbyServerProperties.getHost(),
+        lobbyServerProperties.getPort(),
         userName,
         MacFinder.getHashedMacAddress(),
         challenge -> {
@@ -159,8 +159,8 @@ public class LobbyLogin {
   private IMessenger createAccount(final String userName, final String password, final String email)
       throws IOException {
     return new ClientMessenger(
-        lobbyServerProperties.host,
-        lobbyServerProperties.port,
+        lobbyServerProperties.getHost(),
+        lobbyServerProperties.getPort(),
         userName,
         MacFinder.getHashedMacAddress(),
         challenge -> {

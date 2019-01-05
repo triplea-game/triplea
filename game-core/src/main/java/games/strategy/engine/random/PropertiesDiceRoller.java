@@ -11,11 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
-
-import javax.annotation.Nullable;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -43,9 +40,6 @@ import com.google.common.collect.ImmutableList;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
-import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.io.FileUtils;
 import lombok.extern.java.Log;
@@ -55,8 +49,6 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class PropertiesDiceRoller implements IRemoteDiceServer {
-  private static final long serialVersionUID = 6481409417543119539L;
-
   /**
    * Loads the property dice rollers from the properties file.
    *
@@ -105,20 +97,6 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public EditorPanel getEditor() {
-    return new DiceServerEditor(this);
-  }
-
-  @Override
-  public boolean sendsEmail() {
-    final String property = props.getProperty("send.email");
-    if (property == null) {
-      return true;
-    }
-    return Boolean.valueOf(property);
-  }
-
-  @Override
   public String postRequest(final int max, final int numDice, final String subjectMessage, final String gameId)
       throws IOException {
     final String normalizedGameId = gameId.trim().isEmpty() ? "TripleA" : gameId;
@@ -147,11 +125,6 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
         return EntityUtils.toString(response.getEntity());
       }
     }
-  }
-
-  @Override
-  public String getInfoText() {
-    return props.getProperty("infotext");
   }
 
   @Override
@@ -205,14 +178,21 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
     }
   }
 
-  @Override
-  public String getToAddress() {
-    return toAddress;
+  public void setToAddress(final String toAddress) {
+    this.toAddress = toAddress;
+  }
+
+  public void setCcAddress(final String ccAddress) {
+    this.ccAddress = ccAddress;
+  }
+
+  public void setGameId(final String gameId) {
+    this.gameId = gameId;
   }
 
   @Override
-  public void setToAddress(final String toAddress) {
-    this.toAddress = toAddress;
+  public String getToAddress() {
+    return toAddress;
   }
 
   @Override
@@ -221,34 +201,8 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
   }
 
   @Override
-  public void setCcAddress(final String ccAddress) {
-    this.ccAddress = ccAddress;
-  }
-
-  @Override
-  public boolean supportsGameId() {
-    final String gameid = props.getProperty("gameid");
-    return "true".equals(gameid);
-  }
-
-  @Override
-  public void setGameId(final String gameId) {
-    this.gameId = gameId;
-  }
-
-  @Override
   public String getGameId() {
     return gameId;
-  }
-
-  @Override
-  public String getHelpText() {
-    return getInfoText();
-  }
-
-  @Override
-  public boolean isSameType(final @Nullable IBean other) {
-    return other instanceof PropertiesDiceRoller && Objects.equals(getDisplayName(), other.getDisplayName());
   }
 
   @VisibleForTesting

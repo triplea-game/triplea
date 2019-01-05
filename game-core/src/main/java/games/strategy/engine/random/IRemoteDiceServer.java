@@ -3,13 +3,16 @@ package games.strategy.engine.random;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import games.strategy.engine.framework.startup.ui.editors.IBean;
-
 /**
  * A service that provides dice rolling facilities outside the game process. Used to provide a level of trust between
  * players that no one player is cheating using a compromised local dice server.
  */
-public interface IRemoteDiceServer extends IBean {
+public interface IRemoteDiceServer {
+
+  String NAME = "DICE_SERVER_NAME";
+  String GAME_NAME = "DICE_SERVER_GAME_NAME";
+  String EMAIL_1 = "DICE_SERVER_EMAIL_1";
+  String EMAIL_2 = "DICE_SERVER_EMAIL_2";
   /**
    * Post a request to the dice server, and return the resulting html page as a string.
    */
@@ -31,13 +34,6 @@ public interface IRemoteDiceServer extends IBean {
   String getToAddress();
 
   /**
-   * Set the to address.
-   *
-   * @param toAddress the new to address
-   */
-  void setToAddress(String toAddress);
-
-  /**
    * get the CC address.
    *
    * @return the address or null if not configured
@@ -45,45 +41,11 @@ public interface IRemoteDiceServer extends IBean {
   String getCcAddress();
 
   /**
-   * Set the cc address.
-   *
-   * @param ccAddress the address or null if not configured
-   */
-  void setCcAddress(String ccAddress);
-
-  /**
-   * Get the info text displayed for this Dice server.
-   *
-   * @return the info text
-   */
-  String getInfoText();
-
-  /**
-   * True if this dice server sends email, and therefore requires email addresses.
-   *
-   * @return true if email addresses are required
-   */
-  boolean sendsEmail();
-
-  /**
-   * True if this dice server requires a game id.
-   *
-   * @return true if a game id is required
-   */
-  boolean supportsGameId();
-
-  /**
-   * Set the game id used for this instance.
-   * If you don't provide a game id, the TripleA GUID will be used
-   *
-   * @param gameId the new game id
-   */
-  void setGameId(String gameId);
-
-  /**
    * Get the configured game id.
    *
    * @return the game id or null if not configured
    */
   String getGameId();
+
+  String getDisplayName();
 }

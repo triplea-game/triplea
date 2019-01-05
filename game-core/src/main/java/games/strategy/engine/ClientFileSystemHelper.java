@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.security.CodeSource;
-import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
@@ -116,7 +115,7 @@ public final class ClientFileSystemHelper {
       mapsFolder.mkdirs();
     }
     if (!mapsFolder.exists()) {
-      log.log(Level.SEVERE, "Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());
+      log.severe("Error, downloaded maps folder does not exist: " + mapsFolder.getAbsolutePath());
     }
     return mapsFolder;
   }

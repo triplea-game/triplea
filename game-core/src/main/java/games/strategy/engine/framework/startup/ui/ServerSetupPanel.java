@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -20,6 +21,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -27,7 +29,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.chat.IChatPanel;
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
@@ -40,8 +41,10 @@ import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
-import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.net.IServerMessenger;
+import games.strategy.net.OpenFileUtility;
+import games.strategy.triplea.UrlConstants;
+import games.strategy.util.ExitStatus;
 
 /** Setup panel displayed for hosting a non-lobby network game (using host option from main panel). */
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener {
@@ -67,7 +70,31 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   private void createLobbyWatcher() {
-    lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), this,
+    final InGameLobbyWatcher.LobbyWatcherHandler handler = new InGameLobbyWatcher.LobbyWatcherHandler() {
+      @Override
+      public void reportError(final String message) {
+        SwingUtilities.invokeLater(() -> {
+          final Frame parentComponent = JOptionPane.getFrameForComponent(ServerSetupPanel.this);
+          if (JOptionPane.showConfirmDialog(parentComponent,
+              message + "\nDo you want to view the tutorial on how to host? This will open in your internet browser.",
+              "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            OpenFileUtility.openUrl(UrlConstants.HOSTING_GUIDE.toString());
+          }
+          ExitStatus.FAILURE.exit();
+        });
+      }
+
+      @Override
+      public String getSupportEmail() {
+        return "";
+      }
+
+      @Override
+      public boolean isPlayer() {
+        return true;
+      }
+    };
+    lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), handler,
         lobbyWatcher.getInGameLobbyWatcher()));
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
   }
@@ -215,8 +242,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   @Override
   public void postStartGame() {
-    final GameData data = gameSelectorModel.getGameData();
-    data.getProperties().set(PbemMessagePoster.PBEM_GAME_PROP_NAME, false);
+    ISetupPanel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
   }
 
   @Override

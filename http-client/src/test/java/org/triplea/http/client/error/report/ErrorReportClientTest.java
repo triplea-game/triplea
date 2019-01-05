@@ -89,8 +89,8 @@ class ErrorReportClientTest {
   private static ServiceResponse<ErrorReportResponse> doServiceCall(final WireMockServer wireMockServer) {
     WireMock.configureFor("localhost", wireMockServer.port());
     final URI hostUri = URI.create(wireMockServer.url(""));
-    return new ErrorReportClientFactory().newErrorUploader()
-        .apply(hostUri, new ErrorReport(ErrorReportDetails.builder()
+    return ErrorReportClientFactory.newErrorUploader(hostUri)
+        .apply(new ErrorReport(ErrorReportDetails.builder()
             .title(MESSAGE_FROM_USER)
             .gameVersion(GAME_VERSION)
             .logRecord(logRecord)

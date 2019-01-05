@@ -2,13 +2,11 @@ package games.strategy.engine.framework.startup.ui;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_EMAIL;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 
-import java.awt.Frame;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,17 +14,14 @@ import java.util.Observer;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.lobby.common.IRemoteHostUtils;
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.events.GameStepListener;
@@ -45,9 +40,6 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
-import games.strategy.net.OpenFileUtility;
-import games.strategy.triplea.UrlConstants;
-import games.strategy.util.ExitStatus;
 import lombok.extern.java.Log;
 
 /**
@@ -76,18 +68,37 @@ public class InGameLobbyWatcher {
   private final Object mutex = new Object();
   private final IConnectionChangeListener connectionChangeListener;
   private final IMessengerErrorListener messengerErrorListener;
+  private final boolean isHandlerPlayer;
+
 
   /**
-   * Reads SystemProperties to see if we should connect to a lobby server.
+   * Helper interface to keep the logging logic outside of this class
+   * to ensure headless clients don't need to depend on UI classes.
+   */
+  public interface LobbyWatcherHandler {
+    void reportError(final String message);
+
+    String getSupportEmail();
+
+    boolean isPlayer();
+  }
+
+  /**
+   * Reads system properties to see if we should connect to a lobby server.
    *
    * <p>
    * After creation, those properties are cleared, since we should watch the first start game.
    * </p>
    *
+   * @param handler The interface that provides the necessary information to decouple this class from the UI.
+   *
    * @return null if no watcher should be created
    */
-  public static InGameLobbyWatcher newInGameLobbyWatcher(final IServerMessenger gameMessenger, final JComponent parent,
+  public static InGameLobbyWatcher newInGameLobbyWatcher(
+      final IServerMessenger gameMessenger,
+      final LobbyWatcherHandler handler,
       final InGameLobbyWatcher oldWatcher) {
+    Preconditions.checkNotNull(handler);
     final @Nullable String host = getLobbySystemProperty(LOBBY_HOST);
     final @Nullable String port = getLobbySystemProperty(LOBBY_PORT);
     final @Nullable String hostedBy = getLobbySystemProperty(LOBBY_GAME_HOSTED_BY);
@@ -110,7 +121,7 @@ public class InGameLobbyWatcher {
       final RemoteMessenger rm = new RemoteMessenger(um);
       final RemoteHostUtils rhu = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);
       rm.registerRemote(rhu, IRemoteHostUtils.Companion.newRemoteNameForNode(um.getLocalNode()));
-      return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent, oldWatcher);
+      return new InGameLobbyWatcher(messenger, rm, gameMessenger, handler, oldWatcher);
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
       return null;
@@ -158,18 +169,23 @@ public class InGameLobbyWatcher {
     }
   }
 
-  InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger,
-      final IServerMessenger serverMessenger, final JComponent parent, final InGameLobbyWatcher oldWatcher) {
+  private InGameLobbyWatcher(
+      final IMessenger messenger,
+      final IRemoteMessenger remoteMessenger,
+      final IServerMessenger serverMessenger,
+      final LobbyWatcherHandler handler,
+      final InGameLobbyWatcher oldWatcher) {
     this.messenger = messenger;
     this.remoteMessenger = remoteMessenger;
     this.serverMessenger = serverMessenger;
+    this.isHandlerPlayer = handler.isPlayer();
     final String password = System.getProperty(SERVER_PASSWORD);
     final boolean passworded = password != null && password.length() > 0;
     final Instant startDateTime = (oldWatcher == null || oldWatcher.gameDescription == null
         || oldWatcher.gameDescription.getStartDateTime() == null) ? Instant.now()
             : oldWatcher.gameDescription.getStartDateTime();
     final int playerCount = (oldWatcher == null || oldWatcher.gameDescription == null)
-        ? (HeadlessGameServer.headless() ? 0 : 1)
+        ? (isHandlerPlayer ? 1 : 0)
         : oldWatcher.gameDescription.getPlayerCount();
     final GameDescription.GameStatus gameStatus =
         (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getStatus() == null)
@@ -192,7 +208,7 @@ public class InGameLobbyWatcher {
         .passworded(passworded)
         .engineVersion(ClientContext.engineVersion().toString())
         .gameVersion("0")
-        .botSupportEmail(HeadlessGameServer.headless() ? System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "") : "")
+        .botSupportEmail(handler.getSupportEmail())
         .build();
     final ILobbyGameController controller =
         (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
@@ -224,30 +240,18 @@ public class InGameLobbyWatcher {
       if (addressUsed != null) {
         if (isActive()) {
           shutDown();
-          SwingUtilities.invokeLater(() -> {
-            String portString = System.getProperty(TRIPLEA_PORT);
-            if (portString == null || portString.trim().length() <= 0) {
-              portString = "3300";
-            }
-            final String message = "Your computer is not reachable from the internet.\n"
-                + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\n"
-                + "(The firewall exception must be updated every time a new version of TripleA comes out.)\n"
-                + "And that your Router is configured to send TCP traffic on port " + portString
-                + " to your local ip address.\r\n"
-                + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
-                + "The server tried to connect to your external ip: " + addressUsed;
-            if (HeadlessGameServer.headless()) {
-              log.log(Level.SEVERE, message);
-              ExitStatus.FAILURE.exit();
-            }
-            final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
-            if (JOptionPane.showConfirmDialog(parentComponent,
-                message + "\nDo you want to view the tutorial on how to host? This will open in your internet browser.",
-                "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-              OpenFileUtility.openUrl(UrlConstants.HOSTING_GUIDE.toString());
-            }
-            ExitStatus.FAILURE.exit();
-          });
+          String portString = System.getProperty(TRIPLEA_PORT);
+          if (portString == null || portString.trim().length() <= 0) {
+            portString = "3300";
+          }
+          final String message = "Your computer is not reachable from the internet.\n"
+              + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\n"
+              + "(The firewall exception must be updated every time a new version of TripleA comes out.)\n"
+              + "And that your Router is configured to send TCP traffic on port " + portString
+              + " to your local ip address.\r\n"
+              + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
+              + "The server tried to connect to your external ip: " + addressUsed;
+          handler.reportError(message);
         }
       }
     }).start();
@@ -270,7 +274,7 @@ public class InGameLobbyWatcher {
 
   protected void updatePlayerCount() {
     synchronized (mutex) {
-      gameDescription.setPlayerCount(serverMessenger.getNodes().size() - (HeadlessGameServer.headless() ? 1 : 0));
+      gameDescription.setPlayerCount(serverMessenger.getNodes().size() - (isHandlerPlayer ? 0 : 1));
       postUpdate();
     }
   }

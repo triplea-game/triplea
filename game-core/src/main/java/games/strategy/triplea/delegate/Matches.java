@@ -336,7 +336,7 @@ public final class Matches {
     };
   }
 
-  static Predicate<Unit> unitIsLegalBombingTargetBy(final Unit bomberOrRocket) {
+  public static Predicate<Unit> unitIsLegalBombingTargetBy(final Unit bomberOrRocket) {
     return unit -> {
       final UnitAttachment ua = UnitAttachment.get(bomberOrRocket.getType());
       final Set<UnitType> allowedTargets = ua.getBombingTargets(bomberOrRocket.getData());
@@ -1711,6 +1711,12 @@ public final class Matches {
       }
 
       return false;
+    };
+  }
+
+  static Predicate<Territory> territoryHasRequiredUnitsToMove(final Collection<Unit> units, final GameData data) {
+    return t -> {
+      return units.stream().allMatch(unitHasRequiredUnitsToMove(t, data));
     };
   }
 

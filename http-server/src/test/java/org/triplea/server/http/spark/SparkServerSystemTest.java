@@ -22,7 +22,8 @@ import org.triplea.http.client.error.report.create.ErrorReport;
 import org.triplea.http.client.error.report.create.ErrorReportDetails;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
 import org.triplea.server.ServerConfiguration;
-import org.triplea.server.reporting.error.upload.ErrorUploadStrategy;
+import org.triplea.server.reporting.error.ErrorReportRequest;
+import org.triplea.server.reporting.error.ErrorUploadStrategy;
 import org.triplea.test.common.Integration;
 
 import spark.Spark;
@@ -56,26 +57,32 @@ class SparkServerSystemTest {
     Spark.stop();
   }
 
-  private static final ErrorReport ERROR_REPORT = new ErrorReport(ErrorReportDetails.builder()
-      .title("Amicitia pius mensa est.")
-      .description("Est brevis silva, cesaris.")
-      .gameVersion("test-version")
-      .build());
+  private static final ErrorReportRequest ERROR_REPORT =
+      ErrorReportRequest.builder()
+          .clientIp("")
+          .errorReport(
+              new ErrorReport(
+                  ErrorReportDetails.builder()
+                      .title("Amicitia pius mensa est.")
+                      .description("Est brevis silva, cesaris.")
+                      .gameVersion("test-version")
+                      .build()))
+          .build();
 
   private static final String LINK = "http://fictitious-link";
 
   @Test
   void errorReportEndpont() {
     final ServiceClient<ErrorReport, ErrorReportResponse> client =
-        new ErrorReportClientFactory().newErrorUploader();
+        ErrorReportClientFactory.newErrorUploader(LOCAL_HOST);
 
-    when(errorUploadStrategy.apply(ERROR_REPORT))
+    when(errorUploadStrategy.apply(Mockito.any()))
         .thenReturn(ErrorReportResponse.builder()
             .githubIssueLink(LINK)
             .build());
 
     final ServiceResponse<ErrorReportResponse> response =
-        client.apply(LOCAL_HOST, ERROR_REPORT);
+        client.apply(ERROR_REPORT.getErrorReport());
 
     assertThat(response.getSendResult(), is(SendResult.SENT));
     assertThat(response.getPayload(), isPresent());

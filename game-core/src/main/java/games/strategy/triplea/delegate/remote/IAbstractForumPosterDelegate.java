@@ -9,7 +9,7 @@ import games.strategy.engine.pbem.PbemMessagePoster;
  * save game (e.g. at the end of a game turn).
  */
 public interface IAbstractForumPosterDelegate extends IRemote, IDelegate {
-  boolean postTurnSummary(final PbemMessagePoster poster, final String title, final boolean includeSaveGame);
+  boolean postTurnSummary(final PbemMessagePoster poster, final String title);
 
   void setHasPostedTurnSummary(boolean hasPostedTurnSummary);
 

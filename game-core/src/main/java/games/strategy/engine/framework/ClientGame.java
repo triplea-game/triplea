@@ -137,7 +137,7 @@ public class ClientGame extends AbstractGame {
           }
           i++;
           if (i > 300 && !shownErrorMessage) {
-            log.log(Level.SEVERE, "Waited more than 30 seconds for step to update. Something wrong.");
+            log.severe("Waited more than 30 seconds for step to update. Something wrong.");
             shownErrorMessage = true;
             // TODO: should we throw an illegal state error? or just return? or a game over exception? should we
             // request the server to send the step update again or something?

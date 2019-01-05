@@ -121,7 +121,7 @@ public class ServerLauncher extends AbstractLauncher {
       final Set<IGamePlayer> localPlayerSet =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
       final Messengers messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
-      serverGame = new ServerGame(gameData, localPlayerSet, remotePlayers, messengers);
+      serverGame = new ServerGame(gameData, localPlayerSet, remotePlayers, messengers, headless);
       serverGame.setInGameLobbyWatcher(inGameLobbyWatcher);
       if (headless) {
         HeadlessGameServer.setServerGame(serverGame);
@@ -191,12 +191,9 @@ public class ServerLauncher extends AbstractLauncher {
           });
           stopGame();
         } catch (final RuntimeException e) {
-          final String errorMessage = "Unrecognized error occurred: " + e.getMessage() + ", if this is a repeatable "
-              + "error please make a copy of this savegame and report to:\n" + UrlConstants.GITHUB_ISSUES;
+          final String errorMessage = "Unrecognized error occurred. If this is a repeatable error, "
+              + "please make a copy of this savegame and report to:\n" + UrlConstants.GITHUB_ISSUES;
           log.log(Level.SEVERE, errorMessage, e);
-          if (headless) {
-            HeadlessGameServer.sendChat(errorMessage);
-          }
           stopGame();
         }
         // having an oddball issue with the zip stream being closed while parsing to load default game. might be
@@ -286,7 +283,7 @@ public class ServerLauncher extends AbstractLauncher {
       serverReady.countDownAll();
       return;
     }
-    // if we loose a connection to a player, shut down the game (after saving) and go back to the main screen
+    // if we lose a connection to a player, shut down the game (after saving) and go back to the main screen
     if (serverGame.getPlayerManager().isPlaying(node)) {
       if (serverGame.isGameSequenceRunning()) {
         saveAndEndGame(node);

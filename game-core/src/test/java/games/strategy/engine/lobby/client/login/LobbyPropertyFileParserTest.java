@@ -3,11 +3,9 @@ package games.strategy.engine.lobby.client.login;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.io.File;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.net.URI;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -47,33 +45,30 @@ class LobbyPropertyFileParserTest {
    * straight forward 1:1
    */
   @Test
-  void parseWithSimpleCase() throws Exception {
+  void parseWithSimpleCase() {
     final TestProps testProps = new TestProps();
     testProps.host = TestData.host;
     testProps.port = TestData.port;
+    testProps.httpHostUri = TestData.httpHostUri;
     testProps.errorMessage = TestData.errorMessage;
     testProps.message = TestData.message;
     testProps.version = TestData.clientCurrentVersion;
 
-    final File testFile = newTempFile(testProps);
+    final String yamlContents = newYaml(testProps);
 
     final LobbyServerProperties result =
-        LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
-    assertThat(result.host, is(TestData.host));
-    assertThat(result.port, is(Integer.valueOf(TestData.port)));
-    assertThat(result.serverMessage, is(TestData.message));
-    assertThat(result.serverErrorMessage, is(TestData.errorMessage));
+        LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));
+    assertThat(result.getHost(), is(TestData.host));
+    assertThat(result.getPort(), is(Integer.valueOf(TestData.port)));
+    assertThat(result.getHttpServerUri(), is(TestData.httpHostUri));
+    assertThat(result.getServerMessage(), is(TestData.message));
+    assertThat(result.getServerErrorMessage(), is(TestData.errorMessage));
   }
 
-  private static File newTempFile(final TestProps... testProps) throws Exception {
-    final File f = File.createTempFile("testing", ".tmp");
-    try (Writer writer = Files.newBufferedWriter(f.toPath(), StandardCharsets.UTF_8)) {
-      for (final TestProps testProp : Arrays.asList(testProps)) {
-        writer.write(testProp.toYaml());
-      }
-    }
-    f.deleteOnExit();
-    return f;
+  private static String newYaml(final TestProps... testProps) {
+    return Arrays.stream(testProps)
+        .map(TestProps::toYaml)
+        .collect(Collectors.joining("\n"));
   }
 
   /**
@@ -81,16 +76,16 @@ class LobbyPropertyFileParserTest {
    * line up and we get the expected lobby config back.
    */
   @Test
-  void checkVersionSelection() throws Exception {
-    final File testFile = newTempFile(testDataSet());
+  void checkVersionSelection() {
+    final String yamlContents = newYaml(testDataSet());
 
     final LobbyServerProperties result =
-        LobbyPropertyFileParser.parse(testFile, new Version(TestData.clientCurrentVersion));
+        LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));
 
-    assertThat(result.host, is(TestData.hostOther));
-    assertThat(result.port, is(Integer.valueOf(TestData.portOther)));
-    assertThat(result.serverMessage, is(""));
-    assertThat(result.serverErrorMessage, is(""));
+    assertThat(result.getHost(), is(TestData.hostOther));
+    assertThat(result.getPort(), is(Integer.valueOf(TestData.portOther)));
+    assertThat(result.getServerMessage(), is(""));
+    assertThat(result.getServerErrorMessage(), is(""));
   }
 
   private interface TestData {
@@ -98,6 +93,7 @@ class LobbyPropertyFileParserTest {
     String portOther = "4141";
     String host = "host";
     String hostOther = "another_host";
+    URI httpHostUri = URI.create("hostDomain.com:1255");
     String message = "message";
     String errorMessage = "err err err test message";
     String version0 = "0.0.0.0";
@@ -111,17 +107,31 @@ class LobbyPropertyFileParserTest {
   private static class TestProps {
     String host;
     String port;
+    URI httpHostUri;
     String message;
     String errorMessage;
     String version;
 
     String toYaml() {
-      final String printVersion = (version == null) ? "" : "  version: " + version + "\n";
-      return "- host: " + host + "\n"
-          + printVersion
-          + "  port: " + port + "\n"
-          + "  message: " + message + "\n"
-          + "  error_message: " + errorMessage + "\n";
+      final String printVersion = (version == null) ? "" : ("version: \"" + version + "\"");
+      return String.format(
+          "- %s: %s\n"
+              + "  %s: %s\n"
+              + "  %s: %s\n"
+              + "  %s: %s\n"
+              + "  %s: %s\n"
+              + "  %s\n",
+          LobbyPropertyFileParser.YAML_HOST,
+          host,
+          LobbyPropertyFileParser.YAML_PORT,
+          port,
+          LobbyPropertyFileParser.YAML_HTTP_SERVER_URI,
+          httpHostUri,
+          LobbyPropertyFileParser.YAML_MESSAGE,
+          message,
+          LobbyPropertyFileParser.YAML_ERROR_MESSAGE,
+          errorMessage,
+          printVersion);
     }
   }
 }

@@ -28,6 +28,10 @@
         "minimum": 0,
         "maximum": 65535
       },
+      "http_server_uri": {
+        "description": "The http lobby server host URI",
+        "format": "uri"
+      },
       "message": {
         "description": "The message displayed when a user connects to an available lobby server",
         "type": ["string", "null"]
@@ -37,7 +41,7 @@
         "type": ["string", "null"]
       }
     },
-    "required": ["version", "host", "port", "message", "error_message"],
+    "required": ["version", "host", "port","http_server_uri", "message", "error_message"],
     "additionalProperties": false
   }
 }

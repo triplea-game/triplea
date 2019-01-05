@@ -1,7 +1,6 @@
 package games.strategy.engine.history;
 
 import java.io.Serializable;
-import java.util.logging.Level;
 
 import javax.swing.SwingUtilities;
 
@@ -47,7 +46,8 @@ public class HistoryWriter implements Serializable {
       closeCurrent();
     }
     if (!isCurrentRound()) {
-      throw new IllegalStateException("Not in a round");
+      throw new IllegalStateException(
+          "Not in a round, but trying to add step: " + stepName + ". Current history node is: " + current);
     }
     final Step currentStep = new Step(stepName, delegateName, player, history.getChanges().size(), stepDisplayName);
     addToAndSetCurrent(currentStep);
@@ -117,8 +117,8 @@ public class HistoryWriter implements Serializable {
       closeCurrent();
     }
     if (!isCurrentStep()) {
-      throw new IllegalStateException("Cant add an event, not a step. "
-          + "Must be in a step to add an event to the step. \nTrying to add event: " + eventName);
+      throw new IllegalStateException(
+          "Not in a step, but trying to add event: " + eventName + ". Current history node is: " + current);
     }
     final Event event = new Event(eventName, history.getChanges().size());
     addToAndSetCurrent(event);
@@ -142,8 +142,8 @@ public class HistoryWriter implements Serializable {
   public void addChildToEvent(final EventChild node) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      log.log(Level.SEVERE, "Not in an event, but trying to add child:" + node + " current is:" + current);
-      startEvent("???");
+      log.severe("Not in an event, but trying to add child: " + node + ". Current history node is: " + current);
+      startEvent("Filler event for child: " + node);
     }
     addToCurrent(node);
   }
@@ -154,8 +154,9 @@ public class HistoryWriter implements Serializable {
   public void addChange(final Change change) {
     assertCorrectThread();
     if (!isCurrentEvent() && !isCurrentStep()) {
-      log.log(Level.SEVERE, "Not in an event, but trying to add change:" + change + " current is:" + current);
-      startEvent("Bad Event for change: \n" + change.toString());
+      log.severe(
+          "Not in an event or step, but trying to add change: " + change + ". Current history node is: " + current);
+      startEvent("Filler event for change: " + change);
     }
     history.changeAdded(change);
   }
@@ -166,8 +167,8 @@ public class HistoryWriter implements Serializable {
   public void setRenderingData(final Object details) {
     assertCorrectThread();
     if (!isCurrentEvent()) {
-      log.log(Level.SEVERE, "Not in an event, but trying to set details:" + details + " current is:" + current);
-      startEvent("???");
+      log.severe("Not in an event, but trying to set details: " + details + ". Current history node is: " + current);
+      startEvent("Filler event for details: " + details);
     }
     history.getGameData().acquireWriteLock();
     try {
