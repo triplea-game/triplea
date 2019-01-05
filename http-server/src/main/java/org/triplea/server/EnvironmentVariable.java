@@ -18,7 +18,7 @@ public enum EnvironmentVariable {
   static {
     final Collection<String> missingVariables =
         stream(EnvironmentVariable.values())
-            .map(Enum::name)
+            .map(EnvironmentVariable::name)
             .filter(name -> System.getenv(name) == null)
             .collect(Collectors.toList());
 
