@@ -250,11 +250,13 @@ public class PbemMessagePoster implements Serializable {
     }
   }
 
-  private void readObject(final ObjectInputStream stream) {
+  @SuppressWarnings("static-method")
+  private void readObject(@SuppressWarnings("unused") final ObjectInputStream stream) {
     throw new UnsupportedOperationException("This class shouldn't get de-serialized!");
   }
 
-  private void writeObject(final ObjectOutputStream stream) {
+  @SuppressWarnings("static-method")
+  private void writeObject(@SuppressWarnings("unused") final ObjectOutputStream stream) {
     throw new UnsupportedOperationException("This class shouldn't get serialized!");
   }
 }
