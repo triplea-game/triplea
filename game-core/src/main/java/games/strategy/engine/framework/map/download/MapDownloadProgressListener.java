@@ -5,6 +5,8 @@ import java.util.Optional;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.FileUtils;
+
 import games.strategy.util.OptionalUtils;
 
 /**
@@ -36,6 +38,7 @@ final class MapDownloadProgressListener {
 
     progressBar.setMinimum(MIN_PROGRESS_VALUE);
     progressBar.setMaximum(MAX_PROGRESS_VALUE);
+    progressBar.setStringPainted(true);
   }
 
   private void requestDownloadLength() {
@@ -44,22 +47,22 @@ final class MapDownloadProgressListener {
   }
 
   void downloadStarted() {
-    updateProgressBar("Pending...");
+    updateProgressBarWithCurrentLength("Pending...", 0L);
   }
 
-  private void updateProgressBar(final String toolTipText) {
+  private void updateProgressBarWithCurrentLength(final String toolTipText, final long currentLength) {
     SwingUtilities.invokeLater(() -> {
       progressBar.setIndeterminate(true);
-      progressBar.setStringPainted(false);
+      progressBar.setString(FileUtils.byteCountToDisplaySize(currentLength));
       progressBar.setToolTipText(toolTipText);
     });
   }
 
-  private void updateProgressBar(final String toolTipText, final int value) {
+  private void updateProgressBarWithPercentComplete(final String toolTipText, final int percentComplete) {
     SwingUtilities.invokeLater(() -> {
       progressBar.setIndeterminate(false);
-      progressBar.setValue(value);
-      progressBar.setStringPainted(true);
+      progressBar.setString(null);
+      progressBar.setValue(percentComplete);
       progressBar.setToolTipText(toolTipText);
     });
   }
@@ -67,8 +70,8 @@ final class MapDownloadProgressListener {
   void downloadUpdated(final long currentLength) {
     final String toolTipText = String.format("Installing to: %s", download.getInstallLocation());
     OptionalUtils.ifPresentOrElse(downloadLength,
-        totalLength -> updateProgressBar(toolTipText, percentComplete(currentLength, totalLength)),
-        () -> updateProgressBar(toolTipText));
+        totalLength -> updateProgressBarWithPercentComplete(toolTipText, percentComplete(currentLength, totalLength)),
+        () -> updateProgressBarWithCurrentLength(toolTipText, currentLength));
   }
 
   private static int percentComplete(final long currentLength, final long totalLength) {
@@ -76,6 +79,8 @@ final class MapDownloadProgressListener {
   }
 
   void downloadCompleted() {
-    updateProgressBar(String.format("Installed to: %s", download.getInstallLocation()), MAX_PROGRESS_VALUE);
+    updateProgressBarWithPercentComplete(
+        String.format("Installed to: %s", download.getInstallLocation()),
+        MAX_PROGRESS_VALUE);
   }
 }
