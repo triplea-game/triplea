@@ -78,10 +78,7 @@ public final class LobbyServerPropertiesFetcher {
       return fromHostedFile;
     }
 
-    return Optional.of(LobbyServerProperties.builder()
-        .host(ClientSetting.lobbyLastUsedHost.getValueOrThrow())
-        .port(ClientSetting.lobbyLastUsedPort.getValueOrThrow())
-        .build());
+    return getLastUsedProperties();
   }
 
   private static Optional<LobbyServerProperties> getTestOverrideProperties() {
@@ -118,6 +115,17 @@ public final class LobbyServerPropertiesFetcher {
     });
 
     return lobbyProps;
+  }
+
+  private Optional<LobbyServerProperties> getLastUsedProperties() {
+    return ClientSetting.lobbyLastUsedHost
+        .getValue()
+        .map(
+            host ->
+                ClientSetting.lobbyLastUsedPort
+                    .getValue()
+                    .map(port -> LobbyServerProperties.builder().host(host).port(port).build())
+                    .orElse(null));
   }
 
   /**
