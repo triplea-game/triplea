@@ -14,7 +14,7 @@ import lombok.ToString;
 /**
  * Class that represents the result of an http service call. The 'payload' is the body portion of
  * the response, typically will be a POJO and the type of this generic class would be the corresponding java type.
- * 
+ *
  * @param <T> If response is JSON then the generic type will be the corresponding Java class, otherwise if
  *        the response from server is plain text the generic type would be String.
  */
@@ -40,7 +40,7 @@ public class ServiceResponse<T> {
 
   /**
    * Convenience method to get the error message frome exception message (if present).
-   * 
+   *
    * @return An empty string if no exception is present, otherwise the exception message is returned.
    */
   public String getExceptionMessage() {
