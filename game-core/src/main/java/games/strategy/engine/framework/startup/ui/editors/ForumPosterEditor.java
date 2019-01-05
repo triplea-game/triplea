@@ -6,179 +6,170 @@ import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentListener;
 
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.util.TimeManager;
+import games.strategy.util.Util;
+import lombok.extern.java.Log;
 
 /**
  * A class for selecting which Forum poster to use.
  */
+@Log
 public class ForumPosterEditor extends EditorPanel {
   private static final long serialVersionUID = -6069315084412575053L;
   private final JButton viewPosts = new JButton("View Forum");
   private final JButton testForum = new JButton("Test Post");
-  private final JLabel loginLabel = new JLabel("Login:");
-  private final JLabel passwordLabel = new JLabel("Password:");
-  private final JTextField login = new JTextField();
-  private final JTextField password = new JPasswordField();
   private final JTextField topicIdField = new JTextField();
   private final JLabel topicIdLabel = new JLabel("Topic Id:");
+  private final JLabel forumLabel = new JLabel("Forums:");
   private final JCheckBox includeSaveGame = new JCheckBox("Attach save game to summary");
   private final JCheckBox alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
-  private final JCheckBox credentialsSaved = new JCheckBox("Remember me");
-  private final IForumPoster bean;
+  private final JComboBox<String> forums = new JComboBox<>();
+  private final Runnable readyCallback;
 
-  public ForumPosterEditor(final IForumPoster bean) {
-    this.bean = Preconditions.checkNotNull(bean);
+  public ForumPosterEditor(final Runnable readyCallback) {
+    this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
-    if (bean.getCanViewPosted()) {
-      add(topicIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(topicIdField, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST,
-          GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
-      topicIdField.setText(bean.getTopicId());
-      add(viewPosts, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          new Insets(0, 2, bottomSpace, 0), 0, 0));
-      row++;
-    }
-    add(loginLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(login, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
-    login.setText(bean.getUsername());
+    IForumPoster.availablePosters().forEach(forums::addItem);
+    add(forumLabel, new GridBagConstraints(0, row, 1, 1, 0, 0,
+        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(forums, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
     row++;
-    add(passwordLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+    add(topicIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(password, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
-    password.setText(bean.getPassword());
+    add(topicIdField, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
+    add(viewPosts, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new Insets(0, 2, bottomSpace, 0), 0, 0));
     row++;
     add(new JLabel(""), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
         new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-    add(credentialsSaved, new GridBagConstraints(1, row, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(0, 0, bottomSpace, 0), 0, 0));
-    credentialsSaved.setSelected(bean.areCredentialsSaved());
     row++;
-    if (bean.supportsSaveGame()) {
-      add(includeSaveGame, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-      includeSaveGame.setSelected(bean.getIncludeSaveGame());
-      add(testForum, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          new Insets(0, 0, 0, 0), 0, 0));
-    } else {
-      add(testForum, new GridBagConstraints(3, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-          new Insets(0, 0, 0, 0), 0, 0));
-    }
+    add(includeSaveGame, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+    add(testForum, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new Insets(0, 0, 0, 0), 0, 0));
     row++;
     add(alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.WEST,
         GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    alsoPostAfterCombatMove.setSelected(bean.getAlsoPostAfterCombatMove());
     setupListeners();
+  }
+
+  private void checkFieldsAndNotify() {
+    areFieldsValid();
+    readyCallback.run();
   }
 
   /**
    * Configures the listeners for the gui components.
    */
   private void setupListeners() {
-    viewPosts.addActionListener(e -> ((IForumPoster) getBean()).viewPosted());
-    credentialsSaved.addActionListener(e -> fireEditorChanged());
+    viewPosts.addActionListener(e -> newForumPoster().viewPosted());
     testForum.addActionListener(e -> testForum());
-    // add a document listener which will validate input when the content of any input field is changed
-    final DocumentListener docListener = new EditorChangedFiringDocumentListener();
-    login.getDocument().addDocumentListener(docListener);
-    password.getDocument().addDocumentListener(docListener);
-    topicIdField.getDocument().addDocumentListener(docListener);
+    forums.addItemListener(e -> checkFieldsAndNotify());
+    topicIdField.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
+
   }
 
   /**
    * Tests the Forum poster.
    */
-  void testForum() {
-    final IForumPoster poster = (IForumPoster) getBean();
+  private void testForum() {
+    final IForumPoster poster = newForumPoster();
     final ProgressWindow progressWindow = GameRunner.newProgressWindow(poster.getTestMessage());
     progressWindow.setVisible(true);
-    // start a background thread
+
     new Thread(() -> {
-      if (poster.getIncludeSaveGame()) {
-        try {
-          final File f = File.createTempFile("123", "test");
-          f.deleteOnExit();
-          /*
-           * For .txt use this:
-           * final FileOutputStream fout = new FileOutputStream(f);
-           * fout.write("Test upload".getBytes());
-           * fout.close();
-           * poster.addSaveGame(f, "test.txt");
-           */
-          // For .jpg use this:
-          final BufferedImage image = new BufferedImage(130, 40, BufferedImage.TYPE_INT_RGB);
-          final Graphics g = image.getGraphics();
-          g.drawString("Testing file upload", 10, 20);
-          try {
-            ImageIO.write(image, "jpg", f);
-          } catch (final IOException e) {
-            // ignore
-          }
-          poster.addSaveGame(f, "Test.jpg");
-        } catch (final IOException e) {
-          // ignore
-        }
+      File f = null;
+      try {
+        f = File.createTempFile("123", ".jpg");
+        f.deleteOnExit();
+        final BufferedImage image = new BufferedImage(130, 40, BufferedImage.TYPE_INT_RGB);
+        final Graphics g = image.getGraphics();
+        g.drawString("Testing file upload", 10, 20);
+        ImageIO.write(image, "jpg", f);
+      } catch (final IOException e) {
+        // ignore
       }
-      poster.postTurnSummary(
+      final CompletableFuture<String> future = poster.postTurnSummary(
           "Test summary from TripleA, engine version: " + ClientContext.engineVersion()
               + ", time: " + TimeManager.getLocalizedTime(),
-          "Testing Forum poster");
+          "Testing Forum poster", f != null ? f.toPath() : null);
       progressWindow.setVisible(false);
-      // now that we have a result, marshall it back unto the swing thread
-      SwingUtilities.invokeLater(() -> GameRunner.showMessageDialog(
-          bean.getTurnSummaryRef(),
-          GameRunner.Title.of("Test Turn Summary Post"),
-          JOptionPane.INFORMATION_MESSAGE));
+      try {
+        // now that we have a result, marshall it back unto the swing thread
+        future.thenAccept(message -> SwingUtilities.invokeLater(() -> GameRunner.showMessageDialog(
+            message,
+            GameRunner.Title.of("Test Turn Summary Post"),
+            JOptionPane.INFORMATION_MESSAGE)))
+            .exceptionally(throwable -> {
+              SwingUtilities.invokeLater(() -> GameRunner.showMessageDialog(
+                  throwable.getMessage(),
+                  GameRunner.Title.of("Test Turn Summary Post"),
+                  JOptionPane.INFORMATION_MESSAGE));
+              return null;
+            }).get();
+      } catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      } catch (final ExecutionException e) {
+        log.log(Level.SEVERE, "Error while retrieving post", e);
+      }
     }).start();
   }
 
-  @Override
-  public boolean isBeanValid() {
-    final boolean loginValid = validateTextFieldNotEmpty(login, loginLabel);
-    final boolean passwordValid = validateTextFieldNotEmpty(password, passwordLabel);
-    boolean idValid = true;
-    if (bean.getCanViewPosted()) {
-      idValid = validateTextFieldNotEmpty(topicIdField, topicIdLabel);
-      viewPosts.setEnabled(idValid);
-    } else {
-      topicIdLabel.setForeground(labelColor);
-      viewPosts.setEnabled(false);
-    }
-    final boolean allValid = loginValid && passwordValid && idValid;
+  /**
+   * Checks if all fields are filled out correctly and indicates an error otherwise.
+   */
+  public boolean areFieldsValid() {
+    final boolean setupValid = IForumPoster.isClientSettingSetupValidForServer((String) forums.getSelectedItem());
+    final boolean idValid = setLabelValid(Util.isInt(topicIdField.getText()), topicIdLabel);
+    final boolean forumValid = validateComboBox(forums, forumLabel);
+    final boolean allValid = setupValid && idValid && forumValid;
+    viewPosts.setEnabled(allValid);
     testForum.setEnabled(allValid);
     return allValid;
   }
 
-  @Override
-  public IBean getBean() {
-    bean.setTopicId(topicIdField.getText());
-    bean.setUsername(login.getText());
-    bean.setPassword(password.getText());
-    bean.setCredentialsSaved(credentialsSaved.isSelected());
-    bean.setIncludeSaveGame(includeSaveGame.isSelected());
-    bean.setAlsoPostAfterCombatMove(alsoPostAfterCombatMove.isSelected());
-    return bean;
+  private IForumPoster newForumPoster() {
+    final String forumName = (String) forums.getSelectedItem();
+    Preconditions.checkNotNull(forumName);
+    return IForumPoster.newInstanceByName(forumName, Integer.parseInt(topicIdField.getText()));
+  }
+
+  public void applyToGameProperties(final GameProperties properties) {
+    properties.set(IForumPoster.NAME, forums.getSelectedItem());
+    properties.set(IForumPoster.TOPIC_ID, Integer.parseInt(topicIdField.getText()));
+    properties.set(IForumPoster.POST_AFTER_COMBAT, alsoPostAfterCombatMove.isSelected());
+    properties.set(IForumPoster.INCLUDE_SAVEGAME, includeSaveGame.isSelected());
+  }
+
+  public void populateFromGameProperties(final GameProperties properties) {
+    forums.setSelectedItem(properties.get(IForumPoster.NAME));
+    final Object topicId = properties.get(IForumPoster.TOPIC_ID);
+    topicIdField.setText(topicId == null ? "" : String.valueOf(topicId));
+    alsoPostAfterCombatMove.setSelected(properties.get(IForumPoster.POST_AFTER_COMBAT, false));
+    includeSaveGame.setSelected(properties.get(IForumPoster.INCLUDE_SAVEGAME, true));
   }
 }

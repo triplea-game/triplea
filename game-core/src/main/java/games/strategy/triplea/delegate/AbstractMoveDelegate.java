@@ -203,8 +203,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public boolean postTurnSummary(final PbemMessagePoster poster, final String title, final boolean includeSaveGame) {
-    return poster.post(bridge.getHistoryWriter(), title, includeSaveGame);
+  public boolean postTurnSummary(final PbemMessagePoster poster, final String title) {
+    return poster.post(bridge.getHistoryWriter(), title);
   }
 
   /**

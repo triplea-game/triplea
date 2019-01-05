@@ -2,111 +2,116 @@ package games.strategy.engine.framework.startup.ui.editors;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.util.function.Function;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentListener;
 
-import games.strategy.engine.framework.startup.ui.editors.validators.EmailValidator;
+import com.google.common.collect.ImmutableMap;
+
+import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PbemDiceRoller;
+import games.strategy.engine.random.PropertiesDiceRoller;
+import games.strategy.util.Util;
 
 /**
- * An class for editing a Dice Server bean.
+ * A class to configure a Dice Server for the game.
  */
 public class DiceServerEditor extends EditorPanel {
   private static final long serialVersionUID = -451810815037661114L;
-  private final JButton testDiceyButton = new JButton("Test Server");
+  private final JButton testDiceButton = new JButton("Test Server");
   private final JTextField toAddress = new JTextField();
   private final JTextField ccAddress = new JTextField();
   private final JTextField gameId = new JTextField();
+  private final JLabel serverLabel = new JLabel("Servers:");
   private final JLabel toLabel = new JLabel("To:");
   private final JLabel ccLabel = new JLabel("Cc:");
-  private final IRemoteDiceServer remoteDiceServer;
+  private final JComboBox<String> servers = new JComboBox<>();
+  private final Runnable readyCallback;
+  private static final ImmutableMap<String, PropertiesDiceRoller> diceRollersByDisplayName = PropertiesDiceRoller
+      .loadFromFile()
+      .stream()
+      .collect(ImmutableMap.toImmutableMap(IRemoteDiceServer::getDisplayName, Function.identity()));
 
-  /**
-   * Creating a new instance.
-   *
-   * @param diceServer the DiceServer bean to edit
-   */
-  public DiceServerEditor(final IRemoteDiceServer diceServer) {
-    remoteDiceServer = diceServer;
+  public DiceServerEditor(final Runnable readyCallback) {
+    this.readyCallback = readyCallback;
     final int bottomSpace = 1;
     final int labelSpace = 2;
     int row = 0;
-    if (remoteDiceServer.sendsEmail()) {
-      add(toLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(toAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
-          GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
-      toAddress.setText(remoteDiceServer.getToAddress());
-      row++;
-      add(ccLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(ccAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
-          GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
-      ccAddress.setText(remoteDiceServer.getCcAddress());
-      row++;
-    }
-    if (remoteDiceServer.supportsGameId()) {
-      final JLabel gameIdLabel = new JLabel("Game ID:");
-      add(gameIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-          new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-      add(gameId, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-          new Insets(0, 0, bottomSpace, 0), 0, 0));
-      gameId.setText(remoteDiceServer.getGameId());
-      row++;
-    }
-    add(testDiceyButton, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+    diceRollersByDisplayName.keySet().forEach(servers::addItem);
+    add(serverLabel, new GridBagConstraints(0, row, 1, 1, 0, 0,
+        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(servers, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
+    row++;
+    add(toLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(toAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
+    row++;
+    add(ccLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(ccAddress, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
+    row++;
+    final JLabel gameIdLabel = new JLabel("Game Name:");
+    add(gameIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+    add(gameId, new GridBagConstraints(1, row, 2, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
         new Insets(0, 0, bottomSpace, 0), 0, 0));
-    setupListeners();
-  }
+    row++;
+    add(testDiceButton, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new Insets(0, 0, bottomSpace, 0), 0, 0));
 
-  /**
-   * Configures the listeners for the gui components.
-   */
-  private void setupListeners() {
-    testDiceyButton.addActionListener(e -> {
-      final PbemDiceRoller random = new PbemDiceRoller(getDiceServer());
+    servers.addItemListener(e -> checkFieldsAndNotify());
+    testDiceButton.addActionListener(e -> {
+      final PbemDiceRoller random = new PbemDiceRoller(newDiceServer());
       random.test();
     });
-    final DocumentListener docListener = new EditorChangedFiringDocumentListener();
-    toAddress.getDocument().addDocumentListener(docListener);
-    ccAddress.getDocument().addDocumentListener(docListener);
+    toAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
+    ccAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
+    gameId.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
   }
 
-  @Override
-  public boolean isBeanValid() {
-    boolean toValid = true;
-    boolean ccValid = true;
-    if (getDiceServer().sendsEmail()) {
-      toValid = validateTextField(toAddress, toLabel, new EmailValidator(false));
-      ccValid = validateTextField(ccAddress, ccLabel, new EmailValidator(true));
-    }
-    final boolean allValid = toValid && ccValid;
-    testDiceyButton.setEnabled(allValid);
+  private void checkFieldsAndNotify() {
+    areFieldsValid();
+    readyCallback.run();
+  }
+
+  public boolean areFieldsValid() {
+    final String toAddressText = toAddress.getText();
+    final boolean toValid = setLabelValid(!toAddressText.isEmpty() && Util.isMailValid(toAddressText), toLabel);
+    final boolean ccValid = setLabelValid(Util.isMailValid(ccAddress.getText()), ccLabel);
+    final boolean serverValid = validateComboBox(servers, serverLabel);
+    final boolean allValid = serverValid && toValid && ccValid;
+    testDiceButton.setEnabled(allValid);
     return allValid;
   }
 
-  @Override
-  public IBean getBean() {
-    return getDiceServer();
+  public void applyToGameProperties(final GameProperties properties) {
+    properties.set(IRemoteDiceServer.NAME, servers.getSelectedItem());
+    properties.set(IRemoteDiceServer.GAME_NAME, gameId.getText());
+    properties.set(IRemoteDiceServer.EMAIL_1, toAddress.getText());
+    properties.set(IRemoteDiceServer.EMAIL_2, ccAddress.getText());
   }
 
-  /**
-   * Returns the currently configured dice server.
-   *
-   * @return the dice server
-   */
-  private IRemoteDiceServer getDiceServer() {
-    if (remoteDiceServer.sendsEmail()) {
-      remoteDiceServer.setCcAddress(ccAddress.getText());
-      remoteDiceServer.setToAddress(toAddress.getText());
-    }
-    if (remoteDiceServer.supportsGameId()) {
-      remoteDiceServer.setGameId(gameId.getText());
-    }
-    return remoteDiceServer;
+  public void populateFromGameProperties(final GameProperties properties) {
+    servers.setSelectedItem(properties.get(IRemoteDiceServer.NAME));
+    gameId.setText(properties.get(IRemoteDiceServer.GAME_NAME, ""));
+    toAddress.setText(properties.get(IRemoteDiceServer.EMAIL_1, ""));
+    ccAddress.setText(properties.get(IRemoteDiceServer.EMAIL_2, ""));
+  }
+
+  public IRemoteDiceServer newDiceServer() {
+    final String selectedName = (String) servers.getSelectedItem();
+    assert selectedName != null;
+    final PropertiesDiceRoller roller = diceRollersByDisplayName.get(selectedName);
+    roller.setGameId(gameId.getText());
+    roller.setToAddress(toAddress.getText());
+    roller.setCcAddress(ccAddress.getText());
+    return roller;
   }
 }

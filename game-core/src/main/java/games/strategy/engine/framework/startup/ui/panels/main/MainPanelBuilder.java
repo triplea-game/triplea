@@ -26,7 +26,6 @@ public class MainPanelBuilder {
     final MainPanel mainPanel = new MainPanel(
         gameSelectorPanel,
         uiPanel -> {
-          setupPanelModel.getPanel().preStartGame();
           setupPanelModel.getPanel().getLauncher()
               .ifPresent(launcher -> launcher.launch(uiPanel));
           setupPanelModel.getPanel().postStartGame();

@@ -4,12 +4,14 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import games.strategy.debug.error.reporting.ReportWindowController;
+import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
@@ -139,7 +141,6 @@ public class MetaSetupPanel extends SetupPanel {
 
   @Override
   public boolean canGameStart() {
-    // we cannot start
     return false;
   }
 
@@ -149,12 +150,18 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   @Override
-  public void cancel() {
-    // nothing to do
-  }
+  public void cancel() {}
 
   @Override
   public JComponent getDrawable() {
     return this;
   }
+
+  @Override
+  public Optional<ILauncher> getLauncher() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void postStartGame() {}
 }
