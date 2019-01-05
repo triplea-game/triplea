@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby.client.login;
 
 import java.net.URI;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,7 +30,7 @@ public final class LobbyServerProperties {
   @Nonnull private final String host;
 
   /** The port the lobby is listening on. */
-  private final int port;
+  @Nonnull private final Integer port;
 
   /** URI for the http lobby server. */
   @Nullable private final URI httpServerUri;
@@ -41,16 +42,11 @@ public final class LobbyServerProperties {
    */
   @Nullable private final String serverMessage;
 
-  public String getServerMessage() {
-    return Strings.nullToEmpty(serverMessage);
+  public Optional<String> getServerMessage() {
+    return Optional.ofNullable(Strings.emptyToNull(serverMessage));
   }
 
-  public String getServerErrorMessage() {
-    return Strings.nullToEmpty(serverErrorMessage);
-  }
-
-  /** Returns true if the server is available. If not then see <code>serverErrorMessage</code> */
-  public boolean isServerAvailable() {
-    return Strings.nullToEmpty(serverErrorMessage).isEmpty();
+  public Optional<String> getServerErrorMessage() {
+    return Optional.ofNullable(Strings.emptyToNull(serverErrorMessage));
   }
 }

@@ -1,5 +1,7 @@
 package games.strategy.engine.lobby.client.login;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -61,8 +63,8 @@ class LobbyPropertyFileParserTest {
     assertThat(result.getHost(), is(TestData.host));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.port)));
     assertThat(result.getHttpServerUri(), is(TestData.httpHostUri));
-    assertThat(result.getServerMessage(), is(TestData.message));
-    assertThat(result.getServerErrorMessage(), is(TestData.errorMessage));
+    assertThat(result.getServerMessage(), isPresentAndIs(TestData.message));
+    assertThat(result.getServerErrorMessage(), isPresentAndIs(TestData.errorMessage));
   }
 
   private static String newYaml(final TestProps... testProps) {
@@ -84,8 +86,8 @@ class LobbyPropertyFileParserTest {
 
     assertThat(result.getHost(), is(TestData.hostOther));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.portOther)));
-    assertThat(result.getServerMessage(), is(""));
-    assertThat(result.getServerErrorMessage(), is(""));
+    assertThat(result.getServerMessage(), isEmpty());
+    assertThat(result.getServerErrorMessage(), isEmpty());
   }
 
   private interface TestData {

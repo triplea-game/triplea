@@ -46,8 +46,8 @@ public class LobbyLogin {
    * </p>
    */
   public @Nullable LobbyClient login() {
-    if (!lobbyServerProperties.isServerAvailable()) {
-      showError("Could not connect to server", lobbyServerProperties.getServerErrorMessage());
+    if (lobbyServerProperties.getServerErrorMessage().isPresent()) {
+      showError("Could not connect to server", lobbyServerProperties.getServerErrorMessage().get());
       return null;
     }
     if (lobbyServerProperties.getPort() == -1) {

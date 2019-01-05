@@ -62,7 +62,7 @@ public class LobbyFrame extends JFrame {
     final Chat chat = new Chat(this.client.getMessenger(), LobbyConstants.LOBBY_CHAT,
         this.client.getChannelMessenger(), this.client.getRemoteMessenger(), Chat.ChatSoundProfile.LOBBY_CHATROOM);
     chatMessagePanel = new ChatMessagePanel(chat);
-    showServerMessage(lobbyServerProperties);
+    lobbyServerProperties.getServerMessage().ifPresent(chatMessagePanel::addServerMessage);
     chatMessagePanel.setShowTime(true);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
     chatPlayers.addHiddenPlayerName(LobbyConstants.ADMIN_USERNAME);
@@ -97,12 +97,6 @@ public class LobbyFrame extends JFrame {
 
   public ChatMessagePanel getChatMessagePanel() {
     return chatMessagePanel;
-  }
-
-  private void showServerMessage(final LobbyServerProperties props) {
-    if (!props.getServerMessage().isEmpty()) {
-      chatMessagePanel.addServerMessage(props.getServerMessage());
-    }
   }
 
   private List<Action> newAdminActions(final INode clickedOn) {
