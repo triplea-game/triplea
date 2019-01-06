@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nullable;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -304,6 +305,9 @@ public final class GameParser {
     try {
       final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setValidating(true);
+      // Not mandatory, but better than relying on the default implementation to prevent XXE
+      factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "file");
       // get the dtd location
       final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
       final URL url = GameParser.class.getResource(dtdFile);
@@ -328,7 +332,7 @@ public final class GameParser {
         }
       });
       final String dtdSystem = url.toExternalForm();
-      final String system = dtdSystem.substring(0, dtdSystem.length() - 8);
+      final String system = dtdSystem.substring(0, dtdSystem.length() - DTD_FILE_NAME.length());
       return builder.parse(input, system);
     } catch (final IOException | ParserConfigurationException e) {
       throw new IllegalStateException("Error parsing: " + mapName, e);
