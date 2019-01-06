@@ -117,7 +117,7 @@ public final class LobbyServerPropertiesFetcher {
     return lobbyProps;
   }
 
-  private Optional<LobbyServerProperties> getLastUsedProperties() {
+  private static Optional<LobbyServerProperties> getLastUsedProperties() {
     return ClientSetting.lobbyLastUsedHost
         .getValue()
         .map(
