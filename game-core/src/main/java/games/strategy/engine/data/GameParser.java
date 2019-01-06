@@ -307,6 +307,7 @@ public final class GameParser {
       factory.setValidating(true);
       // Not mandatory, but better than relying on the default implementation to prevent XXE
       factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "file");
       // get the dtd location
       final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
       final URL url = GameParser.class.getResource(dtdFile);
