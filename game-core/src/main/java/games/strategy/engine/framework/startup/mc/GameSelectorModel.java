@@ -280,26 +280,13 @@ public class GameSelectorModel extends Observable {
    * @return filename formatted file name - in case it is too long (> maxLength) to two lines,
    */
   public String getFormattedFileNameText() {
-    final int maxLength = Math.max(22, 3 + gameName.length() + gameName.length());
-    if (fileName.length() <= maxLength) {
+    if (fileName.length() <= 22) {
       return fileName;
     }
-    int cutoff = fileName.length() - maxLength;
-    String secondLine = fileName.substring(cutoff);
-    if (secondLine.contains("/")) {
-      cutoff += secondLine.indexOf("/") + 1;
-    }
-    secondLine = fileName.substring(cutoff);
-    String firstLine = fileName.substring(0, cutoff);
-    if (firstLine.length() > maxLength) {
-      firstLine = firstLine.substring(0, maxLength - 4);
-      if (firstLine.contains("/")) {
-        cutoff = firstLine.lastIndexOf("/") + 1;
-        firstLine = firstLine.substring(0, cutoff) + ".../";
-      } else {
-        firstLine = firstLine + "...";
-      }
-    }
-    return "<html><p>" + firstLine + "<br/>" + secondLine + "</p></html>";
+
+    return "<html><body>"
+        + fileName.replaceAll("^(.*[A-Z]:/)?(?:[^/]+/){3}([^/]+/)(.*([^/]+)[^/]*/)\\4/(?:[^/:]+/)+",
+        "$1.../$2<br>$3.../")
+        + "</body></html>";
   }
 }
