@@ -25,4 +25,8 @@ TripleA is an open source gaming community, free to play, 100% open source and v
 ## Documentation Links
 - [Documentation Home](https://github.com/triplea-game/triplea/tree/master/docs/)
 - [Developer Getting-Started Documentation](https://github.com/triplea-game/triplea/tree/master/docs/dev)
-- [License](docs/license.md)
+
+## License
+
+This project is licensed under the terms of the 
+[GNU General Public License v3.0 with additional permissions](/docs/license.md).
