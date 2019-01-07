@@ -5,10 +5,10 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import javax.annotation.Nonnull;
+
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
-
-import javax.annotation.Nonnull;
 
 /**
  * Wrapper around feign clients to do provide universal http send/receive functionality.
