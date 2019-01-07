@@ -1,5 +1,7 @@
 package games.strategy.engine.lobby.client.login;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -20,6 +22,7 @@ class LobbyPropertyFileParserTest {
     testProps1.errorMessage = TestData.errorMessage;
     testProps1.message = TestData.message;
     testProps1.version = TestData.version0;
+    testProps1.httpHostUri = TestData.httpHostUri;
 
     final TestProps testProps2 = new TestProps();
     testProps2.host = TestData.host;
@@ -27,6 +30,7 @@ class LobbyPropertyFileParserTest {
     testProps2.errorMessage = TestData.errorMessage;
     testProps2.message = TestData.message;
     testProps2.version = TestData.version1;
+    testProps2.httpHostUri = TestData.httpHostUri;
 
     final TestProps testPropsMatch = new TestProps();
     testPropsMatch.host = TestData.hostOther;
@@ -34,6 +38,7 @@ class LobbyPropertyFileParserTest {
     testPropsMatch.errorMessage = "";
     testPropsMatch.message = "";
     testPropsMatch.version = TestData.clientCurrentVersion;
+    testPropsMatch.httpHostUri = TestData.httpHostUri;
 
     return new TestProps[] {
         testProps1, testProps2, testPropsMatch
@@ -61,8 +66,8 @@ class LobbyPropertyFileParserTest {
     assertThat(result.getHost(), is(TestData.host));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.port)));
     assertThat(result.getHttpServerUri(), is(TestData.httpHostUri));
-    assertThat(result.getServerMessage(), is(TestData.message));
-    assertThat(result.getServerErrorMessage(), is(TestData.errorMessage));
+    assertThat(result.getServerMessage(), isPresentAndIs(TestData.message));
+    assertThat(result.getServerErrorMessage(), isPresentAndIs(TestData.errorMessage));
   }
 
   private static String newYaml(final TestProps... testProps) {
@@ -84,8 +89,8 @@ class LobbyPropertyFileParserTest {
 
     assertThat(result.getHost(), is(TestData.hostOther));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.portOther)));
-    assertThat(result.getServerMessage(), is(""));
-    assertThat(result.getServerErrorMessage(), is(""));
+    assertThat(result.getServerMessage(), isEmpty());
+    assertThat(result.getServerErrorMessage(), isEmpty());
   }
 
   private interface TestData {

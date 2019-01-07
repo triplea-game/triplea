@@ -13,7 +13,7 @@ class LobbyServerPropertiesFetcherIntegrationTest extends AbstractClientSettingT
   @Test
   void remoteLobbyUrlReaderWorks() {
 
-    final LobbyServerPropertiesFetcher testObj = new LobbyServerPropertiesFetcher();
+    final LobbyServerPropertiesFetcher testObj = LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher();
 
     assertThat("verify fetch to get current lobby properties",
         testObj.fetchLobbyServerProperties(), notNullValue());

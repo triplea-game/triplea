@@ -5,6 +5,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import javax.annotation.Nonnull;
+
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 
@@ -23,9 +25,9 @@ public class HttpClient<ClientTypeT, RequestT, ResponseT>
     implements Function<RequestT, ServiceResponse<ResponseT>> {
 
   private final Consumer<RequestT> rateLimiter = new RateLimiter<>();
-  private final Class<ClientTypeT> classType;
-  private final BiFunction<ClientTypeT, RequestT, ResponseT> sendFunction;
-  private final URI hostUri;
+  @Nonnull private final Class<ClientTypeT> classType;
+  @Nonnull private final BiFunction<ClientTypeT, RequestT, ResponseT> sendFunction;
+  @Nonnull private final URI hostUri;
 
   @Override
   public ServiceResponse<ResponseT> apply(
