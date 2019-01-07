@@ -2,6 +2,7 @@ package games.strategy.engine.lobby.client.login;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Optional;
@@ -14,7 +15,6 @@ import javax.annotation.Nullable;
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.framework.map.download.DownloadConfiguration;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
@@ -30,16 +30,6 @@ public final class LobbyServerPropertiesFetcher {
   @Nullable private LobbyServerProperties lobbyServerProperties;
 
 
-  /**
-   * Default constructor with default (prod) dependencies.
-   * This allows us to fetch a remote file and parse it for lobby properties.
-   * Those properties then tell the game client how/where to connect to the lobby.
-   */
-  public LobbyServerPropertiesFetcher() {
-    this(url -> DownloadConfiguration.contentReader().downloadToFile(url));
-  }
-
-  @VisibleForTesting
   LobbyServerPropertiesFetcher(final Function<String, Optional<File>> fileDownloader) {
     this.fileDownloader = fileDownloader;
   }
@@ -77,23 +67,27 @@ public final class LobbyServerPropertiesFetcher {
     if (fromHostedFile.isPresent()) {
       return fromHostedFile;
     }
-
     return getLastUsedProperties();
   }
 
   private static Optional<LobbyServerProperties> getTestOverrideProperties() {
-    return getTestOverrideProperties(ClientSetting.testLobbyHost, ClientSetting.testLobbyPort);
+    return getTestOverrideProperties(
+        ClientSetting.testLobbyHost,
+        ClientSetting.testLobbyPort,
+        ClientSetting.httpLobbyUriOverride);
   }
 
   @VisibleForTesting
   static Optional<LobbyServerProperties> getTestOverrideProperties(
       final GameSetting<String> testLobbyHostSetting,
-      final GameSetting<Integer> testLobbyPortSetting) {
-    if (testLobbyHostSetting.isSet() && testLobbyPortSetting.isSet()) {
+      final GameSetting<Integer> testLobbyPortSetting,
+      final GameSetting<String> testLobbyHttpUri) {
+    if (testLobbyHostSetting.isSet() && testLobbyPortSetting.isSet() && testLobbyHttpUri.isSet()) {
       return Optional.of(
           LobbyServerProperties.builder()
               .host(testLobbyHostSetting.getValueOrThrow())
               .port(testLobbyPortSetting.getValueOrThrow())
+              .httpServerUri(URI.create(testLobbyHttpUri.getValueOrThrow()))
               .build());
     }
 
@@ -111,6 +105,7 @@ public final class LobbyServerPropertiesFetcher {
     lobbyProps.ifPresent(props -> {
       ClientSetting.lobbyLastUsedHost.setValue(props.getHost());
       ClientSetting.lobbyLastUsedPort.setValue(props.getPort());
+      ClientSetting.lobbyLastUsedHttpHostUri.setValue(props.getHttpServerUri().toString());
       ClientSetting.flush();
     });
 
@@ -118,14 +113,18 @@ public final class LobbyServerPropertiesFetcher {
   }
 
   private static Optional<LobbyServerProperties> getLastUsedProperties() {
-    return ClientSetting.lobbyLastUsedHost
-        .getValue()
-        .map(
-            host ->
-                ClientSetting.lobbyLastUsedPort
-                    .getValue()
-                    .map(port -> LobbyServerProperties.builder().host(host).port(port).build())
-                    .orElse(null));
+    if (ClientSetting.lobbyLastUsedHost.isSet()
+        && ClientSetting.lobbyLastUsedPort.isSet()
+        && ClientSetting.lobbyLastUsedHttpHostUri.isSet()) {
+
+      return Optional.of(LobbyServerProperties.builder()
+          .host(ClientSetting.lobbyLastUsedHost.getValueOrThrow())
+          .port(ClientSetting.lobbyLastUsedPort.getValueOrThrow())
+          .httpServerUri(URI.create(ClientSetting.lobbyLastUsedHttpHostUri.getValueOrThrow()))
+          .build());
+    }
+
+    return Optional.empty();
   }
 
   /**

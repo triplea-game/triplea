@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -42,10 +41,7 @@ class LobbyPropertyFileParser {
         .port((Integer) yamlProps.get("port"))
         .serverMessage((String) yamlProps.get("message"))
         .serverErrorMessage((String) yamlProps.get("error_message"))
-        .httpServerUri(
-            Optional.ofNullable((String) yamlProps.get(YAML_HTTP_SERVER_URI))
-                .map(URI::create)
-                .orElse(null))
+        .httpServerUri(URI.create((String) yamlProps.get(YAML_HTTP_SERVER_URI)))
         .build();
   }
 

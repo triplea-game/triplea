@@ -22,6 +22,7 @@ class LobbyPropertyFileParserTest {
     testProps1.errorMessage = TestData.errorMessage;
     testProps1.message = TestData.message;
     testProps1.version = TestData.version0;
+    testProps1.httpHostUri = TestData.httpHostUri;
 
     final TestProps testProps2 = new TestProps();
     testProps2.host = TestData.host;
@@ -29,6 +30,7 @@ class LobbyPropertyFileParserTest {
     testProps2.errorMessage = TestData.errorMessage;
     testProps2.message = TestData.message;
     testProps2.version = TestData.version1;
+    testProps2.httpHostUri = TestData.httpHostUri;
 
     final TestProps testPropsMatch = new TestProps();
     testPropsMatch.host = TestData.hostOther;
@@ -36,6 +38,7 @@ class LobbyPropertyFileParserTest {
     testPropsMatch.errorMessage = "";
     testPropsMatch.message = "";
     testPropsMatch.version = TestData.clientCurrentVersion;
+    testPropsMatch.httpHostUri = TestData.httpHostUri;
 
     return new TestProps[] {
         testProps1, testProps2, testPropsMatch

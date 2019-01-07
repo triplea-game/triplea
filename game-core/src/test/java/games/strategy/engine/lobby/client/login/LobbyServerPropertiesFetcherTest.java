@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -74,6 +75,9 @@ class LobbyServerPropertiesFetcherTest {
     @Mock
     private GameSetting<Integer> testLobbyPortSetting;
 
+    @Mock
+    private GameSetting<String> testLobbyHttpUriSetting;
+
     private Optional<LobbyServerProperties> result;
 
     private void givenTestLobbyHostIsNotSet() {
@@ -82,6 +86,11 @@ class LobbyServerPropertiesFetcherTest {
 
     private void givenTestLobbyHostIsSet() {
       when(testLobbyHostSetting.isSet()).thenReturn(true);
+    }
+
+    private void givenTestLobbyHttpUriIsSet() {
+      when(testLobbyHttpUriSetting.isSet()).thenReturn(true);
+      when(testLobbyHttpUriSetting.getValueOrThrow()).thenReturn("http://uri");
     }
 
     private void givenTestLobbyHostIsSetTo(final String host) {
@@ -99,7 +108,9 @@ class LobbyServerPropertiesFetcherTest {
     }
 
     private void whenGetTestOverrideProperties() {
-      result = LobbyServerPropertiesFetcher.getTestOverrideProperties(testLobbyHostSetting, testLobbyPortSetting);
+      result =
+          LobbyServerPropertiesFetcher.getTestOverrideProperties(
+              testLobbyHostSetting, testLobbyPortSetting, testLobbyHttpUriSetting);
     }
 
     private void thenResultIsEmpty() {
@@ -148,6 +159,7 @@ class LobbyServerPropertiesFetcherTest {
     void shouldReturnPropertiesWhenHostSetAndPortSet() {
       givenTestLobbyHostIsSetTo("foo");
       givenTestLobbyPortIsSetTo(4242);
+      givenTestLobbyHttpUriIsSet();
 
       whenGetTestOverrideProperties();
 
@@ -159,6 +171,10 @@ class LobbyServerPropertiesFetcherTest {
     Version version = new Version("0.0.0.0");
     String url = "someUrl";
     LobbyServerProperties lobbyServerProperties =
-        LobbyServerProperties.builder().host("host").port(123).build();
+        LobbyServerProperties.builder()
+            .host("host")
+            .port(123)
+            .httpServerUri(URI.create("http://demo"))
+            .build();
   }
 }

@@ -18,7 +18,6 @@ import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IMessenger;
 import games.strategy.net.MacFinder;
-import games.strategy.triplea.UrlConstants;
 
 /**
  * The client side of the lobby authentication protocol.
@@ -48,13 +47,6 @@ public class LobbyLogin {
   public @Nullable LobbyClient login() {
     if (lobbyServerProperties.getServerErrorMessage().isPresent()) {
       showError("Could not connect to server", lobbyServerProperties.getServerErrorMessage().get());
-      return null;
-    }
-    if (lobbyServerProperties.getPort() == -1) {
-      showError("Could not connect to server",
-          "<html>Could not find lobby server for this version of TripleA, <br>"
-              + "Please make sure you are using the latest version: " + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
-              + "</html>");
       return null;
     }
     return loginToServer();

@@ -71,6 +71,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
   public static final ClientSetting<String> lobbyLastUsedHost = new StringClientSetting("LOBBY_LAST_USED_HOST");
   public static final ClientSetting<Integer> lobbyLastUsedPort = new IntegerClientSetting("LOBBY_LAST_USED_PORT");
+  public static final ClientSetting<String> lobbyLastUsedHttpHostUri =
+      new StringClientSetting("LOBBY_LAST_USED_HTTP_HOST");
   public static final ClientSetting<String> lookAndFeel =
       new StringClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
   public static final ClientSetting<Integer> mapEdgeScrollSpeed = new IntegerClientSetting("MAP_EDGE_SCROLL_SPEED", 30);

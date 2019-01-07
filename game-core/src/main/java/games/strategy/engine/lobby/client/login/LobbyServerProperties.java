@@ -33,7 +33,7 @@ public final class LobbyServerProperties {
   @Nonnull private final Integer port;
 
   /** URI for the http lobby server. */
-  @Nullable private final URI httpServerUri;
+  @Nonnull private final URI httpServerUri;
 
   @Nullable private final String serverErrorMessage;
 
