@@ -1,7 +1,6 @@
-[Full license](https://github.com/triplea-game/triplea/blob/master/LICENSE)
-
-
 ## License
+
+[GNU GENERAL PUBLIC LICENSE Version 3](https://github.com/triplea-game/triplea/blob/master/LICENSE)
 
 Copyright (C) 2001-2019 TripleA contributors.
 
@@ -18,5 +17,8 @@ If you modify this Program, or any covered work, by linking or combining it with
 Library | Group ID | Artifact ID | SPDX License ID
 :-- | :-- | :-- | :--
 JavaMail | com.sun.mail | javax.mail | GPL-2.0-only
+
+
+
 
 
