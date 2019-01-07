@@ -23,9 +23,6 @@ jar {
 }
 
 task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
-    from('config') {
-        into 'config'
-    }
     from(shadowJar.outputs) {
         into 'bin'
     }
