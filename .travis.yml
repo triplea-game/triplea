@@ -5,7 +5,7 @@ matrix:
   include:
   - jdk: oraclejdk8
     env: TRIPLEA_RELEASE=true
-  - jdk: oraclejdk9
+  - jdk: oraclejdk11
     env: TRIPLEA_RELEASE=false
 addons:
   postgresql: "9.5"

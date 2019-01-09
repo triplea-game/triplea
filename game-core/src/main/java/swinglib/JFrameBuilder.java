@@ -34,6 +34,8 @@ public class JFrameBuilder {
 
   private int minWidth = 50;
   private int minHeight = 50;
+  private int width;
+  private int height;
 
   private JFrameBuilder() {}
 
@@ -45,6 +47,12 @@ public class JFrameBuilder {
     // note: we use the two arg JFrame constructor to avoid the headless check that is in the single arg constructor.
     final JFrame frame = new JFrame(title, null);
     frame.setMinimumSize(new Dimension(minWidth, minHeight));
+
+    if ((width > 0) || (height > 0)) {
+      frame.setPreferredSize(new Dimension(width, height));
+      frame.setSize(new Dimension(width, height));
+    }
+
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.setIconImage(GameRunner.getGameIcon(frame));
 
@@ -80,6 +88,12 @@ public class JFrameBuilder {
   public JFrameBuilder minSize(final int minWidth, final int minHeight) {
     this.minWidth = minWidth;
     this.minHeight = minHeight;
+    return this;
+  }
+
+  public JFrameBuilder size(final int width, final int height) {
+    this.width = width;
+    this.height = height;
     return this;
   }
 
