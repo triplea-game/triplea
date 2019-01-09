@@ -4,7 +4,6 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,6 +17,8 @@ import javax.swing.JFrame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.SendResult;
@@ -56,20 +57,16 @@ class ErrorReportUploadActionTest {
       .build();
 
 
-  @Test
-  void nonSuccessSends() {
-    withNonSuccessSendResults()
-        .forEach(notSuccessfulSend -> {
-          when(serviceClient.apply(USER_ERROR_REPORT.toErrorReport()))
-              .thenReturn(notSuccessfulSend);
+  @ParameterizedTest
+  @MethodSource("withNonSuccessSendResults")
+  void nonSuccessSends(final ServiceResponse<ErrorReportResponse> notSuccessfulSend) {
+    when(serviceClient.apply(USER_ERROR_REPORT.toErrorReport()))
+        .thenReturn(notSuccessfulSend);
 
-          errorReportUploadAction.accept(null, USER_ERROR_REPORT);
+    errorReportUploadAction.accept(null, USER_ERROR_REPORT);
 
-          verify(failureConfirmation).accept(notSuccessfulSend);
-          verify(successConfirmation, never()).accept(any());
-
-          reset(serviceClient, failureConfirmation, successConfirmation);
-        });
+    verify(failureConfirmation).accept(notSuccessfulSend);
+    verify(successConfirmation, never()).accept(any());
   }
 
   private static Collection<ServiceResponse<ErrorReportResponse>> withNonSuccessSendResults() {
@@ -86,21 +83,16 @@ class ErrorReportUploadActionTest {
         .build();
   }
 
-  @Test
-  void missingIssueLinkInPaylaod() {
-    withMissingIssueLinkResult()
-        .forEach(missingLinkResult -> {
+  @ParameterizedTest
+  @MethodSource("withMissingIssueLinkResult")
+  void missingIssueLinkInPaylaod(final ServiceResponse<ErrorReportResponse> missingLinkResult) {
+    when(serviceClient.apply(USER_ERROR_REPORT.toErrorReport()))
+        .thenReturn(missingLinkResult);
 
-          when(serviceClient.apply(USER_ERROR_REPORT.toErrorReport()))
-              .thenReturn(missingLinkResult);
+    errorReportUploadAction.accept(null, USER_ERROR_REPORT);
 
-          errorReportUploadAction.accept(null, USER_ERROR_REPORT);
-
-          verify(failureConfirmation).accept(missingLinkResult);
-          verify(successConfirmation, never()).accept(any());
-
-          reset(serviceClient, failureConfirmation, successConfirmation);
-        });
+    verify(failureConfirmation).accept(missingLinkResult);
+    verify(successConfirmation, never()).accept(any());
   }
 
   private static Collection<ServiceResponse<ErrorReportResponse>> withMissingIssueLinkResult() {
