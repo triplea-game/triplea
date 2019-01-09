@@ -11,6 +11,7 @@ import org.triplea.http.client.error.report.ErrorReportClientFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.triplea.settings.ClientSetting;
@@ -29,7 +30,7 @@ class ErrorReportConfiguration {
   @VisibleForTesting
   static BiConsumer<JFrame, UserErrorReport> newReportHandler(final Supplier<Optional<String>> clientSettingProvider) {
     return httpLobbyUri(clientSettingProvider)
-        .map(ErrorReportConfiguration::uploadAction)
+        .map(ErrorReportConfiguration::uploadActionAsBackgroundTask)
         .orElse(ErrorReportUploadAction.OFFLINE_STRATEGY);
   }
 
@@ -43,6 +44,19 @@ class ErrorReportConfiguration {
                 .orElse(null)));
   }
 
+  /**
+   * Wrap the upload action with a background task so that we display progress bars to the user.
+   */
+  private static BiConsumer<JFrame, UserErrorReport> uploadActionAsBackgroundTask(final URI uri) {
+    return (frame, errorReport) -> new BackgroundTaskRunner(frame)
+        .awaitRunInBackground(
+            "Sending report...", () -> uploadAction(uri).accept(frame, errorReport));
+  }
+
+
+  /**
+   * Instantiate the object that will send an error report.
+   */
   private static BiConsumer<JFrame, UserErrorReport> uploadAction(final URI uri) {
     return new ErrorReportUploadAction(
         ErrorReportClientFactory.newErrorUploader(uri),

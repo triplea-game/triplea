@@ -22,7 +22,7 @@ import swinglib.JPanelBuilder;
  */
 // Not static to allow for mock verifications.
 @SuppressWarnings("MethodMayBeStatic")
-final class ConfirmationDialogController {
+class ConfirmationDialogController {
 
 
   void showFailureConfirmation(final ServiceResponse<ErrorReportResponse> response) {

@@ -11,7 +11,6 @@ import org.triplea.http.client.ServiceResponse;
 import org.triplea.http.client.error.report.create.ErrorReport;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
 
-import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import lombok.RequiredArgsConstructor;
 import swinglib.DialogBuilder;
 
@@ -32,14 +31,8 @@ class ErrorReportUploadAction implements BiConsumer<JFrame, UserErrorReport> {
   private final ConfirmationDialogController dialogController;
 
   @Override
-  public void accept(final JFrame uploadReportWindow, final UserErrorReport errorReport) {
-    new BackgroundTaskRunner(uploadReportWindow)
-        .awaitRunInBackground(
-            "Sending report...", () -> sendErrorReport(uploadReportWindow, errorReport.toErrorReport()));
-  }
-
-  private void sendErrorReport(final JFrame frame, final ErrorReport errorReport) {
-    final ServiceResponse<ErrorReportResponse> response = serviceClient.apply(errorReport);
+  public void accept(final JFrame frame, final UserErrorReport errorReport) {
+    final ServiceResponse<ErrorReportResponse> response = serviceClient.apply(errorReport.toErrorReport());
     final URI githubLink =
         response.getPayload().map(pay -> pay.getGithubIssueLink().orElse(null)).orElse(null);
 
