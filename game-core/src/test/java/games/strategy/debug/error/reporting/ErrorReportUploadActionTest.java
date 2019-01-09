@@ -58,7 +58,7 @@ class ErrorReportUploadActionTest {
         });
   }
 
-  private Collection<ServiceResponse<ErrorReportResponse>> withNonSuccessSendResults() {
+  private static Collection<ServiceResponse<ErrorReportResponse>> withNonSuccessSendResults() {
     // Create ServiceResponses with each of the 'SendResult' values except for the successful SendResult value: 'SENT'
     return stream(SendResult.values())
         .filter(sendResult -> sendResult != SendResult.SENT)
