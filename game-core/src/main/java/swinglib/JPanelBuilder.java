@@ -207,6 +207,11 @@ public class JPanelBuilder {
     return this;
   }
 
+  public JPanelBuilder border(final Border border) {
+    this.border = border;
+    return this;
+  }
+
   public JPanelBuilder borderEmpty() {
     return borderEmpty(0);
   }

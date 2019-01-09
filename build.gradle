@@ -1,8 +1,10 @@
+import net.ltgt.gradle.errorprone.CheckSeverity
+
 plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.20.0'
     id 'io.franzbecker.gradle-lombok' version '1.14' apply false
-    id 'net.ltgt.errorprone' version '0.0.16' apply false
+    id 'net.ltgt.errorprone' version '0.6.1' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -64,6 +66,10 @@ subprojects {
     dependencies {
         errorprone 'com.google.errorprone:error_prone_core:2.3.2'
 
+        if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+            errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
+        }
+
         implementation 'com.google.guava:guava:27.0.1-jre'
 
         testImplementation 'com.github.npathai:hamcrest-optional:2.0.0'
@@ -81,34 +87,36 @@ subprojects {
 
     tasks.withType(JavaCompile).configureEach {
         options.compilerArgs += [
-            '-Xep:ByteBufferBackingArray:ERROR',
-            '-Xep:CatchAndPrintStackTrace:ERROR',
-            '-Xep:ClassCanBeStatic:ERROR',
-            '-Xep:DefaultCharset:ERROR',
-            '-Xep:EqualsGetClass:ERROR',
-            '-Xep:EqualsIncompatibleType:ERROR',
-            '-Xep:EqualsUnsafeCast:ERROR',
-            '-Xep:FutureReturnValueIgnored:ERROR',
-            '-Xep:ImmutableEnumChecker:ERROR',
-            '-Xep:InconsistentCapitalization:ERROR',
-            '-Xep:JdkObsolete:ERROR',
-            '-Xep:MissingOverride:ERROR',
-            '-Xep:MutableConstantField:ERROR',
-            '-Xep:NonAtomicVolatileUpdate:ERROR',
-            '-Xep:OperatorPrecedence:ERROR',
-            '-Xep:ParameterName:OFF', // workaround for https://github.com/google/error-prone/issues/780
-            '-Xep:ReferenceEquality:ERROR',
-            '-Xep:StringSplitter:ERROR',
-            '-Xep:ThreadPriorityCheck:ERROR',
-            '-Xep:UndefinedEquals:ERROR',
-            '-Xep:UnnecessaryParentheses:ERROR',
-            '-Xep:UnsafeReflectiveConstructionCast:ERROR',
-            '-Xep:UnsynchronizedOverridesSynchronized:ERROR',
-            '-Xep:WaitNotInLoop:ERROR',
             '-Xlint:all,-processing',
             '-Xmaxwarns', '1000'
         ]
         options.encoding = 'UTF-8'
+        options.errorprone {
+            check 'ByteBufferBackingArray', CheckSeverity.ERROR
+            check 'CatchAndPrintStackTrace', CheckSeverity.ERROR
+            check 'ClassCanBeStatic', CheckSeverity.ERROR
+            check 'DefaultCharset', CheckSeverity.ERROR
+            check 'EqualsGetClass', CheckSeverity.ERROR
+            check 'EqualsIncompatibleType', CheckSeverity.ERROR
+            check 'EqualsUnsafeCast', CheckSeverity.ERROR
+            check 'FutureReturnValueIgnored', CheckSeverity.ERROR
+            check 'ImmutableEnumChecker', CheckSeverity.ERROR
+            check 'InconsistentCapitalization', CheckSeverity.ERROR
+            check 'JdkObsolete', CheckSeverity.ERROR
+            check 'MissingOverride', CheckSeverity.ERROR
+            check 'MutableConstantField', CheckSeverity.ERROR
+            check 'NonAtomicVolatileUpdate', CheckSeverity.ERROR
+            check 'OperatorPrecedence', CheckSeverity.ERROR
+            check 'ParameterName', CheckSeverity.OFF // workaround for https://github.com/google/error-prone/issues/780
+            check 'ReferenceEquality', CheckSeverity.ERROR
+            check 'StringSplitter', CheckSeverity.ERROR
+            check 'ThreadPriorityCheck', CheckSeverity.ERROR
+            check 'UndefinedEquals', CheckSeverity.ERROR
+            check 'UnnecessaryParentheses', CheckSeverity.ERROR
+            check 'UnsafeReflectiveConstructionCast', CheckSeverity.ERROR
+            check 'UnsynchronizedOverridesSynchronized', CheckSeverity.ERROR
+            check 'WaitNotInLoop', CheckSeverity.ERROR
+        }
         options.incremental = true
 
         // workaround for https://github.com/gradle/gradle/issues/2510
@@ -144,7 +152,9 @@ subprojects {
     }
 
     compileTestJava {
-        options.compilerArgs += ['-Xep:ClassCanBeStatic:OFF']
+        options.errorprone {
+            check 'ClassCanBeStatic', CheckSeverity.OFF
+        }
     }
 
     jacocoTestReport {

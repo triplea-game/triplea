@@ -1,6 +1,8 @@
 package games.strategy.debug.error.reporting;
 
 import java.awt.Component;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import java.util.logging.LogRecord;
 
 import javax.annotation.Nullable;
@@ -8,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import games.strategy.ui.SwingComponents;
 import swinglib.JButtonBuilder;
@@ -97,6 +100,16 @@ public class ErrorReportWindow {
 
     frame.add(JPanelBuilder.builder()
         .borderEmpty(10)
+        .borderLayout()
+        .addNorth(JPanelBuilder.builder()
+            .borderEmpty(3)
+            .borderLayout()
+            .addWest(JPanelBuilder.builder()
+                .borderEmpty(3)
+                .addLabel("Subject:")
+                .build())
+            .addCenter(titleField)
+            .build())
         .addCenter(JPanelBuilder.builder()
             .addNorth(
                 JLabelBuilder.builder()

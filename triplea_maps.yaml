@@ -90,13 +90,14 @@
 - mapName: Total World War
   mapCategory: BEST
   url: https://github.com/triplea-maps/total_world_war/archive/master.zip
-  version: 6
+  version: 7
   img: https://raw.githubusercontent.com/triplea-maps/total_world_war/master/description/TripleA_total_world_war_mini.png
   description: |
     <br><em><b style="font-size: x-large;">Created by Rolf Larsson and Hepster</b></em>
     <br>
     <br><em><b style="font-size: large;">Map and Mechanics by Rolf Larsson and Hepster</b></em>
     <br><em><b style="font-size: large;">Graphics by Hepster</b></em>
+    <br><em><b style="font-size: large;">Engine Mechanics by Redrum</b></em>
     <br>
     <br>
     <br>
@@ -118,8 +119,7 @@
     <br>
     <b>This manual is also accessible within the game using the help tab.</b>
     <br>
-    <br><b>Triplea 1.9.0.0.9464 is required to play T.W.W. 2.8.0.3.BETA</b>
-    <br><b>Triplea (stable release) 1.9.0.0.7621 is minimum version required to play T.W.W. 2.7.7.2.</b>
+    <br><b>Triplea 1.9.0.0.13066 is required to play T.W.W. 2.8.0.5 & 3.0.0.0</b>
     <br>
     <p style="font-size: x-large;"><b><em>Features</em></b></p>
     <br>
