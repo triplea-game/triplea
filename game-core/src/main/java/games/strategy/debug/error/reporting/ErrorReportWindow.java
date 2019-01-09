@@ -1,8 +1,6 @@
 package games.strategy.debug.error.reporting;
 
 import java.awt.Component;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 import java.util.logging.LogRecord;
 
 import javax.annotation.Nullable;
@@ -10,9 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import games.strategy.ui.SwingComponents;
+import swinglib.BorderBuilder;
 import swinglib.JButtonBuilder;
 import swinglib.JFrameBuilder;
 import swinglib.JLabelBuilder;
@@ -93,23 +91,12 @@ public class ErrorReportWindow {
     final JFrame frame = JFrameBuilder.builder()
         .title("Report a Problem to TripleA Support")
         .locateRelativeTo(parent)
-        // TODO: enable size when frame size support is added
-        // .size(600, 450)
+        .size(600, 450)
         .minSize(300, 350)
         .build();
 
     frame.add(JPanelBuilder.builder()
         .borderEmpty(10)
-        .borderLayout()
-        .addNorth(JPanelBuilder.builder()
-            .borderEmpty(3)
-            .borderLayout()
-            .addWest(JPanelBuilder.builder()
-                .borderEmpty(3)
-                .addLabel("Subject:")
-                .build())
-            .addCenter(titleField)
-            .build())
         .addCenter(JPanelBuilder.builder()
             .addNorth(
                 JLabelBuilder.builder()
@@ -124,11 +111,10 @@ public class ErrorReportWindow {
                 model.getAttachedData().isPresent()
                     ? JPanelBuilder.builder()
                         .addNorth(JLabelBuilder.builder()
-                            // TODO: enable this once border support is merged.
-                            // .border(BorderBuilder.builder()
-                            // .top(30)
-                            // .bottom(5)
-                            // .build())
+                            .border(BorderBuilder.builder()
+                                .top(30)
+                                .bottom(5)
+                                .build())
                             .text("The following will be included automatically:")
                             .build())
                         .add(SwingComponents.newJScrollPane(additionalInfo))
@@ -137,11 +123,10 @@ public class ErrorReportWindow {
             .build())
         .addSouth(JPanelBuilder.builder()
             .horizontalBoxLayout()
-            // TODO: enable this once border support is merged.
-            // .border(BorderBuilder.builder()
-            // .top(30)
-            // .bottom(10)
-            // .build())
+            .border(BorderBuilder.builder()
+                .top(30)
+                .bottom(10)
+                .build())
             .addHorizontalStrut(10)
             .add(submitButton)
             .addHorizontalStrut(30)
