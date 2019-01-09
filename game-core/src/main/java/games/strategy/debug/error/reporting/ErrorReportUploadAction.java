@@ -12,10 +12,10 @@ import org.triplea.http.client.error.report.create.ErrorReport;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
 
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import swinglib.DialogBuilder;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 class ErrorReportUploadAction implements BiConsumer<JFrame, UserErrorReport> {
 
   static final BiConsumer<JFrame, UserErrorReport> OFFLINE_STRATEGY =
@@ -29,12 +29,13 @@ class ErrorReportUploadAction implements BiConsumer<JFrame, UserErrorReport> {
               .showDialog();
 
   private final ServiceClient<ErrorReport, ErrorReportResponse> serviceClient;
+  private final ConfirmationDialogController dialogController;
 
   @Override
-  public void accept(final JFrame frame, final UserErrorReport errorReport) {
-    new BackgroundTaskRunner(frame)
+  public void accept(final JFrame uploadReportWindow, final UserErrorReport errorReport) {
+    new BackgroundTaskRunner(uploadReportWindow)
         .awaitRunInBackground(
-            "Sending report...", () -> sendErrorReport(frame, errorReport.toErrorReport()));
+            "Sending report...", () -> sendErrorReport(uploadReportWindow, errorReport.toErrorReport()));
   }
 
   private void sendErrorReport(final JFrame frame, final ErrorReport errorReport) {
@@ -43,31 +44,13 @@ class ErrorReportUploadAction implements BiConsumer<JFrame, UserErrorReport> {
         response.getPayload().map(pay -> pay.getGithubIssueLink().orElse(null)).orElse(null);
 
     if ((response.getSendResult() == SendResult.SENT) && (githubLink != null)) {
-      DialogBuilder.builder()
-          .parent(frame)
-          .title("Report sent successfully")
-          .infoMessage(
-              "Upload success, report created: "
-                  + response.getPayload().map(pay -> pay.getGithubIssueLink().orElse(null)))
-          .showDialog();
+      dialogController.showSuccessConfirmation(githubLink);
       frame.dispose();
     } else {
-      DialogBuilder.builder()
-          .parent(frame)
-          .title("Report upload failed")
-          .errorMessage(errorMessage(response))
-          .showDialog();
+      dialogController.showFailureConfirmation(response);
       // We close the frame on success, but not on failure.
       // This is so the user can recover any data they have typed.
     }
   }
 
-  private static String errorMessage(final ServiceResponse<ErrorReportResponse> response) {
-    return String.format(
-        "<html>Failure uploading report, please try again or contact support. <br/>"
-            + "Send result: %s<br />"
-            + "Error: %s"
-            + "</html>",
-        response.getSendResult(), response.getExceptionMessage());
-  }
 }

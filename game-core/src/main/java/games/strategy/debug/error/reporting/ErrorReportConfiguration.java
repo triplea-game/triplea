@@ -3,12 +3,16 @@ package games.strategy.debug.error.reporting;
 import java.net.URI;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import javax.swing.JFrame;
 
 import org.triplea.http.client.error.report.ErrorReportClientFactory;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
+import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.triplea.settings.ClientSetting;
 
 class ErrorReportConfiguration {
@@ -19,25 +23,29 @@ class ErrorReportConfiguration {
    * dialog and sending error report data to the remote http server.
    */
   static BiConsumer<JFrame, UserErrorReport> newReportHandler() {
-    return newFromUserOverride()
-        .orElseGet(
-            () -> newFromRemoteProperties().orElse(ErrorReportUploadAction.OFFLINE_STRATEGY));
+    return newReportHandler(ClientSetting.httpLobbyUriOverride::getValue);
   }
 
-  private static Optional<BiConsumer<JFrame, UserErrorReport>> newFromUserOverride() {
-    return ClientSetting.httpLobbyUriOverride
-        .getValue()
-        .map(URI::create)
-        .map(ErrorReportClientFactory::newErrorUploader)
-        .map(ErrorReportUploadAction::new);
+  @VisibleForTesting
+  static BiConsumer<JFrame, UserErrorReport> newReportHandler(final Supplier<Optional<String>> clientSettingProvider) {
+    return httpLobbyUri(clientSettingProvider)
+        .map(ErrorReportConfiguration::uploadAction)
+        .orElse(ErrorReportUploadAction.OFFLINE_STRATEGY);
   }
 
-  private static Optional<BiConsumer<JFrame, UserErrorReport>> newFromRemoteProperties() {
-    return LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
-        .fetchLobbyServerProperties()
-        .map(
-            props ->
-                new ErrorReportUploadAction(
-                    ErrorReportClientFactory.newErrorUploader(props.getHttpServerUri())));
+  private static Optional<URI> httpLobbyUri(final Supplier<Optional<String>> clientSettingProvider) {
+    return Optional.ofNullable(
+        clientSettingProvider.get()
+            .map(URI::create)
+            .orElseGet(() -> LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
+                .fetchLobbyServerProperties()
+                .map(LobbyServerProperties::getHttpServerUri)
+                .orElse(null)));
+  }
+
+  private static BiConsumer<JFrame, UserErrorReport> uploadAction(final URI uri) {
+    return new ErrorReportUploadAction(
+        ErrorReportClientFactory.newErrorUploader(uri),
+        new ConfirmationDialogController());
   }
 }
