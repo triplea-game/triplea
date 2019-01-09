@@ -18,8 +18,6 @@ import static org.hamcrest.text.IsEmptyString.emptyOrNullString;
 
 import java.net.URI;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
@@ -27,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.ServiceResponse;
 import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportDetails;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
 import org.triplea.test.common.Integration;
 
@@ -52,8 +49,10 @@ import ru.lanwen.wiremock.ext.WiremockUriResolver;
 class ErrorReportClientTest {
   private static final String CONTENT_TYPE_JSON = "application/json";
   private static final String MESSAGE_FROM_USER = "msg";
-  private static final String GAME_VERSION = "version";
-  private static final LogRecord logRecord = new LogRecord(Level.SEVERE, "record");
+  private static final String GAME_VERSION = "game-version";
+  private static final String JAVA_VERSION = "java-version";
+  private static final String OS = "Vigils ortum!";
+  private static final String LINK = "http://localhost";
 
   @Test
   void sendErrorReportSuccessCase(@WiremockResolver.Wiremock final WireMockServer server) {
@@ -63,9 +62,9 @@ class ErrorReportClientTest {
 
     verify(postRequestedFor(urlMatching(ErrorReportClient.ERROR_REPORT_PATH))
         .withRequestBody(containing(MESSAGE_FROM_USER))
+        .withRequestBody(containing(JAVA_VERSION))
         .withRequestBody(containing(GAME_VERSION))
-        .withRequestBody(containing(logRecord.getMessage()))
-        .withRequestBody(containing(logRecord.getLevel().toString()))
+        .withRequestBody(containing(OS))
         .withHeader(HttpHeaders.CONTENT_TYPE, matching(CONTENT_TYPE_JSON)));
 
     assertThat(response.getPayload(), isPresent());
@@ -74,7 +73,6 @@ class ErrorReportClientTest {
     assertThat(response.getThrown(), isEmpty());
   }
 
-  private static final String LINK = "http://localhost";
 
   private static void givenHttpServerSuccessResponse(final WireMockServer wireMockServer) {
     wireMockServer.stubFor(post(urlEqualTo(ErrorReportClient.ERROR_REPORT_PATH))
@@ -90,11 +88,12 @@ class ErrorReportClientTest {
     WireMock.configureFor("localhost", wireMockServer.port());
     final URI hostUri = URI.create(wireMockServer.url(""));
     return ErrorReportClientFactory.newErrorUploader(hostUri)
-        .apply(new ErrorReport(ErrorReportDetails.builder()
-            .title(MESSAGE_FROM_USER)
+        .apply(ErrorReport.builder()
+            .reportMessage(MESSAGE_FROM_USER)
             .gameVersion(GAME_VERSION)
-            .logRecord(logRecord)
-            .build()));
+            .javaVersion(JAVA_VERSION)
+            .operatingSystem(OS)
+            .build());
   }
 
   @Test

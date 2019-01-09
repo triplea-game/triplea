@@ -2,12 +2,10 @@ package org.triplea.server.reporting.error;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringContains.containsString;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportDetails;
 import org.triplea.http.client.github.issues.create.CreateIssueRequest;
 
 class ErrorReportRequestAdapterTest {
@@ -16,12 +14,12 @@ class ErrorReportRequestAdapterTest {
       ErrorReportRequest.builder()
           .clientIp("")
           .errorReport(
-              new ErrorReport(
-                  ErrorReportDetails.builder()
-                      .title("Fraticinida de rusticus abnoba, reperire adelphis!")
-                      .description("Velox valebats ducunt ad tata.")
-                      .gameVersion("version")
-                      .build()))
+              ErrorReport.builder()
+                  .gameVersion("Fraticinida de rusticus abnoba, reperire adelphis!")
+                  .javaVersion("Velox valebats ducunt ad tata.")
+                  .operatingSystem("version")
+                  .reportMessage("Never scrape a dubloon.")
+                  .build())
           .build();
 
   @Test
@@ -30,10 +28,7 @@ class ErrorReportRequestAdapterTest {
 
     final CreateIssueRequest result = errorReportRequestAdapter.apply(request);
 
-    asList(request.getErrorReport().getJavaVersion(), request.getErrorReport().getDescription())
+    asList(request.getErrorReport().getJavaVersion(), request.getErrorReport().getReportMessage())
         .forEach(expectedValue -> assertThat(result.getBody(), containsString(expectedValue)));
-
-    assertThat(result.getTitle(), is(request.getErrorReport().getTitle()));
-    assertThat(result.getBody(), containsString(request.getErrorReport().getDescription()));
   }
 }

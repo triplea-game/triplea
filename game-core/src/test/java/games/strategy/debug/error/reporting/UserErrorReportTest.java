@@ -5,9 +5,6 @@ import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -15,17 +12,14 @@ import org.junit.jupiter.api.Test;
  */
 class UserErrorReportTest {
 
-  private static final String DESCRIPTION = "Sunt aususes imitari azureus, grandis hilotaees.";
-
   @Test
-  void withLogRecord() {
+  void javaVersionIsSet() {
     assertThat(
         UserErrorReport.builder()
-            .logRecord(new LogRecord(Level.FINER, DESCRIPTION))
             .build()
             .toErrorReport()
-            .getErrorMessageToUser(),
-        is(DESCRIPTION));
+            .getJavaVersion(),
+        is(not(emptyString())));
   }
 
   @Test

@@ -5,13 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportDetails;
 
 class MessageSizeThrottleTest {
 
-  private static final ErrorReport ERROR_REPORT = new ErrorReport(ErrorReportDetails.builder()
-      .gameVersion("version info")
-      .build());
+  private static final ErrorReport ERROR_REPORT = ErrorReport.builder()
+      .gameVersion("never drink a doubloons. ")
+      .operatingSystem("The corsair stutters malaria like a rainy dubloon.")
+      .javaVersion("Passion, power, and love.")
+      .reportMessage("Ooh, drink me breeze, ye scrawny ship!")
+      .build();
 
   @Test
   void messageSizeOverLimitIsNotAllowed() {

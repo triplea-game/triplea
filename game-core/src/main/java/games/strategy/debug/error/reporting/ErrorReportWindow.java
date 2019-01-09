@@ -39,8 +39,6 @@ class ErrorReportWindow {
     final JTextArea description = errorReportComponents.descriptionArea();
 
     final Supplier<UserErrorReport> guiReader = () -> UserErrorReport.builder()
-        .logRecord(logRecord)
-        .title(titleField.getText())
         .description(description.getText())
         .build();
 
