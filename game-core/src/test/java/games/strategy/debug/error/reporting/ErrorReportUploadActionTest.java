@@ -37,7 +37,7 @@ class ErrorReportUploadActionTest {
 
 
   @Mock
-  private JFrame jFrame;
+  private JFrame frame;
 
   private static final UserErrorReport USER_ERROR_REPORT = UserErrorReport.builder()
       .build();
@@ -119,7 +119,7 @@ class ErrorReportUploadActionTest {
     when(serviceClient.apply(USER_ERROR_REPORT.toErrorReport()))
         .thenReturn(successCase);
 
-    errorReportUploadAction.accept(jFrame, USER_ERROR_REPORT);
+    errorReportUploadAction.accept(frame, USER_ERROR_REPORT);
 
     verify(dialogController).showSuccessConfirmation(successCase.getPayload().get().getGithubIssueLink().get());
   }
