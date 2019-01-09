@@ -4,7 +4,6 @@ import java.awt.Component;
 
 import javax.swing.JOptionPane;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 import games.strategy.ui.SwingAction;
@@ -18,12 +17,6 @@ import lombok.RequiredArgsConstructor;
  * yes/no confirmation dialog will be shown to the user, if yes is clicked the confirm action will be executed.
  */
 public class DialogBuilder {
-  private static boolean headlessMode;
-
-  @VisibleForTesting
-  public static void suppressDialog() {
-    headlessMode = true;
-  }
 
   public static WithParentBuilder builder() {
     return new WithParentBuilder();
@@ -92,10 +85,6 @@ public class DialogBuilder {
     private final WithMessageBuilder withMessageBuilder;
 
     public void showDialog() {
-      if (headlessMode) {
-        return;
-      }
-
       showMessage(withMessageBuilder, JOptionPane.INFORMATION_MESSAGE);
     }
   }
@@ -117,10 +106,6 @@ public class DialogBuilder {
     private final WithMessageBuilder withMessageBuilder;
 
     public void showDialog() {
-      if (headlessMode) {
-        return;
-      }
-
       showMessage(withMessageBuilder, JOptionPane.ERROR_MESSAGE);
     }
   }
@@ -152,11 +137,6 @@ public class DialogBuilder {
      * 'no' simply closes the dialog.
      */
     public void showDialog() {
-      if (headlessMode) {
-        withConfirmActionBuilder.confirmAction.run();
-        return;
-      }
-
       SwingAction.invokeNowOrLater(
           () -> {
             final int result =
