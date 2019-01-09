@@ -10,8 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import swinglib.JFrameBuilder;
@@ -26,12 +24,6 @@ import swinglib.JPanelBuilder;
 class ErrorReportWindow {
   private final BiConsumer<JFrame, UserErrorReport> reportHandler;
   private final ErrorReportComponents errorReportComponents = new ErrorReportComponents();
-
-
-  @VisibleForTesting
-  JFrame buildWindow() {
-    return buildWindow(null, null);
-  }
 
   JFrame buildWindow(@Nullable final Component parent, @Nullable final LogRecord logRecord) {
 

@@ -9,8 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import lombok.Builder;
 import swinglib.DialogBuilder;
 import swinglib.JButtonBuilder;
@@ -20,11 +18,6 @@ import swinglib.JTextFieldBuilder;
 
 class ErrorReportComponents {
 
-  @VisibleForTesting
-  enum Names {
-    DESCRIPTION, TITLE, UPLOAD_BUTTON, PREVIEW_BUTTON
-  }
-
   @Builder
   static class FormHandler {
     private final BiConsumer<JFrame, UserErrorReport> guiDataHandler;
@@ -33,7 +26,6 @@ class ErrorReportComponents {
 
   JTextArea descriptionArea() {
     return JTextAreaBuilder.builder()
-        .componentName(Names.DESCRIPTION.toString())
         .columns(10)
         .rows(2)
         .build();
@@ -41,7 +33,6 @@ class ErrorReportComponents {
 
   JTextField titleField() {
     return JTextFieldBuilder.builder()
-        .componentName(Names.TITLE.toString())
         .columns(10)
         .maxLength(40)
         .build();
@@ -52,7 +43,6 @@ class ErrorReportComponents {
     return JButtonBuilder.builder()
         .title("Upload")
         .toolTip("Upload error report to TripleA server")
-        .componentName(Names.UPLOAD_BUTTON.toString())
         .actionListener(button -> newShowSendConfirmationDialogAction(
             button,
             () -> config.guiDataHandler.accept(frame, config.guiReader.get())))
@@ -84,7 +74,6 @@ class ErrorReportComponents {
         .title("Preview")
         .toolTip("Preview the full error report that will be uploaded")
         .actionListener(() -> config.guiDataHandler.accept(frame, config.guiReader.get()))
-        .componentName(Names.PREVIEW_BUTTON.toString())
         .build();
   }
 }
