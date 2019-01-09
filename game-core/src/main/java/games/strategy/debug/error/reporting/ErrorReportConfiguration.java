@@ -58,8 +58,11 @@ class ErrorReportConfiguration {
    * Instantiate the object that will send an error report.
    */
   private static BiConsumer<JFrame, UserErrorReport> uploadAction(final URI uri) {
-    return new ErrorReportUploadAction(
-        ErrorReportClientFactory.newErrorUploader(uri),
-        new ConfirmationDialogController());
+    return ErrorReportUploadAction.builder()
+        .serviceClient(
+            ErrorReportClientFactory.newErrorUploader(uri))
+        .successConfirmation(ConfirmationDialogController::showSuccessConfirmation)
+        .failureConfirmation(ConfirmationDialogController::showFailureConfirmation)
+        .build();
   }
 }

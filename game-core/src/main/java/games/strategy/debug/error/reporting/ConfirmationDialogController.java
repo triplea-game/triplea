@@ -20,12 +20,9 @@ import swinglib.JPanelBuilder;
  * This controller is responsible for showing success/failure confirmation dialogs
  * after an error report has been submitted.
  */
-// Not static to allow for mock verifications.
-@SuppressWarnings("MethodMayBeStatic")
 class ConfirmationDialogController {
 
-
-  void showFailureConfirmation(final ServiceResponse<ErrorReportResponse> response) {
+  static void showFailureConfirmation(final ServiceResponse<ErrorReportResponse> response) {
     SwingUtilities.invokeLater(() -> doShowFailureConfirmation(response));
   }
 
@@ -59,7 +56,7 @@ class ConfirmationDialogController {
     JOptionPane.showMessageDialog(null, messageToShow, "Report Upload Failed", JOptionPane.ERROR_MESSAGE);
   }
 
-  void showSuccessConfirmation(final URI reportLinkCreated) {
+  static void showSuccessConfirmation(final URI reportLinkCreated) {
     SwingUtilities.invokeLater(() -> doShowSuccessConfirmation(reportLinkCreated));
   }
 

@@ -2,7 +2,9 @@ package games.strategy.debug.error.reporting;
 
 import java.net.URI;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
 import javax.swing.JFrame;
 
 import org.triplea.http.client.SendResult;
@@ -11,10 +13,10 @@ import org.triplea.http.client.ServiceResponse;
 import org.triplea.http.client.error.report.create.ErrorReport;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 import swinglib.DialogBuilder;
 
-@RequiredArgsConstructor
+@Builder
 class ErrorReportUploadAction implements BiConsumer<JFrame, UserErrorReport> {
 
   static final BiConsumer<JFrame, UserErrorReport> OFFLINE_STRATEGY =
@@ -27,8 +29,13 @@ class ErrorReportUploadAction implements BiConsumer<JFrame, UserErrorReport> {
                       + "Triplea and try again, if this problem keeps happening please contact Triplea")
               .showDialog();
 
+  @Nonnull
   private final ServiceClient<ErrorReport, ErrorReportResponse> serviceClient;
-  private final ConfirmationDialogController dialogController;
+  @Nonnull
+  private final Consumer<URI> successConfirmation ;
+  @Nonnull
+  private final Consumer<ServiceResponse<ErrorReportResponse>> failureConfirmation ;
+
 
   @Override
   public void accept(final JFrame frame, final UserErrorReport errorReport) {
@@ -37,13 +44,12 @@ class ErrorReportUploadAction implements BiConsumer<JFrame, UserErrorReport> {
         response.getPayload().map(pay -> pay.getGithubIssueLink().orElse(null)).orElse(null);
 
     if ((response.getSendResult() == SendResult.SENT) && (githubLink != null)) {
-      dialogController.showSuccessConfirmation(githubLink);
+      successConfirmation.accept(githubLink);
       frame.dispose();
     } else {
-      dialogController.showFailureConfirmation(response);
+      failureConfirmation.accept(response);
       // We close the frame on success, but not on failure.
       // This is so the user can recover any data they have typed.
     }
   }
-
 }

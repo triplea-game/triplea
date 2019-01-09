@@ -2,18 +2,22 @@ package games.strategy.debug.error.reporting;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.net.URI;
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.swing.JFrame;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.SendResult;
@@ -25,19 +29,28 @@ import org.triplea.http.client.error.report.create.ErrorReportResponse;
 @ExtendWith(MockitoExtension.class)
 class ErrorReportUploadActionTest {
 
-
   @Mock
   private ServiceClient<ErrorReport, ErrorReportResponse> serviceClient;
-
   @Mock
-  private ConfirmationDialogController dialogController;
+  private Consumer<URI> successConfirmation ;
+  @Mock
+  private Consumer<ServiceResponse<ErrorReportResponse>> failureConfirmation ;
 
-  @InjectMocks
   private ErrorReportUploadAction errorReportUploadAction;
 
 
   @Mock
   private JFrame frame;
+
+  @BeforeEach
+  public void setup() {
+    errorReportUploadAction = ErrorReportUploadAction.builder()
+        .serviceClient(serviceClient)
+        .failureConfirmation(failureConfirmation)
+        .successConfirmation(successConfirmation)
+        .build();
+  }
+
 
   private static final UserErrorReport USER_ERROR_REPORT = UserErrorReport.builder()
       .build();
@@ -52,9 +65,10 @@ class ErrorReportUploadActionTest {
 
           errorReportUploadAction.accept(null, USER_ERROR_REPORT);
 
-          verify(dialogController).showFailureConfirmation(notSuccessfulSend);
+          verify(failureConfirmation).accept(notSuccessfulSend);
+          verify(successConfirmation, never()).accept(any());
 
-          reset(serviceClient, dialogController);
+          reset(serviceClient, failureConfirmation, successConfirmation);
         });
   }
 
@@ -82,9 +96,10 @@ class ErrorReportUploadActionTest {
 
           errorReportUploadAction.accept(null, USER_ERROR_REPORT);
 
-          verify(dialogController).showFailureConfirmation(missingLinkResult);
+          verify(failureConfirmation).accept(missingLinkResult);
+          verify(successConfirmation, never()).accept(any());
 
-          reset(serviceClient, dialogController);
+          reset(serviceClient, failureConfirmation, successConfirmation);
         });
   }
 
@@ -121,7 +136,9 @@ class ErrorReportUploadActionTest {
 
     errorReportUploadAction.accept(frame, USER_ERROR_REPORT);
 
-    verify(dialogController).showSuccessConfirmation(successCase.getPayload().get().getGithubIssueLink().get());
+    verify(failureConfirmation, never()).accept(any());
+    verify(successConfirmation)
+        .accept(successCase.getPayload().get().getGithubIssueLink().get());
   }
 
   private static ServiceResponse<ErrorReportResponse> withSuccessfulSend() {
