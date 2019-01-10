@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import games.strategy.engine.framework.system.SystemProperties;
 import org.triplea.http.client.error.report.create.ErrorReport;
 
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.framework.system.SystemProperties;
 import lombok.Builder;
 
 /**
