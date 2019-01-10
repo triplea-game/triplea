@@ -1,10 +1,10 @@
 package games.strategy.engine.framework.startup.ui;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
+import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 
 import java.time.Instant;
@@ -101,7 +101,7 @@ public class InGameLobbyWatcher {
     Preconditions.checkNotNull(handler);
     final @Nullable String host = getLobbySystemProperty(LOBBY_HOST);
     final @Nullable String port = getLobbySystemProperty(LOBBY_PORT);
-    final @Nullable String hostedBy = getLobbySystemProperty(LOBBY_GAME_HOSTED_BY);
+    final @Nullable String hostedBy = getLobbySystemProperty(TRIPLEA_NAME);
     if (host == null || port == null) {
       return null;
     }

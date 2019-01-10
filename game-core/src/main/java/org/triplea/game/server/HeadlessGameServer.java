@@ -1,9 +1,6 @@
 package org.triplea.game.server;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_RECONNECTION;
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_EMAIL;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
@@ -36,8 +33,6 @@ import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.headless.game.server.ArgValidationResult;
-import games.strategy.engine.framework.headless.game.server.HeadlessGameServerCliParam;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
@@ -50,7 +45,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
-import games.strategy.util.Util;
 import lombok.extern.java.Log;
 
 /**
@@ -58,8 +52,7 @@ import lombok.extern.java.Log;
  */
 @Log
 public class HeadlessGameServer {
-  private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM = 21600;
-  private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM;
+  private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * 21600;
   private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 
   private final AvailableGames availableGames = new AvailableGames();
@@ -111,21 +104,13 @@ public class HeadlessGameServer {
 
   @SuppressWarnings("FutureReturnValueIgnored") // false positive; see https://github.com/google/error-prone/issues/883
   private void startLobbyWatcher() {
-    int reconnect;
-    try {
-      final String reconnectionSeconds = System.getProperty(LOBBY_GAME_RECONNECTION,
-          "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
-      reconnect = Math.max(Integer.parseInt(reconnectionSeconds), LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM);
-    } catch (final NumberFormatException e) {
-      reconnect = LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT;
-    }
     lobbyWatcherResetupThread.scheduleAtFixedRate(() -> {
       try {
         restartLobbyWatcher();
       } catch (final Exception e) {
         log.log(Level.WARNING, "Failed to restart Lobby watcher", e);
       }
-    }, reconnect, reconnect, TimeUnit.SECONDS);
+    }, LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT, LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT, TimeUnit.SECONDS);
   }
 
   public static synchronized HeadlessGameServer getInstance() {
@@ -590,19 +575,11 @@ public class HeadlessGameServer {
    * </p>
    */
   public static void start(final String[] args) {
-    final ArgValidationResult validation = HeadlessGameServerCliParam.validateArgs(args);
-    if (!validation.isValid()) {
-      log.severe(String.format("Failed to start, improper args: %s\n"
-          + "Errors:\n- %s\n"
-          + "Example usage: %s",
-          Arrays.toString(args),
-          String.join("\n- ", validation.getErrorMessages()),
-          HeadlessGameServerCliParam.exampleUsage()));
-      return;
-    }
-
     ClientSetting.initialize();
+    System.setProperty(LOBBY_GAME_COMMENTS, "automated_host");
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
+    System.setProperty(TRIPLEA_SERVER, "true");
+
     ArgParser.handleCommandLineArgs(args);
     handleHeadlessGameServerArgs();
     ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
@@ -617,79 +594,46 @@ public class HeadlessGameServer {
     // TODO replace this method with the generated usage of commons-cli
     log.info("\nUsage and Valid Arguments:\n"
         + "   " + TRIPLEA_GAME + "=<FILE_NAME>\n"
-        + "   " + TRIPLEA_SERVER + "=true\n"
         + "   " + TRIPLEA_PORT + "=<PORT>\n"
         + "   " + TRIPLEA_NAME + "=<PLAYER_NAME>\n"
         + "   " + LOBBY_HOST + "=<LOBBY_HOST>\n"
         + "   " + LOBBY_PORT + "=<LOBBY_PORT>\n"
-        + "   " + LOBBY_GAME_COMMENTS + "=<LOBBY_GAME_COMMENTS>\n"
-        + "   " + LOBBY_GAME_HOSTED_BY + "=<LOBBY_GAME_HOSTED_BY>\n"
-        + "   " + LOBBY_GAME_SUPPORT_EMAIL + "=<youremail@emailprovider.com>\n"
         + "   " + LOBBY_GAME_SUPPORT_PASSWORD + "=<password for remote actions, such as remote stop game>\n"
-        + "   " + LOBBY_GAME_RECONNECTION + "=<seconds between refreshing lobby connection [min "
-        + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM + "]>\n"
-        + "   " + MAP_FOLDER + "=mapFolder"
-        + "\n"
-        + "   You must start the Name and HostedBy with \"Bot\".\n"
-        + "   Game Comments must have this string in it: \"automated_host\".\n"
-        + "   You must include a support email for your host, so that you can be alerted by lobby admins when your "
-        + "host has an error."
-        + " (For example they may email you when your host is down and needs to be restarted.)\n"
-        + "   Support password is a remote access password that will allow lobby admins to remotely take the "
-        + "following actions: ban player, stop game, shutdown server."
-        + " (Please email this password to one of the lobby moderators, or private message an admin on the "
-        + "forums.triplea-game.org forum.)\n");
+        + "   " + MAP_FOLDER + "=<MAP_FOLDER>"
+        + "\n");
   }
 
   private static void handleHeadlessGameServerArgs() {
     boolean printUsage = false;
-
     final File mapFolder = ClientSetting.mapFolderOverride.getValueOrThrow().toFile();
     if (!mapFolder.isDirectory()) {
       log.warning("Invalid '" + MAP_FOLDER + "' param, map folder must exist: '" + mapFolder + "'");
       printUsage = true;
     }
 
-    final String playerName = System.getProperty(TRIPLEA_NAME, "");
-    final String hostName = System.getProperty(LOBBY_GAME_HOSTED_BY, "");
-    if (playerName.length() < 7 || hostName.length() < 7 || !hostName.equals(playerName)
-        || !playerName.startsWith("Bot") || !hostName.startsWith("Bot")) {
-      log.warning(
-          "Invalid argument: " + TRIPLEA_NAME + " and " + LOBBY_GAME_HOSTED_BY
-              + " must start with \"Bot\" and be at least 7 characters long and be the same.");
+    String playerName = System.getProperty(TRIPLEA_NAME, "");
+    if (playerName.length() < 7) {
+      log.warning("Invalid argument: " + TRIPLEA_NAME + " must at least 4 characters long");
       printUsage = true;
     }
 
-    final String comments = System.getProperty(LOBBY_GAME_COMMENTS, "");
-    if (!comments.contains("automated_host")) {
-      log.warning(
-          "Invalid argument: " + LOBBY_GAME_COMMENTS + " must contain the string \"automated_host\".");
+    if (!playerName.startsWith("Bot")) {
+      playerName = "Bot_" + playerName;
+      System.setProperty(TRIPLEA_NAME, playerName);
+    }
+
+    if (Integer.valueOf(System.getProperty(TRIPLEA_PORT, "0")) <= 0) {
+      log.warning("Invalid argument: " + TRIPLEA_PORT + " must be numeric");
       printUsage = true;
     }
 
-    final String email = System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "");
-    if (email.length() < 3 || !Util.isMailValid(email)) {
-      log.warning(
-          "Invalid argument: " + LOBBY_GAME_SUPPORT_EMAIL + " must contain a valid email address.");
+    if (System.getProperty(LOBBY_HOST, "").isEmpty()) {
+      log.warning("Invalid argument: " + LOBBY_HOST + " must be set");
       printUsage = true;
     }
 
-    final String reconnection = System.getProperty(LOBBY_GAME_RECONNECTION,
-        "" + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT);
-    try {
-      final int reconnect = Integer.parseInt(reconnection);
-      if (reconnect < LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM) {
-        log.warning("Invalid argument: " + LOBBY_GAME_RECONNECTION
-            + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
-            + " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT
-            + " or " + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
-        printUsage = true;
-      }
-    } catch (final NumberFormatException e) {
-      log.warning("Invalid argument: " + LOBBY_GAME_RECONNECTION
-          + " must be an integer equal to or greater than " + LOBBY_RECONNECTION_REFRESH_SECONDS_MINIMUM
-          + " seconds, and should normally be either " + LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT + " or "
-          + (2 * LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT) + " seconds.");
+    if (Integer.valueOf(System.getProperty(LOBBY_PORT, "0")) <= 0) {
+      log.warning("Invalid argument: " + LOBBY_PORT + " must be numeric");
       printUsage = true;
     }
 
