@@ -35,7 +35,11 @@ public final class SystemProperties {
     return checkNotNull(System.getProperty("java.specification.version"));
   }
 
-  private static String getOsName() {
+  public static String getJavaVersion() {
+    return checkNotNull(System.getProperty("java.version"));
+  }
+
+  public static String getOperatingSystem() {
     return checkNotNull(System.getProperty("os.name"));
   }
 
@@ -52,11 +56,11 @@ public final class SystemProperties {
   }
 
   public static boolean isMac() {
-    return getOsName().toLowerCase().contains("mac");
+    return getOperatingSystem().toLowerCase().contains("mac");
   }
 
   public static boolean isWindows() {
-    return getOsName().toLowerCase().contains("windows");
+    return getOperatingSystem().toLowerCase().contains("windows");
   }
 
   public static @Nullable String setJavaNetUseSystemProxies(final String value) {

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import games.strategy.engine.framework.system.SystemProperties;
 import org.triplea.http.client.error.report.create.ErrorReport;
 
 import games.strategy.engine.ClientContext;
@@ -27,8 +28,8 @@ class UserErrorReport {
 
   ErrorReport toErrorReport() {
     return ErrorReport.builder()
-        .operatingSystem(System.getProperty("os.name"))
-        .javaVersion(System.getProperty("java.version"))
+        .operatingSystem(SystemProperties.getOperatingSystem())
+        .javaVersion(SystemProperties.getJavaVersion())
         .gameVersion(ClientContext.engineVersion().toStringFull())
         .reportMessage(
             Optional.ofNullable(description).map(d -> "### Problem Description\n" + d).orElse("")
