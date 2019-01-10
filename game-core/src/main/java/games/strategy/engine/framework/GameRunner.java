@@ -19,22 +19,16 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.FileDialog;
 import java.awt.Frame;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -46,31 +40,21 @@ import javax.swing.filechooser.FileFilter;
 
 import org.triplea.common.util.Services;
 import org.triplea.game.ApplicationContext;
-import org.triplea.game.client.ui.javafx.JavaFxClientRunner;
 
-import games.strategy.debug.Console;
-import games.strategy.debug.ConsoleHandler;
-import games.strategy.debug.ErrorMessage;
-import games.strategy.debug.ErrorMessageHandler;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.auto.health.check.LocalSystemChecker;
 import games.strategy.engine.auto.update.UpdateChecks;
-import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
-import games.strategy.engine.framework.system.HttpProxy;
-import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.pro.ProAi;
-import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
@@ -106,63 +90,19 @@ public final class GameRunner {
    *
    * @throws IllegalStateException If called from a headless environment.
    */
-  public static void start(final String[] args) {
-    checkNotNull(args);
-    checkState(!GraphicsEnvironment.isHeadless(),
-        "UI client launcher invoked from headless environment. This is currently prohibited by design to "
-            + "avoid UI rendering errors in the headless environment.");
+  public static void start() {
+    SwingUtilities.invokeLater(() -> {
+      final JFrame frame = new JFrame("TripleA");
+      mainFrame = newMainFrame(frame);
+      setupPanelModel.showSelectType();
+      new Thread(GameRunner::showMainFrame).start();
+    });
 
-    Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
-    ClientSetting.initialize();
-
-    if (!ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
-      Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-        LookAndFeel.initialize();
-        initializeLogManager(Console.newInstance());
-        ErrorMessage.enable();
-      }));
-    }
-    ArgParser.handleCommandLineArgs(args);
-
-    if (SystemProperties.isMac()) {
-      MacOsIntegration.addOpenUriHandler(uri -> {
-        final String encoding = StandardCharsets.UTF_8.displayName();
-        try {
-          final String mapName = URLDecoder.decode(
-              uri.toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()), encoding);
-          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
-        } catch (final UnsupportedEncodingException e) {
-          throw new AssertionError(encoding + " is not a supported encoding!", e);
-        }
-      });
-    }
-
-    if (HttpProxy.isUsingSystemProxy()) {
-      HttpProxy.updateSystemProxy();
-    }
-
-    if (ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
-      Services.loadAny(JavaFxClientRunner.class).start(args);
-    } else {
-      SwingUtilities.invokeLater(() -> {
-        mainFrame = newMainFrame();
-        setupPanelModel.showSelectType();
-        new Thread(GameRunner::showMainFrame).start();
-      });
-
-      LocalSystemChecker.launch();
-      UpdateChecks.launch();
-    }
+    LocalSystemChecker.launch();
+    UpdateChecks.launch();
   }
 
-  private static void initializeLogManager(final Console console) {
-    final Logger defaultLogger = LogManager.getLogManager().getLogger("");
-    defaultLogger.addHandler(new ErrorMessageHandler());
-    defaultLogger.addHandler(new ConsoleHandler(console));
-  }
-
-  private static JFrame newMainFrame() {
-    final JFrame frame = new JFrame("TripleA");
+  private static JFrame newMainFrame(final JFrame frame) {
     LookAndFeelSwingFrameListener.register(frame);
 
     frame.add(new MainPanelBuilder().buildMainPanel(setupPanelModel, gameSelectorModel));
