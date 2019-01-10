@@ -83,7 +83,7 @@ public class SetupPanelModel {
     }
   }
 
-  protected void setGameTypePanel(final ISetupPanel panel) {
+  public void setGameTypePanel(final ISetupPanel panel) {
     if (this.panel != null) {
       this.panel.cancel();
     }

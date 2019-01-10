@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
 import org.triplea.game.server.HeadlessGameServer;
+import org.triplea.game.server.HeadlessServerSetupPanelModel;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
@@ -76,13 +77,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
 
-  /**
-   * Indicates the server is running in a headed or headless context.
-   */
-  public enum InteractionMode {
-    HEADLESS, SWING_CLIENT_UI
-  }
-
   static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
@@ -91,7 +85,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
+  @Nullable
   private final SetupPanelModel typePanelModel;
+  @Nullable
+  private final HeadlessServerSetupPanelModel headlessServerSetupPanelModel;
   private final boolean headless;
   private IServerMessenger serverMessenger;
   private IRemoteMessenger remoteMessenger;
@@ -114,15 +111,22 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
 
   ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
-    this(gameSelectorModel, typePanelModel, InteractionMode.SWING_CLIENT_UI);
-  }
-
-  public ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel,
-      final InteractionMode interactionMode) {
     this.gameSelectorModel = gameSelectorModel;
     this.typePanelModel = typePanelModel;
     this.gameSelectorModel.addObserver(gameSelectorObserver);
-    headless = (interactionMode == InteractionMode.HEADLESS);
+    headlessServerSetupPanelModel = null;
+    headless = false;
+  }
+
+
+  public ServerModel(
+      final GameSelectorModel gameSelectorModel,
+      final HeadlessServerSetupPanelModel headlessServerSetupPanelModel) {
+    this.gameSelectorModel = gameSelectorModel;
+    typePanelModel = null;
+    this.gameSelectorModel.addObserver(gameSelectorObserver);
+    this.headlessServerSetupPanelModel = headlessServerSetupPanelModel;
+    headless = true;
   }
 
   public void cancel() {
@@ -531,14 +535,14 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   @Override
   public void messengerInvalid(final Throwable reason) {
-    if (headless) {
-      if (typePanelModel != null) {
-        typePanelModel.showSelectType();
-      }
-    } else {
-      JOptionPane.showMessageDialog(ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
-      typePanelModel.showSelectType();
-    }
+    Optional.ofNullable(headlessServerSetupPanelModel)
+        .ifPresent(HeadlessServerSetupPanelModel::showSelectType);
+
+    Optional.ofNullable(typePanelModel).ifPresent(
+        panel -> {
+          JOptionPane.showMessageDialog(ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
+          panel.showSelectType();
+        });
   }
 
   @Override
