@@ -52,7 +52,7 @@ import lombok.extern.java.Log;
  */
 @Log
 public class HeadlessGameServer {
-  private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = 2 * 21600;
+  private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = (int) TimeUnit.HOURS.toSeconds(12);
   private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 
   private final AvailableGames availableGames = new AvailableGames();
