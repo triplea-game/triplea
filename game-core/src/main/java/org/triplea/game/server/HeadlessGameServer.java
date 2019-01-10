@@ -613,15 +613,10 @@ public class HeadlessGameServer {
           Paths.get(SystemProperties.getUserHome(), "/triplea/downloadedMaps"));
     }
 
-    String playerName = System.getProperty(TRIPLEA_NAME, "");
-    if (playerName.length() < 7) {
-      log.warning("Invalid argument: " + TRIPLEA_NAME + " must at least 4 characters long");
+    final String playerName = System.getProperty(TRIPLEA_NAME, "");
+    if ((playerName.length() < 7) || !playerName.startsWith("Bot")) {
+      log.warning("Invalid argument: " + TRIPLEA_NAME + " must at least 7 characters long");
       printUsage = true;
-    }
-
-    if (!playerName.startsWith("Bot")) {
-      playerName = "Bot_" + playerName;
-      System.setProperty(TRIPLEA_NAME, playerName);
     }
 
     if (Integer.valueOf(System.getProperty(TRIPLEA_PORT, "0")) <= 0) {
