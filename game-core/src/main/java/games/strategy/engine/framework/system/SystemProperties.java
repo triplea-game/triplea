@@ -27,16 +27,18 @@ public final class SystemProperties {
     return checkNotNull(System.getProperty("java.home"));
   }
 
-  public static String getJavaRuntimeVersion() {
+  /**
+   * Returns current java version with build number. EG: {@code "1.8.0_181-b13"}
+   */
+  public static String getJavaVersion() {
     return checkNotNull(System.getProperty("java.runtime.version"));
   }
 
+  /**
+   * Returns 'short' java version. EG: {@code "1.8"}
+   */
   public static String getJavaSpecificationVersion() {
     return checkNotNull(System.getProperty("java.specification.version"));
-  }
-
-  public static String getJavaVersion() {
-    return checkNotNull(System.getProperty("java.version"));
   }
 
   public static String getOperatingSystem() {
