@@ -69,6 +69,7 @@ class ErrorReportUploadActionTest {
     verify(successConfirmation, never()).accept(any());
   }
 
+  @SuppressWarnings("unused") // Used by @MethodSource via reflection
   private static Collection<ServiceResponse<ErrorReportResponse>> withNonSuccessSendResults() {
     // Create ServiceResponses with each of the 'SendResult' values except for the successful SendResult value: 'SENT'
     return stream(SendResult.values())
@@ -95,6 +96,7 @@ class ErrorReportUploadActionTest {
     verify(successConfirmation, never()).accept(any());
   }
 
+  @SuppressWarnings("unused") // Used by @MethodSource via reflection
   private static Collection<ServiceResponse<ErrorReportResponse>> withMissingIssueLinkResult() {
     return asList(
         ServiceResponse.<ErrorReportResponse>builder()
