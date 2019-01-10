@@ -12,9 +12,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.text.IsEmptyString.emptyOrNullString;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -114,7 +112,7 @@ class ErrorReportClientTest {
 
     assertThat(response.getPayload(), isEmpty());
     assertThat(response.getThrown(), isPresent());
-    assertThat(response.getExceptionMessage(), not(emptyOrNullString()));
+    assertThat(response.getExceptionMessage(), isPresent());
   }
 
   private static void givenFaultyConnection(final WireMockServer wireMockServer, final Fault fault) {
@@ -135,7 +133,7 @@ class ErrorReportClientTest {
 
     assertThat(response.getPayload(), isEmpty());
     assertThat(response.getThrown(), isPresent());
-    assertThat(response.getExceptionMessage(), not(emptyOrNullString()));
+    assertThat(response.getExceptionMessage(), isPresent());
   }
 
   private static void givenServer500(final WireMockServer wireMockServer) {

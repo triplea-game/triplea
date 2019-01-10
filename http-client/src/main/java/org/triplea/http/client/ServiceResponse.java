@@ -43,10 +43,9 @@ public class ServiceResponse<T> {
    *
    * @return An empty string if no exception is present, otherwise the exception message is returned.
    */
-  public String getExceptionMessage() {
+  public Optional<String> getExceptionMessage() {
     return Optional.ofNullable(thrown)
-        .map(Throwable::getMessage)
-        .orElse("");
+        .map(Throwable::getMessage);
   }
 
   /**

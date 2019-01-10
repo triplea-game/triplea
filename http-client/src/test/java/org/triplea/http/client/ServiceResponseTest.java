@@ -1,5 +1,7 @@
 package org.triplea.http.client;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -37,7 +39,7 @@ class ServiceResponseTest {
             .sendResult(SendResult.SERVER_ERROR)
             .build()
             .getExceptionMessage(),
-        is(""));
+        isEmpty());
 
     assertThat(
         ServiceResponse.<String>builder()
@@ -45,6 +47,6 @@ class ServiceResponseTest {
             .thrown(new IllegalStateException(SAMPLE_MESSGE))
             .build()
             .getExceptionMessage(),
-        is(SAMPLE_MESSGE));
+        isPresentAndIs(SAMPLE_MESSGE));
   }
 }
