@@ -148,7 +148,7 @@ the game goes through in the gamePlay tag.
 
 
 ```xml
-<delegate name="battle&quot" javaClass="BattleDelegate"/>
+ <delegate name="battle" javaClass="BattleDelegate"/>
 <delegate name="move" javaClass="MoveDelegate"/>
 
 <step name="usMove" delegate="move" player="bush"/>
