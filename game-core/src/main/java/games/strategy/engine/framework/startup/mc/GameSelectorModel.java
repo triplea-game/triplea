@@ -8,6 +8,8 @@ import java.net.URI;
 import java.util.Observable;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.ClientFileSystemHelper;
@@ -31,7 +33,8 @@ public class GameSelectorModel extends Observable {
   private String gameName = "";
   private String gameVersion = "";
   private String gameRound = "";
-  private String fileName;
+  @Nullable
+  private String fileName = null;
   private boolean canSelect = true;
   private boolean isHostHeadlessBot = false;
   // just for host bots, so we can get the actions for loading/saving games on the bots from this model
@@ -43,7 +46,7 @@ public class GameSelectorModel extends Observable {
 
   public void resetGameDataToNull() {
     setGameData(null);
-    fileName = "";
+    fileName = null;
   }
 
   public void load(final GameData data, final String fileName) {
@@ -52,7 +55,6 @@ public class GameSelectorModel extends Observable {
   }
 
   public void load(final GameChooserEntry entry) {
-    fileName = entry.getLocation();
     setGameData(entry.getGameData());
     if (entry.getGameData() != null) {
       ClientSetting.defaultGameName.setValue(entry.getGameData().getGameName());
@@ -90,22 +92,19 @@ public class GameSelectorModel extends Observable {
 
   public GameData getGameData(final InputStream input) {
     try {
-      final GameData newData = GameDataManager.loadGame(input);
-      if (newData != null) {
-        return newData;
-      }
+      return GameDataManager.loadGame(input);
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to load game", e);
+      return null;
     }
-    return null;
   }
 
   public synchronized GameData getGameData() {
     return gameData;
   }
 
-  public synchronized boolean isSavedGame() {
-    return !fileName.endsWith(".xml");
+  synchronized boolean isSavedGame() {
+    return fileName != null;
   }
 
   void setCanSelect(final boolean canSelect) {
@@ -130,10 +129,8 @@ public class GameSelectorModel extends Observable {
     return isHostHeadlessBot;
   }
 
-  void setClientModelForHostBots(final ClientModel clientModel) {
-    synchronized (this) {
-      clientModelForHostBots = clientModel;
-    }
+  synchronized void setClientModelForHostBots(final ClientModel clientModel) {
+    clientModelForHostBots = clientModel;
   }
 
   public synchronized ClientModel getClientModelForHostBots() {
@@ -144,7 +141,7 @@ public class GameSelectorModel extends Observable {
    * We don't have a game data (i.e. we are a remote player and the data has not been sent yet), but
    * we still want to display game info.
    */
-  public void clearDataButKeepGameInfo(final String gameName, final String gameRound, final String gameVersion) {
+  void clearDataButKeepGameInfo(final String gameName, final String gameRound, final String gameVersion) {
     synchronized (this) {
       gameData = null;
       this.gameName = gameName;
@@ -155,7 +152,7 @@ public class GameSelectorModel extends Observable {
   }
 
   public synchronized String getFileName() {
-    return (gameData == null) ? "-" : fileName;
+    return (fileName == null) ? "-" : fileName;
   }
 
   public synchronized String getGameName() {
@@ -270,23 +267,5 @@ public class GameSelectorModel extends Observable {
       }
     }
     return selectedGame;
-  }
-
-  /**
-   * Formats the file name text to two lines.
-   * The separation focuses on the second line being at least the filename while the first line
-   * should show the the path including '...' in case it does not fit
-   *
-   * @return filename formatted file name - in case it is too long (> maxLength) to two lines,
-   */
-  public String getFormattedFileNameText() {
-    if (fileName.length() <= 22) {
-      return fileName;
-    }
-
-    return "<html><body>"
-        + fileName.replaceAll("^(.*[A-Z]:/)?(?:[^/]+/){3}([^/]+/)(.*([^/]+)[^/]*/)\\4/(?:[^/:]+/)+",
-        "$1.../$2<br>$3.../")
-        + "</body></html>";
   }
 }
