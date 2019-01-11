@@ -266,7 +266,7 @@ public final class GameRunner {
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
     commands.add("-D" + TRIPLEA_SERVER + "=true");
     commands.add("-D" + TRIPLEA_PORT + "=" + port);
-    commands.add("-D" + TRIPLEA_NAME + "=" + playerName);
+    commands.add("-D" + TRIPLEA_NAME + "=" +  messengers.getMessenger().getLocalNode().getName());
     commands.add("-D" + LOBBY_HOST + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getAddress().getHostAddress());
     commands.add("-D" + LOBBY_PORT + "="
