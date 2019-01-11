@@ -6,8 +6,6 @@ import java.awt.GridBagLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 /**
  * Helper Base class for Editors, that provides a basic collection of useful operations.
@@ -46,31 +44,5 @@ abstract class EditorPanel extends JPanel {
   boolean setLabelValid(final boolean valid, final JLabel label) {
     label.setForeground(valid ? labelColor : Color.RED);
     return valid;
-  }
-
-  /**
-   * Wrapper class to add input changed listeners to JTextFields with ease.
-   */
-  static class TextFieldInputListenerWrapper implements DocumentListener {
-    private final Runnable runnable;
-
-    TextFieldInputListenerWrapper(final Runnable runnable) {
-      this.runnable = runnable;
-    }
-
-    @Override
-    public void changedUpdate(final DocumentEvent e) {
-      runnable.run();
-    }
-
-    @Override
-    public void insertUpdate(final DocumentEvent e) {
-      runnable.run();
-    }
-
-    @Override
-    public void removeUpdate(final DocumentEvent e) {
-      runnable.run();
-    }
   }
 }

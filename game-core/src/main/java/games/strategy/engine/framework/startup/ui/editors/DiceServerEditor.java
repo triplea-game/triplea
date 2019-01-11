@@ -16,6 +16,7 @@ import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.util.Util;
+import swinglib.DocumentListenerBuilder;
 
 /**
  * A class to configure a Dice Server for the game.
@@ -71,9 +72,9 @@ public class DiceServerEditor extends EditorPanel {
       final PbemDiceRoller random = new PbemDiceRoller(newDiceServer());
       random.test();
     });
-    toAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
-    ccAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
-    gameId.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
+    DocumentListenerBuilder.attachDocumentListener(toAddress, this::checkFieldsAndNotify);
+    DocumentListenerBuilder.attachDocumentListener(ccAddress, this::checkFieldsAndNotify);
+    DocumentListenerBuilder.attachDocumentListener(gameId, this::checkFieldsAndNotify);
   }
 
   private void checkFieldsAndNotify() {

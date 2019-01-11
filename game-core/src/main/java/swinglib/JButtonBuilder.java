@@ -6,7 +6,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.awt.Component;
 import java.awt.Font;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import javax.swing.JButton;
 import javax.swing.UIManager;
@@ -27,10 +27,10 @@ public class JButtonBuilder {
   private String title;
   private String toolTip;
   private String componentName;
-  private Function<Component, Runnable> clickAction;
+  private Consumer<Component> clickAction;
   private boolean enabled = true;
-  private boolean selected = false;
-  private int biggerFont = 0;
+  private boolean selected;
+  private int biggerFont;
 
   private JButtonBuilder() {}
 
@@ -47,7 +47,7 @@ public class JButtonBuilder {
 
     final JButton button = new JButton(title);
     Optional.ofNullable(clickAction)
-        .ifPresent(listener -> button.addActionListener(e -> clickAction.apply(button).run()));
+        .ifPresent(listener -> button.addActionListener(e -> clickAction.accept(button)));
     Optional.ofNullable(componentName).ifPresent(button::setName);
     Optional.ofNullable(toolTip).ifPresent(button::setToolTipText);
 
@@ -138,7 +138,7 @@ public class JButtonBuilder {
    */
   public JButtonBuilder actionListener(final Runnable actionListener) {
     checkNotNull(actionListener);
-    return actionListener(c -> actionListener);
+    return actionListener(c -> actionListener.run());
   }
 
 
@@ -149,10 +149,10 @@ public class JButtonBuilder {
    * that should be located above the button. Since we do not have a button reference yet while
    * constructing the button, this method can be used in that situation.
    *
-   * @param clickAction The action listener to invoke when the button is clicked, this listener will be evaluated
-   *        and attached to the button when the button is constructed (ie: {@code #build}.
+   * @param clickAction The action listener to invoke when the button is clicked, the parameter to the listener
+   *        is the button that was clicked (so it can be enabled/disabled, or text updated).
    */
-  public JButtonBuilder actionListener(final Function<Component, Runnable> clickAction) {
+  public JButtonBuilder actionListener(final Consumer<Component> clickAction) {
     this.clickAction = checkNotNull(clickAction);
     return this;
   }
