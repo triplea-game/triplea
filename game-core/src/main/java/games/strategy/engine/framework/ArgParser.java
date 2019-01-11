@@ -11,7 +11,7 @@ import games.strategy.triplea.settings.ClientSetting;
  * Command line argument parser, parses args formatted as: "-Pkey=value".
  */
 public final class ArgParser {
-  static final String TRIPLEA_PROTOCOL = "triplea:";
+  public static final String TRIPLEA_PROTOCOL = "triplea:";
 
   private ArgParser() {}
 

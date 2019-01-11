@@ -36,9 +36,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.ISetupPanel;
-import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
@@ -496,7 +494,7 @@ public class HeadlessGameServer {
         }
         if (setupPanelModel.getPanel() != null
             && setupPanelModel.getPanel().canGameStart()) {
-          final boolean started = startHeadlessGame(setupPanelModel);
+          final boolean started = startHeadlessGame(setupPanelModel, gameSelectorModel);
           if (!started) {
             log.warning("Error in launcher, going back to waiting.");
           } else {
@@ -508,11 +506,12 @@ public class HeadlessGameServer {
     }, "Headless Server Waiting For Users To Connect And Start").start();
   }
 
-  private static synchronized boolean startHeadlessGame(final SetupPanelModel setupPanelModel) {
+  private static synchronized boolean startHeadlessGame(
+      final HeadlessServerSetupPanelModel setupPanelModel, final GameSelectorModel gameSelectorModel) {
     try {
       if (setupPanelModel != null && setupPanelModel.getPanel() != null && setupPanelModel.getPanel().canGameStart()) {
-        log.info("Starting Game: " + setupPanelModel.getGameSelectorModel().getGameData().getGameName()
-            + ", Round: " + setupPanelModel.getGameSelectorModel().getGameData().getSequence().getRound());
+        log.info("Starting Game: " + gameSelectorModel.getGameData().getGameName()
+            + ", Round: " + gameSelectorModel.getGameData().getSequence().getRound());
 
         final boolean launched = setupPanelModel.getPanel().getLauncher()
             .map(launcher -> {
@@ -543,20 +542,11 @@ public class HeadlessGameServer {
     return getServerModel(setupPanelModel);
   }
 
-  private static ServerModel getServerModel(final SetupPanelModel setupPanelModel) {
-    if (setupPanelModel == null) {
-      return null;
-    }
-    final ISetupPanel setup = setupPanelModel.getPanel();
-    if (setup == null) {
-      return null;
-    }
-    if (setup instanceof ServerSetupPanel) {
-      return ((ServerSetupPanel) setup).getModel();
-    } else if (setup instanceof HeadlessServerSetup) {
-      return ((HeadlessServerSetup) setup).getModel();
-    }
-    return null;
+  private static ServerModel getServerModel(final HeadlessServerSetupPanelModel setupPanelModel) {
+    return Optional.ofNullable(setupPanelModel)
+        .map(HeadlessServerSetupPanelModel::getPanel)
+        .map(HeadlessServerSetup::getModel)
+        .orElse(null);
   }
 
   /**
