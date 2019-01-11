@@ -51,3 +51,9 @@ write access to the repository. We use this account so it that these keys are no
       Travis ruby set up program when first configuring travis with TripleA.
   - *Stored Location*: encrypted in the travis.yml file
   - *Usage*: [travis.yml](https://github.com/triplea-game/triplea/blob/master/.travis.yml#L32)
+- *Http-Server / Github Create Issue*
+  - *Description*: Used by http-server to communicate with Github webservice API to create issues
+      for error report upload.
+  - *Stored Location*: filesystem service init file, see [infrastructure docs](https://github.com/triplea-game/infrastructure/docs)
+  - *Usage*: [GithubIssueClient.java](https://github.com/triplea-game/triplea/blob/master/http-client/src/main/java/org/triplea/http/client/github/issues/GithubIssueClient.java)
+

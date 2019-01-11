@@ -1,35 +1,39 @@
 package games.strategy.debug.error.reporting;
 
-import java.util.logging.LogRecord;
+import java.util.Optional;
+
+import javax.annotation.Nullable;
 
 import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportDetails;
 
 import games.strategy.engine.ClientContext;
-import lombok.AccessLevel;
+import games.strategy.engine.framework.system.SystemProperties;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 
 /**
- * Represents the data a user has entered into a swing GUI.
+ * The user error report window can be seeded with information from the console or an error that
+ * impacted the user. The user is given a chance to enter description information of their own. This
+ * data object represents the bundle of that data after a user has entered data.
+ * <p>
+ * Or, a user can open a new bug report and simply enter a description and submit it.
+ * </p>
  */
 @Builder
-@EqualsAndHashCode
-@ToString
-@Getter(AccessLevel.PACKAGE)
 class UserErrorReport {
-  private final String title;
+
+  @Nullable
   private final String description;
-  private final LogRecord logRecord;
+  @Nullable
+  private final String errorData;
 
   ErrorReport toErrorReport() {
-    return new ErrorReport(ErrorReportDetails.builder()
-        .gameVersion(ClientContext.engineVersion().getExactVersion())
-        .logRecord(logRecord)
-        .title(title)
-        .description(description)
-        .build());
+    return ErrorReport.builder()
+        .operatingSystem(SystemProperties.getOperatingSystem())
+        .javaVersion(SystemProperties.getJavaVersion())
+        .gameVersion(ClientContext.engineVersion().toStringFull())
+        .reportMessage(
+            Optional.ofNullable(description).map(d -> "### Problem Description\n" + d).orElse("")
+                + Optional.ofNullable(errorData).map(e -> "\n### Error data\n" + e))
+        .build();
   }
 }

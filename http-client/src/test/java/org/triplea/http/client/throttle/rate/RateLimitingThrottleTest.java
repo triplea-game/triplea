@@ -3,8 +3,6 @@ package org.triplea.http.client.throttle.rate;
 import java.time.Instant;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,15 +11,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportDetails;
 
 @ExtendWith(MockitoExtension.class)
 class RateLimitingThrottleTest {
 
-  private static final ErrorReport ERROR_REPORT = new ErrorReport(ErrorReportDetails.builder()
-      .logRecord(new LogRecord(Level.SEVERE, "message"))
+  private static final ErrorReport ERROR_REPORT = ErrorReport.builder()
+      .reportMessage("Hunger is a scurvy tuna.")
+      .operatingSystem("Why does the cannibal die?")
+      .javaVersion("Woodchucks are the sails of the scrawny desolation.")
       .gameVersion("engine version")
-      .build());
+      .build();
 
   private static final int MIN_MILLIS_BETWEEN_REQUSETS = 5;
 
