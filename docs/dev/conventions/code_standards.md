@@ -1,22 +1,13 @@
 
-# Code Standards
-
-Unless specified otherwise, follow: [Google java style](http://google.github.io/styleguide/javaguide.html)
-
-Project uses checkstyle which must pass for any code to be merged.
-
-## [Checkstyle](http://checkstyle.sourceforge.net)
-
-Build will fail if checkstyle violation is increased.
-
-New sub-projects should enforce checkstyle and allow no violations.
+# Java Conventions
+- Follow: [Google java style](http://google.github.io/styleguide/javaguide.html)
+- Install and use IDE checkstyle and formatting, see: [IDE setup notes](/docs/dev/setup/ide/)
 
 
-## Guidelines and Preferences
+### `null` handling
+- Avoid returning `null` values. Prefer `Optional`.
+- Avoid passing `null` values as parameters to public APIs. Prefer overloads to handle unspecified parameter values.
 
-### Avoid using `null` as part of public APIs
-
-Said another way, do not pass `null` arguments, and do not return null. 
 
 ### Deprecate Correctly
 To deprecate add both a `@Deprecated` annotation  _and_ a `@deprecated` documentation 
@@ -33,30 +24,27 @@ Example:
  :
 ```
 
+## Depth first method ordering
 
-## Variable and Method Ordering
-
-Depth first ordering for methods according to call stack.
-For more details, please see Chapter 5 'Formatting' in [Clean Code](http://ricardogeek.com/docs/clean_code.html)
+For full details, please see *Chapter 5 'Formatting'* in [Clean Code](http://ricardogeek.com/docs/clean_code.html)
 
 Example:
 ```java
 
-public void method1() {
-  callPrivate1();
-  callPrivate2();
+public void firstPublicMethod() {
+  firstPrivateMethodInvoked();
+  secondPrivateMethodInvoked();
 }
 
-private void callPrivate1() { }
-private void callPrivate2() { }
+private void firstPrivateMethodInvoked() { }
+private void secondPrivateMethodInvoked() { }
 
-public void method2() { }
+public void secondPublicMethod() { }
 ```
 
 Note:
- - vertical distance between first usage and declaration is minimized. 
- - checkstyle will require method overloads to be declared next to each other, that
-  is an exception enforced by checkstyle.
+ - goal is to keep vertical distance between first usage and declaration reasonably short / minimized. 
+ - checkstyle will require method overloads to be declared next to each other
 
 
 ## Variables
