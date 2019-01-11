@@ -34,7 +34,7 @@ import swinglib.JPanelBuilder;
  * When the game launches, the MainFrame is loaded which will contain the MainPanel. The contents of the MainPanel are
  * swapped out until a new game has been started (TODO: check if the lobby uses MainPanel at all).
  */
-public class MainPanel extends JPanel implements Observer, ScreenChangeListener {
+public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> {
   private static final long serialVersionUID = -5548760379892913464L;
   private static final Dimension initialSize = new Dimension(800, 620);
 
@@ -128,7 +128,7 @@ public class MainPanel extends JPanel implements Observer, ScreenChangeListener 
    * This method will 'change' screens, swapping out one setup panel for another.
    */
   @Override
-  public void screenChangeEvent(final SetupPanel panel) {
+  public void accept(final SetupPanel panel) {
     gameSetupPanel = panel;
     gameSetupPanelHolder.removeAll();
     gameSetupPanelHolder.add(panel.getDrawable(), BorderLayout.CENTER);

@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.mc;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -16,7 +17,6 @@ import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
-import games.strategy.engine.framework.startup.ui.panels.main.ScreenChangeListener;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
@@ -34,7 +34,7 @@ public class SetupPanelModel {
   protected SetupPanel panel = null;
 
   @Setter
-  private ScreenChangeListener panelChangeListener;
+  private Consumer<SetupPanel> panelChangeListener;
 
 
   public void showSelectType() {
@@ -83,14 +83,14 @@ public class SetupPanelModel {
     }
   }
 
-  public void setGameTypePanel(final SetupPanel panel) {
+  private void setGameTypePanel(final SetupPanel panel) {
     if (this.panel != null) {
       this.panel.cancel();
     }
     this.panel = panel;
 
     Optional.ofNullable(panelChangeListener)
-        .ifPresent(listener -> listener.screenChangeEvent(panel));
+        .ifPresent(listener -> listener.accept(panel));
   }
 
   public SetupPanel getPanel() {
