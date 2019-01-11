@@ -12,7 +12,7 @@
     1. Download [jar file](https://projectlombok.org/downloads/lombok.jar) and execute it: `java -jar lombok.jar`
        - [manual install](https://groups.google.com/forum/#!topic/project-lombok/3rVS0eXVl5U)
          if that does not work
-       - Version to use: 1.16.20 
+       - Version to use: Same version as Gradle (see `lombok` configuration in the top-level [Gradle buildscript](https://github.com/triplea-game/triplea/blob/master/build.gradle))
     2. Enable annotation processing: [how-to-configure-java-annotation-processors-in-eclipse
       ](https://stackoverflow.com/questions/43404891/how-to-configure-java-annotation-processors-in-eclipse)
 
