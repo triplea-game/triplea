@@ -39,7 +39,8 @@
 1. Click 'Import' and select the import file: [triplea/.eclipse/format/triplea.importorder
 ](https://github.com/triplea-game/triplea/blob/master/.eclipse/format/triplea.importorder)
 
-Should look like this when configured: ![screenshot from 2019-01-10 15-10-27
+Should look like this when configured: <br />
+![screenshot from 2019-01-10 15-10-27
 ](https://user-images.githubusercontent.com/12397753/51002992-e7c69f00-14e9-11e9-9076-d05c4b6ce449.png)
 
 
