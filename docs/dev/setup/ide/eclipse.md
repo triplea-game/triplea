@@ -4,7 +4,7 @@
 ##  Plugins:
   - ***Buildship Gradle Integration***
      1. [Install Plugin](https://marketplace.eclipse.org/content/buildship-gradle-integration)
-  - ***CheckStyle***
+  - ***Checkstyle***
      1. [Install Plugin](http://eclipse-cs.sourceforge.net)
      1. Follow: https://checkstyle.org/eclipse-cs/#!/project-setup
      1. After step 3 "Activate Checkstyle for your project", select the TripleA configuration file instead of "Sun Checks"
