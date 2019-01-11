@@ -610,7 +610,7 @@ public class HeadlessGameServer {
     }
 
     if (Integer.valueOf(System.getProperty(TRIPLEA_PORT, "0")) <= 0) {
-      log.warning("Invalid argument: " + TRIPLEA_PORT + " must be numeric");
+      log.warning("Invalid argument: " + TRIPLEA_PORT + " must be greater than zero");
       printUsage = true;
     }
 
