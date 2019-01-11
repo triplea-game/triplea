@@ -6,7 +6,7 @@
 
 ### `null` handling
 - Avoid returning `null` values. Prefer `Optional`.
-- avoid passing 'null' values as parameters to public APIs
+- Avoid passing `null` values as parameters to public APIs. Prefer overloads to handle unspecified parameter values.
 
 
 ### Deprecate Correctly
