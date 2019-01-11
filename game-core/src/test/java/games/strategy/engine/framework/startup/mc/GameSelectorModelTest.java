@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.mc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.reset;
@@ -10,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Observer;
 
 import org.junit.jupiter.api.AfterEach;
@@ -156,20 +156,27 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  void testLoadFromNewGameChooserEntry() {
+  void testLoadFromNewGameChooserEntry() throws Exception {
     when(mockEntry.getGameData()).thenReturn(mockGameData);
     prepareMockGameDataExpectations();
-    try {
-      when(mockEntry.getUri()).thenReturn(new URI("abc"));
-    } catch (final URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
+    when(mockEntry.getUri()).thenReturn(new URI("abc"));
     testObj.load(mockEntry);
     assertThat(testObj.getFileName(), is("-"));
     verify(mockEntry, times(0)).getLocation();
 
     assertThat(testObj.getGameData(), sameInstance(mockGameData));
     assertHasFakeTestData(testObj);
+  }
+
+  @Test
+  void saveGameNameGetsResetWhenLoadingOtherMap() throws Exception {
+    final String testFileName = "someFileName";
+    testObj.load(null, testFileName);
+    assertThat(testObj.getFileName(), is(testFileName));
+
+    when(mockEntry.getUri()).thenReturn(new URI("abc"));
+    testObj.load(mockEntry);
+    assertThat(testObj.getFileName(), is(not(testFileName)));
   }
 
 

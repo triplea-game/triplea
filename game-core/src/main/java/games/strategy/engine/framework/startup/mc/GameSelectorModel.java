@@ -45,16 +45,16 @@ public class GameSelectorModel extends Observable {
   }
 
   public void resetGameDataToNull() {
-    setGameData(null);
-    fileName = null;
+    load(null, null);
   }
 
-  public void load(final GameData data, final String fileName) {
+  public void load(final @Nullable GameData data, final @Nullable String fileName) {
     setGameData(data);
     this.fileName = fileName;
   }
 
   public void load(final GameChooserEntry entry) {
+    fileName = null;
     setGameData(entry.getGameData());
     if (entry.getGameData() != null) {
       ClientSetting.defaultGameName.setValue(entry.getGameData().getGameName());
@@ -82,8 +82,7 @@ public class GameSelectorModel extends Observable {
         newData = GameDataManager.loadGame(file);
       }
       if (newData != null) {
-        fileName = file.getName();
-        setGameData(newData);
+        load(newData, file.getName());
       }
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Error loading game file: " + file.getAbsolutePath(), e);
