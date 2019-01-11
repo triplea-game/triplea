@@ -12,8 +12,7 @@ import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
-import org.triplea.common.util.Services;
-import org.triplea.game.client.ui.javafx.JavaFxClientRunner;
+import org.triplea.game.client.ui.javafx.TripleA;
 
 import games.strategy.debug.Console;
 import games.strategy.debug.ConsoleHandler;
@@ -29,6 +28,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
+import javafx.application.Application;
 
 /**
  * Runs a headed game client.
@@ -72,7 +72,7 @@ public final class HeadedGameRunner {
     }
 
     if (ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
-      Services.loadAny(JavaFxClientRunner.class).start(args);
+      Application.launch(TripleA.class, args);
     } else {
       GameRunner.start();
     }
