@@ -140,7 +140,7 @@ public class ServerLauncher extends AbstractLauncher {
         serverGame.setRandomSource(randomSource);
       }
       try {
-        gameData.getGameLoader().startGame(serverGame, localPlayerSet, headless, serverModel.getChatPanel().getChat());
+        gameData.getGameLoader().startGame(serverGame, localPlayerSet, headless, serverModel.getChatConfiguration().getChat());
       } catch (final Exception e) {
         log.log(Level.SEVERE, "Failed to launch", e);
         abortLaunch = true;

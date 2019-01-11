@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
+import org.triplea.game.common.ChatConfiguration;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.server.HeadlessServerSetupPanelModel;
 
@@ -37,7 +38,6 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.HeadlessChat;
-import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.properties.GameProperties;
@@ -102,7 +102,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel gameSelectorModel;
   private Component ui;
-  private IChatPanel chatPanel;
+  private ChatConfiguration chatConfiguration;
   private ChatController chatController;
   private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
@@ -135,7 +135,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       chatController.deactivate();
       serverMessenger.shutDown();
       serverMessenger.removeErrorListener(this);
-      chatPanel.setChat(null);
+      chatConfiguration.setChat(null);
     }
   }
 
@@ -261,10 +261,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       chatController = new ChatController(CHAT_NAME, serverMessenger, remoteMessenger, channelMessenger, node -> false);
 
       if (ui == null && headless) {
-        chatPanel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
+        chatConfiguration = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
             Chat.ChatSoundProfile.GAME_CHATROOM);
       } else {
-        chatPanel = ChatPanel.newChatPanel(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
+        chatConfiguration = ChatPanel.newChatPanel(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
             Chat.ChatSoundProfile.GAME_CHATROOM);
       }
 
@@ -577,8 +577,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
   }
 
-  public IChatPanel getChatPanel() {
-    return chatPanel;
+  public ChatConfiguration getChatConfiguration() {
+    return chatConfiguration;
   }
 
   private void disallowRemoveConnections() {

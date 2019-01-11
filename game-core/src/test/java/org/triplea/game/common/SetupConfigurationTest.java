@@ -1,20 +1,21 @@
-package games.strategy.engine.framework.startup.ui;
+package org.triplea.game.common;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.game.common.SetupConfiguration;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
 
-class ISetupPanelTest {
+class SetupConfigurationTest {
   @Test
   void testClearPbfPbemInformation() {
     final GameProperties properties = mock(GameProperties.class);
-    ISetupPanel.clearPbfPbemInformation(properties);
+    SetupConfiguration.clearPbfPbemInformation(properties);
 
     verify(properties).set(IRemoteDiceServer.NAME, null);
     verify(properties).set(IRemoteDiceServer.GAME_NAME, null);

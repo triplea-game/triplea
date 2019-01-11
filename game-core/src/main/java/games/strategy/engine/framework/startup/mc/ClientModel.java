@@ -30,7 +30,6 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
@@ -89,7 +88,7 @@ public class ClientModel implements IMessengerErrorListener {
   private IRemoteMessenger remoteMessenger;
   private IClientMessenger messenger;
   private Component ui;
-  private IChatPanel chatPanel;
+  private ChatPanel chatPanel;
   private ClientGame game;
   private boolean hostIsHeadlessBot = false;
   // we set the game data to be null, since we are a client game, and the game data lives on the server
@@ -420,7 +419,7 @@ public class ClientModel implements IMessengerErrorListener {
         "Connection Lost!", JOptionPane.ERROR_MESSAGE);
   }
 
-  public IChatPanel getChatPanel() {
+  public ChatPanel getChatPanel() {
     return chatPanel;
   }
 
@@ -469,7 +468,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   @Getter
   @Setter
-  static class ClientProps {
+  private static class ClientProps {
     private int port;
     private String name;
     private String host;

@@ -28,7 +28,9 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.chat.IChatPanel;
+import org.triplea.game.common.ChatConfiguration;
+import org.triplea.game.common.SetupConfiguration;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
@@ -242,7 +244,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   @Override
   public void postStartGame() {
-    ISetupPanel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
+    SetupConfiguration.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
   }
 
   @Override
@@ -426,8 +428,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   @Override
-  public IChatPanel getChatPanel() {
-    return model.getChatPanel();
+  public ChatConfiguration getChatConfiguration() {
+    return model.getChatConfiguration();
   }
 
   public ServerModel getModel() {

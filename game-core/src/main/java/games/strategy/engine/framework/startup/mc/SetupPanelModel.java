@@ -11,11 +11,11 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
-import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
+import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.ScreenChangeListener;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
@@ -31,7 +31,7 @@ import lombok.Setter;
 public class SetupPanelModel {
   @Getter
   protected final GameSelectorModel gameSelectorModel;
-  protected ISetupPanel panel = null;
+  protected SetupPanel panel = null;
 
   @Setter
   private ScreenChangeListener panelChangeListener;
@@ -83,7 +83,7 @@ public class SetupPanelModel {
     }
   }
 
-  public void setGameTypePanel(final ISetupPanel panel) {
+  public void setGameTypePanel(final SetupPanel panel) {
     if (this.panel != null) {
       this.panel.cancel();
     }
@@ -93,7 +93,7 @@ public class SetupPanelModel {
         .ifPresent(listener -> listener.screenChangeEvent(panel));
   }
 
-  public ISetupPanel getPanel() {
+  public SetupPanel getPanel() {
     return panel;
   }
 

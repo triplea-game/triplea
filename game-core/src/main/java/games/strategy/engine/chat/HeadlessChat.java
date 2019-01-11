@@ -3,7 +3,7 @@ package games.strategy.engine.chat;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.swing.DefaultListCellRenderer;
+import org.triplea.game.common.ChatConfiguration;
 
 import com.google.common.base.Ascii;
 
@@ -19,7 +19,7 @@ import games.strategy.util.TimeManager;
 /**
  * Headless version of ChatPanel.
  */
-public class HeadlessChat implements IChatListener, IChatPanel {
+public class HeadlessChat implements IChatListener, ChatConfiguration {
   // roughly 1000 chat messages
   private static final int MAX_LENGTH = 1000 * 200;
   private Chat chat;
@@ -31,11 +31,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
       final IRemoteMessenger remoteMessenger, final String chatName, final ChatSoundProfile chatSoundProfile) {
     final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
     setChat(chat);
-  }
-
-  @Override
-  public boolean isHeadless() {
-    return true;
   }
 
   @Override
@@ -57,9 +52,6 @@ public class HeadlessChat implements IChatListener, IChatPanel {
   public void setShowChatTime(final boolean showTime) {
     this.showTime = showTime;
   }
-
-  @Override
-  public void setPlayerRenderer(final DefaultListCellRenderer renderer) {}
 
   @Override
   public void updatePlayerList(final Collection<INode> players) {}

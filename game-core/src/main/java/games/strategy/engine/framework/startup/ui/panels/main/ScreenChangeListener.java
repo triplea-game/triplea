@@ -1,11 +1,11 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
-import games.strategy.engine.framework.startup.ui.ISetupPanel;
+import games.strategy.engine.framework.startup.ui.SetupPanel;
 
 /**
- * Callback interface to change the screen to render a given @{code ISetupPanel} instance.
+ * Callback interface to change the screen to render a given @{code SetupPanel} instance.
  */
 public interface ScreenChangeListener {
 
-  void screenChangeEvent(ISetupPanel newSetupPanel);
+  void screenChangeEvent(SetupPanel newSetupPanel);
 }

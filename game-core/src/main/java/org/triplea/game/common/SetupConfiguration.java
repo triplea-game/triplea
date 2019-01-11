@@ -1,27 +1,15 @@
-package games.strategy.engine.framework.startup.ui;
+package org.triplea.game.common;
 
-import java.util.List;
 import java.util.Observer;
 import java.util.Optional;
 
-import javax.swing.Action;
-import javax.swing.JComponent;
-
-import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
 
-/**
- * Made so that we can have a headless setup. (this is probably a hack, but used because i do not want to rewrite the
- * entire setup model).
- */
-public interface ISetupPanel {
-  JComponent getDrawable();
-
-  boolean showCancelButton();
+public interface SetupConfiguration {
 
   void addObserver(final Observer observer);
 
@@ -30,7 +18,7 @@ public interface ISetupPanel {
   /**
    * Subclasses that have chat override this.
    */
-  IChatPanel getChatPanel();
+  ChatConfiguration getChatConfiguration();
 
   /**
    * Cleanup should occur here that occurs when we cancel.
@@ -45,8 +33,6 @@ public interface ISetupPanel {
   void postStartGame();
 
   Optional<ILauncher> getLauncher();
-
-  List<Action> getUserActions();
 
   /**
    * Helper method to clear PbF/PbEM related properties from a game that has potentially
