@@ -47,6 +47,21 @@ readonly BOT_PORT=3300
 readonly BOT_NAME="Bot_${USER}_${BOT_PORT}"
 
 #
+# The password used to secure access to games running on your bot.  Users
+# attempting to start a new game or connect to an existing game on your bot
+# will be prompted for this password.  If the password is an empty string,
+# the user will not be prompted, and any lobby user will be able to use your
+# bot.
+#
+# The default value is an empty password. You should change this to a
+# non-empty string if you do not want arbitrary users to use your bot.  For
+# example, you may wish to run a private game for you and some friends.  In
+# that case, set the password to a non-empty string and communicate it to
+# your friends in some manner (e.g. via email).
+#
+readonly BOT_PASSWORD=
+
+#
 # The hostname of the lobby to which the bot will connect.
 #
 # The default value is the hostname for the TripleA community's public lobby.
@@ -62,6 +77,17 @@ readonly LOBBY_HOST=lobby.triplea-game.org
 # Under normal circumstances, you will not have to change this variable.
 #
 readonly LOBBY_PORT=3304
+
+#
+# The email address at which you can be contacted.  Lobby moderators will
+# communicate with you using this email address if they notice problems with
+# your bot, or if they need to perform remote maintenance on your bot (e.g.
+# to shut down your bot).
+#
+# The default value is meaningless.  IT IS STRONGLY RECOMMENDED THAT YOU
+# CHANGE THIS VARIABLE TO A VALID EMAIL ADDRESS THAT YOU CONTROL.
+#
+readonly LOBBY_SUPPORT_EMAIL="${USER}@localhost.localdomain"
 
 #
 # The password used to secure remote maintenance of your bot.  A lobby
@@ -88,9 +114,15 @@ java \
     -Xmx256M \
     -Djava.awt.headless=true \
     -jar bin/triplea-game-headless-*-all.jar \
+    -Ptriplea.game= \
+    -Ptriplea.lobby.game.comments=automated_host \
+    -Ptriplea.lobby.game.hostedBy="$BOT_NAME" \
+    -Ptriplea.lobby.game.supportEmail="$LOBBY_SUPPORT_EMAIL" \
+    -Ptriplea.lobby.game.supportPassword="$LOBBY_SUPPORT_PASSWORD" \
     -Ptriplea.lobby.host="$LOBBY_HOST" \
     -Ptriplea.lobby.port="$LOBBY_PORT" \
-    -Ptriplea.lobby.game.supportPassword="$LOBBY_SUPPORT_PASSWORD" \
     -Ptriplea.map.folder="$MAPS_FOLDER" \
     -Ptriplea.name="$BOT_NAME" \
-    -Ptriplea.port="$BOT_PORT"
+    -Ptriplea.port="$BOT_PORT" \
+    -Ptriplea.server=true \
+    -Ptriplea.server.password="$BOT_PASSWORD"

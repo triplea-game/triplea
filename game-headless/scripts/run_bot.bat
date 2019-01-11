@@ -47,6 +47,21 @@ REM
 SET BOT_NAME=Bot_%USERNAME%_%BOT_PORT%
 
 REM
+REM The password used to secure access to games running on your bot.  Users
+REM attempting to start a new game or connect to an existing game on your bot
+REM will be prompted for this password.  If the password is an empty string,
+REM the user will not be prompted, and any lobby user will be able to use your
+REM bot.
+REM
+REM The default value is an empty password. You should change this to a
+REM non-empty string if you do not want arbitrary users to use your bot.  For
+REM example, you may wish to run a private game for you and some friends.  In
+REM that case, set the password to a non-empty string and communicate it to
+REM your friends in some manner (e.g. via email).
+REM
+SET BOT_PASSWORD=
+
+REM
 REM The hostname of the lobby to which the bot will connect.
 REM
 REM The default value is the hostname for the TripleA community's public lobby.
@@ -62,6 +77,17 @@ REM The default value is the port for the TripleA community's public lobby.
 REM Under normal circumstances, you will not have to change this variable.
 REM
 SET LOBBY_PORT=3304
+
+REM
+REM The email address at which you can be contacted.  Lobby moderators will
+REM communicate with you using this email address if they notice problems with
+REM your bot, or if they need to perform remote maintenance on your bot (e.g.
+REM to shut down your bot).
+REM
+REM The default value is meaningless.  IT IS STRONGLY RECOMMENDED THAT YOU
+REM CHANGE THIS VARIABLE TO A VALID EMAIL ADDRESS THAT YOU CONTROL.
+REM
+SET LOBBY_SUPPORT_EMAIL=%USERNAME%@localhost.localdomain
 
 REM
 REM The password used to secure remote maintenance of your bot.  A lobby
@@ -88,10 +114,15 @@ java^
  -Xmx256M^
  -Djava.awt.headless=true^
  -jar bin\triplea-game-headless-@version@-all.jar^
+ -Ptriplea.game=^
+ -Ptriplea.lobby.game.comments=automated_host^
  -Ptriplea.lobby.game.hostedBy=%BOT_NAME%^
+ -Ptriplea.lobby.game.supportEmail=%LOBBY_SUPPORT_EMAIL%^
  -Ptriplea.lobby.game.supportPassword=%LOBBY_SUPPORT_PASSWORD%^
  -Ptriplea.lobby.host=%LOBBY_HOST%^
  -Ptriplea.lobby.port=%LOBBY_PORT%^
  -Ptriplea.map.folder="%MAPS_FOLDER%"^
  -Ptriplea.name=%BOT_NAME%^
- -Ptriplea.port=%BOT_PORT%
+ -Ptriplea.port=%BOT_PORT%^
+ -Ptriplea.server=true^
+ -Ptriplea.server.password=%BOT_PASSWORD%
