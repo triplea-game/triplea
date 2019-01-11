@@ -5,7 +5,7 @@
 
 
 ### `null` handling
-- avoid returning 'null' values
+- Avoid returning `null` values. Prefer `Optional`.
 - avoid passing 'null' values as parameters to public APIs
 
 
