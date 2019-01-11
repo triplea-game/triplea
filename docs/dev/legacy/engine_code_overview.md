@@ -1,3 +1,7 @@
+```
+This is the original design document published with Triplea.
+It is quite old, potentially out of date, left intact for historical reference.
+```
 
 ## Design Goals
 
@@ -143,8 +147,8 @@ the game goes through in the gamePlay tag.
 
 
 
-```
-<delegate name="battle&quot" javaClass="BattleDelegate"/>
+```xml
+ <delegate name="battle" javaClass="BattleDelegate"/>
 <delegate name="move" javaClass="MoveDelegate"/>
 
 <step name="usMove" delegate="move" player="bush"/>
@@ -193,9 +197,8 @@ style="mso-spacerun: yes">  A game player can be anything from a GUI to
 an AI to a PBEM interface.
 
 A GamePlayer sends messages to the current game delegate
-saying what moves the player would like to make.<span style="mso-spacerun:
-yes">  The Delegate will then validate the move, and if the move is
-valid, alter the GameData.
+saying what moves the player would like to make. The Delegate will then
+validate the move, and if the move is valid, alter the GameData.
 
 
 ##
@@ -213,12 +216,10 @@ start method returns.
 
 
 Because delegates and game players may not be on the same
-machine, communication is done through Bridges.<span style="mso-spacerun:
-yes">  
+machine, communication is done through Bridges.
 
 A delegate can send a message to a player through its
-delegateBridge using the sendMessage(..) functions.<span style="mso-spacerun:
-yes">  
+delegateBridge using the sendMessage(..) functions.
 
 A GamePlayer can only send a message to the games current
 delegate. The message is sent using the
