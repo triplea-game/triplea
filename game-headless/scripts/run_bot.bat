@@ -79,17 +79,6 @@ REM
 SET LOBBY_PORT=3304
 
 REM
-REM The email address at which you can be contacted.  Lobby moderators will
-REM communicate with you using this email address if they notice problems with
-REM your bot, or if they need to perform remote maintenance on your bot (e.g.
-REM to shut down your bot).
-REM
-REM The default value is meaningless.  IT IS STRONGLY RECOMMENDED THAT YOU
-REM CHANGE THIS VARIABLE TO A VALID EMAIL ADDRESS THAT YOU CONTROL.
-REM
-SET LOBBY_SUPPORT_EMAIL=%USERNAME%@localhost.localdomain
-
-REM
 REM The password used to secure remote maintenance of your bot.  A lobby
 REM moderator who wishes to perform remote maintenance on your bot will be
 REM required to enter this password in order to complete any maintenance
@@ -114,15 +103,11 @@ java^
  -Xmx256M^
  -Djava.awt.headless=true^
  -jar bin\triplea-game-headless-@version@-all.jar^
- -Ptriplea.game=^
- -Ptriplea.lobby.game.comments=automated_host^
  -Ptriplea.lobby.game.hostedBy=%BOT_NAME%^
- -Ptriplea.lobby.game.supportEmail=%LOBBY_SUPPORT_EMAIL%^
  -Ptriplea.lobby.game.supportPassword=%LOBBY_SUPPORT_PASSWORD%^
  -Ptriplea.lobby.host=%LOBBY_HOST%^
  -Ptriplea.lobby.port=%LOBBY_PORT%^
  -Ptriplea.map.folder="%MAPS_FOLDER%"^
  -Ptriplea.name=%BOT_NAME%^
  -Ptriplea.port=%BOT_PORT%^
- -Ptriplea.server=true^
  -Ptriplea.server.password=%BOT_PASSWORD%
