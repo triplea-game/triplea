@@ -9,15 +9,16 @@ import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
 
+/**
+ * Interface to abstract common functionality shared between headless
+ * and headed game launching mechanisms
+ */
 public interface SetupConfiguration {
 
   void addObserver(final Observer observer);
 
   void notifyObservers();
 
-  /**
-   * Subclasses that have chat override this.
-   */
   ChatConfiguration getChatConfiguration();
 
   /**

@@ -23,6 +23,10 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.ui.SwingAction;
 
+/**
+ * UI Implementation of SetupConfiguration.
+ * This is the base-class for any panel that configures a game.
+ */
 public abstract class SetupPanel extends JPanel implements SetupConfiguration {
   private static final long serialVersionUID = 4001323470187210773L;
   private static final String SET_ALL_DEFAULT_LABEL = "Default";
