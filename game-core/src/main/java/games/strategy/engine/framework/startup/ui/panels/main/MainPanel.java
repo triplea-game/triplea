@@ -20,7 +20,7 @@ import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
-import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.chat.ChatModel;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
@@ -59,7 +59,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
       .build();
   private SetupPanel gameSetupPanel;
   private boolean isChatShowing;
-  private final Supplier<Optional<ChatConfiguration>> chatPanelSupplier;
+  private final Supplier<Optional<ChatModel>> chatPanelSupplier;
 
   /**
    * MainPanel is the full contents of the 'mainFrame'. This panel represents the welcome screen and subsequent screens.
@@ -67,7 +67,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
   MainPanel(
       final GameSelectorPanel gameSelectorPanel,
       final Consumer<MainPanel> launchAction,
-      final Supplier<Optional<ChatConfiguration>> chatPanelSupplier,
+      final Supplier<Optional<ChatModel>> chatPanelSupplier,
       final Runnable cancelAction) {
     this.chatPanelSupplier = chatPanelSupplier;
     playButton.addActionListener(e -> launchAction.accept(this));
@@ -112,7 +112,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
     remove(mainPanel);
     remove(chatSplit);
     chatPanelHolder.removeAll();
-    final ChatConfiguration chat = chatPanelSupplier.get().orElse(null);
+    final ChatModel chat = chatPanelSupplier.get().orElse(null);
     if (chat instanceof SetupPanel) {
       chatPanelHolder.add((SetupPanel) chat, BorderLayout.CENTER);
       chatSplit.setTopComponent(mainPanel);

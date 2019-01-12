@@ -3,7 +3,7 @@ package games.strategy.engine.chat;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.chat.ChatModel;
 
 import com.google.common.base.Ascii;
 
@@ -19,7 +19,7 @@ import games.strategy.util.TimeManager;
 /**
  * Headless version of ChatPanel.
  */
-public class HeadlessChat implements IChatListener, ChatConfiguration {
+public class HeadlessChat implements IChatListener, ChatModel {
   // roughly 1000 chat messages
   private static final int MAX_LENGTH = 1000 * 200;
   private Chat chat;

@@ -8,7 +8,7 @@ import java.util.Observer;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupConfiguration;
 
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -107,8 +107,8 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupConfiguration {
   }
 
   @Override
-  public ChatConfiguration getChatConfiguration() {
-    return model.getChatConfiguration();
+  public ChatModel getChatModel() {
+    return model.getChatModel();
   }
 
   ServerModel getModel() {

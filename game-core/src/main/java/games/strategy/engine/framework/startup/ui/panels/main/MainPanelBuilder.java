@@ -32,7 +32,7 @@ public class MainPanelBuilder {
           setupPanelModel.getPanel().postStartGame();
         },
         () -> Optional.ofNullable(setupPanelModel.getPanel())
-            .map(SetupConfiguration::getChatConfiguration),
+            .map(SetupConfiguration::getChatModel),
         setupPanelModel::showSelectType);
     setupPanelModel.setPanelChangeListener(mainPanel);
     gameSelectorModel.addObserver(mainPanel);

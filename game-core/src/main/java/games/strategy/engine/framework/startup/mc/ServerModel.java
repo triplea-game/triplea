@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
-import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.server.HeadlessServerSetupPanelModel;
 
@@ -102,7 +102,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel gameSelectorModel;
   private Component ui;
-  private ChatConfiguration chatConfiguration;
+  private ChatModel chatModel;
   private ChatController chatController;
   private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
   // while our server launcher is not null, delegate new/lost connections to it
@@ -135,7 +135,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       chatController.deactivate();
       serverMessenger.shutDown();
       serverMessenger.removeErrorListener(this);
-      chatConfiguration.setChat(null);
+      chatModel.setChat(null);
     }
   }
 
@@ -261,10 +261,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       chatController = new ChatController(CHAT_NAME, serverMessenger, remoteMessenger, channelMessenger, node -> false);
 
       if (ui == null && headless) {
-        chatConfiguration = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
+        chatModel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
             Chat.ChatSoundProfile.GAME_CHATROOM);
       } else {
-        chatConfiguration = ChatPanel.newChatPanel(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
+        chatModel = ChatPanel.newChatPanel(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
             Chat.ChatSoundProfile.GAME_CHATROOM);
       }
 
@@ -577,8 +577,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
   }
 
-  public ChatConfiguration getChatConfiguration() {
-    return chatConfiguration;
+  public ChatModel getChatModel() {
+    return chatModel;
   }
 
   private void disallowRemoveConnections() {

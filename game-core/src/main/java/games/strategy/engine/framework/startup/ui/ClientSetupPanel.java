@@ -236,7 +236,7 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
-  public ChatPanel getChatConfiguration() {
+  public ChatPanel getChatModel() {
     return clientModel.getChatPanel();
   }
 

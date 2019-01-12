@@ -8,7 +8,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.chat.ChatModel;
 
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.message.IChannelMessenger;
@@ -28,7 +28,7 @@ import games.strategy.util.Interruptibles;
  * We can change the chat we are connected to using the setChat(...) method.
  * </p>
  */
-public class ChatPanel extends JPanel implements ChatConfiguration {
+public class ChatPanel extends JPanel implements ChatModel {
   private static final long serialVersionUID = -6177517517279779486L;
   private static final int DIVIDER_SIZE = 5;
   private ChatPlayerPanel chatPlayerPanel;

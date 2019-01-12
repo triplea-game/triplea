@@ -16,7 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupConfiguration;
 
 import games.strategy.engine.data.GameData;
@@ -46,7 +46,7 @@ public abstract class SetupPanel extends JPanel implements SetupConfiguration {
   }
 
   @Override
-  public ChatConfiguration getChatConfiguration() {
+  public ChatModel getChatModel() {
     return null;
   }
 

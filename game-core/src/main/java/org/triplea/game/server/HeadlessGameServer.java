@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.mindrot.jbcrypt.BCrypt;
-import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupConfiguration;
 
 import games.strategy.engine.chat.Chat;
@@ -309,7 +309,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     if (hashPassword(password, salt).equals(hashedPassword)) {
-      final ChatConfiguration chat = getServerModel().getChatConfiguration();
+      final ChatModel chat = getServerModel().getChatModel();
       if (chat == null || chat.getAllText() == null) {
         return "Empty or null chat";
       }
@@ -568,7 +568,7 @@ public class HeadlessGameServer {
    */
   public Chat getChat() {
     final SetupConfiguration model = setupPanelModel.getPanel();
-    return model != null ? model.getChatConfiguration().getChat() : null;
+    return model != null ? model.getChatModel().getChat() : null;
   }
 
   /**

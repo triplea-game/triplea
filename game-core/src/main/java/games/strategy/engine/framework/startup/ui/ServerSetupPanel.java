@@ -28,7 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
-import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupConfiguration;
 
 import games.strategy.engine.data.PlayerId;
@@ -428,8 +428,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   @Override
-  public ChatConfiguration getChatConfiguration() {
-    return model.getChatConfiguration();
+  public ChatModel getChatModel() {
+    return model.getChatModel();
   }
 
   public ServerModel getModel() {
