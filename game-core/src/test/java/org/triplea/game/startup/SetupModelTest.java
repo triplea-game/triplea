@@ -10,11 +10,11 @@ import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
 
-class SetupConfigurationTest {
+class SetupModelTest {
   @Test
   void testClearPbfPbemInformation() {
     final GameProperties properties = mock(GameProperties.class);
-    SetupConfiguration.clearPbfPbemInformation(properties);
+    SetupModel.clearPbfPbemInformation(properties);
 
     verify(properties).set(IRemoteDiceServer.NAME, null);
     verify(properties).set(IRemoteDiceServer.GAME_NAME, null);

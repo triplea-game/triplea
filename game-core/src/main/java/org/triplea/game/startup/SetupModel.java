@@ -15,7 +15,7 @@ import games.strategy.engine.random.IRemoteDiceServer;
  * Interface to abstract common functionality shared between headless
  * and headed game launching mechanisms.
  */
-public interface SetupConfiguration {
+public interface SetupModel {
 
   void addObserver(final Observer observer);
 

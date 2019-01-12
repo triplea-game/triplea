@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.triplea.game.chat.ChatModel;
-import org.triplea.game.startup.SetupConfiguration;
+import org.triplea.game.startup.SetupModel;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -27,7 +27,7 @@ import games.strategy.ui.SwingAction;
  * Headed Implementation of SetupConfiguration.
  * This is the base-class for any panel that configures a game.
  */
-public abstract class SetupPanel extends JPanel implements SetupConfiguration {
+public abstract class SetupPanel extends JPanel implements SetupModel {
   private static final long serialVersionUID = 4001323470187210773L;
   private static final String SET_ALL_DEFAULT_LABEL = "Default";
 

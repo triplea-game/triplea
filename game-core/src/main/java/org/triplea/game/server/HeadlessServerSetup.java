@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.triplea.game.chat.ChatModel;
-import org.triplea.game.startup.SetupConfiguration;
+import org.triplea.game.startup.SetupModel;
 
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -25,7 +25,7 @@ import lombok.extern.java.Log;
  * Server setup model.
  */
 @Log
-class HeadlessServerSetup implements IRemoteModelListener, SetupConfiguration {
+class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
   private final List<Observer> listeners = new CopyOnWriteArrayList<>();
   private final ServerModel model;
   private final GameSelectorModel gameSelectorModel;
@@ -138,6 +138,6 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupConfiguration {
 
   @Override
   public void postStartGame() {
-    SetupConfiguration.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
+    SetupModel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
   }
 }

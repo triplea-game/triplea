@@ -29,7 +29,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import org.triplea.game.chat.ChatModel;
-import org.triplea.game.startup.SetupConfiguration;
+import org.triplea.game.startup.SetupModel;
 
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
@@ -244,7 +244,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 
   @Override
   public void postStartGame() {
-    SetupConfiguration.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
+    SetupModel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
   }
 
   @Override

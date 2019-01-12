@@ -28,7 +28,7 @@ import java.util.logging.Level;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.game.chat.ChatModel;
-import org.triplea.game.startup.SetupConfiguration;
+import org.triplea.game.startup.SetupModel;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
@@ -567,7 +567,7 @@ public class HeadlessGameServer {
    * Get the chat for the game, or null if there is no chat.
    */
   public Chat getChat() {
-    final SetupConfiguration model = setupPanelModel.getPanel();
+    final SetupModel model = setupPanelModel.getPanel();
     return model != null ? model.getChatModel().getChat() : null;
   }
 
