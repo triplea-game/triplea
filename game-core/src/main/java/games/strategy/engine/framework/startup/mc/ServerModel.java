@@ -205,6 +205,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     if (!optionsResult.completed) {
       throw new IllegalArgumentException("Error while gathering connection details");
     }
+    if (!optionsResult.result.isPresent()) {
+      cancel();
+    }
     return optionsResult.result.map(options -> ServerConnectionProps.builder()
         .name(options.getName())
         .port(options.getPort())
@@ -213,21 +216,19 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   /**
-   * Creates a server messenger, returns false if any errors happen.
+   * Creates a server messenger.
    *
    * @param ui In non-headless environments we get input from user, the component is for window placements.
    */
-  public boolean createServerMessenger(final Component ui) {
-    return getServerProps(ui)
-        .map(props -> createServerMessenger(ui, props))
-        .orElse(false);
+  public void createServerMessenger(final Component ui) {
+    getServerProps(ui).ifPresent(props -> createServerMessenger(ui, props));
   }
 
   /**
    * UI can be null. We use it as the parent for message dialogs we show.
    * If you have a component displayed, use it.
    */
-  private boolean createServerMessenger(
+  private void createServerMessenger(
       @Nullable final Component ui,
       @Nonnull final ServerConnectionProps props) {
     this.ui = (ui == null) ? null : JOptionPane.getFrameForComponent(ui);
@@ -255,10 +256,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
       serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
-      return true;
+      serverSetupModel.onServerMessengerCreated(this);
     } catch (final IOException ioe) {
       log.log(Level.SEVERE, "Unable to create server socket", ioe);
-      return false;
+      cancel();
     }
   }
 

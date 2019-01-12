@@ -22,13 +22,13 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
   @Override
   public void showSelectType() {
     final ServerModel model = new ServerModel(gameSelectorModel, this);
-    if (model.createServerMessenger(null)) {
-      Optional.ofNullable(headlessServerSetup).ifPresent(HeadlessServerSetup::cancel);
-      headlessServerSetup = new HeadlessServerSetup(model, gameSelectorModel);
-    } else {
-      model.cancel();
-    }
+    model.createServerMessenger(null);
+  }
 
+  @Override
+  public void onServerMessengerCreated(final ServerModel serverModel) {
+    Optional.ofNullable(headlessServerSetup).ifPresent(HeadlessServerSetup::cancel);
+    headlessServerSetup = new HeadlessServerSetup(serverModel, gameSelectorModel);
   }
 
   public HeadlessServerSetup getPanel() {
