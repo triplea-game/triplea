@@ -24,7 +24,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.ui.SwingAction;
 
 /**
- * UI Implementation of SetupConfiguration.
+ * Headed Implementation of SetupConfiguration.
  * This is the base-class for any panel that configures a game.
  */
 public abstract class SetupPanel extends JPanel implements SetupConfiguration {
