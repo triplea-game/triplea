@@ -16,8 +16,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.triplea.game.common.ChatConfiguration;
-import org.triplea.game.common.SetupConfiguration;
+import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.startup.SetupConfiguration;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;

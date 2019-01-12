@@ -2,7 +2,7 @@ package games.strategy.engine.framework.startup.ui.panels.main;
 
 import java.util.Optional;
 
-import org.triplea.game.common.SetupConfiguration;
+import org.triplea.game.startup.SetupConfiguration;
 
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;

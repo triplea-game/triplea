@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
-import org.triplea.game.common.ChatConfiguration;
+import org.triplea.game.chat.ChatConfiguration;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.server.HeadlessServerSetupPanelModel;
 

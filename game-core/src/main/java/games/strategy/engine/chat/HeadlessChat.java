@@ -3,7 +3,7 @@ package games.strategy.engine.chat;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.triplea.game.common.ChatConfiguration;
+import org.triplea.game.chat.ChatConfiguration;
 
 import com.google.common.base.Ascii;
 

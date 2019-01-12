@@ -1,4 +1,4 @@
-package org.triplea.game.common;
+package org.triplea.game.startup;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;

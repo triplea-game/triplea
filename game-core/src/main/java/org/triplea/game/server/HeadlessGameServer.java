@@ -27,8 +27,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.mindrot.jbcrypt.BCrypt;
-import org.triplea.game.common.ChatConfiguration;
-import org.triplea.game.common.SetupConfiguration;
+import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.startup.SetupConfiguration;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;

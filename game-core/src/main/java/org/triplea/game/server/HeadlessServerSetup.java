@@ -8,8 +8,8 @@ import java.util.Observer;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.triplea.game.common.ChatConfiguration;
-import org.triplea.game.common.SetupConfiguration;
+import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.startup.SetupConfiguration;
 
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;

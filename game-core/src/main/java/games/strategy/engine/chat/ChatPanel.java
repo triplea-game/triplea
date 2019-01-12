@@ -8,7 +8,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import org.triplea.game.common.ChatConfiguration;
+import org.triplea.game.chat.ChatConfiguration;
 
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.message.IChannelMessenger;

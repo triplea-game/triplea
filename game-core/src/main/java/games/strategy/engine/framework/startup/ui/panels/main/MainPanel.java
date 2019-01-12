@@ -20,7 +20,7 @@ import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
-import org.triplea.game.common.ChatConfiguration;
+import org.triplea.game.chat.ChatConfiguration;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.SetupPanel;

@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import javax.swing.JComponent;
 
-import org.triplea.game.common.SetupConfiguration;
+import org.triplea.game.startup.SetupConfiguration;
 
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LauncherFactory;

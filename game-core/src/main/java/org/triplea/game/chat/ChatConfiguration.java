@@ -1,4 +1,4 @@
-package org.triplea.game.common;
+package org.triplea.game.chat;
 
 import games.strategy.engine.chat.Chat;
 

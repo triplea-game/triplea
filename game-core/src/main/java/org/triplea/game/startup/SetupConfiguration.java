@@ -1,7 +1,9 @@
-package org.triplea.game.common;
+package org.triplea.game.startup;
 
 import java.util.Observer;
 import java.util.Optional;
+
+import org.triplea.game.chat.ChatConfiguration;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.startup.launcher.ILauncher;

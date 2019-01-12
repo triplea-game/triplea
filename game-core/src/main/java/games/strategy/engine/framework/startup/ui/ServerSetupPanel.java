@@ -28,8 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
-import org.triplea.game.common.ChatConfiguration;
-import org.triplea.game.common.SetupConfiguration;
+import org.triplea.game.chat.ChatConfiguration;
+import org.triplea.game.startup.SetupConfiguration;
 
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
