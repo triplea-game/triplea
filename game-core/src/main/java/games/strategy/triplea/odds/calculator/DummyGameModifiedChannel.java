@@ -25,4 +25,3 @@ class DummyGameModifiedChannel implements IGameModifiedChannel {
   public void stepChanged(final String stepName, final String delegateName, final PlayerId player, final int round,
       final String displayName, final boolean loadedFromSavedGame) {}
 }
-
