@@ -5,7 +5,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
-import java.awt.Component;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +27,7 @@ import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.triplea.game.chat.ChatModel;
@@ -98,7 +98,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
   private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel gameSelectorModel;
-  private final Component ui;
+  private final JFrame ui;
   private ChatModel chatModel;
   private ChatController chatController;
   private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
@@ -108,11 +108,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
 
   public ServerModel(final GameSelectorModel gameSelectorModel, final ServerSetupModel serverSetupModel,
-      final Component ui) {
+      final JFrame ui) {
     this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
     this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
     this.gameSelectorModel.addObserver(gameSelectorObserver);
-    this.ui = (ui == null) ? null : JOptionPane.getFrameForComponent(ui);
+    this.ui = ui;
   }
 
   public void cancel() {
