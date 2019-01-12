@@ -145,7 +145,7 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   @Override
-  public boolean showCancelButton() {
+  public boolean isCancelButtonVisible() {
     return false;
   }
 

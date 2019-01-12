@@ -2,9 +2,10 @@ package games.strategy.engine.framework.startup.ui.panels.main;
 
 import java.util.Optional;
 
+import org.triplea.game.startup.SetupModel;
+
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
-import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
 
 /**
@@ -31,7 +32,7 @@ public class MainPanelBuilder {
           setupPanelModel.getPanel().postStartGame();
         },
         () -> Optional.ofNullable(setupPanelModel.getPanel())
-            .map(ISetupPanel::getChatPanel),
+            .map(SetupModel::getChatModel),
         setupPanelModel::showSelectType);
     setupPanelModel.setPanelChangeListener(mainPanel);
     gameSelectorModel.addObserver(mainPanel);

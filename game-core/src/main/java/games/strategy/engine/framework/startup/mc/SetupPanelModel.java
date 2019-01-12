@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.mc;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -11,12 +12,11 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
-import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
-import games.strategy.engine.framework.startup.ui.panels.main.ScreenChangeListener;
+import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
@@ -31,10 +31,10 @@ import lombok.Setter;
 public class SetupPanelModel {
   @Getter
   protected final GameSelectorModel gameSelectorModel;
-  protected ISetupPanel panel = null;
+  protected SetupPanel panel = null;
 
   @Setter
-  private ScreenChangeListener panelChangeListener;
+  private Consumer<SetupPanel> panelChangeListener;
 
 
   public void showSelectType() {
@@ -83,17 +83,17 @@ public class SetupPanelModel {
     }
   }
 
-  public void setGameTypePanel(final ISetupPanel panel) {
+  private void setGameTypePanel(final SetupPanel panel) {
     if (this.panel != null) {
       this.panel.cancel();
     }
     this.panel = panel;
 
     Optional.ofNullable(panelChangeListener)
-        .ifPresent(listener -> listener.screenChangeEvent(panel));
+        .ifPresent(listener -> listener.accept(panel));
   }
 
-  public ISetupPanel getPanel() {
+  public SetupPanel getPanel() {
     return panel;
   }
 
