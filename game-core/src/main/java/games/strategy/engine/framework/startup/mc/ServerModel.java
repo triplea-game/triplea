@@ -88,7 +88,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final ServerSetupModel serverSetupModel;
-  private final boolean headless;
   private IServerMessenger serverMessenger;
   private IRemoteMessenger remoteMessenger;
   private IChannelMessenger channelMessenger;
@@ -114,7 +113,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
     this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
     this.gameSelectorModel.addObserver(gameSelectorObserver);
-    this.headless = serverSetupModel.isHeadless();
     this.ui = (ui == null) ? null : JOptionPane.getFrameForComponent(ui);
   }
 
@@ -146,7 +144,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
         for (final PlayerId player : data.getPlayerList().getPlayers()) {
           final String name = player.getName();
-          if (headless) {
+          if (ui == null) {
             if (player.getIsDisabled()) {
               playersToNodeListing.put(name, serverMessenger.getLocalNode().getName());
               localPlayerTypes.put(name, PlayerType.WEAK_AI);
@@ -196,7 +194,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           ClientSetting.flush();
           final int port = options.getPort();
           if (port >= 65536 || port == 0) {
-            if (headless) {
+            if (ui == null) {
               throw new IllegalStateException("Invalid Port: " + port);
             }
             JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
@@ -235,7 +233,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       channelMessenger = new ChannelMessenger(unifiedMessenger);
       chatController = new ChatController(CHAT_NAME, serverMessenger, remoteMessenger, channelMessenger, node -> false);
 
-      if (ui == null && headless) {
+      if (ui == null) {
         chatModel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
             Chat.ChatSoundProfile.GAME_CHATROOM);
       } else {
@@ -270,7 +268,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void disablePlayer(final String playerName) {
-      if (!headless) {
+      if (ui != null) {
         return;
       }
       // we don't want the client's changing stuff for anyone but a bot
@@ -279,7 +277,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void enablePlayer(final String playerName) {
-      if (!headless) {
+      if (ui != null) {
         return;
       }
       // we don't want the client's changing stuff for anyone but a bot
@@ -411,7 +409,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   private void takePlayerInternal(final INode from, final boolean take, final String playerName) {
-    // synchronize to make sure two adds arent executed at once
+    // synchronize to make sure two adds aren't executed at once
     synchronized (this) {
       if (!playersToNodeListing.containsKey(playerName)) {
         return;
@@ -434,7 +432,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         return;
       }
       playersEnabledListing.put(playerName, enabled);
-      if (headless) {
+      if (ui == null) {
         // we do not want the host bot to actually play, so set to null if enabled, and set to weak ai if disabled
         if (enabled) {
           playersToNodeListing.put(playerName, null);
@@ -510,7 +508,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   @Override
   public void messengerInvalid(final Throwable reason) {
-    if (!headless) {
+    if (ui != null) {
       JOptionPane.showMessageDialog(ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
     }
     serverSetupModel.showSelectType();
@@ -573,7 +571,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     final Map<String, PlayerType> localPlayerMappings = new HashMap<>();
     // local player default = humans (for bots = weak ai)
-    final PlayerType defaultLocalType = headless
+    final PlayerType defaultLocalType = ui == null
         ? PlayerType.WEAK_AI
         : PlayerType.HUMAN_PLAYER;
     for (final String player : playersToNodeListing.keySet()) {
@@ -611,7 +609,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         }
       }
       return Optional.of(new ServerLauncher(clientCount, remoteMessenger, channelMessenger,
-          serverMessenger, gameSelectorModel, getPlayerListingInternal(), remotePlayers, this, headless));
+          serverMessenger, gameSelectorModel, getPlayerListingInternal(), remotePlayers, this, ui == null));
     }
   }
 

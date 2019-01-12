@@ -126,9 +126,4 @@ public class SetupPanelModel implements ServerSetupModel {
                   });
         });
   }
-
-  @Override
-  public boolean isHeadless() {
-    return false;
-  }
 }

@@ -33,9 +33,4 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
   public HeadlessServerSetup getPanel() {
     return headlessServerSetup;
   }
-
-  @Override
-  public boolean isHeadless() {
-    return true;
-  }
 }
