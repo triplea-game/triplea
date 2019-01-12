@@ -4,7 +4,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.game.common.SetupConfiguration;
 
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.pbem.IEmailSender;
