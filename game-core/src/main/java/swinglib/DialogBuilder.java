@@ -141,11 +141,7 @@ public class DialogBuilder {
           () -> {
             final int result =
                 JOptionPane.showConfirmDialog(
-                    withConfirmActionBuilder
-                        .withMessageBuilder
-                        .withTitleBuilder
-                        .withParentBuilder
-                        .parent,
+                    withConfirmActionBuilder.withMessageBuilder.withTitleBuilder.withParentBuilder.parent,
                     withConfirmActionBuilder.withMessageBuilder.message,
                     withConfirmActionBuilder.withMessageBuilder.withTitleBuilder.title,
                     JOptionPane.YES_NO_OPTION,

@@ -69,8 +69,7 @@ public interface IEmailSender {
             "",
             ClientSetting.emailServerHost.getValueOrThrow(),
             ClientSetting.emailServerPort.getValueOrThrow(),
-            ClientSetting.emailServerSecurity.getValueOrThrow()
-        ),
+            ClientSetting.emailServerSecurity.getValueOrThrow()),
         Arrays.withSensitiveArrayAndReturn(ClientSetting.emailUsername::getValueOrThrow, String::new),
         Arrays.withSensitiveArrayAndReturn(ClientSetting.emailPassword::getValueOrThrow, String::new),
         subjectPrefix,

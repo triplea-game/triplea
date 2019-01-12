@@ -15,11 +15,15 @@ import lombok.Getter;
 @Builder
 public class IssueClientParams {
   /** Github Personal access token with repo permissions. */
-  @Nonnull private final String authToken;
+  @Nonnull
+  private final String authToken;
   /** The name of the github org, used as part of URL. */
-  @Nonnull private final String githubOrg;
+  @Nonnull
+  private final String githubOrg;
   /** The name of the github repo, used as part of URL. */
-  @Nonnull private final String githubRepo;
+  @Nonnull
+  private final String githubRepo;
   /** URI of github web service API. */
-  @Nonnull private final URI uri;
+  @Nonnull
+  private final URI uri;
 }

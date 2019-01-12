@@ -33,9 +33,9 @@ class ErrorReportUploadActionTest {
   @Mock
   private ServiceClient<ErrorReport, ErrorReportResponse> serviceClient;
   @Mock
-  private Consumer<URI> successConfirmation ;
+  private Consumer<URI> successConfirmation;
   @Mock
-  private Consumer<ServiceResponse<ErrorReportResponse>> failureConfirmation ;
+  private Consumer<ServiceResponse<ErrorReportResponse>> failureConfirmation;
 
   private ErrorReportUploadAction errorReportUploadAction;
 

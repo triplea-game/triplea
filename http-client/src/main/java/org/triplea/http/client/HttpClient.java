@@ -25,9 +25,12 @@ public class HttpClient<ClientTypeT, RequestT, ResponseT>
     implements Function<RequestT, ServiceResponse<ResponseT>> {
 
   private final Consumer<RequestT> rateLimiter = new RateLimiter<>();
-  @Nonnull private final Class<ClientTypeT> classType;
-  @Nonnull private final BiFunction<ClientTypeT, RequestT, ResponseT> sendFunction;
-  @Nonnull private final URI hostUri;
+  @Nonnull
+  private final Class<ClientTypeT> classType;
+  @Nonnull
+  private final BiFunction<ClientTypeT, RequestT, ResponseT> sendFunction;
+  @Nonnull
+  private final URI hostUri;
 
   @Override
   public ServiceResponse<ResponseT> apply(

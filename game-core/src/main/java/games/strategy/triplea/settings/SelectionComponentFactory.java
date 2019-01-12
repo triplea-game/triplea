@@ -548,8 +548,9 @@ final class SelectionComponentFactory {
       final ClientSetting<char[]> passwordSetting) {
     return new AlwaysValidInputSelectionComponent() {
 
-      private JTextField usernameField = new JTextField(credentialToString(usernameSetting::getValue), 20);
-      private JPasswordField passwordField = new JPasswordField(credentialToString(passwordSetting::getValue), 20);
+      private final JTextField usernameField = new JTextField(credentialToString(usernameSetting::getValue), 20);
+      private final JPasswordField passwordField =
+          new JPasswordField(credentialToString(passwordSetting::getValue), 20);
 
       private final JPanel mainPanel = JPanelBuilder.builder()
           .verticalBoxLayout()

@@ -16,13 +16,16 @@ import lombok.Builder;
 /** Performs the steps for uploading an error report from the point of view of the server. */
 @Builder
 public class ErrorUploadStrategy implements Function<ErrorReportRequest, ErrorReportResponse> {
-  @Nonnull private final Function<ErrorReportRequest, CreateIssueRequest> requestAdapter;
+  @Nonnull
+  private final Function<ErrorReportRequest, CreateIssueRequest> requestAdapter;
 
   @Nonnull
   private final Function<ServiceResponse<CreateIssueResponse>, ErrorReportResponse> responseAdapter;
 
-  @Nonnull private final ServiceClient<CreateIssueRequest, CreateIssueResponse> createIssueClient;
-  @Nonnull private final Predicate<ErrorReportRequest> allowErrorReport;
+  @Nonnull
+  private final ServiceClient<CreateIssueRequest, CreateIssueResponse> createIssueClient;
+  @Nonnull
+  private final Predicate<ErrorReportRequest> allowErrorReport;
 
   @Override
   public ErrorReportResponse apply(final ErrorReportRequest errorReport) {
