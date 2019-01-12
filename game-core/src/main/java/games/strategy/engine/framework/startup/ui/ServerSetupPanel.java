@@ -466,7 +466,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
   }
 
   @Override
-  public boolean showCancelButton() {
+  public boolean isCancelButtonVisible() {
     return true;
   }
 

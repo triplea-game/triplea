@@ -141,5 +141,5 @@ public abstract class SetupPanel extends JPanel implements SetupConfiguration {
 
   public abstract JComponent getDrawable();
 
-  public abstract boolean showCancelButton();
+  public abstract boolean isCancelButtonVisible();
 }

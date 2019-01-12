@@ -135,7 +135,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
     panel.addObserver(this);
     setWidgetActivation();
     // add the cancel button if we are not choosing the type.
-    if (panel.showCancelButton()) {
+    if (panel.isCancelButtonVisible()) {
       final JPanel cancelPanel = new JPanel();
       cancelPanel.setBorder(new EmptyBorder(10, 0, 10, 10));
       cancelPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));

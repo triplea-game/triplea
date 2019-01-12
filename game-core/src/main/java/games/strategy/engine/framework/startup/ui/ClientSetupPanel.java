@@ -271,7 +271,7 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
-  public boolean showCancelButton() {
+  public boolean isCancelButtonVisible() {
     return true;
   }
 

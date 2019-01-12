@@ -32,7 +32,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   }
 
   @Override
-  public boolean showCancelButton() {
+  public boolean isCancelButtonVisible() {
     return true;
   }
 
