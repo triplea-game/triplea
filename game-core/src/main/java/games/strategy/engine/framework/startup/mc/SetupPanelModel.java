@@ -57,19 +57,19 @@ public class SetupPanelModel implements ServerSetupModel {
    */
   public void showServer(final Component ui) {
     final ServerModel model = new ServerModel(gameSelectorModel, this);
-    if (!model.createServerMessenger(ui)) {
+    if (model.createServerMessenger(ui)) {
+      SwingUtilities.invokeLater(() -> {
+        setGameTypePanel(new ServerSetupPanel(model, gameSelectorModel));
+        // for whatever reason, the server window is showing very very small, causing the nation info to be cut and
+        // requiring scroll bars
+        final int x = (ui.getPreferredSize().width > 800 ? ui.getPreferredSize().width : 800);
+        final int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
+        ui.setPreferredSize(new Dimension(x, y));
+        ui.setSize(new Dimension(x, y));
+      });
+    } else {
       model.cancel();
-      return;
     }
-    SwingUtilities.invokeLater(() -> {
-      setGameTypePanel(new ServerSetupPanel(model, gameSelectorModel));
-      // for whatever reason, the server window is showing very very small, causing the nation info to be cut and
-      // requiring scroll bars
-      final int x = (ui.getPreferredSize().width > 800 ? ui.getPreferredSize().width : 800);
-      final int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
-      ui.setPreferredSize(new Dimension(x, y));
-      ui.setSize(new Dimension(x, y));
-    });
   }
 
   /**
