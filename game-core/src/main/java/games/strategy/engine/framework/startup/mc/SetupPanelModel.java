@@ -37,8 +37,7 @@ public class SetupPanelModel implements ServerSetupModel {
 
   @Setter
   private Consumer<SetupPanel> panelChangeListener;
-  // FIXME remove this ugly temporary field
-  private Component ui;
+  private final Component ui;
 
 
   @Override
@@ -57,8 +56,7 @@ public class SetupPanelModel implements ServerSetupModel {
   /**
    * Starts the game server and displays the game start screen afterwards, awaiting remote game clients.
    */
-  public void showServer(final Component ui) {
-    this.ui = ui;
+  public void showServer() {
     new ServerModel(gameSelectorModel, this, ui).createServerMessenger();
   }
 
@@ -72,7 +70,6 @@ public class SetupPanelModel implements ServerSetupModel {
       final int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
       ui.setPreferredSize(new Dimension(x, y));
       ui.setSize(new Dimension(x, y));
-      this.ui = null;
     });
   }
 
@@ -80,7 +77,7 @@ public class SetupPanelModel implements ServerSetupModel {
    * A method that establishes a connection to a remote game and displays the game start screen afterwards if the
    * connection was successfully established.
    */
-  public void showClient(final Component ui) {
+  public void showClient() {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
     final ClientModel model = new ClientModel(gameSelectorModel, this);
     if (model.createClientMessenger(ui)) {
@@ -108,14 +105,12 @@ public class SetupPanelModel implements ServerSetupModel {
    * Executes a login sequence prompting the user for their lobby username+password and sends it to
    * server. If successful the user is presented with the lobby frame. Failure cases are handled and
    * user is presented with another try or they can abort. In the abort case this method is a no-op.
-   *
-   * @param uiParent Used to center pop-up's prompting user for their lobby credentials.
    */
-  public void login(final Component uiParent) {
+  public void login() {
     LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher().fetchLobbyServerProperties()
         .ifPresent(lobbyServerProperties -> {
           final LobbyLogin login =
-              new LobbyLogin(JOptionPane.getFrameForComponent(uiParent), lobbyServerProperties);
+              new LobbyLogin(JOptionPane.getFrameForComponent(ui), lobbyServerProperties);
 
           Optional.ofNullable(login.login())
               .ifPresent(
