@@ -21,8 +21,7 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
 
   @Override
   public void showSelectType() {
-    final ServerModel model = new ServerModel(gameSelectorModel, this);
-    model.createServerMessenger(null);
+    new ServerModel(gameSelectorModel, this, null).createServerMessenger();
   }
 
   @Override

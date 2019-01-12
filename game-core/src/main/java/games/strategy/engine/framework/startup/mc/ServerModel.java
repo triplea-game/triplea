@@ -100,7 +100,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       new LinkedHashMap<>();
   private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel gameSelectorModel;
-  private Component ui;
+  private final Component ui;
   private ChatModel chatModel;
   private ChatController chatController;
   private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
@@ -109,11 +109,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
 
-  public ServerModel(final GameSelectorModel gameSelectorModel, final ServerSetupModel serverSetupModel) {
+  public ServerModel(final GameSelectorModel gameSelectorModel, final ServerSetupModel serverSetupModel,
+      final Component ui) {
     this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
     this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
     this.gameSelectorModel.addObserver(gameSelectorObserver);
     this.headless = serverSetupModel.isHeadless();
+    this.ui = (ui == null) ? null : JOptionPane.getFrameForComponent(ui);
   }
 
   public void cancel() {
@@ -168,7 +170,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     remoteModelListener.playerListChanged();
   }
 
-  private Optional<ServerConnectionProps> getServerProps(final Component ui) {
+  private Optional<ServerConnectionProps> getServerProps() {
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")
         && GameState.notStarted()) {
       GameState.setStarted();
@@ -215,24 +217,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         .build());
   }
 
-  /**
-   * Creates a server messenger.
-   *
-   * @param ui In non-headless environments we get input from user, the component is for window placements.
-   */
-  public void createServerMessenger(final Component ui) {
-    getServerProps(ui).ifPresent(props -> createServerMessenger(ui, props));
+  public void createServerMessenger() {
+    getServerProps().ifPresent(this::createServerMessenger);
   }
 
-  /**
-   * UI can be null. We use it as the parent for message dialogs we show.
-   * If you have a component displayed, use it.
-   */
-  private void createServerMessenger(
-      @Nullable final Component ui,
-      @Nonnull final ServerConnectionProps props) {
-    this.ui = (ui == null) ? null : JOptionPane.getFrameForComponent(ui);
-
+  private void createServerMessenger(@Nonnull final ServerConnectionProps props) {
     try {
       serverMessenger = new GameServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
