@@ -1,6 +1,8 @@
 package games.strategy.debug.error.reporting;
 
 import java.awt.Component;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.logging.LogRecord;
 
 import javax.annotation.Nullable;
@@ -8,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.text.JTextComponent;
 
 import games.strategy.ui.SwingComponents;
 import swinglib.BorderBuilder;
@@ -29,7 +32,7 @@ public class ErrorReportWindow {
     showWindow(null);
   }
 
-  public static void showWindow(final JFrame parent) {
+  private static void showWindow(final JFrame parent) {
     final ErrorReportWindowModel model = new ErrorReportWindowModel(parent);
     buildWindow(parent, model);
   }
@@ -47,44 +50,64 @@ public class ErrorReportWindow {
   }
 
   private static void updateButtonEnabledStatus(
-      final JTextArea description, final JTextArea attached, final JButton preview, final JButton submit) {
+      final Supplier<String> description, 
+      final Supplier<String> attached, 
+      final JButton preview, 
+      final JButton submit) {
 
-    final boolean enableSubmit = (description.getText().length() >= MIN_SUBMISSION_LENGTH)
-        || (attached.getText().length() >= MIN_SUBMISSION_LENGTH);
+    final boolean enableSubmit = (description.get().length() >= MIN_SUBMISSION_LENGTH)
+        || (attached.get().length() >= MIN_SUBMISSION_LENGTH);
     submit.setEnabled(enableSubmit);
     preview.setEnabled(enableSubmit);
   }
 
+  
+  
+  
   private static void buildWindow(@Nullable final Component parent, final ErrorReportWindowModel model) {
     final JTextArea description = JTextAreaBuilder.builder()
         .columns(10)
         .rows(2)
         .build();
 
-    final JTextArea additionalInfo = model.getAttachedData().map(
+    final Optional<JTextArea> additionalInfo = model.getAttachedData().map(
         attached -> JTextAreaBuilder.builder()
             .rows(5)
             .text(attached)
-            .build())
-        .orElse(new JTextArea());
+            .build());
 
+    final Supplier<String> additionalInfoReader = () -> additionalInfo.map(JTextComponent::getText).orElse("");
+    
+    
     final JButton submitButton = JButtonBuilder.builder()
         .title("Upload")
         .toolTip("Upload error report to TripleA server")
-        .actionListener(button -> model.submitAction(button, description::getText, additionalInfo::getText))
+        .actionListener(button -> model.submitAction(button, description::getText, additionalInfoReader))
         .biggerFont()
         .build();
 
     final JButton previewButton = JButtonBuilder.builder()
         .title("Preview")
         .toolTip("Preview the full error report that will be uploaded")
-        .actionListener(() -> model.previewAction(description::getText, additionalInfo::getText))
+        .actionListener(() -> model.previewAction(description::getText, additionalInfoReader))
         .build();
 
-    updateButtonEnabledStatus(description, additionalInfo, submitButton, previewButton);
+    updateButtonEnabledStatus(
+        description::getText,
+        () -> additionalInfo.map(JTextComponent::getText).orElse(""),
+        submitButton,
+        previewButton);
 
+    
     JTextAreaBuilder.addTextListener(additionalInfo,
-        () -> updateButtonEnabledStatus(description, additionalInfo, submitButton, previewButton));
+        () ->     updateButtonEnabledStatus(
+            description::getText,
+            () -> additionalInfo.map(JTextComponent::getText).orElse(""),
+            submitButton,
+            previewButton);
+
+
+    updateButtonEnabledStatus(description, additionalInfo, submitButton, previewButton));
     JTextAreaBuilder.addTextListener(description,
         () -> updateButtonEnabledStatus(description, additionalInfo, submitButton, previewButton));
 
@@ -108,8 +131,8 @@ public class ErrorReportWindow {
                     .build())
             .addCenter(description)
             .addSouth(
-                model.getAttachedData().isPresent()
-                    ? JPanelBuilder.builder()
+                additionalInfo.map(
+                    textArea -> JPanelBuilder.builder()
                         .addNorth(JLabelBuilder.builder()
                             .border(BorderBuilder.builder()
                                 .top(30)
@@ -117,9 +140,9 @@ public class ErrorReportWindow {
                                 .build())
                             .text("The following will be included automatically:")
                             .build())
-                        .add(SwingComponents.newJScrollPane(additionalInfo))
-                        .build()
-                    : new JPanel())
+                        .add(SwingComponents.newJScrollPane(textArea))
+                        .build())
+                    .orElseGet(JPanel::new))
             .build())
         .addSouth(JPanelBuilder.builder()
             .horizontalBoxLayout()
