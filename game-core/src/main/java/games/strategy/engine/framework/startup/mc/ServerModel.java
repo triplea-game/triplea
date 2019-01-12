@@ -32,7 +32,9 @@ import javax.swing.JOptionPane;
 
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.HeadlessGameServer;
-import org.triplea.game.server.HeadlessServerSetupPanelModel;
+import org.triplea.game.startup.ServerSetupModel;
+
+import com.google.common.base.Preconditions;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
@@ -85,10 +87,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
-  @Nullable
-  private final SetupPanelModel typePanelModel;
-  @Nullable
-  private final HeadlessServerSetupPanelModel headlessServerSetupPanelModel;
+  private final ServerSetupModel serverSetupModel;
   private final boolean headless;
   private IServerMessenger serverMessenger;
   private IRemoteMessenger remoteMessenger;
@@ -110,23 +109,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
 
-  ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
-    this.gameSelectorModel = gameSelectorModel;
-    this.typePanelModel = typePanelModel;
+  public ServerModel(final GameSelectorModel gameSelectorModel, final ServerSetupModel serverSetupModel) {
+    this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
+    this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
     this.gameSelectorModel.addObserver(gameSelectorObserver);
-    headlessServerSetupPanelModel = null;
-    headless = false;
-  }
-
-
-  public ServerModel(
-      final GameSelectorModel gameSelectorModel,
-      final HeadlessServerSetupPanelModel headlessServerSetupPanelModel) {
-    this.gameSelectorModel = gameSelectorModel;
-    typePanelModel = null;
-    this.gameSelectorModel.addObserver(gameSelectorObserver);
-    this.headlessServerSetupPanelModel = headlessServerSetupPanelModel;
-    headless = true;
+    this.headless = serverSetupModel.isHeadless();
   }
 
   public void cancel() {
@@ -143,10 +130,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     remoteModelListener = Optional.ofNullable(listener).orElse(IRemoteModelListener.NULL_LISTENER);
   }
 
-  public void setLocalPlayerType(final String player, final PlayerType type) {
-    synchronized (this) {
-      localPlayerTypes.put(player, type);
-    }
+  public synchronized void setLocalPlayerType(final String player, final PlayerType type) {
+    localPlayerTypes.put(player, type);
   }
 
   private void gameDataChanged() {
@@ -242,7 +227,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
    * UI can be null. We use it as the parent for message dialogs we show.
    * If you have a component displayed, use it.
    */
-  boolean createServerMessenger(
+  private boolean createServerMessenger(
       @Nullable final Component ui,
       @Nonnull final ServerConnectionProps props) {
     this.ui = (ui == null) ? null : JOptionPane.getFrameForComponent(ui);
@@ -535,14 +520,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   @Override
   public void messengerInvalid(final Throwable reason) {
-    Optional.ofNullable(headlessServerSetupPanelModel)
-        .ifPresent(HeadlessServerSetupPanelModel::showSelectType);
-
-    Optional.ofNullable(typePanelModel).ifPresent(
-        panel -> {
-          JOptionPane.showMessageDialog(ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
-          panel.showSelectType();
-        });
+    if (!headless) {
+      JOptionPane.showMessageDialog(ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    serverSetupModel.showSelectType();
   }
 
   @Override

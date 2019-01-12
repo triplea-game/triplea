@@ -8,6 +8,8 @@ import java.util.function.Consumer;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.game.startup.ServerSetupModel;
+
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.framework.GameRunner;
@@ -28,7 +30,7 @@ import lombok.Setter;
  * This class provides a way to switch between different ISetupPanel displays.
  */
 @RequiredArgsConstructor
-public class SetupPanelModel {
+public class SetupPanelModel implements ServerSetupModel {
   @Getter
   protected final GameSelectorModel gameSelectorModel;
   protected SetupPanel panel = null;
@@ -37,6 +39,7 @@ public class SetupPanelModel {
   private Consumer<SetupPanel> panelChangeListener;
 
 
+  @Override
   public void showSelectType() {
     setGameTypePanel(new MetaSetupPanel(this));
   }
@@ -118,5 +121,10 @@ public class SetupPanelModel {
                     lobbyFrame.setVisible(true);
                   });
         });
+  }
+
+  @Override
+  public boolean isHeadless() {
+    return false;
   }
 }
