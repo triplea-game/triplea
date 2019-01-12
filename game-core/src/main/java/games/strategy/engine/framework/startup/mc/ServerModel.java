@@ -95,8 +95,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private Map<String, String> playersToNodeListing = new HashMap<>();
   private Map<String, Boolean> playersEnabledListing = new HashMap<>();
   private Collection<String> playersAllowedToBeDisabled = new HashSet<>();
-  private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
-      new LinkedHashMap<>();
+  private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
   private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel gameSelectorModel;
   private final Component ui;
@@ -593,7 +592,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   public Optional<ServerLauncher> getLauncher() {
     synchronized (this) {
       disallowRemoveConnections();
-      // -1 since we dont count outselves
+      // -1 since we dont count ourselves
       final int clientCount = serverMessenger.getNodes().size() - 1;
       final Map<String, INode> remotePlayers = new HashMap<>();
       for (final Entry<String, String> entry : playersToNodeListing.entrySet()) {

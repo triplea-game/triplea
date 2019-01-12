@@ -61,7 +61,7 @@ public class ServerLauncher extends AbstractLauncher {
   private volatile boolean isLaunching = true;
   private volatile boolean abortLaunch = false;
   private volatile boolean gameStopped = false;
-  // a list of observers that tried to join the game during starup
+  // a list of observers that tried to join the game during startup
   // we need to track these, because when we lose connections to them we can ignore the connection lost
   private final List<INode> observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<>());
   private InGameLobbyWatcherWrapper inGameLobbyWatcher;
