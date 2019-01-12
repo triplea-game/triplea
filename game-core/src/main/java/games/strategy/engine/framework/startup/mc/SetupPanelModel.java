@@ -1,11 +1,10 @@
 package games.strategy.engine.framework.startup.mc;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import javax.swing.JOptionPane;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import org.triplea.game.startup.ServerSetupModel;
@@ -37,7 +36,7 @@ public class SetupPanelModel implements ServerSetupModel {
 
   @Setter
   private Consumer<SetupPanel> panelChangeListener;
-  private final Component ui;
+  private final JFrame ui;
 
 
   @Override
@@ -109,8 +108,7 @@ public class SetupPanelModel implements ServerSetupModel {
   public void login() {
     LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher().fetchLobbyServerProperties()
         .ifPresent(lobbyServerProperties -> {
-          final LobbyLogin login =
-              new LobbyLogin(JOptionPane.getFrameForComponent(ui), lobbyServerProperties);
+          final LobbyLogin login = new LobbyLogin(ui, lobbyServerProperties);
 
           Optional.ofNullable(login.login())
               .ifPresent(
