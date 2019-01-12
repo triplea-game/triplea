@@ -14,7 +14,6 @@ import org.triplea.http.client.SendResult;
 import org.triplea.http.client.ServiceResponse;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
-import org.triplea.server.reporting.error.ErrorReportResponseAdapter;
 
 class ErrorReportResponseAdapterTest {
 
