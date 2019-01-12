@@ -13,8 +13,12 @@ import lombok.ToString;
 @EqualsAndHashCode
 @Builder
 public class ErrorReport {
-  @Nonnull private final String reportMessage;
-  @Nonnull private final String gameVersion;
-  @Nonnull private final String operatingSystem;
-  @Nonnull private final String javaVersion;
+  @Nonnull
+  private final String reportMessage;
+  @Nonnull
+  private final String gameVersion;
+  @Nonnull
+  private final String operatingSystem;
+  @Nonnull
+  private final String javaVersion;
 }

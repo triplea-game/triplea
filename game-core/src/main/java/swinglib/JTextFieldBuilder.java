@@ -63,8 +63,8 @@ public class JTextFieldBuilder {
 
     Optional.ofNullable(textEnteredAction)
         .ifPresent(
-            action ->
-                DocumentListenerBuilder.attachDocumentListener(textField, () -> textEnteredAction.accept(textField)));
+            action -> DocumentListenerBuilder.attachDocumentListener(textField,
+                () -> textEnteredAction.accept(textField)));
 
     Optional.ofNullable(maxLength)
         .map(JTextFieldLimit::new)
