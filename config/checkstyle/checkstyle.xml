@@ -207,6 +207,7 @@
             <property name="sortImportsInGroupAlphabetically" value="true"/>
             <property name="separateLineBetweenGroups" value="true"/>
         </module>
+        <module name="RedundantImport"/>
         <module name="UnusedImports"/>
         <module name="MethodParamPad"/>
         <module name="ParenPad"/>
