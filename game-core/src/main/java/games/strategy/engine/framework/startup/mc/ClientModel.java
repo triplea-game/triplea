@@ -200,8 +200,6 @@ public class ClientModel implements IMessengerErrorListener {
     // load in the saved name!
     final ClientProps props = getProps(this.ui);
     if (props == null) {
-      gameSelectorModel.setCanSelect(true);
-      cancel();
       return false;
     }
     final String name = props.getName();
@@ -268,18 +266,17 @@ public class ClientModel implements IMessengerErrorListener {
    * Resets stats and nulls out references, keeps chat alive.
    */
   public void cancel() {
-    if (messenger == null) {
-      return;
-    }
-    objectStreamFactory.setData(null);
-    messenger.shutDown();
-    chatPanel.setChat(null);
     gameSelectorModel.setGameData(gameDataOnStartup);
     gameSelectorModel.setCanSelect(true);
-    hostIsHeadlessBot = false;
-    gameSelectorModel.setIsHostHeadlessBot(false);
-    gameSelectorModel.setClientModelForHostBots(null);
-    messenger.removeErrorListener(this);
+    if (messenger != null) {
+      messenger.shutDown();
+      messenger.removeErrorListener(this);
+      objectStreamFactory.setData(null);
+      chatPanel.setChat(null);
+      hostIsHeadlessBot = false;
+      gameSelectorModel.setIsHostHeadlessBot(false);
+      gameSelectorModel.setClientModelForHostBots(null);
+    }
   }
 
   private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone,
