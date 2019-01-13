@@ -266,11 +266,6 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
-  public JComponent getDrawable() {
-    return this;
-  }
-
-  @Override
   public boolean isCancelButtonVisible() {
     return true;
   }

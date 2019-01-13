@@ -236,7 +236,7 @@ public class ServerLauncher extends AbstractLauncher<Boolean> {
         HeadlessGameServer.waitForUsersHeadlessInstance();
       }
       log.info("Game Status: Waiting For Players");
-    }, "Triplea, start server game").start();
+    }, "TripleA, start server game").start();
   }
 
   private void warmUpCryptoRandomSource() {

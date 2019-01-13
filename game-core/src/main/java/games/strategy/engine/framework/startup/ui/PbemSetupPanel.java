@@ -15,7 +15,6 @@ import java.util.Observer;
 import java.util.Optional;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -194,10 +193,5 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
         new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
     return Optional.of(new LocalLauncher(gameSelectorModel, randomSource, pl));
-  }
-
-  @Override
-  public JComponent getDrawable() {
-    return this;
   }
 }
