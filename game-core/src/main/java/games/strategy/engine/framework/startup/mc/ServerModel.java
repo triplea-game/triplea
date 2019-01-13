@@ -5,7 +5,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
-import java.awt.Component;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,11 +27,14 @@ import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.HeadlessGameServer;
-import org.triplea.game.server.HeadlessServerSetupPanelModel;
+import org.triplea.game.startup.ServerSetupModel;
+
+import com.google.common.base.Preconditions;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
@@ -85,11 +87,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
-  @Nullable
-  private final SetupPanelModel typePanelModel;
-  @Nullable
-  private final HeadlessServerSetupPanelModel headlessServerSetupPanelModel;
-  private final boolean headless;
+  private final ServerSetupModel serverSetupModel;
   private IServerMessenger serverMessenger;
   private IRemoteMessenger remoteMessenger;
   private IChannelMessenger channelMessenger;
@@ -97,11 +95,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private Map<String, String> playersToNodeListing = new HashMap<>();
   private Map<String, Boolean> playersEnabledListing = new HashMap<>();
   private Collection<String> playersAllowedToBeDisabled = new HashSet<>();
-  private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
-      new LinkedHashMap<>();
+  private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
   private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel gameSelectorModel;
-  private Component ui;
+  @Nullable
+  private final JFrame ui;
   private ChatModel chatModel;
   private ChatController chatController;
   private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
@@ -110,23 +108,12 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
 
-  ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
-    this.gameSelectorModel = gameSelectorModel;
-    this.typePanelModel = typePanelModel;
+  public ServerModel(final GameSelectorModel gameSelectorModel, final ServerSetupModel serverSetupModel,
+      @Nullable final JFrame ui) {
+    this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
+    this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
     this.gameSelectorModel.addObserver(gameSelectorObserver);
-    headlessServerSetupPanelModel = null;
-    headless = false;
-  }
-
-
-  public ServerModel(
-      final GameSelectorModel gameSelectorModel,
-      final HeadlessServerSetupPanelModel headlessServerSetupPanelModel) {
-    this.gameSelectorModel = gameSelectorModel;
-    typePanelModel = null;
-    this.gameSelectorModel.addObserver(gameSelectorObserver);
-    this.headlessServerSetupPanelModel = headlessServerSetupPanelModel;
-    headless = true;
+    this.ui = ui;
   }
 
   public void cancel() {
@@ -143,10 +130,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     remoteModelListener = Optional.ofNullable(listener).orElse(IRemoteModelListener.NULL_LISTENER);
   }
 
-  public void setLocalPlayerType(final String player, final PlayerType type) {
-    synchronized (this) {
-      localPlayerTypes.put(player, type);
-    }
+  public synchronized void setLocalPlayerType(final String player, final PlayerType type) {
+    localPlayerTypes.put(player, type);
   }
 
   private void gameDataChanged() {
@@ -159,7 +144,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
         for (final PlayerId player : data.getPlayerList().getPlayers()) {
           final String name = player.getName();
-          if (headless) {
+          if (ui == null) {
             if (player.getIsDisabled()) {
               playersToNodeListing.put(name, serverMessenger.getLocalNode().getName());
               localPlayerTypes.put(name, PlayerType.WEAK_AI);
@@ -183,7 +168,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     remoteModelListener.playerListChanged();
   }
 
-  private Optional<ServerConnectionProps> getServerProps(final Component ui) {
+  private Optional<ServerConnectionProps> getServerProps() {
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")
         && GameState.notStarted()) {
       GameState.setStarted();
@@ -209,7 +194,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           ClientSetting.flush();
           final int port = options.getPort();
           if (port >= 65536 || port == 0) {
-            if (headless) {
+            if (ui == null) {
               throw new IllegalStateException("Invalid Port: " + port);
             }
             JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
@@ -220,6 +205,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     if (!optionsResult.completed) {
       throw new IllegalArgumentException("Error while gathering connection details");
     }
+    if (!optionsResult.result.isPresent()) {
+      cancel();
+    }
     return optionsResult.result.map(options -> ServerConnectionProps.builder()
         .name(options.getName())
         .port(options.getPort())
@@ -227,26 +215,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         .build());
   }
 
-  /**
-   * Creates a server messenger, returns false if any errors happen.
-   *
-   * @param ui In non-headless environments we get input from user, the component is for window placements.
-   */
-  public boolean createServerMessenger(final Component ui) {
-    return getServerProps(ui)
-        .map(props -> createServerMessenger(ui, props))
-        .orElse(false);
+  public void createServerMessenger() {
+    getServerProps().ifPresent(this::createServerMessenger);
   }
 
-  /**
-   * UI can be null. We use it as the parent for message dialogs we show.
-   * If you have a component displayed, use it.
-   */
-  boolean createServerMessenger(
-      @Nullable final Component ui,
-      @Nonnull final ServerConnectionProps props) {
-    this.ui = (ui == null) ? null : JOptionPane.getFrameForComponent(ui);
-
+  private void createServerMessenger(@Nonnull final ServerConnectionProps props) {
     try {
       serverMessenger = new GameServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
@@ -260,7 +233,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       channelMessenger = new ChannelMessenger(unifiedMessenger);
       chatController = new ChatController(CHAT_NAME, serverMessenger, remoteMessenger, channelMessenger, node -> false);
 
-      if (ui == null && headless) {
+      if (ui == null) {
         chatModel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
             Chat.ChatSoundProfile.GAME_CHATROOM);
       } else {
@@ -270,10 +243,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
       serverMessenger.setAcceptNewConnections(true);
       gameDataChanged();
-      return true;
+      serverSetupModel.onServerMessengerCreated(this);
     } catch (final IOException ioe) {
       log.log(Level.SEVERE, "Unable to create server socket", ioe);
-      return false;
+      cancel();
     }
   }
 
@@ -295,7 +268,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void disablePlayer(final String playerName) {
-      if (!headless) {
+      if (ui != null) {
         return;
       }
       // we don't want the client's changing stuff for anyone but a bot
@@ -304,7 +277,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     @Override
     public void enablePlayer(final String playerName) {
-      if (!headless) {
+      if (ui != null) {
         return;
       }
       // we don't want the client's changing stuff for anyone but a bot
@@ -436,7 +409,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   private void takePlayerInternal(final INode from, final boolean take, final String playerName) {
-    // synchronize to make sure two adds arent executed at once
+    // synchronize to make sure two adds aren't executed at once
     synchronized (this) {
       if (!playersToNodeListing.containsKey(playerName)) {
         return;
@@ -459,7 +432,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         return;
       }
       playersEnabledListing.put(playerName, enabled);
-      if (headless) {
+      if (ui == null) {
         // we do not want the host bot to actually play, so set to null if enabled, and set to weak ai if disabled
         if (enabled) {
           playersToNodeListing.put(playerName, null);
@@ -535,14 +508,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   @Override
   public void messengerInvalid(final Throwable reason) {
-    Optional.ofNullable(headlessServerSetupPanelModel)
-        .ifPresent(HeadlessServerSetupPanelModel::showSelectType);
-
-    Optional.ofNullable(typePanelModel).ifPresent(
-        panel -> {
-          JOptionPane.showMessageDialog(ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
-          panel.showSelectType();
-        });
+    if (ui != null) {
+      JOptionPane.showMessageDialog(ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    serverSetupModel.showSelectType();
   }
 
   @Override
@@ -602,7 +571,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
     final Map<String, PlayerType> localPlayerMappings = new HashMap<>();
     // local player default = humans (for bots = weak ai)
-    final PlayerType defaultLocalType = headless
+    final PlayerType defaultLocalType = ui == null
         ? PlayerType.WEAK_AI
         : PlayerType.HUMAN_PLAYER;
     for (final String player : playersToNodeListing.keySet()) {
@@ -624,7 +593,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   public Optional<ServerLauncher> getLauncher() {
     synchronized (this) {
       disallowRemoveConnections();
-      // -1 since we dont count outselves
+      // -1 since we dont count ourselves
       final int clientCount = serverMessenger.getNodes().size() - 1;
       final Map<String, INode> remotePlayers = new HashMap<>();
       for (final Entry<String, String> entry : playersToNodeListing.entrySet()) {
@@ -640,7 +609,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         }
       }
       return Optional.of(new ServerLauncher(clientCount, remoteMessenger, channelMessenger,
-          serverMessenger, gameSelectorModel, getPlayerListingInternal(), remotePlayers, this, headless));
+          serverMessenger, gameSelectorModel, getPlayerListingInternal(), remotePlayers, this, ui == null));
     }
   }
 
