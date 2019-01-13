@@ -4,8 +4,9 @@ import java.awt.Component;
 
 /**
  * Abstract class for launching a game.
+ *
  * @param <T> The type of object that gets returned by {@link #loadGame(Component)}
- *          and is required by {@link #launchInternal(Component, Object)}.
+ *        and is required by {@link #launchInternal(Component, Object)}.
  */
 public abstract class AbstractLauncher<T> implements ILauncher {
   @Override
