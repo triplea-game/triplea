@@ -9,5 +9,5 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 public interface ServerSetupModel {
   void showSelectType();
 
-  void onServerMessengerCreated(final ServerModel serverSetupModel);
+  void onServerMessengerCreated(ServerModel serverModel);
 }
