@@ -23,7 +23,7 @@ import lombok.extern.java.Log;
  * Implementation of {@link ILauncher} for a headed local or network client game.
  */
 @Log
-public class LocalLauncher extends AbstractLauncher {
+public class LocalLauncher extends AbstractLauncher<Optional<ServerGame>> {
   private final IRandomSource randomSource;
   private final PlayerListing playerListing;
 
@@ -35,8 +35,7 @@ public class LocalLauncher extends AbstractLauncher {
   }
 
   @Override
-  protected void launchInNewThread(final Component parent) {
-    final Optional<ServerGame> game = loadGame();
+  protected void launchInternal(final Component parent, final Optional<ServerGame> game) {
     try {
       game.ifPresent(ServerGame::startGame);
     } finally {
@@ -49,7 +48,8 @@ public class LocalLauncher extends AbstractLauncher {
     }
   }
 
-  private Optional<ServerGame> loadGame() {
+  @Override
+  Optional<ServerGame> loadGame(final Component parent) {
     try {
       gameData.doPreGameStartDataModifications(playerListing);
       final Messengers messengers = new Messengers(new HeadlessServerMessenger());
@@ -62,8 +62,6 @@ public class LocalLauncher extends AbstractLauncher {
     } catch (final Exception ex) {
       log.log(Level.SEVERE, "Failed to start game", ex);
       return Optional.empty();
-    } finally {
-      gameLoadingWindow.doneWait();
     }
   }
 }

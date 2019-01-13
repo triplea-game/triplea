@@ -46,7 +46,7 @@ import lombok.extern.java.Log;
  * Implementation of {@link ILauncher} for a headed or headless network server game.
  */
 @Log
-public class ServerLauncher extends AbstractLauncher {
+public class ServerLauncher extends AbstractLauncher<Boolean> {
   private final int clientCount;
   private final IRemoteMessenger remoteMessenger;
   private final IChannelMessenger channelMessenger;
@@ -101,7 +101,7 @@ public class ServerLauncher extends AbstractLauncher {
   }
 
   @Override
-  protected void launchInNewThread(final Component parent) {
+  Boolean loadGame(final Component parent) {
     try {
       // the order of this stuff does matter
       serverModel.setServerLauncher(this);
@@ -142,10 +142,6 @@ public class ServerLauncher extends AbstractLauncher {
       } catch (final Exception e) {
         log.log(Level.SEVERE, "Failed to launch", e);
         abortLaunch = true;
-
-        if (gameLoadingWindow != null) {
-          gameLoadingWindow.doneWait();
-        }
       }
       log.info("Game Successfully Loaded. " + (abortLaunch ? "Aborting Launch." : "Starting Game."));
       if (abortLaunch) {
@@ -156,83 +152,85 @@ public class ServerLauncher extends AbstractLauncher {
         abortLaunch = true;
       }
       remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
-      new Thread(() -> {
-        try {
-          isLaunching = false;
-          abortLaunch = testShouldWeAbort();
-          if (!abortLaunch) {
-            if (useSecureRandomSource) {
-              warmUpCryptoRandomSource();
-            }
-            log.info("Starting Game Delegates.");
-            serverGame.startGame();
-          } else {
-            stopGame();
-          }
-        } catch (final ConnectionLostException e) {
-          // no-op, this is a simple player disconnect, no need to scare the user with some giant stack trace
-        } catch (final MessengerException me) {
-          // we lost a connection
-          // wait for the connection handler to notice, and shut us down
-          Interruptibles.await(() -> {
-            if (!abortLaunch
-                && !errorLatch.await(ClientSetting.serverObserverJoinWaitTime.getValueOrThrow(), TimeUnit.SECONDS)) {
-              log.warning("Waiting on error latch timed out!");
-            }
-          });
-          stopGame();
-        } catch (final RuntimeException e) {
-          final String errorMessage = "Unrecognized error occurred. If this is a repeatable error, "
-              + "please make a copy of this savegame and report to:\n" + UrlConstants.GITHUB_ISSUES;
-          log.log(Level.SEVERE, errorMessage, e);
-          stopGame();
-        }
-        // having an oddball issue with the zip stream being closed while parsing to load default game. might be
-        // caused by closing of stream while unloading map resources.
-        Interruptibles.sleep(200);
-        // either game ended, or aborted, or a player left or disconnected
-        if (headless) {
-          try {
-            log.info("Game ended, going back to waiting.");
-            // if we do not do this, we can get into an infinite loop of launching a game,
-            // then crashing out, then launching, etc.
-            serverModel.setAllPlayersToNullNodes();
-            final File f1 = AutoSaveFileUtils.getHeadlessAutoSaveFile();
-            if (f1.exists()) {
-              gameSelectorModel.load(f1);
-            } else {
-              gameSelectorModel.resetGameDataToNull();
-            }
-          } catch (final Exception e1) {
-            log.log(Level.SEVERE, "Failed to load game", e1);
-            gameSelectorModel.resetGameDataToNull();
-          }
-        } else {
-          gameSelectorModel.loadDefaultGameNewThread();
-        }
-        if (parent != null) {
-          SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
-        }
-        serverModel.setServerLauncher(null);
-        serverModel.newGame();
-        if (inGameLobbyWatcher != null) {
-          inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
-        }
-        if (headless) {
-          // tell headless server to wait for new connections:
-          HeadlessGameServer.waitForUsersHeadlessInstance();
-        }
-        log.info("Game Status: Waiting For Players");
-      }, "Triplea, start server game").start();
+      return useSecureRandomSource;
     } finally {
-      if (gameLoadingWindow != null) {
-        gameLoadingWindow.doneWait();
-      }
       if (inGameLobbyWatcher != null) {
         inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, serverGame);
       }
       log.info("Game Status: In Progress");
     }
+  }
+
+  @Override
+  void launchInternal(final Component parent, final Boolean useSecureRandomSource) {
+    new Thread(() -> {
+      try {
+        isLaunching = false;
+        abortLaunch = testShouldWeAbort();
+        if (!abortLaunch) {
+          if (useSecureRandomSource) {
+            warmUpCryptoRandomSource();
+          }
+          log.info("Starting Game Delegates.");
+          serverGame.startGame();
+        } else {
+          stopGame();
+        }
+      } catch (final ConnectionLostException e) {
+        // no-op, this is a simple player disconnect, no need to scare the user with some giant stack trace
+      } catch (final MessengerException me) {
+        // we lost a connection
+        // wait for the connection handler to notice, and shut us down
+        Interruptibles.await(() -> {
+          if (!abortLaunch
+              && !errorLatch.await(ClientSetting.serverObserverJoinWaitTime.getValueOrThrow(), TimeUnit.SECONDS)) {
+            log.warning("Waiting on error latch timed out!");
+          }
+        });
+        stopGame();
+      } catch (final RuntimeException e) {
+        final String errorMessage = "Unrecognized error occurred. If this is a repeatable error, "
+            + "please make a copy of this savegame and report to:\n" + UrlConstants.GITHUB_ISSUES;
+        log.log(Level.SEVERE, errorMessage, e);
+        stopGame();
+      }
+      // having an oddball issue with the zip stream being closed while parsing to load default game. might be
+      // caused by closing of stream while unloading map resources.
+      Interruptibles.sleep(200);
+      // either game ended, or aborted, or a player left or disconnected
+      if (headless) {
+        try {
+          log.info("Game ended, going back to waiting.");
+          // if we do not do this, we can get into an infinite loop of launching a game,
+          // then crashing out, then launching, etc.
+          serverModel.setAllPlayersToNullNodes();
+          final File f1 = AutoSaveFileUtils.getHeadlessAutoSaveFile();
+          if (f1.exists()) {
+            gameSelectorModel.load(f1);
+          } else {
+            gameSelectorModel.resetGameDataToNull();
+          }
+        } catch (final Exception e1) {
+          log.log(Level.SEVERE, "Failed to load game", e1);
+          gameSelectorModel.resetGameDataToNull();
+        }
+      } else {
+        gameSelectorModel.loadDefaultGameNewThread();
+      }
+      if (parent != null) {
+        SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
+      }
+      serverModel.setServerLauncher(null);
+      serverModel.newGame();
+      if (inGameLobbyWatcher != null) {
+        inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
+      }
+      if (headless) {
+        // tell headless server to wait for new connections:
+        HeadlessGameServer.waitForUsersHeadlessInstance();
+      }
+      log.info("Game Status: Waiting For Players");
+    }, "Triplea, start server game").start();
   }
 
   private void warmUpCryptoRandomSource() {
