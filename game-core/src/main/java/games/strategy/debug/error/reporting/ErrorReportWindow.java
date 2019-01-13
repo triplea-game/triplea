@@ -14,6 +14,7 @@ import javax.swing.text.JTextComponent;
 
 import games.strategy.ui.SwingComponents;
 import swinglib.BorderBuilder;
+import swinglib.DocumentListenerBuilder;
 import swinglib.JButtonBuilder;
 import swinglib.JFrameBuilder;
 import swinglib.JLabelBuilder;
@@ -50,9 +51,9 @@ public class ErrorReportWindow {
   }
 
   private static void updateButtonEnabledStatus(
-      final Supplier<String> description, 
-      final Supplier<String> attached, 
-      final JButton preview, 
+      final Supplier<String> description,
+      final Supplier<String> attached,
+      final JButton preview,
       final JButton submit) {
 
     final boolean enableSubmit = (description.get().length() >= MIN_SUBMISSION_LENGTH)
@@ -61,9 +62,8 @@ public class ErrorReportWindow {
     preview.setEnabled(enableSubmit);
   }
 
-  
-  
-  
+
+
   private static void buildWindow(@Nullable final Component parent, final ErrorReportWindowModel model) {
     final JTextArea description = JTextAreaBuilder.builder()
         .columns(10)
@@ -77,8 +77,8 @@ public class ErrorReportWindow {
             .build());
 
     final Supplier<String> additionalInfoReader = () -> additionalInfo.map(JTextComponent::getText).orElse("");
-    
-    
+
+
     final JButton submitButton = JButtonBuilder.builder()
         .title("Upload")
         .toolTip("Upload error report to TripleA server")
@@ -94,22 +94,18 @@ public class ErrorReportWindow {
 
     updateButtonEnabledStatus(
         description::getText,
+        additionalInfoReader,
+        submitButton,
+        previewButton);
+
+    final Runnable listenerAction = () -> updateButtonEnabledStatus(
+        description::getText,
         () -> additionalInfo.map(JTextComponent::getText).orElse(""),
         submitButton,
         previewButton);
 
-    
-    JTextAreaBuilder.addTextListener(additionalInfo,
-        () ->     updateButtonEnabledStatus(
-            description::getText,
-            () -> additionalInfo.map(JTextComponent::getText).orElse(""),
-            submitButton,
-            previewButton);
-
-
-    updateButtonEnabledStatus(description, additionalInfo, submitButton, previewButton));
-    JTextAreaBuilder.addTextListener(description,
-        () -> updateButtonEnabledStatus(description, additionalInfo, submitButton, previewButton));
+    DocumentListenerBuilder.attachDocumentListener(description, listenerAction);
+    additionalInfo.ifPresent(area -> DocumentListenerBuilder.attachDocumentListener(area, listenerAction));
 
     final JFrame frame = JFrameBuilder.builder()
         .title("Report a Problem to TripleA Support")
