@@ -98,6 +98,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
   private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel gameSelectorModel;
+  @Nullable
   private final JFrame ui;
   private ChatModel chatModel;
   private ChatController chatController;
@@ -108,7 +109,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
 
   public ServerModel(final GameSelectorModel gameSelectorModel, final ServerSetupModel serverSetupModel,
-      final JFrame ui) {
+      @Nullable final JFrame ui) {
     this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
     this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
     this.gameSelectorModel.addObserver(gameSelectorObserver);

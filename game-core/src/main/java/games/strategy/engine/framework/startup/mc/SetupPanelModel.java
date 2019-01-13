@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -36,6 +37,7 @@ public class SetupPanelModel implements ServerSetupModel {
 
   @Setter
   private Consumer<SetupPanel> panelChangeListener;
+  @Nonnull
   private final JFrame ui;
 
 
