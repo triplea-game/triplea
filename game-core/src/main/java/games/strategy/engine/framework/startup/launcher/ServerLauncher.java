@@ -17,6 +17,7 @@ import javax.swing.SwingUtilities;
 
 import org.triplea.game.server.HeadlessGameServer;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.ServerGame;
@@ -47,6 +48,9 @@ import lombok.extern.java.Log;
  */
 @Log
 public class ServerLauncher extends AbstractLauncher<Boolean> {
+  private final GameData gameData;
+  private final GameSelectorModel gameSelectorModel;
+  private final boolean headless;
   private final int clientCount;
   private final IRemoteMessenger remoteMessenger;
   private final IChannelMessenger channelMessenger;
@@ -70,7 +74,8 @@ public class ServerLauncher extends AbstractLauncher<Boolean> {
       final IChannelMessenger channelMessenger, final IMessenger messenger, final GameSelectorModel gameSelectorModel,
       final PlayerListing playerListing, final Map<String, INode> remotePlayers, final ServerModel serverModel,
       final boolean headless) {
-    super(gameSelectorModel, headless);
+    this.gameSelectorModel = gameSelectorModel;
+    this.headless = headless;
     this.clientCount = clientCount;
     this.remoteMessenger = remoteMessenger;
     this.channelMessenger = channelMessenger;
@@ -78,6 +83,7 @@ public class ServerLauncher extends AbstractLauncher<Boolean> {
     this.playerListing = playerListing;
     this.remotePlayers = remotePlayers;
     this.serverModel = serverModel;
+    this.gameData = gameSelectorModel.getGameData();
   }
 
   public void setInGameLobbyWatcher(final InGameLobbyWatcherWrapper watcher) {

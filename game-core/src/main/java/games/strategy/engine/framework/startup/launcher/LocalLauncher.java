@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -24,14 +25,17 @@ import lombok.extern.java.Log;
  */
 @Log
 public class LocalLauncher extends AbstractLauncher<Optional<ServerGame>> {
+  private final GameData gameData;
+  private final GameSelectorModel gameSelectorModel;
   private final IRandomSource randomSource;
   private final PlayerListing playerListing;
 
   public LocalLauncher(final GameSelectorModel gameSelectorModel, final IRandomSource randomSource,
       final PlayerListing playerListing) {
-    super(gameSelectorModel);
     this.randomSource = randomSource;
     this.playerListing = playerListing;
+    this.gameSelectorModel = gameSelectorModel;
+    this.gameData = gameSelectorModel.getGameData();
   }
 
   @Override
@@ -55,9 +59,9 @@ public class LocalLauncher extends AbstractLauncher<Optional<ServerGame>> {
       final Messengers messengers = new Messengers(new HeadlessServerMessenger());
       final Set<IGamePlayer> gamePlayers =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
-      final ServerGame game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers, headless);
+      final ServerGame game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers, false);
       game.setRandomSource(randomSource);
-      gameData.getGameLoader().startGame(game, gamePlayers, headless, null);
+      gameData.getGameLoader().startGame(game, gamePlayers, false, null);
       return Optional.of(game);
     } catch (final Exception ex) {
       log.log(Level.SEVERE, "Failed to start game", ex);
