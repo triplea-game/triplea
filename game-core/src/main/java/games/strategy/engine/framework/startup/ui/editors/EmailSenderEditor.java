@@ -26,6 +26,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.ProgressWindow;
 import games.strategy.util.Util;
 import lombok.extern.java.Log;
+import swinglib.DocumentListenerBuilder;
 
 /**
  * An editor for modifying email senders.
@@ -62,8 +63,8 @@ public class EmailSenderEditor extends EditorPanel {
     row++;
     add(alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST,
         GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
-    subject.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
-    toAddress.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
+    DocumentListenerBuilder.attachDocumentListener(subject, this::checkFieldsAndNotify);
+    DocumentListenerBuilder.attachDocumentListener(toAddress, this::checkFieldsAndNotify);
   }
 
   private void checkFieldsAndNotify() {

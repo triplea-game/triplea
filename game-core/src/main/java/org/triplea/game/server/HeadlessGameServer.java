@@ -27,9 +27,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.game.chat.ChatModel;
+import org.triplea.game.startup.SetupModel;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
@@ -40,7 +41,6 @@ import games.strategy.engine.framework.headless.game.server.ArgValidationResult;
 import games.strategy.engine.framework.headless.game.server.HeadlessGameServerCliParam;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
@@ -309,7 +309,7 @@ public class HeadlessGameServer {
       return "Host not accepting remote requests!";
     }
     if (hashPassword(password, salt).equals(hashedPassword)) {
-      final IChatPanel chat = getServerModel().getChatPanel();
+      final ChatModel chat = getServerModel().getChatModel();
       if (chat == null || chat.getAllText() == null) {
         return "Empty or null chat";
       }
@@ -567,8 +567,8 @@ public class HeadlessGameServer {
    * Get the chat for the game, or null if there is no chat.
    */
   public Chat getChat() {
-    final ISetupPanel model = setupPanelModel.getPanel();
-    return model != null ? model.getChatPanel().getChat() : null;
+    final SetupModel model = setupPanelModel.getPanel();
+    return model != null ? model.getChatModel().getChat() : null;
   }
 
   /**

@@ -74,7 +74,7 @@ public final class GameRunner {
   public static final int MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME = 20;
 
   private static final GameSelectorModel gameSelectorModel = new GameSelectorModel();
-  private static final SetupPanelModel setupPanelModel = new SetupPanelModel(gameSelectorModel);
+  private static SetupPanelModel setupPanelModel;
   private static JFrame mainFrame;
 
   private GameRunner() {}
@@ -93,6 +93,7 @@ public final class GameRunner {
   public static void start() {
     SwingUtilities.invokeLater(() -> {
       final JFrame frame = new JFrame("TripleA");
+      setupPanelModel = new SetupPanelModel(gameSelectorModel, frame);
       mainFrame = newMainFrame(frame);
       setupPanelModel.showSelectType();
       new Thread(GameRunner::showMainFrame).start();
@@ -216,10 +217,10 @@ public final class GameRunner {
     loadGame();
 
     if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")) {
-      setupPanelModel.showServer(mainFrame);
+      setupPanelModel.showServer();
       System.clearProperty(TRIPLEA_SERVER);
     } else if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")) {
-      setupPanelModel.showClient(mainFrame);
+      setupPanelModel.showClient();
       System.clearProperty(TRIPLEA_CLIENT);
     }
   }

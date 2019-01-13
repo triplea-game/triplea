@@ -46,7 +46,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   private final Map<String, Object> originalPropertiesMap = new HashMap<>();
   private final JLabel nameText = new JLabel();
   private final JLabel versionText = new JLabel();
-  private final JLabel fileNameText = new JLabel();
+  private final JLabel saveGameText = new JLabel();
   private final JLabel roundText = new JLabel();
   private final JButton loadSavedGame = JButtonBuilder.builder()
       .title("Open Saved Game")
@@ -88,9 +88,9 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     add(new JLabel("Game Round:"), buildGridCell(0, 4, new Insets(0, 10, 3, 5)));
     add(roundText, buildGridCell(1, 4, new Insets(0, 0, 3, 0)));
 
-    add(new JLabel("File Name:"), buildGridCell(0, 5, new Insets(20, 10, 3, 5)));
+    add(new JLabel("Loaded Savegame:"), buildGridCell(0, 5, new Insets(20, 10, 3, 5)));
 
-    add(fileNameText, buildGridRow(0, 6, new Insets(0, 10, 3, 5)));
+    add(saveGameText, buildGridRow(0, 6, new Insets(0, 10, 3, 5)));
 
     add(loadNewGame, buildGridRow(0, 7, new Insets(25, 10, 10, 10)));
 
@@ -234,7 +234,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
       nameText.setText(model.getGameName());
       versionText.setText(model.getGameVersion());
       roundText.setText(model.getGameRound());
-      fileNameText.setText(model.getFormattedFileNameText());
+      saveGameText.setText(model.getFileName());
 
       final boolean canSelectGameData = canSelectLocalGameData();
       final boolean canChangeHostBotGameData = canChangeHostBotGameData();

@@ -41,7 +41,7 @@ public interface SelectionComponent<T> {
      * @param gameSetting The game setting whose value is to be set.
      * @param value The new setting value or {@code null} to clear the setting value.
      */
-    default <T> void setValue(GameSetting<T> gameSetting, @Nullable T value) {
+    default <T> void setValue(final GameSetting<T> gameSetting, final @Nullable T value) {
       setValue(gameSetting, value, ValueSensitivity.INSENSITIVE);
     }
 

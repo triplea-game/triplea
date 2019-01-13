@@ -122,9 +122,9 @@ public class MetaSetupPanel extends SetupPanel {
   private void setupListeners() {
     startLocal.addActionListener(e -> model.showLocal());
     startPbem.addActionListener(e -> model.showPbem());
-    hostGame.addActionListener(e -> new Thread(() -> model.showServer(MetaSetupPanel.this)).start());
-    connectToHostedGame.addActionListener(e -> new Thread(() -> model.showClient(MetaSetupPanel.this)).start());
-    connectToLobby.addActionListener(e -> model.login(this));
+    hostGame.addActionListener(e -> new Thread(model::showServer).start());
+    connectToHostedGame.addActionListener(e -> new Thread(model::showClient).start());
+    connectToLobby.addActionListener(e -> model.login());
     enginePreferences.addActionListener(e -> ClientSetting.showSettingsWindow());
     ruleBook.addActionListener(e -> ruleBook());
     helpButton.addActionListener(e -> helpPage());
@@ -145,7 +145,7 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   @Override
-  public boolean showCancelButton() {
+  public boolean isCancelButtonVisible() {
     return false;
   }
 

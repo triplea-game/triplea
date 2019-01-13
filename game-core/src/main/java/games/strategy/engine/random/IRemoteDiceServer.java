@@ -13,6 +13,7 @@ public interface IRemoteDiceServer {
   String GAME_NAME = "DICE_SERVER_GAME_NAME";
   String EMAIL_1 = "DICE_SERVER_EMAIL_1";
   String EMAIL_2 = "DICE_SERVER_EMAIL_2";
+
   /**
    * Post a request to the dice server, and return the resulting html page as a string.
    */

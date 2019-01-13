@@ -27,7 +27,8 @@ import lombok.extern.java.Log;
 @Log
 public final class LobbyServerPropertiesFetcher {
   private final Function<String, Optional<File>> fileDownloader;
-  @Nullable private LobbyServerProperties lobbyServerProperties;
+  @Nullable
+  private LobbyServerProperties lobbyServerProperties;
 
 
   LobbyServerPropertiesFetcher(final Function<String, Optional<File>> fileDownloader) {

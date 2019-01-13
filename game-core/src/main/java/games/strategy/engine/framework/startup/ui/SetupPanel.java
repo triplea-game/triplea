@@ -12,15 +12,22 @@ import java.util.Observer;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import games.strategy.engine.chat.IChatPanel;
+import org.triplea.game.chat.ChatModel;
+import org.triplea.game.startup.SetupModel;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.ui.SwingAction;
 
-abstract class SetupPanel extends JPanel implements ISetupPanel {
+/**
+ * Headed Implementation of SetupConfiguration.
+ * This is the base-class for any panel that configures a game.
+ */
+public abstract class SetupPanel extends JPanel implements SetupModel {
   private static final long serialVersionUID = 4001323470187210773L;
   private static final String SET_ALL_DEFAULT_LABEL = "Default";
 
@@ -39,11 +46,10 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
   }
 
   @Override
-  public IChatPanel getChatPanel() {
+  public ChatModel getChatModel() {
     return null;
   }
 
-  @Override
   public List<Action> getUserActions() {
     return new ArrayList<>();
   }
@@ -132,4 +138,8 @@ abstract class SetupPanel extends JPanel implements ISetupPanel {
     panel.validate();
     panel.repaint();
   }
+
+  public abstract JComponent getDrawable();
+
+  public abstract boolean isCancelButtonVisible();
 }

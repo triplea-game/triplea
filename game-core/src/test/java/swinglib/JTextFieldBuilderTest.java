@@ -64,8 +64,8 @@ class JTextFieldBuilderTest {
     JTextFieldBuilder.builder()
         .actionListener(fieldValue -> value.incrementAndGet())
         .build()
-        // and then fire the action!
-        .getActionListeners()[0].actionPerformed(null);
+        .setText("text");
+
     MatcherAssert.assertThat(
         "action expected to have been called and incremented our value from 0 to 1",
         value.get(), Is.is(1));

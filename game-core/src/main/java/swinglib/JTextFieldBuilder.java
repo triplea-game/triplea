@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
 
 import com.google.common.base.Preconditions;
@@ -44,7 +45,7 @@ public class JTextFieldBuilder {
   private Integer maxLength;
   private String componentName;
 
-  private Consumer<String> textEnteredAction;
+  private Consumer<JTextComponent> textEnteredAction;
   private boolean enabled = true;
   private boolean readOnly;
   private Consumer<JTextField> onFocusAction;
@@ -59,8 +60,11 @@ public class JTextFieldBuilder {
     Optional.ofNullable(columns)
         .ifPresent(textField::setColumns);
 
+
     Optional.ofNullable(textEnteredAction)
-        .ifPresent(action -> textField.addActionListener(e -> action.accept(textField.getText())));
+        .ifPresent(
+            action -> DocumentListenerBuilder.attachDocumentListener(textField,
+                () -> textEnteredAction.accept(textField)));
 
     Optional.ofNullable(maxLength)
         .map(JTextFieldLimit::new)
@@ -166,7 +170,7 @@ public class JTextFieldBuilder {
    * @param textEnteredAction Action to fire on 'enter', input value is the current value of the
    *        text field.
    */
-  public JTextFieldBuilder actionListener(final Consumer<String> textEnteredAction) {
+  public JTextFieldBuilder actionListener(final Consumer<JTextComponent> textEnteredAction) {
     Preconditions.checkNotNull(textEnteredAction);
     this.textEnteredAction = textEnteredAction;
     return this;
