@@ -258,4 +258,3 @@ class OrderOfLossesInputPanel extends JPanel {
     return defenderTextField.getText();
   }
 }
-
