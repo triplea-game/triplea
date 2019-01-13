@@ -30,9 +30,9 @@ public final class JTextAreaBuilder {
   private String componentName;
   private int rows = 3;
   private int columns = 15;
-  private boolean readOnly = false;
+  private boolean readOnly;
   private int border = 3;
-  private boolean selectAllOnFocus = false;
+  private boolean selectAllOnFocus;
 
   private JTextAreaBuilder() {}
 
