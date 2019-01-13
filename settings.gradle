@@ -1,4 +1,5 @@
 // TODO: Remove once Spotless 3.17.0 is published to Gradle plugin portal
+// see https://github.com/triplea-game/triplea/pull/4569#discussion_r247326720
 pluginManagement {
     repositories {
         gradlePluginPortal()
