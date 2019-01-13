@@ -111,9 +111,7 @@ public class ServerLauncher extends AbstractLauncher {
       }
       serverModel.allowRemoveConnections();
       ui = parent;
-      if (headless) {
-        HeadlessGameServer.log("Game Status: Launching");
-      }
+      log.info("Game Status: Launching");
       remoteMessenger.registerRemote(serverReady, ClientModel.CLIENT_READY_CHANNEL);
       gameData.doPreGameStartDataModifications(playerListing);
       abortLaunch = testShouldWeAbort();
@@ -149,9 +147,7 @@ public class ServerLauncher extends AbstractLauncher {
           gameLoadingWindow.doneWait();
         }
       }
-      if (headless) {
-        HeadlessGameServer.log("Game Successfully Loaded. " + (abortLaunch ? "Aborting Launch." : "Starting Game."));
-      }
+      log.info("Game Successfully Loaded. " + (abortLaunch ? "Aborting Launch." : "Starting Game."));
       if (abortLaunch) {
         serverReady.countDownAll();
       }
@@ -171,9 +167,7 @@ public class ServerLauncher extends AbstractLauncher {
             if (gameLoadingWindow != null) {
               gameLoadingWindow.doneWait();
             }
-            if (headless) {
-              HeadlessGameServer.log("Starting Game Delegates.");
-            }
+            log.info("Starting Game Delegates.");
             serverGame.startGame();
           } else {
             stopGame();
@@ -230,8 +224,8 @@ public class ServerLauncher extends AbstractLauncher {
         if (headless) {
           // tell headless server to wait for new connections:
           HeadlessGameServer.waitForUsersHeadlessInstance();
-          HeadlessGameServer.log("Game Status: Waiting For Players");
         }
+        log.info("Game Status: Waiting For Players");
       }, "Triplea, start server game").start();
     } finally {
       if (gameLoadingWindow != null) {
@@ -240,9 +234,7 @@ public class ServerLauncher extends AbstractLauncher {
       if (inGameLobbyWatcher != null) {
         inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, serverGame);
       }
-      if (headless) {
-        HeadlessGameServer.log("Game Status: In Progress");
-      }
+      log.info("Game Status: In Progress");
     }
   }
 
