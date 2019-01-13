@@ -164,9 +164,6 @@ public class ServerLauncher extends AbstractLauncher {
             if (useSecureRandomSource) {
               warmUpCryptoRandomSource();
             }
-            if (gameLoadingWindow != null) {
-              gameLoadingWindow.doneWait();
-            }
             log.info("Starting Game Delegates.");
             serverGame.startGame();
           } else {

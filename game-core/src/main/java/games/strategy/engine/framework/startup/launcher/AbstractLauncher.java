@@ -35,7 +35,7 @@ public abstract class AbstractLauncher implements ILauncher {
 
   @Override
   public void launch(final Component parent) {
-    if (!headless && !SwingUtilities.isEventDispatchThread()) {
+    if (headless == SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
     if (!headless && gameLoadingWindow != null) {
