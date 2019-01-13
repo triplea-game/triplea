@@ -1,22 +1,4 @@
-// TODO: Remove once Spotless 3.17.0 is published to Gradle plugin portal
-// see https://github.com/triplea-game/triplea/pull/4569#discussion_r247326720
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        jcenter()
-    }
-
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == 'com.diffplug.gradle.spotless') {
-                useModule "com.diffplug.spotless:spotless-plugin-gradle:${requested.version}"
-            }
-        }
-    }
-}
-
 rootProject.name='triplea'
-
 include 'game-core'
 include 'game-headed'
 include 'game-headless'
