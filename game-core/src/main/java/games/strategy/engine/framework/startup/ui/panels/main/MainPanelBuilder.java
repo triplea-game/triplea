@@ -2,11 +2,14 @@ package games.strategy.engine.framework.startup.ui.panels.main;
 
 import java.util.Optional;
 
+import javax.swing.JOptionPane;
+
 import org.triplea.game.startup.SetupModel;
 
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
+import games.strategy.engine.framework.ui.background.WaitWindow;
 
 /**
  * Can be used to create a {@link MainPanel} UI component class, which is a UI holder. The final contents are added to
@@ -28,7 +31,20 @@ public class MainPanelBuilder {
         gameSelectorPanel,
         uiPanel -> {
           setupPanelModel.getPanel().getLauncher()
-              .ifPresent(launcher -> launcher.launch(uiPanel));
+              .ifPresent(launcher -> {
+                final WaitWindow gameLoadingWindow = new WaitWindow();
+                gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(uiPanel));
+                gameLoadingWindow.setVisible(true);
+                gameLoadingWindow.showWait();
+                JOptionPane.getFrameForComponent(uiPanel).setVisible(false);
+                new Thread(() -> {
+                  try {
+                    launcher.launch(uiPanel);
+                  } finally {
+                    gameLoadingWindow.doneWait();
+                  }
+                }).start();
+              });
           setupPanelModel.getPanel().postStartGame();
         },
         () -> Optional.ofNullable(setupPanelModel.getPanel())
