@@ -7,8 +7,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -38,32 +36,6 @@ public final class JTextAreaBuilder {
 
   public static JTextAreaBuilder builder() {
     return new JTextAreaBuilder();
-  }
-
-  /**
-   * Attaches a listener that is fired whenever text is typed in the textArea.
-   * Note, the listener will be notified if text is either typed or pasted.
-   *
-   * @param textArea The component to which we attach a listener.
-   * @param listener The listener that should be invoked on key events.
-   */
-  public static void addTextListener(final JTextArea textArea, final Runnable listener) {
-    textArea.getDocument().addDocumentListener(new DocumentListener() {
-      @Override
-      public void insertUpdate(final DocumentEvent e) {
-        listener.run();
-      }
-
-      @Override
-      public void removeUpdate(final DocumentEvent e) {
-        listener.run();
-      }
-
-      @Override
-      public void changedUpdate(final DocumentEvent e) {
-        listener.run();
-      }
-    });
   }
 
   /**
