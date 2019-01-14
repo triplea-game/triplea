@@ -8,11 +8,13 @@ import java.util.logging.LogRecord;
 import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.text.JTextComponent;
 
 import games.strategy.ui.SwingComponents;
+import lombok.Getter;
 import swinglib.BorderBuilder;
 import swinglib.DocumentListenerBuilder;
 import swinglib.JButtonBuilder;
@@ -24,13 +26,18 @@ import swinglib.JTextAreaBuilder;
 /**
  * This is primarily a layout class that shows a form for entering bug report information, and has buttons to
  * preview, cancel, or upload the bug report.
+ * <p>
+ * Bug report submission has two parts: 1) user text 2) error data. An error message or console willevent will add teh
+ * data from either an error message or console.
+ * The error data is supplied automatically on error message or when shown from console
+ * </p>
  */
 public class ErrorReportWindow {
 
   private static final int MIN_SUBMISSION_LENGTH = 10;
 
   public static void showWindow() {
-    showWindow(null);
+    showWindow();
   }
 
   private static void showWindow(final JFrame parent) {
@@ -50,62 +57,8 @@ public class ErrorReportWindow {
     buildWindow(parent, model);
   }
 
-  private static void updateButtonEnabledStatus(
-      final Supplier<String> description,
-      final Supplier<String> attached,
-      final JButton preview,
-      final JButton submit) {
-
-    final boolean enableSubmit = (description.get().length() >= MIN_SUBMISSION_LENGTH)
-        || (attached.get().length() >= MIN_SUBMISSION_LENGTH);
-    submit.setEnabled(enableSubmit);
-    preview.setEnabled(enableSubmit);
-  }
-
-
-
   private static void buildWindow(@Nullable final Component parent, final ErrorReportWindowModel model) {
-    final JTextArea description = JTextAreaBuilder.builder()
-        .columns(10)
-        .rows(2)
-        .build();
-
-    final Optional<JTextArea> additionalInfo = model.getAttachedData().map(
-        attached -> JTextAreaBuilder.builder()
-            .rows(5)
-            .text(attached)
-            .build());
-
-    final Supplier<String> additionalInfoReader = () -> additionalInfo.map(JTextComponent::getText).orElse("");
-
-
-    final JButton submitButton = JButtonBuilder.builder()
-        .title("Upload")
-        .toolTip("Upload error report to TripleA server")
-        .actionListener(button -> model.submitAction(button, description::getText, additionalInfoReader))
-        .biggerFont()
-        .build();
-
-    final JButton previewButton = JButtonBuilder.builder()
-        .title("Preview")
-        .toolTip("Preview the full error report that will be uploaded")
-        .actionListener(() -> model.previewAction(description::getText, additionalInfoReader))
-        .build();
-
-    updateButtonEnabledStatus(
-        description::getText,
-        additionalInfoReader,
-        submitButton,
-        previewButton);
-
-    final Runnable listenerAction = () -> updateButtonEnabledStatus(
-        description::getText,
-        () -> additionalInfo.map(JTextComponent::getText).orElse(""),
-        submitButton,
-        previewButton);
-
-    DocumentListenerBuilder.attachDocumentListener(description, listenerAction);
-    additionalInfo.ifPresent(area -> DocumentListenerBuilder.attachDocumentListener(area, listenerAction));
+    final Components components = new Components(model);
 
     final JFrame frame = JFrameBuilder.builder()
         .title("Report a Problem to TripleA Support")
@@ -114,47 +67,152 @@ public class ErrorReportWindow {
         .minSize(300, 350)
         .build();
 
-    frame.add(JPanelBuilder.builder()
-        .borderEmpty(10)
-        .addCenter(JPanelBuilder.builder()
-            .addNorth(
-                JLabelBuilder.builder()
-                    .html("Please describe the problem:")
-                    .tooltip("This information will be sent to the TripleA development team. Please "
-                        + "describe as exactly as possible where the problem is and the events leading "
-                        + "up to it.")
-                    .border(5)
+    final Panels panelBuilder = new Panels(frame, components);
+
+    frame.add(
+        JPanelBuilder.builder()
+            .borderEmpty(10)
+            .addCenter(
+                JPanelBuilder.builder()
+                    .addNorth(components.getDescriptionFieldLabel())
+                    .addCenter(components.getDescriptionField())
+                    .addSouth(panelBuilder.getAdditionalInfoFieldPanel().orElseGet(JPanel::new))
                     .build())
-            .addCenter(description)
             .addSouth(
-                additionalInfo.map(
-                    textArea -> JPanelBuilder.builder()
-                        .addNorth(JLabelBuilder.builder()
-                            .border(BorderBuilder.builder()
-                                .top(30)
-                                .bottom(5)
-                                .build())
-                            .text("The following will be included automatically:")
-                            .build())
-                        .add(SwingComponents.newJScrollPane(textArea))
-                        .build())
-                    .orElseGet(JPanel::new))
-            .build())
-        .addSouth(JPanelBuilder.builder()
-            .horizontalBoxLayout()
-            .border(BorderBuilder.builder()
-                .top(30)
-                .bottom(10)
-                .build())
-            .addHorizontalStrut(10)
-            .add(submitButton)
-            .addHorizontalStrut(30)
-            .add(previewButton)
-            .addHorizontalStrut(60)
-            .add(JButtonBuilder.builder().title("Cancel").actionListener(frame::dispose).build())
-            .addHorizontalStrut(30)
-            .build())
-        .build());
+                panelBuilder.getButtonsPanel())
+            .build());
     frame.setVisible(true);
+  }
+
+
+  /**
+   * Factory class for individual UI components.
+   */
+  @Getter
+  private static final class Components {
+    private final JLabel descriptionFieldLabel;
+
+    private final JTextArea descriptionField;
+    @Nullable
+    private final JTextArea additionalInfoField;
+
+    private final JButton submitButton;
+    private final JButton previewButton;
+
+
+    private Components(final ErrorReportWindowModel model) {
+
+      descriptionFieldLabel = JLabelBuilder.builder()
+          .html("Please describe the problem:")
+          .tooltip("This information will be sent to the TripleA development team. Please "
+              + "describe as exactly as possible where the problem is and the events leading "
+              + "up to it.")
+          .border(5)
+          .build();
+
+      descriptionField = JTextAreaBuilder.builder()
+          .columns(10)
+          .rows(2)
+          .build();
+
+      final Optional<JTextArea> additionalInfo = model.getAttachedData().map(
+          attached -> JTextAreaBuilder.builder()
+              .rows(5)
+              .text(attached)
+              .build());
+      additionalInfoField = additionalInfo.orElse(null);
+
+      final Supplier<String> additionalInfoReader = () -> additionalInfo.map(JTextComponent::getText).orElse("");
+
+      submitButton = JButtonBuilder.builder()
+          .title("Upload")
+          .toolTip("Upload error report to TripleA server")
+          .actionListener(button -> model.submitAction(button, descriptionField::getText, additionalInfoReader))
+          .biggerFont()
+          .build();
+
+      previewButton = JButtonBuilder.builder()
+          .title("Preview")
+          .toolTip("Preview the full error report that will be uploaded")
+          .actionListener(() -> model.previewAction(descriptionField::getText, additionalInfoReader))
+          .build();
+
+      updateButtonEnabledStatus(
+          descriptionField::getText,
+          additionalInfoReader,
+          submitButton,
+          previewButton);
+
+      final Runnable listenerAction = () -> updateButtonEnabledStatus(
+          descriptionField::getText,
+          () -> additionalInfo.map(JTextComponent::getText).orElse(""),
+          submitButton,
+          previewButton);
+
+      DocumentListenerBuilder.attachDocumentListener(descriptionField, listenerAction);
+      additionalInfo.ifPresent(area -> DocumentListenerBuilder.attachDocumentListener(area, listenerAction));
+    }
+
+    private static void updateButtonEnabledStatus(
+        final Supplier<String> description,
+        final Supplier<String> attached,
+        final JButton preview,
+        final JButton submit) {
+
+      final boolean enableSubmit = (description.get().length() >= MIN_SUBMISSION_LENGTH)
+          || (attached.get().length() >= MIN_SUBMISSION_LENGTH);
+      submit.setEnabled(enableSubmit);
+      preview.setEnabled(enableSubmit);
+    }
+
+    Optional<JTextArea> getAdditionalInfoField() {
+      return Optional.ofNullable(additionalInfoField);
+    }
+  }
+
+
+  /**
+   * Factory class to create 'complex' panels that represent a logical UI element.
+   */
+  @Getter
+  private static final class Panels {
+    @Nullable
+    private final JPanel additionalInfoFieldPanel;
+    private final JPanel buttonsPanel;
+
+    private Panels(final JFrame frame, final Components components) {
+      additionalInfoFieldPanel = components.getAdditionalInfoField().map(
+          textArea -> JPanelBuilder.builder()
+              .addNorth(JLabelBuilder.builder()
+                  .border(BorderBuilder.builder()
+                      .top(30)
+                      .bottom(5)
+                      .build())
+                  .text("The following will be included automatically:")
+                  .build())
+              .add(SwingComponents.newJScrollPane(textArea))
+              .build())
+          .orElse(null);
+
+      buttonsPanel = JPanelBuilder.builder()
+          .horizontalBoxLayout()
+          .border(
+              BorderBuilder.builder()
+                  .top(30)
+                  .bottom(10)
+                  .build())
+          .addHorizontalStrut(10)
+          .add(components.getSubmitButton())
+          .addHorizontalStrut(30)
+          .add(components.getPreviewButton())
+          .addHorizontalStrut(60)
+          .add(JButtonBuilder.builder().title("Cancel").actionListener(frame::dispose).build())
+          .addHorizontalStrut(30)
+          .build();
+    }
+
+    Optional<JPanel> getAdditionalInfoFieldPanel() {
+      return Optional.ofNullable(additionalInfoFieldPanel);
+    }
   }
 }
