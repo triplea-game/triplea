@@ -71,18 +71,14 @@ class ErrorReportWindowModel {
 
   Runnable submitAction(
       final Component button,
-      final Supplier<String> userInputReader, final Supplier<String> additionalInformationReader) {
+      final Supplier<String> userInputReader,
+      final Supplier<String> additionalInformationReader) {
 
-    return newShowSendConfirmationDialogAction(button,
-        () -> ErrorReportConfiguration.newReportHandler().accept(parent, UserErrorReport.builder()
+    final Runnable confirmAction = () -> ErrorReportConfiguration.newReportHandler().accept(parent,
+        UserErrorReport.builder()
             .description(userInputReader.get())
             .errorData(additionalInformationReader.get())
-            .build()));
-  }
-
-  private static Runnable newShowSendConfirmationDialogAction(
-      final Component parent,
-      final Runnable confirmAction) {
+            .build());
 
     return () -> DialogBuilder.builder()
         .parent(parent)
@@ -91,5 +87,4 @@ class ErrorReportWindowModel {
         .confirmAction(confirmAction)
         .showDialog();
   }
-
 }
