@@ -7,6 +7,7 @@ import java.awt.GraphicsEnvironment;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -29,10 +30,12 @@ import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
 import javafx.application.Application;
+import lombok.extern.java.Log;
 
 /**
  * Runs a headed game client.
  */
+@Log
 public final class HeadedGameRunner {
   private HeadedGameRunner() {}
 
@@ -44,6 +47,8 @@ public final class HeadedGameRunner {
     checkState(!GraphicsEnvironment.isHeadless(),
         "UI client launcher invoked from headless environment. This is currently prohibited by design to "
             + "avoid UI rendering errors in the headless environment.");
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
+
     ClientSetting.initialize();
     if (!ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
       Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
