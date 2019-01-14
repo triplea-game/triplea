@@ -54,7 +54,7 @@ import lombok.extern.java.Log;
 public class HeadlessGameServer {
   public static final String BOT_GAME_HOST_COMMENT = "automated_host";
   public static final String BOT_GAME_HOST_NAME_PREFIX = "Bot";
-  private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = (int) TimeUnit.HOURS.toSeconds(12);
+  private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = (int) TimeUnit.DAYS.toSeconds(2);
   private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 
   private final AvailableGames availableGames = new AvailableGames();
