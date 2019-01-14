@@ -37,7 +37,7 @@ public class ErrorReportWindow {
   private static final int MIN_SUBMISSION_LENGTH = 10;
 
   public static void showWindow() {
-    showWindow();
+    showWindow(null);
   }
 
   private static void showWindow(final JFrame parent) {
