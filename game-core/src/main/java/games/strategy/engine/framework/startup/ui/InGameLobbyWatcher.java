@@ -78,8 +78,6 @@ public class InGameLobbyWatcher {
   public interface LobbyWatcherHandler {
     void reportError(final String message);
 
-    String getSupportEmail();
-
     boolean isPlayer();
   }
 
@@ -208,7 +206,6 @@ public class InGameLobbyWatcher {
         .passworded(passworded)
         .engineVersion(ClientContext.engineVersion().toString())
         .gameVersion("0")
-        .botSupportEmail(handler.getSupportEmail())
         .build();
     final ILobbyGameController controller =
         (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
@@ -272,7 +269,7 @@ public class InGameLobbyWatcher {
     }
   }
 
-  protected void updatePlayerCount() {
+  private void updatePlayerCount() {
     synchronized (mutex) {
       gameDescription.setPlayerCount(serverMessenger.getNodes().size() - (isHandlerPlayer ? 0 : 1));
       postUpdate();

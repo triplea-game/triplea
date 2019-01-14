@@ -29,7 +29,6 @@ import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
@@ -38,7 +37,6 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
@@ -54,6 +52,8 @@ import lombok.extern.java.Log;
  */
 @Log
 public class HeadlessGameServer {
+  public static final String BOT_GAME_HOST_COMMENT = "automated_host";
+  public static final String BOT_GAME_HOST_NAME_PREFIX = "Bot";
   private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = (int) TimeUnit.HOURS.toSeconds(12);
   private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
 
@@ -64,6 +64,7 @@ public class HeadlessGameServer {
   private final HeadlessServerSetupPanelModel setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel);
   private ServerGame game = null;
   private boolean shutDown = false;
+
 
   private final List<Runnable> shutdownListeners = Arrays.asList(
       lobbyWatcherResetupThread::shutdown,
@@ -219,7 +220,7 @@ public class HeadlessGameServer {
     }
   }
 
-  public String getSalt() {
+  public static String getSalt() {
     return BCrypt.gensalt();
   }
 
@@ -235,7 +236,7 @@ public class HeadlessGameServer {
    *
    * @return {@code null} if the operation succeeded; otherwise an error message if the operation failed.
    */
-  public String remoteShutdown(final String hashedPassword, final String salt) {
+  public static String remoteShutdown(final String hashedPassword, final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
@@ -570,7 +571,7 @@ public class HeadlessGameServer {
    */
   public static void start(final String[] args) {
     ClientSetting.initialize();
-    System.setProperty(LOBBY_GAME_COMMENTS, "automated_host");
+    System.setProperty(LOBBY_GAME_COMMENTS, BOT_GAME_HOST_COMMENT);
     System.setProperty(GameRunner.TRIPLEA_HEADLESS, "true");
     System.setProperty(TRIPLEA_SERVER, "true");
 
@@ -606,8 +607,9 @@ public class HeadlessGameServer {
     }
 
     final String playerName = System.getProperty(TRIPLEA_NAME, "");
-    if ((playerName.length() < 7) || !playerName.startsWith("Bot")) {
-      log.warning("Invalid argument: " + TRIPLEA_NAME + " must at least 7 characters long");
+    if ((playerName.length() < 7) || !playerName.startsWith(BOT_GAME_HOST_NAME_PREFIX)) {
+      log.warning("Invalid argument: " + TRIPLEA_NAME + " must at least 7 characters long "
+          + "and start with " + BOT_GAME_HOST_NAME_PREFIX);
       printUsage = true;
     }
 

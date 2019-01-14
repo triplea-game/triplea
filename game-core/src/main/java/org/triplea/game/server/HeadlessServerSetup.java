@@ -1,7 +1,5 @@
 package org.triplea.game.server;
 
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_EMAIL;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
@@ -45,11 +43,6 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
       public void reportError(final String message) {
         log.severe(message);
         ExitStatus.FAILURE.exit();
-      }
-
-      @Override
-      public String getSupportEmail() {
-        return System.getProperty(LOBBY_GAME_SUPPORT_EMAIL, "");
       }
 
       @Override

@@ -3,46 +3,49 @@ package org.triplea.lobby.common;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.Collection;
 
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.triplea.game.server.HeadlessGameServer;
 
 import games.strategy.engine.lobby.server.GameDescription;
 
 final class GameDescriptionTest {
-  @Nested
-  final class GetBotSupportEmailTest {
-    @Test
-    void shouldReturnBotSupportEmailWhenBotSupportEmailIsNotEmpty() {
-      final String botSupportEmail = "bot@me.com";
-      final GameDescription gameDescription = GameDescription.builder().botSupportEmail(botSupportEmail).build();
+  @Test
+  void isBotShouldReturnTrueWhenCommentAndNamePrefixMatch() {
+    final GameDescription gameDescription = GameDescription.builder()
+        .comment(HeadlessGameServer.BOT_GAME_HOST_COMMENT)
+        .hostName(HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
+        .build();
 
-      assertThat(gameDescription.getBotSupportEmail(), is(Optional.of(botSupportEmail)));
-    }
-
-    @Test
-    void shouldReturnEmptyWhenBotSupportEmailIsEmpty() {
-      final GameDescription gameDescription = GameDescription.builder().botSupportEmail("").build();
-
-      assertThat(gameDescription.getBotSupportEmail(), is(Optional.empty()));
-    }
+    assertThat(gameDescription.isBot(), is(true));
   }
 
-  @Nested
-  final class IsBotTest {
-    @Test
-    void shouldReturnTrueWhenBotSupportEmailIsNotEmpty() {
-      final GameDescription gameDescription = GameDescription.builder().botSupportEmail("bot@me.com").build();
+  @ParameterizedTest
+  @MethodSource("notBotDescriptions")
+  void isBotShouldReturnFalseWhen(final GameDescription shouldNotBeBot) {
+    assertThat(shouldNotBeBot.toString(), shouldNotBeBot.isBot(), is(false));
+  }
 
-      assertThat(gameDescription.isBot(), is(true));
-    }
-
-    @Test
-    void shouldReturnFalseWhenBotSupportEmailIsEmpty() {
-      final GameDescription gameDescription = GameDescription.builder().botSupportEmail("").build();
-
-      assertThat(gameDescription.isBot(), is(false));
-    }
+  private static Collection<GameDescription> notBotDescriptions() {
+    return Arrays.asList(
+        // host name must have correct prefix
+        GameDescription.builder()
+            .comment(HeadlessGameServer.BOT_GAME_HOST_COMMENT)
+            .hostName("")
+            .build(),
+        // host name must have correct prefix
+        GameDescription.builder()
+            .comment(HeadlessGameServer.BOT_GAME_HOST_COMMENT)
+            .hostName("mangling-the-prefix-" + HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
+            .build(),
+        // must have the right comment
+        GameDescription.builder()
+            .comment(HeadlessGameServer.BOT_GAME_HOST_COMMENT + HeadlessGameServer.BOT_GAME_HOST_COMMENT)
+            .hostName("mangling-the-prefix-" + HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
+            .build());
   }
 }
