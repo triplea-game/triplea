@@ -103,7 +103,6 @@ java \
     -Xmx256M \
     -Djava.awt.headless=true \
     -jar bin/triplea-game-headless-*-all.jar \
-    -Ptriplea.lobby.game.hostedBy="$BOT_NAME" \
     -Ptriplea.lobby.game.supportPassword="$LOBBY_SUPPORT_PASSWORD" \
     -Ptriplea.lobby.host="$LOBBY_HOST" \
     -Ptriplea.lobby.port="$LOBBY_PORT" \
