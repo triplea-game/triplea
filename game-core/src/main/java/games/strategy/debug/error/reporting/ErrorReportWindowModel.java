@@ -12,8 +12,7 @@ import javax.swing.JFrame;
 import swinglib.DialogBuilder;
 
 /**
- * This is primarily a layout class that shows a form for entering bug report information, and has buttons to
- * preview, cancel, or upload the bug report.
+ * UI model class, manages the state and interactions between {@code ErrorReportWindow} and the rest of the system.
  */
 class ErrorReportWindowModel {
 
@@ -51,35 +50,33 @@ class ErrorReportWindowModel {
   }
 
 
-  public Optional<String> getAttachedData() {
+  Optional<String> getAttachedData() {
     return Optional.ofNullable(attachedData);
   }
 
 
-  public void previewAction(final Supplier<String> userInputReader,
+  void previewAction(final Supplier<String> userInputReader,
       final Supplier<String> additionalInformationReader) {
 
     PreviewWindow.build(
         parent,
         UserErrorReport.builder()
             .description(userInputReader.get())
-            // TODO: enable this once data model is updated.
-            // .errorData(additionalInformationReader.get())
+            .errorData(additionalInformationReader.get())
             .build()
             .toErrorReport()
             .toString())
         .setVisible(true);
   }
 
-  public Runnable submitAction(
+  Runnable submitAction(
       final Component button,
       final Supplier<String> userInputReader, final Supplier<String> additionalInformationReader) {
 
     return newShowSendConfirmationDialogAction(button,
         () -> ErrorReportConfiguration.newReportHandler().accept(parent, UserErrorReport.builder()
             .description(userInputReader.get())
-            // TODO: enable this once data model is updated.
-            // .errorData(additionalInformationReader.get())
+            .errorData(additionalInformationReader.get())
             .build()));
   }
 
