@@ -1,0 +1,17 @@
+/*
+ * Returns a list containing the contents of the Eclipse import order configuration file in a format appropriate for
+ * Spotless.
+ *
+ * Each non-empty token will have a period appended in order to ensure Spotless groups the imports identically to
+ * Eclipse. Without this period, Spotless simply performs a substring match at the beginning of each import, which may
+ * result in unexpected groupings. For example, without the trailing period, the "java" and "javafx" packages will
+ * appear in the same group, but with the trailing period, "javafx" will appear in the uncategorized group.
+ */
+ext.getEclipseImportOrder = {
+    def props = new Properties()
+    def importOrderFile = rootProject.file('.eclipse/format/triplea.importorder')
+    importOrderFile.withInputStream { props.load(it) }
+    return props
+            .sort()
+            .collect { _, value -> value + (value ? '.' : '') }
+}

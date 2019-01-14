@@ -138,4 +138,3 @@ public class DummyDelegateBridge implements IDelegateBridge {
     this.battle = battle;
   }
 }
-
