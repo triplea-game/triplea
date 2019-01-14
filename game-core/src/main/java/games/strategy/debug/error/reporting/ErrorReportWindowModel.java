@@ -69,6 +69,10 @@ class ErrorReportWindowModel {
         .setVisible(true);
   }
 
+  /**
+   * On submit we'll ask the user for confirmation if they'd like to send the error erport. If yes,
+   * then the error report will be uploaded.
+   */
   Runnable submitAction(
       final Component button,
       final Supplier<String> userInputReader,
