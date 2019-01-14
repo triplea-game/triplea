@@ -123,8 +123,8 @@ public class RocketsFireHelper implements Serializable {
   }
 
   /**
-   *  Find Rocket Targets and load up fire rockets for later execution if necessary.
-   *  Directly fired with Sequentially Targeted rockets.
+   * Find Rocket Targets and load up fire rockets for later execution if necessary.
+   * Directly fired with Sequentially Targeted rockets.
    */
   private void findRocketTargetsAndFireIfNeeded(final IDelegateBridge bridge, final boolean fireRocketsImmediately) {
     final GameData data = bridge.getData();
@@ -202,8 +202,8 @@ public class RocketsFireHelper implements Serializable {
   }
 
   /**
-  *  Fire rockets which have been previously targetted (if any), or for Sequentially Targeted rockets target them too.
-  */
+   * Fire rockets which have been previously targetted (if any), or for Sequentially Targeted rockets target them too.
+   */
   public void fireRockets(final IDelegateBridge bridge) {
     if (needToFindRocketTargets) {
       findRocketTargetsAndFireIfNeeded(bridge, true);

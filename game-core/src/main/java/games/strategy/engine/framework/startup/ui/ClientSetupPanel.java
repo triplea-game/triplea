@@ -22,7 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.chat.IChatPanel;
+import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.ClientModel;
@@ -236,7 +236,7 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
-  public IChatPanel getChatPanel() {
+  public ChatPanel getChatModel() {
     return clientModel.getChatPanel();
   }
 
@@ -271,7 +271,7 @@ public class ClientSetupPanel extends SetupPanel {
   }
 
   @Override
-  public boolean showCancelButton() {
+  public boolean isCancelButtonVisible() {
     return true;
   }
 

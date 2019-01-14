@@ -8,6 +8,8 @@ import java.util.Optional;
 
 import javax.swing.JComponent;
 
+import org.triplea.game.startup.SetupModel;
+
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LauncherFactory;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -30,7 +32,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   }
 
   @Override
-  public boolean showCancelButton() {
+  public boolean isCancelButtonVisible() {
     return true;
   }
 
@@ -46,7 +48,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public void postStartGame() {
-    ISetupPanel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
+    SetupModel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
   }
 
   @Override

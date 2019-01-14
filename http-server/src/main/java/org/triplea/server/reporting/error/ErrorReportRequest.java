@@ -13,6 +13,8 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode
 public class ErrorReportRequest {
-  @Nonnull private final ErrorReport errorReport;
-  @Nonnull private final String clientIp;
+  @Nonnull
+  private final ErrorReport errorReport;
+  @Nonnull
+  private final String clientIp;
 }

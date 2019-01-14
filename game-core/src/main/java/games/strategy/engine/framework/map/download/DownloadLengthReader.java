@@ -35,7 +35,9 @@ final class DownloadLengthReader {
   /**
    * Gets the download length for the resource at the specified URI.
    *
-   * <p>This method is thread safe.
+   * <p>
+   * This method is thread safe.
+   * </p>
    *
    * @param uri The resource URI; must not be {@code null}.
    * @return The download length (in bytes) or empty if unknown; never {@code null}.

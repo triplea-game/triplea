@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.mc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.reset;
@@ -10,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Observer;
 
 import org.junit.jupiter.api.AfterEach;
@@ -29,7 +29,7 @@ import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.util.Version;
 
 @ExtendWith(MockitoExtension.class)
-public class GameSelectorModelTest extends AbstractClientSettingTestCase {
+class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
   private static void assertHasEmptyData(final GameSelectorModel objectToCheck) {
     assertThat(objectToCheck.getGameData(), nullValue());
@@ -71,19 +71,19 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
   private ClientModel mockClientModel;
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     testObj = new GameSelectorModel();
     assertHasEmptyData(testObj);
     testObj.addObserver(mockObserver);
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     testObj.deleteObservers();
   }
 
   @Test
-  public void testSetGameData() {
+  void testSetGameData() {
     assertHasEmptyData(testObj);
     this.testObjectSetMockGameData();
   }
@@ -109,7 +109,7 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testResetGameDataToNull() {
+  void testResetGameDataToNull() {
     assertHasEmptyData(testObj);
     this.testObjectSetMockGameData();
 
@@ -118,12 +118,12 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testIsSaveGame() {
-    testObj.load(null, "");
-    assertThat(testObj.isSavedGame(), is(true));
-
-    testObj.load(null, ".xml");
+  void testIsSaveGame() {
+    testObj.load(null, null);
     assertThat(testObj.isSavedGame(), is(false));
+
+    testObj.load(null, "someWeirdString");
+    assertThat(testObj.isSavedGame(), is(true));
 
     testObj.load(null, GameDataFileUtils.addExtension("file"));
     assertThat(testObj.isSavedGame(), is(true));
@@ -131,7 +131,7 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
 
   @Test
-  public void testCanSelect() {
+  void testCanSelect() {
     assertThat(testObj.canSelect(), is(true));
     testObj.setCanSelect(false);
     assertThat(testObj.canSelect(), is(false));
@@ -140,7 +140,7 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testClearDataButKeepGameInfo() {
+  void testClearDataButKeepGameInfo() {
     this.testObjectSetMockGameData();
 
     final String newGameName = " 123";
@@ -156,27 +156,32 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testLoadFromNewGameChooserEntry() {
-    final String fileName = "testname";
-    when(mockEntry.getLocation()).thenReturn(fileName);
-
+  void testLoadFromNewGameChooserEntry() throws Exception {
     when(mockEntry.getGameData()).thenReturn(mockGameData);
     prepareMockGameDataExpectations();
-    try {
-      when(mockEntry.getUri()).thenReturn(new URI("abc"));
-    } catch (final URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
+    when(mockEntry.getUri()).thenReturn(new URI("abc"));
     testObj.load(mockEntry);
-    assertThat(testObj.getFileName(), is(fileName));
+    assertThat(testObj.getFileName(), is("-"));
+    verify(mockEntry, times(0)).getLocation();
 
     assertThat(testObj.getGameData(), sameInstance(mockGameData));
     assertHasFakeTestData(testObj);
   }
 
+  @Test
+  void saveGameNameGetsResetWhenLoadingOtherMap() throws Exception {
+    final String testFileName = "someFileName";
+    testObj.load(null, testFileName);
+    assertThat(testObj.getFileName(), is(testFileName));
+
+    when(mockEntry.getUri()).thenReturn(new URI("abc"));
+    testObj.load(mockEntry);
+    assertThat(testObj.getFileName(), is(not(testFileName)));
+  }
+
 
   @Test
-  public void testLoadFromGameDataFileNamePair() {
+  void testLoadFromGameDataFileNamePair() {
     assertHasEmptyData(testObj);
 
     prepareMockGameDataExpectations();
@@ -187,7 +192,7 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
 
   @Test
-  public void testGetGameData() {
+  void testGetGameData() {
     assertThat(testObj.getGameData(), nullValue());
     prepareMockGameDataExpectations();
     testObj.setGameData(mockGameData);
@@ -195,7 +200,7 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testSetAndGetIsHostHeadlessBot() {
+  void testSetAndGetIsHostHeadlessBot() {
     assertThat(testObj.isHostHeadlessBot(), is(false));
     testObj.setIsHostHeadlessBot(true);
     assertThat(testObj.isHostHeadlessBot(), is(true));
@@ -205,7 +210,7 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
 
   @Test
-  public void testSetAndGetClientModelForHostBots() {
+  void testSetAndGetClientModelForHostBots() {
     assertThat(testObj.getClientModelForHostBots(), nullValue());
     testObj.setClientModelForHostBots(mockClientModel);
     assertThat(testObj.getClientModelForHostBots(), sameInstance(mockClientModel));
@@ -214,7 +219,7 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testGetFileName() {
+  void testGetFileName() {
     assertThat(testObj.getFileName(), is("-"));
     prepareMockGameDataExpectations();
     testObj.load(mockGameData, fakeFileName);
@@ -224,19 +229,19 @@ public class GameSelectorModelTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testGetGameName() {
+  void testGetGameName() {
     this.testObjectSetMockGameData();
     assertThat(testObj.getGameName(), is(fakeGameName));
   }
 
   @Test
-  public void testGetGameRound() {
+  void testGetGameRound() {
     this.testObjectSetMockGameData();
     assertThat(testObj.getGameRound(), is(fakeGameRound));
   }
 
   @Test
-  public void testGetGameVersion() {
+  void testGetGameVersion() {
     this.testObjectSetMockGameData();
     assertThat(testObj.getGameVersion(), is(fakeGameVersion));
   }

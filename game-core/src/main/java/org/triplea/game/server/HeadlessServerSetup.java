@@ -8,15 +8,13 @@ import java.util.Observer;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.Action;
-import javax.swing.JComponent;
+import org.triplea.game.chat.ChatModel;
+import org.triplea.game.startup.SetupModel;
 
-import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.startup.ui.ISetupPanel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.util.ExitStatus;
@@ -27,7 +25,7 @@ import lombok.extern.java.Log;
  * Server setup model.
  */
 @Log
-class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
+class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
   private final List<Observer> listeners = new CopyOnWriteArrayList<>();
   private final ServerModel model;
   private final GameSelectorModel gameSelectorModel;
@@ -109,8 +107,8 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   }
 
   @Override
-  public IChatPanel getChatPanel() {
-    return model.getChatPanel();
+  public ChatModel getChatModel() {
+    return model.getChatModel();
   }
 
   ServerModel getModel() {
@@ -127,11 +125,6 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
   }
 
   @Override
-  public List<Action> getUserActions() {
-    return null;
-  }
-
-  @Override
   public void addObserver(final Observer observer) {
     listeners.add(observer);
   }
@@ -145,17 +138,6 @@ class HeadlessServerSetup implements IRemoteModelListener, ISetupPanel {
 
   @Override
   public void postStartGame() {
-    ISetupPanel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
-  }
-
-  @Override
-  public JComponent getDrawable() {
-    throw new UnsupportedOperationException("HeadlessServerSetup should not use UI components. "
-        + "Bot setup code should not execute this code path.");
-  }
-
-  @Override
-  public boolean showCancelButton() {
-    return true;
+    SetupModel.clearPbfPbemInformation(gameSelectorModel.getGameData().getProperties());
   }
 }

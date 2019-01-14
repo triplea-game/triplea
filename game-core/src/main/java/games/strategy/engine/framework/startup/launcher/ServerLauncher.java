@@ -61,7 +61,7 @@ public class ServerLauncher extends AbstractLauncher {
   private volatile boolean isLaunching = true;
   private volatile boolean abortLaunch = false;
   private volatile boolean gameStopped = false;
-  // a list of observers that tried to join the game during starup
+  // a list of observers that tried to join the game during startup
   // we need to track these, because when we lose connections to them we can ignore the connection lost
   private final List<INode> observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<>());
   private InGameLobbyWatcherWrapper inGameLobbyWatcher;
@@ -140,7 +140,7 @@ public class ServerLauncher extends AbstractLauncher {
         serverGame.setRandomSource(randomSource);
       }
       try {
-        gameData.getGameLoader().startGame(serverGame, localPlayerSet, headless, serverModel.getChatPanel().getChat());
+        gameData.getGameLoader().startGame(serverGame, localPlayerSet, headless, serverModel.getChatModel().getChat());
       } catch (final Exception e) {
         log.log(Level.SEVERE, "Failed to launch", e);
         abortLaunch = true;

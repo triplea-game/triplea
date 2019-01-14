@@ -29,6 +29,7 @@ import games.strategy.ui.ProgressWindow;
 import games.strategy.util.TimeManager;
 import games.strategy.util.Util;
 import lombok.extern.java.Log;
+import swinglib.DocumentListenerBuilder;
 
 /**
  * A class for selecting which Forum poster to use.
@@ -89,7 +90,7 @@ public class ForumPosterEditor extends EditorPanel {
     viewPosts.addActionListener(e -> newForumPoster().viewPosted());
     testForum.addActionListener(e -> testForum());
     forums.addItemListener(e -> checkFieldsAndNotify());
-    topicIdField.getDocument().addDocumentListener(new TextFieldInputListenerWrapper(this::checkFieldsAndNotify));
+    DocumentListenerBuilder.attachDocumentListener(topicIdField, this::checkFieldsAndNotify);
 
   }
 

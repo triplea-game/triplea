@@ -58,7 +58,7 @@ public class PbemMessagePoster implements Serializable {
   public static boolean gameDataHasPlayByEmailOrForumMessengers(final GameData gameData) {
     return gameData != null
         && (gameData.getProperties().get(IForumPoster.NAME) != null
-        || gameData.getProperties().get(IEmailSender.SUBJECT) != null);
+            || gameData.getProperties().get(IEmailSender.SUBJECT) != null);
   }
 
   public void setSaveGame(final File saveGameFile) {

@@ -18,8 +18,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -35,11 +33,12 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.Tuple;
+import swinglib.DocumentListenerBuilder;
 
 /**
  * Order of loss panel, helps user create an order of loss string that is used to choose casualty order.
  */
-public class OrderOfLossesInputPanel extends JPanel {
+class OrderOfLossesInputPanel extends JPanel {
   private static final long serialVersionUID = 8815617685388156219L;
   private static final char OOL_SEPARATOR = ';';
   private static final char OOL_AMOUNT_DESCRIPTOR = '^';
@@ -56,7 +55,9 @@ public class OrderOfLossesInputPanel extends JPanel {
   private final JButton clear;
   private final boolean land;
 
-  public OrderOfLossesInputPanel(final String attackerOrder, final String defenderOrder,
+
+
+  OrderOfLossesInputPanel(final String attackerOrder, final String defenderOrder,
       final List<UnitCategory> attackerCategories, final List<UnitCategory> defenderCategories, final boolean land,
       final UiContext uiContext, final GameData data) {
     this.data = data;
@@ -65,63 +66,13 @@ public class OrderOfLossesInputPanel extends JPanel {
     this.attackerCategories = attackerCategories;
     this.defenderCategories = defenderCategories;
     attackerTextField = new JTextField(attackerOrder == null ? "" : attackerOrder);
-    attackerTextField.getDocument().addDocumentListener(new DocumentListener() {
-      @Override
-      public void insertUpdate(final DocumentEvent e) {
-        if (!isValidOrderOfLoss(attackerTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-          attackerLabel.setForeground(Color.red);
-        } else {
-          attackerLabel.setForeground(null);
-        }
-      }
+    DocumentListenerBuilder.attachDocumentListener(attackerTextField,
+        () -> turnToRedIfNotValidOrderOfLoss(attackerTextField));
 
-      @Override
-      public void removeUpdate(final DocumentEvent e) {
-        if (!isValidOrderOfLoss(attackerTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-          attackerLabel.setForeground(Color.red);
-        } else {
-          attackerLabel.setForeground(null);
-        }
-      }
-
-      @Override
-      public void changedUpdate(final DocumentEvent e) {
-        if (!isValidOrderOfLoss(attackerTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-          attackerLabel.setForeground(Color.red);
-        } else {
-          attackerLabel.setForeground(null);
-        }
-      }
-    });
     defenderTextField = new JTextField(defenderOrder == null ? "" : defenderOrder);
-    defenderTextField.getDocument().addDocumentListener(new DocumentListener() {
-      @Override
-      public void insertUpdate(final DocumentEvent e) {
-        if (!isValidOrderOfLoss(defenderTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-          defenderLabel.setForeground(Color.red);
-        } else {
-          defenderLabel.setForeground(null);
-        }
-      }
+    DocumentListenerBuilder.attachDocumentListener(defenderTextField,
+        () -> turnToRedIfNotValidOrderOfLoss(defenderTextField));
 
-      @Override
-      public void removeUpdate(final DocumentEvent e) {
-        if (!isValidOrderOfLoss(defenderTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-          defenderLabel.setForeground(Color.red);
-        } else {
-          defenderLabel.setForeground(null);
-        }
-      }
-
-      @Override
-      public void changedUpdate(final DocumentEvent e) {
-        if (!isValidOrderOfLoss(defenderTextField.getText(), OrderOfLossesInputPanel.this.data)) {
-          defenderLabel.setForeground(Color.red);
-        } else {
-          defenderLabel.setForeground(null);
-        }
-      }
-    });
     clear = new JButton("Clear");
     clear.addActionListener(e -> {
       attackerTextField.setText("");
@@ -130,10 +81,17 @@ public class OrderOfLossesInputPanel extends JPanel {
     layoutComponents();
   }
 
+  private void turnToRedIfNotValidOrderOfLoss(final JTextField textField) {
+    textField.setForeground(
+        isValidOrderOfLoss(textField.getText(), data)
+            ? null
+            : Color.red);
+  }
+
   /**
    * Validates if a given string can be parsed for order of losses.
    */
-  public static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
+  static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
     if (orderOfLoss == null || orderOfLoss.trim().length() == 0) {
       return true;
     }
@@ -183,7 +141,7 @@ public class OrderOfLossesInputPanel extends JPanel {
   /**
    * Returns units in the same ordering as the 'order of loss' string passed in.
    */
-  public static List<Unit> getUnitListByOrderOfLoss(final String ool, final Collection<Unit> units,
+  static List<Unit> getUnitListByOrderOfLoss(final String ool, final Collection<Unit> units,
       final GameData data) {
     if (ool == null || ool.trim().length() == 0) {
       return null;
@@ -292,12 +250,11 @@ public class OrderOfLossesInputPanel extends JPanel {
     return panel;
   }
 
-  public String getAttackerOrder() {
+  String getAttackerOrder() {
     return attackerTextField.getText();
   }
 
-  public String getDefenderOrder() {
+  String getDefenderOrder() {
     return defenderTextField.getText();
   }
 }
-

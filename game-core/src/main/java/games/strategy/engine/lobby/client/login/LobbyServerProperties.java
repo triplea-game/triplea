@@ -15,32 +15,41 @@ import lombok.Getter;
 /**
  * Server properties.
  *
- * <p>Generally there is one lobby server, but that server may move.
- *
- * <p>To keep track of this, we always have a properties file in a constant location that points to
+ * <p>
+ * Generally there is one lobby server, but that server may move.
+ * </p>
+ * <p>
+ * To keep track of this, we always have a properties file in a constant location that points to
  * the current lobby server.
- *
- * <p>The properties file may indicate that the server is not available using the ERROR_MESSAGE key.
+ * </p>
+ * <p>
+ * The properties file may indicate that the server is not available using the ERROR_MESSAGE key.
+ * </p>
  */
 @Builder
 @Getter
 @EqualsAndHashCode
 public final class LobbyServerProperties {
   /** The host address of the lobby, typically an IP address. */
-  @Nonnull private final String host;
+  @Nonnull
+  private final String host;
 
   /** The port the lobby is listening on. */
-  @Nonnull private final Integer port;
+  @Nonnull
+  private final Integer port;
 
   /** URI for the http lobby server. */
-  @Nonnull private final URI httpServerUri;
+  @Nonnull
+  private final URI httpServerUri;
 
-  @Nullable private final String serverErrorMessage;
+  @Nullable
+  private final String serverErrorMessage;
 
   /**
    * Message from lobby, eg: "welcome, lobby rules are: xyz".
    */
-  @Nullable private final String serverMessage;
+  @Nullable
+  private final String serverMessage;
 
   public Optional<String> getServerMessage() {
     return Optional.ofNullable(Strings.emptyToNull(serverMessage));

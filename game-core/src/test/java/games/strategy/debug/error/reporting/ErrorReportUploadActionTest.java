@@ -2,7 +2,7 @@ package games.strategy.debug.error.reporting;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,9 +33,9 @@ class ErrorReportUploadActionTest {
   @Mock
   private ServiceClient<ErrorReport, ErrorReportResponse> serviceClient;
   @Mock
-  private Consumer<URI> successConfirmation ;
+  private Consumer<URI> successConfirmation;
   @Mock
-  private Consumer<ServiceResponse<ErrorReportResponse>> failureConfirmation ;
+  private Consumer<ServiceResponse<ErrorReportResponse>> failureConfirmation;
 
   private ErrorReportUploadAction errorReportUploadAction;
 

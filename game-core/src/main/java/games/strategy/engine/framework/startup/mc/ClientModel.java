@@ -30,7 +30,6 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.chat.IChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
@@ -89,7 +88,7 @@ public class ClientModel implements IMessengerErrorListener {
   private IRemoteMessenger remoteMessenger;
   private IClientMessenger messenger;
   private Component ui;
-  private IChatPanel chatPanel;
+  private ChatPanel chatPanel;
   private ClientGame game;
   private boolean hostIsHeadlessBot = false;
   // we set the game data to be null, since we are a client game, and the game data lives on the server
@@ -201,8 +200,6 @@ public class ClientModel implements IMessengerErrorListener {
     // load in the saved name!
     final ClientProps props = getProps(this.ui);
     if (props == null) {
-      gameSelectorModel.setCanSelect(true);
-      cancel();
       return false;
     }
     final String name = props.getName();
@@ -234,7 +231,7 @@ public class ClientModel implements IMessengerErrorListener {
         Chat.ChatSoundProfile.GAME_CHATROOM);
     if (getIsServerHeadlessTest()) {
       gameSelectorModel.setClientModelForHostBots(this);
-      ((ChatPanel) chatPanel).getChatMessagePanel()
+      chatPanel.getChatMessagePanel()
           .addServerMessage("Welcome to an automated dedicated host service (a host bot). "
               + "\nIf anyone disconnects, the autosave will be reloaded (a save might be loaded right now). "
               + "\nYou can get the current save, or you can load a save (only saves that it has the map for).");
@@ -269,18 +266,17 @@ public class ClientModel implements IMessengerErrorListener {
    * Resets stats and nulls out references, keeps chat alive.
    */
   public void cancel() {
-    if (messenger == null) {
-      return;
-    }
-    objectStreamFactory.setData(null);
-    messenger.shutDown();
-    chatPanel.setChat(null);
     gameSelectorModel.setGameData(gameDataOnStartup);
     gameSelectorModel.setCanSelect(true);
-    hostIsHeadlessBot = false;
-    gameSelectorModel.setIsHostHeadlessBot(false);
-    gameSelectorModel.setClientModelForHostBots(null);
-    messenger.removeErrorListener(this);
+    if (messenger != null) {
+      messenger.shutDown();
+      messenger.removeErrorListener(this);
+      objectStreamFactory.setData(null);
+      chatPanel.setChat(null);
+      hostIsHeadlessBot = false;
+      gameSelectorModel.setIsHostHeadlessBot(false);
+      gameSelectorModel.setClientModelForHostBots(null);
+    }
   }
 
   private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone,
@@ -420,7 +416,7 @@ public class ClientModel implements IMessengerErrorListener {
         "Connection Lost!", JOptionPane.ERROR_MESSAGE);
   }
 
-  public IChatPanel getChatPanel() {
+  public ChatPanel getChatPanel() {
     return chatPanel;
   }
 
@@ -469,7 +465,7 @@ public class ClientModel implements IMessengerErrorListener {
 
   @Getter
   @Setter
-  static class ClientProps {
+  private static class ClientProps {
     private int port;
     private String name;
     private String host;

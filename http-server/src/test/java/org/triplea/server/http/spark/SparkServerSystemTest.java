@@ -19,7 +19,6 @@ import org.triplea.http.client.ServiceClient;
 import org.triplea.http.client.ServiceResponse;
 import org.triplea.http.client.error.report.ErrorReportClientFactory;
 import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportDetails;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
 import org.triplea.server.ServerConfiguration;
 import org.triplea.server.reporting.error.ErrorReportRequest;
@@ -61,12 +60,12 @@ class SparkServerSystemTest {
       ErrorReportRequest.builder()
           .clientIp("")
           .errorReport(
-              new ErrorReport(
-                  ErrorReportDetails.builder()
-                      .title("Amicitia pius mensa est.")
-                      .description("Est brevis silva, cesaris.")
-                      .gameVersion("test-version")
-                      .build()))
+              ErrorReport.builder()
+                  .gameVersion("Ah there's nothing like the salty endurance stuttering on the plunder.")
+                  .javaVersion("Where is the shiny jack?")
+                  .operatingSystem("haiti ")
+                  .reportMessage("Never ransack a ship.")
+                  .build())
           .build();
 
   private static final String LINK = "http://fictitious-link";

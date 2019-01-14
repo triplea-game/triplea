@@ -8,9 +8,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum EnvironmentVariable {
   PORT("3304"),
+
   POSTGRES_USER("postgres"),
+
   POSTGRES_PASSWORD("postgres"),
+
   POSTGRES_HOST("localhost"),
+
   POSTGRES_PORT("5432");
 
   private final String defaultValue;

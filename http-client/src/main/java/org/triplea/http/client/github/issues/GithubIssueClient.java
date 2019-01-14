@@ -32,7 +32,7 @@ interface GithubIssueClient {
 
 
   default CreateIssueResponse newIssue(
-      final IssueClientParams params ,
+      final IssueClientParams params,
       final CreateIssueRequest createIssueRequest) {
     final Map<String, Object> tokens = new HashMap<>();
     tokens.put("Authorization", "token " + params.getAuthToken());
