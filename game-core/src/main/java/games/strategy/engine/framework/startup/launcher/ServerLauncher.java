@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -47,7 +49,7 @@ import lombok.extern.java.Log;
  * Implementation of {@link ILauncher} for a headed or headless network server game.
  */
 @Log
-public class ServerLauncher extends AbstractLauncher<Boolean> {
+public class ServerLauncher extends AbstractLauncher<Void> {
   private final GameData gameData;
   private final GameSelectorModel gameSelectorModel;
   private final boolean headless;
@@ -107,7 +109,7 @@ public class ServerLauncher extends AbstractLauncher<Boolean> {
   }
 
   @Override
-  Boolean loadGame(final Component parent) {
+  Optional<Void> loadGame(final Component parent) {
     try {
       // the order of this stuff does matter
       serverModel.setServerLauncher(this);
@@ -158,22 +160,22 @@ public class ServerLauncher extends AbstractLauncher<Boolean> {
         abortLaunch = true;
       }
       remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
-      return useSecureRandomSource;
     } finally {
       if (inGameLobbyWatcher != null) {
         inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, serverGame);
       }
       log.info("Game Status: In Progress");
     }
+    return Optional.empty();
   }
 
   @Override
-  void launchInternal(final Component parent, final Boolean useSecureRandomSource) {
+  void launchInternal(final Component parent, @Nullable final Void none) {
     try {
       isLaunching = false;
       abortLaunch = testShouldWeAbort();
       if (!abortLaunch) {
-        if (useSecureRandomSource) {
+        if (!remotePlayers.isEmpty()) {
           warmUpCryptoRandomSource();
         }
         log.info("Starting Game Delegates.");

@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -24,7 +25,7 @@ import lombok.extern.java.Log;
  * Implementation of {@link ILauncher} for a headed local or network client game.
  */
 @Log
-public class LocalLauncher extends AbstractLauncher<Optional<ServerGame>> {
+public class LocalLauncher extends AbstractLauncher<ServerGame> {
   private final GameData gameData;
   private final GameSelectorModel gameSelectorModel;
   private final IRandomSource randomSource;
@@ -39,9 +40,11 @@ public class LocalLauncher extends AbstractLauncher<Optional<ServerGame>> {
   }
 
   @Override
-  protected void launchInternal(final Component parent, final Optional<ServerGame> game) {
+  protected void launchInternal(final Component parent, @Nullable final ServerGame game) {
     try {
-      game.ifPresent(ServerGame::startGame);
+      if (game != null) {
+        game.startGame();
+      }
     } finally {
       // todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
       // having an oddball issue with the zip stream being closed while parsing to load default game. might be caused
