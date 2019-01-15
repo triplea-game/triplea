@@ -611,7 +611,7 @@ public class HeadlessGameServer {
       printUsage = true;
     }
 
-    if (Integer.valueOf(System.getProperty(TRIPLEA_PORT, "0")) <= 0) {
+    if(isInvalidPortNumber(System.getProperty(TRIPLEA_PORT, "0"))) {
       log.warning("Invalid argument: " + TRIPLEA_PORT + " must be greater than zero");
       printUsage = true;
     }
@@ -621,14 +621,17 @@ public class HeadlessGameServer {
       printUsage = true;
     }
 
-    if (Integer.valueOf(System.getProperty(LOBBY_PORT, "0")) <= 0) {
-      log.warning("Invalid argument: " + LOBBY_PORT + " must be numeric");
-      printUsage = true;
-    }
-
     if (printUsage) {
       usage();
       ExitStatus.FAILURE.exit();
+    }
+  }
+
+  private static boolean isInvalidPortNumber(final String testValue) {
+    try{
+      return Integer.parseInt(testValue) <= 0;
+    } catch(final NumberFormatException e) {
+      return true;
     }
   }
 }
