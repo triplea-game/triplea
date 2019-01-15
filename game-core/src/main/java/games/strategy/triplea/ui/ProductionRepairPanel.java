@@ -44,7 +44,6 @@ import games.strategy.util.IntegerMap;
 
 class ProductionRepairPanel extends JPanel {
   private static final long serialVersionUID = -6344711064699083729L;
-  private final JFrame owner = null;
   private JDialog dialog;
   private final UiContext uiContext;
   private final List<Rule> rules = new ArrayList<>();
@@ -81,7 +80,7 @@ class ProductionRepairPanel extends JPanel {
   Map<Unit, IntegerMap<RepairRule>> show(final PlayerId id,
       final Collection<PlayerId> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
       final Map<Unit, IntegerMap<RepairRule>> initialPurchase) {
-    if (!(parent == owner)) {
+    if (parent != null) {
       dialog = null;
     }
     if (dialog == null) {
