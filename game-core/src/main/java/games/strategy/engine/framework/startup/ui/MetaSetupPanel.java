@@ -7,7 +7,6 @@ import java.awt.Insets;
 import java.util.Optional;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import games.strategy.debug.error.reporting.ReportWindowController;
@@ -151,11 +150,6 @@ public class MetaSetupPanel extends SetupPanel {
 
   @Override
   public void cancel() {}
-
-  @Override
-  public JComponent getDrawable() {
-    return this;
-  }
 
   @Override
   public Optional<ILauncher> getLauncher() {
