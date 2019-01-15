@@ -184,7 +184,7 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
    * @param entryToBeRemoved The element to be removed.
    * @return Returns true, if the given element could successfully be removed.
    */
-  public boolean removeEntry(final GameChooserEntry entryToBeRemoved) {
-    return this.removeElement(entryToBeRemoved);
+  public void removeEntry(final GameChooserEntry entryToBeRemoved) {
+    this.removeElement(entryToBeRemoved);
   }
 }

@@ -187,7 +187,7 @@ class ProCombatMoveAi {
     return isBombing;
   }
 
-  private List<ProTerritory> prioritizeAttackOptions(final PlayerId player, final List<ProTerritory> attackOptions) {
+  private void prioritizeAttackOptions(final PlayerId player, final List<ProTerritory> attackOptions) {
 
     ProLogger.info("Prioritizing territories to try to attack");
 
@@ -298,7 +298,6 @@ class ProCombatMoveAi {
       ProLogger.debug("AttackValue=" + patd.getValue() + ", TUVSwing=" + patd.getMaxBattleResult().getTuvSwing()
           + ", isAmphib=" + patd.isNeedAmphibUnits() + ", " + patd.getTerritory().getName());
     }
-    return attackOptions;
   }
 
   private void determineTerritoriesToAttack(final List<ProTerritory> prioritizedTerritories) {

@@ -14,7 +14,7 @@ public interface GameChooserEntry extends Comparable<GameChooserEntry> {
   /**
    * Returns a {@link GameData} instance resulting from fully parsing the XML associated with this game.
    */
-  GameData fullyParseGameData() throws GameParseException;
+  void fullyParseGameData() throws GameParseException;
 
   boolean isGameDataLoaded();
 

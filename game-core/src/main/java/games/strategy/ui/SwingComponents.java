@@ -147,12 +147,11 @@ public class SwingComponents {
     return tabbedPane;
   }
 
-  public static ButtonGroup newButtonGroup(final JRadioButton... radioButtons) {
+  public static void newButtonGroup(final JRadioButton... radioButtons) {
     final ButtonGroup group = new ButtonGroup();
     for (final JRadioButton radioButton : radioButtons) {
       group.add(radioButton);
     }
-    return group;
   }
 
   public static JScrollPane newJScrollPane(final Component contents) {

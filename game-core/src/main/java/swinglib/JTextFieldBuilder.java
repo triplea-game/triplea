@@ -208,9 +208,8 @@ public class JTextFieldBuilder {
     return this;
   }
 
-  public JTextFieldBuilder onFocusAction(final Consumer<JTextField> onFocusAction) {
+  public void onFocusAction(final Consumer<JTextField> onFocusAction) {
     this.onFocusAction = onFocusAction;
-    return this;
   }
 
   public JTextFieldBuilder selectAllTextOnFocus() {

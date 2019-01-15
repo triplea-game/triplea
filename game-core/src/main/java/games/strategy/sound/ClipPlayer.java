@@ -124,13 +124,12 @@ public class ClipPlayer {
     return clipPlayer;
   }
 
-  public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader) {
+  public static synchronized void getInstance(final ResourceLoader resourceLoader) {
     // make a new clip player if we switch resource loaders (ie: if we switch maps)
     if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
       // make a new clip player with our new resource loader
       clipPlayer = new ClipPlayer(resourceLoader);
     }
-    return clipPlayer;
   }
 
   private ClipPlayer(final ResourceLoader resourceLoader) {

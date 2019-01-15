@@ -1133,7 +1133,7 @@ public class MovePanel extends AbstractMovePanel {
    * Allow the user to select specific units, if for example some units have different movement.
    * Units are sorted in preferred order, so units represents the default selections.
    */
-  private boolean allowSpecificUnitSelection(
+  private void allowSpecificUnitSelection(
       final Collection<Unit> units,
       final Route route,
       final boolean initialMustQueryUser,
@@ -1189,7 +1189,7 @@ public class MovePanel extends AbstractMovePanel {
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
       if (option != JOptionPane.OK_OPTION) {
         units.clear();
-        return false;
+        return;
       }
       units.clear();
       units.addAll(chooser.getSelected(false));
@@ -1207,7 +1207,6 @@ public class MovePanel extends AbstractMovePanel {
         }
       }
     }
-    return true;
   }
 
   private final MouseOverUnitListener mouseOverUnitListener = new MouseOverUnitListener() {

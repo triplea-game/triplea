@@ -30,7 +30,7 @@ public class MapDownloadController {
    * Return true if all locally downloaded maps are latest versions, false if any can are out of date or their version
    * not recognized.
    */
-  public static boolean checkDownloadedMapsAreLatest() {
+  public static void checkDownloadedMapsAreLatest() {
     try {
       final List<DownloadFileDescription> allDownloads = ClientContext.getMapDownloadList();
       final Collection<String> outOfDateMapNames = getOutOfDateMapNames(allDownloads);
@@ -44,12 +44,10 @@ public class MapDownloadController {
         text.append("</ul></html>");
         SwingComponents.promptUser("Update Your Maps?", text.toString(),
             () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(outOfDateMapNames));
-        return true;
       }
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Error while checking for map updates", e);
     }
-    return false;
   }
 
   private static Collection<String> getOutOfDateMapNames(final Collection<DownloadFileDescription> downloads) {

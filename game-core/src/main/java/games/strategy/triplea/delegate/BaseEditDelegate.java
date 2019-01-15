@@ -67,14 +67,13 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
     return null;
   }
 
-  public String setEditMode(final boolean editMode) {
+  public void setEditMode(final boolean editMode) {
     final IRemotePlayer remotePlayer = getRemotePlayer();
     if (!bridge.getPlayerId().equals(remotePlayer.getPlayerId())) {
-      return "Edit Mode can only be toggled during players turn";
+      return;
     }
     logEvent((editMode ? EDITMODE_ON : EDITMODE_OFF), null);
     bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, editMode, getData()));
-    return null;
   }
 
   public String addComment(final String message) {
