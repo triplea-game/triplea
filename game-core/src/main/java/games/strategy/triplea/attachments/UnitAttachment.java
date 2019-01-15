@@ -2439,7 +2439,7 @@ public class UnitAttachment extends DefaultAttachment {
         throw new GameParseException("air units cannot have certain properties, " + thisErrorMsg());
       }
     } else if (isSea) {
-      if (canBlitz || isAir || isStrategicBomber || carrierCost != -1
+      if (canBlitz || isStrategicBomber || carrierCost != -1
           || transportCost != -1 || isMarine != 0 || isLandTransportable || isLandTransport
           || isAirTransportable || isAirTransport || isKamikaze) {
         throw new GameParseException("sea units cannot have certain properties, " + thisErrorMsg());
