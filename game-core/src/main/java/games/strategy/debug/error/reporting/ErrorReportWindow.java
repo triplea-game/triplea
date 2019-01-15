@@ -27,7 +27,7 @@ import swinglib.JTextAreaBuilder;
  * This is primarily a layout class that shows a form for entering bug report information, and has buttons to
  * preview, cancel, or upload the bug report.
  * <p>
- * Bug report submission has two parts: 1) user text 2) error data. An error message or console willevent will add teh
+ * Bug report submission has two parts: 1) user text and 2) error data. An error message or console event will add the
  * data from either an error message or console.
  * The error data is supplied automatically on error message or when shown from console
  * </p>
