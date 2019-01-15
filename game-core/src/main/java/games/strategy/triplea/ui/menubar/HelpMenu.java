@@ -119,7 +119,7 @@ public final class HelpMenu extends JMenu {
           + "To list specific units from a territory in the Territory panel, drag and drop from the territory on the "
           + "map to the territory panel.<br>"
           + "Press CTRL+(key) to select a specific tab panel "
-          + "(A-Actions, P-Players, R-Resources, O-Objectives, N-Notes, T-Territory).<br>"
+          + "(C-Actions, P-Players, R-Resources, O-Objectives, N-Notes, T-Territory).<br>"
           + "Press CTRL+E to toggle edit mode.<br>"
           + "Press CTRL+H and CTRL+G to show history or game modes.<br>"
           + "Press CTRL+W to show politics panel.<br>"
