@@ -70,7 +70,7 @@ class ErrorReportWindowModel {
   }
 
   /**
-   * On submit we'll ask the user for confirmation if they'd like to send the error erport. If yes,
+   * On submit we'll ask the user for confirmation if they'd like to send the error report. If yes,
    * then the error report will be uploaded.
    */
   Runnable submitAction(
