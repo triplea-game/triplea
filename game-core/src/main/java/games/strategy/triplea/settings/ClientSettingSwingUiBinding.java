@@ -238,7 +238,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     public SelectionComponent<JComponent> newSelectionComponent() {
       return textField(
           ClientSetting.httpLobbyUriOverride,
-          value -> value.toString(),
+          Object::toString,
           encodedValue -> {
             try {
               return new URI(encodedValue);
