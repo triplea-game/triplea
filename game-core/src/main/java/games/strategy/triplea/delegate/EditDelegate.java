@@ -30,8 +30,6 @@ import games.strategy.util.Triple;
  * Edit game state.
  */
 public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
-  @Override
-  public void end() {}
 
   @Override
   public String removeUnits(final Territory territory, final Collection<Unit> units) {

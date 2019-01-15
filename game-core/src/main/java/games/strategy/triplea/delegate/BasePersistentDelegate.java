@@ -10,14 +10,6 @@ import games.strategy.engine.delegate.IPersistentDelegate;
  * etc.
  * Persistent Delegates are active all the time.
  */
+@SuppressWarnings("AbstractClassWithOnlyOneDirectInheritor")
 public abstract class BasePersistentDelegate extends AbstractDelegate implements IPersistentDelegate {
-  @Override
-  public void start() {
-    super.start();
-  }
-
-  @Override
-  public void end() {
-    super.end();
-  }
 }
