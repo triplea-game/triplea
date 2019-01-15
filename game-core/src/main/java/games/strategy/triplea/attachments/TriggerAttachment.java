@@ -938,7 +938,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       throw new GameParseException(
           "relationshipTypeAttachmentName count must be a valid attachment name" + thisErrorMsg());
     }
-    if (s[1].equals("RelationshipTypeAttachment") && !s[0].startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME)) {
+    if (!s[0].startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
     relationshipTypeAttachmentName = Tuple.of(s[1], s[0]);
@@ -1030,7 +1030,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       throw new GameParseException(
           "territoryEffectAttachmentName count must be a valid attachment name" + thisErrorMsg());
     }
-    if (s[1].equals("TerritoryEffectAttachment") && !s[0].startsWith(Constants.TERRITORYEFFECT_ATTACHMENT_NAME)) {
+    if (!s[0].startsWith(Constants.TERRITORYEFFECT_ATTACHMENT_NAME)) {
       throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
     }
     territoryEffectAttachmentName = Tuple.of(s[1], s[0]);
