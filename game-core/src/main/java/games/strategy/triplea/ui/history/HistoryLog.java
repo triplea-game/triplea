@@ -540,8 +540,7 @@ public class HistoryLog extends JFrame {
       boolean isConvoyOrLand = false;
       final TerritoryAttachment ta = TerritoryAttachment.get(place);
       if (!place.isWater()
-          || (place.isWater()
-              && ta != null
+          || (ta != null
               && !PlayerId.NULL_PLAYERID.equals(OriginalOwnerTracker.getOriginalOwner(place))
               && player.equals(OriginalOwnerTracker.getOriginalOwner(place))
               && place.getOwner().equals(player))) {
