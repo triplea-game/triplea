@@ -1428,9 +1428,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (ua1 != null && ua2 == null) {
         return -1;
       }
-      if (ua1 == null && ua2 != null) {
+      if (ua1 == null) {
         return 1;
       }
+      assert (ua1 != null) && (ua2 != null);
+
       // constructions go ahead first
       if (sortConstructionsToFront) {
         final int constructionSort = getUnitConstructionComparator().compare(u1, u2);
