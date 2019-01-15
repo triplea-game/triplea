@@ -1,7 +1,5 @@
 package games.strategy.debug.error.reporting;
 
-import java.awt.Component;
-
 import javax.swing.JFrame;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -17,8 +15,7 @@ import swinglib.JTextAreaBuilder;
  */
 class PreviewWindow {
 
-  JFrame build(final Component parent, final UserErrorReport userErrorReport) {
-    final String previewText = userErrorReport.toErrorReport().toString();
+  static JFrame build(final JFrame parent, final String previewText) {
     final JFrame frame = JFrameBuilder.builder()
         .locateRelativeTo(parent)
         .alwaysOnTop()

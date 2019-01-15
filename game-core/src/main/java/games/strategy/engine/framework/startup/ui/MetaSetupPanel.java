@@ -9,7 +9,7 @@ import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import games.strategy.debug.error.reporting.ReportWindowController;
+import games.strategy.debug.error.reporting.ErrorReportWindow;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.triplea.UrlConstants;
@@ -127,7 +127,7 @@ public class MetaSetupPanel extends SetupPanel {
     enginePreferences.addActionListener(e -> ClientSetting.showSettingsWindow());
     ruleBook.addActionListener(e -> ruleBook());
     helpButton.addActionListener(e -> helpPage());
-    errorReportDemo.addActionListener(e -> ReportWindowController.showWindow(errorReportDemo));
+    errorReportDemo.addActionListener(e -> ErrorReportWindow.showWindow());
   }
 
   private static void ruleBook() {
