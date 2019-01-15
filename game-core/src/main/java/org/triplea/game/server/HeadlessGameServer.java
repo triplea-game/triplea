@@ -12,7 +12,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -28,6 +27,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 
+import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
@@ -37,7 +37,6 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
@@ -602,8 +601,7 @@ public class HeadlessGameServer {
     boolean printUsage = false;
 
     if (!ClientSetting.mapFolderOverride.isSet()) {
-      ClientSetting.mapFolderOverride.setValue(
-          Paths.get(SystemProperties.getUserHome(), "/triplea/downloadedMaps"));
+      ClientSetting.mapFolderOverride.setValue(ClientFileSystemHelper.getUserMapsFolder().toPath());
     }
 
     final String playerName = System.getProperty(TRIPLEA_NAME, "");
