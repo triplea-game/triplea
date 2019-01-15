@@ -8,6 +8,8 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.proxySet
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 import static games.strategy.triplea.settings.SelectionComponentFactory.textField;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 
 import javax.swing.JComponent;
@@ -234,7 +236,17 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Specifies host and port for connecting to a test HTTP lobby.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return textField(ClientSetting.httpLobbyUriOverride);
+      return textField(
+          ClientSetting.httpLobbyUriOverride,
+          value -> value.toString(),
+          encodedValue -> {
+            try {
+              return new URI(encodedValue);
+            } catch (final URISyntaxException e) {
+              throw new SelectionComponentFactory.ValueEncodingException(e);
+            }
+          },
+          "Must be a valid URI (e.g. \"http://localhost:5678)\"");
     }
   },
 

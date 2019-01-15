@@ -76,7 +76,7 @@ class LobbyServerPropertiesFetcherTest {
     private GameSetting<Integer> testLobbyPortSetting;
 
     @Mock
-    private GameSetting<String> testLobbyHttpUriSetting;
+    private GameSetting<URI> testLobbyHttpUriSetting;
 
     private Optional<LobbyServerProperties> result;
 
@@ -90,7 +90,7 @@ class LobbyServerPropertiesFetcherTest {
 
     private void givenTestLobbyHttpUriIsSet() {
       when(testLobbyHttpUriSetting.isSet()).thenReturn(true);
-      when(testLobbyHttpUriSetting.getValueOrThrow()).thenReturn("http://uri");
+      when(testLobbyHttpUriSetting.getValueOrThrow()).thenReturn(URI.create("http://uri"));
     }
 
     private void givenTestLobbyHostIsSetTo(final String host) {
