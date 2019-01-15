@@ -171,7 +171,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   public List<PlayerId> getPlayersByUnitCount() {
     final IntegerMap<PlayerId> map = getPlayerUnitCounts();
     final List<PlayerId> players = new ArrayList<>(map.keySet());
-    players.sort(Comparator.<PlayerId>comparingInt(p -> map.getInt(p)).reversed());
+    players.sort(Comparator.comparingInt(map::getInt).reversed());
     return players;
   }
 

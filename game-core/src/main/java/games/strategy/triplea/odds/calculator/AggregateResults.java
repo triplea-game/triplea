@@ -66,7 +66,8 @@ public class AggregateResults {
       return 0.0;
     }
     return results.stream()
-        .mapToDouble(result -> result.getRemainingAttackingUnits().size())
+        .map(BattleResults::getRemainingAttackingUnits)
+        .mapToDouble(Collection::size)
         .sum() / results.size();
   }
 
@@ -134,7 +135,8 @@ public class AggregateResults {
       return 0.0;
     }
     return results.stream()
-        .mapToDouble(result -> result.getRemainingDefendingUnits().size())
+        .map(BattleResults::getRemainingDefendingUnits)
+        .mapToDouble(Collection::size)
         .sum() / results.size();
   }
 
