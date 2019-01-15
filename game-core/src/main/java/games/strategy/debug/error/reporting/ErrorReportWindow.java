@@ -145,7 +145,7 @@ public class ErrorReportWindow {
 
       final Runnable listenerAction = () -> updateButtonEnabledStatus(
           descriptionField::getText,
-          () -> additionalInfo.map(JTextComponent::getText).orElse(""),
+          additionalInfoReader,
           submitButton,
           previewButton);
 
