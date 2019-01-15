@@ -23,8 +23,16 @@ class ErrorReportWindowModel {
 
 
   ErrorReportWindowModel(final JFrame parent, final LogRecord logRecord) {
+    this(parent, formatLogRecord(logRecord));
+  }
+
+  ErrorReportWindowModel(final JFrame parent) {
+    this(parent, (String) null);
+  }
+
+  ErrorReportWindowModel(final JFrame parent, @Nullable final String consoleText) {
     this.parent = parent;
-    attachedData = formatLogRecord(logRecord);
+    attachedData = consoleText;
   }
 
   private static String formatLogRecord(final LogRecord logRecord) {
@@ -37,16 +45,6 @@ class ErrorReportWindowModel {
         logRecord.getSourceClassName(),
         logRecord.getSourceMethodName(),
         Arrays.toString(logRecord.getThrown().getStackTrace()));
-  }
-
-  ErrorReportWindowModel(final JFrame parent, final String consoleText) {
-    this.parent = parent;
-    attachedData = consoleText;
-  }
-
-  ErrorReportWindowModel(final JFrame parent) {
-    this.parent = parent;
-    attachedData = null;
   }
 
 
