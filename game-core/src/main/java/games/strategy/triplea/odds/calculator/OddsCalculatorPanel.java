@@ -350,7 +350,9 @@ class OddsCalculatorPanel extends JPanel {
       } finally {
         data.releaseReadLock();
       }
-      updateDefender(null);
+      setDefendingUnits(defendingUnitsPanel.getUnits().stream().anyMatch(Matches.unitIsOwnedBy(getDefender()))
+          ? defendingUnitsPanel.getUnits()
+          : null);
       setWidgetActivation();
     });
     attackerCombo.addActionListener(e -> {
@@ -362,15 +364,15 @@ class OddsCalculatorPanel extends JPanel {
       } finally {
         data.releaseReadLock();
       }
-      updateAttacker(null);
+      setAttackingUnits(null);
       setWidgetActivation();
     });
     amphibiousCheckBox.addActionListener(e -> setWidgetActivation());
     landBattleCheckBox.addActionListener(e -> {
       attackerOrderOfLosses = null;
       defenderOrderOfLosses = null;
-      updateDefender(null);
-      updateAttacker(null);
+      setDefendingUnits(null);
+      setAttackingUnits(null);
       setWidgetActivation();
     });
     calculateButton.addActionListener(e -> updateStats());
@@ -389,13 +391,16 @@ class OddsCalculatorPanel extends JPanel {
     swapSidesButton.addActionListener(e -> {
       attackerOrderOfLosses = null;
       defenderOrderOfLosses = null;
-      final List<Unit> getDefenders = defendingUnitsPanel.getUnits();
-      final List<Unit> getAttackers = attackingUnitsPanel.getUnits();
+      final List<Unit> newAttackers =
+          CollectionUtils.getMatches(defendingUnitsPanel.getUnits(), Matches.unitIsOwnedBy(getDefender())
+              .and(Matches.unitCanBeInBattle(true, isLand(), 1, hasMaxRounds(isLand(), data), true)));
+      final List<Unit> newDefenders = CollectionUtils.getMatches(attackingUnitsPanel.getUnits(),
+          Matches.unitCanBeInBattle(true, isLand(), 1, true));
       swapSidesCombo.setSelectedItem(getAttacker());
       attackerCombo.setSelectedItem(getDefender());
       defenderCombo.setSelectedItem(getSwapSides());
-      attackingUnitsPanel.init(getAttacker(), getDefenders, isLand());
-      defendingUnitsPanel.init(getDefender(), getAttackers, isLand());
+      setAttackingUnits(newAttackers);
+      setDefendingUnits(newDefenders);
       setWidgetActivation();
     });
     orderOfLossesButton.addActionListener(e -> {
@@ -423,32 +428,57 @@ class OddsCalculatorPanel extends JPanel {
       data.acquireReadLock();
       try {
         landBattleCheckBox.setSelected(!location.isWater());
-        // default to the current player
-        if (data.getSequence().getStep().getPlayerId() != null
-            && !data.getSequence().getStep().getPlayerId().isNull()) {
-          attackerCombo.setSelectedItem(data.getSequence().getStep().getPlayerId());
+
+        // Default attacker to current player
+        final PlayerId currentPlayer = data.getSequence().getStep().getPlayerId();
+        if (currentPlayer != null && !currentPlayer.isNull()) {
+          attackerCombo.setSelectedItem(currentPlayer);
         }
+
+        // Get players with units sorted
+        final List<PlayerId> players = location.getUnits().getPlayersByUnitCount();
+        if (players.contains(currentPlayer)) {
+          players.remove(currentPlayer);
+          players.add(0, currentPlayer);
+        }
+
+        // Check location to determine optimal attacker and defender
         if (!location.isWater()) {
           defenderCombo.setSelectedItem(location.getOwner());
-        } else {
-          // we need to find out the defender for sea zones
-          for (final PlayerId player : location.getUnits().getPlayersWithUnits()) {
-            if (!player.equals(getAttacker()) && !data.getRelationshipTracker().isAllied(player, getAttacker())) {
-              defenderCombo.setSelectedItem(player);
+          for (final PlayerId player : players) {
+            if (Matches.isAtWar(getDefender(), data).test(player)) {
+              attackerCombo.setSelectedItem(player);
               break;
             }
           }
+        } else {
+          if (players.size() == 1) {
+            defenderCombo.setSelectedItem(players.get(0));
+          } else if (players.size() > 1) {
+            if (!data.getRelationshipTracker().isAtWarWithAnyOfThesePlayers(players.get(0), players)) {
+              defenderCombo.setSelectedItem(players.get(0));
+            } else {
+              attackerCombo.setSelectedItem(players.get(0));
+              for (final PlayerId player : players) {
+                if (Matches.isAtWar(getAttacker(), data).test(player)) {
+                  defenderCombo.setSelectedItem(player);
+                  break;
+                }
+              }
+            }
+          }
         }
-        updateDefender(location.getUnits().getMatches(Matches.alliedUnit(getDefender(), data)));
-        updateAttacker(location.getUnits().getMatches(Matches.alliedUnit(getAttacker(), data)));
+
+        setAttackingUnits(location.getUnits().getMatches(Matches.unitIsOwnedBy(getAttacker())));
+        setDefendingUnits(location.getUnits().getMatches(Matches.alliedUnit(getDefender(), data)));
       } finally {
         data.releaseReadLock();
       }
     } else {
       landBattleCheckBox.setSelected(true);
       defenderCombo.setSelectedItem(data.getPlayerList().getPlayers().iterator().next());
-      updateDefender(null);
-      updateAttacker(null);
+      setDefendingUnits(null);
+      setAttackingUnits(null);
     }
     calculator = new ConcurrentOddsCalculator("BtlCalc Panel", () -> SwingUtilities.invokeLater(() -> {
       calculateButton.setText("Calculate Odds");
@@ -470,12 +500,12 @@ class OddsCalculatorPanel extends JPanel {
     }
   }
 
-  private PlayerId getDefender() {
-    return (PlayerId) defenderCombo.getSelectedItem();
+  PlayerId getAttacker() {
+    return (PlayerId) attackerCombo.getSelectedItem();
   }
 
-  private PlayerId getAttacker() {
-    return (PlayerId) attackerCombo.getSelectedItem();
+  PlayerId getDefender() {
+    return (PlayerId) defenderCombo.getSelectedItem();
   }
 
   private PlayerId getSwapSides() {
@@ -585,10 +615,10 @@ class OddsCalculatorPanel extends JPanel {
       defenderWin.setText(formatPercentage(results.get().getDefenderWinPercent()));
       draw.setText(formatPercentage(results.get().getDrawPercent()));
       final boolean isLand = isLand();
-      final List<Unit> mainCombatAttackers =
-          CollectionUtils.getMatches(attackers.get(), Matches.unitCanBeInBattle(true, isLand, 1, false, true, true));
-      final List<Unit> mainCombatDefenders =
-          CollectionUtils.getMatches(defenders.get(), Matches.unitCanBeInBattle(false, isLand, 1, false, true, true));
+      final List<Unit> mainCombatAttackers = CollectionUtils.getMatches(attackers.get(),
+          Matches.unitCanBeInBattle(true, isLand, 1, true));
+      final List<Unit> mainCombatDefenders = CollectionUtils.getMatches(defenders.get(),
+          Matches.unitCanBeInBattle(false, isLand, 1, true));
       final int attackersTotal = mainCombatAttackers.size();
       final int defendersTotal = mainCombatDefenders.size();
       defenderLeft.setText(formatValue(results.get().getAverageDefendingUnitsLeft()) + " / " + defendersTotal);
@@ -618,22 +648,35 @@ class OddsCalculatorPanel extends JPanel {
     return new DecimalFormat("#0.##").format(value);
   }
 
-  private void updateDefender(final List<Unit> initialUnits) {
-    final List<Unit> units = Optional.ofNullable(initialUnits).orElseGet(Collections::emptyList);
-    final boolean isLand = isLand();
-    defendingUnitsPanel.init(
-        getDefender(),
-        CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(false, isLand, 1, false, false, false)),
-        isLand);
+  void addAttackingUnits(final List<Unit> unitsToAdd) {
+    final List<Unit> units = attackingUnitsPanel.getUnits();
+    units.addAll(unitsToAdd);
+    setAttackingUnits(units);
+    setWidgetActivation();
   }
 
-  private void updateAttacker(final List<Unit> initialUnits) {
+  private void setAttackingUnits(final List<Unit> initialUnits) {
     final List<Unit> units = Optional.ofNullable(initialUnits).orElseGet(Collections::emptyList);
-    final boolean isLand = isLand();
     attackingUnitsPanel.init(
         getAttacker(),
-        CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(true, isLand, 1, false, false, false)),
-        isLand);
+        CollectionUtils.getMatches(units,
+            Matches.unitCanBeInBattle(true, isLand(), 1, hasMaxRounds(isLand(), data), false)),
+        isLand());
+  }
+
+  void addDefendingUnits(final List<Unit> unitsToAdd) {
+    final List<Unit> units = defendingUnitsPanel.getUnits();
+    units.addAll(unitsToAdd);
+    setDefendingUnits(units);
+    setWidgetActivation();
+  }
+
+  private void setDefendingUnits(final List<Unit> initialUnits) {
+    final List<Unit> units = Optional.ofNullable(initialUnits).orElseGet(Collections::emptyList);
+    defendingUnitsPanel.init(
+        getDefender(),
+        CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(false, isLand(), 1, false)),
+        isLand());
   }
 
   private boolean isLand() {
@@ -676,11 +719,10 @@ class OddsCalculatorPanel extends JPanel {
     final boolean isLand = isLand();
     try {
       data.acquireReadLock();
-      // do not include bombardment and aa guns in our "total" labels
       final List<Unit> attackers = CollectionUtils.getMatches(attackingUnitsPanel.getUnits(),
-          Matches.unitCanBeInBattle(true, isLand, 1, false, true, true));
+          Matches.unitCanBeInBattle(true, isLand, 1, true));
       final List<Unit> defenders = CollectionUtils.getMatches(defendingUnitsPanel.getUnits(),
-          Matches.unitCanBeInBattle(false, isLand, 1, false, true, true));
+          Matches.unitCanBeInBattle(false, isLand, 1, true));
       attackerUnitsTotalNumber.setText("Units: " + attackers.size());
       defenderUnitsTotalNumber.setText("Units: " + defenders.size());
       attackerUnitsTotalTuv.setText("TUV: " + TuvUtils.getTuv(attackers, getAttacker(),
@@ -741,4 +783,14 @@ class OddsCalculatorPanel extends JPanel {
     }
     return false;
   }
+
+  static boolean hasMaxRounds(final boolean isLand, final GameData data) {
+    data.acquireReadLock();
+    try {
+      return isLand ? Properties.getLandBattleRounds(data) > 0 : Properties.getSeaBattleRounds(data) > 0;
+    } finally {
+      data.releaseReadLock();
+    }
+  }
+
 }

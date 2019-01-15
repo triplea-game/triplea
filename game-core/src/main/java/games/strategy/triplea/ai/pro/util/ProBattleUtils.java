@@ -97,7 +97,7 @@ public class ProBattleUtils {
     final GameData data = ProData.getData();
 
     List<Unit> unitsThatCanFight =
-        CollectionUtils.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
+        CollectionUtils.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, true));
     if (Properties.getTransportCasualtiesRestricted(data)) {
       unitsThatCanFight =
           CollectionUtils.getMatches(unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().negate());
@@ -112,7 +112,7 @@ public class ProBattleUtils {
     final GameData data = ProData.getData();
 
     final List<Unit> unitsThatCanFight =
-        CollectionUtils.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
+        CollectionUtils.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, true));
     final List<Unit> sortedUnitsList = new ArrayList<>(unitsThatCanFight);
     sortedUnitsList.sort(new UnitBattleComparator(!attacking, ProData.unitValueMap,
         TerritoryEffectHelper.getEffects(t), data, false, false));

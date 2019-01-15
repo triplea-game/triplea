@@ -45,8 +45,8 @@ public class AggregateResults {
   private Optional<BattleResults> getBattleResultsClosestToAverage() {
     return results.stream()
         .min(Comparator.comparingDouble(
-            result -> Math.abs(result.getAttackingCombatUnitsLeft() - getAverageAttackingUnitsLeft())
-                + Math.abs(result.getDefendingCombatUnitsLeft() - getAverageDefendingUnitsLeft())));
+            result -> Math.abs(result.getRemainingAttackingUnits().size() - getAverageAttackingUnitsLeft())
+                + Math.abs(result.getRemainingDefendingUnits().size() - getAverageDefendingUnitsLeft())));
   }
 
   public List<Unit> getAverageAttackingUnitsRemaining() {
@@ -66,7 +66,7 @@ public class AggregateResults {
       return 0.0;
     }
     return results.stream()
-        .mapToDouble(BattleResults::getAttackingCombatUnitsLeft)
+        .mapToDouble(result -> result.getRemainingAttackingUnits().size())
         .sum() / results.size();
   }
 
@@ -119,7 +119,7 @@ public class AggregateResults {
     double total = 0;
     for (final BattleResults result : results) {
       if (result.attackerWon()) {
-        count += result.getAttackingCombatUnitsLeft();
+        count += result.getRemainingAttackingUnits().size();
         total += 1;
       }
     }
@@ -134,7 +134,7 @@ public class AggregateResults {
       return 0.0;
     }
     return results.stream()
-        .mapToDouble(BattleResults::getDefendingCombatUnitsLeft)
+        .mapToDouble(result -> result.getRemainingDefendingUnits().size())
         .sum() / results.size();
   }
 
@@ -146,7 +146,7 @@ public class AggregateResults {
     double total = 0;
     for (final BattleResults result : results) {
       if (result.defenderWon()) {
-        count += result.getDefendingCombatUnitsLeft();
+        count += result.getRemainingDefendingUnits().size();
         total += 1;
       }
     }

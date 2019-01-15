@@ -2116,20 +2116,25 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitCanBeInBattle(final boolean attack, final boolean isLandBattle,
+      final int battleRound, final boolean doNotIncludeBombardingSeaUnits) {
+    return unitCanBeInBattle(attack, isLandBattle, battleRound, true, doNotIncludeBombardingSeaUnits);
+  }
+
+  public static Predicate<Unit> unitCanBeInBattle(final boolean attack, final boolean isLandBattle,
       final int battleRound, final boolean includeAttackersThatCanNotMove,
-      final boolean doNotIncludeAa, final boolean doNotIncludeBombardingSeaUnits) {
+      final boolean doNotIncludeBombardingSeaUnits) {
     return unit -> unitTypeCanBeInBattle(attack, isLandBattle, unit.getOwner(), battleRound,
-        includeAttackersThatCanNotMove, doNotIncludeAa, doNotIncludeBombardingSeaUnits).test(unit.getType());
+        includeAttackersThatCanNotMove, doNotIncludeBombardingSeaUnits).test(unit.getType());
   }
 
   public static Predicate<UnitType> unitTypeCanBeInBattle(final boolean attack, final boolean isLandBattle,
       final PlayerId player, final int battleRound, final boolean includeAttackersThatCanNotMove,
-      final boolean doNotIncludeAa, final boolean doNotIncludeBombardingSeaUnits) {
+      final boolean doNotIncludeBombardingSeaUnits) {
 
     // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
     final PredicateBuilder<UnitType> canBeInBattleBuilder = PredicateBuilder.of(unitTypeIsInfrastructure().negate())
         .or(unitTypeIsSupporterOrHasCombatAbility(attack, player))
-        .orIf(!doNotIncludeAa, unitTypeIsAaForCombatOnly().and(unitTypeIsAaThatCanFireOnRound(battleRound)));
+        .or(unitTypeIsAaForCombatOnly().and(unitTypeIsAaThatCanFireOnRound(battleRound)));
 
     if (attack) {
       if (!includeAttackersThatCanNotMove) {

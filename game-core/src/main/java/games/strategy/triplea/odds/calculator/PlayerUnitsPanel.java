@@ -184,7 +184,8 @@ public class PlayerUnitsPanel extends JPanel {
 
     // Filter out anything like factories, or units that have no combat ability AND cannot be taken casualty
     unitTypes = CollectionUtils.getMatches(unitTypes,
-        Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, false, false, false));
+        Matches.unitTypeCanBeInBattle(!defender, isLand, player, 1, OddsCalculatorPanel.hasMaxRounds(isLand, data),
+            false));
 
     return unitTypes;
   }

@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -165,6 +166,13 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
     final IntegerMap<PlayerId> count = new IntegerMap<>();
     units.forEach(unit -> count.add(unit.getOwner(), 1));
     return count;
+  }
+
+  public List<PlayerId> getPlayersByUnitCount() {
+    final IntegerMap<PlayerId> map = getPlayerUnitCounts();
+    final List<PlayerId> players = new ArrayList<>(map.keySet());
+    players.sort(Comparator.<PlayerId>comparingInt(p -> map.getInt(p)).reversed());
+    return players;
   }
 
   public boolean hasUnitsFromMultiplePlayers() {

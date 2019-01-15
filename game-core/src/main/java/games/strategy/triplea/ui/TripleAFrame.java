@@ -386,7 +386,7 @@ public final class TripleAFrame extends JFrame {
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(movePanel.getCustomKeyListeners()));
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getFlagToggleKeyListener(this)));
 
-    addTab("Actions", actionButtons, 'A');
+    addTab("Actions", actionButtons, 'C');
     actionButtons.setBorder(null);
     statsPanel = new StatPanel(data, uiContext);
     addTab("Players", statsPanel, 'P');
@@ -1976,7 +1976,7 @@ public final class TripleAFrame extends JFrame {
         tabsPanel.removeAll();
       }
       setWidgetActivation();
-      addTab("Actions", actionButtons, 'A');
+      addTab("Actions", actionButtons, 'C');
       addTab("Players", statsPanel, 'P');
       addTab("Resources", economyPanel, 'R');
       if (objectivePanel != null && !objectivePanel.isEmpty()) {
