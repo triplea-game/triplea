@@ -173,7 +173,7 @@ class LobbyGamePanel extends JPanel {
 
       final GameDescription gameDescription = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
       if (gameDescription.isBot()) {
-        final Collection<Action> botAdminActions = getBotAdminGamesListContextActions(gameDescription);
+        final Collection<Action> botAdminActions = getBotAdminGamesListContextActions();
         if (!botAdminActions.isEmpty()) {
           menu.addSeparator();
           botAdminActions.forEach(menu::add);
@@ -198,7 +198,7 @@ class LobbyGamePanel extends JPanel {
         SwingAction.of("Boot Game", e -> bootGame()));
   }
 
-  private Collection<Action> getBotAdminGamesListContextActions(final GameDescription description) {
+  private Collection<Action> getBotAdminGamesListContextActions() {
     return Arrays.asList(
         SwingAction.of("Get Chat Log Of Headless Host Bot", e -> getChatLogOfHeadlessHostBot()),
         SwingAction.of("Mute Player In Headless Host Bot", e -> mutePlayerInHeadlessHostBot()),
