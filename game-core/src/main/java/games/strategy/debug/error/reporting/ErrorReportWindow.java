@@ -67,7 +67,7 @@ public class ErrorReportWindow {
         .minSize(300, 350)
         .build();
 
-    final Panels panelBuilder = new Panels(frame, components);
+    final Panels panels = new Panels(frame, components);
 
     frame.add(
         JPanelBuilder.builder()
@@ -76,10 +76,10 @@ public class ErrorReportWindow {
                 JPanelBuilder.builder()
                     .addNorth(components.getDescriptionFieldLabel())
                     .addCenter(components.getDescriptionField())
-                    .addSouth(panelBuilder.getAdditionalInfoFieldPanel().orElseGet(JPanel::new))
+                    .addSouth(panels.getAdditionalInfoFieldPanel().orElseGet(JPanel::new))
                     .build())
             .addSouth(
-                panelBuilder.getButtonsPanel())
+                panels.getButtonsPanel())
             .build());
     frame.setVisible(true);
   }
