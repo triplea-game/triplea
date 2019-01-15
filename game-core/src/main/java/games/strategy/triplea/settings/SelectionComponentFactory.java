@@ -474,11 +474,9 @@ final class SelectionComponentFactory {
       @Override
       public void save(final SaveContext context) {
         final String encodedValue = textField.getText();
-        if (encodedValue.isEmpty()) {
-          context.setValue(clientSetting, null);
-        } else {
-          decode(encodedValue).ifPresent(value -> context.setValue(clientSetting, value));
-        }
+        // FIXME: isValid() is only called when context.setValue() is called; we should change the SelectionComponent
+        // design to simply return a result from this method to avoid a double evaluation of the value validity.
+        context.setValue(clientSetting, encodedValue.isEmpty() ? null : decode(encodedValue).orElse(null));
       }
 
       @Override
