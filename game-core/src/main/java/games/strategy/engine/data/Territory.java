@@ -4,14 +4,21 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import lombok.Getter;
+
 /**
  * A territory on a map.
  */
+@Getter
 public class Territory extends NamedAttachable implements NamedUnitHolder, Comparable<Territory> {
   private static final long serialVersionUID = -6390555051736721082L;
 
   private final boolean water;
+  /**
+   * The territory owner; defaults to {@link PlayerId#NULL_PLAYERID} if the territory is not owned.
+   */
   private PlayerId owner = PlayerId.NULL_PLAYERID;
+  @Getter
   private final UnitCollection units;
 
   public Territory(final String name, final GameData data) {
@@ -24,28 +31,9 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
     units = new UnitCollection(this, getData());
   }
 
-  public boolean isWater() {
-    return water;
-  }
-
-  /**
-   * Returns the territory owner; will be {@link PlayerId#NULL_PLAYERID} if the territory is not owned.
-   */
-  public PlayerId getOwner() {
-    return owner;
-  }
-
   public void setOwner(final @Nullable PlayerId owner) {
     this.owner = Optional.ofNullable(owner).orElse(PlayerId.NULL_PLAYERID);
     getData().notifyTerritoryOwnerChanged(this);
-  }
-
-  /**
-   * Get the units in this territory.
-   */
-  @Override
-  public UnitCollection getUnits() {
-    return units;
   }
 
   /**
