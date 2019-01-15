@@ -1,6 +1,5 @@
 package games.strategy.debug.error.reporting;
 
-import java.awt.Component;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Supplier;
