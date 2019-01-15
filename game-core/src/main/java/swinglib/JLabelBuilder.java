@@ -68,12 +68,8 @@ public class JLabelBuilder {
 
     Optional.ofNullable(alignment)
         .ifPresent(align -> {
-          switch (align) {
-            case LEFT:
-              label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-              break;
-            default:
-              break;
+          if (align == Alignment.LEFT) {
+            label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
           }
         });
 
