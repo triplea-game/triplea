@@ -72,7 +72,6 @@ class ErrorReportWindowModel {
    * then the error report will be uploaded.
    */
   Runnable submitAction(
-      final Component button,
       final Supplier<String> userInputReader,
       final Supplier<String> additionalInformationReader) {
 

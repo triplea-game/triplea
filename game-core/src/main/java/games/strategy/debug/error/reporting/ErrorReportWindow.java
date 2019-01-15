@@ -127,7 +127,7 @@ public class ErrorReportWindow {
       submitButton = JButtonBuilder.builder()
           .title("Upload")
           .toolTip("Upload error report to TripleA server")
-          .actionListener(button -> model.submitAction(button, descriptionField::getText, additionalInfoReader))
+          .actionListener(button -> model.submitAction(descriptionField::getText, additionalInfoReader))
           .biggerFont()
           .build();
 
