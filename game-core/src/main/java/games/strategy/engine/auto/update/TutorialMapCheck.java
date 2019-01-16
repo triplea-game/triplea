@@ -8,8 +8,8 @@ import games.strategy.ui.SwingComponents;
 class TutorialMapCheck {
   static void checkForTutorialMap() {
     final MapDownloadController mapDownloadController = ClientContext.mapDownloadController();
-    final boolean promptToDownloadTutorialMap = mapDownloadController.shouldPromptToDownloadTutorialMap();
-    mapDownloadController.preventPromptToDownloadTutorialMap();
+    final boolean promptToDownloadTutorialMap = MapDownloadController.shouldPromptToDownloadTutorialMap();
+    MapDownloadController.preventPromptToDownloadTutorialMap();
     if (!promptToDownloadTutorialMap) {
       return;
     }
