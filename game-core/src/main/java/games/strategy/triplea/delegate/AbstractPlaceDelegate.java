@@ -1416,7 +1416,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     };
   }
 
-  private Comparator<Unit> getHardestToPlaceWithRequiresUnitsRestrictions(final boolean sortConstructionsToFront) {
+  private static Comparator<Unit> getHardestToPlaceWithRequiresUnitsRestrictions(
+      final boolean sortConstructionsToFront) {
     return (u1, u2) -> {
       if (Objects.equals(u1, u2)) {
         return 0;
