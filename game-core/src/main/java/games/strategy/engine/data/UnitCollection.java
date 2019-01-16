@@ -29,9 +29,9 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
 
   @Override
   public boolean add(final Unit unit) {
-    final boolean result = units.add(unit);
+    units.add(unit);
     holder.notifyChanged();
-    return result;
+    return true;
   }
 
   @Override
