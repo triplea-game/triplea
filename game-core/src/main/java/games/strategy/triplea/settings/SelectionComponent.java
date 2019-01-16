@@ -69,7 +69,7 @@ public interface SelectionComponent<T> {
       /**
        * The value is sensitive and will be masked when displayed in the UI.
        */
-      SENSITIVE;
+      SENSITIVE
     }
   }
 }

@@ -406,7 +406,7 @@ class ProLogWindow extends JDialog {
       newScrollPane.setViewportView(newTextArea);
       newPanel.setLayout(new GridLayout());
       newPanel.add(newScrollPane);
-      logHolderTabbedPane.addTab(Integer.toString(roundNumber) + "-" + name, newPanel);
+      logHolderTabbedPane.addTab(roundNumber + "-" + name, newPanel);
       currentLogTextArea = newTextArea;
     }));
     // Now remove round logging that has 'expired'.

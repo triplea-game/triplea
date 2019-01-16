@@ -2848,7 +2848,7 @@ public class UnitAttachment extends DefaultAttachment {
             + (support.getOffence() && support.getDefence()
                 ? "Attack & Defense"
                 : (support.getOffence() ? "Attack" : "Defense"));
-        final String text = String.valueOf(support.getBonus())
+        final String text = support.getBonus()
             + (moreThanOneSupportType ? " " + support.getBonusType() : "")
             + " "
             + (support.getDice() == null
@@ -3102,7 +3102,7 @@ public class UnitAttachment extends DefaultAttachment {
     if (integerMap != null && integerMap.size() > 0) {
       final StringBuilder sb = new StringBuilder();
       if (integerMap.size() > 4) {
-        sb.append(String.valueOf(integerMap.totalValues()));
+        sb.append(integerMap.totalValues());
       } else {
         for (final Entry<T, Integer> entry : integerMap.entrySet()) {
           sb.append(entry.getValue()).append("x").append(entry.getKey().getName()).append(" ");
@@ -3115,7 +3115,7 @@ public class UnitAttachment extends DefaultAttachment {
   private void addAaDescription(final String startOfKey, final int aa, final int aaMaxDieSides,
       final List<Tuple<String, String>> tuples) {
     if ((getIsAaForCombatOnly() || getIsAaForBombingThisUnitOnly() || getIsAaForFlyOverOnly()) && (aa > 0)) {
-      final String string = String.valueOf(aa) + "/"
+      final String string = aa + "/"
           + (aaMaxDieSides != -1 ? aaMaxDieSides : getData().getDiceSides())
           + " " + getTypeAa()
           + " with " + (getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited")

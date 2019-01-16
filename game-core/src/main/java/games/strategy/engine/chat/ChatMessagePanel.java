@@ -213,7 +213,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   private enum MessageOffset {
-    PREVIOUS, NEXT;
+    PREVIOUS, NEXT
   }
 
   private void cleanupKeyMap() {

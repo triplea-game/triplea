@@ -221,7 +221,7 @@ final class GameMenu extends JMenu {
           panelDice.add(label);
           final StringBuilder diceString = new StringBuilder();
           for (int i = 0; i < dice.length; i++) {
-            diceString.append(String.valueOf(dice[i] + 1)).append((i == dice.length - 1) ? "" : ", ");
+            diceString.append((dice[i] + 1)).append((i == dice.length - 1) ? "" : ", ");
           }
           final JTextField diceList = new JTextField(diceString.toString());
           diceList.setEditable(false);
