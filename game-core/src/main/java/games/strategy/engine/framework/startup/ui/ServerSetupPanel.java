@@ -86,11 +86,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       }
 
       @Override
-      public String getSupportEmail() {
-        return "";
-      }
-
-      @Override
       public boolean isPlayer() {
         return true;
       }
@@ -376,7 +371,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       return localCheckBox;
     }
 
-    public JCheckBox getEnabledPlayer() {
+    JCheckBox getEnabledPlayer() {
       return enabledCheckBox;
     }
 

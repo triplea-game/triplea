@@ -3,7 +3,6 @@ package games.strategy.engine.framework;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
@@ -274,7 +273,6 @@ public final class GameRunner {
     commands.add("-D" + LOBBY_PORT + "="
         + messengers.getMessenger().getRemoteServerSocketAddress().getPort());
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
-    commands.add("-D" + LOBBY_GAME_HOSTED_BY + "=" + messengers.getMessenger().getLocalNode().getName());
     if (password != null && password.length() > 0) {
       commands.add("-D" + SERVER_PASSWORD + "=" + password);
     }

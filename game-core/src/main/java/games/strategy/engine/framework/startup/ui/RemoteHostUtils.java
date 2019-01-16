@@ -110,7 +110,7 @@ final class RemoteHostUtils implements IRemoteHostUtils {
     if (instance == null) {
       return "Not a headless host bot!";
     }
-    return instance.remoteShutdown(hashedPassword, salt);
+    return HeadlessGameServer.remoteShutdown(hashedPassword, salt);
   }
 
   @Override
@@ -122,6 +122,6 @@ final class RemoteHostUtils implements IRemoteHostUtils {
     if (instance == null) {
       return "Not a headless host bot!";
     }
-    return instance.getSalt();
+    return HeadlessGameServer.getSalt();
   }
 }

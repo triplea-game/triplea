@@ -5,19 +5,20 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.time.Instant;
-import java.util.Optional;
 
-import com.google.common.base.Strings;
+import org.triplea.game.server.HeadlessGameServer;
 
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 import lombok.Builder;
+import lombok.ToString;
 
 // TODO: move this class to lobby.common upon next incompatible release; it is shared between client and server
 
 /**
  * NOTE - this class is not thread safe. Modifications should be done holding an external lock.
  */
+@ToString
 public class GameDescription implements Externalizable, Cloneable {
   private static final long serialVersionUID = 508593169141567546L;
 
@@ -72,7 +73,6 @@ public class GameDescription implements Externalizable, Cloneable {
   @Deprecated
   private String engineVersion;
   private String gameVersion;
-  private String botSupportEmail = "";
 
   // if you add a field, add it to write/read object as well for Externalizable
   public GameDescription() {}
@@ -90,8 +90,7 @@ public class GameDescription implements Externalizable, Cloneable {
       final String comment,
       final boolean passworded,
       final String engineVersion,
-      final String gameVersion,
-      final String botSupportEmail) {
+      final String gameVersion) {
     this.hostName = hostName;
     this.hostedBy = hostedBy;
     this.port = port;
@@ -104,7 +103,6 @@ public class GameDescription implements Externalizable, Cloneable {
     this.passworded = passworded;
     this.engineVersion = engineVersion;
     this.gameVersion = gameVersion;
-    this.botSupportEmail = Strings.nullToEmpty(botSupportEmail);
   }
 
   @Override
@@ -186,12 +184,9 @@ public class GameDescription implements Externalizable, Cloneable {
     return gameVersion;
   }
 
-  public Optional<String> getBotSupportEmail() {
-    return Optional.ofNullable(Strings.emptyToNull(botSupportEmail));
-  }
-
   public boolean isBot() {
-    return getBotSupportEmail().isPresent();
+    return hostName.startsWith(HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
+        && HeadlessGameServer.BOT_GAME_HOST_COMMENT.equals(comment);
   }
 
   public String getRound() {
@@ -256,7 +251,8 @@ public class GameDescription implements Externalizable, Cloneable {
     passworded = in.readBoolean();
     engineVersion = in.readUTF();
     gameVersion = in.readUTF();
-    botSupportEmail = in.readUTF();
+    // TODO: was bot support email, delete this when ready to break 1.9.0 network compatibility
+    in.readUTF();
   }
 
   @Override
@@ -274,12 +270,7 @@ public class GameDescription implements Externalizable, Cloneable {
     out.writeBoolean(passworded);
     out.writeUTF(engineVersion);
     out.writeUTF(gameVersion);
-    out.writeUTF(botSupportEmail);
-  }
-
-  @Override
-  public String toString() {
-    return "Game Hosted By:" + hostName + " gameName:" + gameName + " at:" + hostedBy.getAddress() + ":" + port
-        + " playerCount:" + playerCount;
+    // TODO: was bot support email, delete this when ready to break 1.9.0 network compatibility
+    out.writeUTF("");
   }
 }

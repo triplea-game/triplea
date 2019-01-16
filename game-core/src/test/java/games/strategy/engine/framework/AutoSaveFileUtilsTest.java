@@ -37,11 +37,7 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
     private static final String PLAYER_NAME = "playerName";
 
     private void givenHostName(final String hostName) {
-      System.setProperty(CliProperties.LOBBY_GAME_HOSTED_BY, hostName);
-    }
-
-    private void givenHostNameNotDefined() {
-      System.clearProperty(CliProperties.LOBBY_GAME_HOSTED_BY);
+      System.setProperty(CliProperties.TRIPLEA_NAME, hostName);
     }
 
     private void givenPlayerName(final String playerName) {
@@ -54,7 +50,6 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
 
     @AfterEach
     void clearSystemProperties() {
-      givenHostNameNotDefined();
       givenPlayerNameNotDefined();
     }
 
@@ -66,7 +61,6 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
     @Test
     void shouldPrefixFileNameWithPlayerNameWhenHeadless() {
       givenPlayerName(PLAYER_NAME);
-      givenHostName(HOST_NAME);
 
       assertThat(getAutoSaveFileName(BASE_FILE_NAME, true), is(PLAYER_NAME + "_" + BASE_FILE_NAME));
     }
@@ -82,7 +76,6 @@ final class AutoSaveFileUtilsTest extends AbstractClientSettingTestCase {
     @Test
     void shouldNotPrefixFileNameWhenHeadlessAndPlayerNameNotDefinedAndHostNameNotDefined() {
       givenPlayerNameNotDefined();
-      givenHostNameNotDefined();
 
       assertThat(getAutoSaveFileName(BASE_FILE_NAME, true), is(BASE_FILE_NAME));
     }

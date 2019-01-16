@@ -104,7 +104,7 @@ class LobbyGamePanel extends JPanel {
     add(toolBar, BorderLayout.SOUTH);
   }
 
-  boolean isAdmin() {
+  private boolean isAdmin() {
     return ((IModeratorController) messengers.getRemoteMessenger()
         .getRemote(IModeratorController.REMOTE_NAME)).isAdmin();
   }
@@ -173,7 +173,7 @@ class LobbyGamePanel extends JPanel {
 
       final GameDescription gameDescription = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
       if (gameDescription.isBot()) {
-        final Collection<Action> botAdminActions = getBotAdminGamesListContextActions(gameDescription);
+        final Collection<Action> botAdminActions = getBotAdminGamesListContextActions();
         if (!botAdminActions.isEmpty()) {
           menu.addSeparator();
           botAdminActions.forEach(menu::add);
@@ -198,30 +198,14 @@ class LobbyGamePanel extends JPanel {
         SwingAction.of("Boot Game", e -> bootGame()));
   }
 
-  private Collection<Action> getBotAdminGamesListContextActions(final GameDescription description) {
+  private Collection<Action> getBotAdminGamesListContextActions() {
     return Arrays.asList(
-        getSupportInfoHeadlessHostBotAction(description),
         SwingAction.of("Get Chat Log Of Headless Host Bot", e -> getChatLogOfHeadlessHostBot()),
         SwingAction.of("Mute Player In Headless Host Bot", e -> mutePlayerInHeadlessHostBot()),
         SwingAction.of("Boot Player In Headless Host Bot", e -> bootPlayerInHeadlessHostBot()),
         SwingAction.of("Ban Player In Headless Host Bot", e -> banPlayerInHeadlessHostBot()),
         SwingAction.of("Remote Stop Game Headless Host Bot", e -> stopGameHeadlessHostBot()),
         SwingAction.of("Remote Shutdown Headless Host Bot", e -> shutDownHeadlessHostBot()));
-  }
-
-  private static Action getSupportInfoHeadlessHostBotAction(final GameDescription gameDescription) {
-    final String supportEmail = gameDescription.getBotSupportEmail()
-        .orElseThrow(() -> new IllegalArgumentException("game description is not for a bot"));
-    final String text = "Support Email for this bot is as follows. "
-        + "\n(Please copy the email address below and manually email them ONLY if something is seriously "
-        + "\nwrong with the bot, like it needs to be restarted because it is down and not working at all.) "
-        + "\n\nEmail: \n" + supportEmail;
-    return SwingAction.of("Show Support Information/Email Of Headless Host Bot", e -> {
-      final JTextPane textPane = new JTextPane();
-      textPane.setEditable(false);
-      textPane.setText(text);
-      JOptionPane.showMessageDialog(null, textPane, "Bot Support Info", JOptionPane.INFORMATION_MESSAGE);
-    });
   }
 
   private void joinGame() {
@@ -234,7 +218,7 @@ class LobbyGamePanel extends JPanel {
     GameRunner.joinGame(description, messengers, getParent());
   }
 
-  protected void hostGame() {
+  private void hostGame() {
     final ServerOptions options = new ServerOptions(JOptionPane.getFrameForComponent(this),
         messengers.getMessenger().getLocalNode().getName(), 3300, true);
     options.setLocationRelativeTo(JOptionPane.getFrameForComponent(this));

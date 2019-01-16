@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.framework.headless.game.server.HeadlessGameServerCliParam;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 
@@ -77,7 +76,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
     final Path mapFolder = Paths.get("/path", "to", "maps");
 
     ArgParser
-        .handleCommandLineArgs("-P" + HeadlessGameServerCliParam.MAP_FOLDER.getLabel() + "=" + mapFolder.toString());
+        .handleCommandLineArgs("-P" + CliProperties.MAP_FOLDER + "=" + mapFolder);
 
     assertThat(ClientSetting.mapFolderOverride.getValueOrThrow(), is(mapFolder));
   }

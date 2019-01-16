@@ -1,7 +1,6 @@
 package games.strategy.engine.framework;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_HOSTED_BY;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.GameDataFileUtils.addExtension;
 import static games.strategy.util.StringUtils.capitalize;
@@ -33,7 +32,7 @@ public final class AutoSaveFileUtils {
   @VisibleForTesting
   static String getAutoSaveFileName(final String baseFileName, final boolean headless) {
     if (headless) {
-      final String prefix = System.getProperty(TRIPLEA_NAME, System.getProperty(LOBBY_GAME_HOSTED_BY, ""));
+      final String prefix = System.getProperty(TRIPLEA_NAME, "");
       if (!prefix.isEmpty()) {
         return prefix + "_" + baseFileName;
       }
