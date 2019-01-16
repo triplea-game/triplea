@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 import javax.swing.DefaultListCellRenderer;
@@ -35,6 +36,8 @@ import com.google.common.base.Strings;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.SwingComponents;
+import games.strategy.util.function.ThrowingFunction;
+import lombok.extern.java.Log;
 import swinglib.JButtonBuilder;
 import swinglib.JComboBoxBuilder;
 import swinglib.JPanelBuilder;
@@ -44,6 +47,7 @@ import swinglib.JPanelBuilder;
  * For example, if we have a setting that needs a number, we could create an integer text field with this
  * class. This class takes care of the UI code to ensure we render the proper swing component with validation.
  */
+@Log
 final class SelectionComponentFactory {
   private SelectionComponentFactory() {}
 
@@ -412,8 +416,32 @@ final class SelectionComponentFactory {
   }
 
   static SelectionComponent<JComponent> textField(final ClientSetting<String> clientSetting) {
-    return new AlwaysValidInputSelectionComponent() {
-      final JTextField textField = new JTextField(clientSetting.getValue().orElse(""), 20);
+    return textField(clientSetting, value -> value, encodedValue -> encodedValue, "");
+  }
+
+  static <T> SelectionComponent<JComponent> textField(
+      final ClientSetting<T> clientSetting,
+      final ThrowingFunction<T, String, ValueEncodingException> encodeValue,
+      final ThrowingFunction<String, T, ValueEncodingException> decodeValue,
+      final String validValueDescription) {
+    return new SelectionComponent<JComponent>() {
+      private final JTextField textField = new JTextField(encode(clientSetting::getValue), 20);
+
+      private String encode(final Supplier<Optional<T>> valueSupplier) {
+        return valueSupplier.get()
+            .map(value -> {
+              try {
+                return encodeValue.apply(value);
+              } catch (final ValueEncodingException e) {
+                log.log(
+                    Level.FINE,
+                    String.format("Failed to encode value '%s' from client setting '%s'", value, clientSetting),
+                    e);
+                return null;
+              }
+            })
+            .orElse("");
+      }
 
       @Override
       public JComponent getUiComponent() {
@@ -421,19 +449,44 @@ final class SelectionComponentFactory {
       }
 
       @Override
+      public boolean isValid() {
+        final String encodedValue = textField.getText();
+        return encodedValue.isEmpty() || decode(encodedValue).isPresent();
+      }
+
+      private Optional<T> decode(final String encodedValue) {
+        try {
+          return Optional.of(decodeValue.apply(encodedValue));
+        } catch (final ValueEncodingException e) {
+          log.log(
+              Level.FINE,
+              String.format("Failed to decode value '%s' for client setting '%s'", encodedValue, clientSetting),
+              e);
+          return Optional.empty();
+        }
+      }
+
+      @Override
+      public String validValueDescription() {
+        return validValueDescription;
+      }
+
+      @Override
       public void save(final SaveContext context) {
-        final String value = textField.getText();
-        context.setValue(clientSetting, value.isEmpty() ? null : value);
+        final String encodedValue = textField.getText();
+        // FIXME: isValid() is only called when context.setValue() is called; we should change the SelectionComponent
+        // design to simply return a result from this method to avoid a double evaluation of the value validity.
+        context.setValue(clientSetting, encodedValue.isEmpty() ? null : decode(encodedValue).orElse(null));
       }
 
       @Override
       public void reset() {
-        textField.setText(clientSetting.getValue().orElse(""));
+        textField.setText(encode(clientSetting::getValue));
       }
 
       @Override
       public void resetToDefault() {
-        textField.setText(clientSetting.getDefaultValue().orElse(""));
+        textField.setText(encode(clientSetting::getDefaultValue));
       }
     };
   }
@@ -600,6 +653,14 @@ final class SelectionComponentFactory {
     @Override
     public String validValueDescription() {
       return "";
+    }
+  }
+
+  static final class ValueEncodingException extends Exception {
+    private static final long serialVersionUID = 4544282783923154696L;
+
+    ValueEncodingException(final Throwable cause) {
+      super(cause);
     }
   }
 }

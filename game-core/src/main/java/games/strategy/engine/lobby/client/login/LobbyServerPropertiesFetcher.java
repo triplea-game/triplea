@@ -82,13 +82,13 @@ public final class LobbyServerPropertiesFetcher {
   static Optional<LobbyServerProperties> getTestOverrideProperties(
       final GameSetting<String> testLobbyHostSetting,
       final GameSetting<Integer> testLobbyPortSetting,
-      final GameSetting<String> testLobbyHttpUri) {
+      final GameSetting<URI> testLobbyHttpUri) {
     if (testLobbyHostSetting.isSet() && testLobbyPortSetting.isSet() && testLobbyHttpUri.isSet()) {
       return Optional.of(
           LobbyServerProperties.builder()
               .host(testLobbyHostSetting.getValueOrThrow())
               .port(testLobbyPortSetting.getValueOrThrow())
-              .httpServerUri(URI.create(testLobbyHttpUri.getValueOrThrow()))
+              .httpServerUri(testLobbyHttpUri.getValueOrThrow())
               .build());
     }
 
@@ -106,7 +106,7 @@ public final class LobbyServerPropertiesFetcher {
     lobbyProps.ifPresent(props -> {
       ClientSetting.lobbyLastUsedHost.setValue(props.getHost());
       ClientSetting.lobbyLastUsedPort.setValue(props.getPort());
-      ClientSetting.lobbyLastUsedHttpHostUri.setValue(props.getHttpServerUri().toString());
+      ClientSetting.lobbyLastUsedHttpHostUri.setValue(props.getHttpServerUri());
       ClientSetting.flush();
     });
 
@@ -121,7 +121,7 @@ public final class LobbyServerPropertiesFetcher {
       return Optional.of(LobbyServerProperties.builder()
           .host(ClientSetting.lobbyLastUsedHost.getValueOrThrow())
           .port(ClientSetting.lobbyLastUsedPort.getValueOrThrow())
-          .httpServerUri(URI.create(ClientSetting.lobbyLastUsedHttpHostUri.getValueOrThrow()))
+          .httpServerUri(ClientSetting.lobbyLastUsedHttpHostUri.getValueOrThrow())
           .build());
     }
 

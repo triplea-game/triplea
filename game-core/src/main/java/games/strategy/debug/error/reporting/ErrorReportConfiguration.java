@@ -28,16 +28,15 @@ class ErrorReportConfiguration {
   }
 
   @VisibleForTesting
-  static BiConsumer<JFrame, UserErrorReport> newReportHandler(final Supplier<Optional<String>> clientSettingProvider) {
+  static BiConsumer<JFrame, UserErrorReport> newReportHandler(final Supplier<Optional<URI>> clientSettingProvider) {
     return httpLobbyUri(clientSettingProvider)
         .map(ErrorReportConfiguration::uploadActionAsBackgroundTask)
         .orElse(ErrorReportUploadAction.OFFLINE_STRATEGY);
   }
 
-  private static Optional<URI> httpLobbyUri(final Supplier<Optional<String>> clientSettingProvider) {
+  private static Optional<URI> httpLobbyUri(final Supplier<Optional<URI>> clientSettingProvider) {
     return Optional.ofNullable(
         clientSettingProvider.get()
-            .map(URI::create)
             .orElseGet(() -> LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
                 .fetchLobbyServerProperties()
                 .map(LobbyServerProperties::getHttpServerUri)
