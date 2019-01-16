@@ -4,8 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Properties;
 
-import javax.annotation.Nullable;
-
 /**
  * Wrapper class around System.getProperties(), use this class to set/get System properties.
  * Prefer to use system props only for command line usage. TripleA code base has made pretty extensive use
