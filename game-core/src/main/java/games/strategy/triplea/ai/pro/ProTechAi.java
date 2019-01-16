@@ -200,12 +200,6 @@ final class ProTechAi {
             int availOther = 0;
             for (final Unit candidateTransport : transports) {
               final Collection<Unit> thisTransUnits = TransportTracker.transporting(candidateTransport);
-              if (thisTransUnits == null) {
-                availInf += 2;
-                availOther += 1;
-                continue;
-              }
-
               int inf = 2;
               int other = 1;
               for (final Unit checkUnit : thisTransUnits) {
