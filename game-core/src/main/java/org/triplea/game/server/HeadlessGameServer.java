@@ -628,9 +628,9 @@ public class HeadlessGameServer {
   }
 
   private static boolean isInvalidPortNumber(final String testValue) {
-    try{
+    try {
       return Integer.parseInt(testValue) <= 0;
-    } catch(final NumberFormatException e) {
+    } catch (final NumberFormatException e) {
       return true;
     }
   }
