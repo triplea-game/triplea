@@ -246,7 +246,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
               throw new SelectionComponentFactory.ValueEncodingException(e);
             }
           },
-          "Must be a valid URI (e.g. \"http://localhost:5678)\"");
+          "Must be a valid URI (e.g. \"http://localhost:5678\")");
     }
   },
 
