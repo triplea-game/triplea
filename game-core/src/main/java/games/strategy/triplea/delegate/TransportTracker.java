@@ -25,7 +25,7 @@ import games.strategy.triplea.util.TransportUtils;
  */
 public class TransportTracker {
 
-  public static int getCost(final Collection<Unit> units) {
+  private static int getCost(final Collection<Unit> units) {
     return TransportUtils.getTransportCost(units);
   }
 
@@ -38,14 +38,14 @@ public class TransportTracker {
   private TransportTracker() {}
 
   /**
-   * Returns the collection of units that the given transport is transporting. Could be null.
+   * Returns the collection of units that the given transport is transporting.
    */
   public static Collection<Unit> transporting(final Unit transport) {
     return new ArrayList<>(((TripleAUnit) transport).getTransporting());
   }
 
   /**
-   * Returns the collection of units that the given transport is transporting. Could be null.
+   * Returns the collection of units that the given transport is transporting.
    */
   public static Collection<Unit> transporting(final Unit transport, final Collection<Unit> transportedUnitsPossible) {
     return new ArrayList<>(((TripleAUnit) transport).getTransporting(transportedUnitsPossible));
@@ -80,7 +80,7 @@ public class TransportTracker {
    * This method is identical to {@link #transporting(Collection)} except that it considers all elements in
    * {@code units} as the possible units to transport (see {@link #transporting(Unit, Collection)}).
    */
-  public static Map<Unit, Collection<Unit>> transportingWithAllPossibleUnits(final Collection<Unit> units) {
+  static Map<Unit, Collection<Unit>> transportingWithAllPossibleUnits(final Collection<Unit> units) {
     return transporting(units, transport -> transporting(transport, units));
   }
 
