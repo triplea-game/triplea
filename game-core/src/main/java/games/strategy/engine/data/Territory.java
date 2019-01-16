@@ -18,7 +18,6 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
    * The territory owner; defaults to {@link PlayerId#NULL_PLAYERID} if the territory is not owned.
    */
   private PlayerId owner = PlayerId.NULL_PLAYERID;
-  @Getter
   private final UnitCollection units;
 
   public Territory(final String name, final GameData data) {
@@ -34,6 +33,14 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   public void setOwner(final @Nullable PlayerId owner) {
     this.owner = Optional.ofNullable(owner).orElse(PlayerId.NULL_PLAYERID);
     getData().notifyTerritoryOwnerChanged(this);
+  }
+
+   /**
+   * Get the units in this territory.
+   */
+  @Override
+  public UnitCollection getUnits() {
+    return units;
   }
 
   /**
