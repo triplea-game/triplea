@@ -1402,7 +1402,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     };
   }
 
-  private Comparator<Unit> getUnitConstructionComparator() {
+  private static Comparator<Unit> getUnitConstructionComparator() {
     return (u1, u2) -> {
       final boolean construction1 = Matches.unitIsConstruction().test(u1);
       final boolean construction2 = Matches.unitIsConstruction().test(u2);
