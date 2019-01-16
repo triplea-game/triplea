@@ -25,7 +25,7 @@ final class GameDescriptionTest {
     }
 
     @Test
-    void isBotShouldReturnFalseWhen(final GameDescription shouldNotBeBot) {
+    void isBotShouldReturnFalseWhen() {
       Arrays.asList(
           // host name must have correct prefix
           GameDescription.builder()
@@ -43,7 +43,7 @@ final class GameDescriptionTest {
               .hostName("mangling-the-prefix-" + HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
               .build())
           .forEach(
-              shouldNotBot -> assertThat(shouldNotBeBot.toString(), shouldNotBeBot.isBot(), is(false)));
+              shouldNotBeBot -> assertThat(shouldNotBeBot.toString(), shouldNotBeBot.isBot(), is(false)));
     }
   }
 }
