@@ -12,7 +12,6 @@ import java.util.Observer;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -138,8 +137,6 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
     panel.validate();
     panel.repaint();
   }
-
-  public abstract JComponent getDrawable();
 
   public abstract boolean isCancelButtonVisible();
 }

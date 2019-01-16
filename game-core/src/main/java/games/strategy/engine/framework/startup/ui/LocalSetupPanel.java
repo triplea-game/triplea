@@ -6,8 +6,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
 
-import javax.swing.JComponent;
-
 import org.triplea.game.startup.SetupModel;
 
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -64,10 +62,5 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
   @Override
   public Optional<ILauncher> getLauncher() {
     return Optional.of(LauncherFactory.getLocalLaunchers(gameSelectorModel, playerTypes));
-  }
-
-  @Override
-  public JComponent getDrawable() {
-    return this;
   }
 }
