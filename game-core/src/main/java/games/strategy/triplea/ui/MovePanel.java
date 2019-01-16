@@ -1232,9 +1232,6 @@ public class MovePanel extends AbstractMovePanel {
 
   private final MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
     @Override
-    public void territorySelected(final Territory territory, final MouseDetails me) {}
-
-    @Override
     public void mouseMoved(final @Nullable Territory territory, final MouseDetails me) {
       if (!getListening()) {
         return;
