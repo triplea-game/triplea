@@ -1,13 +1,11 @@
 package games.strategy.engine.auto.update;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.ui.SwingComponents;
 
 class TutorialMapCheck {
   static void checkForTutorialMap() {
-    final MapDownloadController mapDownloadController = ClientContext.mapDownloadController();
     final boolean promptToDownloadTutorialMap = MapDownloadController.shouldPromptToDownloadTutorialMap();
     MapDownloadController.preventPromptToDownloadTutorialMap();
     if (!promptToDownloadTutorialMap) {

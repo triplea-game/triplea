@@ -23,9 +23,6 @@ import lombok.extern.java.Log;
 @Log
 public class MapDownloadController {
 
-  public MapDownloadController() {}
-
-
   /**
    * Prompts user to download map updates if maps are out of date.
    */
