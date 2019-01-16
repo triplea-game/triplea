@@ -37,7 +37,7 @@ class RemoveBattleRecordsChange extends Change {
     // This only occurs when serialization went badly, or something cannot be serialized.
     if (recordsToRemove == null) {
       throw new IllegalStateException(
-          "Records cannot be null (most likely caused by improper or impossible serialization): " + recordsToRemove);
+          "Records cannot be null (most likely caused by improper or impossible serialization)");
     }
     return "Adding Battle Records: " + recordsToRemove;
   }
