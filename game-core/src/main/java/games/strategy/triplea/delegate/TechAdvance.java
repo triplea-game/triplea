@@ -166,23 +166,22 @@ public abstract class TechAdvance extends NamedAttachable {
   /**
    * Creates and returns an instance of the well-known technology advance with the specified class name.
    *
-   * @param s The fully-qualified name of the technology advance class.
-   * @param data
+   * @param technologyName The fully-qualified name of the technology advance class.
    *
    * @throws IllegalArgumentException If {@code s} is not a well-known technology advance.
    * @throws IllegalStateException If an error occurs while creating the new technology advance instance.
    */
-  public static TechAdvance findDefinedAdvanceAndCreateAdvance(final String s, final GameData data) {
-    final Class<? extends TechAdvance> clazz = ALL_PREDEFINED_TECHNOLOGIES.get(s);
+  public static TechAdvance findDefinedAdvanceAndCreateAdvance(final String technologyName, final GameData data) {
+    final Class<? extends TechAdvance> clazz = ALL_PREDEFINED_TECHNOLOGIES.get(technologyName);
     if (clazz == null) {
-      throw new IllegalArgumentException(s + " is not a valid technology");
+      throw new IllegalArgumentException(technologyName + " is not a valid technology");
     }
     final TechAdvance ta;
     try {
       final Constructor<? extends TechAdvance> constructor = clazz.getConstructor(preDefinedTechConstructorParameter);
       ta = constructor.newInstance(data);
     } catch (final Exception e) {
-      throw new IllegalStateException(s + " is not a valid technology or could not be instantiated", e);
+      throw new IllegalStateException(technologyName + " is not a valid technology or could not be instantiated", e);
     }
     return ta;
   }
