@@ -147,7 +147,7 @@ public class SwingComponents {
     return tabbedPane;
   }
 
-  public static void newButtonGroup(final JRadioButton... radioButtons) {
+  public static void createButtonGroup(final JRadioButton... radioButtons) {
     final ButtonGroup group = new ButtonGroup();
     for (final JRadioButton radioButton : radioButtons) {
       group.add(radioButton);

@@ -89,7 +89,7 @@ final class SelectionComponentFactory {
 
       @Override
       public JComponent getUiComponent() {
-        SwingComponents.newButtonGroup(noneButton, systemButton, userButton);
+        SwingComponents.createButtonGroup(noneButton, systemButton, userButton);
         enableUserSettings.actionPerformed(null);
         userButton.addActionListener(enableUserSettings);
         noneButton.addActionListener(enableUserSettings);
@@ -258,7 +258,7 @@ final class SelectionComponentFactory {
       public JComponent getUiComponent() {
         yesButton.setSelected(initialSelection);
         noButton.setSelected(!initialSelection);
-        SwingComponents.newButtonGroup(yesButton, noButton);
+        SwingComponents.createButtonGroup(yesButton, noButton);
         return buttonPanel;
       }
 
