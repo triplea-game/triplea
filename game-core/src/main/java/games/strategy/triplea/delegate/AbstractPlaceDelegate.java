@@ -283,7 +283,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * @param at territory where the new units get placed
    */
   private void performPlaceFrom(final Territory producer, final Collection<Unit> placeableUnits, final Territory at,
-                                final PlayerId player) {
+      final PlayerId player) {
     final CompositeChange change = new CompositeChange();
     // make sure we can place consuming units
     final boolean didIt = canWeConsumeUnits(placeableUnits, at, true, change);
@@ -1297,7 +1297,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return unitsAllowed;
   }
 
-  int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap) {
+  static int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap) {
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
     if (!ua.getIsConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1
         || ua.getMaxConstructionsPerTypePerTerr() < 1) {
@@ -1520,7 +1520,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * The rule is that new fighters can be produced on new carriers. This does
    * not allow for fighters to be produced on old carriers. THIS ISN'T CORRECT.
    */
-  private String validateNewAirCanLandOnCarriers(final Territory to, final Collection<Unit> units) {
+  private static String validateNewAirCanLandOnCarriers(final Territory to, final Collection<Unit> units) {
     final int cost = AirMovementValidator.carrierCost(units);
     int capacity = AirMovementValidator.carrierCapacity(units, to);
     capacity += AirMovementValidator.carrierCapacity(to.getUnits().getUnits(), to);
@@ -1589,12 +1589,12 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     return false;
   }
 
-  private boolean isPlacementAllowedInCapturedTerritory(final PlayerId player) {
+  private static boolean isPlacementAllowedInCapturedTerritory(final PlayerId player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     return ra != null && ra.getPlacementCapturedTerritory();
   }
 
-  private boolean isPlacementInCapitalRestricted(final PlayerId player) {
+  private static boolean isPlacementInCapitalRestricted(final PlayerId player) {
     final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     return ra != null && ra.getPlacementInCapitalRestricted();
   }
