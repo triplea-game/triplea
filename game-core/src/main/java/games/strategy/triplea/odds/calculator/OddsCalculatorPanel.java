@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -202,6 +203,8 @@ class OddsCalculatorPanel extends JPanel {
         GridBagConstraints.NONE, new Insets(0, gap, gap, 0), 0, 0));
     attackAndDefend.add(defenderCombo, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(0, 0, gap / 2, gap), 0, 0));
+    attackAndDefend.add(new JPanel(), new GridBagConstraints(4, row0, 1, 1, 1.0, 0, GridBagConstraints.EAST,
+        GridBagConstraints.NONE, new Insets(0, 0, gap / 2, gap), 0, 0));
     row0++;
     attackAndDefend.add(attackerUnitsTotalNumber, new GridBagConstraints(0, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(0, gap, 0, 0), 0, 0));
@@ -220,18 +223,26 @@ class OddsCalculatorPanel extends JPanel {
         GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, gap / 2, 0), 0, 0));
     attackAndDefend.add(defenderUnitsTotalPower, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(0, gap / 2, gap / 2, gap * 2), 0, 0));
-    row0++;
+
+
+    final JPanel unitPanels = new JPanel();
+    unitPanels.setLayout(new GridBagLayout());
     final JScrollPane attackerScroll = new JScrollPane(attackingUnitsPanel);
     attackerScroll.setBorder(null);
     attackerScroll.getViewport().setBorder(null);
     final JScrollPane defenderScroll = new JScrollPane(defendingUnitsPanel);
     defenderScroll.setBorder(null);
     defenderScroll.getViewport().setBorder(null);
-    attackAndDefend.add(attackerScroll, new GridBagConstraints(0, row0, 2, 1, 1, 1, GridBagConstraints.NORTH,
+    unitPanels.add(attackerScroll, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
         GridBagConstraints.BOTH, new Insets(10, gap, gap, gap), 0, 0));
-    attackAndDefend.add(defenderScroll, new GridBagConstraints(2, row0, 2, 1, 1, 1, GridBagConstraints.NORTH,
+    unitPanels.add(defenderScroll, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
         GridBagConstraints.BOTH, new Insets(10, gap, gap, gap), 0, 0));
-    main.add(attackAndDefend, BorderLayout.CENTER);
+
+    final JPanel leftPanel = new JPanel();
+    leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+    leftPanel.add(attackAndDefend);
+    leftPanel.add(unitPanels);
+    main.add(leftPanel, BorderLayout.CENTER);
 
     final JPanel resultsText = new JPanel();
     resultsText.setLayout(new GridBagLayout());
@@ -662,6 +673,12 @@ class OddsCalculatorPanel extends JPanel {
         CollectionUtils.getMatches(units,
             Matches.unitCanBeInBattle(true, isLand(), 1, hasMaxRounds(isLand(), data), false)),
         isLand());
+    invalidate();
+    validate();
+    revalidate();
+    if (getParent() != null) {
+      getParent().invalidate();
+    }
   }
 
   void addDefendingUnits(final List<Unit> unitsToAdd) {
@@ -677,6 +694,12 @@ class OddsCalculatorPanel extends JPanel {
         getDefender(),
         CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(false, isLand(), 1, false)),
         isLand());
+    invalidate();
+    validate();
+    revalidate();
+    if (getParent() != null) {
+      getParent().invalidate();
+    }
   }
 
   private boolean isLand() {

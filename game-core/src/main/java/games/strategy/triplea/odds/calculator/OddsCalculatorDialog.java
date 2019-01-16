@@ -63,11 +63,11 @@ public class OddsCalculatorDialog extends JDialog {
     if (lastPosition == null) {
       dialog.setLocationRelativeTo(taFrame);
       if (dialog.getHeight() > MAX_HEIGHT) {
-        dialog.setSize(new Dimension(dialog.getWidth(), MAX_HEIGHT));
+        dialog.setPreferredSize(new Dimension(dialog.getWidth(), MAX_HEIGHT));
       }
     } else {
       dialog.setLocation(lastPosition);
-      dialog.setSize(lastShape);
+      dialog.setPreferredSize(lastShape);
     }
     dialog.setVisible(true);
     taFrame.getUiContext().addShutdownWindow(dialog);
