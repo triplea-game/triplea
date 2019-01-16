@@ -68,7 +68,7 @@ class ProPurchaseAi {
   }
 
   void repair(final int initialPusRemaining, final IPurchaseDelegate purchaseDelegate, final GameData data,
-              final PlayerId player) {
+      final PlayerId player) {
     int pusRemaining = initialPusRemaining;
     ProLogger.info("Repairing factories with PUsRemaining=" + pusRemaining);
 
