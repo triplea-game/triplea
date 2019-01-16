@@ -40,10 +40,9 @@ class AaInMoveUtil implements Serializable {
 
   AaInMoveUtil() {}
 
-  public AaInMoveUtil initialize(final IDelegateBridge bridge) {
+  public void initialize(final IDelegateBridge bridge) {
     this.bridge = bridge;
     this.player = bridge.getPlayerId();
-    return this;
   }
 
   private GameData getData() {

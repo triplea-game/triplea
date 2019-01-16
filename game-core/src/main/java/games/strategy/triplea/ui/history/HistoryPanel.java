@@ -281,12 +281,12 @@ public class HistoryPanel extends JPanel {
   // remember where to start collapsing
   TreePath lastParent = null;
 
-  private boolean addToStayExpanded(final Enumeration<TreePath> paths) {
+  private void addToStayExpanded(final Enumeration<TreePath> paths) {
     final Collection<TreePath> expandPaths = new ArrayList<>();
     while (paths.hasMoreElements()) {
       expandPaths.add(paths.nextElement());
     }
-    return stayExpandedPaths.addAll(expandPaths);
+    stayExpandedPaths.addAll(expandPaths);
   }
 
   /**

@@ -10,13 +10,12 @@ import org.triplea.test.common.Integration;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
 @Integration
-public class ClientContextIntegrationTest extends AbstractClientSettingTestCase {
+class ClientContextIntegrationTest extends AbstractClientSettingTestCase {
 
   @Test
-  public void verifyClientContext() {
+  void verifyClientContext() {
     assertThat(ClientContext.downloadCoordinator(), notNullValue());
     assertThat(ClientContext.engineVersion(), notNullValue());
-    assertThat(ClientContext.mapDownloadController(), notNullValue());
 
     assertThat(ClientContext.getMapDownloadList(), notNullValue());
     assertThat(ClientContext.getMapDownloadList().isEmpty(), is(false));

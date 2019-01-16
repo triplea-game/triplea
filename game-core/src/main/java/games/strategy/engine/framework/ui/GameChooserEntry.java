@@ -11,10 +11,8 @@ import games.strategy.engine.data.GameParseException;
  * An installed game (map) that is selectable by the user from the Game Chooser dialog.
  */
 public interface GameChooserEntry extends Comparable<GameChooserEntry> {
-  /**
-   * Returns a {@link GameData} instance resulting from fully parsing the XML associated with this game.
-   */
-  GameData fullyParseGameData() throws GameParseException;
+
+  void fullyParseGameData() throws GameParseException;
 
   boolean isGameDataLoaded();
 

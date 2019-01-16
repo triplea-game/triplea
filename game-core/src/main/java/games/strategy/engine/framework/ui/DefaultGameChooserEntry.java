@@ -39,14 +39,14 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
   }
 
   @Override
-  public GameData fullyParseGameData() throws GameParseException {
+  public void fullyParseGameData() throws GameParseException {
     // TODO: We should be setting this in the the constructor. At this point, you have to call methods in the
     // correct order for things to work, and that is bads.
     gameData = null;
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(url);
     if (!inputStream.isPresent()) {
-      return gameData;
+      return;
     }
 
     try (InputStream input = inputStream.get()) {
@@ -62,7 +62,6 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
       log.log(Level.SEVERE, "Could not parse:" + url, e);
       throw new GameParseException(e);
     }
-    return gameData;
   }
 
   @Override

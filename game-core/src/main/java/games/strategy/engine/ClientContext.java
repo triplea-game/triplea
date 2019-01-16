@@ -7,7 +7,6 @@ import org.triplea.common.config.product.ProductConfiguration;
 import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.engine.framework.map.download.DownloadRunnable;
-import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.Version;
@@ -47,17 +46,12 @@ public final class ClientContext {
   private static final ClientContext instance = new ClientContext();
 
   private final ProductConfiguration productConfiguration = new ProductConfiguration();
-  private final MapDownloadController mapDownloadController = new MapDownloadController();
   private final DownloadCoordinator downloadCoordinator = new DownloadCoordinator();
 
   private ClientContext() {}
 
   public static DownloadCoordinator downloadCoordinator() {
     return instance.downloadCoordinator;
-  }
-
-  public static MapDownloadController mapDownloadController() {
-    return instance.mapDownloadController;
   }
 
   public static Version engineVersion() {

@@ -18,7 +18,7 @@ import games.strategy.util.Triple;
 public interface IEditDelegate extends IRemote, IPersistentDelegate {
   boolean getEditMode();
 
-  String setEditMode(boolean editMode);
+  void setEditMode(boolean editMode);
 
   String removeUnits(Territory t, Collection<Unit> units);
 

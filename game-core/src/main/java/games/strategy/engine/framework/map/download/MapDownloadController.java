@@ -23,14 +23,10 @@ import lombok.extern.java.Log;
 @Log
 public class MapDownloadController {
 
-  public MapDownloadController() {}
-
-
   /**
-   * Return true if all locally downloaded maps are latest versions, false if any can are out of date or their version
-   * not recognized.
+   * Prompts user to download map updates if maps are out of date.
    */
-  public static boolean checkDownloadedMapsAreLatest() {
+  public static void checkDownloadedMapsAreLatest() {
     try {
       final List<DownloadFileDescription> allDownloads = ClientContext.getMapDownloadList();
       final Collection<String> outOfDateMapNames = getOutOfDateMapNames(allDownloads);
@@ -44,12 +40,10 @@ public class MapDownloadController {
         text.append("</ul></html>");
         SwingComponents.promptUser("Update Your Maps?", text.toString(),
             () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(outOfDateMapNames));
-        return true;
       }
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Error while checking for map updates", e);
     }
-    return false;
   }
 
   private static Collection<String> getOutOfDateMapNames(final Collection<DownloadFileDescription> downloads) {
@@ -111,7 +105,7 @@ public class MapDownloadController {
    *
    * @return {@code true} if the user should be prompted to download the tutorial map; otherwise {@code false}.
    */
-  public boolean shouldPromptToDownloadTutorialMap() {
+  public static boolean shouldPromptToDownloadTutorialMap() {
     return shouldPromptToDownloadTutorialMap(getTutorialMapPreferences(), getUserMaps());
   }
 
@@ -160,7 +154,7 @@ public class MapDownloadController {
   /**
    * Prevents the user from being prompted to download the tutorial map.
    */
-  public void preventPromptToDownloadTutorialMap() {
+  public static void preventPromptToDownloadTutorialMap() {
     preventPromptToDownloadTutorialMap(getTutorialMapPreferences());
   }
 

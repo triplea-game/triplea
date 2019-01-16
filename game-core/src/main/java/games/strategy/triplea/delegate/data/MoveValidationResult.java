@@ -52,20 +52,19 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   /**
    * Removes the specified unit from the list of unresolved units associated with the specified warning.
    */
-  public boolean removeUnresolvedUnit(final String warning, final Unit unit) {
+  public void removeUnresolvedUnit(final String warning, final Unit unit) {
     final int index = unresolvedUnitWarnings.indexOf(warning);
     if (index == -1) {
-      return false;
+      return;
     }
     final Collection<Unit> unresolvedUnits = unresolvedUnitsList.get(index);
     if (!unresolvedUnits.remove(unit)) {
-      return false;
+      return;
     }
     if (unresolvedUnits.isEmpty()) {
       unresolvedUnitsList.remove(unresolvedUnits);
       unresolvedUnitWarnings.remove(warning);
     }
-    return true;
   }
 
   public void setError(final String error) {
