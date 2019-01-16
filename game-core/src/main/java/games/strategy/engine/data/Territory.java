@@ -35,7 +35,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
     getData().notifyTerritoryOwnerChanged(this);
   }
 
-   /**
+  /**
    * Get the units in this territory.
    */
   @Override
