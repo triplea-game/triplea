@@ -32,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.GameData;
@@ -184,12 +185,12 @@ class OddsCalculatorPanel extends JPanel {
         + "include Bombarding sea units for land battles.");
     defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
         + "include Bombarding sea units for land battles.");
-    setLayout(new BorderLayout());
 
+    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     final JPanel main = new JPanel();
     main.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-    add(main, BorderLayout.CENTER);
     main.setLayout(new BorderLayout());
+    add(main);
 
     final JPanel attackAndDefend = new JPanel();
     attackAndDefend.setLayout(new GridBagLayout());
@@ -202,8 +203,6 @@ class OddsCalculatorPanel extends JPanel {
     attackAndDefend.add(new JLabel("Defender: "), new GridBagConstraints(2, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(0, gap, gap, 0), 0, 0));
     attackAndDefend.add(defenderCombo, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
-        GridBagConstraints.NONE, new Insets(0, 0, gap / 2, gap), 0, 0));
-    attackAndDefend.add(new JPanel(), new GridBagConstraints(4, row0, 1, 1, 1.0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(0, 0, gap / 2, gap), 0, 0));
     row0++;
     attackAndDefend.add(attackerUnitsTotalNumber, new GridBagConstraints(0, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
@@ -223,24 +222,27 @@ class OddsCalculatorPanel extends JPanel {
         GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, gap, gap / 2, 0), 0, 0));
     attackAndDefend.add(defenderUnitsTotalPower, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(0, gap / 2, gap / 2, gap * 2), 0, 0));
+    final JPanel attackAndDefendAlignLeft = new JPanel();
+    attackAndDefendAlignLeft.setLayout(new BorderLayout());
+    attackAndDefendAlignLeft.add(attackAndDefend, BorderLayout.WEST);
 
     final JPanel unitPanels = new JPanel();
-    unitPanels.setLayout(new GridBagLayout());
+    unitPanels.setLayout(new BoxLayout(unitPanels, BoxLayout.X_AXIS));
     final JScrollPane attackerScroll = new JScrollPane(attackingUnitsPanel);
     attackerScroll.setBorder(null);
     attackerScroll.getViewport().setBorder(null);
+    attackerScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     final JScrollPane defenderScroll = new JScrollPane(defendingUnitsPanel);
     defenderScroll.setBorder(null);
     defenderScroll.getViewport().setBorder(null);
-    unitPanels.add(attackerScroll, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
-        GridBagConstraints.BOTH, new Insets(10, gap, gap, gap), 0, 0));
-    unitPanels.add(defenderScroll, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
-        GridBagConstraints.BOTH, new Insets(10, gap, gap, gap), 0, 0));
+    defenderScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    unitPanels.add(attackerScroll);
+    unitPanels.add(defenderScroll);
 
     final JPanel leftPanel = new JPanel();
-    leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-    leftPanel.add(attackAndDefend);
-    leftPanel.add(unitPanels);
+    leftPanel.setLayout(new BorderLayout());
+    leftPanel.add(attackAndDefendAlignLeft, BorderLayout.NORTH);
+    leftPanel.add(unitPanels, BorderLayout.CENTER);
     main.add(leftPanel, BorderLayout.CENTER);
 
     final JPanel resultsText = new JPanel();
@@ -342,14 +344,11 @@ class OddsCalculatorPanel extends JPanel {
     resultsScroll.setPreferredSize(resultsScrollDimensions);
     main.add(resultsScroll, BorderLayout.EAST);
 
-    final JPanel south = new JPanel();
-    south.setLayout(new BorderLayout());
     final JPanel buttons = new JPanel();
     buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
     final JButton closeButton = new JButton("Close");
     buttons.add(closeButton);
-    south.add(buttons, BorderLayout.SOUTH);
-    add(south, BorderLayout.SOUTH);
+    add(buttons);
 
     defenderCombo.addActionListener(e -> {
       data.acquireReadLock();

@@ -3,6 +3,8 @@ package games.strategy.triplea.odds.calculator;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -25,9 +27,7 @@ import games.strategy.ui.SwingComponents;
  */
 public class OddsCalculatorDialog extends JDialog {
   private static final long serialVersionUID = -7625420355087851930L;
-  private static final int MAX_HEIGHT = 640;
   private static Point lastPosition;
-  private static Dimension lastShape;
   private static List<OddsCalculatorDialog> instances = new ArrayList<>();
   private final OddsCalculatorPanel panel;
 
@@ -54,6 +54,16 @@ public class OddsCalculatorDialog extends JDialog {
       }
     });
 
+    dialog.addComponentListener(new ComponentAdapter() {
+      @Override
+      public void componentResized(final ComponentEvent e) {
+        final Dimension size = dialog.getSize();
+        size.width = Math.min(size.width, taFrame.getWidth() - 50);
+        size.height = Math.min(size.height, taFrame.getHeight() - 50);
+        dialog.setSize(size);
+      }
+    });
+
     // close when hitting the escape key
     SwingComponents.addEscapeKeyListener(dialog, () -> {
       dialog.setVisible(false);
@@ -62,12 +72,8 @@ public class OddsCalculatorDialog extends JDialog {
     dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     if (lastPosition == null) {
       dialog.setLocationRelativeTo(taFrame);
-      if (dialog.getHeight() > MAX_HEIGHT) {
-        dialog.setPreferredSize(new Dimension(dialog.getWidth(), MAX_HEIGHT));
-      }
     } else {
       dialog.setLocation(lastPosition);
-      dialog.setPreferredSize(lastShape);
     }
     dialog.setVisible(true);
     taFrame.getUiContext().addShutdownWindow(dialog);
@@ -85,9 +91,10 @@ public class OddsCalculatorDialog extends JDialog {
     if (instances.isEmpty()) {
       return;
     }
-    final OddsCalculatorPanel currentPanel = instances.get(instances.size() - 1).panel;
-    currentPanel
-        .addDefendingUnits(t.getUnits().getMatches(Matches.alliedUnit(currentPanel.getDefender(), t.getData())));
+    final OddsCalculatorDialog currentDialog = instances.get(instances.size() - 1);
+    currentDialog.panel
+        .addDefendingUnits(t.getUnits().getMatches(Matches.alliedUnit(currentDialog.panel.getDefender(), t.getData())));
+    currentDialog.pack();
   }
 
   OddsCalculatorDialog(final GameData data, final UiContext uiContext, final JFrame parent, final Territory location) {
@@ -102,7 +109,6 @@ public class OddsCalculatorDialog extends JDialog {
   public void dispose() {
     instances.remove(this);
     lastPosition = new Point(getLocation());
-    lastShape = new Dimension(getSize());
     panel.shutdown();
     super.dispose();
   }
