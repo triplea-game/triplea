@@ -22,7 +22,6 @@ final class FindTerritoryDialog extends JDialog {
   private final MapPanel mapPanel;
   private final Point originalMapPanelOffset;
   private Result result = Result.CANCEL;
-  private final JComboBox<Territory> territoryComboBox;
 
   FindTerritoryDialog(final TripleAFrame owner) {
     super(owner, "Find Territory", true);
@@ -32,7 +31,7 @@ final class FindTerritoryDialog extends JDialog {
 
     final Collection<Territory> territories = owner.getGame().getData().getMap().getTerritories();
     final @Nullable Territory initialSelectedTerritory = mapPanel.getCurrentTerritory();
-    territoryComboBox = JComboBoxBuilder.builder(Territory.class)
+    final JComboBox<Territory> territoryComboBox = JComboBoxBuilder.builder(Territory.class)
         .items(territories.stream().sorted().collect(Collectors.toList()))
         .nullableSelectedItem(initialSelectedTerritory)
         .enableAutoComplete()
