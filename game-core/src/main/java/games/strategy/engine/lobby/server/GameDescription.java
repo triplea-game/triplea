@@ -251,6 +251,8 @@ public class GameDescription implements Externalizable, Cloneable {
     passworded = in.readBoolean();
     engineVersion = in.readUTF();
     gameVersion = in.readUTF();
+    // TODO: was bot support email, delete this when ready to break 1.9.0 network compatibility
+    in.readUTF();
   }
 
   @Override
