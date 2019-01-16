@@ -224,7 +224,6 @@ class OddsCalculatorPanel extends JPanel {
     attackAndDefend.add(defenderUnitsTotalPower, new GridBagConstraints(3, row0, 1, 1, 0, 0, GridBagConstraints.EAST,
         GridBagConstraints.NONE, new Insets(0, gap / 2, gap / 2, gap * 2), 0, 0));
 
-
     final JPanel unitPanels = new JPanel();
     unitPanels.setLayout(new GridBagLayout());
     final JScrollPane attackerScroll = new JScrollPane(attackingUnitsPanel);
@@ -673,12 +672,6 @@ class OddsCalculatorPanel extends JPanel {
         CollectionUtils.getMatches(units,
             Matches.unitCanBeInBattle(true, isLand(), 1, hasMaxRounds(isLand(), data), false)),
         isLand());
-    invalidate();
-    validate();
-    revalidate();
-    if (getParent() != null) {
-      getParent().invalidate();
-    }
   }
 
   void addDefendingUnits(final List<Unit> unitsToAdd) {
@@ -694,12 +687,6 @@ class OddsCalculatorPanel extends JPanel {
         getDefender(),
         CollectionUtils.getMatches(units, Matches.unitCanBeInBattle(false, isLand(), 1, false)),
         isLand());
-    invalidate();
-    validate();
-    revalidate();
-    if (getParent() != null) {
-      getParent().invalidate();
-    }
   }
 
   private boolean isLand() {
