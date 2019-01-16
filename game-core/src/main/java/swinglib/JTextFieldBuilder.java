@@ -1,9 +1,5 @@
 package swinglib;
 
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -16,7 +12,6 @@ import javax.swing.text.PlainDocument;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-import games.strategy.ui.SwingAction;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -43,12 +38,10 @@ public class JTextFieldBuilder {
   private String toolTip;
   private Integer columns;
   private Integer maxLength;
-  private String componentName;
 
   private Consumer<JTextComponent> textEnteredAction;
   private boolean enabled = true;
   private boolean readOnly;
-  private Consumer<JTextField> onFocusAction;
 
 
   /**
@@ -69,17 +62,6 @@ public class JTextFieldBuilder {
     Optional.ofNullable(maxLength)
         .map(JTextFieldLimit::new)
         .ifPresent(textField::setDocument);
-
-    Optional.ofNullable(componentName)
-        .ifPresent(textField::setName);
-
-    Optional.ofNullable(onFocusAction)
-        .ifPresent(action -> textField.addFocusListener(new FocusAdapter() {
-          @Override
-          public void focusGained(final FocusEvent e) {
-            action.accept(textField);
-          }
-        }));
 
     Optional.ofNullable(text)
         .ifPresent(textField::setText);
@@ -177,17 +159,6 @@ public class JTextFieldBuilder {
   }
 
   /**
-   * Adds a listener action to the text field that is fired whenever a key is typed.
-   */
-  public static void keyTypedListener(final Consumer<KeyEvent> listener, final JTextField... fields) {
-    Preconditions.checkNotNull(listener);
-    Preconditions.checkArgument(fields.length > 0);
-    Preconditions.checkNotNull(fields[0]);
-
-    Arrays.asList(fields).forEach(field -> field.addKeyListener(SwingAction.keyReleaseListener(listener)));
-  }
-
-  /**
    * A ready only text field can't be changed, but the user can still click on it and select the text.
    */
   public JTextFieldBuilder readOnly() {
@@ -202,21 +173,4 @@ public class JTextFieldBuilder {
     this.enabled = false;
     return this;
   }
-
-  public JTextFieldBuilder componentName(final String name) {
-    this.componentName = name;
-    return this;
-  }
-
-  public void onFocusAction(final Consumer<JTextField> onFocusAction) {
-    this.onFocusAction = onFocusAction;
-  }
-
-  public JTextFieldBuilder selectAllTextOnFocus() {
-    onFocusAction(field -> {
-      field.select(0, field.getText().length());
-    });
-    return this;
-  }
-
 }
