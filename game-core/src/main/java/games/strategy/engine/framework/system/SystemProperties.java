@@ -65,7 +65,7 @@ public final class SystemProperties {
     return getOperatingSystem().toLowerCase().contains("windows");
   }
 
-  public static @Nullable void setJavaNetUseSystemProxies(final String value) {
+  public static void setJavaNetUseSystemProxies(final String value) {
     System.setProperty("java.net.useSystemProxies", checkNotNull(value));
   }
 }
