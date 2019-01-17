@@ -140,9 +140,6 @@ public class PlayerUnitsPanel extends JPanel {
         final UnitPanel upanel = new UnitPanel(uiContext, category, costs);
         upanel.addChangeListener(this::notifyListeners);
         panel.add(upanel);
-        panel.invalidate();
-        panel.validate();
-        panel.revalidate();
         unitPanels.add(upanel);
       }
     }
