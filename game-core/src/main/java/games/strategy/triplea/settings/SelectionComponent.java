@@ -12,13 +12,6 @@ public interface SelectionComponent<T> {
   T getUiComponent();
 
   /**
-   * Reads the value set in the UI and return true if it is valid, false otherwise.
-   */
-  boolean isValid();
-
-  String validValueDescription();
-
-  /**
    * Saves values stored in the UI components to the underlying game settings.
    */
   void save(SaveContext context);
@@ -34,6 +27,39 @@ public interface SelectionComponent<T> {
    * The execution context for the {@link SelectionComponent#save(SaveContext)} method.
    */
   interface SaveContext {
+    /**
+     * Reports an error when failing to set the insensitive value for the specified game setting (e.g. if the value is
+     * invalid or malformed in some way).
+     *
+     * @param gameSetting The game setting whose value failed to be set.
+     * @param message A message providing guidance to the user as to what constitutes a valid value.
+     * @param value The new setting value that could not be set. The value may be in an encoded form and does not have
+     *        to have the same type as the game setting (e.g. if the {@code String} from a text field could not be
+     *        parsed into an {@code Integer} for a {@code GameSetting<Integer>}).
+     */
+    default void reportError(final GameSetting<?> gameSetting, final String message, final @Nullable Object value) {
+      reportError(gameSetting, message, value, ValueSensitivity.INSENSITIVE);
+    }
+
+    /**
+     * Reports an error when failing to set the value with the specified sensitivity for the specified game setting
+     * (e.g. if the value is invalid or malformed in some way).
+     *
+     * @param gameSetting The game setting whose value failed to be set.
+     * @param message A message providing guidance to the user as to what constitutes a valid value.
+     * @param value The new setting value that could not be set. The value may be in an encoded form and does not have
+     *        to have the same type as the game setting (e.g. if the {@code String} from a text field could not be
+     *        parsed into an {@code Integer} for a {@code GameSetting<Integer>}).
+     * @param valueSensitivity The sensitivity of the new setting value to disclosure. Use
+     *        {@link ValueSensitivity#INSENSITIVE} if the value can be displayed to the user in the UI; otherwise use
+     *        {@link ValueSensitivity#SENSITIVE} if the value should be masked before it is displayed to the user.
+     */
+    void reportError(
+        GameSetting<?> gameSetting,
+        String message,
+        @Nullable Object value,
+        ValueSensitivity valueSensitivity);
+
     /**
      * Sets the insensitive value for the specified game setting. Selection components must call this method to change a
      * setting value and must not call {@link GameSetting#setValue(Object)} directly.

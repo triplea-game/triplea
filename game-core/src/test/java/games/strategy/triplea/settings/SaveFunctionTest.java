@@ -11,11 +11,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.swing.JComponent;
@@ -53,14 +51,21 @@ final class SaveFunctionTest {
     }
 
     private void givenValidationResults(final boolean first, final boolean second) {
-      when(mockSelectionComponent.isValid()).thenReturn(first);
-      whenSelectionComponentSave(mockSelectionComponent, context -> context.setValue(mockSetting, TestData.fakeValue));
-      if (first) {
-        when(mockSetting.getValue()).thenReturn(Optional.empty());
-      }
+      whenSelectionComponentSave(mockSelectionComponent, context -> {
+        if (first) {
+          context.setValue(mockSetting, TestData.fakeValue);
+        } else {
+          context.reportError(mockSetting, "first failed", TestData.fakeValue);
+        }
+      });
 
-      when(mockSelectionComponent2.isValid()).thenReturn(second);
-      whenSelectionComponentSave(mockSelectionComponent2, context -> context.setValue(mockSetting, "abc"));
+      whenSelectionComponentSave(mockSelectionComponent2, context -> {
+        if (second) {
+          context.setValue(mockSetting, "abc");
+        } else {
+          context.reportError(mockSetting, "second failed", "abc");
+        }
+      });
     }
 
     private void whenSelectionComponentSave(
@@ -98,12 +103,9 @@ final class SaveFunctionTest {
 
     @Test
     void valueSavedWhenValid(@Mock final Runnable flushSettingsAction) {
-      when(mockSelectionComponent.isValid()).thenReturn(true);
       whenSelectionComponentSave(mockSelectionComponent, context -> context.setValue(mockSetting, TestData.fakeValue));
-      when(mockSetting.getValue()).thenReturn(Optional.empty());
-      when(mockSelectionComponent2.isValid()).thenReturn(false);
 
-      SaveFunction.saveSettings(Arrays.asList(mockSelectionComponent, mockSelectionComponent2), flushSettingsAction);
+      SaveFunction.saveSettings(Arrays.asList(mockSelectionComponent), flushSettingsAction);
 
       verify(flushSettingsAction).run();
       verify(mockSetting).setValue(TestData.fakeValue);
@@ -111,11 +113,14 @@ final class SaveFunctionTest {
 
     @Test
     void noSettingsSavedIfAllInvalid(@Mock final Runnable flushSettingsAction) {
-      when(mockSelectionComponent.isValid()).thenReturn(false);
+      whenSelectionComponentSave(
+          mockSelectionComponent,
+          context -> context.reportError(mockSetting, "failed", TestData.fakeValue));
 
       SaveFunction.saveSettings(Collections.singletonList(mockSelectionComponent), flushSettingsAction);
 
       verify(flushSettingsAction, never()).run();
+      verify(mockSetting, never()).setValue(TestData.fakeValue);
     }
   }
 

@@ -36,6 +36,7 @@ import com.google.common.base.Strings;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.SwingComponents;
+import games.strategy.util.OptionalUtils;
 import games.strategy.util.function.ThrowingFunction;
 import lombok.extern.java.Log;
 import swinglib.JButtonBuilder;
@@ -87,7 +88,9 @@ final class SelectionComponentFactory {
           portText.setEnabled(true);
         } else {
           hostText.setEnabled(false);
+          hostText.setText("");
           portText.setEnabled(false);
+          portText.setText("");
         }
       };
 
@@ -103,48 +106,50 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public boolean isValid() {
-        return !userButton.isSelected() || (isHostTextValid() && isPortTextValid());
-      }
-
-      private boolean isHostTextValid() {
-        return !Strings.nullToEmpty(hostText.getText()).trim().isEmpty();
-      }
-
-      private boolean isPortTextValid() {
-        final String value = Strings.nullToEmpty(portText.getText()).trim();
-        if (value.isEmpty()) {
-          return false;
-        }
-
-        try {
-          return Integer.parseInt(value) > 0;
-        } catch (final NumberFormatException e) {
-          return false;
-        }
-      }
-
-      @Override
-      public String validValueDescription() {
-        return "Proxy host can be a network name or an IP address, port should be number, usually 4 to 5 digits.";
-      }
-
-      @Override
       public void save(final SaveContext context) {
         if (noneButton.isSelected()) {
           context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE);
+          context.setValue(proxyHostClientSetting, null);
+          context.setValue(proxyPortClientSetting, null);
         } else if (systemButton.isSelected()) {
           context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
+          context.setValue(proxyHostClientSetting, null);
+          context.setValue(proxyPortClientSetting, null);
           HttpProxy.updateSystemProxy();
         } else {
-          context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+          final String encodedHost = hostText.getText().trim();
+          final Optional<String> optionalHost = parseHost(encodedHost);
+          OptionalUtils.ifEmpty(optionalHost, () -> context.reportError(
+              proxyHostClientSetting,
+              "must be a network name or an IP address",
+              encodedHost));
+
+          final String encodedPort = portText.getText().trim();
+          final Optional<Integer> optionalPort = parsePort(encodedPort);
+          OptionalUtils.ifEmpty(optionalPort, () -> context.reportError(
+              proxyPortClientSetting,
+              "must be a positive integer, usually 4 to 5 digits",
+              encodedPort));
+
+          OptionalUtils.ifAllPresent(optionalHost, optionalPort, (host, port) -> {
+            context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+            context.setValue(proxyHostClientSetting, host);
+            context.setValue(proxyPortClientSetting, port);
+          });
         }
+      }
 
-        final String host = hostText.getText().trim();
-        context.setValue(proxyHostClientSetting, host.isEmpty() ? null : host);
+      private Optional<String> parseHost(final String encodedHost) {
+        return !encodedHost.isEmpty() ? Optional.of(encodedHost) : Optional.empty();
+      }
 
-        final String encodedPort = portText.getText().trim();
-        context.setValue(proxyPortClientSetting, encodedPort.isEmpty() ? null : Integer.valueOf(encodedPort));
+      private Optional<Integer> parsePort(final String encodedPort) {
+        try {
+          final Integer port = Integer.valueOf(encodedPort);
+          return (port > 0) ? Optional.of(port) : Optional.empty();
+        } catch (final NumberFormatException e) {
+          return Optional.empty();
+        }
       }
 
       @Override
@@ -213,16 +218,6 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public boolean isValid() {
-        return true;
-      }
-
-      @Override
-      public String validValueDescription() {
-        return "";
-      }
-
-      @Override
       public void save(final SaveContext context) {
         context.setValue(clientSetting, getComponentValue());
       }
@@ -248,7 +243,7 @@ final class SelectionComponentFactory {
    * yes/no radio buttons.
    */
   static SelectionComponent<JComponent> booleanRadioButtons(final ClientSetting<Boolean> clientSetting) {
-    return new AlwaysValidInputSelectionComponent() {
+    return new SelectionComponent<JComponent>() {
       final boolean initialSelection = clientSetting.getValueOrThrow();
       final JRadioButton yesButton = new JRadioButton("True");
       final JRadioButton noButton = new JRadioButton("False");
@@ -297,7 +292,7 @@ final class SelectionComponentFactory {
   private static SelectionComponent<JComponent> selectFile(
       final ClientSetting<Path> clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
-    return new AlwaysValidInputSelectionComponent() {
+    return new SelectionComponent<JComponent>() {
       final JTextField field = new JTextField(SelectionComponentUiUtils.toString(clientSetting.getValue()), 20);
       final JButton button = JButtonBuilder.builder()
           .title("Select")
@@ -350,7 +345,7 @@ final class SelectionComponentFactory {
       final Function<T, Optional<E>> convertSettingValueToComboBoxItem,
       final Function<E, T> convertComboBoxItemToSettingValue,
       final Function<E, ?> convertComboBoxItemToDisplayValue) {
-    return new AlwaysValidInputSelectionComponent() {
+    return new SelectionComponent<JComponent>() {
       private final JComboBox<E> comboBox = newComboBox();
 
       private JComboBox<E> newComboBox() {
@@ -423,7 +418,7 @@ final class SelectionComponentFactory {
       final ClientSetting<T> clientSetting,
       final ThrowingFunction<T, String, ValueEncodingException> encodeValue,
       final ThrowingFunction<String, T, ValueEncodingException> decodeValue,
-      final String validValueDescription) {
+      final String invalidValueMessage) {
     return new SelectionComponent<JComponent>() {
       private final JTextField textField = new JTextField(encode(clientSetting::getValue), 20);
 
@@ -449,34 +444,17 @@ final class SelectionComponentFactory {
       }
 
       @Override
-      public boolean isValid() {
-        final String encodedValue = textField.getText();
-        return encodedValue.isEmpty() || decode(encodedValue).isPresent();
-      }
-
-      private Optional<T> decode(final String encodedValue) {
-        try {
-          return Optional.of(decodeValue.apply(encodedValue));
-        } catch (final ValueEncodingException e) {
-          log.log(
-              Level.FINE,
-              String.format("Failed to decode value '%s' for client setting '%s'", encodedValue, clientSetting),
-              e);
-          return Optional.empty();
-        }
-      }
-
-      @Override
-      public String validValueDescription() {
-        return validValueDescription;
-      }
-
-      @Override
       public void save(final SaveContext context) {
         final String encodedValue = textField.getText();
-        // FIXME: isValid() is only called when context.setValue() is called; we should change the SelectionComponent
-        // design to simply return a result from this method to avoid a double evaluation of the value validity.
-        context.setValue(clientSetting, encodedValue.isEmpty() ? null : decode(encodedValue).orElse(null));
+        if (encodedValue.isEmpty()) {
+          context.setValue(clientSetting, null);
+        } else {
+          try {
+            context.setValue(clientSetting, decodeValue.apply(encodedValue));
+          } catch (final ValueEncodingException e) {
+            context.reportError(clientSetting, invalidValueMessage, encodedValue);
+          }
+        }
       }
 
       @Override
@@ -504,7 +482,7 @@ final class SelectionComponentFactory {
       final ClientSetting<Boolean> tlsSetting,
       final ClientSetting<char[]> usernameSetting,
       final ClientSetting<char[]> passwordSetting) {
-    return new AlwaysValidInputSelectionComponent() {
+    return new SelectionComponent<JComponent>() {
 
       private final List<IEmailSender.EmailProviderSetting> knownProviders = Arrays.asList(
           new IEmailSender.EmailProviderSetting("Gmail", "smtp.gmail.com", 587, true),
@@ -599,7 +577,7 @@ final class SelectionComponentFactory {
   static SelectionComponent<JComponent> forumPosterSettings(
       final ClientSetting<char[]> usernameSetting,
       final ClientSetting<char[]> passwordSetting) {
-    return new AlwaysValidInputSelectionComponent() {
+    return new SelectionComponent<JComponent>() {
 
       private final JTextField usernameField = new JTextField(credentialToString(usernameSetting::getValue), 20);
       private final JPasswordField passwordField =
@@ -642,18 +620,6 @@ final class SelectionComponentFactory {
         passwordField.setText(credentialToString(passwordSetting::getValue));
       }
     };
-  }
-
-  private abstract static class AlwaysValidInputSelectionComponent implements SelectionComponent<JComponent> {
-    @Override
-    public boolean isValid() {
-      return true;
-    }
-
-    @Override
-    public String validValueDescription() {
-      return "";
-    }
   }
 
   static final class ValueEncodingException extends Exception {
