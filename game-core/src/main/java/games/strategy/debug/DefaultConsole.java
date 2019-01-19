@@ -36,16 +36,24 @@ import lombok.extern.java.Log;
 @Log
 final class DefaultConsole implements Console {
   private static final ImmutableCollection<LogLevelItem> LOG_LEVEL_ITEMS = ImmutableList.of(
-      new LogLevelItem("Errors and Warnings", Level.WARNING),
-      new LogLevelItem("Errors, Warnings and Informational Messages", Level.INFO),
-      new LogLevelItem("All Messages", Level.ALL));
+          new LogLevelItem("All (Full Debug)", Level.ALL),
+          new LogLevelItem("Info And Errors", Level.INFO),
+          new LogLevelItem("Errors Only", Level.WARNING));
 
   private final JTextArea textArea = new JTextArea(20, 50);
   private final JFrame frame = new JFrame("TripleA Console");
-  private Level logLevel = Level.WARNING;
+  private Level logLevel = Level.INFO;
+  private final JToggleButton logLevelButton;
 
   DefaultConsole() {
-    setLogLevel(getDefaultLogLevel());
+    final Level level = Level.parse(ClientSetting.loggingVerbosity.getValueOrThrow());
+    logLevelButton = new JToggleButton();
+    setLogLevel(level);
+    logLevelButton.addItemListener(e -> {
+      if (e.getStateChange() == ItemEvent.SELECTED) {
+        createAndShowLogLevelMenu((JComponent) e.getSource(), logLevelButton);
+      }
+    });
 
     ClientSetting.showConsole.addListener(gameSetting -> {
       if (gameSetting.getValueOrThrow()) {
@@ -74,7 +82,7 @@ final class DefaultConsole implements Console {
       Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, select);
     }));
     actions.add(SwingAction.of("Clear", e -> textArea.setText("")));
-    actions.add(newLogLevelButton());
+    actions.add(logLevelButton);
     SwingUtilities.invokeLater(frame::pack);
 
     if (ClientSetting.showConsole.getValueOrThrow()) {
@@ -82,30 +90,10 @@ final class DefaultConsole implements Console {
     }
   }
 
-  private static Level getDefaultLogLevel() {
-    final String logLevelName = ClientSetting.loggingVerbosity.getValueOrThrow();
-    try {
-      return Level.parse(logLevelName);
-    } catch (final IllegalArgumentException e) {
-      log.warning("Client setting " + ClientSetting.loggingVerbosity + " contains malformed log level ("
-          + logLevelName + "); defaulting to WARNING");
-      return Level.WARNING;
-    }
-  }
-
   private void setLogLevel(final Level level) {
     logLevel = level;
     LoggerManager.setLogLevel(level);
-  }
-
-  private AbstractButton newLogLevelButton() {
-    final JToggleButton button = new JToggleButton("Log Level ▼");
-    button.addItemListener(e -> {
-      if (e.getStateChange() == ItemEvent.SELECTED) {
-        createAndShowLogLevelMenu((JComponent) e.getSource(), button);
-      }
-    });
-    return button;
+    logLevelButton.setText("Log Level (" + level + ")");
   }
 
   private void createAndShowLogLevelMenu(final JComponent component, final AbstractButton button) {
