@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import games.strategy.engine.ClientFileSystemHelper;
@@ -28,24 +29,24 @@ public class DownloadRunnable {
    * Returns a parsed list of parsed downloadable maps. If initialized with a URL then we will do a network fetch and
    * parse those contents, otherwise (for testing) we assume a local file reference and parse that.
    */
-  public List<DownloadFileDescription> getDownloads() {
-    return beginsWithHttpProtocol(urlString) ? downloadFile() : readLocalFile();
+  public Optional<List<DownloadFileDescription>> getDownloads() {
+    return beginsWithHttpProtocol(urlString) ? downloadFile() : Optional.of(readLocalFile());
   }
 
   private static boolean beginsWithHttpProtocol(final String urlString) {
     return urlString.startsWith("http://") || urlString.startsWith("https://");
   }
 
-  private List<DownloadFileDescription> downloadFile() {
+  private Optional<List<DownloadFileDescription>> downloadFile() {
     try {
       final File tempFile = ClientFileSystemHelper.newTempFile();
       tempFile.deleteOnExit();
       DownloadConfiguration.contentReader().downloadToFile(urlString, tempFile);
       final byte[] contents = Files.readAllBytes(tempFile.toPath());
-      return IoUtils.readFromMemory(contents, DownloadFileParser::parse);
+      return Optional.of(IoUtils.readFromMemory(contents, DownloadFileParser::parse));
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Error - will show an empty list of downloads. Failed to get files from: " + urlString, e);
-      return new ArrayList<>();
+      log.log(Level.SEVERE, "Error - check internet connection, unable to download list of maps.", e);
+      return Optional.empty();
     }
   }
 
