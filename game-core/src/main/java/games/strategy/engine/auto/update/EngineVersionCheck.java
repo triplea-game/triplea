@@ -26,10 +26,8 @@ final class EngineVersionCheck {
         return;
       }
 
-      final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
-      if (latestEngineOut == null) {
-        return;
-      }
+      final EngineVersionProperties latestEngineOut = new EngineVersionProperties();
+
       if (ClientContext.engineVersion().isLessThan(latestEngineOut.getLatestVersionOut())) {
         SwingUtilities
             .invokeLater(() -> EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(),
