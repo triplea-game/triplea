@@ -137,7 +137,7 @@ public class RevisedTest {
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     final String error = moveDelegate(gameData).move(sz1.getUnits().getUnits(), new Route(sz1, sz11, sz9));
-    assertTrue(error != null);
+    assertNotNull(error);
   }
 
   @Test
@@ -303,7 +303,7 @@ public class RevisedTest {
     final String error = moveDelegate(gameData).move(uk.getUnits().getMatches(Matches.unitIsOwnedBy(americans)),
         new Route(uk, sz2), sz2.getUnits().getMatches(Matches.unitIsTransport()));
     // should not be able to load on british turn, only on american turn
-    assertFalse(error == null);
+    assertNotNull(error);
   }
 
   @Test

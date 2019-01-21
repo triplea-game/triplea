@@ -3,6 +3,7 @@ package games.strategy.triplea.delegate;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -87,7 +88,7 @@ public class VictoryTest {
     final String error =
         moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
     moveDelegate.end();
-    assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
+    assertEquals(error, MoveValidator.NOT_ALL_UNITS_CAN_BLITZ);
   }
 
   @Test
@@ -100,7 +101,7 @@ public class VictoryTest {
         moveDelegate.move(frenchWestAfrica.getUnits().getUnits(),
             gameData.getMap().getRoute(frenchWestAfrica, britishCongo));
     moveDelegate.end();
-    assertEquals(null, error);
+    assertNull(error);
   }
 
   @Test
@@ -111,11 +112,11 @@ public class VictoryTest {
     moveDelegate.start();
     String error = moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, angloEgypt));
     // first step is legal
-    assertEquals(null, error);
+    assertNull(error);
     // second step isn't legal because we lost blitz even though we took the mountain
     error = moveDelegate.move(angloEgypt.getUnits().getUnits(), gameData.getMap().getRoute(angloEgypt, britishCongo));
     moveDelegate.end();
-    assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
+    assertEquals(error, MoveValidator.NOT_ALL_UNITS_CAN_BLITZ);
   }
 
   @Test
@@ -126,11 +127,11 @@ public class VictoryTest {
     moveDelegate.start();
     String error = moveDelegate.move(frenchWestAfrica.getUnits().getUnits(),
         gameData.getMap().getRoute(frenchWestAfrica, frenchEastAfrica));
-    assertEquals(null, error);
+    assertNull(error);
     error = moveDelegate.move(frenchEastAfrica.getUnits().getUnits(),
         gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
     moveDelegate.end();
-    assertEquals(null, error);
+    assertNull(error);
   }
 
 
@@ -143,7 +144,7 @@ public class VictoryTest {
     final String error =
         moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
     moveDelegate.end();
-    assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
+    assertEquals(error, MoveValidator.NOT_ALL_UNITS_CAN_BLITZ);
   }
 
   @Test
@@ -157,9 +158,9 @@ public class VictoryTest {
     moveDelegate.start();
     String error = moveDelegate.move(frenchEastAfrica.getUnits().getUnits(),
         gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
-    assertEquals(null, error);
+    assertNull(error);
     error = moveDelegate.move(kenya.getUnits().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
-    assertEquals(null, error);
+    assertNull(error);
     error = moveDelegate.move(britishCongo.getUnits().getUnits(),
         gameData.getMap().getRoute(britishCongo, frenchEastAfrica));
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
@@ -272,7 +273,7 @@ public class VictoryTest {
     italianResources.subtract(armourtest.getCosts());
     purchaseList.add(armourtest, 1);
     final String error = purchaseDelegate.purchase(purchaseList);
-    assertEquals(null, error);
+    assertNull(error);
     assertEquals(italianResources, italians.getResources().getResourcesCopy());
   }
 
@@ -301,7 +302,7 @@ public class VictoryTest {
     italianResources.subtract(buyArmour.getCosts());
     purchaseList.add(buyArmour, 1);
     final String error = purchaseDelegate.purchase(purchaseList);
-    assertEquals(null, error);
+    assertNull(error);
     assertEquals(italianResources, italians.getResources().getResourcesCopy());
   }
 
@@ -316,7 +317,7 @@ public class VictoryTest {
     italianResources.subtract(buyArmour.getCosts());
     purchaseList.add(buyArmour, 1);
     final String error = purchaseDelegate.purchase(purchaseList);
-    assertEquals(null, error);
+    assertNull(error);
     assertEquals(italianResources, italians.getResources().getResourcesCopy());
   }
 }
