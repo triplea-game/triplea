@@ -809,8 +809,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     route.setStart(congoSeaZone);
     route.add(westAfricaSea);
     route.add(northAtlantic);
-    Collection<Unit> units = new ArrayList<>();
-    units.addAll(CollectionUtils.getMatches(
+    Collection<Unit> units = new ArrayList<>(CollectionUtils.getMatches(
         gameData.getMap().getTerritory(congoSeaZone.toString()).getUnits().getUnits(), Matches.unitIsCarrier()));
     results = delegate.move(units, route);
     assertValid(results);
@@ -819,8 +818,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     route.setStart(redSea);
     route.add(eastMediteranean);
     route.add(blackSea);
-    units = new ArrayList<>();
-    units.addAll(CollectionUtils.getMatches(
+    units = new ArrayList<>(CollectionUtils.getMatches(
         gameData.getMap().getTerritory(redSea.toString()).getUnits().getUnits(), Matches.unitIsCarrier()));
     results = delegate.move(units, route);
     assertValid(results);
@@ -956,15 +954,15 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits = new ArrayList<>();
-    retreatingSeaUnits.addAll(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
+    final List<Unit> retreatingSeaUnits =
+        new ArrayList<>(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
     // Get the attacking land units that will retreat and their number
-    final List<Unit> retreatingLandUnits = new ArrayList<>();
-    retreatingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
+    final List<Unit> retreatingLandUnits =
+        new ArrayList<>(finlandNorway.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
     final int retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
-    final List<Unit> defendingLandUnits = new ArrayList<>();
-    defendingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(british, gameData)));
+    final List<Unit> defendingLandUnits =
+        new ArrayList<>(finlandNorway.getUnits().getMatches(Matches.enemyUnit(british, gameData)));
     final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inFinlandNorway =
@@ -1018,15 +1016,15 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits = new ArrayList<>();
-    retreatingSeaUnits.addAll(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
+    final List<Unit> retreatingSeaUnits =
+        new ArrayList<>(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
     // Get the attacking land units that will retreat and their number
-    final List<Unit> retreatingLandUnits = new ArrayList<>();
-    retreatingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
+    final List<Unit> retreatingLandUnits =
+        new ArrayList<>(finlandNorway.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
     final int retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
-    final List<Unit> defendingLandUnits = new ArrayList<>();
-    defendingLandUnits.addAll(finlandNorway.getUnits().getMatches(Matches.enemyUnit(british, gameData)));
+    final List<Unit> defendingLandUnits =
+        new ArrayList<>(finlandNorway.getUnits().getMatches(Matches.enemyUnit(british, gameData)));
     final int defendingLandSizeInt = defendingLandUnits.size();
     // Set up the battles and the dependent battles
     final IBattle inFinlandNorway =
@@ -1080,11 +1078,11 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits = new ArrayList<>();
-    retreatingSeaUnits.addAll(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
+    final List<Unit> retreatingSeaUnits =
+        new ArrayList<>(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
     // Get the attacking land units that will retreat and their number
-    final List<Unit> retreatingLandUnits = new ArrayList<>();
-    retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(russians, gameData)));
+    final List<Unit> retreatingLandUnits =
+        new ArrayList<>(karelia.getUnits().getMatches(Matches.isUnitAllied(russians, gameData)));
     final int retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
     retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(british, gameData)));
@@ -1136,11 +1134,11 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     // Get the attacking sea units that will retreat
-    final List<Unit> retreatingSeaUnits = new ArrayList<>();
-    retreatingSeaUnits.addAll(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
+    final List<Unit> retreatingSeaUnits =
+        new ArrayList<>(balticSeaZone.getUnits().getMatches(Matches.enemyUnit(germans, gameData)));
     // Get the attacking land units that will retreat and their number
-    final List<Unit> retreatingLandUnits = new ArrayList<>();
-    retreatingLandUnits.addAll(karelia.getUnits().getMatches(Matches.isUnitAllied(russians, gameData)));
+    final List<Unit> retreatingLandUnits =
+        new ArrayList<>(karelia.getUnits().getMatches(Matches.isUnitAllied(russians, gameData)));
     final int retreatingLandSizeInt = retreatingLandUnits.size();
     // Get the defending land units that and their number
     final List<Unit> defendingLandUnits = new ArrayList<>();

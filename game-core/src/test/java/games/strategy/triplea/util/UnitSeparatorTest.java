@@ -67,9 +67,8 @@ public class UnitSeparatorTest {
     final GameData data = TestMapGameData.TWW.getGameData();
     final Territory northernGermany = territory("Northern Germany", data);
     northernGermany.getUnits().clear();
-    final List<Unit> units = new ArrayList<>();
     final PlayerId italians = GameDataTestUtil.italy(data);
-    units.addAll(GameDataTestUtil.italianInfantry(data).create(1, italians));
+    final List<Unit> units = new ArrayList<>(GameDataTestUtil.italianInfantry(data).create(1, italians));
     GameDataTestUtil.addTo(northernGermany, units);
     when(mockMapData.shouldDrawUnit(ArgumentMatchers.anyString())).thenReturn(false);
     final List<UnitCategory> categories = UnitSeparator.getSortedUnitCategories(northernGermany, mockMapData);
