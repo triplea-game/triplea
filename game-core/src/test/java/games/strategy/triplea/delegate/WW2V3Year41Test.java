@@ -1173,9 +1173,8 @@ public class WW2V3Year41Test {
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     final Route r = new Route(france, germany, poland);
-    final List<Unit> toMove = new ArrayList<>();
     // 1 armour and 1 infantry
-    toMove.addAll(france.getUnits().getMatches(Matches.unitCanBlitz()));
+    final List<Unit> toMove = new ArrayList<>(france.getUnits().getMatches(Matches.unitCanBlitz()));
     toMove.add(france.getUnits().getMatches(Matches.unitIsLandTransportable()).get(0));
     move(toMove, r);
   }
