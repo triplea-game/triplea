@@ -96,7 +96,7 @@ public class MessengerIntegrationTest {
 
   @Test
   public void testClientSendToClientLargeMessage() {
-    final int count = 1 * 1000 * 1000;
+    final int count = 1_000_000;
     final StringBuilder builder = new StringBuilder(count);
     for (int i = 0; i < count; i++) {
       builder.append('a');
