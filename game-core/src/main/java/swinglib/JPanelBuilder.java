@@ -24,7 +24,6 @@ import com.google.common.base.Preconditions;
 
 import lombok.AllArgsConstructor;
 import swinglib.GridBagHelper.Anchor;
-import swinglib.GridBagHelper.ColumnSpan;
 import swinglib.GridBagHelper.Fill;
 
 /**
@@ -260,15 +259,6 @@ public class JPanelBuilder {
     return this;
   }
 
-  /**
-   * An 'add' method to be used with the grid bag layout, can specify how many columns the component should span.
-   */
-  public JPanelBuilder add(final Component component, final GridBagHelper.ColumnSpan columnSpan) {
-    components.add(new Pair<>(component, new PanelProperties(columnSpan)));
-    return this;
-  }
-
-
   public JPanelBuilder add(final Component component, final GridBagHelper.Anchor anchor,
       final GridBagHelper.Fill fill) {
     components.add(new Pair<>(component, new PanelProperties(anchor, fill)));
@@ -373,10 +363,6 @@ public class JPanelBuilder {
 
     PanelProperties(final BorderLayoutPosition borderLayoutPosition) {
       this.borderLayoutPosition = borderLayoutPosition;
-    }
-
-    PanelProperties(final ColumnSpan columnSpan) {
-      this.columnSpan = columnSpan;
     }
 
     PanelProperties(final Anchor anchor, final Fill fill) {

@@ -11,7 +11,6 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import com.google.common.base.Ascii;
 import com.google.common.base.Preconditions;
 
 /**
@@ -32,7 +31,6 @@ public class JLabelBuilder {
   private @Nullable Integer iconTextGap;
   private Alignment alignment;
   private Dimension maxSize;
-  private int maxTextLength = Integer.MAX_VALUE;
   private String tooltip;
   private Border border;
   private Integer borderSize;
@@ -50,15 +48,7 @@ public class JLabelBuilder {
   public JLabel build() {
     Preconditions.checkState(text != null || icon != null);
 
-    final String truncated;
-    if (text != null) {
-      Preconditions.checkState(!text.trim().isEmpty());
-      truncated = Ascii.truncate(text, maxTextLength, "...");
-    } else {
-      truncated = "";
-    }
-
-    final JLabel label = new JLabel(truncated);
+    final JLabel label = new JLabel(text);
 
     Optional.ofNullable(icon)
         .ifPresent(label::setIcon);
@@ -130,17 +120,6 @@ public class JLabelBuilder {
 
   public JLabelBuilder tooltip(final String tooltip) {
     this.tooltip = tooltip;
-    return this;
-  }
-
-
-  /**
-   * Builds a label with a max length enforced for the printed text. Text is truncated if exceeds the max
-   * length and the full text is placed into a hover-over tooltip.
-   */
-  public JLabelBuilder textWithMaxLength(final String text, final int maxTextLength) {
-    this.maxTextLength = maxTextLength;
-    this.text = text;
     return this;
   }
 

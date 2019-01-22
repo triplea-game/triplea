@@ -74,15 +74,6 @@ public class JButtonBuilder {
   }
 
   /**
-   * Sets the name of the component used internally by swing, can be used later for programmatic lookup of
-   * components (notably useful in test context).
-   */
-  public JButtonBuilder componentName(final String componentName) {
-    this.componentName = checkNotNull(componentName);
-    return this;
-  }
-
-  /**
    * Sets the button title to the system's OK button text.
    */
   public JButtonBuilder okTitle() {
@@ -154,14 +145,6 @@ public class JButtonBuilder {
    */
   public JButtonBuilder actionListener(final Consumer<Component> clickAction) {
     this.clickAction = checkNotNull(clickAction);
-    return this;
-  }
-
-  /**
-   * Whether the button can be clicked on or not.
-   */
-  public JButtonBuilder disabled() {
-    enabled = false;
     return this;
   }
 }

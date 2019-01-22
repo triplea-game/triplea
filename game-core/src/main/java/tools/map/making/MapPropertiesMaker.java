@@ -398,27 +398,5 @@ public final class MapPropertiesMaker {
         log.severe("Not a decimal percentage: " + zoomString);
       }
     }
-    final String widthString = System.getProperty(ToolArguments.UNIT_WIDTH);
-    if (widthString != null && widthString.length() > 0) {
-      try {
-        final int unitWidth = Integer.parseInt(widthString);
-        mapProperties.setUnitsWidth(unitWidth);
-        mapProperties.setUnitsCounterOffsetWidth(unitWidth / 4);
-        log.info("Unit Width to use: " + unitWidth);
-      } catch (final Exception e) {
-        log.severe("Not an integer: " + widthString);
-      }
-    }
-    final String heightString = System.getProperty(ToolArguments.UNIT_HEIGHT);
-    if (heightString != null && heightString.length() > 0) {
-      try {
-        final int unitHeight = Integer.parseInt(heightString);
-        mapProperties.setUnitsHeight(unitHeight);
-        mapProperties.setUnitsCounterOffsetHeight(unitHeight);
-        log.info("Unit Height to use: " + unitHeight);
-      } catch (final Exception e) {
-        log.severe("Not an integer: " + heightString);
-      }
-    }
   }
 }

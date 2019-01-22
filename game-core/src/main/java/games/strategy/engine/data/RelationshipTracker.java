@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 
 /**
  * A collection of relationships between any two players.
@@ -62,20 +61,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
 
   public int getRoundRelationshipWasCreated(final PlayerId p1, final PlayerId p2) {
     return relationships.get(new RelatedPlayers(p1, p2)).getRoundCreated();
-  }
-
-  /**
-   * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two
-   * players.
-   *
-   * @param p1 Player 1 in the relationship
-   * @param p2 Player 2 in the relationship
-   * @return the current RelationshipTypeAttachment attached to the current relationship that exists between those 2
-   *         players
-   */
-  protected RelationshipTypeAttachment getRelationshipTypeAttachment(final PlayerId p1, final PlayerId p2) {
-    final RelationshipType relation = getRelationshipType(p1, p2);
-    return RelationshipTypeAttachment.get(relation);
   }
 
   /**

@@ -426,10 +426,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     return model.getChatModel();
   }
 
-  public ServerModel getModel() {
-    return model;
-  }
-
   @Override
   public synchronized Optional<ILauncher> getLauncher() {
     return model.getLauncher()
