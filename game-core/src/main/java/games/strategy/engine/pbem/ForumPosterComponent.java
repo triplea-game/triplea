@@ -1,6 +1,5 @@
 package games.strategy.engine.pbem;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.Action;
@@ -31,7 +30,6 @@ public final class ForumPosterComponent extends JPanel {
   private HistoryLog historyLog;
   private final JButton postButton;
   private final JCheckBox includeTerritoryCheckBox;
-  private final JCheckBox includeTerritoryAllPlayersCheckBox;
   private final JCheckBox includeProductionCheckBox;
   private final JCheckBox showDetailsCheckBox;
   private final JCheckBox showDiceStatisticsCheckBox;
@@ -50,8 +48,6 @@ public final class ForumPosterComponent extends JPanel {
     this.title = title;
 
     includeTerritoryCheckBox = new JCheckBox(SwingAction.of("Include territory summary", e -> updateHistoryLog()));
-    includeTerritoryAllPlayersCheckBox =
-        new JCheckBox(SwingAction.of("Include Full Territory Summary", e -> updateHistoryLog()));
     includeProductionCheckBox = new JCheckBox(SwingAction.of("Include Production Summary", e -> updateHistoryLog()));
     showDetailsCheckBox = new JCheckBox(SwingAction.of("Show dice/battle details", e -> updateHistoryLog()));
     showDiceStatisticsCheckBox =
@@ -85,7 +81,7 @@ public final class ForumPosterComponent extends JPanel {
   public ForumPosterComponent layoutComponents(final PbemMessagePoster poster,
       final IAbstractForumPosterDelegate forumPosterDelegate, final TripleAFrame frame,
       final boolean hasPosted, final boolean allowIncludeTerritorySummary,
-      final boolean allowIncludeTerritoryAllPlayersSummary, final boolean allowIncludeProductionSummary,
+      final boolean allowIncludeProductionSummary,
       final boolean allowDiceBattleDetails, final boolean allowDiceStatistics) {
     this.forumPosterDelegate = forumPosterDelegate;
     this.frame = frame;
@@ -97,9 +93,6 @@ public final class ForumPosterComponent extends JPanel {
 
     if (allowIncludeTerritorySummary) {
       add(includeTerritoryCheckBox);
-    }
-    if (allowIncludeTerritoryAllPlayersSummary) {
-      add(includeTerritoryAllPlayersCheckBox);
     }
     if (allowIncludeProductionSummary) {
       add(includeProductionCheckBox);
@@ -133,13 +126,7 @@ public final class ForumPosterComponent extends JPanel {
     // clear first, then update
     historyLog.clear();
     historyLog.printFullTurn(data, showDetailsCheckBox.isSelected(), allowedIDs);
-    if (includeTerritoryAllPlayersCheckBox.isSelected()) {
-      for (final PlayerId player : data.getPlayerList().getPlayers()) {
-        final Collection<PlayerId> players = new ArrayList<>();
-        players.add(player);
-        historyLog.printTerritorySummary(data, players);
-      }
-    } else if (includeTerritoryCheckBox.isSelected()) {
+    if (includeTerritoryCheckBox.isSelected()) {
       historyLog.printTerritorySummary(data, allowedIDs);
     }
     if (includeProductionCheckBox.isSelected()) {
