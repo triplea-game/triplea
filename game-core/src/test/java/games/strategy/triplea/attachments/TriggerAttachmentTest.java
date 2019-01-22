@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +59,8 @@ public class TriggerAttachmentTest {
 
     final ProductionFrontierList productionFrontierList = gameData.getProductionFrontierList();
     productionFrontierList
-        .addProductionFrontier(new ProductionFrontier("frontier", gameData, Arrays.asList(productionRule2)));
+        .addProductionFrontier(
+            new ProductionFrontier("frontier", gameData, Collections.singletonList(productionRule2)));
   }
 
   @Test

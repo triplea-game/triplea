@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -76,16 +77,16 @@ final class OpenJsonUtilsTest {
 
     @Test
     void shouldNotConvertNullSentinelValue() {
-      final JSONArray jsonArray = new JSONArray(Arrays.asList(JSONObject.NULL));
+      final JSONArray jsonArray = new JSONArray(Collections.singletonList(JSONObject.NULL));
 
       final List<Object> elements = OpenJsonUtils.stream(jsonArray).collect(Collectors.toList());
 
-      assertThat(elements, is(Arrays.asList(JSONObject.NULL)));
+      assertThat(elements, is(Collections.singletonList(JSONObject.NULL)));
     }
 
     @Test
     void shouldNotConvertJsonArrayValue() {
-      final List<Object> expectedElements = Arrays.asList(new JSONArray(Arrays.asList(42)));
+      final List<Object> expectedElements = Collections.singletonList(new JSONArray(Collections.singletonList(42)));
       final JSONArray jsonArray = new JSONArray(expectedElements);
 
       final List<Object> actualElements = OpenJsonUtils.stream(jsonArray).collect(Collectors.toList());
@@ -95,7 +96,7 @@ final class OpenJsonUtilsTest {
 
     @Test
     void shouldNotConvertJsonObjectValue() {
-      final List<Object> expectedElements = Arrays.asList(new JSONObject(ImmutableMap.of("name", 42)));
+      final List<Object> expectedElements = Collections.singletonList(new JSONObject(ImmutableMap.of("name", 42)));
       final JSONArray jsonArray = new JSONArray(expectedElements);
 
       final List<Object> actualElements = OpenJsonUtils.stream(jsonArray).collect(Collectors.toList());
@@ -126,7 +127,7 @@ final class OpenJsonUtilsTest {
 
     @Test
     void shouldConvertNullSentinelValueToNull() {
-      final JSONArray jsonArray = new JSONArray(Arrays.asList(JSONObject.NULL));
+      final JSONArray jsonArray = new JSONArray(Collections.singletonList(JSONObject.NULL));
 
       final List<Object> elements = OpenJsonUtils.toList(jsonArray);
 
@@ -136,20 +137,21 @@ final class OpenJsonUtilsTest {
 
     @Test
     void shouldConvertJsonArrayValueToList() {
-      final JSONArray jsonArray = new JSONArray(Arrays.asList(new JSONArray(Arrays.asList(42))));
+      final JSONArray jsonArray =
+          new JSONArray(Collections.singletonList(new JSONArray(Collections.singletonList(42))));
 
       final List<Object> elements = OpenJsonUtils.toList(jsonArray);
 
-      assertThat(elements, is(Arrays.asList(Arrays.asList(42))));
+      assertThat(elements, is(Collections.singletonList(Collections.singletonList(42))));
     }
 
     @Test
     void shouldConvertJsonObjectValueToMap() {
-      final JSONArray jsonArray = new JSONArray(Arrays.asList(new JSONObject(ImmutableMap.of("name", 42))));
+      final JSONArray jsonArray = new JSONArray(Collections.singletonList(new JSONObject(ImmutableMap.of("name", 42))));
 
       final List<Object> elements = OpenJsonUtils.toList(jsonArray);
 
-      assertThat(elements, is(Arrays.asList(ImmutableMap.of("name", 42))));
+      assertThat(elements, is(Collections.singletonList(ImmutableMap.of("name", 42))));
     }
   }
 
@@ -192,11 +194,11 @@ final class OpenJsonUtilsTest {
     @Test
     void shouldConvertJsonArrayValueToList() {
       final JSONObject jsonObject = new JSONObject(ImmutableMap.of(
-          "name", new JSONArray(Arrays.asList(42))));
+          "name", new JSONArray(Collections.singletonList(42))));
 
       final Map<String, Object> properties = OpenJsonUtils.toMap(jsonObject);
 
-      assertThat(properties, is(ImmutableMap.of("name", Arrays.asList(42))));
+      assertThat(properties, is(ImmutableMap.of("name", Collections.singletonList(42))));
     }
 
     @Test
