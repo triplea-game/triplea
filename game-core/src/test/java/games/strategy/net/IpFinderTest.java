@@ -69,9 +69,7 @@ public final class IpFinderTest {
   @Nested
   public final class GetInetAddressComparatorTest {
     private InetAddress selectInetAddress(final InetAddress... inetAddresses) {
-      return Stream.of(inetAddresses)
-          .sorted(IpFinder.getInetAddressComparator())
-          .findFirst()
+      return Stream.of(inetAddresses).min(IpFinder.getInetAddressComparator())
           .orElseThrow(() -> new AssertionError("failed to select an InetAddress"));
     }
 

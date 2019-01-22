@@ -116,7 +116,7 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
   @Test
   public void testHasSomeLand() {
     final Collection<Unit> units = transport.create(3, british);
-    assertTrue(!units.stream().anyMatch(Matches.unitIsLand()));
+    assertTrue(units.stream().noneMatch(Matches.unitIsLand()));
     units.addAll(infantry.create(2, british));
     assertTrue(units.stream().anyMatch(Matches.unitIsLand()));
   }
