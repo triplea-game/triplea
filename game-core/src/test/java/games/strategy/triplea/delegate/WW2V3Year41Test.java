@@ -959,7 +959,7 @@ public class WW2V3Year41Test {
         steps.toString());
     givenRemotePlayerWillSelectCasualtiesPer(bridge, invocation -> {
       final Collection<Unit> selectFrom = invocation.getArgument(0);
-      return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
+      return new CasualtyDetails(Collections.singletonList(selectFrom.iterator().next()), new ArrayList<>(), false);
     });
     // attacking subs sneak attack and hit
     // no chance to return fire

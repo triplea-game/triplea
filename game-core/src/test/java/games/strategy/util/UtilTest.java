@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +49,7 @@ public class UtilTest {
 
   @Test
   public void isMailValid_ShouldReturnFalseWhenAddressIsInvalid() {
-    Arrays.asList(
+    Collections.singletonList(
         "test")
         .forEach(it -> assertThat("'" + it + "' should be invalid", Util.isMailValid(it), is(false)));
   }
