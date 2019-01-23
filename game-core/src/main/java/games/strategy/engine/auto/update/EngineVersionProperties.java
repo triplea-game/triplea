@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
@@ -46,7 +45,7 @@ class EngineVersionProperties {
     try {
       props.load(new URL(TRIPLEA_VERSION_LINK).openStream());
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed while attempting to check for a new Version", e);
+      log.info("Failed to get TripleA latest version file, check internet connection, error: " + e);
     }
     return props;
   }
