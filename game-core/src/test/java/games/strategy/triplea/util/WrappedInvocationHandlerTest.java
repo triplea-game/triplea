@@ -1,8 +1,7 @@
 package games.strategy.triplea.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -19,7 +18,7 @@ public final class WrappedInvocationHandlerTest {
     final Object proxy1 = newProxy(new WrappedInvocationHandler("test"));
     final Object proxy2 = newProxy(new WrappedInvocationHandler("test"));
 
-    assertTrue(proxy1.equals(proxy2));
+    assertEquals(proxy1, proxy2);
   }
 
   @Test
@@ -27,7 +26,7 @@ public final class WrappedInvocationHandlerTest {
     final Object proxy1 = newProxy(new WrappedInvocationHandler("test1"));
     final Object proxy2 = newProxy(new WrappedInvocationHandler("test2"));
 
-    assertFalse(proxy1.equals(proxy2));
+    assertNotEquals(proxy1, proxy2);
   }
 
   @Test
@@ -35,7 +34,7 @@ public final class WrappedInvocationHandlerTest {
     final Object proxy1 = newProxy(new WrappedInvocationHandler("test"));
     final Object proxy2 = newProxy((proxy, method, args) -> null);
 
-    assertFalse(proxy1.equals(proxy2));
+    assertNotEquals(proxy1, proxy2);
   }
 
   @Test

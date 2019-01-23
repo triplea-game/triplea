@@ -261,7 +261,7 @@ public class WW2V3Year41Test {
     sz12To13.setStart(sz12);
     sz12To13.add(sz13);
     final String error = moveDelegate.move(sz12.getUnits().getUnits(), sz12To13);
-    assertEquals(null, error);
+    assertNull(error);
     assertEquals(3, sz13.getUnits().size());
     moveDelegate.end();
     // the transport was not removed automatically
@@ -1196,7 +1196,7 @@ public class WW2V3Year41Test {
     // try to move all the units in france, the infantry should not be able to move
     final Route r = new Route(france, germany);
     final String error = moveDelegate(gameData).move(france.getUnits().getUnits(), r);
-    assertFalse(error == null);
+    assertNotNull(error);
   }
 
   @Test

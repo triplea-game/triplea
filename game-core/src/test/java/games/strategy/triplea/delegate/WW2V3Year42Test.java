@@ -16,6 +16,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withRemotePlayer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -60,7 +61,7 @@ public class WW2V3Year42Test {
     final List<Unit> transports = sz13.getUnits().getMatches(Matches.unitIsTransport());
     assertEquals(1, transports.size());
     final String error = moveDelegate.move(transports, sz13To12);
-    assertEquals(null, error);
+    assertNull(error);
   }
 
   @Test
