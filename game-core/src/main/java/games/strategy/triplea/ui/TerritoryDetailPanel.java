@@ -30,6 +30,8 @@ class TerritoryDetailPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 1377022163587438988L;
   private final UiContext uiContext;
   private final JButton showOdds = new JButton("Battle Calculator (Ctrl-B)");
+  private final JButton addAttackers = new JButton("Add Attackers (Ctrl-A)");
+  private final JButton addDefenders = new JButton("Add Defenders (Ctrl-D)");
   private final JButton findTerritoryButton;
   private @Nullable Territory currentTerritory;
   private final TripleAFrame frame;
@@ -59,6 +61,14 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     showOdds.addActionListener(e -> OddsCalculatorDialog.show(frame, currentTerritory));
     SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
         frame, 'B', () -> OddsCalculatorDialog.show(frame, currentTerritory));
+
+    addAttackers.addActionListener(e -> OddsCalculatorDialog.addAttackers(currentTerritory));
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
+        frame, 'A', () -> OddsCalculatorDialog.addAttackers(currentTerritory));
+
+    addDefenders.addActionListener(e -> OddsCalculatorDialog.addDefenders(currentTerritory));
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
+        frame, 'D', () -> OddsCalculatorDialog.addDefenders(currentTerritory));
   }
 
   public void setGameData(final GameData data) {
@@ -74,6 +84,8 @@ class TerritoryDetailPanel extends AbstractStatPanel {
       return;
     }
     add(showOdds);
+    add(addAttackers);
+    add(addDefenders);
     add(findTerritoryButton);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final String labelText;

@@ -7,12 +7,11 @@ import java.util.function.BiFunction;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Strings;
-
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SelectionComponentUiUtils;
+import games.strategy.util.OptionalUtils;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -75,16 +74,6 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public boolean isValid() {
-        return true;
-      }
-
-      @Override
-      public String validValueDescription() {
-        return "";
-      }
-
-      @Override
       public void save(final SaveContext context) {
         final Integer spinnerValue = spinner.getValue();
         final @Nullable Integer value = (allowUnset && spinnerValue.equals(unsetValue())) ? null : spinnerValue;
@@ -119,16 +108,6 @@ final class JavaFxSelectionComponentFactory {
       }
 
       @Override
-      public boolean isValid() {
-        return true;
-      }
-
-      @Override
-      public String validValueDescription() {
-        return "";
-      }
-
-      @Override
       public void save(final SaveContext context) {
         context.setValue(clientSetting, checkBox.selectedProperty().get());
       }
@@ -158,16 +137,6 @@ final class JavaFxSelectionComponentFactory {
       @Override
       public Region getUiComponent() {
         return textField;
-      }
-
-      @Override
-      public boolean isValid() {
-        return true;
-      }
-
-      @Override
-      public String validValueDescription() {
-        return "";
       }
 
       @Override
@@ -268,16 +237,6 @@ final class JavaFxSelectionComponentFactory {
     public Region getUiComponent() {
       return this;
     }
-
-    @Override
-    public boolean isValid() {
-      return true;
-    }
-
-    @Override
-    public String validValueDescription() {
-      return "";
-    }
   }
 
   private static final class ProxySetting extends Region implements SelectionComponent<Region> {
@@ -323,6 +282,13 @@ final class JavaFxSelectionComponentFactory {
       noneButton.setToggleGroup(toggleGroup);
       systemButton.setToggleGroup(toggleGroup);
       userButton.setToggleGroup(toggleGroup);
+      toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+        if (!userButton.isSelected()) {
+          hostText.clear();
+          portText.clear();
+        }
+      });
+
       getChildren().add(radioPanel);
     }
 
@@ -330,18 +296,47 @@ final class JavaFxSelectionComponentFactory {
     public void save(final SaveContext context) {
       if (noneButton.isSelected()) {
         context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.NONE);
+        context.setValue(proxyHostClientSetting, null);
+        context.setValue(proxyPortClientSetting, null);
       } else if (systemButton.isSelected()) {
         context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_SYSTEM_SETTINGS);
+        context.setValue(proxyHostClientSetting, null);
+        context.setValue(proxyPortClientSetting, null);
         HttpProxy.updateSystemProxy();
       } else {
-        context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+        final String encodedHost = hostText.getText().trim();
+        final Optional<String> optionalHost = parseHost(encodedHost);
+        OptionalUtils.ifEmpty(optionalHost, () -> context.reportError(
+            proxyHostClientSetting,
+            "must be a network name or an IP address",
+            encodedHost));
+
+        final String encodedPort = portText.getText().trim();
+        final Optional<Integer> optionalPort = parsePort(encodedPort);
+        OptionalUtils.ifEmpty(optionalPort, () -> context.reportError(
+            proxyPortClientSetting,
+            "must be a positive integer, usually 4 to 5 digits",
+            encodedPort));
+
+        OptionalUtils.ifAllPresent(optionalHost, optionalPort, (host, port) -> {
+          context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+          context.setValue(proxyHostClientSetting, host);
+          context.setValue(proxyPortClientSetting, port);
+        });
       }
+    }
 
-      final String host = hostText.getText().trim();
-      context.setValue(proxyHostClientSetting, host.isEmpty() ? null : host);
+    private static Optional<String> parseHost(final String encodedHost) {
+      return !encodedHost.isEmpty() ? Optional.of(encodedHost) : Optional.empty();
+    }
 
-      final String encodedPort = portText.getText().trim();
-      context.setValue(proxyPortClientSetting, encodedPort.isEmpty() ? null : Integer.valueOf(encodedPort));
+    private static Optional<Integer> parsePort(final String encodedPort) {
+      try {
+        final Integer port = Integer.valueOf(encodedPort);
+        return (port > 0) ? Optional.of(port) : Optional.empty();
+      } catch (final NumberFormatException e) {
+        return Optional.empty();
+      }
     }
 
     @Override
@@ -366,36 +361,9 @@ final class JavaFxSelectionComponentFactory {
       setProxyChoice(proxyChoiceClientSetting.getValueOrThrow());
     }
 
-    private boolean isHostTextValid() {
-      return !Strings.nullToEmpty(hostText.getText()).trim().isEmpty();
-    }
-
-    private boolean isPortTextValid() {
-      final String value = Strings.nullToEmpty(portText.getText()).trim();
-      if (value.isEmpty()) {
-        return false;
-      }
-
-      try {
-        return Integer.parseInt(value) > 0;
-      } catch (final NumberFormatException e) {
-        return false;
-      }
-    }
-
-    @Override
-    public boolean isValid() {
-      return !userButton.isSelected() || (isHostTextValid() && isPortTextValid());
-    }
-
     @Override
     public Region getUiComponent() {
       return this;
-    }
-
-    @Override
-    public String validValueDescription() {
-      return "Proxy host can be a network name or an IP address, port should be number, usually 4 to 5 digits.";
     }
   }
 }

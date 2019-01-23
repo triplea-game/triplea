@@ -29,11 +29,6 @@ class MoveForumPosterPanel extends AbstractForumPosterPanel {
   }
 
   @Override
-  protected boolean allowIncludeTerritoryAllPlayersSummary() {
-    return false;
-  }
-
-  @Override
   protected boolean allowIncludeProductionSummary() {
     return false;
   }

@@ -151,12 +151,15 @@ public class DownloadMapsWindow extends JFrame {
       assert SwingUtilities.isEventDispatchThread();
       assert state == State.UNINITIALIZED;
 
-      state = State.INITIALIZING;
       Interruptibles.awaitResult(SingletonManager::getMapDownloadListInBackground).result
-          .ifPresent(downloads -> createAndShow(mapNames, downloads));
+          .ifPresent(downloads -> downloads.ifPresent(d -> {
+            state = State.INITIALIZING;
+            createAndShow(mapNames, d);
+          }));
     }
 
-    private static List<DownloadFileDescription> getMapDownloadListInBackground() throws InterruptedException {
+    private static Optional<List<DownloadFileDescription>> getMapDownloadListInBackground()
+        throws InterruptedException {
       return GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
           "Downloading list of available maps...",
           ClientContext::getMapDownloadList);
