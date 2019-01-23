@@ -61,11 +61,6 @@ class EngineVersionProperties {
         + "<br />Latest version available for download: " + getLatestVersionOut()
         + "<br /><br />Click to download: <a class=\"external\" href=\"" + link
         + "\">" + link + "</a>"
-        + "<br /><br />Please note that installing a new version of TripleA will not remove any old copies of "
-        + "TripleA."
-        + "<br />So be sure to either manually uninstall all older versions of TripleA, or change your "
-        + "shortcuts to the new TripleA."
-        + "<br /><br />What is new:<br />"
         + "</html>";
   }
 
