@@ -6,9 +6,6 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
@@ -32,7 +29,7 @@ class EngineVersionProperties {
   private final String link;
   private final String changelogLink;
 
-  private EngineVersionProperties() {
+  EngineVersionProperties() {
     this(getProperties());
   }
 
@@ -43,34 +40,6 @@ class EngineVersionProperties {
     changelogLink = props.getProperty("CHANGELOG", UrlConstants.RELEASE_NOTES.toString());
   }
 
-
-  static EngineVersionProperties contactServerForEngineVersionProperties() {
-    // sourceforge sometimes takes a long while to return results
-    // so run a couple requests in parallel, starting with delays to try and get a response quickly
-    final AtomicReference<EngineVersionProperties> ref = new AtomicReference<>();
-    final CountDownLatch latch = new CountDownLatch(1);
-    for (int i = 0; i < 5; i++) {
-      new Thread(() -> {
-        ref.set(new EngineVersionProperties());
-        latch.countDown();
-      }).start();
-      try {
-        latch.await(2, TimeUnit.SECONDS);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-      if (ref.get() != null) {
-        break;
-      }
-    }
-    // we have spawned a bunch of requests
-    try {
-      latch.await(15, TimeUnit.SECONDS);
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
-    return ref.get();
-  }
 
   private static Properties getProperties() {
     final Properties props = new Properties();
