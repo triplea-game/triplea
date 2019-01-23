@@ -36,9 +36,9 @@ import lombok.extern.java.Log;
 @Log
 final class DefaultConsole implements Console {
   private static final ImmutableCollection<LogLevelItem> LOG_LEVEL_ITEMS = ImmutableList.of(
-          new LogLevelItem("All (Full Debug)", Level.ALL),
-          new LogLevelItem("Info And Errors", Level.INFO),
-          new LogLevelItem("Errors Only", Level.WARNING));
+      new LogLevelItem("All (Full Debug)", Level.ALL),
+      new LogLevelItem("Info And Errors", Level.INFO),
+      new LogLevelItem("Errors Only", Level.WARNING));
 
   private final JTextArea textArea = new JTextArea(20, 50);
   private final JFrame frame = new JFrame("TripleA Console");
