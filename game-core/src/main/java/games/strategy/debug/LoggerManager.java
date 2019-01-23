@@ -2,9 +2,9 @@ package games.strategy.debug;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
@@ -21,7 +21,7 @@ final class LoggerManager {
   private LoggerManager() {}
 
   private static ImmutableCollection<Logger> getLoggers() {
-    return Arrays.asList("games.strategy", "org.triplea", "swinglib", "tools").stream()
+    return Stream.of("games.strategy", "org.triplea", "swinglib", "tools")
         .map(Logger::getLogger)
         .collect(ImmutableList.toImmutableList());
   }
