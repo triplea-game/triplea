@@ -92,10 +92,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private IRemoteMessenger remoteMessenger;
   private IChannelMessenger channelMessenger;
   private GameData data;
-  private Map<String, String> playersToNodeListing = new HashMap<>();
-  private Map<String, Boolean> playersEnabledListing = new HashMap<>();
-  private Collection<String> playersAllowedToBeDisabled = new HashSet<>();
-  private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
+  private Map<String, String> playersToNodeListing = Collections.synchronizedMap(new HashMap<>());
+  private Map<String, Boolean> playersEnabledListing = Collections.synchronizedMap(new HashMap<>());
+  private Collection<String> playersAllowedToBeDisabled = Collections.synchronizedSet(new HashSet<>());
+  private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
+      Collections.synchronizedMap(new LinkedHashMap<>());
   private IRemoteModelListener remoteModelListener = IRemoteModelListener.NULL_LISTENER;
   private final GameSelectorModel gameSelectorModel;
   @Nullable
@@ -138,10 +139,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     synchronized (this) {
       data = gameSelectorModel.getGameData();
       if (data != null) {
-        playersToNodeListing = new HashMap<>();
-        playersEnabledListing = new HashMap<>();
-        playersAllowedToBeDisabled = new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled());
-        playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
+        playersToNodeListing = Collections.synchronizedMap(new HashMap<>());
+        playersEnabledListing = Collections.synchronizedMap(new HashMap<>());
+        playersAllowedToBeDisabled =
+            Collections.synchronizedSet(new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled()));
+        playerNamesAndAlliancesInTurnOrder = Collections.synchronizedMap(new LinkedHashMap<>());
         for (final PlayerId player : data.getPlayerList().getPlayers()) {
           final String name = player.getName();
           if (ui == null) {
