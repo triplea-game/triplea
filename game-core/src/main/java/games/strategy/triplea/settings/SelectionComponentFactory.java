@@ -122,14 +122,14 @@ final class SelectionComponentFactory {
           OptionalUtils.ifEmpty(optionalHost, () -> context.reportError(
               proxyHostClientSetting,
               "must be a network name or an IP address",
-              encodedHost));
+              Strings.emptyToNull(encodedHost)));
 
           final String encodedPort = portText.getText().trim();
           final Optional<Integer> optionalPort = parsePort(encodedPort);
           OptionalUtils.ifEmpty(optionalPort, () -> context.reportError(
               proxyPortClientSetting,
               "must be a positive integer, usually 4 to 5 digits",
-              encodedPort));
+              Strings.emptyToNull(encodedPort)));
 
           OptionalUtils.ifAllPresent(optionalHost, optionalPort, (host, port) -> {
             context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
