@@ -64,13 +64,8 @@ public class DefaultEmailSender implements IEmailSender {
   public void sendEmail(final String subject, final String htmlMessage, final File saveGame, final String saveGameName)
       throws IOException {
     // this is the last step and we create the email to send
-    if (toAddress == null) {
-      throw new IOException("Could not send email, no To address configured");
-    }
     final Properties props = new Properties();
-    if (username != null) {
-      props.put("mail.smtp.auth", "true");
-    }
+    props.put("mail.smtp.auth", "true");
     if (providerSetting.isEncrypted()) {
       props.put("mail.smtp.starttls.enable", "true");
       props.put("mail.smtp.starttls.required", "true");
