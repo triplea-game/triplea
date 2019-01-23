@@ -79,6 +79,7 @@ public class MapData implements Closeable {
   public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
   public static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
   public static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
+  public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
   public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
   public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
   public static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION = "smallMap.territory.saturation";
