@@ -88,7 +88,7 @@ public class VictoryTest {
     final String error =
         moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
     moveDelegate.end();
-    assertEquals(error, MoveValidator.NOT_ALL_UNITS_CAN_BLITZ);
+    assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
   }
 
   @Test
@@ -116,7 +116,7 @@ public class VictoryTest {
     // second step isn't legal because we lost blitz even though we took the mountain
     error = moveDelegate.move(angloEgypt.getUnits().getUnits(), gameData.getMap().getRoute(angloEgypt, britishCongo));
     moveDelegate.end();
-    assertEquals(error, MoveValidator.NOT_ALL_UNITS_CAN_BLITZ);
+    assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
   }
 
   @Test
@@ -144,7 +144,7 @@ public class VictoryTest {
     final String error =
         moveDelegate.move(libya.getUnits().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
     moveDelegate.end();
-    assertEquals(error, MoveValidator.NOT_ALL_UNITS_CAN_BLITZ);
+    assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
   }
 
   @Test
