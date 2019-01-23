@@ -26,9 +26,6 @@ class InvocationInProgress {
    * Returns true if there are no more results to process.
    */
   boolean process(final HubInvocationResults hubresults, final INode from) {
-    if (hubresults.results == null) {
-      throw new IllegalStateException("No results");
-    }
     results = hubresults.results;
     if (!from.equals(waitingOn)) {
       throw new IllegalStateException("Wrong node, expecting " + waitingOn + " got " + from);
