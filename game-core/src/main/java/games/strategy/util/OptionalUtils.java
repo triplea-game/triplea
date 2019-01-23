@@ -3,6 +3,7 @@ package games.strategy.util;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -10,6 +11,33 @@ import java.util.function.Consumer;
  */
 public final class OptionalUtils {
   private OptionalUtils() {}
+
+  /**
+   * If a value is present in both {@code optional1} and {@code optional2}, performs the given action with the values,
+   * otherwise does nothing.
+   */
+  public static <T, U> void ifAllPresent(
+      final Optional<T> optional1,
+      final Optional<U> optional2,
+      final BiConsumer<? super T, ? super U> action) {
+    checkNotNull(optional1);
+    checkNotNull(optional2);
+    checkNotNull(action);
+
+    optional1.ifPresent(value1 -> optional2.ifPresent(value2 -> action.accept(value1, value2)));
+  }
+
+  /**
+   * If no value is present in {@code optional}, performs the given action.
+   */
+  public static void ifEmpty(final Optional<?> optional, final Runnable action) {
+    checkNotNull(optional);
+    checkNotNull(action);
+
+    if (!optional.isPresent()) {
+      action.run();
+    }
+  }
 
   /**
    * If a value is present in the specified {@code Optional}, performs the given action with the value, otherwise

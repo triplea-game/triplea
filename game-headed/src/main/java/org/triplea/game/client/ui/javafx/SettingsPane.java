@@ -121,6 +121,13 @@ class SettingsPane extends StackPane {
   private void save() {
     final SelectionComponent.SaveContext context = new SelectionComponent.SaveContext() {
       @Override
+      public void reportError(
+          final GameSetting<?> gameSetting,
+          final String message,
+          final @Nullable Object value,
+          final SelectionComponent.SaveContext.ValueSensitivity valueSensitivity) {}
+
+      @Override
       public <T> void setValue(
           final GameSetting<T> gameSetting,
           final @Nullable T value,
