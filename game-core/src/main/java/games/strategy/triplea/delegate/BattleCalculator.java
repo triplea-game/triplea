@@ -104,7 +104,7 @@ public class BattleCalculator {
             && defendingAa.stream().allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (isChooseAa(data)) {
       final String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
-      return selectCasualties(null, hitPlayer, planes, allFriendlyUnits, firingPlayer, allEnemyUnits, amphibious,
+      return selectCasualties(hitPlayer, planes, allFriendlyUnits, firingPlayer, allEnemyUnits, amphibious,
           amphibiousLandAttackers, terr, territoryEffects, bridge, text, dice, defending, battleId, false,
           dice.getHits(), allowMultipleHitsPerUnit);
     }
@@ -434,7 +434,7 @@ public class BattleCalculator {
    *
    * @param battleId may be null if we are not in a battle (eg, if this is an aa fire due to moving).
    */
-  public static CasualtyDetails selectCasualties(final String step, final PlayerId player,
+  public static CasualtyDetails selectCasualties(final PlayerId player,
       final Collection<Unit> targetsToPickFrom, final Collection<Unit> friendlyUnits, final PlayerId enemyPlayer,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final Territory battlesite, final Collection<TerritoryEffect> territoryEffects, final IDelegateBridge bridge,
@@ -532,7 +532,7 @@ public class BattleCalculator {
             + (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining) + ", for "
             + casualtySelection.toString());
       }
-      return selectCasualties(step, player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
+      return selectCasualties(player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
           amphibiousLandAttackers, battlesite, territoryEffects, bridge, text, dice, defending, battleId, headLess,
           extraHits, allowMultipleHitsPerUnit);
     }
@@ -543,7 +543,7 @@ public class BattleCalculator {
         log.severe("Possible Infinite Loop: Cannot remove enough units of those types: targets "
             + MyFormatter.unitsToTextNoOwner(sortedTargetsToPickFrom) + ", for " + casualtySelection.toString());
       }
-      return selectCasualties(step, player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
+      return selectCasualties(player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
           amphibiousLandAttackers, battlesite, territoryEffects, bridge, text, dice, defending, battleId, headLess,
           extraHits, allowMultipleHitsPerUnit);
     }

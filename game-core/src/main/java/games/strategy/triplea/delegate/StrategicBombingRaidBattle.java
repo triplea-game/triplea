@@ -461,7 +461,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             && defendingAa.stream().allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (isEditMode) {
       final String text = currentTypeAa + AA_GUNS_FIRE_SUFFIX;
-      return BattleCalculator.selectCasualties(RAID, attacker,
+      return BattleCalculator.selectCasualties(attacker,
           validAttackingUnitsForThisRoll, attackingUnits, defender, defendingUnits, isAmphibious,
           amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, /* dice */null,
           /* defending */false, battleId, /* head-less */false, 0, allowMultipleHitsPerUnit);
