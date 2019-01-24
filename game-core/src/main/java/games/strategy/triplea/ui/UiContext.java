@@ -66,9 +66,7 @@ public interface UiContext {
     return newUnitImageLabel(type, player, UnitDamage.NOT_DAMAGED, UnitEnable.ENABLED);
   }
 
-  JLabel newUnitImageLabel(final UnitType type, final PlayerId player,
-      final UnitDamage damaged,
-      final UnitEnable disabled);
+  JLabel newUnitImageLabel(UnitType type, PlayerId player, UnitDamage damaged, UnitEnable disabled);
 
   ResourceImageFactory getResourceImageFactory();
 

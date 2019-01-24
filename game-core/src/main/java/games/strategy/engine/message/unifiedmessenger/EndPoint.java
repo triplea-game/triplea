@@ -31,7 +31,7 @@ class EndPoint {
   private final List<Object> implementors = new ArrayList<>();
   private final boolean singleThreaded;
 
-  public EndPoint(final String name, final Class<?> remoteClass, final boolean singleThreaded) {
+  EndPoint(final String name, final Class<?> remoteClass, final boolean singleThreaded) {
     this.name = name;
     this.remoteClass = remoteClass;
     this.singleThreaded = singleThreaded;

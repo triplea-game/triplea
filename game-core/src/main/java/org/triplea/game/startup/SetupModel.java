@@ -17,7 +17,7 @@ import games.strategy.engine.random.IRemoteDiceServer;
  */
 public interface SetupModel {
 
-  void addObserver(final Observer observer);
+  void addObserver(Observer observer);
 
   void notifyObservers();
 

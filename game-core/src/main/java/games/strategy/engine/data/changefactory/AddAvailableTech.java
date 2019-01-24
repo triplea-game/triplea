@@ -15,7 +15,7 @@ class AddAvailableTech extends Change {
   private final TechnologyFrontier frontier;
   private final PlayerId player;
 
-  public AddAvailableTech(final TechnologyFrontier front, final TechAdvance tech, final PlayerId player) {
+  AddAvailableTech(final TechnologyFrontier front, final TechAdvance tech, final PlayerId player) {
     checkNotNull(front);
     checkNotNull(tech);
 

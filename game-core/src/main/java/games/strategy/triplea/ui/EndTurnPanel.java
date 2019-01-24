@@ -19,7 +19,7 @@ class EndTurnPanel extends AbstractForumPosterPanel {
     }
   });
 
-  public EndTurnPanel(final GameData data, final MapPanel map) {
+  EndTurnPanel(final GameData data, final MapPanel map) {
     super(data, map);
     forumPosterComponent = new ForumPosterComponent(getData(), doneAction, getTitle());
   }

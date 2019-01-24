@@ -3,7 +3,7 @@ package games.strategy.engine.history;
 class RootHistoryNode extends HistoryNode {
   private static final long serialVersionUID = 625147613043836829L;
 
-  public RootHistoryNode(final String title) {
+  RootHistoryNode(final String title) {
     super(title);
   }
 

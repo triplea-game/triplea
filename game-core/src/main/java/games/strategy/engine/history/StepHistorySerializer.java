@@ -10,7 +10,7 @@ class StepHistorySerializer implements SerializationWriter {
   private final PlayerId playerId;
   private final String displayName;
 
-  public StepHistorySerializer(final String stepName, final String delegateName, final PlayerId playerId,
+  StepHistorySerializer(final String stepName, final String delegateName, final PlayerId playerId,
       final String displayName) {
     this.stepName = stepName;
     this.delegateName = delegateName;

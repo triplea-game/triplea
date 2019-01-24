@@ -8,12 +8,11 @@ import games.strategy.net.INode;
  * An interface to allow for testing.
  */
 public interface IChatListener {
-  void updatePlayerList(final Collection<INode> players);
+  void updatePlayerList(Collection<INode> players);
 
-  void addMessage(final String message, final String from, final boolean thirdperson);
+  void addMessage(String message, String from, boolean thirdperson);
 
-  void addMessageWithSound(final String message, final String from, final boolean thirdperson,
-      final String sound);
+  void addMessageWithSound(String message, String from, boolean thirdperson, String sound);
 
-  void addStatusMessage(final String message);
+  void addStatusMessage(String message);
 }

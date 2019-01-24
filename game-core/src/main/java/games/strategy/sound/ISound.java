@@ -19,7 +19,7 @@ public interface ISound extends IChannelSubscriber {
    * @param playerId The player who's sound we want to play (ie: russians infantry might make different sounds from
    *        german infantry, etc). Can be null.
    */
-  void playSoundForAll(final String clipName, final PlayerId playerId);
+  void playSoundForAll(String clipName, PlayerId playerId);
 
   /**
    * You will want to call this from things that the server only runs (like delegates), and not call this from user
@@ -32,7 +32,6 @@ public interface ISound extends IChannelSubscriber {
    *        null.)
    * @param includeObservers Whether to include non-playing machines
    */
-  void playSoundToPlayers(final String clipName,
-      final Collection<PlayerId> playersToSendTo, final Collection<PlayerId> butNotThesePlayers,
-      final boolean includeObservers);
+  void playSoundToPlayers(String clipName,
+      Collection<PlayerId> playersToSendTo, Collection<PlayerId> butNotThesePlayers, boolean includeObservers);
 }

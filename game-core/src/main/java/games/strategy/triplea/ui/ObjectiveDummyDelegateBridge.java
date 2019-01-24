@@ -144,7 +144,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   }
 
   static class ObjectivePanelDummyPlayer extends AbstractAi {
-    public ObjectivePanelDummyPlayer(final String name) {
+    ObjectivePanelDummyPlayer(final String name) {
       super(name);
     }
 

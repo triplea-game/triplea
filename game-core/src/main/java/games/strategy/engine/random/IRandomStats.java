@@ -17,5 +17,5 @@ public interface IRandomStats extends IRemote {
     COMBAT, BOMBING, NONCOMBAT, TECH, ENGINE
   }
 
-  RandomStatsDetails getRandomStats(final int diceSides);
+  RandomStatsDetails getRandomStats(int diceSides);
 }

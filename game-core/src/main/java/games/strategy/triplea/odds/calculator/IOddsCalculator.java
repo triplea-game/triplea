@@ -12,35 +12,35 @@ import games.strategy.engine.data.Unit;
  * Interface to ensure different implementations of the odds calculator all have the same public methods.
  */
 public interface IOddsCalculator {
-  void setGameData(final GameData data);
+  void setGameData(GameData data);
 
-  void setCalculateData(final PlayerId attacker, final PlayerId defender, final Territory location,
-      final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
-      final Collection<TerritoryEffect> territoryEffects, final int runCount);
+  void setCalculateData(PlayerId attacker, PlayerId defender, Territory location,
+      Collection<Unit> attacking, Collection<Unit> defending, Collection<Unit> bombarding,
+      Collection<TerritoryEffect> territoryEffects, int runCount);
 
   AggregateResults calculate();
 
-  AggregateResults setCalculateDataAndCalculate(final PlayerId attacker, final PlayerId defender,
-      final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
-      final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount);
+  AggregateResults setCalculateDataAndCalculate(PlayerId attacker, PlayerId defender,
+      Territory location, Collection<Unit> attacking, Collection<Unit> defending,
+      Collection<Unit> bombarding, Collection<TerritoryEffect> territoryEffects, int runCount);
 
   int getRunCount();
 
   boolean getIsReady();
 
-  void setKeepOneAttackingLandUnit(final boolean bool);
+  void setKeepOneAttackingLandUnit(boolean bool);
 
-  void setAmphibious(final boolean bool);
+  void setAmphibious(boolean bool);
 
-  void setRetreatAfterRound(final int value);
+  void setRetreatAfterRound(int value);
 
-  void setRetreatAfterXUnitsLeft(final int value);
+  void setRetreatAfterXUnitsLeft(int value);
 
-  void setRetreatWhenOnlyAirLeft(final boolean value);
+  void setRetreatWhenOnlyAirLeft(boolean value);
 
-  void setAttackerOrderOfLosses(final String attackerOrderOfLosses);
+  void setAttackerOrderOfLosses(String attackerOrderOfLosses);
 
-  void setDefenderOrderOfLosses(final String defenderOrderOfLosses);
+  void setDefenderOrderOfLosses(String defenderOrderOfLosses);
 
   void cancel();
 

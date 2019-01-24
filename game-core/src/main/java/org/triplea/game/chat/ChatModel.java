@@ -8,11 +8,11 @@ import games.strategy.engine.chat.Chat;
  */
 public interface ChatModel {
 
-  void setChat(final Chat chat);
+  void setChat(Chat chat);
 
   Chat getChat();
 
   String getAllText();
 
-  void setShowChatTime(final boolean showTime);
+  void setShowChatTime(boolean showTime);
 }

@@ -98,7 +98,7 @@ public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
   @Nested
   final class EqualsAndHashCodeTest {
     @Test
-    final void shouldBeEquatableAndHashable() {
+    void shouldBeEquatableAndHashable() {
       EqualsVerifier.forClass(DownloadFileDescription.class)
           .withOnlyTheseFields("url")
           .verify();

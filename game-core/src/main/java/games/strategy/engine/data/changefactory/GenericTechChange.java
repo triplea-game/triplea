@@ -26,7 +26,7 @@ class GenericTechChange extends Change {
     this.property = property;
   }
 
-  public GenericTechChange(final Attachable attachTo, final String attachmentName, final boolean newValue,
+  GenericTechChange(final Attachable attachTo, final String attachmentName, final boolean newValue,
       final boolean oldValue, final String property) {
     this.attachmentName = attachmentName;
     attachedTo = attachTo;

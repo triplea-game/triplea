@@ -1030,7 +1030,7 @@ public final class TripleAFrame extends JFrame {
 
     private static final long serialVersionUID = 1749164256040268579L;
 
-    public UnitRenderer() {
+    UnitRenderer() {
       setOpaque(true);
     }
 

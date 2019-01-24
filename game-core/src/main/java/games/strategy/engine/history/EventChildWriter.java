@@ -6,7 +6,7 @@ class EventChildWriter implements SerializationWriter {
   private final String text;
   private final Object renderingData;
 
-  public EventChildWriter(final String text, final Object renderingData) {
+  EventChildWriter(final String text, final Object renderingData) {
     this.text = text;
     this.renderingData = renderingData;
   }

@@ -62,7 +62,7 @@ public class ImageScrollerLargeView extends JComponent {
 
   private final ActionListener timerAction = new ActionListener() {
     @Override
-    public final void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
       if (JOptionPane.getFrameForComponent(ImageScrollerLargeView.this).getFocusOwner() == null) {
         insideCount = 0;
         return;

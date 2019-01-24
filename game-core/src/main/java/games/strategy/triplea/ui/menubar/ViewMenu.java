@@ -162,7 +162,7 @@ final class ViewMenu extends JMenu {
       private static final long serialVersionUID = -6280511505686687867L;
       private final double scaleFactor;
 
-      public UnitSizeAction(final double scaleFactor) {
+      UnitSizeAction(final double scaleFactor) {
         super(decimalFormat.format(scaleFactor * 100) + "%");
         this.scaleFactor = scaleFactor;
       }

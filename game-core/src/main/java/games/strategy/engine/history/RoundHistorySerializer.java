@@ -5,7 +5,7 @@ class RoundHistorySerializer implements SerializationWriter {
 
   private final int roundNo;
 
-  public RoundHistorySerializer(final int roundNo) {
+  RoundHistorySerializer(final int roundNo) {
     this.roundNo = roundNo;
   }
 

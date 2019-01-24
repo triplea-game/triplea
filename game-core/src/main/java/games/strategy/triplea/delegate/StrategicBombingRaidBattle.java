@@ -323,12 +323,12 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     Collection<Unit> validAttackingUnitsForThisRoll;
     final boolean determineAttackers;
 
-    public FireAa(final Collection<Unit> attackers) {
+    FireAa(final Collection<Unit> attackers) {
       validAttackingUnitsForThisRoll = attackers;
       determineAttackers = false;
     }
 
-    public FireAa() {
+    FireAa() {
       validAttackingUnitsForThisRoll = Collections.emptyList();
       determineAttackers = true;
     }
