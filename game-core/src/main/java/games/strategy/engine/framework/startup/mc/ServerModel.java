@@ -476,20 +476,20 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     return serverMessenger;
   }
 
-  public Map<String, String> getPlayersToNodeListing() {
-    return Collections.unmodifiableMap(playersToNodeListing);
+  public synchronized Map<String, String> getPlayersToNodeListing() {
+    return new HashMap<>(playersToNodeListing);
   }
 
-  public Map<String, Boolean> getPlayersEnabledListing() {
-    return Collections.unmodifiableMap(playersEnabledListing);
+  public synchronized Map<String, Boolean> getPlayersEnabledListing() {
+    return new HashMap<>(playersEnabledListing);
   }
 
-  public Collection<String> getPlayersAllowedToBeDisabled() {
-    return Collections.unmodifiableCollection(playersAllowedToBeDisabled);
+  public synchronized Collection<String> getPlayersAllowedToBeDisabled() {
+    return new HashSet<>(playersAllowedToBeDisabled);
   }
 
-  public Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrder() {
-    return Collections.unmodifiableMap(playerNamesAndAlliancesInTurnOrder);
+  public synchronized Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrder() {
+    return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
   }
 
   @Override
