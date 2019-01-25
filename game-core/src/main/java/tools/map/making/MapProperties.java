@@ -78,7 +78,10 @@ public class MapProperties {
     return colorMap;
   }
 
-  @SuppressWarnings("unused")
+  public void setColorMap(final Map<String, Color> value) {
+    colorMap = value;
+  }
+
   public String outColorMap() {
     final StringBuilder buf = new StringBuilder();
     for (final Entry<String, Color> entry : colorMap.entrySet()) {
@@ -131,48 +134,66 @@ public class MapProperties {
     }
   }
 
-  @SuppressWarnings("unused")
   public String outUnitsScale() {
     return MapData.PROPERTY_UNITS_SCALE + "=" + unitsScale + "\r\n";
+  }
+
+  public int getUnitsWidth() {
+    return unitsWidth;
   }
 
   public void setUnitsWidth(final int value) {
     unitsWidth = value;
   }
 
-  @SuppressWarnings("unused")
   public String outUnitsWidth() {
     return MapData.PROPERTY_UNITS_WIDTH + "=" + unitsWidth + "\r\n";
+  }
+
+  public int getUnitsHeight() {
+    return unitsHeight;
   }
 
   public void setUnitsHeight(final int value) {
     unitsHeight = value;
   }
 
-  @SuppressWarnings("unused")
   public String outUnitsHeight() {
     return MapData.PROPERTY_UNITS_HEIGHT + "=" + unitsHeight + "\r\n";
+  }
+
+  public int getUnitsCounterOffsetWidth() {
+    return unitsCounterOffsetWidth;
   }
 
   public void setUnitsCounterOffsetWidth(final int value) {
     unitsCounterOffsetWidth = value;
   }
 
-  @SuppressWarnings("unused")
   public String outUnitsCounterOffsetWidth() {
     return MapData.PROPERTY_UNITS_COUNTER_OFFSET_WIDTH + "=" + unitsCounterOffsetWidth + "\r\n";
+  }
+
+  public int getUnitsCounterOffsetHeight() {
+    return unitsCounterOffsetHeight;
   }
 
   public void setUnitsCounterOffsetHeight(final int value) {
     unitsCounterOffsetHeight = value;
   }
 
-  @SuppressWarnings("unused")
   public String outUnitsCounterOffsetHeight() {
     return MapData.PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT + "=" + unitsCounterOffsetHeight + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public int getUnitsStackSize() {
+    return unitsStackSize;
+  }
+
+  public void setUnitsStackSize(final int value) {
+    unitsStackSize = value;
+  }
+
   public String outUnitsStackSize() {
     return MapData.PROPERTY_UNITS_STACK_SIZE + "=" + unitsStackSize + "\r\n";
   }
@@ -185,7 +206,6 @@ public class MapProperties {
     mapWidth = value;
   }
 
-  @SuppressWarnings("unused")
   public String outMapWidth() {
     return MapData.PROPERTY_MAP_WIDTH + "=" + mapWidth + "\r\n";
   }
@@ -198,117 +218,271 @@ public class MapProperties {
     mapHeight = value;
   }
 
-  @SuppressWarnings("unused")
   public String outMapHeight() {
     return MapData.PROPERTY_MAP_HEIGHT + "=" + mapHeight + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapScrollWrapX() {
+    return mapScrollWrapX;
+  }
+
+  public void setMapScrollWrapX(final boolean value) {
+    mapScrollWrapX = value;
+  }
+
   public String outMapScrollWrapX() {
     return MapData.PROPERTY_MAP_SCROLLWRAPX + "=" + mapScrollWrapX + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapScrollWrapY() {
+    return mapScrollWrapY;
+  }
+
+  public void setMapScrollWrapY(final boolean value) {
+    mapScrollWrapY = value;
+  }
+
   public String outMapScrollWrapY() {
     return MapData.PROPERTY_MAP_SCROLLWRAPY + "=" + mapScrollWrapY + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapHasRelief() {
+    return mapHasRelief;
+  }
+
+  public void setMapHasRelief(final boolean value) {
+    mapHasRelief = value;
+  }
+
   public String outMapHasRelief() {
     return MapData.PROPERTY_MAP_HASRELIEF + "=" + mapHasRelief + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public int getMapCursorHotspotX() {
+    return mapCursorHotspotX;
+  }
+
+  public void setMapCursorHotspotX(final int value) {
+    mapCursorHotspotX = value;
+  }
+
   public String outMapCursorHotspotX() {
     return MapData.PROPERTY_MAP_CURSOR_HOTSPOT_X + "=" + mapCursorHotspotX + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public int getMapCursorHotspotY() {
+    return mapCursorHotspotY;
+  }
+
+  public void setMapCursorHotspotY(final int value) {
+    mapCursorHotspotY = value;
+  }
+
   public String outMapCursorHotspotY() {
     return MapData.PROPERTY_MAP_CURSOR_HOTSPOT_Y + "=" + mapCursorHotspotY + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapShowCapitolMarkers() {
+    return mapShowCapitolMarkers;
+  }
+
+  public void setMapShowCapitolMarkers(final boolean value) {
+    mapShowCapitolMarkers = value;
+  }
+
   public String outMapShowCapitolMarkers() {
     return MapData.PROPERTY_MAP_SHOWCAPITOLMARKERS + "=" + mapShowCapitolMarkers + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapUseTerritoryEffectMarkers() {
+    return mapUseTerritoryEffectMarkers;
+  }
+
+  public void setMapUseTerritoryEffectMarkers(final boolean value) {
+    mapUseTerritoryEffectMarkers = value;
+  }
+
   public String outMapUseTerritoryEffectMarkers() {
     return MapData.PROPERTY_MAP_USETERRITORYEFFECTMARKERS + "=" + mapUseTerritoryEffectMarkers + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapShowTerritoryNames() {
+    return mapShowTerritoryNames;
+  }
+
+  public void setMapShowTerritoryNames(final boolean value) {
+    mapShowTerritoryNames = value;
+  }
+
   public String outMapShowTerritoryNames() {
     return MapData.PROPERTY_MAP_SHOWTERRITORYNAMES + "=" + mapShowTerritoryNames + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapShowResources() {
+    return mapShowResources;
+  }
+
+  public void setMapShowResources(final boolean value) {
+    mapShowResources = value;
+  }
+
   public String outMapShowResources() {
     return MapData.PROPERTY_MAP_SHOWRESOURCES + "=" + mapShowResources + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapShowComments() {
+    return mapShowComments;
+  }
+
+  public void setMapShowComments(final boolean value) {
+    mapShowComments = value;
+  }
+
   public String outMapShowComments() {
     return MapData.PROPERTY_MAP_SHOWCOMMENTS + "=" + mapShowComments + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapShowSeaZoneNames() {
+    return mapShowSeaZoneNames;
+  }
+
+  public void setMapShowSeaZoneNames(final boolean value) {
+    mapShowSeaZoneNames = value;
+  }
+
   public String outMapShowSeaZoneNames() {
     return MapData.PROPERTY_MAP_SHOWSEAZONENAMES + "=" + mapShowSeaZoneNames + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapDrawNamesFromTopLeft() {
+    return mapDrawNamesFromTopLeft;
+  }
+
+  public void setMapDrawNamesFromTopLeft(final boolean value) {
+    mapDrawNamesFromTopLeft = value;
+  }
+
   public String outMapDrawNamesFromTopLeft() {
     return MapData.PROPERTY_MAP_DRAWNAMESFROMTOPLEFT + "=" + mapDrawNamesFromTopLeft + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapUseNationConvoyFlags() {
+    return mapUseNationConvoyFlags;
+  }
+
+  public void setMapUseNationConvoyFlags(final boolean value) {
+    mapUseNationConvoyFlags = value;
+  }
+
   public String outMapUseNationConvoyFlags() {
     return MapData.PROPERTY_MAP_USENATION_CONVOYFLAGS + "=" + mapUseNationConvoyFlags + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public String getDontDrawTerritoryNames() {
+    return dontDrawTerritoryNames;
+  }
+
+  public void setDontDrawTerritoryNames(final String value) {
+    dontDrawTerritoryNames = value;
+  }
+
   public String outDontDrawTerritoryNames() {
     return MapData.PROPERTY_DONT_DRAW_TERRITORY_NAMES + "=" + dontDrawTerritoryNames + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getMapMapBlends() {
+    return mapMapBlends;
+  }
+
+  public void setMapMapBlends(final boolean value) {
+    mapMapBlends = value;
+  }
+
   public String outMapMapBlends() {
     return MapData.PROPERTY_MAP_MAPBLENDS + "=" + mapMapBlends + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public String getMapMapBlendMode() {
+    return mapMapBlendMode;
+  }
+
+  public void setMapMapBlendMode(final String value) {
+    mapMapBlendMode = value;
+  }
+
   public String outMapMapBlendMode() {
     return MapData.PROPERTY_MAP_MAPBLENDMODE + "=" + mapMapBlendMode + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public String getMapMapBlendAlpha() {
+    return mapMapBlendAlpha;
+  }
+
+  public void setMapMapBlendAlpha(final String value) {
+    Double.parseDouble(value);
+    mapMapBlendAlpha = value;
+  }
+
   public String outMapMapBlendAlpha() {
     return MapData.PROPERTY_MAP_MAPBLENDALPHA + "=" + mapMapBlendAlpha + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public boolean getScreenshotTitleEnabled() {
+    return screenshotTitleEnabled;
+  }
+
+  public void setScreenshotTitleEnabled(final boolean value) {
+    screenshotTitleEnabled = value;
+  }
+
   public String outScreenshotTitleEnabled() {
     return MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED + "=" + screenshotTitleEnabled + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public int getScreenshotTitleX() {
+    return screenshotTitleX;
+  }
+
+  public void setScreenshotTitleX(final int value) {
+    screenshotTitleX = value;
+  }
+
   public String outScreenshotTitleX() {
     return MapData.PROPERTY_SCREENSHOT_TITLE_X + "=" + screenshotTitleX + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public int getScreenshotTitleY() {
+    return screenshotTitleY;
+  }
+
+  public void setScreenshotTitleY(final int value) {
+    screenshotTitleY = value;
+  }
+
   public String outScreenshotTitleY() {
     return MapData.PROPERTY_SCREENSHOT_TITLE_Y + "=" + screenshotTitleY + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public Color getScreenshotTitleColor() {
+    return screenshotTitleColor;
+  }
+
+  public void setScreenshotTitleColor(final Color value) {
+    screenshotTitleColor = value;
+  }
+
   public String outScreenshotTitleColor() {
     return MapData.PROPERTY_SCREENSHOT_TITLE_COLOR + "=" + colorToHex(screenshotTitleColor) + "\r\n";
   }
 
-  @SuppressWarnings("unused")
+  public int getScreenshotTitleFontSize() {
+    return screenshotTitleFontSize;
+  }
+
+  public void setScreenshotTitleFontSize(final int value) {
+    screenshotTitleFontSize = value;
+  }
+
   public String outScreenshotTitleFontSize() {
     return MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE + "=" + screenshotTitleFontSize + "\r\n";
   }
