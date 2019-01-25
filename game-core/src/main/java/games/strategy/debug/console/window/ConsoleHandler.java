@@ -8,7 +8,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
 /**
- * A {@link Handler} that publishes log records to an instance of {@link ConsoleWindow}.
+ * A {@link Handler} that publishes log records to an instance of {@link ConsoleView}.
  *
  * <p>
  * <strong>Configuration:</strong> This handler does not currently support configuration through the {@link LogManager}.
