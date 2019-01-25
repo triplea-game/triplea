@@ -670,6 +670,7 @@ public final class TripleAFrame extends JFrame {
       for (final TerritoryEffect territoryEffect : territoryEffects) {
         try {
           final JLabel territoryEffectLabel = new JLabel();
+          territoryEffectLabel.setToolTipText(territoryEffect.getName());
           territoryEffectLabel.setIcon(uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect, false));
           territoryEffectLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
           territoryInfo.add(territoryEffectLabel,
@@ -1393,7 +1394,7 @@ public final class TripleAFrame extends JFrame {
     return selection;
   }
 
-  private JOptionPane getOptionPane(final JComponent parent) {
+  private static JOptionPane getOptionPane(final JComponent parent) {
     return !(parent instanceof JOptionPane)
         ? getOptionPane((JComponent) parent.getParent())
         : (JOptionPane) parent;
