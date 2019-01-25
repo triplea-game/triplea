@@ -122,7 +122,7 @@ public abstract class AbstractUiContext implements UiContext {
     }
   }
 
-  protected abstract void internalSetMapDir(final String dir, final GameData data);
+  protected abstract void internalSetMapDir(String dir, GameData data);
 
   public static String getMapDir() {
     return mapDir;

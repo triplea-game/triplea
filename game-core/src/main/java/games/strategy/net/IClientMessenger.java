@@ -8,11 +8,11 @@ import games.strategy.engine.framework.HeadlessAutoSaveType;
  * A client messenger. Additional methods for selecting the game on the server.
  */
 public interface IClientMessenger extends IMessenger {
-  void changeServerGameTo(final String gameName);
+  void changeServerGameTo(String gameName);
 
-  void changeToLatestAutosave(final HeadlessAutoSaveType typeOfAutosave);
+  void changeToLatestAutosave(HeadlessAutoSaveType typeOfAutosave);
 
-  void changeToGameSave(final byte[] bytes, final String fileName);
+  void changeToGameSave(byte[] bytes, String fileName);
 
-  void changeToGameSave(final File saveGame, final String fileName);
+  void changeToGameSave(File saveGame, String fileName);
 }

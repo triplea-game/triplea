@@ -76,7 +76,7 @@ public class InGameLobbyWatcher {
    * to ensure headless clients don't need to depend on UI classes.
    */
   public interface LobbyWatcherHandler {
-    void reportError(final String message);
+    void reportError(String message);
 
     boolean isPlayer();
   }

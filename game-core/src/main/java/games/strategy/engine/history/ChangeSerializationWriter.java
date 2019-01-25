@@ -7,7 +7,7 @@ class ChangeSerializationWriter implements SerializationWriter {
 
   private final Change change;
 
-  public ChangeSerializationWriter(final Change change) {
+  ChangeSerializationWriter(final Change change) {
     this.change = change;
   }
 

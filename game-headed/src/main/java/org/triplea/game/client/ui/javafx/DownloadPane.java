@@ -18,7 +18,7 @@ class DownloadPane extends VBox {
    * @param triplea The root pane.
    * @throws IOException If the FXML file is not present.
    */
-  public DownloadPane(final TripleA triplea) throws IOException {
+  DownloadPane(final TripleA triplea) throws IOException {
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.DOWNLOAD_PANE.toString()));
     loader.setRoot(this);
     loader.setController(this);

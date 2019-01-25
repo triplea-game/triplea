@@ -130,7 +130,7 @@ public enum LockUtil {
     // cache the hash code to make sure it doesn't change if our reference has been cleared
     private final int hashCode;
 
-    public WeakLockRef(final Lock referent) {
+    WeakLockRef(final Lock referent) {
       super(referent);
       hashCode = Objects.hashCode(referent);
     }

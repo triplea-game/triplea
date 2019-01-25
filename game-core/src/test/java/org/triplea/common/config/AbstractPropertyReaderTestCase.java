@@ -50,7 +50,7 @@ public abstract class AbstractPropertyReaderTestCase {
     private PropertyReader propertyReader;
 
     @BeforeEach
-    public final void setupPropertyReader() throws Exception {
+    public void setupPropertyReader() throws Exception {
       propertyReader = newSingletonPropertyReader(PRESENT_PROPERTY_VALUE);
     }
 

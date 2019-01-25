@@ -14,7 +14,7 @@ class RemoveAttachmentChange extends Change {
   private final Attachable attachable;
   private final String name;
 
-  public RemoveAttachmentChange(final IAttachment attachment, final Attachable attachable, final String name) {
+  RemoveAttachmentChange(final IAttachment attachment, final Attachable attachable, final String name) {
     this.attachment = attachment;
     originalAttachmentName = attachment.getName();
     originalAttachable = attachment.getAttachedTo();

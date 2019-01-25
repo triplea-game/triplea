@@ -63,7 +63,7 @@ class EconomyPanel extends AbstractStatPanel {
     private boolean isDirty = true;
     private String[][] collectedData;
 
-    public ResourceTableModel() {
+    ResourceTableModel() {
       setResourceColumns();
       gameData.addDataChangeListener(this);
     }

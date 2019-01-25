@@ -35,15 +35,15 @@ public interface IServerStartupRemote extends IRemote {
 
   Set<String> getAvailableGames();
 
-  void changeServerGameTo(final String gameName);
+  void changeServerGameTo(String gameName);
 
-  void changeToLatestAutosave(final HeadlessAutoSaveType typeOfAutosave);
+  void changeToLatestAutosave(HeadlessAutoSaveType typeOfAutosave);
 
-  void changeToGameSave(final byte[] bytes, final String fileName);
+  void changeToGameSave(byte[] bytes, String fileName);
 
   byte[] getSaveGame();
 
   byte[] getGameOptions();
 
-  void changeToGameOptions(final byte[] bytes);
+  void changeToGameOptions(byte[] bytes);
 }

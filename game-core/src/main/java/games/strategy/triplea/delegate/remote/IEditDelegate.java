@@ -34,9 +34,9 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate {
 
   String removeTechAdvance(PlayerId player, Collection<TechAdvance> advance);
 
-  String changeUnitHitDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory);
+  String changeUnitHitDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
 
-  String changeUnitBombingDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory);
+  String changeUnitBombingDamage(IntegerMap<Unit> unitDamageMap, Territory territory);
 
   String addComment(String message);
 

@@ -25,10 +25,10 @@ interface GithubIssueClient {
       "Accept: application/json"
   })
   CreateIssueResponse newIssue(
-      final @HeaderMap Map<String, Object> headerMap,
-      final @Param("org") String org,
-      final @Param("repo") String repo,
-      final CreateIssueRequest createIssueRequest);
+      @HeaderMap Map<String, Object> headerMap,
+      @Param("org") String org,
+      @Param("repo") String repo,
+      CreateIssueRequest createIssueRequest);
 
 
   default CreateIssueResponse newIssue(

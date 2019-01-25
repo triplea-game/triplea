@@ -2,7 +2,6 @@ package games.strategy.triplea.delegate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -176,14 +175,12 @@ public abstract class TechAdvance extends NamedAttachable {
     if (clazz == null) {
       throw new IllegalArgumentException(technologyName + " is not a valid technology");
     }
-    final TechAdvance ta;
+
     try {
-      final Constructor<? extends TechAdvance> constructor = clazz.getConstructor(preDefinedTechConstructorParameter);
-      ta = constructor.newInstance(data);
+      return clazz.getDeclaredConstructor(preDefinedTechConstructorParameter).newInstance(data);
     } catch (final Exception e) {
       throw new IllegalStateException(technologyName + " is not a valid technology or could not be instantiated", e);
     }
-    return ta;
   }
 
   static TechAdvance findAdvance(final String propertyString, final GameData data, final PlayerId player) {

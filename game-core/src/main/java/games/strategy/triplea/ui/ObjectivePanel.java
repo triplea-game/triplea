@@ -114,7 +114,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     final Map<String, List<String>> sections = new LinkedHashMap<>();
     private Instant timestamp = Instant.EPOCH;
 
-    public ObjectiveTableModel() {
+    ObjectiveTableModel() {
       setObjectiveStats();
       gameData.addDataChangeListener(this);
     }

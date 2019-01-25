@@ -13,7 +13,7 @@ class AddProductionRule extends Change {
   private final ProductionRule rule;
   private final ProductionFrontier frontier;
 
-  public AddProductionRule(final ProductionRule rule, final ProductionFrontier frontier) {
+  AddProductionRule(final ProductionRule rule, final ProductionFrontier frontier) {
     checkNotNull(rule);
     checkNotNull(frontier);
 

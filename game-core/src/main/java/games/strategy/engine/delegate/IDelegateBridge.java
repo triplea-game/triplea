@@ -45,7 +45,7 @@ public interface IDelegateBridge {
   /**
    * equivalent to getRandom(max,1,annotation)[0].
    */
-  int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation);
+  int getRandom(int max, PlayerId player, DiceType diceType, String annotation);
 
   /**
    * Return a random value to be used by the delegate.
@@ -55,8 +55,7 @@ public interface IDelegateBridge {
    *
    * @param annotation a string used to describe the random event.
    */
-  int[] getRandom(final int max, final int count, final PlayerId player, final DiceType diceType,
-      final String annotation);
+  int[] getRandom(int max, int count, PlayerId player, DiceType diceType, String annotation);
 
   /**
    * return the delegate history writer for this game.

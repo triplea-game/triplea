@@ -121,8 +121,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    * One or more bombers have just moved into a territory where a strategic bombing
    * raid can be conducted, what should the bomber bomb.
    */
-  Unit whatShouldBomberBomb(Territory territory, final Collection<Unit> potentialTargets,
-      final Collection<Unit> bombers);
+  Unit whatShouldBomberBomb(Territory territory, Collection<Unit> potentialTargets, Collection<Unit> bombers);
 
   /**
    * Choose where my rockets should fire.
@@ -148,7 +147,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    * @param candidates - a list of territories - these are the places where air units can land
    * @return - the territory to land the fighters in, must be non null
    */
-  Territory selectTerritoryForAirToLand(Collection<Territory> candidates, final Territory currentTerritory,
+  Territory selectTerritoryForAirToLand(Collection<Territory> candidates, Territory currentTerritory,
       String unitMessage);
 
   /**

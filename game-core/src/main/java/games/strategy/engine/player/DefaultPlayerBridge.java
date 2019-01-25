@@ -131,7 +131,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     private final Object delegate;
     private final IGame game;
 
-    public GameOverInvocationHandler(final Object delegate, final IGame game) {
+    GameOverInvocationHandler(final Object delegate, final IGame game) {
       this.delegate = delegate;
       this.game = game;
     }
