@@ -462,7 +462,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     if (isEditMode) {
       final String text = currentTypeAa + AA_GUNS_FIRE_SUFFIX;
       return BattleCalculator.selectCasualties(attacker,
-          validAttackingUnitsForThisRoll, attackingUnits, defender, defendingUnits, isAmphibious,
+          validAttackingUnitsForThisRoll, attackingUnits, defendingUnits, isAmphibious,
           amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, /* dice */null,
           /* defending */false, battleId, /* head-less */false, 0, allowMultipleHitsPerUnit);
     }

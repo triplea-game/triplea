@@ -132,7 +132,7 @@ public class Fire implements IExecutable {
           extraHits = transportsOnly.size();
         }
         message = BattleCalculator.selectCasualties(hitPlayer, transportsOnly,
-            allEnemyUnitsNotIncludingWaitingToDie, firingPlayer, allFriendlyUnitsNotIncludingWaitingToDie,
+            allEnemyUnitsNotIncludingWaitingToDie, allFriendlyUnitsNotIncludingWaitingToDie,
             isAmphibious, amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, dice,
             !defending, battleId, isHeadless, extraHits, true);
         killed.addAll(message.getKilled());
@@ -143,7 +143,7 @@ public class Fire implements IExecutable {
         confirmOwnCasualties = true;
       } else { // less than possible number
         message = BattleCalculator.selectCasualties(hitPlayer, nonTransports,
-            allEnemyUnitsNotIncludingWaitingToDie, firingPlayer, allFriendlyUnitsNotIncludingWaitingToDie,
+            allEnemyUnitsNotIncludingWaitingToDie, allFriendlyUnitsNotIncludingWaitingToDie,
             isAmphibious, amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, dice,
             !defending, battleId, isHeadless, dice.getHits(), true);
         killed = message.getKilled();
@@ -160,7 +160,7 @@ public class Fire implements IExecutable {
       } else { // Choose casualties
         final CasualtyDetails message;
         message = BattleCalculator.selectCasualties(hitPlayer, attackableUnits,
-            allEnemyUnitsNotIncludingWaitingToDie, firingPlayer, allFriendlyUnitsNotIncludingWaitingToDie,
+            allEnemyUnitsNotIncludingWaitingToDie, allFriendlyUnitsNotIncludingWaitingToDie,
             isAmphibious, amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, dice,
             !defending, battleId, isHeadless, dice.getHits(), true);
         killed = message.getKilled();

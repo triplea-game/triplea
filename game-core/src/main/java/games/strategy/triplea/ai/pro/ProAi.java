@@ -313,7 +313,7 @@ public class ProAi extends AbstractAi {
   @Override
   public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom,
       final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
-      final PlayerId hit, final Collection<Unit> friendlyUnits, final PlayerId enemyPlayer,
+      final PlayerId hit, final Collection<Unit> friendlyUnits,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties, final GUID battleId, final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
