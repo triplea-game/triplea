@@ -1986,10 +1986,6 @@ public final class Matches {
         && rt.getRelationshipTypeAttachment().canAlliancesChainTogether();
   }
 
-  public static Predicate<RelationshipType> relationshipTypeIsDefaultWarPosition() {
-    return rt -> rt.getRelationshipTypeAttachment().isDefaultWarPosition();
-  }
-
   /**
    * If player is null, this predicate will return true if ANY of the relationship changes match the conditions. (since
    * paa's can have more than 1 change).

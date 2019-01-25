@@ -212,13 +212,6 @@ public class HeadlessGameServer {
     }
   }
 
-  public static synchronized void log(final String stdout) {
-    final HeadlessGameServer instance = getInstance();
-    if (instance != null) {
-      log.info(stdout);
-    }
-  }
-
   public static String getSalt() {
     return BCrypt.gensalt();
   }
