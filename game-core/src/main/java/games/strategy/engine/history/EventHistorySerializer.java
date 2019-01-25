@@ -6,7 +6,7 @@ class EventHistorySerializer implements SerializationWriter {
   private final String eventName;
   private final Object renderingData;
 
-  public EventHistorySerializer(final String eventName, final Object renderingData) {
+  EventHistorySerializer(final String eventName, final Object renderingData) {
     this.eventName = eventName;
     this.renderingData = renderingData;
   }

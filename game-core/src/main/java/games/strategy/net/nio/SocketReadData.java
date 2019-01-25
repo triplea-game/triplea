@@ -30,7 +30,7 @@ class SocketReadData {
   private final int number = counter.incrementAndGet();
   private int readCalls;
 
-  public SocketReadData(final SocketChannel channel) {
+  SocketReadData(final SocketChannel channel) {
     this.channel = channel;
   }
 

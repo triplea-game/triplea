@@ -41,7 +41,7 @@ public class AllianceTracker implements Serializable {
     private static final long serialVersionUID = -4193924040595347947L;
     private final Multimap<PlayerId, String> alliances;
 
-    public SerializationProxy(final AllianceTracker allianceTracker) {
+    SerializationProxy(final AllianceTracker allianceTracker) {
       alliances = ImmutableMultimap.copyOf(allianceTracker.alliances);
     }
 

@@ -11,7 +11,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 final class AaRadarAdvance extends TechAdvance {
   private static final long serialVersionUID = 6464021231625252901L;
 
-  public AaRadarAdvance(final GameData data) {
+  AaRadarAdvance(final GameData data) {
     super(TECH_NAME_AA_RADAR, data);
   }
 

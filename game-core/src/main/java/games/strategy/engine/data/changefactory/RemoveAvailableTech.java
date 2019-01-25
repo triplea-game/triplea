@@ -15,7 +15,7 @@ class RemoveAvailableTech extends Change {
   private final TechnologyFrontier frontier;
   private final PlayerId player;
 
-  public RemoveAvailableTech(final TechnologyFrontier front, final TechAdvance tech, final PlayerId player) {
+  RemoveAvailableTech(final TechnologyFrontier front, final TechAdvance tech, final PlayerId player) {
     checkNotNull(front);
     checkNotNull(tech);
 

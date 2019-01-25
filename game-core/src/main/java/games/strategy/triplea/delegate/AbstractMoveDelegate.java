@@ -126,8 +126,8 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   }
 
   @Override
-  public abstract String move(final Collection<Unit> units, final Route route,
-      final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
+  public abstract String move(Collection<Unit> units, Route route,
+      Collection<Unit> transportsThatCanBeLoaded, Map<Unit, Collection<Unit>> newDependents);
 
   public static MoveValidationResult validateMove(final MoveType moveType, final Collection<Unit> units,
       final Route route, final PlayerId player, final Collection<Unit> transportsToLoad,
@@ -210,12 +210,12 @@ public abstract class AbstractMoveDelegate extends BaseTripleADelegate implement
   /**
    * Returns the number of PUs that have been lost by bombing, rockets, etc.
    */
-  public abstract int pusAlreadyLost(final Territory t);
+  public abstract int pusAlreadyLost(Territory t);
 
   /**
    * Add more PUs lost to a territory due to bombing, rockets, etc.
    */
-  public abstract void pusLost(final Territory t, final int amt);
+  public abstract void pusLost(Territory t, int amt);
 
   @Override
   public Class<IMoveDelegate> getRemoteType() {

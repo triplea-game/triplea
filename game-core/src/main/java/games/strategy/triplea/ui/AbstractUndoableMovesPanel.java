@@ -173,7 +173,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     private static final long serialVersionUID = -397312652244693138L;
     private final int moveIndex;
 
-    public UndoMoveActionListener(final int index) {
+    UndoMoveActionListener(final int index) {
       super("Undo");
       moveIndex = index;
     }
@@ -194,7 +194,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
   class UndoAllMovesActionListener extends AbstractAction {
     private static final long serialVersionUID = 7908136093303143896L;
 
-    public UndoAllMovesActionListener() {
+    UndoAllMovesActionListener() {
       super("UndoAllMoves");
     }
 
@@ -213,7 +213,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     private static final long serialVersionUID = -6999284663802575467L;
     private final AbstractUndoableMove move;
 
-    public ViewAction(final AbstractUndoableMove move) {
+    ViewAction(final AbstractUndoableMove move) {
       super("Show");
       this.move = move;
     }
@@ -228,5 +228,5 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     }
   }
 
-  protected abstract void specificViewAction(final AbstractUndoableMove move);
+  protected abstract void specificViewAction(AbstractUndoableMove move);
 }

@@ -18,14 +18,14 @@ public interface IDelegate {
   /**
    * Uses name as the internal unique name and displayName for display to users.
    */
-  void initialize(final String name, final String displayName);
+  void initialize(String name, String displayName);
 
   /**
    * Called before the delegate will run and before "start" is called.
    *
    * @param delegateBridge the IDelegateBridge
    */
-  void setDelegateBridgeAndPlayer(final IDelegateBridge delegateBridge);
+  void setDelegateBridgeAndPlayer(IDelegateBridge delegateBridge);
 
   /**
    * Called before the delegate will run.
@@ -74,7 +74,7 @@ public interface IDelegate {
    *
    * @param state the delegates state.
    */
-  void loadState(final Serializable state);
+  void loadState(Serializable state);
 
   /**
    * Returns the remote type of this delegate for use by a RemoteMessenger.

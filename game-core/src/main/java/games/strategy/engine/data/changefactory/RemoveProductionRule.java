@@ -13,7 +13,7 @@ class RemoveProductionRule extends Change {
   private final ProductionRule rule;
   private final ProductionFrontier frontier;
 
-  public RemoveProductionRule(final ProductionRule rule, final ProductionFrontier frontier) {
+  RemoveProductionRule(final ProductionRule rule, final ProductionFrontier frontier) {
     checkNotNull(rule);
     checkNotNull(frontier);
 

@@ -20,7 +20,7 @@ class SerializedHistory implements Serializable {
   private final List<SerializationWriter> writers = new ArrayList<>();
   private final GameData gameData;
 
-  public SerializedHistory(final History history, final GameData data, final List<Change> changes) {
+  SerializedHistory(final History history, final GameData data, final List<Change> changes) {
     gameData = data;
     final Enumeration<?> enumeration = ((DefaultMutableTreeNode) history.getRoot()).preorderEnumeration();
     enumeration.nextElement();

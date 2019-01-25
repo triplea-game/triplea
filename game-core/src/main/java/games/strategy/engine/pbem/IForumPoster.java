@@ -28,7 +28,7 @@ public interface IForumPoster {
    * @param subject the forum subject
    * @return true if the post was successful
    */
-  CompletableFuture<String> postTurnSummary(String summary, final String subject, final Path savegame);
+  CompletableFuture<String> postTurnSummary(String summary, String subject, Path savegame);
 
   String getDisplayName();
 

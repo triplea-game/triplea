@@ -54,7 +54,7 @@ class SettingsPane extends StackPane {
    * @param triplea The root pane.
    * @throws IOException If the FXML file is not present.
    */
-  public SettingsPane(final TripleA triplea) throws IOException {
+  SettingsPane(final TripleA triplea) throws IOException {
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.SETTINGS_PANE.toString()));
     loader.setRoot(this);
     loader.setController(this);

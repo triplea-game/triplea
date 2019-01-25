@@ -100,7 +100,7 @@ public class BattleRecord implements Serializable {
     private final BattleType battleType;
     private final BattleResults battleResults;
 
-    public SerializationProxy(final BattleRecord battleRecord) {
+    SerializationProxy(final BattleRecord battleRecord) {
       battleSite = battleRecord.battleSite;
       attacker = battleRecord.attacker;
       defender = battleRecord.defender;

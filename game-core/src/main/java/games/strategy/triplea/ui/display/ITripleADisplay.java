@@ -20,15 +20,15 @@ public interface ITripleADisplay extends IDisplay {
   /**
    * Sends a message to all TripleAFrame that have joined the game, possibly including observers.
    */
-  void reportMessageToAll(final String message, final String title, final boolean doNotIncludeHost,
-      final boolean doNotIncludeClients, final boolean doNotIncludeObservers);
+  void reportMessageToAll(String message, String title, boolean doNotIncludeHost,
+      boolean doNotIncludeClients, boolean doNotIncludeObservers);
 
   /**
    * Sends a message to all TripleAFrame's that are playing AND are controlling one or more of the players listed but
    * NOT any of the players listed as butNotThesePlayers. (No message to any observers or players not in the list.)
    */
-  void reportMessageToPlayers(final Collection<PlayerId> playersToSendTo,
-      final Collection<PlayerId> butNotThesePlayers, final String message, final String title);
+  void reportMessageToPlayers(Collection<PlayerId> playersToSendTo,
+      Collection<PlayerId> butNotThesePlayers, String message, String title);
 
   /**
    * Display info about the battle. This is the first message to be displayed in a battle.
@@ -45,9 +45,8 @@ public interface ITripleADisplay extends IDisplay {
    */
   void showBattle(GUID battleId, Territory location, String battleTitle, Collection<Unit> attackingUnits,
       Collection<Unit> defendingUnits, Collection<Unit> killedUnits, Collection<Unit> attackingWaitingToDie,
-      Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerId attacker,
-      final PlayerId defender, final boolean isAmphibious, final BattleType battleType,
-      final Collection<Unit> amphibiousLandAttackers);
+      Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, PlayerId attacker,
+      PlayerId defender, boolean isAmphibious, BattleType battleType, Collection<Unit> amphibiousLandAttackers);
 
   /**
    * Displays the steps for the specified battle.

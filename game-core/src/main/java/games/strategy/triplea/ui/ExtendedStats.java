@@ -224,7 +224,7 @@ public class ExtendedStats extends StatPanel {
   }
 
   class TechTokenStat extends ResourceStat {
-    public TechTokenStat() {
+    TechTokenStat() {
       super(gameData.getResourceList().getResource(Constants.TECH_TOKENS));
     }
   }
