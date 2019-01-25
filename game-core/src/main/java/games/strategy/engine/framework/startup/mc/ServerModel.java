@@ -414,11 +414,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       if (!playersToNodeListing.containsKey(playerName)) {
         return;
       }
-      if (take) {
-        playersToNodeListing.put(playerName, from.getName());
-      } else {
-        playersToNodeListing.put(playerName, null);
-      }
+      playersToNodeListing.put(playerName, take ? from.getName() : null);
     }
     notifyChanellPlayersChanged();
     remoteModelListener.playersTakenChanged();
@@ -447,9 +443,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   public void setAllPlayersToNullNodes() {
     if (playersToNodeListing != null) {
-      for (final String p : playersToNodeListing.keySet()) {
-        playersToNodeListing.put(p, null);
-      }
+      playersToNodeListing.replaceAll((key, value) -> null);
     }
   }
 
@@ -482,28 +476,20 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     return serverMessenger;
   }
 
-  public Map<String, String> getPlayersToNodeListing() {
-    synchronized (this) {
-      return new HashMap<>(playersToNodeListing);
-    }
+  public synchronized Map<String, String> getPlayersToNodeListing() {
+    return new HashMap<>(playersToNodeListing);
   }
 
-  public Map<String, Boolean> getPlayersEnabledListing() {
-    synchronized (this) {
-      return new HashMap<>(playersEnabledListing);
-    }
+  public synchronized Map<String, Boolean> getPlayersEnabledListing() {
+    return new HashMap<>(playersEnabledListing);
   }
 
-  public Collection<String> getPlayersAllowedToBeDisabled() {
-    synchronized (this) {
-      return new HashSet<>(playersAllowedToBeDisabled);
-    }
+  public synchronized Collection<String> getPlayersAllowedToBeDisabled() {
+    return new HashSet<>(playersAllowedToBeDisabled);
   }
 
-  public Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
-    synchronized (this) {
-      return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
-    }
+  public synchronized Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrder() {
+    return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
   }
 
   @Override
@@ -520,11 +506,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   @Override
   public void connectionRemoved(final INode node) {
     if (removeConnectionsLatch != null) {
-      try {
-        removeConnectionsLatch.await(6, TimeUnit.SECONDS);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
+      Interruptibles.await(() -> removeConnectionsLatch.await(6, TimeUnit.SECONDS));
     }
     // will be handled elsewhere
     if (serverLauncher != null) {
@@ -574,12 +556,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     final PlayerType defaultLocalType = ui == null
         ? PlayerType.WEAK_AI
         : PlayerType.HUMAN_PLAYER;
-    for (final String player : playersToNodeListing.keySet()) {
-      final String playedBy = playersToNodeListing.get(player);
-      if (playedBy == null) {
-        continue;
-      }
-      if (playedBy.equals(serverMessenger.getLocalNode().getName())) {
+    for (final Map.Entry<String, String> entry : playersToNodeListing.entrySet()) {
+      final String player = entry.getKey();
+      final String playedBy = entry.getValue();
+      if (playedBy != null && playedBy.equals(serverMessenger.getLocalNode().getName())) {
         localPlayerMappings.put(player, localPlayerTypes.getOrDefault(player, defaultLocalType));
       }
     }

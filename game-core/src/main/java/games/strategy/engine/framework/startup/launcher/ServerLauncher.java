@@ -93,19 +93,13 @@ public class ServerLauncher extends AbstractLauncher<Void> {
   }
 
   private boolean testShouldWeAbort() {
-    if (abortLaunch) {
-      return true;
-    }
-    if (gameData == null || serverModel == null) {
+    if (abortLaunch || gameData == null || serverModel == null) {
       return true;
     }
 
     final Map<String, String> players = serverModel.getPlayersToNodeListing();
-    if (players == null || players.isEmpty() || players.containsValue(null)) {
-      return true;
-    }
-
-    return serverGame != null && serverGame.getPlayerManager() != null && serverGame.getPlayerManager().isEmpty();
+    return players == null || players.isEmpty() || players.containsValue(null)
+        || (serverGame != null && serverGame.getPlayerManager() != null && serverGame.getPlayerManager().isEmpty());
   }
 
   @Override
@@ -332,20 +326,14 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       latch.countDown();
     }
 
-    public void countDownAll() {
+    void countDownAll() {
       for (int i = 0; i < clients; i++) {
         latch.countDown();
       }
     }
 
     public boolean await(final long timeout, final TimeUnit timeUnit) {
-      boolean didNotTimeOut = false;
-      try {
-        didNotTimeOut = latch.await(timeout, timeUnit);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-      return didNotTimeOut;
+      return Interruptibles.await(() -> latch.await(timeout, timeUnit));
     }
   }
 }

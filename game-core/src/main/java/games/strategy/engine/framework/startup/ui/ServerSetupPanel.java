@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.swing.Action;
 import javax.swing.JCheckBox;
@@ -247,22 +246,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       return false;
     }
     final Map<String, String> players = model.getPlayersToNodeListing();
-    if (players == null || players.isEmpty()) {
+    if (players == null || players.isEmpty() || players.containsValue(null)) {
       return false;
     }
-    for (final String player : players.keySet()) {
-      if (players.get(player) == null) {
-        return false;
-      }
-    }
     // make sure at least 1 player is enabled
-    final Map<String, Boolean> someoneEnabled = model.getPlayersEnabledListing();
-    for (final boolean bool : someoneEnabled.values()) {
-      if (bool) {
-        return true;
-      }
-    }
-    return false;
+    return model.getPlayersEnabledListing().containsValue(Boolean.TRUE);
   }
 
   @Override
@@ -294,13 +282,9 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     playerRows = new ArrayList<>();
     final Map<String, String> players = model.getPlayersToNodeListing();
     final Map<String, Boolean> playersEnabled = model.getPlayersEnabledListing();
-    final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
-        model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
     final Map<String, String> reloadSelections = PlayerId.currentPlayers(gameSelectorModel.getGameData());
-    final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
-    for (final String name : playerNames) {
-      final PlayerRow newPlayerRow =
-          new PlayerRow(name, reloadSelections, playerNamesAndAlliancesInTurnOrder.get(name));
+    for (final Map.Entry<String, Collection<String>> entry : model.getPlayerNamesAndAlliancesInTurnOrder().entrySet()) {
+      final PlayerRow newPlayerRow = new PlayerRow(entry.getKey(), reloadSelections, entry.getValue());
       playerRows.add(newPlayerRow);
       newPlayerRow.update(players, playersEnabled);
     }

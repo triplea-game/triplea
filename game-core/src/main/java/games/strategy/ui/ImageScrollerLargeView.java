@@ -38,11 +38,11 @@ public class ImageScrollerLargeView extends JComponent {
   private static final long serialVersionUID = -7212817233833868483L;
 
   // bit flags for determining which way we are scrolling
-  static final int NONE = 0;
-  static final int LEFT = 1;
-  static final int RIGHT = 2;
-  static final int TOP = 4;
-  static final int BOTTOM = 8;
+  private static final int NONE = 0b0000;
+  private static final int LEFT = 0b0001;
+  private static final int RIGHT = 0b0010;
+  private static final int TOP = 0b0100;
+  private static final int BOTTOM = 0b1000;
 
   private final int tileSize;
   protected final ImageScrollModel model;
@@ -264,23 +264,12 @@ public class ImageScrollerLargeView extends JComponent {
   }
 
   private void scroll() {
-    int dy = 0;
-    if ((edge & TOP) != 0) {
-      dy = -ClientSetting.mapEdgeScrollSpeed.getValueOrThrow();
-    } else if ((edge & BOTTOM) != 0) {
-      dy = ClientSetting.mapEdgeScrollSpeed.getValueOrThrow();
-    }
-    int dx = 0;
-    if ((edge & LEFT) != 0) {
-      dx = -ClientSetting.mapEdgeScrollSpeed.getValueOrThrow();
-    } else if ((edge & RIGHT) != 0) {
-      dx = ClientSetting.mapEdgeScrollSpeed.getValueOrThrow();
-    }
+    final int scrollSpeed = ClientSetting.mapEdgeScrollSpeed.getValueOrThrow();
+    final int dx = (edge & LEFT) != 0 ? -scrollSpeed : ((edge & RIGHT) != 0 ? scrollSpeed : 0);
+    final int dy = (edge & TOP) != 0 ? -scrollSpeed : ((edge & BOTTOM) != 0 ? scrollSpeed : 0);
 
-    dx = (int) (dx / scale);
-    dy = (int) (dy / scale);
-    final int newX = (model.getX() + dx);
-    final int newY = model.getY() + dy;
+    final int newX = (int) (model.getX() + (dx / scale));
+    final int newY = (int) (model.getY() + (dy / scale));
     model.set(newX, newY);
   }
 
@@ -289,21 +278,22 @@ public class ImageScrollerLargeView extends JComponent {
   }
 
   private static int getNewEdge(final int x, final int y, final int width, final int height) {
+    final int mapEdgeScrollZoneSize = ClientSetting.mapEdgeScrollZoneSize.getValueOrThrow();
     int newEdge = NONE;
-    if (x < ClientSetting.mapEdgeScrollZoneSize.getValueOrThrow()) {
-      newEdge += LEFT;
-    } else if (width - x < ClientSetting.mapEdgeScrollZoneSize.getValueOrThrow()) {
-      newEdge += RIGHT;
+    if (x < mapEdgeScrollZoneSize) {
+      newEdge |= LEFT;
+    } else if (width - x < mapEdgeScrollZoneSize) {
+      newEdge |= RIGHT;
     }
-    if (y < ClientSetting.mapEdgeScrollZoneSize.getValueOrThrow()) {
-      newEdge += TOP;
-    } else if (height - y < ClientSetting.mapEdgeScrollZoneSize.getValueOrThrow()) {
-      newEdge += BOTTOM;
+    if (y < mapEdgeScrollZoneSize) {
+      newEdge |= TOP;
+    } else if (height - y < mapEdgeScrollZoneSize) {
+      newEdge |= BOTTOM;
     }
     return newEdge;
   }
 
-  protected void refreshBoxSize() {
+  private void refreshBoxSize() {
     model.setBoxDimensions((int) (getWidth() / scale), (int) (getHeight() / scale));
   }
 

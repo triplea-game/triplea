@@ -78,7 +78,7 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
       return false;
     }
     // make sure at least 1 player is enabled
-    return model.getPlayersEnabledListing().values().contains(Boolean.TRUE);
+    return model.getPlayersEnabledListing().containsValue(Boolean.TRUE);
   }
 
   @Override
