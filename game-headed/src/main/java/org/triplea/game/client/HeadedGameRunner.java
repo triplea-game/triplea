@@ -8,17 +8,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
 import org.triplea.game.client.ui.javafx.TripleA;
 
-import games.strategy.debug.Console;
-import games.strategy.debug.ConsoleHandler;
 import games.strategy.debug.ErrorMessage;
-import games.strategy.debug.ErrorMessageHandler;
+import games.strategy.debug.LoggerManager;
+import games.strategy.debug.console.window.ConsoleView;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
@@ -50,10 +47,12 @@ public final class HeadedGameRunner {
     Thread.setDefaultUncaughtExceptionHandler((t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
 
     ClientSetting.initialize();
+
+    LoggerManager.setLogLevel(ClientSetting.loggingVerbosity.getValue().map(Level::parse).orElse(Level.INFO));
     if (!ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
       Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
         LookAndFeel.initialize();
-        initializeLogManager(Console.newInstance());
+        ConsoleView.initialize();
         ErrorMessage.enable();
       }));
     }
@@ -82,11 +81,4 @@ public final class HeadedGameRunner {
       GameRunner.start();
     }
   }
-
-  private static void initializeLogManager(final Console console) {
-    final Logger defaultLogger = LogManager.getLogManager().getLogger("");
-    defaultLogger.addHandler(new ErrorMessageHandler());
-    defaultLogger.addHandler(new ConsoleHandler(console));
-  }
-
 }

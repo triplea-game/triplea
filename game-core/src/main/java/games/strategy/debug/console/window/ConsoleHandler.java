@@ -1,4 +1,4 @@
-package games.strategy.debug;
+package games.strategy.debug.console.window;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -8,7 +8,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
 /**
- * A {@link Handler} that publishes log records to an instance of {@link Console}.
+ * A {@link Handler} that publishes log records to an instance of {@link ConsoleWindow}.
  *
  * <p>
  * <strong>Configuration:</strong> This handler does not currently support configuration through the {@link LogManager}.
@@ -22,9 +22,9 @@ import java.util.logging.SimpleFormatter;
  * </ul>
  */
 public final class ConsoleHandler extends Handler {
-  private final Console console;
+  private final ConsoleView console;
 
-  public ConsoleHandler(final Console console) {
+  ConsoleHandler(final ConsoleView console) {
     checkNotNull(console);
 
     this.console = console;

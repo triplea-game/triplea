@@ -1,4 +1,4 @@
-package games.strategy.debug;
+package games.strategy.debug.console.window;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
@@ -13,7 +13,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 /**
  * A collection of methods that provide information about the JVM state that may be useful for debugging.
  */
-public final class DebugUtils {
+final class DebugUtils {
   private static final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
 
   private DebugUtils() {}
@@ -22,7 +22,7 @@ public final class DebugUtils {
    * Returns a message containing the stack trace of each active thread, as well as a listing of possibly-deadlocked
    * threads.
    */
-  public static String getThreadDumps() {
+  static String getThreadDumps() {
     final StringBuilder result = new StringBuilder();
     result.append("THREAD DUMP\n");
     final ThreadInfo[] threadInfo = threadMxBean.getThreadInfo(threadMxBean.getAllThreadIds(), Integer.MAX_VALUE);

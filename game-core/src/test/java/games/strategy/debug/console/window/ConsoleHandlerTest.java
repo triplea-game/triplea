@@ -1,4 +1,4 @@
-package games.strategy.debug;
+package games.strategy.debug.console.window;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
@@ -22,7 +22,7 @@ final class ConsoleHandlerTest {
   @Nested
   final class PublishTest {
     @Mock
-    private Console console;
+    private ConsoleWindow console;
     private ConsoleHandler consoleHandler;
     private final LogRecord record = new LogRecord(Level.SEVERE, "message");
 

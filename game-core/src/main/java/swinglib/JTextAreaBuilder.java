@@ -12,7 +12,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 /**
- * Builder for Swing text areas. Example usage:
+ * Builder for Swing text areas.
+ * <ul>
+ * <li>Line wrapping is turned on by default.</li>
+ * </ul>
+ * Example usage:
  * <code><pre>
  *   JTextAreaBuilder textArea = JTextAreaBuilder.builder()
  *     .text(setting.description)
