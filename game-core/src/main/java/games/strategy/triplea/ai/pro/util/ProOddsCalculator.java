@@ -104,7 +104,10 @@ public class ProOddsCalculator {
     if (attackingUnits.size() == 0 || (hasNoDefenders && isLandAndCanOnlyBeAttackedByAir)) {
       return new ProBattleResult();
     } else if (hasNoDefenders) {
-      return new ProBattleResult(100, 0.1, true, attackingUnits, new ArrayList<>(), 0);
+      final List<Unit> mainCombatDefenders = CollectionUtils.getMatches(defendingUnits,
+          Matches.unitCanBeInBattle(false, !t.isWater(), 1, true));
+      final double tuv = TuvUtils.getTuv(mainCombatDefenders, ProData.unitValueMap);
+      return new ProBattleResult(100, 0.1 + tuv, true, attackingUnits, new ArrayList<>(), 0);
     } else if (Properties.getSubRetreatBeforeBattle(data) && !defendingUnits.isEmpty()
         && defendingUnits.stream().allMatch(Matches.unitIsSub())
         && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())) {
