@@ -67,6 +67,9 @@ class ConsoleModel {
     consoleView.append(DebugUtils.getThreadDumps());
   }
 
+  /**
+   * Represents the mapping between user-friendly label and log level.
+   */
   @VisibleForTesting
   @AllArgsConstructor
   @ToString
