@@ -5,6 +5,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
@@ -34,6 +35,7 @@ public final class JComboBoxBuilder<E> {
   private @Nullable Consumer<E> itemSelectedAction;
   private boolean autoCompleteEnabled;
   private @Nullable E selectedItem;
+  private @Nullable String tooltip;
 
   private JComboBoxBuilder(final Class<E> itemType) {
     this.itemType = itemType;
@@ -49,21 +51,18 @@ public final class JComboBoxBuilder<E> {
     final E[] array = (E[]) Array.newInstance(itemType, items.size());
     final JComboBox<E> comboBox = new JComboBox<>(items.toArray(array));
 
-    if (selectedItem != null) {
-      comboBox.setSelectedItem(selectedItem);
-    }
-
-    final @Nullable Consumer<E> myAction = this.itemSelectedAction;
-    if (myAction != null) {
-      comboBox.addItemListener(e -> {
-        // combo box will fire two events when you change selection, first a 'ItemEvent.DESELECTED' event and then
-        // a 'ItemEvent.SELECTED' event. We keep it simple for now and ignore the deselected event
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-          final @Nullable E selectionValue = itemType.cast(e.getItem());
-          myAction.accept(selectionValue);
-        }
-      });
-    }
+    Optional.ofNullable(selectedItem).ifPresent(comboBox::setSelectedItem);
+    Optional.ofNullable(tooltip).ifPresent(comboBox::setToolTipText);
+    Optional.ofNullable(itemSelectedAction).ifPresent(
+        myAction -> comboBox.addItemListener(
+            e -> {
+              // combo box will fire two events when you change selection, first a 'ItemEvent.DESELECTED' event and then
+              // a 'ItemEvent.SELECTED' event. We keep it simple for now and ignore the deselected event
+              if (e.getStateChange() == ItemEvent.SELECTED) {
+                final @Nullable E selectionValue = itemType.cast(e.getItem());
+                myAction.accept(selectionValue);
+              }
+            }));
 
     if (autoCompleteEnabled) {
       AutoCompletion.enable(comboBox);
@@ -102,6 +101,12 @@ public final class JComboBoxBuilder<E> {
   public JComboBoxBuilder<E> itemSelectedAction(final Consumer<E> itemSelectedAction) {
     Preconditions.checkNotNull(itemSelectedAction);
     this.itemSelectedAction = itemSelectedAction;
+    return this;
+  }
+
+  public JComboBoxBuilder<E> tooltip(final String tooltip) {
+    Preconditions.checkNotNull(tooltip);
+    this.tooltip = tooltip;
     return this;
   }
 
