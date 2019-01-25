@@ -82,14 +82,14 @@ class ConsoleModelTest extends AbstractClientSettingTestCase {
 
   @Test
   void memoryButtonAction() {
-    consoleModel.memoryButtonAction();
+    consoleModel.memoryAction();
 
     verify(defaultConsole).append(anyString());
   }
 
   @Test
   void propertiesButtonAction() {
-    consoleModel.propertiesButtonAction();
+    consoleModel.propertiesAction();
 
     verify(defaultConsole).append(DebugUtils.getProperties());
   }

@@ -48,8 +48,8 @@ class ConsoleWindow implements ConsoleView {
     buttonsToolBar.setFloatable(false);
     buttonsToolBar.setLayout(new FlowLayout());
     buttonsToolBar.add(SwingAction.of("Enumerate Threads", model::enumerateThreadsAction));
-    buttonsToolBar.add(SwingAction.of("Memory", model::memoryButtonAction));
-    buttonsToolBar.add(SwingAction.of("Properties", model::propertiesButtonAction));
+    buttonsToolBar.add(SwingAction.of("Memory", model::memoryAction));
+    buttonsToolBar.add(SwingAction.of("Properties", model::propertiesAction));
     buttonsToolBar.add(SwingAction.of("Copy to clipboard", model::copyToClipboardAction));
     buttonsToolBar.add(SwingAction.of("Clear", model::clearAction));
 
@@ -59,7 +59,7 @@ class ConsoleWindow implements ConsoleView {
             .selectedItem(ConsoleModel.getCurrentLogLevel())
             .items(ConsoleModel.getLogLevelOptions())
             .itemSelectedAction(ConsoleModel::setLogLevel)
-            .toolTip("Increase or decrease log messages printed to console")
+            .toolTipText("Increase or decrease log messages printed to console")
             .build());
     return buttonsToolBar;
   }

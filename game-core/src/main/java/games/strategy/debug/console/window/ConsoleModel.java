@@ -47,11 +47,11 @@ class ConsoleModel {
         .collect(Collectors.toList());
   }
 
-  void memoryButtonAction() {
+  void memoryAction() {
     consoleView.append(DebugUtils.getMemory());
   }
 
-  void propertiesButtonAction() {
+  void propertiesAction() {
     consoleView.append(DebugUtils.getProperties());
   }
 

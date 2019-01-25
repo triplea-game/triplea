@@ -35,7 +35,7 @@ public final class JComboBoxBuilder<E> {
   private @Nullable Consumer<E> itemSelectedAction;
   private boolean autoCompleteEnabled;
   private @Nullable E selectedItem;
-  private @Nullable String tooltip;
+  private @Nullable String toolTipText;
 
   private JComboBoxBuilder(final Class<E> itemType) {
     this.itemType = itemType;
@@ -52,7 +52,7 @@ public final class JComboBoxBuilder<E> {
     final JComboBox<E> comboBox = new JComboBox<>(items.toArray(array));
 
     Optional.ofNullable(selectedItem).ifPresent(comboBox::setSelectedItem);
-    Optional.ofNullable(tooltip).ifPresent(comboBox::setToolTipText);
+    Optional.ofNullable(toolTipText).ifPresent(comboBox::setToolTipText);
     Optional.ofNullable(itemSelectedAction).ifPresent(
         myAction -> comboBox.addItemListener(
             e -> {
@@ -104,9 +104,9 @@ public final class JComboBoxBuilder<E> {
     return this;
   }
 
-  public JComboBoxBuilder<E> tooltip(final String tooltip) {
-    Preconditions.checkNotNull(tooltip);
-    this.tooltip = tooltip;
+  public JComboBoxBuilder<E> toolTipText(final String toolTipText) {
+    Preconditions.checkNotNull(toolTipText);
+    this.toolTipText = toolTipText;
     return this;
   }
 
