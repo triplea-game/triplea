@@ -185,7 +185,7 @@ public final class PointFileReaderWriterTest {
       assertThat(pointListsByName, is(ImmutableMap.of(
           "Belarus", Arrays.asList(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)),
           "54 Sea Zone", Arrays.asList(new Point(2011, 2021), new Point(2012, 2022)),
-          "Philippines", Arrays.asList(new Point(3011, 3021)))));
+          "Philippines", Collections.singletonList(new Point(3011, 3021)))));
     }
 
     @Test
@@ -263,9 +263,9 @@ public final class PointFileReaderWriterTest {
           "Belarus",
           Tuple.of(Arrays.asList(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)), false),
           "54 Sea Zone", Tuple.of(Arrays.asList(new Point(2011, 2021), new Point(2012, 2022)), true),
-          "Philippines", Tuple.of(Arrays.asList(new Point(3011, 3021)), false),
-          "East America", Tuple.of(Arrays.asList(new Point(4011, 4021)), false),
-          "East Africa", Tuple.of(Arrays.asList(new Point(5011, 5021)), false))));
+          "Philippines", Tuple.of(Collections.singletonList(new Point(3011, 3021)), false),
+          "East America", Tuple.of(Collections.singletonList(new Point(4011, 4021)), false),
+          "East Africa", Tuple.of(Collections.singletonList(new Point(5011, 5021)), false))));
     }
 
     @Test
@@ -343,7 +343,7 @@ public final class PointFileReaderWriterTest {
 
       assertThat(polygonListsByName, is(aMapWithSize(3)));
       assertThat(polygonListsByName, hasKey("Belarus"));
-      assertThat(points(polygonListsByName.get("Belarus")), is(Arrays.asList(
+      assertThat(points(polygonListsByName.get("Belarus")), is(Collections.singletonList(
           Arrays.asList(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)))));
       assertThat(polygonListsByName, hasKey("54 Sea Zone"));
       assertThat(points(polygonListsByName.get("54 Sea Zone")), is(Arrays.asList(
@@ -353,7 +353,7 @@ public final class PointFileReaderWriterTest {
       assertThat(points(polygonListsByName.get("Philippines")), is(Arrays.asList(
           Arrays.asList(new Point(3011, 3021), new Point(3012, 3022), new Point(3013, 3023)),
           Arrays.asList(new Point(3111, 3121), new Point(3112, 3122)),
-          Arrays.asList(new Point(3211, 3221)))));
+          Collections.singletonList(new Point(3211, 3221)))));
     }
 
     @Test
@@ -400,9 +400,8 @@ public final class PointFileReaderWriterTest {
       final Map<String, List<Polygon>> polygonListsByName =
           readFromString(PointFileReaderWriter::readOneToManyPolygons, content);
 
-      assertThat(points(polygonListsByName.get("United Kingdom")), is(Arrays
-          .asList(Arrays
-              .asList(new Point(-1011, 1021), new Point(1234, -12424), new Point(-123, -456)))));
+      assertThat(points(polygonListsByName.get("United Kingdom")), is(Collections.singletonList(Arrays
+          .asList(new Point(-1011, 1021), new Point(1234, -12424), new Point(-123, -456)))));
     }
   }
 
@@ -449,7 +448,7 @@ public final class PointFileReaderWriterTest {
       final Map<String, List<Point>> pointListsByName = ImmutableMap.of(
           "Belarus", Arrays.asList(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)),
           "54 Sea Zone", Arrays.asList(new Point(2011, 2021), new Point(2012, 2022)),
-          "Philippines", Arrays.asList(new Point(3011, 3021)));
+          "Philippines", Collections.singletonList(new Point(3011, 3021)));
 
       final String content = writeToString(os -> PointFileReaderWriter.writeOneToMany(os, pointListsByName));
 
@@ -505,7 +504,7 @@ public final class PointFileReaderWriterTest {
     @Test
     public void shouldWriteMultiplePolygonsPerName() throws Exception {
       final Map<String, List<Polygon>> polygonListsByName = ImmutableMap.of(
-          "Belarus", Arrays.asList(
+          "Belarus", Collections.singletonList(
               polygon(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023))),
           "54 Sea Zone", Arrays.asList(
               polygon(new Point(2011, 2021), new Point(2012, 2022), new Point(2013, 2023)),

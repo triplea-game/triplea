@@ -48,8 +48,6 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
 
   protected abstract boolean allowIncludeTerritorySummary();
 
-  protected abstract boolean allowIncludeTerritoryAllPlayersSummary();
-
   protected abstract boolean allowIncludeProductionSummary();
 
   protected abstract boolean allowDiceBattleDetails();
@@ -84,7 +82,7 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
       add(actionLabel);
       add(forumPosterComponent.layoutComponents(pbemMessagePoster, getForumPosterDelegate(),
           tripleAFrame, hasPosted,
-          allowIncludeTerritorySummary(), allowIncludeTerritoryAllPlayersSummary(), allowIncludeProductionSummary(),
+          allowIncludeTerritorySummary(), allowIncludeProductionSummary(),
           allowDiceBattleDetails(), allowDiceStatistics()));
       validate();
     });

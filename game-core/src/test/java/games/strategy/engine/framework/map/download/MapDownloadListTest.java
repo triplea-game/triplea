@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +64,7 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
 
     final List<DownloadFileDescription> available = testObj.getAvailableExcluding(Arrays.asList(download1, download3));
 
-    assertThat(available, is(Arrays.asList(download2)));
+    assertThat(available, is(Collections.singletonList(download2)));
   }
 
   private static DownloadFileDescription newDownloadWithUrl(final String url) {
@@ -116,7 +117,7 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
 
     final List<DownloadFileDescription> outOfDate = testObj.getOutOfDateExcluding(Arrays.asList(download1, download3));
 
-    assertThat(outOfDate, is(Arrays.asList(download2)));
+    assertThat(outOfDate, is(Collections.singletonList(download2)));
   }
 
   @Test

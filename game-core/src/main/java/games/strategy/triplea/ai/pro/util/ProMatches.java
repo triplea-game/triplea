@@ -22,11 +22,15 @@ public class ProMatches {
 
   public static Predicate<Territory> territoryCanLandAirUnits(final PlayerId player, final GameData data,
       final boolean isCombatMove, final List<Territory> enemyTerritories, final List<Territory> alliedTerritories) {
-    return Matches.territoryIsInList(alliedTerritories).or(
-        Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data)
-            .and(Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false,
-                false, true, true))
-            .and(Matches.territoryIsInList(enemyTerritories).negate()));
+    Predicate<Territory> match = Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data)
+        .and(Matches.territoryIsPassableAndNotRestrictedAndOkByRelationships(player, data, isCombatMove, false,
+            false, true, true))
+        .and(Matches.territoryIsInList(enemyTerritories).negate());
+    if (!isCombatMove) {
+      match = match.and(Matches.territoryIsNeutralButNotWater()
+          .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data)).negate());
+    }
+    return Matches.territoryIsInList(alliedTerritories).or(match);
   }
 
   public static Predicate<Territory> territoryCanMoveAirUnits(final PlayerId player, final GameData data,

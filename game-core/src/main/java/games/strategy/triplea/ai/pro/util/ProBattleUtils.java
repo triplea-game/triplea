@@ -68,22 +68,20 @@ public class ProBattleUtils {
   /**
    * Returns an estimate of the strength difference between the specified attacking and defending units.
    *
-   * @return A value in the range [0,100]. 0 indicates absolute defender strength; 100 indicates absolute attacker
+   * @return 0 indicates absolute defender strength; 100+ indicates absolute attacker
    *         strength; 50 indicates equal attacker and defender strength.
    */
   public static double estimateStrengthDifference(final Territory t, final List<Unit> attackingUnits,
       final List<Unit> defendingUnits) {
 
-    if (attackingUnits.size() == 0) {
+    if (attackingUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
       return 0;
     }
-    final List<Unit> actualDefenders =
-        CollectionUtils.getMatches(defendingUnits, Matches.unitIsInfrastructure().negate());
-    if (actualDefenders.size() == 0) {
-      return 100;
+    if (defendingUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
+      return 99999;
     }
-    final double attackerStrength = estimateStrength(t, attackingUnits, actualDefenders, true);
-    final double defenderStrength = estimateStrength(t, actualDefenders, attackingUnits, false);
+    final double attackerStrength = estimateStrength(t, attackingUnits, defendingUnits, true);
+    final double defenderStrength = estimateStrength(t, defendingUnits, attackingUnits, false);
     return ((attackerStrength - defenderStrength) / Math.pow(defenderStrength, 0.85) * 50 + 50);
   }
 
@@ -97,7 +95,7 @@ public class ProBattleUtils {
     final GameData data = ProData.getData();
 
     List<Unit> unitsThatCanFight =
-        CollectionUtils.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
+        CollectionUtils.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, true));
     if (Properties.getTransportCasualtiesRestricted(data)) {
       unitsThatCanFight =
           CollectionUtils.getMatches(unitsThatCanFight, Matches.unitIsTransportButNotCombatTransport().negate());
@@ -112,7 +110,7 @@ public class ProBattleUtils {
     final GameData data = ProData.getData();
 
     final List<Unit> unitsThatCanFight =
-        CollectionUtils.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, false, true, true));
+        CollectionUtils.getMatches(myUnits, Matches.unitCanBeInBattle(attacking, !t.isWater(), 1, true));
     final List<Unit> sortedUnitsList = new ArrayList<>(unitsThatCanFight);
     sortedUnitsList.sort(new UnitBattleComparator(!attacking, ProData.unitValueMap,
         TerritoryEffectHelper.getEffects(t), data, false, false));

@@ -1,7 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -163,7 +163,7 @@ public class PlaceDelegateTest extends AbstractDelegateTestCase {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.add(infantry, 3);
     final PlaceableUnits response = delegate.getPlaceableUnits(GameDataTestUtil.getUnits(map, british), westCanada);
-    assertTrue(response.getMaxUnits() == 2);
+    assertEquals(2, response.getMaxUnits());
   }
 
   @Test
@@ -174,7 +174,7 @@ public class PlaceDelegateTest extends AbstractDelegateTestCase {
     delegate.setProduced(alreadyProduced);
     map.add(infantry, 1);
     final PlaceableUnits response = delegate.getPlaceableUnits(GameDataTestUtil.getUnits(map, british), westCanada);
-    assertTrue(response.getMaxUnits() == 0);
+    assertEquals(0, response.getMaxUnits());
   }
 
   @Test

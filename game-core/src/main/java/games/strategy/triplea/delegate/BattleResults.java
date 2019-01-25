@@ -6,7 +6,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
-import games.strategy.util.CollectionUtils;
 
 /**
  * The results of an in-progress or complete battle.
@@ -56,14 +55,6 @@ public class BattleResults extends GameDataComponent {
     return remainingDefendingUnits;
   }
 
-  public int getAttackingCombatUnitsLeft() {
-    return CollectionUtils.countMatches(remainingAttackingUnits, Matches.unitIsNotInfrastructure());
-  }
-
-  public int getDefendingCombatUnitsLeft() {
-    return CollectionUtils.countMatches(remainingDefendingUnits, Matches.unitIsNotInfrastructure());
-  }
-
   public int getBattleRoundsFought() {
     return battleRoundsFought;
   }
@@ -81,6 +72,6 @@ public class BattleResults extends GameDataComponent {
 
   public boolean draw() {
     return (whoWon != WhoWon.ATTACKER && whoWon != WhoWon.DEFENDER)
-        || (getAttackingCombatUnitsLeft() == 0 && getDefendingCombatUnitsLeft() == 0);
+        || (getRemainingAttackingUnits().isEmpty() && getRemainingDefendingUnits().isEmpty());
   }
 }

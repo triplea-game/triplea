@@ -261,7 +261,7 @@ public class WW2V3Year41Test {
     sz12To13.setStart(sz12);
     sz12To13.add(sz13);
     final String error = moveDelegate.move(sz12.getUnits().getUnits(), sz12To13);
-    assertEquals(null, error);
+    assertNull(error);
     assertEquals(3, sz13.getUnits().size());
     moveDelegate.end();
     // the transport was not removed automatically
@@ -959,7 +959,7 @@ public class WW2V3Year41Test {
         steps.toString());
     givenRemotePlayerWillSelectCasualtiesPer(bridge, invocation -> {
       final Collection<Unit> selectFrom = invocation.getArgument(0);
-      return new CasualtyDetails(Arrays.asList(selectFrom.iterator().next()), new ArrayList<>(), false);
+      return new CasualtyDetails(Collections.singletonList(selectFrom.iterator().next()), new ArrayList<>(), false);
     });
     // attacking subs sneak attack and hit
     // no chance to return fire
@@ -1173,9 +1173,8 @@ public class WW2V3Year41Test {
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(gameData).start();
     final Route r = new Route(france, germany, poland);
-    final List<Unit> toMove = new ArrayList<>();
     // 1 armour and 1 infantry
-    toMove.addAll(france.getUnits().getMatches(Matches.unitCanBlitz()));
+    final List<Unit> toMove = new ArrayList<>(france.getUnits().getMatches(Matches.unitCanBlitz()));
     toMove.add(france.getUnits().getMatches(Matches.unitIsLandTransportable()).get(0));
     move(toMove, r);
   }
@@ -1197,7 +1196,7 @@ public class WW2V3Year41Test {
     // try to move all the units in france, the infantry should not be able to move
     final Route r = new Route(france, germany);
     final String error = moveDelegate(gameData).move(france.getUnits().getUnits(), r);
-    assertFalse(error == null);
+    assertNotNull(error);
   }
 
   @Test

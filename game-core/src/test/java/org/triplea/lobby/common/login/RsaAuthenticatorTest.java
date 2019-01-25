@@ -34,13 +34,11 @@ final class RsaAuthenticatorTest {
     void shouldBeAbleToDecryptHashedAndSaltedPassword() throws Exception {
       final RsaAuthenticator rsaAuthenticator = new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair());
       final String password = "password";
-      final Map<String, String> challenge = new HashMap<>();
-      final Map<String, String> response = new HashMap<>();
       @SuppressWarnings("unchecked")
       final Function<String, String> action = mock(Function.class);
 
-      challenge.putAll(rsaAuthenticator.newChallenge());
-      response.putAll(RsaAuthenticator.newResponse(challenge, password));
+      final Map<String, String> challenge = new HashMap<>(rsaAuthenticator.newChallenge());
+      final Map<String, String> response = new HashMap<>(RsaAuthenticator.newResponse(challenge, password));
       rsaAuthenticator.decryptPasswordForAction(response, action);
 
       verify(action).apply(RsaAuthenticator.hashPasswordWithSalt(password));

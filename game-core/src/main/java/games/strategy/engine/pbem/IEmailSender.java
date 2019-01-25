@@ -8,6 +8,8 @@ import javax.annotation.concurrent.Immutable;
 
 import org.triplea.common.util.Arrays;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.triplea.settings.ClientSetting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -64,6 +66,9 @@ public interface IEmailSender {
    * Creates an {@link IEmailSender} instance based on the given arguments and the configured settings.
    */
   static IEmailSender newInstance(final String subjectPrefix, final String toAddress) {
+    Preconditions.checkNotNull(subjectPrefix);
+    Preconditions.checkNotNull(toAddress);
+
     return new DefaultEmailSender(
         new IEmailSender.EmailProviderSetting(
             "",

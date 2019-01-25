@@ -6,10 +6,6 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
@@ -32,7 +28,7 @@ class EngineVersionProperties {
   private final String link;
   private final String changelogLink;
 
-  private EngineVersionProperties() {
+  EngineVersionProperties() {
     this(getProperties());
   }
 
@@ -44,40 +40,12 @@ class EngineVersionProperties {
   }
 
 
-  static EngineVersionProperties contactServerForEngineVersionProperties() {
-    // sourceforge sometimes takes a long while to return results
-    // so run a couple requests in parallel, starting with delays to try and get a response quickly
-    final AtomicReference<EngineVersionProperties> ref = new AtomicReference<>();
-    final CountDownLatch latch = new CountDownLatch(1);
-    for (int i = 0; i < 5; i++) {
-      new Thread(() -> {
-        ref.set(new EngineVersionProperties());
-        latch.countDown();
-      }).start();
-      try {
-        latch.await(2, TimeUnit.SECONDS);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-      if (ref.get() != null) {
-        break;
-      }
-    }
-    // we have spawned a bunch of requests
-    try {
-      latch.await(15, TimeUnit.SECONDS);
-    } catch (final InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
-    return ref.get();
-  }
-
   private static Properties getProperties() {
     final Properties props = new Properties();
     try {
       props.load(new URL(TRIPLEA_VERSION_LINK).openStream());
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed while attempting to check for a new Version", e);
+      log.info("Failed to get TripleA latest version file, check internet connection, error: " + e);
     }
     return props;
   }
@@ -92,11 +60,6 @@ class EngineVersionProperties {
         + "<br />Latest version available for download: " + getLatestVersionOut()
         + "<br /><br />Click to download: <a class=\"external\" href=\"" + link
         + "\">" + link + "</a>"
-        + "<br /><br />Please note that installing a new version of TripleA will not remove any old copies of "
-        + "TripleA."
-        + "<br />So be sure to either manually uninstall all older versions of TripleA, or change your "
-        + "shortcuts to the new TripleA."
-        + "<br /><br />What is new:<br />"
         + "</html>";
   }
 

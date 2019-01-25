@@ -42,12 +42,6 @@ public class ResourceBar extends AbstractStatPanel implements GameDataChangeList
     this.setLayout(new GridBagLayout());
   }
 
-  public void setGameData(final GameData data) {
-    gameData.removeDataChangeListener(this);
-    gameData = data;
-    gameData.addDataChangeListener(this);
-  }
-
   private void setResources() {
     for (final Resource resource : gameData.getResourceList().getResources()) {
       if (resource.getName().equals(Constants.VPS)) {

@@ -45,10 +45,7 @@ public final class ContentReader {
     } catch (final IOException e) {
       log.log(
           Level.SEVERE,
-          "Failed to download: "
-              + uri
-              + ", will attempt to use backup values where available. "
-              + "Please check your network connection.",
+          "Failed to connect to lobby, please check your internet connection",
           e);
       return Optional.empty();
     }

@@ -33,7 +33,6 @@ public final class JTextAreaBuilder {
   private int rows = 3;
   private int columns = 15;
   private boolean readOnly;
-  private int border = 3;
   private boolean selectAllOnFocus;
 
   private JTextAreaBuilder() {}
@@ -58,6 +57,7 @@ public final class JTextAreaBuilder {
     if (readOnly) {
       textArea.setEditable(false);
     }
+    final int border = 3;
     textArea.setBorder(new EmptyBorder(border, border, border, border));
 
     if (selectAllOnFocus) {
@@ -121,12 +121,6 @@ public final class JTextAreaBuilder {
 
   public JTextAreaBuilder componentName(final String componentName) {
     this.componentName = componentName;
-    return this;
-  }
-
-  public JTextAreaBuilder border(final int borderWidth) {
-    Preconditions.checkArgument(borderWidth >= 0);
-    this.border = borderWidth;
     return this;
   }
 

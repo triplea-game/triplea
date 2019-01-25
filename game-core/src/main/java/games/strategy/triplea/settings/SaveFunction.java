@@ -35,27 +35,30 @@ final class SaveFunction {
     // save all the values, save stuff that is valid and that was updated
     selectionComponents.forEach(selectionComponent -> {
       final SelectionComponent.SaveContext context = new SelectionComponent.SaveContext() {
-        private final boolean selectionComponentValid = selectionComponent.isValid();
+        @Override
+        public void reportError(
+            final GameSetting<?> gameSetting,
+            final String message,
+            final @Nullable Object value,
+            final ValueSensitivity valueSensitivity) {
+          failMsg.append(String.format(
+              "Could not set %s to %s (%s)\n",
+              gameSetting,
+              toDisplayString(value, gameSetting.getDefaultValue().orElse(null), valueSensitivity),
+              message));
+        }
 
         @Override
         public <T> void setValue(
             final GameSetting<T> gameSetting,
-            final T value,
+            final @Nullable T value,
             final ValueSensitivity valueSensitivity) {
-          if (selectionComponentValid) {
-            if (doesNewSettingValueDiffer(gameSetting, value)) {
-              gameSetting.setValue(value);
-              successMsg.append(String.format(
-                  "%s was updated to %s\n",
-                  gameSetting,
-                  toDisplayString(value, gameSetting.getDefaultValue().orElse(null), valueSensitivity)));
-            }
-          } else {
-            failMsg.append(String.format(
-                "Could not set %s to %s (%s)\n",
+          if (doesNewSettingValueDiffer(gameSetting, value)) {
+            gameSetting.setValue(value);
+            successMsg.append(String.format(
+                "%s was updated to %s\n",
                 gameSetting,
-                toDisplayString(value, gameSetting.getDefaultValue().orElse(null), valueSensitivity),
-                selectionComponent.validValueDescription()));
+                toDisplayString(value, gameSetting.getDefaultValue().orElse(null), valueSensitivity)));
           }
         }
       };

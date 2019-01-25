@@ -42,7 +42,6 @@ import org.triplea.game.ApplicationContext;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
-import games.strategy.engine.auto.health.check.LocalSystemChecker;
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -98,7 +97,6 @@ public final class GameRunner {
       new Thread(GameRunner::showMainFrame).start();
     });
 
-    LocalSystemChecker.launch();
     UpdateChecks.launch();
   }
 

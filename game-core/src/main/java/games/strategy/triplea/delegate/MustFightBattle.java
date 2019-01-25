@@ -289,8 +289,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (stack.isExecuting()) {
       final ITripleADisplay display = getDisplay(bridge);
       display.showBattle(battleId, battleSite, getBattleTitle(),
-          removeNonCombatants(attackingUnits, true, false, false, false),
-          removeNonCombatants(defendingUnits, false, false, false, false),
+          removeNonCombatants(attackingUnits, true, false),
+          removeNonCombatants(defendingUnits, false, false),
           killed, attackingWaitingToDie, defendingWaitingToDie, dependentUnits, attacker, defender,
           isAmphibious(), getBattleType(), amphibiousLandAttackers);
       display.listBattleSteps(battleId, stepStrings);
@@ -322,8 +322,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     stepStrings = determineStepStrings(true);
     final ITripleADisplay display = getDisplay(bridge);
     display.showBattle(battleId, battleSite, getBattleTitle(),
-        removeNonCombatants(attackingUnits, true, false, false, false),
-        removeNonCombatants(defendingUnits, false, false, false, false),
+        removeNonCombatants(attackingUnits, true, false),
+        removeNonCombatants(defendingUnits, false, false),
         killed, attackingWaitingToDie, defendingWaitingToDie, dependentUnits, attacker, defender,
         isAmphibious(), getBattleType(), amphibiousLandAttackers);
     display.listBattleSteps(battleId, stepStrings);
@@ -658,7 +658,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          removeNonCombatants(bridge, false, false, true);
+          removeNonCombatants(bridge);
         }
       });
     }
@@ -692,7 +692,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
         @Override
         public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          removeNonCombatants(bridge, false, false, true);
+          removeNonCombatants(bridge);
         }
       });
       steps.add(new IExecutable() {
@@ -1385,15 +1385,23 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   @Override
   public List<Unit> getRemainingAttackingUnits() {
-    final List<Unit> remaining = new ArrayList<>(attackingUnits);
-    remaining.addAll(attackingUnitsRetreated);
+    final List<Unit> remaining = new ArrayList<>(attackingUnitsRetreated);
+    if (getWhoWon() != WhoWon.DEFENDER) {
+      final Collection<Unit> unitsLeftInTerritory = battleSite.getUnits().getUnits();
+      unitsLeftInTerritory.removeAll(killed);
+      remaining.addAll(CollectionUtils.getMatches(unitsLeftInTerritory, Matches.unitOwnedBy(attacker)));
+    }
     return remaining;
   }
 
   @Override
   public List<Unit> getRemainingDefendingUnits() {
-    final List<Unit> remaining = new ArrayList<>(defendingUnits);
-    remaining.addAll(defendingUnitsRetreated);
+    final List<Unit> remaining = new ArrayList<>(defendingUnitsRetreated);
+    if (getWhoWon() != WhoWon.ATTACKER || attackingUnits.stream().allMatch(Matches.unitIsAir())) {
+      final Collection<Unit> unitsLeftInTerritory = battleSite.getUnits().getUnits();
+      unitsLeftInTerritory.removeAll(killed);
+      remaining.addAll(CollectionUtils.getMatches(unitsLeftInTerritory, Matches.enemyUnit(attacker, gameData)));
+    }
     return remaining;
   }
 
@@ -2223,7 +2231,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    *         aa guns, land units in a water battle.
    */
   private List<Unit> removeNonCombatants(final Collection<Unit> units, final boolean attacking,
-      final boolean doNotIncludeAa, final boolean doNotIncludeSeaBombardmentUnits, final boolean removeForNextRound) {
+      final boolean removeForNextRound) {
     final List<Unit> unitList = new ArrayList<>(units);
     if (battleSite.isWater()) {
       unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitIsLand()));
@@ -2231,8 +2239,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // still allow infrastructure type units that can provide support have combat abilities
     // remove infrastructure units that can't take part in combat (air/naval bases, etc...)
     unitList.removeAll(CollectionUtils.getMatches(unitList,
-        Matches.unitCanBeInBattle(attacking, !battleSite.isWater(),
-            (removeForNextRound ? round + 1 : round), true, doNotIncludeAa, doNotIncludeSeaBombardmentUnits)
+        Matches.unitCanBeInBattle(attacking, !battleSite.isWater(), (removeForNextRound ? round + 1 : round), false)
             .negate()));
     // remove any disabled units from combat
     unitList.removeAll(CollectionUtils.getMatches(unitList, Matches.unitIsDisabled()));
@@ -2248,12 +2255,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return unitList;
   }
 
-  private void removeNonCombatants(final IDelegateBridge bridge, final boolean doNotIncludeAa,
-      final boolean doNotIncludeSeaBombardmentUnits, final boolean removeForNextRound) {
-    final List<Unit> notRemovedDefending = removeNonCombatants(defendingUnits, false, doNotIncludeAa,
-        doNotIncludeSeaBombardmentUnits, removeForNextRound);
-    final List<Unit> notRemovedAttacking = removeNonCombatants(attackingUnits, true, doNotIncludeAa,
-        doNotIncludeSeaBombardmentUnits, removeForNextRound);
+  private void removeNonCombatants(final IDelegateBridge bridge) {
+    final List<Unit> notRemovedDefending = removeNonCombatants(defendingUnits, false, true);
+    final List<Unit> notRemovedAttacking = removeNonCombatants(attackingUnits, true, true);
     final Collection<Unit> toRemoveDefending = CollectionUtils.difference(defendingUnits, notRemovedDefending);
     final Collection<Unit> toRemoveAttacking = CollectionUtils.difference(attackingUnits, notRemovedAttacking);
     defendingUnits = notRemovedDefending;
