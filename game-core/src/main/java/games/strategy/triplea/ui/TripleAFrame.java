@@ -1896,7 +1896,7 @@ public final class TripleAFrame extends JFrame {
           try {
             final File f = TripleAMenuBar.getSaveGameLocation(TripleAFrame.this);
             if (f != null) {
-              try (final FileOutputStream fout = new FileOutputStream(f)) {
+              try (FileOutputStream fout = new FileOutputStream(f)) {
                 final GameData datacopy = GameDataUtils.cloneGameData(data, true);
                 datacopy.getHistory().gotoNode(historyPanel.getCurrentPopupNode());
                 datacopy.getHistory().removeAllHistoryAfterNode(historyPanel.getCurrentPopupNode());
