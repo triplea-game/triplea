@@ -38,7 +38,7 @@ public class DownloadRunnable {
         return DownloadFileParser.parse(response.getEntity().getContent());
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Error while downloading map download info file.");
+      log.log(Level.SEVERE, "Error while downloading map download info.");
       return Collections.emptyList();
     }
   }
