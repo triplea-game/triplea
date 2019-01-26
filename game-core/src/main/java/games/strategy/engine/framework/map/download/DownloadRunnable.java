@@ -1,12 +1,13 @@
 package games.strategy.engine.framework.map.download;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Level;
 
 import org.apache.http.HttpStatus;
@@ -26,7 +27,7 @@ public class DownloadRunnable {
 
   private DownloadRunnable() {}
 
-  public static Optional<List<DownloadFileDescription>> download(final String url) {
+  public static List<DownloadFileDescription> download(final String url) {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
       final HttpGet request = new HttpGet(url);
       HttpProxy.addProxy(request);
@@ -34,22 +35,22 @@ public class DownloadRunnable {
         final int status = response.getStatusLine().getStatusCode();
         if (status != HttpStatus.SC_OK) {
           log.log(Level.WARNING, "Invalid map link '" + url + "'. Server returned " + status);
-          return Optional.empty();
+          return Collections.emptyList();
         }
-        return Optional.of(DownloadFileParser.parse(response.getEntity().getContent()));
+        return DownloadFileParser.parse(response.getEntity().getContent());
       }
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Error while downloading map download info file.");
-      return Optional.empty();
+      return Collections.emptyList();
     }
   }
 
-  public static Optional<List<DownloadFileDescription>> readLocalFile(final Path path) {
+  public static List<DownloadFileDescription> readLocalFile(final Path path) {
     try (InputStream inputStream = Files.newInputStream(path)) {
-      return Optional.of(DownloadFileParser.parse(inputStream));
+      return checkNotNull(DownloadFileParser.parse(inputStream));
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to read file at: " + path.toAbsolutePath(), e);
-      return Optional.of(Collections.emptyList());
+      return Collections.emptyList();
     }
   }
 }

@@ -18,6 +18,5 @@ class ClientContextIntegrationTest extends AbstractClientSettingTestCase {
     assertThat(ClientContext.engineVersion(), notNullValue());
 
     assertThat(ClientContext.getMapDownloadList(), notNullValue());
-    assertThat(ClientContext.getMapDownloadList().isPresent(), is(true));
   }
 }

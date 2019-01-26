@@ -3,6 +3,7 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static games.strategy.util.Util.not;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -15,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -153,14 +153,14 @@ public class DownloadMapsWindow extends JFrame {
       assert state == State.UNINITIALIZED;
 
       Interruptibles.awaitResult(SingletonManager::getMapDownloadListInBackground).result
-          .flatMap(Function.identity())
+          .filter(not(Collection::isEmpty))
           .ifPresent(downloads -> {
             state = State.INITIALIZING;
             createAndShow(mapNames, downloads);
           });
     }
 
-    private static Optional<List<DownloadFileDescription>> getMapDownloadListInBackground()
+    private static List<DownloadFileDescription> getMapDownloadListInBackground()
         throws InterruptedException {
       return GameRunner.newBackgroundTaskRunner().runInBackgroundAndReturn(
           "Downloading list of available maps...",
