@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -49,7 +49,7 @@ public class DownloadRunnable {
       return Optional.of(DownloadFileParser.parse(inputStream));
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to read file at: " + path.toAbsolutePath(), e);
-      return Optional.of(new ArrayList<>());
+      return Optional.of(Collections.emptyList());
     }
   }
 }

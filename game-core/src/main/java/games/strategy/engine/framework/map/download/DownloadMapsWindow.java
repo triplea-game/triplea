@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -152,10 +153,11 @@ public class DownloadMapsWindow extends JFrame {
       assert state == State.UNINITIALIZED;
 
       Interruptibles.awaitResult(SingletonManager::getMapDownloadListInBackground).result
-          .ifPresent(downloads -> downloads.ifPresent(d -> {
+          .flatMap(Function.identity())
+          .ifPresent(downloads -> {
             state = State.INITIALIZING;
-            createAndShow(mapNames, d);
-          }));
+            createAndShow(mapNames, downloads);
+          });
     }
 
     private static Optional<List<DownloadFileDescription>> getMapDownloadListInBackground()
