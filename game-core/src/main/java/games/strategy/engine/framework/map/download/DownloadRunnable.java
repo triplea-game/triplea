@@ -12,8 +12,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.io.IoUtils;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+import games.strategy.engine.framework.system.HttpProxy;
 import lombok.extern.java.Log;
 
 /**
@@ -40,14 +45,19 @@ public class DownloadRunnable {
   }
 
   private Optional<List<DownloadFileDescription>> downloadFile() {
-    try {
-      final Path tempFile = ClientFileSystemHelper.newTempFile().toPath();
-      tempFile.toFile().deleteOnExit();
-      DownloadConfiguration.contentReader().downloadToFile(urlString, tempFile.toFile());
-      final byte[] contents = Files.readAllBytes(tempFile);
-      return Optional.of(IoUtils.readFromMemory(contents, DownloadFileParser::parse));
+    try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
+      final HttpGet request = new HttpGet(urlString);
+      HttpProxy.addProxy(request);
+      try (CloseableHttpResponse response = client.execute(request)) {
+        final int status = response.getStatusLine().getStatusCode();
+        if (status != HttpStatus.SC_OK) {
+          log.log(Level.WARNING, "Invalid map link '" + urlString + "'. Server returned " + status);
+          return Optional.empty();
+        }
+        return Optional.of(DownloadFileParser.parse(response.getEntity().getContent()));
+      }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Error - check internet connection, unable to download list of maps.", e);
+      log.log(Level.SEVERE, "Error while downloading map download info file.");
       return Optional.empty();
     }
   }
