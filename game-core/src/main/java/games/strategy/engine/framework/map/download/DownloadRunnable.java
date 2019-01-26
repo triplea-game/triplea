@@ -1,7 +1,5 @@
 package games.strategy.engine.framework.map.download;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -47,7 +45,7 @@ public class DownloadRunnable {
 
   public static List<DownloadFileDescription> readLocalFile(final Path path) {
     try (InputStream inputStream = Files.newInputStream(path)) {
-      return checkNotNull(DownloadFileParser.parse(inputStream));
+      return DownloadFileParser.parse(inputStream);
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to read file at: " + path.toAbsolutePath(), e);
       return Collections.emptyList();
