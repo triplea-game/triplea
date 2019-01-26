@@ -26,10 +26,10 @@ import lombok.extern.java.Log;
  */
 @Log
 public class DownloadRunnable {
-  private final String urlString;
+  private final String locator;
 
-  public DownloadRunnable(final String urlString) {
-    this.urlString = urlString;
+  public DownloadRunnable(final String locator) {
+    this.locator = locator;
   }
 
   /**
@@ -37,21 +37,21 @@ public class DownloadRunnable {
    * parse those contents, otherwise (for testing) we assume a local file reference and parse that.
    */
   public Optional<List<DownloadFileDescription>> getDownloads() {
-    return beginsWithHttpProtocol(urlString) ? downloadFile() : Optional.of(readLocalFile());
+    return beginsWithHttpProtocol() ? downloadFile() : Optional.of(readLocalFile());
   }
 
-  private static boolean beginsWithHttpProtocol(final String urlString) {
-    return urlString.startsWith("http://") || urlString.startsWith("https://");
+  private boolean beginsWithHttpProtocol() {
+    return locator.startsWith("http://") || locator.startsWith("https://");
   }
 
   private Optional<List<DownloadFileDescription>> downloadFile() {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
-      final HttpGet request = new HttpGet(urlString);
+      final HttpGet request = new HttpGet(locator);
       HttpProxy.addProxy(request);
       try (CloseableHttpResponse response = client.execute(request)) {
         final int status = response.getStatusLine().getStatusCode();
         if (status != HttpStatus.SC_OK) {
-          log.log(Level.WARNING, "Invalid map link '" + urlString + "'. Server returned " + status);
+          log.log(Level.WARNING, "Invalid map link '" + locator + "'. Server returned " + status);
           return Optional.empty();
         }
         return Optional.of(DownloadFileParser.parse(response.getEntity().getContent()));
@@ -63,11 +63,9 @@ public class DownloadRunnable {
   }
 
   private List<DownloadFileDescription> readLocalFile() {
-    final Path targetFile = Paths.get(urlString);
+    final Path targetFile = Paths.get(locator);
     try (InputStream inputStream = Files.newInputStream(targetFile)) {
-      final List<DownloadFileDescription> downloads = DownloadFileParser.parse(inputStream);
-      checkNotNull(downloads);
-      return downloads;
+      return checkNotNull(DownloadFileParser.parse(inputStream));
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to read file at: " + targetFile.toAbsolutePath(), e);
       return new ArrayList<>();
