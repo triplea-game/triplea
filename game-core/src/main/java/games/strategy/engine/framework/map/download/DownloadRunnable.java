@@ -32,13 +32,13 @@ public class DownloadRunnable {
       try (CloseableHttpResponse response = client.execute(request)) {
         final int status = response.getStatusLine().getStatusCode();
         if (status != HttpStatus.SC_OK) {
-          log.log(Level.WARNING, "Invalid map link '" + url + "'. Server returned " + status);
+          log.warning("Invalid map link '" + url + "'. Server returned " + status);
           return Collections.emptyList();
         }
         return DownloadFileParser.parse(response.getEntity().getContent());
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Error while downloading map download info.");
+      log.log(Level.SEVERE, "Error while downloading map download info.", e);
       return Collections.emptyList();
     }
   }
