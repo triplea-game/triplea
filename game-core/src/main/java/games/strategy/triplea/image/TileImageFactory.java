@@ -22,7 +22,6 @@ import javax.imageio.ImageIO;
 
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.BlendComposite.BlendingMode;
-import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 import lombok.extern.java.Log;
 
@@ -225,14 +224,12 @@ public final class TileImageFactory {
 
     // Get buffered images
     try {
-      final Stopwatch loadingImages = new Stopwatch("Loading images:" + urlrelief + " and " + urlBase);
       if (urlrelief != null) {
         reliefFile = loadCompatibleImage(urlrelief);
       }
       if (urlBase != null) {
         baseFile = loadCompatibleImage(urlBase);
       }
-      loadingImages.done();
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to load one or more images: " + urlrelief + ", " + urlBase, e);
     }
@@ -283,10 +280,7 @@ public final class TileImageFactory {
       final boolean cache, final boolean scaled) {
     Image image;
     try {
-      final Stopwatch loadingImages = new Stopwatch("Loading image:" + imageLocation);
       final BufferedImage fromFile = ImageIO.read(imageLocation);
-      loadingImages.done();
-      final Stopwatch copyingImage = new Stopwatch("Copying image:" + imageLocation);
       // if we don't copy, drawing the tile to the screen takes significantly longer
       // has something to do with the color model and type of the images
       // some images can be copied quickly to the screen
@@ -302,7 +296,6 @@ public final class TileImageFactory {
       g.drawImage(fromFile, 0, 0, null);
       g.dispose();
       fromFile.flush();
-      copyingImage.done();
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Could not load image, url: " + imageLocation.toString(), e);
       image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
