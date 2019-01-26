@@ -2,9 +2,11 @@ package games.strategy.engine.framework.map.download;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,10 +41,10 @@ public class DownloadRunnable {
 
   private Optional<List<DownloadFileDescription>> downloadFile() {
     try {
-      final File tempFile = ClientFileSystemHelper.newTempFile();
-      tempFile.deleteOnExit();
-      DownloadConfiguration.contentReader().downloadToFile(urlString, tempFile);
-      final byte[] contents = Files.readAllBytes(tempFile.toPath());
+      final Path tempFile = ClientFileSystemHelper.newTempFile().toPath();
+      tempFile.toFile().deleteOnExit();
+      DownloadConfiguration.contentReader().downloadToFile(urlString, tempFile.toFile());
+      final byte[] contents = Files.readAllBytes(tempFile);
       return Optional.of(IoUtils.readFromMemory(contents, DownloadFileParser::parse));
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Error - check internet connection, unable to download list of maps.", e);
@@ -51,14 +53,13 @@ public class DownloadRunnable {
   }
 
   private List<DownloadFileDescription> readLocalFile() {
-    final File targetFile = new File(urlString);
-    try {
-      final byte[] contents = Files.readAllBytes(targetFile.toPath());
-      final List<DownloadFileDescription> downloads = IoUtils.readFromMemory(contents, DownloadFileParser::parse);
+    final Path targetFile = Paths.get(urlString);
+    try (InputStream inputStream = Files.newInputStream(targetFile)) {
+      final List<DownloadFileDescription> downloads = DownloadFileParser.parse(inputStream);
       checkNotNull(downloads);
       return downloads;
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to read file at: " + targetFile.getAbsolutePath(), e);
+      log.log(Level.SEVERE, "Failed to read file at: " + targetFile.toAbsolutePath(), e);
       return new ArrayList<>();
     }
   }
