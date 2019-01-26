@@ -1,12 +1,9 @@
 package games.strategy.engine.framework.map.download;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,32 +23,17 @@ import lombok.extern.java.Log;
  */
 @Log
 public class DownloadRunnable {
-  private final String locator;
 
-  public DownloadRunnable(final String locator) {
-    this.locator = locator;
-  }
+  private DownloadRunnable() {}
 
-  /**
-   * Returns a parsed list of parsed downloadable maps. If initialized with a URL then we will do a network fetch and
-   * parse those contents, otherwise (for testing) we assume a local file reference and parse that.
-   */
-  public Optional<List<DownloadFileDescription>> getDownloads() {
-    return beginsWithHttpProtocol() ? downloadFile() : Optional.of(readLocalFile());
-  }
-
-  private boolean beginsWithHttpProtocol() {
-    return locator.startsWith("http://") || locator.startsWith("https://");
-  }
-
-  private Optional<List<DownloadFileDescription>> downloadFile() {
+  public static Optional<List<DownloadFileDescription>> download(final String url) {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
-      final HttpGet request = new HttpGet(locator);
+      final HttpGet request = new HttpGet(url);
       HttpProxy.addProxy(request);
       try (CloseableHttpResponse response = client.execute(request)) {
         final int status = response.getStatusLine().getStatusCode();
         if (status != HttpStatus.SC_OK) {
-          log.log(Level.WARNING, "Invalid map link '" + locator + "'. Server returned " + status);
+          log.log(Level.WARNING, "Invalid map link '" + url + "'. Server returned " + status);
           return Optional.empty();
         }
         return Optional.of(DownloadFileParser.parse(response.getEntity().getContent()));
@@ -62,13 +44,12 @@ public class DownloadRunnable {
     }
   }
 
-  private List<DownloadFileDescription> readLocalFile() {
-    final Path targetFile = Paths.get(locator);
-    try (InputStream inputStream = Files.newInputStream(targetFile)) {
-      return checkNotNull(DownloadFileParser.parse(inputStream));
+  public static Optional<List<DownloadFileDescription>> readLocalFile(final Path path) {
+    try (InputStream inputStream = Files.newInputStream(path)) {
+      return Optional.of(DownloadFileParser.parse(inputStream));
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to read file at: " + targetFile.toAbsolutePath(), e);
-      return new ArrayList<>();
+      log.log(Level.SEVERE, "Failed to read file at: " + path.toAbsolutePath(), e);
+      return Optional.of(new ArrayList<>());
     }
   }
 }

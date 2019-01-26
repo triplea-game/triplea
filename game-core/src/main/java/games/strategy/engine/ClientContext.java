@@ -60,10 +60,9 @@ public final class ClientContext {
   }
 
   public static Optional<List<DownloadFileDescription>> getMapDownloadList() {
-    final String mapDownloadListUrl = ClientSetting.mapListOverride.getValue()
-        .map(Object::toString)
-        .orElse(UrlConstants.MAP_DOWNLOAD_LIST.toString());
 
-    return new DownloadRunnable(mapDownloadListUrl).getDownloads();
+    return ClientSetting.mapListOverride.getValue()
+        .map(DownloadRunnable::readLocalFile)
+        .orElseGet(() -> DownloadRunnable.download(UrlConstants.MAP_DOWNLOAD_LIST.toString()));
   }
 }
