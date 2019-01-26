@@ -25,6 +25,10 @@ public class DownloadRunnable {
 
   private DownloadRunnable() {}
 
+  /**
+   * Parses a file at the given URL into a List of {@link DownloadFileDescription}s.
+   * If an error occurs this will return an empty list.
+   */
   public static List<DownloadFileDescription> download(final String url) {
     try (CloseableHttpClient client = HttpClients.custom().disableCookieManagement().build()) {
       final HttpGet request = new HttpGet(url);
@@ -43,6 +47,10 @@ public class DownloadRunnable {
     }
   }
 
+  /**
+   * Parses a file at the given {@link Path} into a List of {@link DownloadFileDescription}s.
+   * If an error occurs this will return an empty list.
+   */
   public static List<DownloadFileDescription> readLocalFile(final Path path) {
     try (InputStream inputStream = Files.newInputStream(path)) {
       return DownloadFileParser.parse(inputStream);
