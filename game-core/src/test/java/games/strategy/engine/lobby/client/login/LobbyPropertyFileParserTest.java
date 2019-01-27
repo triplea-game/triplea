@@ -5,7 +5,10 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -59,7 +62,7 @@ class LobbyPropertyFileParserTest {
     testProps.message = TestData.message;
     testProps.version = TestData.clientCurrentVersion;
 
-    final String yamlContents = newYaml(testProps);
+    final InputStream yamlContents = newYaml(testProps);
 
     final LobbyServerProperties result =
         LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));
@@ -70,10 +73,10 @@ class LobbyPropertyFileParserTest {
     assertThat(result.getServerErrorMessage(), isPresentAndIs(TestData.errorMessage));
   }
 
-  private static String newYaml(final TestProps... testProps) {
-    return Arrays.stream(testProps)
+  private static ByteArrayInputStream newYaml(final TestProps... testProps) {
+    return new ByteArrayInputStream(Arrays.stream(testProps)
         .map(TestProps::toYaml)
-        .collect(Collectors.joining("\n"));
+        .collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8));
   }
 
   /**
@@ -82,7 +85,7 @@ class LobbyPropertyFileParserTest {
    */
   @Test
   void checkVersionSelection() {
-    final String yamlContents = newYaml(testDataSet());
+    final InputStream yamlContents = newYaml(testDataSet());
 
     final LobbyServerProperties result =
         LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));

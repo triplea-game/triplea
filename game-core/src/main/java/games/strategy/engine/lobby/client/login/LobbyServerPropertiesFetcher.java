@@ -1,14 +1,10 @@
 package games.strategy.engine.lobby.client.login;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
@@ -26,12 +22,12 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class LobbyServerPropertiesFetcher {
-  private final Function<String, Optional<File>> fileDownloader;
+  private final BiFunction<String, Function<InputStream, LobbyServerProperties>, Optional<LobbyServerProperties>> fileDownloader;
   @Nullable
   private LobbyServerProperties lobbyServerProperties;
 
 
-  LobbyServerPropertiesFetcher(final Function<String, Optional<File>> fileDownloader) {
+  LobbyServerPropertiesFetcher(final BiFunction<String, Function<InputStream, LobbyServerProperties>, Optional<LobbyServerProperties>> fileDownloader) {
     this.fileDownloader = fileDownloader;
   }
 
@@ -141,24 +137,7 @@ public final class LobbyServerPropertiesFetcher {
   Optional<LobbyServerProperties> downloadAndParseRemoteFile(
       final String lobbyPropFileUrl,
       final Version currentVersion,
-      final BiFunction<String, Version, LobbyServerProperties> propertyParser) {
-    return fileDownloader.apply(lobbyPropFileUrl).map(downloadFile -> {
-      try {
-        final String yamlContent = new String(Files.readAllBytes(downloadFile.toPath()), StandardCharsets.UTF_8);
-
-        final LobbyServerProperties properties =
-            propertyParser.apply(yamlContent, currentVersion);
-
-        if (!downloadFile.delete()) {
-          downloadFile.deleteOnExit();
-        }
-
-        return properties;
-      } catch (final IOException e) {
-        log.log(Level.SEVERE, "Failed loading file: " + lobbyPropFileUrl + ", please try again, if the "
-            + "problem does not go away please report a bug: " + UrlConstants.GITHUB_ISSUES, e);
-        return null;
-      }
-    });
+      final BiFunction<InputStream, Version, LobbyServerProperties> propertyParser) {
+    return fileDownloader.apply(lobbyPropFileUrl, inputStream -> propertyParser.apply(inputStream, currentVersion));
   }
 }

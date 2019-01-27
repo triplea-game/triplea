@@ -2,6 +2,7 @@ package games.strategy.engine.lobby.client.login;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ class LobbyPropertyFileParser {
   @VisibleForTesting
   static final String YAML_ERROR_MESSAGE = "error_message";
 
-  public static LobbyServerProperties parse(final String fileContents, final Version currentVersion) {
+  public static LobbyServerProperties parse(final InputStream fileContents, final Version currentVersion) {
     final Map<String, Object> yamlProps =
         OpenJsonUtils.toMap(matchCurrentVersion(loadYaml(fileContents), currentVersion));
 
@@ -55,7 +56,7 @@ class LobbyPropertyFileParser {
         .orElse(lobbyProps.getJSONObject(0));
   }
 
-  private static JSONArray loadYaml(final String yamlContent) {
+  private static JSONArray loadYaml(final InputStream yamlContent) {
     final Yaml yaml = new Yaml();
     return new JSONArray(yaml.loadAs(yamlContent, List.class));
   }

@@ -76,9 +76,7 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
     }
 
     private void downloadToFile() throws Exception {
-      try (FileOutputStream os = new FileOutputStream(file)) {
-        ContentReader.downloadToFile(URI, os, client);
-      }
+      new ContentReader(() -> client).downloadToFile(URI, file);
     }
 
     private byte[] fileContent() throws Exception {

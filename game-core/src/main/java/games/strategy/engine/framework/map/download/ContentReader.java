@@ -6,8 +6,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.Channels;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
@@ -15,13 +17,12 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.system.HttpProxy;
+import games.strategy.util.function.ThrowingFunction;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 
@@ -32,21 +33,19 @@ public final class ContentReader {
   private final Supplier<CloseableHttpClient> httpClientFactory;
 
   /**
-   * Creates a temp file, downloads the contents of a target uri to that file, returns the file.
+   * Downloads the resource at the specified URI to the specified file.
    *
-   * @param uri The URI whose contents will be downloaded
+   * @param uri The resource URI; must not be {@code null}.
+   * @param action The action to perform using the give InputStream; must not be {@code null}.
    */
-  public Optional<File> downloadToFile(final String uri) {
-    final File file = ClientFileSystemHelper.newTempFile();
-    file.deleteOnExit();
+  public <T> Optional<T> download(final String uri, final Function<InputStream, T> action) {
+    checkNotNull(uri);
+    checkNotNull(action);
+
     try {
-      downloadToFile(uri, file);
-      return Optional.of(file);
+      return Optional.of(downloadInternal(uri, action::apply));
     } catch (final IOException e) {
-      log.log(
-          Level.SEVERE,
-          "Failed to connect to lobby, please check your internet connection",
-          e);
+      log.log(Level.SEVERE, "Error while downloading file", e);
       return Optional.empty();
     }
   }
@@ -62,34 +61,47 @@ public final class ContentReader {
     checkNotNull(uri);
     checkNotNull(file);
 
-    try (FileOutputStream os = new FileOutputStream(file);
-        CloseableHttpClient client = httpClientFactory.get()) {
-      downloadToFile(uri, os, client);
+    try (FileOutputStream os = new FileOutputStream(file)) {
+      downloadInternal(uri, is -> os.getChannel().transferFrom(Channels.newChannel(is), 0L, Long.MAX_VALUE));
+    }
+  }
+
+
+  /**
+   * Downloads the resource at the specified URI to the specified file.
+   *
+   * @param uri The resource URI; must not be {@code null}.
+   * @param action The action to perform using the give InputStream; must not be {@code null}.
+   * @throws IOException If an error occurs during the download.
+   */
+  private <T> T downloadInternal(final String uri, final ThrowingFunction<InputStream, T, IOException> action) throws IOException {
+    checkNotNull(uri);
+    checkNotNull(action);
+
+    try (CloseableHttpClient client = httpClientFactory.get()) {
+      return download(uri, action, client);
     }
   }
 
   @VisibleForTesting
-  static void downloadToFile(
-      final String uri, final FileOutputStream os, final CloseableHttpClient client)
+  static <T> T download(
+      final String uri, final ThrowingFunction<InputStream, T, IOException> action, final CloseableHttpClient client)
       throws IOException {
-    try (CloseableHttpResponse response = client.execute(newHttpGetRequest(uri))) {
-      final int statusCode = response.getStatusLine().getStatusCode();
-      if (statusCode != HttpStatus.SC_OK) {
-        throw new IOException(String.format("unexpected status code (%d)", statusCode));
-      }
-
-      final HttpEntity entity = response.getEntity();
-      if (entity == null) {
-        throw new IOException("entity is missing");
-      }
-
-      os.getChannel().transferFrom(Channels.newChannel(entity.getContent()), 0L, Long.MAX_VALUE);
-    }
-  }
-
-  private static HttpRequestBase newHttpGetRequest(final String uri) {
     final HttpGet request = new HttpGet(uri);
     HttpProxy.addProxy(request);
-    return request;
+
+    try (CloseableHttpResponse response = client.execute(request)) {
+      final int statusCode = response.getStatusLine().getStatusCode();
+      if (statusCode != HttpStatus.SC_OK) {
+        throw new IOException(String.format("Unexpected status code (%d)", statusCode));
+      }
+
+      final HttpEntity entity = Optional.ofNullable(response.getEntity())
+          .orElseThrow(() -> new IOException("Entity is missing"));
+
+      try (InputStream stream = entity.getContent()) {
+        return action.apply(stream);
+      }
+    }
   }
 }
