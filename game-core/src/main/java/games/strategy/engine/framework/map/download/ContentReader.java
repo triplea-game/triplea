@@ -26,7 +26,9 @@ import games.strategy.util.function.ThrowingFunction;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 
-/** Provides methods to download files via HTTP. */
+/**
+ * Provides methods to download files via HTTP.
+ */
 @Log
 @AllArgsConstructor
 public final class ContentReader {
@@ -47,6 +49,28 @@ public final class ContentReader {
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Error while downloading file", e);
       return Optional.empty();
+    }
+  }
+
+  @VisibleForTesting
+  static <T> T download(
+      final String uri, final ThrowingFunction<InputStream, T, IOException> action, final CloseableHttpClient client)
+      throws IOException {
+    final HttpGet request = new HttpGet(uri);
+    HttpProxy.addProxy(request);
+
+    try (CloseableHttpResponse response = client.execute(request)) {
+      final int statusCode = response.getStatusLine().getStatusCode();
+      if (statusCode != HttpStatus.SC_OK) {
+        throw new IOException(String.format("Unexpected status code (%d)", statusCode));
+      }
+
+      final HttpEntity entity = Optional.ofNullable(response.getEntity())
+          .orElseThrow(() -> new IOException("Entity is missing"));
+
+      try (InputStream stream = entity.getContent()) {
+        return action.apply(stream);
+      }
     }
   }
 
@@ -74,34 +98,13 @@ public final class ContentReader {
    * @param action The action to perform using the give InputStream; must not be {@code null}.
    * @throws IOException If an error occurs during the download.
    */
-  private <T> T downloadInternal(final String uri, final ThrowingFunction<InputStream, T, IOException> action) throws IOException {
+  private <T> T downloadInternal(final String uri, final ThrowingFunction<InputStream, T, IOException> action)
+      throws IOException {
     checkNotNull(uri);
     checkNotNull(action);
 
     try (CloseableHttpClient client = httpClientFactory.get()) {
       return download(uri, action, client);
-    }
-  }
-
-  @VisibleForTesting
-  static <T> T download(
-      final String uri, final ThrowingFunction<InputStream, T, IOException> action, final CloseableHttpClient client)
-      throws IOException {
-    final HttpGet request = new HttpGet(uri);
-    HttpProxy.addProxy(request);
-
-    try (CloseableHttpResponse response = client.execute(request)) {
-      final int statusCode = response.getStatusLine().getStatusCode();
-      if (statusCode != HttpStatus.SC_OK) {
-        throw new IOException(String.format("Unexpected status code (%d)", statusCode));
-      }
-
-      final HttpEntity entity = Optional.ofNullable(response.getEntity())
-          .orElseThrow(() -> new IOException("Entity is missing"));
-
-      try (InputStream stream = entity.getContent()) {
-        return action.apply(stream);
-      }
     }
   }
 }

@@ -22,12 +22,15 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class LobbyServerPropertiesFetcher {
-  private final BiFunction<String, Function<InputStream, LobbyServerProperties>, Optional<LobbyServerProperties>> fileDownloader;
+  private final BiFunction<String, Function<InputStream, LobbyServerProperties>,
+      Optional<LobbyServerProperties>> fileDownloader;
   @Nullable
   private LobbyServerProperties lobbyServerProperties;
 
 
-  LobbyServerPropertiesFetcher(final BiFunction<String, Function<InputStream, LobbyServerProperties>, Optional<LobbyServerProperties>> fileDownloader) {
+  LobbyServerPropertiesFetcher(
+      final BiFunction<String, Function<InputStream, LobbyServerProperties>,
+          Optional<LobbyServerProperties>> fileDownloader) {
     this.fileDownloader = fileDownloader;
   }
 

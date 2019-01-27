@@ -29,8 +29,8 @@ import games.strategy.util.Version;
 @ExtendWith(MockitoExtension.class)
 class LobbyServerPropertiesFetcherTest {
   @Mock
-  private BiFunction<String, Function<InputStream, LobbyServerProperties>, Optional<LobbyServerProperties>>
-      mockFileDownloader;
+  private BiFunction<String, Function<InputStream, LobbyServerProperties>,
+      Optional<LobbyServerProperties>> mockFileDownloader;
 
   private LobbyServerPropertiesFetcher testObj;
 
@@ -46,9 +46,6 @@ class LobbyServerPropertiesFetcherTest {
      */
     @Test
     void happyCase() {
-
-
-
       when(mockFileDownloader.apply(eq(TestData.url), any())).thenReturn(Optional.of(TestData.lobbyServerProperties));
 
       final Optional<LobbyServerProperties> result = testObj.downloadAndParseRemoteFile(TestData.url,
@@ -67,6 +64,7 @@ class LobbyServerPropertiesFetcherTest {
       assertThat(result, isEmpty());
     }
   }
+
 
   @Nested
   final class GetTestOverridePropertiesTest {
@@ -167,6 +165,7 @@ class LobbyServerPropertiesFetcherTest {
       thenResultHasHostAndPort("foo", 4242);
     }
   }
+
 
   private interface TestData {
     Version version = new Version("0.0.0.0");
