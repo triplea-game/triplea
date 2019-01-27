@@ -104,7 +104,7 @@ public class BattleCalculator {
             && defendingAa.stream().allMatch(Matches.unitAaShotDamageableInsteadOfKillingInstantly());
     if (isChooseAa(data)) {
       final String text = "Select " + dice.getHits() + " casualties from aa fire in " + terr.getName();
-      return selectCasualties(null, hitPlayer, planes, allFriendlyUnits, firingPlayer, allEnemyUnits, amphibious,
+      return selectCasualties(hitPlayer, planes, allFriendlyUnits, allEnemyUnits, amphibious,
           amphibiousLandAttackers, terr, territoryEffects, bridge, text, dice, defending, battleId, false,
           dice.getHits(), allowMultipleHitsPerUnit);
     }
@@ -434,8 +434,8 @@ public class BattleCalculator {
    *
    * @param battleId may be null if we are not in a battle (eg, if this is an aa fire due to moving).
    */
-  public static CasualtyDetails selectCasualties(final String step, final PlayerId player,
-      final Collection<Unit> targetsToPickFrom, final Collection<Unit> friendlyUnits, final PlayerId enemyPlayer,
+  public static CasualtyDetails selectCasualties(final PlayerId player,
+      final Collection<Unit> targetsToPickFrom, final Collection<Unit> friendlyUnits,
       final Collection<Unit> enemyUnits, final boolean amphibious, final Collection<Unit> amphibiousLandAttackers,
       final Territory battlesite, final Collection<TerritoryEffect> territoryEffects, final IDelegateBridge bridge,
       final String text, final DiceRoll dice, final boolean defending, final GUID battleId, final boolean headLess,
@@ -454,7 +454,7 @@ public class BattleCalculator {
     final Map<Unit, Collection<Unit>> dependents = headLess ? Collections.emptyMap() : getDependents(targetsToPickFrom);
     if (isEditMode && !headLess) {
       final CasualtyDetails editSelection = tripleaPlayer.selectCasualties(targetsToPickFrom, dependents, 0, text, dice,
-          player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, new CasualtyList(),
+          player, friendlyUnits, enemyUnits, amphibious, amphibiousLandAttackers, new CasualtyList(),
           battleId, battlesite, allowMultipleHitsPerUnit);
       final List<Unit> killed = editSelection.getKilled();
       // if partial retreat is possible, kill amphibious units first
@@ -500,7 +500,7 @@ public class BattleCalculator {
       casualtySelection = new CasualtyDetails(defaultCasualties, true);
     } else {
       casualtySelection = tripleaPlayer.selectCasualties(sortedTargetsToPickFrom, dependents, hitsRemaining, text, dice,
-          player, friendlyUnits, enemyPlayer, enemyUnits, amphibious, amphibiousLandAttackers, defaultCasualties,
+          player, friendlyUnits, enemyUnits, amphibious, amphibiousLandAttackers, defaultCasualties,
           battleId, battlesite, allowMultipleHitsPerUnit);
     }
     final List<Unit> killed = casualtySelection.getKilled();
@@ -532,7 +532,7 @@ public class BattleCalculator {
             + (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining) + ", for "
             + casualtySelection.toString());
       }
-      return selectCasualties(step, player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
+      return selectCasualties(player, sortedTargetsToPickFrom, friendlyUnits, enemyUnits, amphibious,
           amphibiousLandAttackers, battlesite, territoryEffects, bridge, text, dice, defending, battleId, headLess,
           extraHits, allowMultipleHitsPerUnit);
     }
@@ -543,7 +543,7 @@ public class BattleCalculator {
         log.severe("Possible Infinite Loop: Cannot remove enough units of those types: targets "
             + MyFormatter.unitsToTextNoOwner(sortedTargetsToPickFrom) + ", for " + casualtySelection.toString());
       }
-      return selectCasualties(step, player, sortedTargetsToPickFrom, friendlyUnits, enemyPlayer, enemyUnits, amphibious,
+      return selectCasualties(player, sortedTargetsToPickFrom, friendlyUnits, enemyUnits, amphibious,
           amphibiousLandAttackers, battlesite, territoryEffects, bridge, text, dice, defending, battleId, headLess,
           extraHits, allowMultipleHitsPerUnit);
     }

@@ -32,7 +32,6 @@ public interface ITripleAPlayer extends IRemotePlayer {
    * @param dice - the dice rolled for the casualties
    * @param hit - the player hit
    * @param friendlyUnits - all friendly units in the battle (or moving)
-   * @param enemyPlayer - the player who has hit you
    * @param enemyUnits - all enemy units in the battle (or defending aa)
    * @param amphibious - is the battle amphibious?
    * @param amphibiousLandAttackers - can be null
@@ -43,7 +42,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
    * @return CasualtyDetails
    */
   CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count,
-      String message, DiceRoll dice, PlayerId hit, Collection<Unit> friendlyUnits, PlayerId enemyPlayer,
+      String message, DiceRoll dice, PlayerId hit, Collection<Unit> friendlyUnits,
       Collection<Unit> enemyUnits, boolean amphibious, Collection<Unit> amphibiousLandAttackers,
       CasualtyList defaultCasualties, GUID battleId, Territory battlesite, boolean allowMultipleHitsPerUnit);
 

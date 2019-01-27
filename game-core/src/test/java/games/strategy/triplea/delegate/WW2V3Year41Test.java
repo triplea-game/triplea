@@ -117,7 +117,6 @@ public class WW2V3Year41Test {
         any(),
         any(),
         any(),
-        any(),
         anyBoolean(),
         any(),
         any(),
