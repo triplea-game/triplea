@@ -100,9 +100,6 @@ public final class ContentReader {
    */
   private <T> T downloadInternal(final String uri, final ThrowingFunction<InputStream, T, IOException> action)
       throws IOException {
-    checkNotNull(uri);
-    checkNotNull(action);
-
     try (CloseableHttpClient client = httpClientFactory.get()) {
       return download(uri, action, client);
     }
