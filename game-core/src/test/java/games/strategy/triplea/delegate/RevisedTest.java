@@ -87,7 +87,7 @@ public class RevisedTest {
 
   private static void givenRemotePlayerWillSelectDefaultCasualties(final IDelegateBridge delegateBridge) {
     givenRemotePlayerWillSelectCasualtiesPer(delegateBridge, invocation -> {
-      final CasualtyList defaultCasualties = invocation.getArgument(11);
+      final CasualtyList defaultCasualties = invocation.getArgument(10);
       return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
     });
   }
