@@ -58,7 +58,6 @@ import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
-import games.strategy.triplea.util.Stopwatch;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.ImageScrollModel;
@@ -583,7 +582,6 @@ public class MapPanel extends ImageScrollerLargeView {
     int y = model.getY();
     final List<Tile> images = new ArrayList<>();
     final List<Tile> undrawnTiles = new ArrayList<>();
-    final Stopwatch stopWatch = new Stopwatch("Paint");
     // make sure we use the same data for the entire paint
     final GameData data = gameData;
     // if the map fits on screen, don't draw any overlap
@@ -666,7 +664,6 @@ public class MapPanel extends ImageScrollerLargeView {
       }
       SwingUtilities.invokeLater(MapPanel.this::repaint);
     }));
-    stopWatch.done();
   }
 
   private void clearPendingDrawOperations() {

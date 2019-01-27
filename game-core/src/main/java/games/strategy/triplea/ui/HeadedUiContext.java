@@ -30,7 +30,6 @@ import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
-import games.strategy.triplea.util.Stopwatch;
 import lombok.extern.java.Log;
 
 /**
@@ -71,7 +70,6 @@ public class HeadedUiContext extends AbstractUiContext {
 
   @Override
   protected void internalSetMapDir(final String dir, final GameData data) {
-    final Stopwatch stopWatch = new Stopwatch("Loading UI Context");
     resourceLoader = ResourceLoader.getMapResourceLoader(dir);
     if (mapData != null) {
       mapData.close();
@@ -119,7 +117,6 @@ public class HeadedUiContext extends AbstractUiContext {
         log.log(Level.SEVERE, "Failed to create cursor from: " + cursorUrl, e);
       }
     }
-    stopWatch.done();
   }
 
   @Override
