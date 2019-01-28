@@ -53,7 +53,6 @@ class ConsoleWindow implements ConsoleView {
     buttonsToolBar.add(SwingAction.of("Copy to clipboard", model::copyToClipboardAction));
     buttonsToolBar.add(SwingAction.of("Clear", model::clearAction));
 
-    // buttonsToolBar.add(new JLabel("Log Level:"));
     buttonsToolBar.add(
         JComboBoxBuilder.builder(String.class)
             .selectedItem(ConsoleModel.getCurrentLogLevel())
