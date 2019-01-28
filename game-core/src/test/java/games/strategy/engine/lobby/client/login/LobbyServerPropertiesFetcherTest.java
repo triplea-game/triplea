@@ -5,11 +5,14 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +29,8 @@ import games.strategy.util.Version;
 @ExtendWith(MockitoExtension.class)
 class LobbyServerPropertiesFetcherTest {
   @Mock
-  private Function<String, Optional<File>> mockFileDownloader;
+  private BiFunction<String, Function<InputStream, LobbyServerProperties>,
+      Optional<LobbyServerProperties>> mockFileDownloader;
 
   private LobbyServerPropertiesFetcher testObj;
 
@@ -41,31 +45,26 @@ class LobbyServerPropertiesFetcherTest {
      * Happy case test path, download file, parse it, return values parsed.
      */
     @Test
-    void happyCase() throws Exception {
-      givenHappyCase();
+    void happyCase() {
+      when(mockFileDownloader.apply(eq(TestData.url), any())).thenReturn(Optional.of(TestData.lobbyServerProperties));
 
       final Optional<LobbyServerProperties> result = testObj.downloadAndParseRemoteFile(TestData.url,
-          TestData.version, (a, b) -> TestData.lobbyServerProperties);
+          TestData.version, (a, b) -> null);
 
       assertThat(result, isPresentAndIs(TestData.lobbyServerProperties));
     }
 
-    private void givenHappyCase() throws Exception {
-      final File temp = File.createTempFile("temp", "tmp");
-      temp.deleteOnExit();
-      when(mockFileDownloader.apply(TestData.url)).thenReturn(Optional.of(temp));
-    }
-
     @Test
     void throwsOnDownloadFailure() {
-      when(mockFileDownloader.apply(TestData.url)).thenReturn(Optional.empty());
+      when(mockFileDownloader.apply(eq(TestData.url), any())).thenReturn(Optional.empty());
 
       final Optional<LobbyServerProperties> result =
-          testObj.downloadAndParseRemoteFile(TestData.url, TestData.version, (a, b) -> TestData.lobbyServerProperties);
+          testObj.downloadAndParseRemoteFile(TestData.url, TestData.version, (a, b) -> null);
 
       assertThat(result, isEmpty());
     }
   }
+
 
   @Nested
   final class GetTestOverridePropertiesTest {
@@ -166,6 +165,7 @@ class LobbyServerPropertiesFetcherTest {
       thenResultHasHostAndPort("foo", 4242);
     }
   }
+
 
   private interface TestData {
     Version version = new Version("0.0.0.0");

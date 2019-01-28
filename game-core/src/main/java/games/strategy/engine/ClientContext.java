@@ -1,7 +1,6 @@
 package games.strategy.engine;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.triplea.common.config.product.ProductConfiguration;
 
@@ -59,11 +58,9 @@ public final class ClientContext {
     return instance.productConfiguration.getVersion();
   }
 
-  public static Optional<List<DownloadFileDescription>> getMapDownloadList() {
-    final String mapDownloadListUrl = ClientSetting.mapListOverride.isSet()
-        ? ClientSetting.mapListOverride.getValueOrThrow().toString()
-        : UrlConstants.MAP_DOWNLOAD_LIST.toString();
-
-    return new DownloadRunnable(mapDownloadListUrl).getDownloads();
+  public static List<DownloadFileDescription> getMapDownloadList() {
+    return ClientSetting.mapListOverride.getValue()
+        .map(DownloadRunnable::readLocalFile)
+        .orElseGet(() -> DownloadRunnable.download(UrlConstants.MAP_DOWNLOAD_LIST.toString()));
   }
 }

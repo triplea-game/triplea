@@ -28,11 +28,7 @@ public class MapDownloadController {
    */
   public static void checkDownloadedMapsAreLatest() {
     try {
-      final Optional<List<DownloadFileDescription>> allDownloads = ClientContext.getMapDownloadList();
-      if (!allDownloads.isPresent()) {
-        return;
-      }
-      final Collection<String> outOfDateMapNames = getOutOfDateMapNames(allDownloads.get());
+      final Collection<String> outOfDateMapNames = getOutOfDateMapNames(ClientContext.getMapDownloadList());
       if (!outOfDateMapNames.isEmpty()) {
         final StringBuilder text = new StringBuilder();
         text.append("<html>Some of the maps you have are out of date, and newer versions of those maps exist.<br><br>");
