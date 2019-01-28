@@ -98,7 +98,7 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
 
       final Exception e = assertThrows(IOException.class, this::downloadToFile);
 
-      assertThat(e.getMessage(), containsString("entity is missing"));
+      assertThat(e.getMessage(), containsString("Entity is missing"));
     }
   }
 }
