@@ -64,7 +64,7 @@ public class JFrameBuilder {
       frame.setAlwaysOnTop(true);
     }
     Optional.ofNullable(parent).ifPresent(frame::setLocationRelativeTo);
-    Optional.ofNullable(layoutManager).ifPresent(layout -> frame.getContentPane().setLayout(layout));
+    Optional.ofNullable(layoutManager).ifPresent(frame.getContentPane()::setLayout);
 
     children.forEach(frame::add);
 
