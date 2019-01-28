@@ -15,7 +15,7 @@ import org.triplea.game.client.ui.javafx.TripleA;
 
 import games.strategy.debug.ErrorMessage;
 import games.strategy.debug.LoggerManager;
-import games.strategy.debug.console.window.ConsoleView;
+import games.strategy.debug.console.window.ConsoleConfiguration;
 import games.strategy.engine.framework.ArgParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
@@ -52,8 +52,8 @@ public final class HeadedGameRunner {
     if (!ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
       Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
         LookAndFeel.initialize();
-        ConsoleView.initialize();
-        ErrorMessage.enable();
+        ConsoleConfiguration.initialize();
+        ErrorMessage.initialize();
       }));
     }
     ArgParser.handleCommandLineArgs(args);

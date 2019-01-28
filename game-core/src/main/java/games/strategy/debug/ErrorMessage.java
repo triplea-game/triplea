@@ -5,6 +5,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
 import javax.swing.JFrame;
@@ -36,6 +37,7 @@ import swinglib.JPanelBuilder;
 public enum ErrorMessage {
   INSTANCE;
 
+  private static final String DEFAULT_LOGGER = "";
   private final JFrame windowReference = new JFrame("TripleA Error");
   private final JLabel errorMessage = JLabelBuilder.builder().errorIcon().iconTextGap(10).build();
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
@@ -85,13 +87,14 @@ public enum ErrorMessage {
   /**
    * Set this to true on non-headless environments to actively notify user of errors via a pop-up message.
    */
-  public static void enable() {
+  public static void initialize() {
     Preconditions.checkState(
         !GraphicsEnvironment.isHeadless(),
         "Error, must not enable error pop-up in a headless environment, there will be errors rendering "
             + "swing components. Check the call flow to this point and make sure we do not enable error reporting "
             + "unless we are in a non-headless environment");
     INSTANCE.enableErrorPopup = true;
+    LogManager.getLogManager().getLogger(DEFAULT_LOGGER).addHandler(new ErrorMessageHandler());
   }
 
   public static void show(final LogRecord record) {

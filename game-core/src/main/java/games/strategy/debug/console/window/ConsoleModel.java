@@ -1,6 +1,7 @@
 package games.strategy.debug.console.window;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -8,27 +9,36 @@ import java.util.stream.Stream;
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.SystemClipboard;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.java.Log;
 
+/**
+ * View-model for console window.
+ */
 @Log
+@Builder
 class ConsoleModel {
+  private final Consumer<String> clipboardAction;
 
-  private final ConsoleView consoleView;
+  void copyToClipboardAction(final ConsoleView consoleView) {
+    clipboardAction.accept(consoleView.readText());
+  }
 
-  ConsoleModel(final ConsoleView consoleView) {
-    this.consoleView = consoleView;
-
+  static void setVisibility(final ConsoleView consoleView) {
     // Show console window automatically when the user setting is toggled on.
     ClientSetting.showConsole.addListener(gameSetting -> {
       if (gameSetting.getValueOrThrow()) {
-        consoleView.setVisible(true);
+        consoleView.setVisible();
       }
     });
+
+    if (ClientSetting.showConsole.getValue().orElse(false)) {
+      consoleView.setVisible();
+    }
 
     // if the console is closed by user manually, keep it closed and do not show it again on startup.
     consoleView.addWindowClosedListener(() -> ClientSetting.showConsole.setValueAndFlush(false));
@@ -47,23 +57,20 @@ class ConsoleModel {
         .collect(Collectors.toList());
   }
 
-  void memoryAction() {
+  static void memoryAction(final ConsoleView consoleView) {
     consoleView.append(DebugUtils.getMemory());
   }
 
-  void propertiesAction() {
+  static void propertiesAction(final ConsoleView consoleView) {
     consoleView.append(DebugUtils.getProperties());
   }
 
-  void copyToClipboardAction() {
-    SystemClipboard.setClipboardContents(consoleView.readText());
-  }
 
-  void clearAction() {
+  static void clearAction(final ConsoleView consoleView) {
     consoleView.setText("");
   }
 
-  void enumerateThreadsAction() {
+  static void enumerateThreadsAction(final ConsoleView consoleView) {
     consoleView.append(DebugUtils.getThreadDumps());
   }
 
@@ -94,10 +101,7 @@ class ConsoleModel {
     }
 
     static String fromLevel(final Level level) {
-      if (level.equals(DEBUG.level)) {
-        return DEBUG.label;
-      }
-      return NORMAL.label;
+      return level.equals(DEBUG.level) ? DEBUG.label : NORMAL.label;
     }
   }
 

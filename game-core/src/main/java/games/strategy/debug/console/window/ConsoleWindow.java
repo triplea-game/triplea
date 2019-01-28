@@ -19,6 +19,10 @@ import swinglib.JComboBoxBuilder;
 import swinglib.JFrameBuilder;
 import swinglib.JTextAreaBuilder;
 
+/**
+ * This is a debug window that can be displayed to show log events and has controls for dumping system data,
+ * eg: current property values, JVM memory.
+ */
 @Log
 class ConsoleWindow implements ConsoleView {
 
@@ -33,25 +37,23 @@ class ConsoleWindow implements ConsoleView {
       .layout(new BorderLayout())
       .build();
 
-
-  ConsoleWindow() {
-    final ConsoleModel model = new ConsoleModel(this);
-
+  ConsoleWindow(final ConsoleModel model) {
     frame.getContentPane().add(new JScrollPane(textArea), BorderLayout.CENTER);
     frame.getContentPane().add(createButtonsToolBar(model), BorderLayout.SOUTH);
 
     SwingUtilities.invokeLater(frame::pack);
+    ConsoleModel.setVisibility(this);
   }
 
-  private static JToolBar createButtonsToolBar(final ConsoleModel model) {
+  private JToolBar createButtonsToolBar(final ConsoleModel model) {
     final JToolBar buttonsToolBar = new JToolBar(SwingConstants.HORIZONTAL);
     buttonsToolBar.setFloatable(false);
     buttonsToolBar.setLayout(new FlowLayout());
-    buttonsToolBar.add(SwingAction.of("Enumerate Threads", model::enumerateThreadsAction));
-    buttonsToolBar.add(SwingAction.of("Memory", model::memoryAction));
-    buttonsToolBar.add(SwingAction.of("Properties", model::propertiesAction));
-    buttonsToolBar.add(SwingAction.of("Copy to clipboard", model::copyToClipboardAction));
-    buttonsToolBar.add(SwingAction.of("Clear", model::clearAction));
+    buttonsToolBar.add(SwingAction.of("Enumerate Threads", () -> ConsoleModel.enumerateThreadsAction(this)));
+    buttonsToolBar.add(SwingAction.of("Memory", () -> ConsoleModel.memoryAction(this)));
+    buttonsToolBar.add(SwingAction.of("Properties", () -> ConsoleModel.propertiesAction(this)));
+    buttonsToolBar.add(SwingAction.of("Copy to clipboard", () -> model.copyToClipboardAction(this)));
+    buttonsToolBar.add(SwingAction.of("Clear", () -> ConsoleModel.clearAction(this)));
 
     buttonsToolBar.add(
         JComboBoxBuilder.builder(String.class)
@@ -74,8 +76,8 @@ class ConsoleWindow implements ConsoleView {
   }
 
   @Override
-  public void setVisible(final boolean visible) {
-    SwingUtilities.invokeLater(() -> frame.setVisible(visible));
+  public void setVisible() {
+    SwingUtilities.invokeLater(() -> frame.setVisible(true));
   }
 
   @Override

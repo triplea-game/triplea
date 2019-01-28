@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.SystemClipboard;
 
 @ExtendWith(MockitoExtension.class)
 class ConsoleModelTest extends AbstractClientSettingTestCase {
@@ -58,38 +57,37 @@ class ConsoleModelTest extends AbstractClientSettingTestCase {
 
   @Test
   void copyToClipboardAction() {
-    SystemClipboard.setTestBehavior(mockClipboard);
     when(defaultConsole.readText()).thenReturn(SAMPLE_DATA);
 
-    consoleModel.copyToClipboardAction();
+    consoleModel.copyToClipboardAction(defaultConsole);
 
     verify(mockClipboard).accept(SAMPLE_DATA);
   }
 
   @Test
   void clearAction() {
-    consoleModel.clearAction();
+    ConsoleModel.clearAction(defaultConsole);
 
     verify(defaultConsole).setText("");
   }
 
   @Test
   void enumerateThreadsAction() {
-    consoleModel.enumerateThreadsAction();
+    ConsoleModel.enumerateThreadsAction(defaultConsole);
 
     verify(defaultConsole).append(anyString());
   }
 
   @Test
   void memoryButtonAction() {
-    consoleModel.memoryAction();
+    ConsoleModel.memoryAction(defaultConsole);
 
     verify(defaultConsole).append(anyString());
   }
 
   @Test
   void propertiesButtonAction() {
-    consoleModel.propertiesAction();
+    ConsoleModel.propertiesAction(defaultConsole);
 
     verify(defaultConsole).append(DebugUtils.getProperties());
   }
