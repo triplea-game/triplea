@@ -131,8 +131,8 @@ public class Fire implements IExecutable {
         if (extraHits > transportsOnly.size()) {
           extraHits = transportsOnly.size();
         }
-        message = BattleCalculator.selectCasualties(stepName, hitPlayer, transportsOnly,
-            allEnemyUnitsNotIncludingWaitingToDie, firingPlayer, allFriendlyUnitsNotIncludingWaitingToDie,
+        message = BattleCalculator.selectCasualties(hitPlayer, transportsOnly,
+            allEnemyUnitsNotIncludingWaitingToDie, allFriendlyUnitsNotIncludingWaitingToDie,
             isAmphibious, amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, dice,
             !defending, battleId, isHeadless, extraHits, true);
         killed.addAll(message.getKilled());
@@ -142,8 +142,8 @@ public class Fire implements IExecutable {
         damaged = Collections.emptyList();
         confirmOwnCasualties = true;
       } else { // less than possible number
-        message = BattleCalculator.selectCasualties(stepName, hitPlayer, nonTransports,
-            allEnemyUnitsNotIncludingWaitingToDie, firingPlayer, allFriendlyUnitsNotIncludingWaitingToDie,
+        message = BattleCalculator.selectCasualties(hitPlayer, nonTransports,
+            allEnemyUnitsNotIncludingWaitingToDie, allFriendlyUnitsNotIncludingWaitingToDie,
             isAmphibious, amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, dice,
             !defending, battleId, isHeadless, dice.getHits(), true);
         killed = message.getKilled();
@@ -159,8 +159,8 @@ public class Fire implements IExecutable {
         confirmOwnCasualties = true;
       } else { // Choose casualties
         final CasualtyDetails message;
-        message = BattleCalculator.selectCasualties(stepName, hitPlayer, attackableUnits,
-            allEnemyUnitsNotIncludingWaitingToDie, firingPlayer, allFriendlyUnitsNotIncludingWaitingToDie,
+        message = BattleCalculator.selectCasualties(hitPlayer, attackableUnits,
+            allEnemyUnitsNotIncludingWaitingToDie, allFriendlyUnitsNotIncludingWaitingToDie,
             isAmphibious, amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, dice,
             !defending, battleId, isHeadless, dice.getHits(), true);
         killed = message.getKilled();

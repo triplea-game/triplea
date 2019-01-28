@@ -10,5 +10,8 @@ Plugins:
   - *Lombok*
   - Method ordering: ![keep_dependents_first](https://user-images.githubusercontent.com/12397753/27557429-72fb899c-5a6e-11e7-8f9f-59cc508ba86c.png)
 
+Analysis:
+  - An analysis configuration file for import is checked in to `config/`
+
 Lombok:
  - requires annotation processing to be turned on (settings > 'annotation processing')

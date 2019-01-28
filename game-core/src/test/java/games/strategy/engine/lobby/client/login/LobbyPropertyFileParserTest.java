@@ -5,7 +5,10 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -59,10 +62,10 @@ class LobbyPropertyFileParserTest {
     testProps.message = TestData.message;
     testProps.version = TestData.clientCurrentVersion;
 
-    final String yamlContents = newYaml(testProps);
+    final InputStream stream = newYaml(testProps);
 
     final LobbyServerProperties result =
-        LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));
+        LobbyPropertyFileParser.parse(stream, new Version(TestData.clientCurrentVersion));
     assertThat(result.getHost(), is(TestData.host));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.port)));
     assertThat(result.getHttpServerUri(), is(TestData.httpHostUri));
@@ -70,10 +73,10 @@ class LobbyPropertyFileParserTest {
     assertThat(result.getServerErrorMessage(), isPresentAndIs(TestData.errorMessage));
   }
 
-  private static String newYaml(final TestProps... testProps) {
-    return Arrays.stream(testProps)
+  private static InputStream newYaml(final TestProps... testProps) {
+    return new ByteArrayInputStream(Arrays.stream(testProps)
         .map(TestProps::toYaml)
-        .collect(Collectors.joining("\n"));
+        .collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8));
   }
 
   /**
@@ -82,10 +85,10 @@ class LobbyPropertyFileParserTest {
    */
   @Test
   void checkVersionSelection() {
-    final String yamlContents = newYaml(testDataSet());
+    final InputStream stream = newYaml(testDataSet());
 
     final LobbyServerProperties result =
-        LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));
+        LobbyPropertyFileParser.parse(stream, new Version(TestData.clientCurrentVersion));
 
     assertThat(result.getHost(), is(TestData.hostOther));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.portOther)));

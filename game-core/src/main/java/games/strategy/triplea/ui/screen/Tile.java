@@ -19,7 +19,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
-import games.strategy.triplea.util.Stopwatch;
 import games.strategy.ui.Util;
 
 /**
@@ -97,7 +96,6 @@ public class Tile {
     } else {
       scaled = unscaled;
     }
-    final Stopwatch stopWatch = new Stopwatch("Drawing Tile at " + bounds);
     // clear
     g.setColor(Color.BLACK);
     g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
@@ -106,7 +104,6 @@ public class Tile {
       queue.remove().draw(bounds, data, g, mapData, unscaled, scaled);
     }
     isDirty = false;
-    stopWatch.done();
   }
 
   void addDrawables(final Collection<IDrawable> drawables) {

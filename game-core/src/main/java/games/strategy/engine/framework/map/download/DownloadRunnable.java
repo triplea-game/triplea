@@ -1,17 +1,13 @@
 package games.strategy.engine.framework.map.download;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
+import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Level;
 
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.io.IoUtils;
 import lombok.extern.java.Log;
 
 /**
@@ -19,47 +15,28 @@ import lombok.extern.java.Log;
  */
 @Log
 public class DownloadRunnable {
-  private final String urlString;
 
-  public DownloadRunnable(final String urlString) {
-    this.urlString = urlString;
+  private DownloadRunnable() {}
+
+  /**
+   * Parses a file at the given URL into a List of {@link DownloadFileDescription}s.
+   * If an error occurs this will return an empty list.
+   */
+  public static List<DownloadFileDescription> download(final String url) {
+    return DownloadConfiguration.contentReader().download(url, DownloadFileParser::parse)
+        .orElseGet(Collections::emptyList);
   }
 
   /**
-   * Returns a parsed list of parsed downloadable maps. If initialized with a URL then we will do a network fetch and
-   * parse those contents, otherwise (for testing) we assume a local file reference and parse that.
+   * Parses a file at the given {@link Path} into a List of {@link DownloadFileDescription}s.
+   * If an error occurs this will return an empty list.
    */
-  public Optional<List<DownloadFileDescription>> getDownloads() {
-    return beginsWithHttpProtocol(urlString) ? downloadFile() : Optional.of(readLocalFile());
-  }
-
-  private static boolean beginsWithHttpProtocol(final String urlString) {
-    return urlString.startsWith("http://") || urlString.startsWith("https://");
-  }
-
-  private Optional<List<DownloadFileDescription>> downloadFile() {
-    try {
-      final File tempFile = ClientFileSystemHelper.newTempFile();
-      tempFile.deleteOnExit();
-      DownloadConfiguration.contentReader().downloadToFile(urlString, tempFile);
-      final byte[] contents = Files.readAllBytes(tempFile.toPath());
-      return Optional.of(IoUtils.readFromMemory(contents, DownloadFileParser::parse));
+  public static List<DownloadFileDescription> readLocalFile(final Path path) {
+    try (InputStream inputStream = Files.newInputStream(path)) {
+      return DownloadFileParser.parse(inputStream);
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Error - check internet connection, unable to download list of maps.", e);
-      return Optional.empty();
-    }
-  }
-
-  private List<DownloadFileDescription> readLocalFile() {
-    final File targetFile = new File(urlString);
-    try {
-      final byte[] contents = Files.readAllBytes(targetFile.toPath());
-      final List<DownloadFileDescription> downloads = IoUtils.readFromMemory(contents, DownloadFileParser::parse);
-      checkNotNull(downloads);
-      return downloads;
-    } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to read file at: " + targetFile.getAbsolutePath(), e);
-      return new ArrayList<>();
+      log.log(Level.SEVERE, "Failed to read file at: " + path.toAbsolutePath(), e);
+      return Collections.emptyList();
     }
   }
 }

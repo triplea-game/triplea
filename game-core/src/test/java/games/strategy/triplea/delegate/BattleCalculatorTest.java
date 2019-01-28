@@ -48,7 +48,6 @@ public class BattleCalculatorTest {
         any(),
         any(),
         any(),
-        any(),
         anyBoolean(),
         any(),
         any(),

@@ -9,9 +9,16 @@ function stop_container() {
   fi
 }
 
+
+function remove_dead_containers() {
+  docker ps --filter "status=exited" | grep triplea-lobby-db | cut -d ' ' -f 1 | \
+	  xargs --no-run-if-empty docker rm
+}
+
 function start_container() {
   docker run -d --name=triplea-lobby-db -p 5432:5432 triplea/lobby-db
 }
 
 stop_container
+remove_dead_containers
 start_container

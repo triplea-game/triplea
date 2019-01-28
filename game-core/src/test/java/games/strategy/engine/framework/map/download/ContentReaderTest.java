@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -76,9 +75,7 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
     }
 
     private void downloadToFile() throws Exception {
-      try (FileOutputStream os = new FileOutputStream(file)) {
-        ContentReader.downloadToFile(URI, os, client);
-      }
+      new ContentReader(() -> client).downloadToFile(URI, file);
     }
 
     private byte[] fileContent() throws Exception {
@@ -101,7 +98,7 @@ final class ContentReaderTest extends AbstractClientSettingTestCase {
 
       final Exception e = assertThrows(IOException.class, this::downloadToFile);
 
-      assertThat(e.getMessage(), containsString("entity is missing"));
+      assertThat(e.getMessage(), containsString("Entity is missing"));
     }
   }
 }
