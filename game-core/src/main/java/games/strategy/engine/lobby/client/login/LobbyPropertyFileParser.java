@@ -33,9 +33,9 @@ class LobbyPropertyFileParser {
   @VisibleForTesting
   static final String YAML_ERROR_MESSAGE = "error_message";
 
-  public static LobbyServerProperties parse(final InputStream fileContents, final Version currentVersion) {
+  public static LobbyServerProperties parse(final InputStream stream, final Version currentVersion) {
     final Map<String, Object> yamlProps =
-        OpenJsonUtils.toMap(matchCurrentVersion(loadYaml(fileContents), currentVersion));
+        OpenJsonUtils.toMap(matchCurrentVersion(loadYaml(stream), currentVersion));
 
     return LobbyServerProperties.builder()
         .host((String) yamlProps.get("host"))
@@ -56,8 +56,8 @@ class LobbyPropertyFileParser {
         .orElse(lobbyProps.getJSONObject(0));
   }
 
-  private static JSONArray loadYaml(final InputStream yamlContent) {
+  private static JSONArray loadYaml(final InputStream stream) {
     final Yaml yaml = new Yaml();
-    return new JSONArray(yaml.loadAs(yamlContent, List.class));
+    return new JSONArray(yaml.loadAs(stream, List.class));
   }
 }

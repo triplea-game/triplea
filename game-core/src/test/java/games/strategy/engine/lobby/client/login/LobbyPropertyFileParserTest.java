@@ -62,10 +62,10 @@ class LobbyPropertyFileParserTest {
     testProps.message = TestData.message;
     testProps.version = TestData.clientCurrentVersion;
 
-    final InputStream yamlContents = newYaml(testProps);
+    final InputStream stream = newYaml(testProps);
 
     final LobbyServerProperties result =
-        LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));
+        LobbyPropertyFileParser.parse(stream, new Version(TestData.clientCurrentVersion));
     assertThat(result.getHost(), is(TestData.host));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.port)));
     assertThat(result.getHttpServerUri(), is(TestData.httpHostUri));
@@ -73,7 +73,7 @@ class LobbyPropertyFileParserTest {
     assertThat(result.getServerErrorMessage(), isPresentAndIs(TestData.errorMessage));
   }
 
-  private static ByteArrayInputStream newYaml(final TestProps... testProps) {
+  private static InputStream newYaml(final TestProps... testProps) {
     return new ByteArrayInputStream(Arrays.stream(testProps)
         .map(TestProps::toYaml)
         .collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8));
@@ -85,10 +85,10 @@ class LobbyPropertyFileParserTest {
    */
   @Test
   void checkVersionSelection() {
-    final InputStream yamlContents = newYaml(testDataSet());
+    final InputStream stream = newYaml(testDataSet());
 
     final LobbyServerProperties result =
-        LobbyPropertyFileParser.parse(yamlContents, new Version(TestData.clientCurrentVersion));
+        LobbyPropertyFileParser.parse(stream, new Version(TestData.clientCurrentVersion));
 
     assertThat(result.getHost(), is(TestData.hostOther));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.portOther)));

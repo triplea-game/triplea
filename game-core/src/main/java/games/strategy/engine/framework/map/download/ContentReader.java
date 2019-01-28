@@ -35,7 +35,8 @@ public final class ContentReader {
   private final Supplier<CloseableHttpClient> httpClientFactory;
 
   /**
-   * Downloads the resource at the specified URI to the specified file.
+   * Downloads the resource at the specified URI, applies the given
+   * Function to it and returns the result.
    *
    * @param uri The resource URI; must not be {@code null}.
    * @param action The action to perform using the give InputStream; must not be {@code null}.
@@ -92,8 +93,9 @@ public final class ContentReader {
 
 
   /**
-   * Downloads the resource at the specified URI to the specified file.
+   * Downloads the resource at the specified URI using the configured httpClientFactory.
    *
+   * @see #download(String, Function)
    * @param uri The resource URI; must not be {@code null}.
    * @param action The action to perform using the give InputStream; must not be {@code null}.
    * @throws IOException If an error occurs during the download.
