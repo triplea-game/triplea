@@ -50,6 +50,7 @@ subprojects {
     apply plugin: 'checkstyle'
     apply plugin: 'jacoco'
     apply plugin: 'java'
+    apply plugin: 'pmd'
     apply plugin: 'com.diffplug.gradle.spotless'
     apply plugin: 'net.ltgt.errorprone'
     apply plugin: 'io.franzbecker.gradle-lombok'
@@ -182,6 +183,12 @@ subprojects {
     lombok {
         version = '1.18.4'
         sha256 = '39f3922deb679b1852af519eb227157ef2dd0a21eec3542c8ce1b45f2df39742'
+    }
+
+    pmd {
+        consoleOutput = true
+        ruleSetFiles = files(rootProject.file('config/pmd/pmd.xml'))
+        ruleSets = []
     }
 
     spotless {

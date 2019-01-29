@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Component;
-import java.awt.event.ItemEvent;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,15 +16,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class JComboBoxBuilderTest {
-  @Mock
-  private ItemEvent mockItemEvent;
-
   @Test
   void builderNoItemsSpecified() {
     assertThrows(IllegalStateException.class, JComboBoxBuilder.builder(Object.class)::build);
