@@ -27,14 +27,6 @@ public abstract class BaseEditDelegate extends BasePersistentDelegate {
   }
 
   @Override
-  public void start() {
-    super.start();
-  }
-
-  @Override
-  public void end() {}
-
-  @Override
   public boolean delegateCurrentlyRequiresUserInput() {
     return true;
   }

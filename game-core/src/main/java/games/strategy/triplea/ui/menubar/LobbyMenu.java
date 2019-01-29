@@ -199,13 +199,12 @@ public final class LobbyMenu extends JMenuBar {
 
   private void addBanMacAddressMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Ban Hashed Mac Address");
-    menuItem.addActionListener(e -> {
-      showHashedMacAddressInputDialog("Enter the hashed Mac address that you want to ban from the lobby.")
-          .filter(this::validateHashedMacAddress)
-          .ifPresent(hashedMacAddress -> showTimespanDialog(
-              "Please consult other admins before banning longer than 1 day.",
-              date -> getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, date)));
-    });
+    menuItem.addActionListener(
+        e -> showHashedMacAddressInputDialog("Enter the hashed Mac address that you want to ban from the lobby.")
+            .filter(this::validateHashedMacAddress)
+            .ifPresent(hashedMacAddress -> showTimespanDialog(
+                "Please consult other admins before banning longer than 1 day.",
+                date -> getModeratorController().banMac(newDummyNode("__unknown__"), hashedMacAddress, date))));
     parentMenu.add(menuItem);
   }
 
@@ -227,23 +226,20 @@ public final class LobbyMenu extends JMenuBar {
 
   private void addUnbanUsernameMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Unban Username");
-    menuItem.addActionListener(e -> {
-      showInputDialog("Enter the username that you want to unban from the lobby.")
-          .filter(this::validateUsername)
-          .ifPresent(username -> getModeratorController()
-              .banUsername(newDummyNode(username), Date.from(Instant.EPOCH)));
-    });
+    menuItem.addActionListener(e -> showInputDialog("Enter the username that you want to unban from the lobby.")
+        .filter(this::validateUsername)
+        .ifPresent(username -> getModeratorController()
+            .banUsername(newDummyNode(username), Date.from(Instant.EPOCH))));
     parentMenu.add(menuItem);
   }
 
   private void addUnbanMacAddressMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Unban Hashed Mac Address");
-    menuItem.addActionListener(e -> {
-      showHashedMacAddressInputDialog("Enter the hashed Mac address that you want to unban from the lobby.")
-          .filter(this::validateHashedMacAddress)
-          .ifPresent(hashedMacAddress -> getModeratorController()
-              .banMac(newDummyNode("__unknown__"), hashedMacAddress, Date.from(Instant.EPOCH)));
-    });
+    menuItem.addActionListener(
+        e -> showHashedMacAddressInputDialog("Enter the hashed Mac address that you want to unban from the lobby.")
+            .filter(this::validateHashedMacAddress)
+            .ifPresent(hashedMacAddress -> getModeratorController()
+                .banMac(newDummyNode("__unknown__"), hashedMacAddress, Date.from(Instant.EPOCH))));
     parentMenu.add(menuItem);
   }
 
@@ -264,12 +260,10 @@ public final class LobbyMenu extends JMenuBar {
 
   private void addUnmuteUsernameMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Unmute Username");
-    menuItem.addActionListener(e -> {
-      showInputDialog("Enter the username that you want to unmute in the lobby.")
-          .filter(this::validateUsername)
-          .ifPresent(username -> getModeratorController()
-              .muteUsername(newDummyNode(username), Date.from(Instant.EPOCH)));
-    });
+    menuItem.addActionListener(e -> showInputDialog("Enter the username that you want to unmute in the lobby.")
+        .filter(this::validateUsername)
+        .ifPresent(username -> getModeratorController()
+            .muteUsername(newDummyNode(username), Date.from(Instant.EPOCH))));
     parentMenu.add(menuItem);
   }
 

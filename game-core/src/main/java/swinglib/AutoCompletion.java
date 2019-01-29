@@ -1,15 +1,11 @@
 package swinglib;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.text.Normalizer;
 
 import javax.swing.ComboBoxEditor;
@@ -43,27 +39,21 @@ final class AutoCompletion<E> extends PlainDocument {
   private final KeyListener editorKeyListener;
   private final FocusListener editorFocusListener;
 
+  @SuppressWarnings("unchecked")
   private AutoCompletion(final JComboBox<E> comboBox) {
     this.comboBox = comboBox;
     model = comboBox.getModel();
-    comboBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (!selecting) {
-          highlightCompletedText(0);
-        }
+    comboBox.addActionListener(e -> {
+      if (!selecting) {
+        highlightCompletedText(0);
       }
     });
-    comboBox.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      @SuppressWarnings("unchecked")
-      public void propertyChange(final PropertyChangeEvent e) {
-        if (e.getPropertyName().equals("editor")) {
-          configureEditor((ComboBoxEditor) e.getNewValue());
-        }
-        if (e.getPropertyName().equals("model")) {
-          model = (ComboBoxModel<E>) e.getNewValue();
-        }
+    comboBox.addPropertyChangeListener(e -> {
+      if (e.getPropertyName().equals("editor")) {
+        configureEditor((ComboBoxEditor) e.getNewValue());
+      }
+      if (e.getPropertyName().equals("model")) {
+        model = (ComboBoxModel<E>) e.getNewValue();
       }
     });
     editorKeyListener = new KeyAdapter() {

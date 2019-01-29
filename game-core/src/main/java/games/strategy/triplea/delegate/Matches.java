@@ -1715,9 +1715,7 @@ public final class Matches {
   }
 
   static Predicate<Territory> territoryHasRequiredUnitsToMove(final Collection<Unit> units, final GameData data) {
-    return t -> {
-      return units.stream().allMatch(unitHasRequiredUnitsToMove(t, data));
-    };
+    return t -> units.stream().allMatch(unitHasRequiredUnitsToMove(t, data));
   }
 
   static Predicate<Territory> territoryIsBlockadeZone() {

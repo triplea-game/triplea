@@ -135,7 +135,7 @@ public class RocketsFireHelper implements Serializable {
       final int maxAttacks = TechAbilityAttachment.getRocketNumberPerTerritory(player, data);
       for (final Territory t : previouslyAttackedTerritories.keySet()) {
         // negative Rocket Number per Territory == unlimited
-        if (maxAttacks >= 0 && maxAttacks <= previouslyAttackedTerritories.get(t).intValue()) {
+        if (maxAttacks >= 0 && maxAttacks <= previouslyAttackedTerritories.get(t)) {
           targets.remove(t);
         }
       }
@@ -194,9 +194,8 @@ public class RocketsFireHelper implements Serializable {
         break;
       } // while (true)
       if (targetTerritory != null) {
-        final Integer numAttacks = previouslyAttackedTerritories.get(targetTerritory);
-        previouslyAttackedTerritories.put(targetTerritory,
-            Integer.valueOf(numAttacks == null ? 1 : numAttacks.intValue() + 1));
+        final int numAttacks = previouslyAttackedTerritories.getOrDefault(targetTerritory, 0);
+        previouslyAttackedTerritories.put(targetTerritory, numAttacks + 1);
       }
     }
   }
