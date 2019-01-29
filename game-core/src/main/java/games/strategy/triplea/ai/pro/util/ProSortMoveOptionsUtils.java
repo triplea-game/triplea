@@ -22,7 +22,9 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
 /**
  * Pro AI attack options utilities.
  */
-public class ProSortMoveOptionsUtils {
+public final class ProSortMoveOptionsUtils {
+  private ProSortMoveOptionsUtils() {}
+
   /**
    * Returns a copy of {@code unitAttackOptions} sorted by number of move options, then by cost of unit, then by unit
    * type name.

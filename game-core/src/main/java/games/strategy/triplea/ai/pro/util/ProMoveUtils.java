@@ -27,7 +27,9 @@ import games.strategy.util.Tuple;
 /**
  * Pro AI move utilities.
  */
-public class ProMoveUtils {
+public final class ProMoveUtils {
+  private ProMoveUtils() {}
+
   /**
    * Calculates normal movement routes (e.g. land, air, sea attack routes, not including amphibious, bombardment, or
    * strategic bombing raid attack routes).

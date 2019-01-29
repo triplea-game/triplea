@@ -15,7 +15,8 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CollectionUtils;
 
-class Utils {
+final class Utils {
+  private Utils() {}
 
   static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units,
       final boolean sea) {

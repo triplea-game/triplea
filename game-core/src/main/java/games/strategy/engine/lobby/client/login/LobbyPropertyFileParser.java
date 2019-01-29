@@ -20,7 +20,7 @@ import games.strategy.util.Version;
  * Parses a downloaded lobby properties file (yaml format expected).
  * Lobby properties include IP address and port of the lobby.
  */
-class LobbyPropertyFileParser {
+final class LobbyPropertyFileParser {
 
   @VisibleForTesting
   static final String YAML_HOST = "host";
@@ -32,6 +32,8 @@ class LobbyPropertyFileParser {
   static final String YAML_MESSAGE = "message";
   @VisibleForTesting
   static final String YAML_ERROR_MESSAGE = "error_message";
+
+  private LobbyPropertyFileParser() {}
 
   public static LobbyServerProperties parse(final InputStream stream, final Version currentVersion) {
     final Map<String, Object> yamlProps =

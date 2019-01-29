@@ -10,7 +10,8 @@ import org.triplea.http.client.error.report.create.ErrorReportResponse;
 /**
  * Creates an http client that can be used to upload error reports to the TripleA server.
  */
-public class ErrorReportClientFactory {
+public final class ErrorReportClientFactory {
+  private ErrorReportClientFactory() {}
 
   /**
    * Creates an error report uploader clients, sends error reports and gets a response back.

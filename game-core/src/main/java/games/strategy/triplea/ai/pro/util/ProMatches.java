@@ -18,7 +18,8 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 /**
  * Pro AI matches.
  */
-public class ProMatches {
+public final class ProMatches {
+  private ProMatches() {}
 
   public static Predicate<Territory> territoryCanLandAirUnits(final PlayerId player, final GameData data,
       final boolean isCombatMove, final List<Territory> enemyTerritories, final List<Territory> alliedTerritories) {

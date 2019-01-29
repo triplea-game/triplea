@@ -16,7 +16,9 @@ import games.strategy.triplea.util.TransportUtils;
 /**
  * A collection of comparators for sorting units based on various heuristics.
  */
-public class UnitComparator {
+public final class UnitComparator {
+  private UnitComparator() {}
+
   static Comparator<Unit> getLowestToHighestMovementComparator() {
     return Comparator.comparing(TripleAUnit::get,
         Comparator.comparingInt(TripleAUnit::getMovementLeft));

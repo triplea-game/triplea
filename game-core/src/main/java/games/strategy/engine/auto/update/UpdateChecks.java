@@ -10,7 +10,8 @@ import games.strategy.engine.framework.map.download.MapDownloadController;
  * Runs background update checks and would prompt user if anything needs to be updated.
  * This class and related ones will control the frequency of how often we prompt the user.
  */
-public class UpdateChecks {
+public final class UpdateChecks {
+  private UpdateChecks() {}
 
   public static void launch() {
     new Thread(UpdateChecks::checkForUpdates).start();

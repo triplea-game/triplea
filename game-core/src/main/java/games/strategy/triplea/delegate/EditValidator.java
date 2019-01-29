@@ -24,7 +24,9 @@ import games.strategy.util.Triple;
 /**
  * Provides some static methods for validating game edits.
  */
-class EditValidator {
+final class EditValidator {
+  private EditValidator() {}
+
   private static String validateTerritoryBasic(final GameData data, final Territory territory) {
     // territory cannot be in an UndoableMove route
     final List<UndoableMove> moves = DelegateFinder.moveDelegate(data).getMovesMade();

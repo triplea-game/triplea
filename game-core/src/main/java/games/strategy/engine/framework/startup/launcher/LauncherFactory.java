@@ -13,7 +13,8 @@ import games.strategy.engine.random.PlainRandomSource;
 /**
  * Factory class to create instances of {@code ILauncher}.
  */
-public class LauncherFactory {
+public final class LauncherFactory {
+  private LauncherFactory() {}
 
   /**
    * Creates a launcher for a single player local (no network) game.

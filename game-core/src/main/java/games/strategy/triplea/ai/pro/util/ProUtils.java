@@ -29,7 +29,8 @@ import games.strategy.util.Interruptibles;
 /**
  * Pro AI utilities (these are very general and maybe should be moved into delegate or engine).
  */
-public class ProUtils {
+public final class ProUtils {
+  private ProUtils() {}
 
   public static Map<Unit, Territory> newUnitTerritoryMap() {
     final Map<Unit, Territory> unitTerritoryMap = new HashMap<>();

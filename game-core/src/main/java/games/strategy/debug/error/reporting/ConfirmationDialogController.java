@@ -20,7 +20,8 @@ import swinglib.JPanelBuilder;
  * This controller is responsible for showing success/failure confirmation dialogs
  * after an error report has been submitted.
  */
-class ConfirmationDialogController {
+final class ConfirmationDialogController {
+  private ConfirmationDialogController() {}
 
   static void showFailureConfirmation(final ServiceResponse<ErrorReportResponse> response) {
     SwingUtilities.invokeLater(() -> doShowFailureConfirmation(response));

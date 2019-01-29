@@ -29,10 +29,12 @@ import games.strategy.util.CollectionUtils;
 /**
  * Pro AI battle utilities.
  */
-public class ProBattleUtils {
+public final class ProBattleUtils {
 
   public static final int SHORT_RANGE = 2;
   public static final int MEDIUM_RANGE = 3;
+
+  private ProBattleUtils() {}
 
   /**
    * Return {@code true} if the specified battle would result in an overwhelming win for the attacker. An overwhelming

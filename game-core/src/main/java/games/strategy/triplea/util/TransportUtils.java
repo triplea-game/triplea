@@ -27,7 +27,8 @@ import games.strategy.util.IntegerMap;
 /**
  * Utilities for loading/unloading various types of transports.
  */
-public class TransportUtils {
+public final class TransportUtils {
+  private TransportUtils() {}
 
   /**
    * Returns a map of unit -> transport.

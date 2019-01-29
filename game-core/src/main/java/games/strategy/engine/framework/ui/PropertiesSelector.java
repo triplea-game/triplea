@@ -16,7 +16,9 @@ import games.strategy.util.Interruptibles;
 /**
  * Wrapper for properties selection window.
  */
-public class PropertiesSelector {
+public final class PropertiesSelector {
+  private PropertiesSelector() {}
+
   /**
    * Displays a property selection window.
    *

@@ -10,7 +10,8 @@ import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 import org.triplea.server.EnvironmentVariable;
 
 /** Class that handles object creation and dependencies for error upload. */
-public class ErrorUploadConfiguration {
+public final class ErrorUploadConfiguration {
+  private ErrorUploadConfiguration() {}
 
   /**
    * Factory method for {@code ErrorUploader}.

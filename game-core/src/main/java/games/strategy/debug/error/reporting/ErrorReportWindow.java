@@ -32,9 +32,11 @@ import swinglib.JTextAreaBuilder;
  * The error data is supplied automatically on error message or when shown from console
  * </p>
  */
-public class ErrorReportWindow {
+public final class ErrorReportWindow {
 
   private static final int MIN_SUBMISSION_LENGTH = 10;
+
+  private ErrorReportWindow() {}
 
   public static void showWindow() {
     showWindow(null);

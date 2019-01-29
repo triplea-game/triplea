@@ -26,6 +26,8 @@ import com.google.common.collect.Maps;
  * </p>
  */
 final class HmacSha512Authenticator {
+  private HmacSha512Authenticator() {}
+
   @VisibleForTesting
   interface ChallengePropertyNames {
     String NONCE = "authenticator/hmac-sha512/nonce";

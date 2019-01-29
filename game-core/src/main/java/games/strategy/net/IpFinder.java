@@ -32,7 +32,9 @@ import games.strategy.util.Util;
  * some tests, the 1st ip tends to be the IP used by the gateway to connect to the net.
  * This means that TripleA will still work.
  */
-public class IpFinder {
+public final class IpFinder {
+  private IpFinder() {}
+
   /**
    * We iterate through an enumeration of network interfaces on the machine
    * and picks the first IP that is not a loopback and not a link local and not private.

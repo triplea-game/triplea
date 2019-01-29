@@ -15,7 +15,8 @@ import lombok.extern.java.Log;
  * To hold various static utility methods for running a java program.
  */
 @Log
-class ProcessRunnerUtil {
+final class ProcessRunnerUtil {
+  private ProcessRunnerUtil() {}
 
   static void populateBasicJavaArgs(final List<String> commands) {
     final String javaCommand = SystemProperties.getJavaHome() + File.separator + "bin" + File.separator + "java";

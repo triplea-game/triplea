@@ -22,7 +22,8 @@ import games.strategy.util.CollectionUtils;
 /**
  * Handy utility methods for the writers of an AI.
  */
-public class AiUtils {
+public final class AiUtils {
+  private AiUtils() {}
 
   /**
    * Returns a comparator that sorts cheaper units before expensive ones.
