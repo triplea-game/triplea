@@ -170,7 +170,7 @@ public class WW2V3Year41Test {
         defendingAa, planes, territory("Germany", gameData).getUnits().getUnits(), bridge,
         territory("Germany", gameData), true);
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
-        defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
+        defendingAa, roll, bridge, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(2, casualties.size());
     // should be 1 fighter and 1 bomber
     assertEquals(1, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
@@ -203,7 +203,7 @@ public class WW2V3Year41Test {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
-        defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
+        defendingAa, roll, bridge, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(3, casualties.size());
     // should be 1 fighter and 2 bombers
     assertEquals(2, CollectionUtils.countMatches(casualties, Matches.unitIsStrategicBomber()));
@@ -238,7 +238,7 @@ public class WW2V3Year41Test {
     // make sure we rolled once
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
     final Collection<Unit> casualties = BattleCalculator.getAaCasualties(false, planes, planes, defendingAa,
-        defendingAa, roll, bridge, null, null, null, territory("Germany", gameData), null, false, null).getKilled();
+        defendingAa, roll, bridge, null, null, territory("Germany", gameData), null, false, null).getKilled();
     assertEquals(2, casualties.size());
     thenGetRandomShouldHaveBeenCalled(bridge, times(3));
     // should be 1 fighter and 2 bombers

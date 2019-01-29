@@ -265,7 +265,7 @@ class AaInMoveUtil implements Serializable {
       final Collection<Unit> validTargetedUnitsForThisRoll, final Collection<Unit> defendingAa,
       final Collection<Unit> allEnemyUnits, final Territory territory, final String currentTypeAa) {
     final CasualtyDetails casualties = BattleCalculator.getAaCasualties(false, validTargetedUnitsForThisRoll,
-        allFriendlyUnits, defendingAa, allEnemyUnits, dice, bridge, territory.getOwner(), player, null, territory,
+        allFriendlyUnits, defendingAa, allEnemyUnits, dice, bridge, player, null, territory,
         TerritoryEffectHelper.getEffects(territory), false, new ArrayList<>());
     getRemotePlayer().reportMessage(casualties.size() + " " + currentTypeAa + " hits in " + territory.getName(),
         casualties.size() + " " + currentTypeAa + " hits in " + territory.getName());
