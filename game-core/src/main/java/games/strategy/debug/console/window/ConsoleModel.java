@@ -78,10 +78,10 @@ class ConsoleModel {
    * Represents the mapping between user-friendly label and log level.
    */
   @VisibleForTesting
-  @AllArgsConstructor
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @ToString
   @Getter(AccessLevel.PACKAGE)
-  static class LogLevelItem {
+  static final class LogLevelItem {
     static final LogLevelItem DEBUG = new LogLevelItem("Debug Logging", Level.ALL);
 
     static final LogLevelItem NORMAL = new LogLevelItem("Normal Logging", Level.INFO);
