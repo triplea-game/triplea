@@ -23,8 +23,6 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   private PlayerId playerId;
   @Getter
   private IPlayerBridge playerBridge;
-  private boolean isStoppedGame = false;
-
 
   public AbstractBasePlayer(final String name) {
     this.name = name;
@@ -79,7 +77,5 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
   }
 
   @Override
-  public void stopGame() {
-    isStoppedGame = true;
-  }
+  public void stopGame() {}
 }
