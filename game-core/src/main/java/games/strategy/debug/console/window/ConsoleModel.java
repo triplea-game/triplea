@@ -94,10 +94,7 @@ class ConsoleModel {
     }
 
     static Level fromLabel(final String label) {
-      return Stream.of(values())
-          .filter(item -> item.label.equalsIgnoreCase(label))
-          .findAny()
-          .orElseThrow(() -> new IllegalStateException("Could not find LogLevel label: " + label)).level;
+      return label.equals(DEBUG.label) ? DEBUG.level : NORMAL.level;
     }
 
     static String fromLevel(final Level level) {
