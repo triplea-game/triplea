@@ -26,9 +26,7 @@ public class JButtonBuilder {
 
   private String title;
   private String toolTip;
-  private String componentName;
   private Consumer<Component> clickAction;
-  private boolean enabled = true;
   private boolean selected;
   private int biggerFont;
 
@@ -48,10 +46,8 @@ public class JButtonBuilder {
     final JButton button = new JButton(title);
     Optional.ofNullable(clickAction)
         .ifPresent(listener -> button.addActionListener(e -> clickAction.accept(button)));
-    Optional.ofNullable(componentName).ifPresent(button::setName);
     Optional.ofNullable(toolTip).ifPresent(button::setToolTipText);
 
-    button.setEnabled(enabled);
     button.setSelected(selected);
 
     if (biggerFont > 0) {
