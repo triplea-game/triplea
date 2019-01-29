@@ -849,7 +849,8 @@ public class DiceRoll implements Externalizable {
 
   private static void sortAaSupportRules(final Set<List<UnitSupportAttachment>> support, final boolean defense,
       final boolean friendly) {
-    sortSupportRules(support, defense, friendly, UnitSupportAttachment::getAaRoll, UnitSupportAttachment::getAaStrength);
+    sortSupportRules(support, defense, friendly, UnitSupportAttachment::getAaRoll,
+        UnitSupportAttachment::getAaStrength);
   }
 
   private static void sortSupportRules(final Set<List<UnitSupportAttachment>> support, final boolean defense,
