@@ -2,6 +2,7 @@ package swinglib;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -37,7 +38,7 @@ public class JFrameBuilder {
   private int width;
   private int height;
 
-  private JFrameBuilder() {}
+  private LayoutManager layoutManager;
 
   /**
    * Constructs the JFrame instance. It will not be visible.
@@ -63,6 +64,7 @@ public class JFrameBuilder {
       frame.setAlwaysOnTop(true);
     }
     Optional.ofNullable(parent).ifPresent(frame::setLocationRelativeTo);
+    Optional.ofNullable(layoutManager).ifPresent(frame.getContentPane()::setLayout);
 
     children.forEach(frame::add);
 
@@ -82,6 +84,11 @@ public class JFrameBuilder {
 
   public JFrameBuilder title(final String title) {
     this.title = title;
+    return this;
+  }
+
+  public JFrameBuilder layout(final LayoutManager layoutManager) {
+    this.layoutManager = layoutManager;
     return this;
   }
 

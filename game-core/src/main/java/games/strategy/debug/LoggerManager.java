@@ -12,21 +12,19 @@ import com.google.common.collect.ImmutableList;
 /**
  * Manages all application-specific loggers and provides convenience methods for configuring them.
  */
-final class LoggerManager {
+public final class LoggerManager {
   /**
    * Stores strong references to application-specific loggers so they aren't GCed after being configured.
    */
-  private static final ImmutableCollection<Logger> loggers = getLoggers();
+  private static final ImmutableCollection<Logger> loggers =
+      Stream.of("games.strategy", "org.triplea", "swinglib", "tools")
+          .map(Logger::getLogger)
+          .collect(ImmutableList.toImmutableList());
 
   private LoggerManager() {}
 
-  private static ImmutableCollection<Logger> getLoggers() {
-    return Stream.of("games.strategy", "org.triplea", "swinglib", "tools")
-        .map(Logger::getLogger)
-        .collect(ImmutableList.toImmutableList());
-  }
 
-  static void setLogLevel(final Level level) {
+  public static void setLogLevel(final Level level) {
     checkNotNull(level);
 
     loggers.forEach(logger -> logger.setLevel(level));
