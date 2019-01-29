@@ -15,12 +15,10 @@ import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.util.Version;
-import lombok.extern.java.Log;
 
 /**
  * Fetches the lobby server properties from the remote Source of Truth.
  */
-@Log
 public final class LobbyServerPropertiesFetcher {
   private final BiFunction<String, Function<InputStream, LobbyServerProperties>,
       Optional<LobbyServerProperties>> fileDownloader;
