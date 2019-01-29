@@ -418,9 +418,9 @@ public class DiceRoll implements Externalizable {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       int strength = defending ? ua.getAttackAa(unit.getOwner()) : ua.getOffensiveAttackAa(unit.getOwner());
       strength += getSupport(unit, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
-          new HashMap<>(), usa -> usa.getAaStrength());
+          new HashMap<>(), UnitSupportAttachment::getAaStrength);
       strength += getSupport(unit, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, new HashMap<>(),
-          usa -> usa.getAaStrength());
+          UnitSupportAttachment::getAaStrength);
       strength = Math.min(Math.max(strength, 0), data.getDiceSides());
 
       // Find unit's AA rolls
@@ -431,9 +431,9 @@ public class DiceRoll implements Externalizable {
         rolls = ua.getMaxAaAttacks();
         if (rolls > -1) {
           rolls += getSupport(unit, supportRulesFriendly, supportLeftFriendlyRolls, supportUnitsLeftFriendlyRolls,
-              new HashMap<>(), usa -> usa.getAaRoll());
+              new HashMap<>(), UnitSupportAttachment::getAaRoll);
           rolls += getSupport(unit, supportRulesEnemy, supportLeftEnemyRolls, supportUnitsLeftEnemyRolls,
-              new HashMap<>(), usa -> usa.getAaRoll());
+              new HashMap<>(), UnitSupportAttachment::getAaRoll);
           rolls = Math.max(0, rolls);
         }
         if (rolls == 0) {
@@ -565,10 +565,10 @@ public class DiceRoll implements Externalizable {
           strength = Math.min(1, strength);
         } else {
           strength += getSupport(unit, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
-              unitSupportPowerMap, usa -> usa.getStrength());
+              unitSupportPowerMap, UnitSupportAttachment::getStrength);
         }
         strength += getSupport(unit, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitSupportPowerMap,
-            usa -> usa.getStrength());
+            UnitSupportAttachment::getStrength);
       } else {
         strength = ua.getAttack(unit.getOwner());
         if (ua.getIsMarine() != 0 && isAmphibiousBattle) {
@@ -581,9 +581,9 @@ public class DiceRoll implements Externalizable {
           strength = ua.getBombard();
         }
         strength += getSupport(unit, supportRulesFriendly, supportLeftFriendly, supportUnitsLeftFriendly,
-            unitSupportPowerMap, usa -> usa.getStrength());
+            unitSupportPowerMap, UnitSupportAttachment::getStrength);
         strength += getSupport(unit, supportRulesEnemy, supportLeftEnemy, supportUnitsLeftEnemy, unitSupportPowerMap,
-            usa -> usa.getStrength());
+            UnitSupportAttachment::getStrength);
       }
       strength += TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), territoryEffects, defending);
       strength = Math.min(Math.max(strength, 0), data.getDiceSides());
@@ -599,9 +599,9 @@ public class DiceRoll implements Externalizable {
           rolls = ua.getAttackRolls(unit.getOwner());
         }
         rolls += getSupport(unit, supportRulesFriendly, supportLeftFriendlyRolls, supportUnitsLeftFriendlyRolls,
-            unitSupportRollsMap, usa -> usa.getRoll());
+            unitSupportRollsMap, UnitSupportAttachment::getRoll);
         rolls += getSupport(unit, supportRulesEnemy, supportLeftEnemyRolls, supportUnitsLeftEnemyRolls,
-            unitSupportRollsMap, usa -> usa.getRoll());
+            unitSupportRollsMap, UnitSupportAttachment::getRoll);
         rolls = Math.max(0, rolls);
         if (rolls == 0) {
           strength = 0;
@@ -849,12 +849,12 @@ public class DiceRoll implements Externalizable {
 
   private static void sortAaSupportRules(final Set<List<UnitSupportAttachment>> support, final boolean defense,
       final boolean friendly) {
-    sortSupportRules(support, defense, friendly, usa -> usa.getAaRoll(), usa -> usa.getAaStrength());
+    sortSupportRules(support, defense, friendly, UnitSupportAttachment::getAaRoll, UnitSupportAttachment::getAaStrength);
   }
 
   private static void sortSupportRules(final Set<List<UnitSupportAttachment>> support, final boolean defense,
       final boolean friendly) {
-    sortSupportRules(support, defense, friendly, usa -> usa.getRoll(), usa -> usa.getStrength());
+    sortSupportRules(support, defense, friendly, UnitSupportAttachment::getRoll, UnitSupportAttachment::getStrength);
   }
 
   private static void sortSupportRules(final Set<List<UnitSupportAttachment>> support, final boolean defense,
