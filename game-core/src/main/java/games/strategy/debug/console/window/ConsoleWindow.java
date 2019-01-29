@@ -14,7 +14,6 @@ import games.strategy.ui.SwingAction;
 import games.strategy.ui.SwingComponents;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.extern.java.Log;
 import swinglib.JComboBoxBuilder;
 import swinglib.JFrameBuilder;
 import swinglib.JTextAreaBuilder;
@@ -23,7 +22,6 @@ import swinglib.JTextAreaBuilder;
  * This is a debug window that can be displayed to show log events and has controls for dumping system data,
  * eg: current property values, JVM memory.
  */
-@Log
 class ConsoleWindow implements ConsoleView {
 
   private final JTextArea textArea = JTextAreaBuilder.builder()
