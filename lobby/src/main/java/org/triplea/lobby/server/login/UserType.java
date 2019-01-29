@@ -14,5 +14,5 @@ public enum UserType {
    * A user who has registered. Registered users must provide valid credentials in order to be granted access to the
    * lobby.
    */
-  REGISTERED;
+  REGISTERED
 }
