@@ -21,7 +21,9 @@ import games.strategy.util.CollectionUtils;
  * state if it is free with everyone this AI will not go through a different Neutral state to reach a War state
  * (i.e. go from NAP to Peace to War).
  */
-public class AiPoliticalUtils {
+public final class AiPoliticalUtils {
+  private AiPoliticalUtils() {}
+
   public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerId id,
       final Map<ICondition, Boolean> testedConditions, final GameData data) {
     final List<PoliticalActionAttachment> acceptableActions = new ArrayList<>();

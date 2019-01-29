@@ -16,7 +16,8 @@ import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguratio
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.triplea.settings.ClientSetting;
 
-class ErrorReportConfiguration {
+final class ErrorReportConfiguration {
+  private ErrorReportConfiguration() {}
 
   /**
    * Creates a 'report handler', this is the component invoked when we have collected all data from

@@ -13,7 +13,8 @@ import swinglib.JPanelBuilder;
 /**
  * Panel to show who is playing which players.
  */
-public class PlayersPanel {
+public final class PlayersPanel {
+  private PlayersPanel() {}
 
   /**
    * Displays a dialog that shows which node (user) is controlling each player (nation, power, etc.).

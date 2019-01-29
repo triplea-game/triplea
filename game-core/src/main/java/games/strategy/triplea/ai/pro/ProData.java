@@ -23,7 +23,7 @@ import games.strategy.util.IntegerMap;
 /**
  * Pro AI data.
  */
-public class ProData {
+public final class ProData {
 
   private static ProAi proAi;
   private static GameData data;
@@ -39,6 +39,8 @@ public class ProData {
   public static IntegerMap<UnitType> unitValueMap = new IntegerMap<>();
   public static ProPurchaseOptionMap purchaseOptions = null;
   public static double minCostPerHitPoint = Double.MAX_VALUE;
+
+  private ProData() {}
 
   public static void initialize(final ProAi proAi) {
     hiddenInitialize(proAi, proAi.getGameData(), proAi.getPlayerId(), false);

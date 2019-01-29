@@ -15,7 +15,7 @@ import lombok.extern.java.Log;
  * local system.
  */
 @Log
-public class LocalizeHtml {
+public final class LocalizeHtml {
   public static final String ASSET_IMAGE_FOLDER = "doc/images/";
   public static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
   /*
@@ -30,6 +30,8 @@ public class LocalizeHtml {
   public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
   /* Match the src attribute */
   public static final String PATTERN_HTML_IMG_SRC_TAG = "\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
+
+  private LocalizeHtml() {}
 
   /**
    * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be

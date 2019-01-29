@@ -5,9 +5,11 @@ import games.strategy.net.INode;
 /**
  * Information useful on invocation of remote networked events.
  */
-public class MessageContext {
+public final class MessageContext {
   // the current caller of the remote or channel
   private static final ThreadLocal<INode> sender = new ThreadLocal<>();
+
+  private MessageContext() {}
 
   // should only be called by EndPoint
   public static void setSenderNodeForThread(final INode node) {

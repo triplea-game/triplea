@@ -49,9 +49,11 @@ import games.strategy.triplea.UrlConstants;
  * Wrapper/utility class to give Swing components a nicer API. This class is to help extract pure UI code out of
  * the rest of the code base. This also gives us a cleaner interface between UI and the rest of the code.
  */
-public class SwingComponents {
+public final class SwingComponents {
   private static final String PERIOD = ".";
   private static final Collection<String> visiblePrompts = new HashSet<>();
+
+  private SwingComponents() {}
 
   /**
    * Enum for swing codes that represent key events. In this case holding control or the meta keys.

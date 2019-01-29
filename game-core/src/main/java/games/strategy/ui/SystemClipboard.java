@@ -6,7 +6,8 @@ import java.awt.datatransfer.StringSelection;
 /**
  * A utility for interacting with the system clipboard, humble object pattern.
  */
-public class SystemClipboard {
+public final class SystemClipboard {
+  private SystemClipboard() {}
 
   public static void setClipboardContents(final String contents) {
     final StringSelection select = new StringSelection(contents);

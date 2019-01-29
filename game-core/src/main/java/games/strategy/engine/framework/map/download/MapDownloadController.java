@@ -21,7 +21,8 @@ import lombok.extern.java.Log;
 
 /** Controller for in-game map download actions. */
 @Log
-public class MapDownloadController {
+public final class MapDownloadController {
+  private MapDownloadController() {}
 
   /**
    * Prompts user to download map updates if maps are out of date.

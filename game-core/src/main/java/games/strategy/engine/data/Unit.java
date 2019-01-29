@@ -129,8 +129,10 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
    * any serious issues.
    * TODO: fix the root cause of this deserialization issue (probably a circular dependency somewhere)
    */
-  public static class UnitDeserializationErrorLazyMessage {
+  public static final class UnitDeserializationErrorLazyMessage {
     private static boolean shownError = false;
+
+    private UnitDeserializationErrorLazyMessage() {}
 
     private static void printError(final String errorMessage) {
       if (!shownError) {

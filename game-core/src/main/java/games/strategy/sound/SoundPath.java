@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * Contains the sound file names and the directory of all sound files.
  */
-public class SoundPath {
+public final class SoundPath {
   // MAKE SURE TO ADD NEW SOUNDS TO THE getAllSoundOptions() METHOD! (or else the user's preference will not be saved)
 
   // standard sounds (files can be found in corresponding data/... folder to this package)
@@ -75,6 +75,8 @@ public class SoundPath {
   public static final String CLIP_TERRITORY_CAPTURE_SEA = "territory_capture_sea";
   public static final String CLIP_USER_ACTION_FAILURE = "user_action_failure";
   public static final String CLIP_USER_ACTION_SUCCESSFUL = "user_action_successful";
+
+  private SoundPath() {}
 
   public static Set<String> getAllSoundOptions() {
     return getAllSoundOptionsWithDescription().keySet();

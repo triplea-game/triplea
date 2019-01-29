@@ -9,10 +9,12 @@ import games.strategy.triplea.ui.TripleAFrame;
 /**
  * Class to manage log window display.
  */
-public class ProLogUi {
+public final class ProLogUi {
   private static ProLogWindow settingsWindow = null;
   private static String currentName = "";
   private static int currentRound = 0;
+
+  private ProLogUi() {}
 
   public static void initialize(final TripleAFrame frame) {
     if (!SwingUtilities.isEventDispatchThread()) {

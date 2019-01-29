@@ -43,7 +43,8 @@ import games.strategy.util.CollectionUtils;
 /**
  * Pro AI purchase utilities.
  */
-public class ProPurchaseUtils {
+public final class ProPurchaseUtils {
+  private ProPurchaseUtils() {}
 
   public static List<ProPurchaseOption> findPurchaseOptionsForTerritory(final PlayerId player,
       final List<ProPurchaseOption> purchaseOptions, final Territory t, final boolean isBid) {

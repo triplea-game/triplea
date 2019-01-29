@@ -7,6 +7,7 @@ import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 /** Creates an http client that can be used to interact with Github 'issues'. */
 public final class GithubIssueClientFactory {
+  private GithubIssueClientFactory() {}
 
   /** Creates an http client that can post a new github issue. */
   public static ServiceClient<CreateIssueRequest, CreateIssueResponse> newGithubIssueCreator(

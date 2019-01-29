@@ -16,6 +16,8 @@ import games.strategy.ui.Util;
  * of {@link Paint} provided by the subclass to fill the territory interior.
  */
 public abstract class TerritoryDrawable {
+  protected TerritoryDrawable() {}
+
   protected static void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
       final Territory territory, final Paint territoryPaint) {
     final List<Polygon> polys = mapData.getPolygons(territory);

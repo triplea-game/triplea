@@ -12,6 +12,7 @@ import javax.swing.text.JTextComponent;
  * should reliably trigger when text is changed.
  */
 public final class DocumentListenerBuilder {
+  private DocumentListenerBuilder() {}
 
   /**
    * Attaches a given (add/remove/changed) text change action to a {@code JTextComponent}.

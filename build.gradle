@@ -124,6 +124,7 @@ subprojects {
             check 'NonAtomicVolatileUpdate', CheckSeverity.ERROR
             check 'OperatorPrecedence', CheckSeverity.ERROR
             check 'ParameterName', CheckSeverity.OFF // workaround for https://github.com/google/error-prone/issues/780
+            check 'PrivateConstructorForUtilityClass', CheckSeverity.ERROR
             check 'ReferenceEquality', CheckSeverity.ERROR
             check 'StringSplitter', CheckSeverity.ERROR
             check 'ThreadPriorityCheck', CheckSeverity.ERROR

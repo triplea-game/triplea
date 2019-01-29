@@ -32,8 +32,10 @@ import games.strategy.util.IntegerMap;
 /**
  * Provides static methods for evaluating movement of air units.
  */
-public class AirMovementValidator {
+public final class AirMovementValidator {
   public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
+
+  private AirMovementValidator() {}
 
   // TODO: this class does a pretty good job already, but could be improved by having the carriers that are potentially
   // moved also look for any owned air units that are in sea zones without carriers. these would be air units that have

@@ -23,7 +23,8 @@ import lombok.extern.java.Log;
  * Provides methods to configure the proxy to use for HTTP requests.
  */
 @Log
-public class HttpProxy {
+public final class HttpProxy {
+  private HttpProxy() {}
 
   /**
    * Set of possible proxy options. Users can change between these via settings.

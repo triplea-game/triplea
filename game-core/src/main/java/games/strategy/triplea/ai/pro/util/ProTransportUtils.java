@@ -30,7 +30,8 @@ import games.strategy.util.CollectionUtils;
 /**
  * Pro AI transport utilities.
  */
-public class ProTransportUtils {
+public final class ProTransportUtils {
+  private ProTransportUtils() {}
 
   public static int findMaxMovementForTransports(final List<ProPurchaseOption> seaTransportPurchaseOptions) {
     int maxMovement = 2;

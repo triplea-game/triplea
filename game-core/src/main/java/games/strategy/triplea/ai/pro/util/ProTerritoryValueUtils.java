@@ -21,10 +21,12 @@ import games.strategy.util.CollectionUtils;
 /**
  * Pro AI battle utilities.
  */
-public class ProTerritoryValueUtils {
+public final class ProTerritoryValueUtils {
 
   private static final int MIN_FACTORY_CHECK_DISTANCE = 9;
   private static final int MAX_FACTORY_CHECK_DISTANCE = 30;
+
+  private ProTerritoryValueUtils() {}
 
   /**
    * Returns the relative value of attacking the specified territory compared to other territories.

@@ -11,7 +11,8 @@ import games.strategy.util.IntegerMap;
 /**
  * Provides methods that assist with player bonus income.
  */
-public class BonusIncomeUtils {
+public final class BonusIncomeUtils {
+  private BonusIncomeUtils() {}
 
   /**
    * Add bonus income based on the player's set percentage for all resources.

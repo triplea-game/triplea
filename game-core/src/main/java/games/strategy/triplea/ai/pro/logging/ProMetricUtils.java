@@ -6,8 +6,10 @@ import games.strategy.util.IntegerMap;
 /**
  * Pro AI metrics.
  */
-public class ProMetricUtils {
+public final class ProMetricUtils {
   private static final IntegerMap<ProductionRule> totalPurchaseMap = new IntegerMap<>();
+
+  private ProMetricUtils() {}
 
   public static void collectPurchaseStats(final IntegerMap<ProductionRule> purchaseMap) {
     totalPurchaseMap.add(purchaseMap);

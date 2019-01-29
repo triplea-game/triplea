@@ -13,7 +13,8 @@ import swinglib.JTextAreaBuilder;
 /**
  * A simple window printing a representation of the bug report upload payload.
  */
-class PreviewWindow {
+final class PreviewWindow {
+  private PreviewWindow() {}
 
   static JFrame build(final JFrame parent, final String previewText) {
     final JFrame frame = JFrameBuilder.builder()

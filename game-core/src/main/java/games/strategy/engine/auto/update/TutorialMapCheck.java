@@ -4,7 +4,9 @@ import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.download.MapDownloadController;
 import games.strategy.ui.SwingComponents;
 
-class TutorialMapCheck {
+final class TutorialMapCheck {
+  private TutorialMapCheck() {}
+
   static void checkForTutorialMap() {
     final boolean promptToDownloadTutorialMap = MapDownloadController.shouldPromptToDownloadTutorialMap();
     MapDownloadController.preventPromptToDownloadTutorialMap();

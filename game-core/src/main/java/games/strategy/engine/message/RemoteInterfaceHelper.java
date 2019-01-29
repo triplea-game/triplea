@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.IntStream;
 
-class RemoteInterfaceHelper {
+final class RemoteInterfaceHelper {
+  private RemoteInterfaceHelper() {}
+
   static int getNumber(final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface) {
     final Method[] methods = remoteInterface.getMethods();
     Arrays.sort(methods, methodComparator);

@@ -39,7 +39,9 @@ import games.strategy.util.CollectionUtils;
 /**
  * Pro AI simulate turn utilities.
  */
-public class ProSimulateTurnUtils {
+public final class ProSimulateTurnUtils {
+  private ProSimulateTurnUtils() {}
+
   /**
    * Simulates all pending battles in {@code data}. The simulation results are written as changes to
    * {@code delegateBridge}.
