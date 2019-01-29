@@ -2179,7 +2179,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           + SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
       return BattleCalculator.getAaCasualties(!defending, validAttackingUnitsForThisRoll,
           (defending ? attackingUnits : defendingUnits), defendingAa,
-          (defending ? defendingUnits : attackingUnits), dice, bridge, (defending ? defender : attacker),
+          (defending ? defendingUnits : attackingUnits), dice, bridge,
           (defending ? attacker : defender), battleId, battleSite, territoryEffects, isAmphibious,
           amphibiousLandAttackers);
     }

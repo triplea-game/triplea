@@ -92,7 +92,7 @@ public class BattleCalculator {
    */
   static CasualtyDetails getAaCasualties(final boolean defending, final Collection<Unit> planes,
       final Collection<Unit> allFriendlyUnits, final Collection<Unit> defendingAa, final Collection<Unit> allEnemyUnits,
-      final DiceRoll dice, final IDelegateBridge bridge, final PlayerId firingPlayer, final PlayerId hitPlayer,
+      final DiceRoll dice, final IDelegateBridge bridge, final PlayerId hitPlayer,
       final GUID battleId, final Territory terr, final Collection<TerritoryEffect> territoryEffects,
       final boolean amphibious, final Collection<Unit> amphibiousLandAttackers) {
     if (planes.isEmpty()) {
