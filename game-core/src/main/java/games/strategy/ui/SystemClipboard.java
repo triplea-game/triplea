@@ -1,4 +1,4 @@
-package games.strategy.util;
+package games.strategy.ui;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;

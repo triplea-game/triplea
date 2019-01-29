@@ -3,7 +3,7 @@ package games.strategy.debug.console.window;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
-import games.strategy.util.SystemClipboard;
+import games.strategy.ui.SystemClipboard;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
