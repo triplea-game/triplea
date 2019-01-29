@@ -33,7 +33,7 @@ public interface IGameLoader extends Serializable {
   /**
    * The game is about to start.
    */
-  void startGame(IGame game, Set<IGamePlayer> players, boolean headless, @Nullable Chat chat) throws Exception;
+  void startGame(IGame game, Set<IGamePlayer> players, boolean headless, @Nullable Chat chat);
 
   /**
    * Get the type of the display.
