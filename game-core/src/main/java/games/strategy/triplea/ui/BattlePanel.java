@@ -63,7 +63,7 @@ public class BattlePanel extends ActionPanel {
   // there is a bug in linux jdk1.5.0_6 where frames are not being garbage collected
   // reuse one frame
   private final JFrame battleFrame;
-  Map<BattleType, Collection<Territory>> battles;
+  private Map<BattleType, Collection<Territory>> battles;
 
   public BattlePanel(final GameData data, final MapPanel map) {
     super(data, map);

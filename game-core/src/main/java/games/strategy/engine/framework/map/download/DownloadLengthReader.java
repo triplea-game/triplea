@@ -26,11 +26,9 @@ import lombok.extern.java.Log;
 @Log
 @AllArgsConstructor
 final class DownloadLengthReader {
-
-  private final Supplier<CloseableHttpClient> httpClientFactory;
-
   @VisibleForTesting
   final ConcurrentMap<String, Long> downloadLengthsByUri = new ConcurrentHashMap<>();
+  private final Supplier<CloseableHttpClient> httpClientFactory;
 
   /**
    * Gets the download length for the resource at the specified URI.

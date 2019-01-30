@@ -40,6 +40,9 @@ import lombok.extern.java.Log;
  */
 @Log
 public class UnitsDrawer implements IDrawable {
+  public static boolean enabledFlags = false;
+  private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.NEXT_TO;
+
   private final int count;
   private final String unitType;
   private final String playerName;
@@ -50,7 +53,6 @@ public class UnitsDrawer implements IDrawable {
   private final boolean overflow;
   private final String territoryName;
   private final UiContext uiContext;
-  private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.NEXT_TO;
 
   /**
    * The keys for {@link UnitsDrawer} preferences.
@@ -58,8 +60,6 @@ public class UnitsDrawer implements IDrawable {
   public enum PreferenceKeys {
     DRAW_MODE, DRAWING_ENABLED
   }
-
-  public static boolean enabledFlags = false;
 
   /**
    * Identifies the location where a nation flag is drawn relative to a unit.

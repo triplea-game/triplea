@@ -55,21 +55,18 @@ public class HeadlessGameServer {
   public static final String BOT_GAME_HOST_NAME_PREFIX = "Bot";
   private static final int LOBBY_RECONNECTION_REFRESH_SECONDS_DEFAULT = (int) TimeUnit.DAYS.toSeconds(2);
   private static final String NO_REMOTE_REQUESTS_ALLOWED = "noRemoteRequestsAllowed";
+  private static HeadlessGameServer instance = null;
 
   private final AvailableGames availableGames = new AvailableGames();
   private final GameSelectorModel gameSelectorModel = new GameSelectorModel();
   private final ScheduledExecutorService lobbyWatcherResetupThread = Executors.newScheduledThreadPool(1);
-  private static HeadlessGameServer instance = null;
   private final HeadlessServerSetupPanelModel setupPanelModel = new HeadlessServerSetupPanelModel(gameSelectorModel);
   private ServerGame game = null;
   private boolean shutDown = false;
-
-
   private final List<Runnable> shutdownListeners = Arrays.asList(
       lobbyWatcherResetupThread::shutdown,
       () -> Optional.ofNullable(game).ifPresent(ServerGame::stopGame),
       () -> setupPanelModel.getPanel().cancel());
-
 
   private HeadlessGameServer() {
     if (instance != null) {

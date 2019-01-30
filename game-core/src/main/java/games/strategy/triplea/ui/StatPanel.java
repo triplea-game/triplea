@@ -44,11 +44,12 @@ import games.strategy.util.IntegerMap;
 
 class StatPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 4340684166664492498L;
+
+  IStat[] stats;
+  final Map<PlayerId, ImageIcon> mapPlayerImage = new HashMap<>();
+  final UiContext uiContext;
   private final StatTableModel dataModel;
   private final TechTableModel techModel;
-  protected IStat[] stats;
-  protected final Map<PlayerId, ImageIcon> mapPlayerImage = new HashMap<>();
-  protected final UiContext uiContext;
 
   StatPanel(final GameData data, final UiContext uiContext) {
     super(data);

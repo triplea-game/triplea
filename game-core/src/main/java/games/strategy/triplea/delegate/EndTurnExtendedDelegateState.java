@@ -7,6 +7,6 @@ class EndTurnExtendedDelegateState implements Serializable {
 
   Serializable superState;
   // add other variables here:
-  public boolean needToInitialize;
-  public boolean hasPostedTurnSummary;
+  boolean needToInitialize;
+  boolean hasPostedTurnSummary;
 }

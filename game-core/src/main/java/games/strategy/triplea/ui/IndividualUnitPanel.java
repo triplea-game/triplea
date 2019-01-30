@@ -212,9 +212,10 @@ public class IndividualUnitPanel extends JPanel {
 
   private static final class SingleUnitPanel extends JPanel {
     private static final long serialVersionUID = 5034287842323633030L;
+    private static final Insets nullInsets = new Insets(0, 0, 0, 0);
+
     private final Unit unit;
     private final ScrollableTextField textField;
-    private static final Insets nullInsets = new Insets(0, 0, 0, 0);
     private final ScrollableTextFieldListener countTextFieldListener;
 
     SingleUnitPanel(final Unit unit, final UiContext uiContext,

@@ -18,9 +18,10 @@ import games.strategy.net.INode;
  */
 public class SetMapClientAction extends AbstractAction {
   private static final long serialVersionUID = -9156920997678163614L;
+
+  final List<String> availableGames;
   private final Component parent;
   private final IClientMessenger clientMessenger;
-  final List<String> availableGames;
 
   public SetMapClientAction(final Component parent, final IClientMessenger clientMessenger,
       final List<String> availableGames) {

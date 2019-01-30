@@ -13,6 +13,6 @@ class PlaceExtendedDelegateState implements Serializable {
 
   Serializable superState;
   // add other variables here:
-  public Map<Territory, Collection<Unit>> produced;
-  public List<UndoablePlacement> placements;
+  Map<Territory, Collection<Unit>> produced;
+  List<UndoablePlacement> placements;
 }

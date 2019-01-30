@@ -11,6 +11,6 @@ class EndRoundExtendedDelegateState implements Serializable {
 
   Serializable superState;
   // add other variables here:
-  public boolean gameOver = false;
-  public Collection<PlayerId> winners = new ArrayList<>();
+  boolean gameOver = false;
+  Collection<PlayerId> winners = new ArrayList<>();
 }

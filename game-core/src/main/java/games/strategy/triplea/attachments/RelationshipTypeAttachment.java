@@ -16,8 +16,6 @@ import games.strategy.triplea.Constants;
  * An attachment for instances of {@link RelationshipType}.
  */
 public class RelationshipTypeAttachment extends DefaultAttachment {
-  private static final long serialVersionUID = -4367286684249791984L;
-
   public static final String ARCHETYPE_NEUTRAL = Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL;
   public static final String ARCHETYPE_WAR = Constants.RELATIONSHIP_ARCHETYPE_WAR;
   public static final String ARCHETYPE_ALLIED = Constants.RELATIONSHIP_ARCHETYPE_ALLIED;
@@ -26,6 +24,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
   public static final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
   public static final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
   public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
+  private static final long serialVersionUID = -4367286684249791984L;
 
   private String archeType = ARCHETYPE_WAR;
   private String canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;

@@ -43,13 +43,13 @@ import lombok.extern.java.Log;
  */
 @Log
 public class AirBattle extends AbstractBattle {
-  private static final long serialVersionUID = 4686241714027216395L;
   protected static final String AIR_BATTLE = "Air Battle";
   protected static final String INTERCEPTORS_LAUNCH = "Defender Launches Interceptors";
   protected static final String ATTACKERS_FIRE = "Attackers Fire";
   protected static final String DEFENDERS_FIRE = "Defenders Fire";
   protected static final String ATTACKERS_WITHDRAW = "Attackers Withdraw?";
   protected static final String DEFENDERS_WITHDRAW = "Defenders Withdraw?";
+  private static final long serialVersionUID = 4686241714027216395L;
 
   protected final ExecutionStack stack = new ExecutionStack();
   protected List<String> steps;

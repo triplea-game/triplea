@@ -95,10 +95,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   // the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
   private List<String> stepStrings;
-  protected List<Unit> defendingAa;
-  protected List<Unit> offensiveAa;
-  protected List<String> defendingAaTypes;
-  protected List<String> offensiveAaTypes;
+  private List<Unit> defendingAa;
+  private List<Unit> offensiveAa;
+  private List<String> defendingAaTypes;
+  private List<String> offensiveAaTypes;
   private final List<Unit> attackingUnitsRetreated = new ArrayList<>();
   private final List<Unit> defendingUnitsRetreated = new ArrayList<>();
   // -1 would mean forever until one side is eliminated (the default is infinite)
@@ -2065,7 +2065,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     private final boolean defending;
     private DiceRoll dice;
     private CasualtyDetails casualties;
-    final Collection<Unit> casualtiesSoFar = new ArrayList<>();
+    private final Collection<Unit> casualtiesSoFar = new ArrayList<>();
 
     private FireAa(final boolean defending) {
       this.defending = defending;

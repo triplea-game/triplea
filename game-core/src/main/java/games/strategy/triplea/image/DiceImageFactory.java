@@ -28,10 +28,10 @@ import games.strategy.ui.Util;
 public class DiceImageFactory {
   public static final int DIE_WIDTH = 32;
   public static final int DIE_HEIGHT = 32;
-  private final int diceSides;
-  private final ResourceLoader resourceLoader;
   private static final Color IGNORED = new Color(100, 100, 100, 200);
 
+  private final int diceSides;
+  private final ResourceLoader resourceLoader;
   private final Map<Integer, Image> images;
   private final Map<Integer, Image> imagesHit;
   private final Map<Integer, Image> imagesIgnored;

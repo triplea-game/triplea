@@ -96,9 +96,7 @@
         <module name="MissingSwitchDefault"/>
         <module name="FallThrough"/>
         <module name="UpperEll"/>
-        <module name="DeclarationOrder">
-            <property name="ignoreModifiers" value="true"/>
-        </module>
+        <module name="DeclarationOrder"/>
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
         <module name="EmptyLineSeparator">

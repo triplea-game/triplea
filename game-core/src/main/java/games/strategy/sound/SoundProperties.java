@@ -17,13 +17,14 @@ import lombok.extern.java.Log;
  */
 @Log
 class SoundProperties {
+  static final String GENERIC_FOLDER = "generic";
   // Filename
   private static final String PROPERTY_FILE = "sounds.properties";
   private static final String PROPERTY_DEFAULT_FOLDER = "Sound.Default.Folder";
   private static final String DEFAULT_ERA_FOLDER = "ww2";
-  static final String GENERIC_FOLDER = "generic";
   private static SoundProperties instance = null;
   private static Instant timestamp = Instant.EPOCH;
+
   private final Properties properties = new Properties();
 
   SoundProperties(final ResourceLoader loader) {

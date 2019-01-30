@@ -31,8 +31,9 @@ import games.strategy.util.Interruptibles;
  * before returning.
  */
 public class PbemDiceRoller implements IRandomSource {
-  private final IRemoteDiceServer remoteDiceServer;
   private static Frame focusWindow;
+
+  private final IRemoteDiceServer remoteDiceServer;
 
   public PbemDiceRoller(final IRemoteDiceServer diceServer) {
     remoteDiceServer = diceServer;

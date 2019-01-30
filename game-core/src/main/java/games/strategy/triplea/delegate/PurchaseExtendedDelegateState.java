@@ -7,5 +7,5 @@ class PurchaseExtendedDelegateState implements Serializable {
 
   Serializable superState;
   // add other variables here:
-  public boolean needToInitialize;
+  boolean needToInitialize;
 }

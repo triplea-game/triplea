@@ -43,7 +43,7 @@ public class PoliticsPanel extends ActionPanel {
   private JButton doneButton = null;
   private PoliticalActionAttachment choice = null;
   private boolean firstRun = true;
-  protected List<PoliticalActionAttachment> validPoliticalActions = null;
+  private List<PoliticalActionAttachment> validPoliticalActions = null;
 
   /**
    * Fires up a JDialog showing the political landscape and valid actions,

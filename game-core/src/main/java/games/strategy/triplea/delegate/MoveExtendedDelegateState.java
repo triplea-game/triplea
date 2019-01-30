@@ -10,7 +10,7 @@ class MoveExtendedDelegateState implements Serializable {
 
   Serializable superState;
   // add other variables here:
-  public boolean needToInitialize;
-  public boolean needToDoRockets;
-  public IntegerMap<Territory> pusLost;
+  boolean needToInitialize;
+  boolean needToDoRockets;
+  IntegerMap<Territory> pusLost;
 }

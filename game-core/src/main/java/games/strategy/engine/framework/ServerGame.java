@@ -59,11 +59,10 @@ import lombok.extern.java.Log;
  */
 @Log
 public class ServerGame extends AbstractGame {
-  static final RemoteName SERVER_REMOTE =
-      new RemoteName("games.strategy.engine.framework.ServerGame.SERVER_REMOTE", IServerRemote.class);
-
   public static final String GAME_HAS_BEEN_SAVED_PROPERTY =
       "games.strategy.engine.framework.ServerGame.GameHasBeenSaved";
+  static final RemoteName SERVER_REMOTE =
+      new RemoteName("games.strategy.engine.framework.ServerGame.SERVER_REMOTE", IServerRemote.class);
 
   private final RandomStats randomStats;
   private IRandomSource randomSource = new PlainRandomSource();

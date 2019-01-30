@@ -28,14 +28,14 @@ import swinglib.JButtonBuilder;
 abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;
   private static final int entryPadding = 15;
+
+  AbstractUndoableMovesPanel undoableMovesPanel;
   private final TripleAFrame frame;
   private boolean listening = false;
   private final JLabel actionLabel = new JLabel();
   private MoveDescription moveMessage;
   private List<UndoableMove> undoableMoves;
-  AbstractUndoableMovesPanel undoableMovesPanel;
   private IPlayerBridge bridge;
-
   private final JButton cancelMoveButton = JButtonBuilder.builder()
       .title("Cancel")
       .actionListener(this::cancelMove)

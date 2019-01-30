@@ -15,11 +15,12 @@ import games.strategy.engine.framework.system.SystemProperties;
  * Written very often over the network, so make externalizable to make faster and reduce traffic.
  */
 public class Node implements INode, Externalizable {
+  public static final INode NULL_NODE;
   private static final long serialVersionUID = -2908980662926959943L;
+
   private String name;
   private int port;
   private InetAddress address;
-  public static final INode NULL_NODE;
 
   static {
     try {

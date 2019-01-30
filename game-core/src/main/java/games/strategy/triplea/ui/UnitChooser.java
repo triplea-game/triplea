@@ -315,6 +315,8 @@ final class UnitChooser extends JPanel {
   }
 
   private static final class ChooserEntry {
+    private static final Insets nullInsets = new Insets(0, 0, 0, 0);
+
     private final UnitCategory category;
     private final ScrollableTextFieldListener hitTextFieldListener;
     private final boolean hasMultipleHits;
@@ -322,7 +324,6 @@ final class UnitChooser extends JPanel {
     private final List<ScrollableTextField> hitTexts;
     private final List<JLabel> hitLabel = new ArrayList<>();
     private int leftToSelect;
-    private static final Insets nullInsets = new Insets(0, 0, 0, 0);
     private final UiContext uiContext;
 
     ChooserEntry(final UnitCategory category, final int leftToSelect, final ScrollableTextFieldListener listener,

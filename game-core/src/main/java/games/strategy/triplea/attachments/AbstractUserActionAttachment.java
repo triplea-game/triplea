@@ -20,8 +20,8 @@ import games.strategy.util.IntegerMap;
  * Abstract class for holding various action/condition things for PoliticalActionAttachment and UserActionAttachment.
  */
 public abstract class AbstractUserActionAttachment extends AbstractConditionsAttachment {
-  private static final long serialVersionUID = 3569461523853104614L;
   public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
+  private static final long serialVersionUID = 3569461523853104614L;
 
   // a key referring to politicaltexts.properties or other .properties for all the UI messages belonging to this action.
   protected String text = "";

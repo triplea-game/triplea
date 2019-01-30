@@ -65,6 +65,8 @@ public class MovePanel extends AbstractMovePanel {
    * changed it after feedback).
    */
   private static final int deselectNumber = 10;
+  private static final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
+
   // access only through getter and setter!
   private Territory firstSelectedTerritory;
   private Territory selectedEndpointTerritory;
@@ -77,7 +79,6 @@ public class MovePanel extends AbstractMovePanel {
   private Point mouseLastUpdatePoint;
   // use a LinkedHashSet because we want to know the order
   private final Set<Unit> selectedUnits = new LinkedHashSet<>();
-  private static final Map<Unit, Collection<Unit>> dependentUnits = new HashMap<>();
   // the must move with details for the currently selected territory
   // note this is kept in sync because we do not modify selectedTerritory directly
   // instead we only do so through the private setter

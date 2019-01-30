@@ -44,10 +44,9 @@ public class ImageScrollerLargeView extends JComponent {
   private static final int TOP = 0b0100;
   private static final int BOTTOM = 0b1000;
 
-  private final int tileSize;
   protected final ImageScrollModel model;
   protected double scale = 1;
-
+  private final int tileSize;
   private int dragScrollingLastX;
   private int dragScrollingLastY;
   private boolean wasLastActionDragging = false;

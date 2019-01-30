@@ -6,5 +6,5 @@ class SpecialMoveExtendedDelegateState implements Serializable {
   private static final long serialVersionUID = 7781410008392307104L;
 
   Serializable superState;
-  public boolean needToInitialize;
+  boolean needToInitialize;
 }
