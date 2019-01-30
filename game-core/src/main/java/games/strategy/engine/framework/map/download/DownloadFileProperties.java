@@ -21,6 +21,8 @@ class DownloadFileProperties {
   static final String VERSION_PROPERTY = "map.version";
   private final Properties props = new Properties();
 
+  DownloadFileProperties() {}
+
   static DownloadFileProperties loadForZip(final File zipFile) {
     if (!fromZip(zipFile).exists()) {
       return new DownloadFileProperties();
@@ -41,8 +43,6 @@ class DownloadFileProperties {
       log.log(Level.SEVERE, "Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(), e);
     }
   }
-
-  DownloadFileProperties() {}
 
   private static File fromZip(final File zipFile) {
     return new File(zipFile.getAbsolutePath() + ".properties");

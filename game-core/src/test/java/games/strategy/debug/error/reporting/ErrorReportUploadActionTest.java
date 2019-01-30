@@ -29,6 +29,8 @@ import org.triplea.http.client.error.report.create.ErrorReportResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorReportUploadActionTest {
+  private static final UserErrorReport USER_ERROR_REPORT = UserErrorReport.builder()
+      .build();
 
   @Mock
   private ServiceClient<ErrorReport, ErrorReportResponse> serviceClient;
@@ -51,11 +53,6 @@ class ErrorReportUploadActionTest {
         .successConfirmation(successConfirmation)
         .build();
   }
-
-
-  private static final UserErrorReport USER_ERROR_REPORT = UserErrorReport.builder()
-      .build();
-
 
   @ParameterizedTest
   @MethodSource("withNonSuccessSendResults")

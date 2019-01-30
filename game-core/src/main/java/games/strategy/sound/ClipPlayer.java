@@ -117,21 +117,6 @@ public class ClipPlayer {
   private final ResourceLoader resourceLoader;
   private static ClipPlayer clipPlayer;
 
-  static synchronized ClipPlayer getInstance() {
-    if (clipPlayer == null) {
-      clipPlayer = new ClipPlayer(ResourceLoader.getGameEngineAssetLoader());
-    }
-    return clipPlayer;
-  }
-
-  public static synchronized void getInstance(final ResourceLoader resourceLoader) {
-    // make a new clip player if we switch resource loaders (ie: if we switch maps)
-    if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
-      // make a new clip player with our new resource loader
-      clipPlayer = new ClipPlayer(resourceLoader);
-    }
-  }
-
   private ClipPlayer(final ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
@@ -144,6 +129,21 @@ public class ClipPlayer {
       if (muted) {
         mutedClips.add(sound);
       }
+    }
+  }
+
+  static synchronized ClipPlayer getInstance() {
+    if (clipPlayer == null) {
+      clipPlayer = new ClipPlayer(ResourceLoader.getGameEngineAssetLoader());
+    }
+    return clipPlayer;
+  }
+
+  public static synchronized void getInstance(final ResourceLoader resourceLoader) {
+    // make a new clip player if we switch resource loaders (ie: if we switch maps)
+    if (clipPlayer == null || clipPlayer.resourceLoader != resourceLoader) {
+      // make a new clip player with our new resource loader
+      clipPlayer = new ClipPlayer(resourceLoader);
     }
   }
 

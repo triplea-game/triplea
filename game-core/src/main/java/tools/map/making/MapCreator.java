@@ -55,18 +55,6 @@ public class MapCreator extends JFrame {
   private final JPanel panel3 = new JPanel();
   private final JPanel panel4 = new JPanel();
 
-  /**
-   * Opens a map creator window.
-   */
-  public static void openMapCreatorWindow() {
-    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-      final MapCreator creator = new MapCreator();
-      creator.setSize(800, 600);
-      creator.setLocationRelativeTo(null);
-      creator.setVisible(true);
-    }));
-  }
-
   private MapCreator() {
     super("TripleA Map Creator");
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -348,5 +336,17 @@ public class MapCreator extends JFrame {
 
   private static void runUtility(final Consumer<String[]> entryPoint) {
     entryPoint.accept(new String[0]);
+  }
+
+  /**
+   * Opens a map creator window.
+   */
+  public static void openMapCreatorWindow() {
+    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
+      final MapCreator creator = new MapCreator();
+      creator.setSize(800, 600);
+      creator.setLocationRelativeTo(null);
+      creator.setVisible(true);
+    }));
   }
 }

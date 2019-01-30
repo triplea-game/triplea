@@ -81,11 +81,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
 
-  static RemoteName getObserverWaitingToStartName(final INode node) {
-    return new RemoteName("games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName(),
-        IObserverWaitingToJoin.class);
-  }
-
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final ServerSetupModel serverSetupModel;
   private IServerMessenger serverMessenger;
@@ -107,149 +102,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private volatile ServerLauncher serverLauncher;
   private CountDownLatch removeConnectionsLatch = null;
   private final Observer gameSelectorObserver = (observable, value) -> gameDataChanged();
-
-  public ServerModel(final GameSelectorModel gameSelectorModel, final ServerSetupModel serverSetupModel,
-      @Nullable final JFrame ui) {
-    this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
-    this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
-    this.gameSelectorModel.addObserver(gameSelectorObserver);
-    this.ui = ui;
-  }
-
-  public void cancel() {
-    gameSelectorModel.deleteObserver(gameSelectorObserver);
-    if (serverMessenger != null) {
-      chatController.deactivate();
-      serverMessenger.shutDown();
-      serverMessenger.removeErrorListener(this);
-      chatModel.setChat(null);
-    }
-  }
-
-  public void setRemoteModelListener(final @Nullable IRemoteModelListener listener) {
-    remoteModelListener = Optional.ofNullable(listener).orElse(IRemoteModelListener.NULL_LISTENER);
-  }
-
-  public synchronized void setLocalPlayerType(final String player, final PlayerType type) {
-    localPlayerTypes.put(player, type);
-  }
-
-  private void gameDataChanged() {
-    synchronized (this) {
-      data = gameSelectorModel.getGameData();
-      if (data != null) {
-        playersToNodeListing = new HashMap<>();
-        playersEnabledListing = new HashMap<>();
-        playersAllowedToBeDisabled = new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled());
-        playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
-        for (final PlayerId player : data.getPlayerList().getPlayers()) {
-          final String name = player.getName();
-          if (ui == null) {
-            if (player.getIsDisabled()) {
-              playersToNodeListing.put(name, serverMessenger.getLocalNode().getName());
-              localPlayerTypes.put(name, PlayerType.WEAK_AI);
-            } else {
-              // we generally do not want a headless host bot to be doing any AI turns, since that
-              // is taxing on the system
-              playersToNodeListing.put(name, null);
-            }
-          } else {
-            Optional.ofNullable(serverMessenger)
-                .ifPresent(messenger -> playersToNodeListing.put(name, messenger.getLocalNode().getName()));
-          }
-          playerNamesAndAlliancesInTurnOrder.put(name, data.getAllianceTracker().getAlliancesPlayerIsIn(player));
-          playersEnabledListing.put(name, !player.getIsDisabled());
-        }
-      }
-      objectStreamFactory.setData(data);
-      localPlayerTypes.clear();
-    }
-    notifyChanellPlayersChanged();
-    remoteModelListener.playerListChanged();
-  }
-
-  private Optional<ServerConnectionProps> getServerProps() {
-    if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")
-        && GameState.notStarted()) {
-      GameState.setStarted();
-      return Optional.of(ServerConnectionProps.builder()
-          .name(System.getProperty(TRIPLEA_NAME))
-          .port(Integer.parseInt(System.getProperty(TRIPLEA_PORT)))
-          .password(System.getProperty(SERVER_PASSWORD))
-          .build());
-    }
-    final String playername = ClientSetting.playerName.getValueOrThrow();
-    final Interruptibles.Result<ServerOptions> optionsResult = Interruptibles
-        .awaitResult(() -> SwingAction.invokeAndWaitResult(() -> {
-          final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
-          options.setLocationRelativeTo(ui);
-          options.setVisible(true);
-          options.dispose();
-          if (!options.getOkPressed()) {
-            return null;
-          }
-          final String name = options.getName();
-          log.fine("Server playing as:" + name);
-          ClientSetting.playerName.setValue(name);
-          ClientSetting.flush();
-          final int port = options.getPort();
-          if (port >= 65536 || port == 0) {
-            if (ui == null) {
-              throw new IllegalStateException("Invalid Port: " + port);
-            }
-            JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
-            return null;
-          }
-          return options;
-        }));
-    if (!optionsResult.completed) {
-      throw new IllegalArgumentException("Error while gathering connection details");
-    }
-    if (!optionsResult.result.isPresent()) {
-      cancel();
-    }
-    return optionsResult.result.map(options -> ServerConnectionProps.builder()
-        .name(options.getName())
-        .port(options.getPort())
-        .password(options.getPassword())
-        .build());
-  }
-
-  public void createServerMessenger() {
-    getServerProps().ifPresent(this::createServerMessenger);
-  }
-
-  private void createServerMessenger(@Nonnull final ServerConnectionProps props) {
-    try {
-      serverMessenger = new GameServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
-      final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
-      clientLoginValidator.setGamePassword(props.getPassword());
-      serverMessenger.setLoginValidator(clientLoginValidator);
-      serverMessenger.addErrorListener(this);
-      serverMessenger.addConnectionChangeListener(this);
-      final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
-      remoteMessenger = new RemoteMessenger(unifiedMessenger);
-      remoteMessenger.registerRemote(serverStartupRemote, SERVER_REMOTE_NAME);
-      channelMessenger = new ChannelMessenger(unifiedMessenger);
-      chatController = new ChatController(CHAT_NAME, serverMessenger, remoteMessenger, channelMessenger, node -> false);
-
-      if (ui == null) {
-        chatModel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
-            Chat.ChatSoundProfile.GAME_CHATROOM);
-      } else {
-        chatModel = ChatPanel.newChatPanel(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
-            Chat.ChatSoundProfile.GAME_CHATROOM);
-      }
-
-      serverMessenger.setAcceptNewConnections(true);
-      gameDataChanged();
-      serverSetupModel.onServerMessengerCreated(this);
-    } catch (final IOException ioe) {
-      log.log(Level.SEVERE, "Unable to create server socket", ioe);
-      cancel();
-    }
-  }
-
   private final IServerStartupRemote serverStartupRemote = new IServerStartupRemote() {
     @Override
     public PlayerListing getPlayerListing() {
@@ -392,6 +244,153 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
     }
   };
+
+  public ServerModel(final GameSelectorModel gameSelectorModel, final ServerSetupModel serverSetupModel,
+      @Nullable final JFrame ui) {
+    this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
+    this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
+    this.gameSelectorModel.addObserver(gameSelectorObserver);
+    this.ui = ui;
+  }
+
+  static RemoteName getObserverWaitingToStartName(final INode node) {
+    return new RemoteName("games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName(),
+        IObserverWaitingToJoin.class);
+  }
+
+  public void cancel() {
+    gameSelectorModel.deleteObserver(gameSelectorObserver);
+    if (serverMessenger != null) {
+      chatController.deactivate();
+      serverMessenger.shutDown();
+      serverMessenger.removeErrorListener(this);
+      chatModel.setChat(null);
+    }
+  }
+
+  public void setRemoteModelListener(final @Nullable IRemoteModelListener listener) {
+    remoteModelListener = Optional.ofNullable(listener).orElse(IRemoteModelListener.NULL_LISTENER);
+  }
+
+  public synchronized void setLocalPlayerType(final String player, final PlayerType type) {
+    localPlayerTypes.put(player, type);
+  }
+
+  private void gameDataChanged() {
+    synchronized (this) {
+      data = gameSelectorModel.getGameData();
+      if (data != null) {
+        playersToNodeListing = new HashMap<>();
+        playersEnabledListing = new HashMap<>();
+        playersAllowedToBeDisabled = new HashSet<>(data.getPlayerList().getPlayersThatMayBeDisabled());
+        playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
+        for (final PlayerId player : data.getPlayerList().getPlayers()) {
+          final String name = player.getName();
+          if (ui == null) {
+            if (player.getIsDisabled()) {
+              playersToNodeListing.put(name, serverMessenger.getLocalNode().getName());
+              localPlayerTypes.put(name, PlayerType.WEAK_AI);
+            } else {
+              // we generally do not want a headless host bot to be doing any AI turns, since that
+              // is taxing on the system
+              playersToNodeListing.put(name, null);
+            }
+          } else {
+            Optional.ofNullable(serverMessenger)
+                .ifPresent(messenger -> playersToNodeListing.put(name, messenger.getLocalNode().getName()));
+          }
+          playerNamesAndAlliancesInTurnOrder.put(name, data.getAllianceTracker().getAlliancesPlayerIsIn(player));
+          playersEnabledListing.put(name, !player.getIsDisabled());
+        }
+      }
+      objectStreamFactory.setData(data);
+      localPlayerTypes.clear();
+    }
+    notifyChanellPlayersChanged();
+    remoteModelListener.playerListChanged();
+  }
+
+  private Optional<ServerConnectionProps> getServerProps() {
+    if (System.getProperty(TRIPLEA_SERVER, "false").equals("true")
+        && GameState.notStarted()) {
+      GameState.setStarted();
+      return Optional.of(ServerConnectionProps.builder()
+          .name(System.getProperty(TRIPLEA_NAME))
+          .port(Integer.parseInt(System.getProperty(TRIPLEA_PORT)))
+          .password(System.getProperty(SERVER_PASSWORD))
+          .build());
+    }
+    final String playername = ClientSetting.playerName.getValueOrThrow();
+    final Interruptibles.Result<ServerOptions> optionsResult = Interruptibles
+        .awaitResult(() -> SwingAction.invokeAndWaitResult(() -> {
+          final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
+          options.setLocationRelativeTo(ui);
+          options.setVisible(true);
+          options.dispose();
+          if (!options.getOkPressed()) {
+            return null;
+          }
+          final String name = options.getName();
+          log.fine("Server playing as:" + name);
+          ClientSetting.playerName.setValue(name);
+          ClientSetting.flush();
+          final int port = options.getPort();
+          if (port >= 65536 || port == 0) {
+            if (ui == null) {
+              throw new IllegalStateException("Invalid Port: " + port);
+            }
+            JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+          }
+          return options;
+        }));
+    if (!optionsResult.completed) {
+      throw new IllegalArgumentException("Error while gathering connection details");
+    }
+    if (!optionsResult.result.isPresent()) {
+      cancel();
+    }
+    return optionsResult.result.map(options -> ServerConnectionProps.builder()
+        .name(options.getName())
+        .port(options.getPort())
+        .password(options.getPassword())
+        .build());
+  }
+
+  public void createServerMessenger() {
+    getServerProps().ifPresent(this::createServerMessenger);
+  }
+
+  private void createServerMessenger(@Nonnull final ServerConnectionProps props) {
+    try {
+      serverMessenger = new GameServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
+      final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
+      clientLoginValidator.setGamePassword(props.getPassword());
+      serverMessenger.setLoginValidator(clientLoginValidator);
+      serverMessenger.addErrorListener(this);
+      serverMessenger.addConnectionChangeListener(this);
+      final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
+      remoteMessenger = new RemoteMessenger(unifiedMessenger);
+      remoteMessenger.registerRemote(serverStartupRemote, SERVER_REMOTE_NAME);
+      channelMessenger = new ChannelMessenger(unifiedMessenger);
+      chatController = new ChatController(CHAT_NAME, serverMessenger, remoteMessenger, channelMessenger, node -> false);
+
+      if (ui == null) {
+        chatModel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
+            Chat.ChatSoundProfile.GAME_CHATROOM);
+      } else {
+        chatModel = ChatPanel.newChatPanel(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
+            Chat.ChatSoundProfile.GAME_CHATROOM);
+      }
+
+      serverMessenger.setAcceptNewConnections(true);
+      gameDataChanged();
+      serverSetupModel.onServerMessengerCreated(this);
+    } catch (final IOException ioe) {
+      log.log(Level.SEVERE, "Unable to create server socket", ioe);
+      cancel();
+    }
+  }
 
   private PlayerListing getPlayerListingInternal() {
     synchronized (this) {

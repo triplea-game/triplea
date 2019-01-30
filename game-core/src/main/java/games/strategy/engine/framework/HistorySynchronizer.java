@@ -19,26 +19,6 @@ public class HistorySynchronizer {
   private final GameData gameData;
   private int currentRound;
   private final IGame game;
-
-  public HistorySynchronizer(final GameData data, final IGame game) {
-    // this is not the way to use this.
-    if (game.getData() == data) {
-      throw new IllegalStateException(
-          "You dont need a history synchronizer to synchronize game data that is managed by an IGame");
-    }
-    gameData = data;
-    gameData.forceChangesOnlyInSwingEventThread();
-    data.acquireReadLock();
-    try {
-      currentRound = data.getSequence().getRound();
-    } finally {
-      data.releaseReadLock();
-    }
-    this.game = game;
-    this.game.getChannelMessenger().registerChannelSubscriber(gameModifiedChannelListener,
-        IGame.GAME_MODIFICATION_CHANNEL);
-  }
-
   private final IGameModifiedChannel gameModifiedChannelListener = new IGameModifiedChannel() {
     @Override
     public void gameDataChanged(final Change change) {
@@ -95,6 +75,25 @@ public class HistorySynchronizer {
     @Override
     public void shutDown() {}
   };
+
+  public HistorySynchronizer(final GameData data, final IGame game) {
+    // this is not the way to use this.
+    if (game.getData() == data) {
+      throw new IllegalStateException(
+          "You dont need a history synchronizer to synchronize game data that is managed by an IGame");
+    }
+    gameData = data;
+    gameData.forceChangesOnlyInSwingEventThread();
+    data.acquireReadLock();
+    try {
+      currentRound = data.getSequence().getRound();
+    } finally {
+      data.releaseReadLock();
+    }
+    this.game = game;
+    this.game.getChannelMessenger().registerChannelSubscriber(gameModifiedChannelListener,
+        IGame.GAME_MODIFICATION_CHANNEL);
+  }
 
   public void deactivate() {
     game.getChannelMessenger().unregisterChannelSubscriber(gameModifiedChannelListener,

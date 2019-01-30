@@ -47,6 +47,52 @@ public class UserActionPanel extends ActionPanel {
   private boolean firstRun = true;
   private List<UserActionAttachment> validUserActions = Collections.emptyList();
 
+  /**
+   * Fires up a JDialog showing valid actions,
+   * choosing an action will release this model and trigger waitForRelease().
+   */
+  private final Action selectUserActionAction = new AbstractAction("Take Action...") {
+    private static final long serialVersionUID = 2389485901611958851L;
+
+    @Override
+    public void actionPerformed(final ActionEvent event) {
+      final JDialog userChoiceDialog = new JDialog(parent, "Actions and Operations", true);
+
+      final JPanel userChoicePanel = new JPanel();
+      userChoicePanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+      userChoicePanel.setLayout(new GridBagLayout());
+
+      int row = 0;
+      final JScrollPane choiceScroll = new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
+      choiceScroll.setBorder(BorderFactory.createEtchedBorder());
+      userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER,
+          GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+
+      final JButton noActionButton = new JButton(SwingAction.of("No Actions", e -> userChoiceDialog.setVisible(false)));
+      SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
+      userChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 2, 1, 0.0, 0.0, GridBagConstraints.EAST,
+          GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
+
+      userChoiceDialog.setContentPane(userChoicePanel);
+      userChoiceDialog.pack();
+      userChoiceDialog.setLocationRelativeTo(parent);
+      userChoiceDialog.setVisible(true);
+      userChoiceDialog.dispose();
+    }
+  };
+
+  /**
+   * This will stop the user action Phase.
+   */
+  private final Action dontBotherAction = SwingAction.of("Done", e -> {
+    if (!firstRun || JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this),
+        "Are you sure you dont want to do anything?", "End Actions",
+        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+      choice = null;
+      release();
+    }
+  });
+
   public UserActionPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
     this.parent = parent;
@@ -105,40 +151,6 @@ public class UserActionPanel extends ActionPanel {
     return choice;
   }
 
-  /**
-   * Fires up a JDialog showing valid actions,
-   * choosing an action will release this model and trigger waitForRelease().
-   */
-  private final Action selectUserActionAction = new AbstractAction("Take Action...") {
-    private static final long serialVersionUID = 2389485901611958851L;
-
-    @Override
-    public void actionPerformed(final ActionEvent event) {
-      final JDialog userChoiceDialog = new JDialog(parent, "Actions and Operations", true);
-
-      final JPanel userChoicePanel = new JPanel();
-      userChoicePanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-      userChoicePanel.setLayout(new GridBagLayout());
-
-      int row = 0;
-      final JScrollPane choiceScroll = new JScrollPane(getUserActionButtonPanel(userChoiceDialog));
-      choiceScroll.setBorder(BorderFactory.createEtchedBorder());
-      userChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 2, 1, 1, 1, GridBagConstraints.CENTER,
-          GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-
-      final JButton noActionButton = new JButton(SwingAction.of("No Actions", e -> userChoiceDialog.setVisible(false)));
-      SwingUtilities.invokeLater(noActionButton::requestFocusInWindow);
-      userChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 2, 1, 0.0, 0.0, GridBagConstraints.EAST,
-          GridBagConstraints.NONE, new Insets(12, 0, 0, 0), 0, 0));
-
-      userChoiceDialog.setContentPane(userChoicePanel);
-      userChoiceDialog.pack();
-      userChoiceDialog.setLocationRelativeTo(parent);
-      userChoiceDialog.setVisible(true);
-      userChoiceDialog.dispose();
-    }
-  };
-
   @VisibleForTesting
   static boolean canSpendResourcesOnUserActions(final Collection<UserActionAttachment> userActions) {
     return userActions.stream().anyMatch(userAction -> !userAction.getCostResources().isEmpty());
@@ -190,18 +202,6 @@ public class UserActionPanel extends ActionPanel {
   static boolean canPlayerAffordUserAction(final PlayerId player, final UserActionAttachment userAction) {
     return player.getResources().has(userAction.getCostResources());
   }
-
-  /**
-   * This will stop the user action Phase.
-   */
-  private final Action dontBotherAction = SwingAction.of("Done", e -> {
-    if (!firstRun || JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(UserActionPanel.this),
-        "Are you sure you dont want to do anything?", "End Actions",
-        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      choice = null;
-      release();
-    }
-  });
 
   /**
    * Convenient method to get a JCompenent showing the flags involved in this action.

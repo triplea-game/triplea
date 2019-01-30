@@ -909,11 +909,6 @@ public final class DecorationPlacer {
     private final String description;
     private final String instructions;
 
-    static ImagePointType[] getTypes() {
-      return new ImagePointType[] {decorations, name_place, pu_place, capitols, vc, blockade, convoy, comments,
-          kamikaze_place, territory_effects};
-    }
-
     ImagePointType(final String fileName, final String folderName, final String imageName, final boolean useFolder,
         final boolean endInPng, final boolean fillAll, final boolean canUseBottomLeftPoint,
         final boolean canHaveMultiplePoints, final String description, final String instructions) {
@@ -927,6 +922,11 @@ public final class DecorationPlacer {
       this.canHaveMultiplePoints = canHaveMultiplePoints;
       this.description = description;
       this.instructions = instructions;
+    }
+
+    static ImagePointType[] getTypes() {
+      return new ImagePointType[] {decorations, name_place, pu_place, capitols, vc, blockade, convoy, comments,
+          kamikaze_place, territory_effects};
     }
 
     public String getFileName() {

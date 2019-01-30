@@ -44,6 +44,8 @@ import games.strategy.util.Interruptibles;
  */
 @AutoSave(afterStepStart = true)
 public class EndTurnDelegate extends AbstractEndTurnDelegate {
+  private static final Predicate<RulesAttachment> availableUses = ra -> ra.getUses() != 0;
+
   @Override
   protected String doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge) {
     final StringBuilder endTurnReport = new StringBuilder();
@@ -338,8 +340,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
   private boolean isNationalObjectives() {
     return Properties.getNationalObjectives(getData());
   }
-
-  private static final Predicate<RulesAttachment> availableUses = ra -> ra.getUses() != 0;
 
   @Override
   protected String addOtherResources(final IDelegateBridge bridge) {

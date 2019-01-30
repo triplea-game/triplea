@@ -65,6 +65,8 @@ public class ChangeFactory {
     }
   };
 
+  private ChangeFactory() {}
+
   public static Change changeOwner(final Territory territory, final PlayerId owner) {
     return new OwnerChange(territory, owner);
   }
@@ -184,8 +186,6 @@ public class ChangeFactory {
   public static Change addBattleRecords(final BattleRecords records, final GameData data) {
     return new AddBattleRecordsChange(records, data);
   }
-
-  private ChangeFactory() {}
 
   /**
    * Creates a change of relationshipType between 2 players, for example: change Germany-France relationship from

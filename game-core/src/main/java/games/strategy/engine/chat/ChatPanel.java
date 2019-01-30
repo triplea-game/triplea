@@ -34,6 +34,11 @@ public class ChatPanel extends JPanel implements ChatModel {
   private ChatPlayerPanel chatPlayerPanel;
   private ChatMessagePanel chatMessagePanel;
 
+  public ChatPanel(final Chat chat) {
+    init();
+    setChat(chat);
+  }
+
   /**
    * Creates a Chat object instance on the current thread based on the provided arguments
    * and calls the ChatPanel constructor with it on the EDT.
@@ -50,11 +55,6 @@ public class ChatPanel extends JPanel implements ChatModel {
     final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
     return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat))).result
         .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
-  }
-
-  public ChatPanel(final Chat chat) {
-    init();
-    setChat(chat);
   }
 
   private void init() {

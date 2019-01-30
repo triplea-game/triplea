@@ -46,59 +46,6 @@ class TechPanel extends ActionPanel {
   private int quantity;
   private IntegerMap<PlayerId> whoPaysHowMuch = null;
 
-  TechPanel(final GameData data, final MapPanel map) {
-    super(data, map);
-  }
-
-  @Override
-  public void display(final PlayerId id) {
-    super.display(id);
-    SwingUtilities.invokeLater(() -> {
-      removeAll();
-      actionLabel.setText(id.getName() + " Tech Roll");
-      add(actionLabel);
-      if (isWW2V3TechModel()) {
-        add(new JButton(getTechTokenAction));
-        add(new JButton(justRollTech));
-      } else {
-        add(new JButton(getTechRollsAction));
-        add(new JButton(dontBother));
-      }
-    });
-  }
-
-  @Override
-  public String toString() {
-    return "TechPanel";
-  }
-
-  TechRoll waitForTech() {
-    if (getAvailableTechs().isEmpty()) {
-      return null;
-    }
-    waitForRelease();
-    if (techRoll == null) {
-      return null;
-    }
-    if (techRoll.getRolls() == 0) {
-      return null;
-    }
-    return techRoll;
-  }
-
-  private List<TechAdvance> getAvailableTechs() {
-    final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(getCurrentPlayer(), getData());
-    final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData(), getCurrentPlayer());
-    return CollectionUtils.difference(allAdvances, currentAdvances);
-  }
-
-  private List<TechnologyFrontier> getAvailableCategories() {
-    final Collection<TechnologyFrontier> currentAdvances =
-        TechTracker.getFullyResearchedPlayerTechCategories(getCurrentPlayer());
-    final Collection<TechnologyFrontier> allAdvances = TechAdvance.getPlayerTechCategories(getCurrentPlayer());
-    return CollectionUtils.difference(allAdvances, currentAdvances);
-  }
-
   private final Action getTechRollsAction = SwingAction.of("Roll Tech...", e -> {
     TechAdvance advance = null;
     if (isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel())) {
@@ -200,8 +147,6 @@ class TechPanel extends ActionPanel {
     techRoll = new TechRoll(category, currTokens, quantity, whoPaysHowMuch);
     techRoll.setNewTokens(quantity);
     release();
-
-
   });
 
   private final Action justRollTech = SwingAction.of("Done/Roll Current Tokens", e -> {
@@ -235,8 +180,60 @@ class TechPanel extends ActionPanel {
       techRoll = null;
     }
     release();
-
   });
+
+  TechPanel(final GameData data, final MapPanel map) {
+    super(data, map);
+  }
+
+  @Override
+  public void display(final PlayerId id) {
+    super.display(id);
+    SwingUtilities.invokeLater(() -> {
+      removeAll();
+      actionLabel.setText(id.getName() + " Tech Roll");
+      add(actionLabel);
+      if (isWW2V3TechModel()) {
+        add(new JButton(getTechTokenAction));
+        add(new JButton(justRollTech));
+      } else {
+        add(new JButton(getTechRollsAction));
+        add(new JButton(dontBother));
+      }
+    });
+  }
+
+  @Override
+  public String toString() {
+    return "TechPanel";
+  }
+
+  TechRoll waitForTech() {
+    if (getAvailableTechs().isEmpty()) {
+      return null;
+    }
+    waitForRelease();
+    if (techRoll == null) {
+      return null;
+    }
+    if (techRoll.getRolls() == 0) {
+      return null;
+    }
+    return techRoll;
+  }
+
+  private List<TechAdvance> getAvailableTechs() {
+    final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(getCurrentPlayer(), getData());
+    final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData(), getCurrentPlayer());
+    return CollectionUtils.difference(allAdvances, currentAdvances);
+  }
+
+  private List<TechnologyFrontier> getAvailableCategories() {
+    final Collection<TechnologyFrontier> currentAdvances =
+        TechTracker.getFullyResearchedPlayerTechCategories(getCurrentPlayer());
+    final Collection<TechnologyFrontier> allAdvances = TechAdvance.getPlayerTechCategories(getCurrentPlayer());
+    return CollectionUtils.difference(allAdvances, currentAdvances);
+  }
 
   private static String getTechListToolTipText(final TechnologyFrontier techCategory) {
     final List<TechAdvance> techList = techCategory.getTechs();

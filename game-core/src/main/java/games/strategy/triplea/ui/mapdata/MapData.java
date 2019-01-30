@@ -126,14 +126,6 @@ public class MapData implements Closeable {
   private final Map<String, Image> effectImages = new HashMap<>();
   private final ResourceLoader resourceLoader;
 
-  public boolean scrollWrapX() {
-    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true"));
-  }
-
-  public boolean scrollWrapY() {
-    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPY, "false"));
-  }
-
   public MapData(final String mapNameDir) {
     this(ResourceLoader.getMapResourceLoader(mapNameDir));
   }
@@ -217,6 +209,14 @@ public class MapData implements Closeable {
     try (InputStream is = inputStreamFactory.get()) {
       return reader.apply(is);
     }
+  }
+
+  public boolean scrollWrapX() {
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true"));
+  }
+
+  public boolean scrollWrapY() {
+    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPY, "false"));
   }
 
   @Override

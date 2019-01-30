@@ -34,6 +34,10 @@ public class PbemDiceRoller implements IRandomSource {
   private final IRemoteDiceServer remoteDiceServer;
   private static Frame focusWindow;
 
+  public PbemDiceRoller(final IRemoteDiceServer diceServer) {
+    remoteDiceServer = diceServer;
+  }
+
   /**
    * If the game has multiple frames, allows the UI to set what frame should be the parent of the dice rolling window.
    * If set to null, or not set, we try to guess by finding the currently focused window (or a visible window if none
@@ -41,10 +45,6 @@ public class PbemDiceRoller implements IRandomSource {
    */
   public static void setFocusWindow(final Frame w) {
     focusWindow = w;
-  }
-
-  public PbemDiceRoller(final IRemoteDiceServer diceServer) {
-    remoteDiceServer = diceServer;
   }
 
   /**

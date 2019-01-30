@@ -41,6 +41,28 @@ public class ResourceLoader implements Closeable {
 
   private final ResourceLocationTracker resourceLocationTracker;
 
+  private ResourceLoader(final String mapName, final String[] paths) {
+    final URL[] urls = new URL[paths.length];
+    for (int i = 0; i < paths.length; i++) {
+      final File f = new File(paths[i]);
+      if (!f.exists()) {
+        log.severe(f + " does not exist");
+      }
+      if (!f.isDirectory() && !f.getName().endsWith(".zip")) {
+        log.severe(f + " is not a directory or a zip file");
+      }
+      try {
+        urls[i] = f.toURI().toURL();
+      } catch (final MalformedURLException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+    resourceLocationTracker = new ResourceLocationTracker(mapName, urls);
+    // Note: URLClassLoader does not always respect the ordering of the search URLs
+    // To solve this we will get all matching paths and then filter by what matched
+    // the assets folder.
+    loader = new URLClassLoader(urls);
+  }
 
   public static ResourceLoader getGameEngineAssetLoader() {
     return getMapResourceLoader("");
@@ -187,30 +209,6 @@ public class ResourceLoader implements Closeable {
       throw new IllegalStateException(e);
     }
     return paths;
-  }
-
-
-  private ResourceLoader(final String mapName, final String[] paths) {
-    final URL[] urls = new URL[paths.length];
-    for (int i = 0; i < paths.length; i++) {
-      final File f = new File(paths[i]);
-      if (!f.exists()) {
-        log.severe(f + " does not exist");
-      }
-      if (!f.isDirectory() && !f.getName().endsWith(".zip")) {
-        log.severe(f + " is not a directory or a zip file");
-      }
-      try {
-        urls[i] = f.toURI().toURL();
-      } catch (final MalformedURLException e) {
-        throw new IllegalStateException(e);
-      }
-    }
-    resourceLocationTracker = new ResourceLocationTracker(mapName, urls);
-    // Note: URLClassLoader does not always respect the ordering of the search URLs
-    // To solve this we will get all matching paths and then filter by what matched
-    // the assets folder.
-    loader = new URLClassLoader(urls);
   }
 
   @Override

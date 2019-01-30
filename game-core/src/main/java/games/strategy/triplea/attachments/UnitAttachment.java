@@ -44,24 +44,6 @@ import games.strategy.util.Tuple;
 public class UnitAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -2946748686268541820L;
 
-  public static UnitAttachment get(final UnitType type) {
-    return get(type, Constants.UNIT_ATTACHMENT_NAME);
-  }
-
-  static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
-    return getAttachment(type, nameOfAttachment, UnitAttachment.class);
-  }
-
-  private static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {
-    final Collection<UnitType> types = new ArrayList<>();
-    for (final Unit u : units) {
-      if (!types.contains(u.getType())) {
-        types.add(u.getType());
-      }
-    }
-    return types;
-  }
-
   public static final String UNITSMAYNOTLANDONCARRIER = "unitsMayNotLandOnCarrier";
   public static final String UNITSMAYNOTLEAVEALLIEDCARRIER = "unitsMayNotLeaveAlliedCarrier";
   // movement related
@@ -222,6 +204,24 @@ public class UnitAttachment extends DefaultAttachment {
 
   public UnitAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
+  }
+
+  public static UnitAttachment get(final UnitType type) {
+    return get(type, Constants.UNIT_ATTACHMENT_NAME);
+  }
+
+  static UnitAttachment get(final UnitType type, final String nameOfAttachment) {
+    return getAttachment(type, nameOfAttachment, UnitAttachment.class);
+  }
+
+  private static Collection<UnitType> getUnitTypesFromUnitList(final Collection<Unit> units) {
+    final Collection<UnitType> types = new ArrayList<>();
+    for (final Unit u : units) {
+      if (!types.contains(u.getType())) {
+        types.add(u.getType());
+      }
+    }
+    return types;
   }
 
   private void setCanIntercept(final String value) {

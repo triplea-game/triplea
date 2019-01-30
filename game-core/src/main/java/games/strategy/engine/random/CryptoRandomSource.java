@@ -18,6 +18,15 @@ import games.strategy.engine.vault.VaultId;
  */
 public class CryptoRandomSource implements IRandomSource {
   private final IRandomSource plainRandom = new PlainRandomSource();
+  // the remote players who involved in rolling the dice
+  // dice are rolled securely between us and her
+  private final PlayerId remotePlayer;
+  private final IGame game;
+
+  public CryptoRandomSource(final PlayerId remotePlayer, final IGame game) {
+    this.remotePlayer = remotePlayer;
+    this.game = game;
+  }
 
   /**
    * Converts an {@code int} array to a {@code byte} array. Each {@code int} will be encoded in little endian order in
@@ -67,16 +76,6 @@ public class CryptoRandomSource implements IRandomSource {
       mixedValues[i] = (val1[i] + val2[i]) % max;
     }
     return mixedValues;
-  }
-
-  // the remote players who involved in rolling the dice
-  // dice are rolled securely between us and her
-  private final PlayerId remotePlayer;
-  private final IGame game;
-
-  public CryptoRandomSource(final PlayerId remotePlayer, final IGame game) {
-    this.remotePlayer = remotePlayer;
-    this.game = game;
   }
 
   /**

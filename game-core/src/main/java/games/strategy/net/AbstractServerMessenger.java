@@ -58,6 +58,17 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   // all our nodes
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
+  private final Object cachedListLock = new Object();
+  private final Map<String, String> cachedMacAddresses = new HashMap<>();
+  private final List<String> miniBannedIpAddresses = new ArrayList<>();
+  // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a
+  // message was sent, which can be very slow
+  private final List<String> liveMutedUsernames = new ArrayList<>();
+  private final List<String> miniBannedMacAddresses = new ArrayList<>();
+  private final List<String> liveMutedMacAddresses = new ArrayList<>();
+  // The following code is used in hosted lobby games by the host for player mini-banning and mini-muting
+  private final List<String> miniBannedUsernames = new ArrayList<>();
+  private final Map<String, String> playersThatLeftMacsLast10 = new HashMap<>();
 
   protected AbstractServerMessenger(final String name, final int port, final IObjectStreamFactory objectStreamFactory)
       throws IOException {
@@ -135,9 +146,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     forwardBroadcast(header);
   }
 
-  private final Object cachedListLock = new Object();
-  private final Map<String, String> cachedMacAddresses = new HashMap<>();
-
   @Override
   public @Nullable String getPlayerMac(final String name) {
     synchronized (cachedListLock) {
@@ -145,10 +153,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
           .orElseGet(() -> playersThatLeftMacsLast10.get(name));
     }
   }
-
-  // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a
-  // message was sent, which can be very slow
-  private final List<String> liveMutedUsernames = new ArrayList<>();
 
   private boolean isUsernameMutedInCache(final String username) {
     synchronized (cachedListLock) {
@@ -167,8 +171,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
       }
     }
   }
-
-  private final List<String> liveMutedMacAddresses = new ArrayList<>();
 
   private boolean isMacMutedInCache(final String mac) {
     synchronized (cachedListLock) {
@@ -311,8 +313,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     return Optional.empty();
   }
 
-  private final Map<String, String> playersThatLeftMacsLast10 = new HashMap<>();
-
   private void notifyPlayerRemoval(final INode node) {
     synchronized (cachedListLock) {
       playersThatLeftMacsLast10.put(node.getName(), cachedMacAddresses.get(node.getName()));
@@ -376,9 +376,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     send(spokeInvoke, to);
   }
 
-  // The following code is used in hosted lobby games by the host for player mini-banning and mini-muting
-  private final List<String> miniBannedUsernames = new ArrayList<>();
-
   @Override
   public boolean isUsernameMiniBanned(final String username) {
     synchronized (cachedListLock) {
@@ -412,8 +409,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     };
   }
 
-  private final List<String> miniBannedIpAddresses = new ArrayList<>();
-
   @Override
   public boolean isIpMiniBanned(final String ip) {
     synchronized (cachedListLock) {
@@ -435,8 +430,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
       }
     }
   }
-
-  private final List<String> miniBannedMacAddresses = new ArrayList<>();
 
   @Override
   public boolean isMacMiniBanned(final String mac) {

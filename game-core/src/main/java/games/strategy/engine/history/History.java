@@ -34,15 +34,15 @@ public class History extends DefaultTreeModel {
   private HistoryNode currentNode;
   private HistoryPanel panel = null;
 
+  public History(final GameData data) {
+    super(new RootHistoryNode("Game History"));
+    gameData = data;
+  }
+
   private void assertCorrectThread() {
     if (gameData.areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
     }
-  }
-
-  public History(final GameData data) {
-    super(new RootHistoryNode("Game History"));
-    gameData = data;
   }
 
   public HistoryWriter getHistoryWriter() {

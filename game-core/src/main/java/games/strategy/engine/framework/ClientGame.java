@@ -27,11 +27,6 @@ import lombok.extern.java.Log;
  */
 @Log
 public class ClientGame extends AbstractGame {
-  public static RemoteName getRemoteStepAdvancerName(final INode node) {
-    return new RemoteName(ClientGame.class.getName() + ".REMOTE_STEP_ADVANCER:" + node.getName(),
-        IGameStepAdvancer.class);
-  }
-
   public ClientGame(final GameData data, final Set<IGamePlayer> gamePlayers,
       final Map<String, INode> remotePlayerMapping, final Messengers messengers) {
     super(data, gamePlayers, remotePlayerMapping, messengers);
@@ -159,6 +154,11 @@ public class ClientGame extends AbstractGame {
       final IRemoteRandom remoteRandom = new RemoteRandom(this);
       remoteMessenger.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
     }
+  }
+
+  public static RemoteName getRemoteStepAdvancerName(final INode node) {
+    return new RemoteName(ClientGame.class.getName() + ".REMOTE_STEP_ADVANCER:" + node.getName(),
+        IGameStepAdvancer.class);
   }
 
   /**

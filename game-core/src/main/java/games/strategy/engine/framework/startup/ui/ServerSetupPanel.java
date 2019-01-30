@@ -299,6 +299,30 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     private final JCheckBox enabledCheckBox;
     private final JComboBox<String> type;
     private final JLabel alliance;
+    private final ActionListener localPlayerActionListener = new ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        if (localCheckBox.isSelected()) {
+          model.takePlayer(nameLabel.getText());
+        } else {
+          model.releasePlayer(nameLabel.getText());
+        }
+        setWidgetActivation();
+      }
+    };
+    private final ActionListener disablePlayerActionListener = new ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        if (enabledCheckBox.isSelected()) {
+          model.enablePlayer(nameLabel.getText());
+          type.setSelectedItem(PlayerType.HUMAN_PLAYER);
+        } else {
+          model.disablePlayer(nameLabel.getText());
+          type.setSelectedItem(PlayerType.WEAK_AI.name());
+        }
+        setWidgetActivation();
+      }
+    };
 
     PlayerRow(final String playerName, final Map<String, String> reloadSelections,
         final Collection<String> playerAlliances) {
@@ -378,31 +402,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
       alliance.setEnabled(enabledCheckBox.isSelected());
       enabledCheckBox.setEnabled(model.getPlayersAllowedToBeDisabled().contains(nameLabel.getText()));
     }
-
-    private final ActionListener localPlayerActionListener = new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (localCheckBox.isSelected()) {
-          model.takePlayer(nameLabel.getText());
-        } else {
-          model.releasePlayer(nameLabel.getText());
-        }
-        setWidgetActivation();
-      }
-    };
-    private final ActionListener disablePlayerActionListener = new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (enabledCheckBox.isSelected()) {
-          model.enablePlayer(nameLabel.getText());
-          type.setSelectedItem(PlayerType.HUMAN_PLAYER);
-        } else {
-          model.disablePlayer(nameLabel.getText());
-          type.setSelectedItem(PlayerType.WEAK_AI.name());
-        }
-        setWidgetActivation();
-      }
-    };
   }
 
   @Override

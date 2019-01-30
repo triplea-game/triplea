@@ -93,12 +93,12 @@ public class TripleAUnit extends Unit {
   // was charged flat fuel cost already this turn
   private boolean chargedFlatFuelCost = false;
 
-  public static TripleAUnit get(final Unit u) {
-    return (TripleAUnit) u;
-  }
-
   public TripleAUnit(final UnitType type, final PlayerId owner, final GameData data) {
     super(type, owner, data);
+  }
+
+  public static TripleAUnit get(final Unit u) {
+    return (TripleAUnit) u;
   }
 
   public TripleAUnit getTransportedBy() {

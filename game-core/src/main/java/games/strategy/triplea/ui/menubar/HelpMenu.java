@@ -52,6 +52,7 @@ import swinglib.JLabelBuilder;
  */
 public final class HelpMenu extends JMenu {
   private static final long serialVersionUID = 4070541434144687452L;
+  public static final JEditorPane gameNotesPane = new JEditorPane();
 
   private final UiContext uiContext;
   private final GameData gameData;
@@ -239,8 +240,6 @@ public final class HelpMenu extends JMenu {
     unitMenuItem.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   }
-
-  public static final JEditorPane gameNotesPane = new JEditorPane();
 
   private void addGameNotesMenu() {
     // allow the game developer to write notes that appear in the game

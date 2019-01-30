@@ -31,22 +31,6 @@ import games.strategy.util.Triple;
 public class PlayerAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1880755875866426270L;
 
-  /**
-   * Convenience method. can be null
-   */
-  public static PlayerAttachment get(final PlayerId p) {
-    // allow null
-    return p.getPlayerAttachment();
-  }
-
-  static PlayerAttachment get(final PlayerId p, final String nameOfAttachment) {
-    final PlayerAttachment playerAttachment = p.getPlayerAttachment();
-    if (playerAttachment == null) {
-      throw new IllegalStateException("No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
-    }
-    return playerAttachment;
-  }
-
   private int vps = 0;
   // need to store some data during a turn
   private int captureVps = 0;
@@ -77,9 +61,24 @@ public class PlayerAttachment extends DefaultAttachment {
   // attacking limits on a flexible per player basis
   private Set<Triple<Integer, String, Set<UnitType>>> attackingLimit = new HashSet<>();
 
-  /** Creates new PlayerAttachment. */
   public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
+  }
+
+  /**
+   * Convenience method. can be null
+   */
+  public static PlayerAttachment get(final PlayerId p) {
+    // allow null
+    return p.getPlayerAttachment();
+  }
+
+  static PlayerAttachment get(final PlayerId p, final String nameOfAttachment) {
+    final PlayerAttachment playerAttachment = p.getPlayerAttachment();
+    if (playerAttachment == null) {
+      throw new IllegalStateException("No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
+    }
+    return playerAttachment;
   }
 
   private void setPlacementLimit(final String value) throws GameParseException {

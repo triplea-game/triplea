@@ -16,18 +16,18 @@ public final class SaveGameFileChooser extends JFileChooser {
 
   private static SaveGameFileChooser instance;
 
-  public static SaveGameFileChooser getInstance() {
-    if (instance == null) {
-      instance = new SaveGameFileChooser();
-    }
-    return instance;
-  }
-
   private SaveGameFileChooser() {
     setFileFilter(newGameDataFileFilter());
     final File saveGamesFolder = ClientSetting.saveGamesFolderPath.getValueOrThrow().toFile();
     ensureDirectoryExists(saveGamesFolder);
     setCurrentDirectory(saveGamesFolder);
+  }
+
+  public static SaveGameFileChooser getInstance() {
+    if (instance == null) {
+      instance = new SaveGameFileChooser();
+    }
+    return instance;
   }
 
   private static void ensureDirectoryExists(final File f) {

@@ -14,19 +14,6 @@ import games.strategy.engine.framework.ui.PropertiesSelector;
  * Sound option window framework.
  */
 public final class SoundOptions {
-
-  /**
-   * Adds the "Sound Options" menu item to the specified menu.
-   *
-   * @param parentMenu menu where to add the menu item "Sound Options".
-   */
-  public static void addToMenu(final JMenu parentMenu) {
-    final JMenuItem soundOptions = new JMenuItem("Sound Options");
-    soundOptions.setMnemonic(KeyEvent.VK_S);
-    soundOptions.addActionListener(e -> new SoundOptions(parentMenu));
-    parentMenu.add(soundOptions);
-  }
-
   private SoundOptions(final JComponent parent) {
     final ClipPlayer clipPlayer = ClipPlayer.getInstance();
     final String ok = "OK";
@@ -58,6 +45,18 @@ public final class SoundOptions {
       }
       clipPlayer.saveSoundPreferences();
     }
+  }
+
+  /**
+   * Adds the "Sound Options" menu item to the specified menu.
+   *
+   * @param parentMenu menu where to add the menu item "Sound Options".
+   */
+  public static void addToMenu(final JMenu parentMenu) {
+    final JMenuItem soundOptions = new JMenuItem("Sound Options");
+    soundOptions.setMnemonic(KeyEvent.VK_S);
+    soundOptions.addActionListener(e -> new SoundOptions(parentMenu));
+    parentMenu.add(soundOptions);
   }
 
   public static void addGlobalSoundSwitchMenu(final JMenu parentMenu) {

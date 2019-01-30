@@ -49,6 +49,16 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class PropertiesDiceRoller implements IRemoteDiceServer {
+  private final Properties props;
+  private String toAddress;
+  private String ccAddress;
+  private String gameId;
+
+  @VisibleForTesting
+  PropertiesDiceRoller(final Properties props) {
+    this.props = props;
+  }
+
   /**
    * Loads the property dice rollers from the properties file.
    *
@@ -79,16 +89,6 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
       rollers.add(new PropertiesDiceRoller(prop));
     }
     return rollers;
-  }
-
-  private final Properties props;
-  private String toAddress;
-  private String ccAddress;
-  private String gameId;
-
-  @VisibleForTesting
-  PropertiesDiceRoller(final Properties props) {
-    this.props = props;
   }
 
   @Override

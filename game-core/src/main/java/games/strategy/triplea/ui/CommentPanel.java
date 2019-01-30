@@ -54,6 +54,13 @@ class CommentPanel extends JPanel {
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
+  private final Action saveAction = SwingAction.of("Add Comment", e -> {
+    if (nextMessage.getText().trim().length() == 0) {
+      return;
+    }
+    addMessage(nextMessage.getText());
+    nextMessage.setText("");
+  });
 
   CommentPanel(final TripleAFrame frame, final GameData data) {
     this.frame = frame;
@@ -224,12 +231,4 @@ class CommentPanel extends JPanel {
       scrollModel.setValue(scrollModel.getMaximum());
     });
   }
-
-  private final Action saveAction = SwingAction.of("Add Comment", e -> {
-    if (nextMessage.getText().trim().length() == 0) {
-      return;
-    }
-    addMessage(nextMessage.getText());
-    nextMessage.setText("");
-  });
 }

@@ -61,6 +61,8 @@ public class MoveValidator {
       "Transport cannot both load AND unload after being in combat";
   public static final String NOT_ALL_UNITS_CAN_BLITZ = "Not all units can blitz";
 
+  private MoveValidator() {}
+
   /**
    * Validates the specified move.
    */
@@ -1590,6 +1592,4 @@ public class MoveValidator {
   private static boolean isIgnoreSubInMovement(final GameData data) {
     return Properties.getIgnoreSubInMovement(data);
   }
-
-  private MoveValidator() {}
 }

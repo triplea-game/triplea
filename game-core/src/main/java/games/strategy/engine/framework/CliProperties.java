@@ -4,8 +4,6 @@ package games.strategy.engine.framework;
  * A collection of all CLI related constants.
  */
 public class CliProperties {
-  private CliProperties() {}
-
   public static final String TRIPLEA_GAME = "triplea.game";
   static final String TRIPLEA_MAP_DOWNLOAD = "triplea.map.download";
   public static final String TRIPLEA_SERVER = "triplea.server";
@@ -20,4 +18,6 @@ public class CliProperties {
   public static final String LOBBY_GAME_SUPPORT_PASSWORD = "triplea.lobby.game.supportPassword";
 
   public static final String MAP_FOLDER = "triplea.map.folder";
+
+  private CliProperties() {}
 }

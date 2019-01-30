@@ -54,6 +54,67 @@ public class Vault {
   // maps VaultId -> byte[]
   private final ConcurrentMap<VaultId, byte[]> verifiedValues = new ConcurrentHashMap<>();
   private final Object waitForLock = new Object();
+  private final IRemoteVault remoteVault = new IRemoteVault() {
+    @Override
+    public void addLockedValue(final VaultId id, final byte[] data) {
+      if (id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
+        return;
+      }
+      if (unverifiedValues.putIfAbsent(id, data) != null) {
+        throw new IllegalStateException("duplicate values for id:" + id);
+      }
+      synchronized (waitForLock) {
+        waitForLock.notifyAll();
+      }
+    }
+
+    @Override
+    public void unlock(final VaultId id, final byte[] secretKeyBytes) {
+      if (id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
+        return;
+      }
+      final SecretKey key = bytesToKey(secretKeyBytes);
+      final Cipher cipher;
+      try {
+        cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, key);
+      } catch (final NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException e) {
+        throw new IllegalStateException(e);
+      }
+      final byte[] encrypted = unverifiedValues.remove(id);
+      final byte[] decrypted;
+      try {
+        decrypted = cipher.doFinal(encrypted);
+      } catch (final Exception e1) {
+        throw new IllegalStateException("Failed to decrypt vault values", e1);
+      }
+      if (decrypted.length < KNOWN_VAL.length) {
+        throw new IllegalStateException("decrypted is not long enough to have known value, cheating is suspected");
+      }
+      // check that the known value is correct
+      // we use the known value to check that the key given to
+      // us was the key used to encrypt the value in the first place
+      for (int i = 0; i < KNOWN_VAL.length; i++) {
+        if (KNOWN_VAL[i] != decrypted[i]) {
+          throw new IllegalStateException("Known value of cipher not correct, cheating is suspected");
+        }
+      }
+      final byte[] data = new byte[decrypted.length - KNOWN_VAL.length];
+      System.arraycopy(decrypted, KNOWN_VAL.length, data, 0, data.length);
+      if (verifiedValues.putIfAbsent(id, data) != null) {
+        throw new IllegalStateException("duplicate values for id:" + id);
+      }
+      synchronized (waitForLock) {
+        waitForLock.notifyAll();
+      }
+    }
+
+    @Override
+    public void release(final VaultId id) {
+      unverifiedValues.remove(id);
+      verifiedValues.remove(id);
+    }
+  };
 
   public Vault(final IChannelMessenger channelMessenger) {
     this.channelMessenger = channelMessenger;
@@ -212,68 +273,6 @@ public class Vault {
   public void release(final VaultId id) {
     getRemoteBroadcaster().release(id);
   }
-
-  private final IRemoteVault remoteVault = new IRemoteVault() {
-    @Override
-    public void addLockedValue(final VaultId id, final byte[] data) {
-      if (id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
-        return;
-      }
-      if (unverifiedValues.putIfAbsent(id, data) != null) {
-        throw new IllegalStateException("duplicate values for id:" + id);
-      }
-      synchronized (waitForLock) {
-        waitForLock.notifyAll();
-      }
-    }
-
-    @Override
-    public void unlock(final VaultId id, final byte[] secretKeyBytes) {
-      if (id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
-        return;
-      }
-      final SecretKey key = bytesToKey(secretKeyBytes);
-      final Cipher cipher;
-      try {
-        cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, key);
-      } catch (final NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException e) {
-        throw new IllegalStateException(e);
-      }
-      final byte[] encrypted = unverifiedValues.remove(id);
-      final byte[] decrypted;
-      try {
-        decrypted = cipher.doFinal(encrypted);
-      } catch (final Exception e1) {
-        throw new IllegalStateException("Failed to decrypt vault values", e1);
-      }
-      if (decrypted.length < KNOWN_VAL.length) {
-        throw new IllegalStateException("decrypted is not long enough to have known value, cheating is suspected");
-      }
-      // check that the known value is correct
-      // we use the known value to check that the key given to
-      // us was the key used to encrypt the value in the first place
-      for (int i = 0; i < KNOWN_VAL.length; i++) {
-        if (KNOWN_VAL[i] != decrypted[i]) {
-          throw new IllegalStateException("Known value of cipher not correct, cheating is suspected");
-        }
-      }
-      final byte[] data = new byte[decrypted.length - KNOWN_VAL.length];
-      System.arraycopy(decrypted, KNOWN_VAL.length, data, 0, data.length);
-      if (verifiedValues.putIfAbsent(id, data) != null) {
-        throw new IllegalStateException("duplicate values for id:" + id);
-      }
-      synchronized (waitForLock) {
-        waitForLock.notifyAll();
-      }
-    }
-
-    @Override
-    public void release(final VaultId id) {
-      unverifiedValues.remove(id);
-      verifiedValues.remove(id);
-    }
-  };
 
   /**
    * Waits until we know about a given vault id.

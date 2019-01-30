@@ -89,6 +89,497 @@ public class MovePanel extends AbstractMovePanel {
   private String displayText = "Combat Move";
   private MoveType moveType = MoveType.DEFAULT;
 
+  private final UnitSelectionListener unitSelectionListener = new UnitSelectionListener() {
+    @Override
+    public void unitsSelected(final List<Unit> units, final Territory t, final MouseDetails me) {
+      if (!getListening()) {
+        return;
+      }
+      // check if we can handle this event, are we active?
+      if (!getActive()) {
+        return;
+      }
+      if (t == null) {
+        return;
+      }
+      final boolean rightMouse = me.isRightButton();
+      final boolean isMiddleMouseButton = me.getButton() == MouseEvent.BUTTON2;
+      final boolean noSelectedTerritory = (firstSelectedTerritory == null);
+      final boolean isFirstSelectedTerritory = Objects.equals(firstSelectedTerritory, t);
+      // select units
+      final GameData data = getData();
+      data.acquireReadLock();
+      try {
+        // de select units
+        if (rightMouse && !noSelectedTerritory && !map.wasLastActionDraggingAndReset()) {
+          deselectUnits(units, t, me);
+        } else if (!isMiddleMouseButton && !rightMouse && (noSelectedTerritory || isFirstSelectedTerritory)) {
+          selectUnitsToMove(units, t, me);
+        } else if (!rightMouse && me.isControlDown() && !isFirstSelectedTerritory) {
+          selectWayPoint(t);
+        } else if (!rightMouse && !noSelectedTerritory && !isFirstSelectedTerritory && !isMiddleMouseButton) {
+          selectEndPoint(t);
+        }
+      } finally {
+        data.releaseReadLock();
+      }
+      getMap().requestFocusInWindow();
+    }
+
+    private void selectUnitsToMove(final List<Unit> units, final Territory t, final MouseDetails me) {
+      // are any of the units ours, note - if no units selected thats still ok
+      if (!BaseEditDelegate.getEditMode(getData()) || !selectedUnits.isEmpty()) {
+        for (final Unit unit : units) {
+          if (!unit.getOwner().equals(getUnitOwner(selectedUnits))) {
+            return;
+          }
+        }
+      }
+      // basic match criteria only
+      final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, null);
+      final Predicate<Collection<Unit>> ownerMatch = unitsToCheck -> {
+        final PlayerId owner = unitsToCheck.iterator().next().getOwner();
+        for (final Unit unit : unitsToCheck) {
+          if (!owner.equals(unit.getOwner())) {
+            return false;
+          }
+        }
+        return true;
+      };
+      if (units.isEmpty() && selectedUnits.isEmpty()) {
+        if (!me.isShiftDown()) {
+          final List<Unit> unitsToMove = t.getUnits().getMatches(unitsToMoveMatch);
+          if (unitsToMove.isEmpty()) {
+            return;
+          }
+          final String text = "Select units to move from " + t.getName();
+          final UnitChooser chooser;
+          if (BaseEditDelegate.getEditMode(getData()) && !CollectionUtils
+              .getMatches(unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove))).containsAll(unitsToMove)) {
+            // use matcher to prevent units of different owners being chosen
+            chooser = new UnitChooser(unitsToMove, selectedUnits, /* mustMoveWith */null,
+                /* categorizeMovement */false, /* categorizeTransportCost */false, /* allowTwoHit */false,
+                getMap().getUiContext(), ownerMatch);
+          } else {
+            chooser =
+                new UnitChooser(unitsToMove, selectedUnits, /* mustMoveWith */null, /* categorizeMovement */false,
+                    /* categorizeTransportCost */false, /* allowTwoHit */false, getMap().getUiContext());
+          }
+          final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text,
+              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+          if (option != JOptionPane.OK_OPTION) {
+            return;
+          }
+          if (chooser.getSelected(false).isEmpty()) {
+            return;
+          }
+          selectedUnits.addAll(chooser.getSelected(false));
+        }
+      }
+      if (getFirstSelectedTerritory() == null) {
+        setFirstSelectedTerritory(t);
+        mouseSelectedPoint = me.getMapPoint();
+        mouseCurrentPoint = me.getMapPoint();
+        enableCancelButton();
+      }
+      if (!getFirstSelectedTerritory().equals(t)) {
+        throw new IllegalStateException("Wrong selected territory");
+      }
+      // add all
+      if (me.isShiftDown()) {
+        // prevent units of multiple owners from being chosen in edit mode
+        final PredicateBuilder<Unit> ownedNotFactoryBuilder = PredicateBuilder.trueBuilder();
+        if (!BaseEditDelegate.getEditMode(getData())) {
+          ownedNotFactoryBuilder.and(unitsToMoveMatch);
+        } else if (!selectedUnits.isEmpty()) {
+          ownedNotFactoryBuilder
+              .and(unitsToMoveMatch)
+              .and(Matches.unitIsOwnedBy(getUnitOwner(selectedUnits)));
+        } else {
+          ownedNotFactoryBuilder
+              .and(unitsToMoveMatch)
+              .and(Matches.unitIsOwnedBy(getUnitOwner(t.getUnits().getUnits())));
+        }
+        selectedUnits.addAll(t.getUnits().getMatches(ownedNotFactoryBuilder.build()));
+      } else if (me.isControlDown()) {
+        selectedUnits.addAll(CollectionUtils.getMatches(units, unitsToMoveMatch));
+      } else { // add one
+        // best candidate unit for route is chosen dynamically later
+        // check for alt key - add 1/10 of total units (useful for splitting large armies)
+        final List<Unit> unitsToMove = CollectionUtils.getMatches(units, unitsToMoveMatch);
+        unitsToMove.sort(UnitComparator.getHighestToLowestMovementComparator());
+
+        final int iterCount = me.isAltDown() ? deselectNumber : 1;
+
+        int addCount = 0;
+        for (final Unit unit : unitsToMove) {
+          if (!selectedUnits.contains(unit)) {
+            selectedUnits.add(unit);
+            addCount++;
+            if (addCount >= iterCount) {
+              break;
+            }
+          }
+        }
+      }
+      if (!selectedUnits.isEmpty()) {
+        mouseLastUpdatePoint = me.getMapPoint();
+        final Route route = getRoute(getFirstSelectedTerritory(), t, selectedUnits);
+        // Load Bombers with paratroops
+        if ((!nonCombat || isParatroopersCanMoveDuringNonCombat(getData()))
+            && TechAttachment.isAirTransportable(getCurrentPlayer())
+            && selectedUnits.stream().anyMatch(Matches.unitIsAirTransport().and(Matches.unitHasNotMoved()))) {
+          final PlayerId player = getCurrentPlayer();
+          // TODO Transporting allied units
+          // Get the potential units to load
+          final Predicate<Unit> unitsToLoadMatch = Matches.unitIsAirTransportable()
+              .and(Matches.unitIsOwnedBy(player))
+              .and(Matches.unitHasNotMoved());
+          final Collection<Unit> unitsToLoad =
+              CollectionUtils.getMatches(route.getStart().getUnits().getUnits(), unitsToLoadMatch);
+          unitsToLoad.removeAll(selectedUnits);
+          for (final Collection<Unit> units2 : dependentUnits.values()) {
+            unitsToLoad.removeAll(units2);
+          }
+          // Get the potential air transports to load
+          final Predicate<Unit> candidateAirTransportsMatch = Matches.unitIsAirTransport()
+              .and(Matches.unitIsOwnedBy(player))
+              .and(Matches.unitHasNotMoved())
+              .and(Matches.transportIsNotTransporting());
+          final Collection<Unit> candidateAirTransports =
+              CollectionUtils.getMatches(t.getUnits().getMatches(unitsToMoveMatch), candidateAirTransportsMatch);
+          // candidateAirTransports.removeAll(selectedUnits);
+          candidateAirTransports.removeAll(dependentUnits.keySet());
+          if (unitsToLoad.size() > 0 && candidateAirTransports.size() > 0) {
+            final Collection<Unit> airTransportsToLoad = getAirTransportsToLoad(candidateAirTransports);
+            selectedUnits.addAll(airTransportsToLoad);
+            if (!airTransportsToLoad.isEmpty()) {
+              final Collection<Unit> loadedAirTransports =
+                  getLoadedAirTransports(route, unitsToLoad, airTransportsToLoad, player);
+              selectedUnits.addAll(loadedAirTransports);
+              final MoveDescription message =
+                  new MoveDescription(loadedAirTransports, route, airTransportsToLoad, dependentUnits);
+              setMoveMessage(message);
+            }
+          }
+        }
+        updateUnitsThatCanMoveOnRoute(selectedUnits, route);
+        updateRouteAndMouseShadowUnits(route);
+      } else {
+        setFirstSelectedTerritory(null);
+      }
+    }
+
+    public Collection<Unit> getAirTransportsToLoad(final Collection<Unit> candidateAirTransports) {
+      final Set<Unit> defaultSelections = new HashSet<>();
+      // prevent too many bombers from being selected
+      final Predicate<Collection<Unit>> transportsToLoadMatch = units -> {
+        final Collection<Unit> airTransports = CollectionUtils.getMatches(units, Matches.unitIsAirTransport());
+        return (airTransports.size() <= candidateAirTransports.size());
+      };
+      // Allow player to select which to load.
+      final UnitChooser chooser = new UnitChooser(candidateAirTransports, defaultSelections, dependentUnits,
+          /* categorizeMovement */true, /* categorizeTransportCost */false, /* allowTwoHit */false,
+          getMap().getUiContext(), transportsToLoadMatch);
+      chooser.setTitle("Select air transports to load");
+      final int option =
+          JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to load",
+              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+      if (option != JOptionPane.OK_OPTION) {
+        return Collections.emptyList();
+      }
+      return chooser.getSelected(true);
+    }
+
+    /**
+     * Allow the user to select what units to load.
+     * If null is returned, the move should be canceled.
+     */
+    public Collection<Unit> getLoadedAirTransports(final Route route, final Collection<Unit> capableUnitsToLoad,
+        final Collection<Unit> capableTransportsToLoad, final PlayerId player) {
+      // Get the minimum transport cost of a candidate unit
+      int minTransportCost = Integer.MAX_VALUE;
+      for (final Unit unit : capableUnitsToLoad) {
+        minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
+      }
+      final Collection<Unit> airTransportsToLoad = new ArrayList<>();
+      for (final Unit bomber : capableTransportsToLoad) {
+        final int capacity = TransportTracker.getAvailableCapacity(bomber);
+        if (capacity >= minTransportCost) {
+          airTransportsToLoad.add(bomber);
+        }
+      }
+      // If no airTransports can be loaded, return the empty set
+      if (airTransportsToLoad.isEmpty()) {
+        return airTransportsToLoad;
+      }
+      final Set<Unit> defaultSelections = new HashSet<>();
+      // Check to see if there's room for the selected units
+      final Predicate<Collection<Unit>> unitsToLoadMatch = units -> {
+        final Collection<Unit> unitsToLoad = CollectionUtils.getMatches(units, Matches.unitIsAirTransportable());
+        final Map<Unit, Unit> unitMap = TransportUtils.mapTransportsToLoad(unitsToLoad, airTransportsToLoad);
+        boolean ableToLoad = true;
+        for (final Unit unit : unitsToLoad) {
+          if (!unitMap.keySet().contains(unit)) {
+            ableToLoad = false;
+          }
+        }
+        return ableToLoad;
+      };
+      List<Unit> loadedUnits = new ArrayList<>(capableUnitsToLoad);
+      if (!airTransportsToLoad.isEmpty()) {
+        // Get a list of the units that could be loaded on the transport (based upon transport capacity)
+        final List<Unit> unitsToLoad =
+            TransportUtils.findUnitsToLoadOnAirTransports(capableUnitsToLoad, airTransportsToLoad);
+        final String title = "Load air transports";
+        final String action = "load";
+        loadedUnits = userChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad, title, action);
+        final Map<Unit, Unit> mapping = TransportUtils.mapTransportsToLoad(loadedUnits, airTransportsToLoad);
+        for (final Unit unit : mapping.keySet()) {
+          final Collection<Unit> unitsColl = new ArrayList<>();
+          unitsColl.add(unit);
+          final Unit airTransport = mapping.get(unit);
+          if (dependentUnits.containsKey(airTransport)) {
+            unitsColl.addAll(dependentUnits.get(airTransport));
+          }
+          dependentUnits.put(airTransport, unitsColl);
+          mustMoveWithDetails = MoveValidator.getMustMoveWith(route.getStart(),
+              route.getStart().getUnits().getUnits(), dependentUnits, getData(), player);
+        }
+      }
+      return loadedUnits;
+    }
+
+    private void deselectUnits(final List<Unit> initialUnits, final Territory t, final MouseDetails me) {
+      final Collection<Unit> unitsToRemove = new ArrayList<>(selectedUnits.size());
+      // we have right clicked on a unit stack in a different territory
+      final List<Unit> units = getFirstSelectedTerritory().equals(t) ? initialUnits : Collections.emptyList();
+      // remove the dependent units so we don't have to micromanage them
+      final List<Unit> unitsWithoutDependents = new ArrayList<>(selectedUnits);
+      for (final Unit unit : selectedUnits) {
+        final Collection<Unit> forced = mustMoveWithDetails.getMustMoveWith().get(unit);
+        if (forced != null) {
+          unitsWithoutDependents.removeAll(forced);
+        }
+      }
+      // no unit selected, remove the most recent, but skip dependents
+      if (units.isEmpty()) {
+        if (me.isControlDown()) {
+          selectedUnits.clear();
+          // Clear the stored dependents for AirTransports
+          if (!dependentUnits.isEmpty()) {
+            dependentUnits.clear();
+          }
+        } else if (!unitsWithoutDependents.isEmpty()) {
+          // check for alt key - remove 1/10 of total units (useful for splitting large armies)
+          final int iterCount = me.isAltDown() ? deselectNumber : 1;
+          // remove the last iterCount elements
+          for (int i = 0; i < iterCount; i++) {
+            unitsToRemove.add(unitsWithoutDependents.get(unitsWithoutDependents.size() - 1));
+            // Clear the stored dependents for AirTransports
+            if (!dependentUnits.isEmpty()) {
+              for (final Unit airTransport : unitsWithoutDependents) {
+                if (dependentUnits.containsKey(airTransport)) {
+                  unitsToRemove.addAll(dependentUnits.get(airTransport));
+                  dependentUnits.remove(airTransport);
+                }
+              }
+            }
+          }
+        }
+      } else { // we have actually clicked on a specific unit
+        // remove all if control is down
+        if (me.isControlDown()) {
+          unitsToRemove.addAll(units);
+          // Clear the stored dependents for AirTransports
+          if (!dependentUnits.isEmpty()) {
+            for (final Unit airTransport : unitsWithoutDependents) {
+              if (dependentUnits.containsKey(airTransport)) {
+                unitsToRemove.addAll(dependentUnits.get(airTransport));
+                dependentUnits.remove(airTransport);
+              }
+            }
+          }
+        } else { // remove one
+          if (!getFirstSelectedTerritory().equals(t)) {
+            throw new IllegalStateException("Wrong selected territory");
+          }
+          // doesn't matter which unit we remove since units are assigned to routes later
+          // check for alt key - remove 1/10 of total units (useful for splitting large armies)
+          // changed to just remove 10 units
+          // (int) Math.max(1, Math.floor(units.size() / deselectNumber))
+          final int iterCount = me.isAltDown() ? deselectNumber : 1;
+          int remCount = 0;
+          for (final Unit unit : units) {
+            if (selectedUnits.contains(unit) && !unitsToRemove.contains(unit)) {
+              unitsToRemove.add(unit);
+              // Clear the stored dependents for AirTransports
+              if (!dependentUnits.isEmpty()) {
+                for (final Unit airTransport : unitsWithoutDependents) {
+                  if (dependentUnits.containsKey(airTransport)) {
+                    dependentUnits.get(airTransport).remove(unit);
+                  }
+                }
+              }
+              remCount++;
+              if (remCount >= iterCount) {
+                break;
+              }
+            }
+          }
+        }
+      }
+      // perform the remove
+      selectedUnits.removeAll(unitsToRemove);
+      if (selectedUnits.isEmpty()) {
+        // nothing left, cancel move
+        cancelMove();
+      } else {
+        mouseLastUpdatePoint = me.getMapPoint();
+        updateUnitsThatCanMoveOnRoute(selectedUnits, getRoute(getFirstSelectedTerritory(), t, selectedUnits));
+        updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), t, selectedUnits));
+      }
+    }
+
+    private void selectWayPoint(final Territory territory) {
+      if (forced == null) {
+        forced = new ArrayList<>();
+      }
+      if (!forced.contains(territory)) {
+        forced.add(territory);
+      }
+      updateRouteAndMouseShadowUnits(
+          getRoute(getFirstSelectedTerritory(), getFirstSelectedTerritory(), selectedUnits));
+    }
+
+    private Predicate<Unit> getUnloadableMatch() {
+      // are we unloading everything? if we are then we dont need to select the transports
+      return PredicateBuilder.of(
+          Matches.unitIsOwnedBy(getCurrentPlayer()))
+          .and(Matches.unitIsLand())
+          .andIf(nonCombat, Matches.unitCanNotMoveDuringCombatMove().negate())
+          .build();
+    }
+
+    private void selectEndPoint(final Territory territory) {
+      final Route route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
+      final List<Unit> units = unitsThatCanMoveOnRoute;
+      setSelectedEndpointTerritory(territory);
+      if (units.isEmpty() || route == null) {
+        cancelMove();
+        return;
+      }
+      Collection<Unit> transports = null;
+      final Predicate<Unit> paratroopNBombers = Matches.unitIsAirTransport()
+          .and(Matches.unitIsAirTransportable());
+      final boolean paratroopsLanding = units.stream().anyMatch(paratroopNBombers);
+      if (route.isLoad() && units.stream().anyMatch(Matches.unitIsLand())) {
+        transports = getTransportsToLoad(route, units, false);
+        if (transports.isEmpty()) {
+          cancelMove();
+          return;
+        }
+      } else if ((route.isUnload() && units.stream().anyMatch(Matches.unitIsLand())) || paratroopsLanding) {
+        final List<Unit> unloadAble = CollectionUtils.getMatches(selectedUnits, getUnloadableMatch());
+        final Collection<Unit> canMove = new ArrayList<>(getUnitsToUnload(route, unloadAble));
+        canMove.addAll(CollectionUtils.getMatches(selectedUnits, getUnloadableMatch().negate()));
+        if (paratroopsLanding) {
+          transports = canMove;
+        }
+        if (canMove.isEmpty()) {
+          cancelMove();
+          return;
+        }
+        selectedUnits.clear();
+        selectedUnits.addAll(canMove);
+      } else {
+        // keep a map of the max number of each eligible unitType that can be chosen
+        final IntegerMap<UnitType> maxMap = new IntegerMap<>();
+        for (final Unit unit : units) {
+          maxMap.add(unit.getType(), 1);
+        }
+        // this match will make sure we can't select more units of a specific type then we had originally selected
+        final Predicate<Collection<Unit>> unitTypeCountMatch = unitsToCheck -> {
+          final IntegerMap<UnitType> currentMap = new IntegerMap<>();
+          for (final Unit unit : unitsToCheck) {
+            currentMap.add(unit.getType(), 1);
+          }
+          return maxMap.greaterThanOrEqualTo(currentMap);
+        };
+        allowSpecificUnitSelection(units, route, false, unitTypeCountMatch);
+        if (units.isEmpty()) {
+          cancelMove();
+          return;
+        }
+      }
+      final MoveDescription message = new MoveDescription(units, route, transports, dependentUnits);
+      setMoveMessage(message);
+      setFirstSelectedTerritory(null);
+      setSelectedEndpointTerritory(null);
+      mouseCurrentTerritory = null;
+      forced = null;
+      updateRouteAndMouseShadowUnits(null);
+      release();
+    }
+  };
+
+  private final MouseOverUnitListener mouseOverUnitListener = new MouseOverUnitListener() {
+    @Override
+    public void mouseEnter(final List<Unit> units, final Territory territory) {
+      if (!getListening()) {
+        return;
+      }
+      final PlayerId owner = getUnitOwner(selectedUnits);
+      final Predicate<Unit> match = Matches.unitIsOwnedBy(owner).and(Matches.unitCanMove());
+      final boolean someOwned = units.stream().anyMatch(match);
+      final boolean isCorrectTerritory = (firstSelectedTerritory == null) || firstSelectedTerritory.equals(territory);
+      if (someOwned && isCorrectTerritory) {
+        final Map<Territory, List<Unit>> highlight = new HashMap<>();
+        highlight.put(territory, units);
+        getMap().setUnitHighlight(highlight);
+      } else {
+        getMap().setUnitHighlight(null);
+      }
+    }
+  };
+
+  private final MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
+    @Override
+    public void mouseMoved(final @Nullable Territory territory, final MouseDetails me) {
+      if (!getListening()) {
+        return;
+      }
+      if (getFirstSelectedTerritory() != null && territory != null) {
+        Route route;
+        if (mouseCurrentTerritory == null || !mouseCurrentTerritory.equals(territory)
+            || mouseCurrentPoint.equals(mouseLastUpdatePoint)) {
+          route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
+          getData().acquireReadLock();
+          try {
+            updateUnitsThatCanMoveOnRoute(selectedUnits, route);
+            // now, check if there is a better route for just the units that can get there (we check only air since that
+            // is the only one for which the route may actually change much)
+            if (unitsThatCanMoveOnRoute.size() < selectedUnits.size() && (unitsThatCanMoveOnRoute.size() == 0
+                || unitsThatCanMoveOnRoute.stream().allMatch(Matches.unitIsAir()))) {
+              final Collection<Unit> airUnits = CollectionUtils.getMatches(selectedUnits, Matches.unitIsAir());
+              if (airUnits.size() > 0) {
+                route = getRoute(getFirstSelectedTerritory(), territory, airUnits);
+                updateUnitsThatCanMoveOnRoute(airUnits, route);
+              }
+            }
+          } finally {
+            getData().releaseReadLock();
+          }
+        } else {
+          route = routeCached;
+        }
+        mouseCurrentPoint = me.getMapPoint();
+        updateRouteAndMouseShadowUnits(route);
+      }
+      mouseCurrentTerritory = territory;
+    }
+  };
+
   public MovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map, frame);
     undoableMovesPanel = new UndoableMovesPanel(this);
@@ -695,440 +1186,6 @@ public class MovePanel extends AbstractMovePanel {
     return chooser.getSelected(false);
   }
 
-  private final UnitSelectionListener unitSelectionListener = new UnitSelectionListener() {
-    @Override
-    public void unitsSelected(final List<Unit> units, final Territory t, final MouseDetails me) {
-      if (!getListening()) {
-        return;
-      }
-      // check if we can handle this event, are we active?
-      if (!getActive()) {
-        return;
-      }
-      if (t == null) {
-        return;
-      }
-      final boolean rightMouse = me.isRightButton();
-      final boolean isMiddleMouseButton = me.getButton() == MouseEvent.BUTTON2;
-      final boolean noSelectedTerritory = (firstSelectedTerritory == null);
-      final boolean isFirstSelectedTerritory = Objects.equals(firstSelectedTerritory, t);
-      // select units
-      final GameData data = getData();
-      data.acquireReadLock();
-      try {
-        // de select units
-        if (rightMouse && !noSelectedTerritory && !map.wasLastActionDraggingAndReset()) {
-          deselectUnits(units, t, me);
-        } else if (!isMiddleMouseButton && !rightMouse && (noSelectedTerritory || isFirstSelectedTerritory)) {
-          selectUnitsToMove(units, t, me);
-        } else if (!rightMouse && me.isControlDown() && !isFirstSelectedTerritory) {
-          selectWayPoint(t);
-        } else if (!rightMouse && !noSelectedTerritory && !isFirstSelectedTerritory && !isMiddleMouseButton) {
-          selectEndPoint(t);
-        }
-      } finally {
-        data.releaseReadLock();
-      }
-      getMap().requestFocusInWindow();
-    }
-
-    private void selectUnitsToMove(final List<Unit> units, final Territory t, final MouseDetails me) {
-      // are any of the units ours, note - if no units selected thats still ok
-      if (!BaseEditDelegate.getEditMode(getData()) || !selectedUnits.isEmpty()) {
-        for (final Unit unit : units) {
-          if (!unit.getOwner().equals(getUnitOwner(selectedUnits))) {
-            return;
-          }
-        }
-      }
-      // basic match criteria only
-      final Predicate<Unit> unitsToMoveMatch = getMovableMatch(null, null);
-      final Predicate<Collection<Unit>> ownerMatch = unitsToCheck -> {
-        final PlayerId owner = unitsToCheck.iterator().next().getOwner();
-        for (final Unit unit : unitsToCheck) {
-          if (!owner.equals(unit.getOwner())) {
-            return false;
-          }
-        }
-        return true;
-      };
-      if (units.isEmpty() && selectedUnits.isEmpty()) {
-        if (!me.isShiftDown()) {
-          final List<Unit> unitsToMove = t.getUnits().getMatches(unitsToMoveMatch);
-          if (unitsToMove.isEmpty()) {
-            return;
-          }
-          final String text = "Select units to move from " + t.getName();
-          final UnitChooser chooser;
-          if (BaseEditDelegate.getEditMode(getData()) && !CollectionUtils
-              .getMatches(unitsToMove, Matches.unitIsOwnedBy(getUnitOwner(unitsToMove))).containsAll(unitsToMove)) {
-            // use matcher to prevent units of different owners being chosen
-            chooser = new UnitChooser(unitsToMove, selectedUnits, /* mustMoveWith */null,
-                /* categorizeMovement */false, /* categorizeTransportCost */false, /* allowTwoHit */false,
-                getMap().getUiContext(), ownerMatch);
-          } else {
-            chooser =
-                new UnitChooser(unitsToMove, selectedUnits, /* mustMoveWith */null, /* categorizeMovement */false,
-                    /* categorizeTransportCost */false, /* allowTwoHit */false, getMap().getUiContext());
-          }
-          final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text,
-              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-          if (option != JOptionPane.OK_OPTION) {
-            return;
-          }
-          if (chooser.getSelected(false).isEmpty()) {
-            return;
-          }
-          selectedUnits.addAll(chooser.getSelected(false));
-        }
-      }
-      if (getFirstSelectedTerritory() == null) {
-        setFirstSelectedTerritory(t);
-        mouseSelectedPoint = me.getMapPoint();
-        mouseCurrentPoint = me.getMapPoint();
-        enableCancelButton();
-      }
-      if (!getFirstSelectedTerritory().equals(t)) {
-        throw new IllegalStateException("Wrong selected territory");
-      }
-      // add all
-      if (me.isShiftDown()) {
-        // prevent units of multiple owners from being chosen in edit mode
-        final PredicateBuilder<Unit> ownedNotFactoryBuilder = PredicateBuilder.trueBuilder();
-        if (!BaseEditDelegate.getEditMode(getData())) {
-          ownedNotFactoryBuilder.and(unitsToMoveMatch);
-        } else if (!selectedUnits.isEmpty()) {
-          ownedNotFactoryBuilder
-              .and(unitsToMoveMatch)
-              .and(Matches.unitIsOwnedBy(getUnitOwner(selectedUnits)));
-        } else {
-          ownedNotFactoryBuilder
-              .and(unitsToMoveMatch)
-              .and(Matches.unitIsOwnedBy(getUnitOwner(t.getUnits().getUnits())));
-        }
-        selectedUnits.addAll(t.getUnits().getMatches(ownedNotFactoryBuilder.build()));
-      } else if (me.isControlDown()) {
-        selectedUnits.addAll(CollectionUtils.getMatches(units, unitsToMoveMatch));
-      } else { // add one
-        // best candidate unit for route is chosen dynamically later
-        // check for alt key - add 1/10 of total units (useful for splitting large armies)
-        final List<Unit> unitsToMove = CollectionUtils.getMatches(units, unitsToMoveMatch);
-        unitsToMove.sort(UnitComparator.getHighestToLowestMovementComparator());
-
-        final int iterCount = me.isAltDown() ? deselectNumber : 1;
-
-        int addCount = 0;
-        for (final Unit unit : unitsToMove) {
-          if (!selectedUnits.contains(unit)) {
-            selectedUnits.add(unit);
-            addCount++;
-            if (addCount >= iterCount) {
-              break;
-            }
-          }
-        }
-      }
-      if (!selectedUnits.isEmpty()) {
-        mouseLastUpdatePoint = me.getMapPoint();
-        final Route route = getRoute(getFirstSelectedTerritory(), t, selectedUnits);
-        // Load Bombers with paratroops
-        if ((!nonCombat || isParatroopersCanMoveDuringNonCombat(getData()))
-            && TechAttachment.isAirTransportable(getCurrentPlayer())
-            && selectedUnits.stream().anyMatch(Matches.unitIsAirTransport().and(Matches.unitHasNotMoved()))) {
-          final PlayerId player = getCurrentPlayer();
-          // TODO Transporting allied units
-          // Get the potential units to load
-          final Predicate<Unit> unitsToLoadMatch = Matches.unitIsAirTransportable()
-              .and(Matches.unitIsOwnedBy(player))
-              .and(Matches.unitHasNotMoved());
-          final Collection<Unit> unitsToLoad =
-              CollectionUtils.getMatches(route.getStart().getUnits().getUnits(), unitsToLoadMatch);
-          unitsToLoad.removeAll(selectedUnits);
-          for (final Collection<Unit> units2 : dependentUnits.values()) {
-            unitsToLoad.removeAll(units2);
-          }
-          // Get the potential air transports to load
-          final Predicate<Unit> candidateAirTransportsMatch = Matches.unitIsAirTransport()
-              .and(Matches.unitIsOwnedBy(player))
-              .and(Matches.unitHasNotMoved())
-              .and(Matches.transportIsNotTransporting());
-          final Collection<Unit> candidateAirTransports =
-              CollectionUtils.getMatches(t.getUnits().getMatches(unitsToMoveMatch), candidateAirTransportsMatch);
-          // candidateAirTransports.removeAll(selectedUnits);
-          candidateAirTransports.removeAll(dependentUnits.keySet());
-          if (unitsToLoad.size() > 0 && candidateAirTransports.size() > 0) {
-            final Collection<Unit> airTransportsToLoad = getAirTransportsToLoad(candidateAirTransports);
-            selectedUnits.addAll(airTransportsToLoad);
-            if (!airTransportsToLoad.isEmpty()) {
-              final Collection<Unit> loadedAirTransports =
-                  getLoadedAirTransports(route, unitsToLoad, airTransportsToLoad, player);
-              selectedUnits.addAll(loadedAirTransports);
-              final MoveDescription message =
-                  new MoveDescription(loadedAirTransports, route, airTransportsToLoad, dependentUnits);
-              setMoveMessage(message);
-            }
-          }
-        }
-        updateUnitsThatCanMoveOnRoute(selectedUnits, route);
-        updateRouteAndMouseShadowUnits(route);
-      } else {
-        setFirstSelectedTerritory(null);
-      }
-    }
-
-    public Collection<Unit> getAirTransportsToLoad(final Collection<Unit> candidateAirTransports) {
-      final Set<Unit> defaultSelections = new HashSet<>();
-      // prevent too many bombers from being selected
-      final Predicate<Collection<Unit>> transportsToLoadMatch = units -> {
-        final Collection<Unit> airTransports = CollectionUtils.getMatches(units, Matches.unitIsAirTransport());
-        return (airTransports.size() <= candidateAirTransports.size());
-      };
-      // Allow player to select which to load.
-      final UnitChooser chooser = new UnitChooser(candidateAirTransports, defaultSelections, dependentUnits,
-          /* categorizeMovement */true, /* categorizeTransportCost */false, /* allowTwoHit */false,
-          getMap().getUiContext(), transportsToLoadMatch);
-      chooser.setTitle("Select air transports to load");
-      final int option =
-          JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to load",
-              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-      if (option != JOptionPane.OK_OPTION) {
-        return Collections.emptyList();
-      }
-      return chooser.getSelected(true);
-    }
-
-    /**
-     * Allow the user to select what units to load.
-     * If null is returned, the move should be canceled.
-     */
-    public Collection<Unit> getLoadedAirTransports(final Route route, final Collection<Unit> capableUnitsToLoad,
-        final Collection<Unit> capableTransportsToLoad, final PlayerId player) {
-      // Get the minimum transport cost of a candidate unit
-      int minTransportCost = Integer.MAX_VALUE;
-      for (final Unit unit : capableUnitsToLoad) {
-        minTransportCost = Math.min(minTransportCost, UnitAttachment.get(unit.getType()).getTransportCost());
-      }
-      final Collection<Unit> airTransportsToLoad = new ArrayList<>();
-      for (final Unit bomber : capableTransportsToLoad) {
-        final int capacity = TransportTracker.getAvailableCapacity(bomber);
-        if (capacity >= minTransportCost) {
-          airTransportsToLoad.add(bomber);
-        }
-      }
-      // If no airTransports can be loaded, return the empty set
-      if (airTransportsToLoad.isEmpty()) {
-        return airTransportsToLoad;
-      }
-      final Set<Unit> defaultSelections = new HashSet<>();
-      // Check to see if there's room for the selected units
-      final Predicate<Collection<Unit>> unitsToLoadMatch = units -> {
-        final Collection<Unit> unitsToLoad = CollectionUtils.getMatches(units, Matches.unitIsAirTransportable());
-        final Map<Unit, Unit> unitMap = TransportUtils.mapTransportsToLoad(unitsToLoad, airTransportsToLoad);
-        boolean ableToLoad = true;
-        for (final Unit unit : unitsToLoad) {
-          if (!unitMap.keySet().contains(unit)) {
-            ableToLoad = false;
-          }
-        }
-        return ableToLoad;
-      };
-      List<Unit> loadedUnits = new ArrayList<>(capableUnitsToLoad);
-      if (!airTransportsToLoad.isEmpty()) {
-        // Get a list of the units that could be loaded on the transport (based upon transport capacity)
-        final List<Unit> unitsToLoad =
-            TransportUtils.findUnitsToLoadOnAirTransports(capableUnitsToLoad, airTransportsToLoad);
-        final String title = "Load air transports";
-        final String action = "load";
-        loadedUnits = userChooseUnits(defaultSelections, unitsToLoadMatch, unitsToLoad, title, action);
-        final Map<Unit, Unit> mapping = TransportUtils.mapTransportsToLoad(loadedUnits, airTransportsToLoad);
-        for (final Unit unit : mapping.keySet()) {
-          final Collection<Unit> unitsColl = new ArrayList<>();
-          unitsColl.add(unit);
-          final Unit airTransport = mapping.get(unit);
-          if (dependentUnits.containsKey(airTransport)) {
-            unitsColl.addAll(dependentUnits.get(airTransport));
-          }
-          dependentUnits.put(airTransport, unitsColl);
-          mustMoveWithDetails = MoveValidator.getMustMoveWith(route.getStart(),
-              route.getStart().getUnits().getUnits(), dependentUnits, getData(), player);
-        }
-      }
-      return loadedUnits;
-    }
-
-    private void deselectUnits(final List<Unit> initialUnits, final Territory t, final MouseDetails me) {
-      final Collection<Unit> unitsToRemove = new ArrayList<>(selectedUnits.size());
-      // we have right clicked on a unit stack in a different territory
-      final List<Unit> units = getFirstSelectedTerritory().equals(t) ? initialUnits : Collections.emptyList();
-      // remove the dependent units so we don't have to micromanage them
-      final List<Unit> unitsWithoutDependents = new ArrayList<>(selectedUnits);
-      for (final Unit unit : selectedUnits) {
-        final Collection<Unit> forced = mustMoveWithDetails.getMustMoveWith().get(unit);
-        if (forced != null) {
-          unitsWithoutDependents.removeAll(forced);
-        }
-      }
-      // no unit selected, remove the most recent, but skip dependents
-      if (units.isEmpty()) {
-        if (me.isControlDown()) {
-          selectedUnits.clear();
-          // Clear the stored dependents for AirTransports
-          if (!dependentUnits.isEmpty()) {
-            dependentUnits.clear();
-          }
-        } else if (!unitsWithoutDependents.isEmpty()) {
-          // check for alt key - remove 1/10 of total units (useful for splitting large armies)
-          final int iterCount = me.isAltDown() ? deselectNumber : 1;
-          // remove the last iterCount elements
-          for (int i = 0; i < iterCount; i++) {
-            unitsToRemove.add(unitsWithoutDependents.get(unitsWithoutDependents.size() - 1));
-            // Clear the stored dependents for AirTransports
-            if (!dependentUnits.isEmpty()) {
-              for (final Unit airTransport : unitsWithoutDependents) {
-                if (dependentUnits.containsKey(airTransport)) {
-                  unitsToRemove.addAll(dependentUnits.get(airTransport));
-                  dependentUnits.remove(airTransport);
-                }
-              }
-            }
-          }
-        }
-      } else { // we have actually clicked on a specific unit
-        // remove all if control is down
-        if (me.isControlDown()) {
-          unitsToRemove.addAll(units);
-          // Clear the stored dependents for AirTransports
-          if (!dependentUnits.isEmpty()) {
-            for (final Unit airTransport : unitsWithoutDependents) {
-              if (dependentUnits.containsKey(airTransport)) {
-                unitsToRemove.addAll(dependentUnits.get(airTransport));
-                dependentUnits.remove(airTransport);
-              }
-            }
-          }
-        } else { // remove one
-          if (!getFirstSelectedTerritory().equals(t)) {
-            throw new IllegalStateException("Wrong selected territory");
-          }
-          // doesn't matter which unit we remove since units are assigned to routes later
-          // check for alt key - remove 1/10 of total units (useful for splitting large armies)
-          // changed to just remove 10 units
-          // (int) Math.max(1, Math.floor(units.size() / deselectNumber))
-          final int iterCount = me.isAltDown() ? deselectNumber : 1;
-          int remCount = 0;
-          for (final Unit unit : units) {
-            if (selectedUnits.contains(unit) && !unitsToRemove.contains(unit)) {
-              unitsToRemove.add(unit);
-              // Clear the stored dependents for AirTransports
-              if (!dependentUnits.isEmpty()) {
-                for (final Unit airTransport : unitsWithoutDependents) {
-                  if (dependentUnits.containsKey(airTransport)) {
-                    dependentUnits.get(airTransport).remove(unit);
-                  }
-                }
-              }
-              remCount++;
-              if (remCount >= iterCount) {
-                break;
-              }
-            }
-          }
-        }
-      }
-      // perform the remove
-      selectedUnits.removeAll(unitsToRemove);
-      if (selectedUnits.isEmpty()) {
-        // nothing left, cancel move
-        cancelMove();
-      } else {
-        mouseLastUpdatePoint = me.getMapPoint();
-        updateUnitsThatCanMoveOnRoute(selectedUnits, getRoute(getFirstSelectedTerritory(), t, selectedUnits));
-        updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), t, selectedUnits));
-      }
-    }
-
-    private void selectWayPoint(final Territory territory) {
-      if (forced == null) {
-        forced = new ArrayList<>();
-      }
-      if (!forced.contains(territory)) {
-        forced.add(territory);
-      }
-      updateRouteAndMouseShadowUnits(
-          getRoute(getFirstSelectedTerritory(), getFirstSelectedTerritory(), selectedUnits));
-    }
-
-    private Predicate<Unit> getUnloadableMatch() {
-      // are we unloading everything? if we are then we dont need to select the transports
-      return PredicateBuilder.of(
-          Matches.unitIsOwnedBy(getCurrentPlayer()))
-          .and(Matches.unitIsLand())
-          .andIf(nonCombat, Matches.unitCanNotMoveDuringCombatMove().negate())
-          .build();
-    }
-
-    private void selectEndPoint(final Territory territory) {
-      final Route route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
-      final List<Unit> units = unitsThatCanMoveOnRoute;
-      setSelectedEndpointTerritory(territory);
-      if (units.isEmpty() || route == null) {
-        cancelMove();
-        return;
-      }
-      Collection<Unit> transports = null;
-      final Predicate<Unit> paratroopNBombers = Matches.unitIsAirTransport()
-          .and(Matches.unitIsAirTransportable());
-      final boolean paratroopsLanding = units.stream().anyMatch(paratroopNBombers);
-      if (route.isLoad() && units.stream().anyMatch(Matches.unitIsLand())) {
-        transports = getTransportsToLoad(route, units, false);
-        if (transports.isEmpty()) {
-          cancelMove();
-          return;
-        }
-      } else if ((route.isUnload() && units.stream().anyMatch(Matches.unitIsLand())) || paratroopsLanding) {
-        final List<Unit> unloadAble = CollectionUtils.getMatches(selectedUnits, getUnloadableMatch());
-        final Collection<Unit> canMove = new ArrayList<>(getUnitsToUnload(route, unloadAble));
-        canMove.addAll(CollectionUtils.getMatches(selectedUnits, getUnloadableMatch().negate()));
-        if (paratroopsLanding) {
-          transports = canMove;
-        }
-        if (canMove.isEmpty()) {
-          cancelMove();
-          return;
-        }
-        selectedUnits.clear();
-        selectedUnits.addAll(canMove);
-      } else {
-        // keep a map of the max number of each eligible unitType that can be chosen
-        final IntegerMap<UnitType> maxMap = new IntegerMap<>();
-        for (final Unit unit : units) {
-          maxMap.add(unit.getType(), 1);
-        }
-        // this match will make sure we can't select more units of a specific type then we had originally selected
-        final Predicate<Collection<Unit>> unitTypeCountMatch = unitsToCheck -> {
-          final IntegerMap<UnitType> currentMap = new IntegerMap<>();
-          for (final Unit unit : unitsToCheck) {
-            currentMap.add(unit.getType(), 1);
-          }
-          return maxMap.greaterThanOrEqualTo(currentMap);
-        };
-        allowSpecificUnitSelection(units, route, false, unitTypeCountMatch);
-        if (units.isEmpty()) {
-          cancelMove();
-          return;
-        }
-      }
-      final MoveDescription message = new MoveDescription(units, route, transports, dependentUnits);
-      setMoveMessage(message);
-      setFirstSelectedTerritory(null);
-      setSelectedEndpointTerritory(null);
-      mouseCurrentTerritory = null;
-      forced = null;
-      updateRouteAndMouseShadowUnits(null);
-      release();
-    }
-  };
-
   /**
    * Allow the user to select specific units, if for example some units have different movement.
    * Units are sorted in preferred order, so units represents the default selections.
@@ -1208,63 +1265,6 @@ public class MovePanel extends AbstractMovePanel {
       }
     }
   }
-
-  private final MouseOverUnitListener mouseOverUnitListener = new MouseOverUnitListener() {
-    @Override
-    public void mouseEnter(final List<Unit> units, final Territory territory) {
-      if (!getListening()) {
-        return;
-      }
-      final PlayerId owner = getUnitOwner(selectedUnits);
-      final Predicate<Unit> match = Matches.unitIsOwnedBy(owner).and(Matches.unitCanMove());
-      final boolean someOwned = units.stream().anyMatch(match);
-      final boolean isCorrectTerritory = (firstSelectedTerritory == null) || firstSelectedTerritory.equals(territory);
-      if (someOwned && isCorrectTerritory) {
-        final Map<Territory, List<Unit>> highlight = new HashMap<>();
-        highlight.put(territory, units);
-        getMap().setUnitHighlight(highlight);
-      } else {
-        getMap().setUnitHighlight(null);
-      }
-    }
-  };
-
-  private final MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
-    @Override
-    public void mouseMoved(final @Nullable Territory territory, final MouseDetails me) {
-      if (!getListening()) {
-        return;
-      }
-      if (getFirstSelectedTerritory() != null && territory != null) {
-        Route route;
-        if (mouseCurrentTerritory == null || !mouseCurrentTerritory.equals(territory)
-            || mouseCurrentPoint.equals(mouseLastUpdatePoint)) {
-          route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
-          getData().acquireReadLock();
-          try {
-            updateUnitsThatCanMoveOnRoute(selectedUnits, route);
-            // now, check if there is a better route for just the units that can get there (we check only air since that
-            // is the only one for which the route may actually change much)
-            if (unitsThatCanMoveOnRoute.size() < selectedUnits.size() && (unitsThatCanMoveOnRoute.size() == 0
-                || unitsThatCanMoveOnRoute.stream().allMatch(Matches.unitIsAir()))) {
-              final Collection<Unit> airUnits = CollectionUtils.getMatches(selectedUnits, Matches.unitIsAir());
-              if (airUnits.size() > 0) {
-                route = getRoute(getFirstSelectedTerritory(), territory, airUnits);
-                updateUnitsThatCanMoveOnRoute(airUnits, route);
-              }
-            }
-          } finally {
-            getData().releaseReadLock();
-          }
-        } else {
-          route = routeCached;
-        }
-        mouseCurrentPoint = me.getMapPoint();
-        updateRouteAndMouseShadowUnits(route);
-      }
-      mouseCurrentTerritory = territory;
-    }
-  };
 
   @Override
   public final String toString() {

@@ -52,14 +52,6 @@ public class ImageScrollerLargeView extends JComponent {
   private int dragScrollingLastY;
   private boolean wasLastActionDragging = false;
 
-  public boolean wasLastActionDraggingAndReset() {
-    if (wasLastActionDragging) {
-      wasLastActionDragging = false;
-      return true;
-    }
-    return false;
-  }
-
   private final ActionListener timerAction = new ActionListener() {
     @Override
     public void actionPerformed(final ActionEvent e) {
@@ -236,6 +228,14 @@ public class ImageScrollerLargeView extends JComponent {
       repaint();
       notifyScollListeners();
     });
+  }
+
+  public boolean wasLastActionDraggingAndReset() {
+    if (wasLastActionDragging) {
+      wasLastActionDragging = false;
+      return true;
+    }
+    return false;
   }
 
   /**

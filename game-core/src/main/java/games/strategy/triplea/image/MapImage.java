@@ -218,8 +218,6 @@ public class MapImage {
     pref.remove(property);
   }
 
-  public MapImage() {}
-
   public BufferedImage getSmallMapImage() {
     return smallMapImage;
   }

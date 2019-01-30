@@ -46,6 +46,10 @@ import games.strategy.util.IntegerMap;
  * the adding or removing of resources is done.
  */
 public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate {
+  private static final Comparator<RepairRule> repairRuleComparator = Comparator.comparing(
+      o -> (UnitType) o.getResults().keySet().iterator().next(),
+      new UnitTypeComparator());
+
   private boolean needToInitialize = true;
   public static final String NOT_ENOUGH_RESOURCES = "Not enough resources";
 
@@ -291,10 +295,6 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
     }
     return repairMap;
   }
-
-  private static final Comparator<RepairRule> repairRuleComparator = Comparator.comparing(
-      o -> (UnitType) o.getResults().keySet().iterator().next(),
-      new UnitTypeComparator());
 
   private static IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules) {
     final IntegerMap<Resource> costs = new IntegerMap<>();

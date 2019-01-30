@@ -19,12 +19,6 @@ public abstract class Invoke implements Externalizable {
 
   public Invoke() {}
 
-  @Override
-  public String toString() {
-    return "invoke on:" + call.getRemoteName() + " method name:" + call.getMethodName() + " method call id:"
-        + methodCallId;
-  }
-
   public Invoke(final GUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call) {
     if (needReturnValues && methodCallId == null) {
       throw new IllegalArgumentException("Cant have no id and need return values");
@@ -35,6 +29,12 @@ public abstract class Invoke implements Externalizable {
     this.methodCallId = methodCallId;
     this.needReturnValues = needReturnValues;
     this.call = call;
+  }
+
+  @Override
+  public String toString() {
+    return "invoke on:" + call.getRemoteName() + " method name:" + call.getMethodName() + " method call id:"
+        + methodCallId;
   }
 
   @Override

@@ -35,44 +35,6 @@ class PlacePanel extends AbstractMovePanel {
   private PlaceData placeData;
   private final SimpleUnitPanel unitsToPlace;
 
-  PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
-    super(data, map, frame);
-    undoableMovesPanel = new UndoablePlacementsPanel(this);
-    unitsToPlace = new SimpleUnitPanel(map.getUiContext());
-    leftToPlaceLabel.setText("Units left to place:");
-  }
-
-  @Override
-  public void display(final PlayerId id) {
-    super.display(id, " place");
-  }
-
-  private void refreshActionLabelText(final boolean bid) {
-    SwingUtilities
-        .invokeLater(() -> actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : "")));
-  }
-
-  PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge) {
-    setUp(playerBridge);
-    // workaround: meant to be in setUpSpecific, but it requires a variable
-    refreshActionLabelText(bid);
-    waitForRelease();
-    cleanUp();
-    return placeData;
-  }
-
-  private boolean canProduceFightersOnCarriers() {
-    return Properties.getProduceFightersOnCarriers(getData());
-  }
-
-  private boolean canProduceNewFightersOnOldCarriers() {
-    return Properties.getProduceNewFightersOnOldCarriers(getData());
-  }
-
-  private boolean isLhtrCarrierProductionRules() {
-    return Properties.getLhtrCarrierProductionRules(getData());
-  }
-
   private final MapSelectionListener placeMapSelectionListener = new DefaultMapSelectionListener() {
     @Override
     public void territorySelected(final Territory territory, final MouseDetails e) {
@@ -112,6 +74,44 @@ class PlacePanel extends AbstractMovePanel {
       }
     }
   };
+
+  PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
+    super(data, map, frame);
+    undoableMovesPanel = new UndoablePlacementsPanel(this);
+    unitsToPlace = new SimpleUnitPanel(map.getUiContext());
+    leftToPlaceLabel.setText("Units left to place:");
+  }
+
+  @Override
+  public void display(final PlayerId id) {
+    super.display(id, " place");
+  }
+
+  private void refreshActionLabelText(final boolean bid) {
+    SwingUtilities
+        .invokeLater(() -> actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : "")));
+  }
+
+  PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge) {
+    setUp(playerBridge);
+    // workaround: meant to be in setUpSpecific, but it requires a variable
+    refreshActionLabelText(bid);
+    waitForRelease();
+    cleanUp();
+    return placeData;
+  }
+
+  private boolean canProduceFightersOnCarriers() {
+    return Properties.getProduceFightersOnCarriers(getData());
+  }
+
+  private boolean canProduceNewFightersOnOldCarriers() {
+    return Properties.getProduceNewFightersOnOldCarriers(getData());
+  }
+
+  private boolean isLhtrCarrierProductionRules() {
+    return Properties.getLhtrCarrierProductionRules(getData());
+  }
 
   private Collection<Unit> getUnitsToPlace(final Territory territory, final int[] maxUnits) {
     getData().acquireReadLock();

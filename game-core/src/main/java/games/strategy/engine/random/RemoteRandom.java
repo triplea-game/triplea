@@ -15,14 +15,6 @@ import games.strategy.engine.vault.VaultId;
 public class RemoteRandom implements IRemoteRandom {
   private static final List<VerifiedRandomNumbers> verifiedRandomNumbers = new ArrayList<>();
 
-  public static synchronized List<VerifiedRandomNumbers> getVerifiedRandomNumbers() {
-    return new ArrayList<>(verifiedRandomNumbers);
-  }
-
-  private static synchronized void addVerifiedRandomNumber(final VerifiedRandomNumbers number) {
-    verifiedRandomNumbers.add(number);
-  }
-
   private final PlainRandomSource plainRandom = new PlainRandomSource();
   private final IGame game;
   // remembered from generate to unlock
@@ -33,11 +25,16 @@ public class RemoteRandom implements IRemoteRandom {
   private boolean waitingForUnlock;
   private int[] localNumbers;
 
-  /**
-   * Creates a new instance of RemoteRandom.
-   */
   public RemoteRandom(final IGame game) {
     this.game = game;
+  }
+
+  public static synchronized List<VerifiedRandomNumbers> getVerifiedRandomNumbers() {
+    return new ArrayList<>(verifiedRandomNumbers);
+  }
+
+  private static synchronized void addVerifiedRandomNumber(final VerifiedRandomNumbers number) {
+    verifiedRandomNumbers.add(number);
   }
 
   @Override

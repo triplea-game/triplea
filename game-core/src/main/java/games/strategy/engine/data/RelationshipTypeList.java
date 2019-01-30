@@ -19,24 +19,6 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   private final Map<String, RelationshipType> relationshipTypes = new HashMap<>();
 
   /**
-   * Convenience method to return the RELATIONSHIP_TYPE_SELF relation (the relation you have with yourself).
-   *
-   * @return the relation one has with oneself.
-   */
-  public RelationshipType getSelfRelation() {
-    return this.getRelationshipType(Constants.RELATIONSHIP_TYPE_SELF);
-  }
-
-  /**
-   * Convenience method to return the RELATIONSHIP_TYPE_NULL relation (the relation you have with the Neutral Player).
-   *
-   * @return the relation one has with the Neutral.
-   */
-  public RelationshipType getNullRelation() {
-    return this.getRelationshipType(Constants.RELATIONSHIP_TYPE_NULL);
-  }
-
-  /**
    * Constructs a new RelationshipTypeList.
    *
    * @param data GameData used for construction
@@ -55,6 +37,24 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
       // is supplied, but we never do that
       throw new IllegalStateException(e);
     }
+  }
+
+  /**
+   * Convenience method to return the RELATIONSHIP_TYPE_SELF relation (the relation you have with yourself).
+   *
+   * @return the relation one has with oneself.
+   */
+  public RelationshipType getSelfRelation() {
+    return this.getRelationshipType(Constants.RELATIONSHIP_TYPE_SELF);
+  }
+
+  /**
+   * Convenience method to return the RELATIONSHIP_TYPE_NULL relation (the relation you have with the Neutral Player).
+   *
+   * @return the relation one has with the Neutral.
+   */
+  public RelationshipType getNullRelation() {
+    return this.getRelationshipType(Constants.RELATIONSHIP_TYPE_NULL);
   }
 
   /**

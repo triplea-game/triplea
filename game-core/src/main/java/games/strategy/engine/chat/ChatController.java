@@ -51,14 +51,6 @@ public class ChatController implements IChatController {
     }
   };
 
-  static RemoteName getChatControlerRemoteName(final String chatName) {
-    return new RemoteName(CHAT_REMOTE + chatName, IChatController.class);
-  }
-
-  public static String getChatChannelName(final String chatName) {
-    return CHAT_CHANNEL + chatName;
-  }
-
   public ChatController(final String name, final IMessenger messenger, final IRemoteMessenger remoteMessenger,
       final IChannelMessenger channelMessenger, final Predicate<INode> isModerator) {
     chatName = name;
@@ -74,6 +66,14 @@ public class ChatController implements IChatController {
 
   public ChatController(final String name, final Messengers messenger, final Predicate<INode> isModerator) {
     this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger(), isModerator);
+  }
+
+  static RemoteName getChatControlerRemoteName(final String chatName) {
+    return new RemoteName(CHAT_REMOTE + chatName, IChatController.class);
+  }
+
+  public static String getChatChannelName(final String chatName) {
+    return CHAT_CHANNEL + chatName;
   }
 
   @SuppressWarnings("FutureReturnValueIgnored") // false positive; see https://github.com/google/error-prone/issues/883

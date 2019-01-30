@@ -29,29 +29,27 @@ public class Node implements INode, Externalizable {
     }
   }
 
-  /** Returns the localhost InetAddress. */
-  public static InetAddress getLocalHost() throws UnknownHostException {
-    // On Mac, InetAddress.getLocalHost() can be extremely slow (30 seconds)
-    // due to a bug in macOS Sierra and higher. Use a work around to avoid
-    // this. See: https://thoeni.io/post/macos-sierra-java/
-    return SystemProperties.isMac() ? InetAddress.getByName("localhost") : InetAddress.getLocalHost();
-  }
-
   // needed to support Externalizable
   public Node() {}
 
-  /** Creates new Node. */
   public Node(final String name, final InetSocketAddress address) {
     this.name = name;
     this.address = address.getAddress();
     port = address.getPort();
   }
 
-  /** Creates new Node. */
   public Node(final String name, final InetAddress address, final int port) {
     this.name = name;
     this.address = address;
     this.port = port;
+  }
+
+  /** Returns the localhost InetAddress. */
+  public static InetAddress getLocalHost() throws UnknownHostException {
+    // On Mac, InetAddress.getLocalHost() can be extremely slow (30 seconds)
+    // due to a bug in macOS Sierra and higher. Use a work around to avoid
+    // this. See: https://thoeni.io/post/macos-sierra-java/
+    return SystemProperties.isMac() ? InetAddress.getByName("localhost") : InetAddress.getLocalHost();
   }
 
   @Override

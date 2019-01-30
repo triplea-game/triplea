@@ -18,6 +18,11 @@ public final class Tuple<T, S> implements Serializable {
   private final T first;
   private final S second;
 
+  private Tuple(final T first, final S second) {
+    this.first = first;
+    this.second = second;
+  }
+
   /**
    * Static creation method to create a new instance of a tuple with the parameters provided.
    *
@@ -39,11 +44,6 @@ public final class Tuple<T, S> implements Serializable {
    */
   public static <T, S> Tuple<T, S> of(final T first, final S second) {
     return new Tuple<>(first, second);
-  }
-
-  private Tuple(final T first, final S second) {
-    this.first = first;
-    this.second = second;
   }
 
   public T getFirst() {

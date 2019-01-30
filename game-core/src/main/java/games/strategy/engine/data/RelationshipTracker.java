@@ -141,6 +141,9 @@ public class RelationshipTracker extends RelationshipInterpreter {
   public class Relationship implements Serializable {
     private static final long serialVersionUID = -6718866176901627180L;
 
+    private final RelationshipType relationshipType;
+    private final int roundCreated;
+
     /**
      * This should never be called outside of the change factory.
      */
@@ -156,9 +159,6 @@ public class RelationshipTracker extends RelationshipInterpreter {
       this.relationshipType = relationshipType;
       this.roundCreated = roundValue;
     }
-
-    private final RelationshipType relationshipType;
-    private final int roundCreated;
 
     public int getRoundCreated() {
       return roundCreated;

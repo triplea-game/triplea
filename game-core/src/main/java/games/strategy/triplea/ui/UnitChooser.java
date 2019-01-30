@@ -42,6 +42,16 @@ final class UnitChooser extends JPanel {
   private JButton selectNoneButton;
   private final UiContext uiContext;
   private final Predicate<Collection<Unit>> match;
+  private final ScrollableTextFieldListener textFieldListener = new ScrollableTextFieldListener() {
+    @Override
+    public void changedValue(final ScrollableTextField field) {
+      if (match != null) {
+        checkMatches();
+      } else {
+        updateLeft();
+      }
+    }
+  };
 
   UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent,
       final boolean allowTwoHit, final UiContext uiContext) {
@@ -303,17 +313,6 @@ final class UnitChooser extends JPanel {
   public void addChangeListener(final ScrollableTextFieldListener listener) {
     entries.forEach(entry -> entry.addChangeListener(listener));
   }
-
-  private final ScrollableTextFieldListener textFieldListener = new ScrollableTextFieldListener() {
-    @Override
-    public void changedValue(final ScrollableTextField field) {
-      if (match != null) {
-        checkMatches();
-      } else {
-        updateLeft();
-      }
-    }
-  };
 
   private static final class ChooserEntry {
     private final UnitCategory category;

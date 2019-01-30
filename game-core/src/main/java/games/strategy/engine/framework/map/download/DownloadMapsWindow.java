@@ -55,9 +55,67 @@ public class DownloadMapsWindow extends JFrame {
   private static final int WINDOW_WIDTH = 1200;
   private static final int WINDOW_HEIGHT = 700;
   private static final int DIVIDER_POSITION = WINDOW_HEIGHT - 150;
+  private static final String MULTIPLE_SELECT_MSG =
+      "You can select multiple maps by holding control or shift while clicking map names.";
   private static final SingletonManager SINGLETON_MANAGER = new SingletonManager();
 
   private final MapDownloadProgressPanel progressPanel;
+
+  private DownloadMapsWindow(
+      final Collection<String> pendingDownloadMapNames,
+      final List<DownloadFileDescription> allDownloads) {
+    super("Download Maps");
+
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    setLocationRelativeTo(null);
+    setMinimumSize(new Dimension(200, 200));
+
+    setIconImage(GameRunner.getGameIcon(this));
+    progressPanel = new MapDownloadProgressPanel();
+
+    final Set<DownloadFileDescription> pendingDownloads = new HashSet<>();
+    final Collection<String> unknownMapNames = new ArrayList<>();
+    for (final String mapName : pendingDownloadMapNames) {
+      OptionalUtils.ifPresentOrElse(findMap(mapName, allDownloads),
+          pendingDownloads::add,
+          () -> unknownMapNames.add(mapName));
+    }
+    final Collection<String> installedMapNames = removeInstalledDownloads(pendingDownloads);
+
+    if (!pendingDownloads.isEmpty()) {
+      progressPanel.download(pendingDownloads);
+    }
+
+    pendingDownloads.addAll(ClientContext.downloadCoordinator().getDownloads().stream()
+        .filter(download -> download.getDownloadState() != DownloadState.CANCELLED)
+        .map(DownloadFile::getDownload)
+        .collect(Collectors.toList()));
+
+    if (!unknownMapNames.isEmpty() || !installedMapNames.isEmpty()) {
+      SwingComponents.newMessageDialog(formatIgnoredPendingMapsMessage(unknownMapNames, installedMapNames));
+    }
+
+    final Optional<String> selectedMapName = pendingDownloadMapNames.stream().findFirst();
+
+    SwingComponents.addWindowClosingListener(this, progressPanel::cancel);
+
+    final JTabbedPane outerTabs = new JTabbedPane();
+
+    final List<DownloadFileDescription> maps = filterMaps(allDownloads, DownloadFileDescription::isMap);
+    outerTabs.add("Maps", newTabbedPanelForMaps(maps, pendingDownloads));
+
+    final List<DownloadFileDescription> skins = filterMaps(allDownloads, DownloadFileDescription::isMapSkin);
+    outerTabs.add("Skins", newAvailableInstalledTabbedPanel(selectedMapName, skins, pendingDownloads));
+
+    final List<DownloadFileDescription> tools = filterMaps(allDownloads, DownloadFileDescription::isMapTool);
+    outerTabs.add("Tools", newAvailableInstalledTabbedPanel(selectedMapName, tools, pendingDownloads));
+
+    final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, outerTabs,
+        SwingComponents.newJScrollPane(progressPanel));
+    splitPane.setDividerLocation(DIVIDER_POSITION);
+    add(splitPane);
+  }
 
   /**
    * Shows the Download Maps window.
@@ -195,62 +253,6 @@ public class DownloadMapsWindow extends JFrame {
     if (!mapNames.isEmpty()) {
       log.info("ignoring request to download maps because window initialization has already started");
     }
-  }
-
-  private DownloadMapsWindow(
-      final Collection<String> pendingDownloadMapNames,
-      final List<DownloadFileDescription> allDownloads) {
-    super("Download Maps");
-
-    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    setLocationRelativeTo(null);
-    setMinimumSize(new Dimension(200, 200));
-
-    setIconImage(GameRunner.getGameIcon(this));
-    progressPanel = new MapDownloadProgressPanel();
-
-    final Set<DownloadFileDescription> pendingDownloads = new HashSet<>();
-    final Collection<String> unknownMapNames = new ArrayList<>();
-    for (final String mapName : pendingDownloadMapNames) {
-      OptionalUtils.ifPresentOrElse(findMap(mapName, allDownloads),
-          pendingDownloads::add,
-          () -> unknownMapNames.add(mapName));
-    }
-    final Collection<String> installedMapNames = removeInstalledDownloads(pendingDownloads);
-
-    if (!pendingDownloads.isEmpty()) {
-      progressPanel.download(pendingDownloads);
-    }
-
-    pendingDownloads.addAll(ClientContext.downloadCoordinator().getDownloads().stream()
-        .filter(download -> download.getDownloadState() != DownloadState.CANCELLED)
-        .map(DownloadFile::getDownload)
-        .collect(Collectors.toList()));
-
-    if (!unknownMapNames.isEmpty() || !installedMapNames.isEmpty()) {
-      SwingComponents.newMessageDialog(formatIgnoredPendingMapsMessage(unknownMapNames, installedMapNames));
-    }
-
-    final Optional<String> selectedMapName = pendingDownloadMapNames.stream().findFirst();
-
-    SwingComponents.addWindowClosingListener(this, progressPanel::cancel);
-
-    final JTabbedPane outerTabs = new JTabbedPane();
-
-    final List<DownloadFileDescription> maps = filterMaps(allDownloads, DownloadFileDescription::isMap);
-    outerTabs.add("Maps", newTabbedPanelForMaps(maps, pendingDownloads));
-
-    final List<DownloadFileDescription> skins = filterMaps(allDownloads, DownloadFileDescription::isMapSkin);
-    outerTabs.add("Skins", newAvailableInstalledTabbedPanel(selectedMapName, skins, pendingDownloads));
-
-    final List<DownloadFileDescription> tools = filterMaps(allDownloads, DownloadFileDescription::isMapTool);
-    outerTabs.add("Tools", newAvailableInstalledTabbedPanel(selectedMapName, tools, pendingDownloads));
-
-    final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, outerTabs,
-        SwingComponents.newJScrollPane(progressPanel));
-    splitPane.setDividerLocation(DIVIDER_POSITION);
-    add(splitPane);
   }
 
   private static Collection<String> removeInstalledDownloads(
@@ -537,9 +539,6 @@ public class DownloadMapsWindow extends JFrame {
             .build())
         .build();
   }
-
-  private static final String MULTIPLE_SELECT_MSG =
-      "You can select multiple maps by holding control or shift while clicking map names.";
 
   private JButton buildMapActionButton(final MapAction action, final JList<String> gamesList,
       final List<DownloadFileDescription> maps,

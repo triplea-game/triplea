@@ -222,23 +222,149 @@ public final class TripleAFrame extends JFrame {
   private final MapUnitTooltipManager tooltipManager;
   private boolean isCtrlPressed = false;
 
-  /**
-   * Constructs a new instance of a TripleAFrame, but executes required IO-Operations off the EDT.
-   */
-  public static TripleAFrame create(final IGame game, final LocalPlayers players, @Nullable final Chat chat) {
-    Preconditions.checkState(!SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
+  public final MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
+    @Override
+    public void mouseEntered(final Territory territory) {
+      territoryLastEntered = territory;
+      refresh();
+    }
 
-    final UiContext uiContext = new HeadedUiContext();
-    uiContext.setDefaultMapDir(game.getData());
-    uiContext.getMapData().verify(game.getData());
-    uiContext.setLocalPlayers(players);
+    void refresh() {
+      territoryInfo.removeAll();
 
-    final TripleAFrame frame = Interruptibles.awaitResult(() -> SwingAction
-        .invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext, chat))).result
-            .orElseThrow(() -> new IllegalStateException("Error while instantiating TripleAFrame"));
-    frame.updateStep();
-    return frame;
-  }
+      message.setText((territoryLastEntered == null) ? "none" : territoryLastEntered.getName());
+
+      // If territory is null or doesn't have an attachment then just display the name or "none"
+      if (territoryLastEntered == null || TerritoryAttachment.get(territoryLastEntered) == null) {
+        territoryInfo.add(message, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        territoryInfo.revalidate();
+        territoryInfo.repaint();
+        return;
+      }
+
+      // Display territory effects, territory name, and resources
+      final TerritoryAttachment ta = TerritoryAttachment.get(territoryLastEntered);
+      final List<TerritoryEffect> territoryEffects = ta.getTerritoryEffect();
+      int count = 0;
+      final StringBuilder territoryEffectText = new StringBuilder();
+      for (final TerritoryEffect territoryEffect : territoryEffects) {
+        try {
+          final JLabel territoryEffectLabel = new JLabel();
+          territoryEffectLabel.setToolTipText(territoryEffect.getName());
+          territoryEffectLabel.setIcon(uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect, false));
+          territoryEffectLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+          territoryInfo.add(territoryEffectLabel,
+              new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+                  new Insets(0, 0, 0, 0), 0, 0));
+        } catch (final IllegalStateException e) {
+          territoryEffectText.append(territoryEffect.getName()).append(", ");
+        }
+      }
+
+      territoryInfo.add(message, new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+
+      if (territoryEffectText.length() > 0) {
+        territoryEffectText.setLength(territoryEffectText.length() - 2);
+        final JLabel territoryEffectTextLabel = new JLabel();
+        territoryEffectTextLabel.setText(" (" + territoryEffectText + ")");
+        territoryInfo.add(territoryEffectTextLabel,
+            new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+                GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+      }
+
+      final int production = ta.getProduction();
+      final ResourceCollection resourceCollection = ta.getResources();
+      final IntegerMap<Resource> resources = new IntegerMap<>();
+      if (production > 0) {
+        resources.add(new Resource(Constants.PUS, data), production);
+      }
+      if (resourceCollection != null) {
+        resources.add(resourceCollection.getResourcesCopy());
+      }
+      for (final Resource resource : resources.keySet()) {
+        final JLabel resourceLabel =
+            uiContext.getResourceImageFactory().getLabel(resource, resources);
+        resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        territoryInfo.add(resourceLabel,
+            new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+                new Insets(0, 0, 0, 0), 0, 0));
+      }
+      territoryInfo.revalidate();
+      territoryInfo.repaint();
+    }
+  };
+
+  final GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
+
+  final GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
+    @Override
+    public void gameDataChanged(final Change change) {
+      try {
+        SwingUtilities.invokeLater(() -> {
+          if (uiContext == null) {
+            return;
+          }
+          if (getEditMode()) {
+            if (tabsPanel.indexOfComponent(editPanel) == -1) {
+              showEditMode();
+            }
+          } else {
+            if (tabsPanel.indexOfComponent(editPanel) != -1) {
+              hideEditMode();
+            }
+          }
+          if (uiContext.getShowMapOnly()) {
+            hideRightHandSidePanel();
+            // display troop movement
+            final HistoryNode node = data.getHistory().getLastNode();
+            if (node instanceof Renderable) {
+              final Object details1 = ((Renderable) node).getRenderingData();
+              if (details1 instanceof MoveDescription) {
+                final MoveDescription moveMessage = (MoveDescription) details1;
+                final Route route = moveMessage.getRoute();
+                mapPanel.setRoute(null);
+                mapPanel.setRoute(route);
+                final Territory terr = route.getEnd();
+                if (!mapPanel.isShowing(terr)) {
+                  mapPanel.centerOn(terr);
+                }
+              }
+            }
+          } else {
+            showRightHandSidePanel();
+          }
+        });
+      } catch (final Exception e) {
+        log.log(Level.SEVERE, "Failed to process game data change", e);
+      }
+    }
+  };
+
+  private final Action showHistoryAction = SwingAction.of("Show history", e -> {
+    showHistory();
+    dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+  });
+
+  private final Action showGameAction = new AbstractAction("Show current game") {
+    private static final long serialVersionUID = -7551760679570164254L;
+
+    {
+      setEnabled(false);
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      showGame();
+      dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+    }
+  };
+
+  private final Action showMapOnlyAction = SwingAction.of("Show map only", e -> {
+    showMapOnly();
+    dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
+  });
 
   private TripleAFrame(final IGame game, final LocalPlayers players,
       final UiContext uiContext, @Nullable final Chat chat) {
@@ -461,6 +587,24 @@ public final class TripleAFrame extends JFrame {
     uiContext.addShutdownWindow(this);
   }
 
+  /**
+   * Constructs a new instance of a TripleAFrame, but executes required IO-Operations off the EDT.
+   */
+  public static TripleAFrame create(final IGame game, final LocalPlayers players, @Nullable final Chat chat) {
+    Preconditions.checkState(!SwingUtilities.isEventDispatchThread(), "This method must not be called on the EDT");
+
+    final UiContext uiContext = new HeadedUiContext();
+    uiContext.setDefaultMapDir(game.getData());
+    uiContext.getMapData().verify(game.getData());
+    uiContext.setLocalPlayers(players);
+
+    final TripleAFrame frame = Interruptibles.awaitResult(() -> SwingAction
+        .invokeAndWaitResult(() -> new TripleAFrame(game, players, uiContext, chat))).result
+            .orElseThrow(() -> new IllegalStateException("Error while instantiating TripleAFrame"));
+    frame.updateStep();
+    return frame;
+  }
+
   private void hideCommentLog() {
     if (chatPanel != null) {
       commentSplit.setBottomComponent(null);
@@ -640,80 +784,6 @@ public final class TripleAFrame extends JFrame {
       new Thread(GameRunner::clientLeftGame).start();
     }
   }
-
-  public final MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
-    @Override
-    public void mouseEntered(final Territory territory) {
-      territoryLastEntered = territory;
-      refresh();
-    }
-
-    void refresh() {
-      territoryInfo.removeAll();
-
-      message.setText((territoryLastEntered == null) ? "none" : territoryLastEntered.getName());
-
-      // If territory is null or doesn't have an attachment then just display the name or "none"
-      if (territoryLastEntered == null || TerritoryAttachment.get(territoryLastEntered) == null) {
-        territoryInfo.add(message, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-            GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        territoryInfo.revalidate();
-        territoryInfo.repaint();
-        return;
-      }
-
-      // Display territory effects, territory name, and resources
-      final TerritoryAttachment ta = TerritoryAttachment.get(territoryLastEntered);
-      final List<TerritoryEffect> territoryEffects = ta.getTerritoryEffect();
-      int count = 0;
-      final StringBuilder territoryEffectText = new StringBuilder();
-      for (final TerritoryEffect territoryEffect : territoryEffects) {
-        try {
-          final JLabel territoryEffectLabel = new JLabel();
-          territoryEffectLabel.setToolTipText(territoryEffect.getName());
-          territoryEffectLabel.setIcon(uiContext.getTerritoryEffectImageFactory().getIcon(territoryEffect, false));
-          territoryEffectLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
-          territoryInfo.add(territoryEffectLabel,
-              new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                  new Insets(0, 0, 0, 0), 0, 0));
-        } catch (final IllegalStateException e) {
-          territoryEffectText.append(territoryEffect.getName()).append(", ");
-        }
-      }
-
-      territoryInfo.add(message, new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-
-      if (territoryEffectText.length() > 0) {
-        territoryEffectText.setLength(territoryEffectText.length() - 2);
-        final JLabel territoryEffectTextLabel = new JLabel();
-        territoryEffectTextLabel.setText(" (" + territoryEffectText + ")");
-        territoryInfo.add(territoryEffectTextLabel,
-            new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-                GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-      }
-
-      final int production = ta.getProduction();
-      final ResourceCollection resourceCollection = ta.getResources();
-      final IntegerMap<Resource> resources = new IntegerMap<>();
-      if (production > 0) {
-        resources.add(new Resource(Constants.PUS, data), production);
-      }
-      if (resourceCollection != null) {
-        resources.add(resourceCollection.getResourcesCopy());
-      }
-      for (final Resource resource : resources.keySet()) {
-        final JLabel resourceLabel =
-            uiContext.getResourceImageFactory().getLabel(resource, resources);
-        resourceLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-        territoryInfo.add(resourceLabel,
-            new GridBagConstraints(count++, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, 0, 0, 0), 0, 0));
-      }
-      territoryInfo.revalidate();
-      territoryInfo.repaint();
-    }
-  };
 
   void clearStatusMessage() {
     status.setText("");
@@ -1534,8 +1604,6 @@ public final class TripleAFrame extends JFrame {
         .orElse(null);
   }
 
-  final GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
-
   private void updateStep() {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread(),
         "This method must not be invoked on the EDT!");
@@ -1621,50 +1689,6 @@ public final class TripleAFrame extends JFrame {
       }
     }));
   }
-
-  final GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
-    @Override
-    public void gameDataChanged(final Change change) {
-      try {
-        SwingUtilities.invokeLater(() -> {
-          if (uiContext == null) {
-            return;
-          }
-          if (getEditMode()) {
-            if (tabsPanel.indexOfComponent(editPanel) == -1) {
-              showEditMode();
-            }
-          } else {
-            if (tabsPanel.indexOfComponent(editPanel) != -1) {
-              hideEditMode();
-            }
-          }
-          if (uiContext.getShowMapOnly()) {
-            hideRightHandSidePanel();
-            // display troop movement
-            final HistoryNode node = data.getHistory().getLastNode();
-            if (node instanceof Renderable) {
-              final Object details1 = ((Renderable) node).getRenderingData();
-              if (details1 instanceof MoveDescription) {
-                final MoveDescription moveMessage = (MoveDescription) details1;
-                final Route route = moveMessage.getRoute();
-                mapPanel.setRoute(null);
-                mapPanel.setRoute(route);
-                final Territory terr = route.getEnd();
-                if (!mapPanel.isShowing(terr)) {
-                  mapPanel.centerOn(terr);
-                }
-              }
-            }
-          } else {
-            showRightHandSidePanel();
-          }
-        });
-      } catch (final Exception e) {
-        log.log(Level.SEVERE, "Failed to process game data change", e);
-      }
-    }
-  };
 
   private KeyListener getFullScreenListener() {
     return new KeyAdapter() {
@@ -2087,30 +2111,6 @@ public final class TripleAFrame extends JFrame {
     }
     return isEditMode;
   }
-
-  private final Action showHistoryAction = SwingAction.of("Show history", e -> {
-    showHistory();
-    dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
-  });
-
-  private final Action showGameAction = new AbstractAction("Show current game") {
-    private static final long serialVersionUID = -7551760679570164254L;
-
-    {
-      setEnabled(false);
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      showGame();
-      dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
-    }
-  };
-
-  private final Action showMapOnlyAction = SwingAction.of("Show map only", e -> {
-    showMapOnly();
-    dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
-  });
 
   /**
    * Prompts the user to select from the specified collection of fighters those they wish to move to an adjacent

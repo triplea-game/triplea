@@ -25,6 +25,16 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
   private static final String DEFAULT_TYPE_AI = "AI";
   private static final String DEFAULT_TYPE_DOES_NOTHING = "DoesNothing";
 
+  public static final PlayerId NULL_PLAYERID =
+      new PlayerId(Constants.PLAYER_NAME_NEUTRAL, true, false, null, false, null) {
+        private static final long serialVersionUID = -6596127754502509049L;
+
+        @Override
+        public boolean isNull() {
+          return true;
+        }
+      };
+
   private final boolean optional;
   private final boolean canBeDisabled;
   private final String defaultType;
@@ -100,17 +110,6 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
   public boolean isNull() {
     return false;
   }
-
-  public static final PlayerId NULL_PLAYERID =
-      new PlayerId(Constants.PLAYER_NAME_NEUTRAL, true, false, null, false, null) {
-        // compatible with 0.9.0.2 saved games
-        private static final long serialVersionUID = -6596127754502509049L;
-
-        @Override
-        public boolean isNull() {
-          return true;
-        }
-      };
 
   @Override
   public String toString() {

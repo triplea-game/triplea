@@ -46,6 +46,11 @@ public class UndoableMove extends AbstractUndoableMove {
   private final Set<Unit> unloaded = new HashSet<>();
   private final Route route;
 
+  public UndoableMove(final Collection<Unit> units, final Route route) {
+    super(new CompositeChange(), units);
+    this.route = route;
+  }
+
   public void addToConquered(final Territory t) {
     conquered.add(t);
   }
@@ -74,11 +79,6 @@ public class UndoableMove extends AbstractUndoableMove {
 
   public void setDescription(final String description) {
     this.description = description;
-  }
-
-  public UndoableMove(final Collection<Unit> units, final Route route) {
-    super(new CompositeChange(), units);
-    this.route = route;
   }
 
   public void load(final Unit transport) {

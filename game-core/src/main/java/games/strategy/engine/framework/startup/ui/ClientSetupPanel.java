@@ -166,6 +166,18 @@ public class ClientSetupPanel extends SetupPanel {
     private final JLabel playerLabel = new JLabel();
     private JComponent playerComponent = new JLabel();
     private final JLabel alliance;
+    private final Action takeAction =
+        SwingAction.of("Play", e -> clientModel.takePlayer(playerNameLabel.getText()));
+    private final Action dontTakeAction =
+        SwingAction.of("Don't Play", e -> clientModel.releasePlayer(playerNameLabel.getText()));
+    private final ActionListener disablePlayerActionListener = e -> {
+      if (enabledCheckBox.isSelected()) {
+        clientModel.enablePlayer(playerNameLabel.getText());
+      } else {
+        clientModel.disablePlayer(playerNameLabel.getText());
+      }
+      setWidgetActivation(true);
+    };
 
     PlayerRow(final String playerName, final Collection<String> playerAlliances, final boolean enabled) {
       playerNameLabel.setText(playerName);
@@ -220,19 +232,6 @@ public class ClientSetupPanel extends SetupPanel {
     public JComponent getPlayerComponent() {
       return playerComponent;
     }
-
-    private final Action takeAction =
-        SwingAction.of("Play", e -> clientModel.takePlayer(playerNameLabel.getText()));
-    private final Action dontTakeAction =
-        SwingAction.of("Don't Play", e -> clientModel.releasePlayer(playerNameLabel.getText()));
-    private final ActionListener disablePlayerActionListener = e -> {
-      if (enabledCheckBox.isSelected()) {
-        clientModel.enablePlayer(playerNameLabel.getText());
-      } else {
-        clientModel.disablePlayer(playerNameLabel.getText());
-      }
-      setWidgetActivation(true);
-    };
   }
 
   @Override
