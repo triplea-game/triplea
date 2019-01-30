@@ -60,6 +60,11 @@ class ProductionPanel extends JPanel {
 
   private JDialog dialog;
   private boolean bid;
+  final Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
+
+  protected ProductionPanel(final UiContext uiContext) {
+    this.uiContext = uiContext;
+  }
 
   static IntegerMap<ProductionRule> getProduction(final PlayerId id, final JFrame parent, final GameData data,
       final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final UiContext uiContext) {
@@ -75,10 +80,6 @@ class ProductionPanel extends JPanel {
       }
     }
     return prod;
-  }
-
-  protected ProductionPanel(final UiContext uiContext) {
-    this.uiContext = uiContext;
   }
 
   /**
@@ -179,8 +180,6 @@ class ProductionPanel extends JPanel {
     }
   }
 
-  final Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
-
   // This method can be overridden by subclasses
   protected void calculateLimits() {
     final ResourceCollection resources = getResources();
@@ -224,6 +223,26 @@ class ProductionPanel extends JPanel {
     private final ProductionRule rule;
     private final PlayerId id;
     private final Set<ScrollableTextField> textFields = new HashSet<>();
+    private final ScrollableTextFieldListener listener = new ScrollableTextFieldListener() {
+      @Override
+      public void changedValue(final ScrollableTextField stf) {
+        if (stf.getValue() != quantity) {
+          quantity = stf.getValue();
+          calculateLimits();
+          for (final ScrollableTextField textField : textFields) {
+            if (!stf.equals(textField)) {
+              textField.setValue(quantity);
+            }
+          }
+        }
+      }
+    };
+
+    Rule(final ProductionRule rule, final PlayerId id) {
+      this.rule = rule;
+      cost = rule.getCosts();
+      this.id = id;
+    }
 
     protected JPanel getPanelComponent() {
       final JPanel panel = new JPanel();
@@ -315,12 +334,6 @@ class ProductionPanel extends JPanel {
       return panel;
     }
 
-    Rule(final ProductionRule rule, final PlayerId id) {
-      this.rule = rule;
-      cost = rule.getCosts();
-      this.id = id;
-    }
-
     IntegerMap<Resource> getCost() {
       return cost;
     }
@@ -347,20 +360,5 @@ class ProductionPanel extends JPanel {
         textField.setMax(max);
       }
     }
-
-    private final ScrollableTextFieldListener listener = new ScrollableTextFieldListener() {
-      @Override
-      public void changedValue(final ScrollableTextField stf) {
-        if (stf.getValue() != quantity) {
-          quantity = stf.getValue();
-          calculateLimits();
-          for (final ScrollableTextField textField : textFields) {
-            if (!stf.equals(textField)) {
-              textField.setValue(quantity);
-            }
-          }
-        }
-      }
-    };
   }
 }

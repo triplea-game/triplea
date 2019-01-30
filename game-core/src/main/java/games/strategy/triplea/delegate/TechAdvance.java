@@ -61,6 +61,10 @@ public abstract class TechAdvance extends NamedAttachable {
   private static final Map<String, Class<? extends TechAdvance>> ALL_PREDEFINED_TECHNOLOGIES =
       newPredefinedTechnologyMap();
 
+  public TechAdvance(final String name, final GameData data) {
+    super(name, data);
+  }
+
   private static Map<String, Class<? extends TechAdvance>> newPredefinedTechnologyMap() {
     final Map<String, Class<? extends TechAdvance>> preDefinedTechMap =
         new HashMap<>();
@@ -79,10 +83,6 @@ public abstract class TechAdvance extends NamedAttachable {
     preDefinedTechMap.put(TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY, IndustrialTechnologyAdvance.class);
     preDefinedTechMap.put(TECH_PROPERTY_DESTROYER_BOMBARD, DestroyerBombardTechAdvance.class);
     return Collections.unmodifiableMap(preDefinedTechMap);
-  }
-
-  public TechAdvance(final String name, final GameData data) {
-    super(name, data);
   }
 
   public abstract String getProperty();

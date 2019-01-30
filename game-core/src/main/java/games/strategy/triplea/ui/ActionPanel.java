@@ -22,6 +22,14 @@ public abstract class ActionPanel extends JPanel {
   private CountDownLatch latch;
   private final Object latchLock = new Object();
 
+  /**
+   * Refreshes the action panel. Should be run within the swing event queue.
+   */
+  protected final Runnable refresh = () -> {
+    revalidate();
+    repaint();
+  };
+
   public ActionPanel(final GameData data, final MapPanel map) {
     this.data = data;
     this.map = map;
@@ -128,12 +136,4 @@ public abstract class ActionPanel extends JPanel {
   public boolean getActive() {
     return active;
   }
-
-  /**
-   * Refreshes the action panel. Should be run within the swing event queue.
-   */
-  protected final Runnable refresh = () -> {
-    revalidate();
-    repaint();
-  };
 }

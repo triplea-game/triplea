@@ -28,6 +28,12 @@ public final class DBUser implements Serializable {
   private final String m_email;
   private final Role userRole;
 
+  public DBUser(final UserName name, final UserEmail email, final Role role) {
+    this.m_name = name.userName;
+    this.m_email = email.userEmail;
+    this.userRole = role;
+  }
+
   /**
    * The user's role within the lobby.
    */
@@ -99,15 +105,6 @@ public final class DBUser implements Serializable {
 
   public boolean isAdmin() {
     return userRole == Role.ADMIN;
-  }
-
-  /**
-   * An all-args constructor.
-   */
-  public DBUser(final UserName name, final UserEmail email, final Role role) {
-    this.m_name = name.userName;
-    this.m_email = email.userEmail;
-    this.userRole = role;
   }
 
   public boolean isValid() {

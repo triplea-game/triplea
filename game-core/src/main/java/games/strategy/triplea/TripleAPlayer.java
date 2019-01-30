@@ -72,6 +72,19 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   private boolean soundPlayedAlreadyBattle = false;
   private boolean soundPlayedAlreadyEndTurn = false;
   private boolean soundPlayedAlreadyPlacement = false;
+  private final ActionListener editModeAction = e -> {
+    final boolean editMode = ((ButtonModel) e.getSource()).isSelected();
+    try {
+      // Set edit mode
+      // All GameDataChangeListeners will be notified upon success
+      final IEditDelegate editDelegate = (IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
+      editDelegate.setEditMode(editMode);
+    } catch (final Exception exception) {
+      log.log(Level.SEVERE, "Failed to set edit mode to " + editMode, exception);
+      // toggle back to previous state since setEditMode failed
+      ui.getEditModeButtonModel().setSelected(!ui.getEditModeButtonModel().isSelected());
+    }
+  };
 
   public TripleAPlayer(final String name) {
     super(name);
@@ -169,21 +182,6 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       ui.getEditModeButtonModel().removeActionListener(editModeAction);
     });
   }
-
-  private final ActionListener editModeAction = e -> {
-    final boolean editMode = ((ButtonModel) e.getSource()).isSelected();
-    try {
-      // Set edit mode
-      // All GameDataChangeListeners will be notified upon success
-      final IEditDelegate editDelegate = (IEditDelegate) getPlayerBridge().getRemotePersistentDelegate("edit");
-      editDelegate.setEditMode(editMode);
-    } catch (final Exception exception) {
-      log.log(Level.SEVERE, "Failed to set edit mode to " + editMode, exception);
-      // toggle back to previous state since setEditMode failed
-      ui.getEditModeButtonModel().setSelected(!ui.getEditModeButtonModel().isSelected());
-    }
-
-  };
 
   private void politics(final boolean firstRun) {
     if (getPlayerBridge().isGameOver()) {

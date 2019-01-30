@@ -33,6 +33,20 @@ public class BattleRecords implements Serializable {
     this.records = records;
   }
 
+  // Create copy
+  public BattleRecords(final BattleRecords records) {
+    this.records = new HashMap<>();
+    for (final Entry<PlayerId, Map<GUID, BattleRecord>> entry : records.records.entrySet()) {
+      final PlayerId p = entry.getKey();
+      final Map<GUID, BattleRecord> record = entry.getValue();
+      final Map<GUID, BattleRecord> map = new HashMap<>();
+      for (final Entry<GUID, BattleRecord> entry2 : record.entrySet()) {
+        map.put(entry2.getKey(), new BattleRecord(entry2.getValue()));
+      }
+      this.records.put(p, map);
+    }
+  }
+
   @SerializationProxySupport
   public Object writeReplace() {
     return new SerializationProxy(this);
@@ -51,20 +65,6 @@ public class BattleRecords implements Serializable {
       return new BattleRecords(records);
     }
 
-  }
-
-  // Create copy
-  public BattleRecords(final BattleRecords records) {
-    this.records = new HashMap<>();
-    for (final Entry<PlayerId, Map<GUID, BattleRecord>> entry : records.records.entrySet()) {
-      final PlayerId p = entry.getKey();
-      final Map<GUID, BattleRecord> record = entry.getValue();
-      final Map<GUID, BattleRecord> map = new HashMap<>();
-      for (final Entry<GUID, BattleRecord> entry2 : record.entrySet()) {
-        map.put(entry2.getKey(), new BattleRecord(entry2.getValue()));
-      }
-      this.records.put(p, map);
-    }
   }
 
   public static Collection<BattleRecord> getAllRecords(final BattleRecords brs) {

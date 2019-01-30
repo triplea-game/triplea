@@ -14,14 +14,6 @@ public class ChangeAttachmentChange extends Change {
   private final String property;
   private boolean clearFirst = false;
 
-  public Attachable getAttachedTo() {
-    return attachedTo;
-  }
-
-  public String getAttachmentName() {
-    return attachmentName;
-  }
-
   /**
    * Initializes a new instance of the ChangeAttachmentChange class.
    *
@@ -67,6 +59,14 @@ public class ChangeAttachmentChange extends Change {
     this.oldValue = oldValue;
     this.property = property;
     clearFirst = resetFirst;
+  }
+
+  public Attachable getAttachedTo() {
+    return attachedTo;
+  }
+
+  public String getAttachmentName() {
+    return attachmentName;
   }
 
   @Override

@@ -43,18 +43,6 @@ import games.strategy.util.IntegerMap;
 public class TechAbilityAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 1866305599625384294L;
 
-  public static TechAbilityAttachment get(final TechAdvance type) {
-    if (type instanceof GenericTechAdvance) {
-      // generic techs can name a hardcoded tech, therefore if it exists we should use the hard coded tech's attachment.
-      // (if the map maker doesn't want to use the hardcoded tech's attachment, they should not name a hardcoded tech)
-      final TechAdvance hardCodedAdvance = ((GenericTechAdvance) type).getAdvance();
-      if (hardCodedAdvance != null) {
-        return (TechAbilityAttachment) hardCodedAdvance.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
-      }
-    }
-    return (TechAbilityAttachment) type.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
-  }
-
   // unitAbilitiesGained Static Strings
   public static final String ABILITY_CAN_BLITZ = "canBlitz";
   public static final String ABILITY_CAN_BOMBARD = "canBombard";
@@ -89,6 +77,18 @@ public class TechAbilityAttachment extends DefaultAttachment {
 
   public TechAbilityAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
+  }
+
+  public static TechAbilityAttachment get(final TechAdvance type) {
+    if (type instanceof GenericTechAdvance) {
+      // generic techs can name a hardcoded tech, therefore if it exists we should use the hard coded tech's attachment.
+      // (if the map maker doesn't want to use the hardcoded tech's attachment, they should not name a hardcoded tech)
+      final TechAdvance hardCodedAdvance = ((GenericTechAdvance) type).getAdvance();
+      if (hardCodedAdvance != null) {
+        return (TechAbilityAttachment) hardCodedAdvance.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
+      }
+    }
+    return (TechAbilityAttachment) type.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
   }
 
   @VisibleForTesting

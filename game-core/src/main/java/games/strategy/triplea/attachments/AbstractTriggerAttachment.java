@@ -35,6 +35,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";
   public static final String BEFORE = "before";
+  public static final Predicate<TriggerAttachment> availableUses = t -> t.getUses() != 0;
+
   // "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for
   // backwards compatibility.
   private int uses = -1;
@@ -224,8 +226,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
       return false;
     };
   }
-
-  public static final Predicate<TriggerAttachment> availableUses = t -> t.getUses() != 0;
 
   public static Predicate<TriggerAttachment> notificationMatch() {
     return t -> t.getNotification() != null;

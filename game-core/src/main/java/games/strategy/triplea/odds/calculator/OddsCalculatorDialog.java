@@ -31,6 +31,14 @@ public class OddsCalculatorDialog extends JDialog {
   private static List<OddsCalculatorDialog> instances = new ArrayList<>();
   private final OddsCalculatorPanel panel;
 
+  OddsCalculatorDialog(final GameData data, final UiContext uiContext, final JFrame parent, final Territory location) {
+    super(parent, "Odds Calculator");
+    panel = new OddsCalculatorPanel(data, uiContext, location, this);
+    getContentPane().setLayout(new BorderLayout());
+    getContentPane().add(panel, BorderLayout.CENTER);
+    pack();
+  }
+
   /**
    * Shows the Odds Calculator dialog and initializes it using the current state of the specified territory.
    */
@@ -95,14 +103,6 @@ public class OddsCalculatorDialog extends JDialog {
     currentDialog.panel
         .addDefendingUnits(t.getUnits().getMatches(Matches.alliedUnit(currentDialog.panel.getDefender(), t.getData())));
     currentDialog.pack();
-  }
-
-  OddsCalculatorDialog(final GameData data, final UiContext uiContext, final JFrame parent, final Territory location) {
-    super(parent, "Odds Calculator");
-    panel = new OddsCalculatorPanel(data, uiContext, location, this);
-    getContentPane().setLayout(new BorderLayout());
-    getContentPane().add(panel, BorderLayout.CENTER);
-    pack();
   }
 
   @Override

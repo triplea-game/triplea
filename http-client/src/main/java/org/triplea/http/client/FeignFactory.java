@@ -17,11 +17,6 @@ import lombok.extern.java.Log;
 final class FeignFactory {
   private static final Encoder gsonEncoder = new GsonEncoder();
   private static final Decoder gsonDecoder = new GsonDecoder();
-
-  private FeignFactory() {
-
-  }
-
   /**
    * How long we can take to start receiving a message.
    */
@@ -30,6 +25,8 @@ final class FeignFactory {
    * How long we can spend receiving a message.
    */
   private static final int DEFAULT_READ_TIME_OUT_MS = 20 * 1000;
+
+  private FeignFactory() {}
 
   static <T> T build(final Class<T> classType, final URI hostUri) {
     Preconditions.checkNotNull(classType);

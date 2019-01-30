@@ -30,24 +30,6 @@ import games.strategy.util.Version;
 
 @ExtendWith(MockitoExtension.class)
 class GameSelectorModelTest extends AbstractClientSettingTestCase {
-
-  private static void assertHasEmptyData(final GameSelectorModel objectToCheck) {
-    assertThat(objectToCheck.getGameData(), nullValue());
-    assertHasEmptyDisplayData(objectToCheck);
-  }
-
-  private static void assertHasEmptyDisplayData(final GameSelectorModel objectToCheck) {
-    assertThat(objectToCheck.getFileName(), is("-"));
-    assertThat(objectToCheck.getGameName(), is("-"));
-    assertThat(objectToCheck.getGameRound(), is("-"));
-  }
-
-  private static void assertHasFakeTestData(final GameSelectorModel objectToCheck) {
-    assertThat(objectToCheck.getGameName(), is(fakeGameName));
-    assertThat(objectToCheck.getGameRound(), is(fakeGameRound));
-    assertThat(objectToCheck.getGameVersion(), is(fakeGameVersion));
-  }
-
   private static final String fakeGameVersion = "12.34.56";
   private static final String fakeGameRound = "3";
   private static final String fakeGameName = "_fakeGameName_";
@@ -69,6 +51,23 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
   @Mock
   private ClientModel mockClientModel;
+
+  private static void assertHasEmptyData(final GameSelectorModel objectToCheck) {
+    assertThat(objectToCheck.getGameData(), nullValue());
+    assertHasEmptyDisplayData(objectToCheck);
+  }
+
+  private static void assertHasEmptyDisplayData(final GameSelectorModel objectToCheck) {
+    assertThat(objectToCheck.getFileName(), is("-"));
+    assertThat(objectToCheck.getGameName(), is("-"));
+    assertThat(objectToCheck.getGameRound(), is("-"));
+  }
+
+  private static void assertHasFakeTestData(final GameSelectorModel objectToCheck) {
+    assertThat(objectToCheck.getGameName(), is(fakeGameName));
+    assertThat(objectToCheck.getGameRound(), is(fakeGameRound));
+    assertThat(objectToCheck.getGameVersion(), is(fakeGameVersion));
+  }
 
   @BeforeEach
   void setup() {

@@ -24,6 +24,7 @@ import games.strategy.triplea.util.TransportUtils;
  * that has been unloaded. To reset the unloaded call clearUnloadedCapacity().
  */
 public class TransportTracker {
+  private TransportTracker() {}
 
   private static int getCost(final Collection<Unit> units) {
     return TransportUtils.getTransportCost(units);
@@ -34,8 +35,6 @@ public class TransportTracker {
       throw new IllegalStateException("Not a transport:" + u);
     }
   }
-
-  private TransportTracker() {}
 
   /**
    * Returns the collection of units that the given transport is transporting.

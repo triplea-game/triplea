@@ -50,6 +50,13 @@ public final class CreateUpdateAccountPanel extends JPanel {
   private final JButton cancelButton = new JButton("Cancel");
   private ReturnValue returnValue = ReturnValue.CANCEL;
 
+  private CreateUpdateAccountPanel(final boolean create) {
+    title = create ? "Create Account" : "Update Account";
+
+    layoutComponents();
+    setupListeners();
+  }
+
   /**
    * Creates a new instance of the {@code CreateUpdateAccountPanel} class that is used to update the specified lobby
    * account.
@@ -80,13 +87,6 @@ public final class CreateUpdateAccountPanel extends JPanel {
    */
   public static CreateUpdateAccountPanel newCreatePanel() {
     return new CreateUpdateAccountPanel(true);
-  }
-
-  private CreateUpdateAccountPanel(final boolean create) {
-    title = create ? "Create Account" : "Update Account";
-
-    layoutComponents();
-    setupListeners();
   }
 
   private void layoutComponents() {

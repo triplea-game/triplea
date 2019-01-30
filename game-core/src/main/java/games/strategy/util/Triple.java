@@ -19,6 +19,11 @@ public final class Triple<F, S, T> implements Serializable {
   private final Tuple<F, S> tuple;
   private final T third;
 
+  private Triple(final F first, final S second, final T third) {
+    tuple = Tuple.of(first, second);
+    this.third = third;
+  }
+
   /**
    * Static creation method to create a new instance of a triple with the parameters provided.
    *
@@ -40,11 +45,6 @@ public final class Triple<F, S, T> implements Serializable {
    */
   public static <F, S, T> Triple<F, S, T> of(final F first, final S second, final T third) {
     return new Triple<>(first, second, third);
-  }
-
-  private Triple(final F first, final S second, final T third) {
-    tuple = Tuple.of(first, second);
-    this.third = third;
   }
 
   public F getFirst() {

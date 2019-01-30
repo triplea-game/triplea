@@ -99,6 +99,60 @@ public class MapPanel extends ImageScrollerLargeView {
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
 
+  private final TerritoryListener territoryListener = new TerritoryListener() {
+    @Override
+    public void unitsChanged(final Territory territory) {
+      updateCountries(Collections.singleton(territory));
+      SwingUtilities.invokeLater(MapPanel.this::repaint);
+    }
+
+    @Override
+    public void ownerChanged(final Territory territory) {
+      smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
+      updateCountries(Collections.singleton(territory));
+      SwingUtilities.invokeLater(MapPanel.this::repaint);
+    }
+
+    @Override
+    public void attachmentChanged(final Territory territory) {
+      updateCountries(Collections.singleton(territory));
+      SwingUtilities.invokeLater(MapPanel.this::repaint);
+    }
+  };
+
+  private final GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
+    @Override
+    public void gameDataChanged(final Change change) {
+      // find the players with tech changes
+      final Set<PlayerId> playersWithTechChange = new HashSet<>();
+      getPlayersWithTechChanges(change, playersWithTechChange);
+      if (!playersWithTechChange.isEmpty()
+          || UnitIconProperties.getInstance(gameData).testIfConditionsHaveChanged(gameData)) {
+        tileManager.resetTiles(gameData, uiContext.getMapData());
+        SwingUtilities.invokeLater(() -> {
+          recreateTiles(getData(), uiContext);
+          repaint();
+        });
+      }
+    }
+
+    private void getPlayersWithTechChanges(final Change change, final Set<PlayerId> players) {
+      if (change instanceof CompositeChange) {
+        final CompositeChange composite = (CompositeChange) change;
+        for (final Change item : composite.getChanges()) {
+          getPlayersWithTechChanges(item, players);
+        }
+      } else {
+        if (change instanceof ChangeAttachmentChange) {
+          final ChangeAttachmentChange changeAttachment = (ChangeAttachmentChange) change;
+          if (changeAttachment.getAttachmentName().equals(Constants.TECH_ATTACHMENT_NAME)) {
+            players.add((PlayerId) changeAttachment.getAttachedTo());
+          }
+        }
+      }
+    }
+  };
+
   public MapPanel(final GameData data, final MapPanelSmallView smallView, final UiContext uiContext,
       final ImageScrollModel model, final Supplier<Integer> computeScrollSpeed) {
     super(uiContext.getMapData().getMapDimensions(), model, TileManager.TILE_SIZE);
@@ -478,60 +532,6 @@ public class MapPanel extends ImageScrollerLargeView {
     clearPendingDrawOperations();
     executor.execute(() -> tileManager.resetTiles(gameData, uiContext.getMapData()));
   }
-
-  private final TerritoryListener territoryListener = new TerritoryListener() {
-    @Override
-    public void unitsChanged(final Territory territory) {
-      updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(MapPanel.this::repaint);
-    }
-
-    @Override
-    public void ownerChanged(final Territory territory) {
-      smallMapImageManager.updateTerritoryOwner(territory, gameData, uiContext.getMapData());
-      updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(MapPanel.this::repaint);
-    }
-
-    @Override
-    public void attachmentChanged(final Territory territory) {
-      updateCountries(Collections.singleton(territory));
-      SwingUtilities.invokeLater(MapPanel.this::repaint);
-    }
-  };
-
-  private final GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
-    @Override
-    public void gameDataChanged(final Change change) {
-      // find the players with tech changes
-      final Set<PlayerId> playersWithTechChange = new HashSet<>();
-      getPlayersWithTechChanges(change, playersWithTechChange);
-      if (!playersWithTechChange.isEmpty()
-          || UnitIconProperties.getInstance(gameData).testIfConditionsHaveChanged(gameData)) {
-        tileManager.resetTiles(gameData, uiContext.getMapData());
-        SwingUtilities.invokeLater(() -> {
-          recreateTiles(getData(), uiContext);
-          repaint();
-        });
-      }
-    }
-
-    private void getPlayersWithTechChanges(final Change change, final Set<PlayerId> players) {
-      if (change instanceof CompositeChange) {
-        final CompositeChange composite = (CompositeChange) change;
-        for (final Change item : composite.getChanges()) {
-          getPlayersWithTechChanges(item, players);
-        }
-      } else {
-        if (change instanceof ChangeAttachmentChange) {
-          final ChangeAttachmentChange changeAttachment = (ChangeAttachmentChange) change;
-          if (changeAttachment.getAttachmentName().equals(Constants.TECH_ATTACHMENT_NAME)) {
-            players.add((PlayerId) changeAttachment.getAttachedTo());
-          }
-        }
-      }
-    }
-  };
 
   @Override
   public void setTopLeft(final int x, final int y) {

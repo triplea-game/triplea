@@ -10,13 +10,13 @@ public class Event extends IndexedHistoryNode implements Renderable {
   // additional data used for rendering this event
   private Object renderingData;
 
-  public String getDescription() {
-    return description;
-  }
-
   Event(final String description, final int changeStartIndex) {
     super(description, changeStartIndex);
     this.description = description;
+  }
+
+  public String getDescription() {
+    return description;
   }
 
   @Override

@@ -47,6 +47,8 @@ import lombok.extern.java.Log;
 public class BattleCalculator {
   private static final Map<String, List<UnitType>> oolCache = new ConcurrentHashMap<>();
 
+  private BattleCalculator() {}
+
   public static void clearOolCache() {
     oolCache.clear();
   }
@@ -909,9 +911,6 @@ public class BattleCalculator {
   private static boolean isPartialAmphibiousRetreat(final GameData data) {
     return Properties.getPartialAmphibiousRetreat(data);
   }
-
-  // nothing but static
-  private BattleCalculator() {}
 
   /**
    * This returns the exact Power that a unit has according to what DiceRoll.rollDiceLowLuck() would give it.

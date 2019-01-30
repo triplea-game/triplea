@@ -53,6 +53,12 @@ class ProductionRepairPanel extends JPanel {
   private boolean bid;
   private Collection<PlayerId> allowedPlayersToRepair;
   private GameData data;
+  final Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
+  private final ScrollableTextFieldListener listener = stf -> calculateLimits();
+
+  ProductionRepairPanel(final UiContext uiContext) {
+    this.uiContext = uiContext;
+  }
 
   static Map<Unit, IntegerMap<RepairRule>> getProduction(final PlayerId id,
       final Collection<PlayerId> allowedPlayersToRepair, final JFrame parent, final GameData data, final boolean bid,
@@ -104,10 +110,6 @@ class ProductionRepairPanel extends JPanel {
     dialog = new JDialog(root, "Repair", true);
     dialog.getContentPane().add(this);
     SwingComponents.addEscapeKeyListener(dialog, () -> dialog.setVisible(false));
-  }
-
-  ProductionRepairPanel(final UiContext uiContext) {
-    this.uiContext = uiContext;
   }
 
   private void initRules(final PlayerId player, final Collection<PlayerId> allowedPlayersToRepair, final GameData data,
@@ -170,8 +172,6 @@ class ProductionRepairPanel extends JPanel {
     final ResourceCollection total = getResources();
     this.left.setText("<html>You have " + left + " left.<br>Out of " + total + "</html>");
   }
-
-  final Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
 
   protected void calculateLimits() {
     // final IntegerMap<Resource> cost;
@@ -285,6 +285,4 @@ class ProductionRepairPanel extends JPanel {
       return unit;
     }
   }
-
-  private final ScrollableTextFieldListener listener = stf -> calculateLimits();
 }

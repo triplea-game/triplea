@@ -33,7 +33,8 @@ abstract class AbstractMovePanel extends ActionPanel {
   private final JLabel actionLabel = new JLabel();
   private MoveDescription moveMessage;
   private List<UndoableMove> undoableMoves;
-
+  AbstractUndoableMovesPanel undoableMovesPanel;
+  private IPlayerBridge bridge;
 
   private final JButton cancelMoveButton = JButtonBuilder.builder()
       .title("Cancel")
@@ -56,10 +57,6 @@ abstract class AbstractMovePanel extends ActionPanel {
    * sub-classes method for cancel handling
    */
   protected abstract void cancelMoveAction();
-
-
-  AbstractUndoableMovesPanel undoableMovesPanel;
-  private IPlayerBridge bridge;
 
   IPlayerBridge getPlayerBridge() {
     return bridge;

@@ -82,6 +82,9 @@ public class BattleDisplay extends JPanel {
   private static final String DICE_KEY = "D";
   private static final String CASUALTIES_KEY = "C";
   private static final String MESSAGE_KEY = "M";
+  private static final int MY_WIDTH = 100;
+  private static final int MY_HEIGHT = 100;
+
   private final PlayerId defender;
   private final PlayerId attacker;
   private final Territory location;
@@ -618,9 +621,6 @@ public class BattleDisplay extends JPanel {
     return player;
   }
 
-  private static final int MY_WIDTH = 100;
-  private static final int MY_HEIGHT = 100;
-
   private JComponent getTerritoryComponent() {
     final Image finalImage = Util.newImage(MY_WIDTH, MY_HEIGHT, true);
     final Image territory = mapPanel.getTerritoryImage(location);
@@ -658,21 +658,6 @@ public class BattleDisplay extends JPanel {
     private final Collection<Unit> amphibiousLandAttackers;
     private BattleModel enemyBattleModel = null;
 
-    private static String[] varDiceArray(final GameData data) {
-      // TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
-      final String[] diceColumns = new String[data.getDiceSides() + 1];
-      {
-        for (int i = 0; i < diceColumns.length; i++) {
-          if (i == 0) {
-            diceColumns[i] = " ";
-          } else {
-            diceColumns[i] = Integer.toString(i);
-          }
-        }
-      }
-      return diceColumns;
-    }
-
     BattleModel(final Collection<Unit> units, final boolean attack, final BattleType battleType,
         final GameData data, final Territory battleLocation, final Collection<TerritoryEffect> territoryEffects,
         final boolean isAmphibious, final Collection<Unit> amphibiousLandAttackers, final UiContext uiContext) {
@@ -687,6 +672,21 @@ public class BattleDisplay extends JPanel {
       this.territoryEffects = territoryEffects;
       this.isAmphibious = isAmphibious;
       this.amphibiousLandAttackers = amphibiousLandAttackers;
+    }
+
+    private static String[] varDiceArray(final GameData data) {
+      // TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
+      final String[] diceColumns = new String[data.getDiceSides() + 1];
+      {
+        for (int i = 0; i < diceColumns.length; i++) {
+          if (i == 0) {
+            diceColumns[i] = " ";
+          } else {
+            diceColumns[i] = Integer.toString(i);
+          }
+        }
+      }
+      return diceColumns;
     }
 
     void setEnemyBattleModel(final BattleModel enemyBattleModel) {

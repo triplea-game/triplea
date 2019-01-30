@@ -40,18 +40,17 @@ public class FileProperty extends AbstractEditableProperty<File> {
     this(name, description, getFileIfExists(new File(fileName)));
   }
 
+  public FileProperty(final String name, final String description, final File file) {
+    super(name, description);
+    this.file = getFileIfExists(file);
+    this.acceptableSuffixes = defaultImageSuffixes;
+  }
+
   private static File getFileIfExists(final File file) {
     if (file.exists()) {
       return file;
     }
     return null;
-  }
-
-
-  public FileProperty(final String name, final String description, final File file) {
-    super(name, description);
-    this.file = getFileIfExists(file);
-    this.acceptableSuffixes = defaultImageSuffixes;
   }
 
   /**

@@ -128,6 +128,7 @@ public final class PolygonGrabber {
     // holds the centers for the polygons
     private Map<String, Point> centers;
     private final JLabel location = new JLabel();
+    private final Point testPoint = new Point();
 
     /**
      * Asks user to specify a file with center points. If not program will exit. We setup the mouse listeners and
@@ -536,9 +537,6 @@ public final class PolygonGrabber {
         p.y--;
       }
     }
-
-    // used below
-    private final Point testPoint = new Point();
 
     /**
      * Checks to see if the direction we're going is on the edge.

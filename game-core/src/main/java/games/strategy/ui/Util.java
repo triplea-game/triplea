@@ -27,11 +27,11 @@ import java.util.Optional;
 public final class Util {
   public static final String TERRITORY_SEA_ZONE_INFIX = "Sea Zone";
 
-  private Util() {}
-
   private static final Component component = new Component() {
     private static final long serialVersionUID = 1800075529163275600L;
   };
+
+  private Util() {}
 
   public static void ensureImageLoaded(final Image anImage) {
     final MediaTracker tracker = new MediaTracker(component);

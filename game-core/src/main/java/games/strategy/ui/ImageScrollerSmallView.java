@@ -28,6 +28,7 @@ public class ImageScrollerSmallView extends JComponent {
   private final ImageScrollModel model;
   private Image image;
   private final MapData mapData;
+  private long lastUpdate = 0;
 
   public ImageScrollerSmallView(final Image image, final ImageScrollModel model, final MapData mapData) {
     this.model = model;
@@ -152,8 +153,6 @@ public class ImageScrollerSmallView extends JComponent {
   private void setSelection(final int x, final int y) {
     model.set(x, y);
   }
-
-  private long lastUpdate = 0;
 
   public double getRatioY() {
     return image.getHeight(null) / (double) model.getMaxHeight();

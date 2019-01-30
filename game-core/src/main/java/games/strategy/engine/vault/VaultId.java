@@ -12,10 +12,6 @@ public class VaultId implements Serializable {
   private static final long serialVersionUID = 8863728184933393296L;
   private static long currentId;
 
-  private static synchronized long getNextId() {
-    return currentId++;
-  }
-
   private final INode generatedOn;
   // this is a unique and monotone increasing id
   // unique in this vm
@@ -23,6 +19,10 @@ public class VaultId implements Serializable {
 
   VaultId(final INode generatedOn) {
     this.generatedOn = generatedOn;
+  }
+
+  private static synchronized long getNextId() {
+    return currentId++;
   }
 
   INode getGeneratedOn() {

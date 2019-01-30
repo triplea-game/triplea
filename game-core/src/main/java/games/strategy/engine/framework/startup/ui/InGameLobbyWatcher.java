@@ -70,6 +70,92 @@ public class InGameLobbyWatcher {
   private final IMessengerErrorListener messengerErrorListener;
   private final boolean isHandlerPlayer;
 
+  private InGameLobbyWatcher(
+      final IMessenger messenger,
+      final IRemoteMessenger remoteMessenger,
+      final IServerMessenger serverMessenger,
+      final LobbyWatcherHandler handler,
+      final InGameLobbyWatcher oldWatcher) {
+    this.messenger = messenger;
+    this.remoteMessenger = remoteMessenger;
+    this.serverMessenger = serverMessenger;
+    this.isHandlerPlayer = handler.isPlayer();
+    final String password = System.getProperty(SERVER_PASSWORD);
+    final boolean passworded = password != null && password.length() > 0;
+    final Instant startDateTime = (oldWatcher == null || oldWatcher.gameDescription == null
+        || oldWatcher.gameDescription.getStartDateTime() == null) ? Instant.now()
+            : oldWatcher.gameDescription.getStartDateTime();
+    final int playerCount = (oldWatcher == null || oldWatcher.gameDescription == null)
+        ? (isHandlerPlayer ? 1 : 0)
+        : oldWatcher.gameDescription.getPlayerCount();
+    final GameDescription.GameStatus gameStatus =
+        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getStatus() == null)
+            ? GameDescription.GameStatus.WAITING_FOR_PLAYERS
+            : oldWatcher.gameDescription.getStatus();
+    final String gameRound =
+        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
+            ? "-"
+            : oldWatcher.gameDescription.getRound();
+    gameDescription = GameDescription.builder()
+        .hostedBy(messenger.getLocalNode())
+        .port(serverMessenger.getLocalNode().getPort())
+        .startDateTime(startDateTime)
+        .gameName("???")
+        .playerCount(playerCount)
+        .status(gameStatus)
+        .round(gameRound)
+        .hostName(serverMessenger.getLocalNode().getName())
+        .comment(System.getProperty(LOBBY_GAME_COMMENTS))
+        .passworded(passworded)
+        .engineVersion(ClientContext.engineVersion().toString())
+        .gameVersion("0")
+        .build();
+    final ILobbyGameController controller =
+        (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
+    synchronized (mutex) {
+      controller.postGame(gameId, (GameDescription) gameDescription.clone());
+    }
+    messengerErrorListener = e -> shutDown();
+    this.messenger.addErrorListener(messengerErrorListener);
+    connectionChangeListener = new IConnectionChangeListener() {
+      @Override
+      public void connectionRemoved(final INode to) {
+        updatePlayerCount();
+      }
+
+      @Override
+      public void connectionAdded(final INode to) {
+        updatePlayerCount();
+      }
+    };
+    // when players join or leave the game update the connection count
+    this.serverMessenger.addConnectionChangeListener(connectionChangeListener);
+    if (oldWatcher != null && oldWatcher.gameDescription != null) {
+      this.setGameStatus(oldWatcher.gameDescription.getStatus(), oldWatcher.game);
+    }
+    // if we loose our connection, then shutdown
+    new Thread(() -> {
+      final String addressUsed = controller.testGame(gameId);
+      // if the server cannot connect to us, then quit
+      if (addressUsed != null) {
+        if (isActive()) {
+          shutDown();
+          String portString = System.getProperty(TRIPLEA_PORT);
+          if (portString == null || portString.trim().length() <= 0) {
+            portString = "3300";
+          }
+          final String message = "Your computer is not reachable from the internet.\n"
+              + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\n"
+              + "(The firewall exception must be updated every time a new version of TripleA comes out.)\n"
+              + "And that your Router is configured to send TCP traffic on port " + portString
+              + " to your local ip address.\r\n"
+              + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
+              + "The server tried to connect to your external ip: " + addressUsed;
+          handler.reportError(message);
+        }
+      }
+    }).start();
+  }
 
   /**
    * Helper interface to keep the logging logic outside of this class
@@ -165,93 +251,6 @@ public class InGameLobbyWatcher {
       gameDescription.setGameVersion(gameSelectorModel.getGameVersion());
       postUpdate();
     }
-  }
-
-  private InGameLobbyWatcher(
-      final IMessenger messenger,
-      final IRemoteMessenger remoteMessenger,
-      final IServerMessenger serverMessenger,
-      final LobbyWatcherHandler handler,
-      final InGameLobbyWatcher oldWatcher) {
-    this.messenger = messenger;
-    this.remoteMessenger = remoteMessenger;
-    this.serverMessenger = serverMessenger;
-    this.isHandlerPlayer = handler.isPlayer();
-    final String password = System.getProperty(SERVER_PASSWORD);
-    final boolean passworded = password != null && password.length() > 0;
-    final Instant startDateTime = (oldWatcher == null || oldWatcher.gameDescription == null
-        || oldWatcher.gameDescription.getStartDateTime() == null) ? Instant.now()
-            : oldWatcher.gameDescription.getStartDateTime();
-    final int playerCount = (oldWatcher == null || oldWatcher.gameDescription == null)
-        ? (isHandlerPlayer ? 1 : 0)
-        : oldWatcher.gameDescription.getPlayerCount();
-    final GameDescription.GameStatus gameStatus =
-        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getStatus() == null)
-            ? GameDescription.GameStatus.WAITING_FOR_PLAYERS
-            : oldWatcher.gameDescription.getStatus();
-    final String gameRound =
-        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
-            ? "-"
-            : oldWatcher.gameDescription.getRound();
-    gameDescription = GameDescription.builder()
-        .hostedBy(messenger.getLocalNode())
-        .port(serverMessenger.getLocalNode().getPort())
-        .startDateTime(startDateTime)
-        .gameName("???")
-        .playerCount(playerCount)
-        .status(gameStatus)
-        .round(gameRound)
-        .hostName(serverMessenger.getLocalNode().getName())
-        .comment(System.getProperty(LOBBY_GAME_COMMENTS))
-        .passworded(passworded)
-        .engineVersion(ClientContext.engineVersion().toString())
-        .gameVersion("0")
-        .build();
-    final ILobbyGameController controller =
-        (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
-    synchronized (mutex) {
-      controller.postGame(gameId, (GameDescription) gameDescription.clone());
-    }
-    messengerErrorListener = e -> shutDown();
-    this.messenger.addErrorListener(messengerErrorListener);
-    connectionChangeListener = new IConnectionChangeListener() {
-      @Override
-      public void connectionRemoved(final INode to) {
-        updatePlayerCount();
-      }
-
-      @Override
-      public void connectionAdded(final INode to) {
-        updatePlayerCount();
-      }
-    };
-    // when players join or leave the game update the connection count
-    this.serverMessenger.addConnectionChangeListener(connectionChangeListener);
-    if (oldWatcher != null && oldWatcher.gameDescription != null) {
-      this.setGameStatus(oldWatcher.gameDescription.getStatus(), oldWatcher.game);
-    }
-    // if we loose our connection, then shutdown
-    new Thread(() -> {
-      final String addressUsed = controller.testGame(gameId);
-      // if the server cannot connect to us, then quit
-      if (addressUsed != null) {
-        if (isActive()) {
-          shutDown();
-          String portString = System.getProperty(TRIPLEA_PORT);
-          if (portString == null || portString.trim().length() <= 0) {
-            portString = "3300";
-          }
-          final String message = "Your computer is not reachable from the internet.\n"
-              + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\n"
-              + "(The firewall exception must be updated every time a new version of TripleA comes out.)\n"
-              + "And that your Router is configured to send TCP traffic on port " + portString
-              + " to your local ip address.\r\n"
-              + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
-              + "The server tried to connect to your external ip: " + addressUsed;
-          handler.reportError(message);
-        }
-      }
-    }).start();
   }
 
   void setGameSelectorModel(final GameSelectorModel model) {

@@ -68,6 +68,25 @@ public class BattleRecord implements Serializable {
   private final BattleType battleType;
   private BattleResults battleResults;
 
+  /**
+   * Convenience copy constructor.
+   */
+  protected BattleRecord(final BattleRecord record) {
+    battleSite = record.battleSite;
+    attacker = record.attacker;
+    defender = record.defender;
+    attackerLostTuv = record.attackerLostTuv;
+    defenderLostTuv = record.defenderLostTuv;
+    battleResultDescription = record.battleResultDescription;
+    battleType = record.battleType;
+    battleResults = record.battleResults;
+  }
+
+  protected BattleRecord(final Territory battleSite, final PlayerId attacker, final BattleType battleType) {
+    this.battleSite = battleSite;
+    this.attacker = attacker;
+    this.battleType = battleType;
+  }
 
   @SerializationProxySupport
   private BattleRecord(final Territory battleSite, final PlayerId attacker, final PlayerId defender,
@@ -115,26 +134,6 @@ public class BattleRecord implements Serializable {
       return new BattleRecord(battleSite, attacker, defender, attackerLostTuv, defenderLostTuv, battleResultDescription,
           battleType, battleResults);
     }
-  }
-
-  /**
-   * Convenience copy constructor.
-   */
-  protected BattleRecord(final BattleRecord record) {
-    battleSite = record.battleSite;
-    attacker = record.attacker;
-    defender = record.defender;
-    attackerLostTuv = record.attackerLostTuv;
-    defenderLostTuv = record.defenderLostTuv;
-    battleResultDescription = record.battleResultDescription;
-    battleType = record.battleType;
-    battleResults = record.battleResults;
-  }
-
-  protected BattleRecord(final Territory battleSite, final PlayerId attacker, final BattleType battleType) {
-    this.battleSite = battleSite;
-    this.attacker = attacker;
-    this.battleType = battleType;
   }
 
   protected void setResult(final PlayerId defender, final int attackerLostTuv, final int defenderLostTuv,

@@ -21,6 +21,8 @@ public final class DownloadConfiguration {
     downloadLengthReader = new DownloadLengthReader(httpClientSupplier);
   }
 
+  private DownloadConfiguration() {}
+
   public static ContentReader contentReader() {
     return contentReader;
   }
@@ -28,7 +30,4 @@ public final class DownloadConfiguration {
   public static DownloadLengthReader downloadLengthReader() {
     return downloadLengthReader;
   }
-
-
-  private DownloadConfiguration() {}
 }

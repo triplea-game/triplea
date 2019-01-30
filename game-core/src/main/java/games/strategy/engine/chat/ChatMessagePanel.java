@@ -64,14 +64,24 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
   public static final String ME = "/me ";
-
-  private static boolean isThirdPerson(final String msg) {
-    return msg.toLowerCase().startsWith(ME);
-  }
+  private final Action setStatusAction = SwingAction.of("Status...", e -> {
+    String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this),
+        "Enter Status Text (leave blank for no status)", "");
+    if (status != null) {
+      if (status.trim().length() == 0) {
+        status = null;
+      }
+      chat.getStatusManager().setStatus(status);
+    }
+  });
 
   public ChatMessagePanel(final Chat chat) {
     init();
     setChat(chat);
+  }
+
+  private static boolean isThirdPerson(final String msg) {
+    return msg.toLowerCase().startsWith(ME);
   }
 
   private void init() {
@@ -331,17 +341,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       log.log(Level.SEVERE, "There was an Error whilst trying trimming Chat", e);
     }
   }
-
-  private final Action setStatusAction = SwingAction.of("Status...", e -> {
-    String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this),
-        "Enter Status Text (leave blank for no status)", "");
-    if (status != null) {
-      if (status.trim().length() == 0) {
-        status = null;
-      }
-      chat.getStatusManager().setStatus(status);
-    }
-  });
 
   private void sendMessage() {
     if (nextMessage.getText().trim().length() == 0) {

@@ -20,31 +20,6 @@ import games.strategy.triplea.delegate.TechAdvance;
 public class TechAttachment extends DefaultAttachment {
   private static final long serialVersionUID = -8780929085456199961L;
 
-  // attaches to a PlayerId
-  public static TechAttachment get(final PlayerId id) {
-    final TechAttachment attachment = id.getTechAttachment();
-    // dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment
-    // for them
-    if (attachment == null) {
-      return new TechAttachment();
-    }
-    return attachment;
-  }
-
-  static TechAttachment get(final PlayerId id, final String nameOfAttachment) {
-    if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME)) {
-      throw new IllegalStateException(
-          "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
-    }
-    final TechAttachment attachment = (TechAttachment) id.getAttachment(nameOfAttachment);
-    // dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment
-    // for them
-    if (attachment == null) {
-      return new TechAttachment();
-    }
-    return attachment;
-  }
-
   private int techCost = 5;
   private boolean heavyBomber = false;
   private boolean longRangeAir = false;
@@ -80,6 +55,31 @@ public class TechAttachment extends DefaultAttachment {
     super(Constants.TECH_ATTACHMENT_NAME, null, null);
     // TODO: not having game data, and not having generic techs, causes problems. Fix by creating real tech attachments
     // for all players who are missing them, at the beginning of the game.
+  }
+
+  // attaches to a PlayerId
+  public static TechAttachment get(final PlayerId id) {
+    final TechAttachment attachment = id.getTechAttachment();
+    // dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment
+    // for them
+    if (attachment == null) {
+      return new TechAttachment();
+    }
+    return attachment;
+  }
+
+  static TechAttachment get(final PlayerId id, final String nameOfAttachment) {
+    if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME)) {
+      throw new IllegalStateException(
+          "TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
+    }
+    final TechAttachment attachment = (TechAttachment) id.getAttachment(nameOfAttachment);
+    // dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment
+    // for them
+    if (attachment == null) {
+      return new TechAttachment();
+    }
+    return attachment;
   }
 
   // setters

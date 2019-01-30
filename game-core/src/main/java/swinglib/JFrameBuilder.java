@@ -22,11 +22,6 @@ import games.strategy.ui.SwingComponents;
  * </ul>
  */
 public class JFrameBuilder {
-
-  public static JFrameBuilder builder() {
-    return new JFrameBuilder();
-  }
-
   private final Collection<Component> children = new ArrayList<>();
   private boolean escapeClosesWindow;
   private boolean alwaysOnTop;
@@ -39,6 +34,10 @@ public class JFrameBuilder {
   private int height;
 
   private LayoutManager layoutManager;
+
+  public static JFrameBuilder builder() {
+    return new JFrameBuilder();
+  }
 
   /**
    * Constructs the JFrame instance. It will not be visible.

@@ -37,6 +37,20 @@ class SparkServerSystemTest {
 
   private static final ErrorUploadStrategy errorUploadStrategy = Mockito.mock(ErrorUploadStrategy.class);
 
+  private static final ErrorReportRequest ERROR_REPORT =
+      ErrorReportRequest.builder()
+          .clientIp("")
+          .errorReport(
+              ErrorReport.builder()
+                  .gameVersion("Ah there's nothing like the salty endurance stuttering on the plunder.")
+                  .javaVersion("Where is the shiny jack?")
+                  .operatingSystem("haiti ")
+                  .reportMessage("Never ransack a ship.")
+                  .build())
+          .build();
+
+  private static final String LINK = "http://fictitious-link";
+
   @BeforeAll
   static void startServer() {
     Spark.port(SPARK_PORT);
@@ -55,20 +69,6 @@ class SparkServerSystemTest {
   static void stopServer() {
     Spark.stop();
   }
-
-  private static final ErrorReportRequest ERROR_REPORT =
-      ErrorReportRequest.builder()
-          .clientIp("")
-          .errorReport(
-              ErrorReport.builder()
-                  .gameVersion("Ah there's nothing like the salty endurance stuttering on the plunder.")
-                  .javaVersion("Where is the shiny jack?")
-                  .operatingSystem("haiti ")
-                  .reportMessage("Never ransack a ship.")
-                  .build())
-          .build();
-
-  private static final String LINK = "http://fictitious-link";
 
   @Test
   void errorReportEndpont() {

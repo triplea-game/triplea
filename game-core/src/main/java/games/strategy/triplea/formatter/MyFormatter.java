@@ -41,6 +41,8 @@ public class MyFormatter {
     plural.put("factory", "factories");
   }
 
+  private MyFormatter() {}
+
   public static String unitsToTextNoOwner(final Collection<Unit> units) {
     return unitsToTextNoOwner(units, null);
   }
@@ -395,6 +397,4 @@ public class MyFormatter {
     }
     return buf.toString().replaceFirst(separator, "");
   }
-
-  private MyFormatter() {}
 }

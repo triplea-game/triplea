@@ -57,6 +57,38 @@ public class DiceRoll implements Externalizable {
   private int hits;
   private double expectedHits;
 
+  /**
+   * Initializes a new instance of the DiceRoll class.
+   *
+   * @param dice the dice, 0 based
+   * @param hits the number of hits
+   * @param rollAt what we roll at, [0,Constants.MAX_DICE]
+   * @param hitOnlyIfEquals Do we get a hit only if we are equals, or do we hit when we are equal or less than for
+   *        example a 5 is a hit when rolling at 6 for equal and less than, but is not for equals.
+   */
+  public DiceRoll(final int[] dice, final int hits, final int rollAt, final boolean hitOnlyIfEquals) {
+    this.hits = hits;
+    expectedHits = 0;
+    rolls = new ArrayList<>(dice.length);
+    for (final int element : dice) {
+      final boolean hit;
+      if (hitOnlyIfEquals) {
+        hit = (rollAt == element);
+      } else {
+        hit = element <= rollAt;
+      }
+      rolls.add(new Die(element, rollAt, hit ? DieType.HIT : DieType.MISS));
+    }
+  }
+
+  // only for externalizable
+  public DiceRoll() {}
+
+  private DiceRoll(final List<Die> dice, final int hits, final double expectedHits) {
+    rolls = new ArrayList<>(dice);
+    this.hits = hits;
+    this.expectedHits = expectedHits;
+  }
 
   static Tuple<Integer, Integer> getMaxAaAttackAndDiceSides(final Collection<Unit> aaUnits, final GameData data,
       final boolean defending) {
@@ -1173,39 +1205,6 @@ public class DiceRoll implements Externalizable {
           .append((battle.getBattleRound() + 1));
     }
     return buffer.toString();
-  }
-
-  /**
-   * Initializes a new instance of the DiceRoll class.
-   *
-   * @param dice the dice, 0 based
-   * @param hits the number of hits
-   * @param rollAt what we roll at, [0,Constants.MAX_DICE]
-   * @param hitOnlyIfEquals Do we get a hit only if we are equals, or do we hit when we are equal or less than for
-   *        example a 5 is a hit when rolling at 6 for equal and less than, but is not for equals.
-   */
-  public DiceRoll(final int[] dice, final int hits, final int rollAt, final boolean hitOnlyIfEquals) {
-    this.hits = hits;
-    expectedHits = 0;
-    rolls = new ArrayList<>(dice.length);
-    for (final int element : dice) {
-      final boolean hit;
-      if (hitOnlyIfEquals) {
-        hit = (rollAt == element);
-      } else {
-        hit = element <= rollAt;
-      }
-      rolls.add(new Die(element, rollAt, hit ? DieType.HIT : DieType.MISS));
-    }
-  }
-
-  // only for externalizable
-  public DiceRoll() {}
-
-  private DiceRoll(final List<Die> dice, final int hits, final double expectedHits) {
-    rolls = new ArrayList<>(dice);
-    this.hits = hits;
-    this.expectedHits = expectedHits;
   }
 
   public int getHits() {

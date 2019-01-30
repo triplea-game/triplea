@@ -23,13 +23,13 @@ import games.strategy.util.IntegerMap;
 class EditProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 5826523459539469173L;
 
+  private EditProductionPanel(final UiContext uiContext) {
+    super(uiContext);
+  }
+
   static IntegerMap<ProductionRule> getProduction(final PlayerId id, final JFrame parent, final GameData data,
       final UiContext uiContext) {
     return new EditProductionPanel(uiContext).show(id, parent, data, false, new IntegerMap<>());
-  }
-
-  private EditProductionPanel(final UiContext uiContext) {
-    super(uiContext);
   }
 
   @Override

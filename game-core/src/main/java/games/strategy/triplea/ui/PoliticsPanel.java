@@ -51,6 +51,16 @@ public class PoliticsPanel extends ActionPanel {
    */
   private final Action selectPoliticalActionAction;
 
+  /**
+   * This will stop the politicsPhase.
+   */
+  private final Action dontBotherAction = SwingAction.of("Done", e -> {
+    if (!firstRun || youSureDoNothing()) {
+      choice = null;
+      release();
+    }
+  });
+
   public PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
     selectPoliticalActionAction = SwingAction.of("Do Politics...", e -> {
@@ -188,16 +198,6 @@ public class PoliticsPanel extends ActionPanel {
     }
     return politicalActionButtonPanel;
   }
-
-  /**
-   * This will stop the politicsPhase.
-   */
-  private final Action dontBotherAction = SwingAction.of("Done", e -> {
-    if (!firstRun || youSureDoNothing()) {
-      choice = null;
-      release();
-    }
-  });
 
   private boolean youSureDoNothing() {
     final int selectedOption = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PoliticsPanel.this),

@@ -33,6 +33,88 @@ public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
   private final UiContext uiContext;
 
+  final Comparator<ProductionRule> productionRuleComparator = new Comparator<ProductionRule>() {
+    final UnitTypeComparator utc = new UnitTypeComparator();
+
+    @Override
+    public int compare(final ProductionRule o1, final ProductionRule o2) {
+      if (o1.getResults().size() == 1 && o2.getResults().size() == 1) {
+        final NamedAttachable n1 = o1.getResults().keySet().iterator().next();
+        final NamedAttachable n2 = o2.getResults().keySet().iterator().next();
+        if (n1 instanceof UnitType) {
+          final UnitType u1 = (UnitType) n1;
+          if (n2 instanceof UnitType) {
+            final UnitType u2 = (UnitType) n2;
+            return utc.compare(u1, u2);
+          } else if (n2 instanceof Resource) {
+            // final Resource r2 = (Resource) n2;
+            return -1;
+          }
+          return n1.getName().compareTo(n2.getName());
+        } else if (n1 instanceof Resource) {
+          final Resource r1 = (Resource) n1;
+          if (n2 instanceof UnitType) {
+            // final UnitType u2 = (UnitType) n2;
+            return 1;
+          } else if (n2 instanceof Resource) {
+            final Resource r2 = (Resource) n2;
+            return r1.getName().compareTo(r2.getName());
+          } else {
+            return n1.getName().compareTo(n2.getName());
+          }
+        }
+        return n1.getName().compareTo(n2.getName());
+      }
+      if (o1.getResults().size() > o2.getResults().size()) {
+        return -1;
+      } else if (o1.getResults().size() < o2.getResults().size()) {
+        return 1;
+      }
+      return o1.getName().compareTo(o2.getName());
+    }
+  };
+
+  final Comparator<RepairRule> repairRuleComparator = new Comparator<RepairRule>() {
+    final UnitTypeComparator utc = new UnitTypeComparator();
+
+    @Override
+    public int compare(final RepairRule o1, final RepairRule o2) {
+      if (o1.getResults().size() == 1 && o2.getResults().size() == 1) {
+        final NamedAttachable n1 = o1.getResults().keySet().iterator().next();
+        final NamedAttachable n2 = o2.getResults().keySet().iterator().next();
+        if (n1 instanceof UnitType) {
+          final UnitType u1 = (UnitType) n1;
+          if (n2 instanceof UnitType) {
+            final UnitType u2 = (UnitType) n2;
+            return utc.compare(u1, u2);
+          } else if (n2 instanceof Resource) {
+            // final Resource r2 = (Resource) n2;
+            return -1;
+          }
+          return n1.getName().compareTo(n2.getName());
+        } else if (n1 instanceof Resource) {
+          final Resource r1 = (Resource) n1;
+          if (n2 instanceof UnitType) {
+            // final UnitType u2 = (UnitType) n2;
+            return 1;
+          } else if (n2 instanceof Resource) {
+            final Resource r2 = (Resource) n2;
+            return r1.getName().compareTo(r2.getName());
+          } else {
+            return n1.getName().compareTo(n2.getName());
+          }
+        }
+        return n1.getName().compareTo(n2.getName());
+      }
+      if (o1.getResults().size() > o2.getResults().size()) {
+        return -1;
+      } else if (o1.getResults().size() < o2.getResults().size()) {
+        return 1;
+      }
+      return o1.getName().compareTo(o2.getName());
+    }
+  };
+
   public SimpleUnitPanel(final UiContext uiContext) {
     this.uiContext = uiContext;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -111,85 +193,4 @@ public class SimpleUnitPanel extends JPanel {
     }
     add(label);
   }
-
-  final Comparator<ProductionRule> productionRuleComparator = new Comparator<ProductionRule>() {
-    final UnitTypeComparator utc = new UnitTypeComparator();
-
-    @Override
-    public int compare(final ProductionRule o1, final ProductionRule o2) {
-      if (o1.getResults().size() == 1 && o2.getResults().size() == 1) {
-        final NamedAttachable n1 = o1.getResults().keySet().iterator().next();
-        final NamedAttachable n2 = o2.getResults().keySet().iterator().next();
-        if (n1 instanceof UnitType) {
-          final UnitType u1 = (UnitType) n1;
-          if (n2 instanceof UnitType) {
-            final UnitType u2 = (UnitType) n2;
-            return utc.compare(u1, u2);
-          } else if (n2 instanceof Resource) {
-            // final Resource r2 = (Resource) n2;
-            return -1;
-          }
-          return n1.getName().compareTo(n2.getName());
-        } else if (n1 instanceof Resource) {
-          final Resource r1 = (Resource) n1;
-          if (n2 instanceof UnitType) {
-            // final UnitType u2 = (UnitType) n2;
-            return 1;
-          } else if (n2 instanceof Resource) {
-            final Resource r2 = (Resource) n2;
-            return r1.getName().compareTo(r2.getName());
-          } else {
-            return n1.getName().compareTo(n2.getName());
-          }
-        }
-        return n1.getName().compareTo(n2.getName());
-      }
-      if (o1.getResults().size() > o2.getResults().size()) {
-        return -1;
-      } else if (o1.getResults().size() < o2.getResults().size()) {
-        return 1;
-      }
-      return o1.getName().compareTo(o2.getName());
-    }
-  };
-  final Comparator<RepairRule> repairRuleComparator = new Comparator<RepairRule>() {
-    final UnitTypeComparator utc = new UnitTypeComparator();
-
-    @Override
-    public int compare(final RepairRule o1, final RepairRule o2) {
-      if (o1.getResults().size() == 1 && o2.getResults().size() == 1) {
-        final NamedAttachable n1 = o1.getResults().keySet().iterator().next();
-        final NamedAttachable n2 = o2.getResults().keySet().iterator().next();
-        if (n1 instanceof UnitType) {
-          final UnitType u1 = (UnitType) n1;
-          if (n2 instanceof UnitType) {
-            final UnitType u2 = (UnitType) n2;
-            return utc.compare(u1, u2);
-          } else if (n2 instanceof Resource) {
-            // final Resource r2 = (Resource) n2;
-            return -1;
-          }
-          return n1.getName().compareTo(n2.getName());
-        } else if (n1 instanceof Resource) {
-          final Resource r1 = (Resource) n1;
-          if (n2 instanceof UnitType) {
-            // final UnitType u2 = (UnitType) n2;
-            return 1;
-          } else if (n2 instanceof Resource) {
-            final Resource r2 = (Resource) n2;
-            return r1.getName().compareTo(r2.getName());
-          } else {
-            return n1.getName().compareTo(n2.getName());
-          }
-        }
-        return n1.getName().compareTo(n2.getName());
-      }
-      if (o1.getResults().size() > o2.getResults().size()) {
-        return -1;
-      } else if (o1.getResults().size() < o2.getResults().size()) {
-        return 1;
-      }
-      return o1.getName().compareTo(o2.getName());
-    }
-  };
 }
