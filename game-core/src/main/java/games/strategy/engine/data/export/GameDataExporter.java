@@ -200,18 +200,9 @@ public class GameDataExporter {
       }
     }
     if (prop.getClass().equals(NumberProperty.class)) {
-      try {
-        // TODO: unchecked reflection
-        final Field maxField = NumberProperty.class.getDeclaredField(NumberProperty.MAX_PROPERTY_NAME);
-        final Field minField = NumberProperty.class.getDeclaredField(NumberProperty.MIN_PROPERTY_NAME);
-        maxField.setAccessible(true);
-        minField.setAccessible(true);
-        final int max = maxField.getInt(prop);
-        final int min = minField.getInt(prop);
-        typeString = "            <number min=\"" + min + "\" max=\"" + max + "\"/>\n";
-      } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-        log.log(Level.SEVERE, "An Error occured whilst trying to print a Number-XML Tag", e);
-      }
+      final NumberProperty numberProperty = (NumberProperty) prop;
+      typeString = String.format("            <number min=\"%d\" max=\"%d\"/>\n",
+          numberProperty.getMin(), numberProperty.getMax());
     }
     xmlfile.append("        <property name=\"").append(prop.getName()).append("\" value=\"").append(value)
         .append("\" editable=\"true\">\n");
