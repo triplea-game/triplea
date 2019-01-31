@@ -1,7 +1,6 @@
 package games.strategy.engine.data.export;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -150,21 +149,11 @@ public class GameDataExporter {
     return returnValue.toString();
   }
 
-  @SuppressWarnings("unchecked")
-  private void propertyList(final GameData data) { // TODO: Unchecked Reflection
+  private void propertyList(final GameData data) {
     xmlfile.append("    <propertyList>\n");
     final GameProperties gameProperties = data.getProperties();
-    try {
-      // TODO: unchecked reflection below.. this is bad stuff.. find ways to remove
-      final Field conPropField = GameProperties.class.getDeclaredField(GameProperties.CONSTANT_PROPERTIES_FIELD_NAME);
-      conPropField.setAccessible(true);
-      final Field edPropField = GameProperties.class.getDeclaredField(GameProperties.EDITABLE_PROPERTIES_FIELD_NAME);
-      edPropField.setAccessible(true);
-      printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
-      printEditableProperties((Map<String, IEditableProperty<?>>) edPropField.get(gameProperties));
-    } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-      log.log(Level.SEVERE, "An Error occured whilst trying trying to setup the Property List", e);
-    }
+    printConstantProperties(gameProperties.getConstantPropertiesByName());
+    printEditableProperties(gameProperties.getEditablePropertiesByName());
     xmlfile.append("    </propertyList>\n");
   }
 
