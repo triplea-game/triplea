@@ -59,8 +59,7 @@ abstract class AbstractBattle implements IBattle {
   WhoWon whoWon = WhoWon.NOTFINISHED;
   int attackerLostTuv = 0;
   int defenderLostTuv = 0;
-
-  protected final GameData gameData;
+  final GameData gameData;
 
   AbstractBattle(final Territory battleSite, final PlayerId attacker, final BattleTracker battleTracker,
       final boolean isBombingRun, final BattleType battleType, final GameData data) {

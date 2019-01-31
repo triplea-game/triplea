@@ -15,13 +15,8 @@ import games.strategy.triplea.Properties;
  */
 public abstract class ActionPanel extends JPanel {
   private static final long serialVersionUID = -5954576036704958641L;
-  private final GameData data;
-  private PlayerId currentPlayer;
-  protected final MapPanel map;
-  private boolean active;
-  private CountDownLatch latch;
-  private final Object latchLock = new Object();
 
+  protected final MapPanel map;
   /**
    * Refreshes the action panel. Should be run within the swing event queue.
    */
@@ -29,6 +24,11 @@ public abstract class ActionPanel extends JPanel {
     revalidate();
     repaint();
   };
+  private final GameData data;
+  private PlayerId currentPlayer;
+  private boolean active;
+  private CountDownLatch latch;
+  private final Object latchLock = new Object();
 
   public ActionPanel(final GameData data, final MapPanel map) {
     this.data = data;

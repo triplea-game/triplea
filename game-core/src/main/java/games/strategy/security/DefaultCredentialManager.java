@@ -33,10 +33,9 @@ import com.google.common.base.Splitter;
  * </p>
  */
 final class DefaultCredentialManager implements CredentialManager {
-  private static final String CIPHER_ALGORITHM = "AES";
-
   @VisibleForTesting
   static final String PREFERENCE_KEY_MASTER_PASSWORD = "DEFAULT_CREDENTIAL_MANAGER_MASTER_PASSWORD";
+  private static final String CIPHER_ALGORITHM = "AES";
 
   private final char[] masterPassword;
 

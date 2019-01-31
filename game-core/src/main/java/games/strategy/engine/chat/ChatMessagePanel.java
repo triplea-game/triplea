@@ -50,9 +50,11 @@ import lombok.extern.java.Log;
  */
 @Log
 public class ChatMessagePanel extends JPanel implements IChatListener {
+  public static final String ME = "/me ";
   private static final long serialVersionUID = 118727200083595226L;
-  private final ChatFloodControl floodControl = new ChatFloodControl();
   private static final int MAX_LINES = 5000;
+
+  private final ChatFloodControl floodControl = new ChatFloodControl();
   private JTextPane text;
   private JScrollPane scrollPane;
   private JTextField nextMessage;
@@ -63,7 +65,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
-  public static final String ME = "/me ";
   private final Action setStatusAction = SwingAction.of("Status...", e -> {
     String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this),
         "Enter Status Text (leave blank for no status)", "");

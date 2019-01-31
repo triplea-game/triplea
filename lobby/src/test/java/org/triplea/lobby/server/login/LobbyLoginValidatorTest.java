@@ -52,16 +52,16 @@ public final class LobbyLoginValidatorTest {
     static final String PASSWORD = "password";
 
     @Mock
-    private AccessLog accessLog;
-
-    @Mock
-    private BadWordDao badWordDao;
-
-    @Mock
     BannedMacDao bannedMacDao;
 
     @Mock
     BannedUsernameDao bannedUsernameDao;
+
+    @Mock
+    private AccessLog accessLog;
+
+    @Mock
+    private BadWordDao badWordDao;
 
     @Mock
     private UserDao userDao;

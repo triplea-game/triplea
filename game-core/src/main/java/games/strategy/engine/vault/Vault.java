@@ -40,11 +40,12 @@ public class Vault {
   private static final RemoteName VAULT_CHANNEL =
       new RemoteName("games.strategy.engine.vault.IServerVault.VAULT_CHANNEL", IRemoteVault.class);
   private static final String ALGORITHM = "DES";
-  private final SecretKeyFactory secretKeyFactory;
   // 0xCAFEBABE
   // we encrypt both this value and data when we encrypt data.
   // when decrypting we ensure that KNOWN_VAL is correct and thus guarantee that we are being given the right key
   private static final byte[] KNOWN_VAL = new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE};
+
+  private final SecretKeyFactory secretKeyFactory;
   private final KeyGenerator keyGen;
   private final IChannelMessenger channelMessenger;
   // Maps VaultId -> SecretKey

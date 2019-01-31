@@ -41,11 +41,12 @@ import games.strategy.util.IntegerMap;
  * Also contains static methods of interpreting data from all technology attachments that a player has.
  */
 public class TechAbilityAttachment extends DefaultAttachment {
-  private static final long serialVersionUID = 1866305599625384294L;
-
   // unitAbilitiesGained Static Strings
   public static final String ABILITY_CAN_BLITZ = "canBlitz";
   public static final String ABILITY_CAN_BOMBARD = "canBombard";
+
+  private static final long serialVersionUID = 1866305599625384294L;
+
   // attachment fields
   private IntegerMap<UnitType> attackBonus = new IntegerMap<>();
   private IntegerMap<UnitType> defenseBonus = new IntegerMap<>();

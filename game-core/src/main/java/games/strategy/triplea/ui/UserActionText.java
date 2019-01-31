@@ -21,7 +21,6 @@ public class UserActionText {
   private static final String PROPERTY_FILE = "actionstext.properties";
   private static UserActionText text = null;
   private static Instant timestamp = Instant.EPOCH;
-  private final Properties properties = new Properties();
   private static final String BUTTON = "BUTTON";
   private static final String DESCRIPTION = "DESCRIPTION";
   private static final String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
@@ -31,6 +30,8 @@ public class UserActionText {
   private static final String TARGET_NOTIFICATION_FAILURE = "TARGET_NOTIFICATION_FAILURE";
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
+
+  private final Properties properties = new Properties();
 
   protected UserActionText() {
     final ResourceLoader loader = AbstractUiContext.getResourceLoader();

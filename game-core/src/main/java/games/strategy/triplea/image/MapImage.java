@@ -21,8 +21,6 @@ import games.strategy.ui.Util;
  * Is not responsible for drawing things on top of the map, such as units, routes etc.
  */
 public class MapImage {
-
-  private BufferedImage smallMapImage;
   private static Font propertyMapFont = null;
   private static Color propertyTerritoryNameAndPuAndCommentColor = null;
   private static Color propertyUnitCountColor = null;
@@ -41,7 +39,6 @@ public class MapImage {
   private static final String PROPERTY_UNIT_FACTORY_DAMAGE_OUTLINE_STRING = "PROPERTY_UNIT_FACTORY_DAMAGE_OUTLINE";
   private static final String PROPERTY_UNIT_HIT_DAMAGE_COLOR_STRING = "PROPERTY_UNIT_HIT_DAMAGE_COLOR";
   private static final String PROPERTY_UNIT_HIT_DAMAGE_OUTLINE_STRING = "PROPERTY_UNIT_HIT_DAMAGE_OUTLINE";
-
   private static final int MAP_FONT_SIZE_DEFAULT = 12;
   private static final Color TERRITORY_NAME_AND_PU_AND_COMMENT_COLOR_DEFAULT = Color.BLACK;
   private static final Color UNIT_COUNT_COLOR_DEFAULT = Color.WHITE;
@@ -51,6 +48,7 @@ public class MapImage {
   private static final Color UNIT_HIT_DAMAGE_COLOR_DEFAULT = Color.BLACK;
   private static final Color UNIT_HIT_DAMAGE_OUTLINE_DEFAULT = Color.LIGHT_GRAY;
 
+  private BufferedImage smallMapImage;
 
   public static Font getPropertyMapFont() {
     if (propertyMapFont == null) {

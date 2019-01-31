@@ -23,8 +23,6 @@ import games.strategy.util.Tuple;
  * Superclass for all technology advances.
  */
 public abstract class TechAdvance extends NamedAttachable {
-  private static final long serialVersionUID = -1076712297024403156L;
-  private static final Class<?>[] preDefinedTechConstructorParameter = new Class<?>[] {GameData.class};
   public static final String TECH_NAME_SUPER_SUBS = "Super subs";
   public static final String TECH_PROPERTY_SUPER_SUBS = "superSub";
   public static final String TECH_NAME_JET_POWER = "Jet Power";
@@ -58,6 +56,8 @@ public abstract class TechAdvance extends NamedAttachable {
           TECH_NAME_LONG_RANGE_AIRCRAFT, TECH_NAME_HEAVY_BOMBER, TECH_NAME_IMPROVED_ARTILLERY_SUPPORT,
           TECH_NAME_ROCKETS, TECH_NAME_PARATROOPERS, TECH_NAME_INCREASED_FACTORY_PRODUCTION, TECH_NAME_WAR_BONDS,
           TECH_NAME_MECHANIZED_INFANTRY, TECH_NAME_INDUSTRIAL_TECHNOLOGY, TECH_NAME_DESTROYER_BOMBARD));
+  private static final long serialVersionUID = -1076712297024403156L;
+  private static final Class<?>[] preDefinedTechConstructorParameter = new Class<?>[] {GameData.class};
   private static final Map<String, Class<? extends TechAdvance>> ALL_PREDEFINED_TECHNOLOGIES =
       newPredefinedTechnologyMap();
 

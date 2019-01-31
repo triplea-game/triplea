@@ -222,7 +222,7 @@ public final class TripleAFrame extends JFrame {
   private final MapUnitTooltipManager tooltipManager;
   private boolean isCtrlPressed = false;
 
-  public final MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
+  private final MapSelectionListener mapSelectionListener = new DefaultMapSelectionListener() {
     @Override
     public void mouseEntered(final Territory territory) {
       territoryLastEntered = territory;
@@ -296,9 +296,10 @@ public final class TripleAFrame extends JFrame {
     }
   };
 
-  final GameStepListener stepListener = (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
+  private final GameStepListener stepListener =
+      (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
 
-  final GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
+  private final GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
     @Override
     public void gameDataChanged(final Change change) {
       try {

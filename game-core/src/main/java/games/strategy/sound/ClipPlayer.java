@@ -107,15 +107,13 @@ public class ClipPlayer {
   private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
   private static final String SOUND_PREFERENCE_PREFIX = "sound_";
   private static final boolean DEFAULT_SOUND_SILENCED_SWITCH_SETTING = false;
-
   private static final String MP3_SUFFIX = ".mp3";
-
+  private static ClipPlayer clipPlayer;
 
   protected final Map<String, List<URL>> sounds = new HashMap<>();
   private final Set<String> mutedClips = new HashSet<>();
   private boolean beSilent;
   private final ResourceLoader resourceLoader;
-  private static ClipPlayer clipPlayer;
 
   private ClipPlayer(final ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;

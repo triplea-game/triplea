@@ -43,9 +43,9 @@ public final class DBUser implements Serializable {
 
   /** User name value object with validation methods. */
   public static class UserName {
-    private static final int MIN_LENGTH = 3;
     @VisibleForTesting
     public static final int MAX_LENGTH = 40;
+    private static final int MIN_LENGTH = 3;
 
     public final String userName;
 

@@ -36,9 +36,9 @@ import lombok.extern.java.Log;
  */
 @Log
 public class ResourceLoader implements Closeable {
-  private final URLClassLoader loader;
   public static final String RESOURCE_FOLDER = "assets";
 
+  private final URLClassLoader loader;
   private final ResourceLocationTracker resourceLocationTracker;
 
   private ResourceLoader(final String mapName, final String[] paths) {

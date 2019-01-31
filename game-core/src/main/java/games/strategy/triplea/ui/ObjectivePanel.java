@@ -111,7 +111,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     private static final int COLUMNS_TOTAL = 2;
     private boolean isDirty = true;
     private String[][] collectedData;
-    final Map<String, List<String>> sections = new LinkedHashMap<>();
+    private final Map<String, List<String>> sections = new LinkedHashMap<>();
     private Instant timestamp = Instant.EPOCH;
 
     ObjectiveTableModel() {

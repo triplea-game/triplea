@@ -34,6 +34,11 @@ import games.strategy.util.IntegerMap;
  */
 public class PurchasePanel extends ActionPanel {
   private static final long serialVersionUID = -6121756876868623355L;
+  // if this is set Purchase will use the tabbedProductionPanel - this is modifyable through the View Menu
+  private static boolean tabbedProduction = true;
+  private static final String BUY = "Buy...";
+  private static final String CHANGE = "Change...";
+
   private final JLabel actionLabel = new JLabel();
   private IntegerMap<ProductionRule> purchase;
   private boolean bid;
@@ -42,10 +47,6 @@ public class PurchasePanel extends ActionPanel {
   private final SimpleUnitPanel purhcasedUnits;
   private final JLabel purchasedLabel = new JLabel();
   private final JButton buyButton;
-  // if this is set Purchase will use the tabbedProductionPanel - this is modifyable through the View Menu
-  private static boolean tabbedProduction = true;
-  private static final String BUY = "Buy...";
-  private static final String CHANGE = "Change...";
 
   private final AbstractAction purchaseAction = new AbstractAction("Buy") {
     private static final long serialVersionUID = -2931438906267249990L;

@@ -24,11 +24,6 @@ import games.strategy.util.IntegerMap;
  * Pro AI data.
  */
 public final class ProData {
-
-  private static ProAi proAi;
-  private static GameData data;
-  private static PlayerId player;
-
   // Default values
   public static boolean isSimulation = false;
   public static double winPercentage = 95;
@@ -39,6 +34,10 @@ public final class ProData {
   public static IntegerMap<UnitType> unitValueMap = new IntegerMap<>();
   public static ProPurchaseOptionMap purchaseOptions = null;
   public static double minCostPerHitPoint = Double.MAX_VALUE;
+
+  private static ProAi proAi;
+  private static GameData data;
+  private static PlayerId player;
 
   private ProData() {}
 

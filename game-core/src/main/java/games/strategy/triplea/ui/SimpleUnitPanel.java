@@ -33,7 +33,7 @@ public class SimpleUnitPanel extends JPanel {
   private static final long serialVersionUID = -3768796793775300770L;
   private final UiContext uiContext;
 
-  final Comparator<ProductionRule> productionRuleComparator = new Comparator<ProductionRule>() {
+  private final Comparator<ProductionRule> productionRuleComparator = new Comparator<ProductionRule>() {
     final UnitTypeComparator utc = new UnitTypeComparator();
 
     @Override
@@ -74,7 +74,7 @@ public class SimpleUnitPanel extends JPanel {
     }
   };
 
-  final Comparator<RepairRule> repairRuleComparator = new Comparator<RepairRule>() {
+  private final Comparator<RepairRule> repairRuleComparator = new Comparator<RepairRule>() {
     final UnitTypeComparator utc = new UnitTypeComparator();
 
     @Override

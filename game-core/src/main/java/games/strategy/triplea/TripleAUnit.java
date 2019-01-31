@@ -35,8 +35,6 @@ import games.strategy.util.Tuple;
  * </p>
  */
 public class TripleAUnit extends Unit {
-  // compatable with 0.9.2
-  private static final long serialVersionUID = 8811372406957115036L;
   public static final String TRANSPORTED_BY = "transportedBy";
   public static final String UNLOADED = "unloaded";
   public static final String LOADED_THIS_TURN = "wasLoadedThisTurn";
@@ -55,6 +53,7 @@ public class TripleAUnit extends Unit {
   public static final String LAUNCHED = "launched";
   public static final String AIRBORNE = "airborne";
   public static final String CHARGED_FLAT_FUEL_COST = "chargedFlatFuelCost";
+  private static final long serialVersionUID = 8811372406957115036L;
 
   // the transport that is currently transporting us
   private TripleAUnit transportedBy = null;

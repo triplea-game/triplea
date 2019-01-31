@@ -51,8 +51,8 @@ import swinglib.JLabelBuilder;
  * The help menu.
  */
 public final class HelpMenu extends JMenu {
-  private static final long serialVersionUID = 4070541434144687452L;
   public static final JEditorPane gameNotesPane = new JEditorPane();
+  private static final long serialVersionUID = 4070541434144687452L;
 
   private final UiContext uiContext;
   private final GameData gameData;

@@ -33,14 +33,14 @@ import games.strategy.triplea.formatter.MyFormatter;
  * RulesAttachments), should extend this instead of DefaultAttachment.
  */
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition {
-  private static final long serialVersionUID = -9008441256118867078L;
-  private static final Splitter HYPHEN_SPLITTER = Splitter.on('-');
+  public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
+  public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
   protected static final String AND = "AND";
   protected static final String OR = "OR";
   protected static final String DEFAULT_CHANCE = "1:1";
   protected static final String CHANCE = "chance";
-  public static final String TRIGGER_CHANCE_SUCCESSFUL = "Trigger Rolling is a Success!";
-  public static final String TRIGGER_CHANCE_FAILURE = "Trigger Rolling is a Failure!";
+  private static final long serialVersionUID = -9008441256118867078L;
+  private static final Splitter HYPHEN_SPLITTER = Splitter.on('-');
 
   // list of conditions that this condition can contain
   protected List<RulesAttachment> conditions = new ArrayList<>();

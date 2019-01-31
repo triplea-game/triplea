@@ -30,12 +30,11 @@ import games.strategy.util.Tuple;
  * </p>
  */
 public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment {
-  private static final long serialVersionUID = 5866039180681962697L;
-
   public static final String NOTIFICATION = "Notification";
   public static final String AFTER = "after";
   public static final String BEFORE = "before";
   public static final Predicate<TriggerAttachment> availableUses = t -> t.getUses() != 0;
+  private static final long serialVersionUID = 5866039180681962697L;
 
   // "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for
   // backwards compatibility.

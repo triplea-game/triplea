@@ -11,6 +11,6 @@ class TechnologyExtendedDelegateState implements Serializable {
 
   Serializable superState;
   // add other variables here:
-  public boolean needToInitialize;
+  boolean needToInitialize;
   Map<PlayerId, Collection<TechAdvance>> techs;
 }

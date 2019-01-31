@@ -29,6 +29,8 @@ import games.strategy.util.Tuple;
  * </p>
  */
 public class Chat {
+  private static final String TAG_MODERATOR = "[Mod]";
+
   private final List<IChatListener> listeners = new CopyOnWriteArrayList<>();
   private final Messengers messengers;
   private final String chatChannelName;
@@ -47,7 +49,6 @@ public class Chat {
   private final StatusManager statusManager;
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
   private final Map<INode, Set<String>> notesMap = new HashMap<>();
-  private static final String TAG_MODERATOR = "[Mod]";
   private final ChatSoundProfile chatSoundProfile;
   private final List<INode> playersThatLeftLast10 = new ArrayList<>();
   private final IChatChannel chatChannelSubscriber = new IChatChannel() {

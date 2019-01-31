@@ -8,7 +8,7 @@ class BattleExtendedDelegateState implements Serializable {
   Serializable superState;
   // add other variables here:
   BattleTracker battleTracker = new BattleTracker();
-  public boolean needToInitialize;
+  boolean needToInitialize;
   boolean needToScramble;
   boolean needToCreateRockets;
   boolean needToKamikazeSuicideAttacks;

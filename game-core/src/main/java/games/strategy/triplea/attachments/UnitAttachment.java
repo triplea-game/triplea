@@ -42,10 +42,10 @@ import games.strategy.util.Tuple;
  * Despite the misleading name, this attaches not to individual Units but to UnitTypes.
  */
 public class UnitAttachment extends DefaultAttachment {
-  private static final long serialVersionUID = -2946748686268541820L;
-
   public static final String UNITSMAYNOTLANDONCARRIER = "unitsMayNotLandOnCarrier";
   public static final String UNITSMAYNOTLEAVEALLIEDCARRIER = "unitsMayNotLeaveAlliedCarrier";
+  private static final long serialVersionUID = -2946748686268541820L;
+
   // movement related
   private boolean isAir = false;
   private boolean isSea = false;

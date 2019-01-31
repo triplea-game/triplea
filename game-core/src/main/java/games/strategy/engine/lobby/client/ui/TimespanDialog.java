@@ -29,10 +29,9 @@ import swinglib.JPanelBuilder;
  * A UI-Utility class that can be used to prompt the user for a ban or mute time.
  */
 public final class TimespanDialog extends JDialog {
-  private static final long serialVersionUID = 1367343948352548021L;
-
   @VisibleForTesting
   static final int MAX_DURATION = 99_999_999;
+  private static final long serialVersionUID = 1367343948352548021L;
 
   private final JSpinner durationSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_DURATION, 1));
   private final JComboBox<TimeUnit> timeUnitComboBox = new JComboBox<>(TimeUnit.values());

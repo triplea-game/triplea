@@ -9,5 +9,5 @@ class RandomStartExtendedDelegateState implements Serializable {
 
   Serializable superState;
   // add other variables here:
-  public PlayerId currentPickingPlayer;
+  PlayerId currentPickingPlayer;
 }

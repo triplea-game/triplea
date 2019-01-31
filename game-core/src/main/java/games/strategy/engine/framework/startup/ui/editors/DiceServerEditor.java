@@ -23,6 +23,11 @@ import swinglib.DocumentListenerBuilder;
  */
 public class DiceServerEditor extends EditorPanel {
   private static final long serialVersionUID = -451810815037661114L;
+  private static final ImmutableMap<String, PropertiesDiceRoller> diceRollersByDisplayName = PropertiesDiceRoller
+      .loadFromFile()
+      .stream()
+      .collect(ImmutableMap.toImmutableMap(IRemoteDiceServer::getDisplayName, Function.identity()));
+
   private final JButton testDiceButton = new JButton("Test Server");
   private final JTextField toAddress = new JTextField();
   private final JTextField ccAddress = new JTextField();
@@ -32,10 +37,6 @@ public class DiceServerEditor extends EditorPanel {
   private final JLabel ccLabel = new JLabel("Cc:");
   private final JComboBox<String> servers = new JComboBox<>();
   private final Runnable readyCallback;
-  private static final ImmutableMap<String, PropertiesDiceRoller> diceRollersByDisplayName = PropertiesDiceRoller
-      .loadFromFile()
-      .stream()
-      .collect(ImmutableMap.toImmutableMap(IRemoteDiceServer::getDisplayName, Function.identity()));
 
   public DiceServerEditor(final Runnable readyCallback) {
     this.readyCallback = readyCallback;
