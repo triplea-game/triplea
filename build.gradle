@@ -46,12 +46,25 @@ task validateYamls(group: 'verification', description: 'Validates YAML files.') 
     }
 }
 
+allprojects {
+    apply plugin: 'com.diffplug.gradle.spotless'
+
+    spotless {
+        groovyGradle {
+            target '*.gradle', 'gradle/**/*.gradle'
+
+            endWithNewline()
+            indentWithSpaces()
+            trimTrailingWhitespace()
+        }
+    }
+}
+
 subprojects {
     apply plugin: 'checkstyle'
     apply plugin: 'jacoco'
     apply plugin: 'java'
     apply plugin: 'pmd'
-    apply plugin: 'com.diffplug.gradle.spotless'
     apply plugin: 'net.ltgt.errorprone'
     apply plugin: 'io.franzbecker.gradle-lombok'
 
