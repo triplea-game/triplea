@@ -2,7 +2,6 @@ package games.strategy.engine.data.properties;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -15,10 +14,9 @@ import games.strategy.ui.SwingComponents;
  * @param <T> The type of the property value.
  */
 public class ComboProperty<T> extends AbstractEditableProperty<T> {
-  public static final String POSSIBLE_VALUES_FIELD_NAME = "possibleValues";
   private static final long serialVersionUID = -3098612299805630587L;
 
-  private final List<T> possibleValues;
+  private final Collection<T> possibleValues;
   private T value;
 
   /**
@@ -61,5 +59,9 @@ public class ComboProperty<T> extends AbstractEditableProperty<T> {
   @Override
   public boolean validate(final Object value) {
     return possibleValues != null && possibleValues.contains(value);
+  }
+
+  public Collection<T> getPossibleValues() {
+    return new ArrayList<>(possibleValues);
   }
 }

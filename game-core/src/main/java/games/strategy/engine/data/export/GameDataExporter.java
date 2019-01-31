@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -171,7 +172,6 @@ public class GameDataExporter {
     editableProperties.values().forEach(this::printEditableProperty);
   }
 
-  @SuppressWarnings("unchecked")
   private void printEditableProperty(final IEditableProperty<?> prop) {
     String typeString = "";
     String value = "" + prop.getValue();
@@ -189,15 +189,11 @@ public class GameDataExporter {
       value = "0x" + Integer.toHexString(((Integer) prop.getValue())).toUpperCase();
     }
     if (prop.getClass().equals(ComboProperty.class)) {
-      final Field listField;
-      try {
-        // TODO: unchecked reflection
-        listField = ComboProperty.class.getDeclaredField(ComboProperty.POSSIBLE_VALUES_FIELD_NAME);
-        listField.setAccessible(true);
-        typeString = "            <list>" + String.join(",", (List<String>) listField.get(prop)) + "</list>\n";
-      } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-        log.log(Level.SEVERE, "An Error occured whilst trying to print the Property \"" + value + "\"", e);
-      }
+      final ComboProperty<?> comboProperty = (ComboProperty<?>) prop;
+      final Collection<String> encodedPossibleValues = comboProperty.getPossibleValues().stream()
+          .map(Object::toString)
+          .collect(Collectors.toList());
+      typeString = "            <list>" + String.join(",", encodedPossibleValues) + "</list>\n";
     }
     if (prop.getClass().equals(NumberProperty.class)) {
       final NumberProperty numberProperty = (NumberProperty) prop;
