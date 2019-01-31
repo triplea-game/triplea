@@ -1,5 +1,7 @@
 package games.strategy.engine.data.properties;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -18,15 +20,19 @@ public class DoubleProperty extends AbstractEditableProperty<Double> {
   private double value;
   private final int places;
 
+  /**
+   * Initializes a new instance of the {@link DoubleProperty} class.
+   *
+   * @throws IllegalArgumentException If {@code max} is less than {@code min}; if {@code def} is less than {@code min};
+   *         or if {@code def} is greater than {@code max}.
+   */
   public DoubleProperty(final String name, final String description, final double max, final double min,
       final double def, final int numberOfPlaces) {
     super(name, description);
-    if (max < min) {
-      throw new IllegalThreadStateException("Max must be greater than min");
-    }
-    if (def > max || def < min) {
-      throw new IllegalThreadStateException("Default value out of range");
-    }
+
+    checkArgument(max >= min, "Max must be greater than min");
+    checkArgument((def >= min) && (def <= max), "Default value out of range");
+
     this.max = max;
     this.min = min;
     places = numberOfPlaces;
