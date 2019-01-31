@@ -1,13 +1,13 @@
 package games.strategy.engine.data.export;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -149,21 +149,11 @@ public class GameDataExporter {
     return returnValue.toString();
   }
 
-  @SuppressWarnings("unchecked")
-  private void propertyList(final GameData data) { // TODO: Unchecked Reflection
+  private void propertyList(final GameData data) {
     xmlfile.append("    <propertyList>\n");
     final GameProperties gameProperties = data.getProperties();
-    try {
-      // TODO: unchecked reflection below.. this is bad stuff.. find ways to remove
-      final Field conPropField = GameProperties.class.getDeclaredField(GameProperties.CONSTANT_PROPERTIES_FIELD_NAME);
-      conPropField.setAccessible(true);
-      final Field edPropField = GameProperties.class.getDeclaredField(GameProperties.EDITABLE_PROPERTIES_FIELD_NAME);
-      edPropField.setAccessible(true);
-      printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
-      printEditableProperties((Map<String, IEditableProperty<?>>) edPropField.get(gameProperties));
-    } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-      log.log(Level.SEVERE, "An Error occured whilst trying trying to setup the Property List", e);
-    }
+    printConstantProperties(gameProperties.getConstantPropertiesByName());
+    printEditableProperties(gameProperties.getEditablePropertiesByName());
     xmlfile.append("    </propertyList>\n");
   }
 
@@ -171,7 +161,6 @@ public class GameDataExporter {
     editableProperties.values().forEach(this::printEditableProperty);
   }
 
-  @SuppressWarnings("unchecked")
   private void printEditableProperty(final IEditableProperty<?> prop) {
     String typeString = "";
     String value = "" + prop.getValue();
@@ -189,29 +178,16 @@ public class GameDataExporter {
       value = "0x" + Integer.toHexString(((Integer) prop.getValue())).toUpperCase();
     }
     if (prop.getClass().equals(ComboProperty.class)) {
-      final Field listField;
-      try {
-        // TODO: unchecked reflection
-        listField = ComboProperty.class.getDeclaredField(ComboProperty.POSSIBLE_VALUES_FIELD_NAME);
-        listField.setAccessible(true);
-        typeString = "            <list>" + String.join(",", (List<String>) listField.get(prop)) + "</list>\n";
-      } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-        log.log(Level.SEVERE, "An Error occured whilst trying to print the Property \"" + value + "\"", e);
-      }
+      final ComboProperty<?> comboProperty = (ComboProperty<?>) prop;
+      final Collection<String> encodedPossibleValues = comboProperty.getPossibleValues().stream()
+          .map(Object::toString)
+          .collect(Collectors.toList());
+      typeString = "            <list>" + String.join(",", encodedPossibleValues) + "</list>\n";
     }
     if (prop.getClass().equals(NumberProperty.class)) {
-      try {
-        // TODO: unchecked reflection
-        final Field maxField = NumberProperty.class.getDeclaredField(NumberProperty.MAX_PROPERTY_NAME);
-        final Field minField = NumberProperty.class.getDeclaredField(NumberProperty.MIN_PROPERTY_NAME);
-        maxField.setAccessible(true);
-        minField.setAccessible(true);
-        final int max = maxField.getInt(prop);
-        final int min = minField.getInt(prop);
-        typeString = "            <number min=\"" + min + "\" max=\"" + max + "\"/>\n";
-      } catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-        log.log(Level.SEVERE, "An Error occured whilst trying to print a Number-XML Tag", e);
-      }
+      final NumberProperty numberProperty = (NumberProperty) prop;
+      typeString = String.format("            <number min=\"%d\" max=\"%d\"/>\n",
+          numberProperty.getMin(), numberProperty.getMax());
     }
     xmlfile.append("        <property name=\"").append(prop.getName()).append("\" value=\"").append(value)
         .append("\" editable=\"true\">\n");

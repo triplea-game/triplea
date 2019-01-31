@@ -27,10 +27,6 @@ import lombok.extern.java.Log;
  */
 @Log
 public class GameProperties extends GameDataComponent {
-  // keep this in sync with the corresponding property, this name is used by reflection
-  public static final String CONSTANT_PROPERTIES_FIELD_NAME = "constantProperties";
-  // keep this in sync with the corresponding property, this name is used by reflection
-  public static final String EDITABLE_PROPERTIES_FIELD_NAME = "editableProperties";
   private static final long serialVersionUID = -1448163357090677564L;
 
   private final Map<String, Object> constantProperties = new HashMap<>();
@@ -41,6 +37,14 @@ public class GameProperties extends GameDataComponent {
 
   public GameProperties(final GameData data) {
     super(data);
+  }
+
+  public Map<String, Object> getConstantPropertiesByName() {
+    return new HashMap<>(constantProperties);
+  }
+
+  public Map<String, IEditableProperty<?>> getEditablePropertiesByName() {
+    return new HashMap<>(editableProperties);
   }
 
   /**

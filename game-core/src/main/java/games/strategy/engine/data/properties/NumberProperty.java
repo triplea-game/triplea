@@ -5,18 +5,17 @@ import static com.google.common.base.Preconditions.checkArgument;
 import javax.swing.JComponent;
 
 import games.strategy.ui.IntTextField;
+import lombok.Getter;
 
 /**
  * Implementation of {@link IEditableProperty} for an integer value.
  */
 public class NumberProperty extends AbstractEditableProperty<Integer> {
-  // Keep this in sync with the matching property name, used by reflection.
-  public static final String MAX_PROPERTY_NAME = "max";
-  // Keep this in sync with the matching property name, used by reflection.
-  public static final String MIN_PROPERTY_NAME = "min";
   private static final long serialVersionUID = 6826763550643504789L;
 
+  @Getter
   private final int max;
+  @Getter
   private final int min;
   private int value;
 
