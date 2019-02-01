@@ -445,7 +445,7 @@ class OddsCalculatorPanel extends JPanel {
         }
 
         // Get players with units sorted
-        final List<PlayerId> players = location.getUnits().getPlayersByUnitCount();
+        final List<PlayerId> players = location.getUnitCollection().getPlayersByUnitCount();
         if (players.contains(currentPlayer)) {
           players.remove(currentPlayer);
           players.add(0, currentPlayer);
@@ -478,8 +478,8 @@ class OddsCalculatorPanel extends JPanel {
           }
         }
 
-        setAttackingUnits(location.getUnits().getMatches(Matches.unitIsOwnedBy(getAttacker())));
-        setDefendingUnits(location.getUnits().getMatches(Matches.alliedUnit(getDefender(), data)));
+        setAttackingUnits(location.getUnitCollection().getMatches(Matches.unitIsOwnedBy(getAttacker())));
+        setDefendingUnits(location.getUnitCollection().getMatches(Matches.alliedUnit(getDefender(), data)));
       } finally {
         data.releaseReadLock();
       }
@@ -784,7 +784,7 @@ class OddsCalculatorPanel extends JPanel {
 
   private static boolean doesPlayerHaveUnitsOnMap(final PlayerId player, final GameData data) {
     for (final Territory t : data.getMap()) {
-      for (final Unit u : t.getUnits()) {
+      for (final Unit u : t.getUnitCollection()) {
         if (u.getOwner().equals(player)) {
           return true;
         }

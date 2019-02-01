@@ -32,7 +32,7 @@ public class UnitSeparatorTest {
   public void testGetSortedUnitCategories() throws Exception {
     final GameData data = TestMapGameData.TWW.getGameData();
     final Territory northernGermany = territory("Northern Germany", data);
-    northernGermany.getUnits().clear();
+    northernGermany.getUnitCollection().clear();
     final List<Unit> units = new ArrayList<>();
     final PlayerId italians = GameDataTestUtil.italy(data);
     units.addAll(GameDataTestUtil.italianInfantry(data).create(1, italians));
@@ -66,7 +66,7 @@ public class UnitSeparatorTest {
   public void testGetSortedUnitCategoriesDontDrawUnit() throws Exception {
     final GameData data = TestMapGameData.TWW.getGameData();
     final Territory northernGermany = territory("Northern Germany", data);
-    northernGermany.getUnits().clear();
+    northernGermany.getUnitCollection().clear();
     final PlayerId italians = GameDataTestUtil.italy(data);
     final List<Unit> units = new ArrayList<>(GameDataTestUtil.italianInfantry(data).create(1, italians));
     GameDataTestUtil.addTo(northernGermany, units);

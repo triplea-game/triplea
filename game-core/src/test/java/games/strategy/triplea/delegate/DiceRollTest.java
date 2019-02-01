@@ -400,7 +400,8 @@ public class DiceRollTest {
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
+        gameData.getMap().getTerritory("United Kingdom").getUnitCollection()
+            .getMatches(Matches.unitIsStrategicBomber());
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(2, 3, 2));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, mock(IBattle.class), "",
@@ -417,7 +418,8 @@ public class DiceRollTest {
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
+        gameData.getMap().getTerritory("United Kingdom").getUnitCollection()
+            .getMatches(Matches.unitIsStrategicBomber());
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(0));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, mock(IBattle.class), "",
@@ -432,7 +434,8 @@ public class DiceRollTest {
     gameData.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, true);
     final IDelegateBridge testDelegateBridge = newDelegateBridge(british);
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
+        gameData.getMap().getTerritory("United Kingdom").getUnitCollection()
+            .getMatches(Matches.unitIsStrategicBomber());
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(0));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, mock(IBattle.class), "",
@@ -450,7 +453,8 @@ public class DiceRollTest {
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
+        gameData.getMap().getTerritory("United Kingdom").getUnitCollection()
+            .getMatches(Matches.unitIsStrategicBomber());
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(2, 3));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, mock(IBattle.class), "",
@@ -469,7 +473,8 @@ public class DiceRollTest {
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
+        gameData.getMap().getTerritory("United Kingdom").getUnitCollection()
+            .getMatches(Matches.unitIsStrategicBomber());
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(3, 2));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, false, british, testDelegateBridge, mock(IBattle.class), "",
@@ -487,7 +492,8 @@ public class DiceRollTest {
     TechTracker.addAdvance(british, testDelegateBridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     final List<Unit> bombers =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber());
+        gameData.getMap().getTerritory("United Kingdom").getUnitCollection()
+            .getMatches(Matches.unitIsStrategicBomber());
     whenGetRandom(testDelegateBridge).thenAnswer(withValues(0, 1));
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final DiceRoll dice = DiceRoll.rollDice(bombers, true, british, testDelegateBridge, mock(IBattle.class), "",
@@ -502,7 +508,8 @@ public class DiceRollTest {
   public void testSbrRolls() {
     final PlayerId british = GameDataTestUtil.british(gameData);
     final Unit bomber =
-        gameData.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.unitIsStrategicBomber()).get(0);
+        gameData.getMap().getTerritory("United Kingdom").getUnitCollection().getMatches(Matches.unitIsStrategicBomber())
+            .get(0);
     // default 1 roll
     assertThat(StrategicBombingRaidBattle.getSbrRolls(bomber, british), is(1));
     assertThat(StrategicBombingRaidBattle.getSbrRolls(bomber, british), is(1));

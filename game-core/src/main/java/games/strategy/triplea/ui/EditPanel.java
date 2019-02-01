@@ -155,7 +155,7 @@ class EditPanel extends ActionPanel {
     private void selectUnitsToRemove(final List<Unit> units, final Territory t, final MouseDetails md) {
       if (units.isEmpty() && selectedUnits.isEmpty()) {
         if (!md.isShiftDown()) {
-          final Collection<Unit> unitsToMove = t.getUnits().getUnits();
+          final Collection<Unit> unitsToMove = t.getUnitCollection().getUnits();
           if (unitsToMove.isEmpty()) {
             return;
           }
@@ -181,7 +181,7 @@ class EditPanel extends ActionPanel {
       }
       // select all
       if (md.isShiftDown()) {
-        selectedUnits.addAll(t.getUnits().getUnits());
+        selectedUnits.addAll(t.getUnitCollection().getUnits());
       } else if (md.isControlDown()) {
         selectedUnits.addAll(units);
       } else { // select one
@@ -349,7 +349,7 @@ class EditPanel extends ActionPanel {
       public void actionPerformed(final ActionEvent event) {
         currentAction = this;
         setWidgetActivation();
-        final List<Unit> allUnits = new ArrayList<>(selectedTerritory.getUnits().getUnits());
+        final List<Unit> allUnits = new ArrayList<>(selectedTerritory.getUnitCollection().getUnits());
         sortUnitsToRemove(allUnits);
         final MustMoveWithDetails mustMoveWithDetails;
         try {
@@ -566,7 +566,7 @@ class EditPanel extends ActionPanel {
         currentAction = this;
         setWidgetActivation();
         final List<Unit> units = CollectionUtils.getMatches(selectedUnits, Matches.unitHasMoreThanOneHitPointTotal());
-        if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
+        if (units == null || units.isEmpty() || !selectedTerritory.getUnitCollection().getUnits().containsAll(units)) {
           cancelEditAction.actionPerformed(null);
           return;
         }
@@ -614,7 +614,7 @@ class EditPanel extends ActionPanel {
         currentAction = this;
         setWidgetActivation();
         final List<Unit> units = CollectionUtils.getMatches(selectedUnits, Matches.unitCanBeDamaged());
-        if (units == null || units.isEmpty() || !selectedTerritory.getUnits().getUnits().containsAll(units)) {
+        if (units == null || units.isEmpty() || !selectedTerritory.getUnitCollection().getUnits().containsAll(units)) {
           cancelEditAction.actionPerformed(null);
           return;
         }
@@ -836,7 +836,7 @@ class EditPanel extends ActionPanel {
 
   private static boolean doesPlayerHaveUnitsOnMap(final PlayerId player, final GameData data) {
     for (final Territory t : data.getMap()) {
-      for (final Unit u : t.getUnits()) {
+      for (final Unit u : t.getUnitCollection()) {
         if (u.getOwner().equals(player)) {
           return true;
         }

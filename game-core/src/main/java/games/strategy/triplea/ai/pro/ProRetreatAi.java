@@ -106,7 +106,7 @@ class ProRetreatAi {
           break;
         }
         final double strength = ProBattleUtils.estimateStrength(t,
-            t.getUnits().getMatches(Matches.isUnitAllied(player, data)), new ArrayList<>(), false);
+            t.getUnitCollection().getMatches(Matches.isUnitAllied(player, data)), new ArrayList<>(), false);
         if (strength > maxStrength) {
           retreatTerritory = t;
           maxStrength = strength;

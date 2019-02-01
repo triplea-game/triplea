@@ -94,7 +94,7 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, gameData);
     bombardingUnits = GameDataUtils.translateIntoOtherGameData(bombarding, gameData);
     this.territoryEffects = GameDataUtils.translateIntoOtherGameData(territoryEffects, gameData);
-    gameData.performChange(ChangeFactory.removeUnits(this.location, this.location.getUnits().getUnits()));
+    gameData.performChange(ChangeFactory.removeUnits(this.location, this.location.getUnitCollection().getUnits()));
     gameData.performChange(ChangeFactory.addUnits(this.location, attackingUnits));
     gameData.performChange(ChangeFactory.addUnits(this.location, defendingUnits));
     this.runCount = runCount;

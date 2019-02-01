@@ -66,7 +66,7 @@ final class EditValidator {
           if (landUnitsToAdd.isEmpty() || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }
-          seaTransports.addAll(territory.getUnits().getMatches(friendlySeaTransports));
+          seaTransports.addAll(territory.getUnitCollection().getMatches(friendlySeaTransports));
           if (seaTransports.isEmpty()) {
             return "Can't add land units to water without enough transports";
           }
@@ -85,10 +85,12 @@ final class EditValidator {
           final Predicate<Unit> friendlyAirUnits = Matches.unitIsAir().and(Matches.alliedUnit(player, data));
           // Determine transport capacity
           final int carrierCapacityTotal =
-              AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)
+              AirMovementValidator.carrierCapacity(territory.getUnitCollection().getMatches(friendlyCarriers),
+                  territory)
                   + AirMovementValidator.carrierCapacity(units, territory);
-          final int carrierCost = AirMovementValidator.carrierCost(territory.getUnits().getMatches(friendlyAirUnits))
-              + AirMovementValidator.carrierCost(units);
+          final int carrierCost =
+              AirMovementValidator.carrierCost(territory.getUnitCollection().getMatches(friendlyAirUnits))
+                  + AirMovementValidator.carrierCost(units);
           if (carrierCapacityTotal < carrierCost) {
             return "Can't add more air units to water without sufficient space";
           }
@@ -195,7 +197,7 @@ final class EditValidator {
       return result;
     }
     final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());
-    if (!territory.getUnits().getUnits().containsAll(units)) {
+    if (!territory.getUnitCollection().getUnits().containsAll(units)) {
       return "Selected Territory does not contain all of the selected units";
     }
     final PlayerId player = units.iterator().next().getOwner();
@@ -229,7 +231,7 @@ final class EditValidator {
       return "Game does not allow bombing damage";
     }
     final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());
-    if (!territory.getUnits().getUnits().containsAll(units)) {
+    if (!territory.getUnitCollection().getUnits().containsAll(units)) {
       return "Selected Territory does not contain all of the selected units";
     }
     final PlayerId player = units.iterator().next().getOwner();

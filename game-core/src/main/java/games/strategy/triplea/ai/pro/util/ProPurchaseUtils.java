@@ -132,7 +132,7 @@ public final class ProPurchaseUtils {
         final Predicate<Unit> unitTypeOwnedBy = Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
         final List<Territory> allTerritories = data.getMap().getTerritories();
         for (final Territory t : allTerritories) {
-          currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
+          currentlyBuilt += t.getUnitCollection().countMatches(unitTypeOwnedBy);
         }
         currentlyBuilt += CollectionUtils.countMatches(unitsToPlace, unitTypeOwnedBy);
         for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
@@ -296,7 +296,7 @@ public final class ProPurchaseUtils {
     final Predicate<Unit> factoryMatch = Matches.unitIsOwnedAndIsFactoryOrCanProduceUnits(player)
         .and(Matches.unitIsBeingTransported().negate())
         .and((territory.isWater() ? Matches.unitIsLand() : Matches.unitIsSea()).negate());
-    final Collection<Unit> factoryUnits = territory.getUnits().getMatches(factoryMatch);
+    final Collection<Unit> factoryUnits = territory.getUnitCollection().getMatches(factoryMatch);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());
     final boolean playerIsOriginalOwner =
@@ -311,13 +311,13 @@ public final class ProPurchaseUtils {
     if (ra != null && ra.getPlacementAnyTerritory()) {
       return Integer.MAX_VALUE;
     }
-    return TripleAUnit.getProductionPotentialOfTerritory(territory.getUnits().getUnits(),
+    return TripleAUnit.getProductionPotentialOfTerritory(territory.getUnitCollection().getUnits(),
         territory, player, data, true, true);
   }
 
   private static PlayerId getOriginalFactoryOwner(final Territory territory, final PlayerId player) {
 
-    final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.unitCanProduceUnits());
+    final Collection<Unit> factoryUnits = territory.getUnitCollection().getMatches(Matches.unitCanProduceUnits());
     if (factoryUnits.size() == 0) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }

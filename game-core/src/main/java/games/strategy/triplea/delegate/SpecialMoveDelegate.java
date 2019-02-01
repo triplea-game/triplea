@@ -137,7 +137,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     }
     currentMove.addChange(airborneChange);
     // make the bases start filling up their capacity
-    final Collection<Unit> basesAtStart = route.getStart().getUnits().getMatches(getAirborneBaseMatch(player, data));
+    final Collection<Unit> basesAtStart =
+        route.getStart().getUnitCollection().getMatches(getAirborneBaseMatch(player, data));
     final Change fillLaunchCapacity = getNewAssignmentOfNumberLaunchedChange(units.size(), basesAtStart, player, data);
     currentMove.addChange(fillLaunchCapacity);
     // start event
@@ -197,7 +198,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final Predicate<Unit> airborneBaseMatch = getAirborneMatch(airborneBases, alliesForBases);
     final Territory start = route.getStart();
     final Territory end = route.getEnd();
-    final Collection<Unit> basesAtStart = start.getUnits().getMatches(airborneBaseMatch);
+    final Collection<Unit> basesAtStart = start.getUnitCollection().getMatches(airborneBaseMatch);
     if (basesAtStart.isEmpty()) {
       return result.setErrorReturnResult("Require Airborne Base At Originating Territory");
     }

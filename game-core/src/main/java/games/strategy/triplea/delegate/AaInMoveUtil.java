@@ -87,7 +87,7 @@ class AaInMoveUtil implements Serializable {
     final PlayerId movingPlayer = movingPlayer(units);
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(movingPlayer, getData());
-    final List<Unit> defendingAa = territory.getUnits().getMatches(Matches.unitIsAaThatCanFire(units,
+    final List<Unit> defendingAa = territory.getUnitCollection().getMatches(Matches.unitIsAaThatCanFire(units,
         airborneTechTargetsAllowed, movingPlayer, Matches.unitIsAaForFlyOverOnly(), 1, true, getData()));
     // comes ordered alphabetically already
     final List<String> aaTypes = UnitAttachment.getAllOfTypeAas(defendingAa);
@@ -201,12 +201,12 @@ class AaInMoveUtil implements Serializable {
     // AA guns in transports shouldn't be able to fire
     final List<Territory> territoriesWhereAaWillFire = new ArrayList<>();
     for (final Territory current : route.getMiddleSteps()) {
-      if (current.getUnits().anyMatch(hasAa)) {
+      if (current.getUnitCollection().anyMatch(hasAa)) {
         territoriesWhereAaWillFire.add(current);
       }
     }
     if (Properties.getForceAaAttacksForLastStepOfFlyOver(data)) {
-      if (route.getEnd().getUnits().anyMatch(hasAa)) {
+      if (route.getEnd().getUnitCollection().anyMatch(hasAa)) {
         territoriesWhereAaWillFire.add(route.getEnd());
       }
     } else {
@@ -216,7 +216,8 @@ class AaInMoveUtil implements Serializable {
       // wants to fire after the battle.
       // TODO: there is a bug in which if you move an air unit to a battle site in the middle of non combat, it wont
       // fire
-      if (route.getStart().getUnits().anyMatch(hasAa) && !getBattleTracker().wasBattleFought(route.getStart())) {
+      if (route.getStart().getUnitCollection().anyMatch(hasAa)
+          && !getBattleTracker().wasBattleFought(route.getStart())) {
         territoriesWhereAaWillFire.add(route.getStart());
       }
     }

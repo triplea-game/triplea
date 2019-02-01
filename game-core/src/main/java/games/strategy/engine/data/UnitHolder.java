@@ -7,7 +7,7 @@ public interface UnitHolder {
   String TERRITORY = "T";
   String PLAYER = "P";
 
-  UnitCollection getUnits();
+  UnitCollection getUnitCollection();
 
   void notifyChanged();
 

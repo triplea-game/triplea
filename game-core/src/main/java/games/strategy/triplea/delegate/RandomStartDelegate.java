@@ -101,7 +101,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         pos += hitRandom[i];
         i++;
         final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(currentPickingPlayer, data);
-        final List<Unit> units = new ArrayList<>(currentPickingPlayer.getUnits().getUnits());
+        final List<Unit> units = new ArrayList<>(currentPickingPlayer.getUnitCollection().getUnits());
 
         units.sort(Comparator.comparingInt(unit -> costs.getInt(unit.getType())));
         final Set<Unit> unitsToPlace = new HashSet<>();
@@ -124,13 +124,13 @@ public class RandomStartDelegate extends BaseTripleADelegate {
         while (true) {
           final Tuple<Territory, Set<Unit>> pick = getRemotePlayer(currentPickingPlayer).pickTerritoryAndUnits(
               new ArrayList<>(allPickableTerritories),
-              new ArrayList<>(currentPickingPlayer.getUnits().getUnits()), UNITS_PER_PICK);
+              new ArrayList<>(currentPickingPlayer.getUnitCollection().getUnits()), UNITS_PER_PICK);
           picked = pick.getFirst();
           unitsToPlace = pick.getSecond();
           if (!allPickableTerritories.contains(picked)
-              || !currentPickingPlayer.getUnits().getUnits().containsAll(unitsToPlace)
+              || !currentPickingPlayer.getUnitCollection().getUnits().containsAll(unitsToPlace)
               || unitsToPlace.size() > UNITS_PER_PICK || (unitsToPlace.size() < UNITS_PER_PICK
-                  && unitsToPlace.size() < currentPickingPlayer.getUnits().getUnits().size())) {
+                  && unitsToPlace.size() < currentPickingPlayer.getUnitCollection().getUnits().size())) {
             getRemotePlayer(currentPickingPlayer).reportMessage("Chosen territory or units invalid!",
                 "Chosen territory or units invalid!");
           } else {
@@ -171,13 +171,13 @@ public class RandomStartDelegate extends BaseTripleADelegate {
       while (true) {
         final Tuple<Territory, Set<Unit>> pick = getRemotePlayer(currentPickingPlayer).pickTerritoryAndUnits(
             new ArrayList<>(territoriesToPickFrom),
-            new ArrayList<>(currentPickingPlayer.getUnits().getUnits()), UNITS_PER_PICK);
+            new ArrayList<>(currentPickingPlayer.getUnitCollection().getUnits()), UNITS_PER_PICK);
         picked = pick.getFirst();
         unitsToPlace = pick.getSecond();
         if (!territoriesToPickFrom.contains(picked)
-            || !currentPickingPlayer.getUnits().getUnits().containsAll(unitsToPlace)
+            || !currentPickingPlayer.getUnitCollection().getUnits().containsAll(unitsToPlace)
             || unitsToPlace.size() > UNITS_PER_PICK || (unitsToPlace.size() < UNITS_PER_PICK
-                && unitsToPlace.size() < currentPickingPlayer.getUnits().getUnits().size())) {
+                && unitsToPlace.size() < currentPickingPlayer.getUnitCollection().getUnits().size())) {
           getRemotePlayer(currentPickingPlayer).reportMessage("Chosen territory or units invalid!",
               "Chosen territory or units invalid!");
         } else {
@@ -231,7 +231,7 @@ public class RandomStartDelegate extends BaseTripleADelegate {
   private static Predicate<PlayerId> getPlayerCanPickMatch() {
     return player -> player != null
         && !player.equals(PlayerId.NULL_PLAYERID)
-        && !player.getUnits().isEmpty()
+        && !player.getUnitCollection().isEmpty()
         && !player.getIsDisabled();
   }
 

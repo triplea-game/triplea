@@ -95,7 +95,7 @@ class TerritoryDetailPanel extends AbstractStatPanel {
       labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
     }
     add(new JLabel(labelText));
-    add(new JLabel("Units: " + territory.getUnits().getUnits().stream()
+    add(new JLabel("Units: " + territory.getUnitCollection().getUnits().stream()
         .filter(u -> uiContext.getMapData().shouldDrawUnit(u.getType().getName())).count()));
     final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(territory, uiContext));
     scroll.setBorder(BorderFactory.createEmptyBorder());

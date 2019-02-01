@@ -37,7 +37,8 @@ public final class ProTerritoryValueUtils {
     double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
     if (ProUtils.isNeutralLand(t)) {
       final double strength =
-          ProBattleUtils.estimateStrength(t, new ArrayList<>(t.getUnits().getUnits()), new ArrayList<>(), false);
+          ProBattleUtils.estimateStrength(t, new ArrayList<>(t.getUnitCollection().getUnits()), new ArrayList<>(),
+              false);
 
       // Estimate TUV swing as number of casualties * cost
       final double tuvSwing = -(strength / 8) * ProData.minCostPerHitPoint;
@@ -131,7 +132,7 @@ public final class ProTerritoryValueUtils {
           final int distance = route.numberOfSteps();
           if (distance > 0) {
             nearbyEnemySeaUnitValue +=
-                nearbyEnemySeaTerritory.getUnits().countMatches(Matches.unitIsEnemyOf(data, player))
+                nearbyEnemySeaTerritory.getUnitCollection().countMatches(Matches.unitIsEnemyOf(data, player))
                     / Math.pow(2, distance);
           }
         }

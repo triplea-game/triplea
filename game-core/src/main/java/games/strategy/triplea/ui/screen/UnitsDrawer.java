@@ -244,7 +244,7 @@ public class UnitsDrawer implements IDrawable {
         .and(bombingUnitDamage > 0
             ? Matches.unitHasTakenSomeBombingUnitDamage()
             : Matches.unitHasNotTakenAnyBombingUnitDamage());
-    return Tuple.of(t, t.getUnits().getMatches(selectedUnits));
+    return Tuple.of(t, t.getUnitCollection().getMatches(selectedUnits));
   }
 
   @Override

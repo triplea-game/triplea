@@ -166,12 +166,12 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
           return "May not build any of this unit right now: " + type.getName();
         } else if (maxBuilt > 0) {
           // count how many units are yet to be placed or are in the field
-          int currentlyBuilt = player.getUnits().countMatches(Matches.unitIsOfType(type));
+          int currentlyBuilt = player.getUnitCollection().countMatches(Matches.unitIsOfType(type));
 
           final Predicate<Unit> unitTypeOwnedBy = Matches.unitIsOfType(type).and(Matches.unitIsOwnedBy(player));
           final Collection<Territory> allTerrs = getData().getMap().getTerritories();
           for (final Territory t : allTerrs) {
-            currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
+            currentlyBuilt += t.getUnitCollection().countMatches(unitTypeOwnedBy);
           }
 
           final int allowedBuild = maxBuilt - currentlyBuilt;

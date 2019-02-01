@@ -74,9 +74,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
     // we were having a problem with units that had been killed previously were still part of battle's variables, so we
     // double check that the stuff still exists here.
-    defendingUnits.retainAll(battleSite.getUnits().getUnits());
-    attackingUnits.retainAll(battleSite.getUnits().getUnits());
-    targets.keySet().removeIf(unit -> !battleSite.getUnits().getUnits().contains(unit));
+    defendingUnits.retainAll(battleSite.getUnitCollection().getUnits());
+    attackingUnits.retainAll(battleSite.getUnitCollection().getUnits());
+    targets.keySet().removeIf(unit -> !battleSite.getUnitCollection().getUnits().contains(unit));
   }
 
   protected void updateDefendingUnits() {
@@ -88,11 +88,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             .or(Matches.unitIsAaThatCanFire(attackingUnits, airborneTechTargetsAllowed, attacker,
                 Matches.unitIsAaForBombingThisUnitOnly(), round, true, gameData)));
     if (targets.isEmpty()) {
-      defendingUnits = CollectionUtils.getMatches(battleSite.getUnits().getUnits(), defenders);
+      defendingUnits = CollectionUtils.getMatches(battleSite.getUnitCollection().getUnits(), defenders);
     } else {
       final List<Unit> targets =
-          CollectionUtils.getMatches(battleSite.getUnits().getUnits(), Matches.unitIsAaThatCanFire(attackingUnits,
-              airborneTechTargetsAllowed, attacker, Matches.unitIsAaForBombingThisUnitOnly(), round, true, gameData));
+          CollectionUtils.getMatches(battleSite.getUnitCollection().getUnits(),
+              Matches.unitIsAaThatCanFire(attackingUnits,
+                  airborneTechTargetsAllowed, attacker, Matches.unitIsAaForBombingThisUnitOnly(), round, true,
+                  gameData));
       targets.addAll(this.targets.keySet());
       defendingUnits = targets;
     }
@@ -167,7 +169,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     // TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData);
-    defendingAa = battleSite.getUnits().getMatches(Matches.unitIsAaThatCanFire(attackingUnits,
+    defendingAa = battleSite.getUnitCollection().getMatches(Matches.unitIsAaThatCanFire(attackingUnits,
         airborneTechTargetsAllowed, attacker, Matches.unitIsAaForBombingThisUnitOnly(), round, true, gameData));
     aaTypes = UnitAttachment.getAllOfTypeAas(defendingAa);
     // reverse since stacks are in reverse order

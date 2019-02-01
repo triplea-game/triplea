@@ -29,13 +29,13 @@ public class UnitsThatCantFightUtil {
           .andIf(current.isWater(), Matches.unitIsLand().negate())
           .and(Matches.unitIsOwnedBy(player))
           .build();
-      final int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
+      final int countAllOwnedUnits = current.getUnitCollection().countMatches(ownedUnitsMatch);
       final Collection<Unit> nonCombatUnits =
-          current.getUnits().getMatches(ownedUnitsMatch.and(Matches.unitCanAttack(player).negate()));
+          current.getUnitCollection().getMatches(ownedUnitsMatch.and(Matches.unitCanAttack(player).negate()));
       if (nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits) {
         continue;
       }
-      if (current.getUnits().anyMatch(enemyAttackUnits)) {
+      if (current.getUnitCollection().anyMatch(enemyAttackUnits)) {
         cantFight.add(current);
       }
     }

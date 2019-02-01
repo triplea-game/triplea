@@ -247,14 +247,15 @@ public class PacificTest extends AbstractDelegateTestCase {
     // movement to force boarding
     route.add(sz24);
     // verify unit counts before move
-    assertEquals(2, bonin.getUnits().size());
-    assertEquals(1, sz24.getUnits().size());
+    assertEquals(2, bonin.getUnitCollection().size());
+    assertEquals(1, sz24.getUnitCollection().size());
     // validate movement
     final String results =
-        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route, route.getEnd().getUnits().getUnits());
+        delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route,
+            route.getEnd().getUnitCollection().getUnits());
     assertValid(results);
     // verify unit counts after move
-    assertEquals(1, bonin.getUnits().size());
-    assertEquals(2, sz24.getUnits().size());
+    assertEquals(1, bonin.getUnitCollection().size());
+    assertEquals(2, sz24.getUnitCollection().size());
   }
 }

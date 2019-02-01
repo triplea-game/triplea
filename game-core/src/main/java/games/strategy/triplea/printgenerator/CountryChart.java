@@ -35,7 +35,7 @@ class CountryChart {
     Iterator<UnitType> availableUnits = gameData.getUnitTypeList().iterator();
     while (terrIterator.hasNext()) {
       final Territory currentTerritory = terrIterator.next();
-      final UnitCollection unitsHere = currentTerritory.getUnits();
+      final UnitCollection unitsHere = currentTerritory.getUnitCollection();
       final List<Map<UnitType, Integer>> unitPairs = new ArrayList<>();
       while (availableUnits.hasNext()) {
         final UnitType currentUnit = availableUnits.next();

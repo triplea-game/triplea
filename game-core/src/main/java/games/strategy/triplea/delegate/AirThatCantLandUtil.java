@@ -39,7 +39,7 @@ public class AirThatCantLandUtil {
     final Collection<Territory> cantLand = new ArrayList<>();
     for (final Territory current : data.getMap().getTerritories()) {
       final Predicate<Unit> ownedAir = Matches.unitIsAir().and(Matches.unitIsOwnedBy(player));
-      final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
+      final Collection<Unit> air = current.getUnitCollection().getMatches(ownedAir);
       if (air.size() != 0 && !AirMovementValidator.canLand(air, current, player, data)) {
         cantLand.add(current);
       }
@@ -52,7 +52,7 @@ public class AirThatCantLandUtil {
     final GameMap map = data.getMap();
     for (final Territory current : getTerritoriesWhereAirCantLand(player)) {
       final Predicate<Unit> ownedAir = Matches.unitIsAir().and(Matches.alliedUnit(player, data));
-      final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
+      final Collection<Unit> air = current.getUnitCollection().getMatches(ownedAir);
       final boolean hasNeighboringFriendlyFactory =
           map.getNeighbors(current, Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(data, player)).size() > 0;
       final boolean skip = spareAirInSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory;
@@ -70,7 +70,8 @@ public class AirThatCantLandUtil {
       toRemove.addAll(airUnits);
     } else { // on water we may just no have enough carriers
       // find the carrier capacity
-      final Collection<Unit> carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, bridge.getData()));
+      final Collection<Unit> carriers =
+          territory.getUnitCollection().getMatches(Matches.alliedUnit(player, bridge.getData()));
       int capacity = AirMovementValidator.carrierCapacity(carriers, territory);
       for (final Unit unit : airUnits) {
         final UnitAttachment ua = UnitAttachment.get(unit.getType());

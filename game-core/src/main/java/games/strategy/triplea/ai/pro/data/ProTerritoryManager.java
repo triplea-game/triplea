@@ -121,7 +121,7 @@ public class ProTerritoryManager {
 
       // Check if I can win without amphib units
       final List<Unit> defenders =
-          new ArrayList<>(isIgnoringRelationships ? t.getUnits() : patd.getMaxEnemyDefenders(player, data));
+          new ArrayList<>(isIgnoringRelationships ? t.getUnitCollection() : patd.getMaxEnemyDefenders(player, data));
       patd.setMaxBattleResult(calc.estimateAttackBattleResults(t, patd.getMaxUnits(), defenders, new HashSet<>()));
 
       // Add in amphib units if I can't win without them
@@ -333,10 +333,10 @@ public class ProTerritoryManager {
       for (final Territory from : scrambleTerrs.get(to)) {
 
         // Find potential scramble units from territory
-        final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
+        final Collection<Unit> airbases = from.getUnitCollection().getMatches(airbasesCanScramble);
         final int maxCanScramble = getMaxScrambleCount(airbases);
         final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.territoryIsNotImpassable());
-        List<Unit> canScrambleAir = from.getUnits().getMatches(Matches.unitIsEnemyOf(data, player)
+        List<Unit> canScrambleAir = from.getUnitCollection().getMatches(Matches.unitIsEnemyOf(data, player)
             .and(Matches.unitCanScramble())
             .and(Matches.unitIsNotDisabled())
             .and(Matches.unitWasScrambled().negate())
@@ -537,7 +537,7 @@ public class ProTerritoryManager {
 
       // Find my naval units that have movement left
       final List<Unit> mySeaUnits =
-          myUnitTerritory.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedSea(player, isCombatMove));
+          myUnitTerritory.getUnitCollection().getMatches(ProMatches.unitCanBeMovedAndIsOwnedSea(player, isCombatMove));
 
       // Check each sea unit individually since they can have different ranges
       for (final Unit mySeaUnit : mySeaUnits) {
@@ -545,7 +545,8 @@ public class ProTerritoryManager {
         // If my combat move and carrier has dependent allied fighters then skip it
         if (isCombatMove && !isCheckingEnemyAttacks) {
           final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-              MoveValidator.carrierMustMoveWith(myUnitTerritory.getUnits().getUnits(), myUnitTerritory, data, player);
+              MoveValidator.carrierMustMoveWith(myUnitTerritory.getUnitCollection().getUnits(), myUnitTerritory, data,
+                  player);
           if (carrierMustMoveWith.containsKey(mySeaUnit) && !carrierMustMoveWith.get(mySeaUnit).isEmpty()) {
             continue;
           }
@@ -647,7 +648,7 @@ public class ProTerritoryManager {
 
       // Find my land units that have movement left
       final List<Unit> myLandUnits =
-          myUnitTerritory.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedLand(player, isCombatMove));
+          myUnitTerritory.getUnitCollection().getMatches(ProMatches.unitCanBeMovedAndIsOwnedLand(player, isCombatMove));
 
       // Check each land unit individually since they can have different ranges
       for (final Unit myLandUnit : myLandUnits) {
@@ -744,7 +745,7 @@ public class ProTerritoryManager {
         }
       }
       for (final Territory t : data.getMap().getTerritories()) {
-        if (t.getUnits().anyMatch(Matches.unitIsAlliedCarrier(player, data))) {
+        if (t.getUnitCollection().anyMatch(Matches.unitIsAlliedCarrier(player, data))) {
           possibleCarrierTerritories.add(t);
         }
       }
@@ -754,7 +755,7 @@ public class ProTerritoryManager {
 
       // Find my air units that have movement left
       final List<Unit> myAirUnits =
-          myUnitTerritory.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedAir(player, isCombatMove));
+          myUnitTerritory.getUnitCollection().getMatches(ProMatches.unitCanBeMovedAndIsOwnedAir(player, isCombatMove));
 
       // Check each air unit individually since they can have different ranges
       for (final Unit myAirUnit : myAirUnits) {
@@ -850,7 +851,8 @@ public class ProTerritoryManager {
 
       // Find my transports and amphibious units that have movement left
       final List<Unit> myTransportUnits =
-          myUnitTerritory.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedTransport(player, isCombatMove));
+          myUnitTerritory.getUnitCollection()
+              .getMatches(ProMatches.unitCanBeMovedAndIsOwnedTransport(player, isCombatMove));
       Predicate<Territory> unloadAmphibTerritoryMatch = ProMatches.territoryCanMoveLandUnits(player, data, isCombatMove)
           .and(moveAmphibToTerritoryMatch);
       if (isIgnoringRelationships) {
@@ -898,10 +900,10 @@ public class ProTerritoryManager {
             } else if (Matches.territoryHasEnemySeaUnits(player, data).negate().test(currentTerritory)) {
               final Set<Territory> possibleLoadTerritories = data.getMap().getNeighbors(currentTerritory);
               for (final Territory possibleLoadTerritory : possibleLoadTerritories) {
-                List<Unit> possibleUnits = possibleLoadTerritory.getUnits().getMatches(
+                List<Unit> possibleUnits = possibleLoadTerritory.getUnitCollection().getMatches(
                     ProMatches.unitIsOwnedTransportableUnitAndCanBeLoaded(player, myTransportUnit, isCombatMove));
                 if (isCheckingEnemyAttacks) {
-                  possibleUnits = possibleLoadTerritory.getUnits()
+                  possibleUnits = possibleLoadTerritory.getUnitCollection()
                       .getMatches(ProMatches.unitIsOwnedCombatTransportableUnit(player));
                 }
                 for (final Unit possibleUnit : possibleUnits) {
@@ -1027,7 +1029,7 @@ public class ProTerritoryManager {
 
       // Find my bombard units that have movement left
       final List<Unit> mySeaUnits =
-          myUnitTerritory.getUnits().getMatches(ProMatches.unitCanBeMovedAndIsOwnedBombard(player));
+          myUnitTerritory.getUnitCollection().getMatches(ProMatches.unitCanBeMovedAndIsOwnedBombard(player));
 
       // Check each sea unit individually since they can have different ranges
       for (final Unit mySeaUnit : mySeaUnits) {

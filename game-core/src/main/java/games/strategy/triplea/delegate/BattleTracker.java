@@ -679,7 +679,7 @@ public class BattleTracker implements Serializable {
     }
     // Remove any bombing raids against captured territory
     // TODO: see if necessary
-    if (territory.getUnits().anyMatch(Matches.unitIsEnemyOf(data, id).and(Matches.unitCanBeDamaged()))) {
+    if (territory.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(data, id).and(Matches.unitCanBeDamaged()))) {
       final IBattle bombingBattle = getPendingBattle(territory, true, null);
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
@@ -713,7 +713,7 @@ public class BattleTracker implements Serializable {
           changeTracker.addChange(takeOverFriendlyTerritories);
         }
         final Collection<Unit> units =
-            CollectionUtils.getMatches(item.getUnits().getUnits(), Matches.unitIsInfrastructure());
+            CollectionUtils.getMatches(item.getUnitCollection().getUnits(), Matches.unitIsInfrastructure());
         if (!units.isEmpty()) {
           final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, territory);
           bridge.addChange(takeOverNonComUnits);
@@ -743,7 +743,7 @@ public class BattleTracker implements Serializable {
     if (Properties.getUnitsCanBeDestroyedInsteadOfCaptured(data)) {
       final Predicate<Unit> enemyToBeDestroyed = Matches.enemyUnit(id, data)
           .and(Matches.unitDestroyedWhenCapturedByOrFrom(id));
-      final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
+      final Collection<Unit> destroyed = territory.getUnitCollection().getMatches(enemyToBeDestroyed);
       if (!destroyed.isEmpty()) {
         final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
         bridge.getHistoryWriter().addChildToEvent("Some non-combat units are destroyed: ", destroyed);
@@ -756,7 +756,8 @@ public class BattleTracker implements Serializable {
     // destroy any capture on entering units, IF the property to destroy them instead of capture is turned on
     if (Properties.getOnEnteringUnitsDestroyedInsteadOfCaptured(data)) {
       final Collection<Unit> destroyed =
-          territory.getUnits().getMatches(Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
+          territory.getUnitCollection()
+              .getMatches(Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
       if (!destroyed.isEmpty()) {
         final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
         bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys some units instead of capturing them",
@@ -771,7 +772,7 @@ public class BattleTracker implements Serializable {
     final Predicate<Unit> enemyToBeDestroyed = Matches.enemyUnit(id, data)
         .and(Matches.unitIsDisabled())
         .and(Matches.unitIsInfrastructure().negate());
-    final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
+    final Collection<Unit> destroyed = territory.getUnitCollection().getMatches(enemyToBeDestroyed);
     if (!destroyed.isEmpty()) {
       final Change destroyUnits = ChangeFactory.removeUnits(territory, destroyed);
       bridge.getHistoryWriter().addChildToEvent(id.getName() + " destroys some disabled combat units", destroyed);
@@ -784,7 +785,7 @@ public class BattleTracker implements Serializable {
     final Predicate<Unit> enemyNonCom = Matches.enemyUnit(id, data).and(Matches.unitIsInfrastructure());
     final Predicate<Unit> willBeCaptured = enemyNonCom
         .or(Matches.unitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
-    final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
+    final Collection<Unit> nonCom = territory.getUnitCollection().getMatches(willBeCaptured);
     // change any units that change unit types on capture
     if (Properties.getUnitsCanBeChangedOnCapture(data)) {
       final Collection<Unit> toReplace =
@@ -893,7 +894,7 @@ public class BattleTracker implements Serializable {
     }
     // if just an enemy factory &/or AA then no battle
     final Collection<Unit> enemyUnits =
-        CollectionUtils.getMatches(site.getUnits().getUnits(), Matches.enemyUnit(id, data));
+        CollectionUtils.getMatches(site.getUnitCollection().getUnits(), Matches.enemyUnit(id, data));
     if (route.getEnd() != null && !enemyUnits.isEmpty()
         && enemyUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
       return ChangeFactory.EMPTY_CHANGE;

@@ -72,9 +72,10 @@ public class AirBattle extends AbstractBattle {
     // fill in defenders
     if (isBombingRun) {
       defendingUnits =
-          battleSite.getUnits().getMatches(defendingBombingRaidInterceptors(battleSite, attacker, gameData));
+          battleSite.getUnitCollection().getMatches(defendingBombingRaidInterceptors(battleSite, attacker, gameData));
     } else {
-      defendingUnits = battleSite.getUnits().getMatches(defendingGroundSeaBattleInterceptors(attacker, gameData));
+      defendingUnits =
+          battleSite.getUnitCollection().getMatches(defendingGroundSeaBattleInterceptors(attacker, gameData));
     }
   }
 
@@ -311,7 +312,7 @@ public class AirBattle extends AbstractBattle {
       final Collection<Unit> bombers = CollectionUtils.getMatches(attackingUnits, Matches.unitIsStrategicBomber());
       if (!bombers.isEmpty()) {
         Map<Unit, Set<Unit>> targets = null;
-        final Collection<Unit> enemyTargetsTotal = battleSite.getUnits().getMatches(
+        final Collection<Unit> enemyTargetsTotal = battleSite.getUnitCollection().getMatches(
             Matches.enemyUnit(bridge.getPlayerId(), gameData)
                 .and(Matches.unitCanBeDamaged())
                 .and(Matches.unitIsBeingTransported().negate()));
@@ -487,7 +488,7 @@ public class AirBattle extends AbstractBattle {
       return Integer.MAX_VALUE;
     }
     int result = 0;
-    for (final Unit base : t.getUnits().getMatches(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
+    for (final Unit base : t.getUnitCollection().getMatches(Matches.unitIsAirBase().and(Matches.unitIsNotDisabled()))) {
       final int baseMax = UnitAttachment.get(base.getType()).getMaxInterceptCount();
       if (baseMax == -1) {
         return Integer.MAX_VALUE;
@@ -708,10 +709,10 @@ public class AirBattle extends AbstractBattle {
         }
       }
     } else {
-      return territory.getUnits().anyMatch(defendingAirMatch);
+      return territory.getUnitCollection().anyMatch(defendingAirMatch);
     }
     // should we check if the territory also has an air base?
-    return territory.getUnits().anyMatch(defendingAirMatch)
+    return territory.getUnitCollection().anyMatch(defendingAirMatch)
         || data.getMap().getNeighbors(territory, maxScrambleDistance).stream()
             .anyMatch(Matches.territoryHasUnitsThatMatch(defendingAirMatch));
   }

@@ -506,7 +506,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   protected abstract void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerId player);
 
   /**
-   * It is the AI's turn to place units. get the units available to place with player.getUnits()
+   * It is the AI's turn to place units. get the units available to place with player.getUnitCollection()
    *
    * @param placeForBid - is this a placement for bid
    * @param placeDelegate - the place delegate to place with

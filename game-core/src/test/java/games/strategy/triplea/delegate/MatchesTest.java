@@ -121,19 +121,19 @@ public final class MatchesTest {
 
       territory = gameData.getMap().getTerritory("Germany");
       territory.setOwner(player);
-      territory.getUnits().clear();
+      territory.getUnitCollection().clear();
     }
 
     @Test
     public void shouldNotMatchWhenTerritoryContainsOnlyAlliedLandUnits() {
-      territory.getUnits().add(newLandUnitFor(alliedPlayer));
+      territory.getUnitCollection().add(newLandUnitFor(alliedPlayer));
 
       assertThat(newMatch(), notMatches(territory));
     }
 
     @Test
     public void shouldMatchWhenTerritoryContainsEnemyLandUnits() {
-      territory.getUnits().addAll(Arrays.asList(
+      territory.getUnitCollection().addAll(Arrays.asList(
           newLandUnitFor(player),
           newLandUnitFor(enemyPlayer),
           newAirUnitFor(enemyPlayer),
@@ -144,7 +144,7 @@ public final class MatchesTest {
 
     @Test
     public void shouldMatchWhenTerritoryContainsEnemySeaUnits() {
-      territory.getUnits().addAll(Arrays.asList(
+      territory.getUnitCollection().addAll(Arrays.asList(
           newSeaUnitFor(player),
           newSeaUnitFor(enemyPlayer),
           newAirUnitFor(enemyPlayer),
@@ -155,14 +155,14 @@ public final class MatchesTest {
 
     @Test
     public void shouldNotMatchWhenTerritoryContainsOnlyEnemyAirUnits() {
-      territory.getUnits().add(newAirUnitFor(enemyPlayer));
+      territory.getUnitCollection().add(newAirUnitFor(enemyPlayer));
 
       assertThat(newMatch(), notMatches(territory));
     }
 
     @Test
     public void shouldNotMatchWhenTerritoryContainsOnlyEnemyInfrastructureUnits() {
-      territory.getUnits().add(newInfrastructureUnitFor(enemyPlayer));
+      territory.getUnitCollection().add(newInfrastructureUnitFor(enemyPlayer));
 
       assertThat(newMatch(), notMatches(territory));
     }

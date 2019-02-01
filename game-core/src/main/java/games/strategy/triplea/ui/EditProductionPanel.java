@@ -62,7 +62,7 @@ class EditProductionPanel extends ProductionPanel {
       // This is because the null player does not have a production frontier, and we also do not know what units we have
       // art for, so only use the units on a map.
       for (final Territory t : data.getMap()) {
-        for (final Unit u : t.getUnits()) {
+        for (final Unit u : t.getUnitCollection()) {
           if (u.getOwner().equals(player)) {
             final UnitType ut = u.getType();
             if (!unitsAllowed.contains(ut)) {

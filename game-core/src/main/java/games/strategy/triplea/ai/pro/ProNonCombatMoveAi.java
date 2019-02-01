@@ -203,7 +203,7 @@ class ProNonCombatMoveAi {
     // Add all units that can't move (allied units, 0 move units, etc)
     for (final Territory t : moveMap.keySet()) {
       moveMap.get(t).getCantMoveUnits()
-          .addAll(t.getUnits().getMatches(ProMatches.unitCantBeMovedAndIsAlliedDefender(player, data, t)));
+          .addAll(t.getUnitCollection().getMatches(ProMatches.unitCantBeMovedAndIsAlliedDefender(player, data, t)));
     }
 
     // Add all units that only have 1 move option and can't be transported
@@ -673,7 +673,8 @@ class ProNonCombatMoveAi {
           if (Matches.unitIsCarrier().test(unit)) {
             final Territory unitTerritory = unitTerritoryMap.get(unit);
             final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-                MoveValidator.carrierMustMoveWith(unitTerritory.getUnits().getUnits(), unitTerritory, data, player);
+                MoveValidator.carrierMustMoveWith(unitTerritory.getUnitCollection().getUnits(), unitTerritory, data,
+                    player);
             if (carrierMustMoveWith.containsKey(unit)) {
               moveMap.get(maxWinTerritory).getTempUnits().addAll(carrierMustMoveWith.get(unit));
             }
@@ -1365,7 +1366,7 @@ class ProNonCombatMoveAi {
                 if (Matches.unitIsCarrier().test(u)) {
                   final Territory unitTerritory = unitTerritoryMap.get(u);
                   final Map<Unit, Collection<Unit>> carrierMustMoveWith = MoveValidator
-                      .carrierMustMoveWith(unitTerritory.getUnits().getUnits(), unitTerritory, data, player);
+                      .carrierMustMoveWith(unitTerritory.getUnitCollection().getUnits(), unitTerritory, data, player);
                   if (carrierMustMoveWith.containsKey(u)) {
                     moveMap.get(t).getTempUnits().addAll(carrierMustMoveWith.get(u));
                   }
@@ -1442,7 +1443,8 @@ class ProNonCombatMoveAi {
             if (Matches.unitIsCarrier().test(u)) {
               final Territory unitTerritory = unitTerritoryMap.get(u);
               final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-                  MoveValidator.carrierMustMoveWith(unitTerritory.getUnits().getUnits(), unitTerritory, data, player);
+                  MoveValidator.carrierMustMoveWith(unitTerritory.getUnitCollection().getUnits(), unitTerritory, data,
+                      player);
               if (carrierMustMoveWith.containsKey(u)) {
                 moveMap.get(maxValueTerritory).getTempUnits().addAll(carrierMustMoveWith.get(u));
               }
@@ -1480,7 +1482,8 @@ class ProNonCombatMoveAi {
               if (Matches.unitIsCarrier().test(u)) {
                 final Territory unitTerritory = unitTerritoryMap.get(u);
                 final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-                    MoveValidator.carrierMustMoveWith(unitTerritory.getUnits().getUnits(), unitTerritory, data, player);
+                    MoveValidator.carrierMustMoveWith(unitTerritory.getUnitCollection().getUnits(), unitTerritory, data,
+                        player);
                 if (carrierMustMoveWith.containsKey(u)) {
                   moveMap.get(minTerritory).getTempUnits().addAll(carrierMustMoveWith.get(u));
                 }

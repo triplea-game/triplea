@@ -241,7 +241,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         .build();
     return !getData().getMap().getTerritories().isEmpty()
         && getData().getMap().getTerritories().stream()
-            .map(Territory::getUnits)
+            .map(Territory::getUnitCollection)
             .anyMatch(units -> units.anyMatch(moveableUnitOwnedByMe));
   }
 
@@ -322,12 +322,12 @@ public class MoveDelegate extends AbstractMoveDelegate {
         .and(Matches.unitHasMovementLeft());
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> ownedFighters = t.getUnits().getMatches(ownedFightersMatch);
+      final Collection<Unit> ownedFighters = t.getUnitCollection().getMatches(ownedFightersMatch);
       if (ownedFighters.isEmpty()) {
         continue;
       }
       final Collection<Unit> crippledAlliedCarriers =
-          CollectionUtils.getMatches(t.getUnits().getUnits(), crippledAlliedCarriersMatch);
+          CollectionUtils.getMatches(t.getUnitCollection().getUnits(), crippledAlliedCarriersMatch);
       if (crippledAlliedCarriers.isEmpty()) {
         continue;
       }
@@ -356,7 +356,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   static Change giveBonusMovementToUnits(final PlayerId player, final GameData data, final Territory t) {
     final CompositeChange change = new CompositeChange();
-    for (final Unit u : t.getUnits().getUnits()) {
+    for (final Unit u : t.getUnitCollection().getUnits()) {
       if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).test(u)) {
         if (!Matches.isUnitAllied(player, data).test(u)) {
           continue;
@@ -365,18 +365,20 @@ public class MoveDelegate extends AbstractMoveDelegate {
         final Predicate<Unit> givesBonusUnit = Matches.alliedUnit(player, data)
             .and(Matches.unitCanGiveBonusMovementToThisUnit(u));
         final Collection<Unit> givesBonusUnits =
-            new ArrayList<>(CollectionUtils.getMatches(t.getUnits().getUnits(), givesBonusUnit));
+            new ArrayList<>(CollectionUtils.getMatches(t.getUnitCollection().getUnits(), givesBonusUnit));
         if (Matches.unitIsSea().test(u)) {
           final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(Matches.unitIsLand());
           final Set<Territory> neighbors = new HashSet<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
           for (final Territory current : neighbors) {
-            givesBonusUnits.addAll(CollectionUtils.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
+            givesBonusUnits
+                .addAll(CollectionUtils.getMatches(current.getUnitCollection().getUnits(), givesBonusUnitLand));
           }
         } else if (Matches.unitIsLand().test(u)) {
           final Predicate<Unit> givesBonusUnitSea = givesBonusUnit.and(Matches.unitIsSea());
           final Set<Territory> neighbors = new HashSet<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
           for (final Territory current : neighbors) {
-            givesBonusUnits.addAll(CollectionUtils.getMatches(current.getUnits().getUnits(), givesBonusUnitSea));
+            givesBonusUnits
+                .addAll(CollectionUtils.getMatches(current.getUnitCollection().getUnits(), givesBonusUnitSea));
           }
         }
         for (final Unit bonusGiver : givesBonusUnits) {
@@ -405,9 +407,10 @@ public class MoveDelegate extends AbstractMoveDelegate {
     for (final Territory current : data.getMap().getTerritories()) {
       final Set<Unit> damaged;
       if (!Properties.getTwoHitPointUnitsRequireRepairFacilities(data)) {
-        damaged = new HashSet<>(current.getUnits().getMatches(repairOnlyOwn ? damagedUnitsOwned : damagedUnits));
+        damaged =
+            new HashSet<>(current.getUnitCollection().getMatches(repairOnlyOwn ? damagedUnitsOwned : damagedUnits));
       } else {
-        damaged = new HashSet<>(current.getUnits().getMatches(damagedUnitsOwned
+        damaged = new HashSet<>(current.getUnitCollection().getMatches(damagedUnitsOwned
             .and(Matches.unitCanBeRepairedByFacilitiesInItsTerritory(current, player, data))));
       }
       if (!damaged.isEmpty()) {
@@ -506,7 +509,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final Predicate<Unit> repairUnit = Matches.alliedUnit(owner, data)
         .and(Matches.unitCanRepairOthers())
         .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, territoryUnitIsIn));
-    final Set<Unit> repairUnitsForThisUnit = new HashSet<>(territoryUnitIsIn.getUnits().getMatches(repairUnit));
+    final Set<Unit> repairUnitsForThisUnit =
+        new HashSet<>(territoryUnitIsIn.getUnitCollection().getMatches(repairUnit));
     if (Matches.unitIsSea().test(unitToBeRepaired)) {
       final List<Territory> neighbors =
           new ArrayList<>(data.getMap().getNeighbors(territoryUnitIsIn, Matches.territoryIsLand()));
@@ -515,7 +519,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
             .and(Matches.unitCanRepairOthers())
             .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, current))
             .and(Matches.unitIsLand());
-        repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitLand));
+        repairUnitsForThisUnit.addAll(current.getUnitCollection().getMatches(repairUnitLand));
       }
     } else if (Matches.unitIsLand().test(unitToBeRepaired)) {
       final List<Territory> neighbors =
@@ -525,7 +529,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
             .and(Matches.unitCanRepairOthers())
             .and(Matches.unitCanRepairThisUnit(unitToBeRepaired, current))
             .and(Matches.unitIsSea());
-        repairUnitsForThisUnit.addAll(current.getUnits().getMatches(repairUnitSea));
+        repairUnitsForThisUnit.addAll(current.getUnitCollection().getMatches(repairUnitSea));
       }
     }
     int largest = 0;
@@ -614,7 +618,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     boolean hasProducedCarriers = false;
     for (final PlayerId p : GameStepPropertiesHelper.getCombinedTurns(data, player)) {
-      if (p.getUnits().anyMatch(Matches.unitIsCarrier())) {
+      if (p.getUnitCollection().anyMatch(Matches.unitIsCarrier())) {
         hasProducedCarriers = true;
         break;
       }
@@ -628,7 +632,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
       // Check if player still has units to place
       if (!player.equals(this.player)) {
         util.removeAirThatCantLand(player,
-            ((player.getUnits().anyMatch(Matches.unitIsCarrier()) || hasProducedCarriers) && lhtrCarrierProd));
+            ((player.getUnitCollection().anyMatch(Matches.unitIsCarrier()) || hasProducedCarriers) && lhtrCarrierProd));
       }
     }
   }

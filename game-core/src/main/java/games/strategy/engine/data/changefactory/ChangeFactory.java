@@ -80,19 +80,19 @@ public class ChangeFactory {
   }
 
   public static Change addUnits(final Territory territory, final Collection<Unit> units) {
-    return new AddUnits(territory.getUnits(), units);
+    return new AddUnits(territory.getUnitCollection(), units);
   }
 
   public static Change addUnits(final PlayerId player, final Collection<Unit> units) {
-    return new AddUnits(player.getUnits(), units);
+    return new AddUnits(player.getUnitCollection(), units);
   }
 
   public static Change removeUnits(final Territory territory, final Collection<Unit> units) {
-    return new RemoveUnits(territory.getUnits(), units);
+    return new RemoveUnits(territory.getUnitCollection(), units);
   }
 
   public static Change removeUnits(final PlayerId player, final Collection<Unit> units) {
-    return new RemoveUnits(player.getUnits(), units);
+    return new RemoveUnits(player.getUnitCollection(), units);
   }
 
   public static Change moveUnits(final Territory start, final Territory end, final Collection<Unit> units) {

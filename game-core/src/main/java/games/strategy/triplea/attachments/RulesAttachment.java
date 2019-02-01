@@ -893,7 +893,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     boolean satisfied = false;
     int numberMet = 0;
     for (final Territory terr : territories) {
-      final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
+      final Collection<Unit> allUnits = new ArrayList<>(terr.getUnitCollection().getUnits());
       switch (exclType) {
         case "direct":
           allUnits.removeAll(
@@ -968,7 +968,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     int numberMet = 0;
     for (final Territory terr : territories) {
       // get all the units in the territory
-      final Collection<Unit> allUnits = new ArrayList<>(terr.getUnits().getUnits());
+      final Collection<Unit> allUnits = new ArrayList<>(terr.getUnitCollection().getUnits());
       switch (exclType) {
         case "allied": // any allied units in the territory. (does not include owned units)
           allUnits.removeAll(CollectionUtils.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));

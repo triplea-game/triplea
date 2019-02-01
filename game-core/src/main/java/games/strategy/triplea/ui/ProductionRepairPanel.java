@@ -127,7 +127,7 @@ class ProductionRepairPanel extends JPanel {
           .getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
       for (final RepairRule repairRule : player.getRepairFrontier()) {
         for (final Territory terr : terrsWithPotentiallyDamagedUnits) {
-          for (final Unit unit : CollectionUtils.getMatches(terr.getUnits().getUnits(), myDamagedUnits)) {
+          for (final Unit unit : CollectionUtils.getMatches(terr.getUnitCollection().getUnits(), myDamagedUnits)) {
             if (!repairRule.getResults().keySet().iterator().next().equals(unit.getType())) {
               continue;
             }

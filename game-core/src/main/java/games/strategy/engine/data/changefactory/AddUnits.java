@@ -39,7 +39,7 @@ class AddUnits extends Change {
   @Override
   protected void perform(final GameData data) {
     final UnitHolder holder = data.getUnitHolder(name, type);
-    holder.getUnits().addAll(units);
+    holder.getUnitCollection().addAll(units);
   }
 
   @Override

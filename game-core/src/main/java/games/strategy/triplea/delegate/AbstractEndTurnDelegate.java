@@ -327,7 +327,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
         for (final PlayerId terrNewOwner : terrNewOwners) {
           if (possibleNewOwners.contains(terrNewOwner)) {
             // PlayerOwnerChange
-            final Collection<Unit> units = currTerritory.getUnits()
+            final Collection<Unit> units = currTerritory.getUnitCollection()
                 .getMatches(Matches.unitOwnedBy(player).and(Matches.unitCanBeGivenByTerritoryTo(terrNewOwner)));
             if (!units.isEmpty()) {
               change.add(ChangeFactory.changeOwner(units, terrNewOwner, currTerritory));
@@ -408,7 +408,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       if (maxLoss <= 0) {
         continue;
       }
-      final Collection<Unit> enemies = CollectionUtils.getMatches(b.getUnits().getUnits(), enemyUnits);
+      final Collection<Unit> enemies = CollectionUtils.getMatches(b.getUnitCollection().getUnits(), enemyUnits);
       if (enemies.isEmpty()) {
         continue;
       }

@@ -2426,7 +2426,7 @@ public class UnitAttachment extends DefaultAttachment {
         break;
     }
     // else if (stackingType.equals("total"))
-    final int totalInTerritory = CollectionUtils.countMatches(t.getUnits().getUnits(), stackingMatch);
+    final int totalInTerritory = CollectionUtils.countMatches(t.getUnitCollection().getUnits(), stackingMatch);
     return Math.max(0, max - totalInTerritory);
   }
 

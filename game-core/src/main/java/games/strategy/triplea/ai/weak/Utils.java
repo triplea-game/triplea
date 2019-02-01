@@ -37,7 +37,7 @@ final class Utils {
     float strength = 0;
     for (final Territory t : data.getMap().getNeighbors(location,
         location.isWater() ? Matches.territoryIsWater() : Matches.territoryIsLand())) {
-      final List<Unit> enemies = t.getUnits().getMatches(Matches.enemyUnit(location.getOwner(), data));
+      final List<Unit> enemies = t.getUnitCollection().getMatches(Matches.enemyUnit(location.getOwner(), data));
       strength += AiUtils.strength(enemies, true, location.isWater());
     }
     return strength;
@@ -88,7 +88,7 @@ final class Utils {
     final List<Territory> shipTerr = new ArrayList<>();
     final Collection<Territory> neighbors = data.getMap().getTerritories();
     for (final Territory t2 : neighbors) {
-      if (t2.getUnits().anyMatch(unitCondition)) {
+      if (t2.getUnitCollection().anyMatch(unitCondition)) {
         shipTerr.add(t2);
       }
     }
