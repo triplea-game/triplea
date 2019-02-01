@@ -112,7 +112,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
       if (!current.isWater()) {
         continue;
       }
-      final Collection<Unit> units = current.getUnits().getUnits();
+      final Collection<Unit> units = current.getUnits();
       if (units.size() == 0 || units.stream().noneMatch(Matches.unitIsLand())) {
         continue;
       }
@@ -180,13 +180,13 @@ public class InitializationDelegate extends BaseTripleADelegate {
           change.add(ChangeFactory.changeResourcesChange(player, r, -deleted));
         }
       }
-      final Collection<Unit> heldUnits = player.getUnits().getUnits();
+      final Collection<Unit> heldUnits = player.getUnits();
       if (!heldUnits.isEmpty()) {
         change.add(ChangeFactory.removeUnits(player, heldUnits));
       }
       final Predicate<Unit> owned = Matches.unitIsOwnedBy(player);
       for (final Territory t : data.getMap().getTerritories()) {
-        final Collection<Unit> terrUnits = t.getUnits().getMatches(owned);
+        final Collection<Unit> terrUnits = t.getUnitCollection().getMatches(owned);
         if (!terrUnits.isEmpty()) {
           change.add(ChangeFactory.removeUnits(t, terrUnits));
         }
@@ -323,7 +323,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
         if (territoryAttachment.getOriginalOwner() == null && current.getOwner() != null) {
           changes.add(OriginalOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
         }
-        final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.unitIsInfrastructure());
+        final Collection<Unit> factoryAndInfrastructure =
+            current.getUnitCollection().getMatches(Matches.unitIsInfrastructure());
         changes.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, current.getOwner()));
       } else if (!current.isWater()) {
         final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);

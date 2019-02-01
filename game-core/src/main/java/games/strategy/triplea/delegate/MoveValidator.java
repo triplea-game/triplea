@@ -189,7 +189,7 @@ public class MoveValidator {
       }
     }
     // make sure all units are actually in the start territory
-    if (!route.getStart().getUnits().containsAll(units)) {
+    if (!route.getStart().getUnitCollection().containsAll(units)) {
       return result.setErrorReturnResult("Not enough units in starting territory");
     }
     return result;
@@ -416,7 +416,7 @@ public class MoveValidator {
     if (units.stream().anyMatch(Matches.unitWasInCombat())
         && units.stream().anyMatch(Matches.unitWasUnloadedThisTurn())) {
       if (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(player, data).test(route.getEnd())
-          && !route.getEnd().getUnits().isEmpty()) {
+          && !route.getEnd().getUnitCollection().isEmpty()) {
         return result.setErrorReturnResult("Units cannot participate in multiple battles");
       }
     }
@@ -460,11 +460,11 @@ public class MoveValidator {
         return result.setErrorReturnResult("Cannot move submarines under destroyers");
       }
     }
-    if (end.getUnits().anyMatch(Matches.enemyUnit(player, data))) {
+    if (end.getUnitCollection().anyMatch(Matches.enemyUnit(player, data))) {
       if (!onlyIgnoredUnitsOnPath(route, player, data, false)) {
         final Predicate<Unit> friendlyOrSubmerged =
             Matches.enemyUnit(player, data).negate().or(Matches.unitIsSubmerged());
-        if (!end.getUnits().allMatch(friendlyOrSubmerged)
+        if (!end.getUnitCollection().allMatch(friendlyOrSubmerged)
             && !(!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir()) && end.isWater())) {
           if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSub())
               || !Properties.getSubsCanEndNonCombatMoveWithEnemies(data)) {
@@ -571,7 +571,7 @@ public class MoveValidator {
       final Map<Unit, Collection<Unit>> newDependents, final MoveValidationResult result) {
     final boolean isEditMode = getEditMode(data);
     // make sure transports in the destination
-    if (route.getEnd() != null && !route.getEnd().getUnits().containsAll(transportsToLoad)
+    if (route.getEnd() != null && !route.getEnd().getUnitCollection().containsAll(transportsToLoad)
         && !units.containsAll(transportsToLoad)) {
       return result.setErrorReturnResult("Transports not found in route end");
     }
@@ -659,7 +659,7 @@ public class MoveValidator {
       for (final Territory t : route.getSteps()) {
         final Collection<Unit> unitsAllowedSoFar = new ArrayList<>();
         if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(t)
-            || t.getUnits().anyMatch(Matches.unitIsEnemyOf(data, player))) {
+            || t.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(data, player))) {
           for (final Unit unit : unitsWithStackingLimits) {
             final UnitType ut = unit.getType();
             int maxAllowed = UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit("attackingLimit", ut, t,
@@ -802,7 +802,7 @@ public class MoveValidator {
         Matches.unitIsInfrastructure().or(Matches.enemyUnit(player, data).negate()).or(Matches.unitIsSubmerged());
     // Submerged units do not interfere with movement
     return route.getMiddleSteps().stream()
-        .allMatch(current -> current.getUnits().allMatch(alliedOrNonCombat));
+        .allMatch(current -> current.getUnitCollection().allMatch(alliedOrNonCombat));
   }
 
   /**
@@ -835,15 +835,17 @@ public class MoveValidator {
     boolean validMove = false;
     for (final Territory current : steps) {
       if (current.isWater()) {
-        if (getIgnoreTransportInMovement && getIgnoreSubInMovement && current.getUnits().allMatch(transportOrSubOnly)) {
+        if (getIgnoreTransportInMovement && getIgnoreSubInMovement
+            && current.getUnitCollection().allMatch(transportOrSubOnly)) {
           validMove = true;
           continue;
         }
-        if (getIgnoreTransportInMovement && !getIgnoreSubInMovement && current.getUnits().allMatch(transportOnly)) {
+        if (getIgnoreTransportInMovement && !getIgnoreSubInMovement
+            && current.getUnitCollection().allMatch(transportOnly)) {
           validMove = true;
           continue;
         }
-        if (!getIgnoreTransportInMovement && getIgnoreSubInMovement && current.getUnits().allMatch(subOnly)) {
+        if (!getIgnoreTransportInMovement && getIgnoreSubInMovement && current.getUnitCollection().allMatch(subOnly)) {
           validMove = true;
           continue;
         }
@@ -856,7 +858,7 @@ public class MoveValidator {
   private static boolean enemyDestroyerOnPath(final Route route, final PlayerId player, final GameData data) {
     final Predicate<Unit> enemyDestroyer = Matches.unitIsDestroyer().and(Matches.enemyUnit(player, data));
     return route.getMiddleSteps().stream()
-        .anyMatch(current -> current.getUnits().anyMatch(enemyDestroyer));
+        .anyMatch(current -> current.getUnitCollection().anyMatch(enemyDestroyer));
   }
 
   private static boolean getEditMode(final GameData data) {
@@ -1113,10 +1115,11 @@ public class MoveValidator {
         return result.setErrorReturnResult("Units cannot move before loading onto transports");
       }
       final Predicate<Unit> enemyNonSubmerged = Matches.enemyUnit(player, data).and(Matches.unitIsSubmerged().negate());
-      if (!Properties.getUnitsCanLoadInHostileSeaZones(data) && route.getEnd().getUnits().anyMatch(enemyNonSubmerged)
+      if (!Properties.getUnitsCanLoadInHostileSeaZones(data)
+          && route.getEnd().getUnitCollection().anyMatch(enemyNonSubmerged)
           && nonParatroopersPresent(player, landAndAir) && !onlyIgnoredUnitsOnPath(route, player, data, false)
           && !AbstractMoveDelegate.getBattleTracker(data).didAllThesePlayersJustGoToWarThisTurn(player,
-              route.getEnd().getUnits().getUnits(), data)) {
+              route.getEnd().getUnits(), data)) {
         return result.setErrorReturnResult("Cannot load when enemy sea units are present");
       }
       final Map<Unit, Unit> unitsToTransports = TransportUtils.mapTransports(route, land, transportsToLoad);
@@ -1388,7 +1391,7 @@ public class MoveValidator {
 
   public static Map<Unit, Collection<Unit>> carrierMustMoveWith(final Collection<Unit> units, final Territory start,
       final GameData data, final PlayerId player) {
-    return carrierMustMoveWith(units, start.getUnits().getUnits(), data, player);
+    return carrierMustMoveWith(units, start.getUnits(), data, player);
   }
 
   static Map<Unit, Collection<Unit>> carrierMustMoveWith(final Collection<Unit> units,

@@ -76,7 +76,7 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
   }
 
   @Override
-  public UnitCollection getUnits() {
+  public UnitCollection getUnitCollection() {
     return unitsHeld;
   }
 
@@ -170,14 +170,14 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
    */
   public boolean amNotDeadYet(final GameData data) {
     for (final Territory t : data.getMap().getTerritories()) {
-      if (t.getUnits().anyMatch(Matches.unitIsOwnedBy(this)
+      if (t.getUnitCollection().anyMatch(Matches.unitIsOwnedBy(this)
           .and(Matches.unitHasAttackValueOfAtLeast(1))
           .and(Matches.unitCanMove())
           .and(Matches.unitIsLand()))) {
         return true;
       }
       if (t.getOwner().equals(this)
-          && t.getUnits().anyMatch(Matches.unitIsOwnedBy(this).and(Matches.unitCanProduceUnits()))) {
+          && t.getUnitCollection().anyMatch(Matches.unitIsOwnedBy(this).and(Matches.unitCanProduceUnits()))) {
         return true;
       }
     }

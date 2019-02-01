@@ -39,7 +39,7 @@ public final class TransportUtils {
       return mapTransportsToLoad(units, transportsToLoad);
     }
     if (route.isUnload()) {
-      return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
+      return mapTransportsAlreadyLoaded(units, route.getStart().getUnits());
     }
     return mapTransportsAlreadyLoaded(units, units);
   }

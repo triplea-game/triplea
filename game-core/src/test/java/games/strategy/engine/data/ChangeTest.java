@@ -47,115 +47,115 @@ public class ChangeTest {
   public void testUnitsAddTerritory() {
     // make sure we know where we are starting
     final Territory can = gameData.getMap().getTerritory("canada");
-    assertEquals(5, can.getUnits().getUnitCount());
+    assertEquals(5, can.getUnitCollection().getUnitCount());
     // add some units
     final Change change =
         ChangeFactory.addUnits(can, gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF).create(10, null));
     gameData.performChange(change);
-    assertEquals(15, can.getUnits().getUnitCount());
+    assertEquals(15, can.getUnitCollection().getUnitCount());
     // invert the change
     gameData.performChange(change.invert());
-    assertEquals(5, can.getUnits().getUnitCount());
+    assertEquals(5, can.getUnitCollection().getUnitCount());
   }
 
   @Test
   public void testUnitsRemoveTerritory() {
     // make sure we now where we are starting
     final Territory can = gameData.getMap().getTerritory("canada");
-    assertEquals(5, can.getUnits().getUnitCount());
+    assertEquals(5, can.getUnitCollection().getUnitCount());
     // remove some units
     final Collection<Unit> units =
-        can.getUnits().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+        can.getUnitCollection().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.removeUnits(can, units);
     gameData.performChange(change);
 
-    assertEquals(2, can.getUnits().getUnitCount());
+    assertEquals(2, can.getUnitCollection().getUnitCount());
     gameData.performChange(change.invert());
-    assertEquals(5, can.getUnits().getUnitCount(), "last change inverted, should have gained units.");
+    assertEquals(5, can.getUnitCollection().getUnitCount(), "last change inverted, should have gained units.");
   }
 
   @Test
   public void testSerializeUnitsRemoteTerritory() throws Exception {
     // make sure we now where we are starting
     final Territory can = gameData.getMap().getTerritory("canada");
-    assertEquals(5, can.getUnits().getUnitCount());
+    assertEquals(5, can.getUnitCollection().getUnitCount());
     // remove some units
     final Collection<Unit> units =
-        can.getUnits().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+        can.getUnitCollection().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     Change change = ChangeFactory.removeUnits(can, units);
     change = serialize(change);
     gameData.performChange(change);
-    assertEquals(2, can.getUnits().getUnitCount());
+    assertEquals(2, can.getUnitCollection().getUnitCount());
     // invert the change
     gameData.performChange(change.invert());
-    assertEquals(5, can.getUnits().getUnitCount());
+    assertEquals(5, can.getUnitCollection().getUnitCount());
   }
 
   @Test
   public void testUnitsAddPlayer() {
     // make sure we know where we are starting
     final PlayerId chretian = gameData.getPlayerList().getPlayerId("chretian");
-    assertEquals(10, chretian.getUnits().getUnitCount());
+    assertEquals(10, chretian.getUnitCollection().getUnitCount());
     // add some units
     final Change change =
         ChangeFactory.addUnits(chretian,
             gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF).create(10, null));
     gameData.performChange(change);
-    assertEquals(20, chretian.getUnits().getUnitCount());
+    assertEquals(20, chretian.getUnitCollection().getUnitCount());
     // invert the change
     gameData.performChange(change.invert());
-    assertEquals(10, chretian.getUnits().getUnitCount());
+    assertEquals(10, chretian.getUnitCollection().getUnitCount());
   }
 
   @Test
   public void testUnitsRemovePlayer() {
     // make sure we know where we are starting
     final PlayerId chretian = gameData.getPlayerList().getPlayerId("chretian");
-    assertEquals(10, chretian.getUnits().getUnitCount());
+    assertEquals(10, chretian.getUnitCollection().getUnitCount());
     // remove some units
     final Collection<Unit> units =
-        chretian.getUnits().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+        chretian.getUnitCollection().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.removeUnits(chretian, units);
     gameData.performChange(change);
-    assertEquals(7, chretian.getUnits().getUnitCount());
+    assertEquals(7, chretian.getUnitCollection().getUnitCount());
     // invert the change
     gameData.performChange(change.invert());
-    assertEquals(10, chretian.getUnits().getUnitCount());
+    assertEquals(10, chretian.getUnitCollection().getUnitCount());
   }
 
   @Test
   public void testUnitsMove() {
     final Territory canada = gameData.getMap().getTerritory("canada");
     final Territory greenland = gameData.getMap().getTerritory("greenland");
-    assertEquals(5, canada.getUnits().getUnitCount());
-    assertEquals(0, greenland.getUnits().getUnitCount());
+    assertEquals(5, canada.getUnitCollection().getUnitCount());
+    assertEquals(0, greenland.getUnitCollection().getUnitCount());
     final Collection<Unit> units =
-        canada.getUnits().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+        canada.getUnitCollection().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     final Change change = ChangeFactory.moveUnits(canada, greenland, units);
     gameData.performChange(change);
-    assertEquals(2, canada.getUnits().getUnitCount());
-    assertEquals(3, greenland.getUnits().getUnitCount());
+    assertEquals(2, canada.getUnitCollection().getUnitCount());
+    assertEquals(3, greenland.getUnitCollection().getUnitCount());
     gameData.performChange(change.invert());
-    assertEquals(5, canada.getUnits().getUnitCount());
-    assertEquals(0, greenland.getUnits().getUnitCount());
+    assertEquals(5, canada.getUnitCollection().getUnitCount());
+    assertEquals(0, greenland.getUnitCollection().getUnitCount());
   }
 
   @Test
   public void testUnitsMoveSerialization() throws Exception {
     final Territory canada = gameData.getMap().getTerritory("canada");
     final Territory greenland = gameData.getMap().getTerritory("greenland");
-    assertEquals(5, canada.getUnits().getUnitCount());
-    assertEquals(0, greenland.getUnits().getUnitCount());
+    assertEquals(5, canada.getUnitCollection().getUnitCount());
+    assertEquals(0, greenland.getUnitCollection().getUnitCount());
     final Collection<Unit> units =
-        canada.getUnits().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
+        canada.getUnitCollection().getUnits(gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF), 3);
     Change change = ChangeFactory.moveUnits(canada, greenland, units);
     change = serialize(change);
     gameData.performChange(change);
-    assertEquals(2, canada.getUnits().getUnitCount());
-    assertEquals(3, greenland.getUnits().getUnitCount());
+    assertEquals(2, canada.getUnitCollection().getUnitCount());
+    assertEquals(3, greenland.getUnitCollection().getUnitCount());
     gameData.performChange(change.invert());
-    assertEquals(5, canada.getUnits().getUnitCount());
-    assertEquals(0, greenland.getUnits().getUnitCount());
+    assertEquals(5, canada.getUnitCollection().getUnitCount());
+    assertEquals(0, greenland.getUnitCollection().getUnitCount());
   }
 
   @Test

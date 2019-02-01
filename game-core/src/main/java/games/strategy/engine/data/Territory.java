@@ -20,7 +20,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   private PlayerId owner = PlayerId.NULL_PLAYERID;
 
   @Getter(onMethod_ = {@Override})
-  private final UnitCollection units;
+  private final UnitCollection unitCollection;
 
   public Territory(final String name, final GameData data) {
     this(name, false, data);
@@ -29,7 +29,7 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
   public Territory(final String name, final boolean water, final GameData data) {
     super(name, data);
     this.water = water;
-    units = new UnitCollection(this, getData());
+    unitCollection = new UnitCollection(this, getData());
   }
 
   public void setOwner(final @Nullable PlayerId owner) {

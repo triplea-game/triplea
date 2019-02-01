@@ -42,12 +42,12 @@ public final class UnitComparatorTest {
       final Territory seaZone5 = territory("5 Sea Zone", gameData);
       final Territory kareliaSsr = territory("Karelia S.S.R.", gameData);
       startCombatMoveFor(germans, gameData);
-      final List<Unit> transportedUnits = germany.getUnits()
+      final List<Unit> transportedUnits = germany.getUnitCollection()
           .getMatches(u -> armour(gameData).equals(u.getType()))
           .subList(0, 1);
       load(transportedUnits, new Route(germany, seaZone5));
 
-      final List<Unit> units = new ArrayList<>(seaZone5.getUnits().getUnits());
+      final List<Unit> units = new ArrayList<>(seaZone5.getUnits());
       final List<Unit> sortedUnits = new ArrayList<>(units);
       sortedUnits.sort(UnitComparator.getUnloadableUnitsComparator(units, new Route(seaZone5, kareliaSsr), germans));
 

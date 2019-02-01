@@ -92,7 +92,7 @@ public class OddsCalculatorDialog extends JDialog {
       return;
     }
     final OddsCalculatorPanel currentPanel = instances.get(instances.size() - 1).panel;
-    currentPanel.addAttackingUnits(t.getUnits().getMatches(Matches.unitIsOwnedBy(currentPanel.getAttacker())));
+    currentPanel.addAttackingUnits(t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(currentPanel.getAttacker())));
   }
 
   public static void addDefenders(final Territory t) {
@@ -101,7 +101,8 @@ public class OddsCalculatorDialog extends JDialog {
     }
     final OddsCalculatorDialog currentDialog = instances.get(instances.size() - 1);
     currentDialog.panel
-        .addDefendingUnits(t.getUnits().getMatches(Matches.alliedUnit(currentDialog.panel.getDefender(), t.getData())));
+        .addDefendingUnits(
+            t.getUnitCollection().getMatches(Matches.alliedUnit(currentDialog.panel.getDefender(), t.getData())));
     currentDialog.pack();
   }
 

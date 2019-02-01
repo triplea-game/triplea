@@ -120,7 +120,7 @@ public class UndoableMove extends AbstractUndoableMove {
           Unit target = null;
           if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null) {
             final Territory end = routeUnitUsedToMove.getEnd();
-            final Collection<Unit> enemyTargetsTotal = end.getUnits().getMatches(
+            final Collection<Unit> enemyTargetsTotal = end.getUnitCollection().getMatches(
                 Matches.enemyUnit(bridge.getPlayerId(), data)
                     .and(Matches.unitCanBeDamaged())
                     .and(Matches.unitIsBeingTransported().negate()));

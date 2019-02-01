@@ -121,7 +121,7 @@ class PlacePanel extends AbstractMovePanel {
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(territory.getOwner());
           if ((pa == null || pa.getGiveUnitControl() == null || !pa.getGiveUnitControl().contains(getCurrentPlayer()))
-              && !territory.getUnits().anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
+              && !territory.getUnitCollection().anyMatch(Matches.unitIsOwnedBy(getCurrentPlayer()))) {
             return Collections.emptyList();
           }
         } else {
@@ -129,7 +129,7 @@ class PlacePanel extends AbstractMovePanel {
         }
       }
       // get the units that can be placed on this territory.
-      Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
+      Collection<Unit> units = getCurrentPlayer().getUnits();
       if (territory.isWater()) {
         if (!(canProduceFightersOnCarriers() || canProduceNewFightersOnOldCarriers()
             || isLhtrCarrierProductionRules() || GameStepPropertiesHelper.isBid(getData()))) {
@@ -159,7 +159,8 @@ class PlacePanel extends AbstractMovePanel {
   }
 
   private void updateUnits() {
-    final Collection<UnitCategory> unitCategories = UnitSeparator.categorize(getCurrentPlayer().getUnits().getUnits());
+    final Collection<UnitCategory> unitCategories =
+        UnitSeparator.categorize(getCurrentPlayer().getUnits());
     unitsToPlace.setUnitsFromCategories(unitCategories);
   }
 
@@ -192,7 +193,7 @@ class PlacePanel extends AbstractMovePanel {
 
   @Override
   protected boolean doneMoveAction() {
-    if (getCurrentPlayer().getUnits().size() > 0) {
+    if (getCurrentPlayer().getUnitCollection().size() > 0) {
       final int option = JOptionPane.showConfirmDialog(getTopLevelAncestor(),
           "You have not placed all your units yet.  Are you sure you want to end your turn?", "TripleA",
           JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);

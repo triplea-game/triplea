@@ -67,7 +67,7 @@ public class LhtrTest {
     route.setStart(easternEurope);
     route.add(baltic);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
-    delegate.move(easternEurope.getUnits().getMatches(Matches.unitIsOfType(fighterType)), route);
+    delegate.move(easternEurope.getUnitCollection().getMatches(Matches.unitIsOfType(fighterType)), route);
     // add a carrier to be produced in germany
     final TripleAUnit carrier = new TripleAUnit(carrirType, germans, gameData);
     gameData.performChange(ChangeFactory.addUnits(germans, Collections.singleton(carrier)));
@@ -75,7 +75,7 @@ public class LhtrTest {
     delegate.end();
     // make sure the fighter is still there
     // in lhtr fighters can hover, and carriers placed beneath them
-    assertTrue(baltic.getUnits().anyMatch(Matches.unitIsOfType(fighterType)));
+    assertTrue(baltic.getUnitCollection().anyMatch(Matches.unitIsOfType(fighterType)));
   }
 
   @Test
@@ -94,12 +94,12 @@ public class LhtrTest {
     route.setStart(easternEurope);
     route.add(baltic);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
-    delegate.move(easternEurope.getUnits().getMatches(Matches.unitIsOfType(fighterType)), route);
+    delegate.move(easternEurope.getUnitCollection().getMatches(Matches.unitIsOfType(fighterType)), route);
     // end the move phase
     delegate.end();
     // there is no pending carrier to be placed
     // the fighter cannot hover
-    assertFalse(baltic.getUnits().anyMatch(Matches.unitIsOfType(fighterType)));
+    assertFalse(baltic.getUnitCollection().anyMatch(Matches.unitIsOfType(fighterType)));
   }
 
   @Test
@@ -116,7 +116,7 @@ public class LhtrTest {
     route.setStart(gameData.getMap().getTerritory("Ukraine S.S.R."));
     route.add(gameData.getMap().getTerritory("Caucasus"));
     route.add(gameData.getMap().getTerritory("West Russia"));
-    final List<Unit> fighter = route.getStart().getUnits().getMatches(Matches.unitIsAir());
+    final List<Unit> fighter = route.getStart().getUnitCollection().getMatches(Matches.unitIsAir());
     delegate.move(fighter, route);
     // if we try to move aa, then the game will ask us if we want to move
     thenRemotePlayerShouldNeverBeAskedToConfirmMove(bridge);
@@ -151,8 +151,8 @@ public class LhtrTest {
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
-        uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
-    addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
+        uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()), null);
+    addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
     final IDelegateBridge bridge = newDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,
@@ -182,8 +182,8 @@ public class LhtrTest {
     final BattleTracker tracker = new BattleTracker();
     final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
-        uk.getUnits().getMatches(Matches.unitIsStrategicBomber()), null);
-    addTo(germany, uk.getUnits().getMatches(Matches.unitIsStrategicBomber()));
+        uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()), null);
+    addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
     tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
     final IDelegateBridge bridge = newDelegateBridge(british);
     TechTracker.addAdvance(british, bridge,

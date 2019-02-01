@@ -91,8 +91,9 @@ public class PurchasePanel extends ActionPanel {
       try {
         for (final Territory t : CollectionUtils.getMatches(getData().getMap().getTerritories(),
             Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(getCurrentPlayer()))) {
-          totalProd += TripleAUnit.getProductionPotentialOfTerritory(t.getUnits().getUnits(), t, getCurrentPlayer(),
-              getData(), true, true);
+          totalProd +=
+              TripleAUnit.getProductionPotentialOfTerritory(t.getUnits(), t, getCurrentPlayer(),
+                  getData(), true, true);
         }
       } finally {
         getData().releaseReadLock();
@@ -110,7 +111,7 @@ public class PurchasePanel extends ActionPanel {
       }
       final PlayerId player = getCurrentPlayer();
       final Collection<Unit> unitsNeedingFactory =
-          CollectionUtils.getMatches(player.getUnits().getUnits(), Matches.unitIsNotConstruction());
+          CollectionUtils.getMatches(player.getUnits(), Matches.unitIsNotConstruction());
       if (!bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player)) {
         final String text = "You have purchased " + (totalProduced + unitsNeedingFactory.size())
             + " units, and can only place " + totalProd + " of them. Continue with purchase?";
@@ -159,9 +160,10 @@ public class PurchasePanel extends ActionPanel {
 
       getData().acquireReadLock();
       try {
-        purchasedPreviousRoundsUnits.setUnitsFromCategories(UnitSeparator.categorize(id.getUnits().getUnits()));
+        purchasedPreviousRoundsUnits
+            .setUnitsFromCategories(UnitSeparator.categorize(id.getUnits()));
         add(Box.createVerticalStrut(4));
-        if (!id.getUnits().isEmpty()) {
+        if (!id.getUnitCollection().isEmpty()) {
           add(purchasedPreviousRoundsLabel);
         }
         add(purchasedPreviousRoundsUnits);

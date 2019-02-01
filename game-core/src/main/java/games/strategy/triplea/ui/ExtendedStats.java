@@ -217,7 +217,7 @@ public class ExtendedStats extends StatPanel {
       int matchCount = 0;
       final Predicate<Unit> ownedBy = Matches.unitIsOwnedBy(player).and(Matches.unitIsOfType(ut));
       for (final Territory place : data.getMap().getTerritories()) {
-        matchCount += place.getUnits().countMatches(ownedBy);
+        matchCount += place.getUnitCollection().countMatches(ownedBy);
       }
       return matchCount;
     }

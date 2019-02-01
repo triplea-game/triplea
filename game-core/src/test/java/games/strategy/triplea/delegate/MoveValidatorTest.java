@@ -131,14 +131,14 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
     final Territory berlin = territory("Berlin", twwGameData);
     final Territory easternGermany = territory("Eastern Germany", twwGameData);
     final Route r = new Route(berlin, easternGermany);
-    List<Unit> toMove = berlin.getUnits().getMatches(Matches.unitCanMove());
+    List<Unit> toMove = berlin.getUnitCollection().getMatches(Matches.unitCanMove());
     MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
         new HashMap<>(), false, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add germanTrain to units which fails since it requires germainRail
     addTo(berlin, GameDataTestUtil.germanTrain(twwGameData).create(1, germans));
-    toMove = berlin.getUnits().getMatches(Matches.unitCanMove());
+    toMove = berlin.getUnitCollection().getMatches(Matches.unitCanMove());
     results = MoveValidator.validateMove(toMove, r, germans, Collections.emptyList(),
         new HashMap<>(), false, null, twwGameData);
     assertFalse(results.isMoveValid());
@@ -181,40 +181,41 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
     final Territory easternGermany = territory("Eastern Germany", twwGameData);
     final Territory poland = territory("Poland", twwGameData);
     final Route r = new Route(berlin, easternGermany, poland);
-    berlin.getUnits().clear();
+    berlin.getUnitCollection().clear();
     GameDataTestUtil.truck(twwGameData).create(1, germans);
     addTo(berlin, GameDataTestUtil.truck(twwGameData).create(1, germans));
-    MoveValidationResult results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
-        new HashMap<>(), true, null, twwGameData);
+    MoveValidationResult results =
+        MoveValidator.validateMove(berlin.getUnitCollection(), r, germans, Collections.emptyList(),
+            new HashMap<>(), true, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add an infantry for truck to transport
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
-    results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
+    results = MoveValidator.validateMove(berlin.getUnitCollection(), r, germans, Collections.emptyList(),
         new HashMap<>(), true, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add an infantry and the truck can't transport both
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
-    results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
+    results = MoveValidator.validateMove(berlin.getUnitCollection(), r, germans, Collections.emptyList(),
         new HashMap<>(), true, null, twwGameData);
     assertFalse(results.isMoveValid());
 
     // Add a large truck (has capacity for 2 infantry) to transport second infantry
     addTo(berlin, GameDataTestUtil.largeTruck(twwGameData).create(1, germans));
-    results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
+    results = MoveValidator.validateMove(berlin.getUnitCollection(), r, germans, Collections.emptyList(),
         new HashMap<>(), true, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add an infantry that the large truck can also transport
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
-    results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
+    results = MoveValidator.validateMove(berlin.getUnitCollection(), r, germans, Collections.emptyList(),
         new HashMap<>(), true, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add an infantry that can't be transported
     addTo(berlin, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
-    results = MoveValidator.validateMove(berlin.getUnits(), r, germans, Collections.emptyList(),
+    results = MoveValidator.validateMove(berlin.getUnitCollection(), r, germans, Collections.emptyList(),
         new HashMap<>(), true, null, twwGameData);
     assertFalse(results.isMoveValid());
   }
@@ -229,23 +230,23 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
     final Territory northernGermany = territory("Northern Germany", twwGameData);
     final Territory sz27 = territory("27 Sea Zone", twwGameData);
     final Route r = new Route(northernGermany, sz27);
-    northernGermany.getUnits().clear();
+    northernGermany.getUnitCollection().clear();
     addTo(northernGermany, GameDataTestUtil.germanInfantry(twwGameData).create(1, germans));
-    final List<Unit> transport = sz27.getUnits().getMatches(Matches.unitIsTransport());
-    MoveValidationResult results = MoveValidator.validateMove(northernGermany.getUnits(), r, germans,
+    final List<Unit> transport = sz27.getUnitCollection().getMatches(Matches.unitIsTransport());
+    MoveValidationResult results = MoveValidator.validateMove(northernGermany.getUnitCollection(), r, germans,
         transport, new HashMap<>(), false, null, twwGameData);
     assertTrue(results.isMoveValid());
 
     // Add USA ship to transport sea zone
     final PlayerId usa = GameDataTestUtil.usa(twwGameData);
     addTo(sz27, GameDataTestUtil.americanCruiser(twwGameData).create(1, usa));
-    results = MoveValidator.validateMove(northernGermany.getUnits(), r, germans,
+    results = MoveValidator.validateMove(northernGermany.getUnitCollection(), r, germans,
         transport, new HashMap<>(), false, null, twwGameData);
     assertFalse(results.isMoveValid());
 
     // Set 'Units Can Load In Hostile Sea Zones' to true
     twwGameData.getProperties().set(Constants.UNITS_CAN_LOAD_IN_HOSTILE_SEA_ZONES, true);
-    results = MoveValidator.validateMove(northernGermany.getUnits(), r, germans,
+    results = MoveValidator.validateMove(northernGermany.getUnitCollection(), r, germans,
         transport, new HashMap<>(), false, null, twwGameData);
     assertTrue(results.isMoveValid());
   }

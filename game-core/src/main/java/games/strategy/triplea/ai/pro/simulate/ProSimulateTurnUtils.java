@@ -58,9 +58,9 @@ public final class ProSimulateTurnUtils {
         final IBattle battle =
             battleDelegate.getBattleTracker().getPendingBattle(t, entry.getKey().isBombingRun(), entry.getKey());
         final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-        attackers.retainAll(t.getUnits().getUnits());
+        attackers.retainAll(t.getUnits());
         final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
-        defenders.retainAll(t.getUnits().getUnits());
+        defenders.retainAll(t.getUnits());
         final Set<Unit> bombardingUnits = new HashSet<>(battle.getBombardingUnits());
         ProLogger.debug("---" + t);
         ProLogger.debug("attackers=" + attackers);
@@ -92,7 +92,8 @@ public final class ProSimulateTurnUtils {
         battleDelegate.getBattleTracker().removeBattle(battle, data);
         final Territory updatedTerritory = data.getMap().getTerritory(t.getName());
         ProLogger.debug(
-            "after changes owner=" + updatedTerritory.getOwner() + ", units=" + updatedTerritory.getUnits().getUnits());
+            "after changes owner=" + updatedTerritory.getOwner() + ", units="
+                + updatedTerritory.getUnits());
       }
     }
   }
@@ -190,7 +191,7 @@ public final class ProSimulateTurnUtils {
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
         delegateBridge.addChange(takeOverFriendlyTerritories);
         final Collection<Unit> units =
-            CollectionUtils.getMatches(item.getUnits().getUnits(), Matches.unitIsInfrastructure());
+            CollectionUtils.getMatches(item.getUnits(), Matches.unitIsInfrastructure());
         if (!units.isEmpty()) {
           final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, t);
           delegateBridge.addChange(takeOverNonComUnits);
@@ -205,7 +206,7 @@ public final class ProSimulateTurnUtils {
       final List<Unit> usedUnits, final GameData toData, final PlayerId player) {
 
     final Territory unitTerritory = unitTerritoryMap.get(u);
-    final List<Unit> toUnits = toData.getMap().getTerritory(unitTerritory.getName()).getUnits()
+    final List<Unit> toUnits = toData.getMap().getTerritory(unitTerritory.getName()).getUnitCollection()
         .getMatches(ProMatches.unitIsOwnedAndMatchesTypeAndNotTransporting(player, u.getType()));
     for (final Unit toUnit : toUnits) {
       if (!usedUnits.contains(toUnit)) {
@@ -221,7 +222,7 @@ public final class ProSimulateTurnUtils {
       final PlayerId player) {
 
     final Territory unitTerritory = unitTerritoryMap.get(transport);
-    final List<Unit> toTransports = toData.getMap().getTerritory(unitTerritory.getName()).getUnits()
+    final List<Unit> toTransports = toData.getMap().getTerritory(unitTerritory.getName()).getUnitCollection()
         .getMatches(ProMatches.unitIsOwnedAndMatchesTypeAndIsTransporting(player, transport.getType()));
     for (final Unit toTransport : toTransports) {
       if (!usedUnits.contains(toTransport)) {

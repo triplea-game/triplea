@@ -53,7 +53,7 @@ public class DoesNothingAi extends AbstractAi {
   protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data,
       final PlayerId player) {
     // place whatever we have
-    if (!player.getUnits().isEmpty()) {
+    if (!player.getUnitCollection().isEmpty()) {
       new WeakAi(this.getName()).place(placeForBid, placeDelegate, data, player);
     }
     pause();

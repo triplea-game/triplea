@@ -31,7 +31,7 @@ public class BattleDrawable extends TerritoryDrawable implements IDrawable {
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
       final AffineTransform unscaled, final AffineTransform scaled) {
     final Set<PlayerId> players = new HashSet<>();
-    for (final Unit u : data.getMap().getTerritory(territoryName).getUnits()) {
+    for (final Unit u : data.getMap().getTerritory(territoryName).getUnitCollection()) {
       if (!TripleAUnit.get(u).getSubmerged()) {
         players.add(u.getOwner());
       }

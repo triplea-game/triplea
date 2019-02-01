@@ -116,8 +116,8 @@ public class TripleAUnit extends Unit {
     // rather we look at the transported by property of units
     for (final Territory t : getData().getMap()) {
       // find the territory this transport is in
-      if (t.getUnits().contains(this)) {
-        return getTransporting(t.getUnits());
+      if (t.getUnitCollection().contains(this)) {
+        return getTransporting(t.getUnitCollection());
       }
     }
     return Collections.emptyList();

@@ -80,7 +80,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final Predicate<Unit> myCreatorsMatch = Matches.unitIsOwnedBy(player).and(Matches.unitCreatesUnits());
     final CompositeChange change = new CompositeChange();
     for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+      final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits(), myCreatorsMatch);
       if (myCreators != null && !myCreators.isEmpty()) {
         final Collection<Unit> toAdd = new ArrayList<>();
         final Collection<Unit> toAddSea = new ArrayList<>();
@@ -202,7 +202,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     final IntegerMap<Resource> resourceTotalsMap = new IntegerMap<>();
     final Predicate<Unit> myCreatorsMatch = Matches.unitIsOwnedBy(player).and(Matches.unitCreatesResources());
     for (final Territory t : data.getMap().getTerritories()) {
-      final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
+      final Collection<Unit> myCreators = CollectionUtils.getMatches(t.getUnits(), myCreatorsMatch);
       for (final Unit unit : myCreators) {
         final IntegerMap<Resource> generatedResourcesMap = UnitAttachment.get(unit.getType()).getCreatesResourcesList();
         resourceTotalsMap.add(generatedResourcesMap);

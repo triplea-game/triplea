@@ -368,7 +368,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
         final Predicate<Unit> myDamaged = Matches.unitIsOwnedBy(id).and(Matches.unitHasTakenSomeBombingUnitDamage());
         final Collection<Unit> damagedUnits = new ArrayList<>();
         for (final Territory t : data.getMap().getTerritories()) {
-          damagedUnits.addAll(CollectionUtils.getMatches(t.getUnits().getUnits(), myDamaged));
+          damagedUnits.addAll(CollectionUtils.getMatches(t.getUnits(), myDamaged));
         }
         if (damagedUnits.size() > 0) {
           final Map<Unit, IntegerMap<RepairRule>> repair =

@@ -152,7 +152,7 @@ public final class ProSortMoveOptionsUtils {
       int minPower1 = Integer.MAX_VALUE;
       for (final Territory t : o1.getValue()) {
         if (!attackMap.get(t).isCurrentlyWins()) {
-          final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
+          final List<Unit> defendingUnits = t.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
           final List<Unit> sortedUnitsList = new ArrayList<>(attackMap.get(t).getUnits());
           sortedUnitsList.sort(new UnitBattleComparator(false, ProData.unitValueMap,
               TerritoryEffectHelper.getEffects(t), data, false, false));
@@ -180,7 +180,7 @@ public final class ProSortMoveOptionsUtils {
       int minPower2 = Integer.MAX_VALUE;
       for (final Territory t : o2.getValue()) {
         if (!attackMap.get(t).isCurrentlyWins()) {
-          final List<Unit> defendingUnits = t.getUnits().getMatches(Matches.enemyUnit(player, data));
+          final List<Unit> defendingUnits = t.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
           final List<Unit> sortedUnitsList = new ArrayList<>(attackMap.get(t).getUnits());
           sortedUnitsList.sort(new UnitBattleComparator(false, ProData.unitValueMap,
               TerritoryEffectHelper.getEffects(t), data, false, false));

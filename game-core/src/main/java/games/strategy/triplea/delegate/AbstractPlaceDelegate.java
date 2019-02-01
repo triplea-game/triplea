@@ -71,7 +71,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   private void doAfterEnd() {
     final PlayerId player = bridge.getPlayerId();
     // clear all units not placed
-    final Collection<Unit> units = player.getUnits().getUnits();
+    final Collection<Unit> units = player.getUnits();
     final GameData data = getData();
     if (!Properties.getUnplacedUnitsLive(data) && !units.isEmpty()) {
       bridge.getHistoryWriter()
@@ -90,7 +90,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   @Override
   public boolean delegateCurrentlyRequiresUserInput() {
     // nothing to place
-    return !(player == null || (player.getUnits().size() == 0 && getPlacementsMade() == 0));
+    return !(player == null || (player.getUnitCollection().size() == 0 && getPlacementsMade() == 0));
   }
 
   protected void removeAirThatCantLand() {
@@ -479,11 +479,11 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (!Matches.territoryIsLand().test(producer)) {
       return null;
     }
-    if (!producer.getUnits().anyMatch(Matches.unitCanProduceUnits())) {
+    if (!producer.getUnitCollection().anyMatch(Matches.unitCanProduceUnits())) {
       return null;
     }
     final Predicate<Unit> ownedFighters = Matches.unitCanLandOnCarrier().and(Matches.unitIsOwnedBy(player));
-    if (!producer.getUnits().anyMatch(ownedFighters)) {
+    if (!producer.getUnitCollection().anyMatch(ownedFighters)) {
       return null;
     }
     if (wasConquered(producer)) {
@@ -492,7 +492,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (getAlreadyProduced(producer).stream().anyMatch(Matches.unitCanProduceUnits())) {
       return null;
     }
-    final List<Unit> fighters = producer.getUnits().getMatches(ownedFighters);
+    final List<Unit> fighters = producer.getUnitCollection().getMatches(ownedFighters);
     final Collection<Unit> movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, producer);
     if (movedFighters == null || movedFighters.isEmpty()) {
       return null;
@@ -536,7 +536,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    */
   private static String playerHasEnoughUnits(final Collection<Unit> units, final PlayerId player) {
     // make sure the player has enough units in hand to place
-    if (!player.getUnits().getUnits().containsAll(units)) {
+    if (!player.getUnits().containsAll(units)) {
       return "Not enough units";
     }
     return null;
@@ -635,7 +635,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return "You do not have the required units to build in " + producer.getName();
     }
     if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas())
-        && to.getUnits().anyMatch(Matches.enemyUnit(player, getData()))) {
+        && to.getUnitCollection().anyMatch(Matches.enemyUnit(player, getData()))) {
       return "Cannot place sea units with enemy naval units";
     }
     // make sure there is a factory
@@ -754,7 +754,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         if (GameStepPropertiesHelper.isBid(getData())) {
           final PlayerAttachment pa = PlayerAttachment.get(to.getOwner());
           if ((pa == null || pa.getGiveUnitControl() == null || !pa.getGiveUnitControl().contains(player))
-              && !to.getUnits().anyMatch(Matches.unitIsOwnedBy(player))) {
+              && !to.getUnitCollection().anyMatch(Matches.unitIsOwnedBy(player))) {
             return "You don't own " + to.getName();
           }
         } else {
@@ -838,7 +838,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       final PlayerId player) {
     final boolean water = to.isWater();
     if (water && (!isWW2V2() && !isUnitPlacementInEnemySeas())
-        && to.getUnits().anyMatch(Matches.enemyUnit(player, getData()))) {
+        && to.getUnitCollection().anyMatch(Matches.enemyUnit(player, getData()))) {
       return null;
     }
     final Collection<Unit> units = new ArrayList<>(allUnits);
@@ -861,7 +861,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       } else if (((isBid || canProduceFightersOnCarriers() || AirThatCantLandUtil.isLhtrCarrierProduction(getData()))
           && allProducedUnits.stream().anyMatch(Matches.unitIsCarrier()))
           || ((isBid || canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLhtrCarrierProduction(getData()))
-              && to.getUnits().anyMatch(Matches.unitIsCarrier().and(Matches
+              && to.getUnitCollection().anyMatch(Matches.unitIsCarrier().and(Matches
                   .unitIsOwnedByOfAnyOfThesePlayers(GameStepPropertiesHelper.getCombinedTurns(getData(), player)))))) {
         placeableUnits
             .addAll(CollectionUtils.getMatches(units, Matches.unitIsAir().and(Matches.unitCanLandOnCarrier())));
@@ -1051,7 +1051,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         .and(producer.isWater()
             ? Matches.unitIsLand().negate()
             : Matches.unitIsSea().negate());
-    final Collection<Unit> factoryUnits = producer.getUnits().getMatches(factoryMatch);
+    final Collection<Unit> factoryUnits = producer.getUnitCollection().getMatches(factoryMatch);
     // boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
     final boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
     final boolean originalFactory = (ta != null && ta.getOriginalFactory());
@@ -1071,7 +1071,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (ra != null && ra.getPlacementPerTerritory() > 0) {
         final int allowedPlacement = ra.getPlacementPerTerritory();
         final int ownedUnitsInTerritory =
-            CollectionUtils.countMatches(to.getUnits().getUnits(), Matches.unitIsOwnedBy(player));
+            CollectionUtils.countMatches(to.getUnits(), Matches.unitIsOwnedBy(player));
         if (ownedUnitsInTerritory >= allowedPlacement) {
           return 0;
         }
@@ -1201,7 +1201,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return new IntegerMap<>();
     }
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
-    final Collection<Unit> unitsInTo = to.getUnits().getUnits();
+    final Collection<Unit> unitsInTo = to.getUnits();
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
     // build an integer map of each unit we have in our list of held units, as well as integer maps for maximum units
     // and units per turn
@@ -1459,7 +1459,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (to == null) {
       return new ArrayList<>();
     }
-    final Collection<Unit> unitsInTo = to.getUnits().getUnits();
+    final Collection<Unit> unitsInTo = to.getUnits();
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
     if (Matches.territoryIsWater().test(to)) {
       for (final Territory current : getAllProducers(to, player, null, true)) {
@@ -1475,7 +1475,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (to == null) {
       return new ArrayList<>();
     }
-    final Collection<Unit> unitsInTo = to.getUnits().getUnits();
+    final Collection<Unit> unitsInTo = to.getUnits();
     final Collection<Unit> unitsAtStartOfStep = unitsAtStartOfStepInTerritory(to);
     unitsInTo.removeAll(unitsAtStartOfStep);
     return unitsInTo;
@@ -1505,7 +1505,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    * will be thrown. return value may be null.
    */
   private PlayerId getOriginalFactoryOwner(final Territory territory) {
-    final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.unitCanProduceUnits());
+    final Collection<Unit> factoryUnits = territory.getUnitCollection().getMatches(Matches.unitCanProduceUnits());
     if (factoryUnits.size() == 0) {
       throw new IllegalStateException("No factory in territory:" + territory);
     }
@@ -1524,7 +1524,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   private static String validateNewAirCanLandOnCarriers(final Territory to, final Collection<Unit> units) {
     final int cost = AirMovementValidator.carrierCost(units);
     int capacity = AirMovementValidator.carrierCapacity(units, to);
-    capacity += AirMovementValidator.carrierCapacity(to.getUnits().getUnits(), to);
+    capacity += AirMovementValidator.carrierCapacity(to.getUnits(), to);
     // TODO: This method considers existing carriers but not existing air units
     if (cost > capacity) {
       return "Not enough new carriers to land all the fighters";

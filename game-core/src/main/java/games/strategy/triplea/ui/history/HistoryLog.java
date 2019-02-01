@@ -470,7 +470,7 @@ public class HistoryLog extends JFrame {
     // print all units in all territories, including "flags"
     logWriter.println("Territory Summary for " + MyFormatter.defaultNamedToTextList(players) + " : \n");
     for (final Territory t : territories) {
-      final List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
+      final List<Unit> ownedUnits = t.getUnitCollection().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
       // see if there's a flag
       final TerritoryAttachment ta = TerritoryAttachment.get(t);
       final boolean hasFlag = ta != null

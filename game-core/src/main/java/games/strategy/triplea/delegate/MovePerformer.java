@@ -169,7 +169,8 @@ public class MovePerformer implements Serializable {
         if (route.anyMatch(mustFightThrough) && arrived.size() != 0) {
           boolean ignoreBattle = false;
           // could it be a bombing raid
-          final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
+          final Collection<Unit> enemyUnits =
+              route.getEnd().getUnitCollection().getMatches(Matches.enemyUnit(id, data));
           final Collection<Unit> enemyTargetsTotal = CollectionUtils.getMatches(enemyUnits,
               Matches.unitCanBeDamaged().and(Matches.unitIsBeingTransported().negate()));
           final boolean canCreateAirBattle =
@@ -324,7 +325,7 @@ public class MovePerformer implements Serializable {
       }
     }
     if (routeEnd != null && Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
-        && GameStepPropertiesHelper.isNonCombatMove(data, false) && routeEnd.getUnits()
+        && GameStepPropertiesHelper.isNonCombatMove(data, false) && routeEnd.getUnitCollection()
             .anyMatch(Matches.unitIsEnemyOf(data, id).and(Matches.unitIsDestroyer()))) {
       // if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we
       // can't keep moving them if there is an enemy destroyer there

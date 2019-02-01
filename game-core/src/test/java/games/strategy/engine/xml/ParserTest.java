@@ -143,13 +143,13 @@ public class ParserTest {
   @Test
   public void testUnitsHeldInitialized() {
     final PlayerId bush = gameData.getPlayerList().getPlayerId("bush");
-    assertEquals(20, bush.getUnits().getUnitCount());
+    assertEquals(20, bush.getUnitCollection().getUnitCount());
   }
 
   @Test
   public void testUnitsPlacedInitialized() {
     final Territory terr = gameData.getMap().getTerritory("canada");
-    assertEquals(5, terr.getUnits().getUnitCount());
+    assertEquals(5, terr.getUnitCollection().getUnitCount());
   }
 
   @Test

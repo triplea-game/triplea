@@ -149,14 +149,14 @@ public class RocketsFireHelper implements Serializable {
         if (targetTerritory == null) {
           break;
         }
-        final Collection<Unit> enemyUnits = CollectionUtils.getMatches(targetTerritory.getUnits(),
+        final Collection<Unit> enemyUnits = CollectionUtils.getMatches(targetTerritory.getUnitCollection(),
             Matches.enemyUnit(player, data).and(Matches.unitIsBeingTransported().negate()));
         final Collection<Unit> enemyTargetsTotal = CollectionUtils.getMatches(
             enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(targetTerritory).negate());
         Unit unitTarget = null;
         if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
           final Collection<Unit> rocketTargets = new ArrayList<>(
-              CollectionUtils.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player)));
+              CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player)));
           final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<>();
           // a hack for now, we let the rockets fire at anyone who could be targetted by any rocket
           // Not sure if that comment is still current
@@ -222,7 +222,7 @@ public class RocketsFireHelper implements Serializable {
       if (tracker.wasConquered(current)) {
         continue;
       }
-      if (current.getUnits().anyMatch(ownedRockets)) {
+      if (current.getUnitCollection().anyMatch(ownedRockets)) {
         territories.add(current);
       }
     }
@@ -252,7 +252,7 @@ public class RocketsFireHelper implements Serializable {
     for (final Territory current : possible) {
       final Route route = data.getMap().getRoute(territory, current, allowed);
       if (route != null && route.numberOfSteps() <= maxDistance) {
-        if (current.getUnits().anyMatch(attackableUnits
+        if (current.getUnitCollection().anyMatch(attackableUnits
             .and(Matches.unitIsAtMaxDamageOrNotCanBeDamaged(current).negate()))) {
           hasFactory.add(current);
         }
@@ -274,7 +274,7 @@ public class RocketsFireHelper implements Serializable {
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final boolean damageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
     // unit damage vs territory damage
-    final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(
+    final Collection<Unit> enemyUnits = attackedTerritory.getUnitCollection().getMatches(
         Matches.enemyUnit(player, data).and(Matches.unitIsBeingTransported().negate()));
     final Collection<Unit> enemyTargetsTotal =
         CollectionUtils.getMatches(enemyUnits, Matches.unitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).negate());
@@ -285,7 +285,8 @@ public class RocketsFireHelper implements Serializable {
       rockets = new ArrayList<>();
       numberOfAttacks = 1;
     } else {
-      rockets = new ArrayList<>(CollectionUtils.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player)));
+      rockets =
+          new ArrayList<>(CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player)));
       numberOfAttacks = Math.min(TechAbilityAttachment.getRocketNumberPerTerritory(player, data),
           TechAbilityAttachment.getRocketDiceNumber(rockets, data));
     }
@@ -457,7 +458,7 @@ public class RocketsFireHelper implements Serializable {
         final Change change = ChangeFactory.markNoMovementChange(Collections.singleton(rockets.iterator().next()));
         bridge.addChange(change);
       } else {
-        throw new IllegalStateException("No rockets?" + attackFrom.getUnits().getUnits());
+        throw new IllegalStateException("No rockets?" + attackFrom.getUnits());
       }
     }
     // kill any units that can die if they have reached max damage (veqryn)

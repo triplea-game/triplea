@@ -35,7 +35,7 @@ public class UnitSeparator {
    */
   public static List<UnitCategory> getSortedUnitCategories(final Territory t, final MapData mapData) {
     final GameData data = t.getData();
-    final List<UnitCategory> categories = new ArrayList<>(UnitSeparator.categorize(t.getUnits().getUnits()));
+    final List<UnitCategory> categories = new ArrayList<>(UnitSeparator.categorize(t.getUnits()));
     categories.removeIf(uc -> !mapData.shouldDrawUnit(uc.getType().getName()));
     final List<UnitType> xmlUnitTypes = new ArrayList<>(data.getUnitTypeList().getAllUnitTypes());
     categories.sort(Comparator

@@ -289,7 +289,7 @@ public class GameDataExporter {
   private void unitInitialize(final GameData data) {
     xmlfile.append("        <unitInitialize>\n");
     for (final Territory terr : data.getMap().getTerritories()) {
-      final UnitCollection uc = terr.getUnits();
+      final UnitCollection uc = terr.getUnitCollection();
       for (final PlayerId player : uc.getPlayersWithUnits()) {
         final IntegerMap<UnitType> ucp = uc.getUnitsByType(player);
         for (final UnitType unit : ucp.keySet()) {

@@ -936,7 +936,7 @@ public final class TripleAFrame extends JFrame {
     final boolean lhtrProd = AirThatCantLandUtil.isLhtrCarrierProduction(data)
         || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
     final int carrierCount = GameStepPropertiesHelper.getCombinedTurns(data, id).stream()
-        .map(PlayerId::getUnits)
+        .map(PlayerId::getUnitCollection)
         .map(units -> units.getMatches(Matches.unitIsCarrier()))
         .mapToInt(List::size)
         .sum();

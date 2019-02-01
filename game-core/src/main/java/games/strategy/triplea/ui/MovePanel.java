@@ -149,7 +149,7 @@ public class MovePanel extends AbstractMovePanel {
       };
       if (units.isEmpty() && selectedUnits.isEmpty()) {
         if (!me.isShiftDown()) {
-          final List<Unit> unitsToMove = t.getUnits().getMatches(unitsToMoveMatch);
+          final List<Unit> unitsToMove = t.getUnitCollection().getMatches(unitsToMoveMatch);
           if (unitsToMove.isEmpty()) {
             return;
           }
@@ -199,9 +199,9 @@ public class MovePanel extends AbstractMovePanel {
         } else {
           ownedNotFactoryBuilder
               .and(unitsToMoveMatch)
-              .and(Matches.unitIsOwnedBy(getUnitOwner(t.getUnits().getUnits())));
+              .and(Matches.unitIsOwnedBy(getUnitOwner(t.getUnits())));
         }
-        selectedUnits.addAll(t.getUnits().getMatches(ownedNotFactoryBuilder.build()));
+        selectedUnits.addAll(t.getUnitCollection().getMatches(ownedNotFactoryBuilder.build()));
       } else if (me.isControlDown()) {
         selectedUnits.addAll(CollectionUtils.getMatches(units, unitsToMoveMatch));
       } else { // add one
@@ -237,7 +237,7 @@ public class MovePanel extends AbstractMovePanel {
               .and(Matches.unitIsOwnedBy(player))
               .and(Matches.unitHasNotMoved());
           final Collection<Unit> unitsToLoad =
-              CollectionUtils.getMatches(route.getStart().getUnits().getUnits(), unitsToLoadMatch);
+              CollectionUtils.getMatches(route.getStart().getUnits(), unitsToLoadMatch);
           unitsToLoad.removeAll(selectedUnits);
           for (final Collection<Unit> units2 : dependentUnits.values()) {
             unitsToLoad.removeAll(units2);
@@ -248,7 +248,8 @@ public class MovePanel extends AbstractMovePanel {
               .and(Matches.unitHasNotMoved())
               .and(Matches.transportIsNotTransporting());
           final Collection<Unit> candidateAirTransports =
-              CollectionUtils.getMatches(t.getUnits().getMatches(unitsToMoveMatch), candidateAirTransportsMatch);
+              CollectionUtils.getMatches(t.getUnitCollection().getMatches(unitsToMoveMatch),
+                  candidateAirTransportsMatch);
           // candidateAirTransports.removeAll(selectedUnits);
           candidateAirTransports.removeAll(dependentUnits.keySet());
           if (unitsToLoad.size() > 0 && candidateAirTransports.size() > 0) {
@@ -345,7 +346,7 @@ public class MovePanel extends AbstractMovePanel {
           }
           dependentUnits.put(airTransport, unitsColl);
           mustMoveWithDetails = MoveValidator.getMustMoveWith(route.getStart(),
-              route.getStart().getUnits().getUnits(), dependentUnits, getData(), player);
+              route.getStart().getUnits(), dependentUnits, getData(), player);
         }
       }
       return loadedUnits;
@@ -664,7 +665,7 @@ public class MovePanel extends AbstractMovePanel {
    * in the case where some transports have different movement, different units etc
    */
   private Collection<Unit> getUnitsToUnload(final Route route, final Collection<Unit> unitsToUnload) {
-    final Collection<Unit> allUnits = getFirstSelectedTerritory().getUnits().getUnits();
+    final Collection<Unit> allUnits = getFirstSelectedTerritory().getUnits();
     final List<Unit> candidateUnits = CollectionUtils.getMatches(allUnits, getUnloadableMatch(route, unitsToUnload));
     if (unitsToUnload.size() == candidateUnits.size()) {
       return unitsToUnload;
@@ -937,7 +938,7 @@ public class MovePanel extends AbstractMovePanel {
     // TODO kev check for already loaded airTransports
     Collection<Unit> transportsToLoad = Collections.emptyList();
     if (MoveValidator.isLoad(units, dependentUnits, route, getData(), getCurrentPlayer())) {
-      transportsToLoad = route.getEnd().getUnits().getMatches(
+      transportsToLoad = route.getEnd().getUnitCollection().getMatches(
           Matches.unitIsTransport().and(Matches.alliedUnit(getCurrentPlayer(), getData())));
     }
     List<Unit> best = new ArrayList<>(units);
@@ -1048,7 +1049,7 @@ public class MovePanel extends AbstractMovePanel {
     if (unitsToLoad.stream().anyMatch(Matches.unitIsAir())) {
       return Collections.emptyList();
     }
-    final Collection<Unit> endOwnedUnits = route.getEnd().getUnits().getUnits();
+    final Collection<Unit> endOwnedUnits = route.getEnd().getUnits();
     final PlayerId unitOwner = getUnitOwner(unitsToLoad);
     final MustMoveWithDetails endMustMoveWith =
         MoveValidator.getMustMoveWith(route.getEnd(), endOwnedUnits, dependentUnits, getData(), unitOwner);
@@ -1196,7 +1197,8 @@ public class MovePanel extends AbstractMovePanel {
       final Route route,
       final boolean initialMustQueryUser,
       final Predicate<Collection<Unit>> matchCriteria) {
-    final List<Unit> candidateUnits = getFirstSelectedTerritory().getUnits().getMatches(getMovableMatch(route, units));
+    final List<Unit> candidateUnits =
+        getFirstSelectedTerritory().getUnitCollection().getMatches(getMovableMatch(route, units));
     boolean mustQueryUser = initialMustQueryUser;
     if (!mustQueryUser) {
       final Set<UnitCategory> categories =
@@ -1281,7 +1283,7 @@ public class MovePanel extends AbstractMovePanel {
       mustMoveWithDetails = null;
     } else {
       mustMoveWithDetails = MoveValidator.getMustMoveWith(firstSelectedTerritory,
-          firstSelectedTerritory.getUnits().getUnits(), dependentUnits, getData(), getCurrentPlayer());
+          firstSelectedTerritory.getUnits(), dependentUnits, getData(), getCurrentPlayer());
     }
   }
 
@@ -1443,7 +1445,7 @@ public class MovePanel extends AbstractMovePanel {
     int i = 0;
     while (i < size) {
       final Territory t = allTerritories.get(newFocusedIndex);
-      final List<Unit> matchedUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
+      final List<Unit> matchedUnits = t.getUnitCollection().getMatches(moveableUnitOwnedByMe);
       if (matchedUnits.size() > 0) {
         newFocusedTerritory = t;
         final Map<Territory, List<Unit>> highlight = new HashMap<>();
@@ -1481,7 +1483,7 @@ public class MovePanel extends AbstractMovePanel {
         .build();
     final Map<Territory, List<Unit>> highlight = new HashMap<>();
     for (final Territory t : allTerritories) {
-      final List<Unit> moveableUnits = t.getUnits().getMatches(moveableUnitOwnedByMe);
+      final List<Unit> moveableUnits = t.getUnitCollection().getMatches(moveableUnitOwnedByMe);
       if (!moveableUnits.isEmpty()) {
         highlight.put(t, moveableUnits);
       }

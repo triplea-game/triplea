@@ -39,7 +39,7 @@ public class BombingUnitDamageChange extends Change {
     }
     final Set<Unit> units = hits.keySet();
     for (final Territory element : data.getMap().getTerritories()) {
-      if (!Collections.disjoint(element.getUnits().getUnits(), units)) {
+      if (!Collections.disjoint(element.getUnits(), units)) {
         element.notifyChanged();
       }
     }

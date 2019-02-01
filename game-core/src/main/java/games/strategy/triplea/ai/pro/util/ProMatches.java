@@ -175,7 +175,7 @@ public final class ProMatches {
       final Predicate<Unit> subOnly = Matches.unitIsInfrastructure()
           .or(Matches.unitIsSub())
           .or(Matches.enemyUnit(player, data).negate());
-      return (Properties.getIgnoreSubInMovement(data) && t.getUnits().allMatch(subOnly))
+      return (Properties.getIgnoreSubInMovement(data) && t.getUnitCollection().allMatch(subOnly))
           || Matches.territoryHasNoEnemyUnits(player, data).test(t);
     };
   }
@@ -398,7 +398,7 @@ public final class ProMatches {
     final Predicate<Unit> alliedUnitMatch = Matches.unitIsOwnedBy(player).negate()
         .and(Matches.isUnitAllied(player, data))
         .and(Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(
-            t.getUnits().getUnits(), player, data, false).negate());
+            t.getUnits(), player, data, false).negate());
     return myUnitHasNoMovementMatch.or(alliedUnitMatch);
   }
 

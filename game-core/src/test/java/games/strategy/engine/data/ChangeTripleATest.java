@@ -24,7 +24,7 @@ public class ChangeTripleATest {
   public void setUp() throws Exception {
     gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
     can = gameData.getMap().getTerritory("Western Canada");
-    assertEquals(2, can.getUnits().getUnitCount());
+    assertEquals(2, can.getUnitCollection().getUnitCount());
   }
 
   private Change serialize(final Change change) throws Exception {
@@ -48,34 +48,34 @@ public class ChangeTripleATest {
     final Change change =
         ChangeFactory.addUnits(can, GameDataTestUtil.infantry(gameData).create(10, null));
     gameData.performChange(change);
-    assertEquals(12, can.getUnits().getUnitCount());
+    assertEquals(12, can.getUnitCollection().getUnitCount());
     // invert the change
     gameData.performChange(change.invert());
-    assertEquals(2, can.getUnits().getUnitCount());
+    assertEquals(2, can.getUnitCollection().getUnitCount());
   }
 
   @Test
   public void testUnitsRemoveTerritory() {
     // remove some units
-    final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(gameData), 1);
+    final Collection<Unit> units = can.getUnitCollection().getUnits(GameDataTestUtil.infantry(gameData), 1);
     final Change change = ChangeFactory.removeUnits(can, units);
     gameData.performChange(change);
-    assertEquals(1, can.getUnits().getUnitCount());
+    assertEquals(1, can.getUnitCollection().getUnitCount());
     // invert the change
     gameData.performChange(change.invert());
-    assertEquals(2, can.getUnits().getUnitCount());
+    assertEquals(2, can.getUnitCollection().getUnitCount());
   }
 
   @Test
   public void testSerializeUnitsRemoteTerritory() throws Exception {
     // remove some units
-    final Collection<Unit> units = can.getUnits().getUnits(GameDataTestUtil.infantry(gameData), 1);
+    final Collection<Unit> units = can.getUnitCollection().getUnits(GameDataTestUtil.infantry(gameData), 1);
     Change change = ChangeFactory.removeUnits(can, units);
     change = serialize(change);
     gameData.performChange(change);
-    assertEquals(1, can.getUnits().getUnitCount());
+    assertEquals(1, can.getUnitCollection().getUnitCount());
     // invert the change
     gameData.performChange(change.invert());
-    assertEquals(2, can.getUnits().getUnitCount());
+    assertEquals(2, can.getUnitCollection().getUnitCount());
   }
 }

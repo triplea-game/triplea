@@ -37,7 +37,7 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
     advanceToStep(bridge, "CombatMove");
     moveDelegate(twwGameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(twwGameData).start();
-    move(sz33.getUnits().getUnits(), new Route(sz33, sz40));
+    move(sz33.getUnits(), new Route(sz33, sz40));
     moveDelegate(twwGameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(sz40, false, null);
@@ -45,7 +45,7 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
     // Set first roll to hit (mine AA) and check that both units are killed
     whenGetRandom(bridge).thenAnswer(withValues(0));
     battle.fight(bridge);
-    assertEquals(0, sz40.getUnits().size());
+    assertEquals(0, sz40.getUnitCollection().size());
     thenGetRandomShouldHaveBeenCalled(bridge, times(1));
   }
 
@@ -57,7 +57,7 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
     final PlayerId usa = GameDataTestUtil.usa(twwGameData);
     final PlayerId germany = GameDataTestUtil.germany(twwGameData);
     final Territory celebes = territory("Celebes", twwGameData);
-    celebes.getUnits().clear();
+    celebes.getUnitCollection().clear();
     addTo(celebes, GameDataTestUtil.americanStrategicBomber(twwGameData).create(1, usa));
     addTo(celebes, GameDataTestUtil.germanInfantry(twwGameData).create(1, germany));
     final IDelegateBridge bridge = MockDelegateBridge.newInstance(twwGameData, germany);
@@ -68,7 +68,7 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
 
     // Ensure battle ends, both units remain, and has 0 rolls
     battle.fight(bridge);
-    assertEquals(2, celebes.getUnits().size());
+    assertEquals(2, celebes.getUnitCollection().size());
     thenGetRandomShouldHaveBeenCalled(bridge, times(0));
   }
 }

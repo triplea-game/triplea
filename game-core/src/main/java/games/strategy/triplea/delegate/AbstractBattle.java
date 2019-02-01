@@ -126,8 +126,8 @@ abstract class AbstractBattle implements IBattle {
     }
     // we were having a problem with units that had been killed previously were still part of
     // MFB's variables, so we double check that the stuff still exists here.
-    defendingUnits.retainAll(battleSite.getUnits().getUnits());
-    attackingUnits.retainAll(battleSite.getUnits().getUnits());
+    defendingUnits.retainAll(battleSite.getUnits());
+    attackingUnits.retainAll(battleSite.getUnits());
   }
 
   @Override
@@ -273,7 +273,7 @@ abstract class AbstractBattle implements IBattle {
     }
     if (defender == null || battleSite.isWater() || !data.getRelationshipTracker().isAtWar(attacker, defender)) {
       // if water find the defender based on who has the most units in the territory
-      final IntegerMap<PlayerId> players = battleSite.getUnits().getPlayerUnitCounts();
+      final IntegerMap<PlayerId> players = battleSite.getUnitCollection().getPlayerUnitCounts();
       int max = -1;
       for (final PlayerId current : players.keySet()) {
         if (current.equals(attacker) || !data.getRelationshipTracker().isAtWar(attacker, current)) {

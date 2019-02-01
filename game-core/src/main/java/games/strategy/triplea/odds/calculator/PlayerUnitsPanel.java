@@ -204,7 +204,7 @@ public class PlayerUnitsPanel extends JPanel {
       }
     }
     for (final Territory t : data.getMap()) {
-      for (final Unit u : t.getUnits()) {
+      for (final Unit u : t.getUnitCollection()) {
         if (u.getOwner().equals(player)) {
           unitTypes.add(u.getType());
         }
