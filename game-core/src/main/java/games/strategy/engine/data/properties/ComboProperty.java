@@ -2,6 +2,7 @@ package games.strategy.engine.data.properties;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -31,7 +32,7 @@ public class ComboProperty<T> extends AbstractEditableProperty<T> {
       final T defaultValue,
       final Collection<T> possibleValues) {
     super(name, description);
-    this.possibleValues = new ArrayList<>(possibleValues);
+    this.possibleValues = Collections.unmodifiableCollection(new ArrayList<>(possibleValues));
     if (defaultValue != null && !possibleValues.contains(defaultValue)) {
       throw new IllegalStateException("possible values does not contain default");
     }
@@ -61,7 +62,10 @@ public class ComboProperty<T> extends AbstractEditableProperty<T> {
     return possibleValues != null && possibleValues.contains(value);
   }
 
+  /**
+   * Returns an immutable view of the possible values for the property.
+   */
   public Collection<T> getPossibleValues() {
-    return new ArrayList<>(possibleValues);
+    return possibleValues;
   }
 }
