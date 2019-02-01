@@ -1119,7 +1119,7 @@ public class MoveValidator {
           && route.getEnd().getUnitCollection().anyMatch(enemyNonSubmerged)
           && nonParatroopersPresent(player, landAndAir) && !onlyIgnoredUnitsOnPath(route, player, data, false)
           && !AbstractMoveDelegate.getBattleTracker(data).didAllThesePlayersJustGoToWarThisTurn(player,
-              route.getEnd().getUnitCollection().getUnits(), data)) {
+              route.getEnd().getUnits(), data)) {
         return result.setErrorReturnResult("Cannot load when enemy sea units are present");
       }
       final Map<Unit, Unit> unitsToTransports = TransportUtils.mapTransports(route, land, transportsToLoad);
@@ -1391,7 +1391,7 @@ public class MoveValidator {
 
   public static Map<Unit, Collection<Unit>> carrierMustMoveWith(final Collection<Unit> units, final Territory start,
       final GameData data, final PlayerId player) {
-    return carrierMustMoveWith(units, start.getUnitCollection().getUnits(), data, player);
+    return carrierMustMoveWith(units, start.getUnits(), data, player);
   }
 
   static Map<Unit, Collection<Unit>> carrierMustMoveWith(final Collection<Unit> units,

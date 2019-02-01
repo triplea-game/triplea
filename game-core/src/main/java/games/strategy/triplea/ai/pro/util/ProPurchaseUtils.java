@@ -311,7 +311,7 @@ public final class ProPurchaseUtils {
     if (ra != null && ra.getPlacementAnyTerritory()) {
       return Integer.MAX_VALUE;
     }
-    return TripleAUnit.getProductionPotentialOfTerritory(territory.getUnitCollection().getUnits(),
+    return TripleAUnit.getProductionPotentialOfTerritory(territory.getUnits(),
         territory, player, data, true, true);
   }
 

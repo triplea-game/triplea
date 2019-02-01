@@ -713,7 +713,7 @@ public class BattleTracker implements Serializable {
           changeTracker.addChange(takeOverFriendlyTerritories);
         }
         final Collection<Unit> units =
-            CollectionUtils.getMatches(item.getUnitCollection().getUnits(), Matches.unitIsInfrastructure());
+            CollectionUtils.getMatches(item.getUnits(), Matches.unitIsInfrastructure());
         if (!units.isEmpty()) {
           final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, territory);
           bridge.addChange(takeOverNonComUnits);
@@ -894,7 +894,7 @@ public class BattleTracker implements Serializable {
     }
     // if just an enemy factory &/or AA then no battle
     final Collection<Unit> enemyUnits =
-        CollectionUtils.getMatches(site.getUnitCollection().getUnits(), Matches.enemyUnit(id, data));
+        CollectionUtils.getMatches(site.getUnits(), Matches.enemyUnit(id, data));
     if (route.getEnd() != null && !enemyUnits.isEmpty()
         && enemyUnits.stream().allMatch(Matches.unitIsInfrastructure())) {
       return ChangeFactory.EMPTY_CHANGE;

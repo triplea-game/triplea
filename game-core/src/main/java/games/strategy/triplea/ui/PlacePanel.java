@@ -129,7 +129,7 @@ class PlacePanel extends AbstractMovePanel {
         }
       }
       // get the units that can be placed on this territory.
-      Collection<Unit> units = getCurrentPlayer().getUnitCollection().getUnits();
+      Collection<Unit> units = getCurrentPlayer().getUnits();
       if (territory.isWater()) {
         if (!(canProduceFightersOnCarriers() || canProduceNewFightersOnOldCarriers()
             || isLhtrCarrierProductionRules() || GameStepPropertiesHelper.isBid(getData()))) {
@@ -160,7 +160,7 @@ class PlacePanel extends AbstractMovePanel {
 
   private void updateUnits() {
     final Collection<UnitCategory> unitCategories =
-        UnitSeparator.categorize(getCurrentPlayer().getUnitCollection().getUnits());
+        UnitSeparator.categorize(getCurrentPlayer().getUnits());
     unitsToPlace.setUnitsFromCategories(unitCategories);
   }
 

@@ -74,9 +74,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
     }
     // we were having a problem with units that had been killed previously were still part of battle's variables, so we
     // double check that the stuff still exists here.
-    defendingUnits.retainAll(battleSite.getUnitCollection().getUnits());
-    attackingUnits.retainAll(battleSite.getUnitCollection().getUnits());
-    targets.keySet().removeIf(unit -> !battleSite.getUnitCollection().getUnits().contains(unit));
+    defendingUnits.retainAll(battleSite.getUnits());
+    attackingUnits.retainAll(battleSite.getUnits());
+    targets.keySet().removeIf(unit -> !battleSite.getUnits().contains(unit));
   }
 
   protected void updateDefendingUnits() {
@@ -88,10 +88,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             .or(Matches.unitIsAaThatCanFire(attackingUnits, airborneTechTargetsAllowed, attacker,
                 Matches.unitIsAaForBombingThisUnitOnly(), round, true, gameData)));
     if (targets.isEmpty()) {
-      defendingUnits = CollectionUtils.getMatches(battleSite.getUnitCollection().getUnits(), defenders);
+      defendingUnits = CollectionUtils.getMatches(battleSite.getUnits(), defenders);
     } else {
       final List<Unit> targets =
-          CollectionUtils.getMatches(battleSite.getUnitCollection().getUnits(),
+          CollectionUtils.getMatches(battleSite.getUnits(),
               Matches.unitIsAaThatCanFire(attackingUnits,
                   airborneTechTargetsAllowed, attacker, Matches.unitIsAaForBombingThisUnitOnly(), round, true,
                   gameData));

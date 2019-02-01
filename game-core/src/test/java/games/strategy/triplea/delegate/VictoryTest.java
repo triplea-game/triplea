@@ -86,7 +86,7 @@ public class VictoryTest {
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
     final String error =
-        moveDelegate.move(libya.getUnitCollection().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
+        moveDelegate.move(libya.getUnits(), gameData.getMap().getRoute(libya, britishCongo));
     moveDelegate.end();
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
   }
@@ -98,7 +98,7 @@ public class VictoryTest {
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
     final String error =
-        moveDelegate.move(frenchWestAfrica.getUnitCollection().getUnits(),
+        moveDelegate.move(frenchWestAfrica.getUnits(),
             gameData.getMap().getRoute(frenchWestAfrica, britishCongo));
     moveDelegate.end();
     assertNull(error);
@@ -111,11 +111,11 @@ public class VictoryTest {
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
     String error =
-        moveDelegate.move(libya.getUnitCollection().getUnits(), gameData.getMap().getRoute(libya, angloEgypt));
+        moveDelegate.move(libya.getUnits(), gameData.getMap().getRoute(libya, angloEgypt));
     // first step is legal
     assertNull(error);
     // second step isn't legal because we lost blitz even though we took the mountain
-    error = moveDelegate.move(angloEgypt.getUnitCollection().getUnits(),
+    error = moveDelegate.move(angloEgypt.getUnits(),
         gameData.getMap().getRoute(angloEgypt, britishCongo));
     moveDelegate.end();
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
@@ -127,10 +127,10 @@ public class VictoryTest {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    String error = moveDelegate.move(frenchWestAfrica.getUnitCollection().getUnits(),
+    String error = moveDelegate.move(frenchWestAfrica.getUnits(),
         gameData.getMap().getRoute(frenchWestAfrica, frenchEastAfrica));
     assertNull(error);
-    error = moveDelegate.move(frenchEastAfrica.getUnitCollection().getUnits(),
+    error = moveDelegate.move(frenchEastAfrica.getUnits(),
         gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
     moveDelegate.end();
     assertNull(error);
@@ -144,7 +144,7 @@ public class VictoryTest {
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
     final String error =
-        moveDelegate.move(libya.getUnitCollection().getUnits(), gameData.getMap().getRoute(libya, britishCongo));
+        moveDelegate.move(libya.getUnits(), gameData.getMap().getRoute(libya, britishCongo));
     moveDelegate.end();
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
   }
@@ -158,12 +158,12 @@ public class VictoryTest {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
-    String error = moveDelegate.move(frenchEastAfrica.getUnitCollection().getUnits(),
+    String error = moveDelegate.move(frenchEastAfrica.getUnits(),
         gameData.getMap().getRoute(frenchEastAfrica, britishCongo));
     assertNull(error);
-    error = moveDelegate.move(kenya.getUnitCollection().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
+    error = moveDelegate.move(kenya.getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertNull(error);
-    error = moveDelegate.move(britishCongo.getUnitCollection().getUnits(),
+    error = moveDelegate.move(britishCongo.getUnits(),
         gameData.getMap().getRoute(britishCongo, frenchEastAfrica));
     assertEquals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ, error);
     moveDelegate.end();
@@ -182,32 +182,32 @@ public class VictoryTest {
     final int oreAmount = italians.getResources().getQuantity("Ore");
 
     gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(1, italians)));
-    moveDelegate.move(kenya.getUnitCollection().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
+    moveDelegate.move(kenya.getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertEquals(fuelAmount - 2, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 1, italians.getResources().getQuantity("PUs"));
     assertEquals(oreAmount - 2, italians.getResources().getQuantity("Ore"));
 
     gameData.performChange(ChangeFactory.addUnits(kenya, armour.create(1, italians)));
-    moveDelegate.move(kenya.getUnitCollection().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
+    moveDelegate.move(kenya.getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertEquals(fuelAmount - 2, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 1, italians.getResources().getQuantity("PUs"));
     assertEquals(oreAmount - 2, italians.getResources().getQuantity("Ore"));
 
-    moveDelegate.move(britishCongo.getUnitCollection().getUnits(),
+    moveDelegate.move(britishCongo.getUnits(),
         gameData.getMap().getRoute(britishCongo, frenchEastAfrica));
     assertEquals(fuelAmount - 3, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 2, italians.getResources().getQuantity("PUs"));
     assertEquals(oreAmount - 2, italians.getResources().getQuantity("Ore"));
 
     gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(5, italians)));
-    moveDelegate.move(kenya.getUnitCollection().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
+    moveDelegate.move(kenya.getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertEquals(fuelAmount - 13, italians.getResources().getQuantity("Fuel"));
     assertEquals(puAmount - 7, italians.getResources().getQuantity("PUs"));
     assertEquals(oreAmount - 12, italians.getResources().getQuantity("Ore"));
 
     gameData.performChange(ChangeFactory.addUnits(kenya, motorized.create(50, italians)));
     final String error =
-        moveDelegate.move(kenya.getUnitCollection().getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
+        moveDelegate.move(kenya.getUnits(), gameData.getMap().getRoute(kenya, britishCongo));
     assertTrue(error.startsWith("Not enough resources to perform this move"));
     moveDelegate.end();
   }
@@ -222,7 +222,7 @@ public class VictoryTest {
     // Combat move where air is always charged fuel
     gameData.performChange(ChangeFactory.addUnits(sz29, carrier.create(1, italians)));
     gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(2, italians)));
-    moveDelegate.move(sz29.getUnitCollection().getUnits(), gameData.getMap().getRoute(sz29, sz30));
+    moveDelegate.move(sz29.getUnits(), gameData.getMap().getRoute(sz29, sz30));
     assertEquals(fuelAmount - 7, italians.getResources().getQuantity("Fuel"));
 
     // Rest of the cases use non-combat move
@@ -234,7 +234,7 @@ public class VictoryTest {
     // Non-combat move where air isn't charged fuel
     gameData.performChange(ChangeFactory.addUnits(sz29, carrier.create(1, italians)));
     gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(2, italians)));
-    moveDelegate.move(sz29.getUnitCollection().getUnits(), gameData.getMap().getRoute(sz29, sz30));
+    moveDelegate.move(sz29.getUnits(), gameData.getMap().getRoute(sz29, sz30));
     assertEquals(fuelAmount - 8, italians.getResources().getQuantity("Fuel"));
     gameData.performChange(ChangeFactory.removeUnits(sz30, sz30.getUnitCollection()));
 
@@ -242,9 +242,9 @@ public class VictoryTest {
     gameData.performChange(ChangeFactory.addUnits(sz29, carrier.create(1, italians)));
     gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(1, italians)));
     gameData.performChange(ChangeFactory.addUnits(sz30, fighter.create(1, italians)));
-    moveDelegate.move(sz30.getUnitCollection().getUnits(), gameData.getMap().getRoute(sz30, sz29));
+    moveDelegate.move(sz30.getUnits(), gameData.getMap().getRoute(sz30, sz29));
     assertEquals(fuelAmount - 11, italians.getResources().getQuantity("Fuel"));
-    moveDelegate.move(sz29.getUnitCollection().getUnits(), gameData.getMap().getRoute(sz29, sz30));
+    moveDelegate.move(sz29.getUnits(), gameData.getMap().getRoute(sz29, sz30));
     assertEquals(fuelAmount - 12, italians.getResources().getQuantity("Fuel"));
     moveDelegate.move(sz30.getUnitCollection().getMatches(Matches.unitIsAir()), gameData.getMap().getRoute(sz30, sz29));
     assertEquals(fuelAmount - 16, italians.getResources().getQuantity("Fuel"));
@@ -254,14 +254,14 @@ public class VictoryTest {
     // Too many fighters for carrier
     gameData.performChange(ChangeFactory.addUnits(sz29, carrier.create(1, italians)));
     gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(3, italians)));
-    moveDelegate.move(sz29.getUnitCollection().getUnits(), gameData.getMap().getRoute(sz29, sz30));
+    moveDelegate.move(sz29.getUnits(), gameData.getMap().getRoute(sz29, sz30));
     assertEquals(fuelAmount - 20, italians.getResources().getQuantity("Fuel"));
 
     // Allied and owned fighters
     gameData.performChange(ChangeFactory.addUnits(sz29, carrier.create(2, italians)));
     gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(2, italians)));
     gameData.performChange(ChangeFactory.addUnits(sz29, fighter.create(3, germans)));
-    moveDelegate.move(sz29.getUnitCollection().getUnits(), gameData.getMap().getRoute(sz29, sz30));
+    moveDelegate.move(sz29.getUnits(), gameData.getMap().getRoute(sz29, sz30));
     assertEquals(fuelAmount - 25, italians.getResources().getQuantity("Fuel"));
   }
 

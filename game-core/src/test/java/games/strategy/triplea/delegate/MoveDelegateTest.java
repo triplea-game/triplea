@@ -278,7 +278,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     assertEquals(4, redSea.getUnitCollection().size());
     final String results =
         delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route,
-            route.getEnd().getUnitCollection().getUnits());
+            route.getEnd().getUnits());
     assertValid(results);
     assertEquals(16, egypt.getUnitCollection().size());
     assertEquals(6, redSea.getUnitCollection().size());
@@ -453,7 +453,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     route.add(redSea);
     String results =
         delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route,
-            route.getEnd().getUnitCollection().getUnits());
+            route.getEnd().getUnits());
     assertValid(results);
     map = new IntegerMap<>();
     map.put(transport, 2);
@@ -473,7 +473,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     route.add(redSea);
     String results =
         delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route,
-            route.getEnd().getUnitCollection().getUnits());
+            route.getEnd().getUnits());
     assertValid(results);
     map = new IntegerMap<>();
     map.put(armour, 2);
@@ -527,9 +527,9 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     // Set up the test
-    removeFrom(manchuria, manchuria.getUnitCollection().getUnits());
+    removeFrom(manchuria, manchuria.getUnits());
     manchuria.setOwner(russians);
-    removeFrom(japanSeaZone, japanSeaZone.getUnitCollection().getUnits());
+    removeFrom(japanSeaZone, japanSeaZone.getUnits());
     gameData.performChange(ChangeFactory.addUnits(japanSeaZone, transport.create(3, japanese)));
     gameData.performChange(ChangeFactory.addUnits(japan, infantry.create(3, japanese)));
     // Perform the first load
@@ -538,15 +538,15 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     load.add(japanSeaZone);
     String results =
         delegate.move(
-            CollectionUtils.getNMatches(japan.getUnitCollection().getUnits(), 1, Matches.unitIsOfType(infantry)), load,
-            CollectionUtils.getMatches(japanSeaZone.getUnitCollection().getUnits(), Matches.unitIsOfType(transport)));
+            CollectionUtils.getNMatches(japan.getUnits(), 1, Matches.unitIsOfType(infantry)), load,
+            CollectionUtils.getMatches(japanSeaZone.getUnits(), Matches.unitIsOfType(transport)));
     assertNull(results);
     // Perform the first unload
     final Route unload = new Route();
     unload.setStart(japanSeaZone);
     unload.add(manchuria);
     results = delegate.move(
-        CollectionUtils.getNMatches(japanSeaZone.getUnitCollection().getUnits(), 1, Matches.unitIsOfType(infantry)),
+        CollectionUtils.getNMatches(japanSeaZone.getUnits(), 1, Matches.unitIsOfType(infantry)),
         unload);
     assertNull(results);
     // Load another trn
@@ -554,15 +554,15 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     route2.setStart(japan);
     route2.add(japanSeaZone);
     results = delegate.move(
-        CollectionUtils.getNMatches(japan.getUnitCollection().getUnits(), 1, Matches.unitIsOfType(infantry)),
+        CollectionUtils.getNMatches(japan.getUnits(), 1, Matches.unitIsOfType(infantry)),
         route2,
-        CollectionUtils.getMatches(japanSeaZone.getUnitCollection().getUnits(), Matches.unitIsOfType(transport)));
+        CollectionUtils.getMatches(japanSeaZone.getUnits(), Matches.unitIsOfType(transport)));
     assertNull(results);
     // Move remaining units
     final Route route3 = new Route();
     route3.setStart(japanSeaZone);
     route3.add(sfeSeaZone);
-    final Collection<Unit> remainingTrns = CollectionUtils.getMatches(japanSeaZone.getUnitCollection().getUnits(),
+    final Collection<Unit> remainingTrns = CollectionUtils.getMatches(japanSeaZone.getUnits(),
         Matches.unitHasNotMoved().and(Matches.unitWasNotLoadedThisTurn()));
     results = delegate.move(remainingTrns, route3);
     assertNull(results);
@@ -617,7 +617,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(armour, 1);
     String results =
         delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route,
-            route.getEnd().getUnitCollection().getUnits());
+            route.getEnd().getUnits());
     assertValid(results);
     // move two infantry to red sea
     route = new Route();
@@ -627,7 +627,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(infantry, 2);
     results =
         delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route,
-            route.getEnd().getUnitCollection().getUnits());
+            route.getEnd().getUnits());
     assertValid(results);
     // try to move 1 transport to indian ocean with 1 tank
     route = new Route();
@@ -819,7 +819,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     route.add(westAfricaSea);
     route.add(northAtlantic);
     Collection<Unit> units = new ArrayList<>(CollectionUtils.getMatches(
-        gameData.getMap().getTerritory(congoSeaZone.toString()).getUnitCollection().getUnits(),
+        gameData.getMap().getTerritory(congoSeaZone.toString()).getUnits(),
         Matches.unitIsCarrier()));
     results = delegate.move(units, route);
     assertValid(results);
@@ -829,7 +829,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     route.add(eastMediteranean);
     route.add(blackSea);
     units = new ArrayList<>(CollectionUtils.getMatches(
-        gameData.getMap().getTerritory(redSea.toString()).getUnitCollection().getUnits(), Matches.unitIsCarrier()));
+        gameData.getMap().getTerritory(redSea.toString()).getUnits(), Matches.unitIsCarrier()));
     results = delegate.move(units, route);
     assertValid(results);
     // make sure the place cant use it to land

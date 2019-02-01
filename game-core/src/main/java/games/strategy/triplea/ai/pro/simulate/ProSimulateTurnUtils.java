@@ -58,9 +58,9 @@ public final class ProSimulateTurnUtils {
         final IBattle battle =
             battleDelegate.getBattleTracker().getPendingBattle(t, entry.getKey().isBombingRun(), entry.getKey());
         final List<Unit> attackers = (List<Unit>) battle.getAttackingUnits();
-        attackers.retainAll(t.getUnitCollection().getUnits());
+        attackers.retainAll(t.getUnits());
         final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
-        defenders.retainAll(t.getUnitCollection().getUnits());
+        defenders.retainAll(t.getUnits());
         final Set<Unit> bombardingUnits = new HashSet<>(battle.getBombardingUnits());
         ProLogger.debug("---" + t);
         ProLogger.debug("attackers=" + attackers);
@@ -93,7 +93,7 @@ public final class ProSimulateTurnUtils {
         final Territory updatedTerritory = data.getMap().getTerritory(t.getName());
         ProLogger.debug(
             "after changes owner=" + updatedTerritory.getOwner() + ", units="
-                + updatedTerritory.getUnitCollection().getUnits());
+                + updatedTerritory.getUnits());
       }
     }
   }
@@ -191,7 +191,7 @@ public final class ProSimulateTurnUtils {
         final Change takeOverFriendlyTerritories = ChangeFactory.changeOwner(item, terrOrigOwner);
         delegateBridge.addChange(takeOverFriendlyTerritories);
         final Collection<Unit> units =
-            CollectionUtils.getMatches(item.getUnitCollection().getUnits(), Matches.unitIsInfrastructure());
+            CollectionUtils.getMatches(item.getUnits(), Matches.unitIsInfrastructure());
         if (!units.isEmpty()) {
           final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, t);
           delegateBridge.addChange(takeOverNonComUnits);

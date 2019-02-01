@@ -90,7 +90,7 @@ class ProPurchaseAi {
           continue;
         }
         final Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(
-            CollectionUtils.getMatches(fixTerr.getUnitCollection().getUnits(), ourFactories), fixTerr, player, data,
+            CollectionUtils.getMatches(fixTerr.getUnits(), ourFactories), fixTerr, player, data,
             false);
         if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
@@ -142,8 +142,8 @@ class ProPurchaseAi {
     final ProPurchaseOptionMap purchaseOptions = ProData.purchaseOptions;
 
     ProLogger.info("Starting bid phase with resources: " + resourceTracker);
-    if (!player.getUnitCollection().getUnits().isEmpty()) {
-      ProLogger.info("Starting bid phase with unplaced units=" + player.getUnitCollection().getUnits());
+    if (!player.getUnits().isEmpty()) {
+      ProLogger.info("Starting bid phase with unplaced units=" + player.getUnits());
     }
 
     // Find all purchase/place territories
@@ -234,8 +234,8 @@ class ProPurchaseAi {
     final ProPurchaseOptionMap purchaseOptions = ProData.purchaseOptions;
 
     ProLogger.info("Starting purchase phase with resources: " + resourceTracker);
-    if (!player.getUnitCollection().getUnits().isEmpty()) {
-      ProLogger.info("Starting purchase phase with unplaced units=" + player.getUnitCollection().getUnits());
+    if (!player.getUnits().isEmpty()) {
+      ProLogger.info("Starting purchase phase with unplaced units=" + player.getUnits());
     }
 
     // Find all purchase/place territories
@@ -364,12 +364,12 @@ class ProPurchaseAi {
     }
 
     // Place remaining units (currently only implemented to handle land units, ex. WW2v3 China)
-    if (player.getUnitCollection().getUnits().isEmpty()) {
+    if (player.getUnits().isEmpty()) {
       return;
     }
 
     // Current data at the start of place
-    ProLogger.debug("Remaining units to place: " + player.getUnitCollection().getUnits());
+    ProLogger.debug("Remaining units to place: " + player.getUnits());
 
     // Find all place territories
     final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories =
@@ -1395,7 +1395,7 @@ class ProPurchaseAi {
             ProMatches.territoryCanMoveSeaUnits(player, data, false));
         for (final Territory seaTerritory : seaTerritories) {
           final List<Unit> unitsInTerritory = ProPurchaseUtils.getPlaceUnits(seaTerritory, purchaseTerritories);
-          unitsInTerritory.addAll(seaTerritory.getUnitCollection().getUnits());
+          unitsInTerritory.addAll(seaTerritory.getUnits());
           final List<Unit> transports =
               CollectionUtils.getMatches(unitsInTerritory, ProMatches.unitIsOwnedTransport(player));
           for (final Unit transport : transports) {
@@ -1415,7 +1415,7 @@ class ProPurchaseAi {
         final Set<Territory> landNeighbors = data.getMap().getNeighbors(t, Matches.territoryIsLand());
         for (final Territory neighbor : landNeighbors) {
           if (territoryValueMap.get(neighbor) <= 0.25) {
-            final List<Unit> unitsInTerritory = new ArrayList<>(neighbor.getUnitCollection().getUnits());
+            final List<Unit> unitsInTerritory = new ArrayList<>(neighbor.getUnits());
             unitsInTerritory.addAll(ProPurchaseUtils.getPlaceUnits(neighbor, purchaseTerritories));
             potentialUnitsToLoad.addAll(
                 CollectionUtils.getMatches(unitsInTerritory, ProMatches.unitIsOwnedCombatTransportableUnit(player)));
@@ -1788,7 +1788,7 @@ class ProPurchaseAi {
   private void placeDefenders(final Map<Territory, ProPurchaseTerritory> placeNonConstructionTerritories,
       final List<ProPlaceTerritory> needToDefendTerritories, final IAbstractPlaceDelegate placeDelegate) {
 
-    ProLogger.info("Place defenders with units=" + player.getUnitCollection().getUnits());
+    ProLogger.info("Place defenders with units=" + player.getUnits());
 
     final ProOtherMoveOptions enemyAttackOptions = territoryManager.getEnemyAttackOptions();
 
@@ -1857,7 +1857,7 @@ class ProPurchaseAi {
   private void placeUnits(final List<ProPlaceTerritory> prioritizedTerritories,
       final IAbstractPlaceDelegate placeDelegate, final boolean isConstruction) {
 
-    ProLogger.info("Place with isConstruction=" + isConstruction + ", units=" + player.getUnitCollection().getUnits());
+    ProLogger.info("Place with isConstruction=" + isConstruction + ", units=" + player.getUnits());
 
     Predicate<Unit> unitMatch = Matches.unitIsNotConstruction();
     if (isConstruction) {

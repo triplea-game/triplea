@@ -71,7 +71,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   private void doAfterEnd() {
     final PlayerId player = bridge.getPlayerId();
     // clear all units not placed
-    final Collection<Unit> units = player.getUnitCollection().getUnits();
+    final Collection<Unit> units = player.getUnits();
     final GameData data = getData();
     if (!Properties.getUnplacedUnitsLive(data) && !units.isEmpty()) {
       bridge.getHistoryWriter()
@@ -536,7 +536,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
    */
   private static String playerHasEnoughUnits(final Collection<Unit> units, final PlayerId player) {
     // make sure the player has enough units in hand to place
-    if (!player.getUnitCollection().getUnits().containsAll(units)) {
+    if (!player.getUnits().containsAll(units)) {
       return "Not enough units";
     }
     return null;
@@ -1071,7 +1071,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       if (ra != null && ra.getPlacementPerTerritory() > 0) {
         final int allowedPlacement = ra.getPlacementPerTerritory();
         final int ownedUnitsInTerritory =
-            CollectionUtils.countMatches(to.getUnitCollection().getUnits(), Matches.unitIsOwnedBy(player));
+            CollectionUtils.countMatches(to.getUnits(), Matches.unitIsOwnedBy(player));
         if (ownedUnitsInTerritory >= allowedPlacement) {
           return 0;
         }
@@ -1201,7 +1201,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return new IntegerMap<>();
     }
     final Collection<Unit> unitsAtStartOfTurnInTo = unitsAtStartOfStepInTerritory(to);
-    final Collection<Unit> unitsInTo = to.getUnitCollection().getUnits();
+    final Collection<Unit> unitsInTo = to.getUnits();
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
     // build an integer map of each unit we have in our list of held units, as well as integer maps for maximum units
     // and units per turn
@@ -1459,7 +1459,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (to == null) {
       return new ArrayList<>();
     }
-    final Collection<Unit> unitsInTo = to.getUnitCollection().getUnits();
+    final Collection<Unit> unitsInTo = to.getUnits();
     final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
     if (Matches.territoryIsWater().test(to)) {
       for (final Territory current : getAllProducers(to, player, null, true)) {
@@ -1475,7 +1475,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     if (to == null) {
       return new ArrayList<>();
     }
-    final Collection<Unit> unitsInTo = to.getUnitCollection().getUnits();
+    final Collection<Unit> unitsInTo = to.getUnits();
     final Collection<Unit> unitsAtStartOfStep = unitsAtStartOfStepInTerritory(to);
     unitsInTo.removeAll(unitsAtStartOfStep);
     return unitsInTo;
@@ -1524,7 +1524,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   private static String validateNewAirCanLandOnCarriers(final Territory to, final Collection<Unit> units) {
     final int cost = AirMovementValidator.carrierCost(units);
     int capacity = AirMovementValidator.carrierCapacity(units, to);
-    capacity += AirMovementValidator.carrierCapacity(to.getUnitCollection().getUnits(), to);
+    capacity += AirMovementValidator.carrierCapacity(to.getUnits(), to);
     // TODO: This method considers existing carriers but not existing air units
     if (cost > capacity) {
       return "Not enough new carriers to land all the fighters";

@@ -337,7 +337,7 @@ public final class ProTransportUtils {
    */
   public static int getUnusedCarrierCapacity(final PlayerId player, final Territory t, final List<Unit> unitsToPlace) {
     final List<Unit> units = new ArrayList<>(unitsToPlace);
-    units.addAll(t.getUnitCollection().getUnits());
+    units.addAll(t.getUnits());
     int capacity = AirMovementValidator.carrierCapacity(units, t);
     final Collection<Unit> airUnits = CollectionUtils.getMatches(units, ProMatches.unitIsOwnedAir(player));
     for (final Unit airUnit : airUnits) {

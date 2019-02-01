@@ -545,7 +545,7 @@ public class ProTerritoryManager {
         // If my combat move and carrier has dependent allied fighters then skip it
         if (isCombatMove && !isCheckingEnemyAttacks) {
           final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-              MoveValidator.carrierMustMoveWith(myUnitTerritory.getUnitCollection().getUnits(), myUnitTerritory, data,
+              MoveValidator.carrierMustMoveWith(myUnitTerritory.getUnits(), myUnitTerritory, data,
                   player);
           if (carrierMustMoveWith.containsKey(mySeaUnit) && !carrierMustMoveWith.get(mySeaUnit).isEmpty()) {
             continue;

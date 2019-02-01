@@ -112,7 +112,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
       if (!current.isWater()) {
         continue;
       }
-      final Collection<Unit> units = current.getUnitCollection().getUnits();
+      final Collection<Unit> units = current.getUnits();
       if (units.size() == 0 || units.stream().noneMatch(Matches.unitIsLand())) {
         continue;
       }
@@ -180,7 +180,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
           change.add(ChangeFactory.changeResourcesChange(player, r, -deleted));
         }
       }
-      final Collection<Unit> heldUnits = player.getUnitCollection().getUnits();
+      final Collection<Unit> heldUnits = player.getUnits();
       if (!heldUnits.isEmpty()) {
         change.add(ChangeFactory.removeUnits(player, heldUnits));
       }

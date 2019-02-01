@@ -327,7 +327,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
         continue;
       }
       final Collection<Unit> crippledAlliedCarriers =
-          CollectionUtils.getMatches(t.getUnitCollection().getUnits(), crippledAlliedCarriersMatch);
+          CollectionUtils.getMatches(t.getUnits(), crippledAlliedCarriersMatch);
       if (crippledAlliedCarriers.isEmpty()) {
         continue;
       }
@@ -356,7 +356,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
 
   static Change giveBonusMovementToUnits(final PlayerId player, final GameData data, final Territory t) {
     final CompositeChange change = new CompositeChange();
-    for (final Unit u : t.getUnitCollection().getUnits()) {
+    for (final Unit u : t.getUnits()) {
       if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(t, player, data).test(u)) {
         if (!Matches.isUnitAllied(player, data).test(u)) {
           continue;
@@ -365,20 +365,20 @@ public class MoveDelegate extends AbstractMoveDelegate {
         final Predicate<Unit> givesBonusUnit = Matches.alliedUnit(player, data)
             .and(Matches.unitCanGiveBonusMovementToThisUnit(u));
         final Collection<Unit> givesBonusUnits =
-            new ArrayList<>(CollectionUtils.getMatches(t.getUnitCollection().getUnits(), givesBonusUnit));
+            new ArrayList<>(CollectionUtils.getMatches(t.getUnits(), givesBonusUnit));
         if (Matches.unitIsSea().test(u)) {
           final Predicate<Unit> givesBonusUnitLand = givesBonusUnit.and(Matches.unitIsLand());
           final Set<Territory> neighbors = new HashSet<>(data.getMap().getNeighbors(t, Matches.territoryIsLand()));
           for (final Territory current : neighbors) {
             givesBonusUnits
-                .addAll(CollectionUtils.getMatches(current.getUnitCollection().getUnits(), givesBonusUnitLand));
+                .addAll(CollectionUtils.getMatches(current.getUnits(), givesBonusUnitLand));
           }
         } else if (Matches.unitIsLand().test(u)) {
           final Predicate<Unit> givesBonusUnitSea = givesBonusUnit.and(Matches.unitIsSea());
           final Set<Territory> neighbors = new HashSet<>(data.getMap().getNeighbors(t, Matches.territoryIsWater()));
           for (final Territory current : neighbors) {
             givesBonusUnits
-                .addAll(CollectionUtils.getMatches(current.getUnitCollection().getUnits(), givesBonusUnitSea));
+                .addAll(CollectionUtils.getMatches(current.getUnits(), givesBonusUnitSea));
           }
         }
         for (final Unit bonusGiver : givesBonusUnits) {

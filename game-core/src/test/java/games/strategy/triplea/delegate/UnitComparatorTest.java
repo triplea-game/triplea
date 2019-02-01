@@ -47,7 +47,7 @@ public final class UnitComparatorTest {
           .subList(0, 1);
       load(transportedUnits, new Route(germany, seaZone5));
 
-      final List<Unit> units = new ArrayList<>(seaZone5.getUnitCollection().getUnits());
+      final List<Unit> units = new ArrayList<>(seaZone5.getUnits());
       final List<Unit> sortedUnits = new ArrayList<>(units);
       sortedUnits.sort(UnitComparator.getUnloadableUnitsComparator(units, new Route(seaZone5, kareliaSsr), germans));
 

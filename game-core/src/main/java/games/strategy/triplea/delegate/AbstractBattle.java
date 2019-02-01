@@ -126,8 +126,8 @@ abstract class AbstractBattle implements IBattle {
     }
     // we were having a problem with units that had been killed previously were still part of
     // MFB's variables, so we double check that the stuff still exists here.
-    defendingUnits.retainAll(battleSite.getUnitCollection().getUnits());
-    attackingUnits.retainAll(battleSite.getUnitCollection().getUnits());
+    defendingUnits.retainAll(battleSite.getUnits());
+    attackingUnits.retainAll(battleSite.getUnits());
   }
 
   @Override

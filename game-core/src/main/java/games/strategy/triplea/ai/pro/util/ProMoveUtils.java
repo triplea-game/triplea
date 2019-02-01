@@ -80,7 +80,7 @@ public final class ProMoveUtils {
         // If carrier has dependent allied fighters then move them too
         if (Matches.unitIsCarrier().test(u)) {
           final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-              MoveValidator.carrierMustMoveWith(startTerritory.getUnitCollection().getUnits(), startTerritory, data,
+              MoveValidator.carrierMustMoveWith(startTerritory.getUnits(), startTerritory, data,
                   player);
           if (carrierMustMoveWith.containsKey(u)) {
             unitList.addAll(carrierMustMoveWith.get(u));

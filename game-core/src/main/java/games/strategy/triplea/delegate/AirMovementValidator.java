@@ -68,7 +68,7 @@ public final class AirMovementValidator {
         .and(Matches.unitCanLandOnCarrier());
     final Set<Unit> airThatMustLandOnCarriersHash = new HashSet<>();
     airThatMustLandOnCarriersHash
-        .addAll(CollectionUtils.getMatches(routeEnd.getUnitCollection().getUnits(), airAlliedNotOwned));
+        .addAll(CollectionUtils.getMatches(routeEnd.getUnits(), airAlliedNotOwned));
     airThatMustLandOnCarriersHash.addAll(CollectionUtils.getMatches(units, airAlliedNotOwned));
     // now we must see if we also need to account for units (allied cargo) that are moving with our carriers, if we have
     // selected any carriers
@@ -148,7 +148,7 @@ public final class AirMovementValidator {
   }
 
   private static int getMovementLeftForAirUnitNotMovedYet(final Unit airBeingValidated, final Route route) {
-    return route.getEnd().getUnitCollection().getUnits().contains(airBeingValidated)
+    return route.getEnd().getUnits().contains(airBeingValidated)
         // they are not being moved, they are already at the end
         ? ((TripleAUnit) airBeingValidated).getMovementLeft()
         // they are being moved (they are still at the start location)
@@ -230,7 +230,7 @@ public final class AirMovementValidator {
       if (airCanReach.isEmpty()) {
         continue;
       }
-      final Collection<Unit> unitsInLandingSpot = landingSpot.getUnitCollection().getUnits();
+      final Collection<Unit> unitsInLandingSpot = landingSpot.getUnits();
       unitsInLandingSpot.removeAll(movedCarriersAndTheirFighters.keySet());
       // make sure to remove any units we have already moved, or units that are excluded
       unitsInLandingSpot.removeAll(airNotToConsider);
@@ -277,7 +277,7 @@ public final class AirMovementValidator {
       final Iterator<Territory> iter = potentialCarrierOrigins.iterator();
       while (iter.hasNext()) {
         final Territory carrierSpot = iter.next();
-        final Collection<Unit> unitsInCarrierSpot = carrierSpot.getUnitCollection().getUnits();
+        final Collection<Unit> unitsInCarrierSpot = carrierSpot.getUnits();
         // remove carriers we have already moved
         unitsInCarrierSpot.removeAll(movedCarriersAndTheirFighters.keySet());
         // remove units we do not want to consider because they are in our mouse selection
@@ -528,7 +528,7 @@ public final class AirMovementValidator {
         .and(Matches.unitOwnedBy(player))
         .and(Matches.unitIsKamikaze().negate());
     final List<Unit> ownedAir = new ArrayList<>();
-    ownedAir.addAll(CollectionUtils.getMatches(route.getEnd().getUnitCollection().getUnits(), ownedAirMatch));
+    ownedAir.addAll(CollectionUtils.getMatches(route.getEnd().getUnits(), ownedAirMatch));
     ownedAir.addAll(CollectionUtils.getMatches(units, ownedAirMatch));
 
     // Remove suicide units if combat move and any enemy units at destination

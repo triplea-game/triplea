@@ -359,7 +359,7 @@ public class WeakAi extends AbstractAi {
       if (!t.getUnitCollection().anyMatch(Matches.enemyUnit(player, data))) {
         continue;
       }
-      final float enemyStrength = AiUtils.strength(t.getUnitCollection().getUnits(), false, true);
+      final float enemyStrength = AiUtils.strength(t.getUnits(), false, true);
       if (enemyStrength > 0) {
         final Predicate<Unit> attackable = Matches.unitIsOwnedBy(player).and(o -> !unitsAlreadyMoved.contains(o));
         final Set<Territory> dontMoveFrom = new HashSet<>();
@@ -435,7 +435,7 @@ public class WeakAi extends AbstractAi {
       if (TerritoryAttachment.get(t) != null && TerritoryAttachment.get(t).isCapital()) {
         // if they are a threat to take our capitol, dont move
         // compare the strength of units we can place
-        final float ourStrength = AiUtils.strength(player.getUnitCollection().getUnits(), false, false);
+        final float ourStrength = AiUtils.strength(player.getUnits(), false, false);
         final float attackerStrength = Utils.getStrengthOfPotentialAttackers(t, data);
         if (attackerStrength > ourStrength) {
           continue;
@@ -589,7 +589,7 @@ public class WeakAi extends AbstractAi {
     enemyOwned.removeAll(isWaterTerr);
     // first find the territories we can just walk into
     for (final Territory enemy : enemyOwned) {
-      if (AiUtils.strength(enemy.getUnitCollection().getUnits(), false, false) == 0) {
+      if (AiUtils.strength(enemy.getUnits(), false, false) == 0) {
         // only take it with 1 unit
         boolean taken = false;
         for (final Territory attackFrom : data.getMap().getNeighbors(enemy,
@@ -598,7 +598,7 @@ public class WeakAi extends AbstractAi {
             break;
           }
           // get the cheapest unit to move in
-          final List<Unit> unitsSortedByCost = new ArrayList<>(attackFrom.getUnitCollection().getUnits());
+          final List<Unit> unitsSortedByCost = new ArrayList<>(attackFrom.getUnits());
           unitsSortedByCost.sort(AiUtils.getCostComparator());
           for (final Unit unit : unitsSortedByCost) {
             final Predicate<Unit> match = Matches.unitIsOwnedBy(player)
@@ -630,7 +630,7 @@ public class WeakAi extends AbstractAi {
     }
     // find the territories we can reasonably expect to take
     for (final Territory enemy : enemyOwned) {
-      final float enemyStrength = AiUtils.strength(enemy.getUnitCollection().getUnits(), false, false);
+      final float enemyStrength = AiUtils.strength(enemy.getUnits(), false, false);
       if (enemyStrength > 0) {
         final Predicate<Unit> attackable = Matches.unitIsOwnedBy(player)
             .and(Matches.unitIsStrategicBomber().negate())
@@ -648,7 +648,7 @@ public class WeakAi extends AbstractAi {
         for (final Territory owned : attackFrom) {
           if (TerritoryAttachment.get(owned) != null && TerritoryAttachment.get(owned).isCapital()
               && (Utils.getStrengthOfPotentialAttackers(owned, data) > AiUtils.strength(
-                  owned.getUnitCollection().getUnits(),
+                  owned.getUnits(),
                   false, false))) {
             dontMoveFrom.add(owned);
             continue;
@@ -805,7 +805,7 @@ public class WeakAi extends AbstractAi {
           continue;
         }
         final Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(
-            CollectionUtils.getMatches(fixTerr.getUnitCollection().getUnits(), ourFactories), fixTerr, player, data,
+            CollectionUtils.getMatches(fixTerr.getUnits(), ourFactories), fixTerr, player, data,
             false);
         if (Matches.unitHasTakenSomeBombingUnitDamage().test(possibleFactoryNeedingRepair)) {
           unitsThatCanProduceNeedingRepair.put(possibleFactoryNeedingRepair, fixTerr);
@@ -1006,7 +1006,7 @@ public class WeakAi extends AbstractAi {
       final Territory placeAt,
       final IAbstractPlaceDelegate placeDelegate,
       final PlayerId player) {
-    final PlaceableUnits pu = placeDelegate.getPlaceableUnits(player.getUnitCollection().getUnits(), placeAt);
+    final PlaceableUnits pu = placeDelegate.getPlaceableUnits(player.getUnits(), placeAt);
     if (pu.getErrorMessage() != null) {
       return;
     }

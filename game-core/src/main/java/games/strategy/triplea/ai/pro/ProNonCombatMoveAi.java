@@ -673,7 +673,7 @@ class ProNonCombatMoveAi {
           if (Matches.unitIsCarrier().test(unit)) {
             final Territory unitTerritory = unitTerritoryMap.get(unit);
             final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-                MoveValidator.carrierMustMoveWith(unitTerritory.getUnitCollection().getUnits(), unitTerritory, data,
+                MoveValidator.carrierMustMoveWith(unitTerritory.getUnits(), unitTerritory, data,
                     player);
             if (carrierMustMoveWith.containsKey(unit)) {
               moveMap.get(maxWinTerritory).getTempUnits().addAll(carrierMustMoveWith.get(unit));
@@ -1366,7 +1366,7 @@ class ProNonCombatMoveAi {
                 if (Matches.unitIsCarrier().test(u)) {
                   final Territory unitTerritory = unitTerritoryMap.get(u);
                   final Map<Unit, Collection<Unit>> carrierMustMoveWith = MoveValidator
-                      .carrierMustMoveWith(unitTerritory.getUnitCollection().getUnits(), unitTerritory, data, player);
+                      .carrierMustMoveWith(unitTerritory.getUnits(), unitTerritory, data, player);
                   if (carrierMustMoveWith.containsKey(u)) {
                     moveMap.get(t).getTempUnits().addAll(carrierMustMoveWith.get(u));
                   }
@@ -1443,7 +1443,7 @@ class ProNonCombatMoveAi {
             if (Matches.unitIsCarrier().test(u)) {
               final Territory unitTerritory = unitTerritoryMap.get(u);
               final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-                  MoveValidator.carrierMustMoveWith(unitTerritory.getUnitCollection().getUnits(), unitTerritory, data,
+                  MoveValidator.carrierMustMoveWith(unitTerritory.getUnits(), unitTerritory, data,
                       player);
               if (carrierMustMoveWith.containsKey(u)) {
                 moveMap.get(maxValueTerritory).getTempUnits().addAll(carrierMustMoveWith.get(u));
@@ -1482,7 +1482,7 @@ class ProNonCombatMoveAi {
               if (Matches.unitIsCarrier().test(u)) {
                 final Territory unitTerritory = unitTerritoryMap.get(u);
                 final Map<Unit, Collection<Unit>> carrierMustMoveWith =
-                    MoveValidator.carrierMustMoveWith(unitTerritory.getUnitCollection().getUnits(), unitTerritory, data,
+                    MoveValidator.carrierMustMoveWith(unitTerritory.getUnits(), unitTerritory, data,
                         player);
                 if (carrierMustMoveWith.containsKey(u)) {
                   moveMap.get(minTerritory).getTempUnits().addAll(carrierMustMoveWith.get(u));

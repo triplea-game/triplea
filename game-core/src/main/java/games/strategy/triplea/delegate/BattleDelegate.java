@@ -1224,7 +1224,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         continue;
       }
       if (enemies.contains(owner)) {
-        if (t.getUnitCollection().getUnits().stream().noneMatch(Matches.unitIsOwnedBy(player))) {
+        if (t.getUnits().stream().noneMatch(Matches.unitIsOwnedBy(player))) {
           continue;
         }
         if (onlyWhereThereAreBattlesOrAmphibious) {

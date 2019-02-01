@@ -197,7 +197,7 @@ final class EditValidator {
       return result;
     }
     final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());
-    if (!territory.getUnitCollection().getUnits().containsAll(units)) {
+    if (!territory.getUnits().containsAll(units)) {
       return "Selected Territory does not contain all of the selected units";
     }
     final PlayerId player = units.iterator().next().getOwner();
@@ -231,7 +231,7 @@ final class EditValidator {
       return "Game does not allow bombing damage";
     }
     final Collection<Unit> units = new ArrayList<>(unitDamageMap.keySet());
-    if (!territory.getUnitCollection().getUnits().containsAll(units)) {
+    if (!territory.getUnits().containsAll(units)) {
       return "Selected Territory does not contain all of the selected units";
     }
     final PlayerId player = units.iterator().next().getOwner();

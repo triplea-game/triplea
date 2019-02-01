@@ -37,7 +37,7 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
     advanceToStep(bridge, "CombatMove");
     moveDelegate(twwGameData).setDelegateBridgeAndPlayer(bridge);
     moveDelegate(twwGameData).start();
-    move(sz33.getUnitCollection().getUnits(), new Route(sz33, sz40));
+    move(sz33.getUnits(), new Route(sz33, sz40));
     moveDelegate(twwGameData).end();
     final MustFightBattle battle =
         (MustFightBattle) AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(sz40, false, null);

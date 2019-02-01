@@ -199,7 +199,7 @@ public class MovePanel extends AbstractMovePanel {
         } else {
           ownedNotFactoryBuilder
               .and(unitsToMoveMatch)
-              .and(Matches.unitIsOwnedBy(getUnitOwner(t.getUnitCollection().getUnits())));
+              .and(Matches.unitIsOwnedBy(getUnitOwner(t.getUnits())));
         }
         selectedUnits.addAll(t.getUnitCollection().getMatches(ownedNotFactoryBuilder.build()));
       } else if (me.isControlDown()) {
@@ -237,7 +237,7 @@ public class MovePanel extends AbstractMovePanel {
               .and(Matches.unitIsOwnedBy(player))
               .and(Matches.unitHasNotMoved());
           final Collection<Unit> unitsToLoad =
-              CollectionUtils.getMatches(route.getStart().getUnitCollection().getUnits(), unitsToLoadMatch);
+              CollectionUtils.getMatches(route.getStart().getUnits(), unitsToLoadMatch);
           unitsToLoad.removeAll(selectedUnits);
           for (final Collection<Unit> units2 : dependentUnits.values()) {
             unitsToLoad.removeAll(units2);
@@ -346,7 +346,7 @@ public class MovePanel extends AbstractMovePanel {
           }
           dependentUnits.put(airTransport, unitsColl);
           mustMoveWithDetails = MoveValidator.getMustMoveWith(route.getStart(),
-              route.getStart().getUnitCollection().getUnits(), dependentUnits, getData(), player);
+              route.getStart().getUnits(), dependentUnits, getData(), player);
         }
       }
       return loadedUnits;
@@ -665,7 +665,7 @@ public class MovePanel extends AbstractMovePanel {
    * in the case where some transports have different movement, different units etc
    */
   private Collection<Unit> getUnitsToUnload(final Route route, final Collection<Unit> unitsToUnload) {
-    final Collection<Unit> allUnits = getFirstSelectedTerritory().getUnitCollection().getUnits();
+    final Collection<Unit> allUnits = getFirstSelectedTerritory().getUnits();
     final List<Unit> candidateUnits = CollectionUtils.getMatches(allUnits, getUnloadableMatch(route, unitsToUnload));
     if (unitsToUnload.size() == candidateUnits.size()) {
       return unitsToUnload;
@@ -1049,7 +1049,7 @@ public class MovePanel extends AbstractMovePanel {
     if (unitsToLoad.stream().anyMatch(Matches.unitIsAir())) {
       return Collections.emptyList();
     }
-    final Collection<Unit> endOwnedUnits = route.getEnd().getUnitCollection().getUnits();
+    final Collection<Unit> endOwnedUnits = route.getEnd().getUnits();
     final PlayerId unitOwner = getUnitOwner(unitsToLoad);
     final MustMoveWithDetails endMustMoveWith =
         MoveValidator.getMustMoveWith(route.getEnd(), endOwnedUnits, dependentUnits, getData(), unitOwner);
@@ -1283,7 +1283,7 @@ public class MovePanel extends AbstractMovePanel {
       mustMoveWithDetails = null;
     } else {
       mustMoveWithDetails = MoveValidator.getMustMoveWith(firstSelectedTerritory,
-          firstSelectedTerritory.getUnitCollection().getUnits(), dependentUnits, getData(), getCurrentPlayer());
+          firstSelectedTerritory.getUnits(), dependentUnits, getData(), getCurrentPlayer());
     }
   }
 

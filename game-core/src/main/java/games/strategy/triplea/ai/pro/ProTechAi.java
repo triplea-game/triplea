@@ -48,10 +48,10 @@ final class ProTechAi {
     final Territory myCapitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     final float enemyStrength = getStrengthOfPotentialAttackers(myCapitol, data, player);
     float myStrength = (myCapitol == null || myCapitol.getUnitCollection() == null) ? 0.0F
-        : strength(myCapitol.getUnitCollection().getUnits(), false, false, false);
+        : strength(myCapitol.getUnits(), false, false, false);
     final List<Territory> areaStrength = getNeighboringLandTerritories(data, player, myCapitol);
     for (final Territory areaTerr : areaStrength) {
-      myStrength += strength(areaTerr.getUnitCollection().getUnits(), false, false, false) * 0.75F;
+      myStrength += strength(areaTerr.getUnits(), false, false, false) * 0.75F;
     }
     final boolean capDanger = myStrength < (enemyStrength * 1.25F + 3.0F);
     final Resource pus = data.getResourceList().getResource(Constants.PUS);

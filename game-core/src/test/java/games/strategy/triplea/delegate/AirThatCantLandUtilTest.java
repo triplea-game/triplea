@@ -149,7 +149,7 @@ public class AirThatCantLandUtilTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz45.getUnitCollection().getUnits(), gameData.getMap().getRoute(sz45, sz44));
+    moveDelegate.move(sz45.getUnits(), gameData.getMap().getRoute(sz45, sz44));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
@@ -200,7 +200,7 @@ public class AirThatCantLandUtilTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz45.getUnitCollection().getUnits(), gameData.getMap().getRoute(sz45, sz44));
+    moveDelegate.move(sz45.getUnits(), gameData.getMap().getRoute(sz45, sz44));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
@@ -250,7 +250,7 @@ public class AirThatCantLandUtilTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz11.getUnitCollection().getUnits(), gameData.getMap().getRoute(sz11, sz9));
+    moveDelegate.move(sz11.getUnits(), gameData.getMap().getRoute(sz11, sz9));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
@@ -299,7 +299,7 @@ public class AirThatCantLandUtilTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz11.getUnitCollection().getUnits(), gameData.getMap().getRoute(sz11, sz9));
+    moveDelegate.move(sz11.getUnits(), gameData.getMap().getRoute(sz11, sz9));
     moveDelegate.move(sz9.getUnitCollection().getUnits(infantryType, 1), gameData.getMap().getRoute(sz9, eastCanada));
     moveDelegate.end();
     // fight the battle

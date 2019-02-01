@@ -37,7 +37,7 @@ public final class ProTerritoryValueUtils {
     double value = 3.0 * TerritoryAttachment.getProduction(t) * (isEnemyFactory + 1);
     if (ProUtils.isNeutralLand(t)) {
       final double strength =
-          ProBattleUtils.estimateStrength(t, new ArrayList<>(t.getUnitCollection().getUnits()), new ArrayList<>(),
+          ProBattleUtils.estimateStrength(t, new ArrayList<>(t.getUnits()), new ArrayList<>(),
               false);
 
       // Estimate TUV swing as number of casualties * cost

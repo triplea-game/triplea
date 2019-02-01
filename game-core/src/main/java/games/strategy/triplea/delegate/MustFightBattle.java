@@ -479,7 +479,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
       if (!battleSite.isWater() && TechAttachment.isAirTransportable(attacker)) {
         final Collection<Unit> bombers =
-            CollectionUtils.getMatches(battleSite.getUnitCollection().getUnits(), Matches.unitIsAirTransport());
+            CollectionUtils.getMatches(battleSite.getUnits(), Matches.unitIsAirTransport());
         if (!bombers.isEmpty()) {
           final Collection<Unit> dependents = getDependentUnits(bombers);
           if (!dependents.isEmpty()) {
@@ -772,14 +772,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
                 .and(Matches.unitIsNotCombatTransport())
                 .and(Matches.isUnitAllied(attacker, gameData));
             final List<Unit> alliedTransports =
-                CollectionUtils.getMatches(battleSite.getUnitCollection().getUnits(), matchAllied);
+                CollectionUtils.getMatches(battleSite.getUnits(), matchAllied);
             // If no transports, just end the battle
             if (alliedTransports.isEmpty()) {
               endBattle(bridge);
               defenderWins(bridge);
             } else if (round <= 1) {
               attackingUnits =
-                  CollectionUtils.getMatches(battleSite.getUnitCollection().getUnits(),
+                  CollectionUtils.getMatches(battleSite.getUnits(),
                       Matches.unitIsOwnedBy(attacker));
             } else {
               endBattle(bridge);
@@ -1388,7 +1388,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   public List<Unit> getRemainingAttackingUnits() {
     final List<Unit> remaining = new ArrayList<>(attackingUnitsRetreated);
     if (getWhoWon() != WhoWon.DEFENDER) {
-      final Collection<Unit> unitsLeftInTerritory = battleSite.getUnitCollection().getUnits();
+      final Collection<Unit> unitsLeftInTerritory = battleSite.getUnits();
       unitsLeftInTerritory.removeAll(killed);
       remaining.addAll(CollectionUtils.getMatches(unitsLeftInTerritory, Matches.unitOwnedBy(attacker)));
     }
@@ -1399,7 +1399,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   public List<Unit> getRemainingDefendingUnits() {
     final List<Unit> remaining = new ArrayList<>(defendingUnitsRetreated);
     if (getWhoWon() != WhoWon.ATTACKER || attackingUnits.stream().allMatch(Matches.unitIsAir())) {
-      final Collection<Unit> unitsLeftInTerritory = battleSite.getUnitCollection().getUnits();
+      final Collection<Unit> unitsLeftInTerritory = battleSite.getUnits();
       unitsLeftInTerritory.removeAll(killed);
       remaining.addAll(CollectionUtils.getMatches(unitsLeftInTerritory, Matches.enemyUnit(attacker, gameData)));
     }
@@ -1650,7 +1650,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         .and(Matches.isUnitAllied(player, gameData))
         .and(Matches.unitIsSea());
     final List<Unit> alliedTransports =
-        CollectionUtils.getMatches(battleSite.getUnitCollection().getUnits(), matchAllied);
+        CollectionUtils.getMatches(battleSite.getUnits(), matchAllied);
     // If no transports, just return
     if (alliedTransports.isEmpty()) {
       return;
@@ -1660,7 +1660,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         .and(Matches.unitIsNotLand())
         .and(Matches.unitIsSubmerged().negate());
     final Collection<Unit> alliedUnits =
-        CollectionUtils.getMatches(battleSite.getUnitCollection().getUnits(), alliedUnitsMatch);
+        CollectionUtils.getMatches(battleSite.getUnits(), alliedUnitsMatch);
     // If transports are unescorted, check opposing forces to see if the Trns die automatically
     if (alliedTransports.size() == alliedUnits.size()) {
       // Get all the ENEMY sea and air units (that can attack) in the territory
@@ -1668,7 +1668,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           .and(Matches.unitIsSubmerged().negate())
           .and(Matches.unitCanAttack(player));
       final Collection<Unit> enemyUnits =
-          CollectionUtils.getMatches(battleSite.getUnitCollection().getUnits(), enemyUnitsMatch);
+          CollectionUtils.getMatches(battleSite.getUnits(), enemyUnitsMatch);
       // If there are attackers set their movement to 0 and kill the transports
       if (enemyUnits.size() > 0) {
         final Change change =
@@ -2277,7 +2277,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private void landParatroops(final IDelegateBridge bridge) {
     if (TechAttachment.isAirTransportable(attacker)) {
       final Collection<Unit> airTransports =
-          CollectionUtils.getMatches(battleSite.getUnitCollection().getUnits(), Matches.unitIsAirTransport());
+          CollectionUtils.getMatches(battleSite.getUnits(), Matches.unitIsAirTransport());
       if (!airTransports.isEmpty()) {
         final Collection<Unit> dependents = getDependentUnits(airTransports);
         if (!dependents.isEmpty()) {

@@ -34,7 +34,7 @@ public class UnitHitsChange extends Change {
     }
     final Set<Unit> units = hits.keySet();
     for (final Territory element : data.getMap().getTerritories()) {
-      if (!Collections.disjoint(element.getUnitCollection().getUnits(), units)) {
+      if (!Collections.disjoint(element.getUnits(), units)) {
         element.notifyChanged();
       }
     }

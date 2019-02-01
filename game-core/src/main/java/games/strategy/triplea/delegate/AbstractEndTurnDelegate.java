@@ -408,7 +408,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
       if (maxLoss <= 0) {
         continue;
       }
-      final Collection<Unit> enemies = CollectionUtils.getMatches(b.getUnitCollection().getUnits(), enemyUnits);
+      final Collection<Unit> enemies = CollectionUtils.getMatches(b.getUnits(), enemyUnits);
       if (enemies.isEmpty()) {
         continue;
       }

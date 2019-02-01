@@ -252,7 +252,7 @@ public class PacificTest extends AbstractDelegateTestCase {
     // validate movement
     final String results =
         delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route,
-            route.getEnd().getUnitCollection().getUnits());
+            route.getEnd().getUnits());
     assertValid(results);
     // verify unit counts after move
     assertEquals(1, bonin.getUnitCollection().size());

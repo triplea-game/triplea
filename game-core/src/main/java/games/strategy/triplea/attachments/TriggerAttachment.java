@@ -1299,7 +1299,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final Collection<Unit> totalRemoved = new ArrayList<>();
     for (final UnitType ut : utMap.keySet()) {
       final int removeNum = utMap.getInt(ut);
-      final Collection<Unit> toRemove = CollectionUtils.getNMatches(terr.getUnitCollection().getUnits(), removeNum,
+      final Collection<Unit> toRemove = CollectionUtils.getNMatches(terr.getUnits(), removeNum,
           Matches.unitIsOwnedBy(player).and(Matches.unitIsOfType(ut)));
       if (!toRemove.isEmpty()) {
         totalRemoved.addAll(toRemove);

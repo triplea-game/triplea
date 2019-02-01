@@ -33,7 +33,7 @@ public class BigWorldTest {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final String error = moveDelegate.move(sz28.getUnitCollection().getUnits(), new Route(sz28, sz27, sz29));
+    final String error = moveDelegate.move(sz28.getUnits(), new Route(sz28, sz27, sz29));
     assertError(error);
   }
 }

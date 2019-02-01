@@ -1154,7 +1154,7 @@ public final class Matches {
   }
 
   static Predicate<Unit> unitIsInTerritory(final Territory territory) {
-    return o -> territory.getUnitCollection().getUnits().contains(o);
+    return o -> territory.getUnits().contains(o);
   }
 
   public static Predicate<Territory> isTerritoryEnemy(final PlayerId player, final GameData data) {
@@ -1697,7 +1697,7 @@ public final class Matches {
 
       final Predicate<Unit> unitIsOwnedByAndNotDisabled = isUnitAllied(unit.getOwner(), data).and(unitIsNotDisabled());
       final List<Unit> units =
-          CollectionUtils.getMatches(t.getUnitCollection().getUnits(), unitIsOwnedByAndNotDisabled);
+          CollectionUtils.getMatches(t.getUnits(), unitIsOwnedByAndNotDisabled);
       for (final String[] array : ua.getRequiresUnitsToMove()) {
         boolean haveAll = true;
         for (final UnitType ut : ua.getListedUnits(array)) {

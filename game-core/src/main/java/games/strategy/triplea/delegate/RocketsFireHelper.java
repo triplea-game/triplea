@@ -156,7 +156,7 @@ public class RocketsFireHelper implements Serializable {
         Unit unitTarget = null;
         if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
           final Collection<Unit> rocketTargets = new ArrayList<>(
-              CollectionUtils.getMatches(attackFrom.getUnitCollection().getUnits(), rocketMatch(player)));
+              CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player)));
           final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<>();
           // a hack for now, we let the rockets fire at anyone who could be targetted by any rocket
           // Not sure if that comment is still current
@@ -286,7 +286,7 @@ public class RocketsFireHelper implements Serializable {
       numberOfAttacks = 1;
     } else {
       rockets =
-          new ArrayList<>(CollectionUtils.getMatches(attackFrom.getUnitCollection().getUnits(), rocketMatch(player)));
+          new ArrayList<>(CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player)));
       numberOfAttacks = Math.min(TechAbilityAttachment.getRocketNumberPerTerritory(player, data),
           TechAbilityAttachment.getRocketDiceNumber(rockets, data));
     }
@@ -458,7 +458,7 @@ public class RocketsFireHelper implements Serializable {
         final Change change = ChangeFactory.markNoMovementChange(Collections.singleton(rockets.iterator().next()));
         bridge.addChange(change);
       } else {
-        throw new IllegalStateException("No rockets?" + attackFrom.getUnitCollection().getUnits());
+        throw new IllegalStateException("No rockets?" + attackFrom.getUnits());
       }
     }
     // kill any units that can die if they have reached max damage (veqryn)
