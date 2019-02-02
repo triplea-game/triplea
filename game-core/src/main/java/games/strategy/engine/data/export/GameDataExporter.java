@@ -199,7 +199,6 @@ public class GameDataExporter {
     for (final String propName : conProperties.keySet()) {
       switch (propName) {
         case "notes":
-          // unchecked cast
           // Special handling of notes property
           printNotes((String) conProperties.get(propName));
           break;
