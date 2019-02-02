@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.AbstractUiContext;
 import lombok.extern.java.Log;
@@ -47,7 +49,8 @@ public final class LocalizeHtml {
     return localizeImgLinksInHtml(htmlText, ResourceLoader.getMapResourceLoader(mapNameDir));
   }
 
-  private static String localizeImgLinksInHtml(final String htmlText, final ResourceLoader loader) {
+  @VisibleForTesting
+  static String localizeImgLinksInHtml(final String htmlText, final ResourceLoader loader) {
     final StringBuffer result = new StringBuffer();
     final Map<String, String> cache = new HashMap<>();
     final Matcher matcher = PATTERN_HTML_IMG_SRC_TAG.matcher(htmlText);
@@ -55,7 +58,8 @@ public final class LocalizeHtml {
       final String link = Optional.ofNullable(matcher.group(2)).orElseGet(() -> matcher.group(3));
       if (link != null && !link.isEmpty()) {
         final String localized = cache.computeIfAbsent(link, l -> getLocalizedLink(l, loader));
-        matcher.appendReplacement(result, matcher.group(1) + '"' + localized + '"' + matcher.group(4));
+        final char quote = matcher.group(2) != null ? '"' : '\'';
+        matcher.appendReplacement(result, matcher.group(1) + quote + localized + quote + matcher.group(4));
       }
     }
     matcher.appendTail(result);
