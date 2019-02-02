@@ -48,6 +48,8 @@ public final class LocalizeHtml {
 
   @VisibleForTesting
   static String localizeImgLinksInHtml(final String htmlText, final ResourceLoader loader) {
+    // StringBuffer is required here, because Matcher.appendReplacement
+    // doesn't support StringBuilder until Java 9
     final StringBuffer result = new StringBuffer();
     final Map<String, String> cache = new HashMap<>();
     final Matcher matcher = PATTERN_HTML_IMG_SRC_TAG.matcher(htmlText);
