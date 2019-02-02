@@ -19,19 +19,12 @@ import lombok.extern.java.Log;
 public final class LocalizeHtml {
   private static final String ASSET_IMAGE_FOLDER = "doc/images/";
   private static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
-  /*
-   * You would think that there would be a single standardized REGEX for pulling html links out of <img> tags and <a>
-   * tags.
-   * But there isn't, and the internet seems to give million different answers, none of which work perfectly.
-   * So here are the best one I could find.
-   * Regex's found at http://www.mkyong.com/
-   */
 
   // Match the <img /> tag
   public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
   // Match the <img> src
   private static final Pattern PATTERN_HTML_IMG_SRC_TAG = Pattern
-      .compile("s(?<=<img[^>]{0,99})rc\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)')(?=[^>]*/?>)", Pattern.CASE_INSENSITIVE);
+      .compile("(<img[^>]*src\\s*=\\s*)(?:\"([^\"]*)\"|'([^']*)')([^>]*/?>)", Pattern.CASE_INSENSITIVE);
 
   private LocalizeHtml() {}
 
@@ -59,10 +52,10 @@ public final class LocalizeHtml {
     final Map<String, String> cache = new HashMap<>();
     final Matcher matcher = PATTERN_HTML_IMG_SRC_TAG.matcher(htmlText);
     while (matcher.find()) {
-      final String link = Optional.ofNullable(matcher.group(1)).orElseGet(() -> matcher.group(2));
+      final String link = Optional.ofNullable(matcher.group(2)).orElseGet(() -> matcher.group(3));
       if (link != null && !link.isEmpty()) {
         final String localized = cache.computeIfAbsent(link, l -> getLocalizedLink(l, loader, mapNameDir));
-        matcher.appendReplacement(result, "src=\"" + localized + '"');
+        matcher.appendReplacement(result, matcher.group(1) + '"' + localized + '"' + matcher.group(4));
       }
     }
     matcher.appendTail(result);
