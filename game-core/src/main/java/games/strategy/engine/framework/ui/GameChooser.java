@@ -163,7 +163,11 @@ public class GameChooser extends JDialog {
   private void setupListeners() {
     okButton.addActionListener(e -> selectAndReturn());
     cancelButton.addActionListener(e -> cancelAndReturn());
-    gameList.addListSelectionListener(e -> updateInfoPanel());
+    gameList.addListSelectionListener(e -> {
+      if (!e.getValueIsAdjusting()) {
+        updateInfoPanel();
+      }
+    });
     gameList.addMouseListener(new MouseListener() {
       @Override
       public void mouseClicked(final MouseEvent event) {
