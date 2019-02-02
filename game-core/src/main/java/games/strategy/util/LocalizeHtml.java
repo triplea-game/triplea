@@ -1,14 +1,11 @@
 package games.strategy.util;
 
 import java.net.URL;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.AbstractUiContext;
@@ -30,10 +27,11 @@ public final class LocalizeHtml {
    * Regex's found at http://www.mkyong.com/
    */
 
-  /* Match the <img /> tag */
+  // Match the <img /> tag
   public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
-  /* Match the src attribute */
-  private static final String PATTERN_HTML_IMG_SRC_TAG = "src\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)')";
+  // Match the <img> src
+  private static final Pattern PATTERN_HTML_IMG_SRC_TAG = Pattern
+      .compile("s(?<=<img[^>]{0,99})rc\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)')(?=[^>]*/?>)", Pattern.CASE_INSENSITIVE);
 
   private LocalizeHtml() {}
 
@@ -54,72 +52,44 @@ public final class LocalizeHtml {
     if (htmlText == null || (resourceLoader == null && (mapNameDir == null || mapNameDir.trim().length() == 0))) {
       return htmlText;
     }
-    final Pattern patternTag = Pattern.compile(PATTERN_HTML_IMG_TAG);
-    final Pattern patternLink = Pattern.compile(PATTERN_HTML_IMG_SRC_TAG, Pattern.CASE_INSENSITIVE);
-    final Matcher matcherTag = patternTag.matcher(htmlText);
-    final Set<String> linksToProcess = new HashSet<>();
-    while (matcherTag.find()) {
-      // img tag
-      final String href = matcherTag.group(1);
-      if (href == null) {
-        continue;
-      }
-
-      final Matcher matcherLink = patternLink.matcher(href);
-      if (matcherLink.find()) {
-        // src link
-        final String link = Optional.ofNullable(matcherLink.group(1)).orElseGet(() -> matcherLink.group(2));
-        if (link != null && !link.isEmpty()) {
-          linksToProcess.add(link);
-        }
-      }
-    }
-
-    return processLinks(htmlText,
-        resourceLoader == null ? ResourceLoader.getMapResourceLoader(mapNameDir) : resourceLoader,
-        mapNameDir,
-        linksToProcess);
-  }
-
-  private static String processLinks(
-      final String htmlText,
-      final ResourceLoader resourceLoader,
-      final String mapNameDir,
-      final Set<String> linksToProcess) {
-
-    final Map<String, String> mapping = linksToProcess.stream()
-        .collect(Collectors.toMap(Function.identity(), link -> {
-      // remove full parent path
-      final String imageFileName = link.substring(Math.max(link.lastIndexOf("/") + 1, 0));
-
-      // replace when testing with: "REPLACEMENTPATH/" + imageFileName;
-      final String firstOption = ASSET_IMAGE_FOLDER + imageFileName;
-      URL replacementUrl = resourceLoader.getResource(firstOption);
-
-      if (replacementUrl == null || replacementUrl.toString().isEmpty()) {
-        log.severe(String.format("Could not find: %s/%s", mapNameDir, firstOption));
-        final String secondFallback = ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND;
-        replacementUrl = resourceLoader.getResource(secondFallback);
-        if (replacementUrl == null || replacementUrl.toString().isEmpty()) {
-          log.severe(String.format("Could not find: %s", secondFallback));
-          return link;
-        }
-      }
-      return replacementUrl.toString();
-    }));
-    return replaceEach(mapping, htmlText);
-  }
-
-  private static String replaceEach(final Map<String, String> mapping, final String input) {
-    // StringBuffer is required here, starting with Java 9 StringBuilder can be used.
+    final ResourceLoader loader = resourceLoader == null
+        ? ResourceLoader.getMapResourceLoader(mapNameDir)
+        : resourceLoader;
     final StringBuffer result = new StringBuffer();
-    final String regex = String.join("|", mapping.keySet());
-    final Matcher matcher = Pattern.compile(regex).matcher(input);
+    final Map<String, String> cache = new HashMap<>();
+    final Matcher matcher = PATTERN_HTML_IMG_SRC_TAG.matcher(htmlText);
     while (matcher.find()) {
-      final String match = matcher.group();
-      matcher.appendReplacement(result, mapping.getOrDefault(match, match));
+      final String link = Optional.ofNullable(matcher.group(1)).orElseGet(() -> matcher.group(2));
+      if (link != null && !link.isEmpty()) {
+        final String localized = cache.computeIfAbsent(link, l -> getLocalizedLink(l, loader, mapNameDir));
+        matcher.appendReplacement(result, "src=\"" + localized + '"');
+      }
     }
     matcher.appendTail(result);
+
     return result.toString();
+  }
+
+  private static String getLocalizedLink(
+      final String link,
+      final ResourceLoader resourceLoader,
+      final String mapNameDir) {
+    // remove full parent path
+    final String imageFileName = link.substring(Math.max(link.lastIndexOf("/") + 1, 0));
+
+    // replace when testing with: "REPLACEMENTPATH/" + imageFileName;
+    final String firstOption = ASSET_IMAGE_FOLDER + imageFileName;
+    URL replacementUrl = resourceLoader.getResource(firstOption);
+
+    if (replacementUrl == null || replacementUrl.toString().isEmpty()) {
+      log.severe(String.format("Could not find: %s/%s", mapNameDir, firstOption));
+      final String secondFallback = ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND;
+      replacementUrl = resourceLoader.getResource(secondFallback);
+      if (replacementUrl == null || replacementUrl.toString().isEmpty()) {
+        log.severe(String.format("Could not find: %s", secondFallback));
+        return link;
+      }
+    }
+    return replacementUrl.toString();
   }
 }
