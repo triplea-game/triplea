@@ -77,11 +77,11 @@ public final class LocalizeHtml {
     final String firstOption = ASSET_IMAGE_FOLDER + imageFileName;
     URL replacementUrl = loader.getResource(firstOption);
 
-    if (replacementUrl == null || replacementUrl.toString().isEmpty()) {
+    if (replacementUrl == null) {
       log.severe(String.format("Could not find: %s/%s", loader.getMapName(), firstOption));
       final String secondFallback = ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND;
       replacementUrl = loader.getResource(secondFallback);
-      if (replacementUrl == null || replacementUrl.toString().isEmpty()) {
+      if (replacementUrl == null) {
         log.severe(String.format("Could not find: %s", secondFallback));
         return link;
       }
