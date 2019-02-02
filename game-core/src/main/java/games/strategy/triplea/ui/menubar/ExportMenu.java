@@ -392,7 +392,7 @@ final class ExportMenu extends JMenu {
         writer.write(HelpMenu
             .getUnitStatsTable(gameData, uiContext)
             .replaceAll("</?p>|</tr>", "$0\r\n")
-            .replaceAll("(?i)<img([^>]+)/>", ""));
+            .replaceAll("(?i)<img[^>]+/>", ""));
       } catch (final IOException e1) {
         log.log(Level.SEVERE, "Failed to write unit stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
       }
