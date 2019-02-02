@@ -33,28 +33,28 @@ public final class LocalizeHtml {
    * the last game's resource loader.
    */
   public static String localizeImgLinksInHtml(final String htmlText) {
-    return localizeImgLinksInHtml(htmlText, AbstractUiContext.getResourceLoader(), null);
+    return localizeImgLinksInHtml(htmlText, AbstractUiContext.getResourceLoader());
   }
 
   /**
    * Replaces relative image links within the HTML document {@code htmlText} with absolute links that point to the
    * correct location on the local file system.
    */
-  public static String localizeImgLinksInHtml(final String htmlText, final ResourceLoader resourceLoader,
-      final String mapNameDir) {
-    if (htmlText == null || (resourceLoader == null && (mapNameDir == null || mapNameDir.trim().length() == 0))) {
+  public static String localizeImgLinksInHtml(final String htmlText, final String mapNameDir) {
+    if (htmlText == null || mapNameDir == null || mapNameDir.trim().isEmpty()) {
       return htmlText;
     }
-    final ResourceLoader loader = resourceLoader == null
-        ? ResourceLoader.getMapResourceLoader(mapNameDir)
-        : resourceLoader;
+    return localizeImgLinksInHtml(htmlText, ResourceLoader.getMapResourceLoader(mapNameDir));
+  }
+
+  private static String localizeImgLinksInHtml(final String htmlText, final ResourceLoader loader) {
     final StringBuffer result = new StringBuffer();
     final Map<String, String> cache = new HashMap<>();
     final Matcher matcher = PATTERN_HTML_IMG_SRC_TAG.matcher(htmlText);
     while (matcher.find()) {
       final String link = Optional.ofNullable(matcher.group(2)).orElseGet(() -> matcher.group(3));
       if (link != null && !link.isEmpty()) {
-        final String localized = cache.computeIfAbsent(link, l -> getLocalizedLink(l, loader, mapNameDir));
+        final String localized = cache.computeIfAbsent(link, l -> getLocalizedLink(l, loader));
         matcher.appendReplacement(result, matcher.group(1) + '"' + localized + '"' + matcher.group(4));
       }
     }
@@ -65,19 +65,18 @@ public final class LocalizeHtml {
 
   private static String getLocalizedLink(
       final String link,
-      final ResourceLoader resourceLoader,
-      final String mapNameDir) {
+      final ResourceLoader loader) {
     // remove full parent path
     final String imageFileName = link.substring(Math.max(link.lastIndexOf("/") + 1, 0));
 
     // replace when testing with: "REPLACEMENTPATH/" + imageFileName;
     final String firstOption = ASSET_IMAGE_FOLDER + imageFileName;
-    URL replacementUrl = resourceLoader.getResource(firstOption);
+    URL replacementUrl = loader.getResource(firstOption);
 
     if (replacementUrl == null || replacementUrl.toString().isEmpty()) {
-      log.severe(String.format("Could not find: %s/%s", mapNameDir, firstOption));
+      log.severe(String.format("Could not find: %s/%s", loader.getMapName(), firstOption));
       final String secondFallback = ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND;
-      replacementUrl = resourceLoader.getResource(secondFallback);
+      replacementUrl = loader.getResource(secondFallback);
       if (replacementUrl == null || replacementUrl.toString().isEmpty()) {
         log.severe(String.format("Could not find: %s", secondFallback));
         return link;

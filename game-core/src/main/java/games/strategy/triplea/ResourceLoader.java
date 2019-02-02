@@ -40,6 +40,7 @@ public class ResourceLoader implements Closeable {
 
   private final URLClassLoader loader;
   private final ResourceLocationTracker resourceLocationTracker;
+  private final String mapName;
 
   private ResourceLoader(final String mapName, final String[] paths) {
     final URL[] urls = new URL[paths.length];
@@ -62,6 +63,7 @@ public class ResourceLoader implements Closeable {
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
     loader = new URLClassLoader(urls);
+    this.mapName = mapName;
   }
 
   public static ResourceLoader getGameEngineAssetLoader() {
@@ -259,5 +261,9 @@ public class ResourceLoader implements Closeable {
 
     return UrlStreams.openStream(url)
         .orElseThrow(() -> new IllegalStateException("Failed to open an input stream to: " + path));
+  }
+
+  public String getMapName() {
+    return mapName;
   }
 }
