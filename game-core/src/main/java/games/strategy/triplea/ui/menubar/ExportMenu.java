@@ -390,9 +390,10 @@ final class ExportMenu extends JMenu {
         return;
       }
       try (Writer writer = Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
-        writer.write(
-            HelpMenu.getUnitStatsTable(gameData, uiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
-                .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHtml.PATTERN_HTML_IMG_TAG, ""));
+        writer.write(HelpMenu
+            .getUnitStatsTable(gameData, uiContext)
+            .replaceAll("</?p>|</tr>", "$0\r\n")
+            .replaceAll(LocalizeHtml.PATTERN_HTML_IMG_TAG, ""));
       } catch (final IOException e1) {
         log.log(Level.SEVERE, "Failed to write unit stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
       }
