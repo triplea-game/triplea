@@ -54,7 +54,6 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.FileNameUtils;
-import games.strategy.util.LocalizeHtml;
 import lombok.extern.java.Log;
 
 @Log
