@@ -5,7 +5,11 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URL;
@@ -35,6 +39,8 @@ class LocalizeHtmlTest {
     assertThat(result, containsString("http://local-link-2"));
 
     assertThat(result, containsString("test-audio"));
+
+    verify(loader, times(2)).getResource(any());
   }
 
   @Test
@@ -53,5 +59,20 @@ class LocalizeHtmlTest {
   @Test
   void testDoNothingWithoutResources() {
     assertThat(LocalizeHtml.localizeImgLinksInHtml(testHtml, loader), is(equalTo(testHtml)));
+  }
+
+  @Test
+  void testDoNothingWithoutTag() {
+    final String testHtml = "<p>Paragraph</p>";
+    assertThat(LocalizeHtml.localizeImgLinksInHtml(testHtml, loader), is(equalTo(testHtml)));
+    verify(loader, never()).getResource(any());
+  }
+
+  @Test
+  void testCaching() throws Exception {
+    final String testHtml = "<img src='test'><img src='test'>";
+    LocalizeHtml.localizeImgLinksInHtml(testHtml, loader);
+    when(loader.getResource("doc/images/test")).thenReturn(new URL("http://test"));
+    verify(loader).getResource("doc/images/test");
   }
 }
