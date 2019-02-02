@@ -19,11 +19,11 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class LocalizeHtml {
-  private static final String ASSET_IMAGE_FOLDER = "doc/images/";
-  private static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
-
   // Match the <img /> tag
   public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
+
+  private static final String ASSET_IMAGE_FOLDER = "doc/images/";
+  private static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
   // Match the <img> src
   private static final Pattern PATTERN_HTML_IMG_SRC_TAG = Pattern
       .compile("(<img[^>]*src\\s*=\\s*)(?:\"([^\"]*)\"|'([^']*)')([^>]*/?>)", Pattern.CASE_INSENSITIVE);
