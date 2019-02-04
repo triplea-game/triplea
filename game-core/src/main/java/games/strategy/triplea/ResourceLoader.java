@@ -28,6 +28,7 @@ import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.UrlStreams;
+import lombok.Getter;
 import lombok.extern.java.Log;
 
 /**
@@ -40,6 +41,7 @@ public class ResourceLoader implements Closeable {
 
   private final URLClassLoader loader;
   private final ResourceLocationTracker resourceLocationTracker;
+  @Getter
   private final String mapName;
 
   private ResourceLoader(final String mapName, final String[] paths) {
@@ -261,9 +263,5 @@ public class ResourceLoader implements Closeable {
 
     return UrlStreams.openStream(url)
         .orElseThrow(() -> new IllegalStateException("Failed to open an input stream to: " + path));
-  }
-
-  public String getMapName() {
-    return mapName;
   }
 }
