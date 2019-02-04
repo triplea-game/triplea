@@ -54,7 +54,6 @@ import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.SwingAction;
 import games.strategy.util.FileNameUtils;
-import games.strategy.util.LocalizeHtml;
 import lombok.extern.java.Log;
 
 @Log
@@ -390,9 +389,10 @@ final class ExportMenu extends JMenu {
         return;
       }
       try (Writer writer = Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
-        writer.write(
-            HelpMenu.getUnitStatsTable(gameData, uiContext).replaceAll("<p>", "<p>\r\n").replaceAll("</p>", "</p>\r\n")
-                .replaceAll("</tr>", "</tr>\r\n").replaceAll(LocalizeHtml.PATTERN_HTML_IMG_TAG, ""));
+        writer.write(HelpMenu
+            .getUnitStatsTable(gameData, uiContext)
+            .replaceAll("</?p>|</tr>", "$0\r\n")
+            .replaceAll("(?i)<img[^>]+/>", ""));
       } catch (final IOException e1) {
         log.log(Level.SEVERE, "Failed to write unit stats: " + chooser.getSelectedFile().getAbsolutePath(), e1);
       }

@@ -1,10 +1,13 @@
 package games.strategy.util;
 
 import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.AbstractUiContext;
@@ -16,20 +19,11 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class LocalizeHtml {
-  public static final String ASSET_IMAGE_FOLDER = "doc/images/";
-  public static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
-  /*
-   * You would think that there would be a single standardized REGEX for pulling html links out of <img> tags and <a>
-   * tags.
-   * But there isn't, and the internet seems to give million different answers, none of which work perfectly.
-   * So here are the best one I could find.
-   * Regex's found at http://www.mkyong.com/
-   */
-
-  /* Match the <img /> tag */
-  public static final String PATTERN_HTML_IMG_TAG = "(?i)<img([^>]+)/>";
-  /* Match the src attribute */
-  public static final String PATTERN_HTML_IMG_SRC_TAG = "\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
+  private static final String ASSET_IMAGE_FOLDER = "doc/images/";
+  private static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
+  // Match the <img> src
+  private static final Pattern PATTERN_HTML_IMG_SRC_TAG = Pattern
+      .compile("(<img[^>]*src\\s*=\\s*)(?:\"([^\"]+)\"|'([^']+)')([^>]*/?>)", Pattern.CASE_INSENSITIVE);
 
   private LocalizeHtml() {}
 
@@ -38,64 +32,58 @@ public final class LocalizeHtml {
    * the last game's resource loader.
    */
   public static String localizeImgLinksInHtml(final String htmlText) {
-    return localizeImgLinksInHtml(htmlText, AbstractUiContext.getResourceLoader(), null);
+    return localizeImgLinksInHtml(htmlText, AbstractUiContext.getResourceLoader());
   }
 
   /**
    * Replaces relative image links within the HTML document {@code htmlText} with absolute links that point to the
    * correct location on the local file system.
    */
-  public static String localizeImgLinksInHtml(final String htmlText, final ResourceLoader resourceLoader,
-      final String mapNameDir) {
-    if (htmlText == null || (resourceLoader == null && (mapNameDir == null || mapNameDir.trim().length() == 0))) {
+  public static String localizeImgLinksInHtml(final String htmlText, final String mapNameDir) {
+    if (htmlText == null || mapNameDir == null || mapNameDir.trim().isEmpty()) {
       return htmlText;
     }
-    ResourceLoader ourResourceLoader = resourceLoader;
-    String localizedHtmlText = htmlText;
-    final Pattern patternTag = Pattern.compile(PATTERN_HTML_IMG_TAG);
-    final Pattern patternLink = Pattern.compile(PATTERN_HTML_IMG_SRC_TAG);
-    final Matcher matcherTag = patternTag.matcher(htmlText);
-    Matcher matcherLink;
-    final Set<String> alreadyReplaced = new HashSet<>();
-    while (matcherTag.find()) {
-      // img tag
-      final String href = matcherTag.group(1);
-      if (href == null) {
-        continue;
-      }
-      matcherLink = patternLink.matcher(href);
-      while (matcherLink.find()) {
-        // src link
-        final String fullLink = matcherLink.group(1);
-        if (fullLink != null && fullLink.length() > 2) {
-          if (ourResourceLoader == null) {
-            ourResourceLoader = ResourceLoader.getMapResourceLoader(mapNameDir);
-          }
-          // remove quotes
-          final String link = fullLink.substring(1, fullLink.length() - 1);
-          if (!alreadyReplaced.add(link)) {
-            break;
-          }
+    return localizeImgLinksInHtml(htmlText, ResourceLoader.getMapResourceLoader(mapNameDir));
+  }
 
-          // remove full parent path
-          final String imageFileName = link.substring(Math.max((link.lastIndexOf("/") + 1), 0));
+  @VisibleForTesting
+  static String localizeImgLinksInHtml(final String htmlText, final ResourceLoader loader) {
+    // StringBuffer is required here, because Matcher.appendReplacement
+    // doesn't support StringBuilder until Java 9
+    final StringBuffer result = new StringBuffer();
+    final Map<String, String> cache = new HashMap<>();
+    final Matcher matcher = PATTERN_HTML_IMG_SRC_TAG.matcher(htmlText);
+    while (matcher.find()) {
+      final String link = Optional.ofNullable(matcher.group(2)).orElseGet(() -> matcher.group(3));
+      assert link != null && !link.isEmpty() : "RegEx is broken";
+      final String localized = cache.computeIfAbsent(link, l -> getLocalizedLink(l, loader));
+      final char quote = matcher.group(2) != null ? '"' : '\'';
+      matcher.appendReplacement(result, matcher.group(1) + quote + localized + quote + matcher.group(4));
+    }
+    matcher.appendTail(result);
 
-          // replace when testing with: "REPLACEMENTPATH/" + imageFileName;
-          URL replacementUrl = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + imageFileName);
+    return result.toString();
+  }
 
-          if (replacementUrl == null || replacementUrl.toString().length() == 0) {
-            log.severe("Could not find: " + mapNameDir + "/" + ASSET_IMAGE_FOLDER + imageFileName);
-            replacementUrl = ourResourceLoader.getResource(ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
-          }
-          if (replacementUrl == null || replacementUrl.toString().length() == 0) {
-            log.severe("Could not find: " + ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND);
-            continue;
-          }
-          localizedHtmlText = localizedHtmlText.replaceAll(link, replacementUrl.toString());
-        }
+  private static String getLocalizedLink(
+      final String link,
+      final ResourceLoader loader) {
+    // remove full parent path
+    final String imageFileName = link.substring(Math.max(link.lastIndexOf("/") + 1, 0));
+
+    // replace when testing with: "REPLACEMENTPATH/" + imageFileName;
+    final String firstOption = ASSET_IMAGE_FOLDER + imageFileName;
+    URL replacementUrl = loader.getResource(firstOption);
+
+    if (replacementUrl == null) {
+      log.severe(String.format("Could not find: %s/%s", loader.getMapName(), firstOption));
+      final String secondFallback = ASSET_IMAGE_FOLDER + ASSET_IMAGE_NOT_FOUND;
+      replacementUrl = loader.getResource(secondFallback);
+      if (replacementUrl == null) {
+        log.severe(String.format("Could not find: %s", secondFallback));
+        return link;
       }
     }
-
-    return localizedHtmlText;
+    return replacementUrl.toString();
   }
 }

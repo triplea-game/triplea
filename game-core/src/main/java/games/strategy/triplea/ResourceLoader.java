@@ -28,6 +28,7 @@ import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
 import games.strategy.ui.SwingComponents;
 import games.strategy.util.UrlStreams;
+import lombok.Getter;
 import lombok.extern.java.Log;
 
 /**
@@ -40,6 +41,8 @@ public class ResourceLoader implements Closeable {
 
   private final URLClassLoader loader;
   private final ResourceLocationTracker resourceLocationTracker;
+  @Getter
+  private final String mapName;
 
   private ResourceLoader(final String mapName, final String[] paths) {
     final URL[] urls = new URL[paths.length];
@@ -62,6 +65,7 @@ public class ResourceLoader implements Closeable {
     // To solve this we will get all matching paths and then filter by what matched
     // the assets folder.
     loader = new URLClassLoader(urls);
+    this.mapName = mapName;
   }
 
   public static ResourceLoader getGameEngineAssetLoader() {

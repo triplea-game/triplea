@@ -134,11 +134,11 @@ public class GameChooser extends JDialog {
       appendListItem("Location", getSelected().getLocation() + "", notes);
       appendListItem("Version", data.getGameVersion() + "", notes);
       notes.append("<p></p>");
-      final String notesProperty = data.getProperties().get("notes", "");
-      if (notesProperty != null && notesProperty.trim().length() != 0) {
+      final String trimmedNotes = data.getProperties().get("notes", "").trim();
+      if (!trimmedNotes.isEmpty()) {
         // AbstractUiContext resource loader should be null (or potentially is still the last game we played's loader),
         // so we send the map dir name so that our localizing of image links can get a new resource loader if needed
-        notes.append(LocalizeHtml.localizeImgLinksInHtml(notesProperty.trim(), null, mapNameDir));
+        notes.append(LocalizeHtml.localizeImgLinksInHtml(trimmedNotes, mapNameDir));
       }
       notesPanel.setText(notes.toString());
     } else {
@@ -163,7 +163,11 @@ public class GameChooser extends JDialog {
   private void setupListeners() {
     okButton.addActionListener(e -> selectAndReturn());
     cancelButton.addActionListener(e -> cancelAndReturn());
-    gameList.addListSelectionListener(e -> updateInfoPanel());
+    gameList.addListSelectionListener(e -> {
+      if (!e.getValueIsAdjusting()) {
+        updateInfoPanel();
+      }
+    });
     gameList.addMouseListener(new MouseListener() {
       @Override
       public void mouseClicked(final MouseEvent event) {

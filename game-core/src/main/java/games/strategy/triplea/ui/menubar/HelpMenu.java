@@ -182,7 +182,7 @@ public final class HelpMenu extends JMenu {
       return "no image";
     }
     final Optional<URL> imageUrl = unitImageFactory.getBaseImageUrl(unitType.getName(), player);
-    final String imageLocation = imageUrl.isPresent() ? imageUrl.get().toString() : "";
+    final String imageLocation = imageUrl.map(Object::toString).orElse("");
 
     return "<img src=\"" + imageLocation + "\" border=\"0\"/>";
   }
