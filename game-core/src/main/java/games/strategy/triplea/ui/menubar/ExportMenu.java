@@ -94,7 +94,8 @@ final class ExportMenu extends JMenu {
     final int round = gameData.getCurrentRound();
     final String defaultFileName = FileNameUtils.removeIllegalCharacters(
         String.format("xml_%s_%s_round_%s",
-            dateTimeFormatter.format(LocalDateTime.now()), gameData.getGameName(), round)) + ".xml";
+            dateTimeFormatter.format(LocalDateTime.now()), gameData.getGameName(), round))
+        + ".xml";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
@@ -148,7 +149,8 @@ final class ExportMenu extends JMenu {
     final String defaultFileName = FileNameUtils.removeIllegalCharacters(
         String.format("stats_%s_%s_round_%s%s",
             dateTimeFormatter.format(LocalDateTime.now()), gameData.getGameName(),
-            currentRound, showPhaseStats ? "_full" : "_short")) + ".csv";
+            currentRound, showPhaseStats ? "_full" : "_short"))
+        + ".csv";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
