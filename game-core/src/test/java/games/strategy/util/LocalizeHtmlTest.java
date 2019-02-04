@@ -73,4 +73,11 @@ class LocalizeHtmlTest {
     LocalizeHtml.localizeImgLinksInHtml(testHtml, loader);
     verify(loader, times(1)).getResource(any());
   }
+
+  @Test
+  void testStrictHtml() {
+    final String testHtml = "<img src=\"test\"";
+    assertThat(LocalizeHtml.localizeImgLinksInHtml(testHtml, loader), is(equalTo(testHtml)));
+    verify(loader, never()).getResource(any());
+  }
 }
