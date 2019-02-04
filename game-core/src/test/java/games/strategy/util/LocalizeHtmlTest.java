@@ -47,9 +47,7 @@ class LocalizeHtmlTest {
   void testFallbackLink() throws Exception {
     when(loader.getResource("doc/images/actual-link")).thenReturn(null);
     when(loader.getResource("doc/images/another-link.png")).thenReturn(null);
-    when(loader.getResource("doc/images/notFound.png"))
-        .thenReturn(null)
-        .thenReturn(new URL("http://notFound.png"));
+    when(loader.getResource("doc/images/notFound.png")).thenReturn(null, new URL("http://notFound.png"));
     final String result = LocalizeHtml.localizeImgLinksInHtml(testHtml, loader);
     assertThat(result, containsString("dir/actual-link"));
     assertThat(result, containsString("http://notFound.png"));
@@ -71,8 +69,8 @@ class LocalizeHtmlTest {
   @Test
   void testCaching() throws Exception {
     final String testHtml = "<img src='test'><img src='test'>";
-    LocalizeHtml.localizeImgLinksInHtml(testHtml, loader);
     when(loader.getResource("doc/images/test")).thenReturn(new URL("http://test"));
-    verify(loader).getResource("doc/images/test");
+    LocalizeHtml.localizeImgLinksInHtml(testHtml, loader);
+    verify(loader, times(1)).getResource(any());
   }
 }
