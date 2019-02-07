@@ -28,6 +28,8 @@ import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import com.google.common.collect.Iterables;
+
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -147,9 +149,9 @@ final class ExportMenu extends JMenu {
     final File rootDir = new File(SystemProperties.getUserDir());
     final int currentRound = gameData.getCurrentRound();
     final String defaultFileName = FileNameUtils.removeIllegalCharacters(
-        String.format("stats_%s_%s_round_%s%s",
+        String.format("stats_%s_%s_round_%s_%s",
             dateTimeFormatter.format(LocalDateTime.now()), gameData.getGameName(),
-            currentRound, showPhaseStats ? "_full" : "_short"))
+            currentRound, showPhaseStats ? "full" : "short"))
         + ".csv";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
@@ -159,10 +161,6 @@ final class ExportMenu extends JMenu {
     try {
       gameData.acquireReadLock();
       final GameData clone = GameDataUtils.cloneGameData(gameData);
-      final IStat[] stats = statPanel.getStats();
-      // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech
-      // tokens or # techs, etc.
-      final IStat[] statsExtended = statPanel.getStatsExtended(gameData);
       text.append(defaultFileName).append(',').append('\n');
       text.append("TripleA Engine Version: ,");
       text.append(ClientContext.engineVersion()).append(',').append('\n');
@@ -228,7 +226,7 @@ final class ExportMenu extends JMenu {
             continue;
           }
           final String toModify = ua.allUnitStatsForExporter()
-              .replaceAll("UnitType called | with:|games.strategy.engine.data.", "")
+              .replaceAll("UnitType called | with:|games\\.strategy\\.engine\\.data\\.", "")
               .replaceAll("[\n,]", ";")
               .replaceAll(" {2}| ?, ?", ",");
           text.append(toModify).append('\n');
@@ -244,16 +242,20 @@ final class ExportMenu extends JMenu {
       // its important here to translate the player objects into our game data
       // the players for the stat panel are only relevant with respect to the game data they belong to
       Arrays.setAll(players, i -> clone.getPlayerList().getPlayerId(players[i].getName()));
-      for (final IStat[] statArray : Arrays.asList(stats, statsExtended)) {
-        for (final IStat stat : statArray) {
-          for (final PlayerId player : players) {
-            text.append(stat.getName()).append(' ');
-            text.append(player.getName()).append(',');
-          }
-          for (final String alliance : alliances) {
-            text.append(stat.getName()).append(' ');
-            text.append(alliance).append(',');
-          }
+
+      // extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech
+      // tokens or # techs, etc.
+      final Iterable<IStat> stats = Iterables.concat(
+          Arrays.asList(statPanel.getStats()),
+          Arrays.asList(statPanel.getStatsExtended(gameData)));
+      for (final IStat stat : stats) {
+        for (final PlayerId player : players) {
+          text.append(stat.getName()).append(' ');
+          text.append(player.getName()).append(',');
+        }
+        for (final String alliance : alliances) {
+          text.append(stat.getName()).append(' ');
+          text.append(alliance).append(',');
         }
       }
       text.append('\n');
@@ -315,14 +317,12 @@ final class ExportMenu extends JMenu {
         text.append(round).append(',')
             .append(playerName).append(',')
             .append(stepName).append(',');
-        for (final IStat[] statArray : Arrays.asList(stats, statsExtended)) {
-          for (final IStat stat : statArray) {
-            for (final PlayerId player : players) {
-              text.append(stat.getFormatter().format(stat.getValue(player, clone))).append(',');
-            }
-            for (final String alliance : alliances) {
-              text.append(stat.getFormatter().format(stat.getValue(alliance, clone))).append(',');
-            }
+        for (final IStat stat : stats) {
+          for (final PlayerId player : players) {
+            text.append(stat.getFormatter().format(stat.getValue(player, clone))).append(',');
+          }
+          for (final String alliance : alliances) {
+            text.append(stat.getFormatter().format(stat.getValue(alliance, clone))).append(',');
           }
         }
         text.append('\n');
