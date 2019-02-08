@@ -1,10 +1,8 @@
 package games.strategy.triplea.ui.menubar;
 
 import java.awt.event.KeyEvent;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
