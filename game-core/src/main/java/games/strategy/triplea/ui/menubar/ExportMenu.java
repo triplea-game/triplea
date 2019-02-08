@@ -1,8 +1,11 @@
 package games.strategy.triplea.ui.menubar;
 
 import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -157,25 +160,25 @@ final class ExportMenu extends JMenu {
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
     }
-    try (Writer writer = Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
+    try (PrintWriter writer = new PrintWriter(chooser.getSelectedFile(), StandardCharsets.UTF_8.toString())) {
       gameData.acquireReadLock();
       final GameData clone = GameDataUtils.cloneGameData(gameData);
-      writer.append(defaultFileName).append(',').append('\n');
+      writer.append(defaultFileName).println(',');
       writer.append("TripleA Engine Version: ,");
-      writer.append(ClientContext.engineVersion().toString()).append(',').append('\n');
+      writer.append(ClientContext.engineVersion().toString()).println(',');
       writer.append("Game Name: ,");
-      writer.append(gameData.getGameName()).append(',').append('\n');
+      writer.append(gameData.getGameName()).println(',');
       writer.append("Game Version: ,");
-      writer.append(gameData.getGameVersion().toString()).append(',').append('\n');
-      writer.append('\n');
+      writer.append(gameData.getGameVersion().toString()).println(',');
+      writer.println();
       writer.append("Current Round: ,");
-      writer.append(String.valueOf(currentRound)).append(',').append('\n');
+      writer.append(String.valueOf(currentRound)).println(',');
       writer.append("Number of Players: ,");
-      writer.append(String.valueOf(statPanel.getPlayers().size())).append(',').append('\n');
+      writer.append(String.valueOf(statPanel.getPlayers().size())).println(',');
       writer.append("Number of Alliances: ,");
-      writer.append(String.valueOf(statPanel.getAlliances().size())).append(',').append('\n');
-      writer.append('\n');
-      writer.append("Turn Order: ,").append('\n');
+      writer.append(String.valueOf(statPanel.getAlliances().size())).println(',');
+      writer.println();
+      writer.println("Turn Order: ,");
       final SortedSet<PlayerId> orderedPlayers = new TreeSet<>(new PlayerOrderComparator(gameData));
       orderedPlayers.addAll(gameData.getPlayerList().getPlayers());
       for (final PlayerId currentPlayerId : orderedPlayers) {
@@ -184,9 +187,9 @@ final class ExportMenu extends JMenu {
         for (final String allianceName : allianceNames) {
           writer.append(allianceName).append(',');
         }
-        writer.append('\n');
+        writer.println();
       }
-      writer.append('\n');
+      writer.println();
       writer.append("Winners: ,");
       final EndRoundDelegate delegateEndRound = (EndRoundDelegate) gameData.getDelegateList().getDelegate("endRound");
       if (delegateEndRound != null && delegateEndRound.getWinners() != null) {
@@ -196,16 +199,16 @@ final class ExportMenu extends JMenu {
       } else {
         writer.append("none yet; game not over,");
       }
-      writer.append('\n');
-      writer.append('\n');
-      writer.append("Resource Chart: ,").append('\n');
+      writer.println();
+      writer.println();
+      writer.println("Resource Chart: ,");
       for (final Resource resource : gameData.getResourceList().getResources()) {
-        writer.append(resource.getName()).append(',').append('\n');
+        writer.append(resource.getName()).println(',');
       }
       // if short, we won't both showing production and unit info
       if (showPhaseStats) {
-        writer.append('\n');
-        writer.append("Production Rules: ,").append('\n');
+        writer.println();
+        writer.println("Production Rules: ,");
         writer.append("Name,Result,Quantity,Cost,Resource,\n");
         final Collection<ProductionRule> purchaseOptions = gameData.getProductionRuleList().getProductionRules();
         for (final ProductionRule pr : purchaseOptions) {
@@ -213,11 +216,10 @@ final class ExportMenu extends JMenu {
           writer.append(pr.getName()).append(',')
               .append(pr.getResults().keySet().iterator().next().getName()).append(',')
               .append(String.valueOf(pr.getResults().getInt(pr.getResults().keySet().iterator().next()))).append(',')
-              .append(costString).append(',')
-              .append('\n');
+              .append(costString).println(',');
         }
-        writer.append('\n');
-        writer.append("Unit Types: ,").append('\n');
+        writer.println();
+        writer.println("Unit Types: ,");
         writer.append("Name,Listed Abilities\n");
         for (final UnitType unitType : gameData.getUnitTypeList()) {
           final UnitAttachment ua = UnitAttachment.get(unitType);
@@ -228,13 +230,13 @@ final class ExportMenu extends JMenu {
               .replaceAll("UnitType called | with:|games\\.strategy\\.engine\\.data\\.", "")
               .replaceAll("[\n,]", ";")
               .replaceAll(" {2}| ?, ?", ",");
-          writer.append(toModify).append('\n');
+          writer.println(toModify);
         }
       }
-      writer.append('\n');
-      writer.append(showPhaseStats ? "Full Stats (includes each phase that had activity),"
-          : "Short Stats (only shows first phase with activity per player per round),").append('\n');
-      writer.append("Turn Stats: ,").append('\n');
+      writer.println();
+      writer.println(showPhaseStats ? "Full Stats (includes each phase that had activity),"
+          : "Short Stats (only shows first phase with activity per player per round),");
+      writer.println("Turn Stats: ,");
       writer.append("Round,Player Turn,Phase Name,");
       final String[] alliances = statPanel.getAlliances().toArray(new String[0]);
       final PlayerId[] players = statPanel.getPlayers().toArray(new PlayerId[0]);
@@ -257,7 +259,7 @@ final class ExportMenu extends JMenu {
           writer.append(alliance).append(',');
         }
       }
-      writer.append('\n');
+      writer.println();
       clone.getHistory().gotoNode(clone.getHistory().getLastNode());
       @SuppressWarnings("unchecked")
       final Enumeration<TreeNode> nodes = ((DefaultMutableTreeNode) clone.getHistory().getRoot()).preorderEnumeration();
@@ -324,7 +326,7 @@ final class ExportMenu extends JMenu {
             writer.append(stat.getFormatter().format(stat.getValue(alliance, clone))).append(',');
           }
         }
-        writer.append('\n');
+        writer.println();
       }
     } catch (final IOException e) {
       log.log(Level.SEVERE, "Failed to write stats: " + chooser.getSelectedFile().getAbsolutePath(), e);
