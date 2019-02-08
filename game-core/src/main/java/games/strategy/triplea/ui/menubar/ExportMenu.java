@@ -170,11 +170,14 @@ final class ExportMenu extends JMenu {
       writer.append(gameData.getGameVersion().toString()).println(',');
       writer.println();
       writer.append("Current Round: ,");
-      writer.append(String.valueOf(currentRound)).println(',');
+      writer.print(currentRound);
+      writer.println(',');
       writer.append("Number of Players: ,");
-      writer.append(String.valueOf(statPanel.getPlayers().size())).println(',');
+      writer.print(statPanel.getPlayers().size());
+      writer.println(',');
       writer.append("Number of Alliances: ,");
-      writer.append(String.valueOf(statPanel.getAlliances().size())).println(',');
+      writer.print(statPanel.getAlliances().size());
+      writer.println(',');
       writer.println();
       writer.println("Turn Order: ,");
       final SortedSet<PlayerId> orderedPlayers = new TreeSet<>(new PlayerOrderComparator(gameData));
@@ -211,10 +214,10 @@ final class ExportMenu extends JMenu {
         final Collection<ProductionRule> purchaseOptions = gameData.getProductionRuleList().getProductionRules();
         for (final ProductionRule pr : purchaseOptions) {
           final String costString = pr.toStringCosts().replaceAll(";? ", ",");
-          writer.append(pr.getName()).append(',')
-              .append(pr.getResults().keySet().iterator().next().getName()).append(',')
-              .append(String.valueOf(pr.getResults().getInt(pr.getResults().keySet().iterator().next()))).append(',')
-              .append(costString).println(',');
+          writer.append(pr.getName()).append(',');
+          writer.append(pr.getResults().keySet().iterator().next().getName()).append(',');
+          writer.print(pr.getResults().getInt(pr.getResults().keySet().iterator().next()));
+          writer.append(',').append(costString).println(',');
         }
         writer.println();
         writer.println("Unit Types: ,");
@@ -313,9 +316,8 @@ final class ExportMenu extends JMenu {
         } else {
           stepName = "";
         }
-        writer.append(String.valueOf(round)).append(',')
-            .append(playerName).append(',')
-            .append(stepName).append(',');
+        writer.print(round);
+        writer.append(',').append(playerName).append(',').append(stepName).append(',');
         for (final IStat stat : stats) {
           for (final PlayerId player : players) {
             writer.append(stat.getFormatter().format(stat.getValue(player, clone))).append(',');
