@@ -4,9 +4,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.LayoutManager;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
@@ -25,7 +27,7 @@ import lombok.Setter;
 public class JFrameBuilder {
   @Setter
   @Nullable
-  private static Image defaultIconImage;
+  private static Function<Window, Image> defaultIconImage;
 
   private final Collection<Component> children = new ArrayList<>();
   private boolean escapeClosesWindow;
@@ -63,7 +65,7 @@ public class JFrameBuilder {
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
     final Image iconToUse = Optional.ofNullable(iconImage)
-        .orElseGet(() -> defaultIconImage);
+        .orElseGet(() -> Optional.ofNullable(defaultIconImage).map(fn -> fn.apply(frame)).orElse(null));
     Optional.ofNullable(iconToUse).ifPresent(frame::setIconImage);
 
     if (escapeClosesWindow) {
