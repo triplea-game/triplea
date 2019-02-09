@@ -1,7 +1,7 @@
 package games.strategy.triplea.settings;
 
-import static org.triplea.common.util.Arrays.withSensitiveArray;
-import static org.triplea.common.util.Arrays.withSensitiveArrayAndReturn;
+import static org.triplea.util.Arrays.withSensitiveArray;
+import static org.triplea.util.Arrays.withSensitiveArrayAndReturn;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;

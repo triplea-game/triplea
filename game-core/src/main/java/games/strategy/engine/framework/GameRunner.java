@@ -37,8 +37,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 
-import org.triplea.common.util.Services;
 import org.triplea.game.ApplicationContext;
+import org.triplea.util.Services;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;

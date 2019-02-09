@@ -8,8 +8,8 @@ import java.security.CodeSource;
 
 import javax.annotation.Nullable;
 
-import org.triplea.common.util.Services;
 import org.triplea.game.ApplicationContext;
+import org.triplea.util.Services;
 
 import com.google.common.annotations.VisibleForTesting;
 

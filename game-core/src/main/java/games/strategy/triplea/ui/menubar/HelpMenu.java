@@ -28,7 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import org.triplea.common.util.concurrent.CompletableFutureUtils;
+import org.triplea.util.concurrent.CompletableFutureUtils;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;

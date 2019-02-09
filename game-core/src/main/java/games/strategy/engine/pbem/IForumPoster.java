@@ -3,7 +3,7 @@ package games.strategy.engine.pbem;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-import org.triplea.common.util.Arrays;
+import org.triplea.util.Arrays;
 
 import com.google.common.collect.ImmutableSet;
 
