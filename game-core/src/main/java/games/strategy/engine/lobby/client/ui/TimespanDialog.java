@@ -22,9 +22,6 @@ import org.triplea.swing.SwingComponents;
 import com.google.common.annotations.VisibleForTesting;
 
 import lombok.AllArgsConstructor;
-import swinglib.JButtonBuilder;
-import swinglib.JLabelBuilder;
-import swinglib.JPanelBuilder;
 
 /**
  * A UI-Utility class that can be used to prompt the user for a ban or mute time.

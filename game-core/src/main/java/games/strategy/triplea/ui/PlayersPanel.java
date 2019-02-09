@@ -6,9 +6,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.triplea.swing.JPanelBuilder;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.IGame;
-import swinglib.JPanelBuilder;
 
 /**
  * Panel to show who is playing which players.

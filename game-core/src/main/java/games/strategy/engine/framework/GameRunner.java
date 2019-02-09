@@ -39,6 +39,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.triplea.common.util.Services;
 import org.triplea.game.ApplicationContext;
+import org.triplea.swing.ProgressWindow;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -55,7 +56,6 @@ import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.pro.ProAi;
-import org.triplea.swing.ProgressWindow;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;

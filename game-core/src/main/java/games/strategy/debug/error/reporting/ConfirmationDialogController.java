@@ -12,9 +12,9 @@ import javax.swing.event.HyperlinkEvent;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.http.client.ServiceResponse;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.swing.JPanelBuilder;
 
 import games.strategy.triplea.UrlConstants;
-import swinglib.JPanelBuilder;
 
 /**
  * This controller is responsible for showing success/failure confirmation dialogs

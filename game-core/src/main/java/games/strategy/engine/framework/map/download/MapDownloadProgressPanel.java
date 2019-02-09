@@ -14,7 +14,6 @@ import javax.swing.SwingUtilities;
 import com.google.common.collect.Maps;
 
 import games.strategy.engine.ClientContext;
-import swinglib.JPanelBuilder;
 
 /** A small non-modal window that holds the progress bars for the current and pending map downloads. */
 final class MapDownloadProgressPanel extends JPanel implements DownloadListener {

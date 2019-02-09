@@ -11,9 +11,10 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import org.triplea.swing.JLabelBuilder;
+import org.triplea.swing.JPanelBuilder;
+
 import games.strategy.engine.data.GameData;
-import swinglib.JLabelBuilder;
-import swinglib.JPanelBuilder;
 
 /**
  * The top-level UI component for configuring the Setup Chart exporter.

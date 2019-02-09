@@ -8,7 +8,7 @@ import java.util.logging.LogRecord;
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 
-import swinglib.DialogBuilder;
+import org.triplea.swing.DialogBuilder;
 
 /**
  * UI model class, manages the state and interactions between {@code ErrorReportWindow} and the rest of the system.

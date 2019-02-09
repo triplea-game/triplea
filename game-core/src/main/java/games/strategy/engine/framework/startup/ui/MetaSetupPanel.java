@@ -16,7 +16,6 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
-import swinglib.JButtonBuilder;
 import tools.map.making.MapCreator;
 
 /**

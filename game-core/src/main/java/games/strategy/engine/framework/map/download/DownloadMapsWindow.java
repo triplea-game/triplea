@@ -42,8 +42,6 @@ import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.OptionalUtils;
 import lombok.extern.java.Log;
-import swinglib.JButtonBuilder;
-import swinglib.JPanelBuilder;
 
 /** Window that allows for map downloads and removal. */
 @Log

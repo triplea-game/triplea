@@ -15,9 +15,6 @@ import org.triplea.swing.SwingComponents;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import swinglib.JComboBoxBuilder;
-import swinglib.JFrameBuilder;
-import swinglib.JTextAreaBuilder;
 
 /**
  * This is a debug window that can be displayed to show log events and has controls for dumping system data,

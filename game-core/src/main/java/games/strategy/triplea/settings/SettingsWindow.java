@@ -23,16 +23,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JLabelBuilder;
+import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.JScrollPaneBuilder;
+import org.triplea.swing.JTextAreaBuilder;
 import org.triplea.swing.SwingComponents;
 
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.framework.GameRunner;
-import swinglib.JButtonBuilder;
-import swinglib.JLabelBuilder;
-import swinglib.JPanelBuilder;
-import swinglib.JScrollPaneBuilder;
-import swinglib.JTextAreaBuilder;
 
 /**
  * UI window with controls to update game settings and preferences.

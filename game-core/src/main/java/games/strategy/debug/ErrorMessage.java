@@ -16,9 +16,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import games.strategy.triplea.settings.ClientSetting;
-import swinglib.JButtonBuilder;
-import swinglib.JLabelBuilder;
-import swinglib.JPanelBuilder;
 
 /**
  * Class for showing a modal error dialog to the user. The dialog has an 'ok' button to close it and a 'show details'

@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import javax.swing.JComponent;
 
 import org.triplea.swing.IntTextField;
+
 import lombok.Getter;
 
 /**

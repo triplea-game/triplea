@@ -13,16 +13,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.text.JTextComponent;
 
+import org.triplea.swing.BorderBuilder;
+import org.triplea.swing.DocumentListenerBuilder;
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JFrameBuilder;
+import org.triplea.swing.JLabelBuilder;
+import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.JTextAreaBuilder;
 import org.triplea.swing.SwingComponents;
 
 import lombok.Getter;
-import swinglib.BorderBuilder;
-import swinglib.DocumentListenerBuilder;
-import swinglib.JButtonBuilder;
-import swinglib.JFrameBuilder;
-import swinglib.JLabelBuilder;
-import swinglib.JPanelBuilder;
-import swinglib.JTextAreaBuilder;
 
 /**
  * This is primarily a layout class that shows a form for entering bug report information, and has buttons to

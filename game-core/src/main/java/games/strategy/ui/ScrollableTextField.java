@@ -14,9 +14,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import games.strategy.engine.framework.system.SystemProperties;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.IntTextFieldChangeListener;
+
+import games.strategy.engine.framework.system.SystemProperties;
 
 /**
  * A UI component that displays a scrollable text field for inputting integers. Four buttons are provided to change the

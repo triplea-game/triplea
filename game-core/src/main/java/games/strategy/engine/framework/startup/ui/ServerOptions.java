@@ -17,9 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import org.triplea.swing.SwingAction;
-
 import org.triplea.swing.IntTextField;
+import org.triplea.swing.SwingAction;
 
 /**
  * UI for choosing server options.

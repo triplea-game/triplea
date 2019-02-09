@@ -25,6 +25,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -47,7 +48,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
-import swinglib.JPanelBuilder;
 
 /**
  * UI for fighting battles.

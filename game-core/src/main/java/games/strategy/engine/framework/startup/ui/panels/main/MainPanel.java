@@ -26,9 +26,6 @@ import org.triplea.swing.SwingAction;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
-import swinglib.GridBagHelper;
-import swinglib.JButtonBuilder;
-import swinglib.JPanelBuilder;
 
 /**
  * When the game launches, the MainFrame is loaded which will contain the MainPanel. The contents of the MainPanel are

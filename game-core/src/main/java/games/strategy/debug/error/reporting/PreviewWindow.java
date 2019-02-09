@@ -2,14 +2,13 @@ package games.strategy.debug.error.reporting;
 
 import javax.swing.JFrame;
 
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JFrameBuilder;
+import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.JTextAreaBuilder;
 import org.triplea.swing.SwingComponents;
 
 import com.google.common.annotations.VisibleForTesting;
-
-import swinglib.JButtonBuilder;
-import swinglib.JFrameBuilder;
-import swinglib.JPanelBuilder;
-import swinglib.JTextAreaBuilder;
 
 /**
  * A simple window printing a representation of the bug report upload payload.

@@ -16,7 +16,6 @@ import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.util.Util;
-import swinglib.DocumentListenerBuilder;
 
 /**
  * A class to configure a Dice Server for the game.

@@ -34,7 +34,6 @@ import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
-import swinglib.JButtonBuilder;
 
 /**
  * Left hand side panel of the launcher screen that has various info, like selected game and engine version.

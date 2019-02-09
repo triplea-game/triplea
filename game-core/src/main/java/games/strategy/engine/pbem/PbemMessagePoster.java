@@ -13,6 +13,8 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.ProgressWindow;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.properties.GameProperties;
@@ -21,7 +23,6 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
-import org.triplea.swing.ProgressWindow;
 import lombok.extern.java.Log;
 
 /**
