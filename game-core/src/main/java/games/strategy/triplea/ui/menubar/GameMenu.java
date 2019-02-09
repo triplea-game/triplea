@@ -37,7 +37,7 @@ import games.strategy.triplea.ui.PoliticalStateOverview;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
-import games.strategy.ui.IntTextField;
+import org.triplea.swing.IntTextField;
 
 final class GameMenu extends JMenu {
   private static final long serialVersionUID = -6273782490069588052L;

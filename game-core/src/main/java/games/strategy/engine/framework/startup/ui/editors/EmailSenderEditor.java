@@ -23,7 +23,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.ui.ProgressWindow;
+import org.triplea.swing.ProgressWindow;
 import games.strategy.util.Util;
 import lombok.extern.java.Log;
 import swinglib.DocumentListenerBuilder;

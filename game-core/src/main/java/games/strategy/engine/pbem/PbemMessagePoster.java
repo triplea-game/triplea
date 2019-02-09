@@ -21,7 +21,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
-import games.strategy.ui.ProgressWindow;
+import org.triplea.swing.ProgressWindow;
 import lombok.extern.java.Log;
 
 /**

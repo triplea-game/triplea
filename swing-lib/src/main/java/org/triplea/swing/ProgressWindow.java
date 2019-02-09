@@ -1,4 +1,4 @@
-package games.strategy.ui;
+package org.triplea.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

@@ -1,4 +1,4 @@
-package games.strategy.ui;
+package org.triplea.swing;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;

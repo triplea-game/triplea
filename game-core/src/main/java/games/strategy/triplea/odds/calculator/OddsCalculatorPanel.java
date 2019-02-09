@@ -53,7 +53,7 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.ui.IntTextField;
+import org.triplea.swing.IntTextField;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import lombok.extern.java.Log;

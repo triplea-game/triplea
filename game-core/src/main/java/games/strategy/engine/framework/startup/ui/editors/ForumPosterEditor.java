@@ -25,7 +25,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.ui.ProgressWindow;
+import org.triplea.swing.ProgressWindow;
 import games.strategy.util.TimeManager;
 import games.strategy.util.Util;
 import lombok.extern.java.Log;

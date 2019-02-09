@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 
 import org.triplea.swing.SwingAction;
 
-import games.strategy.ui.IntTextField;
+import org.triplea.swing.IntTextField;
 
 /**
  * UI for choosing server options.
