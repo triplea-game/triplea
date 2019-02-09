@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.JPanelBuilder;
+
 import com.google.common.collect.Maps;
 
 import games.strategy.engine.ClientContext;

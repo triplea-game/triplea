@@ -21,6 +21,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import org.triplea.game.chat.ChatModel;
+import org.triplea.swing.GridBagHelper;
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingAction;
 
 import games.strategy.engine.framework.GameRunner;

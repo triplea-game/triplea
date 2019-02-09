@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;
 
 import games.strategy.debug.error.reporting.ErrorReportWindow;
@@ -131,11 +132,11 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private static void ruleBook() {
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK);
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK.toString());
   }
 
   private static void helpPage() {
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP);
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP.toString());
   }
 
   @Override

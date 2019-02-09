@@ -33,6 +33,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
 
 import games.strategy.engine.ClientContext;

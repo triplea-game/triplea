@@ -17,6 +17,9 @@ import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JLabelBuilder;
+import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
 
 import com.google.common.annotations.VisibleForTesting;

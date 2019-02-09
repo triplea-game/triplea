@@ -12,6 +12,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JLabelBuilder;
+import org.triplea.swing.JPanelBuilder;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 

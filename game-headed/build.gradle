@@ -21,6 +21,7 @@ dependencies {
     }
 
     implementation project(':game-core')
+    implementation project(':swing-lib')
     implementation 'org.pushing-pixels:radiance-substance:1.0.2'
 
     if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {

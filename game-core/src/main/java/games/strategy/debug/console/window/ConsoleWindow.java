@@ -10,6 +10,9 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.JComboBoxBuilder;
+import org.triplea.swing.JFrameBuilder;
+import org.triplea.swing.JTextAreaBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 

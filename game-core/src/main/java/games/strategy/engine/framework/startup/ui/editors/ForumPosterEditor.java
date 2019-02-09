@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.ProgressWindow;
 
 import com.google.common.base.Preconditions;

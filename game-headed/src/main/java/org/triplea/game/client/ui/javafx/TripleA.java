@@ -2,9 +2,9 @@ package org.triplea.game.client.ui.javafx;
 
 import java.io.File;
 
+import org.triplea.awt.OpenFileUtility;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
-import games.strategy.net.OpenFileUtility;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;

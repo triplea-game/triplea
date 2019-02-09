@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
+import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 
 import games.strategy.engine.ClientContext;

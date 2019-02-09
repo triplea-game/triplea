@@ -9,6 +9,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import org.triplea.swing.DocumentListenerBuilder;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.properties.GameProperties;
