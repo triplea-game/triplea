@@ -49,7 +49,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.Tuple;

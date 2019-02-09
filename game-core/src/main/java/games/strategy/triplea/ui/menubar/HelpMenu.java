@@ -42,8 +42,8 @@ import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import games.strategy.util.LocalizeHtml;
 import swinglib.JLabelBuilder;
 

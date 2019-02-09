@@ -10,7 +10,7 @@ import javax.swing.JScrollPane;
 
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 
 /**

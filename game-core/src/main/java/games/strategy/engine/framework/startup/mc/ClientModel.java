@@ -64,7 +64,7 @@ import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Interruptibles;
 import lombok.Getter;

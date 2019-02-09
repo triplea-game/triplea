@@ -26,7 +26,7 @@ import javax.swing.border.Border;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import swinglib.JButtonBuilder;
 import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;

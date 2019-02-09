@@ -27,7 +27,7 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
 

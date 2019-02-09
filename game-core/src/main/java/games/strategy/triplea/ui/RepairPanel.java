@@ -19,7 +19,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.IntegerMap;
 
 class RepairPanel extends ActionPanel {

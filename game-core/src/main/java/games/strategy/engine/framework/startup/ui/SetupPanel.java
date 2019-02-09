@@ -20,7 +20,7 @@ import org.triplea.game.startup.SetupModel;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 /**
  * Headed Implementation of SetupConfiguration.

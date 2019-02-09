@@ -19,7 +19,7 @@ import javax.swing.SpinnerNumberModel;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import lombok.AllArgsConstructor;
 import swinglib.JButtonBuilder;
 import swinglib.JLabelBuilder;

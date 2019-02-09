@@ -35,7 +35,7 @@ import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.net.INode;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
 
 /**

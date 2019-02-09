@@ -20,7 +20,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import games.strategy.ui.Util;
 
 final class LoginPanel extends JPanel {

@@ -11,7 +11,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.net.IConnectionLogin;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 
 /**

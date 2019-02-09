@@ -21,8 +21,8 @@ import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import swinglib.JButtonBuilder;
 
 abstract class AbstractMovePanel extends ActionPanel {

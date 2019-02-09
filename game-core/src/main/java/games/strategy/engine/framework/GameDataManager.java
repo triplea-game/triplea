@@ -26,7 +26,7 @@ import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
 

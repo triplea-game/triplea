@@ -19,7 +19,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 
 /**
  * A dialog that allows the user to set up an arbitrary battle and calculate the attacker's odds of successfully winning

@@ -19,7 +19,7 @@ import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 final class FileMenu extends JMenu {
   private static final long serialVersionUID = -3855695429784752428L;

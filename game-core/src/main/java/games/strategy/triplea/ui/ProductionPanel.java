@@ -44,7 +44,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.IntegerMap;
 
 class ProductionPanel extends JPanel {

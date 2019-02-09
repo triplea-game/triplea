@@ -53,7 +53,7 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.util.PlayerOrderComparator;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.FileNameUtils;
 import lombok.extern.java.Log;
 

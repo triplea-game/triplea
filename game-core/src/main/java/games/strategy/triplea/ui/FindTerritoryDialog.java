@@ -11,7 +11,7 @@ import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 
 import games.strategy.engine.data.Territory;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import swinglib.JButtonBuilder;
 import swinglib.JComboBoxBuilder;
 import swinglib.JPanelBuilder;

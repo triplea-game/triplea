@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import games.strategy.util.Interruptibles;
+import org.triplea.swing.SwingAction;
 
 @ExtendWith(MockitoExtension.class)
 public class SwingActionTest {

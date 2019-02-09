@@ -15,7 +15,7 @@ import javax.swing.ListSelectionModel;
 
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerList;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import games.strategy.ui.Util;
 
 class PlayerChooser extends JOptionPane {

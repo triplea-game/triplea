@@ -35,7 +35,7 @@ import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.IEmailSender;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import games.strategy.util.OptionalUtils;
 import games.strategy.util.function.ThrowingFunction;
 import lombok.extern.java.Log;

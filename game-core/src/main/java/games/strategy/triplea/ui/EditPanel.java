@@ -62,7 +62,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeparator;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Triple;

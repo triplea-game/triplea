@@ -15,7 +15,7 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.ui.PlayersPanel;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 final class NetworkMenu extends JMenu {
   private static final long serialVersionUID = 2947249649948115833L;

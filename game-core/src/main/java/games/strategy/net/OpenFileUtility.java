@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Level;
 
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import lombok.extern.java.Log;
 
 /**

@@ -15,7 +15,7 @@ import javax.swing.ScrollPaneConstants;
 
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.image.DiceImageFactory;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 class DiceChooser extends JPanel {
   private static final long serialVersionUID = -3658408802544268998L;

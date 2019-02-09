@@ -32,7 +32,7 @@ import com.google.common.base.Ascii;
 import games.strategy.net.INode;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.TimeManager;
 import lombok.extern.java.Log;

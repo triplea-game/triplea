@@ -32,7 +32,7 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 /**
  * Similar to PoliticsPanel, but for UserActionAttachment/Delegate.

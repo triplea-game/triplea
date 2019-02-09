@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import swinglib.JButtonBuilder;
 import swinglib.JFrameBuilder;
 import swinglib.JPanelBuilder;

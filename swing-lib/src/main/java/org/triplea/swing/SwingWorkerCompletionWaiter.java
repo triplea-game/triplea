@@ -1,4 +1,4 @@
-package games.strategy.ui;
+package org.triplea.swing;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

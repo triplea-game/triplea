@@ -1,21 +1,22 @@
 package org.triplea.swing;
 
 import java.awt.Component;
+import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.ui.SwingAction;
-import games.strategy.util.Interruptibles;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 
 /**
  * Type-safe builder to create a swing dialog confirmation runnable. When the runnable is executed a modal
  * yes/no confirmation dialog will be shown to the user, if yes is clicked the confirm action will be executed.
  */
+@Log
 public final class DialogBuilder {
   private DialogBuilder() {}
 
@@ -91,12 +92,16 @@ public final class DialogBuilder {
   }
 
   private static void showMessage(final WithMessageBuilder withMessageBuilder, final int optionPanetype) {
-    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> JOptionPane.showConfirmDialog(
-        withMessageBuilder.withTitleBuilder.withParentBuilder.parent,
-        withMessageBuilder.message,
-        withMessageBuilder.withTitleBuilder.title,
-        JOptionPane.DEFAULT_OPTION,
-        optionPanetype)));
+    try {
+      SwingAction.invokeAndWait(() -> JOptionPane.showConfirmDialog(
+          withMessageBuilder.withTitleBuilder.withParentBuilder.parent,
+          withMessageBuilder.message,
+          withMessageBuilder.withTitleBuilder.title,
+          JOptionPane.DEFAULT_OPTION,
+          optionPanetype));
+    } catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
   }
 
   /**

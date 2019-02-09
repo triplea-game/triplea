@@ -27,7 +27,7 @@ import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 /**
  * Network client game staging panel, can be used to select sides and chat.

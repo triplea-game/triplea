@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.text.JTextComponent;
 
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import lombok.Getter;
 import swinglib.BorderBuilder;
 import swinglib.DocumentListenerBuilder;

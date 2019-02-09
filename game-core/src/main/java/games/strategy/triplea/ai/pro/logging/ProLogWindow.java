@@ -29,7 +29,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
 
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 

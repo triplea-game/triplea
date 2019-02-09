@@ -24,7 +24,7 @@ import games.strategy.triplea.odds.calculator.OddsCalculatorDialog;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.OverlayIcon;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 
 class TerritoryDetailPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 1377022163587438988L;

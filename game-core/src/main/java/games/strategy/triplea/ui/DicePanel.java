@@ -15,7 +15,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.image.DiceImageFactory;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 /**
  * A UI component used to display a dice roll. One image is displayed per die in a horizontal layout.

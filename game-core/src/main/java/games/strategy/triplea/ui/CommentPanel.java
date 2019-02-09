@@ -38,7 +38,7 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import lombok.extern.java.Log;
 
 @Log

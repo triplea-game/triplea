@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 

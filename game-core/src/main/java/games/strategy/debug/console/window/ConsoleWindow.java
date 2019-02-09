@@ -10,8 +10,8 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import lombok.AccessLevel;
 import lombok.Getter;
 import swinglib.JComboBoxBuilder;

@@ -31,7 +31,7 @@ import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
 import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
 import games.strategy.engine.random.PbemDiceRoller;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 /**
  * A panel for setting up Play by Email/Forum.

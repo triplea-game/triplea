@@ -25,7 +25,7 @@ import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import games.strategy.ui.Util;
 
 /**

@@ -31,7 +31,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.util.PlayerOrderComparator;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 /**
  * This panel is fired by ActionButtons and controls the selection of a valid political action to attempt.

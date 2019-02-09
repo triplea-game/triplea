@@ -36,7 +36,7 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
 import games.strategy.ui.IntTextField;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 final class GameMenu extends JMenu {
   private static final long serialVersionUID = -6273782490069588052L;

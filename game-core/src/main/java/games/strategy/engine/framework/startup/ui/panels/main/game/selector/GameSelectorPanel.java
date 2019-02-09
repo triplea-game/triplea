@@ -32,7 +32,7 @@ import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import swinglib.JButtonBuilder;
 
 /**

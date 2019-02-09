@@ -15,7 +15,7 @@ import javax.swing.JScrollPane;
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.data.TechResults;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 
 class TechResultsDisplay extends JPanel {
   private static final long serialVersionUID = -8303376983862918107L;

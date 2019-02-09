@@ -31,7 +31,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 
 import games.strategy.net.INode;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 /**
  * A UI component that displays the players participating in a chat.

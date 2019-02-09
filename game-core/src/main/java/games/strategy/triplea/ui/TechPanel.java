@@ -33,8 +33,8 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 

@@ -53,7 +53,7 @@ import javax.swing.SwingUtilities;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.io.FileUtils;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.Triple;

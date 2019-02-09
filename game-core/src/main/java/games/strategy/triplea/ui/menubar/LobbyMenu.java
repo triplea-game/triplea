@@ -41,8 +41,8 @@ import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.ui.MacOsIntegration;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 /**
  * The lobby client menu bar.

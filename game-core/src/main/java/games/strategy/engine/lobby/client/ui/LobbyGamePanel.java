@@ -32,7 +32,7 @@ import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;

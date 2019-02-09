@@ -14,7 +14,7 @@ import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 
 /**

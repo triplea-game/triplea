@@ -25,7 +25,7 @@ import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitSeparator;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 

@@ -52,7 +52,7 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.IntTextField;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 import lombok.extern.java.Log;

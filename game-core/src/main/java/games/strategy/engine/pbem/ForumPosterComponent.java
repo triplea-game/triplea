@@ -16,7 +16,7 @@ import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 
 /**
  * A panel used to configure and post a PBEM/PBF game.

@@ -66,7 +66,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
 import lombok.extern.java.Log;

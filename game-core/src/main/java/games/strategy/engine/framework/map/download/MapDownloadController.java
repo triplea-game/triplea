@@ -15,7 +15,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import games.strategy.util.Version;
 import lombok.extern.java.Log;
 

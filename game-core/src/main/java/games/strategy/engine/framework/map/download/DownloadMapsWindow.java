@@ -37,7 +37,7 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.OptionalUtils;
 import lombok.extern.java.Log;
