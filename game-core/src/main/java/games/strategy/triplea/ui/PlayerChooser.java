@@ -13,9 +13,10 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerList;
-import org.triplea.swing.SwingComponents;
 import games.strategy.ui.Util;
 
 class PlayerChooser extends JOptionPane {

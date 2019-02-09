@@ -17,10 +17,10 @@ import javax.swing.JPanel;
 
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.swing.SwingAction;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
-import org.triplea.swing.SwingAction;
 
 /**
  * Headed Implementation of SetupConfiguration.

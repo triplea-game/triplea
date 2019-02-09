@@ -2,9 +2,10 @@ package games.strategy.debug.error.reporting;
 
 import javax.swing.JFrame;
 
+import org.triplea.swing.SwingComponents;
+
 import com.google.common.annotations.VisibleForTesting;
 
-import org.triplea.swing.SwingComponents;
 import swinglib.JButtonBuilder;
 import swinglib.JFrameBuilder;
 import swinglib.JPanelBuilder;

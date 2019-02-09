@@ -5,11 +5,12 @@ import java.util.Set;
 
 import javax.swing.JMenu;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.player.IGamePlayer;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
-import org.triplea.swing.SwingAction;
 
 final class DebugMenu extends JMenu {
   private static final long serialVersionUID = -4876915214715298132L;

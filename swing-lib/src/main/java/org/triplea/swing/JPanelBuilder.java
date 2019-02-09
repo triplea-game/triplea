@@ -19,12 +19,12 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
 import org.apache.commons.math3.util.Pair;
+import org.triplea.swing.GridBagHelper.Anchor;
+import org.triplea.swing.GridBagHelper.Fill;
 
 import com.google.common.base.Preconditions;
 
 import lombok.AllArgsConstructor;
-import org.triplea.swing.GridBagHelper.Anchor;
-import org.triplea.swing.GridBagHelper.Fill;
 
 /**
  * Example usage:.

@@ -14,8 +14,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import games.strategy.ui.IntTextField;
 import org.triplea.swing.SwingAction;
+
+import games.strategy.ui.IntTextField;
 
 /**
  * UI for choosing client options.

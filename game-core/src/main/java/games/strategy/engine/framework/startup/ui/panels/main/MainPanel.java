@@ -21,11 +21,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import org.triplea.game.chat.ChatModel;
+import org.triplea.swing.SwingAction;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
-import org.triplea.swing.SwingAction;
 import swinglib.GridBagHelper;
 import swinglib.JButtonBuilder;
 import swinglib.JPanelBuilder;

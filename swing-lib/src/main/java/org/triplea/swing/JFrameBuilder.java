@@ -2,15 +2,16 @@ package org.triplea.swing;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
 import javax.swing.JFrame;
 
-import games.strategy.engine.framework.GameRunner;
-import games.strategy.ui.SwingComponents;
+import lombok.Setter;
 
 /**
  * Provides a builder API for creating a JFrame that will include project specific defaults when constructed.
@@ -22,6 +23,10 @@ import games.strategy.ui.SwingComponents;
  * </ul>
  */
 public class JFrameBuilder {
+  @Setter
+  @Nullable
+  private static Image defaultIconImage;
+
   private final Collection<Component> children = new ArrayList<>();
   private boolean escapeClosesWindow;
   private boolean alwaysOnTop;
@@ -32,6 +37,8 @@ public class JFrameBuilder {
   private int minHeight = 50;
   private int width;
   private int height;
+  @Nullable
+  private Image iconImage;
 
   private LayoutManager layoutManager;
 
@@ -54,7 +61,10 @@ public class JFrameBuilder {
     }
 
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    frame.setIconImage(GameRunner.getGameIcon(frame));
+
+    final Image iconToUse = Optional.ofNullable(iconImage)
+        .orElseGet(() -> defaultIconImage);
+    Optional.ofNullable(iconToUse).ifPresent(frame::setIconImage);
 
     if (escapeClosesWindow) {
       SwingComponents.addEscapeKeyListener(frame, frame::dispose);
@@ -113,6 +123,16 @@ public class JFrameBuilder {
    */
   public JFrameBuilder add(final Component componentToAdd) {
     children.add(componentToAdd);
+    return this;
+  }
+
+  /**
+   * Sets the icon image to use for the frame. The icon image is the image seen in the 'taskbar' of running apps.
+   * If no icon image is set at all, then a generic java logo displayed. Note, a default icon image
+   * can be specified to avoid setting this for every framebuilder.
+   */
+  public JFrameBuilder icon(final Image iconImage) {
+    this.iconImage = iconImage;
     return this;
   }
 }

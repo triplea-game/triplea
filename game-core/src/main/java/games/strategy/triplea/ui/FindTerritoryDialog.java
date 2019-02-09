@@ -10,8 +10,9 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 
-import games.strategy.engine.data.Territory;
 import org.triplea.swing.SwingComponents;
+
+import games.strategy.engine.data.Territory;
 import swinglib.JButtonBuilder;
 import swinglib.JComboBoxBuilder;
 import swinglib.JPanelBuilder;

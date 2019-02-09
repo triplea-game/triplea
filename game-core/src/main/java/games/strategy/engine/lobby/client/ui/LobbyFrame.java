@@ -24,6 +24,7 @@ import javax.swing.SpinnerNumberModel;
 
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.swing.SwingAction;
 
 import com.google.common.collect.ImmutableList;
 
@@ -35,7 +36,6 @@ import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.net.INode;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
-import org.triplea.swing.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
 
 /**

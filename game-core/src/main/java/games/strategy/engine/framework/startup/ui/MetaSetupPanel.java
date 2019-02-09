@@ -9,12 +9,13 @@ import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.debug.error.reporting.ErrorReportWindow;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
-import org.triplea.swing.SwingComponents;
 import swinglib.JButtonBuilder;
 import tools.map.making.MapCreator;
 

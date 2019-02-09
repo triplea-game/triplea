@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.text.JTextComponent;
 
 import org.triplea.swing.SwingComponents;
+
 import lombok.Getter;
 import swinglib.BorderBuilder;
 import swinglib.DocumentListenerBuilder;

@@ -23,10 +23,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
+import org.triplea.swing.SwingComponents;
+
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.framework.GameRunner;
-import org.triplea.swing.SwingComponents;
 import swinglib.JButtonBuilder;
 import swinglib.JLabelBuilder;
 import swinglib.JPanelBuilder;

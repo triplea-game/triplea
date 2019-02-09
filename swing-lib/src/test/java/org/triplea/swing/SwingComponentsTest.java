@@ -1,10 +1,10 @@
-package games.strategy.ui;
+package org.triplea.swing;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.triplea.swing.SwingComponents.appendExtensionIfAbsent;
 import static org.triplea.swing.SwingComponents.extensionWithLeadingPeriod;
 import static org.triplea.swing.SwingComponents.extensionWithoutLeadingPeriod;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 

@@ -3,7 +3,8 @@ package games.strategy.debug.console.window;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 
-import games.strategy.ui.SystemClipboard;
+import org.triplea.awt.SystemClipboard;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 

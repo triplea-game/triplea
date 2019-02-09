@@ -2,7 +2,7 @@ package org.triplea.swing;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static swinglib.AutoCompletion.startsWith;
+import static org.triplea.swing.AutoCompletion.startsWith;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -27,12 +27,13 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import org.triplea.swing.SwingAction;
+
 import com.google.common.base.Ascii;
 
 import games.strategy.net.INode;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
-import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.TimeManager;
 import lombok.extern.java.Log;

@@ -22,6 +22,8 @@ import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.framework.ClientGame;
@@ -36,7 +38,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
 import games.strategy.ui.IntTextField;
-import org.triplea.swing.SwingAction;
 
 final class GameMenu extends JMenu {
   private static final long serialVersionUID = -6273782490069588052L;

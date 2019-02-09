@@ -11,11 +11,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.image.DiceImageFactory;
-import org.triplea.swing.SwingAction;
 
 /**
  * A UI component used to display a dice roll. One image is displayed per die in a horizontal layout.

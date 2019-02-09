@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.lobby.common.ILobbyGameController;
+import org.triplea.swing.SwingAction;
 
 import com.google.common.util.concurrent.Runnables;
 
@@ -27,7 +28,6 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
-import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Tuple;
 

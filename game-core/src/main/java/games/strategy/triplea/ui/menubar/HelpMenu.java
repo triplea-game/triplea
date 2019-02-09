@@ -29,6 +29,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.triplea.common.util.concurrent.CompletableFutureUtils;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
@@ -42,8 +44,6 @@ import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
-import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
 import games.strategy.util.LocalizeHtml;
 import swinglib.JLabelBuilder;
 

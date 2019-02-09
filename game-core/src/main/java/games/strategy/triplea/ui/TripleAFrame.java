@@ -80,6 +80,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.triplea.common.util.concurrent.CompletableFutureUtils;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 import com.google.common.base.Preconditions;
 
@@ -159,8 +161,6 @@ import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
-import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.IntegerMap;

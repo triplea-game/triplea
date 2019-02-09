@@ -1,4 +1,4 @@
-package games.strategy.net;
+package org.triplea.awt;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.logging.Level;
 
 import org.triplea.swing.SwingComponents;
+
 import lombok.extern.java.Log;
 
 /**

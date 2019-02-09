@@ -40,10 +40,9 @@ import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.google.common.annotations.VisibleForTesting;
+import org.triplea.awt.OpenFileUtility;
 
-import games.strategy.net.OpenFileUtility;
-import games.strategy.triplea.UrlConstants;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Wrapper/utility class to give Swing components a nicer API. This class is to help extract pure UI code out of
@@ -272,10 +271,6 @@ public final class SwingComponents {
     descriptionPane.setEditable(false);
     descriptionPane.setContentType("text/html");
     return descriptionPane;
-  }
-
-  public static void newOpenUrlConfirmationDialog(final UrlConstants url) {
-    newOpenUrlConfirmationDialog(url.toString());
   }
 
   public static void newOpenUrlConfirmationDialog(final String url) {

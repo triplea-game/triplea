@@ -20,13 +20,14 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import org.triplea.swing.SwingComponents;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
-import org.triplea.swing.SwingComponents;
 import games.strategy.util.UrlStreams;
 import lombok.Getter;
 import lombok.extern.java.Log;

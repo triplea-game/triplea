@@ -17,11 +17,12 @@ import java.util.zip.ZipFile;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.io.FileUtils;
-import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 

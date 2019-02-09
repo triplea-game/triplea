@@ -5,8 +5,9 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import games.strategy.triplea.UrlConstants;
 import org.triplea.swing.SwingComponents;
+
+import games.strategy.triplea.UrlConstants;
 
 final class WebHelpMenu extends JMenu {
   private static final long serialVersionUID = -1940188637908722947L;

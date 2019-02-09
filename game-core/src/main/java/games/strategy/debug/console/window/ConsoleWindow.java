@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import swinglib.JComboBoxBuilder;

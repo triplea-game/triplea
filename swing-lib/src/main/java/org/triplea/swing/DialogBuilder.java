@@ -1,7 +1,6 @@
 package org.triplea.swing;
 
 import java.awt.Component;
-import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 

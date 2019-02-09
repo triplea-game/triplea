@@ -17,9 +17,10 @@ import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.triplea.swing.SwingComponents;
+
 import com.google.common.annotations.VisibleForTesting;
 
-import org.triplea.swing.SwingComponents;
 import lombok.AllArgsConstructor;
 import swinglib.JButtonBuilder;
 import swinglib.JLabelBuilder;

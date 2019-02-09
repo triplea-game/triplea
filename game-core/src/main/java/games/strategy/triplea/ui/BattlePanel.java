@@ -25,6 +25,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -41,8 +44,6 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.settings.ClientSetting;
-import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;

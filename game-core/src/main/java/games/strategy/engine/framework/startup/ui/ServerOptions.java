@@ -17,8 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import games.strategy.ui.IntTextField;
 import org.triplea.swing.SwingAction;
+
+import games.strategy.ui.IntTextField;
 
 /**
  * UI for choosing server options.

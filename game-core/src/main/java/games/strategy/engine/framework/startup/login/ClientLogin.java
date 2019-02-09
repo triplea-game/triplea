@@ -7,11 +7,12 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import org.triplea.swing.SwingAction;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.net.IConnectionLogin;
-import org.triplea.swing.SwingAction;
 import games.strategy.util.Interruptibles;
 
 /**

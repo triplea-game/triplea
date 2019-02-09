@@ -1,4 +1,4 @@
-package games.strategy.ui;
+package org.triplea.awt;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;

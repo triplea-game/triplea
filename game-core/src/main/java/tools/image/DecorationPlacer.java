@@ -50,10 +50,11 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.io.FileUtils;
 import games.strategy.triplea.ResourceLoader;
-import org.triplea.swing.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import games.strategy.util.Triple;

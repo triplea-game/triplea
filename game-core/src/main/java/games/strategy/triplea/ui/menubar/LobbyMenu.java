@@ -26,6 +26,8 @@ import javax.swing.WindowConstants;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IUserManager;
 import org.triplea.lobby.common.login.RsaAuthenticator;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 import com.google.common.base.Strings;
 
@@ -41,8 +43,6 @@ import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.ui.MacOsIntegration;
-import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
 
 /**
  * The lobby client menu bar.

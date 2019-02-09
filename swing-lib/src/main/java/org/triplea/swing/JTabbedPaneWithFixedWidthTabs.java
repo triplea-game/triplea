@@ -1,4 +1,4 @@
-package games.strategy.ui;
+package org.triplea.swing;
 
 import java.awt.Component;
 import java.awt.Dimension;

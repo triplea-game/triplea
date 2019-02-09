@@ -22,6 +22,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
@@ -31,7 +33,6 @@ import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.util.PlayerOrderComparator;
-import org.triplea.swing.SwingAction;
 
 /**
  * This panel is fired by ActionButtons and controls the selection of a valid political action to attempt.
