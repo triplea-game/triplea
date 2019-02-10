@@ -71,7 +71,9 @@ public class BattleTrackerTest {
     doReturn(mockBattle).when(mockGetBattleFunction).apply(territory, IBattle.BattleType.BOMBING_RAID);
 
     // set up the testObj to have the bombing battle
-    testObj.addBombingBattle(route, attackers, playerId, mockDelegateBridge, null, null);
+    testObj.addBattle(route, attackers, true, playerId, mockDelegateBridge, null, null, null, false);
+
+
 
     testObj.fightAirRaidsAndStrategicBombing(mockDelegateBridge, () -> Collections.singleton(territory),
         mockGetBattleFunction);
