@@ -494,7 +494,7 @@ public final class GameParser {
         .collect(Collectors.toList());
   }
 
-  private static List<Node> getNonTextNodesIgnoring(final Node node) {
+  private static List<Node> getNonTextNodesIgnoringValue(final Node node) {
     final List<Node> nonTextNodes = getNonTextNodes(node);
     nonTextNodes.removeIf(node1 -> ((Element) node1).getTagName().equals("value"));
     return nonTextNodes;
@@ -860,7 +860,7 @@ public final class GameParser {
       if (editable != null && editable.equalsIgnoreCase("true")) {
         parseEditableProperty(current, property, value);
       } else {
-        final List<Node> children2 = getNonTextNodesIgnoring(current);
+        final List<Node> children2 = getNonTextNodesIgnoringValue(current);
         if (children2.size() == 0) {
           // we don't know what type this property is!!, it appears like only numbers and string may be represented
           // without proper type definition
