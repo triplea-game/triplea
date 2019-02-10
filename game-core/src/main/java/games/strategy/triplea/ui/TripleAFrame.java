@@ -373,7 +373,7 @@ public final class TripleAFrame extends JFrame {
     super("TripleA - " + game.getData().getGameName());
 
     localPlayers = players;
-    setIconImage(JFrameBuilder.getGameIcon(this));
+    setIconImage(JFrameBuilder.getGameIcon());
     // 200 size is pretty arbitrary, goal is to not allow users to shrink window down to nothing.
     setMinimumSize(new Dimension(200, 200));
 
