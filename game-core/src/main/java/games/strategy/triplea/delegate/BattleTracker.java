@@ -956,10 +956,10 @@ public class BattleTracker implements Serializable {
     return null;
   }
 
-  Collection<IBattle> getPendingBattles(final Territory t, final BattleType type) {
+  Collection<IBattle> getPendingBattles(final Territory t) {
     final Collection<IBattle> battles = new HashSet<>();
     for (final IBattle battle : pendingBattles) {
-      if (battle.getTerritory().equals(t) && (type == null || type == battle.getBattleType())) {
+      if (battle.getTerritory().equals(t)) {
         battles.add(battle);
       }
     }

@@ -100,7 +100,7 @@ public class UndoableMove extends AbstractUndoableMove {
     }
     // if we are moving out of a battle zone, mark it
     // this can happen for air units moving out of a battle zone
-    for (final IBattle battle : battleTracker.getPendingBattles(route.getStart(), null)) {
+    for (final IBattle battle : battleTracker.getPendingBattles(route.getStart())) {
       if (battle == null || battle.isOver()) {
         continue;
       }
