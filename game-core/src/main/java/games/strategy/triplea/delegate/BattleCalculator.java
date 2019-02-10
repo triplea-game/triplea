@@ -485,7 +485,7 @@ public class BattleCalculator {
     final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(player, data);
     final Tuple<CasualtyList, List<Unit>> defaultCasualtiesAndSortedTargets = getDefaultCasualties(targetsToPickFrom,
         hitsRemaining, defending, player, enemyUnits, amphibious, amphibiousLandAttackers,
-        battlesite, costs, territoryEffects, data, allowMultipleHitsPerUnit, true);
+        battlesite, costs, territoryEffects, data, allowMultipleHitsPerUnit);
     final CasualtyList defaultCasualties = defaultCasualtiesAndSortedTargets.getFirst();
     final List<Unit> sortedTargetsToPickFrom = defaultCasualtiesAndSortedTargets.getSecond();
     if (sortedTargetsToPickFrom.size() != targetsToPickFrom.size()
@@ -595,12 +595,12 @@ public class BattleCalculator {
       final int hits, final boolean defending, final PlayerId player, final Collection<Unit> enemyUnits,
       final boolean amphibious, final Collection<Unit> amphibiousLandAttackers, final Territory battlesite,
       final IntegerMap<UnitType> costs, final Collection<TerritoryEffect> territoryEffects, final GameData data,
-      final boolean allowMultipleHitsPerUnit, final boolean bonus) {
+      final boolean allowMultipleHitsPerUnit) {
     final CasualtyList defaultCasualtySelection = new CasualtyList();
     // Sort units by power and cost in ascending order
     final List<Unit> sorted = sortUnitsForCasualtiesWithSupport(targetsToPickFrom, defending, player,
         enemyUnits, amphibious, amphibiousLandAttackers, battlesite, costs,
-        territoryEffects, data, bonus);
+        territoryEffects, data, true);
     // Remove two hit bb's selecting them first for default casualties
     int numSelectedCasualties = 0;
     if (allowMultipleHitsPerUnit) {
