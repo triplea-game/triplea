@@ -243,13 +243,6 @@ public class BattleTracker implements Serializable {
     }
   }
 
-  void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerId id,
-      final IDelegateBridge bridge, final UndoableMove changeTracker,
-      final Collection<Unit> unitsNotUnloadedTilEndOfRoute) {
-
-    this.addBattle(route, units, true, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
-  }
-
   private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerId attacker,
       final GameData data, final Map<Unit, Set<Unit>> targets) {
     IBattle battle = getPendingBattle(route.getEnd(), true, BattleType.BOMBING_RAID);
