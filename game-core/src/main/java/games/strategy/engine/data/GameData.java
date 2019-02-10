@@ -225,7 +225,7 @@ public class GameData implements Serializable {
   }
 
   public IDelegate getDelegate(final String name) {
-    return  delegates.get(name);
+    return delegates.get(name);
   }
 
   public UnitHolder getUnitHolder(final String name, final String type) {
