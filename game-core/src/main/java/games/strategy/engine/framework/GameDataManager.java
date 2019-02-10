@@ -125,7 +125,7 @@ public final class GameDataManager {
       try {
         instance = Class.forName(className).asSubclass(IDelegate.class).getDeclaredConstructor().newInstance();
         instance.initialize(name, displayName);
-        data.getDelegateList().addDelegate(instance);
+        data.addDelegate(instance);
       } catch (final Exception e) {
         throw new IOException(e);
       }

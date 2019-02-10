@@ -428,9 +428,8 @@ public final class GameParser {
   /**
    * If cannot find the Delegate an exception will be thrown.
    */
-  private IDelegate getDelegate(final Element element)
-      throws GameParseException {
-    return getValidatedObject(element, "delegate", true, data.getDelegateList()::getDelegate, "delegate");
+  private IDelegate getDelegate(final Element element) throws GameParseException {
+    return getValidatedObject(element, "delegate", true, data::getDelegate, "delegate");
   }
 
   /**
@@ -962,7 +961,6 @@ public final class GameParser {
   }
 
   private void parseDelegates(final List<Element> delegateList) throws GameParseException {
-    final DelegateList delegates = data.getDelegateList();
     for (final Element current : delegateList) {
       // load the class
       final String className = current.getAttribute("javaClass");
@@ -974,7 +972,7 @@ public final class GameParser {
         displayName = name;
       }
       delegate.initialize(name, displayName);
-      delegates.addDelegate(delegate);
+      data.addDelegate(delegate);
     }
   }
 

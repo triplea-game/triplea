@@ -384,42 +384,42 @@ public final class GameDataTestUtil {
    * Returns a PlaceDelegate from the given GameData object.
    */
   static PlaceDelegate placeDelegate(final GameData data) {
-    return (PlaceDelegate) data.getDelegateList().getDelegate("place");
+    return (PlaceDelegate) data.getDelegate("place");
   }
 
   /**
    * Returns a BattleDelegate from the given GameData object.
    */
   static BattleDelegate battleDelegate(final GameData data) {
-    return (BattleDelegate) data.getDelegateList().getDelegate("battle");
+    return (BattleDelegate) data.getDelegate("battle");
   }
 
   /**
    * Returns a MoveDelegate from the given GameData object.
    */
   static MoveDelegate moveDelegate(final GameData data) {
-    return (MoveDelegate) data.getDelegateList().getDelegate("move");
+    return (MoveDelegate) data.getDelegate("move");
   }
 
   /**
    * Returns a TechnologyDelegate from the given GameData object.
    */
   static TechnologyDelegate techDelegate(final GameData data) {
-    return (TechnologyDelegate) data.getDelegateList().getDelegate("tech");
+    return (TechnologyDelegate) data.getDelegate("tech");
   }
 
   /**
    * Returns a PurchaseDelegate from the given GameData object.
    */
   static PurchaseDelegate purchaseDelegate(final GameData data) {
-    return (PurchaseDelegate) data.getDelegateList().getDelegate("purchase");
+    return (PurchaseDelegate) data.getDelegate("purchase");
   }
 
   /**
    * Returns a BidPlaceDelegate from the given GameData object.
    */
   static BidPlaceDelegate bidPlaceDelegate(final GameData data) {
-    return (BidPlaceDelegate) data.getDelegateList().getDelegate("placeBid");
+    return (BidPlaceDelegate) data.getDelegate("placeBid");
   }
 
   static void load(final Collection<Unit> units, final Route route) {

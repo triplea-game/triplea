@@ -56,14 +56,14 @@ public class VictoryTest {
     testBridge = MockDelegateBridge.newInstance(gameData, italians);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
-        (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
+        (InitializationDelegate) gameData.getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(testBridge);
     initDel.start();
     initDel.end();
 
     italianResources = italians.getResources().getResourcesCopy();
-    purchaseDelegate = (PurchaseDelegate) gameData.getDelegateList().getDelegate("purchase");
-    moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    purchaseDelegate = (PurchaseDelegate) gameData.getDelegate("purchase");
+    moveDelegate = (MoveDelegate) gameData.getDelegate("move");
 
     britishCongo = gameData.getMap().getTerritory("Belgian Congo");
     kenya = gameData.getMap().getTerritory("Kenya");

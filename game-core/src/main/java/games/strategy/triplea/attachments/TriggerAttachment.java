@@ -2427,7 +2427,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         try {
           bridge.getHistoryWriter().startEvent("Players: " + MyFormatter.defaultNamedToTextList(t.getPlayers())
               + " have just won the game, with this victory: " + messageForRecord);
-          final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
+          final IDelegate delegateEndRound = data.getDelegate("endRound");
           ((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage.trim(), t.getPlayers(), bridge);
         } catch (final Exception e) {
           log.log(Level.SEVERE, "Failed to signal game over", e);

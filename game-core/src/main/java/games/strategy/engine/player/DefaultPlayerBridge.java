@@ -65,7 +65,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     try {
       game.getData().acquireReadLock();
       try {
-        final IDelegate delegate = game.getData().getDelegateList().getDelegate(currentDelegate);
+        final IDelegate delegate = game.getData().getDelegate(currentDelegate);
         // TODO: before converting this Precondtions check to checkNotNull, make sure we do not depend on the
         // illegal state exception type in a catch block.
         Preconditions.checkState(
@@ -102,7 +102,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     try {
       game.getData().acquireReadLock();
       try {
-        final IDelegate delegate = game.getData().getDelegateList().getDelegate(name);
+        final IDelegate delegate = game.getData().getDelegate(name);
         if (delegate == null) {
           final String errorMessage =
               "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. Looking for delegate named: " + name;

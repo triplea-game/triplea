@@ -75,7 +75,7 @@ public class GameStep extends GameDataComponent {
   }
 
   public IDelegate getDelegate() {
-    return getData().getDelegateList().getDelegate(delegateName);
+    return getData().getDelegate(delegateName);
   }
 
   @Override
