@@ -583,8 +583,7 @@ final class ProTechAi {
         .of(Matches.territoryIsImpassable().negate())
         .andIf(Properties.getNeutralsImpassable(data), Matches.territoryIsNeutralButNotWater().negate())
         .build();
-    final int distance = 1;
-    return findFrontier(territory, endCond, Matches.always(), distance, data);
+    return findFrontier(territory, endCond, Matches.always(), data);
   }
 
   /**
@@ -597,7 +596,6 @@ final class ProTechAi {
       final Territory start,
       final Predicate<Territory> endCondition,
       final Predicate<Territory> routeCondition,
-      final int distance,
       final GameData data) {
     final Predicate<Territory> canGo = endCondition.or(routeCondition);
     final IntegerMap<Territory> visited = new IntegerMap<>();
@@ -607,13 +605,13 @@ final class ProTechAi {
     visited.put(start, 0);
     for (final Territory t : q) {
       visited.put(t, 1);
-      if (1 == distance && endCondition.test(t)) {
+      if (endCondition.test(t)) {
         frontier.add(t);
       }
     }
     while (!q.isEmpty()) {
       current = q.remove();
-      if (visited.getInt(current) == distance) {
+      if (visited.getInt(current) == 1) {
         break;
       }
 
@@ -622,7 +620,7 @@ final class ProTechAi {
           q.add(neighbor);
           final int dist = visited.getInt(current) + 1;
           visited.put(neighbor, dist);
-          if (dist == distance && endCondition.test(neighbor)) {
+          if (dist == 1 && endCondition.test(neighbor)) {
             frontier.add(neighbor);
           }
         }
