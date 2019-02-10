@@ -387,9 +387,8 @@ public final class GameParser {
   /**
    * If cannot find the repairRule an exception will be thrown.
    */
-  private RepairRule getRepairRule(final Element element)
-      throws GameParseException {
-    return getValidatedObject(element, "name", true, data.getRepairRuleList()::getRepairRule, "repair rule");
+  private RepairRule getRepairRule(final Element element) throws GameParseException {
+    return getValidatedObject(element, "name", true, data.getRepairRules()::getRepairRule, "repair rule");
   }
 
   /**
@@ -1043,7 +1042,7 @@ public final class GameParser {
       final RepairRule rule = new RepairRule(name, data);
       parseRepairCosts(rule, getChildren("cost", current));
       parseRepairResults(rule, getChildren("result", current));
-      data.getRepairRuleList().addRepairRule(rule);
+      data.getRepairRules().addRepairRule(rule);
     }
   }
 

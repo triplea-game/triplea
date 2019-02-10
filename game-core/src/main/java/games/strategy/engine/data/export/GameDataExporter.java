@@ -413,7 +413,7 @@ public class GameDataExporter {
   }
 
   private void repairRules(final GameData data) {
-    for (final RepairRule rr : data.getRepairRuleList().getRepairRules()) {
+    for (final RepairRule rr : data.getRepairRules().getRepairRules()) {
       xmlfile.append("        <repairRule name=\"").append(rr.getName()).append("\">\n");
       for (final Resource cost : rr.getCosts().keySet()) {
         xmlfile.append("            <cost resource=\"").append(cost.getName()).append("\" quantity=\"")

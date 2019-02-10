@@ -86,7 +86,7 @@ public class GameData implements Serializable {
   private final ProductionFrontierList productionFrontierList = new ProductionFrontierList(this);
   private final ProductionRuleList productionRuleList = new ProductionRuleList(this);
   private final RepairFrontierList repairFrontierList = new RepairFrontierList(this);
-  private final RepairRuleList repairRuleList = new RepairRuleList(this);
+  private final RepairRules repairRules = new RepairRules(this);
   private final ResourceList resourceList = new ResourceList(this);
   private final GameSequence sequence = new GameSequence(this);
   private final UnitTypeList unitTypeList = new UnitTypeList(this);
@@ -180,8 +180,8 @@ public class GameData implements Serializable {
   /**
    * Returns the list of Production Rules for the game.
    */
-  public RepairRuleList getRepairRuleList() {
-    return repairRuleList;
+  public RepairRules getRepairRules() {
+    return repairRules;
   }
 
   /**
