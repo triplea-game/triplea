@@ -14,6 +14,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import org.triplea.swing.IntTextField;
+import org.triplea.swing.IntTextFieldChangeListener;
+
 import games.strategy.engine.framework.system.SystemProperties;
 
 /**

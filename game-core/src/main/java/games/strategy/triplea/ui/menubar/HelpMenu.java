@@ -28,6 +28,9 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.JLabelBuilder;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import org.triplea.util.concurrent.CompletableFutureUtils;
 
 import games.strategy.engine.ClientContext;
@@ -42,10 +45,7 @@ import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.util.LocalizeHtml;
-import swinglib.JLabelBuilder;
 
 /**
  * The help menu.
@@ -335,6 +335,7 @@ public final class HelpMenu extends JMenu {
 
   private void addReportBugsMenu() {
     add(SwingAction.of("Send Bug Report",
-        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES))).setMnemonic(KeyEvent.VK_B);
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES.toString())))
+            .setMnemonic(KeyEvent.VK_B);
   }
 }

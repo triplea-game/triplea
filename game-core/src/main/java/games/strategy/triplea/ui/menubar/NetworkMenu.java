@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.swing.JMenu;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
@@ -15,7 +17,6 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.ui.PlayersPanel;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.ui.SwingAction;
 
 final class NetworkMenu extends JMenu {
   private static final long serialVersionUID = 2947249649948115833L;

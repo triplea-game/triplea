@@ -7,7 +7,7 @@ import java.util.Collections;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 
 /**
  * A property that uses a list for selecting the value.

@@ -22,12 +22,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.ClientModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
-import games.strategy.ui.SwingAction;
 
 /**
  * Network client game staging panel, can be used to select sides and chat.

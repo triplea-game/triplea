@@ -19,8 +19,9 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.triplea.UrlConstants;
-import games.strategy.ui.SwingAction;
 import games.strategy.ui.Util;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;

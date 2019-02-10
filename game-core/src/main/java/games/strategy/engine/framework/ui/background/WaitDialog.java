@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
 
 /**
  * A dialog that can be displayed during a long-running operation that optionally provides the user with the ability to

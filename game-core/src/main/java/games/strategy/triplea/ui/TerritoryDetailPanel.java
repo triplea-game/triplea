@@ -16,6 +16,8 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -24,7 +26,6 @@ import games.strategy.triplea.odds.calculator.OddsCalculatorDialog;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.OverlayIcon;
-import games.strategy.ui.SwingComponents;
 
 class TerritoryDetailPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 1377022163587438988L;

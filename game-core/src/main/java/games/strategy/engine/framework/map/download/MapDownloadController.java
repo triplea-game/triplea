@@ -9,13 +9,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import org.triplea.swing.SwingComponents;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.ui.SwingComponents;
 import games.strategy.util.Version;
 import lombok.extern.java.Log;
 

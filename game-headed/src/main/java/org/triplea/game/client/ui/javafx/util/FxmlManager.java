@@ -24,7 +24,7 @@ public enum FxmlManager {
 
   FONT_PATH("/org/triplea/game/client/ui/javafx/css/fonts/1942-report.ttf"),
 
-  ICON_LOCATION("/games/strategy/engine/framework/ta_icon.png");
+  ICON_LOCATION("/org/triplea/swing/ta_icon.png");
 
   private final String value;
 

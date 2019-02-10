@@ -22,6 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.SwingAction;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.DefaultAttachment;
@@ -32,7 +34,6 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.UserActionAttachment;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
-import games.strategy.ui.SwingAction;
 
 /**
  * Similar to PoliticsPanel, but for UserActionAttachment/Delegate.

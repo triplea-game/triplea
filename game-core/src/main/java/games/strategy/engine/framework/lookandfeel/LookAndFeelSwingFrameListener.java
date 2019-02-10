@@ -5,9 +5,10 @@ import java.util.function.Consumer;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
-import games.strategy.ui.SwingComponents;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 

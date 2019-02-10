@@ -25,6 +25,7 @@ import javax.swing.SwingUtilities;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.swing.SwingAction;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
@@ -32,7 +33,6 @@ import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
-import games.strategy.ui.SwingAction;
 
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;

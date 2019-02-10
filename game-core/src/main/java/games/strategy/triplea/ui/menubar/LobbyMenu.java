@@ -26,6 +26,8 @@ import javax.swing.WindowConstants;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IUserManager;
 import org.triplea.lobby.common.login.RsaAuthenticator;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 import com.google.common.base.Strings;
 
@@ -41,8 +43,6 @@ import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.ui.MacOsIntegration;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 
 /**
  * The lobby client menu bar.
@@ -283,19 +283,22 @@ public final class LobbyMenu extends JMenuBar {
 
   private static void addHelpMenu(final JMenu parentMenu) {
     final JMenuItem hostingLink = new JMenuItem("How to host");
-    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.HOSTING_GUIDE));
+    hostingLink
+        .addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.HOSTING_GUIDE.toString()));
     parentMenu.add(hostingLink);
 
     final JMenuItem helpPageLink = new JMenuItem("Help Page");
-    helpPageLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP));
+    helpPageLink
+        .addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP.toString()));
     parentMenu.add(helpPageLink);
 
     final JMenuItem lobbyRules = new JMenuItem("Lobby Rules");
-    lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES));
+    lobbyRules.addActionListener(
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES.toString()));
     parentMenu.add(lobbyRules);
 
     final JMenuItem warClub = new JMenuItem("TripleA Forum");
-    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
+    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM.toString()));
     parentMenu.add(warClub);
   }
 

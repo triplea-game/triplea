@@ -1,8 +1,9 @@
 package games.strategy.engine.auto.update;
 
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.map.download.MapDownloadController;
-import games.strategy.ui.SwingComponents;
 
 final class TutorialMapCheck {
   private TutorialMapCheck() {}

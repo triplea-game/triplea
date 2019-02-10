@@ -17,6 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -32,8 +35,6 @@ import games.strategy.engine.framework.startup.ui.IGamePropertiesCache;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.GameChooser;
 import games.strategy.engine.framework.ui.GameChooserEntry;
-import games.strategy.ui.SwingAction;
-import swinglib.JButtonBuilder;
 
 /**
  * Left hand side panel of the launcher screen that has various info, like selected game and engine version.

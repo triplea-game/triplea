@@ -22,6 +22,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
@@ -31,7 +33,6 @@ import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
 import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
 import games.strategy.engine.random.PbemDiceRoller;
-import games.strategy.ui.SwingAction;
 
 /**
  * A panel for setting up Play by Email/Forum.

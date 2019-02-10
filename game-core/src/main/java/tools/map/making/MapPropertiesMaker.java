@@ -48,9 +48,10 @@ import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.IntTextField;
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.data.properties.PropertiesUi;
-import games.strategy.ui.IntTextField;
-import games.strategy.ui.SwingAction;
 import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 import tools.image.FileSave;

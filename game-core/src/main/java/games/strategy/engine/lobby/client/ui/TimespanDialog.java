@@ -17,13 +17,14 @@ import javax.swing.JDialog;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JLabelBuilder;
+import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.SwingComponents;
+
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.ui.SwingComponents;
 import lombok.AllArgsConstructor;
-import swinglib.JButtonBuilder;
-import swinglib.JLabelBuilder;
-import swinglib.JPanelBuilder;
 
 /**
  * A UI-Utility class that can be used to prompt the user for a ban or mute time.

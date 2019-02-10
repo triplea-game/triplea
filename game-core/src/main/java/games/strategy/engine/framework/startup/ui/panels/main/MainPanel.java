@@ -21,14 +21,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import org.triplea.game.chat.ChatModel;
+import org.triplea.swing.GridBagHelper;
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.SwingAction;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
-import games.strategy.ui.SwingAction;
-import swinglib.GridBagHelper;
-import swinglib.JButtonBuilder;
-import swinglib.JPanelBuilder;
 
 /**
  * When the game launches, the MainFrame is loaded which will contain the MainPanel. The contents of the MainPanel are

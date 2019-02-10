@@ -23,6 +23,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
@@ -33,8 +36,6 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.IntegerMap;
 

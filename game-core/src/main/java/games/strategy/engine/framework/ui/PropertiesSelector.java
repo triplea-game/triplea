@@ -8,9 +8,10 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
-import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
 
 /**

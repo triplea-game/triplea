@@ -12,9 +12,9 @@ import org.triplea.http.client.ServiceClient;
 import org.triplea.http.client.ServiceResponse;
 import org.triplea.http.client.error.report.create.ErrorReport;
 import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.swing.DialogBuilder;
 
 import lombok.Builder;
-import swinglib.DialogBuilder;
 
 @Builder
 class ErrorReportUploadAction implements BiConsumer<JFrame, UserErrorReport> {

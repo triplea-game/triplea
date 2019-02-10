@@ -16,6 +16,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.DocumentListenerBuilder;
+import org.triplea.swing.ProgressWindow;
+
 import com.google.common.base.Ascii;
 
 import games.strategy.engine.ClientFileSystemHelper;
@@ -23,10 +26,8 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.ui.ProgressWindow;
 import games.strategy.util.Util;
 import lombok.extern.java.Log;
-import swinglib.DocumentListenerBuilder;
 
 /**
  * An editor for modifying email senders.

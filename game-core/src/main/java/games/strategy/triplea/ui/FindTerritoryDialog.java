@@ -10,11 +10,12 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JComboBoxBuilder;
+import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.engine.data.Territory;
-import games.strategy.ui.SwingComponents;
-import swinglib.JButtonBuilder;
-import swinglib.JComboBoxBuilder;
-import swinglib.JPanelBuilder;
 
 final class FindTerritoryDialog extends JDialog {
   private static final long serialVersionUID = -1601616824595826610L;

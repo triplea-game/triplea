@@ -23,10 +23,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-import games.strategy.net.OpenFileUtility;
+import org.triplea.awt.OpenFileUtility;
+import org.triplea.swing.SwingAction;
+
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.ui.SwingAction;
 import games.strategy.util.Interruptibles;
 import tools.image.AutoPlacementFinder;
 import tools.image.CenterPicker;

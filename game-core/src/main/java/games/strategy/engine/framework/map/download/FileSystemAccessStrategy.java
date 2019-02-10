@@ -11,7 +11,8 @@ import java.util.logging.Level;
 
 import javax.swing.DefaultListModel;
 
-import games.strategy.ui.SwingComponents;
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
 import lombok.extern.java.Log;

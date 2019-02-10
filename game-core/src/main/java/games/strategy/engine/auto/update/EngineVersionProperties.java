@@ -14,8 +14,9 @@ import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import org.triplea.awt.OpenFileUtility;
+
 import games.strategy.engine.ClientContext;
-import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.Version;
 import lombok.extern.java.Log;

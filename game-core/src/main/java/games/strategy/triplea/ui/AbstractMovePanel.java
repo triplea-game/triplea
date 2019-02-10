@@ -14,6 +14,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
@@ -21,9 +25,6 @@ import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
-import swinglib.JButtonBuilder;
 
 abstract class AbstractMovePanel extends ActionPanel {
   private static final long serialVersionUID = -4153574987414031433L;

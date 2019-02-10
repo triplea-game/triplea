@@ -33,16 +33,18 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JFrameBuilder;
+import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
-import games.strategy.ui.SwingComponents;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.OptionalUtils;
 import lombok.extern.java.Log;
-import swinglib.JButtonBuilder;
-import swinglib.JPanelBuilder;
 
 /** Window that allows for map downloads and removal. */
 @Log
@@ -71,7 +73,7 @@ public class DownloadMapsWindow extends JFrame {
     setLocationRelativeTo(null);
     setMinimumSize(new Dimension(200, 200));
 
-    setIconImage(GameRunner.getGameIcon(this));
+    setIconImage(JFrameBuilder.getGameIcon(this));
     progressPanel = new MapDownloadProgressPanel();
 
     final Set<DownloadFileDescription> pendingDownloads = new HashSet<>();

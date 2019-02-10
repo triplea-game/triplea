@@ -26,6 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
+import org.triplea.awt.OpenFileUtility;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 
@@ -42,7 +43,6 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.OpenFileUtility;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.util.ExitStatus;
 

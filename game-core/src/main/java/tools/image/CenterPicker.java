@@ -40,7 +40,8 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import games.strategy.ui.SwingAction;
+import org.triplea.swing.SwingAction;
+
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 import lombok.extern.java.Log;

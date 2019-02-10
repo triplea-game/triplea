@@ -21,12 +21,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.triplea.awt.OpenFileUtility;
 
 import com.github.openjson.JSONArray;
 import com.github.openjson.JSONObject;
 
 import games.strategy.engine.framework.system.HttpProxy;
-import games.strategy.net.OpenFileUtility;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;

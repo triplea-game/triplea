@@ -31,6 +31,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
+import org.triplea.swing.SwingAction;
+
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.GameData;
@@ -44,7 +46,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
-import games.strategy.ui.SwingAction;
 import games.strategy.util.IntegerMap;
 
 class ProductionPanel extends JPanel {

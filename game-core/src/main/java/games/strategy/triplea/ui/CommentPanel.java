@@ -31,6 +31,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.history.Event;
@@ -38,7 +40,6 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
-import games.strategy.ui.SwingAction;
 import lombok.extern.java.Log;
 
 @Log

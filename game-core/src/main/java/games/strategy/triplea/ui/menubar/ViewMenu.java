@@ -34,6 +34,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.IEditableProperty;
@@ -48,7 +50,6 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
-import games.strategy.ui.SwingAction;
 import lombok.extern.java.Log;
 
 @Log

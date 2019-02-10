@@ -9,13 +9,14 @@ import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.debug.error.reporting.ErrorReportWindow;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.ui.SwingComponents;
-import swinglib.JButtonBuilder;
 import tools.map.making.MapCreator;
 
 /**
@@ -131,11 +132,11 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private static void ruleBook() {
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK);
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK.toString());
   }
 
   private static void helpPage() {
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP);
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP.toString());
   }
 
   @Override

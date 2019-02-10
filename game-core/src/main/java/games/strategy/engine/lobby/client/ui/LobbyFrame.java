@@ -24,6 +24,8 @@ import javax.swing.SpinnerNumberModel;
 
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.swing.JFrameBuilder;
+import org.triplea.swing.SwingAction;
 
 import com.google.common.collect.ImmutableList;
 
@@ -35,7 +37,6 @@ import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.net.INode;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
-import games.strategy.ui.SwingAction;
 import games.strategy.util.EventThreadJOptionPane;
 
 /**
@@ -56,7 +57,7 @@ public class LobbyFrame extends JFrame {
   public LobbyFrame(final LobbyClient client, final LobbyServerProperties lobbyServerProperties) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    setIconImage(GameRunner.getGameIcon(this));
+    setIconImage(JFrameBuilder.getGameIcon(this));
     this.client = client;
     setJMenuBar(new LobbyMenu(this));
     final Chat chat = new Chat(this.client.getMessenger(), LobbyConstants.LOBBY_CHAT,

@@ -79,6 +79,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.triplea.swing.JFrameBuilder;
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 import org.triplea.util.concurrent.CompletableFutureUtils;
 
 import com.google.common.base.Preconditions;
@@ -159,8 +162,6 @@ import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.IntegerMap;
@@ -372,7 +373,7 @@ public final class TripleAFrame extends JFrame {
     super("TripleA - " + game.getData().getGameName());
 
     localPlayers = players;
-    setIconImage(GameRunner.getGameIcon(this));
+    setIconImage(JFrameBuilder.getGameIcon(this));
     // 200 size is pretty arbitrary, goal is to not allow users to shrink window down to nothing.
     setMinimumSize(new Dimension(200, 200));
 

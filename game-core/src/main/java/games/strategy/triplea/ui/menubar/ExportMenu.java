@@ -29,6 +29,8 @@ import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import org.triplea.swing.SwingAction;
+
 import com.google.common.collect.Iterables;
 
 import games.strategy.engine.ClientContext;
@@ -53,7 +55,6 @@ import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.export.ScreenshotExporter;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.util.PlayerOrderComparator;
-import games.strategy.ui.SwingAction;
 import games.strategy.util.FileNameUtils;
 import lombok.extern.java.Log;
 

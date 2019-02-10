@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.SwingComponents;
 import org.triplea.util.concurrent.CompletableFutureUtils;
 
 import games.strategy.engine.data.GameData;
@@ -25,7 +26,6 @@ import games.strategy.triplea.ui.MapPanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 
 /**

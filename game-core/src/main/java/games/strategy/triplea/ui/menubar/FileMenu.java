@@ -9,6 +9,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
+import org.triplea.swing.SwingAction;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerId;
@@ -19,7 +21,6 @@ import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.history.HistoryLog;
-import games.strategy.ui.SwingAction;
 
 final class FileMenu extends JMenu {
   private static final long serialVersionUID = -3855695429784752428L;

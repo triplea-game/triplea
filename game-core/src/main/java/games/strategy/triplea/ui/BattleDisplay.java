@@ -47,6 +47,9 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -67,8 +70,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeparator;
-import games.strategy.ui.SwingAction;
-import games.strategy.ui.SwingComponents;
 import games.strategy.ui.Util;
 import games.strategy.util.CollectionUtils;
 import games.strategy.util.Interruptibles;

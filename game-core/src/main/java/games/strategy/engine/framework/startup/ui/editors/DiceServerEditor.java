@@ -9,6 +9,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import org.triplea.swing.DocumentListenerBuilder;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.properties.GameProperties;
@@ -16,7 +18,6 @@ import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
 import games.strategy.util.Util;
-import swinglib.DocumentListenerBuilder;
 
 /**
  * A class to configure a Dice Server for the game.

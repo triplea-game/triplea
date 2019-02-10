@@ -19,17 +19,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.DocumentListenerBuilder;
+import org.triplea.swing.ProgressWindow;
+
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.ui.ProgressWindow;
 import games.strategy.util.TimeManager;
 import games.strategy.util.Util;
 import lombok.extern.java.Log;
-import swinglib.DocumentListenerBuilder;
 
 /**
  * A class for selecting which Forum poster to use.
