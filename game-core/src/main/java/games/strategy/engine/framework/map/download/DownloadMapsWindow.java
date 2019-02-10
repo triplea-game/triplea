@@ -73,7 +73,7 @@ public class DownloadMapsWindow extends JFrame {
     setLocationRelativeTo(null);
     setMinimumSize(new Dimension(200, 200));
 
-    setIconImage(JFrameBuilder.getGameIcon(this));
+    setIconImage(JFrameBuilder.getGameIcon());
     progressPanel = new MapDownloadProgressPanel();
 
     final Set<DownloadFileDescription> pendingDownloads = new HashSet<>();

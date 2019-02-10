@@ -4,16 +4,16 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.LayoutManager;
-import java.awt.MediaTracker;
-import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import lombok.extern.java.Log;
@@ -77,7 +77,7 @@ public class JFrameBuilder {
         }));
 
     frame.setMinimumSize(new Dimension(minWidth, minHeight));
-    frame.setIconImage(getGameIcon(frame));
+    frame.setIconImage(getGameIcon());
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
     if ((width > 0) || (height > 0)) {
@@ -102,21 +102,13 @@ public class JFrameBuilder {
   /**
    * Returns the standard application icon typically displayed in a window's title bar.
    */
-  public static Image getGameIcon(final Window frame) {
-    Image img = null;
+  public static Image getGameIcon() {
     try {
-      img = frame.getToolkit().getImage(JFrameBuilder.class.getResource("ta_icon.png"));
-    } catch (final Exception ex) {
-      log.log(Level.SEVERE, "ta_icon.png not loaded", ex);
+      return ImageIO.read(JFrameBuilder.class.getResource("ta_icon.png"));
+    } catch (final IOException e) {
+      log.log(Level.SEVERE, "ta_icon.png not loaded", e);
     }
-    final MediaTracker tracker = new MediaTracker(frame);
-    tracker.addImage(img, 0);
-    try {
-      tracker.waitForAll();
-    } catch (final InterruptedException ex) {
-      Thread.currentThread().interrupt();
-    }
-    return img;
+    return null;
   }
 
   public JFrameBuilder escapeKeyClosesFrame() {

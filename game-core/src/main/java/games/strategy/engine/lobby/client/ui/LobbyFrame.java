@@ -57,7 +57,7 @@ public class LobbyFrame extends JFrame {
   public LobbyFrame(final LobbyClient client, final LobbyServerProperties lobbyServerProperties) {
     super("TripleA Lobby");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    setIconImage(JFrameBuilder.getGameIcon(this));
+    setIconImage(JFrameBuilder.getGameIcon());
     this.client = client;
     setJMenuBar(new LobbyMenu(this));
     final Chat chat = new Chat(this.client.getMessenger(), LobbyConstants.LOBBY_CHAT,
