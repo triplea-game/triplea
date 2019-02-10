@@ -26,18 +26,6 @@ public interface IBattleDelegate extends IRemote, IDelegate {
   String fightBattle(Territory where, boolean bombing, BattleType type);
 
   /**
-   * Finish the current battle.
-   *
-   * @return an error string if the battle could not be fought or an error occurred, null otherwise
-   */
-  String fightCurrentBattle();
-
-  /**
-   * Returns the location of the currently being fought battle, or null if no battle is in progress.
-   */
-  Territory getCurrentBattleTerritory();
-
-  /**
    * Returns the current battle if there is one, or null if there is no current battle in progress.
    */
   IBattle getCurrentBattle();

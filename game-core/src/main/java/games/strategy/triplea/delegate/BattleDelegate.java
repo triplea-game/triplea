@@ -204,19 +204,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     battleTracker.clearEmptyAirBattleAttacks(bridge);
   }
 
-  // TODO: Remove unused method for next incompatible release
-  @Override
-  public String fightCurrentBattle() {
-    if (currentBattle == null) {
-      return null;
-    }
-    // fight the battle
-    currentBattle.fight(bridge);
-    currentBattle = null;
-    // and were done
-    return null;
-  }
-
   @Override
   public String fightBattle(final Territory territory, final boolean bombing, final BattleType type) {
     final IBattle battle = battleTracker.getPendingBattle(territory, bombing, type);
@@ -1520,12 +1507,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   @Override
   public Class<? extends IRemote> getRemoteType() {
     return IBattleDelegate.class;
-  }
-
-  @Override
-  public Territory getCurrentBattleTerritory() {
-    final IBattle b = currentBattle;
-    return (b != null) ? b.getTerritory() : null;
   }
 
   @Override
