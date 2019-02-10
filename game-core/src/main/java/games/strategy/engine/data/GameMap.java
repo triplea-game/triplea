@@ -3,7 +3,6 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,31 +45,14 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     this.gridDimensions = gridDimensions;
   }
 
-  public Territory getTerritoryFromCoordinates(final int... coordinate) {
-    return getTerritoryFromCoordinates(true, coordinate);
-  }
-
-  private Territory getTerritoryFromCoordinates(final boolean allowNull, final int... coordinate) {
-    if (gridDimensions == null) {
-      if (allowNull) {
-        return null;
-      }
-      throw new IllegalStateException("No Grid Dimensions");
-    }
-    if (!isCoordinateValid(coordinate)) {
-      if (allowNull) {
-        return null;
-      }
-      final String coordinates = Arrays.stream(coordinate)
-          .mapToObj(String::valueOf)
-          .collect(Collectors.joining(", "));
-      throw new IllegalStateException("No Territory at coordinates: " + coordinates);
+  Territory getTerritoryFromCoordinates(final int... coordinate) {
+    if (gridDimensions == null || !isCoordinateValid(coordinate)) {
+      return null;
     }
     int listIndex = coordinate[0];
     int multiplier = 1;
     for (int i = 1; i < gridDimensions.length; i++) {
       multiplier *= gridDimensions[i - 1];
-      // gridDimensions[i];
       listIndex += coordinate[i] * multiplier;
     }
     return territories.get(listIndex);
