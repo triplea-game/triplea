@@ -80,6 +80,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.triplea.common.util.concurrent.CompletableFutureUtils;
+import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -372,7 +373,7 @@ public final class TripleAFrame extends JFrame {
     super("TripleA - " + game.getData().getGameName());
 
     localPlayers = players;
-    setIconImage(GameRunner.getGameIcon(this));
+    setIconImage(JFrameBuilder.getGameIcon(this));
     // 200 size is pretty arbitrary, goal is to not allow users to shrink window down to nothing.
     setMinimumSize(new Dimension(200, 200));
 

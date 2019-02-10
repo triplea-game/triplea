@@ -4,16 +4,19 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.LayoutManager;
+import java.awt.MediaTracker;
 import java.awt.Window;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 import javax.swing.JFrame;
 
-import lombok.Setter;
+import lombok.extern.java.Log;
 
 /**
  * Provides a builder API for creating a JFrame that will include project specific defaults when constructed.
@@ -24,15 +27,13 @@ import lombok.Setter;
  * <li>JFrame dispose on close</li>
  * </ul>
  */
+@Log
 public class JFrameBuilder {
-  @Setter
-  @Nullable
-  private static Function<Window, Image> defaultIconImage;
-
   private final Collection<Component> children = new ArrayList<>();
   private boolean escapeClosesWindow;
   private boolean alwaysOnTop;
   private String title;
+  @Nullable
   private Component parent;
 
   private int minWidth = 50;
@@ -40,9 +41,12 @@ public class JFrameBuilder {
   private int width;
   private int height;
   @Nullable
-  private Image iconImage;
-
   private LayoutManager layoutManager;
+  @Nullable
+  private Runnable closeAction;
+
+  @Nullable
+  private Runnable windowActivatedAction;
 
   public static JFrameBuilder builder() {
     return new JFrameBuilder();
@@ -54,19 +58,31 @@ public class JFrameBuilder {
    */
   public JFrame build() {
     // note: we use the two arg JFrame constructor to avoid the headless check that is in the single arg constructor.
-    final JFrame frame = new JFrame(title, null);
+    final JFrame frame = new JFrame(title, null) {
+      @Override
+      public void dispose() {
+        super.dispose();
+        Optional.ofNullable(closeAction).ifPresent(Runnable::run);
+      }
+    };
+
+    Optional.ofNullable(windowActivatedAction)
+        .ifPresent(action -> frame.addWindowListener(new WindowAdapter() {
+          @Override
+          public void windowActivated(final WindowEvent e) {
+            windowActivatedAction.run();
+          }
+        }));
+
+
     frame.setMinimumSize(new Dimension(minWidth, minHeight));
+    frame.setIconImage(getGameIcon(frame));
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
     if ((width > 0) || (height > 0)) {
       frame.setPreferredSize(new Dimension(width, height));
       frame.setSize(new Dimension(width, height));
     }
-
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-    final Image iconToUse = Optional.ofNullable(iconImage)
-        .orElseGet(() -> Optional.ofNullable(defaultIconImage).map(fn -> fn.apply(frame)).orElse(null));
-    Optional.ofNullable(iconToUse).ifPresent(frame::setIconImage);
 
     if (escapeClosesWindow) {
       SwingComponents.addEscapeKeyListener(frame, frame::dispose);
@@ -82,7 +98,26 @@ public class JFrameBuilder {
     return frame;
   }
 
-  // TODO: unit-test this.
+  /**
+   * Returns the standard application icon typically displayed in a window's title bar.
+   */
+  public static Image getGameIcon(final Window frame) {
+    Image img = null;
+    try {
+      img = frame.getToolkit().getImage(JFrameBuilder.class.getResource("ta_icon.png"));
+    } catch (final Exception ex) {
+      log.log(Level.SEVERE, "ta_icon.png not loaded", ex);
+    }
+    final MediaTracker tracker = new MediaTracker(frame);
+    tracker.addImage(img, 0);
+    try {
+      tracker.waitForAll();
+    } catch (final InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
+    return img;
+  }
+
   public JFrameBuilder escapeKeyClosesFrame() {
     this.escapeClosesWindow = true;
     return this;
@@ -129,12 +164,19 @@ public class JFrameBuilder {
   }
 
   /**
-   * Sets the icon image to use for the frame. The icon image is the image seen in the 'taskbar' of running apps.
-   * If no icon image is set at all, then a generic java logo displayed. Note, a default icon image
-   * can be specified to avoid setting this for every framebuilder.
+   * Adds an action that will be executed when the frame is disposed.
    */
-  public JFrameBuilder icon(final Image iconImage) {
-    this.iconImage = iconImage;
+  public JFrameBuilder closeAction(final Runnable closeAction) {
+    this.closeAction = closeAction;
+    return this;
+  }
+
+
+  /**
+   * Adds an action that will be executed when the frame is activated\.
+   */
+  public JFrameBuilder windowActivatedAction(final Runnable windowActivatedAction) {
+    this.windowActivatedAction = windowActivatedAction;
     return this;
   }
 }

@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
 import org.triplea.game.client.ui.javafx.TripleA;
-import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 
 import games.strategy.debug.ErrorMessage;
@@ -79,7 +78,6 @@ public final class HeadedGameRunner {
     if (ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
       Application.launch(TripleA.class, args);
     } else {
-      JFrameBuilder.setDefaultIconImage(GameRunner::getGameIcon);
       GameRunner.start();
     }
   }

@@ -18,16 +18,12 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.FileDialog;
 import java.awt.Frame;
-import java.awt.Image;
-import java.awt.MediaTracker;
-import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -39,6 +35,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.triplea.common.util.Services;
 import org.triplea.game.ApplicationContext;
+import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.ProgressWindow;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -90,7 +87,9 @@ public final class GameRunner {
    */
   public static void start() {
     SwingUtilities.invokeLater(() -> {
-      final JFrame frame = new JFrame("TripleA");
+      final JFrame frame = JFrameBuilder.builder()
+          .title("TripleA")
+          .build();
       setupPanelModel = new SetupPanelModel(gameSelectorModel, frame);
       mainFrame = newMainFrame(frame);
       setupPanelModel.showSelectType();
@@ -107,7 +106,6 @@ public final class GameRunner {
     frame.pack();
 
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame.setIconImage(getGameIcon(frame));
     frame.setLocationRelativeTo(null);
 
     SwingComponents.addWindowClosingListener(frame, GameRunner::exitGameIfFinished);
@@ -234,26 +232,6 @@ public final class GameRunner {
     if (!downloadableMap.isEmpty()) {
       SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(downloadableMap));
     }
-  }
-
-  /**
-   * Returns the standard application icon typically displayed in a window's title bar.
-   */
-  public static Image getGameIcon(final Window frame) {
-    Image img = null;
-    try {
-      img = frame.getToolkit().getImage(GameRunner.class.getResource("ta_icon.png"));
-    } catch (final Exception ex) {
-      log.log(Level.SEVERE, "ta_icon.png not loaded", ex);
-    }
-    final MediaTracker tracker = new MediaTracker(frame);
-    tracker.addImage(img, 0);
-    try {
-      tracker.waitForAll();
-    } catch (final InterruptedException ex) {
-      Thread.currentThread().interrupt();
-    }
-    return img;
   }
 
   /**

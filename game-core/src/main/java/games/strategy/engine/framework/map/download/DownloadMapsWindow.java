@@ -34,6 +34,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 
 import org.triplea.swing.JButtonBuilder;
+import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
 
@@ -72,7 +73,7 @@ public class DownloadMapsWindow extends JFrame {
     setLocationRelativeTo(null);
     setMinimumSize(new Dimension(200, 200));
 
-    setIconImage(GameRunner.getGameIcon(this));
+    setIconImage(JFrameBuilder.getGameIcon(this));
     progressPanel = new MapDownloadProgressPanel();
 
     final Set<DownloadFileDescription> pendingDownloads = new HashSet<>();

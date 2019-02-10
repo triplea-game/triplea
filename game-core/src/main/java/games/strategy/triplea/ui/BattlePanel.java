@@ -3,13 +3,12 @@ package games.strategy.triplea.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -25,6 +24,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -33,7 +33,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.player.IGamePlayer;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.net.GUID;
@@ -61,37 +60,22 @@ public class BattlePanel extends ActionPanel {
   // if we are showing a battle, then this will be set to the currently displayed battle. This will only be set after
   // the display is shown on the screen
   private volatile GUID currentBattleDisplayed;
-  // there is a bug in linux jdk1.5.0_6 where frames are not being garbage collected
-  // reuse one frame
-  private final JFrame battleFrame;
+  private final JFrame battleFrame = JFrameBuilder.builder()
+      .closeAction(() -> PbemDiceRoller.setFocusWindow(null))
+      .windowActivatedAction(
+          () -> SwingUtilities.invokeLater(
+              () -> Optional.ofNullable(battleDisplay)
+                  .ifPresent(BattleDisplay::takeFocus)))
+      .build();
+
   private Map<BattleType, Collection<Territory>> battles;
 
-  public BattlePanel(final GameData data, final MapPanel map) {
+  BattlePanel(final GameData data, final MapPanel map) {
     super(data, map);
-    battleFrame = new JFrame() {
-      private static final long serialVersionUID = -947813247703330615L;
-
-      @Override
-      public void dispose() {
-        PbemDiceRoller.setFocusWindow(null);
-        super.dispose();
-      }
-    };
-    battleFrame.setIconImage(GameRunner.getGameIcon(battleFrame));
     getMap().getUiContext().addShutdownWindow(battleFrame);
-    battleFrame.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowActivated(final WindowEvent e) {
-        SwingUtilities.invokeLater(() -> {
-          if (battleDisplay != null) {
-            battleDisplay.takeFocus();
-          }
-        });
-      }
-    });
   }
 
-  public void setBattlesAndBombing(final Map<BattleType, Collection<Territory>> battles) {
+  void setBattlesAndBombing(final Map<BattleType, Collection<Territory>> battles) {
     this.battles = battles;
   }
 
