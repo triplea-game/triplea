@@ -69,7 +69,7 @@ class FileSystemAccessStrategy {
 
 
       if (!deletes.isEmpty()) {
-        showRemoveSuccessDialog("Successfully removed.", deletes);
+        showRemoveSuccessDialog(deletes);
         // only once we know for sure we deleted things, then delete the ".properties" file
         deletes.stream()
             .map(DownloadFileDescription::getInstallLocation)
@@ -81,21 +81,20 @@ class FileSystemAccessStrategy {
       }
 
       if (!fails.isEmpty()) {
-        showRemoveFailDialog("Unable to delete some of the maps files.<br />"
-            + "Manual removal of the files may be necessary:", fails);
+        showRemoveFailDialog(fails);
         fails.forEach(m -> m.getInstallLocation().deleteOnExit());
       }
     };
   }
 
-  private static void showRemoveFailDialog(final String failMessage, final List<DownloadFileDescription> mapList) {
-    final String message = newDialogMessage(failMessage, mapList);
+  private static void showRemoveFailDialog(final List<DownloadFileDescription> mapList) {
+    final String message = newDialogMessage(
+        "Unable to delete some of the maps files.<br />Manual removal of the files may be necessary:", mapList);
     showDialog(message, mapList, (map) -> map.getInstallLocation().getAbsolutePath());
   }
 
-  private static void showRemoveSuccessDialog(final String successMessage,
-      final List<DownloadFileDescription> mapList) {
-    final String message = newDialogMessage(successMessage, mapList);
+  private static void showRemoveSuccessDialog(final List<DownloadFileDescription> mapList) {
+    final String message = newDialogMessage("Successfully removed.", mapList);
     showDialog(message, mapList, DownloadFileDescription::getMapName);
   }
 
