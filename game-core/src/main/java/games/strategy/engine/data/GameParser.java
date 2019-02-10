@@ -359,45 +359,45 @@ public final class GameParser {
   }
 
   /**
-   * If mustfind is true and cannot find the player an exception will be thrown.
+   * If cannot find the player an exception will be thrown.
    *
    * @return a RelationshipType from the relationshipTypeList, at this point all relationshipTypes should have been
    *         declared
    */
-  private RelationshipType getRelationshipType(final Element element, final String attribute, final boolean mustFind)
+  private RelationshipType getRelationshipType(final Element element, final String attribute)
       throws GameParseException {
-    return getValidatedObject(element, attribute, mustFind, data.getRelationshipTypeList()::getRelationshipType,
+    return getValidatedObject(element, attribute, true, data.getRelationshipTypeList()::getRelationshipType,
         "relation");
   }
 
-  private TerritoryEffect getTerritoryEffect(final Element element, final String attribute, final boolean mustFind)
+  private TerritoryEffect getTerritoryEffect(final Element element)
       throws GameParseException {
-    return getValidatedObject(element, attribute, mustFind, data.getTerritoryEffectList()::get, "territoryEffect");
+    return getValidatedObject(element, "attachTo", true, data.getTerritoryEffectList()::get, "territoryEffect");
   }
 
   /**
-   * If mustfind is true and cannot find the productionRule an exception will be thrown.
+   * If cannot find the productionRule an exception will be thrown.
    */
-  private ProductionRule getProductionRule(final Element element, final String attribute, final boolean mustFind)
+  private ProductionRule getProductionRule(final Element element)
       throws GameParseException {
-    return getValidatedObject(element, attribute, mustFind, data.getProductionRuleList()::getProductionRule,
+    return getValidatedObject(element, "name", true, data.getProductionRuleList()::getProductionRule,
         "production rule");
   }
 
   /**
-   * If mustfind is true and cannot find the productionRule an exception will be thrown.
+   * If cannot find the repairRule an exception will be thrown.
    */
-  private RepairRule getRepairRule(final Element element, final String attribute, final boolean mustFind)
+  private RepairRule getRepairRule(final Element element)
       throws GameParseException {
-    return getValidatedObject(element, attribute, mustFind, data.getRepairRuleList()::getRepairRule, "repair rule");
+    return getValidatedObject(element, "name", true, data.getRepairRuleList()::getRepairRule, "repair rule");
   }
 
   /**
-   * If mustfind is true and cannot find the territory an exception will be thrown.
+   * If cannot find the territory an exception will be thrown.
    */
-  private Territory getTerritory(final Element element, final String attribute, final boolean mustFind)
+  private Territory getTerritory(final Element element, final String attribute)
       throws GameParseException {
-    return getValidatedObject(element, attribute, mustFind, data.getMap()::getTerritory, "territory");
+    return getValidatedObject(element, attribute, true, data.getMap()::getTerritory, "territory");
   }
 
   /**
@@ -409,11 +409,11 @@ public final class GameParser {
   }
 
   /**
-   * If mustfind is true and cannot find the technology an exception will be thrown.
+   * If cannot find the technology an exception will be thrown.
    */
-  private TechAdvance getTechnology(final Element element, final String attribute, final boolean mustFind)
+  private TechAdvance getTechnology(final Element element)
       throws GameParseException {
-    return getValidatedObject(element, attribute, mustFind, this::getTechnology, "technology");
+    return getValidatedObject(element, "attachTo", true, this::getTechnology, "technology");
   }
 
   private TechAdvance getTechnology(final String name) {
@@ -426,11 +426,11 @@ public final class GameParser {
   }
 
   /**
-   * If mustfind is true and cannot find the Delegate an exception will be thrown.
+   * If cannot find the Delegate an exception will be thrown.
    */
-  private IDelegate getDelegate(final Element element, final String attribute, final boolean mustFind)
+  private IDelegate getDelegate(final Element element)
       throws GameParseException {
-    return getValidatedObject(element, attribute, mustFind, data.getDelegateList()::getDelegate, "delegate");
+    return getValidatedObject(element, "delegate", true, data.getDelegateList()::getDelegate, "delegate");
   }
 
   /**
@@ -442,20 +442,19 @@ public final class GameParser {
   }
 
   /**
-   * If mustfind is true and cannot find the productionRule an exception will be thrown.
+   * If cannot find the productionRule an exception will be thrown.
    */
-  private ProductionFrontier getProductionFrontier(final Element element, final String attribute,
-      final boolean mustFind) throws GameParseException {
-    return getValidatedObject(element, attribute, mustFind, data.getProductionFrontierList()::getProductionFrontier,
+  private ProductionFrontier getProductionFrontier(final Element element) throws GameParseException {
+    return getValidatedObject(element, "frontier", true, data.getProductionFrontierList()::getProductionFrontier,
         "production frontier");
   }
 
   /**
-   * If mustfind is true and cannot find the productionRule an exception will be thrown.
+   * If cannot find the repairFrontier an exception will be thrown.
    */
-  private RepairFrontier getRepairFrontier(final Element element, final String attribute, final boolean mustFind)
+  private RepairFrontier getRepairFrontier(final Element element)
       throws GameParseException {
-    return getValidatedObject(element, attribute, mustFind, data.getRepairFrontierList()::getRepairFrontier,
+    return getValidatedObject(element, "frontier", true, data.getRepairFrontierList()::getRepairFrontier,
         "repair frontier");
   }
 
@@ -495,9 +494,9 @@ public final class GameParser {
         .collect(Collectors.toList());
   }
 
-  private static List<Node> getNonTextNodesIgnoring(final Node node, final String ignore) {
+  private static List<Node> getNonTextNodesIgnoringValue(final Node node) {
     final List<Node> nonTextNodes = getNonTextNodes(node);
-    nonTextNodes.removeIf(node1 -> ((Element) node1).getTagName().equals(ignore));
+    nonTextNodes.removeIf(node1 -> ((Element) node1).getTagName().equals("value"));
     return nonTextNodes;
   }
 
@@ -719,8 +718,8 @@ public final class GameParser {
   private void parseConnections(final List<Element> connections) throws GameParseException {
     final GameMap map = data.getMap();
     for (final Element current : connections) {
-      final Territory t1 = getTerritory(current, "t1", true);
-      final Territory t2 = getTerritory(current, "t2", true);
+      final Territory t1 = getTerritory(current, "t1");
+      final Territory t2 = getTerritory(current, "t2");
       map.addConnection(t1, t2);
     }
   }
@@ -830,7 +829,7 @@ public final class GameParser {
       for (final Element current : relations) {
         final PlayerId p1 = getPlayerId(current, "player1", true);
         final PlayerId p2 = getPlayerId(current, "player2", true);
-        final RelationshipType r = getRelationshipType(current, "type", true);
+        final RelationshipType r = getRelationshipType(current, "type");
         final int roundValue = Integer.valueOf(current.getAttribute("roundValue"));
         tracker.setRelationship(p1, p2, r, roundValue);
       }
@@ -861,7 +860,7 @@ public final class GameParser {
       if (editable != null && editable.equalsIgnoreCase("true")) {
         parseEditableProperty(current, property, value);
       } else {
-        final List<Node> children2 = getNonTextNodesIgnoring(current, "value");
+        final List<Node> children2 = getNonTextNodesIgnoringValue(current);
         if (children2.size() == 0) {
           // we don't know what type this property is!!, it appears like only numbers and string may be represented
           // without proper type definition
@@ -985,7 +984,7 @@ public final class GameParser {
 
   private void parseSteps(final List<Element> stepList) throws GameParseException {
     for (final Element current : stepList) {
-      final IDelegate delegate = getDelegate(current, "delegate", true);
+      final IDelegate delegate = getDelegate(current);
       final PlayerId player = getPlayerId(current, "player", false);
       final String name = current.getAttribute("name");
       String displayName = null;
@@ -1156,7 +1155,7 @@ public final class GameParser {
   private void parsePlayerProduction(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
       final PlayerId player = getPlayerId(current, "player", true);
-      final ProductionFrontier frontier = getProductionFrontier(current, "frontier", true);
+      final ProductionFrontier frontier = getProductionFrontier(current);
       player.setProductionFrontier(frontier);
     }
   }
@@ -1164,7 +1163,7 @@ public final class GameParser {
   private void parsePlayerRepair(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
       final PlayerId player = getPlayerId(current, "player", true);
-      final RepairFrontier repairFrontier = getRepairFrontier(current, "frontier", true);
+      final RepairFrontier repairFrontier = getRepairFrontier(current);
       player.setRepairFrontier(repairFrontier);
     }
   }
@@ -1172,7 +1171,7 @@ public final class GameParser {
   private void parseFrontierRules(final List<Element> elements, final ProductionFrontier frontier)
       throws GameParseException {
     for (final Element element : elements) {
-      frontier.addRule(getProductionRule(element, "name", true));
+      frontier.addRule(getProductionRule(element));
     }
   }
 
@@ -1211,7 +1210,7 @@ public final class GameParser {
   private void parseRepairFrontierRules(final List<Element> elements, final RepairFrontier frontier)
       throws GameParseException {
     for (final Element element : elements) {
-      frontier.addRule(getRepairRule(element, "name", true));
+      frontier.addRule(getRepairRule(element));
     }
   }
 
@@ -1237,17 +1236,17 @@ public final class GameParser {
       case "unitType":
         return getUnitType(element, name, true);
       case "territory":
-        return getTerritory(element, name, true);
+        return getTerritory(element, name);
       case "resource":
         return getResource(element, name, true);
       case "territoryEffect":
-        return getTerritoryEffect(element, name, true);
+        return getTerritoryEffect(element);
       case "player":
         return getPlayerId(element, name, true);
       case "relationship":
-        return getRelationshipType(element, name, true);
+        return getRelationshipType(element, name);
       case "technology":
-        return getTechnology(element, name, true);
+        return getTechnology(element);
       default:
         throw newGameParseException("Type not found to attach to:" + type);
     }
@@ -1315,7 +1314,7 @@ public final class GameParser {
 
   private void parseOwner(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final Territory territory = getTerritory(current, "territory", true);
+      final Territory territory = getTerritory(current, "territory");
       final PlayerId owner = getPlayerId(current, "owner", true);
       territory.setOwner(owner);
       // Set the original owner on startup.
@@ -1342,7 +1341,7 @@ public final class GameParser {
 
   private void parseUnitPlacement(final List<Element> elements) throws GameParseException {
     for (final Element current : elements) {
-      final Territory territory = getTerritory(current, "territory", true);
+      final Territory territory = getTerritory(current, "territory");
       final UnitType type = getUnitType(current, "unitType", true);
       final String ownerString = current.getAttribute("owner");
       final String hitsTakenString = current.getAttribute("hitsTaken");
