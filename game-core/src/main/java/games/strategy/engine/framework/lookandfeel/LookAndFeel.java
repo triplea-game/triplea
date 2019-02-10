@@ -13,8 +13,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import org.triplea.common.util.Services;
 import org.triplea.game.client.ui.swing.laf.SubstanceLookAndFeelManager;
+import org.triplea.util.Services;
 
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;

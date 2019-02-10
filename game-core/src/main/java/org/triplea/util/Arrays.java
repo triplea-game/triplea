@@ -1,4 +1,4 @@
-package org.triplea.common.util;
+package org.triplea.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.fill;

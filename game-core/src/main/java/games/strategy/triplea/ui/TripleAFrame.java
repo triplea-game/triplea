@@ -79,7 +79,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.triplea.common.util.concurrent.CompletableFutureUtils;
+import org.triplea.util.concurrent.CompletableFutureUtils;
 
 import com.google.common.base.Preconditions;
 

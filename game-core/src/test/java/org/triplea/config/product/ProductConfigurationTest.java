@@ -1,11 +1,11 @@
-package org.triplea.common.config.product;
+package org.triplea.config.product;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.common.config.MemoryPropertyReader;
-import org.triplea.common.config.product.ProductConfiguration.PropertyKeys;
+import org.triplea.config.MemoryPropertyReader;
+import org.triplea.config.product.ProductConfiguration.PropertyKeys;
 
 import games.strategy.util.Version;
 

@@ -1,11 +1,11 @@
-package org.triplea.common.util;
+package org.triplea.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.triplea.common.util.Arrays.withSensitiveArray;
-import static org.triplea.common.util.Arrays.withSensitiveArrayAndReturn;
+import static org.triplea.util.Arrays.withSensitiveArray;
+import static org.triplea.util.Arrays.withSensitiveArrayAndReturn;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

@@ -1,4 +1,4 @@
-package org.triplea.common.config;
+package org.triplea.config;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;

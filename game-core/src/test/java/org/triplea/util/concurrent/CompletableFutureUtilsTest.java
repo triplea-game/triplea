@@ -1,10 +1,10 @@
-package org.triplea.common.util.concurrent;
+package org.triplea.util.concurrent;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.triplea.common.util.concurrent.CompletableFutureUtils.logExceptionWhenComplete;
+import static org.triplea.util.concurrent.CompletableFutureUtils.logExceptionWhenComplete;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;

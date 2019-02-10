@@ -1,4 +1,4 @@
-package org.triplea.common.config.product;
+package org.triplea.config.product;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;

@@ -1,4 +1,4 @@
-package org.triplea.common.util.concurrent;
+package org.triplea.util.concurrent;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

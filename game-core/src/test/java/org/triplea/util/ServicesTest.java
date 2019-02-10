@@ -1,4 +1,4 @@
-package org.triplea.common.util;
+package org.triplea.util;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAnd;
@@ -7,8 +7,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.triplea.common.util.Services.loadAny;
-import static org.triplea.common.util.Services.tryLoadAny;
+import static org.triplea.util.Services.loadAny;
+import static org.triplea.util.Services.tryLoadAny;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

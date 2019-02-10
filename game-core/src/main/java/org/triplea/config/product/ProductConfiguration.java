@@ -1,7 +1,7 @@
-package org.triplea.common.config.product;
+package org.triplea.config.product;
 
-import org.triplea.common.config.PropertyReader;
-import org.triplea.common.config.ResourcePropertyReader;
+import org.triplea.config.PropertyReader;
+import org.triplea.config.ResourcePropertyReader;
 
 import com.google.common.annotations.VisibleForTesting;
 
