@@ -76,8 +76,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate {
   }
 
   @Override
-  protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerId player,
-      final boolean countSwitchedProductionToNeighbors) {
+  protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerId player) {
     if (units == null) {
       return -1;
     }

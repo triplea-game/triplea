@@ -182,7 +182,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return new PlaceableUnits(error);
     }
     final Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, player);
-    final int maxUnits = getMaxUnitsToBePlaced(placeableUnits, to, player, true);
+    final int maxUnits = getMaxUnitsToBePlaced(placeableUnits, to, player);
     return new PlaceableUnits(placeableUnits, maxUnits);
   }
 
@@ -226,7 +226,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
             : new ArrayList<>(unitsLeftToPlace));
       }
 
-      unitsCanBePlacedByThisProducer.sort(getHardestToPlaceWithRequiresUnitsRestrictions(true));
+      unitsCanBePlacedByThisProducer.sort(getHardestToPlaceWithRequiresUnitsRestrictions());
       final int maxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
       // don't forget that -1 == infinite
       if (maxForThisProducer == -1 || maxForThisProducer >= unitsCanBePlacedByThisProducer.size()) {
@@ -709,7 +709,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       return "Cannot place more units which require units, than production capacity of territories with the required "
           + "units";
     }
-    final int maxUnitsToBePlaced = getMaxUnitsToBePlaced(units, to, player, true);
+    final int maxUnitsToBePlaced = getMaxUnitsToBePlaced(units, to, player);
     if ((maxUnitsToBePlaced != -1) && (maxUnitsToBePlaced < units.size())) {
       return "Cannot place " + units.size() + " more units in " + to.getName();
     }
@@ -983,9 +983,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
   /**
    * Returns -1 if can place unlimited units.
    */
-  protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerId player,
-      final boolean countSwitchedProductionToNeighbors) {
-    final IntegerMap<Territory> map = getMaxUnitsToBePlacedMap(units, to, player, countSwitchedProductionToNeighbors);
+  protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerId player) {
+    final IntegerMap<Territory> map = getMaxUnitsToBePlacedMap(units, to, player, true);
     int production = 0;
     for (final Entry<Territory, Integer> entry : map.entrySet()) {
       final int prodT = entry.getValue();
@@ -1363,7 +1362,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
         unitsLeftToPlace.removeAll(canBePlacedHere);
         continue;
       }
-      canBePlacedHere.sort(getHardestToPlaceWithRequiresUnitsRestrictions(true));
+      canBePlacedHere.sort(getHardestToPlaceWithRequiresUnitsRestrictions());
       final Collection<Unit> placedHere =
           CollectionUtils.getNMatches(canBePlacedHere, productionHere, Matches.always());
       unitsLeftToPlace.removeAll(placedHere);
@@ -1416,8 +1415,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
     };
   }
 
-  private static Comparator<Unit> getHardestToPlaceWithRequiresUnitsRestrictions(
-      final boolean sortConstructionsToFront) {
+  private static Comparator<Unit> getHardestToPlaceWithRequiresUnitsRestrictions() {
     return (u1, u2) -> {
       if (Objects.equals(u1, u2)) {
         return 0;
@@ -1435,11 +1433,9 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implemen
       }
 
       // constructions go ahead first
-      if (sortConstructionsToFront) {
-        final int constructionSort = getUnitConstructionComparator().compare(u1, u2);
-        if (constructionSort != 0) {
-          return constructionSort;
-        }
+      final int constructionSort = getUnitConstructionComparator().compare(u1, u2);
+      if (constructionSort != 0) {
+        return constructionSort;
       }
       final List<String[]> ru1 = ua1.getRequiresUnits();
       final List<String[]> ru2 = ua2.getRequiresUnits();
