@@ -582,7 +582,6 @@ final class ProTechAi {
         .of(Matches.territoryIsImpassable().negate())
         .andIf(Properties.getNeutralsImpassable(data), Matches.territoryIsNeutralButNotWater().negate())
         .build();
-    final int distance = 1;
     return findFrontier(territory, endCond, Matches.always(), data);
   }
 
