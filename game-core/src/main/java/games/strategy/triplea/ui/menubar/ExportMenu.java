@@ -193,7 +193,7 @@ final class ExportMenu extends JMenu {
       }
       writer.println();
       writer.append("Winners: ,");
-      final EndRoundDelegate delegateEndRound = (EndRoundDelegate) gameData.getDelegateList().getDelegate("endRound");
+      final EndRoundDelegate delegateEndRound = (EndRoundDelegate) gameData.getDelegate("endRound");
       if (delegateEndRound != null && delegateEndRound.getWinners() != null) {
         for (final PlayerId p : delegateEndRound.getWinners()) {
           writer.append(p.getName()).append(',');

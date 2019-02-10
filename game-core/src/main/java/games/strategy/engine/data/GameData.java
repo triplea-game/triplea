@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import com.google.common.base.MoreObjects;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.message.PlayerListing;
@@ -75,16 +77,16 @@ public class GameData implements Serializable {
   private int diceSides;
   private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
   private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
+  private transient Map<String, IDelegate> delegates = new HashMap<>();
   private final AllianceTracker alliances = new AllianceTracker();
   // Tracks current relationships between players, this is empty if relationships aren't used
   private final RelationshipTracker relationships = new RelationshipTracker(this);
-  private final DelegateList delegateList;
   private final GameMap map = new GameMap(this);
   private final PlayerList playerList = new PlayerList(this);
   private final ProductionFrontierList productionFrontierList = new ProductionFrontierList(this);
   private final ProductionRuleList productionRuleList = new ProductionRuleList(this);
   private final RepairFrontierList repairFrontierList = new RepairFrontierList(this);
-  private final RepairRuleList repairRuleList = new RepairRuleList(this);
+  private final RepairRules repairRules = new RepairRules(this);
   private final ResourceList resourceList = new ResourceList(this);
   private final GameSequence sequence = new GameSequence(this);
   private final UnitTypeList unitTypeList = new UnitTypeList(this);
@@ -99,10 +101,6 @@ public class GameData implements Serializable {
   private final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues = new ArrayList<>();
   private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
-
-  public GameData() {
-    delegateList = new DelegateList(this);
-  }
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
@@ -182,8 +180,8 @@ public class GameData implements Serializable {
   /**
    * Returns the list of Production Rules for the game.
    */
-  public RepairRuleList getRepairRuleList() {
-    return repairRuleList;
+  public RepairRules getRepairRules() {
+    return repairRules;
   }
 
   /**
@@ -215,8 +213,16 @@ public class GameData implements Serializable {
     return unitTypeList;
   }
 
-  public DelegateList getDelegateList() {
-    return delegateList;
+  public Collection<IDelegate> getDelegates() {
+    return delegates.values();
+  }
+
+  public void addDelegate(final IDelegate delegate) {
+    delegates.put(delegate.getName(), delegate);
+  }
+
+  public IDelegate getDelegate(final String name) {
+    return delegates.get(name);
   }
 
   public UnitHolder getUnitHolder(final String name, final String type) {
@@ -319,6 +325,7 @@ public class GameData implements Serializable {
   public void postDeSerialize() {
     territoryListeners = new CopyOnWriteArrayList<>();
     dataChangeListeners = new CopyOnWriteArrayList<>();
+    delegates = new HashMap<>();
   }
 
   /**

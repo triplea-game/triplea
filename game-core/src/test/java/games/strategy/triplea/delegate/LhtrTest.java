@@ -52,7 +52,7 @@ public class LhtrTest {
 
   @Test
   public void testFightersCanLandOnNewPlacedCarrier() {
-    final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    final MoveDelegate delegate = (MoveDelegate) gameData.getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
@@ -80,7 +80,7 @@ public class LhtrTest {
 
   @Test
   public void testFightersDestroyedWhenNoPendingCarriers() {
-    final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    final MoveDelegate delegate = (MoveDelegate) gameData.getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
@@ -104,7 +104,7 @@ public class LhtrTest {
 
   @Test
   public void testAaGunsDontFireNonCombat() {
-    final MoveDelegate delegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    final MoveDelegate delegate = (MoveDelegate) gameData.getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);

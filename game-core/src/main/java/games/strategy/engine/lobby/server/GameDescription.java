@@ -13,7 +13,7 @@ import games.strategy.net.Node;
 import lombok.Builder;
 import lombok.ToString;
 
-// TODO: move this class to lobby.common upon next incompatible release; it is shared between client and server
+// TODO: move this class to lobby.common upon next lobby-incompatible release; it is shared between client and server
 
 /**
  * NOTE - this class is not thread safe. Modifications should be done holding an external lock.

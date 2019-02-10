@@ -90,8 +90,8 @@ public final class GameDataManager {
       }
 
       final GameData data = (GameData) input.readObject();
-      loadDelegates(input, data);
       data.postDeSerialize();
+      loadDelegates(input, data);
       return data;
     } catch (final ClassNotFoundException cnfe) {
       throw new IOException(cnfe.getMessage());
@@ -125,7 +125,7 @@ public final class GameDataManager {
       try {
         instance = Class.forName(className).asSubclass(IDelegate.class).getDeclaredConstructor().newInstance();
         instance.initialize(name, displayName);
-        data.getDelegateList().addDelegate(instance);
+        data.addDelegate(instance);
       } catch (final Exception e) {
         throw new IOException(e);
       }
@@ -189,7 +189,7 @@ public final class GameDataManager {
   }
 
   private static void writeDelegates(final GameData data, final ObjectOutputStream out) throws IOException {
-    for (final IDelegate delegate : data.getDelegateList()) {
+    for (final IDelegate delegate : data.getDelegates()) {
       out.writeObject(DELEGATE_START);
       // write out the delegate info
       out.writeObject(delegate.getName());

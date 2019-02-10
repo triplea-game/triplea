@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.EOFException;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -1257,11 +1256,7 @@ public class DiceRoll implements Externalizable {
       rolls.add(Die.getFromWriteValue(element));
     }
     hits = in.readInt();
-    try {
-      expectedHits = in.readDouble();
-    } catch (final EOFException e) {
-      // TODO: Ignore, can remove exception handling on incompatible release
-    }
+    expectedHits = in.readDouble();
   }
 
   @Override

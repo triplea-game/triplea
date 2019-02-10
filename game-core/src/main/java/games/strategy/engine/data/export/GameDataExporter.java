@@ -413,7 +413,7 @@ public class GameDataExporter {
   }
 
   private void repairRules(final GameData data) {
-    for (final RepairRule rr : data.getRepairRuleList().getRepairRules()) {
+    for (final RepairRule rr : data.getRepairRules().getRepairRules()) {
       xmlfile.append("        <repairRule name=\"").append(rr.getName()).append("\">\n");
       for (final Resource cost : rr.getCosts().keySet()) {
         xmlfile.append("            <cost resource=\"").append(cost.getName()).append("\" quantity=\"")
@@ -497,7 +497,7 @@ public class GameDataExporter {
   private void gamePlay(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("    <gamePlay>\n");
-    for (final IDelegate delegate : data.getDelegateList()) {
+    for (final IDelegate delegate : data.getDelegates()) {
       if (!delegate.getName().equals("edit")) {
         xmlfile.append("        <delegate name=\"").append(delegate.getName()).append("\" javaClass=\"")
             .append(delegate.getClass().getCanonicalName()).append("\" display=\"").append(delegate.getDisplayName())

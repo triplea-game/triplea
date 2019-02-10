@@ -10,7 +10,7 @@ public final class DelegateFinder {
   private DelegateFinder() {}
 
   private static IDelegate findDelegate(final GameData data, final String delegateName) {
-    final IDelegate delegate = data.getDelegateList().getDelegate(delegateName);
+    final IDelegate delegate = data.getDelegate(delegateName);
     if (delegate == null) {
       throw new IllegalStateException(delegateName + " delegate not found");
     }

@@ -224,7 +224,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void setupDelegateMessaging(final GameData data) {
-    for (final IDelegate delegate : data.getDelegateList()) {
+    for (final IDelegate delegate : data.getDelegates()) {
       addDelegateMessenger(delegate);
     }
   }
@@ -334,7 +334,7 @@ public class ServerGame extends AbstractGame {
       for (final IGamePlayer gp : gamePlayers.values()) {
         remoteMessenger.unregisterRemote(getRemoteName(gp.getPlayerId(), gameData));
       }
-      for (final IDelegate delegate : gameData.getDelegateList()) {
+      for (final IDelegate delegate : gameData.getDelegates()) {
         final Class<? extends IRemote> remoteType = delegate.getRemoteType();
         // if its null then it shouldnt be added as an IRemote
         if (remoteType == null) {
@@ -470,7 +470,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void startPersistentDelegates() {
-    for (final IDelegate delegate : gameData.getDelegateList()) {
+    for (final IDelegate delegate : gameData.getDelegates()) {
       if (!(delegate instanceof IPersistentDelegate)) {
         continue;
       }

@@ -126,7 +126,7 @@ public class AirThatCantLandUtilTest {
     final IDelegateBridge bridge = newDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
-        (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
+        (InitializationDelegate) gameData.getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
@@ -145,14 +145,14 @@ public class AirThatCantLandUtilTest {
     final int preCountSz52 = sz52.getUnitCollection().size();
     final int preCountAirSz44 = sz44.getUnitCollection().getMatches(Matches.unitIsAir()).size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz45.getUnits(), gameData.getMap().getRoute(sz45, sz44));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
+    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     whenGetRandom(bridge)
         .thenAnswer(withValues(0, 0))
@@ -175,7 +175,7 @@ public class AirThatCantLandUtilTest {
     final IDelegateBridge bridge = newDelegateBridge(japanese);
     // we need to initialize the original owner
     final InitializationDelegate initDel =
-        (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
+        (InitializationDelegate) gameData.getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
@@ -196,14 +196,14 @@ public class AirThatCantLandUtilTest {
     final int preCountSz52 = sz52.getUnitCollection().size();
     final int preCountSz43 = sz43.getUnitCollection().size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz45.getUnits(), gameData.getMap().getRoute(sz45, sz44));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
+    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     whenGetRandom(bridge)
         .thenAnswer(withValues(0, 0))
@@ -226,8 +226,7 @@ public class AirThatCantLandUtilTest {
     final PlayerId americans = GameDataTestUtil.americans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(japanese);
     // we need to initialize the original owner
-    final InitializationDelegate initDel =
-        (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
+    final InitializationDelegate initDel = (InitializationDelegate) gameData.getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
@@ -246,14 +245,14 @@ public class AirThatCantLandUtilTest {
     final int preCountCanada = eastCanada.getUnitCollection().size();
     final int preCountAirSz9 = sz9.getUnitCollection().getMatches(Matches.unitIsAir()).size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     moveDelegate.move(sz11.getUnits(), gameData.getMap().getRoute(sz11, sz9));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
+    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     whenGetRandom(bridge).thenAnswer(withValues(0));
     battle.start();
@@ -287,7 +286,7 @@ public class AirThatCantLandUtilTest {
     gameData.performChange(ChangeFactory.addUnits(sz9, fighterType.create(2, americans)));
     // we need to initialize the original owner
     final InitializationDelegate initDel =
-        (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
+        (InitializationDelegate) gameData.getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();
@@ -295,7 +294,7 @@ public class AirThatCantLandUtilTest {
     final int preCountCanada = eastCanada.getUnitCollection().size();
     final int preCountAirSz9 = sz9.getUnitCollection().getMatches(Matches.unitIsAir()).size();
     // now move to attack
-    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegateList().getDelegate("move");
+    final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
@@ -303,7 +302,7 @@ public class AirThatCantLandUtilTest {
     moveDelegate.move(sz9.getUnitCollection().getUnits(infantryType, 1), gameData.getMap().getRoute(sz9, eastCanada));
     moveDelegate.end();
     // fight the battle
-    final BattleDelegate battle = (BattleDelegate) gameData.getDelegateList().getDelegate("battle");
+    final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
     battle.start();
     whenGetRandom(bridge)

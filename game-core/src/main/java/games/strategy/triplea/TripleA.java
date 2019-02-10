@@ -87,11 +87,11 @@ public class TripleA implements IGameLoader {
   public void startGame(final IGame game, final Set<IGamePlayer> players,
       final boolean headless, @Nullable final Chat chat) {
     this.game = game;
-    if (game.getData().getDelegateList().getDelegate("edit") == null) {
+    if (game.getData().getDelegate("edit") == null) {
       // An evil hack: instead of modifying the XML, force an EditDelegate by adding one here
       final EditDelegate delegate = new EditDelegate();
       delegate.initialize("edit", "edit");
-      game.getData().getDelegateList().addDelegate(delegate);
+      game.getData().addDelegate(delegate);
       if (game instanceof ServerGame) {
         ((ServerGame) game).addDelegateMessenger(delegate);
       }

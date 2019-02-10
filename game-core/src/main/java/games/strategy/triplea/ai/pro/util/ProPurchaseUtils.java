@@ -83,9 +83,9 @@ public final class ProPurchaseUtils {
   public static boolean canUnitsBePlaced(final List<Unit> units, final PlayerId player, final Territory t,
       final Territory factoryTerritory, final boolean isBid) {
     final GameData data = player.getData();
-    AbstractPlaceDelegate placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("place");
+    AbstractPlaceDelegate placeDelegate = (AbstractPlaceDelegate) data.getDelegate("place");
     if (isBid) {
-      placeDelegate = (AbstractPlaceDelegate) data.getDelegateList().getDelegate("placeBid");
+      placeDelegate = (AbstractPlaceDelegate) data.getDelegate("placeBid");
     } else if (!t.equals(factoryTerritory) && !units.stream().allMatch(Matches
         .unitWhichRequiresUnitsHasRequiredUnitsInList(placeDelegate.unitsAtStartOfStepInTerritory(factoryTerritory)))) {
       return false;

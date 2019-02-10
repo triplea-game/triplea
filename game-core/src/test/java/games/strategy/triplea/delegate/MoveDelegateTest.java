@@ -38,7 +38,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
     bridge = newDelegateBridge(british);
     advanceToStep(bridge, "britishCombatMove");
     final InitializationDelegate initDel =
-        (InitializationDelegate) gameData.getDelegateList().getDelegate("initDelegate");
+        (InitializationDelegate) gameData.getDelegate("initDelegate");
     initDel.setDelegateBridgeAndPlayer(bridge);
     initDel.start();
     initDel.end();

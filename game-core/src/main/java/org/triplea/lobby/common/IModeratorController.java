@@ -15,7 +15,7 @@ public interface IModeratorController extends IRemote {
   RemoteName REMOTE_NAME =
       new RemoteName("games.strategy.engine.lobby.server.ModeratorController:Global", IModeratorController.class);
 
-  // TODO: The methods accepting a Date parameter can be converted to Instant after the next incompatible release.
+  // TODO: The methods accepting a Date parameter can be converted to Instant after the next lobby-incompatible release.
 
   /**
    * Boot the given INode from the network.
@@ -39,7 +39,7 @@ public interface IModeratorController extends IRemote {
    * @param node The node to ban.
    * @param banExpires {@code null} for a permanent ban.
    *
-   * @deprecated Kept to maintain backwards compatibility. Remove with next incompatible release.
+   * @deprecated Kept to maintain backwards compatibility. Remove with next lobby-incompatible release.
    */
   @Deprecated
   default void banIp(final INode node, final @Nullable Date banExpires) {}
@@ -71,7 +71,7 @@ public interface IModeratorController extends IRemote {
    * @param node The node to mute.
    * @param muteExpires {@code null} for a permanent mute.
    *
-   * @deprecated Kept to maintain backwards compatibility. Remove with next incompatible release.
+   * @deprecated Kept to maintain backwards compatibility. Remove with next lobby-incompatible release.
    */
   @Deprecated
   default void muteIp(final INode node, final @Nullable Date muteExpires) {}

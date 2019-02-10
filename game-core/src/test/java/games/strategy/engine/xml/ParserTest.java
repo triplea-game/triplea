@@ -10,7 +10,6 @@ import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.engine.data.DelegateList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerId;
@@ -22,6 +21,7 @@ import games.strategy.engine.data.ResourceList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.data.UnitTypeList;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
@@ -89,7 +89,7 @@ public class ParserTest {
 
   @Test
   public void testDelegatesCreated() {
-    final DelegateList delegates = gameData.getDelegateList();
+    final Collection<IDelegate> delegates = gameData.getDelegates();
     assertEquals(2, delegates.size());
   }
 

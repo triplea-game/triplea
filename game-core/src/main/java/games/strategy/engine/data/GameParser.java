@@ -387,9 +387,8 @@ public final class GameParser {
   /**
    * If cannot find the repairRule an exception will be thrown.
    */
-  private RepairRule getRepairRule(final Element element)
-      throws GameParseException {
-    return getValidatedObject(element, "name", true, data.getRepairRuleList()::getRepairRule, "repair rule");
+  private RepairRule getRepairRule(final Element element) throws GameParseException {
+    return getValidatedObject(element, "name", true, data.getRepairRules()::getRepairRule, "repair rule");
   }
 
   /**
@@ -428,9 +427,8 @@ public final class GameParser {
   /**
    * If cannot find the Delegate an exception will be thrown.
    */
-  private IDelegate getDelegate(final Element element)
-      throws GameParseException {
-    return getValidatedObject(element, "delegate", true, data.getDelegateList()::getDelegate, "delegate");
+  private IDelegate getDelegate(final Element element) throws GameParseException {
+    return getValidatedObject(element, "delegate", true, data::getDelegate, "delegate");
   }
 
   /**
@@ -962,7 +960,6 @@ public final class GameParser {
   }
 
   private void parseDelegates(final List<Element> delegateList) throws GameParseException {
-    final DelegateList delegates = data.getDelegateList();
     for (final Element current : delegateList) {
       // load the class
       final String className = current.getAttribute("javaClass");
@@ -974,7 +971,7 @@ public final class GameParser {
         displayName = name;
       }
       delegate.initialize(name, displayName);
-      delegates.addDelegate(delegate);
+      data.addDelegate(delegate);
     }
   }
 
@@ -1045,7 +1042,7 @@ public final class GameParser {
       final RepairRule rule = new RepairRule(name, data);
       parseRepairCosts(rule, getChildren("cost", current));
       parseRepairResults(rule, getChildren("result", current));
-      data.getRepairRuleList().addRepairRule(rule);
+      data.getRepairRules().addRepairRule(rule);
     }
   }
 
