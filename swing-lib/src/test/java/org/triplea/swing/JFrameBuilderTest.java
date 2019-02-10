@@ -116,4 +116,17 @@ class JFrameBuilderTest {
 
     assertThat(testValue.get(), is(true));
   }
+
+  @Test
+  void windowActivatedEvent() {
+    final AtomicBoolean testValue = new AtomicBoolean(false);
+
+    final JFrame frame = JFrameBuilder.builder()
+        .windowActivatedAction(() -> testValue.set(true))
+        .build();
+
+    frame.getWindowListeners()[0].windowActivated(null);
+
+    assertThat(testValue.get(), is(true));
+  }
 }
