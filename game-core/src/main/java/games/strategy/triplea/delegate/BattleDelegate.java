@@ -436,7 +436,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       // add the dependants to the attacking list
       attackingUnits.addAll(dependants);
       final List<Unit> enemyUnits = territory.getUnitCollection().getMatches(Matches.enemyUnit(player, data));
-      final IBattle bombingBattle = battleTracker.getPendingBattle(territory, true, null);
+      final IBattle bombingBattle = battleTracker.getPendingBombingBattle(territory);
       if (bombingBattle != null) {
         // we need to remove any units which are participating in bombing raids
         attackingUnits.removeAll(bombingBattle.getAttackingUnits());
@@ -587,7 +587,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           .flatMap(Collection::stream)
           .collect(Collectors.toSet());
       // only look at bombing battles, because otherwise the normal attack will determine the ownership of the territory
-      final IBattle bombingBattle = battleTracker.getPendingBattle(territory, true, null);
+      final IBattle bombingBattle = battleTracker.getPendingBombingBattle(territory);
       if (bombingBattle != null) {
         enemyUnitsOfAbandonedToUnits.removeAll(bombingBattle.getAttackingUnits());
       }
@@ -833,7 +833,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         continue;
       }
       // make sure the units join the battle, or create a new battle.
-      final IBattle bombing = battleTracker.getPendingBattle(to, true, null);
+      final IBattle bombing = battleTracker.getPendingBombingBattle(to);
       IBattle battle = battleTracker.getPendingBattle(to, false, BattleType.NORMAL);
       if (battle == null) {
         final List<Unit> attackingUnits = to.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player));

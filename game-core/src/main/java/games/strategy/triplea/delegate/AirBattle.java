@@ -338,7 +338,7 @@ public class AirBattle extends AbstractBattle {
                 bridge, null, null, targets, true);
           }
         }
-        final IBattle battle = battleTracker.getPendingBattle(battleSite, true, null);
+        final IBattle battle = battleTracker.getPendingBombingBattle(battleSite);
         final IBattle dependent = battleTracker.getPendingBattle(battleSite, false, BattleType.NORMAL);
         if (dependent != null) {
           battleTracker.addDependency(dependent, battle);

@@ -424,7 +424,7 @@ public class BattleTracker implements Serializable {
     if (conquerable.test(route.getEnd())) {
       IBattle precede = getDependentAmphibiousAssault(route);
       if (precede == null) {
-        precede = getPendingBattle(route.getEnd(), true, null);
+        precede = getPendingBombingBattle(route.getEnd());
       }
       // if we have a preceding battle, then we must use a non-fighting-battle
       // if we have scrambling on, and this is an amphibious attack,
@@ -680,7 +680,7 @@ public class BattleTracker implements Serializable {
     // Remove any bombing raids against captured territory
     // TODO: see if necessary
     if (territory.getUnitCollection().anyMatch(Matches.unitIsEnemyOf(data, id).and(Matches.unitCanBeDamaged()))) {
-      final IBattle bombingBattle = getPendingBattle(territory, true, null);
+      final IBattle bombingBattle = getPendingBombingBattle(territory);
       if (bombingBattle != null) {
         final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
         getBattleRecords().addResultToBattle(id, bombingBattle.getBattleId(), null, 0, 0,
@@ -915,7 +915,7 @@ public class BattleTracker implements Serializable {
       addDependency(battle, precede);
     }
     // don't let land battles in the same territory occur before bombing battles
-    final IBattle bombing = getPendingBattle(route.getEnd(), true, null);
+    final IBattle bombing = getPendingBombingBattle(route.getEnd());
     if (bombing != null) {
       addDependency(battle, bombing);
     }
@@ -932,6 +932,15 @@ public class BattleTracker implements Serializable {
     }
     return getPendingBattle(route.getStart(), false, BattleType.NORMAL);
   }
+
+  public IBattle getPendingBombingBattle(final Territory t) {
+    return getPendingBattle(t, true, null);
+  }
+
+  public IBattle getPendingBattle(final Territory t) {
+    return getPendingBattle(t, false, null);
+  }
+
 
   public IBattle getPendingBattle(final Territory t, final boolean bombing, final BattleType type) {
     for (final IBattle battle : pendingBattles) {
@@ -956,13 +965,9 @@ public class BattleTracker implements Serializable {
   }
 
   Collection<IBattle> getPendingBattles(final Territory t) {
-    final Collection<IBattle> battles = new HashSet<>();
-    for (final IBattle battle : pendingBattles) {
-      if (battle.getTerritory().equals(t)) {
-        battles.add(battle);
-      }
-    }
-    return battles;
+    return pendingBattles.stream()
+        .filter(b -> b.getTerritory().equals(t))
+        .collect(Collectors.toSet());
   }
 
   /**
