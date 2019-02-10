@@ -89,7 +89,7 @@ public final class UserController extends AbstractController implements UserDao 
 
   /**
    * Workaround utility method.
-   * Should be removed in the next incompatible release.
+   * Should be removed in the next lobby-incompatible release.
    */
   private static String getPasswordColumn(final HashedPassword hashedPassword) {
     return hashedPassword.isBcrypted() ? "bcrypt_password" : "password";
