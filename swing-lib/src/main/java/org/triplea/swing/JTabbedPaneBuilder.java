@@ -8,7 +8,7 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
-import org.apache.commons.math3.util.Pair;
+import lombok.Value;
 
 
 /**
@@ -30,7 +30,14 @@ public class JTabbedPaneBuilder {
 
   private static final int DEFAULT_TAB_WIDTH = 130;
   private static final int DEFAULT_TAB_HEIGHT = 20;
-  private final List<Pair<String, Component>> components = new ArrayList<>();
+
+  @Value
+  private static class Tab {
+    private final String tabName;
+    private final Component contents;
+  }
+
+  private final List<Tab> components = new ArrayList<>();
   private int tabIndex = 0;
 
   private JTabbedPaneBuilder() {
@@ -44,9 +51,9 @@ public class JTabbedPaneBuilder {
     final JTabbedPane tabbedPane = new JTabbedPane();
 
     components.forEach(component -> {
-      final JLabel sizedLabel = new JLabel(component.getKey());
+      final JLabel sizedLabel = new JLabel(component.getTabName());
       sizedLabel.setPreferredSize(new Dimension(DEFAULT_TAB_WIDTH, DEFAULT_TAB_HEIGHT));
-      tabbedPane.addTab(component.getKey(), SwingComponents.newJScrollPane(component.getValue()));
+      tabbedPane.addTab(component.getTabName(), SwingComponents.newJScrollPane(component.getContents()));
       tabbedPane.setTabComponentAt(tabIndex, sizedLabel);
       tabIndex++;
     });
@@ -55,7 +62,7 @@ public class JTabbedPaneBuilder {
   }
 
   public JTabbedPaneBuilder addTab(final String tabTitle, final Component tabContents) {
-    components.add(new Pair<>(tabTitle, tabContents));
+    components.add(new Tab(tabTitle, tabContents));
     return this;
   }
 

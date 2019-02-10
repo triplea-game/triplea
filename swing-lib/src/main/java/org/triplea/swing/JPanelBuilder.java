@@ -9,6 +9,7 @@ import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -18,13 +19,13 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-import org.apache.commons.math3.util.Pair;
 import org.triplea.swing.GridBagHelper.Anchor;
 import org.triplea.swing.GridBagHelper.Fill;
 
 import com.google.common.base.Preconditions;
 
 import lombok.AllArgsConstructor;
+import lombok.Value;
 
 /**
  * Example usage:.
@@ -38,7 +39,15 @@ import lombok.AllArgsConstructor;
  */
 public class JPanelBuilder {
 
-  private final Collection<Pair<Component, PanelProperties>> components = new ArrayList<>();
+  @Value
+  private static class PanelComponent {
+    @Nonnull
+    private final Component component;
+    @Nonnull
+    private final PanelProperties panelProperties;
+  }
+
+  private final Collection<PanelComponent> panelComponents = new ArrayList<>();
   private Float horizontalAlignment;
   private Border border;
   private LayoutManager layout;
@@ -80,45 +89,41 @@ public class JPanelBuilder {
       gridBagHelper = new GridBagHelper(panel, gridBagHelperColumns);
     }
 
-    for (final Pair<Component, PanelProperties> child : components) {
-      Preconditions.checkNotNull(child.getFirst());
-      Preconditions.checkNotNull(child.getSecond());
-
-
-      final PanelProperties panelProperties = child.getSecond();
+    for (final PanelComponent panelComponent : panelComponents) {
+      final PanelProperties panelProperties = panelComponent.getPanelProperties();
 
       if (panelProperties.borderLayoutPosition == BorderLayoutPosition.DEFAULT) {
         if (gridBagHelper != null) {
 
           gridBagHelper.add(
-              child.getFirst(),
+              panelComponent.getComponent(),
               panelProperties.columnSpan,
               panelProperties.anchor,
               panelProperties.fill);
 
         } else {
-          panel.add(child.getFirst());
+          panel.add(panelComponent.getComponent());
         }
       } else {
         switch (panelProperties.borderLayoutPosition) {
           case CENTER:
-            panel.add(child.getFirst(), BorderLayout.CENTER);
+            panel.add(panelComponent.getComponent(), BorderLayout.CENTER);
             break;
           case SOUTH:
-            panel.add(child.getFirst(), BorderLayout.SOUTH);
+            panel.add(panelComponent.getComponent(), BorderLayout.SOUTH);
             break;
           case NORTH:
-            panel.add(child.getFirst(), BorderLayout.NORTH);
+            panel.add(panelComponent.getComponent(), BorderLayout.NORTH);
             break;
           case WEST:
-            panel.add(child.getFirst(), BorderLayout.WEST);
+            panel.add(panelComponent.getComponent(), BorderLayout.WEST);
             break;
           case EAST:
-            panel.add(child.getFirst(), BorderLayout.EAST);
+            panel.add(panelComponent.getComponent(), BorderLayout.EAST);
             break;
           default:
             Preconditions.checkState(layout != null);
-            panel.add(child.getFirst());
+            panel.add(panelComponent.getComponent());
             break;
         }
       }
@@ -162,7 +167,7 @@ public class JPanelBuilder {
   public JPanelBuilder addNorth(final JComponent child) {
     layout = new BorderLayout();
     Preconditions.checkNotNull(child);
-    components.add(new Pair<>(child, new PanelProperties(BorderLayoutPosition.NORTH)));
+    panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.NORTH)));
     return this;
   }
 
@@ -172,7 +177,7 @@ public class JPanelBuilder {
   public JPanelBuilder addEast(final JComponent child) {
     layout = new BorderLayout();
     Preconditions.checkNotNull(child);
-    components.add(new Pair<>(child, new PanelProperties(BorderLayoutPosition.EAST)));
+    panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.EAST)));
     return this;
   }
 
@@ -182,7 +187,7 @@ public class JPanelBuilder {
   public JPanelBuilder addWest(final JComponent child) {
     layout = new BorderLayout();
     Preconditions.checkNotNull(child);
-    components.add(new Pair<>(child, new PanelProperties(BorderLayoutPosition.WEST)));
+    panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.WEST)));
     return this;
   }
 
@@ -191,7 +196,7 @@ public class JPanelBuilder {
    */
   public JPanelBuilder addCenter(final JComponent child) {
     layout = new BorderLayout();
-    components.add(new Pair<>(child, new PanelProperties(BorderLayoutPosition.CENTER)));
+    panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.CENTER)));
     return this;
   }
 
@@ -255,13 +260,15 @@ public class JPanelBuilder {
   }
 
   public JPanelBuilder add(final Component component) {
-    components.add(new Pair<>(component, new PanelProperties(BorderLayoutPosition.DEFAULT)));
+    Preconditions.checkNotNull(component);
+    panelComponents.add(new PanelComponent(component, new PanelProperties(BorderLayoutPosition.DEFAULT)));
     return this;
   }
 
   public JPanelBuilder add(final Component component, final GridBagHelper.Anchor anchor,
       final GridBagHelper.Fill fill) {
-    components.add(new Pair<>(component, new PanelProperties(anchor, fill)));
+    Preconditions.checkNotNull(component);
+    panelComponents.add(new PanelComponent(component, new PanelProperties(anchor, fill)));
     return this;
   }
 
@@ -271,7 +278,7 @@ public class JPanelBuilder {
   public JPanelBuilder addSouth(final JComponent child) {
     layout = new BorderLayout();
     Preconditions.checkNotNull(child);
-    components.add(new Pair<>(child, new PanelProperties(BorderLayoutPosition.SOUTH)));
+    panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.SOUTH)));
     return this;
   }
 
