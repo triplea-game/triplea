@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import org.triplea.common.util.Arrays;
+import org.triplea.util.Arrays;
 
 import com.google.common.base.Preconditions;
 

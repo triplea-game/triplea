@@ -2,7 +2,7 @@ package games.strategy.engine;
 
 import java.util.List;
 
-import org.triplea.common.config.product.ProductConfiguration;
+import org.triplea.config.product.ProductConfiguration;
 
 import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import games.strategy.engine.framework.map.download.DownloadFileDescription;

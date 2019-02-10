@@ -28,10 +28,10 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import org.triplea.common.util.concurrent.CompletableFutureUtils;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.util.concurrent.CompletableFutureUtils;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
@@ -335,7 +335,6 @@ public final class HelpMenu extends JMenu {
 
   private void addReportBugsMenu() {
     add(SwingAction.of("Send Bug Report",
-        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES.toString())))
-            .setMnemonic(KeyEvent.VK_B);
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES))).setMnemonic(KeyEvent.VK_B);
   }
 }

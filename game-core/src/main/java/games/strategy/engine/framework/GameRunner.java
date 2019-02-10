@@ -33,12 +33,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 
-import org.triplea.common.util.Services;
 import org.triplea.game.ApplicationContext;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.ProgressWindow;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.util.Services;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;

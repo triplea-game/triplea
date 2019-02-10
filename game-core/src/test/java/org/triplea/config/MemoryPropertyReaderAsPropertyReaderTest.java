@@ -1,4 +1,4 @@
-package org.triplea.common.config;
+package org.triplea.config;
 
 import java.util.Map;
 
