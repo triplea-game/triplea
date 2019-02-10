@@ -1,6 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.EOFException;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
