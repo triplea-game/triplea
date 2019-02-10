@@ -7,6 +7,7 @@ import static org.hamcrest.core.Is.is;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -102,5 +103,17 @@ class JFrameBuilderTest {
 
     SwingComponentWrapper.of(frame)
         .assertHasComponentByName(name);
+  }
+
+  @Test
+  void windowClosingEvent() {
+    final AtomicBoolean testValue = new AtomicBoolean(false);
+
+    JFrameBuilder.builder()
+        .windowCloseAction(() -> testValue.set(true))
+        .build()
+        .dispose();
+
+    assertThat(testValue.get(), is(true));
   }
 }

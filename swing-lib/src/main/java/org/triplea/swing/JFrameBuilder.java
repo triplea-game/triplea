@@ -43,7 +43,7 @@ public class JFrameBuilder {
   @Nullable
   private LayoutManager layoutManager;
   @Nullable
-  private Runnable closeAction;
+  private Runnable windowCloseAction;
 
   @Nullable
   private Runnable windowActivatedAction;
@@ -59,13 +59,15 @@ public class JFrameBuilder {
   public JFrame build() {
     // note: we use the two arg JFrame constructor to avoid the headless check that is in the single arg constructor.
     final JFrame frame = new JFrame(title, null) {
+
       @Override
       public void dispose() {
+        // Note: we override dispose method instead of using a WindowStateListener to allow for testing,
+        // the overrided dispose method is always called in headed or headless environment.
         super.dispose();
-        Optional.ofNullable(closeAction).ifPresent(Runnable::run);
+        Optional.ofNullable(windowCloseAction).ifPresent(Runnable::run);
       }
     };
-
     Optional.ofNullable(windowActivatedAction)
         .ifPresent(action -> frame.addWindowListener(new WindowAdapter() {
           @Override
@@ -73,7 +75,6 @@ public class JFrameBuilder {
             windowActivatedAction.run();
           }
         }));
-
 
     frame.setMinimumSize(new Dimension(minWidth, minHeight));
     frame.setIconImage(getGameIcon(frame));
@@ -164,10 +165,10 @@ public class JFrameBuilder {
   }
 
   /**
-   * Adds an action that will be executed when the frame is disposed.
+   * Adds an action that will be executed when the frame is closed.
    */
-  public JFrameBuilder closeAction(final Runnable closeAction) {
-    this.closeAction = closeAction;
+  public JFrameBuilder windowCloseAction(final Runnable windowAction) {
+    this.windowCloseAction = windowAction;
     return this;
   }
 
