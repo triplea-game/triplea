@@ -948,12 +948,11 @@ public class BattleTracker implements Serializable {
     if (guid == null) {
       return null;
     }
-    for (final IBattle battle : pendingBattles) {
-      if (guid.equals(battle.getBattleId())) {
-        return battle;
-      }
-    }
-    return null;
+
+    return pendingBattles.stream()
+        .filter(b -> b.getBattleId().equals(guid))
+        .findAny()
+        .orElse(null);
   }
 
   Collection<IBattle> getPendingBattles(final Territory t) {
