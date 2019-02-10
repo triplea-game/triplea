@@ -1257,11 +1257,7 @@ public class DiceRoll implements Externalizable {
       rolls.add(Die.getFromWriteValue(element));
     }
     hits = in.readInt();
-    try {
-      expectedHits = in.readDouble();
-    } catch (final EOFException e) {
-      // TODO: Ignore, can remove exception handling on incompatible release
-    }
+    expectedHits = in.readDouble();
   }
 
   @Override
