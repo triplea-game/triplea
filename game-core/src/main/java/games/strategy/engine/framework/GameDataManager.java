@@ -90,8 +90,8 @@ public final class GameDataManager {
       }
 
       final GameData data = (GameData) input.readObject();
-      loadDelegates(input, data);
       data.postDeSerialize();
+      loadDelegates(input, data);
       return data;
     } catch (final ClassNotFoundException cnfe) {
       throw new IOException(cnfe.getMessage());
