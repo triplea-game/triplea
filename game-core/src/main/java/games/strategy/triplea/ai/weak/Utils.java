@@ -18,15 +18,14 @@ import games.strategy.util.CollectionUtils;
 final class Utils {
   private Utils() {}
 
-  static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units,
-      final boolean sea) {
-    if (AiUtils.strength(units, true, sea) < maxStrength) {
+  static List<Unit> getUnitsUpToStrength(final double maxStrength, final Collection<Unit> units) {
+    if (AiUtils.strength(units, true, false) < maxStrength) {
       return new ArrayList<>(units);
     }
     final List<Unit> unitsUpToStrength = new ArrayList<>();
     for (final Unit u : units) {
       unitsUpToStrength.add(u);
-      if (AiUtils.strength(unitsUpToStrength, true, sea) > maxStrength) {
+      if (AiUtils.strength(unitsUpToStrength, true, false) > maxStrength) {
         return unitsUpToStrength;
       }
     }
