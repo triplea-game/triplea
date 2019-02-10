@@ -497,7 +497,7 @@ public class GameDataExporter {
   private void gamePlay(final GameData data) {
     xmlfile.append("\n");
     xmlfile.append("    <gamePlay>\n");
-    for (final IDelegate delegate : data.getDelegateList()) {
+    for (final IDelegate delegate : data.getDelegates()) {
       if (!delegate.getName().equals("edit")) {
         xmlfile.append("        <delegate name=\"").append(delegate.getName()).append("\" javaClass=\"")
             .append(delegate.getClass().getCanonicalName()).append("\" display=\"").append(delegate.getDisplayName())

@@ -189,7 +189,7 @@ public final class GameDataManager {
   }
 
   private static void writeDelegates(final GameData data, final ObjectOutputStream out) throws IOException {
-    for (final IDelegate delegate : data.getDelegateList()) {
+    for (final IDelegate delegate : data.getDelegates()) {
       out.writeObject(DELEGATE_START);
       // write out the delegate info
       out.writeObject(delegate.getName());

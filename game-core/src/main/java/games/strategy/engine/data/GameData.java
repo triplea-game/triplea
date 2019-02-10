@@ -77,7 +77,7 @@ public class GameData implements Serializable {
   private int diceSides;
   private transient List<TerritoryListener> territoryListeners = new CopyOnWriteArrayList<>();
   private transient List<GameDataChangeListener> dataChangeListeners = new CopyOnWriteArrayList<>();
-  private transient Map<String, IDelegate> delegateList = new HashMap<>();
+  private transient Map<String, IDelegate> delegates = new HashMap<>();
   private final AllianceTracker alliances = new AllianceTracker();
   // Tracks current relationships between players, this is empty if relationships aren't used
   private final RelationshipTracker relationships = new RelationshipTracker(this);
@@ -213,16 +213,16 @@ public class GameData implements Serializable {
     return unitTypeList;
   }
 
-  public Collection<IDelegate> getDelegateList() {
-    return delegateList.values();
+  public Collection<IDelegate> getDelegates() {
+    return delegates.values();
   }
 
   public void addDelegate(final IDelegate delegate) {
-    delegateList.put(delegate.getName(), delegate);
+    delegates.put(delegate.getName(), delegate);
   }
 
   public IDelegate getDelegate(final String name) {
-    return  delegateList.get(name);
+    return  delegates.get(name);
   }
 
   public UnitHolder getUnitHolder(final String name, final String type) {
@@ -325,7 +325,7 @@ public class GameData implements Serializable {
   public void postDeSerialize() {
     territoryListeners = new CopyOnWriteArrayList<>();
     dataChangeListeners = new CopyOnWriteArrayList<>();
-    delegateList = new HashMap<>();
+    delegates = new HashMap<>();
   }
 
   /**

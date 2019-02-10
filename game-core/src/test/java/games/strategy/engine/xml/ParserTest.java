@@ -89,7 +89,7 @@ public class ParserTest {
 
   @Test
   public void testDelegatesCreated() {
-    final Collection<IDelegate> delegates = gameData.getDelegateList();
+    final Collection<IDelegate> delegates = gameData.getDelegates();
     assertEquals(2, delegates.size());
   }
 
