@@ -156,7 +156,7 @@ public class WeakAi extends AbstractAi {
     // find second amphib target
     final Route altRoute = getAlternativeAmphibRoute(player, data);
     if (altRoute != null) {
-      moveCombatSea(data, moveUnits, moveRoutes, player, altRoute, 1);
+      moveCombatSea(data, moveUnits, moveRoutes, player, altRoute);
     }
     doMove(moveUnits, moveRoutes, null, moveDel);
     moveUnits.clear();
@@ -261,7 +261,7 @@ public class WeakAi extends AbstractAi {
   }
 
   private static void moveCombatSea(final GameData data, final List<Collection<Unit>> moveUnits,
-      final List<Route> moveRoutes, final PlayerId player, final Route amphibRoute, final int maxTrans) {
+      final List<Route> moveRoutes, final PlayerId player, final Route amphibRoute) {
     // TODO workaround - should check if amphibRoute is in moveRoutes
     if (moveRoutes.size() == 2) {
       moveRoutes.remove(1);
@@ -277,10 +277,10 @@ public class WeakAi extends AbstractAi {
         .and(Matches.unitIsTransporting());
     final List<Unit> unitsToMove = new ArrayList<>();
     final List<Unit> transports = firstSeaZoneOnAmphib.getUnitCollection().getMatches(ownedAndNotMoved);
-    if (transports.size() <= maxTrans) {
+    if (transports.size() <= 1) {
       unitsToMove.addAll(transports);
     } else {
-      unitsToMove.addAll(transports.subList(0, maxTrans));
+      unitsToMove.addAll(transports.subList(0, 1));
     }
     final List<Unit> landUnits = load2Transports(unitsToMove);
     final Route r = getMaxSeaRoute(data, firstSeaZoneOnAmphib, lastSeaZoneOnAmphib, player);
@@ -670,7 +670,7 @@ public class WeakAi extends AbstractAi {
             // 2) we can potentially attack another territory
             if (!owned.isWater()
                 && data.getMap().getNeighbors(owned, Matches.territoryHasEnemyLandUnits(player, data)).size() > 1) {
-              units = Utils.getUnitsUpToStrength(remainingStrengthNeeded, units, false);
+              units = Utils.getUnitsUpToStrength(remainingStrengthNeeded, units);
             }
             remainingStrengthNeeded -= AiUtils.strength(units, true, false);
             if (units.size() > 0) {
