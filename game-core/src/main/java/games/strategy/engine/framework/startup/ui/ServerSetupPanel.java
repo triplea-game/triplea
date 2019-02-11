@@ -78,7 +78,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
           if (JOptionPane.showConfirmDialog(parentComponent,
               message + "\nDo you want to view the tutorial on how to host? This will open in your internet browser.",
               "View Help Website?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            OpenFileUtility.openUrl(UrlConstants.HOSTING_GUIDE.toString());
+            OpenFileUtility.openUrl(UrlConstants.HOSTING_GUIDE);
           }
           ExitStatus.FAILURE.exit();
         });

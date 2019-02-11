@@ -101,12 +101,12 @@ class MainMenuPane extends BorderPane {
 
   @FXML
   private void showHelp() {
-    triplea.open(UrlConstants.GITHUB_HELP.toString());
+    triplea.open(UrlConstants.GITHUB_HELP);
   }
 
   @FXML
   private void showRuleBook() {
-    triplea.open(UrlConstants.RULE_BOOK.toString());
+    triplea.open(UrlConstants.RULE_BOOK);
   }
 
   @FXML

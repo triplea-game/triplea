@@ -335,7 +335,6 @@ public final class HelpMenu extends JMenu {
 
   private void addReportBugsMenu() {
     add(SwingAction.of("Send Bug Report",
-        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES.toString())))
-            .setMnemonic(KeyEvent.VK_B);
+        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES))).setMnemonic(KeyEvent.VK_B);
   }
 }

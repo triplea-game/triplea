@@ -150,7 +150,7 @@ public class MapCreator extends JFrame {
     panel1.add(Box.createVerticalStrut(30));
     panel1.add(new JLabel("Click button open up the readme file on how to make maps:"));
     final JButton helpButton = new JButton("Start Tutorial  /  Show Help Document");
-    helpButton.addActionListener(e -> OpenFileUtility.openUrl(UrlConstants.MAP_MAKER_HELP.toString()));
+    helpButton.addActionListener(e -> OpenFileUtility.openUrl(UrlConstants.MAP_MAKER_HELP));
     panel1.add(helpButton);
     panel1.add(Box.createVerticalStrut(30));
     panel1.add(new JLabel("Click button to select where your map folder is:"));

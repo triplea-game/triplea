@@ -283,22 +283,19 @@ public final class LobbyMenu extends JMenuBar {
 
   private static void addHelpMenu(final JMenu parentMenu) {
     final JMenuItem hostingLink = new JMenuItem("How to host");
-    hostingLink
-        .addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.HOSTING_GUIDE.toString()));
+    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.HOSTING_GUIDE));
     parentMenu.add(hostingLink);
 
     final JMenuItem helpPageLink = new JMenuItem("Help Page");
-    helpPageLink
-        .addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP.toString()));
+    helpPageLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP));
     parentMenu.add(helpPageLink);
 
     final JMenuItem lobbyRules = new JMenuItem("Lobby Rules");
-    lobbyRules.addActionListener(
-        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES.toString()));
+    lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES));
     parentMenu.add(lobbyRules);
 
     final JMenuItem warClub = new JMenuItem("TripleA Forum");
-    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM.toString()));
+    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
     parentMenu.add(warClub);
   }
 

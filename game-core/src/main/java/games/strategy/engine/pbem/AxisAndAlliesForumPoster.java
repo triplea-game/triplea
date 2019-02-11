@@ -18,7 +18,7 @@ class AxisAndAlliesForumPoster extends NodeBbForumPoster {
 
   @Override
   String getForumUrl() {
-    return UrlConstants.AXIS_AND_ALLIES_FORUM.toString();
+    return UrlConstants.AXIS_AND_ALLIES_FORUM;
   }
 
   @Override

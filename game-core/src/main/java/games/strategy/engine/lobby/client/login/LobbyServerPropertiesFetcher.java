@@ -93,20 +93,16 @@ public final class LobbyServerPropertiesFetcher {
   }
 
   private Optional<LobbyServerProperties> getRemoteProperties() {
-    final String lobbyPropsUrl = UrlConstants.LOBBY_PROPS.toString();
-
-    final Version currentVersion = ClientContext.engineVersion();
-
-    final Optional<LobbyServerProperties> lobbyProps = downloadAndParseRemoteFile(lobbyPropsUrl, currentVersion,
+    final Optional<LobbyServerProperties> lobbyProps = downloadAndParseRemoteFile(
+        UrlConstants.LOBBY_PROPS,
+        ClientContext.engineVersion(),
         LobbyPropertyFileParser::parse);
-
     lobbyProps.ifPresent(props -> {
       ClientSetting.lobbyLastUsedHost.setValue(props.getHost());
       ClientSetting.lobbyLastUsedPort.setValue(props.getPort());
       ClientSetting.lobbyLastUsedHttpHostUri.setValue(props.getHttpServerUri());
       ClientSetting.flush();
     });
-
     return lobbyProps;
   }
 
