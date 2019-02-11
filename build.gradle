@@ -135,6 +135,7 @@ subprojects {
             check 'MissingOverride', CheckSeverity.ERROR
             check 'MutableConstantField', CheckSeverity.ERROR
             check 'NonAtomicVolatileUpdate', CheckSeverity.ERROR
+            check 'ObjectToString', CheckSeverity.ERROR
             check 'OperatorPrecedence', CheckSeverity.ERROR
             check 'ParameterName', CheckSeverity.OFF // workaround for https://github.com/google/error-prone/issues/780
             check 'PrivateConstructorForUtilityClass', CheckSeverity.ERROR

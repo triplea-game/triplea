@@ -25,6 +25,7 @@ import org.triplea.swing.GridBagHelper.Fill;
 import com.google.common.base.Preconditions;
 
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 import lombok.Value;
 
 /**
@@ -361,6 +362,7 @@ public class JPanelBuilder {
   /**
    * Struct-like class for the various properties and styles that can be applied to a panel.
    */
+  @ToString
   private static final class PanelProperties {
     BorderLayoutPosition borderLayoutPosition = BorderLayoutPosition.DEFAULT;
     GridBagHelper.ColumnSpan columnSpan = GridBagHelper.ColumnSpan.of(1);
