@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '4.0.3'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
 archivesBaseName = "$group-$name"

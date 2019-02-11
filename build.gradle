@@ -15,8 +15,8 @@ buildscript {
 plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.20.0'
-    id 'io.franzbecker.gradle-lombok' version '1.14' apply false
-    id 'net.ltgt.errorprone' version '0.6.1' apply false
+    id 'io.franzbecker.gradle-lombok' version '2.0' apply false
+    id 'net.ltgt.errorprone' version '0.7' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
