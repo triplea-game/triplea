@@ -1,5 +1,6 @@
 package org.triplea.swing;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
@@ -20,11 +21,12 @@ import javax.swing.SwingUtilities;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class SwingActionTest {
+class SwingActionTest {
   private static final Object VALUE = new Object();
 
   private static final Runnable RUNNABLE_THROWING_EXCEPTION = () -> {
@@ -44,7 +46,7 @@ public class SwingActionTest {
   private Consumer<KeyEvent> consumer;
 
   @Test
-  public void testActionOf() {
+  void testActionOf() {
     final Action action = SwingAction.of("Name1234", listener);
     assertEquals("Name1234", action.getValue(Action.NAME));
     action.actionPerformed(event);
@@ -52,7 +54,7 @@ public class SwingActionTest {
   }
 
   @Test
-  public void testKeyReleaseListener() {
+  void testKeyReleaseListener() {
     final KeyEvent event = mock(KeyEvent.class);
     final KeyListener action = SwingAction.keyReleaseListener(consumer);
     action.keyReleased(event);
@@ -60,73 +62,59 @@ public class SwingActionTest {
   }
 
   @Test
-  public void testInvokeAndWait_ShouldInvokeActionWhenCalledOffEdt()
-      throws Exception {
+  void testInvokeAndWait_ShouldInvokeActionWhenCalledOffEdt() throws Exception {
     SwingAction.invokeAndWait(action);
 
     verify(action).run();
   }
 
   @Test
-  public void testInvokeAndWait_ShouldInvokeActionWhenCalledOnEdt()
-      throws Exception {
-    SwingUtilities.invokeAndWait(() -> {
-      try {
-        SwingAction.invokeAndWait(action);
-      } catch (final InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    });
+  void testInvokeAndWait_ShouldInvokeActionWhenCalledOnEdt() throws Exception {
+    SwingUtilities.invokeAndWait(() -> assertDoesNotThrow(() -> SwingAction.invokeAndWait(action)));
 
     verify(action).run();
   }
 
   @Test
-  public void testInvokeAndWait_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
+  void testInvokeAndWait_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
     assertThrows(IllegalStateException.class, () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION));
   }
 
   @Test
-  public void testInvokeAndWait_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt() throws Exception {
+  void testInvokeAndWait_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt() throws Exception {
     SwingUtilities.invokeAndWait(() -> assertThrows(
         IllegalStateException.class,
         () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION)));
   }
 
   @Test
-  public void testInvokeAndWaitResult_ShouldReturnActionResultWhenCalledOffEdt() throws Exception {
+  void testInvokeAndWaitResult_ShouldReturnActionResultWhenCalledOffEdt() throws Exception {
     assertEquals(VALUE, SwingAction.invokeAndWaitResult(() -> VALUE));
   }
 
   @Test
-  public void testInvokeAndWaitResult_ShouldReturnActionResultWhenCalledOnEdt() throws Exception {
-    SwingUtilities.invokeAndWait(() -> {
-      try {
-        SwingAction.invokeAndWaitResult(() -> VALUE);
-      } catch (final InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    });
+  void testInvokeAndWaitResult_ShouldReturnActionResultWhenCalledOnEdt() throws Exception {
+    SwingUtilities.invokeAndWait(() -> assertDoesNotThrow(() -> SwingAction.invokeAndWaitResult(() -> VALUE)));
   }
 
   @Test
-  public void testInvokeAndWaitResult_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
+  void testInvokeAndWaitResult_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
     assertThrows(IllegalStateException.class, () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION));
   }
 
   @Test
-  public void testInvokeAndWaitResult_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt() throws Exception {
+  void testInvokeAndWaitResult_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt() throws Exception {
     SwingUtilities.invokeAndWait(() -> assertThrows(
         IllegalStateException.class,
         () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION)));
   }
 
   @Test
-  public void testInvokeNowOrLater() {
+  void testInvokeNowOrLater() {
     final CountDownLatch latch = new CountDownLatch(1);
 
     SwingAction.invokeNowOrLater(latch::countDown);
 
-    assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> latch.await());
+    assertTimeoutPreemptively(Duration.ofSeconds(5L), (Executable) latch::await);
   }
 }
