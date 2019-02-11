@@ -59,6 +59,7 @@ public class JFrameBuilder {
   public JFrame build() {
     // note: we use the two arg JFrame constructor to avoid the headless check that is in the single arg constructor.
     final JFrame frame = new JFrame(title, null) {
+      private static final long serialVersionUID = 194970059577791864L;
 
       @Override
       public void dispose() {
