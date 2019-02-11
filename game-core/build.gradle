@@ -22,7 +22,7 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.23'
 
     testImplementation project(':test-common')
-    testImplementation 'org.awaitility:awaitility:3.1.5'
+    testImplementation 'org.awaitility:awaitility:3.1.6'
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
 }
 
