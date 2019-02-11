@@ -85,8 +85,8 @@ public class WW2V3Year42Test {
     move(baltic.getUnitCollection().getMatches(Matches.unitIsLandTransportable()), new Route(baltic, karrelia));
     final BattleTracker battleTracker = MoveDelegate.getBattleTracker(gameData);
     // we should have a pending land battle, and a pending bombing raid
-    assertNotNull(battleTracker.getPendingBattle(karrelia, false, null));
-    assertNotNull(battleTracker.getPendingBattle(karrelia, true, null));
+    assertNotNull(battleTracker.getPendingBattle(karrelia));
+    assertNotNull(battleTracker.getPendingBombingBattle(karrelia));
     // the territory should not be conquered
     assertEquals(karrelia.getOwner(), russians(gameData));
   }
@@ -110,7 +110,7 @@ public class WW2V3Year42Test {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle
     final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
+        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
     assertEquals(5, mfb.getAttackingUnits().size());
   }
 
@@ -136,7 +136,7 @@ public class WW2V3Year42Test {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle except the italian carrier
     final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
+        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
     assertEquals(6, mfb.getAttackingUnits().size());
   }
 
@@ -161,7 +161,7 @@ public class WW2V3Year42Test {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     // all units in sz5 should be involved in the battle
     final MustFightBattle mfb =
-        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5, false, null);
+        (MustFightBattle) MoveDelegate.getBattleTracker(gameData).getPendingBattle(sz5);
     assertEquals(4, mfb.getAttackingUnits().size());
   }
 }

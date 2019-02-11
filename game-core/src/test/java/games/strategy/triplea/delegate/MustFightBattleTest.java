@@ -40,7 +40,7 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
     move(sz33.getUnits(), new Route(sz33, sz40));
     moveDelegate(twwGameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(sz40, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(sz40);
 
     // Set first roll to hit (mine AA) and check that both units are killed
     whenGetRandom(bridge).thenAnswer(withValues(0));
@@ -64,7 +64,7 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
     battleDelegate(twwGameData).setDelegateBridgeAndPlayer(bridge);
     BattleDelegate.doInitialize(battleDelegate(twwGameData).getBattleTracker(), bridge);
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(celebes, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(twwGameData).getPendingBattle(celebes);
 
     // Ensure battle ends, both units remain, and has 0 rolls
     battle.fight(bridge);

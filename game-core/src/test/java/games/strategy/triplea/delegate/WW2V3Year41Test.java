@@ -402,7 +402,7 @@ public class WW2V3Year41Test {
     // we should not be able to retreat to east poland!
     // that territory is still owned by the enemy
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(ukraine, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(ukraine);
     assertFalse(battle.getAttackerRetreatTerritories().contains(eastPoland));
   }
 
@@ -426,7 +426,7 @@ public class WW2V3Year41Test {
     // we should not be able to retreat to east poland!
     // that territory was just conquered
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(ukraine, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(ukraine);
     assertTrue(battle.getAttackerRetreatTerritories().contains(eastPoland));
   }
 
@@ -829,7 +829,7 @@ public class WW2V3Year41Test {
     // move again
     move(sz14.getUnitCollection().getMatches(Matches.unitIsNotTransport()), r);
     final MustFightBattle mfb =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz12, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(sz12);
     // only 3 attacking units
     // the battleship and the two cruisers
     assertEquals(3, mfb.getAttackingUnits().size());
@@ -851,7 +851,7 @@ public class WW2V3Year41Test {
     move(from.getUnits(), new Route(from, attacked));
     moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         Arrays.asList(attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + SUBS_FIRE,
@@ -886,7 +886,7 @@ public class WW2V3Year41Test {
     move(from.getUnits(), new Route(from, attacked));
     moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         Arrays.asList(defender + SUBS_SUBMERGE, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES,
@@ -920,7 +920,7 @@ public class WW2V3Year41Test {
     move(from.getUnits(), new Route(from, attacked));
     moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         Arrays.asList(attacker + SUBS_SUBMERGE, attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES,
@@ -955,7 +955,7 @@ public class WW2V3Year41Test {
     move(from.getUnits(), new Route(from, attacked));
     moveDelegate(gameData).end();
     final MustFightBattle battle =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(attacked);
     final List<String> steps = battle.determineStepStrings(true);
     assertEquals(
         Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, attacker + FIRE,
@@ -1010,7 +1010,7 @@ public class WW2V3Year41Test {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     battleDelegate(gameData).addBombardmentSources();
     final MustFightBattle mfb =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(eg, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(eg);
     // only 2 ships are allowed to bombard (there are 1 battleship and 2 cruisers that COULD bombard, but only 2 ships
     // may bombard total)
     assertEquals(2, mfb.getBombardingUnits().size());
@@ -1073,7 +1073,7 @@ public class WW2V3Year41Test {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     battleDelegate(gameData).addBombardmentSources();
     final MustFightBattle mfb =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(eg, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(eg);
     assertNotNull(mfb);
     // Show that bombard casualties can return fire
     // destroyer bombard hit/miss on rolls of 4 & 3
@@ -1122,7 +1122,7 @@ public class WW2V3Year41Test {
     BattleDelegate.doInitialize(battleDelegate(gameData).getBattleTracker(), bridge);
     battleDelegate(gameData).addBombardmentSources();
     final MustFightBattle mfb =
-        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(eg, false, null);
+        (MustFightBattle) AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattle(eg);
     // only 2 battleships are allowed to bombard
     assertEquals(2, mfb.getBombardingUnits().size());
   }
