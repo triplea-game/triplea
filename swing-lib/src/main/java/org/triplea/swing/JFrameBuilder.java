@@ -43,8 +43,7 @@ public class JFrameBuilder {
   @Nullable
   private LayoutManager layoutManager;
   @Nullable
-  private Runnable windowCloseAction;
-
+  private Runnable windowClosedAction;
   @Nullable
   private Runnable windowActivatedAction;
 
@@ -58,23 +57,18 @@ public class JFrameBuilder {
    */
   public JFrame build() {
     // note: we use the two arg JFrame constructor to avoid the headless check that is in the single arg constructor.
-    final JFrame frame = new JFrame(title, null) {
+    final JFrame frame = new JFrame(title, null);
+    frame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowActivated(final WindowEvent e) {
+        Optional.ofNullable(windowActivatedAction).ifPresent(Runnable::run);
+      }
 
       @Override
-      public void dispose() {
-        // Note: we override dispose method instead of using a WindowStateListener to allow for testing,
-        // the overrided dispose method is always called in headed or headless environment.
-        super.dispose();
-        Optional.ofNullable(windowCloseAction).ifPresent(Runnable::run);
+      public void windowClosed(final WindowEvent e) {
+        Optional.ofNullable(windowClosedAction).ifPresent(Runnable::run);
       }
-    };
-    Optional.ofNullable(windowActivatedAction)
-        .ifPresent(action -> frame.addWindowListener(new WindowAdapter() {
-          @Override
-          public void windowActivated(final WindowEvent e) {
-            windowActivatedAction.run();
-          }
-        }));
+    });
 
     frame.setMinimumSize(new Dimension(minWidth, minHeight));
     frame.setIconImage(getGameIcon());
@@ -159,14 +153,13 @@ public class JFrameBuilder {
   /**
    * Adds an action that will be executed when the frame is closed.
    */
-  public JFrameBuilder windowCloseAction(final Runnable windowAction) {
-    this.windowCloseAction = windowAction;
+  public JFrameBuilder windowClosedAction(final Runnable windowClosedAction) {
+    this.windowClosedAction = windowClosedAction;
     return this;
   }
 
-
   /**
-   * Adds an action that will be executed when the frame is activated\.
+   * Adds an action that will be executed when the frame is activated.
    */
   public JFrameBuilder windowActivatedAction(final Runnable windowActivatedAction) {
     this.windowActivatedAction = windowActivatedAction;

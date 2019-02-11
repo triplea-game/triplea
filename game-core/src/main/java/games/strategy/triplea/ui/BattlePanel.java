@@ -61,7 +61,7 @@ public class BattlePanel extends ActionPanel {
   // the display is shown on the screen
   private volatile GUID currentBattleDisplayed;
   private final JFrame battleFrame = JFrameBuilder.builder()
-      .windowCloseAction(() -> PbemDiceRoller.setFocusWindow(null))
+      .windowClosedAction(() -> PbemDiceRoller.setFocusWindow(null))
       .windowActivatedAction(
           () -> SwingUtilities.invokeLater(
               () -> Optional.ofNullable(battleDisplay)

@@ -4,20 +4,24 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.verify;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.test.common.swing.DisabledInHeadlessGraphicsEnvironment;
 import org.triplea.test.common.swing.SwingComponentWrapper;
 
 @ExtendWith(DisabledInHeadlessGraphicsEnvironment.class)
+@ExtendWith(MockitoExtension.class)
 class JFrameBuilderTest {
   private static final String TITLE = "A falsis, finis secundus quadra.";
   private static final int WIDTH = 100;
@@ -106,27 +110,38 @@ class JFrameBuilderTest {
   }
 
   @Test
-  void windowClosingEvent() {
-    final AtomicBoolean testValue = new AtomicBoolean(false);
+  void windowClosedAction(@Mock final Runnable action) {
+    final JFrame frame = JFrameBuilder.builder()
+        .windowClosedAction(action)
+        .build();
 
-    JFrameBuilder.builder()
-        .windowCloseAction(() -> testValue.set(true))
-        .build()
-        .dispose();
+    frame.getWindowListeners()[0].windowClosed(null);
 
-    assertThat(testValue.get(), is(true));
+    verify(action).run();
   }
 
   @Test
-  void windowActivatedEvent() {
-    final AtomicBoolean testValue = new AtomicBoolean(false);
+  void windowClosedAction_RaisingEventShouldNotThrowExceptionWhenActionNotSet() {
+    final JFrame frame = JFrameBuilder.builder().build();
 
+    assertDoesNotThrow(() -> frame.getWindowListeners()[0].windowClosed(null));
+  }
+
+  @Test
+  void windowActivatedAction(@Mock final Runnable action) {
     final JFrame frame = JFrameBuilder.builder()
-        .windowActivatedAction(() -> testValue.set(true))
+        .windowActivatedAction(action)
         .build();
 
     frame.getWindowListeners()[0].windowActivated(null);
 
-    assertThat(testValue.get(), is(true));
+    verify(action).run();
+  }
+
+  @Test
+  void windowActivatedAction_RaisingEventShouldNotThrowExceptionWhenActionNotSet() {
+    final JFrame frame = JFrameBuilder.builder().build();
+
+    assertDoesNotThrow(() -> frame.getWindowListeners()[0].windowActivated(null));
   }
 }
