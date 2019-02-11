@@ -23,36 +23,32 @@ final class WebHelpMenu extends JMenu {
   private void addWebMenu() {
     final JMenuItem hostingLink = new JMenuItem("How to Host");
     hostingLink.setMnemonic(KeyEvent.VK_H);
-    hostingLink
-        .addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP.toString()));
+    hostingLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP));
     add(hostingLink);
 
     final JMenuItem lobbyRules = new JMenuItem("Lobby Rules");
     lobbyRules.setMnemonic(KeyEvent.VK_L);
-    lobbyRules.addActionListener(
-        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES.toString()));
+    lobbyRules.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_LOBBY_RULES));
     add(lobbyRules);
 
     final JMenuItem warClub = new JMenuItem("TripleA Forum");
     warClub.setMnemonic(KeyEvent.VK_W);
-    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM.toString()));
+    warClub.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
     add(warClub);
 
     final JMenuItem donateLink = new JMenuItem("Donate");
     donateLink.setMnemonic(KeyEvent.VK_O);
-    donateLink
-        .addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE.toString()));
+    donateLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.PAYPAL_DONATE));
     add(donateLink);
 
     final JMenuItem helpLink = new JMenuItem("Help");
     helpLink.setMnemonic(KeyEvent.VK_G);
-    helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP.toString()));
+    helpLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP));
     add(helpLink);
 
     final JMenuItem ruleBookLink = new JMenuItem("Rule Book");
     ruleBookLink.setMnemonic(KeyEvent.VK_K);
-    ruleBookLink
-        .addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK.toString()));
+    ruleBookLink.addActionListener(e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK));
     add(ruleBookLink);
   }
 }

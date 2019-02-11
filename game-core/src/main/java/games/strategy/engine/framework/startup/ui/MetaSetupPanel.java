@@ -132,11 +132,11 @@ public class MetaSetupPanel extends SetupPanel {
   }
 
   private static void ruleBook() {
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK.toString());
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK);
   }
 
   private static void helpPage() {
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP.toString());
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP);
   }
 
   @Override

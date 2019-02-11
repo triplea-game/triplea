@@ -18,7 +18,7 @@ class TripleAForumPoster extends NodeBbForumPoster {
 
   @Override
   String getForumUrl() {
-    return UrlConstants.TRIPLEA_FORUM.toString();
+    return UrlConstants.TRIPLEA_FORUM;
   }
 
   @Override
