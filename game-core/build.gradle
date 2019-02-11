@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 description = 'TripleA core library containing code shared between headed and headless versions'
 
 ext {
-    apacheHttpComponentsVersion = '4.5.6'
+    apacheHttpComponentsVersion = '4.5.7'
 }
 
 dependencies {
@@ -22,7 +22,7 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.23'
 
     testImplementation project(':test-common')
-    testImplementation 'org.awaitility:awaitility:3.1.5'
+    testImplementation 'org.awaitility:awaitility:3.1.6'
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
 }
 
