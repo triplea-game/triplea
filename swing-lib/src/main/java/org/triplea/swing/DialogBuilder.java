@@ -9,13 +9,11 @@ import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 
 /**
  * Type-safe builder to create a swing dialog confirmation runnable. When the runnable is executed a modal
  * yes/no confirmation dialog will be shown to the user, if yes is clicked the confirm action will be executed.
  */
-@Log
 public final class DialogBuilder {
   private DialogBuilder() {}
 
