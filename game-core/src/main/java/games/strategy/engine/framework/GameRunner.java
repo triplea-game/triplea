@@ -56,13 +56,11 @@ import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.util.ExitStatus;
 import games.strategy.util.Interruptibles;
 import games.strategy.util.Version;
-import lombok.extern.java.Log;
 
 /**
  * GameRunner - The entrance class with the main method.
  * In this class commonly used constants are getting defined and the Game is being launched
  */
-@Log
 public final class GameRunner {
   public static final String TRIPLEA_HEADLESS = "triplea.headless";
   public static final int PORT = 3300;
