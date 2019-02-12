@@ -828,7 +828,7 @@ public final class TripleAFrame extends JFrame {
     messageAndDialogThreadPool.waitForAll();
     actionButtons.changeToMove(player, nonCombat, stepName);
     // workaround for panel not receiving focus at beginning of n/c move phase
-    if (!getBattlePanel().getBattleFrame().isVisible()) {
+    if (!getBattlePanel().isBattleShowing()) {
       requestWindowFocus();
     }
     return actionButtons.waitForMove(bridge);
