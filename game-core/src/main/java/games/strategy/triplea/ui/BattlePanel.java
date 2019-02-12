@@ -52,7 +52,7 @@ import lombok.extern.java.Log;
  * UI for fighting battles.
  */
 @Log
-public class BattlePanel extends ActionPanel {
+public final class BattlePanel extends ActionPanel {
   private static final long serialVersionUID = 5304208569738042592L;
   private final JLabel actionLabel = new JLabel();
   private FightBattleDetails fightBattleMessage;
@@ -172,8 +172,8 @@ public class BattlePanel extends ActionPanel {
     return true;
   }
 
-  protected JFrame getBattleFrame() {
-    return battleFrame;
+  boolean isBattleShowing() {
+    return battleFrame.isVisible();
   }
 
   public void listBattle(final List<String> steps) {
