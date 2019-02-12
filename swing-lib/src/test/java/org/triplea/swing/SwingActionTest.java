@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -94,7 +95,12 @@ class SwingActionTest {
 
   @Test
   void testInvokeAndWaitResult_ShouldReturnActionResultWhenCalledOnEdt() throws Exception {
-    SwingUtilities.invokeAndWait(() -> assertDoesNotThrow(() -> SwingAction.invokeAndWaitResult(() -> VALUE)));
+    final AtomicReference<Object> actualValueRef = new AtomicReference<>();
+
+    SwingUtilities.invokeAndWait(
+        () -> assertDoesNotThrow(() -> actualValueRef.set(SwingAction.invokeAndWaitResult(() -> VALUE))));
+
+    assertEquals(VALUE, actualValueRef.get());
   }
 
   @Test
