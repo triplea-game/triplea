@@ -47,6 +47,11 @@ public class GameDescription implements Externalizable, Cloneable {
   }
 
   private INode hostedBy;
+
+  /**
+   * @deprecated This method is obsolete, the Node stored in hostedBy is completely sufficient.
+   */
+  @Deprecated
   private int port;
 
   /**
@@ -137,6 +142,7 @@ public class GameDescription implements Externalizable, Cloneable {
     this.playerCount = playerCount;
   }
 
+  @Deprecated
   public void setPort(final int port) {
     version++;
     this.port = port;
@@ -205,6 +211,7 @@ public class GameDescription implements Externalizable, Cloneable {
     return playerCount;
   }
 
+  @Deprecated
   public int getPort() {
     return port;
   }
