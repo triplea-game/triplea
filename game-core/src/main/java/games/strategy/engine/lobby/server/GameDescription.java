@@ -50,6 +50,7 @@ public class GameDescription implements Externalizable, Cloneable {
 
   /**
    * Kept for compatibility. Remove in the next lobby-incompatible release.
+   *
    * @deprecated This field is redundant, the Node stored in hostedBy is completely sufficient.
    */
   @Deprecated
