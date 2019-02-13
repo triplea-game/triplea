@@ -60,8 +60,6 @@ final class LobbyGameController implements ILobbyGameController {
 
   @Override
   public void postGame(final GUID gameId, final GameDescription description) {
-    final INode from = MessageContext.getSender();
-    assertCorrectHost(description, from);
     log.info("Game added:" + description);
     synchronized (mutex) {
       allGames.put(gameId, description);
@@ -69,17 +67,8 @@ final class LobbyGameController implements ILobbyGameController {
     broadcaster.gameUpdated(gameId, description);
   }
 
-  private static void assertCorrectHost(final GameDescription description, final INode from) {
-    if (!from.getAddress().getHostAddress().equals(description.getHostedBy().getAddress().getHostAddress())) {
-      log.severe("Game modified from wrong host, from:" + from + " game host:" + description.getHostedBy());
-      throw new IllegalStateException("Game from the wrong host");
-    }
-  }
-
   @Override
   public void updateGame(final GUID gameId, final GameDescription description) {
-    final INode from = MessageContext.getSender();
-    assertCorrectHost(description, from);
     synchronized (mutex) {
       final GameDescription oldDescription = allGames.get(gameId);
       // out of order updates
@@ -116,8 +105,6 @@ final class LobbyGameController implements ILobbyGameController {
       return "No such game found";
     }
     // make sure we are being tested from the right node
-    final INode from = MessageContext.getSender();
-    assertCorrectHost(description, from);
     final int port = description.getPort();
     final String host = description.getHostedBy().getAddress().getHostAddress();
     try (Socket s = new Socket()) {
