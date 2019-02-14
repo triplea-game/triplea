@@ -157,7 +157,6 @@ public final class GameParser {
 
     // test minimum engine version FIRST
     parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
-    parseGameLoader(getSingleChild("loader", root, true));
     // if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and
     // see if we have any SAX errors we need to show
     if (!errorsSax.isEmpty()) {
@@ -511,12 +510,6 @@ public final class GameParser {
     data.setGameName(gameName);
     final String version = ((Element) info).getAttribute("version");
     data.setGameVersion(new Version(version));
-  }
-
-  private static void parseGameLoader(final Node loader) {
-    if (loader != null) {
-      log.fine("Loader tag is being ignored");
-    }
   }
 
   private void parseMap(final Node map) throws GameParseException {
