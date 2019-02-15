@@ -4,7 +4,9 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Optional;
 
+import javax.annotation.Nullable;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
@@ -28,12 +30,17 @@ import com.google.common.base.Strings;
  */
 public final class JTextAreaBuilder {
 
+  @Nullable
   private String text;
+  @Nullable
   private String componentName;
   private int rows = 3;
   private int columns = 15;
   private boolean readOnly;
   private boolean selectAllOnFocus;
+  @Nullable
+  private String toolTip;
+
 
   private JTextAreaBuilder() {}
 
@@ -53,6 +60,7 @@ public final class JTextAreaBuilder {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
     textArea.setName(componentName);
+    Optional.ofNullable(toolTip).ifPresent(textArea::setToolTipText);
 
     if (readOnly) {
       textArea.setEditable(false);
@@ -126,6 +134,15 @@ public final class JTextAreaBuilder {
 
   public JTextAreaBuilder selectAllTextOnFocus() {
     selectAllOnFocus = true;
+    return this;
+  }
+
+  /**
+   * Specifies the tooltip that is shown when user hovers over the text area.
+   * By default there is no tooltip text.
+   */
+  public JTextAreaBuilder toolTip(final String toolTip) {
+    this.toolTip = toolTip;
     return this;
   }
 }
