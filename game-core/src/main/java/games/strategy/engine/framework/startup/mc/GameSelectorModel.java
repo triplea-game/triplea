@@ -65,8 +65,11 @@ public class GameSelectorModel extends Observable {
 
   /**
    * Loads game data by parsing a given file.
+   *
+   * @return True if file parsing was successful and an internal {@code GameData}
+   *         was set. Otherwise returns false and internal {@code GameData} is null.
    */
-  public void load(final File file) {
+  public boolean load(final File file) {
     Preconditions.checkArgument(file.exists() && file.isFile(),
         "File should exist at: " + file.getAbsolutePath());
 
@@ -84,8 +87,10 @@ public class GameSelectorModel extends Observable {
       if (newData != null) {
         load(newData, file.getName());
       }
+      return (newData != null);
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Error loading game file: " + file.getAbsolutePath(), e);
+      return false;
     }
   }
 
