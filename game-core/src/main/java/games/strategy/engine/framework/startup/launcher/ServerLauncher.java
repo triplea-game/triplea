@@ -206,9 +206,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
         // then crashing out, then launching, etc.
         serverModel.setAllPlayersToNullNodes();
         final File f1 = AutoSaveFileUtils.getHeadlessAutoSaveFile();
-        if (f1.exists()) {
-          gameSelectorModel.load(f1);
-        } else {
+        if (!f1.exists() || !gameSelectorModel.load(f1)) {
           gameSelectorModel.resetGameDataToNull();
         }
       } catch (final Exception e1) {
