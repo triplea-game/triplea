@@ -807,7 +807,10 @@ public class MapData implements Closeable {
     if (effectImages.get(effectName) != null) {
       return Optional.of(effectImages.get(effectName));
     }
-    final Optional<Image> effectImage = loadImage("territoryEffects/" + effectName + ".png");
+    Optional<Image> effectImage = loadImage("territoryEffects/" + effectName + "_large.png");
+    if (!effectImage.isPresent()) {
+      effectImage = loadImage("territoryEffects/" + effectName + ".png");
+    }
     effectImages.put(effectName, effectImage.orElse(null));
     return effectImage;
   }
