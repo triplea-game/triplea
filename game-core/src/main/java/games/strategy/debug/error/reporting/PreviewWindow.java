@@ -26,7 +26,7 @@ final class PreviewWindow {
     frame.add(JPanelBuilder.builder()
         .borderLayout()
         .addCenter(JPanelBuilder.builder()
-            .borderEmpty(5)
+            .border(5)
             .add(SwingComponents.newJScrollPane(
                 JTextAreaBuilder.builder()
                     .text(previewText)
@@ -37,7 +37,7 @@ final class PreviewWindow {
                     .build()))
             .build())
         .addSouth(JPanelBuilder.builder()
-            .borderEmpty(2)
+            .border(2)
             .flowLayout()
             .addHorizontalGlue()
             .add(JButtonBuilder.builder()
