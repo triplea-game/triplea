@@ -31,7 +31,7 @@ public class JLabelBuilder {
   private @Nullable Integer iconTextGap;
   private Alignment alignment;
   private Dimension maxSize;
-  private String tooltip;
+  private String toolTip;
   private Border border;
   private Integer borderSize;
 
@@ -63,7 +63,7 @@ public class JLabelBuilder {
           }
         });
 
-    Optional.ofNullable(tooltip)
+    Optional.ofNullable(toolTip)
         .ifPresent(label::setToolTipText);
 
     Optional.ofNullable(maxSize)
@@ -118,8 +118,8 @@ public class JLabelBuilder {
     return this;
   }
 
-  public JLabelBuilder tooltip(final String tooltip) {
-    this.tooltip = tooltip;
+  public JLabelBuilder toolTip(final String tooltip) {
+    this.toolTip = tooltip;
     return this;
   }
 
