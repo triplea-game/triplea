@@ -55,7 +55,7 @@ public enum ErrorMessage {
     });
     windowReference.add(JPanelBuilder.builder()
         .borderLayout()
-        .borderEmpty(10)
+        .border(10)
         .addCenter(JPanelBuilder.builder()
             .horizontalBoxLayout()
             .addHorizontalGlue()
@@ -64,7 +64,7 @@ public enum ErrorMessage {
             .build())
         .addSouth(JPanelBuilder.builder()
             .horizontalBoxLayout()
-            .borderEmpty(20, 0, 0, 0)
+            .border(20, 0, 0, 0)
             .addHorizontalGlue()
             .add(JButtonBuilder.builder()
                 .okTitle()

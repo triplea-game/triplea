@@ -95,7 +95,7 @@ public enum SettingsWindow {
 
     return JPanelBuilder.builder()
         .borderLayout()
-        .borderEmpty(10)
+        .border(10)
         .addCenter(tabbedPane)
         .addSouth(buildButtonPanel())
         .build();
@@ -109,7 +109,7 @@ public enum SettingsWindow {
 
   private JComponent buildTabPanel(final Iterable<ClientSettingSwingUiBinding> settings) {
     final JPanel panel = JPanelBuilder.builder()
-        .borderEmpty(10)
+        .border(10)
         .build();
     panel.setLayout(new GridBagLayout());
 
@@ -158,7 +158,7 @@ public enum SettingsWindow {
 
   private JComponent buildButtonPanel() {
     return JPanelBuilder.builder()
-        .borderEmpty(20, 0, 0, 0)
+        .border(20, 0, 0, 0)
         .horizontalBoxLayout()
         .horizontalAlignmentCenter()
         .addHorizontalGlue()

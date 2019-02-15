@@ -42,7 +42,7 @@ public final class TimespanDialog extends JDialog {
     super(owner, title, true);
 
     add(JPanelBuilder.builder()
-        .borderEmpty(10)
+        .border(10)
         .verticalBoxLayout()
         .add(JPanelBuilder.builder()
             .horizontalBoxLayout()

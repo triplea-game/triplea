@@ -217,15 +217,14 @@ public class JPanelBuilder {
     return this;
   }
 
-  public JPanelBuilder borderEmpty() {
-    return borderEmpty(0);
+  /**
+   * Adds an empty border (padding) around the edges of the panel.
+   */
+  public JPanelBuilder border(final int size) {
+    return border(size, size, size, size);
   }
 
-  public JPanelBuilder borderEmpty(final int borderWidth) {
-    return borderEmpty(borderWidth, borderWidth, borderWidth, borderWidth);
-  }
-
-  public JPanelBuilder borderEmpty(final int top, final int left, final int bottom, final int right) {
+  public JPanelBuilder border(final int top, final int left, final int bottom, final int right) {
     border = BorderFactory.createEmptyBorder(top, left, bottom, right);
     return this;
   }

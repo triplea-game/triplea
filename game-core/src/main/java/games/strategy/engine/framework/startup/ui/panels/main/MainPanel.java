@@ -83,7 +83,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
     chatSplit.setDividerSize(5);
 
     mainPanel = JPanelBuilder.builder()
-        .borderEmpty()
+        .border(0)
         .gridBagLayout(2)
         .add(gameSelectorPanel, GridBagHelper.Anchor.WEST, GridBagHelper.Fill.VERTICAL)
         .add(gameSetupPanelScroll, GridBagHelper.Anchor.CENTER, GridBagHelper.Fill.VERTICAL_AND_HORIZONTAL)

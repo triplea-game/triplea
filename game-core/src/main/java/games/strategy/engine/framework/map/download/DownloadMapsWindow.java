@@ -387,7 +387,7 @@ public class DownloadMapsWindow extends JFrame {
     final List<DownloadFileDescription> maps = MapDownloadListSort.sortByMapName(unsortedMaps);
     final JPanel main = JPanelBuilder.builder()
         .borderLayout()
-        .borderEmpty(30)
+        .border(30)
         .build();
     final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
     main.add(SwingComponents.newJScrollPane(descriptionPane), BorderLayout.CENTER);
@@ -522,7 +522,7 @@ public class DownloadMapsWindow extends JFrame {
 
     return JPanelBuilder.builder()
         .gridLayout(1, 5)
-        .borderEmpty(20)
+        .border(20)
         .add(buildMapActionButton(action, gamesList, maps, listModel))
         .add(Box.createGlue())
         .add(JButtonBuilder.builder()

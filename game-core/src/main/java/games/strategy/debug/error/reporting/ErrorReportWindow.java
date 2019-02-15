@@ -74,7 +74,7 @@ public final class ErrorReportWindow {
 
     frame.add(
         JPanelBuilder.builder()
-            .borderEmpty(10)
+            .border(10)
             .addCenter(
                 JPanelBuilder.builder()
                     .addNorth(components.getDescriptionFieldLabel())

@@ -49,7 +49,7 @@ final class FindTerritoryDialog extends JDialog {
     getRootPane().setDefaultButton(okButton);
 
     add(JPanelBuilder.builder()
-        .borderEmpty(10)
+        .border(10)
         .verticalBoxLayout()
         .add(territoryComboBox)
         .addVerticalStrut(20)
