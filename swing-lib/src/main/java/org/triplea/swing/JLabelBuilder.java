@@ -118,8 +118,8 @@ public class JLabelBuilder {
     return this;
   }
 
-  public JLabelBuilder toolTip(final String tooltip) {
-    this.toolTip = tooltip;
+  public JLabelBuilder toolTip(final String toolTip) {
+    this.toolTip = toolTip;
     return this;
   }
 
