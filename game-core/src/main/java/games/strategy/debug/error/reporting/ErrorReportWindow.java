@@ -107,7 +107,7 @@ public final class ErrorReportWindow {
 
       descriptionFieldLabel = JLabelBuilder.builder()
           .html("Please describe the problem:")
-          .tooltip("This information will be sent to the TripleA development team. Please "
+          .toolTip("This information will be sent to the TripleA development team. Please "
               + "describe as exactly as possible where the problem is and the events leading "
               + "up to it.")
           .border(5)
