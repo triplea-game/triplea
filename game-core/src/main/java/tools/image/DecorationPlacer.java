@@ -889,9 +889,9 @@ public final class DecorationPlacer {
             + "CTRL/SHIFT + Right Click = delete currently selected image point</html>"),
 
     territory_effects(
-        "territory_effects.txt", "territoryEffects", "mountain.png", false, false, false, false, true,
+        "territory_effects.txt", "territoryEffects", "mountain_large.png", false, false, false, false, true,
         "territory_effects.txt is the point where a territory effect image is shown,"
-            + " and it picks the <effect>.png image from the 'territoryEffects' folder",
+            + " and it picks the <effect>_large.png or <effect>.png image from the 'territoryEffects' folder",
         "<html>pu_place.txt will allow for multiple points per image. <br>"
             + "Left Click = select closest image  OR  place currently selected image <br>"
             + "Right click = copy selected image OR create an image for this territory<br>"
