@@ -17,6 +17,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.swing.SwingUtilities;
 
+import org.triplea.util.Tuple;
+import org.triplea.util.Version;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 
@@ -31,8 +34,6 @@ import games.strategy.engine.history.History;
 import games.strategy.io.IoUtils;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.TripleA;
-import games.strategy.util.Tuple;
-import games.strategy.util.Version;
 
 /**
  * Central place to find all the information for a running game.

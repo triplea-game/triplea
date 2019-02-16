@@ -12,6 +12,9 @@ import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
+import org.triplea.java.OptionalUtils;
+import org.triplea.util.FileNameUtils;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -20,8 +23,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractPlayerRulesAttachment;
 import games.strategy.triplea.attachments.ICondition;
-import games.strategy.util.FileNameUtils;
-import games.strategy.util.OptionalUtils;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

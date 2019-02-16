@@ -24,13 +24,14 @@ import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.triplea.java.UrlStreams;
+
 import com.google.common.base.Splitter;
 
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.io.FileUtils;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.util.UrlStreams;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;

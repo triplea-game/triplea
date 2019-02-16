@@ -12,9 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import games.strategy.util.function.ThrowingConsumer;
-import games.strategy.util.function.ThrowingFunction;
+import org.triplea.java.function.ThrowingConsumer;
+import org.triplea.java.function.ThrowingFunction;
 
 @ExtendWith(MockitoExtension.class)
 public final class IoUtilsTest {

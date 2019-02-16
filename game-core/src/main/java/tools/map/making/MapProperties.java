@@ -6,11 +6,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.util.Tuple;
 
 /**
  * An object to hold all the map.properties values.

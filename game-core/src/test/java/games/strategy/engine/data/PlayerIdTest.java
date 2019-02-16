@@ -10,8 +10,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.triplea.util.Tuple;
 
-import games.strategy.util.Tuple;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 final class PlayerIdTest {

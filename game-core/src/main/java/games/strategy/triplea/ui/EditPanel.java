@@ -36,7 +36,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingComponents;
+import org.triplea.util.Triple;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
@@ -64,9 +67,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitSeparator;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Triple;
 
 class EditPanel extends ActionPanel {
   private static final long serialVersionUID = 5043639777373556106L;

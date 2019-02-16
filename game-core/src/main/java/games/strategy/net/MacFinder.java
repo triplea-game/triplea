@@ -16,10 +16,10 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
+import org.triplea.util.Md5Crypt;
 
 import com.google.common.primitives.Bytes;
 
-import games.strategy.util.Md5Crypt;
 import lombok.extern.java.Log;
 
 /**

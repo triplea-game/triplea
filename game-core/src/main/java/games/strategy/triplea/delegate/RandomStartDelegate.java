@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -21,10 +26,6 @@ import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.Tuple;
 
 /**
  * This delegate sets up the game according to Risk rules, with a few allowed customizations.

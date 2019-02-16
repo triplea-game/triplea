@@ -15,6 +15,8 @@ import java.util.logging.Level;
 
 import javax.swing.JComponent;
 
+import org.triplea.util.Tuple;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.properties.AbstractEditableProperty;
@@ -28,7 +30,6 @@ import games.strategy.engine.data.properties.MapProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.engine.data.properties.StringProperty;
-import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
 /**

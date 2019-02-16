@@ -6,8 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.jupiter.api.Test;
-
-import games.strategy.util.Interruptibles;
+import org.triplea.java.Interruptibles;
 
 public final class DelegateExecutionManagerTest {
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();

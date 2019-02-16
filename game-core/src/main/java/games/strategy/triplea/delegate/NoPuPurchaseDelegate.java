@@ -3,6 +3,8 @@ package games.strategy.triplea.delegate;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -13,7 +15,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
-import games.strategy.util.IntegerMap;
 
 /**
  * At the end of the turn collect units, not income.

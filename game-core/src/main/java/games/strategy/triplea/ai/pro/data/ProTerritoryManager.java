@@ -12,6 +12,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 
+import org.triplea.java.PredicateBuilder;
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
@@ -32,8 +35,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.PredicateBuilder;
 
 /**
  * Manages info about territories.

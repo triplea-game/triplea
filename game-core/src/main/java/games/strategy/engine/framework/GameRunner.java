@@ -34,11 +34,14 @@ import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 
 import org.triplea.game.ApplicationContext;
+import org.triplea.java.Interruptibles;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.ProgressWindow;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.util.ExitStatus;
 import org.triplea.util.Services;
+import org.triplea.util.Version;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
@@ -53,9 +56,6 @@ import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.pro.ProAi;
-import games.strategy.util.ExitStatus;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.Version;
 
 /**
  * GameRunner - The entrance class with the main method.

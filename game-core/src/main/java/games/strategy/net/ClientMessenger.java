@@ -15,6 +15,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
+import org.triplea.java.Interruptibles;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
@@ -27,7 +29,6 @@ import games.strategy.net.nio.ClientQuarantineConversation;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
-import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**

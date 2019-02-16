@@ -14,6 +14,9 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+
 import com.google.common.collect.Streams;
 
 import games.strategy.engine.data.GameData;
@@ -43,8 +46,6 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 
 /**
  * A very weak ai, based on some simple rules.

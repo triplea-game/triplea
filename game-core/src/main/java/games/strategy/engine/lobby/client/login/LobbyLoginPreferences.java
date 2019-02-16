@@ -6,12 +6,13 @@ import java.util.prefs.Preferences;
 
 import javax.annotation.concurrent.Immutable;
 
+import org.triplea.java.function.ThrowingSupplier;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
-import games.strategy.util.function.ThrowingSupplier;
 import lombok.extern.java.Log;
 
 /**

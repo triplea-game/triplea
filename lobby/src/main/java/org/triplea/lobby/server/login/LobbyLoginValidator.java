@@ -28,6 +28,9 @@ import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserController;
 import org.triplea.lobby.server.db.UserDao;
+import org.triplea.util.Md5Crypt;
+import org.triplea.util.Tuple;
+import org.triplea.util.Version;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
@@ -35,9 +38,6 @@ import com.google.common.base.Strings;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
-import games.strategy.util.Md5Crypt;
-import games.strategy.util.Tuple;
-import games.strategy.util.Version;
 
 /**
  * The server side of the lobby authentication protocol.

@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.util.Tuple;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -19,8 +22,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.Tuple;
 
 /**
  * Superclass for all attachments that trigger an action based on an event.

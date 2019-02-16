@@ -4,8 +4,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Random;
 
+import org.triplea.java.Util;
+
 import games.strategy.net.MacFinder;
-import games.strategy.util.Util;
 
 /**
  * A collection of methods for creating instances of {@link User} for testing purposes.

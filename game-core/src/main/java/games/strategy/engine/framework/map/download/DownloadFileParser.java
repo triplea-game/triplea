@@ -4,13 +4,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.triplea.util.OpenJsonUtils;
+import org.triplea.util.Version;
 import org.yaml.snakeyaml.Yaml;
 
 import com.github.openjson.JSONArray;
 import com.github.openjson.JSONObject;
-
-import games.strategy.util.OpenJsonUtils;
-import games.strategy.util.Version;
 
 /**
  * Utility class to parse an available map list file config file - used to determine which maps are available for

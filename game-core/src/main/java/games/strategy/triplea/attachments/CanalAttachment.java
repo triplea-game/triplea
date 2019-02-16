@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -17,7 +19,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CollectionUtils;
 
 /**
  * An attachment for instances of {@link Territory} that defines a canal through which certain land units may pass from

@@ -16,9 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.util.Version;
 
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import games.strategy.util.Version;
 
 @ExtendWith(MockitoExtension.class)
 public class MapDownloadListTest extends AbstractClientSettingTestCase {

@@ -1,7 +1,8 @@
 package games.strategy.triplea.ai.pro.logging;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.ProductionRule;
-import games.strategy.util.IntegerMap;
 
 /**
  * Pro AI metrics.

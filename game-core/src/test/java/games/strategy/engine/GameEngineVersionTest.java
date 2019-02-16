@@ -7,9 +7,8 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import games.strategy.util.Tuple;
-import games.strategy.util.Version;
+import org.triplea.util.Tuple;
+import org.triplea.util.Version;
 
 final class GameEngineVersionTest {
   @Nested

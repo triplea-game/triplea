@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.java.function.ThrowingFunction;
 
-import games.strategy.util.function.ThrowingFunction;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 final class ClientSettingTest {

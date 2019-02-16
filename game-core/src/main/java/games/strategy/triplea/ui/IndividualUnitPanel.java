@@ -15,12 +15,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Triple;
+
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Triple;
 
 /**
  * For when you do not want things condensed into categories.

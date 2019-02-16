@@ -7,14 +7,13 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import org.triplea.util.OpenJsonUtils;
+import org.triplea.util.Version;
 import org.yaml.snakeyaml.Yaml;
 
 import com.github.openjson.JSONArray;
 import com.github.openjson.JSONObject;
 import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.util.OpenJsonUtils;
-import games.strategy.util.Version;
 
 /**
  * Parses a downloaded lobby properties file (yaml format expected).

@@ -29,9 +29,10 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
+import org.triplea.util.PointFileReaderWriter;
+
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.ui.Util;
-import games.strategy.util.PointFileReaderWriter;
 import lombok.extern.java.Log;
 import tools.util.ToolArguments;
 

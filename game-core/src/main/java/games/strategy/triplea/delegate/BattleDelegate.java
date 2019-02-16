@@ -14,6 +14,12 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.triplea.java.PredicateBuilder;
+import org.triplea.java.Util;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
+
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.Change;
@@ -44,11 +50,6 @@ import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.PredicateBuilder;
-import games.strategy.util.Tuple;
-import games.strategy.util.Util;
 
 /**
  * Delegate to track and fight all battles.

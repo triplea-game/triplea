@@ -12,6 +12,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -36,10 +41,6 @@ import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.Tuple;
 
 /**
  * An attachment for instances of {@link PlayerId} that defines various conditions for enabling certain rules (see the

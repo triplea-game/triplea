@@ -6,6 +6,7 @@ import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
@@ -20,8 +21,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.util.Util;
+import com.google.common.base.Preconditions;
+import com.google.common.io.BaseEncoding;
 
 /**
  * A class which implements the TripleA-Lobby-Login authentication system using RSA encryption for passwords.
@@ -30,6 +31,7 @@ public final class RsaAuthenticator {
   private static final String RSA = "RSA";
   private static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
   private static final String PSEUDO_SALT = "TripleA";
+  private static final String SHA_512 = "SHA-512";
 
   private final KeyPair keyPair;
 
@@ -118,14 +120,35 @@ public final class RsaAuthenticator {
   }
 
   /**
+   * Creates a SHA-512 hash of a given String with a salt.
+   * <br/>
    * The server doesn't need to know the actual password, so this hash essentially replaces
    * the real password. In case any other server authentication system SHA-512 hashes
    * passwords before sending them, we are applying a 'TripleA' prefix to the given String
    * before hashing. This way the hash cannot be used on other websites even if the password
    * and the authentication system is the same.
+   *
+   * @param password The input String to hash.
+   * @return A hashed hexadecimal String of the input.
    */
   public static String hashPasswordWithSalt(final String password) {
-    return Util.sha512(PSEUDO_SALT + password);
+    Preconditions.checkNotNull(password);
+    return sha512(PSEUDO_SALT + password);
+  }
+
+  /**
+   * Creates a SHA-512 hash of the given String.
+   */
+  @VisibleForTesting
+  static String sha512(final String input) {
+    try {
+      return BaseEncoding.base16()
+          .encode(
+              MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8)))
+          .toLowerCase();
+    } catch (final NoSuchAlgorithmException e) {
+      throw new IllegalStateException(SHA_512 + " is not supported!", e);
+    }
   }
 
   /**

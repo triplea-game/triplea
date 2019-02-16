@@ -19,7 +19,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.DocumentListenerBuilder;
+import org.triplea.util.Tuple;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
@@ -33,8 +35,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.Tuple;
 
 /**
  * Order of loss panel, helps user create an order of loss string that is used to choose casualty order.

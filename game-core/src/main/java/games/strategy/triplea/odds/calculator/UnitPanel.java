@@ -12,6 +12,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.TripleAUnit;
@@ -21,7 +23,6 @@ import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.ui.ScrollableTextField;
-import games.strategy.util.IntegerMap;
 
 /**
  * Panel showing a unit image.

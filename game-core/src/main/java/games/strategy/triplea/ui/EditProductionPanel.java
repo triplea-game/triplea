@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.swing.JFrame;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerId;
@@ -18,7 +20,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.util.IntegerMap;
 
 class EditProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 5826523459539469173L;

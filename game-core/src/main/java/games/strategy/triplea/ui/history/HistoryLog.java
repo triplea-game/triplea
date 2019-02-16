@@ -22,6 +22,8 @@ import javax.swing.JTextArea;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import org.triplea.java.collections.IntegerMap;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.GameData;
@@ -43,7 +45,6 @@ import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.IntegerMap;
 import lombok.extern.java.Log;
 
 /**

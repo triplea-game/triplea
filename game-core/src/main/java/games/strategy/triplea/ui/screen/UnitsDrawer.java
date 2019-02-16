@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.prefs.Preferences;
 
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -26,7 +28,6 @@ import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
-import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
 /**

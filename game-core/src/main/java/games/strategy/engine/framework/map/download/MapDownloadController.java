@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.triplea.swing.SwingComponents;
+import org.triplea.util.Version;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -17,7 +18,6 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.Version;
 import lombok.extern.java.Log;
 
 /** Controller for in-game map download actions. */

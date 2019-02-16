@@ -51,14 +51,14 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.triplea.swing.SwingAction;
+import org.triplea.util.PointFileReaderWriter;
+import org.triplea.util.Triple;
+import org.triplea.util.Tuple;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.io.FileUtils;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
-import games.strategy.util.PointFileReaderWriter;
-import games.strategy.util.Triple;
-import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 import tools.util.ToolArguments;
 

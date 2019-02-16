@@ -39,6 +39,11 @@ import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.java.ObjectUtils;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;
 import games.strategy.engine.data.CompositeChange;
@@ -63,10 +68,6 @@ import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.ImageScrollModel;
 import games.strategy.ui.ImageScrollerLargeView;
 import games.strategy.ui.Util;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.ObjectUtils;
-import games.strategy.util.Tuple;
 import lombok.AccessLevel;
 import lombok.Getter;
 

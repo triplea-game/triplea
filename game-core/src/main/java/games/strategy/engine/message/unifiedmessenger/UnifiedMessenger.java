@@ -11,6 +11,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
+import org.triplea.java.Interruptibles;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
@@ -26,7 +28,6 @@ import games.strategy.engine.message.UnifiedMessengerHub;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
-import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**

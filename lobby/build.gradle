@@ -8,6 +8,7 @@ description = 'TripleA Lobby'
 mainClassName = 'org.triplea.lobby.server.LobbyRunner'
 
 dependencies {
+    implementation project(':java-extras')
     implementation project(':game-core')
     implementation "org.mindrot:jbcrypt:$jbcryptVersion"
 

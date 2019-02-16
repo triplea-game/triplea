@@ -21,6 +21,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.util.UnitCategory;
@@ -28,7 +30,6 @@ import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
-import games.strategy.util.IntegerMap;
 
 final class UnitChooser extends JPanel {
   private static final long serialVersionUID = -4667032237550267682L;

@@ -34,6 +34,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import org.triplea.swing.SwingAction;
+import org.triplea.util.FileNameUtils;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -49,7 +50,6 @@ import games.strategy.triplea.attachments.AbstractTriggerAttachment;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
-import games.strategy.util.FileNameUtils;
 import lombok.extern.java.Log;
 
 /**

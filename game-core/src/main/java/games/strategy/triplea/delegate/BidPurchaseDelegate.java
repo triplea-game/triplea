@@ -2,6 +2,8 @@ package games.strategy.triplea.delegate;
 
 import java.io.Serializable;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -12,7 +14,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Constants;
-import games.strategy.util.IntegerMap;
 
 /**
  * Logic for purchasing units when bid mode is active.

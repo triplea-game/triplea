@@ -1,6 +1,6 @@
 package games.strategy.triplea.settings;
 
-import static games.strategy.util.Util.not;
+import static org.triplea.java.Util.not;
 
 import java.net.URI;
 import java.nio.file.Path;

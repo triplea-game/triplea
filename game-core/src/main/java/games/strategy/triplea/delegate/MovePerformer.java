@@ -11,6 +11,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.triplea.java.PredicateBuilder;
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -30,8 +33,6 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.PredicateBuilder;
 
 /**
  * Used to move units and make changes to game state.

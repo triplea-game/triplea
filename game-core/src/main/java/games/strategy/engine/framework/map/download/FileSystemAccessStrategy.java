@@ -11,10 +11,10 @@ import java.util.logging.Level;
 
 import javax.swing.DefaultListModel;
 
+import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingComponents;
+import org.triplea.util.Version;
 
-import games.strategy.util.Interruptibles;
-import games.strategy.util.Version;
 import lombok.extern.java.Log;
 
 @Log

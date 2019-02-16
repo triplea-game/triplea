@@ -18,6 +18,7 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.IntegerMap;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -30,7 +31,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.util.IntegerMap;
 
 public class TechAbilityAttachmentTest {
 

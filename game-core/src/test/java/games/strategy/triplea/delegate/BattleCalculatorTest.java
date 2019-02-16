@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.CollectionUtils;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Unit;
@@ -32,7 +33,6 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.CollectionUtils;
 
 public class BattleCalculatorTest {
   private IDelegateBridge bridge;

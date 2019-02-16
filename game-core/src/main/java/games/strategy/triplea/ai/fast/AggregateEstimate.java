@@ -3,14 +3,15 @@ package games.strategy.triplea.ai.fast;
 import java.util.Collection;
 import java.util.List;
 
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.odds.calculator.AggregateResults;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Tuple;
 
 class AggregateEstimate extends AggregateResults {
   private final int battleRoundsFought;

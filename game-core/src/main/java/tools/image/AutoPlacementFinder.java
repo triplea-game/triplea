@@ -29,10 +29,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.triplea.util.PointFileReaderWriter;
+
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.util.PointFileReaderWriter;
 import lombok.extern.java.Log;
 import tools.util.ToolArguments;
 

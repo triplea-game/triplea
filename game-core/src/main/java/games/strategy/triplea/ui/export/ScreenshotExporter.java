@@ -16,8 +16,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.swing.SwingComponents;
-import org.triplea.util.concurrent.CompletableFutureUtils;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.history.HistoryNode;

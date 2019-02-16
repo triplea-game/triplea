@@ -19,6 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.TimeManager;
+import org.triplea.java.Util;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.ProgressWindow;
 
@@ -28,8 +30,6 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.util.TimeManager;
-import games.strategy.util.Util;
 import lombok.extern.java.Log;
 
 /**

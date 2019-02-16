@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.util.ExitStatus;
 
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
@@ -44,7 +45,6 @@ import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.util.ExitStatus;
 
 /** Setup panel displayed for hosting a non-lobby network game (using host option from main panel). */
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener {

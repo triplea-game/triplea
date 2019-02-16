@@ -7,12 +7,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 
+import org.triplea.java.UrlStreams;
+
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.triplea.Constants;
-import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
 @Log

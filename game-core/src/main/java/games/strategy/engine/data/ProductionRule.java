@@ -2,8 +2,9 @@ package games.strategy.engine.data;
 
 import java.util.Map.Entry;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.triplea.Constants;
-import games.strategy.util.IntegerMap;
 
 /**
  * A production rule.

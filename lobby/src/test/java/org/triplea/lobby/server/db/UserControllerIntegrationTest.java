@@ -14,12 +14,12 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.java.Util;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.test.common.Integration;
+import org.triplea.util.Md5Crypt;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.util.Md5Crypt;
-import games.strategy.util.Util;
 
 @Integration
 public final class UserControllerIntegrationTest extends AbstractControllerTestCase {

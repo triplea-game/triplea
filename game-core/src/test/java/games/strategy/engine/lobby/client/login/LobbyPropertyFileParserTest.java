@@ -13,8 +13,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
-
-import games.strategy.util.Version;
+import org.triplea.util.Version;
 
 class LobbyPropertyFileParserTest {
 

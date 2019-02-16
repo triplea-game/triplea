@@ -1,7 +1,8 @@
 package games.strategy.engine.data;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.triplea.Constants;
-import games.strategy.util.IntegerMap;
 
 /**
  * A collection of {@link Resource}s.

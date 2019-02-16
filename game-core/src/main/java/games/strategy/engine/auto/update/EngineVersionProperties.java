@@ -15,10 +15,10 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import org.triplea.awt.OpenFileUtility;
+import org.triplea.util.Version;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.UrlConstants;
-import games.strategy.util.Version;
 import lombok.extern.java.Log;
 
 @Log

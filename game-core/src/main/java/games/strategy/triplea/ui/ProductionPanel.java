@@ -31,6 +31,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
+import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingAction;
 
 import com.google.common.base.Preconditions;
@@ -46,7 +47,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
-import games.strategy.util.IntegerMap;
 
 class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;

@@ -7,10 +7,10 @@ import java.io.File;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.triplea.util.Version;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import games.strategy.util.Version;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {

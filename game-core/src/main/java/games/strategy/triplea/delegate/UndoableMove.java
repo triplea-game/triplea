@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.Change;
@@ -22,7 +24,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
-import games.strategy.util.CollectionUtils;
 
 /**
  * Contains all the data to describe a move and to undo it.

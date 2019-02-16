@@ -10,11 +10,12 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.triplea.java.UrlStreams;
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.ui.ProductionPanel.Rule;
-import games.strategy.util.Tuple;
-import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
 @Log

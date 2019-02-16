@@ -7,12 +7,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitTypeComparator;
-import games.strategy.util.CollectionUtils;
 
 /**
  * A category of units.

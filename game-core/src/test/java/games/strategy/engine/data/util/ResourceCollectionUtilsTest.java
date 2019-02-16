@@ -15,13 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.java.collections.IntegerMap;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.ResourceList;
 import games.strategy.triplea.Constants;
-import games.strategy.util.IntegerMap;
 
 @ExtendWith(MockitoExtension.class)
 public final class ResourceCollectionUtilsTest {

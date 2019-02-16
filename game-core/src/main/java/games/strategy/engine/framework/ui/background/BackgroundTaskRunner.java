@@ -12,10 +12,10 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
-import com.google.common.base.Throwables;
+import org.triplea.java.Interruptibles;
+import org.triplea.java.function.ThrowingSupplier;
 
-import games.strategy.util.Interruptibles;
-import games.strategy.util.function.ThrowingSupplier;
+import com.google.common.base.Throwables;
 
 /**
  * Provides methods for running tasks in the background to avoid blocking the UI.

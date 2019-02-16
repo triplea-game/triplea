@@ -4,13 +4,14 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.util.IntegerMap;
 
 // TODO: make the Comparator be serializable. To get there all class members need to be serializable or removed.
 

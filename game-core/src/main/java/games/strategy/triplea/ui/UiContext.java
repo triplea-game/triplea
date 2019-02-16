@@ -6,6 +6,8 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JLabel;
 
+import org.triplea.java.concurrency.CountDownLatchHandler;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
@@ -21,7 +23,6 @@ import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
-import games.strategy.util.CountDownLatchHandler;
 
 /**
  * Provides a context for UI-dependent operations to execute without requiring specific knowledge of the underlying UI

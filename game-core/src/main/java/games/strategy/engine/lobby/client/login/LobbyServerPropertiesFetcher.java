@@ -8,13 +8,14 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import org.triplea.util.Version;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
-import games.strategy.util.Version;
 
 /**
  * Fetches the lobby server properties from the remote Source of Truth.

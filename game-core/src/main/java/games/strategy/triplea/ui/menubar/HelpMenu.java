@@ -28,10 +28,11 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
-import org.triplea.util.concurrent.CompletableFutureUtils;
+import org.triplea.util.LocalizeHtml;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
@@ -45,7 +46,6 @@ import games.strategy.triplea.ui.MacOsIntegration;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.util.LocalizeHtml;
 
 /**
  * The help menu.

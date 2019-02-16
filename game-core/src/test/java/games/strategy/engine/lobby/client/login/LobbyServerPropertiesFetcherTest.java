@@ -21,10 +21,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.java.OptionalUtils;
+import org.triplea.util.Version;
 
 import games.strategy.triplea.settings.GameSetting;
-import games.strategy.util.OptionalUtils;
-import games.strategy.util.Version;
 
 @ExtendWith(MockitoExtension.class)
 class LobbyServerPropertiesFetcherTest {

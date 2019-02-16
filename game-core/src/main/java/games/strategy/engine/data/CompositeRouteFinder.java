@@ -9,8 +9,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CollectionUtils;
 
 /**
  * This class can find composite routes between two territories.

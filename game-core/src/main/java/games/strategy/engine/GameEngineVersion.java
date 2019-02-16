@@ -2,7 +2,7 @@ package games.strategy.engine;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.util.Version;
+import org.triplea.util.Version;
 
 /**
  * Wraps a {@link Version} and provides operations specific to game engine versions.

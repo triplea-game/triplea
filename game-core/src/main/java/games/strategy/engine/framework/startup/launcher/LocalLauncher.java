@@ -10,6 +10,8 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.Interruptibles;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
@@ -18,7 +20,6 @@ import games.strategy.engine.player.IGamePlayer;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.net.HeadlessServerMessenger;
 import games.strategy.net.Messengers;
-import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**

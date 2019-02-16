@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
+import org.triplea.java.Util;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
@@ -28,7 +29,6 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
-import games.strategy.util.Util;
 
 @Integration
 public class ModeratorControllerIntegrationTest {

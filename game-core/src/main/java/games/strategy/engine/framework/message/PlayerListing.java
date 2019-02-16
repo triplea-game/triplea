@@ -12,12 +12,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.triplea.util.Version;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.triplea.NetworkData;
-import games.strategy.util.Version;
 
 /**
  * Data from the server indicating what players are available to be taken, and what players are being played.

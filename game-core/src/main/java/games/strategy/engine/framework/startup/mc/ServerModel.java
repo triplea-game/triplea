@@ -33,7 +33,9 @@ import javax.swing.JOptionPane;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.game.startup.ServerSetupModel;
+import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
+import org.triplea.util.Version;
 
 import com.google.common.base.Preconditions;
 
@@ -67,8 +69,6 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.Version;
 import lombok.extern.java.Log;
 
 /**

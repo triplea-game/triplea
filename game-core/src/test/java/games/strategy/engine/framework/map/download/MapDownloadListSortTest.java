@@ -6,10 +6,9 @@ import static org.hamcrest.Matchers.is;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.util.Version;
 
 import com.google.common.collect.Lists;
-
-import games.strategy.util.Version;
 
 public class MapDownloadListSortTest {
 

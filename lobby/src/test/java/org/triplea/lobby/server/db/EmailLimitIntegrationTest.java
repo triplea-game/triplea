@@ -8,12 +8,11 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.java.Util;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 
 import com.google.common.base.Strings;
-
-import games.strategy.util.Util;
 
 /**
  * Emails have a limit of 254 chars, accepted by the IETF.

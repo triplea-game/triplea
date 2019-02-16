@@ -1,12 +1,13 @@
 package games.strategy.triplea.util;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.util.IntegerMap;
 
 /**
  * Provides methods that assist with player bonus income.

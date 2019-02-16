@@ -24,9 +24,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.util.LocalizeHtml;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.util.LocalizeHtml;
 
 /**
  * A modal dialog that prompts the user to select a game (map) from the list of installed games (maps).

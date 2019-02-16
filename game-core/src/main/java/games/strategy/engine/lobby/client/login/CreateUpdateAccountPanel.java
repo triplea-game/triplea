@@ -148,7 +148,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
       passwordField.setText("");
       passwordConfirmField.setText("");
       return;
-    } else if (!games.strategy.util.Util.isMailValid(emailField.getText())) {
+    } else if (!org.triplea.java.Util.isMailValid(emailField.getText())) {
       JOptionPane.showMessageDialog(this, "You must enter a valid email", "No Email", JOptionPane.ERROR_MESSAGE);
       return;
     } else if (!DBUser.isValidUserName(userNameField.getText())) {

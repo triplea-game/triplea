@@ -10,9 +10,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 
-import com.google.common.annotations.VisibleForTesting;
+import org.triplea.java.Util;
 
-import games.strategy.util.Util;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * nekromancer@users.sourceforge.net

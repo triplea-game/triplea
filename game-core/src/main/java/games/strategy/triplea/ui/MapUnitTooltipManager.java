@@ -20,10 +20,11 @@ import javax.swing.Timer;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
+import org.triplea.java.StringUtils;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.util.StringUtils;
 
 /**
  * Responsible for showing tool tips when hovering over units on the main map.

@@ -18,11 +18,11 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.triplea.java.function.ThrowingFunction;
 
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.framework.system.HttpProxy;
-import games.strategy.util.function.ThrowingFunction;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 

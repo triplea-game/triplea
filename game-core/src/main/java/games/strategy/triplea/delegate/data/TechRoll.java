@@ -1,8 +1,9 @@
 package games.strategy.triplea.delegate.data;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
-import games.strategy.util.IntegerMap;
 
 /**
  * Used to describe a tech roll.

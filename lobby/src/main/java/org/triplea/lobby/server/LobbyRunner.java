@@ -3,8 +3,8 @@ package org.triplea.lobby.server;
 import java.util.logging.Level;
 
 import org.triplea.lobby.server.config.LobbyConfiguration;
+import org.triplea.util.ExitStatus;
 
-import games.strategy.util.ExitStatus;
 import lombok.extern.java.Log;
 
 /**

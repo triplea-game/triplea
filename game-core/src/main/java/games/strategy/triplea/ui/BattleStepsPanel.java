@@ -11,7 +11,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import games.strategy.util.Interruptibles;
+import org.triplea.java.Interruptibles;
+
 import lombok.extern.java.Log;
 
 /**

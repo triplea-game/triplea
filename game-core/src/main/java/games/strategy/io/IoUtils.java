@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import games.strategy.util.function.ThrowingConsumer;
-import games.strategy.util.function.ThrowingFunction;
+import org.triplea.java.function.ThrowingConsumer;
+import org.triplea.java.function.ThrowingFunction;
 
 /**
  * A collection of useful methods related to I/O.

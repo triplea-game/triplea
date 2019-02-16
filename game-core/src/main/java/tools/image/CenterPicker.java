@@ -41,9 +41,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.triplea.swing.SwingAction;
+import org.triplea.util.PointFileReaderWriter;
 
 import games.strategy.ui.Util;
-import games.strategy.util.PointFileReaderWriter;
 import lombok.extern.java.Log;
 import tools.util.ToolArguments;
 

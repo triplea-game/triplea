@@ -2,12 +2,13 @@ package games.strategy.triplea.delegate.remote;
 
 import java.util.Map;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
-import games.strategy.util.IntegerMap;
 
 /**
  * Logic for purchasing and repairing units.

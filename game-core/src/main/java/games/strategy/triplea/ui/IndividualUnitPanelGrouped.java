@@ -20,10 +20,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.Unit;
 import games.strategy.ui.ScrollableTextFieldListener;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Tuple;
 
 /**
  * For when you want multiple individual unit panels, perhaps one for each territory, etc.

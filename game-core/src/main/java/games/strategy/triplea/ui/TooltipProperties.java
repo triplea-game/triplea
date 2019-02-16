@@ -8,12 +8,13 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.triplea.java.UrlStreams;
+import org.triplea.util.LocalizeHtml;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.util.LocalizeHtml;
-import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
 /**

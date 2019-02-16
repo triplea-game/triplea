@@ -48,12 +48,12 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.triplea.swing.SwingAction;
+import org.triplea.util.PointFileReaderWriter;
+import org.triplea.util.Tuple;
 
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.ui.Util;
-import games.strategy.util.PointFileReaderWriter;
-import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 import tools.image.FileOpen;
 import tools.image.FileSave;

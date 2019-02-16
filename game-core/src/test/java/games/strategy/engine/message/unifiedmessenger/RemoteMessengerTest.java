@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.Interruptibles;
 
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.IRemote;
@@ -36,7 +37,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import games.strategy.net.TestServerMessenger;
-import games.strategy.util.Interruptibles;
 
 public class RemoteMessengerTest {
   private IServerMessenger serverMessenger = mock(IServerMessenger.class);

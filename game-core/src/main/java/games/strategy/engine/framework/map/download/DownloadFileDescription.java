@@ -2,10 +2,11 @@ package games.strategy.engine.framework.map.download;
 
 import java.io.File;
 
+import org.triplea.util.Version;
+
 import com.google.common.base.MoreObjects;
 
 import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.util.Version;
 import lombok.EqualsAndHashCode;
 
 /**
