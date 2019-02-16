@@ -11,6 +11,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.sparkjava:spark-core:2.8.0'
 
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.21'
+
     testImplementation project(':test-common')
     testImplementation 'uk.co.datumedge:hamcrest-json:0.2'
 }
