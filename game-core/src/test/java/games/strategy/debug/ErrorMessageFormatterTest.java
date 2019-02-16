@@ -16,13 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ErrorMessageFormatterTest {
 
-  private static final String CLASS_NAME = "UserErrorReportSample";
-  private static final String METHOD_NAME = "formatSomething";
-  private static final String LOCATION_LINE = "Location: " + CLASS_NAME + "." + METHOD_NAME;
-
   private static final String LOG_MESSAGE = "Pants travel with power at the stormy madagascar!";
   private static final String EXCEPTION_MESSAGE = "Jolly, yer not trading me without a life!";
-
 
   private static final Exception EXCEPTION_WITHOUT_MESSAGE = new NullPointerException();
   private static final Exception EXCEPTION_WITH_MESSAGE = new NullPointerException(EXCEPTION_MESSAGE);
@@ -40,14 +35,11 @@ class ErrorMessageFormatterTest {
 
   /*
    * <pre>
-   * Error: {log message}
-   *
-   * Location: {className}.{methodName}
+   * {log message}
    * </pre>
    */
   @Test
   void logMessageOnly() {
-    givenSourceClassAndMethodName(logRecord);
     when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
     when(logRecord.getThrown()).thenReturn(null);
 
@@ -57,26 +49,17 @@ class ErrorMessageFormatterTest {
         result,
         is(
             "<html>"
-                + "Error: " + LOG_MESSAGE + "<br/><br/>"
-                + LOCATION_LINE
+                + LOG_MESSAGE
                 + "</html>"));
-  }
-
-  private static void givenSourceClassAndMethodName(final LogRecord logRecord) {
-    when(logRecord.getSourceClassName()).thenReturn(CLASS_NAME);
-    when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
   }
 
   /*
    * <pre>
-   * Error: {exception simple name} - {exception message}
-   *
-   * Location: {className}.{methodName}
+   * {exception simple name} - {exception message}
    * </pre>
    */
   @Test
   void exceptionOnlyWithMessage() {
-    givenSourceClassAndMethodName(logRecord);
     givenLogRecordWithNoMessageOnlyAnException(logRecord, EXCEPTION_WITH_MESSAGE);
 
     final String result = errorMessageFormatter.apply(logRecord);
@@ -85,9 +68,8 @@ class ErrorMessageFormatterTest {
         result,
         is(
             "<html>"
-                + "Error: " + EXCEPTION_WITH_MESSAGE.getClass().getSimpleName() + " - "
-                + EXCEPTION_WITH_MESSAGE.getMessage() + "<br/><br/>"
-                + LOCATION_LINE
+                + EXCEPTION_WITH_MESSAGE.getClass().getSimpleName() + " - "
+                + EXCEPTION_WITH_MESSAGE.getMessage()
                 + "</html>"));
   }
 
@@ -98,14 +80,11 @@ class ErrorMessageFormatterTest {
 
   /*
    * <pre>
-   * Error: {exception simple name}
-   *
-   * Location: {className}.{methodName}
+   * {exception simple name}
    * </pre>
    */
   @Test
   void exceptionOnlyWithNoMessage() {
-    givenSourceClassAndMethodName(logRecord);
     givenLogRecordWithNoMessageOnlyAnException(logRecord, EXCEPTION_WITHOUT_MESSAGE);
 
     final String result = errorMessageFormatter.apply(logRecord);
@@ -114,23 +93,19 @@ class ErrorMessageFormatterTest {
         result,
         is(
             "<html>"
-                + "Error: " + EXCEPTION_WITHOUT_MESSAGE.getClass().getSimpleName() + "<br/><br/>"
-                + LOCATION_LINE
+                + EXCEPTION_WITHOUT_MESSAGE.getClass().getSimpleName()
                 + "</html>"));
   }
 
   /*
    * <pre>
-   * Error: {log message}
+   * {log message}
    *
-   * Details: {exception simple name} - {exception message}
-   *
-   * Location: {className}.{methodName}
+   * {exception simple name} - {exception message}
    * </pre>
    */
   @Test
   void bothMessageAndExceptionWithExceptionMessage() {
-    givenSourceClassAndMethodName(logRecord);
     when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
     when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_MESSAGE);
 
@@ -140,25 +115,21 @@ class ErrorMessageFormatterTest {
         result,
         is(
             "<html>"
-                + "Error: " + LOG_MESSAGE + "<br/><br/>"
-                + "Details: " + EXCEPTION_WITH_MESSAGE.getClass().getSimpleName() + " - "
-                + EXCEPTION_WITH_MESSAGE.getMessage() + "<br/><br/>"
-                + LOCATION_LINE
+                + LOG_MESSAGE + "<br/><br/>"
+                + EXCEPTION_WITH_MESSAGE.getClass().getSimpleName() + ": "
+                + EXCEPTION_WITH_MESSAGE.getMessage()
                 + "</html>"));
   }
 
   /*
    * <pre>
-   * Error: {log message}
+   * {log message}
    *
-   * Details: {exception simple name}
-   *
-   * Location: {className}.{methodName}
+   * {exception simple name}
    * </pre>
    */
   @Test
   void messageAndExceptionWithoutExceptionMessage() {
-    givenSourceClassAndMethodName(logRecord);
     when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
     when(logRecord.getThrown()).thenReturn(EXCEPTION_WITHOUT_MESSAGE);
 
@@ -168,9 +139,8 @@ class ErrorMessageFormatterTest {
         result,
         is(
             "<html>"
-                + "Error: " + LOG_MESSAGE + "<br/><br/>"
-                + "Details: " + EXCEPTION_WITHOUT_MESSAGE.getClass().getSimpleName() + "<br/><br/>"
-                + LOCATION_LINE
+                + LOG_MESSAGE + "<br/><br/>"
+                + EXCEPTION_WITHOUT_MESSAGE.getClass().getSimpleName()
                 + "</html>"));
   }
 }
