@@ -41,7 +41,7 @@ final class FeignFactory {
             log.info(configKey + ": " + String.format(format, args));
           }
         })
-        .logLevel(Logger.Level.FULL)
+        .logLevel(Logger.Level.BASIC)
         .options(new Request.Options(DEFAULT_CONNECT_TIMEOUT_MS, DEFAULT_READ_TIME_OUT_MS))
         .target(classType, hostUri.toString());
   }

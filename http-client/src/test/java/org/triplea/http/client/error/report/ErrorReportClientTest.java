@@ -47,9 +47,6 @@ import ru.lanwen.wiremock.ext.WiremockUriResolver;
 class ErrorReportClientTest {
   private static final String CONTENT_TYPE_JSON = "application/json";
   private static final String MESSAGE_FROM_USER = "msg";
-  private static final String GAME_VERSION = "game-version";
-  private static final String JAVA_VERSION = "java-version";
-  private static final String OS = "Vigils ortum!";
   private static final String LINK = "http://localhost";
 
   @Test
@@ -60,9 +57,6 @@ class ErrorReportClientTest {
 
     verify(postRequestedFor(urlMatching(ErrorReportClient.ERROR_REPORT_PATH))
         .withRequestBody(containing(MESSAGE_FROM_USER))
-        .withRequestBody(containing(JAVA_VERSION))
-        .withRequestBody(containing(GAME_VERSION))
-        .withRequestBody(containing(OS))
         .withHeader(HttpHeaders.CONTENT_TYPE, matching(CONTENT_TYPE_JSON)));
 
     assertThat(response.getPayload(), isPresent());
@@ -87,10 +81,8 @@ class ErrorReportClientTest {
     final URI hostUri = URI.create(wireMockServer.url(""));
     return ErrorReportClientFactory.newErrorUploader(hostUri)
         .apply(ErrorReport.builder()
-            .reportMessage(MESSAGE_FROM_USER)
-            .gameVersion(GAME_VERSION)
-            .javaVersion(JAVA_VERSION)
-            .operatingSystem(OS)
+            .title("Guttuss cadunt in germanus oenipons!")
+            .body(MESSAGE_FROM_USER)
             .build());
   }
 

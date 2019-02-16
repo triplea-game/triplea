@@ -9,10 +9,8 @@ import org.triplea.http.client.error.report.create.ErrorReport;
 class MessageSizeThrottleTest {
 
   private static final ErrorReport ERROR_REPORT = ErrorReport.builder()
-      .gameVersion("never drink a doubloons. ")
-      .operatingSystem("The corsair stutters malaria like a rainy dubloon.")
-      .javaVersion("Passion, power, and love.")
-      .reportMessage("Ooh, drink me breeze, ye scrawny ship!")
+      .title("never drink a doubloons. ")
+      .body("The corsair stutters malaria like a rainy dubloon.")
       .build();
 
   @Test

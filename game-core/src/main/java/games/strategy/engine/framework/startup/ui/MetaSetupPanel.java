@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingComponents;
 
-import games.strategy.debug.error.reporting.ErrorReportWindow;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.triplea.UrlConstants;
@@ -35,7 +34,6 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton enginePreferences;
   private JButton ruleBook;
   private JButton helpButton;
-  private JButton errorReportDemo;
 
   private final SetupPanelModel model;
 
@@ -74,7 +72,6 @@ public class MetaSetupPanel extends SetupPanel {
     enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
     ruleBook = new JButton("Rule Book");
     helpButton = new JButton("Help");
-    errorReportDemo = new JButton("Error report window (WIP)");
     ruleBook.setToolTipText("Download a manual of how to play");
   }
 
@@ -109,11 +106,6 @@ public class MetaSetupPanel extends SetupPanel {
     add(helpButton, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
 
-    if (ClientSetting.showBetaFeatures.getValueOrThrow()) {
-      add(errorReportDemo, new GridBagConstraints(0, 11, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-          new Insets(10, 0, 0, 0), 0, 0));
-    }
-
     // top space
     add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
         new Insets(0, 0, 0, 0), 0, 0));
@@ -128,7 +120,6 @@ public class MetaSetupPanel extends SetupPanel {
     enginePreferences.addActionListener(e -> ClientSetting.showSettingsWindow());
     ruleBook.addActionListener(e -> ruleBook());
     helpButton.addActionListener(e -> helpPage());
-    errorReportDemo.addActionListener(e -> ErrorReportWindow.showWindow());
   }
 
   private static void ruleBook() {

@@ -42,10 +42,8 @@ class SparkServerSystemTest {
           .clientIp("")
           .errorReport(
               ErrorReport.builder()
-                  .gameVersion("Ah there's nothing like the salty endurance stuttering on the plunder.")
-                  .javaVersion("Where is the shiny jack?")
-                  .operatingSystem("haiti ")
-                  .reportMessage("Never ransack a ship.")
+                  .title("Ah there's nothing like the salty endurance stuttering on the plunder.")
+                  .body("Where is the shiny jack?")
                   .build())
           .build();
 
