@@ -1,13 +1,45 @@
-# Building and Running the Code
+## Prerequisites
 
-Below will run tests, second command will do verifications (checkstyle), last will run the project from source.
+- Local installation/environment setup, see [Dev Setup](setup/dev_setup.md) to get started.
+
+
+## Building and Running the Code  / Typical gradle commands
+
+Apply project formatting and cleanups:
+```
+./gradlew spotlessApply
+```
+
+Run tests:
 ```
 ./gradlew test
-./gradlew clean check
-./gradlew run
 ```
 
-First time contributors can follow [Dev Setup](setup/dev_setup.md) to get started.
+Launch the headed-game client:
+```
+./gradlew run 
+```
+
+Perform all code checks and tests (run **this** before submitting PR):
+```
+./gradlew --parallel check
+```
+
+## Building installers
+
+- Install [Install4j7](https://www.ej-technologies.com/download/install4j/files)
+- Create a `triplea/gradle.properties` file with:
+```
+install4jHomeDir = /path/to/install4j7/
+```
+- Obtain install47 license key (can get from maintainers or an open-source one from install4j)
+- Run release task
+```
+export INSTALL4J_LICENSE_KEY={License key here}
+./gradlew release
+```
+
+Installers will be created in `triplea/build/releases/`
 
 
 ## Docker Images
@@ -16,22 +48,3 @@ The following project-specific Docker images, which may be useful during develop
 
   - [Lobby database](https://github.com/triplea-game/triplea/tree/master/lobby-db/Dockerfile)
 
-
-
-## Gradle
-
-Checkstyle can be run with:
-
-```
-$ ./gradlew clean check
-```
-
-## Run Checkstyle checks individually:
-
-```
-$ ./gradlew clean checkstyleMain checkstyleTest checkstyleIntegTest
-```
-
-Checkstyle reports can be found within the folder `build/reports/checkstyle`.
-
-You are **strongly encouraged** to run the `check` task before submitting a PR.
