@@ -103,6 +103,6 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
   private static String stackTraceToString(final StackTraceElement[] stackTrace) {
     return Arrays.stream(stackTrace)
         .map(StackTraceElement::toString)
-        .collect(Collectors.joining("\n\n"));
+        .collect(Collectors.joining("\n"));
   }
 }
