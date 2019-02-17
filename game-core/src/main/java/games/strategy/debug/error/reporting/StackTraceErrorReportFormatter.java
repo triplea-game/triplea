@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.logging.LogRecord;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -94,14 +95,14 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
         + Optional.ofNullable(e.getStackTrace())
             .map(
                 trace -> "## Stack Trace\n"
-                    + String.join("\n", stackTraceToString(trace))
+                    + stackTraceToString(trace)
                     + "\n\n")
             .orElse("");
   }
 
-  private static String[] stackTraceToString(final StackTraceElement[] stackTrace) {
+  private static String stackTraceToString(final StackTraceElement[] stackTrace) {
     return Arrays.stream(stackTrace)
         .map(StackTraceElement::toString)
-        .toArray(String[]::new);
+        .collect(Collectors.joining("\n\n"));
   }
 }
