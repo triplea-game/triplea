@@ -15,6 +15,10 @@ import java.util.logging.Level;
 import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
@@ -53,9 +57,6 @@ import games.strategy.triplea.player.AbstractHumanPlayer;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.PlaceData;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
 /**

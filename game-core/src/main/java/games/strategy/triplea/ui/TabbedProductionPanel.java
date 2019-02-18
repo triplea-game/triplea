@@ -16,7 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.JPanelBuilder;
+import org.triplea.util.Tuple;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
@@ -25,8 +27,6 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Tuple;
 
 class TabbedProductionPanel extends ProductionPanel {
   private static final long serialVersionUID = 3481282212500641144L;

@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -54,7 +56,6 @@ import games.strategy.triplea.ui.screen.drawable.VcDrawable;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.Util;
-import games.strategy.util.Tuple;
 
 /**
  * Orchestrates the rendering of all map tiles.

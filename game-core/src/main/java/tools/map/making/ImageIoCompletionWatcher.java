@@ -4,7 +4,7 @@ import java.awt.Image;
 import java.awt.image.ImageObserver;
 import java.util.concurrent.CountDownLatch;
 
-import games.strategy.util.Interruptibles;
+import org.triplea.java.Interruptibles;
 
 /**
  * Code originally contributed by "Thomas Carvin".

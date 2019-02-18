@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.BombingUnitDamageChange;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;
@@ -24,7 +26,6 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.data.BattleRecords;
-import games.strategy.util.IntegerMap;
 
 /**
  * All changes made to GameData should be made through changes produced here.

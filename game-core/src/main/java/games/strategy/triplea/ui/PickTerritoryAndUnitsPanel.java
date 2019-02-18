@@ -15,6 +15,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.util.Tuple;
+
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.GameData;
@@ -22,9 +26,6 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
 /**

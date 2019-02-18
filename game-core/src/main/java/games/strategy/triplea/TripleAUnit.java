@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Change;
@@ -22,9 +26,6 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Tuple;
 
 /**
  * Extended unit for triplea games.

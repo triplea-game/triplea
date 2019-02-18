@@ -17,6 +17,9 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -24,8 +27,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AirMovementValidator;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.Tuple;
 
 /**
  * A route between two territories.

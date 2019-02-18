@@ -14,8 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 import org.junitpioneer.jupiter.TempDirectory.TempDir;
-
-import games.strategy.util.Version;
+import org.triplea.util.Version;
 
 /**
  * For transition reasons we use a DownloadFileProperties to read a properties file for each map that we download.

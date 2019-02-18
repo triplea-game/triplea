@@ -14,6 +14,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.ILobbyGameController;
+import org.triplea.util.Tuple;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -23,7 +24,6 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
-import games.strategy.util.Tuple;
 
 class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;

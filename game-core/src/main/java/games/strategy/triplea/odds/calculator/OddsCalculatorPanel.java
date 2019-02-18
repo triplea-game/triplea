@@ -35,6 +35,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingComponents;
 
@@ -54,8 +56,6 @@ import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 import lombok.extern.java.Log;
 
 @Log

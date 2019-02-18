@@ -23,6 +23,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.triplea.util.Tuple;
+import org.triplea.util.Version;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -53,8 +55,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.Tuple;
-import games.strategy.util.Version;
 import lombok.extern.java.Log;
 
 /**

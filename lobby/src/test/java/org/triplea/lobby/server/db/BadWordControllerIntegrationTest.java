@@ -8,9 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.java.Util;
 import org.triplea.test.common.Integration;
-
-import games.strategy.util.Util;
 
 @Integration
 public final class BadWordControllerIntegrationTest extends AbstractControllerTestCase {

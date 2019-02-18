@@ -11,6 +11,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.triplea.java.PredicateBuilder;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -31,9 +35,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.PredicateBuilder;
 
 /**
  * Logic to fire rockets.

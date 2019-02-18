@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
@@ -14,7 +16,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
-import games.strategy.util.CollectionUtils;
 
 /**
  * Basic utility methods to handle basic AI stuff for Politics this AI always tries to get from Neutral to War with

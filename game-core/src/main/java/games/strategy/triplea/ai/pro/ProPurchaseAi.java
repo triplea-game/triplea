@@ -13,6 +13,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
@@ -47,8 +50,6 @@ import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 
 /**
  * Pro purchase AI.

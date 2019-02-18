@@ -69,6 +69,8 @@ import java.util.Map.Entry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -95,8 +97,6 @@ import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 
 public class WW2V3Year41Test {
   private GameData gameData;

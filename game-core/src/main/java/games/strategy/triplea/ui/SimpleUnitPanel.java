@@ -12,6 +12,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerId;
@@ -24,7 +26,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitTypeComparator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.UnitCategory;
-import games.strategy.util.IntegerMap;
 
 /**
  * A Simple panel that displays a list of units.

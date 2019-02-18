@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.triplea.java.collections.IntegerMap;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -16,7 +18,6 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
-import games.strategy.util.IntegerMap;
 
 /**
  * An attachment for instances of {@link TerritoryEffect}.

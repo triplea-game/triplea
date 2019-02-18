@@ -2,7 +2,7 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.util.IntegerMap;
+import org.triplea.java.collections.IntegerMap;
 
 /**
  * A repair rule.

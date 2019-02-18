@@ -23,6 +23,11 @@ import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 
+import org.triplea.java.ObjectUtils;
+import org.triplea.java.PredicateBuilder;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
@@ -47,10 +52,6 @@ import games.strategy.triplea.delegate.data.MustMoveWithDetails;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.ObjectUtils;
-import games.strategy.util.PredicateBuilder;
 import lombok.extern.java.Log;
 
 /**

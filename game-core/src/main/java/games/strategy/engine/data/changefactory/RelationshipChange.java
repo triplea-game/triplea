@@ -1,12 +1,13 @@
 package games.strategy.engine.data.changefactory;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CollectionUtils;
 
 /**
  * RelationshipChange this creates a change in relationshipType between two players, for example from Neutral to War.

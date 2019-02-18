@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.java.collections.IntegerMap;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
@@ -21,7 +22,6 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UserActionAttachment;
-import games.strategy.util.IntegerMap;
 
 @ExtendWith(MockitoExtension.class)
 final class UserActionPanelTest {

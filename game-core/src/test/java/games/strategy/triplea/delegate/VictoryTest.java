@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.IntegerMap;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -19,7 +20,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.IntegerMap;
 
 /**
  * "Victory" map is just a branch/mod of Pact of Steel 2.

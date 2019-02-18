@@ -15,10 +15,11 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.Constants;
-import games.strategy.util.IntegerMap;
 
 class PuChart {
   private final Iterable<PlayerId> players;

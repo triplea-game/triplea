@@ -10,11 +10,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.triplea.java.function.ThrowingConsumer;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
 import org.triplea.test.common.Integration;
-
-import games.strategy.util.function.ThrowingConsumer;
 
 /**
  * Superclass for fixtures that test a moderator service controller.

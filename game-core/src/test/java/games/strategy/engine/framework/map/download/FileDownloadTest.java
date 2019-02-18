@@ -5,9 +5,9 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.util.Version;
 
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
-import games.strategy.util.Version;
 
 public class FileDownloadTest {
   @Test

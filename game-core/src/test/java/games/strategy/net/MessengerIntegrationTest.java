@@ -18,9 +18,8 @@ import javax.annotation.concurrent.GuardedBy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.Interruptibles;
 import org.triplea.test.common.Integration;
-
-import games.strategy.util.Interruptibles;
 
 @Integration
 public class MessengerIntegrationTest {

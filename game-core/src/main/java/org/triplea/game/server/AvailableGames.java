@@ -22,11 +22,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.ThreadSafe;
 
+import org.triplea.java.UrlStreams;
+
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.io.FileUtils;
-import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
 /**

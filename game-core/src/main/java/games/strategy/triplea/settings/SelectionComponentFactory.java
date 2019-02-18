@@ -31,6 +31,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+import org.triplea.java.OptionalUtils;
+import org.triplea.java.function.ThrowingFunction;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JComboBoxBuilder;
 import org.triplea.swing.JPanelBuilder;
@@ -40,8 +42,6 @@ import com.google.common.base.Strings;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.pbem.IEmailSender;
-import games.strategy.util.OptionalUtils;
-import games.strategy.util.function.ThrowingFunction;
 import lombok.extern.java.Log;
 
 /**

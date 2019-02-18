@@ -12,11 +12,12 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
-import games.strategy.util.IntegerMap;
 
 /**
  * Used to manage resource images.

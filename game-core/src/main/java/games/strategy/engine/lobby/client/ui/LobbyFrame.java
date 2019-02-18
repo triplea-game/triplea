@@ -24,6 +24,7 @@ import javax.swing.SpinnerNumberModel;
 
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 
@@ -37,7 +38,6 @@ import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.net.INode;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
-import games.strategy.util.EventThreadJOptionPane;
 
 /**
  * The top-level frame window for the lobby client UI.

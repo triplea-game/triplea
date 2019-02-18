@@ -14,6 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
@@ -22,7 +24,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.util.UnitOwner;
-import games.strategy.util.IntegerMap;
 
 /**
  * Provides useful methods for converting things to text.

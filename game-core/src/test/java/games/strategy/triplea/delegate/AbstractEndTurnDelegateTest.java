@@ -11,6 +11,7 @@ import java.util.Comparator;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.IntegerMap;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -18,7 +19,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.IntegerMap;
 
 final class AbstractEndTurnDelegateTest {
   @Nested

@@ -2,10 +2,10 @@ package org.triplea.lobby.server.db;
 
 import java.util.Objects;
 
+import org.triplea.util.Md5Crypt;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-
-import games.strategy.util.Md5Crypt;
 
 /**
  * A Wrapper class for salted password hashes.

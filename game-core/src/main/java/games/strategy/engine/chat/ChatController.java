@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
@@ -17,7 +19,6 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
-import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
 /**

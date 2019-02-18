@@ -7,13 +7,14 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.swing.EventThreadJOptionPane;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.GameSetting;
-import games.strategy.util.EventThreadJOptionPane;
 import lombok.extern.java.Log;
 
 @Log

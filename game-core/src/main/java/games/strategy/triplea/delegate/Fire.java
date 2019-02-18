@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -16,8 +19,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.Interruptibles;
 
 /**
  * Maintains the state of a group of units firing during a {@link MustFightBattle}.

@@ -26,6 +26,8 @@ import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.SwingAction;
 
 import com.google.common.base.Preconditions;
@@ -66,8 +68,6 @@ import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.Interruptibles;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;

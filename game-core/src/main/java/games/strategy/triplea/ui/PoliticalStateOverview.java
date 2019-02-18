@@ -18,11 +18,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
+import org.triplea.util.Triple;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
-import games.strategy.util.Triple;
 
 /**
  * A panel that shows the current political state, this has no other functionality then a view on the current politics.

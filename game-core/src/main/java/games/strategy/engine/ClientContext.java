@@ -3,13 +3,13 @@ package games.strategy.engine;
 import java.util.List;
 
 import org.triplea.config.product.ProductConfiguration;
+import org.triplea.util.Version;
 
 import games.strategy.engine.framework.map.download.DownloadCoordinator;
 import games.strategy.engine.framework.map.download.DownloadFileDescription;
 import games.strategy.engine.framework.map.download.DownloadRunnable;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.Version;
 
 /**
  * Manages the creation of objects, similar to a dependency injection framework.

@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.triplea.java.collections.IntegerMap;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -13,7 +15,6 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
-import games.strategy.util.IntegerMap;
 import lombok.extern.java.Log;
 
 /**

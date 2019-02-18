@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -16,7 +18,6 @@ import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.util.ProMatches;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.CollectionUtils;
 
 /**
  * The result of an AI territory analysis.

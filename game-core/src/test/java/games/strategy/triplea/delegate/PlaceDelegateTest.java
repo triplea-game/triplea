@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.IntegerMap;
 
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -18,7 +19,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
-import games.strategy.util.IntegerMap;
 
 public class PlaceDelegateTest extends AbstractDelegateTestCase {
   protected PlaceDelegate delegate;

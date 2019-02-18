@@ -3,9 +3,10 @@ package games.strategy.engine.random;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.util.IntegerMap;
 
 /**
  * Default implementation of {@link IRandomStats}.

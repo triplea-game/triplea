@@ -22,6 +22,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -40,8 +42,6 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 
 class ProductionRepairPanel extends JPanel {
   private static final long serialVersionUID = -6344711064699083729L;

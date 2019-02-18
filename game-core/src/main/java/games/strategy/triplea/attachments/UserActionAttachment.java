@@ -9,6 +9,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.util.Tuple;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -20,8 +23,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.Tuple;
 
 /**
  * A class of attachments that can be "activated" during a user action delegate.

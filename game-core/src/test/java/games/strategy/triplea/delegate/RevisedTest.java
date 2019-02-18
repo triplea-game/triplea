@@ -60,6 +60,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
+import org.triplea.java.collections.CollectionUtils;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
@@ -80,7 +81,6 @@ import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.CollectionUtils;
 
 public class RevisedTest {
   private GameData gameData;

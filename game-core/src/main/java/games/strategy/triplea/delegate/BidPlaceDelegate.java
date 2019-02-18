@@ -6,14 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 
 /**
  * Logic for unit placement when bid mode is active.

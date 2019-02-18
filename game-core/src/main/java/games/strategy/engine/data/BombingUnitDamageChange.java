@@ -3,8 +3,9 @@ package games.strategy.engine.data;
 import java.util.Collections;
 import java.util.Set;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.util.IntegerMap;
 
 /**
  * A game data change that captures the damage caused to a collection of units by a bombing attack.

@@ -16,8 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import games.strategy.util.function.ThrowingConsumer;
+import org.triplea.java.function.ThrowingConsumer;
 
 final class MacOsIntegrationTest {
   @Nested

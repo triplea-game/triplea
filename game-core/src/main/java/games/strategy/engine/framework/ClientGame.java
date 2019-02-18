@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.triplea.java.Interruptibles;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -19,7 +21,6 @@ import games.strategy.engine.random.RemoteRandom;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.delegate.BattleCalculator;
-import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**

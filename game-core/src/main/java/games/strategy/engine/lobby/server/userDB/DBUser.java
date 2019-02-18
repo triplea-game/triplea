@@ -5,11 +5,11 @@ package games.strategy.engine.lobby.server.userDB;
 
 import java.io.Serializable;
 
+import org.triplea.java.Util;
 import org.triplea.lobby.common.LobbyConstants;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.util.Util;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

@@ -12,6 +12,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -36,8 +39,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitTypeComparator;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 
 /**
  * Logic for purchasing units.

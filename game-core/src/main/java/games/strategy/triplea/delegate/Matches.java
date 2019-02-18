@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import static games.strategy.util.Util.not;
+import static org.triplea.java.Util.not;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +13,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
+
+import org.triplea.java.PredicateBuilder;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
@@ -39,10 +44,6 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.PredicateBuilder;
-import games.strategy.util.Tuple;
 
 /**
  * Useful match interfaces.

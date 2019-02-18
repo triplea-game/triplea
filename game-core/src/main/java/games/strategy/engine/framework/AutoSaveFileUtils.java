@@ -3,7 +3,7 @@ package games.strategy.engine.framework;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.GameDataFileUtils.addExtension;
-import static games.strategy.util.StringUtils.capitalize;
+import static org.triplea.java.StringUtils.capitalize;
 
 import java.io.File;
 import java.nio.file.Paths;

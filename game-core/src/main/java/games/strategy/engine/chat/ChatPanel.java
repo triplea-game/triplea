@@ -9,13 +9,13 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import org.triplea.game.chat.ChatModel;
+import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.net.IMessenger;
-import games.strategy.util.Interruptibles;
 
 /**
  * A Chat window.

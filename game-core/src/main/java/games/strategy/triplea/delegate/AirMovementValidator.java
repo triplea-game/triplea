@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerId;
@@ -26,8 +29,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 
 /**
  * Provides static methods for evaluating movement of air units.

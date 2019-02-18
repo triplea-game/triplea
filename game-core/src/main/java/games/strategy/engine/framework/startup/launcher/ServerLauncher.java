@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.triplea.game.server.HeadlessGameServer;
+import org.triplea.java.Interruptibles;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -42,7 +43,6 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**

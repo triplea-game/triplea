@@ -17,9 +17,10 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Nullable;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
-import games.strategy.util.IntegerMap;
 
 /**
  * Holds a collection of territories, and the links between them.

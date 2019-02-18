@@ -21,11 +21,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.util.Version;
 
 import games.strategy.engine.framework.map.download.MapDownloadController.DownloadedMaps;
 import games.strategy.engine.framework.map.download.MapDownloadController.TutorialMapPreferences;
 import games.strategy.engine.framework.map.download.MapDownloadController.UserMaps;
-import games.strategy.util.Version;
 
 public final class MapDownloadControllerTest {
 

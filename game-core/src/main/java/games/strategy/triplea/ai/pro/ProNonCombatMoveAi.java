@@ -15,6 +15,8 @@ import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
@@ -49,7 +51,6 @@ import games.strategy.triplea.delegate.TransportTracker;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.util.CollectionUtils;
 
 /**
  * Pro non-combat move AI.

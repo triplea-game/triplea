@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.ClientContext;
@@ -44,8 +47,6 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Tuple;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.extern.java.Log;

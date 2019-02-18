@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -24,8 +27,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 
 abstract class AbstractBattle implements IBattle {
   private static final long serialVersionUID = 871090498661731337L;

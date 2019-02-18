@@ -14,6 +14,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.util.ExitStatus;
+
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -50,8 +53,6 @@ import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.ExitStatus;
-import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**

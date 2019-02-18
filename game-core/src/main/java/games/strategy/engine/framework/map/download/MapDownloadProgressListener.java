@@ -6,8 +6,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
-
-import games.strategy.util.OptionalUtils;
+import org.triplea.java.OptionalUtils;
 
 /**
  * A listener of map download progress events that updates the associated controls in the UI.

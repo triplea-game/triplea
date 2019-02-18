@@ -1,11 +1,12 @@
 package games.strategy.triplea.delegate.remote;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.data.TechResults;
-import games.strategy.util.IntegerMap;
 
 /**
  * Logic for spending tech tokens.

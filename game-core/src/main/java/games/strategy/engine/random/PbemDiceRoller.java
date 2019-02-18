@@ -19,12 +19,12 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
+import org.triplea.util.ExitStatus;
 
 import games.strategy.triplea.UrlConstants;
 import games.strategy.ui.Util;
-import games.strategy.util.ExitStatus;
-import games.strategy.util.Interruptibles;
 
 /**
  * It's a bit messy, but the threads are a pain to deal with. We want to be able to call this from any thread, and have

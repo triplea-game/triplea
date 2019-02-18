@@ -12,6 +12,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
@@ -28,8 +31,6 @@ import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Tuple;
 
 /**
  * Root panel for all action buttons in a triplea game.

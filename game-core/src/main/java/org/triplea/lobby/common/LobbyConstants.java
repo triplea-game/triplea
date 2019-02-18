@@ -1,6 +1,6 @@
 package org.triplea.lobby.common;
 
-import games.strategy.util.Version;
+import org.triplea.util.Version;
 
 /**
  * A collection of constants used by both the lobby client and server.

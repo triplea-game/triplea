@@ -33,9 +33,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.AlphanumComparator;
+import org.triplea.util.PointFileReaderWriter;
+
 import games.strategy.ui.Util;
-import games.strategy.util.AlphanumComparator;
-import games.strategy.util.PointFileReaderWriter;
 import lombok.extern.java.Log;
 import tools.image.FileOpen;
 import tools.image.FileSave;

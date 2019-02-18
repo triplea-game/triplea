@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.util.CollectionUtils;
 import lombok.extern.java.Log;
 
 @Log

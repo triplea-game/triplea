@@ -7,11 +7,12 @@ import java.util.function.BiFunction;
 
 import javax.annotation.Nullable;
 
+import org.triplea.java.OptionalUtils;
+
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SelectionComponentUiUtils;
-import games.strategy.util.OptionalUtils;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;

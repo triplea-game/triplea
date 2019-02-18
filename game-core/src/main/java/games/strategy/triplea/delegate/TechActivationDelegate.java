@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.message.IRemote;
@@ -15,7 +17,6 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
-import games.strategy.util.CollectionUtils;
 
 /**
  * Logic for activating tech rolls. This delegate requires the TechnologyDelegate to run correctly.

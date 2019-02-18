@@ -11,6 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -18,7 +20,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
-import games.strategy.util.IntegerMap;
 
 /**
  * Panel used to display the current players resources.

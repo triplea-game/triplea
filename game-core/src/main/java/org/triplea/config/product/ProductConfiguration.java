@@ -2,10 +2,9 @@ package org.triplea.config.product;
 
 import org.triplea.config.PropertyReader;
 import org.triplea.config.ResourcePropertyReader;
+import org.triplea.util.Version;
 
 import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.util.Version;
 
 /**
  * Provides access to the product configuration. The product configuration applies to all components of the TripleA

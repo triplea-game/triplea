@@ -10,9 +10,10 @@ import java.time.LocalDateTime;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.triplea.java.TimeManager;
+import org.triplea.util.Version;
+
 import games.strategy.engine.ClientContext;
-import games.strategy.util.TimeManager;
-import games.strategy.util.Version;
 import lombok.extern.java.Log;
 
 /** Properties file used to know which map versions have been installed. */

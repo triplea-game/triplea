@@ -13,6 +13,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Triple;
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -33,10 +38,6 @@ import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Triple;
-import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
 /**

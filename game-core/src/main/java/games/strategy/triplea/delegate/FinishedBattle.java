@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -18,8 +21,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 
 /**
  * A sort of scripted battle made for blitzed/conquered territories without a fight.

@@ -35,12 +35,12 @@ import org.triplea.lobby.server.db.BannedUsernameDao;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserDao;
 import org.triplea.test.common.security.TestSecurityUtils;
+import org.triplea.util.Md5Crypt;
+import org.triplea.util.Tuple;
 
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.util.Md5Crypt;
-import games.strategy.util.Tuple;
 
 public final class LobbyLoginValidatorTest {
 

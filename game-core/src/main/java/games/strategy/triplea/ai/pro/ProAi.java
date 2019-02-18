@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerId;
@@ -47,8 +50,6 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.odds.calculator.ConcurrentOddsCalculator;
 import games.strategy.triplea.odds.calculator.IOddsCalculator;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.Tuple;
 
 /**
  * Pro AI.

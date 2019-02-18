@@ -14,13 +14,14 @@ import java.util.prefs.Preferences;
 
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.concurrency.CountDownLatchHandler;
+
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.io.FileUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.util.CountDownLatchHandler;
 import lombok.extern.java.Log;
 
 /**

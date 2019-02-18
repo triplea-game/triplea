@@ -12,8 +12,7 @@ import java.time.Instant;
 import javax.annotation.Nullable;
 
 import org.triplea.lobby.server.User;
-
-import games.strategy.util.Tuple;
+import org.triplea.util.Tuple;
 
 /**
  * Utility class to create/read/delete banned usernames (there is no update).

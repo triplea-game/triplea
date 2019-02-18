@@ -31,6 +31,11 @@ import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
+import org.triplea.java.function.ThrowingFunction;
+import org.triplea.java.function.ThrowingSupplier;
+import org.triplea.util.PointFileReaderWriter;
+import org.triplea.util.Tuple;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.data.GameData;
@@ -39,10 +44,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.Util;
-import games.strategy.util.PointFileReaderWriter;
-import games.strategy.util.Tuple;
-import games.strategy.util.function.ThrowingFunction;
-import games.strategy.util.function.ThrowingSupplier;
 import lombok.extern.java.Log;
 
 /**

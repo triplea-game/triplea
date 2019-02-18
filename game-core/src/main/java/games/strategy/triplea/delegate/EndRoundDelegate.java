@@ -12,6 +12,9 @@ import java.util.stream.StreamSupport;
 import javax.swing.JOptionPane;
 
 import org.triplea.game.server.HeadlessGameServer;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.util.LocalizeHtml;
 
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -29,9 +32,6 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.LocalizeHtml;
 
 /**
  * A delegate used to check for end of game conditions.

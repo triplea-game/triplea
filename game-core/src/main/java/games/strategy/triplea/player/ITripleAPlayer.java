@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -14,8 +17,6 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Tuple;
 
 /**
  * Interface the TriplePlayer presents to Delegates through IRemoteMessenger.

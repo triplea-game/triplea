@@ -50,9 +50,9 @@ import javax.swing.SwingUtilities;
 
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
+import org.triplea.util.Tuple;
 
 import games.strategy.engine.data.properties.PropertiesUi;
-import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 import tools.image.FileSave;
 import tools.util.ToolArguments;

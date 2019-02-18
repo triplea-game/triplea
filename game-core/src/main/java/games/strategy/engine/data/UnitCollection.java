@@ -11,8 +11,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
 /**
  * A collection of units.

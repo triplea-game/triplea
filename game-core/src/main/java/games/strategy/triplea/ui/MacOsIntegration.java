@@ -8,10 +8,11 @@ import java.net.URI;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
+import org.triplea.java.function.ThrowingConsumer;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.framework.system.SystemProperties;
-import games.strategy.util.function.ThrowingConsumer;
 import lombok.extern.java.Log;
 
 /**

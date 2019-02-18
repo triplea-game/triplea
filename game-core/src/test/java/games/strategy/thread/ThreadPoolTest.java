@@ -8,8 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-
-import games.strategy.util.Interruptibles;
+import org.triplea.java.Interruptibles;
 
 public class ThreadPoolTest {
 

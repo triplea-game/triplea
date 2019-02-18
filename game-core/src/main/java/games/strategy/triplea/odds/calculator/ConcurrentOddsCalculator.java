@@ -16,6 +16,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.java.concurrency.CountUpAndDownLatch;
+
 import com.google.common.util.concurrent.Runnables;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
@@ -25,8 +28,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameDataUtils;
-import games.strategy.util.CountUpAndDownLatch;
-import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**

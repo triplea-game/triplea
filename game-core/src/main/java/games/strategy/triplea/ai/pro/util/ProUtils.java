@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.java.collections.CollectionUtils;
+
 import com.google.common.collect.Streams;
 
 import games.strategy.engine.data.GameData;
@@ -23,8 +26,6 @@ import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.Interruptibles;
 
 /**
  * Pro AI utilities (these are very general and maybe should be moved into delegate or engine).

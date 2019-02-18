@@ -20,13 +20,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.util.Version;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.framework.GameDataFileUtils;
 import games.strategy.engine.framework.ui.GameChooserEntry;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import games.strategy.util.Version;
 
 @ExtendWith(MockitoExtension.class)
 class GameSelectorModelTest extends AbstractClientSettingTestCase {

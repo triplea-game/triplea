@@ -16,8 +16,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.swing.SwingAction;
+import org.triplea.util.Tuple;
 
 import com.google.common.util.concurrent.Runnables;
 
@@ -28,8 +30,6 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.Tuple;
 
 final class LobbyGameTableModelTest {
   @ExtendWith(MockitoExtension.class)

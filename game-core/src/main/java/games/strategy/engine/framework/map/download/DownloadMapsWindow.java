@@ -3,7 +3,7 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static games.strategy.util.Util.not;
+import static org.triplea.java.Util.not;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -33,6 +33,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.java.OptionalUtils;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JPanelBuilder;
@@ -42,8 +44,6 @@ import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.OptionalUtils;
 import lombok.extern.java.Log;
 
 /** Window that allows for map downloads and removal. */

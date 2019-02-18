@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -26,8 +29,6 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.BonusIncomeUtils;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 import lombok.extern.java.Log;
 
 /**

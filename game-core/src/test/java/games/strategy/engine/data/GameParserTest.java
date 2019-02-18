@@ -11,8 +11,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import games.strategy.util.Tuple;
+import org.triplea.util.Tuple;
 
 final class GameParserTest {
   @Nested

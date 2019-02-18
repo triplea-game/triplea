@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
@@ -38,7 +40,6 @@ import games.strategy.triplea.delegate.AbstractPlaceDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TransportTracker;
-import games.strategy.util.CollectionUtils;
 
 /**
  * Pro AI purchase utilities.

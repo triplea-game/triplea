@@ -26,6 +26,8 @@ import java.util.logging.Level;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
+import org.triplea.java.Interruptibles;
+import org.triplea.util.ExitStatus;
 
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.chat.Chat;
@@ -42,8 +44,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
-import games.strategy.util.ExitStatus;
-import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**

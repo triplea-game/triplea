@@ -8,8 +8,9 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.triplea.java.UrlStreams;
+
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
 /**

@@ -7,10 +7,11 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
+import org.triplea.java.Interruptibles;
+
 import games.strategy.net.IConnectionLogin;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
-import games.strategy.util.Interruptibles;
 import lombok.extern.java.Log;
 
 /**

@@ -14,6 +14,12 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.java.PredicateBuilder;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
+
 import com.google.common.collect.Sets;
 
 import games.strategy.engine.data.Change;
@@ -38,11 +44,6 @@ import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TuvUtils;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.PredicateBuilder;
-import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
 /**

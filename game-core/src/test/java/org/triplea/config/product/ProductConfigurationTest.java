@@ -6,8 +6,7 @@ import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.Test;
 import org.triplea.config.MemoryPropertyReader;
 import org.triplea.config.product.ProductConfiguration.PropertyKeys;
-
-import games.strategy.util.Version;
+import org.triplea.util.Version;
 
 final class ProductConfigurationTest {
   private final MemoryPropertyReader memoryPropertyReader = new MemoryPropertyReader();

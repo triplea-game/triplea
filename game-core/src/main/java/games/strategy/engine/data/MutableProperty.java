@@ -6,8 +6,8 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import games.strategy.util.function.ThrowingConsumer;
-import games.strategy.util.function.ThrowingFunction;
+import org.triplea.java.function.ThrowingConsumer;
+import org.triplea.java.function.ThrowingFunction;
 
 /**
  * A wrapper interface to Bundle setters, getters and resetters of the same field.

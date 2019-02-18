@@ -23,6 +23,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -36,8 +38,6 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.IntegerMap;
 
 class TechPanel extends ActionPanel {
   private static final long serialVersionUID = -6477919141575138007L;

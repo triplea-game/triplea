@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
-import static games.strategy.util.Util.not;
+import static org.triplea.java.Util.not;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.google.common.annotations.VisibleForTesting;
+import org.triplea.util.Version;
 
-import games.strategy.util.Version;
+import com.google.common.annotations.VisibleForTesting;
 
 class MapDownloadList {
 

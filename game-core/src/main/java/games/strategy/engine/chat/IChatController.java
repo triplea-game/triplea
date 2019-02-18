@@ -2,9 +2,10 @@ package games.strategy.engine.chat;
 
 import java.util.Map;
 
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
-import games.strategy.util.Tuple;
 
 /**
  * A central controller of who is in the chat.

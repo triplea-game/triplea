@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 
 import org.triplea.game.client.ui.javafx.TripleA;
+import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
 import games.strategy.debug.ErrorMessage;
@@ -25,7 +26,6 @@ import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
-import games.strategy.util.Interruptibles;
 import javafx.application.Application;
 import lombok.extern.java.Log;
 

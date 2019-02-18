@@ -47,8 +47,11 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.util.Tuple;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -71,9 +74,6 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.Util;
-import games.strategy.util.CollectionUtils;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.Tuple;
 
 /**
  * Displays a running battle.

@@ -79,10 +79,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.java.concurrency.CompletableFutureUtils;
+import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
-import org.triplea.util.concurrent.CompletableFutureUtils;
+import org.triplea.util.ExitStatus;
+import org.triplea.util.LocalizeHtml;
+import org.triplea.util.Tuple;
 
 import com.google.common.base.Preconditions;
 
@@ -162,12 +168,6 @@ import games.strategy.triplea.ui.menubar.TripleAMenuBar;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
-import games.strategy.util.EventThreadJOptionPane;
-import games.strategy.util.ExitStatus;
-import games.strategy.util.IntegerMap;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.LocalizeHtml;
-import games.strategy.util.Tuple;
 import lombok.extern.java.Log;
 
 /**

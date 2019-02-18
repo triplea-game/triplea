@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.triplea.game.chat.ChatModel;
+import org.triplea.java.TimeManager;
 
 import com.google.common.base.Ascii;
 
@@ -14,7 +15,6 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
-import games.strategy.util.TimeManager;
 
 /**
  * Headless version of ChatPanel.

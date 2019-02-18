@@ -10,12 +10,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
+import org.triplea.java.UrlStreams;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.util.UrlStreams;
 import lombok.extern.java.Log;
 
 

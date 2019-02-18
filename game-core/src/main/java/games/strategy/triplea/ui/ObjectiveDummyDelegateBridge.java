@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 
+import org.triplea.util.Tuple;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -30,7 +32,6 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
-import games.strategy.util.Tuple;
 
 /**
  * Class used to avoid making actual data changes when checking objectives.

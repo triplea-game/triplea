@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.triplea.java.collections.CollectionUtils;
+
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -21,7 +23,6 @@ import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
-import games.strategy.util.CollectionUtils;
 
 /**
  * The Purpose of this class is to hold shared and simple methods used by RulesAttachment.

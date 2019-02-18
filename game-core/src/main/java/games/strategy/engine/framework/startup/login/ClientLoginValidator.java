@@ -8,6 +8,9 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.util.Version;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
@@ -16,8 +19,6 @@ import games.strategy.engine.GameEngineVersion;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
-import games.strategy.util.Interruptibles;
-import games.strategy.util.Version;
 
 /**
  * The server side of the peer-to-peer network game authentication protocol.

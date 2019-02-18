@@ -9,6 +9,7 @@ import java.util.Collection;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.CollectionUtils;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -16,7 +17,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
-import games.strategy.util.CollectionUtils;
 
 public class PactOfSteel2Test {
   private GameData gameData;
