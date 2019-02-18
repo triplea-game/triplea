@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import java.util.function.Function;
 import java.util.logging.LogRecord;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -25,19 +24,9 @@ class ErrorMessageFormatterTest {
   @Mock
   private LogRecord logRecord;
 
-  private Function<LogRecord, String> errorMessageFormatter;
-
-  @BeforeEach
-  void setup() {
-    errorMessageFormatter = new ErrorMessageFormatter();
-  }
+  private final Function<LogRecord, String> errorMessageFormatter = new ErrorMessageFormatter();
 
 
-  /*
-   * <pre>
-   * {log message}
-   * </pre>
-   */
   @Test
   void logMessageOnly() {
     when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
@@ -53,11 +42,6 @@ class ErrorMessageFormatterTest {
                 + "</html>"));
   }
 
-  /*
-   * <pre>
-   * {exception simple name} - {exception message}
-   * </pre>
-   */
   @Test
   void exceptionOnlyWithMessage() {
     givenLogRecordWithNoMessageOnlyAnException(logRecord, EXCEPTION_WITH_MESSAGE);
@@ -78,11 +62,6 @@ class ErrorMessageFormatterTest {
     when(logRecord.getThrown()).thenReturn(exception);
   }
 
-  /*
-   * <pre>
-   * {exception simple name}
-   * </pre>
-   */
   @Test
   void exceptionOnlyWithNoMessage() {
     givenLogRecordWithNoMessageOnlyAnException(logRecord, EXCEPTION_WITHOUT_MESSAGE);
@@ -97,13 +76,6 @@ class ErrorMessageFormatterTest {
                 + "</html>"));
   }
 
-  /*
-   * <pre>
-   * {log message}
-   *
-   * {exception simple name} - {exception message}
-   * </pre>
-   */
   @Test
   void bothMessageAndExceptionWithExceptionMessage() {
     when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
@@ -121,13 +93,6 @@ class ErrorMessageFormatterTest {
                 + "</html>"));
   }
 
-  /*
-   * <pre>
-   * {log message}
-   *
-   * {exception simple name}
-   * </pre>
-   */
   @Test
   void messageAndExceptionWithoutExceptionMessage() {
     when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
