@@ -41,23 +41,6 @@ final class HmacSha512Authenticator {
    *         node; never {@code null}.
    */
   static Map<String, String> newChallenge() {
-    return Maps.newHashMap(ImmutableMap.<String, String>builder()
-        .put(encodeProperty(ChallengePropertyNames.NONCE, newRandomBytes()))
-        .put(encodeProperty(ChallengePropertyNames.SALT, newRandomBytes()))
-        .build());
-  }
-
-  private static Map.Entry<String, String> encodeProperty(final String name, final byte[] value) {
-    return Maps.immutableEntry(name, Base64.getEncoder().encodeToString(value));
-  }
-
-  private static byte[] newRandomBytes() {
-    // It is sufficient to use the default non-strong secure PRNG for the platform because the secrets we are protecting
-    // are short lived.
-    //
-    // https://stackoverflow.com/questions/27622625/securerandom-with-nativeprng-vs-sha1prng
-    final SecureRandom secureRandom = new SecureRandom();
-
     // This length is relatively large for a nonce simply because we do not currently expire nonces after they have been
     // issued. If this were done, and a short nonce lifetime was used, we could probably get away with 8 bytes of random
     // data safely as long as we included the timestamp as part of the nonce.
@@ -65,7 +48,29 @@ final class HmacSha512Authenticator {
     // https://security.stackexchange.com/questions/1952/how-long-should-a-random-nonce-be
     final int nonceLengthInBytes = 64;
 
-    final byte[] bytes = new byte[nonceLengthInBytes];
+    // Salt length should match hash output size.
+    //
+    // https://crackstation.net/hashing-security.htm#salt
+    final int saltLengthInBytes = 64;
+
+    return Maps.newHashMap(ImmutableMap.<String, String>builder()
+        .put(encodeProperty(ChallengePropertyNames.NONCE, newRandomBytes(nonceLengthInBytes)))
+        .put(encodeProperty(ChallengePropertyNames.SALT, newRandomBytes(saltLengthInBytes)))
+        .build());
+  }
+
+  private static Map.Entry<String, String> encodeProperty(final String name, final byte[] value) {
+    return Maps.immutableEntry(name, Base64.getEncoder().encodeToString(value));
+  }
+
+  private static byte[] newRandomBytes(final int length) {
+    // It is sufficient to use the default non-strong secure PRNG for the platform because the secrets we are protecting
+    // are short lived.
+    //
+    // https://stackoverflow.com/questions/27622625/securerandom-with-nativeprng-vs-sha1prng
+    final SecureRandom secureRandom = new SecureRandom();
+
+    final byte[] bytes = new byte[length];
     secureRandom.nextBytes(bytes);
     return bytes;
   }
