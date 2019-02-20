@@ -1497,7 +1497,7 @@ return true;</string>
               <group name="" id="339" customizedId="" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" enabled="true" commentSet="false" comment="" actionElevationType="inherit" useExternalParametrization="true" externalParametrizationName="Customize title bar" externalParametrizationMode="include">
                 <serializedBean>
                   <java class="java.beans.XMLDecoder">
-                    <object class="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" id="VerticalFormComponentGroup0">
+                    <object class="com.install4j.runtime.beans.groups.VerticalFormComponentGroup">
                       <void property="backgroundColor">
                         <object class="java.awt.Color">
                           <int>255</int>
@@ -1527,21 +1527,19 @@ return true;</string>
                           <string>icon:${installer:sys.installerApplicationMode}_header.png</string>
                         </object>
                       </void>
-                      <void id="Integer0" property="cellSpacing" />
-                      <void id="Integer1" property="borderWidth" />
                       <void property="imageInsets">
                         <object class="java.awt.Insets">
-                          <object idref="Integer0" />
+                          <int>0</int>
                           <int>5</int>
-                          <object idref="Integer1" />
-                          <object idref="Integer1" />
+                          <int>1</int>
+                          <int>1</int>
                         </object>
                       </void>
                       <void property="insets">
                         <object class="java.awt.Insets">
-                          <object idref="Integer0" />
+                          <int>0</int>
                           <int>20</int>
-                          <object idref="Integer0" />
+                          <int>0</int>
                           <int>10</int>
                         </object>
                       </void>
@@ -1623,17 +1621,16 @@ return true;</string>
               <group name="" id="343" customizedId="" beanClass="com.install4j.runtime.beans.groups.HorizontalFormComponentGroup" enabled="true" commentSet="false" comment="" actionElevationType="inherit" useExternalParametrization="false" externalParametrizationName="" externalParametrizationMode="all">
                 <serializedBean>
                   <java class="java.beans.XMLDecoder">
-                    <object class="com.install4j.runtime.beans.groups.HorizontalFormComponentGroup" id="HorizontalFormComponentGroup0">
+                    <object class="com.install4j.runtime.beans.groups.HorizontalFormComponentGroup">
                       <void property="alignFirstLabel">
                         <boolean>false</boolean>
                       </void>
-                      <void id="Integer0" property="cellSpacing" />
                       <void property="insets">
                         <object class="java.awt.Insets">
                           <int>3</int>
-                          <object idref="Integer0" />
+                          <int>5</int>
                           <int>8</int>
-                          <object idref="Integer0" />
+                          <int>5</int>
                         </object>
                       </void>
                     </object>
