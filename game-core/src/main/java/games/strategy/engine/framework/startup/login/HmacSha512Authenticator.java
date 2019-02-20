@@ -26,6 +26,19 @@ import com.google.common.collect.Maps;
  * </p>
  */
 final class HmacSha512Authenticator {
+
+  /**
+   * We do not expire nonce values, because they are long-lived we use a larger value (rather than say a more minimal
+   * 8 bytes). https://security.stackexchange.com/questions/1952/how-long-should-a-random-nonce-be
+   */
+  private static final int LARGE_NONCE_LENGTH = 64;
+
+
+  /**
+   * Salt length is chosen to match hash output size. Reference: https://crackstation.net/hashing-security.htm#salt
+   */
+  private static final int HASH_OUTPUT_SIZE = 64;
+
   private HmacSha512Authenticator() {}
 
   @VisibleForTesting
@@ -42,8 +55,8 @@ final class HmacSha512Authenticator {
    */
   static Map<String, String> newChallenge() {
     return Maps.newHashMap(ImmutableMap.<String, String>builder()
-        .put(encodeProperty(ChallengePropertyNames.NONCE, newRandomBytes()))
-        .put(encodeProperty(ChallengePropertyNames.SALT, newRandomBytes()))
+        .put(encodeProperty(ChallengePropertyNames.NONCE, newRandomBytes(LARGE_NONCE_LENGTH)))
+        .put(encodeProperty(ChallengePropertyNames.SALT, newRandomBytes(HASH_OUTPUT_SIZE)))
         .build());
   }
 
@@ -51,21 +64,14 @@ final class HmacSha512Authenticator {
     return Maps.immutableEntry(name, Base64.getEncoder().encodeToString(value));
   }
 
-  private static byte[] newRandomBytes() {
+  private static byte[] newRandomBytes(final int numberOfBytes) {
     // It is sufficient to use the default non-strong secure PRNG for the platform because the secrets we are protecting
     // are short lived.
     //
     // https://stackoverflow.com/questions/27622625/securerandom-with-nativeprng-vs-sha1prng
     final SecureRandom secureRandom = new SecureRandom();
 
-    // This length is relatively large for a nonce simply because we do not currently expire nonces after they have been
-    // issued. If this were done, and a short nonce lifetime was used, we could probably get away with 8 bytes of random
-    // data safely as long as we included the timestamp as part of the nonce.
-    //
-    // https://security.stackexchange.com/questions/1952/how-long-should-a-random-nonce-be
-    final int nonceLengthInBytes = 64;
-
-    final byte[] bytes = new byte[nonceLengthInBytes];
+    final byte[] bytes = new byte[numberOfBytes];
     secureRandom.nextBytes(bytes);
     return bytes;
   }
