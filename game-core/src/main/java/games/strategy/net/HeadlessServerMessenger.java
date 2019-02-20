@@ -70,11 +70,6 @@ public class HeadlessServerMessenger implements IServerMessenger {
   public void setAcceptNewConnections(final boolean accept) {}
 
   @Override
-  public boolean isAcceptNewConnections() {
-    return false;
-  }
-
-  @Override
   public void setLoginValidator(final ILoginValidator loginValidator) {}
 
   @Override
