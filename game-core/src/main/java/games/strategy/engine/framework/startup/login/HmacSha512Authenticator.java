@@ -29,7 +29,7 @@ final class HmacSha512Authenticator {
 
   /**
    * We do not expire nonce values, because they are long-lived we use a larger value (rather than say a more minimal
-   * 8-bits). https://security.stackexchange.com/questions/1952/how-long-should-a-random-nonce-be
+   * 8 bytes). https://security.stackexchange.com/questions/1952/how-long-should-a-random-nonce-be
    */
   private static final int LARGE_NONCE_LENGTH = 64;
 
