@@ -130,7 +130,7 @@ abstract class NodeBbForumPoster implements IForumPoster {
   }
 
   private JSONObject queryUserInfo(final CloseableHttpClient client) throws IOException {
-    final HttpGet post = new HttpGet(getForumUrl() + "/api/user/" + username);
+    final HttpGet post = new HttpGet(getForumUrl() + "/api/user/username/" + username);
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       return new JSONObject(EntityUtils.toString(response.getEntity()));
