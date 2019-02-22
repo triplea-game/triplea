@@ -12,7 +12,6 @@ import javax.annotation.Nullable;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.LobbyConstants;
-import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.User;
@@ -28,12 +27,10 @@ import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserController;
 import org.triplea.lobby.server.db.UserDao;
-import org.triplea.util.Md5Crypt;
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
@@ -103,17 +100,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
   @Override
   public Map<String, String> getChallengeProperties(final String userName) {
     final Map<String, String> challenge = new HashMap<>();
-    challenge.putAll(newMd5CryptAuthenticatorChallenge(userName));
     challenge.putAll(rsaAuthenticator.newChallenge());
-    return challenge;
-  }
-
-  private Map<String, String> newMd5CryptAuthenticatorChallenge(final String userName) {
-    final Map<String, String> challenge = new HashMap<>();
-    final HashedPassword password = userDao.getLegacyPassword(userName);
-    if (password != null && Strings.emptyToNull(password.value) != null) {
-      challenge.put(LobbyLoginChallengeKeys.SALT, Md5Crypt.getSalt(password.value));
-    }
     return challenge;
   }
 
@@ -230,37 +217,15 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
   private @Nullable String authenticateRegisteredUser(final Map<String, String> response, final User user) {
     final String username = user.getUsername();
-    final String errorMessage = ErrorMessages.AUTHENTICATION_FAILED;
+
     final HashedPassword hashedPassword = userDao.getPassword(username);
-    if (hashedPassword == null) {
-      return errorMessage;
+    if (hashedPassword != null && RsaAuthenticator.canProcessResponse(response)) {
+      return rsaAuthenticator.decryptPasswordForAction(response,
+          pass -> userDao.login(username, new HashedPassword(pass))
+              ? null
+              : ErrorMessages.AUTHENTICATION_FAILED);
     }
-    if (RsaAuthenticator.canProcessResponse(response)) {
-      return rsaAuthenticator.decryptPasswordForAction(response, pass -> {
-        final String legacyHashedPassword = response.get(LobbyLoginResponseKeys.HASHED_PASSWORD);
-        if (hashedPassword.isBcrypted()) {
-          if (userDao.login(username, new HashedPassword(pass))) {
-            if (legacyHashedPassword != null && userDao.getLegacyPassword(username).value.isEmpty()) {
-              userDao.updateUser(userDao.getUserByName(username), new HashedPassword(legacyHashedPassword));
-              userDao.updateUser(userDao.getUserByName(username),
-                  new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.newSalt())));
-            }
-            return null;
-          }
-          return errorMessage;
-        } else if (userDao.login(username, new HashedPassword(legacyHashedPassword))) {
-          userDao.updateUser(userDao.getUserByName(username),
-              new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.newSalt())));
-          return null;
-        } else {
-          return errorMessage;
-        }
-      });
-    }
-    if (!userDao.login(username, new HashedPassword(response.get(LobbyLoginResponseKeys.HASHED_PASSWORD)))) {
-      return errorMessage;
-    }
-    return null;
+    return ErrorMessages.AUTHENTICATION_FAILED;
   }
 
   private @Nullable String authenticateAnonymousUser(final Map<String, String> response, final User user) {
@@ -301,12 +266,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     if (RsaAuthenticator.canProcessResponse(response)) {
       return rsaAuthenticator.decryptPasswordForAction(response, pass -> {
         final HashedPassword newPass = new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.newSalt()));
-        if (password.isHashedWithSalt()) {
-          userDao.createUser(dbUser, password);
-          userDao.updateUser(dbUser, newPass);
-        } else {
-          userDao.createUser(dbUser, newPass);
-        }
+        userDao.createUser(dbUser, newPass);
         return null;
       });
     }

@@ -12,11 +12,6 @@ public interface UserDao {
    */
   HashedPassword getPassword(String username);
 
-  /**
-   * Returns null if the user does not exist or the user has no legacy password stored.
-   */
-  HashedPassword getLegacyPassword(String username);
-
   boolean doesUserExist(String username);
 
   void updateUser(DBUser user, HashedPassword password);

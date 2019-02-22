@@ -1,7 +1,7 @@
 package org.triplea.lobby.server.login;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -30,27 +30,15 @@ import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserController;
 import org.triplea.test.common.Integration;
-import org.triplea.util.Md5Crypt;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
 
 @Integration
-public class LobbyLoginValidatorIntegrationTest {
+class LobbyLoginValidatorIntegrationTest {
   private final Database database = new Database(TestLobbyConfigurations.INTEGRATION_TEST);
   private final ILoginValidator loginValidator = new LobbyLoginValidator(TestLobbyConfigurations.INTEGRATION_TEST);
-
-  @Test
-  public void testLegacyCreateNewUser() {
-    final ChallengeResultFunction challengeFunction = generateChallenge(null);
-    final Map<String, String> response = new HashMap<>();
-    response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
-    response.put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt("123"));
-    assertNull(challengeFunction.apply(challenge -> response));
-    // try to create a duplicate user, should not work
-    assertNotNull(challengeFunction.apply(challenge -> response));
-  }
 
   private ChallengeResultFunction generateChallenge(final HashedPassword password) {
     return generateChallenge(Util.newUniqueTimestamp(), password);
@@ -78,13 +66,8 @@ public class LobbyLoginValidatorIntegrationTest {
         password);
   }
 
-  @SuppressWarnings("deprecation") // required for testing; remove upon next lobby-incompatible release
-  private static String md5Crypt(final String value) {
-    return Md5Crypt.hashPassword(value, Md5Crypt.newSalt());
-  }
-
   @Test
-  public void testCreateNewUser() {
+  void testCreateNewUser() {
     final String name = Util.newUniqueTimestamp();
     final String password = "password";
     final Map<String, String> response = new HashMap<>();
@@ -103,7 +86,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   @Test
-  public void testWrongVersion() {
+  void testWrongVersion() {
     assertNotNull(generateChallenge(null).apply(challenge -> {
       final Map<String, String> response = new HashMap<>();
       response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
@@ -113,18 +96,19 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   @Test
-  public void testAnonymousLogin() {
+  void testAnonymousLogin() {
     final Map<String, String> response = new HashMap<>();
     response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
     assertNull(generateChallenge(null).apply(challenge -> response));
 
     // create a user, verify we can't login with a username that already exists
     // we should not be able to login now
-    assertNotNull(generateChallenge(new HashedPassword(md5Crypt("foo"))).apply(challenge -> response));
+    assertNotNull(
+        generateChallenge(new HashedPassword(BCrypt.hashpw("foo", BCrypt.gensalt()))).apply(challenge -> response));
   }
 
   @Test
-  public void testAnonymousLoginBadName() {
+  void testAnonymousLoginBadName() {
     final String name = "bitCh" + Util.newUniqueTimestamp();
     try {
       new BadWordController(database).addBadWord("bitCh");
@@ -133,12 +117,13 @@ public class LobbyLoginValidatorIntegrationTest {
       // word previously
     }
     assertEquals(LobbyLoginValidator.ErrorMessages.THATS_NOT_A_NICE_NAME,
-        generateChallenge(name, new HashedPassword(md5Crypt("foo"))).apply(challenge -> new HashMap<>(
-            Collections.singletonMap(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString()))));
+        generateChallenge(name, new HashedPassword(BCrypt.hashpw("foo", BCrypt.gensalt())))
+            .apply(challenge -> new HashMap<>(
+                Collections.singletonMap(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString()))));
   }
 
   @Test
-  public void testLogin() {
+  void testLogin() {
     final String user = Util.newUniqueTimestamp();
     final String password = "foo";
     final Map<String, String> response = new HashMap<>();
@@ -156,7 +141,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   private static void assertError(final @Nullable String errorMessage, final String... strings) {
-    Arrays.stream(strings).forEach(string -> assertThat(errorMessage, containsStringIgnoringCase(string)));
+    Arrays.stream(strings).forEach(string -> assertThat(errorMessage, containsString(string)));
   }
 
   private interface ChallengeResultFunction

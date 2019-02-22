@@ -23,23 +23,14 @@ public final class UserController extends AbstractController implements UserDao 
   }
 
   @Override
-  public HashedPassword getLegacyPassword(final String username) {
-    return getPassword(username, true);
-  }
-
-  @Override
   public HashedPassword getPassword(final String username) {
-    return getPassword(username, false);
-  }
-
-  private HashedPassword getPassword(final String username, final boolean legacy) {
     try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con
-            .prepareStatement("select password, coalesce(bcrypt_password, password) from ta_users where username=?")) {
+            .prepareStatement("select bcrypt_password from ta_users where username=?")) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          return new HashedPassword(rs.getString(legacy ? 1 : 2));
+          return new HashedPassword(rs.getString(1));
         }
         return null;
       }
@@ -68,31 +59,16 @@ public final class UserController extends AbstractController implements UserDao 
 
     try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(
-            String.format("update ta_users set %s=?, email=? where username=?", getPasswordColumn(hashedPassword)))) {
+            "update ta_users set bcrypt_password=?, email=? where username=?")) {
       ps.setString(1, hashedPassword.value);
       ps.setString(2, user.getEmail());
       ps.setString(3, user.getName());
       ps.execute();
-      if (!hashedPassword.isBcrypted()) {
-        try (PreparedStatement ps2 =
-            con.prepareStatement("update ta_users set bcrypt_password=null where username=?")) {
-          ps2.setString(1, user.getName());
-          ps2.execute();
-        }
-      }
       con.commit();
     } catch (final SQLException e) {
-      throw newDatabaseException(String.format("Error updating name: %s, email: %s, (masked) pwd: %s",
-          user.getName(), user.getEmail(), hashedPassword.mask()), e);
+      throw newDatabaseException(String.format("Error updating name: %s, email: %s",
+          user.getName(), user.getEmail()), e);
     }
-  }
-
-  /**
-   * Workaround utility method.
-   * Should be removed in the next lobby-incompatible release.
-   */
-  private static String getPasswordColumn(final HashedPassword hashedPassword) {
-    return hashedPassword.isBcrypted() ? "bcrypt_password" : "password";
   }
 
   /**
@@ -122,42 +98,28 @@ public final class UserController extends AbstractController implements UserDao 
 
     try (Connection con = newDatabaseConnection();
         PreparedStatement ps = con.prepareStatement(
-            "insert into ta_users (username, password, bcrypt_password, email) values (?, ?, ?, ?)")) {
+            "insert into ta_users (username, bcrypt_password, email) values (?, ?, ?)")) {
       ps.setString(1, user.getName());
-      ps.setString(2, hashedPassword.isBcrypted() ? null : hashedPassword.value);
-      ps.setString(3, hashedPassword.isBcrypted() ? hashedPassword.value : null);
-      ps.setString(4, user.getEmail());
+      ps.setString(2, hashedPassword.value);
+      ps.setString(3, user.getEmail());
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw newDatabaseException(String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
-          user.getName(), user.getEmail(), hashedPassword.mask()), e);
+      throw newDatabaseException(String.format("Error inserting name: %s, email: %s",
+          user.getName(), user.getEmail()), e);
     }
   }
 
   @Override
   public boolean login(final String username, final HashedPassword hashedPassword) {
     try (Connection con = newDatabaseConnection()) {
-      if (hashedPassword.isHashedWithSalt()) {
-        try (PreparedStatement ps =
-            con.prepareStatement("select username from  ta_users where username = ? and password = ?")) {
-          ps.setString(1, username);
-          ps.setString(2, hashedPassword.value);
-          try (ResultSet rs = ps.executeQuery()) {
-            if (!rs.next()) {
-              return false;
-            }
-          }
-        }
-      } else {
-        final HashedPassword actualPassword = getPassword(username);
-        if (actualPassword == null) {
-          return false;
-        }
-        Preconditions.checkState(actualPassword.isBcrypted());
-        if (!BCrypt.checkpw(hashedPassword.value, actualPassword.value)) {
-          return false;
-        }
+      final HashedPassword actualPassword = getPassword(username);
+      if (actualPassword == null) {
+        return false;
+      }
+      Preconditions.checkState(actualPassword.isBcrypted());
+      if (!BCrypt.checkpw(hashedPassword.value, actualPassword.value)) {
+        return false;
       }
       // update last login time
       try (PreparedStatement ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
@@ -169,7 +131,7 @@ public final class UserController extends AbstractController implements UserDao 
       }
     } catch (final SQLException e) {
       throw newDatabaseException(
-          String.format("Error validating password name: %s, (masked) pwd: %s", username, hashedPassword.mask()), e);
+          String.format("Error validating password name: %s", username), e);
     }
   }
 

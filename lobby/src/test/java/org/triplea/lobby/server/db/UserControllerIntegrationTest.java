@@ -1,8 +1,6 @@
 package org.triplea.lobby.server.db;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
@@ -17,63 +15,46 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.java.Util;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.test.common.Integration;
-import org.triplea.util.Md5Crypt;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 
 @Integration
-public final class UserControllerIntegrationTest extends AbstractControllerTestCase {
+final class UserControllerIntegrationTest extends AbstractControllerTestCase {
   private final UserController controller = new UserController(database);
 
   @Test
-  public void testCreate() throws Exception {
+  void testCreate() throws Exception {
     final int startCount = getUserCount();
 
-    newUserWithMd5CryptHash();
-    assertEquals(getUserCount(), startCount + 1);
-
     newUserWithBCryptHash();
-    assertEquals(getUserCount(), startCount + 2);
+    assertEquals(getUserCount(), startCount + 1);
   }
 
   @Test
-  public void testGet() {
-    final DBUser user = newUserWithMd5CryptHash();
+  void testGet() {
+    final DBUser user = newUserWithBCryptHash();
     assertEquals(user, controller.getUserByName(user.getName()));
   }
 
   @Test
-  public void testDoesUserExist() {
-    assertTrue(controller.doesUserExist(newUserWithMd5CryptHash().getName()));
+  void testDoesUserExist() {
     assertTrue(controller.doesUserExist(newUserWithBCryptHash().getName()));
   }
 
   @Test
-  public void testCreateDupe() {
-    assertThrows(Exception.class,
-        () -> controller.createUser(newUserWithMd5CryptHash(),
-            new HashedPassword(md5Crypt(Util.newUniqueTimestamp()))),
-        "Should not be allowed to create a dupe user");
-  }
-
-  @Test
-  public void testLogin() {
-    final String password = md5Crypt(Util.newUniqueTimestamp());
+  void testLogin() {
+    final String password = bcrypt(Util.newUniqueTimestamp());
     final DBUser user = newUserWithHash(password, Function.identity());
     controller.updateUser(user, new HashedPassword(bcrypt(obfuscate(password))));
-    assertTrue(controller.login(user.getName(), new HashedPassword(password)));
     assertTrue(controller.login(user.getName(), new HashedPassword(obfuscate(password))));
   }
 
   @Test
-  public void testUpdate() throws Exception {
-    final DBUser user = newUserWithMd5CryptHash();
+  void testUpdate() throws Exception {
+    final DBUser user = newUserWithBCryptHash();
     assertTrue(controller.doesUserExist(user.getName()));
-    final String password2 = md5Crypt("foo");
+    final String password2 = bcrypt("foo");
     final String email2 = "foo@foo.foo";
-    controller.updateUser(
-        new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
-        new HashedPassword(bcrypt(obfuscate(Util.newUniqueTimestamp()))));
     controller.updateUser(
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
         new HashedPassword(password2));
@@ -82,13 +63,8 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
       assertEquals(email2, rs.getString("email"));
-      assertEquals(password2, rs.getString("password"));
-      assertNull(rs.getString("bcrypt_password"));
+      assertEquals(password2, rs.getString("bcrypt_password"));
     }
-  }
-
-  private DBUser newUserWithMd5CryptHash() {
-    return newUserWithHash(Util.newUniqueTimestamp(), UserControllerIntegrationTest::md5Crypt);
   }
 
   private DBUser newUserWithBCryptHash() {
@@ -115,11 +91,6 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
 
   private static String bcrypt(final String string) {
     return BCrypt.hashpw(string, BCrypt.gensalt());
-  }
-
-  @SuppressWarnings("deprecation") // required for testing; remove upon next lobby-incompatible release
-  private static String md5Crypt(final String value) {
-    return Md5Crypt.hashPassword(value, Md5Crypt.newSalt());
   }
 
   private static String obfuscate(final String string) {
