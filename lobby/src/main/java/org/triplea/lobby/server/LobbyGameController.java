@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -129,7 +130,7 @@ final class LobbyGameController implements ILobbyGameController {
     final INode sender = MessageContext.getSender();
     synchronized (mutex) {
       final Optional<Set<GUID>> allowedGames = Optional.ofNullable(hostToGame.get(sender));
-      if (!allowedGames.orElseGet(HashSet::new).contains(gameId)) {
+      if (!allowedGames.orElseGet(Collections::emptySet).contains(gameId)) {
         throw new IllegalStateException(String.format("Invalid Node %s tried accessing other game", sender));
       }
     }
