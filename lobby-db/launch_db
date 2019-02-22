@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This script is mostly in part documentation and convenience. Here
+# we tie together the full flow of building a docker image, launching
+# it, and then executing flyway to have a DB schema installed.
+
+
 set -eu
 
 path=$(dirname $0)
