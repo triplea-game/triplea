@@ -16,10 +16,8 @@ import org.triplea.http.client.error.report.create.ErrorReport;
 class RateLimitingThrottleTest {
 
   private static final ErrorReport ERROR_REPORT = ErrorReport.builder()
-      .reportMessage("Hunger is a scurvy tuna.")
-      .operatingSystem("Why does the cannibal die?")
-      .javaVersion("Woodchucks are the sails of the scrawny desolation.")
-      .gameVersion("engine version")
+      .title("Hunger is a scurvy tuna.")
+      .body("Woodchucks are the sails of the scrawny desolation.")
       .build();
 
   private static final int MIN_MILLIS_BETWEEN_REQUSETS = 5;

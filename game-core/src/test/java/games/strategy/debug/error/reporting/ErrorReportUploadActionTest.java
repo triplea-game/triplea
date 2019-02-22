@@ -2,6 +2,8 @@ package games.strategy.debug.error.reporting;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -11,8 +13,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
-import javax.swing.JFrame;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,10 @@ import org.triplea.http.client.error.report.create.ErrorReportResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorReportUploadActionTest {
-  private static final UserErrorReport USER_ERROR_REPORT = UserErrorReport.builder()
+
+  private static final ErrorReport ERROR_REPORT = ErrorReport.builder()
+      .title("Extums prarere in audax tornacum!")
+      .body("Rector de barbatus gemna, desiderium candidatus!")
       .build();
 
   @Mock
@@ -41,12 +44,8 @@ class ErrorReportUploadActionTest {
 
   private ErrorReportUploadAction errorReportUploadAction;
 
-
-  @Mock
-  private JFrame frame;
-
   @BeforeEach
-  public void setup() {
+  void setup() {
     errorReportUploadAction = ErrorReportUploadAction.builder()
         .serviceClient(serviceClient)
         .failureConfirmation(failureConfirmation)
@@ -57,10 +56,11 @@ class ErrorReportUploadActionTest {
   @ParameterizedTest
   @MethodSource("withNonSuccessSendResults")
   void nonSuccessSends(final ServiceResponse<ErrorReportResponse> notSuccessfulSend) {
-    when(serviceClient.apply(USER_ERROR_REPORT.toErrorReport()))
-        .thenReturn(notSuccessfulSend);
+    when(serviceClient.apply(ERROR_REPORT)).thenReturn(notSuccessfulSend);
 
-    errorReportUploadAction.accept(null, USER_ERROR_REPORT);
+    final boolean result = errorReportUploadAction.test(ERROR_REPORT);
+
+    assertThat(result, is(false));
 
     verify(failureConfirmation).accept(notSuccessfulSend);
     verify(successConfirmation, never()).accept(any());
@@ -84,10 +84,11 @@ class ErrorReportUploadActionTest {
   @ParameterizedTest
   @MethodSource("withMissingIssueLinkResult")
   void missingIssueLinkInPaylaod(final ServiceResponse<ErrorReportResponse> missingLinkResult) {
-    when(serviceClient.apply(USER_ERROR_REPORT.toErrorReport()))
-        .thenReturn(missingLinkResult);
+    when(serviceClient.apply(ERROR_REPORT)).thenReturn(missingLinkResult);
 
-    errorReportUploadAction.accept(null, USER_ERROR_REPORT);
+    final boolean result = errorReportUploadAction.test(ERROR_REPORT);
+
+    assertThat(result, is(false));
 
     verify(failureConfirmation).accept(missingLinkResult);
     verify(successConfirmation, never()).accept(any());
@@ -121,11 +122,11 @@ class ErrorReportUploadActionTest {
   @Test
   void successCase() {
     final ServiceResponse<ErrorReportResponse> successCase = withSuccessfulSend();
+    when(serviceClient.apply(ERROR_REPORT)).thenReturn(successCase);
 
-    when(serviceClient.apply(USER_ERROR_REPORT.toErrorReport()))
-        .thenReturn(successCase);
+    final boolean result = errorReportUploadAction.test(ERROR_REPORT);
 
-    errorReportUploadAction.accept(frame, USER_ERROR_REPORT);
+    assertThat(result, is(true));
 
     verify(failureConfirmation, never()).accept(any());
     verify(successConfirmation)

@@ -49,7 +49,7 @@ final class ConfirmationDialogController {
     });
 
     final JPanel messageToShow = JPanelBuilder.builder()
-        .borderEmpty(10)
+        .border(10)
         .add(editorPane)
         .build();
 
@@ -74,7 +74,7 @@ final class ConfirmationDialogController {
     });
 
     final JPanel messageToShow = JPanelBuilder.builder()
-        .borderEmpty(10)
+        .border(10)
         .add(editorPane)
         .build();
 

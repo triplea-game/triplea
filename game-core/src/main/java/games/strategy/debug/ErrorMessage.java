@@ -8,17 +8,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import org.triplea.http.client.ServiceClient;
+import org.triplea.http.client.error.report.ErrorReportClientFactory;
+import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.create.ErrorReportResponse;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.JPanelBuilder;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.triplea.settings.ClientSetting;
+import games.strategy.debug.error.reporting.StackTraceReportView;
+import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
+import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 
 /**
  * Class for showing a modal error dialog to the user. The dialog has an 'ok' button to close it and a 'show details'
@@ -43,6 +50,11 @@ public enum ErrorMessage {
   private final AtomicBoolean isVisible = new AtomicBoolean(false);
   private volatile boolean enableErrorPopup = false;
 
+  private final JButton uploadButton = JButtonBuilder.builder()
+      .title("Report To TripleA")
+      .toolTip("Upload error report to TripleA support.")
+      .build();
+
   ErrorMessage() {
     windowReference.setAlwaysOnTop(true);
     windowReference.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
@@ -54,7 +66,7 @@ public enum ErrorMessage {
     });
     windowReference.add(JPanelBuilder.builder()
         .borderLayout()
-        .borderEmpty(10)
+        .border(10)
         .addCenter(JPanelBuilder.builder()
             .horizontalBoxLayout()
             .addHorizontalGlue()
@@ -63,7 +75,7 @@ public enum ErrorMessage {
             .build())
         .addSouth(JPanelBuilder.builder()
             .horizontalBoxLayout()
-            .borderEmpty(20, 0, 0, 0)
+            .border(20, 0, 0, 0)
             .addHorizontalGlue()
             .add(JButtonBuilder.builder()
                 .okTitle()
@@ -71,14 +83,7 @@ public enum ErrorMessage {
                 .selected(true)
                 .build())
             .addHorizontalStrut(5)
-            .add(JButtonBuilder.builder()
-                .title("Show Details")
-                .toolTip("Shows the error console window with full error details.")
-                .actionListener(() -> {
-                  hide();
-                  ClientSetting.showConsole.setValueAndFlush(true);
-                })
-                .build())
+            .add(uploadButton)
             .addHorizontalGlue()
             .build())
         .build());
@@ -99,6 +104,8 @@ public enum ErrorMessage {
 
   public static void show(final LogRecord record) {
     if (INSTANCE.enableErrorPopup && INSTANCE.isVisible.compareAndSet(false, true)) {
+      INSTANCE.setUploadRecord(record);
+
       SwingUtilities.invokeLater(() -> {
         INSTANCE.errorMessage.setText(new ErrorMessageFormatter().apply(record));
         INSTANCE.windowReference.pack();
@@ -106,6 +113,36 @@ public enum ErrorMessage {
         INSTANCE.windowReference.setVisible(true);
       });
     }
+  }
+
+  private void setUploadRecord(final LogRecord record) {
+
+    final ServiceClient<ErrorReport, ErrorReportResponse> serviceClient = serviceClient();
+
+    if (serviceClient == null) {
+      // if no internet connection, do not show 'upload button' as it will not work anyways.
+      INSTANCE.uploadButton.setVisible(false);
+    } else {
+      INSTANCE.uploadButton.setVisible(true);
+
+      // replace button upload action to use the new log record object
+      if (INSTANCE.uploadButton.getActionListeners().length > 0) {
+        INSTANCE.uploadButton.removeActionListener(INSTANCE.uploadButton.getActionListeners()[0]);
+      }
+      INSTANCE.uploadButton.addActionListener(e -> {
+        hide();
+        StackTraceReportView.showWindow(windowReference, serviceClient, record);
+      });
+    }
+  }
+
+
+  private static ServiceClient<ErrorReport, ErrorReportResponse> serviceClient() {
+    return LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
+        .fetchLobbyServerProperties()
+        .map(LobbyServerProperties::getHttpServerUri)
+        .map(ErrorReportClientFactory::newErrorUploader)
+        .orElse(null);
   }
 
   private void hide() {

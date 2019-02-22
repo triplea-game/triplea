@@ -3,7 +3,7 @@ package org.triplea.http.client.github.issues;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.triplea.http.client.github.issues.create.CreateIssueRequest;
+import org.triplea.http.client.error.report.create.ErrorReport;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -28,14 +28,14 @@ interface GithubIssueClient {
       @HeaderMap Map<String, Object> headerMap,
       @Param("org") String org,
       @Param("repo") String repo,
-      CreateIssueRequest createIssueRequest);
+      ErrorReport errorReport);
 
 
   default CreateIssueResponse newIssue(
       final IssueClientParams params,
-      final CreateIssueRequest createIssueRequest) {
+      final ErrorReport errorReport) {
     final Map<String, Object> tokens = new HashMap<>();
     tokens.put("Authorization", "token " + params.getAuthToken());
-    return newIssue(tokens, params.getGithubOrg(), params.getGithubRepo(), createIssueRequest);
+    return newIssue(tokens, params.getGithubOrg(), params.getGithubRepo(), errorReport);
   }
 }

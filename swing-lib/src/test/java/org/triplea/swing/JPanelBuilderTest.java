@@ -84,7 +84,7 @@ public class JPanelBuilderTest {
   public void emptyBorderWithSingleWidth() {
     final int borderWidth = 100;
     final JPanel panel = JPanelBuilder.builder()
-        .borderEmpty(borderWidth)
+        .border(borderWidth)
         .build();
     assertThat(panel.getBorder(), instanceOf(EmptyBorder.class));
     final Insets insets = panel.getBorder().getBorderInsets(panel);
@@ -97,7 +97,7 @@ public class JPanelBuilderTest {
   @Test
   public void emptyBorderWithIndependentWidths() {
     final JPanel panel = JPanelBuilder.builder()
-        .borderEmpty(1, 2, 3, 4)
+        .border(1, 2, 3, 4)
         .build();
 
     assertThat(panel.getBorder(), instanceOf(EmptyBorder.class));
