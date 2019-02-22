@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eux
+
+path=$(dirname $0)
+
+$path/build_docker
+$path/run_docker
+$path/run_flyway
+
