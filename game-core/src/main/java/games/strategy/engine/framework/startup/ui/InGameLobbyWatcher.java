@@ -99,13 +99,14 @@ public class InGameLobbyWatcher {
         (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
             ? "-"
             : oldWatcher.gameDescription.getRound();
+    final Optional<Integer> customPort = Optional.ofNullable(Integer.getInteger("customPort"));
     final InetSocketAddress publicView = Optional.ofNullable(System.getProperty("customHost"))
-        .map(s -> new InetSocketAddress(s, Optional.ofNullable(Integer.getInteger("customPort")).orElse(3300)))
+        .map(s -> new InetSocketAddress(s, customPort.orElse(3300)))
         .orElse(messenger.getLocalNode().getSocketAddress());
     final INode publicNode = new Node(messenger.getLocalNode().getName(), publicView);
     gameDescription = GameDescription.builder()
         .hostedBy(publicNode)
-        .port(publicNode.getPort())
+        .port(customPort.isPresent()? publicNode.getPort() : serverMessenger.getLocalNode().getPort())
         .startDateTime(startDateTime)
         .gameName("???")
         .playerCount(playerCount)
