@@ -68,11 +68,11 @@ final class LobbyGameController implements ILobbyGameController {
 
   @Override
   public void postGame(final GUID gameId, final GameDescription description) {
-    log.info("Game added:" + description);
     synchronized (mutex) {
       allGames.put(gameId, description);
       hostToGame.computeIfAbsent(MessageContext.getSender(), k -> new HashSet<>()).add(gameId);
     }
+    log.info("Game added:" + description);
     broadcaster.gameUpdated(gameId, description);
   }
 
@@ -83,11 +83,9 @@ final class LobbyGameController implements ILobbyGameController {
       final GameDescription oldDescription = allGames.get(gameId);
       // out of order updates
       // ignore, we already have the latest
+      // TODO: Check if this method can ever be called out of order. TCP should be able to handle that.
       if (oldDescription.getVersion() > description.getVersion()) {
         return;
-      }
-      if (!oldDescription.getHostedBy().equals(description.getHostedBy())) {
-        throw new IllegalStateException("Game modified by wrong host");
       }
       allGames.put(gameId, description);
     }
@@ -129,9 +127,11 @@ final class LobbyGameController implements ILobbyGameController {
   private void assertCorrectGameOwner(final GUID gameId) {
     Preconditions.checkNotNull(gameId);
     final INode sender = MessageContext.getSender();
-    final Optional<Set<GUID>> allowedGames = Optional.ofNullable(hostToGame.get(sender));
-    if (!allowedGames.orElseGet(HashSet::new).contains(gameId)) {
-      throw new IllegalStateException(String.format("Invalid Node %s tried accessing other game", sender));
+    synchronized (mutex) {
+      final Optional<Set<GUID>> allowedGames = Optional.ofNullable(hostToGame.get(sender));
+      if (!allowedGames.orElseGet(HashSet::new).contains(gameId)) {
+        throw new IllegalStateException(String.format("Invalid Node %s tried accessing other game", sender));
+      }
     }
   }
 }
