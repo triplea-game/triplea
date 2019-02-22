@@ -215,6 +215,7 @@ public class GameDescription implements Externalizable, Cloneable {
 
   /**
    * Kept for backwards compatibility. Should no longer be used.
+   *
    * @deprecated Use {@link #getHostedBy()}{@code .getPort()} instead in the next incompatible lobby release.
    */
   @Deprecated
