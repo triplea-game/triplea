@@ -57,9 +57,9 @@ final class LobbyGameController implements ILobbyGameController {
         if (game.getHostedBy().equals(to)) {
           keys.remove();
           removed.add(key);
-          hostToGame.remove(to);
         }
       }
+      hostToGame.remove(to);
     }
     for (final GUID guid : removed) {
       broadcaster.gameRemoved(guid);
