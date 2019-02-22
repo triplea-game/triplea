@@ -1,31 +1,22 @@
 # lobby-db
 
-## Output
-* Zip file with DB [migrations files](https://github.com/triplea-game/triplea/tree/master/lobby-db/src/main/resources/db/migration).
-This zip file is downloaded in testing and production environments and executed with [FlyWay](https://flywaydb.org/) 
-to update database.
-* To automatically apply updates and keep a known DB state, we check-in
-any DB changes to migration files to then automatically run against database.
+
+- locallobby database: [Dockerfile](https://github.com/triplea-game/triplea/blob/master/lobby-db/Dockerfile) 
+- [migrations files](https://github.com/triplea-game/triplea/tree/master/lobby-db/src/main/resources/db/migration).
+is where we check-in SQL commands to update database. Any new files are run automatically as part of lobby deployment.
 
  
 ## Dev Setup
+
+To launch a local dabase on Docker, run: `launch_db`
 
 ### Prerequisites
 - Docker
 - `psql` (postgres-client) command 
 
-### DockerFile
-
-For a local lobby database: [Dockerfile](https://github.com/triplea-game/triplea/blob/master/lobby-db/Dockerfile) 
-
 ### Typical Usage
 
-To launch a local DB on docker with schema:
-```
-./launch_db
-```
-
-After the first time you can just docker to launch faster:
+After the first time you can just run docker to launch faster:
 ```
 run_docker
 ```
