@@ -104,12 +104,13 @@ final class LobbyGameController implements ILobbyGameController {
       return "No such game found";
     }
     // make sure we are being tested from the right node
-    final InetSocketAddress address = description.getHostedBy().getSocketAddress();
+    final int port = description.getPort();
+    final String host = description.getHostedBy().getAddress().getHostAddress();
     try (Socket s = new Socket()) {
-      s.connect(address, 10 * 1000);
+      s.connect(new InetSocketAddress(host, port), 10 * 1000);
       return null;
     } catch (final IOException e) {
-      return "host:" + address.getHostName() + " " + " port:" + address.getPort();
+      return "host:" + host + " " + " port:" + port;
     }
   }
 }

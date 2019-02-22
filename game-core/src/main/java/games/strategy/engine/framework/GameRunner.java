@@ -280,7 +280,7 @@ public final class GameRunner {
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
     final String prefix = "-D";
     commands.add(prefix + TRIPLEA_CLIENT + "=true");
-    commands.add(prefix + TRIPLEA_PORT + "=" + description.getHostedBy().getPort());
+    commands.add(prefix + TRIPLEA_PORT + "=" + description.getPort());
     commands.add(prefix + TRIPLEA_HOST + "=" + description.getHostedBy().getAddress().getHostAddress());
     commands.add(prefix + TRIPLEA_NAME + "=" + messengers.getMessenger().getLocalNode().getName());
     commands.add(Services.loadAny(ApplicationContext.class).getMainClass().getName());
