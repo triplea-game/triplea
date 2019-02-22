@@ -106,7 +106,7 @@ public class InGameLobbyWatcher {
     final INode publicNode = new Node(messenger.getLocalNode().getName(), publicView);
     gameDescription = GameDescription.builder()
         .hostedBy(publicNode)
-        .port(customPort.isPresent()? publicNode.getPort() : serverMessenger.getLocalNode().getPort())
+        .port(customPort.isPresent() ? publicNode.getPort() : serverMessenger.getLocalNode().getPort())
         .startDateTime(startDateTime)
         .gameName("???")
         .playerCount(playerCount)
