@@ -4,13 +4,19 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.ILobbyGameController;
+
+import com.google.common.base.Preconditions;
 
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -26,6 +32,7 @@ final class LobbyGameController implements ILobbyGameController {
   private final Object mutex = new Object();
   private final Map<GUID, GameDescription> allGames = new HashMap<>();
   private final ILobbyGameBroadcaster broadcaster;
+  private final Map<INode, Set<GUID>> hostToGame = new HashMap<>();
 
   LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IServerMessenger serverMessenger) {
     this.broadcaster = broadcaster;
@@ -43,15 +50,17 @@ final class LobbyGameController implements ILobbyGameController {
   private void connectionLost(final INode to) {
     final List<GUID> removed = new ArrayList<>();
     synchronized (mutex) {
-      final Iterator<GUID> keys = allGames.keySet().iterator();
+      final Iterator<Map.Entry<GUID, GameDescription>> keys = allGames.entrySet().iterator();
       while (keys.hasNext()) {
-        final GUID key = keys.next();
-        final GameDescription game = allGames.get(key);
+        final Map.Entry<GUID, GameDescription> entry = keys.next();
+        final GUID key = entry.getKey();
+        final GameDescription game = entry.getValue();
         if (game.getHostedBy().equals(to)) {
           keys.remove();
           removed.add(key);
         }
       }
+      hostToGame.remove(to);
     }
     for (final GUID guid : removed) {
       broadcaster.gameRemoved(guid);
@@ -60,35 +69,24 @@ final class LobbyGameController implements ILobbyGameController {
 
   @Override
   public void postGame(final GUID gameId, final GameDescription description) {
-    final INode from = MessageContext.getSender();
-    assertCorrectHost(description, from);
-    log.info("Game added:" + description);
     synchronized (mutex) {
       allGames.put(gameId, description);
+      hostToGame.computeIfAbsent(MessageContext.getSender(), k -> new HashSet<>()).add(gameId);
     }
+    log.info("Game added:" + description);
     broadcaster.gameUpdated(gameId, description);
-  }
-
-  private static void assertCorrectHost(final GameDescription description, final INode from) {
-    if (!from.getAddress().getHostAddress().equals(description.getHostedBy().getAddress().getHostAddress())) {
-      log.severe("Game modified from wrong host, from:" + from + " game host:" + description.getHostedBy());
-      throw new IllegalStateException("Game from the wrong host");
-    }
   }
 
   @Override
   public void updateGame(final GUID gameId, final GameDescription description) {
-    final INode from = MessageContext.getSender();
-    assertCorrectHost(description, from);
+    assertCorrectGameOwner(gameId);
     synchronized (mutex) {
       final GameDescription oldDescription = allGames.get(gameId);
       // out of order updates
       // ignore, we already have the latest
+      // TODO: Check if this method can ever be called out of order. TCP should be able to handle that.
       if (oldDescription.getVersion() > description.getVersion()) {
         return;
-      }
-      if (!oldDescription.getHostedBy().equals(description.getHostedBy())) {
-        throw new IllegalStateException("Game modified by wrong host");
       }
       allGames.put(gameId, description);
     }
@@ -108,6 +106,7 @@ final class LobbyGameController implements ILobbyGameController {
 
   @Override
   public String testGame(final GUID gameId) {
+    assertCorrectGameOwner(gameId);
     final GameDescription description;
     synchronized (mutex) {
       description = allGames.get(gameId);
@@ -116,8 +115,6 @@ final class LobbyGameController implements ILobbyGameController {
       return "No such game found";
     }
     // make sure we are being tested from the right node
-    final INode from = MessageContext.getSender();
-    assertCorrectHost(description, from);
     final int port = description.getPort();
     final String host = description.getHostedBy().getAddress().getHostAddress();
     try (Socket s = new Socket()) {
@@ -125,6 +122,17 @@ final class LobbyGameController implements ILobbyGameController {
       return null;
     } catch (final IOException e) {
       return "host:" + host + " " + " port:" + port;
+    }
+  }
+
+  private void assertCorrectGameOwner(final GUID gameId) {
+    Preconditions.checkNotNull(gameId);
+    final INode sender = MessageContext.getSender();
+    synchronized (mutex) {
+      final Optional<Set<GUID>> allowedGames = Optional.ofNullable(hostToGame.get(sender));
+      if (!allowedGames.orElseGet(Collections::emptySet).contains(gameId)) {
+        throw new IllegalStateException(String.format("Invalid Node %s tried accessing other game", sender));
+      }
     }
   }
 }

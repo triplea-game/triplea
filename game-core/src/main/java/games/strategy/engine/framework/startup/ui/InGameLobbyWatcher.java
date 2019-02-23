@@ -7,10 +7,12 @@ import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 
+import java.net.InetSocketAddress;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observer;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
@@ -40,6 +42,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
+import games.strategy.net.Node;
 import lombok.extern.java.Log;
 
 /**
@@ -96,9 +99,14 @@ public class InGameLobbyWatcher {
         (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
             ? "-"
             : oldWatcher.gameDescription.getRound();
+    final Optional<Integer> customPort = Optional.ofNullable(Integer.getInteger("customPort"));
+    final InetSocketAddress publicView = Optional.ofNullable(System.getProperty("customHost"))
+        .map(s -> new InetSocketAddress(s, customPort.orElse(3300)))
+        .orElse(messenger.getLocalNode().getSocketAddress());
+    final INode publicNode = new Node(messenger.getLocalNode().getName(), publicView);
     gameDescription = GameDescription.builder()
-        .hostedBy(messenger.getLocalNode())
-        .port(serverMessenger.getLocalNode().getPort())
+        .hostedBy(publicNode)
+        .port(customPort.isPresent() ? publicNode.getPort() : serverMessenger.getLocalNode().getPort())
         .startDateTime(startDateTime)
         .gameName("???")
         .playerCount(playerCount)

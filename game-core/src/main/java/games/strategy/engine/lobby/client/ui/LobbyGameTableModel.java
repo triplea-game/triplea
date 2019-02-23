@@ -59,8 +59,8 @@ class LobbyGameTableModel extends AbstractTableModel {
 
     final Map<GUID, GameDescription> games =
         ((ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME)).listGames();
-    for (final GUID id : games.keySet()) {
-      updateGame(id, games.get(id));
+    for (final Map.Entry<GUID, GameDescription> entry : games.entrySet()) {
+      updateGame(entry.getKey(), entry.getValue());
     }
   }
 
@@ -102,11 +102,10 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private void updateGame(final GUID gameId, final GameDescription description) {
+    if (gameId == null) {
+      return;
+    }
     SwingUtilities.invokeLater(() -> {
-      if (gameId == null) {
-        return;
-      }
-
       final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
       if (toReplace == null) {
         gameList.add(Tuple.of(gameId, description));

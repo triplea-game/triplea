@@ -47,6 +47,13 @@ public class GameDescription implements Externalizable, Cloneable {
   }
 
   private INode hostedBy;
+
+  /**
+   * Kept for compatibility. Remove in the next lobby-incompatible release.
+   *
+   * @deprecated This field is redundant, the Node stored in hostedBy is completely sufficient.
+   */
+  @Deprecated
   private int port;
 
   /**
@@ -137,6 +144,7 @@ public class GameDescription implements Externalizable, Cloneable {
     this.playerCount = playerCount;
   }
 
+  @Deprecated
   public void setPort(final int port) {
     version++;
     this.port = port;
@@ -205,6 +213,12 @@ public class GameDescription implements Externalizable, Cloneable {
     return playerCount;
   }
 
+  /**
+   * Kept for backwards compatibility. Should no longer be used.
+   *
+   * @deprecated Use {@link #getHostedBy()}{@code .getPort()} instead in the next incompatible lobby release.
+   */
+  @Deprecated
   public int getPort() {
     return port;
   }

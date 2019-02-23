@@ -113,6 +113,8 @@ public class Node implements INode, Externalizable {
   public void writeExternal(final ObjectOutput out) throws IOException {
     out.writeUTF(name);
     out.writeInt(port);
+    // InetAddress is Serializable, we should use that instead of implementing our own logic
+    // in order to preserve the hostname if present in the next lobby-incompatible release
     out.write(address.getAddress().length);
     out.write(address.getAddress());
   }
