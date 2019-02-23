@@ -1142,6 +1142,9 @@ public class DiceRoll implements Externalizable {
         diceIndex += rolls;
       } else {
         for (int i = 0; i < rolls; i++) {
+          if (diceIndex >= random.length) {
+            break;
+          }
           // Zero based
           final boolean hit = strength > random[diceIndex];
           dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
