@@ -7,13 +7,12 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import org.triplea.util.OpenJsonUtils;
+import org.snakeyaml.engine.v1.api.Load;
+import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import org.triplea.util.Version;
-import org.yaml.snakeyaml.Yaml;
 
-import com.github.openjson.JSONArray;
-import com.github.openjson.JSONObject;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 
 /**
  * Parses a downloaded lobby properties file (yaml format expected).
@@ -35,8 +34,8 @@ final class LobbyPropertyFileParser {
   private LobbyPropertyFileParser() {}
 
   public static LobbyServerProperties parse(final InputStream stream, final Version currentVersion) {
-    final Map<String, Object> yamlProps =
-        OpenJsonUtils.toMap(matchCurrentVersion(loadYaml(stream), currentVersion));
+    final Load load = new Load(new LoadSettingsBuilder().build());
+    final Map<?, ?> yamlProps = matchCurrentVersion((List<?>) load.loadFromInputStream(stream), currentVersion);
 
     return LobbyServerProperties.builder()
         .host((String) yamlProps.get("host"))
@@ -47,18 +46,13 @@ final class LobbyPropertyFileParser {
         .build();
   }
 
-  private static JSONObject matchCurrentVersion(final JSONArray lobbyProps, final Version currentVersion) {
+  private static Map<?, ?> matchCurrentVersion(final List<?> lobbyProps, final Version currentVersion) {
     checkNotNull(lobbyProps);
 
-    return OpenJsonUtils.stream(lobbyProps)
-        .map(JSONObject.class::cast)
-        .filter(props -> currentVersion.equals(new Version(props.getString("version"))))
+    return lobbyProps.stream()
+        .map(Map.class::cast)
+        .filter(props -> currentVersion.equals(new Version(Preconditions.checkNotNull((String) props.get("version")))))
         .findFirst()
-        .orElse(lobbyProps.getJSONObject(0));
-  }
-
-  private static JSONArray loadYaml(final InputStream stream) {
-    final Yaml yaml = new Yaml();
-    return new JSONArray(yaml.loadAs(stream, List.class));
+        .orElse((Map<?, ?>) lobbyProps.get(0));
   }
 }
