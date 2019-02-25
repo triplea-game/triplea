@@ -3,8 +3,10 @@ package games.strategy.debug.error.reporting;
 import java.awt.Component;
 
 import javax.annotation.Nullable;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -16,12 +18,11 @@ import org.triplea.swing.JTextAreaBuilder;
 
 class StackTraceReportSwingView implements StackTraceReportView {
 
-  private static final String TOOL_TIP =
-      "<html>This information is used by the TripleA support team to help pinpoint<br/>"
-          + "and solve the error that occurred.  Please describe the sequence of actions and<br/>"
-          + "game events leading up to the error and include any additional information that would<br/>"
-          + "be helpful for TripleA support to solve this problem.<br/><br/>"
-          + "For example: \"Game crashed during combat after rolling dice for defending subs.\"";
+  private static final String HELP_TEXT =
+      "<html>Any data entered is optional, please use<br/>"
+          + "this form to help TripleA support know<br/>"
+          + "where and how the error occurred.<br/><br/>"
+          + "Uploaded data is publicly visible.";
 
   private final JFrame window = JFrameBuilder.builder()
       .title("Upload Error Report to TripleA Support")
@@ -31,13 +32,18 @@ class StackTraceReportSwingView implements StackTraceReportView {
       .build();
 
   private final JTextArea userDescriptionField = JTextAreaBuilder.builder()
-      .toolTip(TOOL_TIP)
+      .toolTip(HELP_TEXT)
       .build();
 
   private final JButton submitButton = JButtonBuilder.builder()
       .title("Upload")
       .biggerFont()
       .toolTip("Uploads error report to TripleA support")
+      .build();
+
+  private final JButton previewButton = JButtonBuilder.builder()
+      .title("Preview")
+      .toolTip("Shows a preview of the error report")
       .build();
 
   private final JButton cancelButton = JButtonBuilder.builder()
@@ -49,12 +55,25 @@ class StackTraceReportSwingView implements StackTraceReportView {
     window.setLocationRelativeTo(parentWindow);
     window.getContentPane()
         .add(JPanelBuilder.builder()
-            .addNorth(JLabelBuilder.builder()
-                .border(5)
-                .html("Please describe when and where the error happened:<br/>"
-                    + "(Error message details will be included automatically in the upload)")
-                .toolTip(TOOL_TIP)
-                .build())
+            .addNorth(
+                JPanelBuilder.builder()
+                    .addWest(
+                        JLabelBuilder.builder()
+                            .border(5)
+                            .html("Please describe the error and where it happened:")
+                            .toolTip(HELP_TEXT)
+                            .build())
+                    .addEast(
+                        JPanelBuilder.builder()
+                            .add(
+                                JButtonBuilder.builder()
+                                    .title("(?)")
+                                    .actionListener(() -> JOptionPane.showMessageDialog(
+                                        window,
+                                        HELP_TEXT))
+                                    .build())
+                            .build())
+                    .build())
             .addCenter(userDescriptionField)
             .addSouth(buttonPanel())
             .build());
@@ -65,11 +84,19 @@ class StackTraceReportSwingView implements StackTraceReportView {
         .border(10)
         .add(
             JPanelBuilder.builder()
-                .borderLayout()
-                .addHorizontalStrut(10)
-                .addWest(submitButton)
-                .addHorizontalStrut(30)
-                .addEast(cancelButton)
+                .addWest(
+                    JPanelBuilder.builder()
+                        .horizontalBoxLayout()
+                        .add(submitButton)
+                        .add(Box.createHorizontalStrut(30))
+                        .add(previewButton)
+                        .build())
+                .addEast(
+                    JPanelBuilder.builder()
+                        .horizontalBoxLayout()
+                        .add(Box.createHorizontalStrut(70))
+                        .add(cancelButton)
+                        .build())
                 .build())
         .build();
   }
@@ -77,6 +104,7 @@ class StackTraceReportSwingView implements StackTraceReportView {
   @Override
   public void bindActions(final StackTraceReportModel viewModel) {
     submitButton.addActionListener(e -> viewModel.submitAction());
+    previewButton.addActionListener(e -> viewModel.previewAction());
     cancelButton.addActionListener(e -> viewModel.cancelAction());
   }
 
