@@ -2,14 +2,13 @@ package org.triplea.java.collections;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Predicates.not;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import org.triplea.java.Util;
 
 import com.google.common.collect.Iterables;
 
@@ -91,7 +90,7 @@ public final class CollectionUtils {
     if (c2 == null || c2.isEmpty()) {
       return new ArrayList<>(c1);
     }
-    return c1.stream().filter(Util.not(c2::contains)).collect(Collectors.toList());
+    return c1.stream().filter(not(c2::contains)).collect(Collectors.toList());
   }
 
   /**

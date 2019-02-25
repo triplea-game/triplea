@@ -1,5 +1,7 @@
 package games.strategy.net;
 
+import static com.google.common.base.Predicates.not;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -9,8 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
-
-import org.triplea.java.Util;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -55,7 +55,7 @@ public final class IpFinder {
         .map(NetworkInterface::getInetAddresses)
         .map(Collections::list)
         .flatMap(Collection::stream)
-        .filter(Util.not(InetAddress::isLoopbackAddress))
+        .filter(not(InetAddress::isLoopbackAddress))
         .min(getInetAddressComparator())
         .orElse(Node.getLocalHost());
   }

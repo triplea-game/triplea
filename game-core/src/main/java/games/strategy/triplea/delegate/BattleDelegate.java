@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate;
 
+import static com.google.common.base.Predicates.not;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +17,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.triplea.java.PredicateBuilder;
-import org.triplea.java.Util;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
@@ -561,7 +562,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           .filter(e -> abandonedToUnits.contains(e.getKey()))
           .map(Entry::getValue)
           .flatMap(Collection::stream)
-          .filter(Util.not(abandonedToUnits::contains))
+          .filter(not(abandonedToUnits::contains))
           .collect(Collectors.toSet()));
 
       // either we have abandoned the territory (so there are no more units that are enemy units of our enemy units)

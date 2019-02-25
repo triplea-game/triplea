@@ -7,13 +7,11 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.java.function.NegationPredicate;
 
-public class UtilTest {
-
+class UtilTest {
 
   @Test
-  public void isMailValid_ShouldReturnTrueWhenAddressIsValid() {
+  void isMailValid_ShouldReturnTrueWhenAddressIsValid() {
     Arrays.asList(
         "some@some.com",
         "some.someMore@some.com",
@@ -26,18 +24,10 @@ public class UtilTest {
   }
 
   @Test
-  public void isMailValid_ShouldReturnFalseWhenAddressIsInvalid() {
+  void isMailValid_ShouldReturnFalseWhenAddressIsInvalid() {
     Collections.singletonList(
         "test")
         .forEach(it -> assertThat("'" + it + "' should be invalid", Util.isMailValid(it), is(false)));
-  }
-
-  @Test
-  public void not_ShouldReturnLogicalNegationOfPredicate() {
-    final Object t = new Object();
-
-    assertThat(NegationPredicate.not(it -> false).test(t), is(true));
-    assertThat(NegationPredicate.not(it -> true).test(t), is(false));
   }
 
   @Test

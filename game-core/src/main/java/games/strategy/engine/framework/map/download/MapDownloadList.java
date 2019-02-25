@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
-import static org.triplea.java.Util.not;
+import static com.google.common.base.Predicates.not;
 
 import java.util.ArrayList;
 import java.util.Collection;
