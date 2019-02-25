@@ -6,7 +6,7 @@
       <env name="GITHUB_API_AUTH_TOKEN" value="SECRET-TOKEN" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="org.triplea.server.http.spark.SparkServer" />
-    <module name="http-server_main" />
+    <module name="triplea.http-server" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.triplea.server.http.spark.*" />
