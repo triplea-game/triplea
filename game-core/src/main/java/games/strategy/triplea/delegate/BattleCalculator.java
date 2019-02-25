@@ -704,6 +704,7 @@ public class BattleCalculator {
     // Sort units starting with weakest for finding the worst units
     Collections.reverse(sortedUnitsList);
     final List<Unit> sortedWellEnoughUnitsList = new ArrayList<>();
+    final Map<Unit, Tuple<Integer, Integer>> originalUnitPowerAndRollsMap = new HashMap<>(unitPowerAndRollsMap);
     for (int i = 0; i < sortedUnitsList.size(); ++i) {
       // Loop through all target units to find the best unit to take as casualty
       Unit worstUnit = null;
@@ -715,9 +716,7 @@ public class BattleCalculator {
         }
         unitTypes.add(u.getType());
         // Find unit power
-        final Map<Unit, Tuple<Integer, Integer>> currentUnitMap = new HashMap<>();
-        currentUnitMap.put(u, unitPowerAndRollsMap.get(u));
-        int power = DiceRoll.getTotalPower(currentUnitMap, data);
+        int power = DiceRoll.getTotalPower(Collections.singletonMap(u, originalUnitPowerAndRollsMap.get(u)), data);
         // Add any support power that it provides to other units
         final IntegerMap<Unit> unitSupportPowerMapForUnit = unitSupportPowerMap.get(u);
         if (unitSupportPowerMapForUnit != null) {
