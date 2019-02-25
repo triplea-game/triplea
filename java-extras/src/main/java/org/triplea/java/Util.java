@@ -1,9 +1,5 @@
 package org.triplea.java;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.function.Predicate;
-
 import com.google.common.base.Preconditions;
 
 /**
@@ -37,22 +33,6 @@ public class Util {
       Interruptibles.sleep(1);
     }
     return "" + System.currentTimeMillis();
-  }
-
-  /**
-   * Returns a predicate that represents the logical negation of the specified predicate.
-   *
-   * @param p The predicate to negate.
-   *
-   * @return A predicate that represents the logical negation of the specified predicate.
-   *
-   * @deprecated Call NegationPredicate instead
-   */
-  @Deprecated
-  public static <T> Predicate<T> not(final Predicate<T> p) {
-    checkNotNull(p);
-
-    return p.negate();
   }
 
   // TODO: move to Strings utility

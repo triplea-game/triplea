@@ -3,7 +3,7 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static org.triplea.java.Util.not;
+import static com.google.common.base.Predicates.not;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

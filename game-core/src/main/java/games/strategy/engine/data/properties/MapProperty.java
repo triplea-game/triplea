@@ -1,7 +1,7 @@
 package games.strategy.engine.data.properties;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.triplea.java.Util.not;
+import static com.google.common.base.Predicates.not;
 
 import java.awt.Color;
 import java.io.File;
