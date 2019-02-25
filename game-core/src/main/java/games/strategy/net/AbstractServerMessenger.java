@@ -551,11 +551,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   @Override
-  public boolean isAcceptNewConnections() {
-    return acceptNewConnection;
-  }
-
-  @Override
   public INode getLocalNode() {
     return node;
   }

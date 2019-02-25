@@ -13,8 +13,6 @@ import javax.annotation.Nullable;
 public interface IServerMessenger extends IMessenger {
   void setAcceptNewConnections(boolean accept);
 
-  boolean isAcceptNewConnections();
-
   void setLoginValidator(ILoginValidator loginValidator);
 
   ILoginValidator getLoginValidator();
