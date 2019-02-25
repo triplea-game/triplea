@@ -5,6 +5,8 @@ import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -21,10 +23,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.snakeyaml.engine.v1.api.Load;
+import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import org.triplea.awt.OpenFileUtility;
 
-import com.github.openjson.JSONArray;
-import com.github.openjson.JSONObject;
+import com.google.common.base.Preconditions;
 
 import games.strategy.engine.framework.system.HttpProxy;
 import lombok.AccessLevel;
@@ -42,6 +45,7 @@ import lombok.extern.java.Log;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 abstract class NodeBbForumPoster implements IForumPoster {
 
+  private final Load load = new Load(new LoadSettingsBuilder().build());
   private final int topicId;
   private final String username;
   private final String password;
@@ -96,7 +100,8 @@ abstract class NodeBbForumPoster implements IForumPoster {
       final int status = response.getStatusLine().getStatusCode();
       if (status == HttpURLConnection.HTTP_OK) {
         final String json = EntityUtils.toString(response.getEntity());
-        return "\n[Savegame](" + new JSONArray(json).getJSONObject(0).getString("url") + ")";
+        final String url = (String) ((Map<?, ?>) ((List<?>) load.loadFromString(json)).get(0)).get("url");
+        return "\n[Savegame](" + url + ")";
       }
       throw new IllegalStateException("Failed to upload savegame, server returned Error Code "
           + status + "\nMessage:\n" + EntityUtils.toString(response.getEntity()));
@@ -112,28 +117,28 @@ abstract class NodeBbForumPoster implements IForumPoster {
   }
 
   private int getUserId(final CloseableHttpClient client) throws IOException {
-    final JSONObject jsonObject = queryUserInfo(client);
+    final Map<?, ?> jsonObject = queryUserInfo(client);
     checkUser(jsonObject);
-    return jsonObject.getInt("uid");
+    return (Integer) jsonObject.get("uid");
   }
 
-  private void checkUser(final JSONObject jsonObject) {
-    if (!jsonObject.has("uid")) {
+  private void checkUser(final Map<?, ?> jsonObject) {
+    if (!jsonObject.containsKey("uid")) {
       throw new IllegalStateException(String.format("User %s doesn't exist.", username));
     }
-    if (jsonObject.getBoolean("banned")) {
+    if (1 == (Integer) jsonObject.get("banned")) {
       throw new IllegalStateException("Your account is banned from the forum.");
     }
-    if (!jsonObject.getBoolean("email:confirmed")) {
+    if (1 != (Integer) jsonObject.get("email:confirmed")) {
       throw new IllegalStateException("Your email isn't confirmed yet!");
     }
   }
 
-  private JSONObject queryUserInfo(final CloseableHttpClient client) throws IOException {
+  private Map<?, ?> queryUserInfo(final CloseableHttpClient client) throws IOException {
     final HttpGet post = new HttpGet(getForumUrl() + "/api/user/username/" + username);
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
-      return new JSONObject(EntityUtils.toString(response.getEntity()));
+      return (Map<?, ?>) load.loadFromString(EntityUtils.toString(response.getEntity()));
     }
   }
 
@@ -149,14 +154,14 @@ abstract class NodeBbForumPoster implements IForumPoster {
     HttpProxy.addProxy(post);
     try (CloseableHttpResponse response = client.execute(post)) {
       final String rawJson = EntityUtils.toString(response.getEntity());
-      final JSONObject jsonObject = new JSONObject(rawJson);
-      if (jsonObject.has("code")) {
-        final String code = jsonObject.getString("code");
+      final Map<?, ?> jsonObject = (Map<?, ?>) load.loadFromString(rawJson);
+      if (jsonObject.containsKey("code")) {
+        final String code = (String) Preconditions.checkNotNull(jsonObject.get("code"));
         if (code.equalsIgnoreCase("ok")) {
-          return jsonObject.getJSONObject("payload").getString("token");
+          return (String) Preconditions.checkNotNull((Map<?, ?>) jsonObject.get("payload")).get("token");
         }
         throw new IllegalStateException(
-            "Failed to retrieve Token. Code: " + code + " Message: " + jsonObject.getString("message"));
+            "Failed to retrieve Token. Code: " + code + " Message: " + jsonObject.get("message"));
       }
       throw new IllegalStateException("Failed to retrieve Token, server did not return correct response: "
           + response.getStatusLine() + "; JSON: " + rawJson);
