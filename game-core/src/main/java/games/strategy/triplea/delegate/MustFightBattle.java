@@ -92,6 +92,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private final Collection<Unit> defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> killed = new ArrayList<>();
+  private final List<Unit> killedWaitingForWhenHitpointsDamagedChangesInto = new ArrayList<>();
   // Our current execution state, we keep a stack of executables, this allows us to save our state and resume while in
   // the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
@@ -2315,6 +2316,15 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     final Collection<Unit> dependent = getDependentUnits(killed);
     killed.addAll(dependent);
+	
+	killedWaitingForWhenHitpointsDamagedChangesInto.addAll(killed);
+	final IntegerMap<Unit> lethallyDamagedMap = new IntegerMap<>();
+	for (final Unit unit : killed) {
+	  lethallyDamagedMap.put(unit, unit.getUnitAttachment().getHitPoints());
+	}
+	final Change lethallyDamagedChange = ChangeFactory.unitsHit(lethallyDamagedMap);
+	bridge.addChange(lethallyDamagedChange);
+	
     final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
     this.killed.addAll(killed);
     final String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
@@ -2366,11 +2376,13 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     remove(unitsToRemove, bridge, battleSite, null);
     defendingWaitingToDie.clear();
     attackingWaitingToDie.clear();
-    damagedChangeInto(attackingUnits, bridge);
-    damagedChangeInto(defendingUnits, bridge);
+    damagedChangeInto(attackingUnits, bridge, false);
+    damagedChangeInto(defendingUnits, bridge, false);
+	damagedChangeInto(killedWaitingForWhenHitpointsDamagedChangesInto, bridge, true);
+	killedWaitingForWhenHitpointsDamagedChangesInto.clear();
   }
 
-  private void damagedChangeInto(final List<Unit> units, final IDelegateBridge bridge) {
+  private void damagedChangeInto(final List<Unit> units, final IDelegateBridge bridge, Boolean deadAlready) {
     final List<Unit> damagedUnits = CollectionUtils.getMatches(units,
         Matches.unitWhenHitPointsDamagedChangesInto().and(Matches.unitHasTakenSomeDamage()));
     final CompositeChange changes = new CompositeChange();
@@ -2393,7 +2405,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     if (!unitsToRemove.isEmpty()) {
       bridge.addChange(changes);
-      remove(unitsToRemove, bridge, battleSite, null);
+	  if (!deadAlready) {
+        remove(unitsToRemove, bridge, battleSite, null);
+	  }
       final String transcriptText = MyFormatter.unitsToText(unitsToAdd) + " added in " + battleSite.getName();
       bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(unitsToAdd));
       bridge.addChange(ChangeFactory.addUnits(battleSite, unitsToAdd));
