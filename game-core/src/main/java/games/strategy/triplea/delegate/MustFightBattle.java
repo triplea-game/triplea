@@ -2393,6 +2393,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           UnitAttachment.get(unit.getType()).getWhenHitPointsDamagedChangesInto();
       if (map.containsKey(unit.getHits())) {
         final boolean translateAttributes = map.get(unit.getHits()).getFirst();
+		if (deadAlready && translateAttributes)
+			continue;
         final UnitType unitType = map.get(unit.getHits()).getSecond();
         final List<Unit> toAdd = unitType.create(1, unit.getOwner());
         if (translateAttributes) {
