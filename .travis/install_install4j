@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Downloads and install install4j
+# Note at the end we configure install4j with our license key. After that final step, install4j can be used.
+#
+
+if [ -z "$INSTALL4J_7_LICENSE" ]; then
+ echo "Error: required license environment variable: INSTALL4J_7_LICENSE, was not set"
+ exit -1
+fi
+
+readonly INSTALL4J_HOME=$1
+
+echo "Downloading and installing install4j to '$INSTALL4J_HOME'"
+wget --no-verbose -O install4j_unix.sh https://raw.githubusercontent.com/triplea-game/assets/master/install4j/install4j_unix_7_0_9.sh
+chmod +x install4j_unix.sh
+./install4j_unix.sh -q -dir "$INSTALL4J_HOME"
+"$INSTALL4J_HOME/bin/install4jc" -L $INSTALL4J_7_LICENSE

@@ -1,0 +1,37 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
+}
+
+description = 'TripleA Http Server'
+mainClassName = 'org.triplea.server.http.spark.SparkServer'
+
+dependencies {
+    implementation project(':java-extras')
+    implementation project(':http-client')
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.sparkjava:spark-core:2.8.0'
+
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.21'
+
+    testImplementation project(':test-common')
+    testImplementation 'uk.co.datumedge:hamcrest-json:0.2'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}

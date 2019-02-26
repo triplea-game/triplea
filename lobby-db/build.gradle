@@ -1,0 +1,29 @@
+buildscript {
+    dependencies {
+        classpath 'com.h2database:h2:1.4.197'
+        classpath "org.postgresql:postgresql:$postgresqlVersion"
+    }
+}
+
+plugins {
+    id 'org.flywaydb.flyway' version '5.2.4'
+}
+
+flyway {
+    driver = 'org.postgresql.Driver'
+    url= 'jdbc:postgresql://localhost:5432/ta_users'
+    user = 'postgres'
+    password = 'postgres'
+}
+
+task portableInstaller(type: Zip, group: 'release') {
+    from 'src/main/resources/db/migration'
+    include '*.sql'
+    archiveName 'migrations.zip'
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}

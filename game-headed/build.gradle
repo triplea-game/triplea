@@ -1,0 +1,112 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'com.install4j.gradle' version '7.0.9'
+    id 'de.undercouch.download' version '3.4.3'
+}
+
+archivesBaseName = "$group-$name"
+description = 'TripleA Headed Game Client'
+mainClassName = 'org.triplea.game.client.HeadedGameRunner'
+
+ext {
+    javaFxRuntimeUrl = 'https://github.com/triplea-game/assets/raw/master/javafx/jfxrt-1.8.0_181.jar'
+    releasesDir = file("$buildDir/releases")
+    testFxVersion = '4.0.15-alpha'
+}
+
+dependencies {
+    if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+        compileOnly remoteLib(javaFxRuntimeUrl)
+    }
+
+    implementation project(':game-core')
+    implementation project(':java-extras')
+    implementation project(':swing-lib')
+    implementation 'org.pushing-pixels:radiance-substance:1.0.2'
+
+    if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+        testCompileOnly remoteLib(javaFxRuntimeUrl)
+    }
+
+    testImplementation project(':test-common')
+    testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
+    testImplementation "org.testfx:testfx-core:$testFxVersion"
+    testImplementation "org.testfx:testfx-junit5:$testFxVersion"
+
+    if (JavaVersion.current() == JavaVersion.VERSION_1_9) {
+        testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-9+181'
+    } else if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+        testRuntimeOnly 'org.testfx:openjfx-monocle:8u76-b04'
+    }
+}
+
+install4j {
+    // If you wish to build the installers, you must install install4j and define the "install4jHomeDir" property on the
+    // command line (e.g. -Pinstall4jHomeDir=...) or in your personal Gradle properties (e.g. ~/.gradle/gradle.properties).
+    installDir = file(project.findProperty('install4jHomeDir') ?: '.')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task downloadPlatformInstallerAssets(group: 'release') {
+    doLast {
+        [
+            'icons/triplea_icon_16_16.png',
+            'icons/triplea_icon_32_32.png',
+            'icons/triplea_icon_48_48.png',
+            'icons/triplea_icon_64_64.png',
+            'icons/triplea_icon_128_128.png',
+            'icons/triplea_icon_256_256.png',
+            'install4j/macosx-amd64-1.8.0_144.tar.gz',
+            'install4j/windows-amd64-1.8.0_144.tar.gz',
+            'install4j/windows-x86-1.8.0_144.tar.gz'
+        ].each { path ->
+            download {
+                src "https://raw.githubusercontent.com/triplea-game/assets/master/$path"
+                dest "$buildDir/assets/$path"
+                overwrite false
+            }
+        }
+    }
+}
+
+task platformInstallers(
+        type: com.install4j.gradle.Install4jTask,
+        group: 'release',
+        dependsOn: [shadowJar, downloadPlatformInstallerAssets]) {
+    projectFile = file('build.install4j')
+    release = version
+
+    doLast {
+        ant.chmod(dir: releasesDir, perm: '+x', includes: '*.sh')
+    }
+}
+
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from file('.triplea-root')
+    from(file('assets')) {
+        into 'assets'
+    }
+    from(file('dice_servers')) {
+        into 'dice_servers'
+    }
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: [portableInstaller, platformInstallers]) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files + [
+            file("$releasesDir/TripleA_${version}_macos.dmg"),
+            file("$releasesDir/TripleA_${version}_unix.sh"),
+            file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
+            file("$releasesDir/TripleA_${version}_windows-64bit.exe")
+        ])
+    }
+}

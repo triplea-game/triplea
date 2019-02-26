@@ -1,0 +1,113 @@
+.button {
+	-fx-background-color: #52602F;
+	-fx-color: #000000;
+}
+.button:hover {
+	-fx-background-color: #2B3318;
+}
+.tab-label, .spinner, .text-field, .combo-box, .exitButton, .label, .radio-button, .normal-font-size, .button {
+	-fx-font-family: "1942 report";
+	-fx-font-size: 16px;
+}
+.tab-label, .text-field {
+	-fx-font-size: 18px;
+}
+.big-font-size {
+	-fx-font-size: 20px !important;
+}
+.file-container {
+	-fx-background-image: url('/org/triplea/game/client/ui/javafx/images/folder.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center top;
+}
+#title {
+	-fx-font-size: 90px;
+}
+#subtitle {
+	-fx-font-size: 17px;
+	-fx-background-image: url('/org/triplea/game/client/ui/javafx/images/subtitle_background.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: stretch;
+	-fx-padding: 0 5px 0 5px;
+}
+#aboutTitle, #exitOverlayQuestion {
+	-fx-font-size: 37px;
+}
+#rootPane {
+	-fx-background-image: url('/org/triplea/game/client/ui/javafx/images/wood.png'), url('/org/triplea/game/client/ui/javafx/images/background.png');
+	-fx-background-position: center center, center center;
+	-fx-background-size: 100% auto, 100% auto;
+	-fx-background-repeat: repeat, no-repeat;
+}
+#bottomFolderBody {
+	-fx-background-image: url('/org/triplea/game/client/ui/javafx/images/dice.png');
+	-fx-background-position: center 20px;
+	-fx-background-repeat: no-repeat;
+	-fx-translate-x: -300px;
+}
+#header {
+	-fx-background-image: url('/org/triplea/game/client/ui/javafx/images/header.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center center;
+	-fx-background-size: auto 100%;
+}
+.check-box {
+	-fx-skin: 'org.triplea.game.client.ui.javafx.controls.TripleACheckBoxSkin';
+}
+.check-box .box {
+	-fx-fill: ANTIQUEWHITE;
+	-fx-stroke: DARKOLIVEGREEN;
+	-fx-stroke-width: 5;
+}
+.check-box .mark {
+	-fx-image: url('/org/triplea/game/client/ui/javafx/images/checkmark.png');
+}
+.combo-box {
+	-fx-background-color: rgba(0, 0, 0, 0);
+	-fx-padding: 1px;
+}
+.combo-box > .list-cell {
+	-fx-border-color: #303030;
+	-fx-border-width: 5px;
+	-fx-border-style: solid;
+	-fx-background-insets: 0 1px 0 0;
+	-fx-border-insets: 0 1px 0 0;
+}
+.combo-box > .arrow-button, .combo-box .virtual-flow, .combo-box > .list-cell {
+	-fx-background-color: DARKOLIVEGREEN;
+}
+.combo-box .text {
+	-fx-fill: WHITE;
+}
+.combo-box > .arrow-button {
+	-fx-background-radius: 5px;
+	-fx-border-width: 0;
+	-fx-padding: 3px 8px;
+}
+.combo-box .arrow {
+	-fx-shape: 'M 18.00682,56.90908 C -6.5480559,-6.9502282 -6.7122117,-4.8711662 21.978378,6.6085318 42.312613,14.74468 45.090803,14.75986 61.728859,6.8257218 89.599661,-6.4649402 89.740627,-5.1768432 67.04318,55.387668 41.052458,124.73976 44.052953,124.64667 18.00682,56.90908 Z M 63.317089,50.364896 C 82.895223,-0.40290021 83.027101,1.8595068 61.099241,12.316172 42.962938,20.964773 42.933519,21.036085 42.933519,56.348958 c 0,44.575742 0.998715,44.282552 20.38357,-5.984062 z';
+	-fx-background-color: WHITE;
+	-fx-padding: 10px;
+}
+.combo-box:hover .arrow {
+	-fx-background-color: #303030;
+}
+.combo-box-popup .list-view .list-cell{
+	-fx-background-color: ANTIQUEWHITE;
+	-fx-border-color: DARKOLIVEGREEN;
+	-fx-border-width: 2px;
+	-fx-border-style: solid;
+}
+.combo-box-popup .list-view {
+	-fx-background-color: ANTIQUEWHITE;
+}
+.combo-box-popup .list-view .list-cell .text {
+	-fx-fill: BLACK;
+}
+.combo-box-popup .list-view .list-cell:hover {
+	-fx-background-color: DARKOLIVEGREEN;
+	-fx-border-color: #303030;
+}
+.combo-box-popup .list-view .list-cell:hover .text {
+	-fx-fill: WHITE;
+}

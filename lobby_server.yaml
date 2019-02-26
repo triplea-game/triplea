@@ -1,11 +1,27 @@
 - version: 1.9.0.0
-  host: 45.79.144.53
+  host: lobby.triplea-game.org
   port: 3304
+  http_server_uri: "http://prerelease.triplea-game.org:4567"
   message: |
-    Welcome to TripleA 1.9 - Help menu has useful links for getting started
-    Help and documentation is on the website: http://www.triplea-game.org/help/
-    Lobby Rules: http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100
-    
+    Welcome to TripleA 1.9 - Got a question, please visit the forums: https://forums.triplea-game.org/
     No talking politics in the lobby! Take your political comments to a private game!
+    Lobby Rules: https://forums.triplea-game.org/topic/4
+
+    It's recommended that all players download and install the latest release here: https://triplea-game.org/download/
+    
+    Join the TripleA ranked ladder by posting here:
+    https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
   error_message:
-  
+- version: "1.10"
+  host: lobby.triplea-game.org
+  port: 3304
+  http_server_uri: "http://prerelease.triplea-game.org:4567"
+  message: |
+    Welcome to TripleA 1.10 - Got a question, please visit the forums: https://forums.triplea-game.org/
+    No talking politics in the lobby! Take your political comments to a private game!
+    Lobby Rules: https://forums.triplea-game.org/topic/4
+
+    THIS IS A BETA RELEASE! You will not be able to use most bots in the lobby unless they happen to be
+    running version 1.10. If you didn't expect to see this message, you should download the latest stable
+    release from https://triplea-game.org/download/ and use that installation instead.
+  error_message:

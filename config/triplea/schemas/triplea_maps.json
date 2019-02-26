@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Maps set",
+  "description": "A set of maps",
+  "type": "array",
+  "items": {
+    "title": "Map",
+    "description": "A map",
+    "type": "object",
+    "properties": {
+      "mapName": {
+        "description": "The map name",
+        "type": "string"
+      },
+      "mapCategory": {
+        "description": "The map category",
+        "type": "string",
+        "enum": ["BEST", "GOOD", "DEVELOPMENT", "EXPERIMENTAL"]
+      },
+      "mapType": {
+        "description": "The map type",
+        "type": "string",
+        "enum": ["MAP", "MAP_SKIN", "MAP_TOOL"]
+      },
+      "url": {
+        "description": "The map download URL",
+        "type": "string"
+      },
+      "version": {
+        "description": "The map download version",
+        "type": "integer",
+        "minimum": 1
+      },
+      "img": {
+        "description": "The map thumbnail image URL",
+        "type": "string"
+      },
+      "description": {
+        "description": "The map description",
+        "type": "string"
+      }
+    },
+    "required": ["mapName", "url", "version", "description"],
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,10 @@
+#!/bin/bash -e
+#
+# This script sets up Gradle for use during a Travis build.
+#
+
+GRADLE_USER_HOME=~/.gradle
+GRADLE_USER_PROPERTIES="${GRADLE_USER_HOME}/gradle.properties"
+
+mkdir -p "$GRADLE_USER_HOME"
+echo "buildId=$TRAVIS_BUILD_NUMBER" >> "$GRADLE_USER_PROPERTIES"

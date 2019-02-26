@@ -1,36 +1,32 @@
-[![Travis](https://img.shields.io/travis/ajoberstar/gradle-git.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea) [![tripleA license](https://img.shields.io/github/license/triplea-game/tripleA.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)<br>
-TripleA is a free game engine that runs on open source and is community supported. 
+[![Travis](https://img.shields.io/travis/triplea-game/triplea.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea)
+[![Code Quality: Java](https://img.shields.io/lgtm/grade/java/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/context:java)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/alerts)
+[![codecov](https://img.shields.io/codecov/c/github/triplea-game/triplea/master.svg?style=flat-square)](https://codecov.io/gh/triplea-game/triplea)
+[![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
 
-Installing TripleA and Playing
-==============================
-- Download and install TripleA: http://triplea-game.github.io/download/
 
-TripleA Websites
-================
-- HomePage: http://www.triplea-game.org/
-- Community Website: http://www.tripleawarclub.org/
-- Community Maps Repository: http://github.com/triplea-maps
-- Source Forge (legacy): https://sourceforge.net/projects/triplea/
+##  [TripleA Home Page](http://triplea-game.org/)
 
-TripleA Game Features
-=====================
-- Free to play, 100% open source and community supported
-- Online lobby, find, join and observe live games
-- Play by correspondence (email)
-- Play single player against the AI
-- Many community created maps available for in-game download
-- Generic game engine allows you to [build your own maps and mods](https://github.com/triplea-maps/Project)
+TripleA is an open source gaming community, free to play, 100% open source and volunteer run.
 
-Reporting Bugs / Feature Requests
-=================================
-- http://www.triplea-game.org/bug_report/
+- ***Contact-us***: 
+  - [Forums: Questions & Help](https://forums.triplea-game.org/category/10/help-questions)
+  - [Bug Tracker](https://github.com/triplea-game/triplea/issues/new)
+  - [Gitter](https://gitter.im/triplea-game/social)
+- ***Technical Documentation***: 
+  - [Developer Setup](https://github.com/triplea-game/triplea/tree/master/docs/dev)
+  - [Project Documentation](https://github.com/triplea-game/triplea/tree/master/docs/)
 
-Lobby Game Bot Hosting
-======================
-- Please see: https://github.com/triplea-game/lobby#run-hosted-bots
 
-Development and Map Making
-==========================
-- Full project documentation, including 'how to get started guides' are at: http://www.triplea-game.org/dev_docs/
-- Broken map list: https://github.com/triplea-game/triplea/wiki/Broken-Maps
-- Accepted feature requests: https://github.com/triplea-game/triplea/wiki/Feature-Back-Log
+
+- ***Dashboards***
+  - [Is the lobby running?](https://stats.uptimerobot.com/14RYqsN5m)
+
+ 
+## [Download and install TripleA](http://triplea-game.org/download/)
+![screenshot from 2018-02-08 22-58-33](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
+
+## License
+
+This project is licensed under the terms of the 
+[GNU General Public License v3.0 with additional permissions](/docs/license.md).

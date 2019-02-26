@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" prefHeight="540.0" prefWidth="960.0" type="VBox" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <tabs>
+          <Tab text="%download.tab.maps">
+               <content>
+                  <ScrollPane prefHeight="200.0" prefWidth="200.0" />
+               </content>
+          </Tab>
+          <Tab text="%download.tab.skins">
+               <content>
+                  <ScrollPane prefHeight="200.0" prefWidth="200.0" />
+               </content>
+          </Tab>
+            <Tab text="%download.tab.tools">
+               <content>
+                  <ScrollPane prefHeight="200.0" prefWidth="200.0" />
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <VBox>
+         <children>
+            <HBox alignment="CENTER_RIGHT">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#back" text="%main.button.back" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" maxHeight="200.0" minHeight="50.0">
+               <children>
+                  <ScrollPane hbarPolicy="NEVER" style="-fx-border-color: #F4F4F4;" HBox.hgrow="NEVER">
+                     <content>
+                        <VBox fx:id="downloadProgressContainer" alignment="CENTER" fillWidth="false" spacing="5.0" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</fx:root>

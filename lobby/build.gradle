@@ -1,0 +1,36 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
+}
+
+archivesBaseName = "$group-$name"
+description = 'TripleA Lobby'
+mainClassName = 'org.triplea.lobby.server.LobbyRunner'
+
+dependencies {
+    implementation project(':java-extras')
+    implementation project(':game-core')
+    implementation "org.mindrot:jbcrypt:$jbcryptVersion"
+
+    runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
+
+    testImplementation project(':test-common')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}

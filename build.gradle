@@ -1,189 +1,230 @@
+import net.ltgt.gradle.errorprone.CheckSeverity
+
+// TODO: Remove once Spotless 3.17.0 is published to Gradle plugin portal and replace with entry under plugins
+// see https://github.com/triplea-game/triplea/pull/4569#discussion_r247326720
 buildscript {
-	repositories {
-		maven { url 'http://maven.ej-technologies.com/repository' }
-	}
-	dependencies {
-		classpath group: 'com.install4j', name: 'gradle-plugin', version: '6.0.4'
-	}
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.diffplug.spotless:spotless-plugin-gradle:3.17.0'
+    }
 }
 
 plugins {
-	id 'java'
-	id 'application'
-	id 'checkstyle'
-	id 'com.github.ben-manes.versions' version '0.12.0'
-	id 'com.github.johnrengelman.shadow' version '1.2.3'
-	id "de.qaware.seu.as.code.git" version "2.2.0"
+    id 'java'
+    id 'com.github.ben-manes.versions' version '0.20.0'
+    id 'io.franzbecker.gradle-lombok' version '2.0' apply false
+    id 'net.ltgt.errorprone' version '0.7' apply false
 }
 
-version = System.getenv("TAGGED_VERSION") ?: ""
-group = 'triplea'
+apply from: 'gradle/scripts/yaml.gradle'
+
 description = 'TripleA is a free online turn based strategy game and board game engine, similar to such board games as Axis & Allies or Risk.'
-mainClassName = "games.strategy.engine.framework.GameRunner"
 
-compileJava {
-    options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:all"
-}
-compileTestJava {
-    options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:all"
-}
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-tasks.withType(JavaCompile) {
-	options.incremental = true
+ext {
+    schemasDir = file('config/triplea/schemas')
 }
 
-sourceSets {
-	main {
-		java { srcDir 'src' }
-		resources { srcDir 'data' }
-	}
-	test {
-		java { srcDirs 'test' }
-	}
+check {
+    dependsOn 'validateYamls'
 }
 
-checkstyle{
-	configFile = rootProject.file('google_checks.xml')
-	toolVersion = "7.1"
-	showViolations = false
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
 }
 
-jar {
-	manifest {
-		attributes 'Main-Class': mainClassName, 'TripleA-Version': version
-	}
+task validateYamls(group: 'verification', description: 'Validates YAML files.') {
+    doLast {
+        def lobbyServerYamlFile = file('lobby_server.yaml')
+        validateYaml(lobbyServerYamlFile, file("$schemasDir/lobby_server.json"))
+
+        def mapsYamlFile = file('triplea_maps.yaml')
+        validateYaml(mapsYamlFile, file("$schemasDir/triplea_maps.json"))
+        validateMapsYamlUris(mapsYamlFile)
+    }
 }
 
-repositories {
-	jcenter()
+allprojects {
+    apply plugin: 'com.diffplug.gradle.spotless'
+
+    spotless {
+        groovyGradle {
+            target '*.gradle', 'gradle/**/*.gradle'
+
+            endWithNewline()
+            indentWithSpaces()
+            trimTrailingWhitespace()
+        }
+    }
 }
 
-dependencies {
-	compile 'com.github.insubstantial:substance:7.3'
-	compile 'com.google.guava:guava:19.0'
-	compile 'com.googlecode.soundlibs:jlayer:1.0.1-2'
-	compile 'com.sun.mail:mailapi:1.5.5'
-	compile 'com.sun.mail:smtp:1.5.5'
-	compile 'commons-httpclient:commons-httpclient:3.1'
-	compile 'org.apache.commons:commons-math3:3.6.1'
-	compile 'org.mindrot:jbcrypt:0.3m'
-	compile 'org.yaml:snakeyaml:1.17'
+subprojects {
+    apply plugin: 'checkstyle'
+    apply plugin: 'jacoco'
+    apply plugin: 'java'
+    apply plugin: 'pmd'
+    apply plugin: 'net.ltgt.errorprone'
+    apply plugin: 'io.franzbecker.gradle-lombok'
 
-	compile files('lib/AppleJavaExtensions-1.6.jar')
-	compile files('lib/upnp.jar')
+    apply from: rootProject.file('gradle/scripts/release.gradle')
+    apply from: rootProject.file('gradle/scripts/remote-lib.gradle')
+    apply from: rootProject.file('gradle/scripts/spotless.gradle')
+    apply from: rootProject.file('gradle/scripts/version.gradle')
 
-	testCompile 'org.apache.derby:derby:10.10.1.1'
-	testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-	testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.0-M1'
-	testCompile 'org.junit.platform:junit-platform-runner:1.0.0-M1'
-	testCompile 'org.junit.vintage:junit-vintage-engine:4.12.0-M1'//JUnit Backwards compatibility
-	testCompile 'org.mockito:mockito-core:2.0.82-beta'
-}
+    group = 'triplea'
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    version = getProductVersion()
 
-test {
-	testLogging {
-		exceptionFormat = 'full'
-	}
-}
+    ext {
+        hamcrestVersion = '2.0.0.0'
+        jbcryptVersion = '0.4'
+        junitJupiterVersion = '5.4.0'
+        mockitoVersion = '2.24.0'
+        postgresqlVersion = '42.2.5'
+        sonatypeGoodiesPrefsVersion = '2.2.5'
+    }
 
+    repositories {
+        jcenter()
+    }
 
-def assetsDirectory = file("${buildDir}/assets")
-git {
-	assets {
-		url 'https://github.com/triplea-game/assets.git'
-		directory assetsDirectory
-		branch 'master'
-		singleBranch true
-	}
-}
+    dependencies {
+        errorprone 'com.google.errorprone:error_prone_core:2.3.2'
 
-task renameShadowJar(type: Copy, group: 'release', dependsOn: [shadowJar]) {
-	ext.output = file("$project.buildDir/libs/all/triplea.jar")
-	from shadowJar.archivePath
-	into ext.output.parent
-	rename shadowJar.archivePath.name, output.name
-}
+        if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+            errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
+        }
 
-task updateAssets(dependsOn: ['gitCloneAssets', 'gitPullAssets']) {
-}
+        implementation 'com.google.guava:guava:27.0.1-jre'
 
-task allPlatform(type: Zip, group: 'release', dependsOn: [renameShadowJar, updateAssets]) {
-	classifier 'all_platforms'
-	['assets', 'dice_servers', 'maps', 'old'].each { folder ->
-		from(folder) {
-			into(folder)
-		}
-	}
-	from("${assetsDirectory}/icons") {
-		into('icons')
-		exclude("icon.icns")
-	}
-	['readme.html', 'changelog.txt', 'system.ini', 'game_engine.properties', 'lobby_server.yaml',
-	 'run-headless-game-host-mac-os.sh', 'run-headless-game-host.sh', 'run-headless-game-host-windows.bat',
-	 'triplea_unix.sh', 'triplea_windows.bat', 'triplea_mac_os_x.sh'].each { fileName ->
-		from(fileName)
-	}
-	from(renameShadowJar.output) {
-		into('bin')
-	}
-}
+        testImplementation 'com.github.npathai:hamcrest-optional:2.0.0'
+        testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.1.4'
+        testImplementation "org.hamcrest:java-hamcrest:$hamcrestVersion"
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+        testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
+        testImplementation 'org.junit-pioneer:junit-pioneer:0.3.0'
+        testImplementation "org.mockito:mockito-core:$mockitoVersion"
+        testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
 
-task lobbyServer(type: Zip, group: 'release', dependsOn: renameShadowJar) {
-	classifier 'server'
-	['run-headless-game-host.sh', 'run-server.sh'].each { fileName ->
-		from(fileName)
-	}
-	from(configurations.testCompile.files { dep -> dep.name == 'derby' }) {
-		into('lib')
-	}
-	from(renameShadowJar.output) {
-		into('bin')
-	}
-}
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.4.0'
+        testRuntimeOnly 'org.slf4j:slf4j-nop:1.7.25'
+    }
 
-task generateZipReleases(group: 'release', dependsOn: [allPlatform, lobbyServer]) {}
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs += [
+            '-Xlint:all,-processing',
+            '-Xmaxwarns', '1000'
+        ]
+        options.encoding = 'UTF-8'
+        options.errorprone {
+            check 'ByteBufferBackingArray', CheckSeverity.ERROR
+            check 'CatchAndPrintStackTrace', CheckSeverity.ERROR
+            check 'ClassCanBeStatic', CheckSeverity.ERROR
+            check 'DefaultCharset', CheckSeverity.ERROR
+            check 'EqualsGetClass', CheckSeverity.ERROR
+            check 'EqualsIncompatibleType', CheckSeverity.ERROR
+            check 'EqualsUnsafeCast', CheckSeverity.ERROR
+            check 'FutureReturnValueIgnored', CheckSeverity.ERROR
+            check 'ImmutableEnumChecker', CheckSeverity.ERROR
+            check 'InconsistentCapitalization', CheckSeverity.ERROR
+            check 'JdkObsolete', CheckSeverity.ERROR
+            check 'MissingOverride', CheckSeverity.ERROR
+            check 'MutableConstantField', CheckSeverity.ERROR
+            check 'NonAtomicVolatileUpdate', CheckSeverity.ERROR
+            check 'ObjectToString', CheckSeverity.ERROR
+            check 'OperatorPrecedence', CheckSeverity.ERROR
+            check 'ParameterName', CheckSeverity.OFF // workaround for https://github.com/google/error-prone/issues/780
+            check 'PrivateConstructorForUtilityClass', CheckSeverity.ERROR
+            check 'ReferenceEquality', CheckSeverity.ERROR
+            check 'StringSplitter', CheckSeverity.ERROR
+            check 'ThreadPriorityCheck', CheckSeverity.ERROR
+            check 'UndefinedEquals', CheckSeverity.ERROR
+            check 'UnnecessaryParentheses', CheckSeverity.ERROR
+            check 'UnsafeReflectiveConstructionCast', CheckSeverity.ERROR
+            check 'UnsynchronizedOverridesSynchronized', CheckSeverity.ERROR
+            check 'WaitNotInLoop', CheckSeverity.ERROR
+        }
+        options.incremental = true
 
-apply plugin: 'install4j'
+        // workaround for https://github.com/gradle/gradle/issues/2510
+        if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+            options.compilerArgs += ['--release', '8']
+        }
+    }
 
-task copyJRE(type: Copy, dependsOn: [updateAssets]) {
-	from "${assetsDirectory}/install4j/windows-x86-1.8.0_66.tar.gz"
-	from "${assetsDirectory}/install4j/macosx-amd64-1.8.0_66.tar.gz"
-	from "${assetsDirectory}/install4j/windows-amd64-1.8.0_66.tar.gz"
-	into "${System.properties['user.home']}/.install4j6/jres"
-}
+    tasks.withType(Test).configureEach {
+        testLogging {
+            exceptionFormat = 'full'
+        }
+    }
 
-import com.install4j.gradle.Install4jTask
-task generateInstallers(type: Install4jTask, dependsOn: [renameShadowJar, copyJRE], group: 'release') {
-	projectFile = file('build.install4j')
-	release project.version
-	doFirst {
-		logger.lifecycle("building installer release of version '${project.version}'")
-	}
-}
+    check {
+        dependsOn 'integTest'
+    }
 
-task setRunnableLinux(dependsOn: [generateInstallers]) {
-	doLast {
-		def linuxFile = "triplea_unix_${project.version}.sh"
-		ant.chmod(dir: "$buildDir/releases", perm: "0755", includes: linuxFile)
-	}
-}
+    checkstyle {
+        toolVersion = '8.12'
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+        configProperties = [samedir: configFile.parent]
+    }
 
-task release(group: 'release', dependsOn: [generateZipReleases, setRunnableLinux]) {}
+    checkstyleMain {
+        maxWarnings = 0
+        source sourceSets.main.output.resourcesDir
+    }
 
-gradle.taskGraph.whenReady { graph ->
-	graph.getAllTasks().any({
-		if (it.name == "generateInstallers") {
-			if (!project.hasProperty('install4jHomeDir')) {
-				File propertiesFile = file("${System.getProperty('user.home')}/.gradle/gradle.properties")
-				throw new RuntimeException("Specify install4jHomeDir in $propertiesFile")
-			}
-			def p = file(project.install4jHomeDir)
-			logger.lifecycle('using install4j home directory ' + p.getAbsolutePath())
-			it.project.install4j.installDir = file(project.install4jHomeDir)
-		}
-	})
+    checkstyleTest {
+        maxWarnings = 0
+        source sourceSets.test.output.resourcesDir
+    }
+
+    compileTestJava {
+        options.errorprone {
+            check 'ClassCanBeStatic', CheckSeverity.OFF
+        }
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+    }
+
+    lombok {
+        version = '1.18.4'
+        sha256 = '39f3922deb679b1852af519eb227157ef2dd0a21eec3542c8ce1b45f2df39742'
+    }
+
+    pmd {
+        consoleOutput = true
+        ruleSetFiles = files(rootProject.file('config/pmd/pmd.xml'))
+        ruleSets = []
+    }
+
+    spotless {
+        java {
+            eclipse('4.9.0').configFile rootProject.file('.eclipse/format/triplea_java_eclipse_format_style.xml')
+            endWithNewline()
+            importOrder(*getEclipseImportOrder())
+            removeUnusedImports()
+            trimTrailingWhitespace()
+        }
+    }
+
+    test {
+        useJUnitPlatform {
+            excludeTags 'integration'
+        }
+    }
+
+    task integTest(type: Test) {
+        useJUnitPlatform {
+            includeTags 'integration'
+        }
+    }
 }

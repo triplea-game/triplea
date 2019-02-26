@@ -1,0 +1,40 @@
+package games.strategy.net;
+
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
+/**
+ * A Node in a network.
+ *
+ * <p>
+ * Node identity is based on address/port. The name is just a display name
+ * </p>
+ *
+ * <p>
+ * Since different nodes may appear as different addresses to different nodes (eg the server sees a node as its nat
+ * accessible address, while the node itself sees itself as a subnet address), the address for a node is defined as the
+ * address that the server sees!
+ * </p>
+ */
+public interface INode extends Serializable, Comparable<INode> {
+  /**
+   * Returns the display/user name for the node.
+   */
+  String getName();
+
+  /**
+   * Returns the address for the node as seen by the server.
+   */
+  InetAddress getAddress();
+
+  /**
+   * Returns the port for the node as seen by the server.
+   */
+  int getPort();
+
+  /**
+   * Returns the address for the node as seen by the server.
+   */
+  InetSocketAddress getSocketAddress();
+}

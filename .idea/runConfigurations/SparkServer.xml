@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SparkServer" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="ERROR_REPORTING_GITHUB_ORG" value="triplea-game" />
+      <env name="ERROR_REPORTING_GITHUB_REPO" value="test" />
+      <env name="GITHUB_API_AUTH_TOKEN" value="SECRET-TOKEN" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="org.triplea.server.http.spark.SparkServer" />
+    <module name="triplea.http-server" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.triplea.server.http.spark.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

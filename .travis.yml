@@ -1,65 +1,57 @@
+dist: trusty
+sudo: false
 language: java
+matrix:
+  include:
+  - jdk: oraclejdk8
+    env: TRIPLEA_RELEASE=true
+  - jdk: openjdk11
+    env: TRIPLEA_RELEASE=false
 addons:
+  postgresql: "9.5"
   apt:
-     packages:
-         - sshpass
-jdk:
-- oraclejdk8
-install: true
+    packages:
+      # python for map file splitter
+      - python3
+      - python3-yaml
+install:
+ - echo "create database ta_users" | psql -h localhost -U postgres
+ - ./gradlew flywayMigrate
+before_script:
+- ./.travis/setup_gpg
+- ./.travis/setup_gradle
 script:
-## validate yamls before we do anything else
-- ruby -e "require 'yaml';puts YAML.load_file('./triplea_maps.yaml')" > /dev/null || exit 1
-- ruby -e "require 'yaml';puts YAML.load_file('./lobby_server.yaml')" > /dev/null || exit 1
-## run the gradle build
-- ./gradlew --no-daemon test
-# Command with checkstyle run  - ./gradlew check --info
+- ./gradlew --parallel check jacocoTestReport
+after_success:
+- bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 before_deploy:
-## Run the travis setup, will download install4j and configure it
-- chmod +x ./.travis/setup && ./.travis/setup
-## Add the travis build number to the game engine version
-- GAME_CONFIG=game_engine.properties
-- ENGINE_VERSION=$(grep "engine_version" $GAME_CONFIG | sed 's/.*= *//g')
-- export TAGGED_VERSION="$ENGINE_VERSION.$TRAVIS_BUILD_NUMBER"
-- sed -i "s/engine_version.*/engine_version = $TAGGED_VERSION/" $GAME_CONFIG
-## Download tutorial map
-- mkdir -p maps
-- (cd maps; wget https://github.com/triplea-maps/tutorial/releases/download/0.125/tutorial.zip)
-## Run the gradle release build process - creates the installers
-- ./gradlew --no-daemon release
-### Debug, show the artifacts that have been built
-- ls build/releases/
-### Rename the windows installers to have 32bit and 64bit extensions instead of 'x86'
-- mv build/releases/TripleA_${TAGGED_VERSION}_windows-x64.exe build/releases/TripleA_${TAGGED_VERSION}_windows-64bit.exe
-- mv build/releases/TripleA_${TAGGED_VERSION}_windows.exe build/releases/TripleA_${TAGGED_VERSION}_windows-32bit.exe
-## Push a tag to github, will trigger the releases process
-- chmod +x ./.travis/push_tag && ./.travis/push_tag
-- chmod +x ./.travis/push_maps_yaml && ./.travis/push_maps_yaml
-## rest is commented out, work in progress.. does not work and needs some debugging.
-#- echo "showing build artifacts" && ls build/distributions/
-#- DEPLOY_DEST="$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
-#- LOBBY_ARTIFACT="triplea-${TAGGED_VERSION}-server.zip"
-#- export SSHPASS=$DEPLOY_PASS
-#- sshpass -e scp build/distributions/$LOBBY_ARTIFACT $DEPLOY_DEST
-#- sshpass -e scp .travis/prerelease_lobby_install.sh $DEPLOY_DEST
-#- sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/prerelease_lobby_install.sh $LOBBY_ARTIFACT
-#- sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST 'bash -s' < ./.travis/update_maps
+- INSTALL4J_HOME=~/install4j
+- ./.travis/install_install4j "$INSTALL4J_HOME"
+- ./gradlew -Pinstall4jHomeDir="$INSTALL4J_HOME" release
+- ./.travis/collect_artifacts
+- ./.travis/generate_artifact_checksums
+- ./.travis/push_tag
+## Live update maps list on website, read the maps in 'triplea_maps.yaml' and commit updated data files
+## to website json data directory.
+- ./.travis/push_maps
 deploy:
   provider: releases
   api_key:
     secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
-  ## This is the list of files to be deployed to github releases
-  file:
-    - build/libs/triplea-${TAGGED_VERSION}-all.jar
-    - build/releases/TripleA_${TAGGED_VERSION}_windows-64bit.exe
-    - build/releases/TripleA_${TAGGED_VERSION}_windows-32bit.exe
-    - build/releases/TripleA_${TAGGED_VERSION}_macos.dmg
-    - build/releases/TripleA_${TAGGED_VERSION}_unix.sh
-    - build/distributions/triplea-${TAGGED_VERSION}-all_platforms.zip
-    - build/distributions/triplea-${TAGGED_VERSION}-server.zip
+  file_glob: true
+  file: build/artifacts/*
+  ## This is set to true to not delete artifacts between the 'before-deploy' and 'deploy' steps
   skip_cleanup: true
   prerelease: true
   on:
     tags: false
-    branches:
-      only:
-        - master
+    condition: "$TRIPLEA_RELEASE = true"
+    repo: triplea-game/triplea
+    branch: master
+notifications:
+  webhooks:
+    urls:
+      - "https://webhooks.gitter.im/e/1b12bfcd765b19e2d59d"
+    on_success: always  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
