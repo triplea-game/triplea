@@ -1,0 +1,19 @@
+- name: apt install nginx
+  become: true
+  apt:
+    name: nginx
+    state: present
+
+- name: create keys
+  become: true
+  shell: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/cert.key -out /etc/nginx/cert.crt -batch
+
+- name: deploy nginx sites_enabled configuation
+  become: yes
+  template:
+    src: etc_nginx_sites_enabled_default.j2
+    dest: /etc/nginx/sites-enabled/default
+
+- name:  relaunch nginx
+  become: yes
+  shell: systemctl restart nginx

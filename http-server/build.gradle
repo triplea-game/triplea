@@ -35,3 +35,13 @@ task release(group: 'release', dependsOn: portableInstaller) {
         publishArtifacts(portableInstaller.outputs.files)
     }
 }
+
+
+task copyShadow(dependsOn: shadowJar) {
+    doLast {
+        copy {
+            from shadowJar
+            into "../infrastructure/ansible/roles/http_server/files/"
+        }
+    }
+}

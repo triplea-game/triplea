@@ -1,0 +1,35 @@
+- name: create the admin user (triplea) for maintainers to SSH to the system
+  become: true
+  user:
+    name: "{{ admin_user }}"
+    shell: /bin/bash
+    create_home: yes
+    append: yes
+    groups: admin
+
+- name: Allow the admin user to have passwordless sudo
+  become: true
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%{{ admin_user }}"
+    line: "%{{ admin_user }} ALL=(ALL) NOPASSWD: ALL"
+    validate: 'visudo -cf %s'
+
+- name: create ssh directory
+  become: true
+  file:
+    path: /home/triplea/.ssh/
+    state: directory
+    mode: "700"
+    owner: "{{ admin_user }}"
+    group: "{{ admin_user }}"
+
+- name: copy authorized keys file
+  become: true
+  copy:
+    src: authorized_keys
+    dest: "/home/{{ admin_user }}/.ssh/authorized_keys"
+    mode: "600"
+    owner: "{{ admin_user }}"
+    group: "{{ admin_user }}"

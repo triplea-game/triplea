@@ -1,0 +1,5 @@
+#!/bin/bash
+set -x
+ansible-playbook -D -v \
+     ansible/site.yml \
+    -i ansible/inventory/vagrant
