@@ -92,6 +92,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private final Collection<Unit> defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> killed = new ArrayList<>();
+  // keep track of all the units that die in the battle to see if they change into another unit
+  private final List<Unit> killedWaitingForWhenHitpointsDamagedChangesInto = new ArrayList<>();
   // Our current execution state, we keep a stack of executables, this allows us to save our state and resume while in
   // the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
@@ -2315,12 +2317,26 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     final Collection<Unit> dependent = getDependentUnits(killed);
     killed.addAll(dependent);
+
+    // Set max damage for any units that will change into another unit
+    final List<Unit> unitsWaitingForWhenHitpointsDamagedChangeInto =
+        CollectionUtils.getMatches(killed, Matches.unitAtMaxHitPointDamageChangesInto());
+    killedWaitingForWhenHitpointsDamagedChangesInto.addAll(unitsWaitingForWhenHitpointsDamagedChangeInto);
+    final IntegerMap<Unit> lethallyDamagedMap = new IntegerMap<>();
+    for (final Unit unit : unitsWaitingForWhenHitpointsDamagedChangeInto) {
+      lethallyDamagedMap.put(unit, unit.getUnitAttachment().getHitPoints());
+    }
+    final Change lethallyDamagedChange = ChangeFactory.unitsHit(lethallyDamagedMap);
+    bridge.addChange(lethallyDamagedChange);
+
+    // Remove units
     final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
     this.killed.addAll(killed);
     final String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(killed));
     bridge.addChange(killedChange);
     final Collection<IBattle> dependentBattles = battleTracker.getBlocked(this);
+
     // If there are NO dependent battles, check for unloads in allied territories
     if (dependentBattles.isEmpty()) {
       removeFromNonCombatLandings(killed, bridge);
@@ -2328,7 +2344,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     } else {
       removeFromDependents(killed, bridge, dependentBattles);
     }
-    // and remove them from the battle display
+
+    // Remove them from the battle display and add any for damaged change into check
     if (defenderDying == null || defenderDying) {
       defendingUnits.removeAll(killed);
     }
@@ -2366,13 +2383,19 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     remove(unitsToRemove, bridge, battleSite, null);
     defendingWaitingToDie.clear();
     attackingWaitingToDie.clear();
-    damagedChangeInto(attackingUnits, bridge);
-    damagedChangeInto(defendingUnits, bridge);
+    damagedChangeInto(attacker, attackingUnits,
+        CollectionUtils.getMatches(killedWaitingForWhenHitpointsDamagedChangesInto, Matches.unitIsOwnedBy(attacker)),
+        bridge);
+    damagedChangeInto(defender, defendingUnits, CollectionUtils
+        .getMatches(killedWaitingForWhenHitpointsDamagedChangesInto, Matches.unitIsOwnedBy(attacker).negate()), bridge);
+    killedWaitingForWhenHitpointsDamagedChangesInto.clear();
   }
 
-  private void damagedChangeInto(final List<Unit> units, final IDelegateBridge bridge) {
+  private void damagedChangeInto(final PlayerId player, final List<Unit> units, final List<Unit> killedUnits,
+      final IDelegateBridge bridge) {
     final List<Unit> damagedUnits = CollectionUtils.getMatches(units,
         Matches.unitWhenHitPointsDamagedChangesInto().and(Matches.unitHasTakenSomeDamage()));
+    damagedUnits.addAll(killedUnits);
     final CompositeChange changes = new CompositeChange();
     final List<Unit> unitsToRemove = new ArrayList<>();
     final List<Unit> unitsToAdd = new ArrayList<>();
@@ -2387,11 +2410,13 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
           final Change translate = TripleAUnit.translateAttributesToOtherUnits(unit, toAdd, battleSite);
           changes.add(translate);
         }
-        unitsToRemove.add(unit);
         unitsToAdd.addAll(toAdd);
+        if (!killedUnits.contains(unit)) {
+          unitsToRemove.add(unit);
+        }
       }
     }
-    if (!unitsToRemove.isEmpty()) {
+    if (!unitsToAdd.isEmpty()) {
       bridge.addChange(changes);
       remove(unitsToRemove, bridge, battleSite, null);
       final String transcriptText = MyFormatter.unitsToText(unitsToAdd) + " added in " + battleSite.getName();
@@ -2399,8 +2424,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       bridge.addChange(ChangeFactory.addUnits(battleSite, unitsToAdd));
       bridge.addChange(ChangeFactory.markNoMovementChange(unitsToAdd));
       units.addAll(unitsToAdd);
-      getDisplay(bridge).changedUnitsNotification(battleId, unitsToRemove.get(0).getOwner(), unitsToRemove,
-          unitsToAdd, null);
+      getDisplay(bridge).changedUnitsNotification(battleId, player, unitsToRemove, unitsToAdd, null);
     }
   }
 
