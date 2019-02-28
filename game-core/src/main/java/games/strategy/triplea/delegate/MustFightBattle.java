@@ -2345,7 +2345,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       removeFromDependents(killed, bridge, dependentBattles);
     }
 
-    // Remove them from the battle display and add any for damaged change into check
+    // Remove them from the battle display
     if (defenderDying == null || defenderDying) {
       defendingUnits.removeAll(killed);
     }
