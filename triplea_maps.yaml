@@ -1958,11 +1958,11 @@
 - mapName: Global 40 House Rules
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/global_40_house_rules/archive/master.zip
-  version: 8
+  version: 9
   img: https://raw.githubusercontent.com/triplea-maps/global_40_house_rules/master/description/TripleA_ww2_global_1940_mini.png
   description:
     <br>
-    <br>Global 40 House Rules. Adds House Rules using Technologies. Also adds Canada that was created by simon 33.<br>
+    <br>Global 40 House Rules. Adds House Rules using Technologies and Map Options. Also adds Canada that was created by simon 33.<br>
 - mapName: The Grand War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/the_grand_war/archive/master.zip
