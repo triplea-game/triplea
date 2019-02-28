@@ -165,7 +165,7 @@ public class JPanelBuilder {
   /**
    * Toggles a border layout, adds a given component to the 'north' portion of the border layout.
    */
-  public JPanelBuilder addNorth(final JComponent child) {
+  public JPanelBuilder addNorth(final Component child) {
     layout = new BorderLayout();
     Preconditions.checkNotNull(child);
     panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.NORTH)));
@@ -175,7 +175,7 @@ public class JPanelBuilder {
   /**
    * Toggles a border layout, adds a given component to the 'east' portion of the border layout.
    */
-  public JPanelBuilder addEast(final JComponent child) {
+  public JPanelBuilder addEast(final Component child) {
     layout = new BorderLayout();
     Preconditions.checkNotNull(child);
     panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.EAST)));
@@ -185,7 +185,7 @@ public class JPanelBuilder {
   /**
    * Toggles a border layout, adds a given component to the 'west' portion of the border layout.
    */
-  public JPanelBuilder addWest(final JComponent child) {
+  public JPanelBuilder addWest(final Component child) {
     layout = new BorderLayout();
     Preconditions.checkNotNull(child);
     panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.WEST)));
@@ -195,7 +195,7 @@ public class JPanelBuilder {
   /**
    * Toggles a border layout, adds a given component to the 'center' portion of the border layout.
    */
-  public JPanelBuilder addCenter(final JComponent child) {
+  public JPanelBuilder addCenter(final Component child) {
     layout = new BorderLayout();
     panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.CENTER)));
     return this;

@@ -5,10 +5,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.logging.LogRecord;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -30,6 +32,9 @@ class StackTraceReportModelTest {
   private Predicate<ErrorReport> uploader;
 
   @Mock
+  private Consumer<ErrorReport> preview;
+
+  @Mock
   private BiFunction<String, LogRecord, ErrorReport> formatter;
 
   @Mock
@@ -44,33 +49,47 @@ class StackTraceReportModelTest {
         .view(stackTraceReportView)
         .stackTraceRecord(logRecord)
         .uploader(uploader)
-        .stackTraceRecord(logRecord)
+        .preview(preview)
         .formatter(formatter)
         .build();
   }
 
-  @Test
-  void submitActionSuccessCase() {
-    givenUploadSuccessResult(true);
+  @Nested
+  final class SubmitAction {
+    @Test
+    void successCase() {
+      givenUploadSuccessResult(true);
 
-    viewModel.submitAction();
+      viewModel.submitAction();
 
-    verify(stackTraceReportView).close();
+      verify(stackTraceReportView).close();
+    }
+
+    private void givenUploadSuccessResult(final boolean result) {
+      when(stackTraceReportView.readUserDescription()).thenReturn(STRING_VALUE);
+      when(formatter.apply(STRING_VALUE, logRecord)).thenReturn(errorReport);
+      when(uploader.test(errorReport)).thenReturn(result);
+    }
+
+    @Test
+    void failureCaseShouldNotCloseReportView() {
+      givenUploadSuccessResult(false);
+
+      viewModel.submitAction();
+
+      verify(stackTraceReportView, never()).close();
+    }
   }
 
-  private void givenUploadSuccessResult(final boolean result) {
+
+  @Test
+  void preview() {
     when(stackTraceReportView.readUserDescription()).thenReturn(STRING_VALUE);
     when(formatter.apply(STRING_VALUE, logRecord)).thenReturn(errorReport);
-    when(uploader.test(errorReport)).thenReturn(result);
-  }
 
-  @Test
-  void submitActionFailureCase() {
-    givenUploadSuccessResult(false);
+    viewModel.previewAction();
 
-    viewModel.submitAction();
-
-    verify(stackTraceReportView, never()).close();
+    verify(preview).accept(errorReport);
   }
 
   @Test
