@@ -22,7 +22,7 @@ class StackTraceReportSwingView implements StackTraceReportView {
       "<html>Any data entered is optional, please use<br/>"
           + "this form to help TripleA support know<br/>"
           + "where and how the error occurred.<br/><br/>"
-          + "Uploaded data is publicly visible.";
+          + "Uploaded data will be used to create a publicly visible bug report";
 
   private final JFrame window = JFrameBuilder.builder()
       .title("Upload Error Report to TripleA Support")
