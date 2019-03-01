@@ -498,7 +498,12 @@ public class TripleAUnit extends Unit {
     final IntegerMap<Unit> hits = new IntegerMap<>();
     if (combatDamage > 0) {
       for (final Unit u : unitsThatWillGetAttributes) {
-        hits.put(u, combatDamage);
+        final int maxHitPoints = UnitAttachment.get(u.getType()).getHitPoints();
+        final int transferDamage = Math.min(combatDamage, maxHitPoints - 1);
+        if (transferDamage <= 0) {
+          continue;
+        }
+        hits.put(u, transferDamage);
       }
     }
     if (!hits.isEmpty()) {

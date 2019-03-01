@@ -92,8 +92,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   private final Collection<Unit> defendingWaitingToDie = new ArrayList<>();
   // keep track of all the units that die in the battle to show in the history window
   private final Collection<Unit> killed = new ArrayList<>();
-  // keep track of all the units that die in the battle to see if they change into another unit
-  private final List<Unit> killedWaitingForWhenHitpointsDamagedChangesInto = new ArrayList<>();
+  // keep track of all the units that die this round to see if they change into another unit
+  private final List<Unit> killedDuringCurrentRound = new ArrayList<>();
   // Our current execution state, we keep a stack of executables, this allows us to save our state and resume while in
   // the middle of a battle.
   private final ExecutionStack stack = new ExecutionStack();
@@ -2319,11 +2319,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     killed.addAll(dependent);
 
     // Set max damage for any units that will change into another unit
-    final List<Unit> unitsWaitingForWhenHitpointsDamagedChangeInto =
-        CollectionUtils.getMatches(killed, Matches.unitAtMaxHitPointDamageChangesInto());
-    killedWaitingForWhenHitpointsDamagedChangesInto.addAll(unitsWaitingForWhenHitpointsDamagedChangeInto);
     final IntegerMap<Unit> lethallyDamagedMap = new IntegerMap<>();
-    for (final Unit unit : unitsWaitingForWhenHitpointsDamagedChangeInto) {
+    for (final Unit unit : CollectionUtils.getMatches(killed, Matches.unitAtMaxHitPointDamageChangesInto())) {
       lethallyDamagedMap.put(unit, unit.getUnitAttachment().getHitPoints());
     }
     final Change lethallyDamagedChange = ChangeFactory.unitsHit(lethallyDamagedMap);
@@ -2332,6 +2329,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // Remove units
     final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
     this.killed.addAll(killed);
+    killedDuringCurrentRound.addAll(killed);
     final String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(killed));
     bridge.addChange(killedChange);
@@ -2384,18 +2382,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     defendingWaitingToDie.clear();
     attackingWaitingToDie.clear();
     damagedChangeInto(attacker, attackingUnits,
-        CollectionUtils.getMatches(killedWaitingForWhenHitpointsDamagedChangesInto, Matches.unitIsOwnedBy(attacker)),
-        bridge);
-    damagedChangeInto(defender, defendingUnits, CollectionUtils
-        .getMatches(killedWaitingForWhenHitpointsDamagedChangesInto, Matches.unitIsOwnedBy(attacker).negate()), bridge);
-    killedWaitingForWhenHitpointsDamagedChangesInto.clear();
+        CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker)), bridge);
+    damagedChangeInto(defender, defendingUnits,
+        CollectionUtils.getMatches(killedDuringCurrentRound, Matches.unitIsOwnedBy(attacker).negate()), bridge);
+    killedDuringCurrentRound.clear();
   }
 
   private void damagedChangeInto(final PlayerId player, final List<Unit> units, final List<Unit> killedUnits,
       final IDelegateBridge bridge) {
     final List<Unit> damagedUnits = CollectionUtils.getMatches(units,
         Matches.unitWhenHitPointsDamagedChangesInto().and(Matches.unitHasTakenSomeDamage()));
-    damagedUnits.addAll(killedUnits);
+    damagedUnits.addAll(CollectionUtils.getMatches(killedUnits, Matches.unitAtMaxHitPointDamageChangesInto()));
     final CompositeChange changes = new CompositeChange();
     final List<Unit> unitsToRemove = new ArrayList<>();
     final List<Unit> unitsToAdd = new ArrayList<>();
