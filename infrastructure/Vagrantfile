@@ -1,0 +1,24 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+
+   config.vm.define "lobby" do |lobby|
+     lobby.vm.network "forwarded_port", guest: 22, host: 2010, host_ip: "127.0.0.1", id: "ssh"
+     lobby.vm.network "forwarded_port", guest: 3304, host: 3304, host_ip: "127.0.0.1"
+   end
+
+   config.vm.define "lobby" do |lobby|
+     lobby.vm.network "forwarded_port", guest: 22, host: 2010, host_ip: "127.0.0.1", id: "ssh"
+     lobby.vm.network "forwarded_port", guest: 3304, host: 3304, host_ip: "127.0.0.1"
+   end
+
+  #config.vm.define "bot" do |bot|
+  #  bot.vm.network "forwarded_port", guest: 22, host: 2020, host_ip: "127.0.0.1", id: "ssh"
+  #end
+
+  config.vm.define "http_server" do |http_server|
+    http_server.vm.network "forwarded_port", guest: 22, host: 2030, host_ip: "127.0.0.1", id: "ssh"
+    http_server.vm.network "forwarded_port", guest: 443, host: 4430, host_ip: "127.0.0.1"
+  end
+end
+
+

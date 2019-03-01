@@ -1,0 +1,10 @@
+papertrail_token: ""
+lobby_postgres_user: "postgres"
+lobby_postgres_password: ""
+lobby_postgres_port: "5432"
+http_server_error_report_github_token: ""
+
+ansible_ssh_user: vagrant
+ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+ansible_host: 127.0.0.1
+ansible_python_interpreter: /usr/bin/python3

@@ -1,0 +1,18 @@
+[Unit]
+Description=TripleA Java Lobby
+Documentation=
+
+[Service]
+WorkingDirectory={{ lobby_folder }}
+User={{ lobby_user }}
+Group={{ lobby_user }}
+ExecStart={{ lobby_folder }}/run_server
+Restart=always
+Environment="PORT={{ lobby_port }}"
+Environment="POSTGRES_USER={{ lobby_postgres_user }}"
+Environment="POSTGRES_PASSWORD={{ lobby_postgres_password }}"
+Environment="POSTGRES_HOST={{ lobby_postgres_host }}"
+Environment="POSTGRES_PORT={{ lobby_postgres_port }}"
+
+[Install]
+WantedBy=multi-user.target

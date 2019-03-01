@@ -1,0 +1,5 @@
+.vagrant
+.ansible
+*-console.log
+ansible/*.retry
+**/*.jar

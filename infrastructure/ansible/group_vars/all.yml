@@ -1,0 +1,8 @@
+triplea_version: "1.10.dev"
+java_open_jdk_version_major: "11"
+
+lobby_port: 3304
+bot_lobby_port: "{{ lobby_port }}"
+
+http_server_port: "4567"
+nginx_http_server_port: "{{ http_server_port }}"

@@ -1,0 +1,19 @@
+lobby_user: lobby
+
+lobby_folder: "/home/{{ lobby_user }}"
+
+lobby_jar: "triplea-lobby-{{ triplea_version }}.jar"
+
+lobby_jvm_starting_memory: 256M
+
+lobby_jvm_max_memory: 256M
+
+lobby_port: "3304"
+
+lobby_postgres_user: "postgres"
+
+lobby_postgres_password: ""
+
+lobby_postgres_host: "10.0.2.2"
+
+lobby_postgres_port: "5432"

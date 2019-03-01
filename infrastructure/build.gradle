@@ -1,0 +1,11 @@
+task portableInstaller(type: Zip, group: 'release') {
+    from 'ansible'
+    include '*'
+    archiveName 'ansible.zip'
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}
