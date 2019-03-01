@@ -74,15 +74,15 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
         + Optional.ofNullable(logRecord.getMessage())
             .map(msg -> "## Log Message\n" + msg + "\n\n")
             .orElse("")
-        + Optional.ofNullable(logRecord.getThrown())
-            .map(StackTraceErrorReportFormatter::throwableToString)
-            .orElse("")
         + "## TripleA Version\n"
         + ClientContext.engineVersion().toStringFull() + "\n\n"
         + "## Java Version\n"
         + SystemProperties.getJavaVersion() + "\n\n"
         + "## Operating System\n"
-        + SystemProperties.getOperatingSystem();
+        + SystemProperties.getOperatingSystem() + "\n\n"
+        + Optional.ofNullable(logRecord.getThrown())
+            .map(StackTraceErrorReportFormatter::throwableToString)
+            .orElse("");
   }
 
   private static String throwableToString(final Throwable e) {
