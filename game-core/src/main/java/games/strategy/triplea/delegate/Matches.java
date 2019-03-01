@@ -1929,6 +1929,13 @@ public final class Matches {
     return u -> !UnitAttachment.get(u.getType()).getWhenHitPointsDamagedChangesInto().isEmpty();
   }
 
+  static Predicate<Unit> unitAtMaxHitPointDamageChangesInto() {
+    return u -> {
+      final UnitAttachment ua = UnitAttachment.get(u.getType());
+      return ua.getWhenHitPointsDamagedChangesInto().containsKey(ua.getHitPoints());
+    };
+  }
+
   static Predicate<Unit> unitWhenHitPointsRepairedChangesInto() {
     return u -> !UnitAttachment.get(u.getType()).getWhenHitPointsRepairedChangesInto().isEmpty();
   }
