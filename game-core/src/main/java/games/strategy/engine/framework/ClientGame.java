@@ -108,7 +108,7 @@ public class ClientGame extends AbstractGame {
         ClientGame.this.shutDown();
       }
     };
-    channelMessenger.registerChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+    messengers.registerChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
     final IGameStepAdvancer gameStepAdvancer = (stepName, player) -> {
       if (isGameOver) {
         return;
@@ -146,14 +146,14 @@ public class ClientGame extends AbstractGame {
       final IGamePlayer gp = this.gamePlayers.get(player);
       if (gp == null) {
         throw new IllegalStateException(
-            "Game player not found. Player:" + player + " on:" + channelMessenger.getLocalNode());
+            "Game player not found. Player:" + player + " on:" + messengers.getLocalNode());
       }
       gp.start(stepName);
     };
-    remoteMessenger.registerRemote(gameStepAdvancer, getRemoteStepAdvancerName(channelMessenger.getLocalNode()));
+    messengers.registerRemote(gameStepAdvancer, getRemoteStepAdvancerName(messengers.getLocalNode()));
     for (final PlayerId player : this.gamePlayers.keySet()) {
       final IRemoteRandom remoteRandom = new RemoteRandom(this);
-      remoteMessenger.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
+      messengers.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
     }
   }
 
@@ -172,8 +172,8 @@ public class ClientGame extends AbstractGame {
     }
     isGameOver = true;
     try {
-      channelMessenger.unregisterChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
-      remoteMessenger.unregisterRemote(getRemoteStepAdvancerName(channelMessenger.getLocalNode()));
+      messengers.unregisterChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+      messengers.unregisterRemote(getRemoteStepAdvancerName(messengers.getLocalNode()));
       vault.shutDown();
       for (final IGamePlayer gp : gamePlayers.values()) {
         final PlayerId player;
@@ -184,8 +184,8 @@ public class ClientGame extends AbstractGame {
           gameData.releaseReadLock();
         }
         gamePlayers.put(player, gp);
-        remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getPlayerId(), gameData));
-        remoteMessenger.unregisterRemote(ServerGame.getRemoteRandomName(player));
+        messengers.unregisterRemote(ServerGame.getRemoteName(gp.getPlayerId(), gameData));
+        messengers.unregisterRemote(ServerGame.getRemoteRandomName(player));
       }
     } catch (final RuntimeException e) {
       log.log(Level.SEVERE, "Failed to shut down client game", e);
@@ -205,7 +205,7 @@ public class ClientGame extends AbstractGame {
 
   @Override
   public void saveGame(final File f) {
-    final IServerRemote server = (IServerRemote) remoteMessenger.getRemote(ServerGame.SERVER_REMOTE);
+    final IServerRemote server = (IServerRemote) messengers.getRemote(ServerGame.SERVER_REMOTE);
     final byte[] bytes = server.getSavedGame();
     try (FileOutputStream fout = new FileOutputStream(f)) {
       fout.write(bytes);

@@ -140,11 +140,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     nioSocket.send(socketChannel, new MessageHeader(to, node, msg));
   }
 
-  @Override
-  public void broadcast(final Serializable msg) {
-    final MessageHeader header = new MessageHeader(node, msg);
-    forwardBroadcast(header);
-  }
 
   @Override
   public @Nullable String getPlayerMac(final String name) {

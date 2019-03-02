@@ -27,9 +27,6 @@ public class HeadlessServerMessenger implements IServerMessenger {
   public void send(final Serializable msg, final INode to) {}
 
   @Override
-  public void broadcast(final Serializable msg) {}
-
-  @Override
   public void addMessageListener(final IMessageListener listener) {}
 
   @Override

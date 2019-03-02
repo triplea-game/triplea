@@ -34,7 +34,7 @@ final class ModeratorController implements IModeratorController {
   private static final String UNKNOWN_HASHED_MAC_ADDRESS = MacFinder.getHashedMacAddress(new byte[6]);
 
   private final IServerMessenger serverMessenger;
-  private final Messengers allMessengers;
+  private final Messengers messengers;
   private final Database database;
 
   ModeratorController(
@@ -42,7 +42,7 @@ final class ModeratorController implements IModeratorController {
       final Messengers messengers,
       final LobbyConfiguration lobbyConfiguration) {
     this.serverMessenger = serverMessenger;
-    allMessengers = messengers;
+    this.messengers = messengers;
     database = new Database(lobbyConfiguration);
   }
 
@@ -215,7 +215,7 @@ final class ModeratorController implements IModeratorController {
 
   private IRemoteHostUtils getRemoteHostUtilsForNode(final INode node) {
     final RemoteName remoteName = IRemoteHostUtils.Companion.newRemoteNameForNode(node);
-    return (IRemoteHostUtils) allMessengers.getRemoteMessenger().getRemote(remoteName);
+    return (IRemoteHostUtils) messengers.getRemote(remoteName);
   }
 
   @Override

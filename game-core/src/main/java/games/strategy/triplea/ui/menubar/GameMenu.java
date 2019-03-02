@@ -182,7 +182,7 @@ final class GameMenu extends JMenu {
   private void addShowDiceStats() {
     add(SwingAction.of("Show Dice Stats", e -> {
       final IRandomStats randomStats =
-          (IRandomStats) game.getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
+          (IRandomStats) game.getMessengers().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
       final RandomStatsDetails stats = randomStats.getRandomStats(gameData.getDiceSides());
       JOptionPane.showMessageDialog(frame, new JScrollPane(stats.getAllStats()), "Random Stats",
           JOptionPane.INFORMATION_MESSAGE);

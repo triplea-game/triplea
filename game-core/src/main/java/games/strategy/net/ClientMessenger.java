@@ -147,12 +147,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public synchronized void broadcast(final Serializable msg) {
-    final MessageHeader header = new MessageHeader(node, msg);
-    nioSocket.send(socketChannel, header);
-  }
-
-  @Override
   public void addMessageListener(final IMessageListener listener) {
     listeners.add(listener);
   }
@@ -249,6 +243,16 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   @Override
   public InetSocketAddress getRemoteServerSocketAddress() {
     return (InetSocketAddress) socketChannel.socket().getRemoteSocketAddress();
+  }
+
+  @Override
+  public void addConnectionChangeListener(final IConnectionChangeListener listener) {
+
+  }
+
+  @Override
+  public void removeConnectionChangeListener(final IConnectionChangeListener listener) {
+
   }
 
   private void bareBonesSendMessageToServer(final String methodName, final Object... messages) {

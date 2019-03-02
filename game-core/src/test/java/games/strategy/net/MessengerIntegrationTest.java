@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,7 +17,6 @@ import javax.annotation.concurrent.GuardedBy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.triplea.java.Interruptibles;
 import org.triplea.test.common.Integration;
 
 @Integration
@@ -109,28 +107,6 @@ public class MessengerIntegrationTest {
   }
 
   @Test
-  public void testServerBroadcast() {
-    final String message = "Hello";
-    serverMessenger.broadcast(message);
-    assertEquals(message, client1MessageListener.getLastMessage());
-    assertEquals(client1MessageListener.getLastSender(), serverMessenger.getLocalNode());
-    assertEquals(message, client2MessageListener.getLastMessage());
-    assertEquals(client2MessageListener.getLastSender(), serverMessenger.getLocalNode());
-    assertEquals(0, serverMessageListener.getMessageCount());
-  }
-
-  @Test
-  public void testClientBroadcast() {
-    final String message = "Hello";
-    client1Messenger.broadcast(message);
-    assertEquals(message, client2MessageListener.getLastMessage());
-    assertEquals(client2MessageListener.getLastSender(), client1Messenger.getLocalNode());
-    assertEquals(message, serverMessageListener.getLastMessage());
-    assertEquals(serverMessageListener.getLastSender(), client1Messenger.getLocalNode());
-    assertEquals(0, client1MessageListener.getMessageCount());
-  }
-
-  @Test
   public void testMultipleServer() {
     for (int i = 0; i < 100; i++) {
       serverMessenger.send(i, client1Messenger.getLocalNode());
@@ -147,29 +123,6 @@ public class MessengerIntegrationTest {
     }
     for (int i = 0; i < 100; i++) {
       client2MessageListener.clearLastMessage();
-    }
-  }
-
-  @Test
-  public void testMultipleMessages() throws Exception {
-    final CountDownLatch workersReadyLatch = new CountDownLatch(3);
-    final Thread t1 = new Thread(new MultipleMessageSender(serverMessenger, workersReadyLatch));
-    final Thread t2 = new Thread(new MultipleMessageSender(client1Messenger, workersReadyLatch));
-    final Thread t3 = new Thread(new MultipleMessageSender(client2Messenger, workersReadyLatch));
-    t1.start();
-    t2.start();
-    t3.start();
-    t1.join();
-    t2.join();
-    t3.join();
-    for (int i = 0; i < 200; i++) {
-      client1MessageListener.clearLastMessage();
-    }
-    for (int i = 0; i < 200; i++) {
-      client2MessageListener.clearLastMessage();
-    }
-    for (int i = 0; i < 200; i++) {
-      serverMessageListener.clearLastMessage();
     }
   }
 
@@ -208,30 +161,6 @@ public class MessengerIntegrationTest {
     client1Messenger.addErrorListener(reason -> closed.set(true));
     serverMessenger.removeConnection(client1Messenger.getLocalNode());
     await().untilTrue(closed);
-  }
-
-  @Test
-  public void testManyClients() throws Exception {
-    final int count = 5;
-    final List<ClientMessenger> clients = new ArrayList<>();
-    final List<MessageListener> listeners = new ArrayList<>();
-    for (int i = 0; i < count; i++) {
-      final String name = "newClient" + i;
-      final String mac = MacFinder.getHashedMacAddress();
-      final ClientMessenger messenger = new ClientMessenger("localhost", serverPort, name, mac);
-      final MessageListener listener = new MessageListener();
-      messenger.addMessageListener(listener);
-      clients.add(messenger);
-      listeners.add(listener);
-    }
-
-    serverMessenger.broadcast("TEST");
-    for (final MessageListener listener : listeners) {
-      assertEquals("TEST", listener.getLastMessage());
-    }
-    for (int i = 0; i < count; i++) {
-      clients.get(i).shutDown();
-    }
   }
 
   private static class MessageListener implements IMessageListener {
@@ -288,25 +217,6 @@ public class MessengerIntegrationTest {
     public int getMessageCount() {
       synchronized (lock) {
         return messages.size();
-      }
-    }
-  }
-
-  private static final class MultipleMessageSender implements Runnable {
-    private final IMessenger messenger;
-    private final CountDownLatch workersReadyLatch;
-
-    MultipleMessageSender(final IMessenger messenger, final CountDownLatch workersReadyLatch) {
-      this.messenger = messenger;
-      this.workersReadyLatch = workersReadyLatch;
-    }
-
-    @Override
-    public void run() {
-      workersReadyLatch.countDown();
-      Interruptibles.await(workersReadyLatch);
-      for (int i = 0; i < 100; i++) {
-        messenger.broadcast(i);
       }
     }
   }

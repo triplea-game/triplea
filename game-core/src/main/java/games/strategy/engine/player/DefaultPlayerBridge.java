@@ -82,7 +82,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
           log.log(Level.SEVERE, errorMessage, e);
           throw new IllegalStateException(errorMessage, e);
         }
-        return getRemoteThatChecksForGameOver(game.getRemoteMessenger().getRemote(remoteName));
+        return getRemoteThatChecksForGameOver(game.getMessengers().getRemote(remoteName));
       } finally {
         game.getData().releaseReadLock();
       }
@@ -112,7 +112,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
           return null;
         }
         return getRemoteThatChecksForGameOver(
-            game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
+            game.getMessengers().getRemote(ServerGame.getRemoteName(delegate)));
       } finally {
         game.getData().releaseReadLock();
       }

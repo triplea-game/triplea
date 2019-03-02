@@ -17,11 +17,6 @@ public interface IMessenger {
   void send(Serializable msg, INode to);
 
   /**
-   * Send a message to all nodes.
-   */
-  void broadcast(Serializable msg);
-
-  /**
    * Listen for messages.
    */
   void addMessageListener(IMessageListener listener);
@@ -69,4 +64,14 @@ public interface IMessenger {
    * than the actual port we use.
    */
   InetSocketAddress getRemoteServerSocketAddress();
+
+  /**
+   * Add a listener for change in connection status.
+   */
+  void addConnectionChangeListener(IConnectionChangeListener listener);
+
+  /**
+   * Remove a listener for change in connection status.
+   */
+  void removeConnectionChangeListener(IConnectionChangeListener listener);
 }
