@@ -213,7 +213,7 @@ public class Chat {
     // and run any queued messages. Queued messages may be ignored if the server version is incorrect.
     // this all seems a lot more involved than it needs to be.
     final IChatController controller = messengers.getRemoteChatController(chatName);
-    messengers.addChatChanelSubscriber(chatChannelSubscriber, chatChannelName);
+    messengers.addChatChannelSubscriber(chatChannelSubscriber, chatChannelName);
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
     final Map<INode, Tag> chatters = init.getFirst();
     nodes = new ArrayList<>(chatters.keySet());

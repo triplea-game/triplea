@@ -51,7 +51,7 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
         .getRemote(ChatController.getChatControlerRemoteName(chatName));
   }
 
-  public void addChatChanelSubscriber(final IChatChannel chatChannelSubscriber, final String chatChannelName) {
+  public void addChatChannelSubscriber(final IChatChannel chatChannelSubscriber, final String chatChannelName) {
     channelMessenger.registerChannelSubscriber(chatChannelSubscriber,
         new RemoteName(chatChannelName, IChatChannel.class));
   }
