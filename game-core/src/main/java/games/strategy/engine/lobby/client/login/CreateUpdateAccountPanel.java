@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import org.triplea.java.StringUtils;
 import org.triplea.swing.SwingComponents;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -148,7 +149,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
       passwordField.setText("");
       passwordConfirmField.setText("");
       return;
-    } else if (!org.triplea.java.Util.isMailValid(emailField.getText())) {
+    } else if (!StringUtils.isMailValid(emailField.getText())) {
       JOptionPane.showMessageDialog(this, "You must enter a valid email", "No Email", JOptionPane.ERROR_MESSAGE);
       return;
     } else if (!DBUser.isValidUserName(userNameField.getText())) {
