@@ -13,7 +13,8 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class MessageHeader {
+public class MessageHeader implements Serializable {
+  private static final long serialVersionUID = -2854966142411168305L;
   // to can be null if we are a broadcast
   @Nullable
   private final INode to;
