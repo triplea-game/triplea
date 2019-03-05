@@ -12,6 +12,7 @@ import org.triplea.java.Interruptibles;
 import games.strategy.net.IConnectionLogin;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
+import lombok.Getter;
 import lombok.extern.java.Log;
 
 /**
@@ -29,17 +30,26 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   private final CountDownLatch showLatch = new CountDownLatch(1);
   private final CountDownLatch doneShowLatch = new CountDownLatch(1);
   private Step step = Step.READ_CHALLENGE;
+  @Getter
   private String localName;
+  @Getter
   private String serverName;
+  @Getter
   private InetSocketAddress networkVisibleAddress;
+  @Getter
   private InetSocketAddress serverLocalAddress;
   private Map<String, String> challengeProperties;
   private Map<String, String> challengeResponse;
   private volatile boolean isClosed = false;
+  @Getter
   private volatile String errorMessage;
 
-  public ClientQuarantineConversation(final IConnectionLogin login, final SocketChannel channel, final NioSocket socket,
-      final String localName, final String mac) {
+  public ClientQuarantineConversation(
+      final IConnectionLogin login,
+      final SocketChannel channel,
+      final NioSocket socket,
+      final String localName,
+      final String mac) {
     this.login = login;
     this.localName = localName;
     this.socket = socket;
@@ -48,18 +58,6 @@ public class ClientQuarantineConversation extends QuarantineConversation {
     send(this.localName);
     // Send the mac address
     send(mac);
-  }
-
-  public String getLocalName() {
-    return localName;
-  }
-
-  public String getErrorMessage() {
-    return errorMessage;
-  }
-
-  public String getServerName() {
-    return serverName;
   }
 
   /**
@@ -85,12 +83,12 @@ public class ClientQuarantineConversation extends QuarantineConversation {
 
   @Override
   @SuppressWarnings("unchecked")
-  public Action message(final Object o) {
+  public Action message(final Serializable serializable) {
     try {
       switch (step) {
         case READ_CHALLENGE:
           // read name, send challenge
-          final Map<String, String> challenge = (Map<String, String>) o;
+          final Map<String, String> challenge = (Map<String, String>) serializable;
           if (challenge != null) {
             challengeProperties = challenge;
             showLatch.countDown();
@@ -106,8 +104,8 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           step = Step.READ_ERROR;
           return Action.NONE;
         case READ_ERROR:
-          if (o != null) {
-            errorMessage = (String) o;
+          if (serializable != null) {
+            errorMessage = (String) serializable;
             // acknowledge the error
             send(null);
             return Action.TERMINATE;
@@ -115,14 +113,14 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           step = Step.READ_NAMES;
           return Action.NONE;
         case READ_NAMES:
-          final String[] strings = ((String[]) o);
+          final String[] strings = ((String[]) serializable);
           localName = strings[0];
           serverName = strings[1];
           step = Step.READ_ADDRESS;
           return Action.NONE;
         case READ_ADDRESS:
-          // this is the adress that others see us as
-          final InetSocketAddress[] address = (InetSocketAddress[]) o;
+          // this is the address that others see us as
+          final InetSocketAddress[] address = (InetSocketAddress[]) serializable;
           // this is the address the server thinks he is
           networkVisibleAddress = address[0];
           serverLocalAddress = address[1];
@@ -143,14 +141,6 @@ public class ClientQuarantineConversation extends QuarantineConversation {
     // this messenger is quarantined, so to and from dont matter
     final MessageHeader header = new MessageHeader(Node.NULL_NODE, Node.NULL_NODE, object);
     socket.send(channel, header);
-  }
-
-  public InetSocketAddress getNetworkVisibleSocketAdress() {
-    return networkVisibleAddress;
-  }
-
-  public InetSocketAddress getServerLocalAddress() {
-    return serverLocalAddress;
   }
 
   @Override

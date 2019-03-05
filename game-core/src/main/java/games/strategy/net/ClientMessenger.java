@@ -220,7 +220,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     // so all node ids are defined as what the server sees the address as
     // we are still in the decode thread at this point, set our nodes now
     // before the socket is unquarantined
-    node = new Node(conversation.getLocalName(), conversation.getNetworkVisibleSocketAdress());
+    node = new Node(conversation.getLocalName(), conversation.getNetworkVisibleAddress());
     serverNode = new Node(conversation.getServerName(), conversation.getServerLocalAddress());
     initLatch.countDown();
   }
