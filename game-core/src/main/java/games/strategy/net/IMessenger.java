@@ -17,11 +17,6 @@ public interface IMessenger {
   void send(Serializable msg, INode to);
 
   /**
-   * Send a message to all nodes.
-   */
-  void broadcast(Serializable msg);
-
-  /**
    * Listen for messages.
    */
   void addMessageListener(IMessageListener listener);

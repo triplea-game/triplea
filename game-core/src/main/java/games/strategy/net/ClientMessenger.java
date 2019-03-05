@@ -104,7 +104,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     }
     final Socket socket = socketChannel.socket();
     socket.setKeepAlive(true);
-    nioSocket = new NioSocket(streamFact, this, name);
+    nioSocket = new NioSocket(streamFact, this);
     final ClientQuarantineConversation conversation =
         new ClientQuarantineConversation(login, socketChannel, nioSocket, name, mac);
     nioSocket.add(socketChannel, conversation);
@@ -143,12 +143,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   public synchronized void send(final Serializable msg, final INode to) {
     // use our nodes address, this is our network visible address
     final MessageHeader header = new MessageHeader(to, node, msg);
-    nioSocket.send(socketChannel, header);
-  }
-
-  @Override
-  public synchronized void broadcast(final Serializable msg) {
-    final MessageHeader header = new MessageHeader(node, msg);
     nioSocket.send(socketChannel, header);
   }
 

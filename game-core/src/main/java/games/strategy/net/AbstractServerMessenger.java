@@ -77,7 +77,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     socketChannel.socket().setReuseAddress(true);
     socketChannel.socket().bind(new InetSocketAddress(port), 10);
     final int boundPort = socketChannel.socket().getLocalPort();
-    nioSocket = new NioSocket(objectStreamFactory, this, "Server");
+    nioSocket = new NioSocket(objectStreamFactory, this);
     acceptorSelector = Selector.open();
     node = new Node(name, IpFinder.findInetAddress(), boundPort);
     new Thread(new ConnectionHandler(), "Server Messenger Connection Handler").start();
@@ -138,12 +138,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
       return;
     }
     nioSocket.send(socketChannel, new MessageHeader(to, node, msg));
-  }
-
-  @Override
-  public void broadcast(final Serializable msg) {
-    final MessageHeader header = new MessageHeader(node, msg);
-    forwardBroadcast(header);
   }
 
   @Override

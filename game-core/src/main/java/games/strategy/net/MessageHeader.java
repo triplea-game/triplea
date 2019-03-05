@@ -15,10 +15,6 @@ public class MessageHeader {
   /**
    * Creates a broadcast message.
    */
-  public MessageHeader(final INode from, final Serializable message) {
-    this(null, from, message);
-  }
-
   public MessageHeader(final INode to, final INode from, final Serializable message) {
     // for can be null if we are a broadcast
     this.to = to;

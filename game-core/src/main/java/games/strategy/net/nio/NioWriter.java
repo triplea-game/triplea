@@ -35,7 +35,7 @@ class NioWriter {
   private long totalBytes = 0;
   private volatile boolean running = true;
 
-  NioWriter(final ErrorReporter reporter, final String threadSuffix) {
+  NioWriter(final ErrorReporter reporter) {
     errorReporter = reporter;
     try {
       selector = Selector.open();
@@ -43,7 +43,7 @@ class NioWriter {
       log.log(Level.SEVERE, "Could not create Selector", e);
       throw new IllegalStateException(e);
     }
-    new Thread(this::loop, "NIO Writer - " + threadSuffix).start();
+    new Thread(this::loop, "NIO Writer").start();
   }
 
   void shutDown() {
@@ -135,7 +135,7 @@ class NioWriter {
   /**
    * Remove the data for this channel.
    */
-  void closed(final SocketChannel channel) {
+  void close(final SocketChannel channel) {
     removeAll(channel);
   }
 

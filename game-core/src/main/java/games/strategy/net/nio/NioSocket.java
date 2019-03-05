@@ -26,11 +26,11 @@ public class NioSocket implements ErrorReporter {
   private final NioReader reader;
   private final NioSocketListener listener;
 
-  public NioSocket(final IObjectStreamFactory factory, final NioSocketListener listener, final String name) {
+  public NioSocket(final IObjectStreamFactory factory, final NioSocketListener listener) {
     this.listener = listener;
-    writer = new NioWriter(this, name);
-    reader = new NioReader(this, name);
-    decoder = new Decoder(this, reader, this, factory, name);
+    writer = new NioWriter(this);
+    reader = new NioReader(this);
+    decoder = new Decoder(this, reader, this, factory);
     encoder = new Encoder(this, writer, factory);
   }
 
@@ -107,9 +107,9 @@ public class NioSocket implements ErrorReporter {
     } catch (final IOException e1) {
       log.log(Level.FINE, "error closing channel", e1);
     }
-    decoder.closed(channel);
-    writer.closed(channel);
-    reader.closed(channel);
+    decoder.close(channel);
+    writer.close(channel);
+    reader.close(channel);
   }
 
   void messageReceived(final MessageHeader header, final SocketChannel channel) {

@@ -3,8 +3,8 @@ package games.strategy.net.nio;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.concurrent.atomic.AtomicInteger;
 
+import lombok.Getter;
 import lombok.extern.java.Log;
 
 /**
@@ -16,19 +16,19 @@ import lombok.extern.java.Log;
  */
 @Log
 class SocketReadData {
-  public static final int MAX_MESSAGE_SIZE = 1000 * 1000 * 10;
+  static final int MAX_MESSAGE_SIZE = 1000 * 1000 * 10;
   // as a sanity check to make sure we are talking to another triplea instance
   // that the upper bits of the packet size we send is 0x9b
-  public static final int MAGIC = 0x9b000000;
-  private static final AtomicInteger counter = new AtomicInteger();
+  static final int MAGIC = 0x9b000000;
 
   private int targetSize = -1;
   // we read into here the first four bytes to find out size
   private ByteBuffer sizeBuffer;
   // we read into here after knowing out size
   private ByteBuffer contentBuffer;
+  @Getter
   private final SocketChannel channel;
-  private final int number = counter.incrementAndGet();
+  @Getter
   private int readCalls;
 
   SocketReadData(final SocketChannel channel) {
@@ -84,10 +84,6 @@ class SocketReadData {
     return !contentBuffer.hasRemaining();
   }
 
-  public SocketChannel getChannel() {
-    return channel;
-  }
-
   /**
    * Get the data as a byte[].
    * This method can only be called once.
@@ -103,14 +99,5 @@ class SocketReadData {
   public int size() {
     // add 4 to count the bytes used to send our size
     return targetSize + 4;
-  }
-
-  public int getReadCalls() {
-    return readCalls;
-  }
-
-  @Override
-  public String toString() {
-    return "<id:" + number + " size:" + targetSize + ">";
   }
 }

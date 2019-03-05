@@ -35,7 +35,7 @@ class NioReader {
   private final List<SocketChannel> socketsToAdd = new ArrayList<>();
   private long totalBytes;
 
-  NioReader(final ErrorReporter reporter, final String threadSuffix) {
+  NioReader(final ErrorReporter reporter) {
     errorReporter = reporter;
     try {
       selector = Selector.open();
@@ -43,7 +43,7 @@ class NioReader {
       log.log(Level.SEVERE, "Could not create Selector", e);
       throw new IllegalStateException(e);
     }
-    new Thread(this::loop, "NIO Reader - " + threadSuffix).start();
+    new Thread(this::loop, "NIO Reader").start();
   }
 
   void shutDown() {
@@ -102,17 +102,7 @@ class NioReader {
               if (done) {
                 totalBytes += packet.size();
                 if (log.isLoggable(Level.FINE)) {
-                  final Socket s = channel.socket();
-                  SocketAddress sa = null;
-                  if (s != null) {
-                    sa = s.getRemoteSocketAddress();
-                  }
-                  String remote = "null";
-                  if (sa != null) {
-                    remote = sa.toString();
-                  }
-                  log.fine(" done reading from:" + remote + " size:" + packet.size() + " readCalls;"
-                      + packet.getReadCalls() + " total:" + totalBytes);
+                  logNetwork(channel, packet);
                 }
                 enque(packet);
               }
@@ -134,6 +124,20 @@ class NioReader {
     }
   }
 
+  private void logNetwork(final SocketChannel channel, final SocketReadData packet) {
+    final Socket s = channel.socket();
+    SocketAddress sa = null;
+    if (s != null) {
+      sa = s.getRemoteSocketAddress();
+    }
+    String remote = "null";
+    if (sa != null) {
+      remote = sa.toString();
+    }
+    log.fine(" done reading from:" + remote + " size:" + packet.size() + " readCalls;"
+        + packet.getReadCalls() + " total:" + totalBytes);
+  }
+
   private void enque(final SocketReadData packet) {
     reading.remove(packet.getChannel());
     outputQueue.offer(packet);
@@ -152,7 +156,7 @@ class NioReader {
     return outputQueue.take();
   }
 
-  void closed(final SocketChannel channel) {
+  void close(final SocketChannel channel) {
     reading.remove(channel);
   }
 }
