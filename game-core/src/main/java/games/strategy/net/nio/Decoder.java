@@ -41,12 +41,12 @@ class Decoder {
   private final Thread thread;
 
   Decoder(final NioSocket nioSocket, final NioReader reader, final ErrorReporter reporter,
-      final IObjectStreamFactory objectStreamFactory, final String threadSuffix) {
+      final IObjectStreamFactory objectStreamFactory) {
     this.reader = reader;
     errorReporter = reporter;
     this.objectStreamFactory = objectStreamFactory;
     this.nioSocket = nioSocket;
-    thread = new Thread(this::loop, "Decoder -" + threadSuffix);
+    thread = new Thread(this::loop, "Decoder");
     thread.start();
   }
 
@@ -190,7 +190,7 @@ class Decoder {
     quarantine.put(channel, conversation);
   }
 
-  void closed(final SocketChannel channel) {
+  void close(final SocketChannel channel) {
     // remove if it exists
     final QuarantineConversation conversation = quarantine.remove(channel);
     if (conversation != null) {

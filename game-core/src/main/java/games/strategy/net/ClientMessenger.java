@@ -104,7 +104,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     }
     final Socket socket = socketChannel.socket();
     socket.setKeepAlive(true);
-    nioSocket = new NioSocket(streamFact, this, name);
+    nioSocket = new NioSocket(streamFact, this);
     final ClientQuarantineConversation conversation =
         new ClientQuarantineConversation(login, socketChannel, nioSocket, name, mac);
     nioSocket.add(socketChannel, conversation);
@@ -147,12 +147,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public synchronized void broadcast(final Serializable msg) {
-    final MessageHeader header = new MessageHeader(node, msg);
-    nioSocket.send(socketChannel, header);
-  }
-
-  @Override
   public void addMessageListener(final IMessageListener listener) {
     listeners.add(listener);
   }
@@ -187,7 +181,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
 
   @Override
   public void messageReceived(final MessageHeader msg, final SocketChannel channel) {
-    if (msg.getFor() != null && !msg.getFor().equals(node)) {
+    if (msg.getTo() != null && !msg.getTo().equals(node)) {
       throw new IllegalStateException("msg not for me:" + msg);
     }
     for (final IMessageListener listener : listeners) {
