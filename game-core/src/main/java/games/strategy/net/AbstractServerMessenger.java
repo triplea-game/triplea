@@ -332,10 +332,10 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
         }
       }
     }
-    if (msg.getFor() == null) {
+    if (msg.getTo() == null) {
       forwardBroadcast(msg);
       notifyListeners(msg);
-    } else if (msg.getFor().equals(node)) {
+    } else if (msg.getTo().equals(node)) {
       notifyListeners(msg);
     } else {
       forward(msg);
@@ -451,9 +451,9 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     if (shutdown) {
       return;
     }
-    final SocketChannel socketChannel = nodeToChannel.get(msg.getFor());
+    final SocketChannel socketChannel = nodeToChannel.get(msg.getTo());
     if (socketChannel == null) {
-      throw new IllegalStateException("No channel for:" + msg.getFor());
+      throw new IllegalStateException("No channel for:" + msg.getTo());
     }
     nioSocket.send(socketChannel, msg);
   }
