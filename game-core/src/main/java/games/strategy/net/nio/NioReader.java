@@ -1,8 +1,6 @@
 package games.strategy.net.nio;
 
 import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
@@ -33,9 +31,8 @@ class NioReader {
   private final Selector selector;
   private final Object socketsToAddMutex = new Object();
   private final List<SocketChannel> socketsToAdd = new ArrayList<>();
-  private long totalBytes;
 
-  NioReader(final ErrorReporter reporter, final String threadSuffix) {
+  NioReader(final ErrorReporter reporter) {
     errorReporter = reporter;
     try {
       selector = Selector.open();
@@ -43,7 +40,7 @@ class NioReader {
       log.log(Level.SEVERE, "Could not create Selector", e);
       throw new IllegalStateException(e);
     }
-    new Thread(this::loop, "NIO Reader - " + threadSuffix).start();
+    new Thread(this::loop, "NIO Reader").start();
   }
 
   void shutDown() {
@@ -100,20 +97,6 @@ class NioReader {
             try {
               final boolean done = packet.read(channel);
               if (done) {
-                totalBytes += packet.size();
-                if (log.isLoggable(Level.FINE)) {
-                  final Socket s = channel.socket();
-                  SocketAddress sa = null;
-                  if (s != null) {
-                    sa = s.getRemoteSocketAddress();
-                  }
-                  String remote = "null";
-                  if (sa != null) {
-                    remote = sa.toString();
-                  }
-                  log.fine(" done reading from:" + remote + " size:" + packet.size() + " readCalls;"
-                      + packet.getReadCalls() + " total:" + totalBytes);
-                }
                 enque(packet);
               }
             } catch (final Exception e) {
@@ -152,7 +135,7 @@ class NioReader {
     return outputQueue.take();
   }
 
-  void closed(final SocketChannel channel) {
+  void close(final SocketChannel channel) {
     reading.remove(channel);
   }
 }

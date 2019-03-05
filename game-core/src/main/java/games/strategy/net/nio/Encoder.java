@@ -50,18 +50,18 @@ class Encoder {
       throw new IllegalArgumentException("null from");
     }
     // a broadcast
-    if (header.getFor() == null) {
+    if (header.getTo() == null) {
       out.write(1);
     } else {
       // to a node
       out.write(0);
       // the common case, skip writing the address
-      if (header.getFor().equals(nioSocket.getRemoteNode(remote))) {
+      if (header.getTo().equals(nioSocket.getRemoteNode(remote))) {
         out.write(1);
       } else {
         // this message is going to be relayed, write the destination
         out.write(0);
-        ((Node) header.getFor()).writeExternal(out);
+        ((Node) header.getTo()).writeExternal(out);
       }
     }
     if (header.getFrom().equals(nioSocket.getLocalNode())) {

@@ -20,8 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.test.common.Integration;
 
 @Integration
-public class MessengerIntegrationTest {
-  private int serverPort = -1;
+class MessengerIntegrationTest {
   private IServerMessenger serverMessenger;
   private IMessenger client1Messenger;
   private IMessenger client2Messenger;
@@ -30,11 +29,11 @@ public class MessengerIntegrationTest {
   private final MessageListener client2MessageListener = new MessageListener();
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     serverMessenger = new TestServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.addMessageListener(serverMessageListener);
-    serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
+    final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();
     client1Messenger = new ClientMessenger("localhost", serverPort, "client1", mac);
     client1Messenger.addMessageListener(client1MessageListener);
@@ -47,14 +46,14 @@ public class MessengerIntegrationTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     MessengerTestUtils.shutDownQuietly(serverMessenger);
     MessengerTestUtils.shutDownQuietly(client1Messenger);
     MessengerTestUtils.shutDownQuietly(client2Messenger);
   }
 
   @Test
-  public void testServerSend() {
+  void testServerSend() {
     final String message = "Hello";
     serverMessenger.send(message, client1Messenger.getLocalNode());
     assertEquals(message, client1MessageListener.getLastMessage());
@@ -63,7 +62,7 @@ public class MessengerIntegrationTest {
   }
 
   @Test
-  public void testServerSendToClient2() {
+  void testServerSendToClient2() {
     final String message = "Hello";
     serverMessenger.send(message, client2Messenger.getLocalNode());
     assertEquals(message, client2MessageListener.getLastMessage());
@@ -72,7 +71,7 @@ public class MessengerIntegrationTest {
   }
 
   @Test
-  public void testClientSendToServer() {
+  void testClientSendToServer() {
     final String message = "Hello";
     client1Messenger.send(message, serverMessenger.getLocalNode());
     assertEquals(message, serverMessageListener.getLastMessage());
@@ -82,7 +81,7 @@ public class MessengerIntegrationTest {
   }
 
   @Test
-  public void testClientSendToClient() {
+  void testClientSendToClient() {
     final String message = "Hello";
     client1Messenger.send(message, client2Messenger.getLocalNode());
     assertEquals(message, client2MessageListener.getLastMessage());
@@ -92,7 +91,7 @@ public class MessengerIntegrationTest {
   }
 
   @Test
-  public void testClientSendToClientLargeMessage() {
+  void testClientSendToClientLargeMessage() {
     final int count = 1_000_000;
     final StringBuilder builder = new StringBuilder(count);
     for (int i = 0; i < count; i++) {
@@ -106,8 +105,9 @@ public class MessengerIntegrationTest {
     assertEquals(0, serverMessageListener.getMessageCount());
   }
 
+
   @Test
-  public void testMultipleServer() {
+  void testMultipleServer() {
     for (int i = 0; i < 100; i++) {
       serverMessenger.send(i, client1Messenger.getLocalNode());
     }
@@ -117,7 +117,7 @@ public class MessengerIntegrationTest {
   }
 
   @Test
-  public void testMultipleClientToClient() {
+  void testMultipleClientToClient() {
     for (int i = 0; i < 100; i++) {
       client1Messenger.send(i, client2Messenger.getLocalNode());
     }
@@ -127,7 +127,7 @@ public class MessengerIntegrationTest {
   }
 
   @Test
-  public void testCorrectNodeCountInRemove() {
+  void testCorrectNodeCountInRemove() {
     // when we receive the notification that a connection has been lost, the node list should reflect that change
     await().until(serverMessenger::getNodes, hasSize(3));
     final AtomicInteger serverCount = new AtomicInteger(3);
@@ -148,7 +148,7 @@ public class MessengerIntegrationTest {
   }
 
   @Test
-  public void testDisconnect() {
+  void testDisconnect() {
     await().until(serverMessenger::getNodes, hasSize(3));
     client1Messenger.shutDown();
     client2Messenger.shutDown();
@@ -156,7 +156,7 @@ public class MessengerIntegrationTest {
   }
 
   @Test
-  public void testClose() {
+  void testClose() {
     final AtomicBoolean closed = new AtomicBoolean(false);
     client1Messenger.addErrorListener(reason -> closed.set(true));
     serverMessenger.removeConnection(client1Messenger.getLocalNode());
@@ -177,7 +177,7 @@ public class MessengerIntegrationTest {
       }
     }
 
-    public void clearLastMessage() {
+    void clearLastMessage() {
       synchronized (lock) {
         waitForMessage();
         messages.remove(0);
@@ -185,7 +185,7 @@ public class MessengerIntegrationTest {
       }
     }
 
-    public Object getLastMessage() {
+    Object getLastMessage() {
       synchronized (lock) {
         waitForMessage();
         assertFalse(messages.isEmpty());
@@ -193,7 +193,7 @@ public class MessengerIntegrationTest {
       }
     }
 
-    public INode getLastSender() {
+    INode getLastSender() {
       synchronized (lock) {
         waitForMessage();
         return senders.get(0);
@@ -214,7 +214,7 @@ public class MessengerIntegrationTest {
       }
     }
 
-    public int getMessageCount() {
+    int getMessageCount() {
       synchronized (lock) {
         return messages.size();
       }

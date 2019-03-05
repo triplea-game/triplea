@@ -54,17 +54,17 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   }
 
   @Override
-  public Action message(final Object o) {
+  public Action message(final Serializable serializable) {
     try {
       switch (step) {
         case READ_NAME:
           // read name, send challenge
-          remoteName = (String) o;
+          remoteName = (String) serializable;
           step = Step.READ_MAC;
           return Action.NONE;
         case READ_MAC:
           // read name, send challenge
-          remoteMac = (String) o;
+          remoteMac = (String) serializable;
           if (validator != null) {
             challenge = validator.getChallengeProperties(remoteName);
           }
@@ -73,7 +73,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           return Action.NONE;
         case CHALLENGE:
           @SuppressWarnings("unchecked")
-          final Map<String, String> response = (Map<String, String>) o;
+          final Map<String, String> response = (Map<String, String>) serializable;
           if (validator != null) {
             final String error = validator.verifyConnection(challenge, response, remoteName, remoteMac,
                 channel.socket().getRemoteSocketAddress());

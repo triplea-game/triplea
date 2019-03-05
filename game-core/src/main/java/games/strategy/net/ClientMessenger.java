@@ -104,7 +104,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     }
     final Socket socket = socketChannel.socket();
     socket.setKeepAlive(true);
-    nioSocket = new NioSocket(streamFact, this, name);
+    nioSocket = new NioSocket(streamFact, this);
     final ClientQuarantineConversation conversation =
         new ClientQuarantineConversation(login, socketChannel, nioSocket, name, mac);
     nioSocket.add(socketChannel, conversation);
@@ -181,7 +181,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
 
   @Override
   public void messageReceived(final MessageHeader msg, final SocketChannel channel) {
-    if (msg.getFor() != null && !msg.getFor().equals(node)) {
+    if (msg.getTo() != null && !msg.getTo().equals(node)) {
       throw new IllegalStateException("msg not for me:" + msg);
     }
     for (final IMessageListener listener : listeners) {
@@ -214,7 +214,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     // so all node ids are defined as what the server sees the address as
     // we are still in the decode thread at this point, set our nodes now
     // before the socket is unquarantined
-    node = new Node(conversation.getLocalName(), conversation.getNetworkVisibleSocketAdress());
+    node = new Node(conversation.getLocalName(), conversation.getNetworkVisibleAddress());
     serverNode = new Node(conversation.getServerName(), conversation.getServerLocalAddress());
     initLatch.countDown();
   }
