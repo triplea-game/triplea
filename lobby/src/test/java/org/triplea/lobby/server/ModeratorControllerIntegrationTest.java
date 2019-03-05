@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
-import org.triplea.java.Util;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
@@ -31,7 +30,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 
 @Integration
-public class ModeratorControllerIntegrationTest {
+class ModeratorControllerIntegrationTest {
   private final IServerMessenger serverMessenger = mock(IServerMessenger.class);
   private ModeratorController moderatorController;
   private ConnectionChangeListener connectionChangeListener;
@@ -44,9 +43,9 @@ public class ModeratorControllerIntegrationTest {
   }
 
   @BeforeEach
-  public void setUp() throws UnknownHostException {
+  void setUp() throws UnknownHostException {
     moderatorController = new ModeratorController(serverMessenger, null, TestLobbyConfigurations.INTEGRATION_TEST);
-    final String adminName = Util.newUniqueTimestamp();
+    final String adminName = TestUserUtils.newUniqueTimestamp();
 
     final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
 
@@ -59,7 +58,7 @@ public class ModeratorControllerIntegrationTest {
   }
 
   @Test
-  public void testBoot() throws UnknownHostException {
+  void testBoot() throws UnknownHostException {
     MessageContext.setSenderNodeForThread(adminNode);
     connectionChangeListener = new ConnectionChangeListener();
     final INode booted = new Node("foo", InetAddress.getByAddress(new byte[] {1, 2, 3, 4}), 0);
@@ -76,7 +75,7 @@ public class ModeratorControllerIntegrationTest {
   }
 
   @Test
-  public void testAssertAdmin() {
+  void testAssertAdmin() {
     MessageContext.setSenderNodeForThread(adminNode);
     assertTrue(moderatorController.isAdmin());
   }

@@ -9,14 +9,14 @@ import org.junit.jupiter.api.Test;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 
-public class HashedPasswordTest {
+class HashedPasswordTest {
   @Test
-  public void shouldBeEquatableAndHashable() {
+  void shouldBeEquatableAndHashable() {
     EqualsVerifier.forClass(HashedPassword.class).verify();
   }
 
   @Test
-  public void isValidSyntax() {
+  void isValidSyntax() {
     Arrays.asList(
         "$1$wwmV2glD$J5dZUS3L8DAMUim4wdL/11",
         "$2a$10$7v.RGs4Aw.cW8Hg1LGINQO/EKf47TAQDClHXkDAzx6HCuakrjBF7.")
@@ -27,7 +27,7 @@ public class HashedPasswordTest {
   }
 
   @Test
-  public void isValidSyntaxInvalidCases() {
+  void isValidSyntaxInvalidCases() {
     Arrays.asList(
         "",
         "abc",

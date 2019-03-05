@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Random;
 
-import org.triplea.java.Util;
+import org.triplea.java.Interruptibles;
 
 import games.strategy.net.MacFinder;
 
@@ -26,7 +26,7 @@ public final class TestUserUtils {
   }
 
   private static String newUsername() {
-    return "user_" + Util.newUniqueTimestamp();
+    return "user_" + newUniqueTimestamp();
   }
 
   private static InetAddress newInetAddress() {
@@ -43,5 +43,13 @@ public final class TestUserUtils {
     final byte[] bytes = new byte[6];
     new Random().nextBytes(bytes);
     return MacFinder.getHashedMacAddress(bytes);
+  }
+
+  public static String newUniqueTimestamp() {
+    final long time = System.currentTimeMillis();
+    while (time == System.currentTimeMillis()) {
+      Interruptibles.sleep(1);
+    }
+    return "" + System.currentTimeMillis();
   }
 }
