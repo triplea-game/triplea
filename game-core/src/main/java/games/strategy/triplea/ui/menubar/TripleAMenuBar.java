@@ -17,7 +17,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
-import games.strategy.net.HeadlessServerMessenger;
+import games.strategy.net.LocalNoOpMessenger;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
 
@@ -39,7 +39,7 @@ public final class TripleAMenuBar extends JMenuBar {
 
     final Optional<InGameLobbyWatcherWrapper> watcher = frame.getInGameLobbyWatcher();
     watcher.filter(InGameLobbyWatcherWrapper::isActive).ifPresent(this::createLobbyMenu);
-    if (!(frame.getGame().getMessenger() instanceof HeadlessServerMessenger)) {
+    if (!(frame.getGame().getMessenger() instanceof LocalNoOpMessenger)) {
       add(new NetworkMenu(watcher, frame));
     }
 
