@@ -1,8 +1,6 @@
 package games.strategy.net.nio;
 
 import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
@@ -33,7 +31,6 @@ class NioReader {
   private final Selector selector;
   private final Object socketsToAddMutex = new Object();
   private final List<SocketChannel> socketsToAdd = new ArrayList<>();
-  private long totalBytes;
 
   NioReader(final ErrorReporter reporter) {
     errorReporter = reporter;
@@ -100,10 +97,6 @@ class NioReader {
             try {
               final boolean done = packet.read(channel);
               if (done) {
-                totalBytes += packet.size();
-                if (log.isLoggable(Level.FINE)) {
-                  logNetwork(channel, packet);
-                }
                 enque(packet);
               }
             } catch (final Exception e) {
@@ -122,20 +115,6 @@ class NioReader {
         log.log(Level.SEVERE, "error in reader", e);
       }
     }
-  }
-
-  private void logNetwork(final SocketChannel channel, final SocketReadData packet) {
-    final Socket s = channel.socket();
-    SocketAddress sa = null;
-    if (s != null) {
-      sa = s.getRemoteSocketAddress();
-    }
-    String remote = "null";
-    if (sa != null) {
-      remote = sa.toString();
-    }
-    log.fine(" done reading from:" + remote + " size:" + packet.size() + " readCalls;"
-        + packet.getReadCalls() + " total:" + totalBytes);
   }
 
   private void enque(final SocketReadData packet) {

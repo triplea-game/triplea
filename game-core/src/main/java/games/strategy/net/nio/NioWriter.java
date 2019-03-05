@@ -1,8 +1,6 @@
 package games.strategy.net.nio;
 
 import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -32,7 +30,6 @@ class NioWriter {
   private List<SocketChannel> socketsToWake = new ArrayList<>();
   // the writing thread and threads adding data to write synchronize on this lock
   private final Object mutex = new Object();
-  private long totalBytes = 0;
   private volatile boolean running = true;
 
   NioWriter(final ErrorReporter reporter) {
@@ -76,7 +73,6 @@ class NioWriter {
   private void loop() {
     while (running) {
       try {
-        log.finest("selecting...");
         selector.select();
         if (!running) {
           continue;
@@ -97,20 +93,6 @@ class NioWriter {
                 log.finest(() -> "writing packet:" + packet + " to:" + channel.socket().getRemoteSocketAddress());
                 final boolean done = packet.write(channel);
                 if (done) {
-                  totalBytes += packet.size();
-                  if (log.isLoggable(Level.FINE)) {
-                    final Socket s = channel.socket();
-                    SocketAddress sa = null;
-                    if (s != null) {
-                      sa = s.getRemoteSocketAddress();
-                    }
-                    String remote = "null";
-                    if (sa != null) {
-                      remote = sa.toString();
-                    }
-                    log.fine(" done writing to:" + remote + " size:" + packet.size() + " writeCalls;"
-                        + packet.getWriteCalls() + " total:" + totalBytes);
-                  }
                   removeLast(channel);
                 }
               } catch (final Exception e) {
