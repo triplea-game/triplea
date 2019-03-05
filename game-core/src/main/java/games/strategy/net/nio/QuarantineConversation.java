@@ -1,5 +1,7 @@
 package games.strategy.net.nio;
 
+import java.io.Serializable;
+
 /**
  * When a connection is first made, it is quarantined until it logs in.
  *
@@ -26,7 +28,7 @@ public abstract class QuarantineConversation {
   /**
    * A message has been read. What should we do?
    */
-  public abstract Action message(Object o);
+  public abstract Action message(Serializable serializable);
 
   /**
    * called if this conversation has been removed, either after a TERMINATE was
