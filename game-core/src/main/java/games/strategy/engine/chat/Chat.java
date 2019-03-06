@@ -12,11 +12,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.triplea.util.Tuple;
 
 import games.strategy.engine.chat.IChatController.Tag;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
-import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ClipPlayer;
@@ -55,7 +52,7 @@ public class Chat {
   private final IChatChannel chatChannelSubscriber = new IChatChannel() {
     private void assertMessageFromServer() {
       final INode senderNode = MessageContext.getSender();
-      final INode serverNode = messengers.getMessenger().getServerNode();
+      final INode serverNode = messengers.getServerNode();
       // this will happen if the message is queued
       // but to queue a message, we must first test where it came from
       // so it is safe in this case to return ok
@@ -172,9 +169,9 @@ public class Chat {
         return;
       }
       synchronized (mutexNodes) {
-        if (to.equals(messengers.getChannelMessenger().getLocalNode().getName())) {
+        if (to.equals(messengers.getLocalNode().getName())) {
           handleSlap("You were slapped by " + from.getName(), from);
-        } else if (from.equals(messengers.getChannelMessenger().getLocalNode())) {
+        } else if (from.equals(messengers.getLocalNode())) {
           handleSlap("You just slapped " + to, from);
         }
       }
@@ -198,11 +195,9 @@ public class Chat {
     LOBBY_CHATROOM, GAME_CHATROOM, NO_SOUND
   }
 
-  public Chat(final IMessenger messenger, final String chatName, final IChannelMessenger channelMessenger,
-      final IRemoteMessenger remoteMessenger, final ChatSoundProfile chatSoundProfile) {
-
+  public Chat(final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
     this.chatSoundProfile = chatSoundProfile;
-    this.messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
+    this.messengers = messengers;
     statusManager = new StatusManager(messengers);
     chatChannelName = ChatController.getChatChannelName(chatName);
     this.chatName = chatName;
@@ -217,10 +212,8 @@ public class Chat {
     // 3 when we receive the init message response, acquire the lock, and initialize our state
     // and run any queued messages. Queued messages may be ignored if the server version is incorrect.
     // this all seems a lot more involved than it needs to be.
-    final IChatController controller = (IChatController) messengers.getRemoteMessenger()
-        .getRemote(ChatController.getChatControlerRemoteName(chatName));
-    messengers.getChannelMessenger().registerChannelSubscriber(chatChannelSubscriber,
-        new RemoteName(chatChannelName, IChatChannel.class));
+    final IChatController controller = messengers.getRemoteChatController(chatName);
+    messengers.addChatChannelSubscriber(chatChannelSubscriber, chatChannelName);
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
     final Map<INode, Tag> chatters = init.getFirst();
     nodes = new ArrayList<>(chatters.keySet());
@@ -313,25 +306,25 @@ public class Chat {
    * Stop receiving events from the messenger.
    */
   public void shutdown() {
-    messengers.getChannelMessenger().unregisterChannelSubscriber(chatChannelSubscriber,
+    messengers.unregisterChannelSubscriber(chatChannelSubscriber,
         new RemoteName(chatChannelName, IChatChannel.class));
-    if (messengers.getMessenger().isConnected()) {
+    if (messengers.isConnected()) {
       final RemoteName chatControllerName = ChatController.getChatControlerRemoteName(chatName);
       final IChatController controller =
-          (IChatController) messengers.getRemoteMessenger().getRemote(chatControllerName);
+          (IChatController) messengers.getRemote(chatControllerName);
       controller.leaveChat();
     }
   }
 
   void sendSlap(final String playerName) {
-    final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
-        .getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
+    final IChatChannel remote = (IChatChannel) messengers.getChannelBroadcaster(
+        new RemoteName(chatChannelName, IChatChannel.class));
     remote.slapOccured(playerName);
   }
 
   public void sendMessage(final String message, final boolean meMessage) {
-    final IChatChannel remote = (IChatChannel) messengers.getChannelMessenger()
-        .getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
+    final IChatChannel remote = (IChatChannel) messengers.getChannelBroadcaster(
+        new RemoteName(chatChannelName, IChatChannel.class));
     if (meMessage) {
       remote.meMessageOccured(message);
     } else {
@@ -353,11 +346,11 @@ public class Chat {
   }
 
   public INode getLocalNode() {
-    return messengers.getMessenger().getLocalNode();
+    return messengers.getLocalNode();
   }
 
   public INode getServerNode() {
-    return messengers.getMessenger().getServerNode();
+    return messengers.getServerNode();
   }
 
   public List<INode> getPlayersThatLeft_Last10() {

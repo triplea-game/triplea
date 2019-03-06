@@ -13,9 +13,7 @@ import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.net.IMessenger;
+import games.strategy.net.Messengers;
 
 /**
  * A Chat window.
@@ -47,12 +45,10 @@ public class ChatPanel extends JPanel implements ChatModel {
    * but the UI might freeze for a long time.
    */
   public static ChatPanel newChatPanel(
-      final IMessenger messenger,
-      final IChannelMessenger channelMessenger,
-      final IRemoteMessenger remoteMessenger,
+      final Messengers messengers,
       final String chatName,
       final ChatSoundProfile chatSoundProfile) {
-    final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
+    final Chat chat = new Chat(messengers, chatName, chatSoundProfile);
     return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat))).result
         .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
   }

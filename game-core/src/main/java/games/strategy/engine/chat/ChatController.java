@@ -10,14 +10,10 @@ import java.util.logging.Level;
 
 import org.triplea.util.Tuple;
 
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
-import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import lombok.extern.java.Log;
 
@@ -28,10 +24,8 @@ import lombok.extern.java.Log;
 public class ChatController implements IChatController {
   private static final String CHAT_REMOTE = "_ChatRmt";
   private static final String CHAT_CHANNEL = "_ChatCtrl";
-  private final IMessenger messenger;
-  private final IRemoteMessenger remoteMessenger;
+  private final Messengers messengers;
   private final Predicate<INode> isModerator;
-  private final IChannelMessenger channelMessenger;
   private final String chatName;
   private final Map<INode, Tag> chatters = new HashMap<>();
   private final Object mutex = new Object();
@@ -52,24 +46,20 @@ public class ChatController implements IChatController {
     }
   };
 
-  public ChatController(final String name, final IMessenger messenger, final IRemoteMessenger remoteMessenger,
-      final IChannelMessenger channelMessenger, final Predicate<INode> isModerator) {
+  public ChatController(
+      final String name,
+      final Messengers messengers,
+      final Predicate<INode> isModerator) {
     chatName = name;
-    this.messenger = messenger;
-    this.remoteMessenger = remoteMessenger;
+    this.messengers = messengers;
     this.isModerator = isModerator;
-    this.channelMessenger = channelMessenger;
     chatChannel = getChatChannelName(name);
-    this.remoteMessenger.registerRemote(this, getChatControlerRemoteName(name));
-    ((IServerMessenger) this.messenger).addConnectionChangeListener(connectionChangeListener);
+    messengers.registerRemote(this, getChatControlerRemoteName(name));
+    messengers.addConnectionChangeListener(connectionChangeListener);
     startPinger();
   }
 
-  public ChatController(final String name, final Messengers messenger, final Predicate<INode> isModerator) {
-    this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger(), isModerator);
-  }
-
-  static RemoteName getChatControlerRemoteName(final String chatName) {
+  public static RemoteName getChatControlerRemoteName(final String chatName) {
     return new RemoteName(CHAT_REMOTE + chatName, IChatController.class);
   }
 
@@ -97,13 +87,13 @@ public class ChatController implements IChatController {
         version++;
         chatter.speakerRemoved(node, version);
       }
-      remoteMessenger.unregisterRemote(getChatControlerRemoteName(chatName));
+      messengers.unregisterRemote(getChatControlerRemoteName(chatName));
     }
-    ((IServerMessenger) messenger).removeConnectionChangeListener(connectionChangeListener);
+    messengers.removeConnectionChangeListener(connectionChangeListener);
   }
 
   private IChatChannel getChatBroadcaster() {
-    return (IChatChannel) channelMessenger.getChannelBroadcaster(new RemoteName(chatChannel, IChatChannel.class));
+    return (IChatChannel) messengers.getChannelBroadcaster(new RemoteName(chatChannel, IChatChannel.class));
   }
 
   // a player has joined

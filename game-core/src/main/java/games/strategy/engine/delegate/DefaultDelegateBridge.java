@@ -109,7 +109,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public IRemotePlayer getRemotePlayer(final PlayerId id) {
     try {
-      final Object implementor = game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(id, gameData));
+      final Object implementor = game.getMessengers().getRemote(ServerGame.getRemoteName(id, gameData));
       return (IRemotePlayer) getOutbound(implementor);
     } catch (final MessengerException me) {
       throw new GameOverException("Game Over!");
@@ -119,13 +119,13 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public IDisplay getDisplayChannelBroadcaster() {
     final Object implementor =
-        game.getChannelMessenger().getChannelBroadcaster(AbstractGame.getDisplayChannel(gameData));
+        game.getMessengers().getChannelBroadcaster(AbstractGame.getDisplayChannel(gameData));
     return (IDisplay) getOutbound(implementor);
   }
 
   @Override
   public ISound getSoundChannelBroadcaster() {
-    final Object implementor = game.getChannelMessenger().getChannelBroadcaster(AbstractGame.getSoundChannel(gameData));
+    final Object implementor = game.getMessengers().getChannelBroadcaster(AbstractGame.getSoundChannel(gameData));
     return (ISound) getOutbound(implementor);
   }
 

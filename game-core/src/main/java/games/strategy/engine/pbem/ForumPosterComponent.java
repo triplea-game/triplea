@@ -135,7 +135,7 @@ public final class ForumPosterComponent extends JPanel {
     }
     if (showDiceStatisticsCheckBox.isSelected()) {
       historyLog.printDiceStatistics(data,
-          (IRandomStats) frame.getGame().getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME));
+          (IRandomStats) frame.getGame().getMessengers().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME));
     }
     historyLog.requestFocus();
   }

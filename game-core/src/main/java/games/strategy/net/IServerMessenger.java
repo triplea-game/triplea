@@ -17,15 +17,6 @@ public interface IServerMessenger extends IMessenger {
 
   ILoginValidator getLoginValidator();
 
-  /**
-   * Add a listener for change in connection status.
-   */
-  void addConnectionChangeListener(IConnectionChangeListener listener);
-
-  /**
-   * Remove a listener for change in connection status.
-   */
-  void removeConnectionChangeListener(IConnectionChangeListener listener);
 
   /**
    * Remove the node from the network.

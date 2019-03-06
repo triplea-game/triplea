@@ -52,12 +52,7 @@ import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.ui.background.WaitWindow;
-import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.RemoteName;
-import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.engine.player.IGamePlayer;
 import games.strategy.io.IoUtils;
 import games.strategy.net.ClientMessenger;
@@ -85,8 +80,7 @@ public class ClientModel implements IMessengerErrorListener {
   private final SetupPanelModel typePanelModel;
   private final WaitWindow gameLoadingWindow;
   private IRemoteModelListener listener = IRemoteModelListener.NULL_LISTENER;
-  private IChannelMessenger channelMessenger;
-  private IRemoteMessenger remoteMessenger;
+  private Messengers messengers;
   private IClientMessenger messenger;
   private Component ui;
   private ChatPanel chatPanel;
@@ -99,7 +93,7 @@ public class ClientModel implements IMessengerErrorListener {
   private final IObserverWaitingToJoin observerWaitingToJoin = new IObserverWaitingToJoin() {
     @Override
     public void joinGame(final byte[] gameData, final Map<String, INode> players) {
-      remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
+      messengers.unregisterRemote(ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
       final CountDownLatch latch = new CountDownLatch(1);
       startGame(gameData, players, latch, true);
       try {
@@ -224,12 +218,11 @@ public class ClientModel implements IMessengerErrorListener {
       return false;
     }
     messenger.addErrorListener(this);
-    final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
-    channelMessenger = new ChannelMessenger(unifiedMessenger);
-    remoteMessenger = new RemoteMessenger(unifiedMessenger);
-    channelMessenger.registerChannelSubscriber(channelListener, IClientChannel.CHANNEL_NAME);
-    chatPanel = ChatPanel.newChatPanel(messenger, channelMessenger, remoteMessenger, ServerModel.CHAT_NAME,
-        Chat.ChatSoundProfile.GAME_CHATROOM);
+
+    this.messengers = new Messengers(messenger);
+    messengers.registerChannelSubscriber(channelListener, IClientChannel.CHANNEL_NAME);
+
+    chatPanel = ChatPanel.newChatPanel(messengers, ServerModel.CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
     if (getIsServerHeadlessTest()) {
       gameSelectorModel.setClientModelForHostBots(this);
       chatPanel.getChatMessagePanel()
@@ -237,7 +230,7 @@ public class ClientModel implements IMessengerErrorListener {
               + "\nIf anyone disconnects, the autosave will be reloaded (a save might be loaded right now). "
               + "\nYou can get the current save, or you can load a save (only saves that it has the map for).");
     }
-    remoteMessenger.registerRemote(observerWaitingToJoin,
+    messengers.registerRemote(observerWaitingToJoin,
         ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
     // save this, it will be cleared later
     gameDataOnStartup = gameSelectorModel.getGameData();
@@ -245,14 +238,14 @@ public class ClientModel implements IMessengerErrorListener {
     final PlayerListing players = serverStartup.getPlayerListing();
     internalPlayerListingChanged(players);
     if (!serverStartup.isGameStarted(messenger.getLocalNode())) {
-      remoteMessenger.unregisterRemote(ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
+      messengers.unregisterRemote(ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
     }
     gameSelectorModel.setIsHostHeadlessBot(hostIsHeadlessBot);
     return true;
   }
 
   private IServerStartupRemote getServerStartup() {
-    return (IServerStartupRemote) remoteMessenger.getRemote(ServerModel.SERVER_REMOTE_NAME);
+    return (IServerStartupRemote) messengers.getRemote(ServerModel.SERVER_REMOTE_NAME);
   }
 
   private List<String> getAvailableServerGames() {
@@ -316,7 +309,6 @@ public class ClientModel implements IMessengerErrorListener {
         .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
         .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerType.CLIENT_PLAYER));
     final Set<IGamePlayer> playerSet = data.getGameLoader().newPlayers(playerMapping);
-    final Messengers messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
     game = new ClientGame(data, playerSet, players, messengers);
     new Thread(() -> {
       SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(ui).setVisible(false));
@@ -335,7 +327,7 @@ public class ClientModel implements IMessengerErrorListener {
           }
         }
         if (!gameRunning) {
-          ((IServerReady) remoteMessenger.getRemote(CLIENT_READY_CHANNEL)).clientReady();
+          ((IServerReady) messengers.getRemote(CLIENT_READY_CHANNEL)).clientReady();
         }
       } finally {
         gameLoadingWindow.doneWait();
@@ -396,7 +388,7 @@ public class ClientModel implements IMessengerErrorListener {
     return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
   }
 
-  public IClientMessenger getMessenger() {
+  public IClientMessenger getClientMessenger() {
     return messenger;
   }
 
@@ -432,7 +424,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public Action getHostBotSetMapClientAction(final Component parent) {
-    return new SetMapClientAction(parent, getMessenger(), getAvailableServerGames());
+    return new SetMapClientAction(parent, getClientMessenger(), getAvailableServerGames());
   }
 
   public Action getHostBotChangeGameOptionsClientAction(final Component parent) {
@@ -440,28 +432,16 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public Action getHostBotChangeGameToSaveGameClientAction() {
-    return new ChangeGameToSaveGameClientAction(getMessenger());
+    return new ChangeGameToSaveGameClientAction(getClientMessenger());
   }
 
   public Action getHostBotChangeToAutosaveClientAction(final Component parent,
       final HeadlessAutoSaveType autosaveType) {
-    return new ChangeToAutosaveClientAction(parent, getMessenger(), autosaveType);
+    return new ChangeToAutosaveClientAction(parent, getClientMessenger(), autosaveType);
   }
 
   public Action getHostBotGetGameSaveClientAction(final Component parent) {
     return new GetGameSaveClientAction(parent, getServerStartupRemote());
-  }
-
-  @Override
-  public String toString() {
-    return "ClientModel GameData:" + (gameDataOnStartup == null ? "null" : gameDataOnStartup.getGameName())
-        + "\n"
-        + "Connected:" + (messenger == null ? "null" : messenger.isConnected()) + "\n"
-        + messenger
-        + "\n"
-        + remoteMessenger
-        + "\n"
-        + channelMessenger;
   }
 
   @Getter
