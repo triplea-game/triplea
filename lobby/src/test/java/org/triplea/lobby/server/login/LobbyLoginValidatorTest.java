@@ -231,12 +231,12 @@ final class LobbyLoginValidatorTest {
 
     private void givenNoMacIsBanned() {
       when(databaseDao.getBannedMacDao()).thenReturn(bannedMacDao);
-      when(bannedMacDao.isMacBanned(anyString())).thenReturn(Tuple.of(false, new Timestamp(0L)));
+      when(bannedMacDao.isMacBanned(any(), anyString())).thenReturn(Tuple.of(false, new Timestamp(0L)));
     }
 
     private void givenNoUsernameIsBanned() {
       when(databaseDao.getBannedUsernameDao()).thenReturn(bannedUsernameDao);
-      when(bannedUsernameDao.isUsernameBanned(anyString())).thenReturn(Tuple.of(false, new Timestamp(0L)));
+      when(bannedUsernameDao.isUsernameBanned(any(), anyString())).thenReturn(Tuple.of(false, new Timestamp(0L)));
     }
   }
 

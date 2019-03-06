@@ -13,5 +13,5 @@ public interface MutedMacDao {
 
   Optional<Instant> getMacUnmuteTime(String mac);
 
-  boolean isMacMuted(String mac);
+  boolean isMacMuted(Instant nowTime, String mac);
 }

@@ -75,7 +75,7 @@ class BannedUsernameController implements BannedUsernameDao {
    * This implementation has the side effect of removing any usernames whose ban has expired.
    */
   @Override
-  public Tuple<Boolean, /* @Nullable */ Timestamp> isUsernameBanned(final String username) {
+  public Tuple<Boolean, /* @Nullable */ Timestamp> isUsernameBanned(final Instant nowTime, final String username) {
     final String sql = "select username, ban_till from banned_usernames where username = ?";
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
@@ -84,7 +84,7 @@ class BannedUsernameController implements BannedUsernameDao {
         // If the ban has expired, allow the username
         if (rs.next()) {
           final Timestamp banTill = rs.getTimestamp(2);
-          if (banTill != null && banTill.toInstant().isBefore(Instant.now())) {
+          if (banTill != null && banTill.toInstant().isBefore(nowTime)) {
             removeBannedUsername(username);
             return Tuple.of(false, banTill);
           }

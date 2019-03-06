@@ -13,5 +13,5 @@ public interface MutedUsernameDao {
 
   Optional<Instant> getUsernameUnmuteTime(String username);
 
-  boolean isUsernameMuted(String username);
+  boolean isUsernameMuted(Instant nowTime, String username);
 }

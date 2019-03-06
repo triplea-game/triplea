@@ -158,6 +158,7 @@ final class ModeratorController implements IModeratorController {
 
     final User mutedUser = getUserForNode(node);
     final User moderator = getUserForNode(MessageContext.getSender());
+
     database.getMutedMacDao().addMutedMac(mutedUser, muteExpires, moderator);
     serverMessenger.notifyMacMutingOfPlayer(mutedUser.getHashedMacAddress(), muteExpires);
     log.info(String.format(

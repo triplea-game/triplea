@@ -39,11 +39,6 @@ class MutedMacController implements MutedMacDao {
     checkNotNull(mutedUser);
     checkNotNull(moderator);
 
-    if (muteTill != null && muteTill.isBefore(Instant.now())) {
-      removeMutedMac(mutedUser.getHashedMacAddress());
-      return;
-    }
-
     final String sql = ""
         + "insert into muted_macs "
         + "  (username, ip, mac, mute_till, mod_username, mod_ip, mod_mac) values (?, ?::inet, ?, ?, ?, ?::inet, ?) "
@@ -86,8 +81,8 @@ class MutedMacController implements MutedMacDao {
    * database any mac's whose mute has expired.
    */
   @Override
-  public boolean isMacMuted(final String mac) {
-    return getMacUnmuteTime(mac).map(Instant.now()::isBefore).orElse(false);
+  public boolean isMacMuted(final Instant nowTime, final String mac) {
+    return getMacUnmuteTime(mac).map(nowTime::isBefore).orElse(false);
   }
 
   /**

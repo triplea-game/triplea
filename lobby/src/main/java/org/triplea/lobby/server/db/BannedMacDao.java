@@ -25,12 +25,13 @@ public interface BannedMacDao {
   void addBannedMac(User bannedUser, @Nullable Instant banTill, User moderator);
 
   /**
-   * Indicates the specified MAC is banned.
+   * Indicates if the specified MAC is banned relative to the checkTime provided.
    *
+   * @param nowTime Typically 'now', relative time to check for a ban.
    * @param mac The MAC to query for a ban.
    *
    * @return A tuple whose first element indicates if the MAC is banned or not. If the MAC is banned, the second element
    *         is the instant at which the ban will expire or {@code null} if the MAC is banned forever.
    */
-  Tuple<Boolean, /* @Nullable */ Timestamp> isMacBanned(String mac);
+  Tuple<Boolean, /* @Nullable */ Timestamp> isMacBanned(Instant nowTime, String mac);
 }

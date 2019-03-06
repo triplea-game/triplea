@@ -86,8 +86,8 @@ class MutedUsernameController implements MutedUsernameDao {
    * database any username's whose mute has expired.
    */
   @Override
-  public boolean isUsernameMuted(final String username) {
-    return getUsernameUnmuteTime(username).map(Instant.now()::isBefore).orElse(false);
+  public boolean isUsernameMuted(final Instant nowTime, final String username) {
+    return getUsernameUnmuteTime(username).map(nowTime::isBefore).orElse(false);
   }
 
   /**

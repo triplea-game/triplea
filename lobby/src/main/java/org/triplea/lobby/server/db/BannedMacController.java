@@ -76,7 +76,7 @@ class BannedMacController implements BannedMacDao {
    * This implementation has the side effect of removing any MACs whose ban has expired.
    */
   @Override
-  public Tuple<Boolean, /* @Nullable */ Timestamp> isMacBanned(final String mac) {
+  public Tuple<Boolean, /* @Nullable */ Timestamp> isMacBanned(final Instant nowtime, final String mac) {
     final String sql = "select mac, ban_till from banned_macs where mac=?";
 
     try (Connection con = connection.get();
@@ -86,7 +86,7 @@ class BannedMacController implements BannedMacDao {
         // If the ban has expired, allow the mac
         if (rs.next()) {
           final Timestamp banTill = rs.getTimestamp(2);
-          if (banTill != null && banTill.toInstant().isBefore(Instant.now())) {
+          if (banTill != null && banTill.toInstant().isBefore(nowtime)) {
             removeBannedMac(mac);
             return Tuple.of(false, banTill);
           }

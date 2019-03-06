@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,14 +119,15 @@ public final class LobbyLoginValidator implements ILoginValidator {
       // Must have been tampered with
       return ErrorMessages.INVALID_MAC;
     }
-    final Tuple<Boolean, Timestamp> macBanned = database.getBannedMacDao().isMacBanned(user.getHashedMacAddress());
+    final Tuple<Boolean, Timestamp> macBanned = database.getBannedMacDao().isMacBanned(
+        Instant.now(), user.getHashedMacAddress());
     if (macBanned.getFirst()) {
       return ErrorMessages.YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(macBanned.getSecond());
     }
     // test for username ban after testing normal bans, because if it is only a username ban then the user should know
     // they can change their name
     final Tuple<Boolean, Timestamp> usernameBanned =
-        database.getBannedUsernameDao().isUsernameBanned(user.getUsername());
+        database.getBannedUsernameDao().isUsernameBanned(Instant.now(), user.getUsername());
     if (usernameBanned.getFirst()) {
       return ErrorMessages.USERNAME_HAS_BEEN_BANNED + " " + getBanDurationBreakdown(usernameBanned.getSecond());
     }
