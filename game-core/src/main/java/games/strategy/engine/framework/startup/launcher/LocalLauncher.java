@@ -18,7 +18,7 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.player.IGamePlayer;
 import games.strategy.engine.random.IRandomSource;
-import games.strategy.net.HeadlessServerMessenger;
+import games.strategy.net.LocalNoOpMessenger;
 import games.strategy.net.Messengers;
 import lombok.extern.java.Log;
 
@@ -60,7 +60,7 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
   Optional<ServerGame> loadGame(final Component parent) {
     try {
       gameData.doPreGameStartDataModifications(playerListing);
-      final Messengers messengers = new Messengers(new HeadlessServerMessenger());
+      final Messengers messengers = new Messengers(new LocalNoOpMessenger());
       final Set<IGamePlayer> gamePlayers =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
       final ServerGame game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers, false);
