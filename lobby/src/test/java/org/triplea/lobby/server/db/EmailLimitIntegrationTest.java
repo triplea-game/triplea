@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.java.Util;
-import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 
 import com.google.common.base.Strings;
@@ -21,7 +20,7 @@ import com.google.common.base.Strings;
  */
 @Integration
 public class EmailLimitIntegrationTest {
-  private final Database database = new Database(TestLobbyConfigurations.INTEGRATION_TEST);
+  // private final Database database = new Database(TestLobbyConfigurations.INTEGRATION_TEST);
 
   @Test
   public void testAllowsMaximumLength() {
@@ -38,7 +37,7 @@ public class EmailLimitIntegrationTest {
   }
 
   private void createAccountWithEmail(final String email) throws SQLException {
-    try (Connection connection = database.newConnection();
+    try (Connection connection = TestDatabase.newConnection();
         PreparedStatement ps =
             connection.prepareStatement("insert into ta_users (username, email, bcrypt_password) values (?, ?, ?)")) {
       ps.setString(1, Util.newUniqueTimestamp());

@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -14,10 +12,12 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.User;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.util.Tuple;
 
 public final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
-  private final BannedMacController controller = spy(new BannedMacController(database));
+  private final BannedMacDao controller =
+      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBannedMacDao();
 
   @Test
   public void testBanMacForever() {
@@ -25,19 +25,6 @@ public final class BannedMacControllerIntegrationTest extends AbstractModeratorS
     final Tuple<Boolean, Timestamp> macDetails = isMacBanned();
     assertTrue(macDetails.getFirst());
     assertNull(macDetails.getSecond());
-  }
-
-  @Test
-  public void testBanMac() {
-    final Instant banUntil = banMacForSeconds(100L);
-    assertBannedUserEquals(user);
-    final Tuple<Boolean, Timestamp> macDetails = isMacBanned();
-    assertTrue(macDetails.getFirst());
-    assertEquals(banUntil, macDetails.getSecond().toInstant());
-    when(controller.now()).thenReturn(banUntil.plusSeconds(1L));
-    final Tuple<Boolean, Timestamp> macDetails2 = isMacBanned();
-    assertFalse(macDetails2.getFirst());
-    assertEquals(banUntil, macDetails2.getSecond().toInstant());
   }
 
   @Test

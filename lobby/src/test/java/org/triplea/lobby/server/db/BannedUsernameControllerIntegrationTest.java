@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -14,10 +12,12 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.User;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.util.Tuple;
 
 public final class BannedUsernameControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
-  private final BannedUsernameController controller = spy(new BannedUsernameController(database));
+  private final BannedUsernameDao controller =
+      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBannedUsernameDao();
 
   @Test
   public void testBanUsernameForever() {
@@ -25,19 +25,6 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
     final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
     assertTrue(usernameDetails.getFirst());
     assertNull(usernameDetails.getSecond());
-  }
-
-  @Test
-  public void testBanUsername() {
-    final Instant banUntil = banUsernameForSeconds(100L);
-    assertBannedUserEquals(user);
-    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
-    assertTrue(usernameDetails.getFirst());
-    assertEquals(banUntil, usernameDetails.getSecond().toInstant());
-    when(controller.now()).thenReturn(banUntil.plusSeconds(1L));
-    final Tuple<Boolean, Timestamp> usernameDetails2 = isUsernameBanned();
-    assertFalse(usernameDetails2.getFirst());
-    assertEquals(banUntil, usernameDetails2.getSecond().toInstant());
   }
 
   @Test

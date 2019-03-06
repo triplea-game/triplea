@@ -12,12 +12,14 @@ import java.sql.ResultSet;
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.lobby.server.login.UserType;
 import org.triplea.test.common.Integration;
 
 @Integration
-public final class AccessLogControllerIntegrationTest extends AbstractControllerTestCase {
-  private final AccessLogController accessLogController = new AccessLogController(database);
+public final class AccessLogControllerIntegrationTest {
+  private final AccessLogDao accessLogController =
+      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getAccessLogDao();
 
   @Test
   public void insert_ShouldInsertNewRecord() throws Exception {
@@ -32,7 +34,7 @@ public final class AccessLogControllerIntegrationTest extends AbstractController
 
   private void thenAccessLogRecordShouldExist(final User user, final UserType userType) throws Exception {
     final String sql = "select access_time from access_log where username=? and ip=?::inet and mac=? and registered=?";
-    try (Connection conn = database.newConnection();
+    try (Connection conn = TestDatabase.newConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setString(1, user.getUsername());
       ps.setString(2, user.getInetAddress().getHostAddress());

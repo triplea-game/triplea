@@ -3,8 +3,6 @@ package org.triplea.lobby.server.db;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -13,26 +11,17 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.User;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 
 public final class MutedUsernameControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
-  private final MutedUsernameController controller = spy(new MutedUsernameController(database));
+  private final MutedUsernameDao controller =
+      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getMutedUsernameDao();
 
   @Test
   public void testMuteUsernameForever() {
     muteUsernameForSeconds(Long.MAX_VALUE);
     assertTrue(isUsernameMuted());
     assertEquals(Optional.of(Instant.MAX), getUsernameUnmuteTime());
-  }
-
-  @Test
-  public void testMuteUsername() {
-    final Instant muteUntil = muteUsernameForSeconds(100L);
-    assertMutedUserEquals(user);
-    assertTrue(isUsernameMuted());
-    assertEquals(Optional.of(muteUntil), getUsernameUnmuteTime());
-    when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
-    assertFalse(isUsernameMuted());
-    assertEquals(Optional.empty(), getUsernameUnmuteTime());
   }
 
   @Test

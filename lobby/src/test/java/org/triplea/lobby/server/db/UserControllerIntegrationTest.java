@@ -16,14 +16,16 @@ import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.java.Util;
 import org.triplea.lobby.common.login.RsaAuthenticator;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 import org.triplea.util.Md5Crypt;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 
 @Integration
-public final class UserControllerIntegrationTest extends AbstractControllerTestCase {
-  private final UserController controller = new UserController(database);
+public final class UserControllerIntegrationTest {
+  private final UserDao controller =
+      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getUserDao();
 
   @Test
   public void testCreate() throws Exception {
@@ -77,7 +79,7 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
     controller.updateUser(
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
         new HashedPassword(password2));
-    try (Connection con = database.newConnection()) {
+    try (Connection con = TestDatabase.newConnection()) {
       final String sql = " select * from ta_users where username = '" + user.getName() + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
@@ -105,7 +107,7 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
   }
 
   private int getUserCount() throws Exception {
-    try (Connection dbConnection = database.newConnection()) {
+    try (Connection dbConnection = TestDatabase.newConnection()) {
       final String sql = "select count(*) from TA_USERS";
       final ResultSet rs = dbConnection.createStatement().executeQuery(sql);
       assertTrue(rs.next());

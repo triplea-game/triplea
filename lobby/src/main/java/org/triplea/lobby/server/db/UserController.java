@@ -6,21 +6,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.function.Supplier;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
+import lombok.AllArgsConstructor;
 
 /**
  * Implementation of {@link UserDao} for a Postgres database.
  */
-public final class UserController extends AbstractController implements UserDao {
-  public UserController(final Database database) {
-    super(database);
-  }
+@AllArgsConstructor
+final class UserController implements UserDao {
+  private final Supplier<Connection> connection;
 
   @Override
   public HashedPassword getLegacyPassword(final String username) {
@@ -33,7 +33,7 @@ public final class UserController extends AbstractController implements UserDao 
   }
 
   private HashedPassword getPassword(final String username, final boolean legacy) {
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con
             .prepareStatement("select password, coalesce(bcrypt_password, password) from ta_users where username=?")) {
       ps.setString(1, username);
@@ -44,21 +44,21 @@ public final class UserController extends AbstractController implements UserDao 
         return null;
       }
     } catch (final SQLException e) {
-      throw newDatabaseException("Error getting password for user: " + username, e);
+      throw new DatabaseException("Error getting password for user: " + username, e);
     }
   }
 
   @Override
   public boolean doesUserExist(final String username) {
     final String sql = "select username from ta_users where upper(username) = upper(?)";
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
         return rs.next();
       }
     } catch (final SQLException e) {
-      throw newDatabaseException("Error testing for existence of user: " + username, e);
+      throw new DatabaseException("Error testing for existence of user: " + username, e);
     }
   }
 
@@ -66,7 +66,7 @@ public final class UserController extends AbstractController implements UserDao 
   public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(
             String.format("update ta_users set %s=?, email=? where username=?", getPasswordColumn(hashedPassword)))) {
       ps.setString(1, hashedPassword.value);
@@ -82,7 +82,7 @@ public final class UserController extends AbstractController implements UserDao 
       }
       con.commit();
     } catch (final SQLException e) {
-      throw newDatabaseException(String.format("Error updating name: %s, email: %s, (masked) pwd: %s",
+      throw new DatabaseException(String.format("Error updating name: %s, email: %s, (masked) pwd: %s",
           user.getName(), user.getEmail(), hashedPassword.mask()), e);
     }
   }
@@ -100,18 +100,18 @@ public final class UserController extends AbstractController implements UserDao 
    * Does only affect the admin state of the given user.
    * The DB is updated with user.isAdmin()
    */
-  @VisibleForTesting
+  @Override
   public void makeAdmin(final DBUser user) {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement("update ta_users set admin=? where username = ?")) {
       ps.setBoolean(1, user.isAdmin());
       ps.setString(2, user.getName());
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw newDatabaseException(String.format("Error while trying to make %s an admin", user.getName()), e);
+      throw new DatabaseException(String.format("Error while trying to make %s an admin", user.getName()), e);
     }
   }
 
@@ -120,7 +120,7 @@ public final class UserController extends AbstractController implements UserDao 
     Preconditions.checkState(hashedPassword.isHashedWithSalt());
     Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(
             "insert into ta_users (username, password, bcrypt_password, email) values (?, ?, ?, ?)")) {
       ps.setString(1, user.getName());
@@ -130,14 +130,14 @@ public final class UserController extends AbstractController implements UserDao 
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw newDatabaseException(String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
+      throw new DatabaseException(String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
           user.getName(), user.getEmail(), hashedPassword.mask()), e);
     }
   }
 
   @Override
   public boolean login(final String username, final HashedPassword hashedPassword) {
-    try (Connection con = newDatabaseConnection()) {
+    try (Connection con = connection.get()) {
       if (hashedPassword.isHashedWithSalt()) {
         try (PreparedStatement ps =
             con.prepareStatement("select username from  ta_users where username = ? and password = ?")) {
@@ -168,7 +168,7 @@ public final class UserController extends AbstractController implements UserDao 
         return true;
       }
     } catch (final SQLException e) {
-      throw newDatabaseException(
+      throw new DatabaseException(
           String.format("Error validating password name: %s, (masked) pwd: %s", username, hashedPassword.mask()), e);
     }
   }
@@ -176,7 +176,7 @@ public final class UserController extends AbstractController implements UserDao 
   @Override
   public DBUser getUserByName(final String username) {
     final String sql = "select * from ta_users where username = ?";
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
@@ -189,7 +189,7 @@ public final class UserController extends AbstractController implements UserDao 
             rs.getBoolean("admin") ? DBUser.Role.ADMIN : DBUser.Role.NOT_ADMIN);
       }
     } catch (final SQLException e) {
-      throw newDatabaseException("Error getting user: " + username, e);
+      throw new DatabaseException("Error getting user: " + username, e);
     }
   }
 }

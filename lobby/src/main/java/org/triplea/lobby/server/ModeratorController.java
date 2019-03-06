@@ -7,13 +7,7 @@ import javax.annotation.Nullable;
 
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IRemoteHostUtils;
-import org.triplea.lobby.server.config.LobbyConfiguration;
-import org.triplea.lobby.server.db.BannedMacController;
-import org.triplea.lobby.server.db.BannedUsernameController;
-import org.triplea.lobby.server.db.Database;
-import org.triplea.lobby.server.db.MutedMacController;
-import org.triplea.lobby.server.db.MutedUsernameController;
-import org.triplea.lobby.server.db.UserController;
+import org.triplea.lobby.server.db.DatabaseDao;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -23,9 +17,11 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
+import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 
 @Log
+@AllArgsConstructor
 final class ModeratorController implements IModeratorController {
   /**
    * The hashed MAC address used when the MAC address of a node is unknown. It corresponds to the MAC address
@@ -34,17 +30,8 @@ final class ModeratorController implements IModeratorController {
   private static final String UNKNOWN_HASHED_MAC_ADDRESS = MacFinder.getHashedMacAddress(new byte[6]);
 
   private final IServerMessenger serverMessenger;
-  private final Messengers allMessengers;
-  private final Database database;
-
-  ModeratorController(
-      final IServerMessenger serverMessenger,
-      final Messengers messengers,
-      final LobbyConfiguration lobbyConfiguration) {
-    this.serverMessenger = serverMessenger;
-    allMessengers = messengers;
-    database = new Database(lobbyConfiguration);
-  }
+  private final Messengers messengers;
+  private final DatabaseDao database;
 
   @Override
   public void banUsername(final INode node, final @Nullable Date banExpires) {
@@ -59,7 +46,7 @@ final class ModeratorController implements IModeratorController {
 
     final User bannedUser = getUserForNode(node);
     final User moderator = getUserForNode(MessageContext.getSender());
-    new BannedUsernameController(database).addBannedUsername(bannedUser, banExpires, moderator);
+    database.getBannedUsernameDao().addBannedUsername(bannedUser, banExpires, moderator);
     log.info(String.format(
         "User was banned from the lobby (by username); "
             + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
@@ -83,7 +70,7 @@ final class ModeratorController implements IModeratorController {
   @Override
   public boolean isPlayerAdmin(final INode node) {
     final User user = getUserForNode(node);
-    final DBUser dbUser = new UserController(database).getUserByName(user.getUsername());
+    final DBUser dbUser = database.getUserDao().getUserByName(user.getUsername());
     return dbUser != null && dbUser.isAdmin();
   }
 
@@ -126,7 +113,7 @@ final class ModeratorController implements IModeratorController {
 
     final User bannedUser = getUserForNode(node).withHashedMacAddress(hashedMac);
     final User moderator = getUserForNode(MessageContext.getSender());
-    new BannedMacController(database).addBannedMac(bannedUser, banExpires, moderator);
+    database.getBannedMacDao().addBannedMac(bannedUser, banExpires, moderator);
     log.info(String.format(
         "User was banned from the lobby (by MAC); "
             + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
@@ -148,7 +135,7 @@ final class ModeratorController implements IModeratorController {
 
     final User mutedUser = getUserForNode(node);
     final User moderator = getUserForNode(MessageContext.getSender());
-    new MutedUsernameController(database).addMutedUsername(mutedUser, muteExpires, moderator);
+    database.getMutedUsernameDao().addMutedUsername(mutedUser, muteExpires, moderator);
     serverMessenger.notifyUsernameMutingOfPlayer(mutedUser.getUsername(), muteExpires);
     log.info(String.format(
         "User was muted in the lobby (by username); "
@@ -171,7 +158,7 @@ final class ModeratorController implements IModeratorController {
 
     final User mutedUser = getUserForNode(node);
     final User moderator = getUserForNode(MessageContext.getSender());
-    new MutedMacController(database).addMutedMac(mutedUser, muteExpires, moderator);
+    database.getMutedMacDao().addMutedMac(mutedUser, muteExpires, moderator);
     serverMessenger.notifyMacMutingOfPlayer(mutedUser.getHashedMacAddress(), muteExpires);
     log.info(String.format(
         "User was muted in the lobby (by MAC); "
@@ -215,7 +202,7 @@ final class ModeratorController implements IModeratorController {
 
   private IRemoteHostUtils getRemoteHostUtilsForNode(final INode node) {
     final RemoteName remoteName = IRemoteHostUtils.Companion.newRemoteNameForNode(node);
-    return (IRemoteHostUtils) allMessengers.getRemoteMessenger().getRemote(remoteName);
+    return (IRemoteHostUtils) messengers.getRemoteMessenger().getRemote(remoteName);
   }
 
   @Override

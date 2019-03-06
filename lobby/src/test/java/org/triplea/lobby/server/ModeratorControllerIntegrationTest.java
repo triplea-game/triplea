@@ -17,9 +17,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
 import org.triplea.java.Util;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
-import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
-import org.triplea.lobby.server.db.UserController;
+import org.triplea.lobby.server.db.UserDao;
 import org.triplea.test.common.Integration;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -31,7 +30,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 
 @Integration
-public class ModeratorControllerIntegrationTest {
+class ModeratorControllerIntegrationTest {
   private final IServerMessenger serverMessenger = mock(IServerMessenger.class);
   private ModeratorController moderatorController;
   private ConnectionChangeListener connectionChangeListener;
@@ -44,13 +43,15 @@ public class ModeratorControllerIntegrationTest {
   }
 
   @BeforeEach
-  public void setUp() throws UnknownHostException {
-    moderatorController = new ModeratorController(serverMessenger, null, TestLobbyConfigurations.INTEGRATION_TEST);
+  void setUp() throws UnknownHostException {
+    moderatorController = new ModeratorController(
+        serverMessenger, null, TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao());
     final String adminName = Util.newUniqueTimestamp();
 
     final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
 
-    final UserController userController = new UserController(new Database(TestLobbyConfigurations.INTEGRATION_TEST));
+
+    final UserDao userController = TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getUserDao();
     userController.createUser(dbUser, new HashedPassword(BCrypt.hashpw(adminName, BCrypt.gensalt())));
     userController.makeAdmin(dbUser);
 
@@ -59,7 +60,7 @@ public class ModeratorControllerIntegrationTest {
   }
 
   @Test
-  public void testBoot() throws UnknownHostException {
+  void testBoot() throws UnknownHostException {
     MessageContext.setSenderNodeForThread(adminNode);
     connectionChangeListener = new ConnectionChangeListener();
     final INode booted = new Node("foo", InetAddress.getByAddress(new byte[] {1, 2, 3, 4}), 0);
@@ -72,11 +73,11 @@ public class ModeratorControllerIntegrationTest {
     final INode dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
     when(serverMessenger.getServerNode()).thenReturn(dummyNode);
     moderatorController.boot(booted);
-    assertTrue(connectionChangeListener.getRemoved().contains(booted));
+    assertTrue(connectionChangeListener.removed.contains(booted));
   }
 
   @Test
-  public void testAssertAdmin() {
+  void testAssertAdmin() {
     MessageContext.setSenderNodeForThread(adminNode);
     assertTrue(moderatorController.isAdmin());
   }
@@ -90,10 +91,6 @@ public class ModeratorControllerIntegrationTest {
     @Override
     public void connectionRemoved(final INode to) {
       removed.add(to);
-    }
-
-    public List<INode> getRemoved() {
-      return removed;
     }
   }
 }

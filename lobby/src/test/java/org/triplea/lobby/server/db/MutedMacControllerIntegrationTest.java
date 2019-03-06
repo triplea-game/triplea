@@ -3,8 +3,6 @@ package org.triplea.lobby.server.db;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -13,26 +11,17 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.User;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 
 public final class MutedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
-  private final MutedMacController controller = spy(new MutedMacController(database));
+  private final MutedMacDao controller =
+      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getMutedMacDao();
 
   @Test
   public void testMuteMacForever() {
     muteMacForSeconds(Long.MAX_VALUE);
     assertTrue(isMacMuted());
     assertEquals(Optional.of(Instant.MAX), getMacUnmuteTime());
-  }
-
-  @Test
-  public void testMuteMac() {
-    final Instant muteUntil = muteMacForSeconds(100L);
-    assertMutedUserEquals(user);
-    assertTrue(isMacMuted());
-    assertEquals(Optional.of(muteUntil), getMacUnmuteTime());
-    when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
-    assertFalse(isMacMuted());
-    assertEquals(Optional.empty(), getMacUnmuteTime());
   }
 
   @Test

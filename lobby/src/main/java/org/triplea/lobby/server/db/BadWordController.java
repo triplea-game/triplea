@@ -6,25 +6,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
+
+import lombok.AllArgsConstructor;
 
 /**
  * Utility class to create/read/delete bad words (there is no update).
  */
-public final class BadWordController extends AbstractController implements BadWordDao {
-  public BadWordController(final Database database) {
-    super(database);
-  }
+@AllArgsConstructor
+final class BadWordController implements BadWordDao {
+  private final Supplier<Connection> connection;
 
   @Override
   public void addBadWord(final String word) {
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         // If the word already is present we don't need to add it twice.
         PreparedStatement ps = con.prepareStatement("insert into bad_words (word) values (?) on conflict do nothing")) {
       ps.setString(1, word);
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw newDatabaseException("Error inserting banned word: " + word, e);
+      throw new DatabaseException("Error inserting banned word: " + word, e);
     }
   }
 
@@ -32,7 +34,7 @@ public final class BadWordController extends AbstractController implements BadWo
   public List<String> list() {
     final String sql = "select word from bad_words";
 
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql);
         ResultSet rs = ps.executeQuery()) {
       final List<String> badWords = new ArrayList<>();
@@ -41,7 +43,7 @@ public final class BadWordController extends AbstractController implements BadWo
       }
       return badWords;
     } catch (final SQLException e) {
-      throw newDatabaseException("Error reading bad words", e);
+      throw new DatabaseException("Error reading bad words", e);
     }
   }
 }
