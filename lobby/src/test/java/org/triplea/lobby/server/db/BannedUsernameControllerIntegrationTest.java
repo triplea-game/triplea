@@ -15,7 +15,7 @@ import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.util.Tuple;
 
-public final class BannedUsernameControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
+final class BannedUsernameControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
   private final BannedUsernameDao controller =
       TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBannedUsernameDao();
 
@@ -34,7 +34,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
     final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
     assertTrue(usernameDetails.getFirst());
     assertEquals(banUntil, usernameDetails.getSecond().toInstant());
-    when(controller.now()).thenReturn(banUntil.plusSeconds(1L));
+    // when(controller.now()).thenReturn(banUntil.plusSeconds(1L));
     final Tuple<Boolean, Timestamp> usernameDetails2 = isUsernameBanned();
     assertFalse(usernameDetails2.getFirst());
     assertEquals(banUntil, usernameDetails2.getSecond().toInstant());

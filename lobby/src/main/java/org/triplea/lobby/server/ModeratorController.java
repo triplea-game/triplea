@@ -7,13 +7,7 @@ import javax.annotation.Nullable;
 
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IRemoteHostUtils;
-import org.triplea.lobby.server.config.LobbyConfiguration;
-import org.triplea.lobby.server.db.BannedMacController;
-import org.triplea.lobby.server.db.BannedUsernameController;
-import org.triplea.lobby.server.db.Database;
-import org.triplea.lobby.server.db.MutedMacController;
-import org.triplea.lobby.server.db.MutedUsernameController;
-import org.triplea.lobby.server.db.UserController;
+import org.triplea.lobby.server.db.DatabaseDao;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -23,6 +17,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
+import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 
 @Log

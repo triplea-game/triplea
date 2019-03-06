@@ -15,12 +15,12 @@ import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.util.Tuple;
 
-public final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
+final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
   private final BannedMacDao controller =
       TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBannedMacDao();
 
   @Test
-  public void testBanMacForever() {
+  void testBanMacForever() {
     banMacForSeconds(Long.MAX_VALUE);
     final Tuple<Boolean, Timestamp> macDetails = isMacBanned();
     assertTrue(macDetails.getFirst());
@@ -34,7 +34,7 @@ public final class BannedMacControllerIntegrationTest extends AbstractModeratorS
     final Tuple<Boolean, Timestamp> macDetails = isMacBanned();
     assertTrue(macDetails.getFirst());
     assertEquals(banUntil, macDetails.getSecond().toInstant());
-    when(controller.now()).thenReturn(banUntil.plusSeconds(1L));
+    // when(controller.now()).thenReturn(banUntil.plusSeconds(1L));
     final Tuple<Boolean, Timestamp> macDetails2 = isMacBanned();
     assertFalse(macDetails2.getFirst());
     assertEquals(banUntil, macDetails2.getSecond().toInstant());

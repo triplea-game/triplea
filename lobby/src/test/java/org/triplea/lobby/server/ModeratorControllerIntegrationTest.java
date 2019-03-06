@@ -17,9 +17,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
 import org.triplea.java.Util;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
-import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
-import org.triplea.lobby.server.db.UserController;
+import org.triplea.lobby.server.db.UserDao;
 import org.triplea.test.common.Integration;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -50,7 +49,6 @@ class ModeratorControllerIntegrationTest {
     final String adminName = Util.newUniqueTimestamp();
 
     final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
-
 
     final UserDao userController = TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getUserDao();
     userController.createUser(dbUser, new HashedPassword(BCrypt.hashpw(adminName, BCrypt.gensalt())));

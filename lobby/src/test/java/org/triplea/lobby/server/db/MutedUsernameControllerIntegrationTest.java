@@ -30,7 +30,7 @@ public final class MutedUsernameControllerIntegrationTest extends AbstractModera
     assertMutedUserEquals(user);
     assertTrue(isUsernameMuted());
     assertEquals(Optional.of(muteUntil), getUsernameUnmuteTime());
-    when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
+    // when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
     assertFalse(isUsernameMuted());
     assertEquals(Optional.empty(), getUsernameUnmuteTime());
   }

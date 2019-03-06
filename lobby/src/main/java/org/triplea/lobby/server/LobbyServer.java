@@ -2,8 +2,10 @@ package org.triplea.lobby.server;
 
 import java.io.IOException;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.config.LobbyConfiguration;
 import org.triplea.lobby.server.login.LobbyLoginValidator;
 
@@ -46,12 +48,12 @@ final class LobbyServer {
             new RsaAuthenticator(),
             BCrypt::gensalt));
 
-    new UserManager(lobbyConfiguration.getDatabaseDao()).register(messengers.getRemoteMessenger());
+    new UserManager(lobbyConfiguration.getDatabaseDao()).register(messengers);
 
 
     final ModeratorController moderatorController =
         new ModeratorController(server, messengers, lobbyConfiguration.getDatabaseDao());
-        moderatorController.register(messengers);
+    moderatorController.register(messengers);
     new ChatController(LobbyConstants.LOBBY_CHAT, messengers, moderatorController::isPlayerAdmin);
 
     // register the status controller

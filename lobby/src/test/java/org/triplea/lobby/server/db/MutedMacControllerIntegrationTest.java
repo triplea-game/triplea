@@ -30,7 +30,7 @@ public final class MutedMacControllerIntegrationTest extends AbstractModeratorSe
     assertMutedUserEquals(user);
     assertTrue(isMacMuted());
     assertEquals(Optional.of(muteUntil), getMacUnmuteTime());
-    when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
+    // when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
     assertFalse(isMacMuted());
     assertEquals(Optional.empty(), getMacUnmuteTime());
   }
