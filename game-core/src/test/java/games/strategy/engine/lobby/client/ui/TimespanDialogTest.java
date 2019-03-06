@@ -17,14 +17,14 @@ import games.strategy.engine.lobby.client.ui.TimespanDialog.Timespan;
 public class TimespanDialogTest {
 
   @Test
-  public void testForeverReturnsNull() {
+  void testForeverReturnsNull() {
     assertNull(TimeUnit.FOREVER.getInstant(Integer.MAX_VALUE));
     assertNull(TimeUnit.FOREVER.getInstant(0));
     assertNull(TimeUnit.FOREVER.getInstant(Integer.MIN_VALUE));
   }
 
   @Test
-  public void testIntervalSizesBecomeBigger() {
+  void testIntervalSizesBecomeBigger() {
     final Instant minute = TimeUnit.MINUTES.getInstant(1);
     final Instant hour = TimeUnit.HOURS.getInstant(1);
     final Instant day = TimeUnit.DAYS.getInstant(1);
@@ -40,17 +40,17 @@ public class TimespanDialogTest {
   }
 
   @Test
-  public void testPositiveIntIsInFuture() {
+  void testPositiveIntIsInFuture() {
     assertTrue(Instant.now().isBefore(TimeUnit.MINUTES.getInstant(1)));
   }
 
   @Test
-  public void testCancelDoesExecuteNothing() {
+  void testCancelDoesExecuteNothing() {
     TimespanDialog.runAction(d -> fail("Operation was not cancelled!"), Optional.empty());
   }
 
   @Test
-  public void testNonNullDateInTheFuture() {
+  void testNonNullDateInTheFuture() {
     // We can't use Integer#MAX_VALUE for years, because this will result in a long-overflow
     // So we just limit the amount for every time unit
     Arrays.asList(
@@ -68,7 +68,7 @@ public class TimespanDialogTest {
   }
 
   @Test
-  public void testForeverPassesNull() {
+  void testForeverPassesNull() {
     TimespanDialog.runAction(d -> assertNull(d), Optional.of(new Timespan(0, TimeUnit.FOREVER)));
   }
 }

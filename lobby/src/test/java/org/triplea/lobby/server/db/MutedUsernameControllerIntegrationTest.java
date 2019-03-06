@@ -18,14 +18,25 @@ public final class MutedUsernameControllerIntegrationTest extends AbstractModera
       TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getMutedUsernameDao();
 
   @Test
-  public void testMuteUsernameForever() {
+  void testMuteUsernameForever() {
     muteUsernameForSeconds(Long.MAX_VALUE);
     assertTrue(isUsernameMuted());
     assertEquals(Optional.of(Instant.MAX), getUsernameUnmuteTime());
   }
 
   @Test
-  public void testUnmuteUsername() {
+  void testMuteUsername() {
+    final Instant muteUntil = muteUsernameForSeconds(100L);
+    assertMutedUserEquals(user);
+    assertTrue(isUsernameMuted());
+    assertEquals(Optional.of(muteUntil), getUsernameUnmuteTime());
+    when(controller.now()).thenReturn(muteUntil.plusSeconds(1L));
+    assertFalse(isUsernameMuted());
+    assertEquals(Optional.empty(), getUsernameUnmuteTime());
+  }
+
+  @Test
+  void testUnmuteUsername() {
     final Instant muteUntil = muteUsernameForSeconds(100L);
     assertTrue(isUsernameMuted());
     assertEquals(Optional.of(muteUntil), getUsernameUnmuteTime());
@@ -35,14 +46,14 @@ public final class MutedUsernameControllerIntegrationTest extends AbstractModera
   }
 
   @Test
-  public void testMuteUsernameInThePast() {
+  void testMuteUsernameInThePast() {
     muteUsernameForSeconds(-10L);
     assertFalse(isUsernameMuted());
     assertEquals(Optional.empty(), getUsernameUnmuteTime());
   }
 
   @Test
-  public void testMuteUsernameUpdate() {
+  void testMuteUsernameUpdate() {
     muteUsernameForSeconds(Long.MAX_VALUE);
     assertTrue(isUsernameMuted());
     assertEquals(Optional.of(Instant.MAX), getUsernameUnmuteTime());
@@ -52,7 +63,7 @@ public final class MutedUsernameControllerIntegrationTest extends AbstractModera
   }
 
   @Test
-  public void testMuteUsernameUpdatesMutedUserAndModerator() {
+  void testMuteUsernameUpdatesMutedUserAndModerator() {
     muteUsernameForSeconds(user, Long.MAX_VALUE, moderator);
 
     final User otherUser = newUser().withUsername(user.getUsername());

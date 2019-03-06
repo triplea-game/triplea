@@ -33,7 +33,7 @@ public class MapTest {
   GameMap map;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     // map, l is land, w is water
     // each territory is connected to it's direct neighbors, but not diagonals
     // llll
@@ -101,91 +101,91 @@ public class MapTest {
   }
 
   @Test
-  public void testNowhere() {
+  void testNowhere() {
     assertEquals(-1, map.getDistance(aa, nowhere));
   }
 
   @Test
-  public void testCantFindByName() {
+  void testCantFindByName() {
     assertNull(map.getTerritory("nowhere"));
   }
 
   @Test
-  public void testCanFindByName() {
+  void testCanFindByName() {
     assertNotNull(map.getTerritory("aa"));
   }
 
   @Test
-  public void testSame() {
+  void testSame() {
     assertEquals(0, map.getDistance(aa, aa));
   }
 
   @Test
-  public void testImpossibleConditionRoute() {
+  void testImpossibleConditionRoute() {
     assertNull(map.getRoute(aa, ba, Matches.never()));
   }
 
   @Test
-  public void testOne() {
+  void testOne() {
     assertEquals(1, map.getDistance(aa, ab));
   }
 
   @Test
-  public void testTwo() {
+  void testTwo() {
     assertEquals(2, map.getDistance(aa, ac));
   }
 
   @Test
-  public void testOverWater() {
+  void testOverWater() {
     assertEquals(3, map.getDistance(ca, cd));
   }
 
   @Test
-  public void testOverWaterCantReach() {
+  void testOverWaterCantReach() {
     assertEquals(-1, map.getLandDistance(ca, cd));
   }
 
   @Test
-  public void testLong() {
+  void testLong() {
     assertEquals(6, map.getLandDistance(ad, da));
   }
 
   @Test
-  public void testNeighborLandNoSeaConnect() {
+  void testNeighborLandNoSeaConnect() {
     assertEquals(-1, map.getWaterDistance(aa, ab));
   }
 
   @Test
-  public void testNeighborSeaNoLandConnect() {
+  void testNeighborSeaNoLandConnect() {
     assertEquals(-1, map.getLandDistance(bc, bd));
   }
 
   @Test
-  public void testRouteToSelf() {
+  void testRouteToSelf() {
     final Route rt = map.getRoute(aa, aa);
     assertEquals(0, rt.numberOfSteps());
   }
 
   @Test
-  public void testRouteSizeOne() {
+  void testRouteSizeOne() {
     final Route rt = map.getRoute(aa, ab);
     assertEquals(1, rt.numberOfSteps());
   }
 
   @Test
-  public void testImpossibleRoute() {
+  void testImpossibleRoute() {
     final Route rt = map.getRoute(aa, nowhere);
     assertNull(rt);
   }
 
   @Test
-  public void testImpossibleLandDistance() {
+  void testImpossibleLandDistance() {
     final int distance = map.getLandDistance(aa, cd);
     assertEquals(-1, distance, "wrong distance");
   }
 
   @Test
-  public void testMultiplePossible() {
+  void testMultiplePossible() {
     final Route rt = map.getRoute(aa, dd);
     assertEquals(aa, rt.getStart());
     assertEquals(dd, rt.getEnd());
@@ -193,7 +193,7 @@ public class MapTest {
   }
 
   @Test
-  public void testNeighbors() {
+  void testNeighbors() {
     final Set<Territory> neighbors = map.getNeighbors(aa);
     assertEquals(2, neighbors.size());
     assertTrue(neighbors.contains(ab));
@@ -201,7 +201,7 @@ public class MapTest {
   }
 
   @Test
-  public void testNeighborsWithDistance() {
+  void testNeighborsWithDistance() {
     Set<Territory> neighbors = map.getNeighbors(aa, 0);
     assertEquals(0, neighbors.size());
     neighbors = map.getNeighbors(aa, 1);

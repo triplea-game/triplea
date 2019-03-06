@@ -2,10 +2,8 @@ package org.triplea.lobby.server;
 
 import java.io.IOException;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.LobbyConstants;
-import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.config.LobbyConfiguration;
 import org.triplea.lobby.server.login.LobbyLoginValidator;
 
@@ -53,15 +51,15 @@ final class LobbyServer {
 
     final ModeratorController moderatorController =
         new ModeratorController(server, messengers, lobbyConfiguration.getDatabaseDao());
-    moderatorController.register(messengers.getRemoteMessenger());
+        moderatorController.register(messengers);
     new ChatController(LobbyConstants.LOBBY_CHAT, messengers, moderatorController::isPlayerAdmin);
 
     // register the status controller
     new StatusManager(messengers).shutDown();
 
-    final LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) messengers
-        .getChannelMessenger().getChannelBroadcaster(ILobbyGameBroadcaster.REMOTE_NAME), server);
-    controller.register(messengers.getRemoteMessenger());
+    final LobbyGameController controller = new LobbyGameController(
+        (ILobbyGameBroadcaster) messengers.getChannelBroadcaster(ILobbyGameBroadcaster.REMOTE_NAME), server);
+    controller.register(messengers);
 
     // now we are open for business
     server.setAcceptNewConnections(true);

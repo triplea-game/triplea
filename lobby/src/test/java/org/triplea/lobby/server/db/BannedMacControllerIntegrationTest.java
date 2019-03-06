@@ -28,7 +28,20 @@ public final class BannedMacControllerIntegrationTest extends AbstractModeratorS
   }
 
   @Test
-  public void testUnbanMac() {
+  void testBanMac() {
+    final Instant banUntil = banMacForSeconds(100L);
+    assertBannedUserEquals(user);
+    final Tuple<Boolean, Timestamp> macDetails = isMacBanned();
+    assertTrue(macDetails.getFirst());
+    assertEquals(banUntil, macDetails.getSecond().toInstant());
+    when(controller.now()).thenReturn(banUntil.plusSeconds(1L));
+    final Tuple<Boolean, Timestamp> macDetails2 = isMacBanned();
+    assertFalse(macDetails2.getFirst());
+    assertEquals(banUntil, macDetails2.getSecond().toInstant());
+  }
+
+  @Test
+  void testUnbanMac() {
     final Instant banUntil = banMacForSeconds(100L);
     final Tuple<Boolean, Timestamp> macDetails = isMacBanned();
     assertTrue(macDetails.getFirst());

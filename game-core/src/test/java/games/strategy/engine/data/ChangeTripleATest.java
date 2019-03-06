@@ -21,7 +21,7 @@ public class ChangeTripleATest {
   private Territory can;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
     can = gameData.getMap().getTerritory("Western Canada");
     assertEquals(2, can.getUnitCollection().getUnitCount());
@@ -43,7 +43,7 @@ public class ChangeTripleATest {
   }
 
   @Test
-  public void testUnitsAddTerritory() {
+  void testUnitsAddTerritory() {
     // add some units
     final Change change =
         ChangeFactory.addUnits(can, GameDataTestUtil.infantry(gameData).create(10, null));
@@ -55,7 +55,7 @@ public class ChangeTripleATest {
   }
 
   @Test
-  public void testUnitsRemoveTerritory() {
+  void testUnitsRemoveTerritory() {
     // remove some units
     final Collection<Unit> units = can.getUnitCollection().getUnits(GameDataTestUtil.infantry(gameData), 1);
     final Change change = ChangeFactory.removeUnits(can, units);
@@ -67,7 +67,7 @@ public class ChangeTripleATest {
   }
 
   @Test
-  public void testSerializeUnitsRemoteTerritory() throws Exception {
+  void testSerializeUnitsRemoteTerritory() throws Exception {
     // remove some units
     final Collection<Unit> units = can.getUnitCollection().getUnits(GameDataTestUtil.infantry(gameData), 1);
     Change change = ChangeFactory.removeUnits(can, units);

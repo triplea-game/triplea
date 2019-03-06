@@ -134,7 +134,7 @@ public class WW2V3Year41Test {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.WW2V3_1941.getGameData();
   }
 
@@ -152,7 +152,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testAaCasualtiesLowLuckMixedRadar() {
+  void testAaCasualtiesLowLuckMixedRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerId british = GameDataTestUtil.british(gameData);
     final IDelegateBridge bridge = newDelegateBridge(british);
@@ -179,7 +179,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testAaCasualtiesLowLuckMixedWithRollingRadar() {
+  void testAaCasualtiesLowLuckMixedWithRollingRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerId british = GameDataTestUtil.british(gameData);
     final IDelegateBridge bridge = newDelegateBridge(british);
@@ -211,7 +211,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testAaCasualtiesLowLuckMixedWithRollingMissRadar() {
+  void testAaCasualtiesLowLuckMixedWithRollingMissRadar() {
     // moved from BattleCalculatorTest because "revised" does not have "radar"
     final PlayerId british = GameDataTestUtil.british(gameData);
     final IDelegateBridge bridge = newDelegateBridge(british);
@@ -247,7 +247,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testDefendingTrasnportsAutoKilled() {
+  void testDefendingTrasnportsAutoKilled() {
     final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
     final Territory sz12 = gameData.getMap().getTerritory("12 Sea Zone");
     final PlayerId british = GameDataTestUtil.british(gameData);
@@ -270,7 +270,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testUnplacedDie() {
+  void testUnplacedDie() {
     final PlaceDelegate del = placeDelegate(gameData);
     del.setDelegateBridgeAndPlayer(newDelegateBridge(british(gameData)));
     del.start();
@@ -281,7 +281,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testPlaceEmpty() {
+  void testPlaceEmpty() {
     final PlaceDelegate del = placeDelegate(gameData);
     del.setDelegateBridgeAndPlayer(newDelegateBridge(british(gameData)));
     del.start();
@@ -292,7 +292,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testTechTokens() {
+  void testTechTokens() {
     // Set up the test
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(germans);
@@ -326,7 +326,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testInfantryLoadOnlyTransports() {
+  void testInfantryLoadOnlyTransports() {
     final Territory gibraltar = territory("Gibraltar", gameData);
     // add a tank to gibralter
     final PlayerId british = british(gameData);
@@ -352,7 +352,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testLoadedTransportAttackKillsLoadedUnits() {
+  void testLoadedTransportAttackKillsLoadedUnits() {
     final PlayerId british = british(gameData);
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     final IDelegateBridge bridge = newDelegateBridge(british);
@@ -383,7 +383,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testCanRetreatIntoEmptyEnemyTerritory() {
+  void testCanRetreatIntoEmptyEnemyTerritory() {
     final Territory eastPoland = territory("East Poland", gameData);
     final Territory ukraine = territory("Ukraine", gameData);
     final Territory poland = territory("Poland", gameData);
@@ -407,7 +407,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testCanRetreatIntoBlitzedTerritory() {
+  void testCanRetreatIntoBlitzedTerritory() {
     final Territory eastPoland = territory("East Poland", gameData);
     final Territory ukraine = territory("Ukraine", gameData);
     final Territory poland = territory("Poland", gameData);
@@ -431,7 +431,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testCantBlitzFactoryOrAa() {
+  void testCantBlitzFactoryOrAa() {
     // Set up territories
     final Territory poland = territory("Poland", gameData);
     final Territory eastPoland = territory("East Poland", gameData);
@@ -470,7 +470,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testMultipleAaInTerritory() {
+  void testMultipleAaInTerritory() {
     // Set up territories
     final Territory poland = territory("Poland", gameData);
     // Add a russian factory
@@ -531,7 +531,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testMechanizedInfantry() {
+  void testMechanizedInfantry() {
     // Set up tech
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(germans(gameData));
@@ -575,7 +575,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testJetPower() {
+  void testJetPower() {
     // Set up tech
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(germans(gameData));
@@ -606,7 +606,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testBidPlace() {
+  void testBidPlace() {
     final IDelegateBridge bridge = newDelegateBridge(british(gameData));
     advanceToStep(bridge, "BidPlace");
     bidPlaceDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -623,7 +623,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testFactoryPlace() {
+  void testFactoryPlace() {
     // Set up game
     final PlayerId british = GameDataTestUtil.british(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(british(gameData));
@@ -650,7 +650,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testChinesePlacement() {
+  void testChinesePlacement() {
     /*
      * This tests that Chinese can place units in any territory, that they can
      * place in just conquered territories, and that they can place in territories
@@ -724,7 +724,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testPlaceInOccupiedSeaZone() {
+  void testPlaceInOccupiedSeaZone() {
     // Set up game
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(germans);
@@ -749,7 +749,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testMoveUnitsThroughSubs() {
+  void testMoveUnitsThroughSubs() {
     final IDelegateBridge bridge = newDelegateBridge(british(gameData));
     advanceToStep(bridge, "britishNonCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -761,7 +761,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testMoveUnitsThroughTransports() {
+  void testMoveUnitsThroughTransports() {
     final IDelegateBridge bridge = newDelegateBridge(british(gameData));
     advanceToStep(bridge, "britishCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -773,7 +773,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testMoveUnitsThroughTransports2() {
+  void testMoveUnitsThroughTransports2() {
     final IDelegateBridge bridge = newDelegateBridge(british(gameData));
     advanceToStep(bridge, "britishNonCombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -787,7 +787,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testLoadThroughSubs() {
+  void testLoadThroughSubs() {
     final IDelegateBridge bridge = newDelegateBridge(british(gameData));
     advanceToStep(bridge, "britishNonCombatMove");
     final MoveDelegate moveDelegate = moveDelegate(gameData);
@@ -810,7 +810,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testAttackUndoAndAttackAgain() {
+  void testAttackUndoAndAttackAgain() {
     final MoveDelegate move = moveDelegate(gameData);
     final IDelegateBridge bridge = newDelegateBridge(italians(gameData));
     advanceToStep(bridge, "CombatMove");
@@ -836,7 +836,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testAttackSubsOnSubs() {
+  void testAttackSubsOnSubs() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -869,7 +869,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testAttackSubsOnDestroyer() {
+  void testAttackSubsOnDestroyer() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -903,7 +903,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testAttackDestroyerAndSubsAgainstSub() {
+  void testAttackDestroyerAndSubsAgainstSub() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -937,7 +937,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
+  void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -979,7 +979,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testLimitBombardtoNumberOfUnloaded() {
+  void testLimitBombardtoNumberOfUnloaded() {
     final MoveDelegate move = moveDelegate(gameData);
     final IDelegateBridge bridge = newDelegateBridge(italians(gameData));
     givenRemotePlayerWillSelectShoreBombard(bridge);
@@ -1027,7 +1027,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testBombardStrengthVariable() {
+  void testBombardStrengthVariable() {
     final MoveDelegate move = moveDelegate(gameData);
     final IDelegateBridge bridge = newDelegateBridge(italians(gameData));
     givenRemotePlayerWillSelectShoreBombard(bridge);
@@ -1092,7 +1092,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testAmphAttackUndoAndAttackAgainBombard() {
+  void testAmphAttackUndoAndAttackAgainBombard() {
     final MoveDelegate move = moveDelegate(gameData);
     final IDelegateBridge bridge = newDelegateBridge(italians(gameData));
     givenRemotePlayerWillSelectShoreBombard(bridge);
@@ -1128,7 +1128,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testCarrierWithAlliedPlanes() {
+  void testCarrierWithAlliedPlanes() {
     final Territory sz8 = territory("8 Sea Zone", gameData);
     final Territory sz1 = territory("1 Sea Zone", gameData);
     addTo(sz8, carrier(gameData).create(1, british(gameData)));
@@ -1145,7 +1145,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testAirCanLandWithAlliedFighters() {
+  void testAirCanLandWithAlliedFighters() {
     // germany owns madagascar, with 2 fighters in it
     // also 1 carrier, and 1 allied fighter in sz 40
     // the fighters should not be able to move from madagascar
@@ -1168,7 +1168,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testMechInfSimple() {
+  void testMechInfSimple() {
     final PlayerId germans = germans(gameData);
     final Territory france = territory("France", gameData);
     final Territory germany = territory("Germany", gameData);
@@ -1186,7 +1186,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testMechInfUnitAlreadyMovedSimple() {
+  void testMechInfUnitAlreadyMovedSimple() {
     final PlayerId germans = germans(gameData);
     final Territory france = territory("France", gameData);
     final Territory germany = territory("Germany", gameData);
@@ -1207,7 +1207,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testParatroopsWalkOnWater() {
+  void testParatroopsWalkOnWater() {
     final PlayerId germans = germans(gameData);
     final Territory france = territory("France", gameData);
     TechAttachment.get(germans).setParatroopers("true");
@@ -1220,7 +1220,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testBomberWithTankOverWaterParatroopers() {
+  void testBomberWithTankOverWaterParatroopers() {
     final PlayerId germans = germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
@@ -1241,7 +1241,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testBomberTankOverWater() {
+  void testBomberTankOverWater() {
     // can't transport a tank over water using a bomber
     final PlayerId germans = germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
@@ -1262,7 +1262,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testMoveParatroopersAsNonPartroops() {
+  void testMoveParatroopersAsNonPartroops() {
     // move a bomber and a paratrooper
     // one step, but as a normal movement
     final PlayerId germans = germans(gameData);
@@ -1282,7 +1282,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testCantMoveParatroopersThatMovedPreviously() {
+  void testCantMoveParatroopersThatMovedPreviously() {
     // make sure infantry can't be moved as paratroopers after moving
     final PlayerId germans = germans(gameData);
     final Territory germany = territory("Germany", gameData);
@@ -1304,7 +1304,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testCantTransportParatroopersWithBombersThatMovedPreviously() {
+  void testCantTransportParatroopersWithBombersThatMovedPreviously() {
     // make sure bombers can't move then pick up paratroopers
     final PlayerId germans = germans(gameData);
     final Territory germany = territory("Germany", gameData);
@@ -1328,7 +1328,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testMoveOneParatrooperPerBomber() {
+  void testMoveOneParatrooperPerBomber() {
     // make sure only 1 paratroop per bomber can be moved
     final PlayerId germans = germans(gameData);
     final Territory germany = territory("Germany", gameData);
@@ -1350,7 +1350,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testParatroopersMoveTwice() {
+  void testParatroopersMoveTwice() {
     // After a battle move to put a bomber + infantry (paratroop) in a first enemy
     // territory, you can make a new move (in the same battle move round) to put
     // bomber+ infantry in a more internal enemy territory.
@@ -1386,7 +1386,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testParatroopersFlyOverBlitzedTerritory() {
+  void testParatroopersFlyOverBlitzedTerritory() {
     // We should be able to blitz a territory, then fly over it with paratroops to battle.
     final PlayerId germans = germans(gameData);
     final Territory germany = territory("Germany", gameData);
@@ -1421,7 +1421,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testDefencelessTransportsDie() {
+  void testDefencelessTransportsDie() {
     final PlayerId british = british(gameData);
     final IDelegateBridge bridge = newDelegateBridge(british);
     advanceToStep(bridge, "CombatMove");
@@ -1449,7 +1449,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testFighterLandsWhereCarrierCanBePlaced() {
+  void testFighterLandsWhereCarrierCanBePlaced() {
     final PlayerId germans = germans(gameData);
     // germans have 1 carrier to place
     addTo(germans, carrier(gameData).create(1, germans), gameData);
@@ -1468,7 +1468,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testFighterCantHoverWithNoCarrierToPlace() {
+  void testFighterCantHoverWithNoCarrierToPlace() {
     // start the move phase
     final IDelegateBridge bridge = newDelegateBridge(germans(gameData));
     advanceToStep(bridge, "CombatMove");
@@ -1486,7 +1486,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testRepair() {
+  void testRepair() {
     final Territory germany = territory("Germany", gameData);
     final Unit factory = germany.getUnitCollection().getMatches(Matches.unitCanBeDamaged()).get(0);
     final PurchaseDelegate del = purchaseDelegate(gameData);
@@ -1539,7 +1539,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testRepairMoreThanDamaged() {
+  void testRepairMoreThanDamaged() {
     final Territory germany = territory("Germany", gameData);
     final Unit factory = germany.getUnitCollection().getMatches(Matches.unitCanBeDamaged()).get(0);
     final PurchaseDelegate del = purchaseDelegate(gameData);
@@ -1564,7 +1564,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testOccupiedTerrOfAttachment() {
+  void testOccupiedTerrOfAttachment() {
     // Set up test
     final PlayerId british = GameDataTestUtil.british(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(british(gameData));
@@ -1597,7 +1597,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testOccupiedTerrOfAttachmentWithCapital() throws GameParseException {
+  void testOccupiedTerrOfAttachmentWithCapital() throws GameParseException {
     // Set up test
     final PlayerId british = GameDataTestUtil.british(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(british(gameData));
@@ -1637,7 +1637,7 @@ public class WW2V3Year41Test {
   }
 
   @Test
-  public void testTwoStepBlitz() {
+  void testTwoStepBlitz() {
     final IDelegateBridge delegateBridge = newDelegateBridge(british(gameData));
     // Set up the territories
     final Territory libya = territory("Libya", gameData);

@@ -28,7 +28,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class MoveValidatorTest extends AbstractDelegateTestCase {
 
   @Test
-  public void testEnemyUnitsInPath() {
+  void testEnemyUnitsInPath() {
     // japanese unit in congo
     final Route bad = new Route();
     // the empty case
@@ -47,7 +47,7 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testHasUnitsThatCantGoOnWater() {
+  void testHasUnitsThatCantGoOnWater() {
     final Collection<Unit> units = new ArrayList<>();
     units.addAll(infantry.create(1, british));
     units.addAll(armour.create(1, british));
@@ -58,19 +58,19 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCarrierCapacity() {
+  void testCarrierCapacity() {
     final Collection<Unit> units = carrier.create(5, british);
     assertEquals(10, AirMovementValidator.carrierCapacity(units, new Territory("TestTerritory", true, gameData)));
   }
 
   @Test
-  public void testCarrierCost() {
+  void testCarrierCost() {
     final Collection<Unit> units = fighter.create(5, british);
     assertEquals(5, AirMovementValidator.carrierCost(units));
   }
 
   @Test
-  public void testGetLeastMovement() {
+  void testGetLeastMovement() {
     final Collection<Unit> collection = bomber.create(1, british);
     assertEquals(6, MoveValidator.getLeastMovement(collection));
     final Object[] objs = collection.toArray();
@@ -81,7 +81,7 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCanLand() {
+  void testCanLand() {
     final Collection<Unit> units = fighter.create(4, british);
     // 2 carriers in red sea
     assertTrue(AirMovementValidator.canLand(units, redSea, british, gameData));
@@ -97,7 +97,7 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCanLandInfantry() {
+  void testCanLandInfantry() {
     try {
       final Collection<Unit> units = infantry.create(1, british);
       AirMovementValidator.canLand(units, redSea, british, gameData);
@@ -108,13 +108,13 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCanLandBomber() {
+  void testCanLandBomber() {
     final Collection<Unit> units = bomber.create(1, british);
     assertTrue(!AirMovementValidator.canLand(units, redSea, british, gameData));
   }
 
   @Test
-  public void testHasSomeLand() {
+  void testHasSomeLand() {
     final Collection<Unit> units = transport.create(3, british);
     assertTrue(units.stream().noneMatch(Matches.unitIsLand()));
     units.addAll(infantry.create(2, british));
@@ -122,7 +122,7 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testValidateMoveForRequiresUnitsToMove() throws Exception {
+  void testValidateMoveForRequiresUnitsToMove() throws Exception {
 
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
@@ -171,7 +171,7 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testValidateMoveForLandTransports() throws Exception {
+  void testValidateMoveForLandTransports() throws Exception {
 
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
@@ -221,7 +221,7 @@ public class MoveValidatorTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testValidateUnitsCanLoadInHostileSeaZones() throws Exception {
+  void testValidateUnitsCanLoadInHostileSeaZones() throws Exception {
 
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 

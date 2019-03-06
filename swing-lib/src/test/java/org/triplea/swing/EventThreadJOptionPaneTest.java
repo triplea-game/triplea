@@ -28,7 +28,7 @@ public final class EventThreadJOptionPaneTest {
   private final CountDownLatchHandler latchHandler = new CountDownLatchHandler();
 
   @Test
-  public void testShouldRunSupplierOnEventDispatchThreadWhenNotCalledFromEventDispatchThread() {
+  void testShouldRunSupplierOnEventDispatchThreadWhenNotCalledFromEventDispatchThread() {
     assertTimeoutPreemptively(timeout, () -> {
       final CountDownLatch latch = new CountDownLatch(1);
       final AtomicBoolean runOnEventDispatchThread = new AtomicBoolean(false);
@@ -47,7 +47,7 @@ public final class EventThreadJOptionPaneTest {
   }
 
   @Test
-  public void testShouldNotDeadlockWhenCalledFromEventDispatchThread() {
+  void testShouldNotDeadlockWhenCalledFromEventDispatchThread() {
     assertTimeoutPreemptively(timeout, () -> {
       final CountDownLatch latch = new CountDownLatch(1);
       final AtomicBoolean run = new AtomicBoolean(false);
@@ -66,7 +66,7 @@ public final class EventThreadJOptionPaneTest {
   }
 
   @Test
-  public void testShouldReturnSupplierResult() {
+  void testShouldReturnSupplierResult() {
     assertTimeoutPreemptively(timeout, () -> {
       final Object expectedResult = new Object();
 
@@ -78,7 +78,7 @@ public final class EventThreadJOptionPaneTest {
   }
 
   @Test
-  public void testShouldRegisterAndUnregisterLatchWithLatchHandler() {
+  void testShouldRegisterAndUnregisterLatchWithLatchHandler() {
     assertTimeoutPreemptively(timeout, () -> {
       EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.empty());
 
@@ -88,7 +88,7 @@ public final class EventThreadJOptionPaneTest {
   }
 
   @Test
-  public void testShouldReturnIntSupplierResult() {
+  void testShouldReturnIntSupplierResult() {
     assertTimeoutPreemptively(timeout, () -> {
       final int expectedResult = 42;
 

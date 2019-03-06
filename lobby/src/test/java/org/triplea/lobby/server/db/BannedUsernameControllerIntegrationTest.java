@@ -20,7 +20,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
       TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBannedUsernameDao();
 
   @Test
-  public void testBanUsernameForever() {
+  void testBanUsernameForever() {
     banUsernameForSeconds(Long.MAX_VALUE);
     final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
     assertTrue(usernameDetails.getFirst());
@@ -28,7 +28,20 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   }
 
   @Test
-  public void testUnbanUsername() {
+  void testBanUsername() {
+    final Instant banUntil = banUsernameForSeconds(100L);
+    assertBannedUserEquals(user);
+    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
+    assertTrue(usernameDetails.getFirst());
+    assertEquals(banUntil, usernameDetails.getSecond().toInstant());
+    when(controller.now()).thenReturn(banUntil.plusSeconds(1L));
+    final Tuple<Boolean, Timestamp> usernameDetails2 = isUsernameBanned();
+    assertFalse(usernameDetails2.getFirst());
+    assertEquals(banUntil, usernameDetails2.getSecond().toInstant());
+  }
+
+  @Test
+  void testUnbanUsername() {
     final Instant banUntil = banUsernameForSeconds(100L);
     final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
     assertTrue(usernameDetails.getFirst());
@@ -40,7 +53,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   }
 
   @Test
-  public void testBanUsernameInThePast() {
+  void testBanUsernameInThePast() {
     banUsernameForSeconds(-10L);
     final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
     assertFalse(usernameDetails.getFirst());
@@ -48,7 +61,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   }
 
   @Test
-  public void testBanUsernameUpdate() {
+  void testBanUsernameUpdate() {
     banUsernameForSeconds(Long.MAX_VALUE);
     final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
     assertTrue(usernameDetails.getFirst());
@@ -60,7 +73,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   }
 
   @Test
-  public void testBanUsernameUpdatesBannedUserAndModerator() {
+  void testBanUsernameUpdatesBannedUserAndModerator() {
     banUsernameForSeconds(user, Long.MAX_VALUE, moderator);
 
     final User otherUser = newUser().withUsername(user.getUsername());

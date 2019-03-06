@@ -780,7 +780,7 @@ public final class TripleAFrame extends JFrame {
     if (game instanceof ServerGame) {
       ((ServerGame) game).stopGame();
     } else {
-      game.getMessenger().shutDown();
+      game.getMessengers().shutDown();
       ((ClientGame) game).shutDown();
       // an ugly hack, we need a better way to get the main frame
       new Thread(GameRunner::clientLeftGame).start();

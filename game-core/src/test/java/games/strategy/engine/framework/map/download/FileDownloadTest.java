@@ -11,7 +11,7 @@ import games.strategy.engine.framework.map.download.DownloadFile.DownloadState;
 
 public class FileDownloadTest {
   @Test
-  public void testBasicStartCancel() {
+  void testBasicStartCancel() {
     final DownloadFileDescription downloadFileDescription = new DownloadFileDescription(
         "url",
         "description",

@@ -7,7 +7,13 @@ import javax.annotation.Nullable;
 
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IRemoteHostUtils;
-import org.triplea.lobby.server.db.DatabaseDao;
+import org.triplea.lobby.server.config.LobbyConfiguration;
+import org.triplea.lobby.server.db.BannedMacController;
+import org.triplea.lobby.server.db.BannedUsernameController;
+import org.triplea.lobby.server.db.Database;
+import org.triplea.lobby.server.db.MutedMacController;
+import org.triplea.lobby.server.db.MutedUsernameController;
+import org.triplea.lobby.server.db.UserController;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -17,7 +23,6 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
-import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 
 @Log
@@ -202,7 +207,7 @@ final class ModeratorController implements IModeratorController {
 
   private IRemoteHostUtils getRemoteHostUtilsForNode(final INode node) {
     final RemoteName remoteName = IRemoteHostUtils.Companion.newRemoteNameForNode(node);
-    return (IRemoteHostUtils) messengers.getRemoteMessenger().getRemote(remoteName);
+    return (IRemoteHostUtils) messengers.getRemote(remoteName);
   }
 
   @Override

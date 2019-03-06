@@ -25,7 +25,7 @@ public class MapDownloadListSortTest {
   }
 
   @Test
-  public void testSortingSortedList() {
+  void testSortingSortedList() {
     final List<DownloadFileDescription> downloads = Lists.newArrayList(MAP_A, MAP_B, MAP_C);
 
     final List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
@@ -39,7 +39,7 @@ public class MapDownloadListSortTest {
   }
 
   @Test
-  public void testSortingUnSortedList() {
+  void testSortingUnSortedList() {
     final List<DownloadFileDescription> downloads = Lists.newArrayList(MAP_B, MAP_C, MAP_A);
     final List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertSorted(sorted);

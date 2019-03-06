@@ -91,12 +91,12 @@ public class HistorySynchronizer {
       data.releaseReadLock();
     }
     this.game = game;
-    this.game.getChannelMessenger().registerChannelSubscriber(gameModifiedChannelListener,
+    this.game.getMessengers().registerChannelSubscriber(gameModifiedChannelListener,
         IGame.GAME_MODIFICATION_CHANNEL);
   }
 
   public void deactivate() {
-    game.getChannelMessenger().unregisterChannelSubscriber(gameModifiedChannelListener,
+    game.getMessengers().unregisterChannelSubscriber(gameModifiedChannelListener,
         IGame.GAME_MODIFICATION_CHANNEL);
   }
 

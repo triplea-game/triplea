@@ -15,7 +15,7 @@ public class DownloadFileParserTest {
   private static final String GAME_NAME = "myGame";
 
   @Test
-  public void testParseMap() throws Exception {
+  void testParseMap() throws Exception {
     final List<DownloadFileDescription> games = parse(buildTestData());
     assertThat(games.size(), is(4));
     final DownloadFileDescription desc = games.get(0);
@@ -29,7 +29,7 @@ public class DownloadFileParserTest {
   }
 
   @Test
-  public void testParseModSkin() throws Exception {
+  void testParseModSkin() throws Exception {
     final List<DownloadFileDescription> games = parse(buildTestData());
     assertThat(games.size(), is(4));
     final DownloadFileDescription desc = games.get(2);
@@ -39,7 +39,7 @@ public class DownloadFileParserTest {
   }
 
   @Test
-  public void testParseMapTool() throws Exception {
+  void testParseMapTool() throws Exception {
     final List<DownloadFileDescription> games = parse(buildTestData());
     assertThat(games.size(), is(4));
     final DownloadFileDescription desc = games.get(3);
@@ -89,7 +89,7 @@ public class DownloadFileParserTest {
   }
 
   @Test
-  public void testMapTypeDefaultsToMap() throws Exception {
+  void testMapTypeDefaultsToMap() throws Exception {
     final DownloadFileDescription download = parse(newSimpleGameXmlWithNoTypeTag()).get(0);
 
     assertThat(download.isMap(), is(true));

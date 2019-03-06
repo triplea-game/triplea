@@ -23,12 +23,12 @@ public class EmailLimitIntegrationTest {
   // private final Database database = new Database(TestLobbyConfigurations.INTEGRATION_TEST);
 
   @Test
-  public void testAllowsMaximumLength() {
+  void testAllowsMaximumLength() {
     assertDoesNotThrow(() -> createAccountWithEmail(getStringWithLength(60) + "@" + getStringWithLength(193)));
   }
 
   @Test
-  public void testAllowsMaximumLocalLength() {
+  void testAllowsMaximumLocalLength() {
     assertDoesNotThrow(() -> createAccountWithEmail(getStringWithLength(64) + "@" + getStringWithLength(189)));
   }
 

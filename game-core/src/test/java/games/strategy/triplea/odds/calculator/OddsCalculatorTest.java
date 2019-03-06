@@ -28,12 +28,12 @@ public class OddsCalculatorTest {
   private GameData gameData;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.REVISED.getGameData();
   }
 
   @Test
-  public void testUnbalancedFight() {
+  void testUnbalancedFight() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Collection<Unit> defendingUnits = new ArrayList<>(germany.getUnits());
     final PlayerId russians = GameDataTestUtil.russians(gameData);
@@ -50,7 +50,7 @@ public class OddsCalculatorTest {
   }
 
   @Test
-  public void testKeepOneAttackingLand() {
+  void testKeepOneAttackingLand() {
     // 1 bomber and 1 infantry attacking
     // 1 fighter
     // if one attacking inf must live, the odds much worse
@@ -71,7 +71,7 @@ public class OddsCalculatorTest {
   }
 
   @Test
-  public void testAttackingTransports() {
+  void testAttackingTransports() {
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final List<Unit> attacking = transport(gameData).create(2, americans(gameData));
     final List<Unit> defending = submarine(gameData).create(2, germans(gameData));
@@ -85,7 +85,7 @@ public class OddsCalculatorTest {
   }
 
   @Test
-  public void testDefendingTransports() throws Exception {
+  void testDefendingTransports() throws Exception {
     // use v3 rule set
     gameData = TestMapGameData.WW2V3_1942.getGameData();
     final Territory sz1 = territory("1 Sea Zone", gameData);

@@ -46,11 +46,11 @@ final class NetworkMenu extends JMenu {
   }
 
   private boolean isServer() {
-    return game.getMessenger().isServer();
+    return game.getMessengers().isServer();
   }
 
   private IServerMessenger getServerMessenger() {
-    return (IServerMessenger) game.getMessenger();
+    return game.getMessengers().getServerMessenger();
   }
 
   private void addBanPlayer() {

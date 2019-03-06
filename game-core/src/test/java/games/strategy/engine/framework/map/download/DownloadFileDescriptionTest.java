@@ -15,28 +15,28 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
   @Test
-  public void testIsMap() {
+  void testIsMap() {
     final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),
         DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.isMap(), is(true));
   }
 
   @Test
-  public void testIsSkin() {
+  void testIsSkin() {
     final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),
         DownloadFileDescription.DownloadType.MAP_SKIN, DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.isMapSkin(), is(true));
   }
 
   @Test
-  public void testIsTool() {
+  void testIsTool() {
     final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),
         DownloadFileDescription.DownloadType.MAP_TOOL, DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.isMapTool(), is(true));
   }
 
   @Test
-  public void testGetMapName() {
+  void testGetMapName() {
     final String mapName = "abc";
     final DownloadFileDescription testObj =
         new DownloadFileDescription("", "", mapName, new Version(0, 0), DownloadFileDescription.DownloadType.MAP,
@@ -45,7 +45,7 @@ public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testGetMapType() {
+  void testGetMapType() {
     final DownloadFileDescription testObj =
         new DownloadFileDescription("", "", "", new Version(0, 0), DownloadFileDescription.DownloadType.MAP,
             DownloadFileDescription.MapCategory.BEST);
@@ -53,7 +53,7 @@ public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testGetMapFileName() {
+  void testGetMapFileName() {
     final String expectedFileName = "world_war_ii_revised.zip";
     String inputUrl = "https://github.com/triplea-maps/world_war_ii_revised/releases/download/0.1/" + expectedFileName;
 
@@ -75,7 +75,7 @@ public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testGetInstallLocation() {
+  void testGetInstallLocation() {
     String inputUrl = "http://github.com/abc.zip";
     String mapName = "123-map";
     File expected = new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + mapName + ".zip");

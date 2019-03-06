@@ -19,12 +19,12 @@ public class BigWorldTest {
   private GameData gameData;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.BIG_WORLD_1942.getGameData();
   }
 
   @Test
-  public void testCanalMovementNotStartingInCanalZone() {
+  void testCanalMovementNotStartingInCanalZone() {
     final Territory sz28 = territory("SZ 28 Eastern Mediterranean", gameData);
     final Territory sz27 = territory("SZ 27 Aegean Sea", gameData);
     final Territory sz29 = territory("SZ 29 Black Sea", gameData);

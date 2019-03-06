@@ -17,8 +17,9 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
 import org.triplea.java.Util;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
+import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
-import org.triplea.lobby.server.db.UserDao;
+import org.triplea.lobby.server.db.UserController;
 import org.triplea.test.common.Integration;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
