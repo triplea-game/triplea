@@ -42,17 +42,17 @@ public final class LobbyServer {
     final Messengers messengers = new Messengers(server);
     server.setLoginValidator(new LobbyLoginValidator(lobbyConfiguration));
     // setup common objects
-    new UserManager(lobbyConfiguration).register(messengers.getRemoteMessenger());
+    new UserManager(lobbyConfiguration).register(messengers);
     final ModeratorController moderatorController = new ModeratorController(server, messengers, lobbyConfiguration);
-    moderatorController.register(messengers.getRemoteMessenger());
+    moderatorController.register(messengers);
     new ChatController(LobbyConstants.LOBBY_CHAT, messengers, moderatorController::isPlayerAdmin);
 
     // register the status controller
     new StatusManager(messengers).shutDown();
 
-    final LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) messengers
-        .getChannelMessenger().getChannelBroadcaster(ILobbyGameBroadcaster.REMOTE_NAME), server);
-    controller.register(messengers.getRemoteMessenger());
+    final LobbyGameController controller = new LobbyGameController(
+        (ILobbyGameBroadcaster) messengers.getChannelBroadcaster(ILobbyGameBroadcaster.REMOTE_NAME), server);
+    controller.register(messengers);
 
     // now we are open for business
     server.setAcceptNewConnections(true);

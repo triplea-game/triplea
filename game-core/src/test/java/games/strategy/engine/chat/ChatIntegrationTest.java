@@ -16,8 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.triplea.test.common.Integration;
 
 import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
@@ -25,6 +23,7 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
+import games.strategy.net.Messengers;
 import games.strategy.net.TestServerMessenger;
 import games.strategy.sound.SoundPath;
 
@@ -34,11 +33,11 @@ public final class ChatIntegrationTest {
   private static final int MESSAGE_COUNT = 50;
   private static final int NODE_COUNT = 3;
 
-  private IServerMessenger serverMessenger;
+  private IServerMessenger messenger;
   private IMessenger client1Messenger;
   private IMessenger client2Messenger;
-  private RemoteMessenger serverRemoteMessenger;
-  private ChannelMessenger serverChannelMessenger;
+  private RemoteMessenger remoteMessenger;
+  private ChannelMessenger channelMessenger;
   private RemoteMessenger client1RemoteMessenger;
   private ChannelMessenger client1ChannelMessenger;
   private RemoteMessenger client2RemoteMessenger;
@@ -49,15 +48,15 @@ public final class ChatIntegrationTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    serverMessenger = new TestServerMessenger("Server", 0);
-    serverMessenger.setAcceptNewConnections(true);
-    final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
+    messenger = new TestServerMessenger("Server", 0);
+    messenger.setAcceptNewConnections(true);
+    final int serverPort = messenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();
     client1Messenger = new ClientMessenger("localhost", serverPort, "client1", mac);
     client2Messenger = new ClientMessenger("localhost", serverPort, "client2", mac);
-    final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(serverMessenger);
-    serverRemoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
-    serverChannelMessenger = new ChannelMessenger(serverUnifiedMessenger);
+    final UnifiedMessenger serverUnifiedMessenger = new UnifiedMessenger(messenger);
+    remoteMessenger = new RemoteMessenger(serverUnifiedMessenger);
+    channelMessenger = new ChannelMessenger(serverUnifiedMessenger);
     final UnifiedMessenger client1UnifiedMessenger = new UnifiedMessenger(client1Messenger);
     client1RemoteMessenger = new RemoteMessenger(client1UnifiedMessenger);
     client1ChannelMessenger = new ChannelMessenger(client1UnifiedMessenger);
@@ -68,8 +67,8 @@ public final class ChatIntegrationTest {
 
   @AfterEach
   public void tearDown() {
-    if (serverMessenger != null) {
-      serverMessenger.shutDown();
+    if (messenger != null) {
+      messenger.shutDown();
     }
     if (client1Messenger != null) {
       client1Messenger.shutDown();
@@ -92,11 +91,11 @@ public final class ChatIntegrationTest {
   private void runChatTest(final ChatTest chatTest) {
     assertTimeoutPreemptively(Duration.ofSeconds(15), () -> {
       final ChatController controller = newChatController();
-      final Chat server = newChat(serverMessenger, serverChannelMessenger, serverRemoteMessenger);
+      final Chat server = newChat(new Messengers(messenger, remoteMessenger, channelMessenger));
       server.addChatListener(serverChatListener);
-      final Chat client1 = newChat(client1Messenger, client1ChannelMessenger, client1RemoteMessenger);
+      final Chat client1 = newChat(new Messengers(client1Messenger, client1RemoteMessenger, client1ChannelMessenger));
       client1.addChatListener(client1ChatListener);
-      final Chat client2 = newChat(client2Messenger, client2ChannelMessenger, client2RemoteMessenger);
+      final Chat client2 = newChat(new Messengers(client2Messenger, client2RemoteMessenger, client2ChannelMessenger));
       client2.addChatListener(client2ChatListener);
       waitFor(this::allNodesToConnect);
 
@@ -114,17 +113,15 @@ public final class ChatIntegrationTest {
   private ChatController newChatController() {
     return new ChatController(
         CHAT_NAME,
-        serverMessenger,
-        serverRemoteMessenger,
-        serverChannelMessenger,
+        new Messengers(
+            messenger,
+            remoteMessenger,
+            channelMessenger),
         node -> false);
   }
 
-  private static Chat newChat(
-      final IMessenger messenger,
-      final IChannelMessenger channelMessenger,
-      final IRemoteMessenger remoteMessenger) {
-    return new Chat(messenger, CHAT_NAME, channelMessenger, remoteMessenger, Chat.ChatSoundProfile.NO_SOUND);
+  private static Chat newChat(final Messengers messengers) {
+    return new Chat(messengers, CHAT_NAME, Chat.ChatSoundProfile.NO_SOUND);
   }
 
   private static void waitFor(final Runnable assertion) throws InterruptedException {
@@ -171,7 +168,7 @@ public final class ChatIntegrationTest {
   @Test
   public void shouldBeAbleToMuteNodeByUsername() {
     runChatTest((server, client1, client2) -> {
-      serverMessenger.notifyUsernameMutingOfPlayer(client1.getLocalNode().getName(), null);
+      messenger.notifyUsernameMutingOfPlayer(client1.getLocalNode().getName(), null);
       client1.sendMessage("Test", false);
       waitFor(() -> nodeToReceiveMessage(client1ChatListener, TestServerMessenger.ADMINISTRATIVE_MUTE_CHAT_MESSAGE));
     });
@@ -184,7 +181,7 @@ public final class ChatIntegrationTest {
   @Test
   public void shouldBeAbleToMuteNodeByMac() {
     runChatTest((server, client1, client2) -> {
-      serverMessenger.notifyMacMutingOfPlayer(serverMessenger.getPlayerMac(client1.getLocalNode().getName()), null);
+      messenger.notifyMacMutingOfPlayer(messenger.getPlayerMac(client1.getLocalNode().getName()), null);
       client1.sendMessage("Test", false);
       waitFor(() -> nodeToReceiveMessage(client1ChatListener, TestServerMessenger.ADMINISTRATIVE_MUTE_CHAT_MESSAGE));
     });

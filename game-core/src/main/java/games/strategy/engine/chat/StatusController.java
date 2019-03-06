@@ -6,7 +6,6 @@ import java.util.Map;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
-import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 
 class StatusController implements IStatusController {
@@ -16,7 +15,7 @@ class StatusController implements IStatusController {
 
   StatusController(final Messengers messengers) {
     this.messengers = messengers;
-    ((IServerMessenger) this.messengers.getMessenger()).addConnectionChangeListener(new IConnectionChangeListener() {
+    messengers.addConnectionChangeListener(new IConnectionChangeListener() {
       @Override
       public void connectionRemoved(final INode to) {
         StatusController.this.connectionRemoved(to);
@@ -32,7 +31,7 @@ class StatusController implements IStatusController {
       status.remove(to);
     }
     final IStatusChannel channel =
-        (IStatusChannel) messengers.getChannelMessenger().getChannelBroadcaster(IStatusChannel.STATUS_CHANNEL);
+        (IStatusChannel) messengers.getChannelBroadcaster(IStatusChannel.STATUS_CHANNEL);
     channel.statusChanged(to, null);
   }
 
@@ -50,7 +49,7 @@ class StatusController implements IStatusController {
       status.put(node, newStatus);
     }
     final IStatusChannel channel =
-        (IStatusChannel) messengers.getChannelMessenger().getChannelBroadcaster(IStatusChannel.STATUS_CHANNEL);
+        (IStatusChannel) messengers.getChannelBroadcaster(IStatusChannel.STATUS_CHANNEL);
     channel.statusChanged(node, newStatus);
   }
 }

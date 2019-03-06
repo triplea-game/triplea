@@ -64,4 +64,14 @@ public interface IMessenger {
    * than the actual port we use.
    */
   InetSocketAddress getRemoteServerSocketAddress();
+
+  /**
+   * Add a listener for change in connection status.
+   */
+  void addConnectionChangeListener(IConnectionChangeListener listener);
+
+  /**
+   * Remove a listener for change in connection status.
+   */
+  void removeConnectionChangeListener(IConnectionChangeListener listener);
 }

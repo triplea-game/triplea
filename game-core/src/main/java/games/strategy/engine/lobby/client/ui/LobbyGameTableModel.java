@@ -19,11 +19,9 @@ import org.triplea.util.Tuple;
 import com.google.common.annotations.VisibleForTesting;
 
 import games.strategy.engine.lobby.server.GameDescription;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
-import games.strategy.net.IMessenger;
+import games.strategy.net.Messengers;
 
 class LobbyGameTableModel extends AbstractTableModel {
   private static final long serialVersionUID = 6399458368730633993L;
@@ -32,7 +30,7 @@ class LobbyGameTableModel extends AbstractTableModel {
     Host, Name, GV, Round, Players, P, Status, Comments, Started, GUID
   }
 
-  private final IMessenger messenger;
+  private final Messengers messengers;
   private final boolean admin;
 
   // these must only be accessed in the swing event thread
@@ -51,14 +49,13 @@ class LobbyGameTableModel extends AbstractTableModel {
     }
   };
 
-  LobbyGameTableModel(final boolean admin, final IMessenger messenger, final IChannelMessenger channelMessenger,
-      final IRemoteMessenger remoteMessenger) {
-    this.messenger = messenger;
+  LobbyGameTableModel(final boolean admin, final Messengers messengers) {
+    this.messengers = messengers;
     this.admin = admin;
-    channelMessenger.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.REMOTE_NAME);
+    messengers.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.REMOTE_NAME);
 
     final Map<GUID, GameDescription> games =
-        ((ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME)).listGames();
+        ((ILobbyGameController) messengers.getRemote(ILobbyGameController.REMOTE_NAME)).listGames();
     for (final Map.Entry<GUID, GameDescription> entry : games.entrySet()) {
       updateGame(entry.getKey(), entry.getValue());
     }
@@ -96,7 +93,7 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
   private void assertSentFromServer() {
-    if (!MessageContext.getSender().equals(messenger.getServerNode())) {
+    if (!MessageContext.getSender().equals(messengers.getServerNode())) {
       throw new IllegalStateException("Invalid sender");
     }
   }

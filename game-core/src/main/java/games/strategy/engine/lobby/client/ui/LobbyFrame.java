@@ -60,8 +60,8 @@ public class LobbyFrame extends JFrame {
     setIconImage(JFrameBuilder.getGameIcon());
     this.client = client;
     setJMenuBar(new LobbyMenu(this));
-    final Chat chat = new Chat(this.client.getMessenger(), LobbyConstants.LOBBY_CHAT,
-        this.client.getChannelMessenger(), this.client.getRemoteMessenger(), Chat.ChatSoundProfile.LOBBY_CHATROOM);
+    final Chat chat = new Chat(
+        client.getMessengers(), LobbyConstants.LOBBY_CHAT, Chat.ChatSoundProfile.LOBBY_CHATROOM);
     chatMessagePanel = new ChatMessagePanel(chat);
     lobbyServerProperties.getServerMessage().ifPresent(chatMessagePanel::addServerMessage);
     chatMessagePanel.setShowTime(true);
@@ -87,7 +87,7 @@ public class LobbyFrame extends JFrame {
     pack();
     chatMessagePanel.requestFocusInWindow();
     setLocationRelativeTo(null);
-    this.client.getMessenger().addErrorListener((reason) -> connectionToServerLost());
+    this.client.getMessengers().addErrorListener((reason) -> connectionToServerLost());
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
@@ -104,10 +104,10 @@ public class LobbyFrame extends JFrame {
     if (!client.isAdmin()) {
       return Collections.emptyList();
     }
-    if (clickedOn.equals(client.getMessenger().getLocalNode())) {
+    if (clickedOn.equals(client.getMessengers().getLocalNode())) {
       return Collections.emptyList();
     }
-    final IModeratorController controller = (IModeratorController) client.getRemoteMessenger()
+    final IModeratorController controller = (IModeratorController) client.getMessengers()
         .getRemote(IModeratorController.REMOTE_NAME);
     final List<Action> actions = new ArrayList<>();
     actions.add(SwingAction.of("Boot " + clickedOn.getName(), e -> {
@@ -221,7 +221,7 @@ public class LobbyFrame extends JFrame {
     dispose();
     new Thread(() -> {
       GameRunner.showMainFrame();
-      client.getMessenger().shutDown();
+      client.getMessengers().shutDown();
       GameRunner.exitGameIfFinished();
     }).start();
   }
