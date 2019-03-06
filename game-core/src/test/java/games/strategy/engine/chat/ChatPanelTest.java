@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 public class ChatPanelTest {
 
   @Test
-  public void testTrim() throws Exception {
+  void testTrim() throws Exception {
     final StyledDocument doc = new DefaultStyledDocument();
     final StringBuilder buffer = new StringBuilder();
     for (int i = 0; i < 10; i++) {

@@ -24,7 +24,7 @@ public class ChangeTest {
   private GameData gameData;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.TEST.getGameData();
   }
 
@@ -44,7 +44,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testUnitsAddTerritory() {
+  void testUnitsAddTerritory() {
     // make sure we know where we are starting
     final Territory can = gameData.getMap().getTerritory("canada");
     assertEquals(5, can.getUnitCollection().getUnitCount());
@@ -59,7 +59,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testUnitsRemoveTerritory() {
+  void testUnitsRemoveTerritory() {
     // make sure we now where we are starting
     final Territory can = gameData.getMap().getTerritory("canada");
     assertEquals(5, can.getUnitCollection().getUnitCount());
@@ -75,7 +75,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testSerializeUnitsRemoteTerritory() throws Exception {
+  void testSerializeUnitsRemoteTerritory() throws Exception {
     // make sure we now where we are starting
     final Territory can = gameData.getMap().getTerritory("canada");
     assertEquals(5, can.getUnitCollection().getUnitCount());
@@ -92,7 +92,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testUnitsAddPlayer() {
+  void testUnitsAddPlayer() {
     // make sure we know where we are starting
     final PlayerId chretian = gameData.getPlayerList().getPlayerId("chretian");
     assertEquals(10, chretian.getUnitCollection().getUnitCount());
@@ -108,7 +108,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testUnitsRemovePlayer() {
+  void testUnitsRemovePlayer() {
     // make sure we know where we are starting
     final PlayerId chretian = gameData.getPlayerList().getPlayerId("chretian");
     assertEquals(10, chretian.getUnitCollection().getUnitCount());
@@ -124,7 +124,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testUnitsMove() {
+  void testUnitsMove() {
     final Territory canada = gameData.getMap().getTerritory("canada");
     final Territory greenland = gameData.getMap().getTerritory("greenland");
     assertEquals(5, canada.getUnitCollection().getUnitCount());
@@ -141,7 +141,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testUnitsMoveSerialization() throws Exception {
+  void testUnitsMoveSerialization() throws Exception {
     final Territory canada = gameData.getMap().getTerritory("canada");
     final Territory greenland = gameData.getMap().getTerritory("greenland");
     assertEquals(5, canada.getUnitCollection().getUnitCount());
@@ -159,7 +159,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testProductionFrontierChange() {
+  void testProductionFrontierChange() {
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
     final ProductionFrontier uspf = gameData.getProductionFrontierList().getProductionFrontier("usProd");
     final ProductionFrontier canpf = gameData.getProductionFrontierList().getProductionFrontier("canProd");
@@ -172,7 +172,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testChangeResourcesChange() {
+  void testChangeResourcesChange() {
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
     final Resource gold = gameData.getResourceList().getResource("gold");
     final Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
@@ -184,7 +184,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testSerializeResourceChange() throws Exception {
+  void testSerializeResourceChange() throws Exception {
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
     final Resource gold = gameData.getResourceList().getResource("gold");
     Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
@@ -195,7 +195,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testChangeOwner() {
+  void testChangeOwner() {
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
     final PlayerId us = gameData.getPlayerList().getPlayerId("bush");
     final Territory greenland = gameData.getMap().getTerritory("greenland");
@@ -208,7 +208,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testChangeOwnerSerialize() throws Exception {
+  void testChangeOwnerSerialize() throws Exception {
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
     final PlayerId us = gameData.getPlayerList().getPlayerId("bush");
     final Territory greenland = gameData.getMap().getTerritory("greenland");
@@ -224,7 +224,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testPlayerOwnerChange() {
+  void testPlayerOwnerChange() {
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
     final PlayerId us = gameData.getPlayerList().getPlayerId("bush");
     final UnitType infantry = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
@@ -246,7 +246,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testPlayerOwnerChangeSerialize() throws Exception {
+  void testPlayerOwnerChangeSerialize() throws Exception {
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
     final PlayerId us = gameData.getPlayerList().getPlayerId("bush");
     final UnitType infantry = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
@@ -270,7 +270,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testChangeProductionFrontier() throws Exception {
+  void testChangeProductionFrontier() throws Exception {
     final ProductionFrontier usProd = gameData.getProductionFrontierList().getProductionFrontier("usProd");
     final ProductionFrontier canProd = gameData.getProductionFrontierList().getProductionFrontier("canProd");
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
@@ -291,7 +291,7 @@ public class ChangeTest {
   }
 
   @Test
-  public void testBlank() {
+  void testBlank() {
     final CompositeChange compositeChange = new CompositeChange();
     assertTrue(compositeChange.isEmpty());
     compositeChange.add(new CompositeChange());

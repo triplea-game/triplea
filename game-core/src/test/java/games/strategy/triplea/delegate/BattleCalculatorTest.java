@@ -61,13 +61,13 @@ public class BattleCalculatorTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     final GameData data = TestMapGameData.REVISED.getGameData();
     bridge = MockDelegateBridge.newInstance(data, british(data));
   }
 
   @Test
-  public void testAaCasualtiesLowLuck() {
+  void testAaCasualtiesLowLuck() {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, false);
@@ -83,7 +83,7 @@ public class BattleCalculatorTest {
   }
 
   @Test
-  public void testAaCasualtiesLowLuckDifferentMovementLeft() {
+  void testAaCasualtiesLowLuckDifferentMovementLeft() {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, false);
@@ -100,7 +100,7 @@ public class BattleCalculatorTest {
   }
 
   @Test
-  public void testAaCasualtiesLowLuckMixed() {
+  void testAaCasualtiesLowLuckMixed() {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, false);
@@ -125,7 +125,7 @@ public class BattleCalculatorTest {
   }
 
   @Test
-  public void testAaCasualtiesLowLuckMixedMultipleDiceRolled() {
+  void testAaCasualtiesLowLuckMixedMultipleDiceRolled() {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, false);
@@ -155,7 +155,7 @@ public class BattleCalculatorTest {
   }
 
   @Test
-  public void testAaCasualtiesLowLuckMixedWithChooseAaCasualties() {
+  void testAaCasualtiesLowLuckMixedWithChooseAaCasualties() {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, true);
@@ -183,7 +183,7 @@ public class BattleCalculatorTest {
   }
 
   @Test
-  public void testAaCasualtiesLowLuckMixedWithChooseAaCasualtiesRoll() {
+  void testAaCasualtiesLowLuckMixedWithChooseAaCasualtiesRoll() {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, true);
@@ -211,7 +211,7 @@ public class BattleCalculatorTest {
   }
 
   @Test
-  public void testAaCasualtiesLowLuckMixedWithRolling() {
+  void testAaCasualtiesLowLuckMixedWithRolling() {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, false);
@@ -243,7 +243,7 @@ public class BattleCalculatorTest {
   }
 
   @Test
-  public void testAaCasualtiesLowLuckMixedWithRollingMiss() {
+  void testAaCasualtiesLowLuckMixedWithRollingMiss() {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, false);
@@ -276,7 +276,7 @@ public class BattleCalculatorTest {
   }
 
   @Test
-  public void testAaCasualtiesLowLuckMixedWithRollingForBombers() {
+  void testAaCasualtiesLowLuckMixedWithRollingForBombers() {
     final GameData data = bridge.getData();
     makeGameLowLuck(data);
     setSelectAaCasualties(data, false);

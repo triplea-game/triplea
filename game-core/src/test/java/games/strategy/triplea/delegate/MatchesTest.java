@@ -110,7 +110,7 @@ public final class MatchesTest {
     }
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
       gameData = TestMapGameData.DELEGATE_TEST.getGameData();
 
       player = GameDataTestUtil.germans(gameData);
@@ -180,7 +180,7 @@ public final class MatchesTest {
     }
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
       gameData = TestMapGameData.DELEGATE_TEST.getGameData();
 
       player = GameDataTestUtil.germans(gameData);

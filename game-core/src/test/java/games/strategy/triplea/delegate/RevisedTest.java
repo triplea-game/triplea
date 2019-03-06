@@ -117,7 +117,7 @@ public class RevisedTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.REVISED.getGameData();
   }
 
@@ -126,7 +126,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testMoveBadRoute() {
+  void testMoveBadRoute() {
     final PlayerId british = british(gameData);
     final Territory sz1 = gameData.getMap().getTerritory("1 Sea Zone");
     final Territory sz11 = gameData.getMap().getTerritory("11 Sea Zone");
@@ -140,7 +140,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAlliedNeighbors() {
+  void testAlliedNeighbors() {
     final PlayerId americans = americans(gameData);
     final Territory centralUs = territory("Central United States", gameData);
     final Set<Territory> enemyNeighbors =
@@ -149,7 +149,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testSubAdvance() {
+  void testSubAdvance() {
     final UnitType sub = submarine(gameData);
     final UnitAttachment attachment = UnitAttachment.get(sub);
     final PlayerId japanese = japanese(gameData);
@@ -165,7 +165,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testMoveThroughSubmergedSubs() {
+  void testMoveThroughSubmergedSubs() {
     final PlayerId british = GameDataTestUtil.british(gameData);
     final Territory sz1 = gameData.getMap().getTerritory("1 Sea Zone");
     final Territory sz7 = gameData.getMap().getTerritory("7 Sea Zone");
@@ -189,7 +189,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testRetreatBug() {
+  void testRetreatBug() {
     final PlayerId russians = GameDataTestUtil.russians(gameData);
     final PlayerId americans = GameDataTestUtil.americans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(russians);
@@ -242,7 +242,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testContinuedBattles() {
+  void testContinuedBattles() {
     final PlayerId russians = GameDataTestUtil.russians(gameData);
     final PlayerId germans = germans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans);
@@ -288,7 +288,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testLoadAlliedTransports() {
+  void testLoadAlliedTransports() {
     final PlayerId british = british(gameData);
     final PlayerId americans = americans(gameData);
     final Territory uk = territory("United Kingdom", gameData);
@@ -308,7 +308,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testBidPlace() {
+  void testBidPlace() {
     final IDelegateBridge bridge = newDelegateBridge(british(gameData));
     advanceToStep(bridge, "BidPlace");
     bidPlaceDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -325,7 +325,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testOverFlyBombersDies() {
+  void testOverFlyBombersDies() {
     final PlayerId british = british(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     final IDelegateBridge bridge = newDelegateBridge(british);
@@ -346,7 +346,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testMultipleOverFlyBombersDies() {
+  void testMultipleOverFlyBombersDies() {
     final PlayerId british = british(gameData);
     final MoveDelegate moveDelegate = (MoveDelegate) gameData.getDelegate("move");
     final IDelegateBridge bridge = newDelegateBridge(british);
@@ -373,7 +373,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testOverFlyBombersJoiningBattleDie() {
+  void testOverFlyBombersJoiningBattleDie() {
     // a bomber flies over aa to join a battle, gets hit,
     // it should not appear in the battle
     final PlayerId british = british(gameData);
@@ -396,7 +396,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testTransportAttack() {
+  void testTransportAttack() {
     final Territory sz14 = gameData.getMap().getTerritory("14 Sea Zone");
     final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
     final PlayerId germans = GameDataTestUtil.germans(gameData);
@@ -415,7 +415,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testLoadUndo() {
+  void testLoadUndo() {
     final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
@@ -447,7 +447,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testLoadDependencies() {
+  void testLoadDependencies() {
     final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
     final Territory norway = gameData.getMap().getTerritory("Norway");
@@ -494,7 +494,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testLoadUndoInWrongOrder() {
+  void testLoadUndoInWrongOrder() {
     final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
@@ -529,7 +529,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testLoadUnloadAlliedTransport() {
+  void testLoadUnloadAlliedTransport() {
     // you cant load and unload an allied transport the same turn
     final UnitType infantryType = GameDataTestUtil.infantry(gameData);
     final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
@@ -562,7 +562,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testUnloadMultipleTerritories() {
+  void testUnloadMultipleTerritories() {
     // in revised a transport may only unload to 1 territory.
     final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
@@ -615,7 +615,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testUnloadInPreviousPhase() {
+  void testUnloadInPreviousPhase() {
     // a transport may not unload in both combat and non combat
     final Territory sz5 = gameData.getMap().getTerritory("5 Sea Zone");
     final Territory eastEurope = gameData.getMap().getTerritory("Eastern Europe");
@@ -659,7 +659,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testSubAttackTransportNonCombat() {
+  void testSubAttackTransportNonCombat() {
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final Territory sz8 = territory("8 Sea Zone", gameData);
     final PlayerId germans = germans(gameData);
@@ -675,7 +675,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testSubAttackNonCombat() {
+  void testSubAttackNonCombat() {
     final Territory sz2 = territory("2 Sea Zone", gameData);
     final Territory sz8 = territory("8 Sea Zone", gameData);
     final PlayerId germans = germans(gameData);
@@ -691,7 +691,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testTransportAttackSubNonCombat() {
+  void testTransportAttackSubNonCombat() {
     final Territory sz1 = territory("1 Sea Zone", gameData);
     final Territory sz8 = territory("8 Sea Zone", gameData);
     final PlayerId british = british(gameData);
@@ -707,7 +707,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testMoveSubAwayFromSubmergedSubsInBattleZone() {
+  void testMoveSubAwayFromSubmergedSubsInBattleZone() {
     final Territory sz45 = gameData.getMap().getTerritory("45 Sea Zone");
     final Territory sz50 = gameData.getMap().getTerritory("50 Sea Zone");
     final PlayerId british = GameDataTestUtil.british(gameData);
@@ -750,7 +750,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAaOwnership() {
+  void testAaOwnership() {
     // Set up players
     // PlayerId british = GameDataTestUtil.british(gameData);
     final PlayerId japanese = GameDataTestUtil.japanese(gameData);
@@ -846,7 +846,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testStratBombCasualties() {
+  void testStratBombCasualties() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
     final PlayerId germans = GameDataTestUtil.germans(gameData);
@@ -869,7 +869,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testStratBombCasualtiesLowLuck() {
+  void testStratBombCasualtiesLowLuck() {
     makeGameLowLuck(gameData);
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
@@ -900,7 +900,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testStratBombCasualtiesLowLuckManyBombers() {
+  void testStratBombCasualtiesLowLuckManyBombers() {
     makeGameLowLuck(gameData);
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
@@ -927,7 +927,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testStratBombRaidWithHeavyBombers() {
+  void testStratBombRaidWithHeavyBombers() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
     final PlayerId germans = GameDataTestUtil.germans(gameData);
@@ -952,7 +952,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testLandBattleNoSneakAttack() {
+  void testLandBattleNoSneakAttack() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("Libya", gameData);
@@ -971,7 +971,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testSeaBattleNoSneakAttack() {
+  void testSeaBattleNoSneakAttack() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -993,7 +993,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAttackSubsOnSubs() {
+  void testAttackSubsOnSubs() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -1029,7 +1029,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAttackSubsOnDestroyer() {
+  void testAttackSubsOnDestroyer() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -1082,7 +1082,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAttackSubsAndBattleshipOnDestroyerAndSubs() {
+  void testAttackSubsAndBattleshipOnDestroyerAndSubs() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -1138,7 +1138,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAttackDestroyerAndSubsAgainstSub() {
+  void testAttackDestroyerAndSubsAgainstSub() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -1178,7 +1178,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAttackSubsAndDestroyerOnBatleshipAndSubs() {
+  void testAttackSubsAndDestroyerOnBatleshipAndSubs() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -1234,7 +1234,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
+  void testAttackDestroyerAndSubsAgainstSubAndDestroyer() {
     final String defender = "Germans";
     final String attacker = "British";
     final Territory attacked = territory("31 Sea Zone", gameData);
@@ -1277,7 +1277,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testUnplacedDie() {
+  void testUnplacedDie() {
     final PlaceDelegate del = placeDelegate(gameData);
     del.setDelegateBridgeAndPlayer(newDelegateBridge(british(gameData)));
     del.start();
@@ -1288,7 +1288,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testRocketsDontFireInConquered() {
+  void testRocketsDontFireInConquered() {
     final MoveDelegate move = moveDelegate(gameData);
     final IDelegateBridge bridge = newDelegateBridge(germans(gameData));
     advanceToStep(bridge, "CombatMove");
@@ -1306,7 +1306,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testTechRolls() {
+  void testTechRolls() {
     // Set up the test
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final IDelegateBridge delegateBridge = newDelegateBridge(germans);
@@ -1349,7 +1349,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testTransportsUnloadingToMultipleTerritoriesDie() {
+  void testTransportsUnloadingToMultipleTerritoriesDie() {
     // two transports enter a battle, but drop off
     // their units to two allied territories before
     // the begin the battle
@@ -1399,7 +1399,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testCanalMovePass() {
+  void testCanalMovePass() {
     final Territory sz15 = territory("15 Sea Zone", gameData);
     final Territory sz34 = territory("34 Sea Zone", gameData);
     final IDelegateBridge bridge = newDelegateBridge(british(gameData));
@@ -1412,7 +1412,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testCanalMovementFail() {
+  void testCanalMovementFail() {
     final Territory sz14 = territory("14 Sea Zone", gameData);
     final Territory sz15 = territory("15 Sea Zone", gameData);
     final Territory sz34 = territory("34 Sea Zone", gameData);
@@ -1428,7 +1428,7 @@ public class RevisedTest {
   }
 
   @Test
-  public void testTransportIsTransport() {
+  void testTransportIsTransport() {
     assertTrue(Matches.unitIsTransport().test(transport(gameData).create(british(gameData))));
     assertFalse(Matches.unitIsTransport().test(infantry(gameData).create(british(gameData))));
   }

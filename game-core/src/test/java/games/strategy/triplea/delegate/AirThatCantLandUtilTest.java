@@ -28,7 +28,7 @@ public class AirThatCantLandUtilTest {
   private UnitType fighterType;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.REVISED.getGameData();
     americansPlayer = GameDataTestUtil.americans(gameData);
     fighterType = GameDataTestUtil.fighter(gameData);
@@ -51,7 +51,7 @@ public class AirThatCantLandUtilTest {
   }
 
   @Test
-  public void testSimple() {
+  void testSimple() {
     final PlayerId player = americansPlayer;
     // everything can land
     final IDelegateBridge bridge = newDelegateBridge(player);
@@ -60,7 +60,7 @@ public class AirThatCantLandUtilTest {
   }
 
   @Test
-  public void testCantLandEnemyTerritory() {
+  void testCantLandEnemyTerritory() {
     final PlayerId player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
     final Territory balkans = gameData.getMap().getTerritory("Balkans");
@@ -76,7 +76,7 @@ public class AirThatCantLandUtilTest {
   }
 
   @Test
-  public void testCantLandWater() {
+  void testCantLandWater() {
     final PlayerId player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
     final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
@@ -91,7 +91,7 @@ public class AirThatCantLandUtilTest {
   }
 
   @Test
-  public void testSpareNextToFactory() {
+  void testSpareNextToFactory() {
     final PlayerId player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
     final Territory sz55 = gameData.getMap().getTerritory("55 Sea Zone");
@@ -103,7 +103,7 @@ public class AirThatCantLandUtilTest {
   }
 
   @Test
-  public void testCantLandCarrier() {
+  void testCantLandCarrier() {
     // 1 carrier in the region, but three fighters, make sure we cant land
     final PlayerId player = americansPlayer;
     final IDelegateBridge bridge = newDelegateBridge(player);
@@ -120,7 +120,7 @@ public class AirThatCantLandUtilTest {
   }
 
   @Test
-  public void testCanLandNeighborCarrier() {
+  void testCanLandNeighborCarrier() {
     final PlayerId japanese = GameDataTestUtil.japanese(gameData);
     final PlayerId americans = GameDataTestUtil.americans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(japanese);
@@ -169,7 +169,7 @@ public class AirThatCantLandUtilTest {
   }
 
   @Test
-  public void testCanLandMultiNeighborCarriers() {
+  void testCanLandMultiNeighborCarriers() {
     final PlayerId japanese = GameDataTestUtil.japanese(gameData);
     final PlayerId americans = GameDataTestUtil.americans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(japanese);
@@ -221,7 +221,7 @@ public class AirThatCantLandUtilTest {
   }
 
   @Test
-  public void testCanLandNeighborLandV2() {
+  void testCanLandNeighborLandV2() {
     final PlayerId japanese = GameDataTestUtil.japanese(gameData);
     final PlayerId americans = GameDataTestUtil.americans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(japanese);
@@ -265,7 +265,7 @@ public class AirThatCantLandUtilTest {
   }
 
   @Test
-  public void testCanLandNeighborLandWithRetreatedBattleV2() {
+  void testCanLandNeighborLandWithRetreatedBattleV2() {
     final PlayerId japanese = GameDataTestUtil.japanese(gameData);
     final PlayerId americans = GameDataTestUtil.americans(gameData);
     final IDelegateBridge bridge = newDelegateBridge(japanese);

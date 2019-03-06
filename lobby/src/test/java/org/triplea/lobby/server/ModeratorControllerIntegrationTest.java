@@ -44,7 +44,7 @@ public class ModeratorControllerIntegrationTest {
   }
 
   @BeforeEach
-  public void setUp() throws UnknownHostException {
+  void setUp() throws UnknownHostException {
     moderatorController = new ModeratorController(serverMessenger, null, TestLobbyConfigurations.INTEGRATION_TEST);
     final String adminName = Util.newUniqueTimestamp();
 
@@ -59,7 +59,7 @@ public class ModeratorControllerIntegrationTest {
   }
 
   @Test
-  public void testBoot() throws UnknownHostException {
+  void testBoot() throws UnknownHostException {
     MessageContext.setSenderNodeForThread(adminNode);
     connectionChangeListener = new ConnectionChangeListener();
     final INode booted = new Node("foo", InetAddress.getByAddress(new byte[] {1, 2, 3, 4}), 0);
@@ -76,7 +76,7 @@ public class ModeratorControllerIntegrationTest {
   }
 
   @Test
-  public void testAssertAdmin() {
+  void testAssertAdmin() {
     MessageContext.setSenderNodeForThread(adminNode);
     assertTrue(moderatorController.isAdmin());
   }

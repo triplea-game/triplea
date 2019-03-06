@@ -18,12 +18,12 @@ public class AllianceTrackerTest {
   private GameData gameData;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.TEST.getGameData();
   }
 
   @Test
-  public void testAddAlliance() {
+  void testAddAlliance() {
     final PlayerId bush = gameData.getPlayerList().getPlayerId("bush");
     final PlayerId castro = gameData.getPlayerList().getPlayerId("castro");
     final AllianceTracker allianceTracker = gameData.getAllianceTracker();

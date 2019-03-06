@@ -22,7 +22,7 @@ public class PactOfSteel2Test {
   private GameData gameData;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.PACT_OF_STEEL_2.getGameData();
   }
 
@@ -31,7 +31,7 @@ public class PactOfSteel2Test {
   }
 
   @Test
-  public void testDirectOwnershipTerritories() {
+  void testDirectOwnershipTerritories() {
     final Territory norway = gameData.getMap().getTerritory("Norway");
     final Territory easternEurope = gameData.getMap().getTerritory("Eastern Europe");
     final Territory eastBalkans = gameData.getMap().getTerritory("East Balkans");

@@ -18,14 +18,14 @@ public final class MutedMacControllerIntegrationTest extends AbstractModeratorSe
   private final MutedMacController controller = spy(new MutedMacController(database));
 
   @Test
-  public void testMuteMacForever() {
+  void testMuteMacForever() {
     muteMacForSeconds(Long.MAX_VALUE);
     assertTrue(isMacMuted());
     assertEquals(Optional.of(Instant.MAX), getMacUnmuteTime());
   }
 
   @Test
-  public void testMuteMac() {
+  void testMuteMac() {
     final Instant muteUntil = muteMacForSeconds(100L);
     assertMutedUserEquals(user);
     assertTrue(isMacMuted());
@@ -36,7 +36,7 @@ public final class MutedMacControllerIntegrationTest extends AbstractModeratorSe
   }
 
   @Test
-  public void testUnmuteMac() {
+  void testUnmuteMac() {
     final Instant muteUntil = muteMacForSeconds(100L);
     assertTrue(isMacMuted());
     assertEquals(Optional.of(muteUntil), getMacUnmuteTime());
@@ -46,14 +46,14 @@ public final class MutedMacControllerIntegrationTest extends AbstractModeratorSe
   }
 
   @Test
-  public void testMuteMacInThePast() {
+  void testMuteMacInThePast() {
     muteMacForSeconds(-10L);
     assertFalse(isMacMuted());
     assertEquals(Optional.empty(), getMacUnmuteTime());
   }
 
   @Test
-  public void testMuteMacUpdate() {
+  void testMuteMacUpdate() {
     muteMacForSeconds(Long.MAX_VALUE);
     assertTrue(isMacMuted());
     assertEquals(Optional.of(Instant.MAX), getMacUnmuteTime());
@@ -63,7 +63,7 @@ public final class MutedMacControllerIntegrationTest extends AbstractModeratorSe
   }
 
   @Test
-  public void testMuteMacUpdatesMutedUserAndModerator() {
+  void testMuteMacUpdatesMutedUserAndModerator() {
     muteMacForSeconds(user, Long.MAX_VALUE, moderator);
 
     final User otherUser = newUser().withHashedMacAddress(user.getHashedMacAddress());

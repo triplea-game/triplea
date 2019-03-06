@@ -36,7 +36,7 @@ public class VaultTest {
   private Vault serverVault;
 
   @BeforeEach
-  public void setUp() throws IOException {
+  void setUp() throws IOException {
     serverMessenger = new TestServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
@@ -49,13 +49,13 @@ public class VaultTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     MessengerTestUtils.shutDownQuietly(serverMessenger);
     MessengerTestUtils.shutDownQuietly(clientMessenger);
   }
 
   @Test
-  public void testLocal() throws Exception {
+  void testLocal() throws Exception {
     final IServerMessenger messenger = mock(IServerMessenger.class);
     when(messenger.getLocalNode()).thenReturn(new Node("dummy", InetAddress.getLocalHost(), 0));
     final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
@@ -87,7 +87,7 @@ public class VaultTest {
   }
 
   @Test
-  public void testClientLock() throws NotUnlockedException {
+  void testClientLock() throws NotUnlockedException {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final VaultId id = clientVault.lock(data);
     serverVault.waitForId(id, 1000);
@@ -126,7 +126,7 @@ public class VaultTest {
   }
 
   @Test
-  public void testJoin() {
+  void testJoin() {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final byte[] joined = Vault.joinDataAndKnown(data);
     assertArrayEquals(new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE, 0, 1, 2, 3, 4, 5}, joined);

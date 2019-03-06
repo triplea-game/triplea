@@ -54,7 +54,7 @@ public class UnitAttachmentTest {
   }
 
   @Test
-  public void testSetWhenCapturedChangesInto_invalidLength() {
+  void testSetWhenCapturedChangesInto_invalidLength() {
     assertThrows(GameParseException.class, () -> attachment.setWhenCapturedChangesInto(""));
     assertThrows(GameParseException.class, () -> attachment.setWhenCapturedChangesInto(":"));
     assertThrows(GameParseException.class, () -> attachment.setWhenCapturedChangesInto("::"));
@@ -72,7 +72,7 @@ public class UnitAttachmentTest {
 
 
   @Test
-  public void testSetWhenCapturedChangesInto_invalidArgs() {
+  void testSetWhenCapturedChangesInto_invalidArgs() {
     assertThrows(GameParseException.class,
         () -> attachment.setWhenCapturedChangesInto("NOT A PLAYER:any:true:Unit1:1"));
     // Testing for fail-fast here
@@ -107,7 +107,7 @@ public class UnitAttachmentTest {
   }
 
   @Test
-  public void testSetWhenCapturedChangesInto() throws Exception {
+  void testSetWhenCapturedChangesInto() throws Exception {
     final SecureRandom rand = new SecureRandom();
 
     final String from = "any";

@@ -23,7 +23,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 
 public class MustFightBattleTest extends AbstractDelegateTestCase {
   @Test
-  public void testFightWithIsSuicideOnHit() throws Exception {
+  void testFightWithIsSuicideOnHit() throws Exception {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Create battle with 1 cruiser attacking 1 mine
@@ -50,7 +50,7 @@ public class MustFightBattleTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testFightWithBothZeroStrength() throws Exception {
+  void testFightWithBothZeroStrength() throws Exception {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
 
     // Create TWW battle in Celebes with 1 inf attacking 1 strat where both have 0 strength

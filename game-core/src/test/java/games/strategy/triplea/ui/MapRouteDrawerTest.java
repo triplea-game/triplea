@@ -38,13 +38,13 @@ final class MapRouteDrawerTest {
       spy(new RouteDescription(dummyRoute, dummyPoints[0], dummyPoints[2], null));
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     when(dummyMapData.getCenter(any(Territory.class))).thenReturn(dummyPoints[1]);
     when(dummyMapData.getMapDimensions()).thenReturn(new Dimension(1000, 1000));
   }
 
   @Test
-  public void testIndex() {
+  void testIndex() {
     assertArrayEquals(spyRouteDrawer.newParameterizedIndex(new Point2D[] {}), new double[] {});
     assertEquals(dummyIndex.length, dummyPoints.length);
     // Not sure whether it makes sense to include a Test for specific values
@@ -54,7 +54,7 @@ final class MapRouteDrawerTest {
   }
 
   @Test
-  public void testCurve() {
+  void testCurve() {
     final double[] testYValues = new double[] {20, 40, 90};
     final PolynomialSplineFunction testFunction = new SplineInterpolator().interpolate(dummyIndex, testYValues);
     final double[] coords = spyRouteDrawer.getCoords(testFunction, dummyIndex);
@@ -66,7 +66,7 @@ final class MapRouteDrawerTest {
   }
 
   @Test
-  public void testPointSplitting() {
+  void testPointSplitting() {
     final double[] expectedXCoords = new double[] {0, 100, 0};
     final double[] expectedYCoords = new double[] {0, 0, 100};
     assertArrayEquals(expectedXCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getX()));
@@ -75,7 +75,7 @@ final class MapRouteDrawerTest {
 
 
   @Test
-  public void testCorrectParameterHandling() {
+  void testCorrectParameterHandling() {
     final MapPanel mockedMapPanel = mock(MapPanel.class);
     final MapRouteDrawer routeDrawer = spy(new MapRouteDrawer(mockedMapPanel, dummyMapData));
     when(mockedMapPanel.getXOffset()).thenReturn(0);

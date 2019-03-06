@@ -42,7 +42,7 @@ public class LobbyLoginValidatorIntegrationTest {
   private final ILoginValidator loginValidator = new LobbyLoginValidator(TestLobbyConfigurations.INTEGRATION_TEST);
 
   @Test
-  public void testLegacyCreateNewUser() {
+  void testLegacyCreateNewUser() {
     final ChallengeResultFunction challengeFunction = generateChallenge(null);
     final Map<String, String> response = new HashMap<>();
     response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
@@ -84,7 +84,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   @Test
-  public void testCreateNewUser() {
+  void testCreateNewUser() {
     final String name = Util.newUniqueTimestamp();
     final String password = "password";
     final Map<String, String> response = new HashMap<>();
@@ -103,7 +103,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   @Test
-  public void testWrongVersion() {
+  void testWrongVersion() {
     assertNotNull(generateChallenge(null).apply(challenge -> {
       final Map<String, String> response = new HashMap<>();
       response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
@@ -113,7 +113,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   @Test
-  public void testAnonymousLogin() {
+  void testAnonymousLogin() {
     final Map<String, String> response = new HashMap<>();
     response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
     assertNull(generateChallenge(null).apply(challenge -> response));
@@ -124,7 +124,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   @Test
-  public void testAnonymousLoginBadName() {
+  void testAnonymousLoginBadName() {
     final String name = "bitCh" + Util.newUniqueTimestamp();
     try {
       new BadWordController(database).addBadWord("bitCh");
@@ -138,7 +138,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   @Test
-  public void testLogin() {
+  void testLogin() {
     final String user = Util.newUniqueTimestamp();
     final String password = "foo";
     final Map<String, String> response = new HashMap<>();

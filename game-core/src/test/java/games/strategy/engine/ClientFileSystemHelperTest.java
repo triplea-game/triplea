@@ -37,7 +37,7 @@ public final class ClientFileSystemHelperTest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
       when(file.getName()).thenReturn("filename.ext");
     }
 

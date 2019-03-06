@@ -102,7 +102,7 @@ public class PacificTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testNonJapanAttack() {
+  void testNonJapanAttack() {
     // this will get us to round 2
     advanceToStep(bridge, "japaneseEndTurn");
     advanceToStep(bridge, "japaneseBattle");
@@ -128,7 +128,7 @@ public class PacificTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testJapanAttackFirstRound() {
+  void testJapanAttackFirstRound() {
     advanceToStep(bridge, "japaneseBattle");
     while (!gameData.getSequence().getStep().getName().equals("japaneseBattle")) {
       gameData.getSequence().next();
@@ -169,7 +169,7 @@ public class PacificTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCanLand2Airfields() {
+  void testCanLand2Airfields() {
     advanceToStep(bridge, "americanCombatMove");
     final Route route = new Route();
     route.setStart(unitedStates);
@@ -186,7 +186,7 @@ public class PacificTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCanLand1AirfieldStart() {
+  void testCanLand1AirfieldStart() {
     advanceToStep(bridge, "americanCombatMove");
     final Route route = new Route();
     route.setStart(unitedStates);
@@ -203,7 +203,7 @@ public class PacificTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCanLand1AirfieldEnd() {
+  void testCanLand1AirfieldEnd() {
     advanceToStep(bridge, "americanCombatMove");
     final Route route = new Route();
     route.setStart(unitedStates);
@@ -219,7 +219,7 @@ public class PacificTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCanMoveNavalBase() {
+  void testCanMoveNavalBase() {
     advanceToStep(bridge, "americanNonCombatMove");
     final Route route = new Route();
     route.setStart(sz5);
@@ -233,7 +233,7 @@ public class PacificTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testJapaneseDestroyerTransport() {
+  void testJapaneseDestroyerTransport() {
     bridge = newDelegateBridge(japanese);
     delegate = new MoveDelegate();
     delegate.initialize("MoveDelegate", "MoveDelegate");

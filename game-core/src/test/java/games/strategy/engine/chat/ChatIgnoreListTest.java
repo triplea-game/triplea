@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test;
 
 public class ChatIgnoreListTest {
   @BeforeEach
-  public void setUp() throws BackingStoreException {
+  void setUp() throws BackingStoreException {
     // clear this
     clearStore();
   }
 
   @AfterEach
-  public void tearDown() throws BackingStoreException {
+  void tearDown() throws BackingStoreException {
     clearStore();
   }
 
@@ -29,7 +29,7 @@ public class ChatIgnoreListTest {
   }
 
   @Test
-  public void testLoadStore() {
+  void testLoadStore() {
     ChatIgnoreList list = new ChatIgnoreList();
     assertFalse(list.shouldIgnore("test"));
     list.add("test");
