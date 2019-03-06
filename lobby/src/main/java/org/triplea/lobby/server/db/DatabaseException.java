@@ -9,7 +9,7 @@ import lombok.extern.java.Log;
  * Thrown when there is an unexpected exception interacting with database.
  */
 @Log
-class DatabaseException extends RuntimeException {
+class DatabaseException extends IllegalStateException {
   private static final long serialVersionUID = -557834581550721114L;
 
   DatabaseException(final String message, final SQLException e) {
