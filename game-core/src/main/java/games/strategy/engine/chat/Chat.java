@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
 
+import org.triplea.java.Interruptibles;
 import org.triplea.util.Tuple;
 
 import games.strategy.engine.chat.IChatController.Tag;
@@ -34,15 +36,12 @@ public class Chat {
   private final String chatChannelName;
   private final String chatName;
   private final SentMessagesHistory sentMessages;
-  private volatile long chatInitVersion = -1;
+  private final long chatInitVersion;
   // mutex used for access synchronization to nodes
   // TODO: check if this mutex is used for something else as well
   private final Object mutexNodes = new Object();
   private final List<INode> nodes;
-  // this queue is filled ONLY in init phase when chatInitVersion is default (-1) and nodes should not be changed
-  // until end of initialization synchronizes access to queue
-  private final Object mutexQueue = new Object();
-  private List<Runnable> queuedInitMessages = new ArrayList<>();
+  private final CountDownLatch latch = new CountDownLatch(1);
   private final List<ChatMessage> chatHistory = new ArrayList<>();
   private final StatusManager statusManager;
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
@@ -99,16 +98,7 @@ public class Chat {
     @Override
     public void speakerAdded(final INode node, final Tag tag, final long version) {
       assertMessageFromServer();
-      if (chatInitVersion == -1) {
-        synchronized (mutexQueue) {
-          if (queuedInitMessages == null) {
-            speakerAdded(node, tag, version);
-          } else {
-            queuedInitMessages.add(() -> speakerAdded(node, tag, version));
-          }
-        }
-        return;
-      }
+      Interruptibles.await(latch);
       if (version > chatInitVersion) {
         synchronized (mutexNodes) {
           nodes.add(node);
@@ -127,16 +117,7 @@ public class Chat {
     @Override
     public void speakerRemoved(final INode node, final long version) {
       assertMessageFromServer();
-      if (chatInitVersion == -1) {
-        synchronized (mutexQueue) {
-          if (queuedInitMessages == null) {
-            speakerRemoved(node, version);
-          } else {
-            queuedInitMessages.add(() -> speakerRemoved(node, version));
-          }
-        }
-        return;
-      }
+      Interruptibles.await(latch);
       if (version > chatInitVersion) {
         synchronized (mutexNodes) {
           nodes.remove(node);
@@ -218,9 +199,8 @@ public class Chat {
     final Map<INode, Tag> chatters = init.getFirst();
     nodes = new ArrayList<>(chatters.keySet());
     chatInitVersion = init.getSecond();
-    queuedInitMessages.forEach(Runnable::run);
+    latch.countDown();
     assignNodeTags(chatters);
-    queuedInitMessages = null;
     updateConnections();
   }
 
