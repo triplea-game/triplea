@@ -66,7 +66,7 @@ public class HeadlessGameServer {
   private final List<Runnable> shutdownListeners = Arrays.asList(
       lobbyWatcherResetupThread::shutdown,
       () -> Optional.ofNullable(game).ifPresent(ServerGame::stopGame),
-      () -> setupPanelModel.getPanel().cancel());
+      () -> Optional.ofNullable(setupPanelModel.getPanel()).ifPresent(HeadlessServerSetup::cancel));
 
   private HeadlessGameServer() {
     if (instance != null) {
