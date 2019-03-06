@@ -49,7 +49,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testNotUnique() {
+  void testNotUnique() {
     final Route route = new Route();
     route.setStart(egypt);
     route.add(eastAfrica);
@@ -60,7 +60,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testNotEnoughUnits() {
+  void testNotEnoughUnits() {
     final Route route = new Route();
     route.setStart(egypt);
     route.add(eastAfrica);
@@ -73,7 +73,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCantMoveEnemy() {
+  void testCantMoveEnemy() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
     final Route route = new Route();
@@ -88,7 +88,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testSimpleMove() {
+  void testSimpleMove() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
@@ -103,7 +103,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testSimpleMoveLength2() {
+  void testSimpleMoveLength2() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
@@ -119,7 +119,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCanReturnToCarrier() {
+  void testCanReturnToCarrier() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 3);
     final Route route = new Route();
@@ -131,7 +131,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testLandOnCarrier() {
+  void testLandOnCarrier() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 2);
     final Route route = new Route();
@@ -150,7 +150,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCantLandWithNoCarrier() {
+  void testCantLandWithNoCarrier() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 2);
     final Route route = new Route();
@@ -170,7 +170,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testNotEnoughCarrierCapacity() {
+  void testNotEnoughCarrierCapacity() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 5);
     final Route route = new Route();
@@ -189,7 +189,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testLandMoveToWaterWithNoTransports() {
+  void testLandMoveToWaterWithNoTransports() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
@@ -205,7 +205,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testSeaMove() {
+  void testSeaMove() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(carrier, 2);
     final Route route = new Route();
@@ -221,7 +221,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testSeaCantMoveToLand() {
+  void testSeaCantMoveToLand() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(carrier, 2);
     final Route route = new Route();
@@ -237,7 +237,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testLandMoveToWaterWithTransportsFull() {
+  void testLandMoveToWaterWithTransportsFull() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
     map.put(infantry, 2);
@@ -254,7 +254,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testAirCanFlyOverWater() {
+  void testAirCanFlyOverWater() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 2);
     final Route route = new Route();
@@ -267,7 +267,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testLandMoveToWaterWithTransportsEmpty() {
+  void testLandMoveToWaterWithTransportsEmpty() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
@@ -285,7 +285,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testBlitzWithArmour() {
+  void testBlitzWithArmour() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
@@ -303,7 +303,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCant2StepBlitzWithNonBlitzingUnits() {
+  void testCant2StepBlitzWithNonBlitzingUnits() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 1);
     Route route = new Route();
@@ -326,7 +326,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCantBlitzNuetral() {
+  void testCantBlitzNuetral() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
@@ -342,7 +342,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testOverrunNeutral() {
+  void testOverrunNeutral() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     final Route route = new Route();
@@ -361,7 +361,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testAirCanOverFlyEnemy() {
+  void testAirCanOverFlyEnemy() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(bomber, 2);
     final Route route = new Route();
@@ -374,7 +374,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testOverrunNeutralMustStop() {
+  void testOverrunNeutralMustStop() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     Route route = new Route();
@@ -392,7 +392,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testmultipleMovesExceedingMovementLimit() {
+  void testmultipleMovesExceedingMovementLimit() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
     Route route = new Route();
@@ -416,7 +416,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testMovingUnitsWithMostMovement() {
+  void testMovingUnitsWithMostMovement() {
     // move 2 tanks to equatorial africa
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
@@ -445,7 +445,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testTransportsMustStayWithUnits() {
+  void testTransportsMustStayWithUnits() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     Route route = new Route();
@@ -465,7 +465,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testUnitsStayWithTransports() {
+  void testUnitsStayWithTransports() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(armour, 2);
     Route route = new Route();
@@ -485,7 +485,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testUnload() {
+  void testUnload() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
     final Route route = new Route();
@@ -496,7 +496,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testTransportCantLoadUnloadAfterBattle() {
+  void testTransportCantLoadUnloadAfterBattle() {
     bridge = newDelegateBridge(russians);
     advanceToStep(bridge, "russianCombatMove");
     westEurope.setOwner(russians);
@@ -521,7 +521,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testLoadUnloadLoadMoveTransports() {
+  void testLoadUnloadLoadMoveTransports() {
     bridge = newDelegateBridge(japanese);
     advanceToStep(bridge, "japaneseCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
@@ -569,7 +569,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testUnloadedCantMove() {
+  void testUnloadedCantMove() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
     Route route = new Route();
@@ -589,7 +589,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testUnloadingTransportsCantMove() {
+  void testUnloadingTransportsCantMove() {
     IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 4);
     Route route = new Route();
@@ -608,7 +608,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testTransportsCanSplit() {
+  void testTransportsCanSplit() {
     // move 1 armour to red sea
     Route route = new Route();
     route.setStart(egypt);
@@ -650,7 +650,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testUseTransportsWithLowestMovement() {
+  void testUseTransportsWithLowestMovement() {
     // move transport south
     Route route = new Route();
     route.setStart(congoSeaZone);
@@ -681,7 +681,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCanOverrunNeutralWithoutFunds() {
+  void testCanOverrunNeutralWithoutFunds() {
     assertEquals(35, british.getResources().getQuantity(pus));
     final Change makePoor = ChangeFactory.changeResourcesChange(british, pus, -35);
     bridge.addChange(makePoor);
@@ -698,7 +698,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testAirViolateNeutrality() {
+  void testAirViolateNeutrality() {
     final Route route = new Route();
     route.setStart(egypt);
     route.add(kenya);
@@ -710,7 +710,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testNeutralConquered() {
+  void testNeutralConquered() {
     // take over neutral
     final Route route = new Route();
     route.setStart(equatorialAfrica);
@@ -724,7 +724,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testMoveTransportsTwice() {
+  void testMoveTransportsTwice() {
     // move transports
     Route route = new Route();
     route.setStart(congoSeaZone);
@@ -743,7 +743,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCantMoveThroughConqueredNeutral() {
+  void testCantMoveThroughConqueredNeutral() {
     // take over neutral
     Route route = new Route();
     route.setStart(equatorialAfrica);
@@ -782,7 +782,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testCanBlitzThroughConqueredEnemy() {
+  void testCanBlitzThroughConqueredEnemy() {
     // take over empty enemy
     Route route = new Route();
     route.setStart(equatorialAfrica);
@@ -803,7 +803,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testAirCantLandInConquered() {
+  void testAirCantLandInConquered() {
     // take over empty neutral
     Route route = new Route();
     route.setStart(egypt);
@@ -846,7 +846,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testMoveAndTransportUnload() {
+  void testMoveAndTransportUnload() {
     // this was causing an exception
     Route route = new Route();
     route.setStart(congoSeaZone);
@@ -866,7 +866,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testTakeOverAfterOverFlight() {
+  void testTakeOverAfterOverFlight() {
     // this was causing an exception
     Route route = new Route();
     route.setStart(egypt);
@@ -886,7 +886,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testBattleAdded() {
+  void testBattleAdded() {
     // TODO if air make sure otnot alwasys battle
     // this was causing an exception
     final Route route = new Route();
@@ -899,7 +899,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testLargeMove() {
+  void testLargeMove() {
     // was causing an error
     final Route route = new Route();
     route.setStart(egypt);
@@ -914,7 +914,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testAmphibiousAssaultAfterNavalBattle() {
+  void testAmphibiousAssaultAfterNavalBattle() {
     // move to take on brazil navy
     Route route = new Route();
     route.setStart(congoSeaZone);
@@ -943,7 +943,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testReloadTransportAfterRetreatAmphibious() {
+  void testReloadTransportAfterRetreatAmphibious() {
     bridge = newDelegateBridge(british);
     advanceToStep(bridge, "britishCombatMove");
     Route route = new Route();
@@ -1005,7 +1005,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testReloadTransportAfterDyingAmphibious() {
+  void testReloadTransportAfterDyingAmphibious() {
     bridge = newDelegateBridge(british);
     advanceToStep(bridge, "britishCombatMove");
     Route route = new Route();
@@ -1067,7 +1067,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testReloadTransportAfterRetreatAllied() {
+  void testReloadTransportAfterRetreatAllied() {
     bridge = newDelegateBridge(british);
     advanceToStep(bridge, "britishCombatMove");
     Route route = new Route();
@@ -1123,7 +1123,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testReloadTransportAfterDyingAllied() {
+  void testReloadTransportAfterDyingAllied() {
     bridge = newDelegateBridge(british);
     advanceToStep(bridge, "britishCombatMove");
     Route route = new Route();
@@ -1179,7 +1179,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testAirToWater() {
+  void testAirToWater() {
     final Route route = new Route();
     route.setStart(egypt);
     route.add(eastMediteranean);
@@ -1191,7 +1191,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testNonCombatAttack() {
+  void testNonCombatAttack() {
     advanceToStep(bridge, "britishNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
@@ -1205,7 +1205,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testNonCombatAttackNeutral() {
+  void testNonCombatAttackNeutral() {
     advanceToStep(bridge, "britishNonCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
@@ -1219,7 +1219,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testNonCombatMoveToConquered() {
+  void testNonCombatMoveToConquered() {
     // take over libya
     Route route = new Route();
     route.setStart(equatorialAfrica);
@@ -1243,7 +1243,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testAaCantMoveToConquered() {
+  void testAaCantMoveToConquered() {
     bridge = newDelegateBridge(japanese);
     advanceToStep(bridge, "japaneseCombatMove");
     delegate.setDelegateBridgeAndPlayer(bridge);
@@ -1265,7 +1265,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testBlitzConqueredNeutralInTwoSteps() {
+  void testBlitzConqueredNeutralInTwoSteps() {
     Route route = new Route();
     route.setStart(equatorialAfrica);
     route.add(westAfrica);
@@ -1288,7 +1288,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testBlitzFactory() {
+  void testBlitzFactory() {
     // create a factory to be taken
     final Collection<Unit> factCollection = factory.create(1, japanese);
     final Change addFactory = ChangeFactory.addUnits(libya, factCollection);
@@ -1308,7 +1308,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testAirCanLandOnLand() {
+  void testAirCanLandOnLand() {
     final Route route = new Route();
     route.setStart(egypt);
     route.add(eastMediteranean);
@@ -1320,7 +1320,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testAirDifferingRouts() {
+  void testAirDifferingRouts() {
     // move one air unit 3 spaces, and a second 2,
     // this was causing an exception when the validator tried to find if they could both land
     // EW: I don't know why this test is failing or what it is supposed to do...
@@ -1345,7 +1345,7 @@ public class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  public void testRoute() {
+  void testRoute() {
     final Route route = gameData.getMap().getRoute(angola, russia);
     assertNotNull(route);
     assertEquals(route.getEnd(), russia);

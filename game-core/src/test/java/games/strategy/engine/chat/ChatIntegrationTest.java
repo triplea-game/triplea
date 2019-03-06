@@ -48,7 +48,7 @@ public final class ChatIntegrationTest {
   private final TestChatListener client2ChatListener = new TestChatListener();
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     serverMessenger = new TestServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
@@ -67,7 +67,7 @@ public final class ChatIntegrationTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     if (serverMessenger != null) {
       serverMessenger.shutDown();
     }

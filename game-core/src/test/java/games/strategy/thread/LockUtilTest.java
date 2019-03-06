@@ -29,22 +29,22 @@ public final class LockUtilTest {
   private LockUtil.ErrorReporter oldErrorReporter;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     oldErrorReporter = lockUtil.setErrorReporter(errorReporter);
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     lockUtil.setErrorReporter(oldErrorReporter);
   }
 
   @Test
-  public void testEmpty() {
+  void testEmpty() {
     assertFalse(lockUtil.isLockHeld(new ReentrantLock()));
   }
 
   @Test
-  public void testMultipleLocks() {
+  void testMultipleLocks() {
     final List<Lock> locks = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
       locks.add(new ReentrantLock());
@@ -66,7 +66,7 @@ public final class LockUtilTest {
   }
 
   @Test
-  public void testFail() {
+  void testFail() {
     final Lock l1 = new ReentrantLock();
     final Lock l2 = new ReentrantLock();
     // acquire in the correct order
@@ -83,7 +83,7 @@ public final class LockUtilTest {
   }
 
   @Test
-  public void testAcquireTwice() {
+  void testAcquireTwice() {
     final ReentrantLock l1 = new ReentrantLock();
     lockUtil.acquireLock(l1);
     lockUtil.acquireLock(l1);

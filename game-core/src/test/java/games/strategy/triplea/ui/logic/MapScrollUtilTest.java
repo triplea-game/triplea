@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 public class MapScrollUtilTest {
 
   @Test
-  public void testWithXWrapOnly() {
+  void testWithXWrapOnly() {
     final List<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(true, false, 9876, 2345);
     assertEquals(3, transforms.size());
     assertTrue(transforms.stream().anyMatch(transCriteria(-9876, 0)));
@@ -21,7 +21,7 @@ public class MapScrollUtilTest {
   }
 
   @Test
-  public void testWithYWrapOnly() {
+  void testWithYWrapOnly() {
     final List<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(false, true, 1234, 5678);
     assertEquals(3, transforms.size());
     assertTrue(transforms.stream().anyMatch(transCriteria(0, -5678)));
@@ -30,7 +30,7 @@ public class MapScrollUtilTest {
   }
 
   @Test
-  public void testWithXAndYWrap() {
+  void testWithXAndYWrap() {
     final List<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(true, true, 2345, 6789);
     assertEquals(9, transforms.size());
     assertTrue(transforms.stream().anyMatch(transCriteria(-2345, -6789)));
@@ -45,7 +45,7 @@ public class MapScrollUtilTest {
   }
 
   @Test
-  public void testWithoutWrap() {
+  void testWithoutWrap() {
     final List<AffineTransform> transforms = MapScrollUtil.getPossibleTranslations(false, false, 8765, 4321);
     assertEquals(1, transforms.size());
     assertTrue(transforms.get(0).isIdentity());

@@ -20,7 +20,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   private final BannedUsernameController controller = spy(new BannedUsernameController(database));
 
   @Test
-  public void testBanUsernameForever() {
+  void testBanUsernameForever() {
     banUsernameForSeconds(Long.MAX_VALUE);
     final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
     assertTrue(usernameDetails.getFirst());
@@ -28,7 +28,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   }
 
   @Test
-  public void testBanUsername() {
+  void testBanUsername() {
     final Instant banUntil = banUsernameForSeconds(100L);
     assertBannedUserEquals(user);
     final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
@@ -41,7 +41,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   }
 
   @Test
-  public void testUnbanUsername() {
+  void testUnbanUsername() {
     final Instant banUntil = banUsernameForSeconds(100L);
     final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
     assertTrue(usernameDetails.getFirst());
@@ -53,7 +53,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   }
 
   @Test
-  public void testBanUsernameInThePast() {
+  void testBanUsernameInThePast() {
     banUsernameForSeconds(-10L);
     final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
     assertFalse(usernameDetails.getFirst());
@@ -61,7 +61,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   }
 
   @Test
-  public void testBanUsernameUpdate() {
+  void testBanUsernameUpdate() {
     banUsernameForSeconds(Long.MAX_VALUE);
     final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
     assertTrue(usernameDetails.getFirst());
@@ -73,7 +73,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   }
 
   @Test
-  public void testBanUsernameUpdatesBannedUserAndModerator() {
+  void testBanUsernameUpdatesBannedUserAndModerator() {
     banUsernameForSeconds(user, Long.MAX_VALUE, moderator);
 
     final User otherUser = newUser().withUsername(user.getUsername());

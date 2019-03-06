@@ -26,7 +26,7 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
   private final UserController controller = new UserController(database);
 
   @Test
-  public void testCreate() throws Exception {
+  void testCreate() throws Exception {
     final int startCount = getUserCount();
 
     newUserWithMd5CryptHash();
@@ -37,19 +37,19 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
   }
 
   @Test
-  public void testGet() {
+  void testGet() {
     final DBUser user = newUserWithMd5CryptHash();
     assertEquals(user, controller.getUserByName(user.getName()));
   }
 
   @Test
-  public void testDoesUserExist() {
+  void testDoesUserExist() {
     assertTrue(controller.doesUserExist(newUserWithMd5CryptHash().getName()));
     assertTrue(controller.doesUserExist(newUserWithBCryptHash().getName()));
   }
 
   @Test
-  public void testCreateDupe() {
+  void testCreateDupe() {
     assertThrows(Exception.class,
         () -> controller.createUser(newUserWithMd5CryptHash(),
             new HashedPassword(md5Crypt(Util.newUniqueTimestamp()))),
@@ -57,7 +57,7 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
   }
 
   @Test
-  public void testLogin() {
+  void testLogin() {
     final String password = md5Crypt(Util.newUniqueTimestamp());
     final DBUser user = newUserWithHash(password, Function.identity());
     controller.updateUser(user, new HashedPassword(bcrypt(obfuscate(password))));
@@ -66,7 +66,7 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
   }
 
   @Test
-  public void testUpdate() throws Exception {
+  void testUpdate() throws Exception {
     final DBUser user = newUserWithMd5CryptHash();
     assertTrue(controller.doesUserExist(user.getName()));
     final String password2 = md5Crypt("foo");

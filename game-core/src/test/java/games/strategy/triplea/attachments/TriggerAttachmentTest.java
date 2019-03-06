@@ -40,7 +40,7 @@ public class TriggerAttachmentTest {
   private IDelegateHistoryWriter historyWriter;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     final GameData gameData = new GameData();
 
     final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
@@ -64,7 +64,7 @@ public class TriggerAttachmentTest {
   }
 
   @Test
-  public void testTriggerProductionFrontierEditChange() {
+  void testTriggerProductionFrontierEditChange() {
     TriggerAttachment.triggerProductionFrontierEditChange(
         satisfiedTriggers,
         bridge,

@@ -16,13 +16,13 @@ public class PredicateBuilderTest {
 
 
   @Test
-  public void testSimplePredicate() {
+  void testSimplePredicate() {
     assertEquals(truePredicate, PredicateBuilder.of(truePredicate).build());
     assertEquals(falsePredicate, PredicateBuilder.of(falsePredicate).build());
   }
 
   @Test
-  public void testAndPredicate() {
+  void testAndPredicate() {
     assertFalse(PredicateBuilder.of(falsePredicate).and(falsePredicate).build().test(new Object()));
     assertFalse(PredicateBuilder.of(truePredicate).and(falsePredicate).build().test(new Object()));
     assertFalse(PredicateBuilder.of(falsePredicate).and(truePredicate).build().test(new Object()));
@@ -34,7 +34,7 @@ public class PredicateBuilderTest {
   }
 
   @Test
-  public void testOrPredicate() {
+  void testOrPredicate() {
     assertFalse(PredicateBuilder.of(falsePredicate).or(falsePredicate).build().test(new Object()));
     assertTrue(PredicateBuilder.of(truePredicate).or(falsePredicate).build().test(new Object()));
     assertTrue(PredicateBuilder.of(falsePredicate).or(truePredicate).build().test(new Object()));
@@ -46,7 +46,7 @@ public class PredicateBuilderTest {
   }
 
   @Test
-  public void testAndIfPredicate() {
+  void testAndIfPredicate() {
     assertFalse(PredicateBuilder.of(falsePredicate).andIf(true, falsePredicate).build().test(new Object()));
     assertFalse(PredicateBuilder.of(truePredicate).andIf(true, falsePredicate).build().test(new Object()));
     assertFalse(PredicateBuilder.of(falsePredicate).andIf(true, truePredicate).build().test(new Object()));
@@ -67,7 +67,7 @@ public class PredicateBuilderTest {
   }
 
   @Test
-  public void testOrIfPredicate() {
+  void testOrIfPredicate() {
     assertFalse(PredicateBuilder.of(falsePredicate).orIf(true, falsePredicate).build().test(new Object()));
     assertTrue(PredicateBuilder.of(truePredicate).orIf(true, falsePredicate).build().test(new Object()));
     assertTrue(PredicateBuilder.of(falsePredicate).orIf(true, truePredicate).build().test(new Object()));

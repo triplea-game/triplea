@@ -31,7 +31,7 @@ public class PropertyFileTest {
   }
 
   @Test
-  public void testConstructor() throws Exception {
+  void testConstructor() throws Exception {
     Files.write(file.toPath(), Arrays.asList("abc=def", "123: 456"));
     final PropertyFile instance = new PropertyFile(file.getAbsolutePath(), mock) {};
     assertEquals("def", instance.properties.getProperty("abc"));
@@ -40,7 +40,7 @@ public class PropertyFileTest {
   }
 
   @Test
-  public void testCaching() {
+  void testCaching() {
     final DummyPropertyFile dummy = new DummyPropertyFile(file.getAbsolutePath(), mock);
     assertSame(dummy, PropertyFile.getInstance(DummyPropertyFile.class, () -> dummy));
     assertSame(dummy, PropertyFile.getInstance(DummyPropertyFile.class,

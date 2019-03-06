@@ -534,7 +534,7 @@ public final class PointFileReaderWriterTest {
   @Nested
   public final class ReadStreamTest {
     @Test
-    public void testExceptionWrapping() {
+    void testExceptionWrapping() {
       final String test = "Test";
       final ByteArrayInputStream stream = new ByteArrayInputStream(test.getBytes(StandardCharsets.UTF_8));
       final IllegalArgumentException exception = new IllegalArgumentException("Test Exception");

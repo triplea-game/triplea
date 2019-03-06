@@ -49,7 +49,7 @@ public class VictoryTest {
   private MoveDelegate moveDelegate;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.VICTORY_TEST.getGameData();
     italians = GameDataTestUtil.italians(gameData);
     germans = GameDataTestUtil.germans(gameData);
@@ -80,7 +80,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testNoBlitzThroughMountain() {
+  void testNoBlitzThroughMountain() {
     gameData.performChange(ChangeFactory.addUnits(libya, armour.create(1, italians)));
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
@@ -92,7 +92,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testBlitzNormal() {
+  void testBlitzNormal() {
     gameData.performChange(ChangeFactory.addUnits(frenchWestAfrica, armour.create(1, italians)));
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
@@ -105,7 +105,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testNoBlitzWithStopThroughMountain() {
+  void testNoBlitzWithStopThroughMountain() {
     gameData.performChange(ChangeFactory.addUnits(libya, armour.create(1, italians)));
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
@@ -122,7 +122,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testBlitzWithStop() {
+  void testBlitzWithStop() {
     gameData.performChange(ChangeFactory.addUnits(frenchWestAfrica, armour.create(1, italians)));
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
@@ -138,7 +138,7 @@ public class VictoryTest {
 
 
   @Test
-  public void testMotorizedThroughMountain() {
+  void testMotorizedThroughMountain() {
     gameData.performChange(ChangeFactory.addUnits(libya, motorized.create(1, italians)));
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
@@ -150,7 +150,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testMotorizedNoBlitzBlitzedTerritory() {
+  void testMotorizedNoBlitzBlitzedTerritory() {
     gameData.performChange(ChangeFactory.changeOwner(frenchEastAfrica, italians));
     gameData.performChange(ChangeFactory.addUnits(frenchEastAfrica, armour.create(1, italians)));
     gameData.performChange(ChangeFactory.changeOwner(kenya, italians));
@@ -170,7 +170,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testFuelCostAndFuelFlatCost() {
+  void testFuelCostAndFuelFlatCost() {
     gameData.performChange(ChangeFactory.changeOwner(kenya, italians));
     gameData.performChange(ChangeFactory.changeOwner(britishCongo, italians));
     gameData.performChange(ChangeFactory.changeOwner(frenchEastAfrica, italians));
@@ -213,7 +213,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testFuelForCarriers() {
+  void testFuelForCarriers() {
     advanceToStep(testBridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(testBridge);
     moveDelegate.start();
@@ -266,7 +266,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testMultipleResourcesToPurchase() {
+  void testMultipleResourcesToPurchase() {
     advanceToStep(testBridge, "italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
@@ -281,7 +281,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testNotEnoughMultipleResourcesToPurchase() {
+  void testNotEnoughMultipleResourcesToPurchase() {
     advanceToStep(testBridge, "italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
@@ -295,7 +295,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testPuOnlyResourcesToPurchase() {
+  void testPuOnlyResourcesToPurchase() {
     advanceToStep(testBridge, "italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();
@@ -310,7 +310,7 @@ public class VictoryTest {
   }
 
   @Test
-  public void testNoPuResourcesToPurchase() {
+  void testNoPuResourcesToPurchase() {
     advanceToStep(testBridge, "italianPurchase");
     purchaseDelegate.setDelegateBridgeAndPlayer(testBridge);
     purchaseDelegate.start();

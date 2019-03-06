@@ -13,7 +13,7 @@ import games.strategy.engine.message.RemoteMethodCallResults;
 public class EndPointTest {
 
   @Test
-  public void testEndPoint() {
+  void testEndPoint() {
     final EndPoint endPoint = new EndPoint("", Comparator.class, false);
     endPoint.addImplementor((Comparator<Object>) (o1, o2) -> 2);
     final RemoteMethodCall call = new RemoteMethodCall("", "compare", new Object[] {"", ""},

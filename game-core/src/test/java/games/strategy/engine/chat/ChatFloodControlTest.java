@@ -10,12 +10,12 @@ public class ChatFloodControlTest {
   private final ChatFloodControl testObj = new ChatFloodControl(INITIAL_CLEAR_TIME);
 
   @Test
-  public void testSimple() {
+  void testSimple() {
     assertTrue(testObj.allow("", System.currentTimeMillis()));
   }
 
   @Test
-  public void testDeny() {
+  void testDeny() {
     final long now = 123;
     for (int i = 0; i < ChatFloodControl.EVENTS_PER_WINDOW; i++) {
       assertTrue(testObj.allow("", now));

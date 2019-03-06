@@ -22,7 +22,7 @@ public class SerializationTest {
   private GameData gameDataSink;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameDataSource = TestMapGameData.TEST.getGameData();
     gameDataSink = TestMapGameData.TEST.getGameData();
   }
@@ -43,7 +43,7 @@ public class SerializationTest {
   }
 
   @Test
-  public void testWritePlayerId() throws Exception {
+  void testWritePlayerId() throws Exception {
     final PlayerId id = gameDataSource.getPlayerList().getPlayerId("chretian");
     final PlayerId readId = (PlayerId) serialize(id);
     final PlayerId localId = gameDataSink.getPlayerList().getPlayerId("chretian");
@@ -51,7 +51,7 @@ public class SerializationTest {
   }
 
   @Test
-  public void testWriteUnitType() throws Exception {
+  void testWriteUnitType() throws Exception {
     final Object orig = gameDataSource.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
     final Object read = serialize(orig);
     final Object local = gameDataSink.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF);
@@ -59,7 +59,7 @@ public class SerializationTest {
   }
 
   @Test
-  public void testWriteTerritory() throws Exception {
+  void testWriteTerritory() throws Exception {
     final Object orig = gameDataSource.getMap().getTerritory("canada");
     final Object read = serialize(orig);
     final Object local = gameDataSink.getMap().getTerritory("canada");
@@ -67,7 +67,7 @@ public class SerializationTest {
   }
 
   @Test
-  public void testWriteProductionRulte() throws Exception {
+  void testWriteProductionRulte() throws Exception {
     final Object orig = gameDataSource.getProductionRuleList().getProductionRule("infForSilver");
     final Object read = serialize(orig);
     final Object local = gameDataSink.getProductionRuleList().getProductionRule("infForSilver");

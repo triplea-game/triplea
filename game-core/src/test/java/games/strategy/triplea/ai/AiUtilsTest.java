@@ -22,19 +22,19 @@ public class AiUtilsTest {
   private GameData gameData;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.REVISED.getGameData();
   }
 
   @Test
-  public void testCost() {
+  void testCost() {
     final UnitType infantry = GameDataTestUtil.infantry(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     assertEquals(3, AiUtils.getCost(infantry, british, gameData));
   }
 
   @Test
-  public void testSortByCost() {
+  void testSortByCost() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final List<Unit> sorted = new ArrayList<>(germany.getUnits());
     Collections.sort(sorted, AiUtils.getCostComparator());

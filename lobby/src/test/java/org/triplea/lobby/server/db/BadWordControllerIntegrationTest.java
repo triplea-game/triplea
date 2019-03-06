@@ -14,7 +14,7 @@ import org.triplea.test.common.Integration;
 @Integration
 public final class BadWordControllerIntegrationTest extends AbstractControllerTestCase {
   @Test
-  public void testInsertAndRemoveBadWord() throws Exception {
+  void testInsertAndRemoveBadWord() throws Exception {
     final BadWordController controller = new BadWordController(database);
     final String word = Util.newUniqueTimestamp();
     controller.addBadWord(word);
@@ -24,7 +24,7 @@ public final class BadWordControllerIntegrationTest extends AbstractControllerTe
   }
 
   @Test
-  public void testDuplicateBadWord() {
+  void testDuplicateBadWord() {
     final BadWordController controller = new BadWordController(database);
     final String word = Util.newUniqueTimestamp();
     final int previousCount = controller.list().size();

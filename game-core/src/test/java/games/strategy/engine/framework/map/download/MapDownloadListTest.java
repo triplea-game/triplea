@@ -35,12 +35,12 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
   private final List<DownloadFileDescription> descriptions = new ArrayList<>();
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     descriptions.add(TEST_MAP);
   }
 
   @Test
-  public void testAvailable() {
+  void testAvailable() {
     when(strategy.getMapVersion(any())).thenReturn(Optional.empty());
     final MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
@@ -55,7 +55,7 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testAvailableExcluding() {
+  void testAvailableExcluding() {
     when(strategy.getMapVersion(any())).thenReturn(Optional.empty());
     final DownloadFileDescription download1 = newDownloadWithUrl("url1");
     final DownloadFileDescription download2 = newDownloadWithUrl("url2");
@@ -78,7 +78,7 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testInstalled() {
+  void testInstalled() {
     when(strategy.getMapVersion(any())).thenReturn(Optional.of(MAP_VERSION));
     final MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
@@ -93,7 +93,7 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testOutOfDate() {
+  void testOutOfDate() {
     when(strategy.getMapVersion(any())).thenReturn(Optional.of(lowVersion));
     final MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 
@@ -108,7 +108,7 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testOutOfDateExcluding() {
+  void testOutOfDateExcluding() {
     when(strategy.getMapVersion(any())).thenReturn(Optional.of(lowVersion));
     final DownloadFileDescription download1 = newDownloadWithUrl("url1");
     final DownloadFileDescription download2 = newDownloadWithUrl("url2");
@@ -121,7 +121,7 @@ public class MapDownloadListTest extends AbstractClientSettingTestCase {
   }
 
   @Test
-  public void testIsInstalled() {
+  void testIsInstalled() {
     when(strategy.getMapVersion(any())).thenReturn(Optional.of(MAP_VERSION));
     final MapDownloadList testObj = new MapDownloadList(descriptions, strategy);
 

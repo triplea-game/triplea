@@ -20,7 +20,7 @@ public final class BannedMacControllerIntegrationTest extends AbstractModeratorS
   private final BannedMacController controller = spy(new BannedMacController(database));
 
   @Test
-  public void testBanMacForever() {
+  void testBanMacForever() {
     banMacForSeconds(Long.MAX_VALUE);
     final Tuple<Boolean, Timestamp> macDetails = isMacBanned();
     assertTrue(macDetails.getFirst());
@@ -28,7 +28,7 @@ public final class BannedMacControllerIntegrationTest extends AbstractModeratorS
   }
 
   @Test
-  public void testBanMac() {
+  void testBanMac() {
     final Instant banUntil = banMacForSeconds(100L);
     assertBannedUserEquals(user);
     final Tuple<Boolean, Timestamp> macDetails = isMacBanned();
@@ -41,7 +41,7 @@ public final class BannedMacControllerIntegrationTest extends AbstractModeratorS
   }
 
   @Test
-  public void testUnbanMac() {
+  void testUnbanMac() {
     final Instant banUntil = banMacForSeconds(100L);
     final Tuple<Boolean, Timestamp> macDetails = isMacBanned();
     assertTrue(macDetails.getFirst());
@@ -53,7 +53,7 @@ public final class BannedMacControllerIntegrationTest extends AbstractModeratorS
   }
 
   @Test
-  public void testBanMacInThePast() {
+  void testBanMacInThePast() {
     banMacForSeconds(-10L);
     final Tuple<Boolean, Timestamp> macDetails = isMacBanned();
     assertFalse(macDetails.getFirst());
@@ -61,7 +61,7 @@ public final class BannedMacControllerIntegrationTest extends AbstractModeratorS
   }
 
   @Test
-  public void testBanMacUpdate() {
+  void testBanMacUpdate() {
     banMacForSeconds(Long.MAX_VALUE);
     final Tuple<Boolean, Timestamp> macDetails = isMacBanned();
     assertTrue(macDetails.getFirst());
@@ -73,7 +73,7 @@ public final class BannedMacControllerIntegrationTest extends AbstractModeratorS
   }
 
   @Test
-  public void testBanMacUpdatesBannedUserAndModerator() {
+  void testBanMacUpdatesBannedUserAndModerator() {
     banMacForSeconds(user, Long.MAX_VALUE, moderator);
 
     final User otherUser = newUser().withHashedMacAddress(user.getHashedMacAddress());

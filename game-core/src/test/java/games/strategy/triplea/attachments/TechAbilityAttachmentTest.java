@@ -58,21 +58,21 @@ public class TechAbilityAttachmentTest {
   }
 
   @Test
-  public void testSplitAndValidate_emptyString() {
+  void testSplitAndValidate_emptyString() {
     final Exception e = assertThrows(GameParseException.class, () -> attachment.splitAndValidate(name, ""));
     assertTrue(e.getMessage().contains(name));
     assertTrue(e.getMessage().contains(customToString));
   }
 
   @Test
-  public void testSplitAndValidate_invalidLength() {
+  void testSplitAndValidate_invalidLength() {
     final Exception e = assertThrows(GameParseException.class, () -> attachment.splitAndValidate(name, "a:b:c"));
     assertTrue(e.getMessage().contains(name));
     assertTrue(e.getMessage().contains(customToString));
   }
 
   @Test
-  public void testSplitAndValidate_oneValue() throws Exception {
+  void testSplitAndValidate_oneValue() throws Exception {
     final String[] result = attachment.splitAndValidate(name, "a");
     assertEquals(1, result.length);
     assertEquals("a", result[0]);
@@ -80,7 +80,7 @@ public class TechAbilityAttachmentTest {
 
 
   @Test
-  public void testSplitAndValidate_twoValues() throws Exception {
+  void testSplitAndValidate_twoValues() throws Exception {
     final String[] result = attachment.splitAndValidate(name, "a:b");
     assertEquals(2, result.length);
     assertEquals("a", result[0]);
@@ -89,7 +89,7 @@ public class TechAbilityAttachmentTest {
 
 
   @Test
-  public void testGetIntInRange_noInt() {
+  void testGetIntInRange_noInt() {
     final Exception e1 = assertThrows(IllegalArgumentException.class,
         () -> attachment.getIntInRange(name, "NaN", 10, false));
     final Exception e2 = assertThrows(IllegalArgumentException.class,
@@ -101,7 +101,7 @@ public class TechAbilityAttachmentTest {
   }
 
   @Test
-  public void testGetIntInRange_tooHigh() {
+  void testGetIntInRange_tooHigh() {
     final Exception e = assertThrows(GameParseException.class, () -> attachment.getIntInRange(name, "20", 10, false));
     assertTrue(e.getMessage().contains("20"));
     assertTrue(e.getMessage().contains("10"));
@@ -110,7 +110,7 @@ public class TechAbilityAttachmentTest {
   }
 
   @Test
-  public void testGetIntInRange_negativeNoUndefined() {
+  void testGetIntInRange_negativeNoUndefined() {
     final Exception e = assertThrows(GameParseException.class, () -> attachment.getIntInRange(name, "-1", 10, false));
     assertTrue(e.getMessage().contains("-1"));
     assertTrue(e.getMessage().contains("10"));
@@ -119,7 +119,7 @@ public class TechAbilityAttachmentTest {
   }
 
   @Test
-  public void testGetIntInRange_negativeUndefined() {
+  void testGetIntInRange_negativeUndefined() {
     final Exception e = assertThrows(GameParseException.class, () -> attachment.getIntInRange(name, "-2", 10, true));
     assertTrue(e.getMessage().contains("-2"));
     assertTrue(e.getMessage().contains("10"));
@@ -128,7 +128,7 @@ public class TechAbilityAttachmentTest {
   }
 
   @Test
-  public void testGetIntInRange_validValues() throws Exception {
+  void testGetIntInRange_validValues() throws Exception {
     assertEquals(-1, attachment.getIntInRange(name, "-1", 10, true));
     assertEquals(10, attachment.getIntInRange(name, "10", 10, true));
     assertEquals(0, attachment.getIntInRange(name, "0", 10, false));
@@ -136,7 +136,7 @@ public class TechAbilityAttachmentTest {
   }
 
   @Test
-  public void testGetUnitType() throws Exception {
+  void testGetUnitType() throws Exception {
     assertEquals(dummyUnitType, attachment.getUnitType(testUnitType));
     verify(list).getUnitType(testUnitType);
     verify(list).getUnitType(any());
@@ -144,7 +144,7 @@ public class TechAbilityAttachmentTest {
 
 
   @Test
-  public void testGetUnitType_noValue() {
+  void testGetUnitType_noValue() {
     final String test = "someNonExistentKey";
     final Exception e = assertThrows(GameParseException.class, () -> attachment.getUnitType(test));
     verify(list).getUnitType(test);
@@ -153,7 +153,7 @@ public class TechAbilityAttachmentTest {
   }
 
   @Test
-  public void testApplyCheckedValue() throws Exception {
+  void testApplyCheckedValue() throws Exception {
     final Map<UnitType, Integer> map = new HashMap<>();
     attachment.applyCheckedValue(name, "1:" + testUnitType, map::put);
     assertEquals(1, map.size());
@@ -161,7 +161,7 @@ public class TechAbilityAttachmentTest {
   }
 
   @Test
-  public void testSumIntegerMap() {
+  void testSumIntegerMap() {
     @SuppressWarnings("unchecked")
     final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper = mock(Function.class);
     doReturn(
@@ -174,7 +174,7 @@ public class TechAbilityAttachmentTest {
   }
 
   @Test
-  public void testSumNumbers() {
+  void testSumNumbers() {
     final AtomicInteger counter = new AtomicInteger(1);
     final int result = TechAbilityAttachment.sumNumbers(a -> {
       assertEquals(attachment, a);

@@ -29,12 +29,12 @@ public final class DefaultCredentialManagerTest {
   private DefaultCredentialManager credentialManager;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     credentialManager = DefaultCredentialManager.newInstance(MASTER_PASSWORD);
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     credentialManager.close();
   }
 
