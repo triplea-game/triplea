@@ -211,7 +211,7 @@ public class ClientSetupPanel extends SetupPanel {
         playerComponent = button;
       } else {
         playerLabel.setText(playerName);
-        if (playerName.equals(clientModel.getMessenger().getLocalNode().getName())) {
+        if (playerName.equals(clientModel.getClientMessenger().getLocalNode().getName())) {
           final JButton button = new JButton(dontTakeAction);
           button.setMargin(buttonInsets);
           playerComponent = button;

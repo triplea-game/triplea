@@ -7,12 +7,10 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.vault.Vault;
-import games.strategy.net.IMessenger;
+import games.strategy.net.Messengers;
 import games.strategy.sound.ISound;
 
 /**
@@ -32,11 +30,7 @@ public interface IGame {
 
   void removeGameStepListener(GameStepListener listener);
 
-  IMessenger getMessenger();
-
-  IChannelMessenger getChannelMessenger();
-
-  IRemoteMessenger getRemoteMessenger();
+  Messengers getMessengers();
 
   Vault getVault();
 

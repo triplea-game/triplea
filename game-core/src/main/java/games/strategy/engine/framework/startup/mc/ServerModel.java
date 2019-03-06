@@ -57,17 +57,13 @@ import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
-import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.RemoteName;
-import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.io.IoUtils;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
+import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.ClientSetting;
 import lombok.extern.java.Log;
 
@@ -84,8 +80,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final ServerSetupModel serverSetupModel;
   private IServerMessenger serverMessenger;
-  private IRemoteMessenger remoteMessenger;
-  private IChannelMessenger channelMessenger;
+  private Messengers messengers;
   private GameData data;
   private Map<String, String> playersToNodeListing = new HashMap<>();
   private Map<String, Boolean> playersEnabledListing = new HashMap<>();
@@ -141,9 +136,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       if (serverLauncher != null) {
         final RemoteName remoteName = getObserverWaitingToStartName(newNode);
         final IObserverWaitingToJoin observerWaitingToJoinBlocking =
-            (IObserverWaitingToJoin) remoteMessenger.getRemote(remoteName);
+            (IObserverWaitingToJoin) messengers.getRemote(remoteName);
         final IObserverWaitingToJoin observerWaitingToJoinNonBlocking =
-            (IObserverWaitingToJoin) remoteMessenger.getRemote(remoteName, true);
+            (IObserverWaitingToJoin) messengers.getRemote(remoteName, true);
         serverLauncher.addObserver(observerWaitingToJoinBlocking, observerWaitingToJoinNonBlocking, newNode);
         return true;
       }
@@ -260,10 +255,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   public void cancel() {
     gameSelectorModel.deleteObserver(gameSelectorObserver);
-    if (serverMessenger != null) {
+    if (messengers != null) {
       chatController.deactivate();
-      serverMessenger.shutDown();
-      serverMessenger.removeErrorListener(this);
+      messengers.shutDown();
+      messengers.removeErrorListener(this);
       chatModel.setChat(null);
     }
   }
@@ -288,7 +283,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
           final String name = player.getName();
           if (ui == null) {
             if (player.getIsDisabled()) {
-              playersToNodeListing.put(name, serverMessenger.getLocalNode().getName());
+              playersToNodeListing.put(name, messengers.getLocalNode().getName());
               localPlayerTypes.put(name, PlayerType.WEAK_AI);
             } else {
               // we generally do not want a headless host bot to be doing any AI turns, since that
@@ -296,7 +291,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
               playersToNodeListing.put(name, null);
             }
           } else {
-            Optional.ofNullable(serverMessenger)
+            Optional.ofNullable(messengers)
                 .ifPresent(messenger -> playersToNodeListing.put(name, messenger.getLocalNode().getName()));
           }
           playerNamesAndAlliancesInTurnOrder.put(name, data.getAllianceTracker().getAlliancesPlayerIsIn(player));
@@ -363,24 +358,21 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   private void createServerMessenger(@Nonnull final ServerConnectionProps props) {
     try {
-      serverMessenger = new GameServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
+      this.serverMessenger = new GameServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
       clientLoginValidator.setGamePassword(props.getPassword());
       serverMessenger.setLoginValidator(clientLoginValidator);
       serverMessenger.addErrorListener(this);
       serverMessenger.addConnectionChangeListener(this);
-      final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(serverMessenger);
-      remoteMessenger = new RemoteMessenger(unifiedMessenger);
-      remoteMessenger.registerRemote(serverStartupRemote, SERVER_REMOTE_NAME);
-      channelMessenger = new ChannelMessenger(unifiedMessenger);
-      chatController = new ChatController(CHAT_NAME, serverMessenger, remoteMessenger, channelMessenger, node -> false);
+
+      messengers = new Messengers(serverMessenger);
+      messengers.registerRemote(serverStartupRemote, SERVER_REMOTE_NAME);
+      chatController = new ChatController(CHAT_NAME, messengers, node -> false);
 
       if (ui == null) {
-        chatModel = new HeadlessChat(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
-            Chat.ChatSoundProfile.GAME_CHATROOM);
+        chatModel = new HeadlessChat(messengers, CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
       } else {
-        chatModel = ChatPanel.newChatPanel(serverMessenger, channelMessenger, remoteMessenger, CHAT_NAME,
-            Chat.ChatSoundProfile.GAME_CHATROOM);
+        chatModel = ChatPanel.newChatPanel(messengers, CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
       }
 
       serverMessenger.setAcceptNewConnections(true);
@@ -420,7 +412,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   private void setPlayerEnabled(final String playerName, final boolean enabled) {
-    takePlayerInternal(serverMessenger.getLocalNode(), true, playerName);
+    takePlayerInternal(messengers.getLocalNode(), true, playerName);
     // synchronize
     synchronized (this) {
       if (!playersEnabledListing.containsKey(playerName)) {
@@ -447,7 +439,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   private void notifyChanellPlayersChanged() {
-    Optional.ofNullable(channelMessenger)
+    Optional.ofNullable(messengers)
         .ifPresent(messenger -> {
           final IClientChannel channel =
               (IClientChannel) messenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
@@ -456,11 +448,11 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   }
 
   public void takePlayer(final String playerName) {
-    takePlayerInternal(serverMessenger.getLocalNode(), true, playerName);
+    takePlayerInternal(messengers.getLocalNode(), true, playerName);
   }
 
   public void releasePlayer(final String playerName) {
-    takePlayerInternal(serverMessenger.getLocalNode(), false, playerName);
+    takePlayerInternal(messengers.getLocalNode(), false, playerName);
   }
 
   public void disablePlayer(final String playerName) {
@@ -587,31 +579,20 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
               .ifPresent(node -> remotePlayers.put(entry.getKey(), node));
         }
       }
-      return Optional.of(new ServerLauncher(clientCount, remoteMessenger, channelMessenger,
-          serverMessenger, gameSelectorModel, getPlayerListingInternal(), remotePlayers, this, ui == null));
+      return Optional.of(new ServerLauncher(clientCount, messengers, gameSelectorModel, getPlayerListingInternal(),
+          remotePlayers, this, ui == null));
     }
   }
 
   public void newGame() {
     serverMessenger.setAcceptNewConnections(true);
     final IClientChannel channel =
-        (IClientChannel) channelMessenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
+        (IClientChannel) messengers.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
     notifyChanellPlayersChanged();
     channel.gameReset();
   }
 
   public void setServerLauncher(final ServerLauncher launcher) {
     serverLauncher = launcher;
-  }
-
-  @Override
-  public String toString() {
-    return "ServerModel GameData:" + (data == null ? "null" : data.getGameName()) + "\n"
-        + "Connected:" + (serverMessenger == null ? "null" : serverMessenger.isConnected()) + "\n"
-        + serverMessenger
-        + "\n"
-        + remoteMessenger
-        + "\n"
-        + channelMessenger;
   }
 }
