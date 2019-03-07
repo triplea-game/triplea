@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -14,15 +12,17 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.User;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.util.Tuple;
 
-public final class BannedUsernameControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
-  private final BannedUsernameController controller = spy(new BannedUsernameController(database));
+final class BannedUsernameControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
+  private final BannedUsernameDao controller =
+      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBannedUsernameDao();
 
   @Test
   void testBanUsernameForever() {
     banUsernameForSeconds(Long.MAX_VALUE);
-    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
+    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned(Instant.now());
     assertTrue(usernameDetails.getFirst());
     assertNull(usernameDetails.getSecond());
   }
@@ -31,11 +31,11 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   void testBanUsername() {
     final Instant banUntil = banUsernameForSeconds(100L);
     assertBannedUserEquals(user);
-    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
+    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned(Instant.now());
     assertTrue(usernameDetails.getFirst());
     assertEquals(banUntil, usernameDetails.getSecond().toInstant());
-    when(controller.now()).thenReturn(banUntil.plusSeconds(1L));
-    final Tuple<Boolean, Timestamp> usernameDetails2 = isUsernameBanned();
+
+    final Tuple<Boolean, Timestamp> usernameDetails2 = isUsernameBanned(banUntil.plusSeconds(1L));
     assertFalse(usernameDetails2.getFirst());
     assertEquals(banUntil, usernameDetails2.getSecond().toInstant());
   }
@@ -43,11 +43,11 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   @Test
   void testUnbanUsername() {
     final Instant banUntil = banUsernameForSeconds(100L);
-    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
+    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned(Instant.now());
     assertTrue(usernameDetails.getFirst());
     assertEquals(banUntil, usernameDetails.getSecond().toInstant());
     banUsernameForSeconds(-10L);
-    final Tuple<Boolean, Timestamp> usernameDetails2 = isUsernameBanned();
+    final Tuple<Boolean, Timestamp> usernameDetails2 = isUsernameBanned(Instant.now());
     assertFalse(usernameDetails2.getFirst());
     assertNull(usernameDetails2.getSecond());
   }
@@ -55,7 +55,7 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   @Test
   void testBanUsernameInThePast() {
     banUsernameForSeconds(-10L);
-    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
+    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned(Instant.now());
     assertFalse(usernameDetails.getFirst());
     assertNull(usernameDetails.getSecond());
   }
@@ -63,11 +63,11 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
   @Test
   void testBanUsernameUpdate() {
     banUsernameForSeconds(Long.MAX_VALUE);
-    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned();
+    final Tuple<Boolean, Timestamp> usernameDetails = isUsernameBanned(Instant.now());
     assertTrue(usernameDetails.getFirst());
     assertNull(usernameDetails.getSecond());
     final Instant banUntil = banUsernameForSeconds(100L);
-    final Tuple<Boolean, Timestamp> usernameDetails2 = isUsernameBanned();
+    final Tuple<Boolean, Timestamp> usernameDetails2 = isUsernameBanned(Instant.now());
     assertTrue(usernameDetails2.getFirst());
     assertEquals(banUntil, usernameDetails2.getSecond().toInstant());
   }
@@ -94,8 +94,8 @@ public final class BannedUsernameControllerIntegrationTest extends AbstractModer
     return banEnd;
   }
 
-  private Tuple<Boolean, /* @Nullable */ Timestamp> isUsernameBanned() {
-    return controller.isUsernameBanned(user.getUsername());
+  private Tuple<Boolean, /* @Nullable */ Timestamp> isUsernameBanned(final Instant checkTime) {
+    return controller.isUsernameBanned(checkTime, user.getUsername());
   }
 
   private void assertBannedUserEquals(final User expected) {

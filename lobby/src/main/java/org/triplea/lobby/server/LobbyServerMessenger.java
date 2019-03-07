@@ -6,24 +6,19 @@ import java.util.Optional;
 
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.lobby.server.config.LobbyConfiguration;
-import org.triplea.lobby.server.db.Database;
-import org.triplea.lobby.server.db.MutedMacController;
-import org.triplea.lobby.server.db.MutedUsernameController;
+import org.triplea.lobby.server.db.DatabaseDao;
 
 import games.strategy.engine.chat.AdministrativeChatMessages;
 import games.strategy.net.AbstractServerMessenger;
 import games.strategy.net.DefaultObjectStreamFactory;
 
 final class LobbyServerMessenger extends AbstractServerMessenger {
-  private final MutedMacController mutedMacController;
-  private final MutedUsernameController mutedUsernameController;
+  private final DatabaseDao databaseDao;
 
   LobbyServerMessenger(final String name, final LobbyConfiguration lobbyConfiguration) throws IOException {
     super(name, lobbyConfiguration.getPort(), new DefaultObjectStreamFactory());
 
-    final Database database = new Database(lobbyConfiguration);
-    mutedMacController = new MutedMacController(database);
-    mutedUsernameController = new MutedUsernameController(database);
+    databaseDao = lobbyConfiguration.getDatabaseDao();
   }
 
   @Override
@@ -38,21 +33,21 @@ final class LobbyServerMessenger extends AbstractServerMessenger {
 
   @Override
   protected Optional<Instant> getMacUnmuteTime(final String mac) {
-    return mutedMacController.getMacUnmuteTime(mac);
+    return databaseDao.getMutedMacDao().getMacUnmuteTime(mac);
   }
 
   @Override
   protected Optional<Instant> getUsernameUnmuteTime(final String username) {
-    return mutedUsernameController.getUsernameUnmuteTime(username);
+    return databaseDao.getMutedUsernameDao().getUsernameUnmuteTime(username);
   }
 
   @Override
   protected boolean isMacMutedInBackingStore(final String mac) {
-    return mutedMacController.isMacMuted(mac);
+    return databaseDao.getMutedMacDao().isMacMuted(Instant.now(), mac);
   }
 
   @Override
   protected boolean isUsernameMutedInBackingStore(final String username) {
-    return mutedUsernameController.isUsernameMuted(username);
+    return databaseDao.getMutedUsernameDao().isUsernameMuted(Instant.now(), username);
   }
 }

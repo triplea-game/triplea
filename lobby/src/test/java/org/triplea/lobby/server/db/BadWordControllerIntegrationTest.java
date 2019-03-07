@@ -9,13 +9,16 @@ import java.sql.PreparedStatement;
 
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.TestUserUtils;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 
 @Integration
-final class BadWordControllerIntegrationTest extends AbstractControllerTestCase {
+final class BadWordControllerIntegrationTest {
+  private final BadWordDao controller =
+      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBadWordDao();
+
   @Test
   void testInsertAndRemoveBadWord() throws Exception {
-    final BadWordController controller = new BadWordController(database);
     final String word = TestUserUtils.newUniqueTimestamp();
     controller.addBadWord(word);
     assertTrue(controller.list().contains(word));
@@ -25,7 +28,6 @@ final class BadWordControllerIntegrationTest extends AbstractControllerTestCase 
 
   @Test
   void testDuplicateBadWord() {
-    final BadWordController controller = new BadWordController(database);
     final String word = TestUserUtils.newUniqueTimestamp();
     final int previousCount = controller.list().size();
     controller.addBadWord(word);
@@ -35,7 +37,7 @@ final class BadWordControllerIntegrationTest extends AbstractControllerTestCase 
   }
 
   private void removeBadWord(final String word) throws Exception {
-    try (Connection con = database.newConnection();
+    try (Connection con = TestDatabase.newConnection();
         PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?")) {
       ps.setString(1, word);
       ps.execute();

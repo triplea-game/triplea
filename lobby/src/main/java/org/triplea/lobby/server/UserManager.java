@@ -2,24 +2,20 @@ package org.triplea.lobby.server;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.IUserManager;
-import org.triplea.lobby.server.config.LobbyConfiguration;
-import org.triplea.lobby.server.db.Database;
+import org.triplea.lobby.server.db.DatabaseDao;
 import org.triplea.lobby.server.db.HashedPassword;
-import org.triplea.lobby.server.db.UserController;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.INode;
+import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 
 @Log
+@AllArgsConstructor
 final class UserManager implements IUserManager {
-  private final Database database;
-
-  UserManager(final LobbyConfiguration lobbyConfiguration) {
-    database = new Database(lobbyConfiguration);
-  }
+  private final DatabaseDao database;
 
   void register(final IRemoteMessenger messenger) {
     messenger.registerRemote(this, REMOTE_NAME);
@@ -42,7 +38,7 @@ final class UserManager implements IUserManager {
     final HashedPassword password = new HashedPassword(hashedPassword);
 
     try {
-      new UserController(database).updateUser(user,
+      database.getUserDao().updateUser(user,
           password.isHashedWithSalt() ? password : new HashedPassword(BCrypt.hashpw(hashedPassword, BCrypt.gensalt())));
     } catch (final IllegalStateException e) {
       return e.getMessage();
@@ -57,6 +53,6 @@ final class UserManager implements IUserManager {
       log.severe("Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);
       throw new IllegalStateException("Sorry, but I can't let you do that");
     }
-    return new UserController(database).getUserByName(userName);
+    return database.getUserDao().getUserByName(userName);
   }
 }

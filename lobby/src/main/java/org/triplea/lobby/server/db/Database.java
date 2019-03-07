@@ -1,34 +1,32 @@
 package org.triplea.lobby.server.db;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.Nonnull;
 
-import org.triplea.lobby.server.config.LobbyConfiguration;
+import lombok.Builder;
 
 /**
  * Utility to get connections to the Postgres lobby database.
- *
- * <p>
- * Instances of this class are thread-safe if the underlying {@link LobbyConfiguration} is thread-safe.
- * </p>
  */
-@ThreadSafe
+@Builder
 public final class Database {
-  private final LobbyConfiguration lobbyConfiguration;
 
-  public Database(final LobbyConfiguration lobbyConfiguration) {
-    checkNotNull(lobbyConfiguration);
+  @Nonnull
+  private final String postgresHost;
+  @Nonnull
+  private final Integer postgresPort;
+  @Nonnull
+  private final String postgresDatabase;
+  @Nonnull
+  private final String postgresUser;
+  @Nonnull
+  private final String postgresPassword;
 
-    this.lobbyConfiguration = lobbyConfiguration;
-  }
-
-  public Connection newConnection() throws SQLException {
+  Connection newConnection() throws SQLException {
     final Connection connection = DriverManager.getConnection(getConnectionUrl(), getConnectionProperties());
     connection.setAutoCommit(false);
     return connection;
@@ -37,15 +35,19 @@ public final class Database {
   private String getConnectionUrl() {
     return String.format(
         "jdbc:postgresql://%s:%d/%s",
-        lobbyConfiguration.getPostgresHost(),
-        lobbyConfiguration.getPostgresPort(),
-        lobbyConfiguration.getPostgresDatabase());
+        postgresHost,
+        postgresPort,
+        postgresDatabase);
   }
 
   private Properties getConnectionProperties() {
     final Properties props = new Properties();
-    props.put("user", lobbyConfiguration.getPostgresUser());
-    props.put("password", lobbyConfiguration.getPostgresPassword());
+    props.put("user", postgresUser);
+    props.put("password", postgresPassword);
     return props;
+  }
+
+  public DatabaseDao newDatabaseDao() {
+    return new JdbcDatabaseDao(this);
   }
 }

@@ -9,18 +9,17 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
 import org.triplea.lobby.server.User;
 
-/**
- * Utility class to create/read/delete muted macs (there is no update).
- */
-public class MutedMacController extends TimedController {
-  public MutedMacController(final Database database) {
-    super(database);
-  }
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+class MutedMacController implements MutedMacDao {
+  private final Supplier<Connection> connection;
 
   /**
    * Mute the given mac. If muteTill is not null, the mute will expire when muteTill is reached.
@@ -35,14 +34,10 @@ public class MutedMacController extends TimedController {
    *
    * @throws IllegalStateException If an error occurs while adding, updating, or removing the mute.
    */
+  @Override
   public void addMutedMac(final User mutedUser, final @Nullable Instant muteTill, final User moderator) {
     checkNotNull(mutedUser);
     checkNotNull(moderator);
-
-    if (muteTill != null && muteTill.isBefore(now())) {
-      removeMutedMac(mutedUser.getHashedMacAddress());
-      return;
-    }
 
     final String sql = ""
         + "insert into muted_macs "
@@ -54,7 +49,7 @@ public class MutedMacController extends TimedController {
         + "  mod_username=excluded.mod_username, "
         + "  mod_ip=excluded.mod_ip, "
         + "  mod_mac=excluded.mod_mac";
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mutedUser.getUsername());
       ps.setString(2, mutedUser.getInetAddress().getHostAddress());
@@ -66,18 +61,18 @@ public class MutedMacController extends TimedController {
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw newDatabaseException("Error inserting muted mac: " + mutedUser.getHashedMacAddress(), e);
+      throw new DatabaseException("Error inserting muted mac: " + mutedUser.getHashedMacAddress(), e);
     }
   }
 
   private void removeMutedMac(final String mac) {
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement("delete from muted_macs where mac=?")) {
       ps.setString(1, mac);
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw newDatabaseException("Error deleting muted mac: " + mac, e);
+      throw new DatabaseException("Error deleting muted mac: " + mac, e);
     }
   }
 
@@ -85,17 +80,19 @@ public class MutedMacController extends TimedController {
    * Is the given mac muted? This may have the side effect of removing from the
    * database any mac's whose mute has expired.
    */
-  public boolean isMacMuted(final String mac) {
-    return getMacUnmuteTime(mac).map(now()::isBefore).orElse(false);
+  @Override
+  public boolean isMacMuted(final Instant nowTime, final String mac) {
+    return getMacUnmuteTime(mac).map(nowTime::isBefore).orElse(false);
   }
 
   /**
    * Returns an Optional Instant of the moment when the mute expires.
    * The optional is empty when the mac is not muted or the mute has already expired.
    */
+  @Override
   public Optional<Instant> getMacUnmuteTime(final String mac) {
     final String sql = "select mac, mute_till from muted_macs where mac=?";
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mac);
       try (ResultSet rs = ps.executeQuery()) {
@@ -106,7 +103,7 @@ public class MutedMacController extends TimedController {
             return Optional.of(Instant.MAX);
           }
           final Instant expiration = muteTill.toInstant();
-          if (expiration.isBefore(now())) {
+          if (expiration.isBefore(Instant.now())) {
             // If the mute has expired, allow the mac
             removeMutedMac(mac);
             // Signal as not-muted
@@ -117,7 +114,7 @@ public class MutedMacController extends TimedController {
         return Optional.empty();
       }
     } catch (final SQLException e) {
-      throw newDatabaseException("Error for testing muted mac existence: " + mac, e);
+      throw new DatabaseException("Error for testing muted mac existence: " + mac, e);
     }
   }
 }

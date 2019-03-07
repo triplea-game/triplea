@@ -19,7 +19,7 @@ import org.triplea.test.common.Integration;
  * Superclass for fixtures that test a moderator service controller.
  */
 @Integration
-public abstract class AbstractModeratorServiceControllerTestCase extends AbstractControllerTestCase {
+public abstract class AbstractModeratorServiceControllerTestCase {
   protected final User user = newUser();
   protected final User moderator = newUser();
 
@@ -48,7 +48,7 @@ public abstract class AbstractModeratorServiceControllerTestCase extends Abstrac
       final String userQuerySql,
       final ThrowingConsumer<PreparedStatement, SQLException> preparedStatementInitializer,
       final String unknownUserMessage) {
-    try (Connection conn = database.newConnection();
+    try (Connection conn = TestDatabase.newConnection();
         PreparedStatement ps = conn.prepareStatement(userQuerySql)) {
       preparedStatementInitializer.accept(ps);
       try (ResultSet rs = ps.executeQuery()) {

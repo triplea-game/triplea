@@ -9,18 +9,17 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
 import org.triplea.lobby.server.User;
 
-/**
- * Utility class to create/read/delete muted usernames (there is no update).
- */
-public class MutedUsernameController extends TimedController {
-  public MutedUsernameController(final Database database) {
-    super(database);
-  }
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+class MutedUsernameController implements MutedUsernameDao {
+  private final Supplier<Connection> connection;
 
   /**
    * Mute the given username. If muteTill is not null, the mute will expire when muteTill is reached.
@@ -35,11 +34,12 @@ public class MutedUsernameController extends TimedController {
    *
    * @throws IllegalStateException If an error occurs while adding, updating, or removing the mute.
    */
+  @Override
   public void addMutedUsername(final User mutedUser, final @Nullable Instant muteTill, final User moderator) {
     checkNotNull(mutedUser);
     checkNotNull(moderator);
 
-    if (muteTill != null && muteTill.isBefore(now())) {
+    if (muteTill != null && muteTill.isBefore(Instant.now())) {
       removeMutedUsername(mutedUser.getUsername());
       return;
     }
@@ -54,7 +54,7 @@ public class MutedUsernameController extends TimedController {
         + "  mod_username=excluded.mod_username, "
         + "  mod_ip=excluded.mod_ip, "
         + "  mod_mac=excluded.mod_mac";
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, mutedUser.getUsername());
       ps.setString(2, mutedUser.getInetAddress().getHostAddress());
@@ -66,18 +66,18 @@ public class MutedUsernameController extends TimedController {
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw newDatabaseException("Error inserting muted username: " + mutedUser.getUsername(), e);
+      throw new DatabaseException("Error inserting muted username: " + mutedUser.getUsername(), e);
     }
   }
 
   private void removeMutedUsername(final String username) {
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement("delete from muted_usernames where username = ?")) {
       ps.setString(1, username);
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw newDatabaseException("Error deleting muted username: " + username, e);
+      throw new DatabaseException("Error deleting muted username: " + username, e);
     }
   }
 
@@ -85,17 +85,19 @@ public class MutedUsernameController extends TimedController {
    * Is the given username muted? This may have the side effect of removing from the
    * database any username's whose mute has expired.
    */
-  public boolean isUsernameMuted(final String username) {
-    return getUsernameUnmuteTime(username).map(now()::isBefore).orElse(false);
+  @Override
+  public boolean isUsernameMuted(final Instant nowTime, final String username) {
+    return getUsernameUnmuteTime(username).map(nowTime::isBefore).orElse(false);
   }
 
   /**
    * Returns an Optional Instant of the moment when the mute expires.
    * The optional is empty when the username is not muted or the mute has already expired.
    */
+  @Override
   public Optional<Instant> getUsernameUnmuteTime(final String username) {
     final String sql = "select username, mute_till from muted_usernames where username = ?";
-    try (Connection con = newDatabaseConnection();
+    try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
@@ -106,7 +108,7 @@ public class MutedUsernameController extends TimedController {
             return Optional.of(Instant.MAX);
           }
           final Instant expiration = muteTill.toInstant();
-          if (expiration.isBefore(now())) {
+          if (expiration.isBefore(Instant.now())) {
             // If the mute has expired, allow the username
             removeMutedUsername(username);
             // Signal as not-muted
@@ -117,7 +119,7 @@ public class MutedUsernameController extends TimedController {
         return Optional.empty();
       }
     } catch (final SQLException e) {
-      throw newDatabaseException("Error for testing muted username existence: " + username, e);
+      throw new DatabaseException("Error for testing muted username existence: " + username, e);
     }
   }
 }

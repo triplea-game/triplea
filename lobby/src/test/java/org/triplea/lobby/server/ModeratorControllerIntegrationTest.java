@@ -16,9 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
-import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
-import org.triplea.lobby.server.db.UserController;
+import org.triplea.lobby.server.db.UserDao;
 import org.triplea.test.common.Integration;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
@@ -44,12 +43,13 @@ class ModeratorControllerIntegrationTest {
 
   @BeforeEach
   void setUp() throws UnknownHostException {
-    moderatorController = new ModeratorController(serverMessenger, null, TestLobbyConfigurations.INTEGRATION_TEST);
+    moderatorController = new ModeratorController(
+        serverMessenger, null, TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao());
     final String adminName = TestUserUtils.newUniqueTimestamp();
 
     final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
 
-    final UserController userController = new UserController(new Database(TestLobbyConfigurations.INTEGRATION_TEST));
+    final UserDao userController = TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getUserDao();
     userController.createUser(dbUser, new HashedPassword(BCrypt.hashpw(adminName, BCrypt.gensalt())));
     userController.makeAdmin(dbUser);
 
@@ -71,7 +71,7 @@ class ModeratorControllerIntegrationTest {
     final INode dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
     when(serverMessenger.getServerNode()).thenReturn(dummyNode);
     moderatorController.boot(booted);
-    assertTrue(connectionChangeListener.getRemoved().contains(booted));
+    assertTrue(connectionChangeListener.removed.contains(booted));
   }
 
   @Test
@@ -89,10 +89,6 @@ class ModeratorControllerIntegrationTest {
     @Override
     public void connectionRemoved(final INode to) {
       removed.add(to);
-    }
-
-    public List<INode> getRemoved() {
-      return removed;
     }
   }
 }

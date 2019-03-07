@@ -5,17 +5,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.function.Supplier;
 
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.login.UserType;
 
+import lombok.AllArgsConstructor;
+
 /**
  * Implementation of {@link AccessLogDao} for a Postgres database.
  */
-public final class AccessLogController extends AbstractController implements AccessLogDao {
-  public AccessLogController(final Database database) {
-    super(database);
-  }
+@AllArgsConstructor
+final class AccessLogController implements AccessLogDao {
+  private final Supplier<Connection> connection;
 
   @Override
   public void insert(final User user, final UserType userType) throws SQLException {
@@ -23,7 +25,7 @@ public final class AccessLogController extends AbstractController implements Acc
     checkNotNull(userType);
 
     final String sql = "insert into access_log (username, ip, mac, registered) values (?, ?::inet, ?, ?)";
-    try (Connection conn = newDatabaseConnection();
+    try (Connection conn = connection.get();
         PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setString(1, user.getUsername());
       ps.setString(2, user.getInetAddress().getHostAddress());

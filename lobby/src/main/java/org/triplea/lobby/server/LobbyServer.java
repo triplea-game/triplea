@@ -2,8 +2,10 @@ package org.triplea.lobby.server;
 
 import java.io.IOException;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.config.LobbyConfiguration;
 import org.triplea.lobby.server.login.LobbyLoginValidator;
 
@@ -24,7 +26,7 @@ import games.strategy.sound.ClipPlayer;
  * <li>A room where players can find opponents and generally chat.</li>
  * </ul>
  */
-public final class LobbyServer {
+final class LobbyServer {
   private LobbyServer() {}
 
   /**
@@ -40,10 +42,17 @@ public final class LobbyServer {
 
     final IServerMessenger server = new LobbyServerMessenger(LobbyConstants.ADMIN_USERNAME, lobbyConfiguration);
     final Messengers messengers = new Messengers(server);
-    server.setLoginValidator(new LobbyLoginValidator(lobbyConfiguration));
-    // setup common objects
-    new UserManager(lobbyConfiguration).register(messengers);
-    final ModeratorController moderatorController = new ModeratorController(server, messengers, lobbyConfiguration);
+    server.setLoginValidator(
+        new LobbyLoginValidator(
+            lobbyConfiguration.getDatabaseDao(),
+            new RsaAuthenticator(),
+            BCrypt::gensalt));
+
+    new UserManager(lobbyConfiguration.getDatabaseDao()).register(messengers);
+
+
+    final ModeratorController moderatorController =
+        new ModeratorController(server, messengers, lobbyConfiguration.getDatabaseDao());
     moderatorController.register(messengers);
     new ChatController(LobbyConstants.LOBBY_CHAT, messengers, moderatorController::isPlayerAdmin);
 

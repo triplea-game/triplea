@@ -33,5 +33,5 @@ public interface BannedUsernameDao {
    *         second element is the instant at which the ban will expire or {@code null} if the username is banned
    *         forever.
    */
-  Tuple<Boolean, /* @Nullable */ Timestamp> isUsernameBanned(String username);
+  Tuple<Boolean, /* @Nullable */ Timestamp> isUsernameBanned(Instant nowTime, String username);
 }

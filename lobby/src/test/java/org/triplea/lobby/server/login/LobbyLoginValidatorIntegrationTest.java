@@ -1,7 +1,6 @@
 package org.triplea.lobby.server.login;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -18,6 +17,7 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.LobbyConstants;
@@ -25,10 +25,7 @@ import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
-import org.triplea.lobby.server.db.BadWordController;
-import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.HashedPassword;
-import org.triplea.lobby.server.db.UserController;
 import org.triplea.test.common.Integration;
 import org.triplea.util.Md5Crypt;
 
@@ -37,9 +34,12 @@ import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
 
 @Integration
-public class LobbyLoginValidatorIntegrationTest {
-  private final Database database = new Database(TestLobbyConfigurations.INTEGRATION_TEST);
-  private final ILoginValidator loginValidator = new LobbyLoginValidator(TestLobbyConfigurations.INTEGRATION_TEST);
+class LobbyLoginValidatorIntegrationTest {
+  private static final String EMAIL = "Chremisa@mori.com";
+  private final ILoginValidator loginValidator = new LobbyLoginValidator(
+      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao(),
+      new RsaAuthenticator(),
+      BCrypt::gensalt);
 
   @Test
   void testLegacyCreateNewUser() {
@@ -59,23 +59,25 @@ public class LobbyLoginValidatorIntegrationTest {
   private ChallengeResultFunction generateChallenge(final String name, final HashedPassword password) {
     final SocketAddress address = new InetSocketAddress(5000);
     final String mac = MacFinder.getHashedMacAddress();
-    final String email = "none@none.none";
     if (password != null) {
-      createUser(name, email, password);
+      createUser(name, password);
     }
     final Map<String, String> challenge = loginValidator.getChallengeProperties(name);
     return responseGetter -> {
       final Map<String, String> response = responseGetter.apply(challenge);
-      response.putIfAbsent(LobbyLoginResponseKeys.EMAIL, email);
+      response.putIfAbsent(LobbyLoginResponseKeys.EMAIL, EMAIL);
       response.putIfAbsent(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
       return loginValidator.verifyConnection(challenge, response, name, mac, address);
     };
   }
 
-  private void createUser(final String name, final String email, final HashedPassword password) {
-    new UserController(database).createUser(
-        new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(email)),
-        password);
+  private void createUser(final String name, final HashedPassword password) {
+    TestLobbyConfigurations.INTEGRATION_TEST
+        .getDatabaseDao()
+        .getUserDao()
+        .createUser(
+            new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(EMAIL)),
+            password);
   }
 
   @SuppressWarnings("deprecation") // required for testing; remove upon next lobby-incompatible release
@@ -99,7 +101,9 @@ public class LobbyLoginValidatorIntegrationTest {
       response.putAll(RsaAuthenticator.newResponse(challenge, "wrong"));
       return response;
     }));
-    assertTrue(BCrypt.checkpw(hashPasswordWithSalt(password), new UserController(database).getPassword(name).value));
+    assertTrue(
+        BCrypt.checkpw(hashPasswordWithSalt(password),
+            TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getUserDao().getPassword(name).value));
   }
 
   @Test
@@ -127,7 +131,7 @@ public class LobbyLoginValidatorIntegrationTest {
   void testAnonymousLoginBadName() {
     final String name = "bitCh" + TestUserUtils.newUniqueTimestamp();
     try {
-      new BadWordController(database).addBadWord("bitCh");
+      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBadWordDao().addBadWord("bitCh");
     } catch (final Exception ignore) {
       // this is probably a duplicate insertion error, we can ignore that as it only means we already added the bad
       // word previously
@@ -156,7 +160,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   private static void assertError(final @Nullable String errorMessage, final String... strings) {
-    Arrays.stream(strings).forEach(string -> assertThat(errorMessage, containsStringIgnoringCase(string)));
+    Arrays.stream(strings).forEach(string -> assertThat(errorMessage, StringContains.containsString(string)));
   }
 
   private interface ChallengeResultFunction

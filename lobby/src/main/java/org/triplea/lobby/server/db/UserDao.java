@@ -26,4 +26,6 @@ public interface UserDao {
   boolean login(String username, HashedPassword password);
 
   DBUser getUserByName(String username);
+
+  void makeAdmin(DBUser dbUser);
 }
