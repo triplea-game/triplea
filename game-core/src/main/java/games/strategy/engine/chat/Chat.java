@@ -98,6 +98,11 @@ public class Chat {
     @Override
     public void speakerAdded(final INode node, final Tag tag, final long version) {
       assertMessageFromServer();
+      // Wait for latch in different Thread if we're still initialising this instance.
+      if (nodes == null) {
+        new Thread(() -> speakerAdded(node, tag, version)).start();
+        return;
+      }
       Interruptibles.await(latch);
       if (version > chatInitVersion) {
         synchronized (mutexNodes) {
