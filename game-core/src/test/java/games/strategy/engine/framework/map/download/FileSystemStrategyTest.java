@@ -21,7 +21,7 @@ import org.triplea.util.Version;
  * Reading XMLs in Zips is can be fast, so one day we should just read the versions directly from the map zip files.
  */
 @ExtendWith(TempDirectory.class)
-public class FileSystemStrategyTest {
+class FileSystemStrategyTest {
   private FileSystemAccessStrategy testObj;
   private File mapFile;
 

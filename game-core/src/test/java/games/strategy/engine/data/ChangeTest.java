@@ -20,7 +20,7 @@ import games.strategy.io.IoUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class ChangeTest {
+class ChangeTest {
   private GameData gameData;
 
   @BeforeEach

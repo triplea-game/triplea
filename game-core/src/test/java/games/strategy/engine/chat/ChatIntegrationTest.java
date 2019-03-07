@@ -28,7 +28,7 @@ import games.strategy.net.TestServerMessenger;
 import games.strategy.sound.SoundPath;
 
 @Integration
-public final class ChatIntegrationTest {
+final class ChatIntegrationTest {
   private static final String CHAT_NAME = TestServerMessenger.CHAT_CHANNEL_NAME;
   private static final int MESSAGE_COUNT = 50;
   private static final int NODE_COUNT = 3;
@@ -47,7 +47,7 @@ public final class ChatIntegrationTest {
   private final TestChatListener client2ChatListener = new TestChatListener();
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     messenger = new TestServerMessenger("Server", 0);
     messenger.setAcceptNewConnections(true);
     final int serverPort = messenger.getLocalNode().getSocketAddress().getPort();
@@ -66,7 +66,7 @@ public final class ChatIntegrationTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     if (messenger != null) {
       messenger.shutDown();
     }
@@ -79,7 +79,7 @@ public final class ChatIntegrationTest {
   }
 
   @Test
-  public void shouldBeAbleToChatAcrossMultipleNodes() {
+  void shouldBeAbleToChatAcrossMultipleNodes() {
     runChatTest((server, client1, client2) -> {
       sendMessagesFrom(client2);
       sendMessagesFrom(server);
@@ -166,7 +166,7 @@ public final class ChatIntegrationTest {
   }
 
   @Test
-  public void shouldBeAbleToMuteNodeByUsername() {
+  void shouldBeAbleToMuteNodeByUsername() {
     runChatTest((server, client1, client2) -> {
       messenger.notifyUsernameMutingOfPlayer(client1.getLocalNode().getName(), null);
       client1.sendMessage("Test", false);
@@ -179,7 +179,7 @@ public final class ChatIntegrationTest {
   }
 
   @Test
-  public void shouldBeAbleToMuteNodeByMac() {
+  void shouldBeAbleToMuteNodeByMac() {
     runChatTest((server, client1, client2) -> {
       messenger.notifyMacMutingOfPlayer(messenger.getPlayerMac(client1.getLocalNode().getName()), null);
       client1.sendMessage("Test", false);

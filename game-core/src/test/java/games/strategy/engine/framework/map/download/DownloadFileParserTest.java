@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.io.IoUtils;
 
-public class DownloadFileParserTest {
+class DownloadFileParserTest {
   private static final String GAME_NAME = "myGame";
 
   @Test

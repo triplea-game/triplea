@@ -98,7 +98,7 @@ final class ResourceLoaderTest {
   @Nested
   final class NormalizeMapNameTest {
     @Test
-    public void shouldNormalizeMapName() {
+    void shouldNormalizeMapName() {
       final Map<String, String> testPairs = Maps.newHashMap();
       testPairs.put("same.zip", "same.zip");
       testPairs.put("camelCase.zip", "camel_case.zip");

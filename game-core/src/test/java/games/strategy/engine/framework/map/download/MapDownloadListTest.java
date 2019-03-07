@@ -21,7 +21,7 @@ import org.triplea.util.Version;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 
 @ExtendWith(MockitoExtension.class)
-public class MapDownloadListTest extends AbstractClientSettingTestCase {
+class MapDownloadListTest extends AbstractClientSettingTestCase {
   private static final String MAP_NAME = "new_test_order";
   private static final Version MAP_VERSION = new Version(10, 10);
   private static final Version lowVersion = new Version(0, 0);

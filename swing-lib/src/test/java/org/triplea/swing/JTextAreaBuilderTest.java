@@ -8,10 +8,10 @@ import javax.swing.JTextArea;
 
 import org.junit.jupiter.api.Test;
 
-public class JTextAreaBuilderTest {
+class JTextAreaBuilderTest {
 
   @Test
-  public void defaultValues() {
+  void defaultValues() {
     final JTextArea area = JTextAreaBuilder.builder()
         .build();
 
@@ -20,7 +20,7 @@ public class JTextAreaBuilderTest {
   }
 
   @Test
-  public void text() {
+  void text() {
     final JTextArea area = JTextAreaBuilder.builder()
         .text("value")
         .build();
@@ -29,7 +29,7 @@ public class JTextAreaBuilderTest {
   }
 
   @Test
-  public void rows() {
+  void rows() {
     final JTextArea area = JTextAreaBuilder.builder()
         .rows(5)
         .build();
@@ -38,12 +38,12 @@ public class JTextAreaBuilderTest {
   }
 
   @Test
-  public void rowsNonZero() {
+  void rowsNonZero() {
     assertThrows(IllegalArgumentException.class, () -> JTextAreaBuilder.builder().rows(0));
   }
 
   @Test
-  public void columns() {
+  void columns() {
     final JTextArea area = JTextAreaBuilder.builder()
         .columns(20)
         .build();
@@ -52,12 +52,12 @@ public class JTextAreaBuilderTest {
   }
 
   @Test
-  public void columnsNonZero() {
+  void columnsNonZero() {
     assertThrows(IllegalArgumentException.class, () -> JTextAreaBuilder.builder().columns(0));
   }
 
   @Test
-  public void readOnly() {
+  void readOnly() {
     final JTextArea area = JTextAreaBuilder.builder()
         .readOnly()
         .build();

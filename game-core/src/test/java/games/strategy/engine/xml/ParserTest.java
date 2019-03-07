@@ -26,7 +26,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class ParserTest {
+class ParserTest {
   private GameData gameData;
 
   @BeforeEach

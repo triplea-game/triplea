@@ -9,10 +9,10 @@ import javax.swing.JLabel;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
-public class JLabelBuilderTest {
+class JLabelBuilderTest {
 
   @Test
-  public void text() {
+  void text() {
     final String value = "some text";
     final JLabel label = JLabelBuilder.builder()
         .text(value)
@@ -21,7 +21,7 @@ public class JLabelBuilderTest {
   }
 
   @Test
-  public void leftAlign() {
+  void leftAlign() {
     final JLabel label = JLabelBuilder.builder()
         .text("value")
         .leftAlign()
@@ -30,7 +30,7 @@ public class JLabelBuilderTest {
   }
 
   @Test
-  public void iconTextGap() {
+  void iconTextGap() {
     final int value = 42;
     final JLabel label = JLabelBuilder.builder()
         .text("value")
@@ -40,12 +40,12 @@ public class JLabelBuilderTest {
   }
 
   @Test
-  public void textOrIconIsRequired() {
+  void textOrIconIsRequired() {
     assertThrows(IllegalStateException.class, JLabelBuilder.builder()::build);
   }
 
   @Test
-  public void maxSize() {
+  void maxSize() {
     final int maxWidth = 300;
     final int maxHeight = 500;
     final JLabel label = JLabelBuilder.builder()

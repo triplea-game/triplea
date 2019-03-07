@@ -90,7 +90,7 @@ public class ThreadPoolTest {
   private static class Task implements Runnable {
     private volatile boolean done = false;
 
-    public boolean isDone() {
+    boolean isDone() {
       return done;
     }
 

@@ -7,7 +7,7 @@ import javax.swing.text.StyledDocument;
 
 import org.junit.jupiter.api.Test;
 
-public class ChatPanelTest {
+class ChatPanelTest {
 
   @Test
   void testTrim() throws Exception {

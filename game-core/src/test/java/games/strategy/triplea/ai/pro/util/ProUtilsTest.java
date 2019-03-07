@@ -9,7 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class ProUtilsTest {
+class ProUtilsTest {
 
   @Test
   void testIsPassiveNeutralPlayer() throws Exception {

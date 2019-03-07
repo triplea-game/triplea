@@ -15,17 +15,17 @@ import javax.swing.border.Border;
 
 import org.junit.jupiter.api.Test;
 
-public final class JScrollPaneBuilderTest {
+final class JScrollPaneBuilderTest {
   private final JScrollPaneBuilder builder = JScrollPaneBuilder.builder();
 
   @Test
-  public void build_ShouldThrowExceptionWhenViewUnspecified() {
+  void build_ShouldThrowExceptionWhenViewUnspecified() {
     final Exception e = assertThrows(IllegalStateException.class, () -> builder.build());
     assertThat(e.getMessage(), containsString("view"));
   }
 
   @Test
-  public void build_ShouldSetBorderWhenProvided() {
+  void build_ShouldSetBorderWhenProvided() {
     final Border border = BorderFactory.createEmptyBorder();
 
     final JScrollPane scrollPane = builder
@@ -37,7 +37,7 @@ public final class JScrollPaneBuilderTest {
   }
 
   @Test
-  public void build_ShouldSetView() {
+  void build_ShouldSetView() {
     final Component view = new JLabel();
 
     final JScrollPane scrollPane = builder

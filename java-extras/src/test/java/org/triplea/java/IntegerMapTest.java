@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableMap;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
-public class IntegerMapTest {
+class IntegerMapTest {
   private final Object k1 = new Object();
   private final Object k2 = new Object();
   private final Object k3 = new Object();

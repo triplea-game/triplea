@@ -15,7 +15,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class BigWorldTest {
+class BigWorldTest {
   private GameData gameData;
 
   @BeforeEach

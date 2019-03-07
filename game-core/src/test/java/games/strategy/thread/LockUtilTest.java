@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public final class LockUtilTest {
+final class LockUtilTest {
   private final LockUtil lockUtil = LockUtil.INSTANCE;
 
   @Mock

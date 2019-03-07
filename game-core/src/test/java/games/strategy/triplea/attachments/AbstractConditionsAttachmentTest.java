@@ -10,7 +10,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 
-public class AbstractConditionsAttachmentTest {
+class AbstractConditionsAttachmentTest {
 
   private final GameData mockData = mock(GameData.class);
   private final Attachable mockAttachable = mock(Attachable.class);

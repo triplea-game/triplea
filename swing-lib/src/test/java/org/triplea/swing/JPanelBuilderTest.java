@@ -20,15 +20,15 @@ import javax.swing.border.EmptyBorder;
 
 import org.junit.jupiter.api.Test;
 
-public class JPanelBuilderTest {
+class JPanelBuilderTest {
 
   @Test
-  public void minBuildCase() {
+  void minBuildCase() {
     assertThat(JPanelBuilder.builder().build(), notNullValue());
   }
 
   @Test
-  public void horizontalAlignmentCenter() {
+  void horizontalAlignmentCenter() {
     final JPanel panel = JPanelBuilder.builder()
         .horizontalAlignmentCenter()
         .build();
@@ -48,7 +48,7 @@ public class JPanelBuilderTest {
   }
 
   @Test
-  public void defaultLayoutIsFlowLayout() {
+  void defaultLayoutIsFlowLayout() {
     assertThat(JPanelBuilder.builder().build().getLayout(), instanceOf(FlowLayout.class));
   }
 
@@ -81,7 +81,7 @@ public class JPanelBuilderTest {
   }
 
   @Test
-  public void emptyBorderWithSingleWidth() {
+  void emptyBorderWithSingleWidth() {
     final int borderWidth = 100;
     final JPanel panel = JPanelBuilder.builder()
         .border(borderWidth)
@@ -95,7 +95,7 @@ public class JPanelBuilderTest {
   }
 
   @Test
-  public void emptyBorderWithIndependentWidths() {
+  void emptyBorderWithIndependentWidths() {
     final JPanel panel = JPanelBuilder.builder()
         .border(1, 2, 3, 4)
         .build();
@@ -110,7 +110,7 @@ public class JPanelBuilderTest {
   }
 
   @Test
-  public void addLabel() {
+  void addLabel() {
     final String labelText = "abc";
 
     final JPanel panel = JPanelBuilder.builder()

@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
-public final class PlainRandomSourceTest {
+final class PlainRandomSourceTest {
   private static final String ANNOTATION = "annotation";
   private static final int MAX = 6;
 
@@ -24,31 +24,31 @@ public final class PlainRandomSourceTest {
   }
 
   @Test
-  public void getRandomSingle_ShouldReturnValueBetweenZeroInclusiveAndMaxExclusive() {
+  void getRandomSingle_ShouldReturnValueBetweenZeroInclusiveAndMaxExclusive() {
     IntStream.range(0, 5_000)
         .forEach(i -> assertValueBetweenZeroInclusiveAndMaxExclusive(plainRandomSource.getRandom(MAX, ANNOTATION)));
   }
 
   @Test
-  public void getRandomSingle_ShouldThrowExceptionWhenMaxIsNotPositive() {
+  void getRandomSingle_ShouldThrowExceptionWhenMaxIsNotPositive() {
     final Exception e = assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, ANNOTATION));
     assertThat(e.getMessage(), containsString("max"));
   }
 
   @Test
-  public void getRandomMany_ShouldReturnRequestedCountOfValues() {
+  void getRandomMany_ShouldReturnRequestedCountOfValues() {
     assertThat(plainRandomSource.getRandom(MAX, 1, ANNOTATION).length, is(1));
     assertThat(plainRandomSource.getRandom(MAX, 42, ANNOTATION).length, is(42));
   }
 
   @Test
-  public void getRandomMany_ShouldReturnValuesBetweenZeroInclusiveAndMaxExclusive() {
+  void getRandomMany_ShouldReturnValuesBetweenZeroInclusiveAndMaxExclusive() {
     Arrays.stream(plainRandomSource.getRandom(MAX, 16, ANNOTATION))
         .forEach(PlainRandomSourceTest::assertValueBetweenZeroInclusiveAndMaxExclusive);
   }
 
   @Test
-  public void getRandomMany_ShouldThrowExceptionWhenMaxIsNotPositive() {
+  void getRandomMany_ShouldThrowExceptionWhenMaxIsNotPositive() {
 
     final Exception e =
         assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(0, 1, ANNOTATION));
@@ -58,7 +58,7 @@ public final class PlainRandomSourceTest {
   }
 
   @Test
-  public void getRandomMany_ShouldThrowExceptionWhenCountIsNotPositive() {
+  void getRandomMany_ShouldThrowExceptionWhenCountIsNotPositive() {
     final Exception e =
         assertThrows(IllegalArgumentException.class, () -> plainRandomSource.getRandom(MAX, 0, ANNOTATION));
     assertThat(e.getMessage(), containsString("count"));

@@ -87,7 +87,7 @@ class StackTraceErrorReportFormatterTest {
     }
 
     @Test
-    public void handleClassNameWithNoPackages() {
+    void handleClassNameWithNoPackages() {
       when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
       when(logRecord.getSourceClassName()).thenReturn("ClassInDefaultPackage");
 

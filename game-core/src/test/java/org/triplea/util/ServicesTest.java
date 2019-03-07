@@ -41,12 +41,12 @@ final class ServicesTest {
     }
   }
 
-  public interface KnownService {
+  interface KnownService {
   }
 
   public static final class KnownServiceImpl implements KnownService {
   }
 
-  public interface UnknownService {
+  interface UnknownService {
   }
 }

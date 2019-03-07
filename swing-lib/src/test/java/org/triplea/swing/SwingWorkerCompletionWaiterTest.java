@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public final class SwingWorkerCompletionWaiterTest {
+final class SwingWorkerCompletionWaiterTest {
 
   private SwingWorkerCompletionWaiter waiter;
 

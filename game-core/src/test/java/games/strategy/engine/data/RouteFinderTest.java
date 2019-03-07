@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class RouteFinderTest {
+class RouteFinderTest {
 
   private final PlayerId player = mock(PlayerId.class);
   private final GameMap map = mock(GameMap.class);

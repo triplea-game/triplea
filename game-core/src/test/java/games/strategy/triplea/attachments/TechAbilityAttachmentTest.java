@@ -32,7 +32,7 @@ import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechAdvance;
 
-public class TechAbilityAttachmentTest {
+class TechAbilityAttachmentTest {
 
   private final GameData data = mock(GameData.class);
   private final TechAbilityAttachment attachment = spy(new TechAbilityAttachment("",
@@ -44,7 +44,7 @@ public class TechAbilityAttachmentTest {
   private final String testUnitType = "someExistentKey";
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     when(attachment.toString()).thenReturn(customToString);
     when(data.getUnitTypeList()).thenReturn(list);
     when(list.getUnitType(testUnitType)).thenReturn(dummyUnitType);

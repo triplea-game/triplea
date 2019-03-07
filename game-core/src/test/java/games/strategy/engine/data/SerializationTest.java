@@ -17,7 +17,7 @@ import games.strategy.io.IoUtils;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class SerializationTest {
+class SerializationTest {
   private GameData gameDataSource;
   private GameData gameDataSink;
 

@@ -26,7 +26,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 
 @ExtendWith(MockitoExtension.class)
-public class BattleTrackerTest {
+class BattleTrackerTest {
 
   @Mock
   private IDelegateBridge mockDelegateBridge;
@@ -49,12 +49,12 @@ public class BattleTrackerTest {
   private final BattleTracker testObj = new BattleTracker();
 
   @Test
-  public void verifyRaidsWithNoBattles() {
+  void verifyRaidsWithNoBattles() {
     testObj.fightAirRaidsAndStrategicBombing(mockDelegateBridge);
   }
 
   @Test
-  public void verifyRaids() {
+  void verifyRaids() {
     final Territory territory = new Territory("terrName", mockGameData);
     final Route route = new Route(territory);
     final PlayerId playerId = new PlayerId("name", mockGameData);

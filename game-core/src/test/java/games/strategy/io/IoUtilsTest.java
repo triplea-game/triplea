@@ -16,7 +16,7 @@ import org.triplea.java.function.ThrowingConsumer;
 import org.triplea.java.function.ThrowingFunction;
 
 @ExtendWith(MockitoExtension.class)
-public final class IoUtilsTest {
+final class IoUtilsTest {
   private final byte[] bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
   @Mock
   private ThrowingConsumer<InputStream, IOException> consumer;
@@ -31,7 +31,7 @@ public final class IoUtilsTest {
   }
 
   @Test
-  public void consumeFromMemory_ShouldPassBytesToConsumer() throws Exception {
+  void consumeFromMemory_ShouldPassBytesToConsumer() throws Exception {
     IoUtils.consumeFromMemory(bytes, consumer);
 
     final ArgumentCaptor<InputStream> inputStreamCaptor = ArgumentCaptor.forClass(InputStream.class);
@@ -40,7 +40,7 @@ public final class IoUtilsTest {
   }
 
   @Test
-  public void readFromMemory_ShouldPassBytesToFunction() throws Exception {
+  void readFromMemory_ShouldPassBytesToFunction() throws Exception {
     IoUtils.readFromMemory(bytes, function);
 
     final ArgumentCaptor<InputStream> inputStreamCaptor = ArgumentCaptor.forClass(InputStream.class);
@@ -49,14 +49,14 @@ public final class IoUtilsTest {
   }
 
   @Test
-  public void readFromMemory_ShouldReturnFunctionResult() throws Exception {
+  void readFromMemory_ShouldReturnFunctionResult() throws Exception {
     final Object result = new Object();
 
     assertThat(IoUtils.readFromMemory(bytes, is -> result), is(result));
   }
 
   @Test
-  public void writeToMemory_ShouldReturnBytesWrittenByConsumer() throws Exception {
+  void writeToMemory_ShouldReturnBytesWrittenByConsumer() throws Exception {
     assertThat(IoUtils.writeToMemory(os -> os.write(bytes)), is(bytes));
   }
 }
