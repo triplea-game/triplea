@@ -10,9 +10,8 @@ import org.hamcrest.core.Is;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.jupiter.api.Test;
 
-public class JTabbedPaneBuilderTest {
-  @Test
-  public void addTab() {
+class JTabbedPaneBuilderTest {
+  @Test void addTab() {
     final JLabel label = new JLabel("value");
     final JComponent component = new JTextField("sample component");
     final JTabbedPane pane = JTabbedPaneBuilder.builder()

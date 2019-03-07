@@ -9,16 +9,14 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
-public final class DefaultColorsTest {
+final class DefaultColorsTest {
   private final DefaultColors defaultColors = new DefaultColors();
 
-  @Test
-  public void nextColor_ShouldReturnNextColorWhenColorsAvailable() {
+  @Test void nextColor_ShouldReturnNextColorWhenColorsAvailable() {
     assertThat(defaultColors.nextColor(), is(DefaultColors.COLORS.get(0)));
   }
 
-  @Test
-  public void nextColor_ShouldThrowExceptionWhenNoColorsAvailable() {
+  @Test void nextColor_ShouldThrowExceptionWhenNoColorsAvailable() {
     assertThrows(
         NoSuchElementException.class,
         () -> IntStream.range(0, DefaultColors.COLORS.size() + 1).forEach(i -> defaultColors.nextColor()));

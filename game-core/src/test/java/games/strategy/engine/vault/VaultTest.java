@@ -29,7 +29,7 @@ import games.strategy.net.TestServerMessenger;
  * This is because the lifecycle of the UnifiedMessenger (and internal classes such as NioReader/Writer) are broken.
  * The UnifiedMessenger will create a new ThreadPool with each instantiation, and this pool is never shutdown.
  */
-public class VaultTest {
+class VaultTest {
   private IServerMessenger serverMessenger;
   private IMessenger clientMessenger;
   private Vault clientVault;
@@ -73,7 +73,7 @@ public class VaultTest {
    * Passes when run individually.
    * Fails when run as part of a suite that consists of multiple server/vault tests.
    */
-  public void temporarilyDisabledSoPleaseRunManuallytestServerLock() throws NotUnlockedException {
+  void temporarilyDisabledSoPleaseRunManuallytestServerLock() throws NotUnlockedException {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final VaultId id = serverVault.lock(data);
     clientVault.waitForId(id, 1000);
@@ -104,7 +104,7 @@ public class VaultTest {
    * Passes when run individually.
    * Fails when run as part of a suite that consists of multiple server/vault tests.
    */
-  public void temporarilyDisabledSoPleaseRunManuallytestMultiple() throws NotUnlockedException {
+  void temporarilyDisabledSoPleaseRunManuallytestMultiple() throws NotUnlockedException {
     final byte[] data1 = new byte[] {0, 1, 2, 3, 4, 5};
     final byte[] data2 = new byte[] {0xE, 0xF, 2, 1, 3, 1, 2, 12, 3, 31, 124, 12, 1};
     final VaultId id1 = serverVault.lock(data1);

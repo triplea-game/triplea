@@ -18,7 +18,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class AiUtilsTest {
+class AiUtilsTest {
   private GameData gameData;
 
   @BeforeEach

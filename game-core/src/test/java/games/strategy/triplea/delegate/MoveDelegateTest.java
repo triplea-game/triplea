@@ -29,12 +29,11 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.UnitAttachment;
 
-public class MoveDelegateTest extends AbstractDelegateTestCase {
-  MoveDelegate delegate;
-  IDelegateBridge bridge;
+class MoveDelegateTest extends AbstractDelegateTestCase {
+  private MoveDelegate delegate;
+  private IDelegateBridge bridge;
 
-  @BeforeEach
-  public void setupMoveDelegate() {
+  @BeforeEach void setupMoveDelegate() {
     bridge = newDelegateBridge(british);
     advanceToStep(bridge, "britishCombatMove");
     final InitializationDelegate initDel =

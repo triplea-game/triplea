@@ -20,15 +20,13 @@ import javax.swing.border.EmptyBorder;
 
 import org.junit.jupiter.api.Test;
 
-public class JPanelBuilderTest {
+class JPanelBuilderTest {
 
-  @Test
-  public void minBuildCase() {
+  @Test void minBuildCase() {
     assertThat(JPanelBuilder.builder().build(), notNullValue());
   }
 
-  @Test
-  public void horizontalAlignmentCenter() {
+  @Test void horizontalAlignmentCenter() {
     final JPanel panel = JPanelBuilder.builder()
         .horizontalAlignmentCenter()
         .build();
@@ -47,8 +45,7 @@ public class JPanelBuilderTest {
         Arrays.asList(panel.getComponents()), contains(label));
   }
 
-  @Test
-  public void defaultLayoutIsFlowLayout() {
+  @Test void defaultLayoutIsFlowLayout() {
     assertThat(JPanelBuilder.builder().build().getLayout(), instanceOf(FlowLayout.class));
   }
 
@@ -80,8 +77,7 @@ public class JPanelBuilderTest {
         instanceOf(BorderLayout.class));
   }
 
-  @Test
-  public void emptyBorderWithSingleWidth() {
+  @Test void emptyBorderWithSingleWidth() {
     final int borderWidth = 100;
     final JPanel panel = JPanelBuilder.builder()
         .border(borderWidth)
@@ -94,8 +90,7 @@ public class JPanelBuilderTest {
     assertThat(insets.right, is(borderWidth));
   }
 
-  @Test
-  public void emptyBorderWithIndependentWidths() {
+  @Test void emptyBorderWithIndependentWidths() {
     final JPanel panel = JPanelBuilder.builder()
         .border(1, 2, 3, 4)
         .build();
@@ -109,8 +104,7 @@ public class JPanelBuilderTest {
     assertThat(insets.right, is(4));
   }
 
-  @Test
-  public void addLabel() {
+  @Test void addLabel() {
     final String labelText = "abc";
 
     final JPanel panel = JPanelBuilder.builder()

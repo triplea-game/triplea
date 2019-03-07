@@ -42,9 +42,9 @@ import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 
-public final class LobbyLoginValidatorTest {
+final class LobbyLoginValidatorTest {
 
-  interface ResponseGenerator extends Function<Map<String, String>, Map<String, String>> {
+  private interface ResponseGenerator extends Function<Map<String, String>, Map<String, String>> {
   }
 
   abstract class AbstractTestCase {
@@ -228,13 +228,10 @@ public final class LobbyLoginValidatorTest {
     }
   }
 
-  @Nested
-  public final class DatabaseInteractionTest {
+  @Nested final class DatabaseInteractionTest {
     @ExtendWith(MockitoExtension.class)
-    @Nested
-    public final class WhenUserIsAnonymousTest extends AbstractNoBansTestCase {
-      @Test
-      public void shouldNotCreateOrUpdateUserWhenAuthenticationSucceeds() {
+    @Nested final class WhenUserIsAnonymousTest extends AbstractNoBansTestCase {
+      @Test void shouldNotCreateOrUpdateUserWhenAuthenticationSucceeds() {
         givenAnonymousAuthenticationWillSucceed();
 
         whenAuthenticating(givenAuthenticationResponse());
@@ -244,8 +241,7 @@ public final class LobbyLoginValidatorTest {
         thenUserShouldNotBeUpdated();
       }
 
-      @Test
-      public void shouldNotCreateOrUpdateUserWhenAuthenticationFails() {
+      @Test void shouldNotCreateOrUpdateUserWhenAuthenticationFails() {
         givenAnonymousAuthenticationWillFail();
 
         whenAuthenticating(givenAuthenticationResponse());
@@ -262,13 +258,10 @@ public final class LobbyLoginValidatorTest {
       }
     }
 
-    @Nested
-    public final class WhenUserDoesNotExistTest {
+    @Nested final class WhenUserDoesNotExistTest {
       @ExtendWith(MockitoExtension.class)
-      @Nested
-      public final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
-        @Test
-        public void shouldCreateNewUserWithOnlyMd5CryptedPassword() {
+      @Nested final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
+        @Test void shouldCreateNewUserWithOnlyMd5CryptedPassword() {
           givenUserDoesNotExist();
 
           whenAuthenticating(givenAuthenticationResponse());
@@ -288,10 +281,8 @@ public final class LobbyLoginValidatorTest {
       }
 
       @ExtendWith(MockitoExtension.class)
-      @Nested
-      public final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
-        @Test
-        public void shouldCreateNewUserWithBothPasswords() {
+      @Nested final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
+        @Test void shouldCreateNewUserWithBothPasswords() {
           givenUserDoesNotExist();
 
           whenAuthenticating(givenAuthenticationResponse());
@@ -313,13 +304,10 @@ public final class LobbyLoginValidatorTest {
       }
     }
 
-    @Nested
-    public final class WhenUserExistsTest {
+    @Nested final class WhenUserExistsTest {
       @ExtendWith(MockitoExtension.class)
-      @Nested
-      public final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
-        @Test
-        public void shouldNotUpdatePasswordsWhenUserHasOnlyMd5CryptedPassword() {
+      @Nested final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
+        @Test void shouldNotUpdatePasswordsWhenUserHasOnlyMd5CryptedPassword() {
           givenUserDoesNotHaveBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
 
@@ -330,8 +318,7 @@ public final class LobbyLoginValidatorTest {
           thenUserShouldNotBeUpdated();
         }
 
-        @Test
-        public void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
+        @Test void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
 
@@ -342,8 +329,7 @@ public final class LobbyLoginValidatorTest {
           thenUserShouldNotBeUpdated();
         }
 
-        @Test
-        public void shouldNotUpdatePasswordsWhenUserHasOnlyBcryptedPassword() {
+        @Test void shouldNotUpdatePasswordsWhenUserHasOnlyBcryptedPassword() {
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndFail();
 
@@ -362,10 +348,8 @@ public final class LobbyLoginValidatorTest {
       }
 
       @ExtendWith(MockitoExtension.class)
-      @Nested
-      public final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
-        @Test
-        public void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
+      @Nested final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
+        @Test void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
           givenUserHasMd5CryptedPassword();
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
@@ -377,8 +361,7 @@ public final class LobbyLoginValidatorTest {
           thenUserShouldNotBeUpdated();
         }
 
-        @Test
-        public void shouldUpdateBcryptedPasswordWhenUserHasOnlyMd5CryptedPassword() {
+        @Test void shouldUpdateBcryptedPasswordWhenUserHasOnlyMd5CryptedPassword() {
           givenUserExists();
           givenUserHasMd5CryptedPassword();
           givenUserDoesNotHaveBcryptedPassword();
@@ -392,8 +375,7 @@ public final class LobbyLoginValidatorTest {
           thenUserShouldBeUpdatedWithBcryptedPassword();
         }
 
-        @Test
-        public void shouldUpdateBothPasswordsWhenUserHasOnlyBcryptedPassword() {
+        @Test void shouldUpdateBothPasswordsWhenUserHasOnlyBcryptedPassword() {
           givenUserExists();
           givenUserDoesNotHaveMd5CryptedPassword();
           givenUserHasBcryptedPassword();
@@ -418,13 +400,10 @@ public final class LobbyLoginValidatorTest {
     }
   }
 
-  @Nested
-  public final class AccessLogTest {
+  @Nested final class AccessLogTest {
     @ExtendWith(MockitoExtension.class)
-    @Nested
-    public final class WhenUserIsAnonymous extends AbstractNoBansTestCase {
-      @Test
-      public void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
+    @Nested final class WhenUserIsAnonymous extends AbstractNoBansTestCase {
+      @Test void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
         givenAnonymousAuthenticationWillSucceed();
 
         whenAuthenticating(givenAuthenticationResponse());
@@ -433,8 +412,7 @@ public final class LobbyLoginValidatorTest {
         thenAccessLogShouldReceiveSuccessfulAuthentication(UserType.ANONYMOUS);
       }
 
-      @Test
-      public void shouldLogFailedAuthenticationWhenAuthenticationFails() {
+      @Test void shouldLogFailedAuthenticationWhenAuthenticationFails() {
         givenAnonymousAuthenticationWillFail();
 
         whenAuthenticating(givenAuthenticationResponse());
@@ -451,10 +429,8 @@ public final class LobbyLoginValidatorTest {
     }
 
     @ExtendWith(MockitoExtension.class)
-    @Nested
-    public final class WhenUserIsRegistered extends AbstractNoBansTestCase {
-      @Test
-      public void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
+    @Nested final class WhenUserIsRegistered extends AbstractNoBansTestCase {
+      @Test void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
 
@@ -464,8 +440,7 @@ public final class LobbyLoginValidatorTest {
         thenAccessLogShouldReceiveSuccessfulAuthentication(UserType.REGISTERED);
       }
 
-      @Test
-      public void shouldLogFailedAuthenticationWhenAuthenticationFails() {
+      @Test void shouldLogFailedAuthenticationWhenAuthenticationFails() {
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndFail();
 

@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableSet;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class AllianceTrackerTest {
+class AllianceTrackerTest {
   private GameData gameData;
 
   @BeforeEach
@@ -40,8 +40,7 @@ public class AllianceTrackerTest {
     assertTrue(relationshipTracker.isAllied(bush, castro));
   }
 
-  @Test
-  public void getPlayersInAlliance_ShouldDifferentiateAllianceNamesThatAreSubstringsOfOtherAllianceNames() {
+  @Test void getPlayersInAlliance_ShouldDifferentiateAllianceNamesThatAreSubstringsOfOtherAllianceNames() {
     final PlayerId player1 = new PlayerId("Player1", gameData);
     final PlayerId player2 = new PlayerId("Player2", gameData);
     final PlayerId player3 = new PlayerId("Player3", gameData);

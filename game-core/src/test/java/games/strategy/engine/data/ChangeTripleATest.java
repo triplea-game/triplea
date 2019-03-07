@@ -16,7 +16,7 @@ import games.strategy.io.IoUtils;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class ChangeTripleATest {
+class ChangeTripleATest {
   private GameData gameData;
   private Territory can;
 

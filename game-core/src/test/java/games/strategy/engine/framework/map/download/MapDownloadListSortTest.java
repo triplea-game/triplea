@@ -10,7 +10,7 @@ import org.triplea.util.Version;
 
 import com.google.common.collect.Lists;
 
-public class MapDownloadListSortTest {
+class MapDownloadListSortTest {
 
   private static final DownloadFileDescription MAP_A = newDownload("a", "url");
   // capitol B to ensure case insensitive sorting

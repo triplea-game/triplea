@@ -13,7 +13,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
-public class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
+class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
   @Test
   void testIsMap() {
     final DownloadFileDescription testObj = new DownloadFileDescription("", "", "", new Version(0, 0),

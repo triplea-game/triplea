@@ -15,19 +15,16 @@ import org.junit.jupiter.api.Test;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 
-public class VersionTest {
-  @Test
-  public void shouldBeEquatableAndHashable() {
+class VersionTest {
+  @Test void shouldBeEquatableAndHashable() {
     EqualsVerifier.forClass(Version.class).withIgnoredFields("exactVersion").verify();
   }
 
-  @Test
-  public void compareTo_ShouldThrowExceptionWhenOtherIsNull() {
+  @Test void compareTo_ShouldThrowExceptionWhenOtherIsNull() {
     assertThrows(NullPointerException.class, () -> new Version(1, 0).compareTo(null));
   }
 
-  @Test
-  public void compareTo_ShouldReturnNegativeIntegerWhenFirstIsLessThanSecond() {
+  @Test void compareTo_ShouldReturnNegativeIntegerWhenFirstIsLessThanSecond() {
     Arrays.asList(
         Tuple.of(new Version(1, 0, 0), new Version(2, 0, 0)),
         Tuple.of(new Version(0, 1, 0), new Version(0, 2, 0)),
@@ -36,8 +33,7 @@ public class VersionTest {
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(lessThan(0))));
   }
 
-  @Test
-  public void compareTo_ShouldReturnZeroWhenFirstIsEqualToSecond() {
+  @Test void compareTo_ShouldReturnZeroWhenFirstIsEqualToSecond() {
     Arrays.asList(
         Tuple.of(new Version(1, 0, 0), new Version(1, 0, 0)),
         Tuple.of(new Version(0, 1, 0), new Version(0, 1, 0)),
@@ -46,8 +42,7 @@ public class VersionTest {
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(0)));
   }
 
-  @Test
-  public void compareTo_ShouldReturnPositiveIntegerWhenFirstIsGreaterThanSecond() {
+  @Test void compareTo_ShouldReturnPositiveIntegerWhenFirstIsGreaterThanSecond() {
     Arrays.asList(
         Tuple.of(new Version(2, 0, 0), new Version(1, 0, 0)),
         Tuple.of(new Version(0, 2, 0), new Version(0, 1, 0)),

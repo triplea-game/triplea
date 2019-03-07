@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class ChatFloodControlTest {
+class ChatFloodControlTest {
   private static final long INITIAL_CLEAR_TIME = 100;
   private final ChatFloodControl testObj = new ChatFloodControl(INITIAL_CLEAR_TIME);
 
@@ -23,8 +23,7 @@ public class ChatFloodControlTest {
     assertFalse(testObj.allow("", now));
   }
 
-  @Test
-  public void throttlingReleasedAfterTimePeriod() {
+  @Test void throttlingReleasedAfterTimePeriod() {
     final long now = 100;
     for (int i = 0; i < 100; i++) {
       testObj.allow("", now);

@@ -23,39 +23,38 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class PacificTest extends AbstractDelegateTestCase {
-  UnitType armor;
-  UnitType artillery;
-  UnitType marine;
-  UnitType sub;
-  UnitType destroyer;
-  UnitType battleship;
+class PacificTest extends AbstractDelegateTestCase {
+  private UnitType armor;
+  private UnitType artillery;
+  private UnitType marine;
+  private UnitType sub;
+  private UnitType destroyer;
+  private UnitType battleship;
   // Define players
-  PlayerId americans;
-  PlayerId chinese;
+  private PlayerId americans;
+  private PlayerId chinese;
   // Define territories
-  Territory queensland;
-  Territory unitedStates;
-  Territory newBritain;
-  Territory midway;
-  Territory mariana;
-  Territory bonin;
+  private Territory queensland;
+  private Territory unitedStates;
+  private Territory newBritain;
+  private Territory midway;
+  private Territory mariana;
+  private Territory bonin;
   // Define Sea Zones
-  Territory sz4;
-  Territory sz5;
-  Territory sz7;
-  Territory sz8;
-  Territory sz10;
-  Territory sz16;
-  Territory sz20;
-  Territory sz24;
-  Territory sz25;
-  Territory sz27;
-  IDelegateBridge bridge;
-  MoveDelegate delegate;
+  private Territory sz4;
+  private Territory sz5;
+  private Territory sz7;
+  private Territory sz8;
+  private Territory sz10;
+  private Territory sz16;
+  private Territory sz20;
+  private Territory sz24;
+  private Territory sz25;
+  private Territory sz27;
+  private IDelegateBridge bridge;
+  private MoveDelegate delegate;
 
-  @BeforeEach
-  public void setupPacificTest() throws Exception {
+  @BeforeEach void setupPacificTest() throws Exception {
     gameData = TestMapGameData.PACIFIC_INCOMPLETE.getGameData();
     // Define units
     infantry = GameDataTestUtil.infantry(gameData);

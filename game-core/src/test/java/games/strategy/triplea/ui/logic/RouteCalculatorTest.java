@@ -19,8 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
-public class RouteCalculatorTest {
+@ExtendWith(MockitoExtension.class) class RouteCalculatorTest {
 
   private static final int MAP_WIDTH = 1000;
   private static final int MAP_HEIGHT = 1000;

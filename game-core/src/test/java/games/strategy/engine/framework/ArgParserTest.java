@@ -15,15 +15,13 @@ import org.junit.jupiter.api.Test;
 import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import games.strategy.triplea.settings.ClientSetting;
 
-public class ArgParserTest extends AbstractClientSettingTestCase {
+class ArgParserTest extends AbstractClientSettingTestCase {
 
-  @AfterEach
-  public void teardown() {
+  @AfterEach void teardown() {
     System.clearProperty(TRIPLEA_GAME);
   }
 
-  @Test
-  public void argsTurnIntoSystemProps() {
+  @Test void argsTurnIntoSystemProps() {
     assertThat("check precondition, system property for our test key should not be set yet.",
         System.getProperty(TestData.propKey), nullValue());
 
@@ -33,22 +31,19 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
         System.getProperty(TestData.propKey), is(TestData.propValue));
   }
 
-  @Test
-  public void emptySystemPropertiesCanBeSet() {
+  @Test void emptySystemPropertiesCanBeSet() {
     ArgParser.handleCommandLineArgs("-Pa=");
     assertThat("expecting the system property to be empty string instead of null",
         System.getProperty("a"), is(""));
   }
 
-  @Test
-  public void singleFileArgIsAssumedToBeGameProperty() {
+  @Test void singleFileArgIsAssumedToBeGameProperty() {
     ArgParser.handleCommandLineArgs(TestData.propValue);
     assertThat("if we pass only one arg, it is assumed to mean we are specifying the 'game property'",
         System.getProperty(TRIPLEA_GAME), is(TestData.propValue));
   }
 
-  @Test
-  public void singleUrlArgIsAssumedToBeMapDownloadProperty() {
+  @Test void singleUrlArgIsAssumedToBeMapDownloadProperty() {
     final String testUrl = "triplea:" + TestData.propValue;
     ArgParser.handleCommandLineArgs(testUrl);
     assertThat("if we pass only one arg prefixed with 'triplea:',"
@@ -56,8 +51,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
         System.getProperty(TRIPLEA_MAP_DOWNLOAD), is(TestData.propValue));
   }
 
-  @Test
-  public void singleUrlArgIsUrlDecoded() {
+  @Test void singleUrlArgIsUrlDecoded() {
     final String testUrl = "triplea:Something%20with+spaces%20and%20Special%20chars%20%F0%9F%A4%94";
     ArgParser.handleCommandLineArgs(testUrl);
     assertThat("if we pass only one arg prefixed with 'triplea:',"
@@ -65,13 +59,11 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
         System.getProperty(TRIPLEA_MAP_DOWNLOAD), is("Something with spaces and Special chars 🤔"));
   }
 
-  @Test
-  public void install4jSwitchesAreIgnored() {
+  @Test void install4jSwitchesAreIgnored() {
     ArgParser.handleCommandLineArgs("-console");
   }
 
-  @Test
-  public void mapFolderOverrideClientSettingIsSetWhenSpecified() {
+  @Test void mapFolderOverrideClientSettingIsSetWhenSpecified() {
     ClientSetting.mapFolderOverride.setValue(Paths.get("some", "path"));
     final Path mapFolder = Paths.get("/path", "to", "maps");
 
@@ -81,8 +73,7 @@ public class ArgParserTest extends AbstractClientSettingTestCase {
     assertThat(ClientSetting.mapFolderOverride.getValueOrThrow(), is(mapFolder));
   }
 
-  @Test
-  public void mapFolderOverrideClientSettingIsResetWhenNotSpecified() {
+  @Test void mapFolderOverrideClientSettingIsResetWhenNotSpecified() {
     ClientSetting.mapFolderOverride.setValue(Paths.get("some", "path"));
 
     ArgParser.handleCommandLineArgs();

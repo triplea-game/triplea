@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public final class IpFinderTest {
+final class IpFinderTest {
   // 172.217.3.132
   private static final InetAddress INET4_PUBLIC_ADDRESS = inetAddressOf(new byte[] {
       (byte) 0xAC, (byte) 0xD9, (byte) 0x03, (byte) 0x84
@@ -54,7 +54,7 @@ public final class IpFinderTest {
   }
 
   @BeforeAll
-  public static void checkInvariants() {
+  static void checkInvariants() {
     assertThat(INET4_LINK_LOCAL_ADDRESS.isLinkLocalAddress(), is(true));
     assertThat(INET4_PUBLIC_ADDRESS.isLinkLocalAddress(), is(false));
     assertThat(INET4_PUBLIC_ADDRESS.isSiteLocalAddress(), is(false));
@@ -66,39 +66,33 @@ public final class IpFinderTest {
     assertThat(INET6_SITE_LOCAL_ADDRESS.isSiteLocalAddress(), is(true));
   }
 
-  @Nested
-  public final class GetInetAddressComparatorTest {
+  @Nested final class GetInetAddressComparatorTest {
     private InetAddress selectInetAddress(final InetAddress... inetAddresses) {
       return Stream.of(inetAddresses).min(IpFinder.getInetAddressComparator())
           .orElseThrow(() -> new AssertionError("failed to select an InetAddress"));
     }
 
-    @Test
-    public void shouldSelectInet4PublicAddressBeforeInet6PublicAddress() {
+    @Test void shouldSelectInet4PublicAddressBeforeInet6PublicAddress() {
       assertThat(selectInetAddress(INET6_PUBLIC_ADDRESS, INET4_PUBLIC_ADDRESS), is(INET4_PUBLIC_ADDRESS));
       assertThat(selectInetAddress(INET4_PUBLIC_ADDRESS, INET6_PUBLIC_ADDRESS), is(INET4_PUBLIC_ADDRESS));
     }
 
-    @Test
-    public void shouldSelectInet6PublicAddressBeforeInet4LinkLocalAddress() {
+    @Test void shouldSelectInet6PublicAddressBeforeInet4LinkLocalAddress() {
       assertThat(selectInetAddress(INET4_LINK_LOCAL_ADDRESS, INET6_PUBLIC_ADDRESS), is(INET6_PUBLIC_ADDRESS));
       assertThat(selectInetAddress(INET6_PUBLIC_ADDRESS, INET4_LINK_LOCAL_ADDRESS), is(INET6_PUBLIC_ADDRESS));
     }
 
-    @Test
-    public void shouldSelectInet6PublicAddressBeforeInet4SiteLocalAddress() {
+    @Test void shouldSelectInet6PublicAddressBeforeInet4SiteLocalAddress() {
       assertThat(selectInetAddress(INET4_SITE_LOCAL_ADDRESS, INET6_PUBLIC_ADDRESS), is(INET6_PUBLIC_ADDRESS));
       assertThat(selectInetAddress(INET6_PUBLIC_ADDRESS, INET4_SITE_LOCAL_ADDRESS), is(INET6_PUBLIC_ADDRESS));
     }
 
-    @Test
-    public void shouldSelectInet4SiteLocalAddressBeforeInet4LinkLocalAddress() {
+    @Test void shouldSelectInet4SiteLocalAddressBeforeInet4LinkLocalAddress() {
       assertThat(selectInetAddress(INET4_LINK_LOCAL_ADDRESS, INET4_SITE_LOCAL_ADDRESS), is(INET4_SITE_LOCAL_ADDRESS));
       assertThat(selectInetAddress(INET4_SITE_LOCAL_ADDRESS, INET4_LINK_LOCAL_ADDRESS), is(INET4_SITE_LOCAL_ADDRESS));
     }
 
-    @Test
-    public void shouldSelectInet6SiteLocalAddressBeforeInet6LinkLocalAddress() {
+    @Test void shouldSelectInet6SiteLocalAddressBeforeInet6LinkLocalAddress() {
       assertThat(selectInetAddress(INET6_LINK_LOCAL_ADDRESS, INET6_SITE_LOCAL_ADDRESS), is(INET6_SITE_LOCAL_ADDRESS));
       assertThat(selectInetAddress(INET6_SITE_LOCAL_ADDRESS, INET6_LINK_LOCAL_ADDRESS), is(INET6_SITE_LOCAL_ADDRESS));
     }

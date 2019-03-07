@@ -23,8 +23,7 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.ResourceList;
 import games.strategy.triplea.Constants;
 
-@ExtendWith(MockitoExtension.class)
-public final class ResourceCollectionUtilsTest {
+@ExtendWith(MockitoExtension.class) final class ResourceCollectionUtilsTest {
   @Mock
   private GameData data;
 

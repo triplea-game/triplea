@@ -32,8 +32,7 @@ class UrlStreamsTest {
   private InputStream mockInputStream;
 
 
-  @BeforeEach
-  public void setup() throws Exception {
+  @BeforeEach void setup() throws Exception {
     // set up the test object with a function that will return a mocked url connection
     testObj = new UrlStreams(url -> mockUrlConnection);
     fakeUrl = new URL("http://well-formed-url.com");

@@ -19,10 +19,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import games.strategy.triplea.settings.GameSetting;
 
-public final class ClientFileSystemHelperTest {
+final class ClientFileSystemHelperTest {
   @ExtendWith(MockitoExtension.class)
-  @Nested
-  public final class GetFolderContainingFileWithNameTest {
+  @Nested final class GetFolderContainingFileWithNameTest {
     @Mock
     private File file;
 
@@ -41,16 +40,14 @@ public final class ClientFileSystemHelperTest {
       when(file.getName()).thenReturn("filename.ext");
     }
 
-    @Test
-    public void shouldReturnStartFolderWhenStartFolderContainsFile() throws Exception {
+    @Test void shouldReturnStartFolderWhenStartFolderContainsFile() throws Exception {
       when(file.isFile()).thenReturn(true);
       when(startFolder.listFiles()).thenReturn(new File[] {file});
 
       assertThat(getFolderContainingFileWithName(), is(startFolder));
     }
 
-    @Test
-    public void shouldReturnAncestorFolderWhenAncestorFolderContainsFile() throws Exception {
+    @Test void shouldReturnAncestorFolderWhenAncestorFolderContainsFile() throws Exception {
       when(file.isFile()).thenReturn(true);
       when(startFolder.getParentFile()).thenReturn(parentFolder);
       when(startFolder.listFiles()).thenReturn(new File[0]);
@@ -59,8 +56,7 @@ public final class ClientFileSystemHelperTest {
       assertThat(getFolderContainingFileWithName(), is(parentFolder));
     }
 
-    @Test
-    public void shouldThrowExceptionWhenNoFolderContainsFile() {
+    @Test void shouldThrowExceptionWhenNoFolderContainsFile() {
       when(startFolder.getParentFile()).thenReturn(parentFolder);
       when(startFolder.listFiles()).thenReturn(new File[0]);
       when(parentFolder.listFiles()).thenReturn(new File[0]);

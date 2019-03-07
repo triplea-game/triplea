@@ -34,7 +34,7 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class DiceRollTest {
+class DiceRollTest {
   private GameData gameData;
 
   @BeforeEach

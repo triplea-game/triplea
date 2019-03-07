@@ -23,7 +23,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public final class UnitComparatorTest {
+final class UnitComparatorTest {
   private static void startCombatMoveFor(final PlayerId playerId, final GameData gameData) {
     final MoveDelegate moveDelegate = moveDelegate(gameData);
     final IDelegateBridge bridge = MockDelegateBridge.newInstance(gameData, playerId);
@@ -32,10 +32,8 @@ public final class UnitComparatorTest {
     moveDelegate.start();
   }
 
-  @Nested
-  public final class GetUnloadableUnitsComparatorTest {
-    @Test
-    public void shouldSortUnloadableUnitsFirst() throws Exception {
+  @Nested final class GetUnloadableUnitsComparatorTest {
+    @Test void shouldSortUnloadableUnitsFirst() throws Exception {
       final GameData gameData = TestMapGameData.WW2V3_1942.getGameData();
       final PlayerId germans = germans(gameData);
       final Territory germany = territory("Germany", gameData);

@@ -32,7 +32,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class LhtrTest {
+class LhtrTest {
   private GameData gameData;
 
   private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(final IDelegateBridge delegateBridge) {

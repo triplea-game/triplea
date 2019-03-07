@@ -15,7 +15,7 @@ import com.google.common.base.Strings;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
-public class DbUserTest {
+class DbUserTest {
 
   private static void verifyValid(final DBUser validDbUser) {
     assertThat("Expecting no validation error messages: " + validDbUser.getValidationErrorMessage(),
@@ -29,13 +29,11 @@ public class DbUserTest {
     assertThat(invalidDbUser.getValidationErrorMessage(), not(emptyString()));
   }
 
-  @Test
-  public void shouldBeEquatableAndHashable() {
+  @Test void shouldBeEquatableAndHashable() {
     EqualsVerifier.forClass(DBUser.class).verify();
   }
 
-  @Test
-  public void valueObjectPropertiesAreSet() {
+  @Test void valueObjectPropertiesAreSet() {
     final DBUser admin = new DBUser(
         new DBUser.UserName(TestData.name),
         new DBUser.UserEmail(TestData.email));
@@ -45,8 +43,7 @@ public class DbUserTest {
     assertThat("by default not admin", admin.isAdmin(), is(false));
   }
 
-  @Test
-  public void notAdmin() {
+  @Test void notAdmin() {
     final DBUser notAdmin = new DBUser(
         new DBUser.UserName(TestData.name),
         new DBUser.UserEmail(TestData.email),
@@ -55,8 +52,7 @@ public class DbUserTest {
     assertThat(notAdmin.isAdmin(), is(false));
   }
 
-  @Test
-  public void admin() {
+  @Test void admin() {
     final DBUser admin = new DBUser(
         new DBUser.UserName(TestData.name),
         new DBUser.UserEmail(TestData.email),
@@ -65,16 +61,14 @@ public class DbUserTest {
     assertThat(admin.isAdmin(), is(true));
   }
 
-  @Test
-  public void validDbUser() {
+  @Test void validDbUser() {
     verifyValid(
         new DBUser(
             new DBUser.UserName(TestData.name),
             new DBUser.UserEmail(TestData.email)));
   }
 
-  @Test
-  public void inValidDbUser() {
+  @Test void inValidDbUser() {
     verifyInvalid(
         new DBUser(
             new DBUser.UserName(TestData.name),
@@ -86,8 +80,7 @@ public class DbUserTest {
             new DBUser.UserEmail(TestData.email)));
   }
 
-  @Test
-  public void userNameValidationWithInvalidNames() {
+  @Test void userNameValidationWithInvalidNames() {
     Arrays.asList(
         null,
         "",
@@ -123,8 +116,7 @@ public class DbUserTest {
         });
   }
 
-  @Test
-  public void userNameValidationWithValidNames() {
+  @Test void userNameValidationWithValidNames() {
     Arrays.asList(
         "abc",
         Strings.repeat("a", DBUser.UserName.MAX_LENGTH),

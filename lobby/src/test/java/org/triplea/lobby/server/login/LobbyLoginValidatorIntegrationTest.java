@@ -36,8 +36,7 @@ import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
 
-@Integration
-public class LobbyLoginValidatorIntegrationTest {
+@Integration class LobbyLoginValidatorIntegrationTest {
   private final Database database = new Database(TestLobbyConfigurations.INTEGRATION_TEST);
   private final ILoginValidator loginValidator = new LobbyLoginValidator(TestLobbyConfigurations.INTEGRATION_TEST);
 

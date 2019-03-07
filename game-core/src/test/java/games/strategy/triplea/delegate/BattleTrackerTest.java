@@ -25,8 +25,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 
-@ExtendWith(MockitoExtension.class)
-public class BattleTrackerTest {
+@ExtendWith(MockitoExtension.class) class BattleTrackerTest {
 
   @Mock
   private IDelegateBridge mockDelegateBridge;
@@ -48,13 +47,11 @@ public class BattleTrackerTest {
 
   private final BattleTracker testObj = new BattleTracker();
 
-  @Test
-  public void verifyRaidsWithNoBattles() {
+  @Test void verifyRaidsWithNoBattles() {
     testObj.fightAirRaidsAndStrategicBombing(mockDelegateBridge);
   }
 
-  @Test
-  public void verifyRaids() {
+  @Test void verifyRaids() {
     final Territory territory = new Territory("terrName", mockGameData);
     final Route route = new Route(territory);
     final PlayerId playerId = new PlayerId("name", mockGameData);

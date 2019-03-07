@@ -19,8 +19,7 @@ import com.google.common.base.Strings;
  * More information: http://www.rfc-editor.org/errata_search.php?rfc=3696&eid=1690
  * This class checks if those lengths are supported.
  */
-@Integration
-public class EmailLimitIntegrationTest {
+@Integration class EmailLimitIntegrationTest {
   private final Database database = new Database(TestLobbyConfigurations.INTEGRATION_TEST);
 
   @Test

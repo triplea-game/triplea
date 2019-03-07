@@ -8,13 +8,11 @@ import java.awt.Polygon;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public final class UtilTest {
-  @Nested
-  public final class TranslatePolygonTest {
+final class UtilTest {
+  @Nested final class TranslatePolygonTest {
     private final Polygon polygon = new Polygon(new int[] {1, 2, 3}, new int[] {4, 5, 6}, 3);
 
-    @Test
-    public void shouldTranslatePolygonBySpecifiedDisplacement() {
+    @Test void shouldTranslatePolygonBySpecifiedDisplacement() {
       final Polygon translatedPolygon = Util.translatePolygon(polygon, 2, -5);
 
       assertThat(translatedPolygon.xpoints, is(new int[] {3, 4, 5}));
@@ -22,8 +20,7 @@ public final class UtilTest {
       assertThat(translatedPolygon.npoints, is(3));
     }
 
-    @Test
-    public void shouldNotModifyOriginalPolygon() {
+    @Test void shouldNotModifyOriginalPolygon() {
       Util.translatePolygon(polygon, 2, -5);
 
       assertThat(polygon.xpoints, is(new int[] {1, 2, 3}));

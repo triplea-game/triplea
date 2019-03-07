@@ -6,9 +6,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 
-public class JCheckBoxBuilderTest {
-  @Test
-  public void build() {
+class JCheckBoxBuilderTest {
+  @Test void build() {
     final JCheckBox box = JCheckBoxBuilder.builder()
         .build();
 
@@ -16,8 +15,7 @@ public class JCheckBoxBuilderTest {
     MatcherAssert.assertThat(box.isSelected(), Is.is(true));
   }
 
-  @Test
-  public void selected() {
+  @Test void selected() {
     MatcherAssert.assertThat(
         JCheckBoxBuilder.builder()
             .selected(false)

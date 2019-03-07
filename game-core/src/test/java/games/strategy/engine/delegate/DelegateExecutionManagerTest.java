@@ -8,11 +8,10 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.Interruptibles;
 
-public final class DelegateExecutionManagerTest {
+final class DelegateExecutionManagerTest {
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
 
-  @Test
-  public void shouldAllowSerialExecutionOfDelegatesOnSameThread() {
+  @Test void shouldAllowSerialExecutionOfDelegatesOnSameThread() {
     // given: a delegate is executed on the current thread and runs to completion
     delegateExecutionManager.enterDelegateExecution();
     delegateExecutionManager.leaveDelegateExecution();
@@ -22,8 +21,7 @@ public final class DelegateExecutionManagerTest {
     assertDoesNotThrow(delegateExecutionManager::enterDelegateExecution);
   }
 
-  @Test
-  public void shouldNotAllowNestedExecutionOfDelegatesOnSameThread() {
+  @Test void shouldNotAllowNestedExecutionOfDelegatesOnSameThread() {
     // given: a delegate is executed on the current thread
     delegateExecutionManager.enterDelegateExecution();
 
@@ -32,8 +30,7 @@ public final class DelegateExecutionManagerTest {
     assertThrows(IllegalStateException.class, delegateExecutionManager::enterDelegateExecution);
   }
 
-  @Test
-  public void shouldAllowConcurrentExecutionOfDelegatesOnDifferentThreads() throws Exception {
+  @Test void shouldAllowConcurrentExecutionOfDelegatesOnDifferentThreads() throws Exception {
     // given: a delegate is executed on some thread
     final CountDownLatch testCompleteLatch = new CountDownLatch(1);
     final CountDownLatch delegate1RunningLatch = new CountDownLatch(1);

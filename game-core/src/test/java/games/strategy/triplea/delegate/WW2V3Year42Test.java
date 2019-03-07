@@ -33,7 +33,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class WW2V3Year42Test {
+class WW2V3Year42Test {
   private GameData gameData;
 
   @BeforeEach

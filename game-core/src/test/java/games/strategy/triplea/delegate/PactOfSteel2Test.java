@@ -18,7 +18,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class PactOfSteel2Test {
+class PactOfSteel2Test {
   private GameData gameData;
 
   @BeforeEach

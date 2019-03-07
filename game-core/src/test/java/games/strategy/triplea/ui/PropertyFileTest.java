@@ -18,13 +18,11 @@ import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import games.strategy.triplea.ResourceLoader;
 
-@ExtendWith(TempDirectory.class)
-public class PropertyFileTest {
+@ExtendWith(TempDirectory.class) class PropertyFileTest {
   private final ResourceLoader mock = mock(ResourceLoader.class);
   private File file;
 
-  @BeforeEach
-  public void setup(@TempDir final Path tempDirPath) throws Exception {
+  @BeforeEach void setup(@TempDir final Path tempDirPath) throws Exception {
     file = Files.createTempFile(tempDirPath, null, null).toFile();
     when(mock.getResource(file.getAbsolutePath())).thenReturn(file.toURI().toURL());
     PropertyFile.cache.invalidateAll();

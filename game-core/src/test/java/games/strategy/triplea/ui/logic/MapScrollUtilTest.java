@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
-public class MapScrollUtilTest {
+class MapScrollUtilTest {
 
   @Test
   void testWithXWrapOnly() {

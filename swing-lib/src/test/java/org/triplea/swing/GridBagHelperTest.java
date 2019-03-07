@@ -9,11 +9,10 @@ import javax.swing.JPanel;
 
 import org.junit.jupiter.api.Test;
 
-public class GridBagHelperTest {
+class GridBagHelperTest {
 
 
-  @Test
-  public void gridBagHelperTest() {
+  @Test void gridBagHelperTest() {
     final JComponent component = new JPanel();
     final GridBagHelper helper = new GridBagHelper(component, 3);
 

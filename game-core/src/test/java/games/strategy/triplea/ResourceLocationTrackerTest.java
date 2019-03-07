@@ -8,22 +8,19 @@ import java.net.URL;
 import org.junit.jupiter.api.Test;
 
 
-public class ResourceLocationTrackerTest {
-  @Test
-  public void defaultEmptyMapPrefix() {
+class ResourceLocationTrackerTest {
+  @Test void defaultEmptyMapPrefix() {
     final ResourceLocationTracker testObj = new ResourceLocationTracker("", new URL[0]);
     assertThat(testObj.getMapPrefix(), is(""));
   }
 
-  @Test
-  public void defaultEmptyMapPrefixWithMoreInterestingTestData() throws Exception {
+  @Test void defaultEmptyMapPrefixWithMoreInterestingTestData() throws Exception {
     final ResourceLocationTracker testObj =
         new ResourceLocationTracker("", new URL[] {new URL("file://localhost"), new URL("file://oldFormat.zip")});
     assertThat(testObj.getMapPrefix(), is(""));
   }
 
-  @Test
-  public void masterZipsGetSpecialPrefixBasedOnTheMapName() throws Exception {
+  @Test void masterZipsGetSpecialPrefixBasedOnTheMapName() throws Exception {
     final String fakeMapName = "fakeMapName";
     final ResourceLocationTracker testObj = new ResourceLocationTracker(fakeMapName,
         new URL[] {new URL("file://pretend" + ResourceLocationTracker.MASTER_ZIP_IDENTIFYING_SUFFIX)});

@@ -27,8 +27,7 @@ import games.strategy.net.Messengers;
 import games.strategy.net.TestServerMessenger;
 import games.strategy.sound.SoundPath;
 
-@Integration
-public final class ChatIntegrationTest {
+@Integration final class ChatIntegrationTest {
   private static final String CHAT_NAME = TestServerMessenger.CHAT_CHANNEL_NAME;
   private static final int MESSAGE_COUNT = 50;
   private static final int NODE_COUNT = 3;
@@ -46,8 +45,7 @@ public final class ChatIntegrationTest {
   private final TestChatListener client1ChatListener = new TestChatListener();
   private final TestChatListener client2ChatListener = new TestChatListener();
 
-  @BeforeEach
-  public void setUp() throws Exception {
+  @BeforeEach void setUp() throws Exception {
     messenger = new TestServerMessenger("Server", 0);
     messenger.setAcceptNewConnections(true);
     final int serverPort = messenger.getLocalNode().getSocketAddress().getPort();
@@ -65,8 +63,7 @@ public final class ChatIntegrationTest {
     client2ChannelMessenger = new ChannelMessenger(client2UnifiedMessenger);
   }
 
-  @AfterEach
-  public void tearDown() {
+  @AfterEach void tearDown() {
     if (messenger != null) {
       messenger.shutDown();
     }
@@ -78,8 +75,7 @@ public final class ChatIntegrationTest {
     }
   }
 
-  @Test
-  public void shouldBeAbleToChatAcrossMultipleNodes() {
+  @Test void shouldBeAbleToChatAcrossMultipleNodes() {
     runChatTest((server, client1, client2) -> {
       sendMessagesFrom(client2);
       sendMessagesFrom(server);
@@ -165,8 +161,7 @@ public final class ChatIntegrationTest {
     }).start();
   }
 
-  @Test
-  public void shouldBeAbleToMuteNodeByUsername() {
+  @Test void shouldBeAbleToMuteNodeByUsername() {
     runChatTest((server, client1, client2) -> {
       messenger.notifyUsernameMutingOfPlayer(client1.getLocalNode().getName(), null);
       client1.sendMessage("Test", false);
@@ -178,8 +173,7 @@ public final class ChatIntegrationTest {
     assertThat(chatListener.lastMessageReceived.get(), is(message));
   }
 
-  @Test
-  public void shouldBeAbleToMuteNodeByMac() {
+  @Test void shouldBeAbleToMuteNodeByMac() {
     runChatTest((server, client1, client2) -> {
       messenger.notifyMacMutingOfPlayer(messenger.getPlayerMac(client1.getLocalNode().getName()), null);
       client1.sendMessage("Test", false);

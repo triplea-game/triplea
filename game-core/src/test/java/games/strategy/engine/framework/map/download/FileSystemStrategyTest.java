@@ -20,8 +20,7 @@ import org.triplea.util.Version;
  * For transition reasons we use a DownloadFileProperties to read a properties file for each map that we download.
  * Reading XMLs in Zips is can be fast, so one day we should just read the versions directly from the map zip files.
  */
-@ExtendWith(TempDirectory.class)
-public class FileSystemStrategyTest {
+@ExtendWith(TempDirectory.class) class FileSystemStrategyTest {
   private FileSystemAccessStrategy testObj;
   private File mapFile;
 

@@ -16,12 +16,11 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public final class Md5CryptTest {
+final class Md5CryptTest {
   @Nested
   @SuppressWarnings("deprecation") // required for testing; remove upon next lobby-incompatible release
-  public final class HashPasswordTest {
-    @Test
-    public void shouldReturnHashedPassword() {
+  final class HashPasswordTest {
+    @Test void shouldReturnHashedPassword() {
       final String password = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
           + "[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007F";
       final String salt = "wwmV2glD";
@@ -29,10 +28,8 @@ public final class Md5CryptTest {
     }
   }
 
-  @Nested
-  public final class HashTest {
-    @Test
-    public void shouldReturnHashedValue() {
+  @Nested final class HashTest {
+    @Test void shouldReturnHashedValue() {
       Arrays.asList(
           Triple.of("", "ll5ESPtE", "$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0"),
           Triple.of("value", "Eim8FgMk", "$1$Eim8FgMk$TYixIMiLc1BA6XHJBw66y0"),
@@ -48,50 +45,40 @@ public final class Md5CryptTest {
           });
     }
 
-    @Test
-    public void shouldUseNewRandomSaltWhenSaltIsEmpty() {
+    @Test void shouldUseNewRandomSaltWhenSaltIsEmpty() {
       assertThat(getSalt(hash("value", "")).length(), is(8));
     }
 
-    @Test
-    public void shouldIgnoreLeadingMagicInSalt() {
+    @Test void shouldIgnoreLeadingMagicInSalt() {
       assertThat(hash("value", "$1$Eim8FgMk"), is(hash("value", "Eim8FgMk")));
     }
 
-    @Test
-    public void shouldIgnoreTrailingHashInSalt() {
+    @Test void shouldIgnoreTrailingHashInSalt() {
       assertThat(hash("value", "Z$IGNOREME"), is(hash("value", "Z")));
     }
 
-    @Test
-    public void shouldUseNoMoreThanEightCharactersFromSalt() {
+    @Test void shouldUseNoMoreThanEightCharactersFromSalt() {
       assertThat(hash("value", "123456789"), is(hash("value", "12345678")));
     }
 
-    @Test
-    public void shouldSilentlyReplaceIllegalCharactersInSaltWithPeriod() {
+    @Test void shouldSilentlyReplaceIllegalCharactersInSaltWithPeriod() {
       assertThat(hash("value", "ABC!@DEF"), is(hash("value", "ABC..DEF")));
     }
   }
 
-  @Nested
-  public final class GetSaltTest {
-    @Test
-    public void shouldReturnSaltWhenHashedValueIsLegal() {
+  @Nested final class GetSaltTest {
+    @Test void shouldReturnSaltWhenHashedValueIsLegal() {
       assertThat(getSalt("$1$A$KnCRC85Rudn6P3cpfe3LR/"), is("A"));
       assertThat(getSalt("$1$ABCDEFGH$hGGndps75hhROKqu/zh9q1"), is("ABCDEFGH"));
     }
 
-    @Test
-    public void shouldThrowExceptionWhenHashedValueIsIllegal() {
+    @Test void shouldThrowExceptionWhenHashedValueIsIllegal() {
       assertThrows(IllegalArgumentException.class, () -> getSalt("1$A$KnCRC85Rudn6P3cpfe3LR/"));
     }
   }
 
-  @Nested
-  public final class IsLegalHashedValueTest {
-    @Test
-    public void shouldReturnTrueWhenHashedValueIsLegal() {
+  @Nested final class IsLegalHashedValueTest {
+    @Test void shouldReturnTrueWhenHashedValueIsLegal() {
       Arrays.asList(
           "$1$ll5ESPtE$KsXRew.PuhVQTNMKSXQZx0",
           "$1$Eim8FgMk$Y7Rv7y5WCc7rARI/g7xgH1",
@@ -114,8 +101,7 @@ public final class Md5CryptTest {
           });
     }
 
-    @Test
-    public void shouldReturnFalseWhenHashedValueIsIlegal() {
+    @Test void shouldReturnFalseWhenHashedValueIsIlegal() {
       Arrays.asList(
           "1$A$KnCRC85Rudn6P3cpfe3LR/",
           "$$AB$4jo772pXjQ9qCwNdBde3d1",
@@ -142,15 +128,12 @@ public final class Md5CryptTest {
     }
   }
 
-  @Nested
-  public final class NewSaltTest {
-    @Test
-    public void shouldReturnSaltOfLengthEight() {
+  @Nested final class NewSaltTest {
+    @Test void shouldReturnSaltOfLengthEight() {
       assertThat(newSalt().length(), is(8));
     }
 
-    @Test
-    public void shouldReturnDifferentSuccessiveSalts() {
+    @Test void shouldReturnDifferentSuccessiveSalts() {
       assertThat(newSalt(), is(not(newSalt())));
     }
   }

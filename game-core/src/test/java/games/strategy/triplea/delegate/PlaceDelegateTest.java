@@ -20,16 +20,15 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 
-public class PlaceDelegateTest extends AbstractDelegateTestCase {
-  protected PlaceDelegate delegate;
-  protected IDelegateBridge bridge;
+class PlaceDelegateTest extends AbstractDelegateTestCase {
+  private PlaceDelegate delegate;
+  private IDelegateBridge bridge;
 
   private Collection<Unit> getInfantry(final int count, final PlayerId player) {
     return gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY).create(count, player);
   }
 
-  @BeforeEach
-  public void setupPlaceDelegate() {
+  @BeforeEach void setupPlaceDelegate() {
     bridge = newDelegateBridge(british);
     delegate = new PlaceDelegate();
     delegate.initialize("place");

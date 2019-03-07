@@ -8,10 +8,9 @@ import javax.swing.JTextArea;
 
 import org.junit.jupiter.api.Test;
 
-public class JTextAreaBuilderTest {
+class JTextAreaBuilderTest {
 
-  @Test
-  public void defaultValues() {
+  @Test void defaultValues() {
     final JTextArea area = JTextAreaBuilder.builder()
         .build();
 
@@ -19,8 +18,7 @@ public class JTextAreaBuilderTest {
     assertThat(area.isEditable(), is(true));
   }
 
-  @Test
-  public void text() {
+  @Test void text() {
     final JTextArea area = JTextAreaBuilder.builder()
         .text("value")
         .build();
@@ -28,8 +26,7 @@ public class JTextAreaBuilderTest {
     assertThat(area.getText(), is("value"));
   }
 
-  @Test
-  public void rows() {
+  @Test void rows() {
     final JTextArea area = JTextAreaBuilder.builder()
         .rows(5)
         .build();
@@ -37,13 +34,11 @@ public class JTextAreaBuilderTest {
     assertThat(area.getRows(), is(5));
   }
 
-  @Test
-  public void rowsNonZero() {
+  @Test void rowsNonZero() {
     assertThrows(IllegalArgumentException.class, () -> JTextAreaBuilder.builder().rows(0));
   }
 
-  @Test
-  public void columns() {
+  @Test void columns() {
     final JTextArea area = JTextAreaBuilder.builder()
         .columns(20)
         .build();
@@ -51,13 +46,11 @@ public class JTextAreaBuilderTest {
     assertThat(area.getColumns(), is(20));
   }
 
-  @Test
-  public void columnsNonZero() {
+  @Test void columnsNonZero() {
     assertThrows(IllegalArgumentException.class, () -> JTextAreaBuilder.builder().columns(0));
   }
 
-  @Test
-  public void readOnly() {
+  @Test void readOnly() {
     final JTextArea area = JTextAreaBuilder.builder()
         .readOnly()
         .build();

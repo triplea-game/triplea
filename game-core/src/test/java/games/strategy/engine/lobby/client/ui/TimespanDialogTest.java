@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import games.strategy.engine.lobby.client.ui.TimespanDialog.TimeUnit;
 import games.strategy.engine.lobby.client.ui.TimespanDialog.Timespan;
 
-public class TimespanDialogTest {
+class TimespanDialogTest {
 
   @Test
   void testForeverReturnsNull() {

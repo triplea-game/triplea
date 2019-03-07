@@ -34,7 +34,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class BattleCalculatorTest {
+class BattleCalculatorTest {
   private IDelegateBridge bridge;
 
   private void givenRemotePlayerWillSelectStrategicBombersForCasualties() {

@@ -91,7 +91,7 @@ class ModeratorControllerIntegrationTest {
       removed.add(to);
     }
 
-    public List<INode> getRemoved() {
+    List<INode> getRemoved() {
       return removed;
     }
   }

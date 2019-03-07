@@ -22,7 +22,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class AirThatCantLandUtilTest {
+class AirThatCantLandUtilTest {
   private GameData gameData;
   private PlayerId americansPlayer;
   private UnitType fighterType;

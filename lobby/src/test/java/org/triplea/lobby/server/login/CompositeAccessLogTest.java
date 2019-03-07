@@ -13,8 +13,7 @@ import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.db.AccessLogDao;
 
-@ExtendWith(MockitoExtension.class)
-public final class CompositeAccessLogTest {
+@ExtendWith(MockitoExtension.class) final class CompositeAccessLogTest {
   @Mock
   private AccessLogDao accessLogDao;
 
@@ -23,8 +22,7 @@ public final class CompositeAccessLogTest {
 
   private final User user = TestUserUtils.newUser();
 
-  @Test
-  public void logFailedAuthentication_ShouldNotAddDatabaseAccessLogRecord() throws Exception {
+  @Test void logFailedAuthentication_ShouldNotAddDatabaseAccessLogRecord() throws Exception {
     for (final UserType userType : UserType.values()) {
       compositeAccessLog.logFailedAuthentication(user, userType, "error message");
 
@@ -32,8 +30,7 @@ public final class CompositeAccessLogTest {
     }
   }
 
-  @Test
-  public void logSuccessfulAuthentication_ShouldAddDatabaseAccessLogRecord() throws Exception {
+  @Test void logSuccessfulAuthentication_ShouldAddDatabaseAccessLogRecord() throws Exception {
     for (final UserType userType : UserType.values()) {
       compositeAccessLog.logSuccessfulAuthentication(user, userType);
 

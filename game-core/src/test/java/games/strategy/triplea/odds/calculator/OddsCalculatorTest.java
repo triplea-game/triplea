@@ -24,7 +24,7 @@ import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class OddsCalculatorTest {
+class OddsCalculatorTest {
   private GameData gameData;
 
   @BeforeEach
