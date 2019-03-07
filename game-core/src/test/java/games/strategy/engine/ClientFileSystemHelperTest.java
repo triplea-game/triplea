@@ -19,10 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import games.strategy.triplea.settings.GameSetting;
 
-public final class ClientFileSystemHelperTest {
+final class ClientFileSystemHelperTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
-  public final class GetFolderContainingFileWithNameTest {
+  final class GetFolderContainingFileWithNameTest {
     @Mock
     private File file;
 
@@ -42,7 +42,7 @@ public final class ClientFileSystemHelperTest {
     }
 
     @Test
-    public void shouldReturnStartFolderWhenStartFolderContainsFile() throws Exception {
+    void shouldReturnStartFolderWhenStartFolderContainsFile() throws Exception {
       when(file.isFile()).thenReturn(true);
       when(startFolder.listFiles()).thenReturn(new File[] {file});
 
@@ -50,7 +50,7 @@ public final class ClientFileSystemHelperTest {
     }
 
     @Test
-    public void shouldReturnAncestorFolderWhenAncestorFolderContainsFile() throws Exception {
+    void shouldReturnAncestorFolderWhenAncestorFolderContainsFile() throws Exception {
       when(file.isFile()).thenReturn(true);
       when(startFolder.getParentFile()).thenReturn(parentFolder);
       when(startFolder.listFiles()).thenReturn(new File[0]);
@@ -60,7 +60,7 @@ public final class ClientFileSystemHelperTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenNoFolderContainsFile() {
+    void shouldThrowExceptionWhenNoFolderContainsFile() {
       when(startFolder.getParentFile()).thenReturn(parentFolder);
       when(startFolder.listFiles()).thenReturn(new File[0]);
       when(parentFolder.listFiles()).thenReturn(new File[0]);

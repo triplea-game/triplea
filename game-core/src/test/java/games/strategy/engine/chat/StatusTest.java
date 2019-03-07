@@ -16,7 +16,7 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
 
-public class StatusTest {
+class StatusTest {
 
   @Test
   void testStatus() throws Exception {

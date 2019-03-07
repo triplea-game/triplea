@@ -12,25 +12,25 @@ import org.junit.jupiter.api.Test;
 
 import games.strategy.triplea.delegate.Matches;
 
-public class MapTest {
-  Territory aa;
-  Territory ab;
-  Territory ac;
-  Territory ad;
-  Territory ba;
-  Territory bb;
-  Territory bc;
-  Territory bd;
-  Territory ca;
-  Territory cb;
-  Territory cc;
-  Territory cd;
-  Territory da;
-  Territory db;
-  Territory dc;
-  Territory dd;
-  Territory nowhere;
-  GameMap map;
+class MapTest {
+  private Territory aa;
+  private Territory ab;
+  private Territory ac;
+  private Territory ad;
+  private Territory ba;
+  private Territory bb;
+  private Territory bc;
+  private Territory bd;
+  private Territory ca;
+  private Territory cb;
+  private Territory cc;
+  private Territory cd;
+  private Territory da;
+  private Territory db;
+  private Territory dc;
+  private Territory dd;
+  private Territory nowhere;
+  private GameMap map;
 
   @BeforeEach
   void setUp() {

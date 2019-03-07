@@ -25,7 +25,7 @@ import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 
-public class UnitAttachmentTest {
+class UnitAttachmentTest {
 
   private final GameData gameData = mock(GameData.class);
   private final UnitAttachment attachment = new UnitAttachment("Test attachment", null, gameData);
@@ -44,7 +44,7 @@ public class UnitAttachmentTest {
 
 
   @BeforeEach
-  public void setup() {
+  void setup() {
     when(gameData.getUnitTypeList()).thenReturn(unitTypeList);
     when(gameData.getPlayerList()).thenReturn(playerList);
     when(unitTypeList.getUnitType(unit1String)).thenReturn(unit1);

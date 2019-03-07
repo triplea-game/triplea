@@ -46,7 +46,7 @@ import games.strategy.engine.lobby.server.userDB.DBUser;
 
 final class LobbyLoginValidatorTest {
 
-  interface ResponseGenerator extends Function<Map<String, String>, Map<String, String>> {
+  private interface ResponseGenerator extends Function<Map<String, String>, Map<String, String>> {
   }
 
   abstract class AbstractTestCase {
@@ -241,12 +241,12 @@ final class LobbyLoginValidatorTest {
   }
 
   @Nested
-  public final class DatabaseInteractionTest {
+  final class DatabaseInteractionTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
-    public final class WhenUserIsAnonymousTest extends AbstractNoBansTestCase {
+    final class WhenUserIsAnonymousTest extends AbstractNoBansTestCase {
       @Test
-      public void shouldNotCreateOrUpdateUserWhenAuthenticationSucceeds() {
+      void shouldNotCreateOrUpdateUserWhenAuthenticationSucceeds() {
         givenAnonymousAuthenticationWillSucceed();
         when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
@@ -258,7 +258,7 @@ final class LobbyLoginValidatorTest {
       }
 
       @Test
-      public void shouldNotCreateOrUpdateUserWhenAuthenticationFails() {
+      void shouldNotCreateOrUpdateUserWhenAuthenticationFails() {
         givenAnonymousAuthenticationWillFail();
 
         whenAuthenticating(givenAuthenticationResponse());
@@ -276,12 +276,12 @@ final class LobbyLoginValidatorTest {
     }
 
     @Nested
-    public final class WhenUserDoesNotExistTest {
+    final class WhenUserDoesNotExistTest {
       @ExtendWith(MockitoExtension.class)
       @Nested
-      public final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
+      final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
         @Test
-        public void shouldCreateNewUserWithOnlyMd5CryptedPassword() {
+        void shouldCreateNewUserWithOnlyMd5CryptedPassword() {
           givenUserDoesNotExist();
           when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
@@ -303,9 +303,9 @@ final class LobbyLoginValidatorTest {
 
       @ExtendWith(MockitoExtension.class)
       @Nested
-      public final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
+      final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
         @Test
-        public void shouldCreateNewUserWithBothPasswords() {
+        void shouldCreateNewUserWithBothPasswords() {
           givenUserDoesNotExist();
           when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
@@ -329,12 +329,12 @@ final class LobbyLoginValidatorTest {
     }
 
     @Nested
-    public final class WhenUserExistsTest {
+    final class WhenUserExistsTest {
       @ExtendWith(MockitoExtension.class)
       @Nested
-      public final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
+      final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
         @Test
-        public void shouldNotUpdatePasswordsWhenUserHasOnlyMd5CryptedPassword() {
+        void shouldNotUpdatePasswordsWhenUserHasOnlyMd5CryptedPassword() {
           givenUserDoesNotHaveBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
           when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
@@ -347,7 +347,7 @@ final class LobbyLoginValidatorTest {
         }
 
         @Test
-        public void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
+        void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
           when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
@@ -360,7 +360,7 @@ final class LobbyLoginValidatorTest {
         }
 
         @Test
-        public void shouldNotUpdatePasswordsWhenUserHasOnlyBcryptedPassword() {
+        void shouldNotUpdatePasswordsWhenUserHasOnlyBcryptedPassword() {
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndFail();
 
@@ -380,9 +380,9 @@ final class LobbyLoginValidatorTest {
 
       @ExtendWith(MockitoExtension.class)
       @Nested
-      public final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
+      final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
         @Test
-        public void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
+        void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
           givenUserHasMd5CryptedPassword();
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
@@ -396,7 +396,7 @@ final class LobbyLoginValidatorTest {
         }
 
         @Test
-        public void shouldUpdateBcryptedPasswordWhenUserHasOnlyMd5CryptedPassword() {
+        void shouldUpdateBcryptedPasswordWhenUserHasOnlyMd5CryptedPassword() {
           givenUserExists();
           givenUserHasMd5CryptedPassword();
           givenUserDoesNotHaveBcryptedPassword();
@@ -412,7 +412,7 @@ final class LobbyLoginValidatorTest {
         }
 
         @Test
-        public void shouldUpdateBothPasswordsWhenUserHasOnlyBcryptedPassword() {
+        void shouldUpdateBothPasswordsWhenUserHasOnlyBcryptedPassword() {
           givenUserExists();
           givenUserDoesNotHaveMd5CryptedPassword();
           givenUserHasBcryptedPassword();
@@ -439,12 +439,12 @@ final class LobbyLoginValidatorTest {
   }
 
   @Nested
-  public final class AccessLogTest {
+  final class AccessLogTest {
     @ExtendWith(MockitoExtension.class)
     @Nested
-    public final class WhenUserIsAnonymous extends AbstractNoBansTestCase {
+    final class WhenUserIsAnonymous extends AbstractNoBansTestCase {
       @Test
-      public void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
+      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
         givenAnonymousAuthenticationWillSucceed();
         when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
@@ -455,7 +455,7 @@ final class LobbyLoginValidatorTest {
       }
 
       @Test
-      public void shouldLogFailedAuthenticationWhenAuthenticationFails() {
+      void shouldLogFailedAuthenticationWhenAuthenticationFails() {
         givenAnonymousAuthenticationWillFail();
 
         whenAuthenticating(givenAuthenticationResponse());
@@ -472,9 +472,9 @@ final class LobbyLoginValidatorTest {
 
     @ExtendWith(MockitoExtension.class)
     @Nested
-    public final class WhenUserIsRegistered extends AbstractNoBansTestCase {
+    final class WhenUserIsRegistered extends AbstractNoBansTestCase {
       @Test
-      public void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
+      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
         when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
@@ -486,7 +486,7 @@ final class LobbyLoginValidatorTest {
       }
 
       @Test
-      public void shouldLogFailedAuthenticationWhenAuthenticationFails() {
+      void shouldLogFailedAuthenticationWhenAuthenticationFails() {
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndFail();
 

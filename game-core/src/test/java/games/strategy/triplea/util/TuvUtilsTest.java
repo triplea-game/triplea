@@ -12,7 +12,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class TuvUtilsTest {
+class TuvUtilsTest {
   private GameData gameData;
 
   @BeforeEach

@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
-public class PredicateBuilderTest {
+class PredicateBuilderTest {
 
   private final Predicate<Object> truePredicate = o -> true;
   private final Predicate<Object> falsePredicate = o -> false;

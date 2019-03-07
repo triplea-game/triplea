@@ -15,7 +15,7 @@ import com.google.common.base.Strings;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import nl.jqno.equalsverifier.EqualsVerifier;
 
-public class DbUserTest {
+class DbUserTest {
 
   private static void verifyValid(final DBUser validDbUser) {
     assertThat("Expecting no validation error messages: " + validDbUser.getValidationErrorMessage(),
@@ -30,12 +30,12 @@ public class DbUserTest {
   }
 
   @Test
-  public void shouldBeEquatableAndHashable() {
+  void shouldBeEquatableAndHashable() {
     EqualsVerifier.forClass(DBUser.class).verify();
   }
 
   @Test
-  public void valueObjectPropertiesAreSet() {
+  void valueObjectPropertiesAreSet() {
     final DBUser admin = new DBUser(
         new DBUser.UserName(TestData.name),
         new DBUser.UserEmail(TestData.email));
@@ -46,7 +46,7 @@ public class DbUserTest {
   }
 
   @Test
-  public void notAdmin() {
+  void notAdmin() {
     final DBUser notAdmin = new DBUser(
         new DBUser.UserName(TestData.name),
         new DBUser.UserEmail(TestData.email),
@@ -56,7 +56,7 @@ public class DbUserTest {
   }
 
   @Test
-  public void admin() {
+  void admin() {
     final DBUser admin = new DBUser(
         new DBUser.UserName(TestData.name),
         new DBUser.UserEmail(TestData.email),
@@ -66,7 +66,7 @@ public class DbUserTest {
   }
 
   @Test
-  public void validDbUser() {
+  void validDbUser() {
     verifyValid(
         new DBUser(
             new DBUser.UserName(TestData.name),
@@ -74,7 +74,7 @@ public class DbUserTest {
   }
 
   @Test
-  public void inValidDbUser() {
+  void inValidDbUser() {
     verifyInvalid(
         new DBUser(
             new DBUser.UserName(TestData.name),
@@ -87,7 +87,7 @@ public class DbUserTest {
   }
 
   @Test
-  public void userNameValidationWithInvalidNames() {
+  void userNameValidationWithInvalidNames() {
     Arrays.asList(
         null,
         "",
@@ -124,7 +124,7 @@ public class DbUserTest {
   }
 
   @Test
-  public void userNameValidationWithValidNames() {
+  void userNameValidationWithValidNames() {
     Arrays.asList(
         "abc",
         Strings.repeat("a", DBUser.UserName.MAX_LENGTH),

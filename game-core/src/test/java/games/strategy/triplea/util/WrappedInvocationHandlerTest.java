@@ -8,13 +8,13 @@ import java.lang.reflect.Proxy;
 
 import org.junit.jupiter.api.Test;
 
-public final class WrappedInvocationHandlerTest {
+final class WrappedInvocationHandlerTest {
   private Object newProxy(final InvocationHandler handler) {
     return Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[] {}, handler);
   }
 
   @Test
-  public void equals_ShouldReturnTrueWhenOtherInstanceIsWrappedInvocationHandlerProxyWithEqualDelegate() {
+  void equals_ShouldReturnTrueWhenOtherInstanceIsWrappedInvocationHandlerProxyWithEqualDelegate() {
     final Object proxy1 = newProxy(new WrappedInvocationHandler("test"));
     final Object proxy2 = newProxy(new WrappedInvocationHandler("test"));
 
@@ -22,7 +22,7 @@ public final class WrappedInvocationHandlerTest {
   }
 
   @Test
-  public void equals_ShouldReturnFalseWhenOtherInstanceIsWrappedInvocationHandlerProxyWithUnequalDelegate() {
+  void equals_ShouldReturnFalseWhenOtherInstanceIsWrappedInvocationHandlerProxyWithUnequalDelegate() {
     final Object proxy1 = newProxy(new WrappedInvocationHandler("test1"));
     final Object proxy2 = newProxy(new WrappedInvocationHandler("test2"));
 
@@ -30,7 +30,7 @@ public final class WrappedInvocationHandlerTest {
   }
 
   @Test
-  public void equals_ShouldReturnFalseWhenOtherInstanceIsProxyWithoutWrappedInvocationHandler() {
+  void equals_ShouldReturnFalseWhenOtherInstanceIsProxyWithoutWrappedInvocationHandler() {
     final Object proxy1 = newProxy(new WrappedInvocationHandler("test"));
     final Object proxy2 = newProxy((proxy, method, args) -> null);
 
@@ -38,7 +38,7 @@ public final class WrappedInvocationHandlerTest {
   }
 
   @Test
-  public void hashCode_ShouldReturnHashCodeOfDelegate() {
+  void hashCode_ShouldReturnHashCodeOfDelegate() {
     final Object delegate = "test";
     final Object proxy = newProxy(new WrappedInvocationHandler(delegate));
 
@@ -46,7 +46,7 @@ public final class WrappedInvocationHandlerTest {
   }
 
   @Test
-  public void toString_ShouldReturnToStringOfDelegate() {
+  void toString_ShouldReturnToStringOfDelegate() {
     final Object delegate = "test";
     final Object proxy = newProxy(new WrappedInvocationHandler(delegate));
 

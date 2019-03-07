@@ -14,7 +14,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class UnitsThatCantFightUtilTest {
+class UnitsThatCantFightUtilTest {
 
   @Test
   void testCantFightAttacksV3() throws Exception {

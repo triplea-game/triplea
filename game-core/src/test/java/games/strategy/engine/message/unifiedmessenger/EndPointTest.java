@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteMethodCallResults;
 
-public class EndPointTest {
+class EndPointTest {
 
   @Test
   void testEndPoint() {

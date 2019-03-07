@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public final class DefaultCredentialManagerTest {
+final class DefaultCredentialManagerTest {
   private static final char[] MASTER_PASSWORD = "MASTER←PASSWORD↑WITH→UNICODE↓CHARS".toCharArray();
 
   @Mock
@@ -39,7 +39,7 @@ public final class DefaultCredentialManagerTest {
   }
 
   @Test
-  public void shouldBeAbleToRoundTripCredential() throws Exception {
+  void shouldBeAbleToRoundTripCredential() throws Exception {
     final String expected = "123$%^ ABCdef←↑→↓";
 
     final String protectedCredential = credentialManager.protect(expected);
@@ -49,7 +49,7 @@ public final class DefaultCredentialManagerTest {
   }
 
   @Test
-  public void getMasterPassword_ShouldCreateAndSaveMasterPasswordWhenMasterPasswordDoesNotExist() throws Exception {
+  void getMasterPassword_ShouldCreateAndSaveMasterPasswordWhenMasterPasswordDoesNotExist() throws Exception {
     givenMasterPasswordDoesNotExist();
 
     final char[] masterPassword = DefaultCredentialManager.getMasterPassword(preferences);
@@ -68,7 +68,7 @@ public final class DefaultCredentialManagerTest {
   }
 
   @Test
-  public void getMasterPassword_ShouldLoadMasterPasswordWhenMasterPasswordExists() throws Exception {
+  void getMasterPassword_ShouldLoadMasterPasswordWhenMasterPasswordExists() throws Exception {
     givenMasterPasswordExists(MASTER_PASSWORD);
 
     final char[] actual = DefaultCredentialManager.getMasterPassword(preferences);
@@ -82,14 +82,14 @@ public final class DefaultCredentialManagerTest {
   }
 
   @Test
-  public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsLessThanOnePeriod() {
+  void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsLessThanOnePeriod() {
     final Exception e = assertThrows(CredentialManagerException.class, () -> credentialManager.unprotect("AAAABBBB"));
 
     assertThat(e.getMessage(), containsString("malformed protected credential"));
   }
 
   @Test
-  public void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsMoreThanOnePeriod() {
+  void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsMoreThanOnePeriod() {
     final Exception e =
         assertThrows(CredentialManagerException.class, () -> credentialManager.unprotect("AAAA.BBBB.CCCC"));
 

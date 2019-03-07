@@ -26,7 +26,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public final class MatchesTest {
+final class MatchesTest {
   private static final Object VALUE = new Object();
 
   private static <T> Matcher<Predicate<T>> matches(final @Nullable T value) {
@@ -82,7 +82,7 @@ public final class MatchesTest {
   }
 
   @Nested
-  public final class TerritoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyTest {
+  final class TerritoryHasEnemyUnitsThatCanCaptureItAndIsOwnedByTheirEnemyTest {
     private GameData gameData;
     private PlayerId player;
     private PlayerId alliedPlayer;
@@ -125,14 +125,14 @@ public final class MatchesTest {
     }
 
     @Test
-    public void shouldNotMatchWhenTerritoryContainsOnlyAlliedLandUnits() {
+    void shouldNotMatchWhenTerritoryContainsOnlyAlliedLandUnits() {
       territory.getUnitCollection().add(newLandUnitFor(alliedPlayer));
 
       assertThat(newMatch(), notMatches(territory));
     }
 
     @Test
-    public void shouldMatchWhenTerritoryContainsEnemyLandUnits() {
+    void shouldMatchWhenTerritoryContainsEnemyLandUnits() {
       territory.getUnitCollection().addAll(Arrays.asList(
           newLandUnitFor(player),
           newLandUnitFor(enemyPlayer),
@@ -143,7 +143,7 @@ public final class MatchesTest {
     }
 
     @Test
-    public void shouldMatchWhenTerritoryContainsEnemySeaUnits() {
+    void shouldMatchWhenTerritoryContainsEnemySeaUnits() {
       territory.getUnitCollection().addAll(Arrays.asList(
           newSeaUnitFor(player),
           newSeaUnitFor(enemyPlayer),
@@ -154,14 +154,14 @@ public final class MatchesTest {
     }
 
     @Test
-    public void shouldNotMatchWhenTerritoryContainsOnlyEnemyAirUnits() {
+    void shouldNotMatchWhenTerritoryContainsOnlyEnemyAirUnits() {
       territory.getUnitCollection().add(newAirUnitFor(enemyPlayer));
 
       assertThat(newMatch(), notMatches(territory));
     }
 
     @Test
-    public void shouldNotMatchWhenTerritoryContainsOnlyEnemyInfrastructureUnits() {
+    void shouldNotMatchWhenTerritoryContainsOnlyEnemyInfrastructureUnits() {
       territory.getUnitCollection().add(newInfrastructureUnitFor(enemyPlayer));
 
       assertThat(newMatch(), notMatches(territory));
@@ -169,7 +169,7 @@ public final class MatchesTest {
   }
 
   @Nested
-  public final class TerritoryIsNotUnownedWaterTest {
+  final class TerritoryIsNotUnownedWaterTest {
     private GameData gameData;
     private PlayerId player;
     private Territory landTerritory;
@@ -197,26 +197,26 @@ public final class MatchesTest {
     }
 
     @Test
-    public void shouldMatchWhenLandTerritoryIsOwnedAndHasTerritoryAttachment() {
+    void shouldMatchWhenLandTerritoryIsOwnedAndHasTerritoryAttachment() {
       assertThat(newMatch(), matches(landTerritory));
     }
 
     @Test
-    public void shouldMatchWhenLandTerritoryIsOwnedAndDoesNotHaveTerritoryAttachment() {
+    void shouldMatchWhenLandTerritoryIsOwnedAndDoesNotHaveTerritoryAttachment() {
       TerritoryAttachment.remove(landTerritory);
 
       assertThat(newMatch(), matches(landTerritory));
     }
 
     @Test
-    public void shouldMatchWhenLandTerritoryIsUnownedAndHasTerritoryAttachment() {
+    void shouldMatchWhenLandTerritoryIsUnownedAndHasTerritoryAttachment() {
       landTerritory.setOwner(PlayerId.NULL_PLAYERID);
 
       assertThat(newMatch(), matches(landTerritory));
     }
 
     @Test
-    public void shouldMatchWhenLandTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
+    void shouldMatchWhenLandTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
       landTerritory.setOwner(PlayerId.NULL_PLAYERID);
       TerritoryAttachment.remove(landTerritory);
 
@@ -224,26 +224,26 @@ public final class MatchesTest {
     }
 
     @Test
-    public void shouldMatchWhenSeaTerritoryIsOwnedAndHasTerritoryAttachment() {
+    void shouldMatchWhenSeaTerritoryIsOwnedAndHasTerritoryAttachment() {
       assertThat(newMatch(), matches(seaTerritory));
     }
 
     @Test
-    public void shouldMatchWhenSeaTerritoryIsOwnedAndDoesNotHaveTerritoryAttachment() {
+    void shouldMatchWhenSeaTerritoryIsOwnedAndDoesNotHaveTerritoryAttachment() {
       TerritoryAttachment.remove(seaTerritory);
 
       assertThat(newMatch(), matches(seaTerritory));
     }
 
     @Test
-    public void shouldMatchWhenSeaTerritoryIsUnownedAndHasTerritoryAttachment() {
+    void shouldMatchWhenSeaTerritoryIsUnownedAndHasTerritoryAttachment() {
       seaTerritory.setOwner(PlayerId.NULL_PLAYERID);
 
       assertThat(newMatch(), matches(seaTerritory));
     }
 
     @Test
-    public void shouldNotMatchWhenSeaTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
+    void shouldNotMatchWhenSeaTerritoryIsUnownedAndDoesNotHaveTerritoryAttachment() {
       seaTerritory.setOwner(PlayerId.NULL_PLAYERID);
       TerritoryAttachment.remove(seaTerritory);
 

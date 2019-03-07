@@ -38,7 +38,7 @@ import com.google.common.primitives.Ints;
 
 import games.strategy.io.IoUtils;
 
-public final class PointFileReaderWriterTest {
+final class PointFileReaderWriterTest {
   private static <R> R readFromString(
       final ThrowingFunction<InputStream, R, IOException> function,
       final String content)
@@ -61,9 +61,9 @@ public final class PointFileReaderWriterTest {
   }
 
   @Nested
-  public final class ReadOneToOneTest {
+  final class ReadOneToOneTest {
     @Test
-    public void shouldNotCloseStream() throws Exception {
+    void shouldNotCloseStream() throws Exception {
       final InputStream is = newInputStreamForCloseTest();
 
       PointFileReaderWriter.readOneToOne(is);
@@ -72,12 +72,12 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
+    void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
       assertThat(IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToOne), is(Collections.emptyMap()));
     }
 
     @Test
-    public void shouldReadOnePointPerName() throws Exception {
+    void shouldReadOnePointPerName() throws Exception {
       final String content = ""
           // Questionable behaviour
           + "United Kingdom (1011,1021) (1234, 12424) everything here should be ignored\n"
@@ -95,7 +95,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldErrorOnInvalidSyntax() {
+    void shouldErrorOnInvalidSyntax() {
       final String content1 = "United Kingdom (1011,1021\n";
       assertThrows(IOException.class, () -> readFromString(PointFileReaderWriter::readOneToOne, content1));
 
@@ -113,7 +113,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldErrorOnDuplicateKey() {
+    void shouldErrorOnDuplicateKey() {
       final String content1 = ""
           + "54 Sea Zone  (1011,1021)\n"
           + "54 Sea Zone  (1011,1021)";
@@ -142,7 +142,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldSupportNegativeValues() throws Exception {
+    void shouldSupportNegativeValues() throws Exception {
       final String content = ""
           + "United Kingdom (-1011,1021)\n"
           + "Germany (1234, -12424)\n"
@@ -158,9 +158,9 @@ public final class PointFileReaderWriterTest {
   }
 
   @Nested
-  public final class ReadOneToManyTest {
+  final class ReadOneToManyTest {
     @Test
-    public void shouldNotCloseStream() throws Exception {
+    void shouldNotCloseStream() throws Exception {
       final InputStream is = newInputStreamForCloseTest();
 
       PointFileReaderWriter.readOneToMany(is);
@@ -169,12 +169,12 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
+    void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
       assertThat(IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToMany), is(Collections.emptyMap()));
     }
 
     @Test
-    public void shouldReadMultiplePointsPerName() throws Exception {
+    void shouldReadMultiplePointsPerName() throws Exception {
       final String content = ""
           + "Belarus  (1011,1021)  (1012,1022)  (1013,1023)\n"
           + "54 Sea Zone  (2011,2021)  (2012,2022)\n"
@@ -189,7 +189,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldErrorOnDuplicateKey() {
+    void shouldErrorOnDuplicateKey() {
       final String content1 = ""
           + "54 Sea Zone  (1011,1021)\n"
           + "54 Sea Zone  (1011,1021)";
@@ -218,7 +218,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldSupportNegativeValues() throws Exception {
+    void shouldSupportNegativeValues() throws Exception {
       final String content = ""
           + "United Kingdom (-1011,1021) (1234, -12424) (-123, -456)";
 
@@ -231,9 +231,9 @@ public final class PointFileReaderWriterTest {
   }
 
   @Nested
-  public final class ReadOneToManyPlacementsTest {
+  final class ReadOneToManyPlacementsTest {
     @Test
-    public void shouldNotCloseStream() throws Exception {
+    void shouldNotCloseStream() throws Exception {
       final InputStream is = newInputStreamForCloseTest();
 
       PointFileReaderWriter.readOneToManyPlacements(is);
@@ -242,13 +242,13 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
+    void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
       assertThat(IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToManyPlacements),
           is(Collections.emptyMap()));
     }
 
     @Test
-    public void shouldReadMultiplePlacementsPerName() throws Exception {
+    void shouldReadMultiplePlacementsPerName() throws Exception {
       final String content = ""
           + "Belarus  (1011,1021)  (1012,1022)  (1013,1023)  | overflowToLeft=false\n"
           + "54 Sea Zone  (2011,2021)  (2012,2022)     | overflowToLeft=true\n"
@@ -269,7 +269,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldErrorOnDuplicateKey() {
+    void shouldErrorOnDuplicateKey() {
       final String content1 = ""
           + "54 Sea Zone  (1011,1021)  | overflowToLeft=false\n"
           + "54 Sea Zone  (1011,1021)  | overflowToLeft=false";
@@ -298,7 +298,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldSupportNegativeValues() throws Exception {
+    void shouldSupportNegativeValues() throws Exception {
       final String content = ""
           + "United Kingdom (-1011,1021) (1234, -12424) (-123, -456)";
 
@@ -314,9 +314,9 @@ public final class PointFileReaderWriterTest {
   }
 
   @Nested
-  public final class ReadOneToManyPolygonsTest {
+  final class ReadOneToManyPolygonsTest {
     @Test
-    public void shouldNotCloseStream() throws Exception {
+    void shouldNotCloseStream() throws Exception {
       final InputStream is = newInputStreamForCloseTest();
 
       PointFileReaderWriter.readOneToManyPolygons(is);
@@ -325,14 +325,14 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
+    void shouldReturnEmptyMapWhenStreamIsEmpty() throws Exception {
       assertThat(
           IoUtils.readFromMemory(new byte[0], PointFileReaderWriter::readOneToManyPolygons),
           is(Collections.emptyMap()));
     }
 
     @Test
-    public void shouldReadMultiplePolygonsPerName() throws Exception {
+    void shouldReadMultiplePolygonsPerName() throws Exception {
       final String content = ""
           + "Belarus  <  (1011,1021) (1012,1022) (1013,1023) >\n"
           + "54 Sea Zone  <  (2011,2021) (2012,2022) (2013,2023) >  <  (2111,2121) (2112,2122) (2113,2123) >\n"
@@ -357,7 +357,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldErrorOnDuplicateKey() {
+    void shouldErrorOnDuplicateKey() {
       final String content1 = ""
           + "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >\n"
           + "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >";
@@ -393,7 +393,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldSupportNegativeValues() throws Exception {
+    void shouldSupportNegativeValues() throws Exception {
       final String content = ""
           + "United Kingdom < (-1011,1021) (1234, -12424) (-123, -456) >";
 
@@ -406,9 +406,9 @@ public final class PointFileReaderWriterTest {
   }
 
   @Nested
-  public final class WriteOneToOneTest {
+  final class WriteOneToOneTest {
     @Test
-    public void shouldNotCloseStream() throws Exception {
+    void shouldNotCloseStream() throws Exception {
       final OutputStream os = newOutputStreamForCloseTest();
 
       PointFileReaderWriter.writeOneToOne(os, Collections.emptyMap());
@@ -417,7 +417,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldWriteOnePointPerName() throws Exception {
+    void shouldWriteOnePointPerName() throws Exception {
       final Map<String, Point> pointsByName = ImmutableMap.of(
           "United Kingdom", new Point(1011, 1021),
           "Germany", new Point(2011, 2021),
@@ -433,9 +433,9 @@ public final class PointFileReaderWriterTest {
   }
 
   @Nested
-  public final class WriteOneToManyTest {
+  final class WriteOneToManyTest {
     @Test
-    public void shouldNotCloseStream() throws Exception {
+    void shouldNotCloseStream() throws Exception {
       final OutputStream os = newOutputStreamForCloseTest();
 
       PointFileReaderWriter.writeOneToMany(os, Collections.emptyMap());
@@ -444,7 +444,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldWriteMultiplePointsPerName() throws Exception {
+    void shouldWriteMultiplePointsPerName() throws Exception {
       final Map<String, List<Point>> pointListsByName = ImmutableMap.of(
           "Belarus", Arrays.asList(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)),
           "54 Sea Zone", Arrays.asList(new Point(2011, 2021), new Point(2012, 2022)),
@@ -460,9 +460,9 @@ public final class PointFileReaderWriterTest {
   }
 
   @Nested
-  public final class WriteOneToManyPlacementsTest {
+  final class WriteOneToManyPlacementsTest {
     @Test
-    public void shouldNotCloseStream() throws Exception {
+    void shouldNotCloseStream() throws Exception {
       final OutputStream os = newOutputStreamForCloseTest();
 
       PointFileReaderWriter.writeOneToManyPlacements(os, Collections.emptyMap());
@@ -471,7 +471,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldWriteMultiplePlacementsPerName() throws Exception {
+    void shouldWriteMultiplePlacementsPerName() throws Exception {
       final Map<String, Tuple<List<Point>, Boolean>> polygonListsByName = ImmutableMap.of(
           "Belarus", Tuple.of(Arrays.asList(
               new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023)), true),
@@ -491,9 +491,9 @@ public final class PointFileReaderWriterTest {
   }
 
   @Nested
-  public final class WriteOneToManyPolygonsTest {
+  final class WriteOneToManyPolygonsTest {
     @Test
-    public void shouldNotCloseStream() throws Exception {
+    void shouldNotCloseStream() throws Exception {
       final OutputStream os = newOutputStreamForCloseTest();
 
       PointFileReaderWriter.writeOneToManyPolygons(os, Collections.emptyMap());
@@ -502,7 +502,7 @@ public final class PointFileReaderWriterTest {
     }
 
     @Test
-    public void shouldWriteMultiplePolygonsPerName() throws Exception {
+    void shouldWriteMultiplePolygonsPerName() throws Exception {
       final Map<String, List<Polygon>> polygonListsByName = ImmutableMap.of(
           "Belarus", Collections.singletonList(
               polygon(new Point(1011, 1021), new Point(1012, 1022), new Point(1013, 1023))),
@@ -532,7 +532,7 @@ public final class PointFileReaderWriterTest {
   }
 
   @Nested
-  public final class ReadStreamTest {
+  final class ReadStreamTest {
     @Test
     void testExceptionWrapping() {
       final String test = "Test";

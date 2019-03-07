@@ -21,20 +21,20 @@ import org.triplea.java.function.ThrowingRunnable;
 import com.google.common.util.concurrent.Runnables;
 
 @ExtendWith(MockitoExtension.class)
-public final class InterruptiblesTest {
+final class InterruptiblesTest {
   @AfterEach
   @SuppressWarnings("static-method")
-  public void resetTestThreadInterruptionStatusSoItDoesNotCrossTestBoundaries() {
+  void resetTestThreadInterruptionStatusSoItDoesNotCrossTestBoundaries() {
     Thread.interrupted();
   }
 
   @Nested
-  public final class AwaitTest {
+  final class AwaitTest {
     @Mock
     private ThrowingRunnable<InterruptedException> runnable;
 
     @Test
-    public void shouldReturnTrueWhenCompleted()
+    void shouldReturnTrueWhenCompleted()
         throws Exception {
       final boolean completed = Interruptibles.await(runnable);
 
@@ -43,7 +43,7 @@ public final class InterruptiblesTest {
     }
 
     @Test
-    public void shouldReturnFalseWhenInterrupted() {
+    void shouldReturnFalseWhenInterrupted() {
       final boolean completed = Interruptibles.await(() -> {
         throw new InterruptedException();
       });
@@ -53,7 +53,7 @@ public final class InterruptiblesTest {
     }
 
     @Test
-    public void shouldRethrowRunnableUncheckedException() {
+    void shouldRethrowRunnableUncheckedException() {
       assertThrows(IllegalStateException.class, () -> Interruptibles.await(() -> {
         throw new IllegalStateException();
       }));
@@ -61,9 +61,9 @@ public final class InterruptiblesTest {
   }
 
   @Nested
-  public final class AwaitResultTest {
+  final class AwaitResultTest {
     @Test
-    public void shouldReturnCompletedSupplierNonNullResultWhenCompleted() {
+    void shouldReturnCompletedSupplierNonNullResultWhenCompleted() {
       final Object value = new Object();
 
       final Interruptibles.Result<Object> result = Interruptibles.awaitResult(() -> value);
@@ -73,7 +73,7 @@ public final class InterruptiblesTest {
     }
 
     @Test
-    public void shouldReturnCompletedSupplierNullResultWhenCompleted() {
+    void shouldReturnCompletedSupplierNullResultWhenCompleted() {
       final Interruptibles.Result<Object> result = Interruptibles.awaitResult(() -> null);
 
       assertThat(result.completed, is(true));
@@ -81,7 +81,7 @@ public final class InterruptiblesTest {
     }
 
     @Test
-    public void shouldReturnInterruptedEmptyResultWhenInterrupted() {
+    void shouldReturnInterruptedEmptyResultWhenInterrupted() {
       final Interruptibles.Result<Object> result = Interruptibles.awaitResult(() -> {
         throw new InterruptedException();
       });
@@ -92,7 +92,7 @@ public final class InterruptiblesTest {
     }
 
     @Test
-    public void shouldRethrowSupplierUncheckedException() {
+    void shouldRethrowSupplierUncheckedException() {
       assertThrows(IllegalStateException.class, () -> Interruptibles.awaitResult(() -> {
         throw new IllegalStateException();
       }));
@@ -100,9 +100,9 @@ public final class InterruptiblesTest {
   }
 
   @Nested
-  public final class AwaitCountDownLatchTest {
+  final class AwaitCountDownLatchTest {
     @Test
-    public void shouldWaitUntilLatchCountIsZero() {
+    void shouldWaitUntilLatchCountIsZero() {
       final CountDownLatch latch = new CountDownLatch(0);
 
       assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> {
@@ -112,9 +112,9 @@ public final class InterruptiblesTest {
   }
 
   @Nested
-  public final class JoinTest {
+  final class JoinTest {
     @Test
-    public void shouldWaitUntilThreadIsDead() {
+    void shouldWaitUntilThreadIsDead() {
       final Thread thread = new Thread(Runnables.doNothing());
       thread.start();
 
@@ -125,27 +125,27 @@ public final class InterruptiblesTest {
   }
 
   @Nested
-  public final class SleepTest {
+  final class SleepTest {
     @Test
-    public void shouldThrowExceptionWhenMillisIsNegative() {
+    void shouldThrowExceptionWhenMillisIsNegative() {
       assertThrows(IllegalArgumentException.class, () -> Interruptibles.sleep(-1L));
     }
   }
 
   @Nested
-  public final class SleepWithNanosTest {
+  final class SleepWithNanosTest {
     @Test
-    public void shouldThrowExceptionWhenMillisIsNegative() {
+    void shouldThrowExceptionWhenMillisIsNegative() {
       assertThrows(IllegalArgumentException.class, () -> Interruptibles.sleep(-1L, 0));
     }
 
     @Test
-    public void shouldThrowExceptionWhenNanosIsLessThanZero() {
+    void shouldThrowExceptionWhenNanosIsLessThanZero() {
       assertThrows(IllegalArgumentException.class, () -> Interruptibles.sleep(0L, -1));
     }
 
     @Test
-    public void shouldThrowExceptionWhenNanosIsGreaterThan999999() {
+    void shouldThrowExceptionWhenNanosIsGreaterThan999999() {
       assertThrows(IllegalArgumentException.class, () -> Interruptibles.sleep(0L, 1_000_000));
     }
   }

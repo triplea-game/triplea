@@ -14,15 +14,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-public final class FileUtilsTest {
+final class FileUtilsTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
-  public final class ListFilesTest {
+  final class ListFilesTest {
     @Mock
     private File directory;
 
     @Test
-    public void shouldReturnFileCollectionWhenTargetIsDirectory() {
+    void shouldReturnFileCollectionWhenTargetIsDirectory() {
       final File file1 = new File("file1");
       final File file2 = new File("file2");
       final File file3 = new File("file3");
@@ -32,7 +32,7 @@ public final class FileUtilsTest {
     }
 
     @Test
-    public void shouldReturnEmptyCollectionWhenTargetIsNotDirectory() {
+    void shouldReturnEmptyCollectionWhenTargetIsNotDirectory() {
       when(directory.listFiles()).thenReturn(null);
 
       assertThat(FileUtils.listFiles(directory), is(empty()));

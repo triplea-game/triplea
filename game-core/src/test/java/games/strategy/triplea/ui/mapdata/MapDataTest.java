@@ -8,9 +8,9 @@ import java.util.Properties;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public final class MapDataTest {
+final class MapDataTest {
   @Nested
-  public final class GetPropertyTest {
+  final class GetPropertyTest {
     private static final int DEFAULT_VALUE = 42;
     private static final String NAME = "name";
 
@@ -21,21 +21,21 @@ public final class MapDataTest {
     }
 
     @Test
-    public void shouldReturnValueWhenPropertyExists() {
+    void shouldReturnValueWhenPropertyExists() {
       properties.setProperty(NAME, "76");
 
       assertThat(getProperty(), is(76));
     }
 
     @Test
-    public void shouldReturnDefaultValueWhenPropertyDoesNotExist() {
+    void shouldReturnDefaultValueWhenPropertyDoesNotExist() {
       properties.remove(NAME);
 
       assertThat(getProperty(), is(DEFAULT_VALUE));
     }
 
     @Test
-    public void shouldReturnDefaultValueWhenPropertyExistsButIsMalformed() {
+    void shouldReturnDefaultValueWhenPropertyExistsButIsMalformed() {
       properties.setProperty(NAME, "malformed");
 
       assertThat(getProperty(), is(DEFAULT_VALUE));

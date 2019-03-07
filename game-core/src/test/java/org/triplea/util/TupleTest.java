@@ -11,23 +11,23 @@ import org.junit.jupiter.api.Test;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 
-public class TupleTest {
+class TupleTest {
   private final Tuple<String, Integer> testObj = Tuple.of("hi", 123);
 
   @Test
-  public void basicUsage() {
+  void basicUsage() {
     assertThat(testObj.getFirst(), is("hi"));
     assertThat(testObj.getSecond(), is(123));
   }
 
   @Test
-  public void verifyToString() {
+  void verifyToString() {
     assertThat(testObj.toString(), containsString(testObj.getFirst()));
     assertThat(testObj.toString(), containsString(String.valueOf(testObj.getSecond())));
   }
 
   @Test
-  public void checkStoringNullCase() {
+  void checkStoringNullCase() {
     final Tuple<String, String> nullTuple = Tuple.of(null, null);
 
     assertThat(nullTuple.getFirst(), nullValue());

@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 
 @ExtendWith(MockitoExtension.class)
-public final class EventThreadJOptionPaneTest {
+final class EventThreadJOptionPaneTest {
   private static final Duration timeout = Duration.ofSeconds(5);
 
   @Spy

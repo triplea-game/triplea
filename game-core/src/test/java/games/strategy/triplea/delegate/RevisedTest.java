@@ -82,7 +82,7 @@ import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class RevisedTest {
+class RevisedTest {
   private GameData gameData;
 
   private static void givenRemotePlayerWillSelectDefaultCasualties(final IDelegateBridge delegateBridge) {

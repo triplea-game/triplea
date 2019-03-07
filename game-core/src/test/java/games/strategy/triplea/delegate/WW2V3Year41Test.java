@@ -98,7 +98,7 @@ import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.xml.TestMapGameData;
 
-public class WW2V3Year41Test {
+class WW2V3Year41Test {
   private GameData gameData;
 
   private static void givenRemotePlayerWillSelectAttackSubs(final IDelegateBridge delegateBridge) {
@@ -1656,11 +1656,11 @@ public class WW2V3Year41Test {
     move(armour, new Route(libya, morrocco));
   }
 
-  public void assertValid(final String string) {
+  void assertValid(final String string) {
     assertNull(string, string);
   }
 
-  public void assertError(final String string) {
+  void assertError(final String string) {
     assertNotNull(string, string);
   }
 }

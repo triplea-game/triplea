@@ -31,7 +31,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 
 @ExtendWith(MockitoExtension.class)
-public class TriggerAttachmentTest {
+class TriggerAttachmentTest {
 
   private final Set<TriggerAttachment> satisfiedTriggers = new HashSet<>();
   @Mock

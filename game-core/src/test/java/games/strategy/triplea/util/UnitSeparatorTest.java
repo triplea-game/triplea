@@ -23,7 +23,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.xml.TestMapGameData;
 
 @ExtendWith(MockitoExtension.class)
-public class UnitSeparatorTest {
+class UnitSeparatorTest {
 
   @Mock
   private MapData mockMapData;
