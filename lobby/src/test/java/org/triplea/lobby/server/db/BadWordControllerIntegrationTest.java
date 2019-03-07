@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 

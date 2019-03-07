@@ -15,8 +15,8 @@ import javax.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.login.RsaAuthenticator;
-import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.lobby.server.TestUserUtils;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 import org.triplea.util.Md5Crypt;
 
