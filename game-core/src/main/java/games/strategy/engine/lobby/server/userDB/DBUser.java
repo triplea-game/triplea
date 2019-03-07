@@ -5,7 +5,7 @@ package games.strategy.engine.lobby.server.userDB;
 
 import java.io.Serializable;
 
-import org.triplea.java.Util;
+import org.triplea.java.StringUtils;
 import org.triplea.lobby.common.LobbyConstants;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -80,7 +80,7 @@ public final class DBUser implements Serializable {
     }
 
     String validate() {
-      if (userEmail == null || userEmail.isEmpty() || !Util.isMailValid(userEmail)) {
+      if (userEmail == null || userEmail.isEmpty() || !StringUtils.isMailValid(userEmail)) {
         return "Invalid email address";
       }
       return null;

@@ -20,10 +20,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import org.triplea.java.TimeManager;
-import org.triplea.java.Util;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.ProgressWindow;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.ClientContext;
@@ -146,12 +146,18 @@ public class ForumPosterEditor extends EditorPanel {
    */
   public boolean areFieldsValid() {
     final boolean setupValid = IForumPoster.isClientSettingSetupValidForServer((String) forums.getSelectedItem());
-    final boolean idValid = setLabelValid(Util.isInt(topicIdField.getText()), topicIdLabel);
+    final boolean idValid = setLabelValid(isInt(topicIdField.getText()), topicIdLabel);
     final boolean forumValid = validateComboBox(forums, forumLabel);
     final boolean allValid = setupValid && idValid && forumValid;
     viewPosts.setEnabled(allValid);
     testForum.setEnabled(allValid);
     return allValid;
+  }
+
+  @VisibleForTesting
+  static boolean isInt(final String string) {
+    Preconditions.checkNotNull(string);
+    return string.matches("^-?\\d+$");
   }
 
   private IForumPoster newForumPoster() {

@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.User;
 import org.triplea.util.Tuple;
 
-public final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
+final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
   private final BannedMacController controller = spy(new BannedMacController(database));
 
   @Test

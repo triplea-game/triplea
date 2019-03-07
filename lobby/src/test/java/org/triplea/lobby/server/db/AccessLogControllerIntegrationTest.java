@@ -16,11 +16,11 @@ import org.triplea.lobby.server.login.UserType;
 import org.triplea.test.common.Integration;
 
 @Integration
-public final class AccessLogControllerIntegrationTest extends AbstractControllerTestCase {
+final class AccessLogControllerIntegrationTest extends AbstractControllerTestCase {
   private final AccessLogController accessLogController = new AccessLogController(database);
 
   @Test
-  public void insert_ShouldInsertNewRecord() throws Exception {
+  void insert_ShouldInsertNewRecord() throws Exception {
     final User user = TestUserUtils.newUser();
 
     for (final UserType userType : UserType.values()) {

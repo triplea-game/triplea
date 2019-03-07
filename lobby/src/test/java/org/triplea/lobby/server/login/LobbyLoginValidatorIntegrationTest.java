@@ -20,10 +20,10 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
-import org.triplea.java.Util;
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
+import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.lobby.server.db.BadWordController;
 import org.triplea.lobby.server.db.Database;
@@ -53,7 +53,7 @@ public class LobbyLoginValidatorIntegrationTest {
   }
 
   private ChallengeResultFunction generateChallenge(final HashedPassword password) {
-    return generateChallenge(Util.newUniqueTimestamp(), password);
+    return generateChallenge(TestUserUtils.newUniqueTimestamp(), password);
   }
 
   private ChallengeResultFunction generateChallenge(final String name, final HashedPassword password) {
@@ -85,7 +85,7 @@ public class LobbyLoginValidatorIntegrationTest {
 
   @Test
   void testCreateNewUser() {
-    final String name = Util.newUniqueTimestamp();
+    final String name = TestUserUtils.newUniqueTimestamp();
     final String password = "password";
     final Map<String, String> response = new HashMap<>();
     response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
@@ -125,7 +125,7 @@ public class LobbyLoginValidatorIntegrationTest {
 
   @Test
   void testAnonymousLoginBadName() {
-    final String name = "bitCh" + Util.newUniqueTimestamp();
+    final String name = "bitCh" + TestUserUtils.newUniqueTimestamp();
     try {
       new BadWordController(database).addBadWord("bitCh");
     } catch (final Exception ignore) {
@@ -139,7 +139,7 @@ public class LobbyLoginValidatorIntegrationTest {
 
   @Test
   void testLogin() {
-    final String user = Util.newUniqueTimestamp();
+    final String user = TestUserUtils.newUniqueTimestamp();
     final String password = "foo";
     final Map<String, String> response = new HashMap<>();
     assertNull(

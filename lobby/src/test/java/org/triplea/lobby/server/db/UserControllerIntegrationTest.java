@@ -14,15 +14,15 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
-import org.triplea.java.Util;
 import org.triplea.lobby.common.login.RsaAuthenticator;
+import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.test.common.Integration;
 import org.triplea.util.Md5Crypt;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 
 @Integration
-public final class UserControllerIntegrationTest extends AbstractControllerTestCase {
+final class UserControllerIntegrationTest extends AbstractControllerTestCase {
   private final UserController controller = new UserController(database);
 
   @Test
@@ -52,13 +52,13 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
   void testCreateDupe() {
     assertThrows(Exception.class,
         () -> controller.createUser(newUserWithMd5CryptHash(),
-            new HashedPassword(md5Crypt(Util.newUniqueTimestamp()))),
+            new HashedPassword(md5Crypt(TestUserUtils.newUniqueTimestamp()))),
         "Should not be allowed to create a dupe user");
   }
 
   @Test
   void testLogin() {
-    final String password = md5Crypt(Util.newUniqueTimestamp());
+    final String password = md5Crypt(TestUserUtils.newUniqueTimestamp());
     final DBUser user = newUserWithHash(password, Function.identity());
     controller.updateUser(user, new HashedPassword(bcrypt(obfuscate(password))));
     assertTrue(controller.login(user.getName(), new HashedPassword(password)));
@@ -73,7 +73,7 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
     final String email2 = "foo@foo.foo";
     controller.updateUser(
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
-        new HashedPassword(bcrypt(obfuscate(Util.newUniqueTimestamp()))));
+        new HashedPassword(bcrypt(obfuscate(TestUserUtils.newUniqueTimestamp()))));
     controller.updateUser(
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
         new HashedPassword(password2));
@@ -88,11 +88,11 @@ public final class UserControllerIntegrationTest extends AbstractControllerTestC
   }
 
   private DBUser newUserWithMd5CryptHash() {
-    return newUserWithHash(Util.newUniqueTimestamp(), UserControllerIntegrationTest::md5Crypt);
+    return newUserWithHash(TestUserUtils.newUniqueTimestamp(), UserControllerIntegrationTest::md5Crypt);
   }
 
   private DBUser newUserWithBCryptHash() {
-    return newUserWithHash(Util.newUniqueTimestamp(), UserControllerIntegrationTest::bcrypt);
+    return newUserWithHash(TestUserUtils.newUniqueTimestamp(), UserControllerIntegrationTest::bcrypt);
   }
 
   private DBUser newUserWithHash(final @Nullable String password, final Function<String, String> hashingMethod) {

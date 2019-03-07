@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import org.triplea.java.Util;
+import org.triplea.java.StringUtils;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.ProgressWindow;
 
@@ -116,7 +116,8 @@ public class EmailSenderEditor extends EditorPanel {
         && ClientSetting.emailServerSecurity.isSet() && ClientSetting.emailUsername.isSet();
 
     final String toAddressText = toAddress.getText();
-    final boolean addressValid = setLabelValid(!toAddressText.isEmpty() && Util.isMailValid(toAddressText), toLabel);
+    final boolean addressValid =
+        setLabelValid(!toAddressText.isEmpty() && StringUtils.isMailValid(toAddressText), toLabel);
     final boolean allValid = setupValid && addressValid;
     testEmail.setEnabled(allValid);
     return allValid;

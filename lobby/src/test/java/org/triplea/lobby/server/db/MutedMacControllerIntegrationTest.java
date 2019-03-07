@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.User;
 
-public final class MutedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
+final class MutedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
   private final MutedMacController controller = spy(new MutedMacController(database));
 
   @Test
