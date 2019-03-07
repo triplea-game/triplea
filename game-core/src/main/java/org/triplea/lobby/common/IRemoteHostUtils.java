@@ -19,7 +19,7 @@ public interface IRemoteHostUtils extends IRemote {
 
   String bootPlayerHeadlessHostBot(String playerNameToBeBooted, String hashedPassword, String salt);
 
-  String banPlayerHeadlessHostBot(String playerNameToBeBanned, int hours, String hashedPassword, String salt);
+  String banPlayerHeadlessHostBot(String playerNameToBeBanned, String hashedPassword, String salt);
 
   String stopGameHeadlessHostBot(String hashedPassword, String salt);
 

@@ -29,28 +29,25 @@ public interface IServerMessenger extends IMessenger {
   Set<INode> getNodes();
 
   /**
-   * Notifies the server that the specified IP address has been banned until the specified instant.
+   * Notifies the server that the specified IP address has been banned.
    *
    * @param ip The IP address to ban.
-   * @param expires The time at which the ban expires or {@code null} if the ban is indefinite.
    */
-  void notifyIpMiniBanningOfPlayer(String ip, @Nullable Instant expires);
+  void notifyIpMiniBanningOfPlayer(String ip);
 
   /**
-   * Notifies the server that the specified hashed MAC address has been banned until the specified instant.
+   * Notifies the server that the specified hashed MAC address has been banned.
    *
    * @param mac The hashed MAC address to ban.
-   * @param expires The time at which the ban expires or {@code null} if the ban is indefinite.
    */
-  void notifyMacMiniBanningOfPlayer(String mac, @Nullable Instant expires);
+  void notifyMacMiniBanningOfPlayer(String mac);
 
   /**
-   * Notifies the server that the specified username has been banned until the specified instant.
+   * Notifies the server that the specified username has been banned.
    *
    * @param username The username to ban.
-   * @param expires The time at which the ban expires or {@code null} if the ban is indefinite.
    */
-  void notifyUsernameMiniBanningOfPlayer(String username, @Nullable Instant expires);
+  void notifyUsernameMiniBanningOfPlayer(String username);
 
   /**
    * Returns the hashed MAC address for the user with the specified name or {@code null} if unknown.

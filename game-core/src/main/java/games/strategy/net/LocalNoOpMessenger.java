@@ -89,13 +89,13 @@ public class LocalNoOpMessenger implements IServerMessenger {
   }
 
   @Override
-  public void notifyIpMiniBanningOfPlayer(final String ip, final @Nullable Instant expires) {}
+  public void notifyIpMiniBanningOfPlayer(final String ip) {}
 
   @Override
-  public void notifyMacMiniBanningOfPlayer(final String mac, final @Nullable Instant expires) {}
+  public void notifyMacMiniBanningOfPlayer(final String mac) {}
 
   @Override
-  public void notifyUsernameMiniBanningOfPlayer(final String username, final @Nullable Instant expires) {}
+  public void notifyUsernameMiniBanningOfPlayer(final String username) {}
 
   @Override
   public @Nullable String getPlayerMac(final String name) {
