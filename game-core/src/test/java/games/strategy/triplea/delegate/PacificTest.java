@@ -24,12 +24,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
 
 class PacificTest extends AbstractDelegateTestCase {
-  private UnitType armor;
-  private UnitType artillery;
   private UnitType marine;
-  private UnitType sub;
-  private UnitType destroyer;
-  private UnitType battleship;
   // Define players
   private PlayerId americans;
   private PlayerId chinese;
@@ -38,7 +33,6 @@ class PacificTest extends AbstractDelegateTestCase {
   private Territory unitedStates;
   private Territory newBritain;
   private Territory midway;
-  private Territory mariana;
   private Territory bonin;
   // Define Sea Zones
   private Territory sz4;
@@ -49,7 +43,6 @@ class PacificTest extends AbstractDelegateTestCase {
   private Territory sz16;
   private Territory sz20;
   private Territory sz24;
-  private Territory sz25;
   private Territory sz27;
   private IDelegateBridge bridge;
   private MoveDelegate delegate;
@@ -59,15 +52,10 @@ class PacificTest extends AbstractDelegateTestCase {
     gameData = TestMapGameData.PACIFIC_INCOMPLETE.getGameData();
     // Define units
     infantry = GameDataTestUtil.infantry(gameData);
-    armor = GameDataTestUtil.armour(gameData);
-    artillery = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_ARTILLERY);
     marine = gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_MARINE);
     fighter = GameDataTestUtil.fighter(gameData);
     bomber = GameDataTestUtil.bomber(gameData);
-    sub = GameDataTestUtil.submarine(gameData);
-    destroyer = GameDataTestUtil.destroyer(gameData);
     carrier = GameDataTestUtil.carrier(gameData);
-    battleship = GameDataTestUtil.battleship(gameData);
     transport = GameDataTestUtil.transport(gameData);
     // Define players
     americans = GameDataTestUtil.americans(gameData);
@@ -80,7 +68,6 @@ class PacificTest extends AbstractDelegateTestCase {
     unitedStates = gameData.getMap().getTerritory("United States");
     newBritain = gameData.getMap().getTerritory("New Britain");
     midway = gameData.getMap().getTerritory("Midway");
-    mariana = gameData.getMap().getTerritory("Mariana");
     bonin = gameData.getMap().getTerritory("Bonin");
     // Define Sea Zones
     sz4 = gameData.getMap().getTerritory("4 Sea Zone");
@@ -91,7 +78,6 @@ class PacificTest extends AbstractDelegateTestCase {
     sz16 = gameData.getMap().getTerritory("16 Sea Zone");
     sz20 = gameData.getMap().getTerritory("20 Sea Zone");
     sz24 = gameData.getMap().getTerritory("24 Sea Zone");
-    sz25 = gameData.getMap().getTerritory("25 Sea Zone");
     sz27 = gameData.getMap().getTerritory("27 Sea Zone");
     bridge = newDelegateBridge(americans);
     advanceToStep(bridge, "japaneseCombatMove");
