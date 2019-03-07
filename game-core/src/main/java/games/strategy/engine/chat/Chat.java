@@ -190,18 +190,18 @@ public class Chat {
     sentMessages = new SentMessagesHistory();
 
     /*
-    The order of events is significant.
-
-    1. Register our channel listener. Once the channel is registered, we are guaranteed that
-    when we receive the response from our init message, our channel subscriber has been added,
-    and will see any messages broadcasted by the server.
-
-    2. Call the init message on the server remote. Any add or join messages sent from the server
-    will wait until we receive the init return value.
-
-    3. When we receive the init message response, initialize our state and release the latch
-    so all pending messages will get processed. Messages may be ignored if the server version is incorrect.
-    This all seems a lot more involved than it needs to be.
+     * The order of events is significant.
+     *
+     * 1. Register our channel listener. Once the channel is registered, we are guaranteed that
+     * when we receive the response from our init message, our channel subscriber has been added,
+     * and will see any messages broadcasted by the server.
+     *
+     * 2. Call the init message on the server remote. Any add or join messages sent from the server
+     * will wait until we receive the init return value.
+     *
+     * 3. When we receive the init message response, initialize our state and release the latch
+     * so all pending messages will get processed. Messages may be ignored if the server version is incorrect.
+     * This all seems a lot more involved than it needs to be.
      */
 
     final IChatController controller = messengers.getRemoteChatController(chatName);
