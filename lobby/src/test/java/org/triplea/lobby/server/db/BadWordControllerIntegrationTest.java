@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.java.Util;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 
@@ -19,7 +18,7 @@ final class BadWordControllerIntegrationTest {
 
   @Test
   void testInsertAndRemoveBadWord() throws Exception {
-    final String word = Util.newUniqueTimestamp();
+    final String word = TestUserUtils.newUniqueTimestamp();
     controller.addBadWord(word);
     assertTrue(controller.list().contains(word));
     removeBadWord(word);
@@ -28,7 +27,7 @@ final class BadWordControllerIntegrationTest {
 
   @Test
   void testDuplicateBadWord() {
-    final String word = Util.newUniqueTimestamp();
+    final String word = TestUserUtils.newUniqueTimestamp();
     final int previousCount = controller.list().size();
     controller.addBadWord(word);
     controller.addBadWord(word);

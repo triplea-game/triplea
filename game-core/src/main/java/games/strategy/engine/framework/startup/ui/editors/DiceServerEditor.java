@@ -9,7 +9,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import org.triplea.java.Util;
+import org.triplea.java.StringUtils;
 import org.triplea.swing.DocumentListenerBuilder;
 
 import com.google.common.collect.ImmutableMap;
@@ -86,8 +86,9 @@ public class DiceServerEditor extends EditorPanel {
 
   public boolean areFieldsValid() {
     final String toAddressText = toAddress.getText();
-    final boolean toValid = setLabelValid(!toAddressText.isEmpty() && Util.isMailValid(toAddressText), toLabel);
-    final boolean ccValid = setLabelValid(Util.isMailValid(ccAddress.getText()), ccLabel);
+    final boolean toValid =
+        setLabelValid(!toAddressText.isEmpty() && StringUtils.isMailValid(toAddressText), toLabel);
+    final boolean ccValid = setLabelValid(StringUtils.isMailValid(ccAddress.getText()), ccLabel);
     final boolean serverValid = validateComboBox(servers, serverLabel);
     final boolean allValid = serverValid && toValid && ccValid;
     testDiceButton.setEnabled(allValid);

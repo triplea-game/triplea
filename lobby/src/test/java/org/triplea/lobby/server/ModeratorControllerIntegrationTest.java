@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.stubbing.Answer;
-import org.triplea.java.Util;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserDao;
@@ -46,7 +45,7 @@ class ModeratorControllerIntegrationTest {
   void setUp() throws UnknownHostException {
     moderatorController = new ModeratorController(
         serverMessenger, null, TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao());
-    final String adminName = Util.newUniqueTimestamp();
+    final String adminName = TestUserUtils.newUniqueTimestamp();
 
     final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
 
