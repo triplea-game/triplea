@@ -2,32 +2,27 @@ package games.strategy.net.nio;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
 
+import com.google.common.base.Preconditions;
+
 import games.strategy.io.IoUtils;
 import games.strategy.net.IObjectStreamFactory;
 import games.strategy.net.MessageHeader;
-import games.strategy.net.Node;
+import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 
 /**
  * Encodes data to be written by a writer.
  */
 @Log
+@AllArgsConstructor
 class Encoder {
   private final NioWriter writer;
   private final IObjectStreamFactory objectStreamFactory;
-  private final NioSocket nioSocket;
-
-  Encoder(final NioSocket nioSocket, final NioWriter writer, final IObjectStreamFactory objectStreamFactory) {
-    this.nioSocket = nioSocket;
-    this.writer = writer;
-    this.objectStreamFactory = objectStreamFactory;
-  }
 
   void write(final SocketChannel to, final MessageHeader header) {
     checkNotNull(to);
@@ -35,7 +30,7 @@ class Encoder {
       throw new IllegalArgumentException("No from node");
     }
     try {
-      final byte[] bytes = IoUtils.writeToMemory(os -> write(header, objectStreamFactory.create(os), to));
+      final byte[] bytes = IoUtils.writeToMemory(os -> write(header, objectStreamFactory.create(os)));
       final SocketWriteData data = new SocketWriteData(bytes, bytes.length);
       writer.enque(data, to);
     } catch (final IOException e) {
@@ -44,41 +39,9 @@ class Encoder {
     }
   }
 
-  private void write(final MessageHeader header, final ObjectOutputStream out, final SocketChannel remote)
-      throws IOException {
-    if (header.getFrom() == null) {
-      throw new IllegalArgumentException("null from");
-    }
-    // a broadcast
-    if (header.getTo() == null) {
-      out.write(1);
-    } else {
-      // to a node
-      out.write(0);
-      // the common case, skip writing the address
-      if (header.getTo().equals(nioSocket.getRemoteNode(remote))) {
-        out.write(1);
-      } else {
-        // this message is going to be relayed, write the destination
-        out.write(0);
-        ((Node) header.getTo()).writeExternal(out);
-      }
-    }
-    if (header.getFrom().equals(nioSocket.getLocalNode())) {
-      out.write(1);
-    } else if (nioSocket.getLocalNode() == null) {
-      out.write(2);
-    } else {
-      out.write(0);
-      ((Node) header.getFrom()).writeExternal(out);
-    }
-    final byte type = Decoder.getType(header.getMessage());
-    out.write(type);
-    if (type != Byte.MAX_VALUE) {
-      ((Externalizable) header.getMessage()).writeExternal(out);
-    } else {
-      out.writeObject(header.getMessage());
-    }
+  private void write(final MessageHeader header, final ObjectOutputStream out) throws IOException {
+    Preconditions.checkNotNull(header.getFrom());
+    out.writeObject(header);
     out.reset();
   }
 }

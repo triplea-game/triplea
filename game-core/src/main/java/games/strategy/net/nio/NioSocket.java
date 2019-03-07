@@ -31,7 +31,7 @@ public class NioSocket implements ErrorReporter {
     writer = new NioWriter(this);
     reader = new NioReader(this);
     decoder = new Decoder(this, reader, this, factory);
-    encoder = new Encoder(this, writer, factory);
+    encoder = new Encoder(writer, factory);
   }
 
   INode getLocalNode() {
