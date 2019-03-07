@@ -48,10 +48,3 @@ deploy:
     condition: "$TRIPLEA_RELEASE = true"
     repo: triplea-game/triplea
     branch: master
-notifications:
-  webhooks:
-    urls:
-      - "https://webhooks.gitter.im/e/1b12bfcd765b19e2d59d"
-    on_success: always  # options: [always|never|change] default: always
-    on_failure: always  # options: [always|never|change] default: always
-    on_start: never     # options: [always|never|change] default: always
