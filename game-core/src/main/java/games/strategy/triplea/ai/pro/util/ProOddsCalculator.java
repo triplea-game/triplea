@@ -90,7 +90,12 @@ public class ProOddsCalculator {
     return calculateBattleResults(t, attackingUnits, defendingUnits, bombardingUnits, true);
   }
 
-  public ProBattleResult calculateBattleResults(final Territory t, final List<Unit> attackingUnits,
+  public ProBattleResult calculateBattleResultsNoSubmerge(final Territory t, final List<Unit> attackingUnits,
+      final List<Unit> defendingUnits, final Set<Unit> bombardingUnits) {
+    return calculateBattleResults(t, attackingUnits, defendingUnits, bombardingUnits, false);
+  }
+
+  private ProBattleResult calculateBattleResults(final Territory t, final List<Unit> attackingUnits,
       final List<Unit> defendingUnits, final Set<Unit> bombardingUnits, final boolean checkSubmerge) {
 
     final ProBattleResult result = checkIfNoAttackersOrDefenders(t, attackingUnits, defendingUnits, checkSubmerge);
