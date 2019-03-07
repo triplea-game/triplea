@@ -12,7 +12,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class ProUtilsTest {
 
   @Test
-  public void testIsPassiveNeutralPlayer() throws Exception {
+  void testIsPassiveNeutralPlayer() throws Exception {
     final GameData data = TestMapGameData.GLOBAL1940.getGameData();
     final PlayerId russians = data.getPlayerList().getPlayerId("Russians");
     assertFalse(ProUtils.isPassiveNeutralPlayer(russians));
@@ -23,7 +23,7 @@ public class ProUtilsTest {
   }
 
   @Test
-  public void testIsNeutralPlayer() throws Exception {
+  void testIsNeutralPlayer() throws Exception {
     final GameData data = TestMapGameData.GLOBAL1940.getGameData();
     final PlayerId russians = data.getPlayerList().getPlayerId("Russians");
     assertFalse(ProUtils.isNeutralPlayer(russians));

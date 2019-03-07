@@ -185,7 +185,6 @@ public final class LobbyMenu extends JMenuBar {
     return (IModeratorController) lobbyFrame
         .getLobbyClient()
         .getMessengers()
-        .getRemoteMessenger()
         .getRemote(IModeratorController.REMOTE_NAME);
   }
 
@@ -316,8 +315,8 @@ public final class LobbyMenu extends JMenuBar {
 
   private void updateAccountDetails() {
     final IUserManager manager =
-        (IUserManager) lobbyFrame.getLobbyClient().getRemoteMessenger().getRemote(IUserManager.REMOTE_NAME);
-    final DBUser user = manager.getUserInfo(lobbyFrame.getLobbyClient().getMessenger().getLocalNode().getName());
+        (IUserManager) lobbyFrame.getLobbyClient().getMessengers().getRemote(IUserManager.REMOTE_NAME);
+    final DBUser user = manager.getUserInfo(lobbyFrame.getLobbyClient().getMessengers().getLocalNode().getName());
     if (user == null) {
       showErrorDialog("No user info found", "Error");
       return;

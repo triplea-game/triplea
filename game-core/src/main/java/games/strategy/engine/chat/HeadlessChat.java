@@ -9,10 +9,8 @@ import org.triplea.java.TimeManager;
 import com.google.common.base.Ascii;
 
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
+import games.strategy.net.Messengers;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 
@@ -27,9 +25,8 @@ public class HeadlessChat implements IChatListener, ChatModel {
   private StringBuilder allText = new StringBuilder();
   private final ChatFloodControl floodControl = new ChatFloodControl();
 
-  public HeadlessChat(final IMessenger messenger, final IChannelMessenger channelMessenger,
-      final IRemoteMessenger remoteMessenger, final String chatName, final ChatSoundProfile chatSoundProfile) {
-    final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger, chatSoundProfile);
+  public HeadlessChat(final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
+    final Chat chat = new Chat(messengers, chatName, chatSoundProfile);
     setChat(chat);
   }
 

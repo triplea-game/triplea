@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class GameChooserModelTest {
   @Test
-  public void testOrdering() throws Exception {
+  void testOrdering() throws Exception {
     SwingUtilities.invokeAndWait(() -> {
       final GameChooserEntry entry1 = mock(GameChooserEntry.class);
       final GameChooserEntry entry2 = mock(GameChooserEntry.class);

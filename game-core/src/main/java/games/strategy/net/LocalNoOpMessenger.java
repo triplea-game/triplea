@@ -9,13 +9,13 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 /**
- * Implementation of {@link IServerMessenger} for a headless game server.
+ * Implementation of {@link IServerMessenger} for a local game server.
  */
-public class HeadlessServerMessenger implements IServerMessenger {
+public class LocalNoOpMessenger implements IServerMessenger {
 
   private final INode node;
 
-  public HeadlessServerMessenger() {
+  public LocalNoOpMessenger() {
     try {
       node = new Node("dummy", Node.getLocalHost(), 0);
     } catch (final UnknownHostException e) {

@@ -245,6 +245,16 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     return (InetSocketAddress) socketChannel.socket().getRemoteSocketAddress();
   }
 
+  @Override
+  public void addConnectionChangeListener(final IConnectionChangeListener listener) {
+
+  }
+
+  @Override
+  public void removeConnectionChangeListener(final IConnectionChangeListener listener) {
+
+  }
+
   private void bareBonesSendMessageToServer(final String methodName, final Object... messages) {
     final List<Object> args = new ArrayList<>();
     final Class<?>[] argTypes = new Class<?>[messages.length];

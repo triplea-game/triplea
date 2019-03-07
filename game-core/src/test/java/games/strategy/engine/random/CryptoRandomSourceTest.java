@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class CryptoRandomSourceTest {
 
   @Test
-  public void testIntsToBytes() {
+  void testIntsToBytes() {
     final byte[] bytes = CryptoRandomSource.intsToBytes(new int[] {0xD1C2B3A4, 0x1A2B3C4D});
     assertEquals(8, bytes.length);
     assertEquals((byte) 0xA4, bytes[0]);
@@ -23,7 +23,7 @@ public class CryptoRandomSourceTest {
   }
 
   @Test
-  public void testBytesToInts() {
+  void testBytesToInts() {
     final int[] ints = CryptoRandomSource.bytesToInts(new byte[] {
         (byte) 0xA4, (byte) 0xB3, (byte) 0xC2, (byte) 0xD1,
         (byte) 0x4D, (byte) 0x3C, (byte) 0x2B, (byte) 0x1A});
@@ -33,7 +33,7 @@ public class CryptoRandomSourceTest {
   }
 
   @Test
-  public void testMix() {
+  void testMix() {
     final int[] val1 = {0, 0, 0, 1, 1, 1, 2, 2, 2};
     final int[] val2 = {0, 1, 2, 0, 1, 2, 0, 1, 2};
     final int max = 3;
@@ -44,7 +44,7 @@ public class CryptoRandomSourceTest {
   }
 
   @Test
-  public void testThereAndBackAgain() {
+  void testThereAndBackAgain() {
     final int[] ints = new int[] {0, 1, 12, 123, 0xFF, 0x100, -1, 124152, 532153, 123121, 0xABCDEF12, 0xFF00DD00,
         Integer.MAX_VALUE, Integer.MIN_VALUE};
     final int[] thereAndBack = CryptoRandomSource.bytesToInts(CryptoRandomSource.intsToBytes(ints));

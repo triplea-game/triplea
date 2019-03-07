@@ -38,13 +38,13 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import games.strategy.net.TestServerMessenger;
 
-public class RemoteMessengerTest {
+class RemoteMessengerTest {
   private IServerMessenger serverMessenger = mock(IServerMessenger.class);
   private RemoteMessenger remoteMessenger;
   private UnifiedMessengerHub unifiedMessengerHub;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     // simple set up for non networked testing
     final List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
     doAnswer(invocation -> connectionListeners.add(invocation.getArgument(0)))
@@ -63,13 +63,13 @@ public class RemoteMessengerTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     serverMessenger = null;
     remoteMessenger = null;
   }
 
   @Test
-  public void testRegisterUnregister() {
+  void testRegisterUnregister() {
     final TestRemote testRemote = new TestRemote();
     final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.registerRemote(testRemote, test);
@@ -79,7 +79,7 @@ public class RemoteMessengerTest {
   }
 
   @Test
-  public void testMethodCall() {
+  void testMethodCall() {
     final TestRemote testRemote = new TestRemote();
     final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.registerRemote(testRemote, test);
@@ -89,7 +89,7 @@ public class RemoteMessengerTest {
   }
 
   @Test
-  public void testExceptionThrownWhenUnregisteredRemote() {
+  void testExceptionThrownWhenUnregisteredRemote() {
     final TestRemote testRemote = new TestRemote();
     final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.registerRemote(testRemote, test);
@@ -100,7 +100,7 @@ public class RemoteMessengerTest {
   }
 
   @Test
-  public void testNoRemote() {
+  void testNoRemote() {
     final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.getRemote(test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
@@ -109,7 +109,7 @@ public class RemoteMessengerTest {
   }
 
   @Test
-  public void testVoidMethodCall() {
+  void testVoidMethodCall() {
     final TestRemote testRemote = new TestRemote();
     final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.registerRemote(testRemote, test);
@@ -118,7 +118,7 @@ public class RemoteMessengerTest {
   }
 
   @Test
-  public void testException() {
+  void testException() {
     final TestRemote testRemote = new TestRemote();
     final RemoteName test = new RemoteName("test", ITestRemote.class);
     remoteMessenger.registerRemote(testRemote, test);
@@ -128,7 +128,7 @@ public class RemoteMessengerTest {
   }
 
   @Test
-  public void testRemoteCall() throws Exception {
+  void testRemoteCall() throws Exception {
     final RemoteName test = new RemoteName("test", ITestRemote.class);
     IServerMessenger server = null;
     ClientMessenger client = null;
@@ -166,7 +166,7 @@ public class RemoteMessengerTest {
   }
 
   @Test
-  public void testRemoteCall2() throws Exception {
+  void testRemoteCall2() throws Exception {
     final RemoteName test = new RemoteName("test", ITestRemote.class);
     IServerMessenger server = null;
     ClientMessenger client = null;
@@ -192,7 +192,7 @@ public class RemoteMessengerTest {
   }
 
   @Test
-  public void testShutDownClient() throws Exception {
+  void testShutDownClient() throws Exception {
     // when the client shutdown, remotes created on the client should not be visible on server
     final RemoteName test = new RemoteName("test", ITestRemote.class);
     IServerMessenger server = null;
@@ -215,7 +215,7 @@ public class RemoteMessengerTest {
   }
 
   @Test
-  public void testMethodReturnsOnWait() throws Exception {
+  void testMethodReturnsOnWait() throws Exception {
     // when the client shutdown, remotes created on the client should not be visible on server
     final RemoteName test = new RemoteName("test", IFoo.class);
     IServerMessenger server = null;

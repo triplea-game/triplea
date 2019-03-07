@@ -57,33 +57,33 @@ public class VersionTest {
   }
 
   @Test
-  public void testWithPoint() {
+  void testWithPoint() {
     assertEquals(new Version(1, 2, 999), new Version(1, 2, 3).withPoint(999));
   }
 
   @Test
-  public void testIsGreaterThan() {
+  void testIsGreaterThan() {
     assertFalse(new Version(1, 0).isGreaterThan(new Version(2, 0)));
     assertFalse(new Version(1, 0).isGreaterThan(new Version(1, 0)));
     assertTrue(new Version(2, 0).isGreaterThan(new Version(1, 0)));
   }
 
   @Test
-  public void testIsGreaterThanOrEqualTo() {
+  void testIsGreaterThanOrEqualTo() {
     assertFalse(new Version(1, 0).isGreaterThanOrEqualTo(new Version(2, 0)));
     assertTrue(new Version(1, 0).isGreaterThanOrEqualTo(new Version(1, 0)));
     assertTrue(new Version(2, 0).isGreaterThanOrEqualTo(new Version(1, 0)));
   }
 
   @Test
-  public void testIsLessThan() {
+  void testIsLessThan() {
     assertTrue(new Version(1, 0).isLessThan(new Version(2, 0)));
     assertFalse(new Version(1, 0).isLessThan(new Version(1, 0)));
     assertFalse(new Version(2, 0).isLessThan(new Version(1, 0)));
   }
 
   @Test
-  public void testToString() {
+  void testToString() {
     assertEquals("1.2.3", new Version("1.2.3").toString());
     assertEquals("1.2", new Version("1.2").toString());
     assertEquals("1.2", new Version("1.2.0").toString());
@@ -91,19 +91,19 @@ public class VersionTest {
   }
 
   @Test
-  public void testToStringFull() {
+  void testToStringFull() {
     assertEquals("1.2.dev", new Version("1.2.dev").toStringFull());
   }
 
   @Test
-  public void testGetExactVersion() {
+  void testGetExactVersion() {
     assertEquals("1.2.3", new Version(1, 2, 3).getExactVersion());
     assertEquals("1.2.3.4", new Version("1.2.3.4").getExactVersion());
     assertEquals("1.2.3.4.something weird", new Version("1.2.3.4.something weird").getExactVersion());
   }
 
   @Test
-  public void testErrorOnWrongSyntax() {
+  void testErrorOnWrongSyntax() {
     assertThrows(IllegalArgumentException.class, () -> new Version("abc12.34.56.78"));
     assertThrows(IllegalArgumentException.class, () -> new Version("abc12.34.56"));
     assertThrows(IllegalArgumentException.class, () -> new Version("abc12.34"));

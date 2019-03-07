@@ -30,6 +30,7 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
+import games.strategy.net.Messengers;
 
 final class LobbyGameTableModelTest {
   @ExtendWith(MockitoExtension.class)
@@ -60,7 +61,8 @@ final class LobbyGameTableModelTest {
       Mockito.when(mockRemoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME))
           .thenReturn(mockLobbyController);
       Mockito.when(mockLobbyController.listGames()).thenReturn(fakeGameMap);
-      testObj = new LobbyGameTableModel(true, mockMessenger, mockChannelMessenger, mockRemoteMessenger);
+      testObj = new LobbyGameTableModel(
+          true, new Messengers(mockMessenger, mockRemoteMessenger, mockChannelMessenger));
       Mockito.verify(mockLobbyController, Mockito.times(1)).listGames();
 
       MessageContext.setSenderNodeForThread(serverNode);

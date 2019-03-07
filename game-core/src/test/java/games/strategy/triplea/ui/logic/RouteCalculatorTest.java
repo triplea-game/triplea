@@ -26,7 +26,7 @@ public class RouteCalculatorTest {
   private static final int MAP_HEIGHT = 1000;
 
   @Test
-  public void testRouteTranslation() {
+  void testRouteTranslation() {
     final Point2D[] inputArray = new Point2D[] {point(1, 4), point(1001, 1001), point(600, 600)};
     assertArrayEquals(new Point2D[] {point(1, 4), point(1, 1), point(-400, -400)},
         RouteCalculator.builder()
@@ -70,7 +70,7 @@ public class RouteCalculatorTest {
   }
 
   @Test
-  public void testClosestPoint() {
+  void testClosestPoint() {
     final Point2D origin = new Point2D.Double();
     final Point2D closestPoint = new Point2D.Double(1, 1);
     final List<Point2D> pool = new ArrayList<>();
@@ -82,7 +82,7 @@ public class RouteCalculatorTest {
   }
 
   @Test
-  public void testPossiblePoints() {
+  void testPossiblePoints() {
     final List<Point2D> possiblePoints = new ArrayList<>();
     // The values below must be all combinations of x and y values 0, -mapWidth/height, +mapWidth/Height
     possiblePoints.add(point(-MAP_WIDTH, -MAP_HEIGHT));
@@ -116,7 +116,7 @@ public class RouteCalculatorTest {
   }
 
   @Test
-  public void testMatrixTransposal() {
+  void testMatrixTransposal() {
     final Point2D[] input = new Point2D[] {point(0, 0), point(1, 1)};
     final Point2D[] nw = new Point2D[] {point(-MAP_WIDTH, -MAP_HEIGHT), point(-999, -999)};
     final Point2D[] n = new Point2D[] {point(0, -MAP_HEIGHT), point(1, -999)};
@@ -147,7 +147,7 @@ public class RouteCalculatorTest {
   }
 
   @Test
-  public void testGetAllNormalizedLines() {
+  void testGetAllNormalizedLines() {
     final RouteCalculator routeCalculator = RouteCalculator.builder()
         .isInfiniteX(true)
         .isInfiniteY(true)

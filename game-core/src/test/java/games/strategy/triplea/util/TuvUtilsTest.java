@@ -16,33 +16,33 @@ public class TuvUtilsTest {
   private GameData gameData;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.TWW.getGameData();
   }
 
   @Test
-  public void testCostsForTuv() {
+  void testCostsForTuv() {
     final PlayerId germans = GameDataTestUtil.germany(gameData);
     final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
     assertEquals(3, result.getInt(GameDataTestUtil.germanInfantry(gameData)));
   }
 
   @Test
-  public void testCostsForTuvWithConsumesUnit() {
+  void testCostsForTuvWithConsumesUnit() {
     final PlayerId germans = GameDataTestUtil.germany(gameData);
     final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
     assertEquals(11, result.getInt(GameDataTestUtil.germanFactory(gameData)));
   }
 
   @Test
-  public void testCostsForTuvWithConsumesUnitChain() {
+  void testCostsForTuvWithConsumesUnitChain() {
     final PlayerId germans = GameDataTestUtil.germany(gameData);
     final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
     assertEquals(12, result.getInt(GameDataTestUtil.germanFortification(gameData)));
   }
 
   @Test
-  public void testCostsForTuvWithXmlPropertySet() {
+  void testCostsForTuvWithXmlPropertySet() {
     final PlayerId germans = GameDataTestUtil.germany(gameData);
     final IntegerMap<UnitType> result = TuvUtils.getCostsForTuv(germans, gameData);
     assertEquals(25, result.getInt(GameDataTestUtil.germanBattleship(gameData)));

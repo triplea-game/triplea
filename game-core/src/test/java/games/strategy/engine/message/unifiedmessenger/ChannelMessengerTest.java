@@ -21,7 +21,7 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.MessengerTestUtils;
 import games.strategy.net.TestServerMessenger;
 
-public class ChannelMessengerTest {
+class ChannelMessengerTest {
   private IServerMessenger serverMessenger;
   private IMessenger clientMessenger;
   private int serverPort = -1;
@@ -30,7 +30,7 @@ public class ChannelMessengerTest {
   private UnifiedMessengerHub unifiedMessengerHub;
 
   @BeforeEach
-  public void setUp() throws IOException {
+  void setUp() throws IOException {
     serverMessenger = new TestServerMessenger("Server", 0);
     serverMessenger.setAcceptNewConnections(true);
     serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
@@ -43,13 +43,13 @@ public class ChannelMessengerTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     MessengerTestUtils.shutDownQuietly(serverMessenger);
     MessengerTestUtils.shutDownQuietly(clientMessenger);
   }
 
   @Test
-  public void testLocalCall() {
+  void testLocalCall() {
     final RemoteName descriptor = new RemoteName("testLocalCall", IChannelBase.class);
     serverChannelMessenger.registerChannelSubscriber(new ChannelSubscriber(), descriptor);
     final IChannelBase subscriber = (IChannelBase) serverChannelMessenger.getChannelBroadcaster(descriptor);
@@ -59,7 +59,7 @@ public class ChannelMessengerTest {
   }
 
   @Test
-  public void testRemoteCall() {
+  void testRemoteCall() {
     final RemoteName testRemote = new RemoteName("testRemote", IChannelBase.class);
     final ChannelSubscriber subscriber1 = new ChannelSubscriber();
     serverChannelMessenger.registerChannelSubscriber(subscriber1, testRemote);
@@ -76,7 +76,7 @@ public class ChannelMessengerTest {
   }
 
   @Test
-  public void testMultipleClients() throws Exception {
+  void testMultipleClients() throws Exception {
     // set up the client and server so that the client has 1 subscriber, and the server knows about it
     final RemoteName test = new RemoteName("test", IChannelBase.class);
     final ChannelSubscriber client1Subscriber = new ChannelSubscriber();
@@ -92,7 +92,7 @@ public class ChannelMessengerTest {
   }
 
   @Test
-  public void testMultipleChannels() {
+  void testMultipleChannels() {
     final RemoteName testRemote2 = new RemoteName("testRemote2", IChannelBase.class);
     final RemoteName testRemote3 = new RemoteName("testRemote3", IChannelBase.class);
     final ChannelSubscriber subscriber2 = new ChannelSubscriber();
@@ -134,7 +134,7 @@ public class ChannelMessengerTest {
       callCount++;
     }
 
-    public synchronized int getCallCount() {
+    synchronized int getCallCount() {
       return callCount;
     }
 

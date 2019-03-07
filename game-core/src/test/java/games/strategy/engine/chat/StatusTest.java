@@ -19,7 +19,7 @@ import games.strategy.net.Node;
 public class StatusTest {
 
   @Test
-  public void testStatus() throws Exception {
+  void testStatus() throws Exception {
     final IServerMessenger messenger = mock(IServerMessenger.class);
     final INode dummyNode = new Node("dummy", InetAddress.getLocalHost(), 0);
     when(messenger.getLocalNode()).thenReturn(dummyNode);

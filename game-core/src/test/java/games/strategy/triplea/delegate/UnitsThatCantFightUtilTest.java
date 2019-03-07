@@ -17,7 +17,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 public class UnitsThatCantFightUtilTest {
 
   @Test
-  public void testCantFightAttacksV3() throws Exception {
+  void testCantFightAttacksV3() throws Exception {
     final GameData data = TestMapGameData.WW2V3_1941.getGameData();
 
     Collection<Territory> territories =
@@ -32,7 +32,7 @@ public class UnitsThatCantFightUtilTest {
   }
 
   @Test
-  public void testCantFightAttackInRevised() throws Exception {
+  void testCantFightAttackInRevised() throws Exception {
     final GameData data = TestMapGameData.REVISED.getGameData();
     final Territory sz15 = territory("15 Sea Zone", data);
     addTo(sz15, transport(data).create(1, germans(data)));

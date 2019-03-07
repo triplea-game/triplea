@@ -21,19 +21,19 @@ public final class SwingWorkerCompletionWaiterTest {
   private SwingWorkerCompletionWaiter.ProgressWindow progressWindow;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     waiter = new SwingWorkerCompletionWaiter(progressWindow);
   }
 
   @Test
-  public void testShouldOpenProgressWindowWhenWorkerStarted() {
+  void testShouldOpenProgressWindowWhenWorkerStarted() {
     waiter.propertyChange(newSwingWorkerStateEvent(SwingWorker.StateValue.STARTED));
 
     verify(progressWindow).open();
   }
 
   @Test
-  public void testShouldCloseProgressWindowWhenWorkerDone() {
+  void testShouldCloseProgressWindowWhenWorkerDone() {
     waiter.propertyChange(newSwingWorkerStateEvent(SwingWorker.StateValue.DONE));
 
     verify(progressWindow).close();

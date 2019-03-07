@@ -13,14 +13,14 @@ import org.triplea.java.Interruptibles;
 public class ThreadPoolTest {
 
   @Test
-  public void testThrowsExceptionOnInvalidArgument() {
+  void testThrowsExceptionOnInvalidArgument() {
     assertThrows(IllegalArgumentException.class, () -> new ThreadPool(0));
     assertThrows(IllegalArgumentException.class, () -> new ThreadPool(-1));
     assertThrows(IllegalArgumentException.class, () -> new ThreadPool(Integer.MIN_VALUE));
   }
 
   @Test
-  public void testRunOneTask() {
+  void testRunOneTask() {
     final ThreadPool pool = new ThreadPool(50);
     final Task task = new Task();
     pool.submit(task);
@@ -29,7 +29,7 @@ public class ThreadPoolTest {
   }
 
   @Test
-  public void testSingleThread() {
+  void testSingleThread() {
     final ThreadPool pool = new ThreadPool(1);
     final Collection<Task> tasks = new ArrayList<>();
     for (int i = 0; i < 30; i++) {
@@ -45,7 +45,7 @@ public class ThreadPoolTest {
   }
 
   @Test
-  public void testSimple() {
+  void testSimple() {
     final ThreadPool pool = new ThreadPool(5);
     final Collection<Task> tasks = new ArrayList<>();
     for (int i = 0; i < 3000; i++) {
@@ -62,7 +62,7 @@ public class ThreadPoolTest {
   }
 
   @Test
-  public void testBlocked() {
+  void testBlocked() {
     final Collection<Thread> threads = new ArrayList<>();
     for (int j = 0; j < 50; j++) {
       final Thread t = new Thread(ThreadPoolTest::threadTestBlock);

@@ -26,7 +26,7 @@ public class FileSystemStrategyTest {
   private File mapFile;
 
   @BeforeEach
-  public void setUp(@TempDir final Path tempDirPath) throws Exception {
+  void setUp(@TempDir final Path tempDirPath) throws Exception {
     testObj = new FileSystemAccessStrategy();
     final String text = DownloadFileProperties.VERSION_PROPERTY + " = 1.2";
     final Path mapPath = Files.createTempFile(tempDirPath, null, null);
@@ -36,12 +36,12 @@ public class FileSystemStrategyTest {
   }
 
   @Test
-  public void testMapPropertyFileNotFound() {
+  void testMapPropertyFileNotFound() {
     assertThat(testObj.getMapVersion("does_not_exist"), is(Optional.empty()));
   }
 
   @Test
-  public void testMapFileFound() {
+  void testMapFileFound() {
     assertThat(testObj.getMapVersion(mapFile.getAbsolutePath()), is(Optional.of(new Version(1, 2))));
   }
 }

@@ -33,12 +33,9 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.ConnectionLostException;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessengerException;
 import games.strategy.engine.player.IGamePlayer;
 import games.strategy.engine.random.CryptoRandomSource;
-import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.UrlConstants;
@@ -54,9 +51,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
   private final GameSelectorModel gameSelectorModel;
   private final boolean headless;
   private final int clientCount;
-  private final IRemoteMessenger remoteMessenger;
-  private final IChannelMessenger channelMessenger;
-  private final IMessenger messenger;
+  private final Messengers messengers;
   private final PlayerListing playerListing;
   private final Map<String, INode> remotePlayers;
   private final ServerModel serverModel;
@@ -72,16 +67,18 @@ public class ServerLauncher extends AbstractLauncher<Void> {
   private final List<INode> observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<>());
   private InGameLobbyWatcherWrapper inGameLobbyWatcher;
 
-  public ServerLauncher(final int clientCount, final IRemoteMessenger remoteMessenger,
-      final IChannelMessenger channelMessenger, final IMessenger messenger, final GameSelectorModel gameSelectorModel,
-      final PlayerListing playerListing, final Map<String, INode> remotePlayers, final ServerModel serverModel,
+  public ServerLauncher(
+      final int clientCount,
+      final Messengers messengers,
+      final GameSelectorModel gameSelectorModel,
+      final PlayerListing playerListing,
+      final Map<String, INode> remotePlayers,
+      final ServerModel serverModel,
       final boolean headless) {
     this.gameSelectorModel = gameSelectorModel;
     this.headless = headless;
     this.clientCount = clientCount;
-    this.remoteMessenger = remoteMessenger;
-    this.channelMessenger = channelMessenger;
-    this.messenger = messenger;
+    this.messengers = messengers;
     this.playerListing = playerListing;
     this.remotePlayers = remotePlayers;
     this.serverModel = serverModel;
@@ -114,20 +111,19 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       serverModel.allowRemoveConnections();
       ui = parent;
       log.info("Game Status: Launching");
-      remoteMessenger.registerRemote(serverReady, ClientModel.CLIENT_READY_CHANNEL);
+      messengers.registerRemote(serverReady, ClientModel.CLIENT_READY_CHANNEL);
       gameData.doPreGameStartDataModifications(playerListing);
       abortLaunch = testShouldWeAbort();
       final byte[] gameDataAsBytes = gameData.toBytes();
       final Set<IGamePlayer> localPlayerSet =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
-      final Messengers messengers = new Messengers(messenger, remoteMessenger, channelMessenger);
       serverGame = new ServerGame(gameData, localPlayerSet, remotePlayers, messengers, headless);
       serverGame.setInGameLobbyWatcher(inGameLobbyWatcher);
       if (headless) {
         HeadlessGameServer.setServerGame(serverGame);
       }
       // tell the clients to start, later we will wait for them to all signal that they are ready.
-      ((IClientChannel) channelMessenger.getChannelBroadcaster(IClientChannel.CHANNEL_NAME))
+      ((IClientChannel) messengers.getChannelBroadcaster(IClientChannel.CHANNEL_NAME))
           .doneSelectingPlayers(gameDataAsBytes, serverGame.getPlayerManager().getPlayerMapping());
 
       final boolean useSecureRandomSource = !remotePlayers.isEmpty();
@@ -135,7 +131,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
         // server game.
         // try to find an opponent to be the other side of the crypto random source.
         final PlayerId remotePlayer =
-            serverGame.getPlayerManager().getRemoteOpponent(messenger.getLocalNode(), gameData);
+            serverGame.getPlayerManager().getRemoteOpponent(messengers.getLocalNode(), gameData);
         final CryptoRandomSource randomSource = new CryptoRandomSource(remotePlayer, serverGame);
         serverGame.setRandomSource(randomSource);
       }
@@ -153,7 +149,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
         log.warning("Aborting launch - waiting for clients to be ready timed out!");
         abortLaunch = true;
       }
-      remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
+      messengers.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
     } finally {
       if (inGameLobbyWatcher != null) {
         inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, serverGame);

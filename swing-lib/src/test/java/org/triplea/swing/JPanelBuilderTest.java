@@ -36,7 +36,7 @@ public class JPanelBuilderTest {
   }
 
   @Test
-  public void testAddComponent() {
+  void testAddComponent() {
     final JLabel label = new JLabel("hi");
 
     final JPanel panel = JPanelBuilder.builder()
@@ -53,7 +53,7 @@ public class JPanelBuilderTest {
   }
 
   @Test
-  public void testLayouts() {
+  void testLayouts() {
     final GridLayout result = (GridLayout) JPanelBuilder.builder()
         .gridLayout(1, 2)
         .build()

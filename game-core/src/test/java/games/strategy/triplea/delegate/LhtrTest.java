@@ -42,7 +42,7 @@ public class LhtrTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.LHTR.getGameData();
   }
 
@@ -51,7 +51,7 @@ public class LhtrTest {
   }
 
   @Test
-  public void testFightersCanLandOnNewPlacedCarrier() {
+  void testFightersCanLandOnNewPlacedCarrier() {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerId germans = GameDataTestUtil.germans(gameData);
@@ -79,7 +79,7 @@ public class LhtrTest {
   }
 
   @Test
-  public void testFightersDestroyedWhenNoPendingCarriers() {
+  void testFightersDestroyedWhenNoPendingCarriers() {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerId germans = GameDataTestUtil.germans(gameData);
@@ -103,7 +103,7 @@ public class LhtrTest {
   }
 
   @Test
-  public void testAaGunsDontFireNonCombat() {
+  void testAaGunsDontFireNonCombat() {
     final MoveDelegate delegate = (MoveDelegate) gameData.getDelegate("move");
     delegate.initialize("MoveDelegate", "MoveDelegate");
     final PlayerId germans = GameDataTestUtil.germans(gameData);
@@ -123,7 +123,7 @@ public class LhtrTest {
   }
 
   @Test
-  public void testSubDefenseBonus() {
+  void testSubDefenseBonus() {
     final UnitType sub = GameDataTestUtil.submarine(gameData);
     final UnitAttachment attachment = UnitAttachment.get(sub);
     final PlayerId japanese = GameDataTestUtil.japanese(gameData);
@@ -143,7 +143,7 @@ public class LhtrTest {
   }
 
   @Test
-  public void testLhtrBombingRaid() {
+  void testLhtrBombingRaid() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
     final PlayerId germans = GameDataTestUtil.germans(gameData);
@@ -170,7 +170,7 @@ public class LhtrTest {
   }
 
   @Test
-  public void testLhtrBombingRaid2Bombers() {
+  void testLhtrBombingRaid2Bombers() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final Territory uk = gameData.getMap().getTerritory("United Kingdom");
     final PlayerId germans = GameDataTestUtil.germans(gameData);

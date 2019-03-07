@@ -35,7 +35,7 @@ public final class ResourceCollectionUtilsTest {
   private Resource vps;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     pus = newResource(Constants.PUS);
     techTokens = newResource(Constants.TECH_TOKENS);
     vps = newResource(Constants.VPS);
@@ -46,7 +46,7 @@ public final class ResourceCollectionUtilsTest {
   }
 
   @Test
-  public void testExcludeByResources_ShouldExcludeSpecifiedResources() {
+  void testExcludeByResources_ShouldExcludeSpecifiedResources() {
     final ResourceCollection unfiltered = newResourceCollection(pus, techTokens, vps);
 
     final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, pus, vps);
@@ -63,7 +63,7 @@ public final class ResourceCollectionUtilsTest {
   }
 
   @Test
-  public void testExcludeByResources_ShouldIgnoreUnregisteredResources() {
+  void testExcludeByResources_ShouldIgnoreUnregisteredResources() {
     final Resource gold = newResource("gold");
     final ResourceCollection unfiltered = newResourceCollection(pus);
 
@@ -73,7 +73,7 @@ public final class ResourceCollectionUtilsTest {
   }
 
   @Test
-  public void testExcludeByNames_ShouldExcludeSpecifiedResources() {
+  void testExcludeByNames_ShouldExcludeSpecifiedResources() {
     givenGameResources(pus, vps);
     final ResourceCollection unfiltered = newResourceCollection(pus, techTokens, vps);
 
@@ -93,7 +93,7 @@ public final class ResourceCollectionUtilsTest {
   }
 
   @Test
-  public void testExcludeByNames_ShouldIgnoreUnregisteredResourceNames() {
+  void testExcludeByNames_ShouldIgnoreUnregisteredResourceNames() {
     final Resource gold = newResource("gold");
     givenGameResources();
     final ResourceCollection unfiltered = newResourceCollection(pus);
@@ -104,7 +104,7 @@ public final class ResourceCollectionUtilsTest {
   }
 
   @Test
-  public void testGetProductionResources_ShouldIncludeAllResourcesExceptTechTokensAndVPs() {
+  void testGetProductionResources_ShouldIncludeAllResourcesExceptTechTokensAndVPs() {
     final Resource gold = newResource("gold");
     givenGameResources(techTokens, vps);
     final ResourceCollection unfiltered = newResourceCollection(gold, pus, techTokens, vps);

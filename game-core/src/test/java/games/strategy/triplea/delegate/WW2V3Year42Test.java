@@ -37,7 +37,7 @@ public class WW2V3Year42Test {
   private GameData gameData;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     gameData = TestMapGameData.WW2V3_1942.getGameData();
   }
 
@@ -46,7 +46,7 @@ public class WW2V3Year42Test {
   }
 
   @Test
-  public void testTransportAttack() {
+  void testTransportAttack() {
     final Territory sz13 = gameData.getMap().getTerritory("13 Sea Zone");
     final Territory sz12 = gameData.getMap().getTerritory("12 Sea Zone");
     final PlayerId germans = germans(gameData);
@@ -65,7 +65,7 @@ public class WW2V3Year42Test {
   }
 
   @Test
-  public void testBombAndAttackEmptyTerritory() {
+  void testBombAndAttackEmptyTerritory() {
     final Territory karrelia = territory("Karelia S.S.R.", gameData);
     final Territory baltic = territory("Baltic States", gameData);
     final Territory sz5 = territory("5 Sea Zone", gameData);
@@ -92,7 +92,7 @@ public class WW2V3Year42Test {
   }
 
   @Test
-  public void testLingeringSeaUnitsJoinBattle() {
+  void testLingeringSeaUnitsJoinBattle() {
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory sz6 = territory("6 Sea Zone", gameData);
     final Territory sz7 = territory("7 Sea Zone", gameData);
@@ -115,7 +115,7 @@ public class WW2V3Year42Test {
   }
 
   @Test
-  public void testLingeringFightersAndALliedUnitsJoinBattle() {
+  void testLingeringFightersAndALliedUnitsJoinBattle() {
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory sz6 = territory("6 Sea Zone", gameData);
     final Territory sz7 = territory("7 Sea Zone", gameData);
@@ -141,7 +141,7 @@ public class WW2V3Year42Test {
   }
 
   @Test
-  public void testLingeringSeaUnitsCanMoveAwayFromBattle() {
+  void testLingeringSeaUnitsCanMoveAwayFromBattle() {
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory sz6 = territory("6 Sea Zone", gameData);
     final Territory sz7 = territory("7 Sea Zone", gameData);
