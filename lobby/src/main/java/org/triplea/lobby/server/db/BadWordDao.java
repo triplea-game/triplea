@@ -1,7 +1,5 @@
 package org.triplea.lobby.server.db;
 
-import java.util.List;
-
 /**
  * Data access object for the bad word table.
  */
@@ -14,9 +12,11 @@ public interface BadWordDao {
   void addBadWord(String word);
 
   /**
-   * Returns a collection of all bad words in the table.
+   * Checks if a given string contains a bad word.
    *
-   * @return A collection of all bad words in the table.
+   * @param testString The value to check for a bad word
+   *
+   * @return Returns true if the parameter contains a bad word (case insensitive).
    */
-  List<String> list();
+  boolean containsBadWord(String testString);
 }
