@@ -189,15 +189,21 @@ public class Chat {
     this.chatName = chatName;
     sentMessages = new SentMessagesHistory();
 
-    // the order of events is significant.
-    // 1 register our channel listener. Once the channel is registered, we are guaranteed that
-    // when we receive the response from our init(...) message, our channel
-    // subscriber has been added, and will see any messages broadcasted by the server
-    // 2 call the init message on the server remote. Any add or join messages sent from the server
-    // will queue until we receive the init return value (they queue since they see the init version is -1)
-    // 3 when we receive the init message response, acquire the lock, and initialize our state
-    // and run any queued messages. Queued messages may be ignored if the server version is incorrect.
-    // this all seems a lot more involved than it needs to be.
+    /*
+    The order of events is significant.
+
+    1. Register our channel listener. Once the channel is registered, we are guaranteed that
+    when we receive the response from our init message, our channel subscriber has been added,
+    and will see any messages broadcasted by the server.
+
+    2. Call the init message on the server remote. Any add or join messages sent from the server
+    will wait until we receive the init return value.
+
+    3. When we receive the init message response, initialize our state and release the latch
+    so all pending messages will get processed. Messages may be ignored if the server version is incorrect.
+    This all seems a lot more involved than it needs to be.
+     */
+
     final IChatController controller = messengers.getRemoteChatController(chatName);
     messengers.addChatChannelSubscriber(chatChannelSubscriber, chatChannelName);
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
