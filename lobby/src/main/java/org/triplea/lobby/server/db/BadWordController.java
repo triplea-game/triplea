@@ -38,13 +38,12 @@ final class BadWordController implements BadWordDao {
     final String sql =
         "select count(bw.word) "
             + "from bad_words bw "
-            + "where ? like '%' || lower(bw.word) || '%' "
-            + "limit 1";
+            + "where lower(?) like '%' || lower(bw.word) || '%'";
 
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
 
-      ps.setString(1, testString.toLowerCase());
+      ps.setString(1, testString);
 
       try (ResultSet rs = ps.executeQuery()) {
         rs.next();
