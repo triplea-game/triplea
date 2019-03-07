@@ -1,0 +1,7 @@
+leakHunter: true
+caseInsensitiveStrategy: !!com.github.database.rider.core.api.configuration.Orthography 'LOWERCASE'
+connectionConfig:
+  driver: "org.postgresql.Driver"
+  url: "jdbc:postgresql://localhost:5432/ta_users"
+  user: "postgres"
+  password: "postgres"

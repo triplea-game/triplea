@@ -15,6 +15,7 @@ dependencies {
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
 
     testImplementation project(':test-common')
+    testImplementation 'com.github.database-rider:rider-junit5:1.5.2'
 }
 
 jar {

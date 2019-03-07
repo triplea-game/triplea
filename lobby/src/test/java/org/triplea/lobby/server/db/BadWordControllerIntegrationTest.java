@@ -1,47 +1,47 @@
 package org.triplea.lobby.server.db;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.triplea.lobby.server.TestUserUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
+
+@ExtendWith(DBUnitExtension.class)
 @Integration
 final class BadWordControllerIntegrationTest {
   private final BadWordDao controller =
       TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBadWordDao();
 
   @Test
-  void testInsertAndRemoveBadWord() throws Exception {
-    final String word = TestUserUtils.newUniqueTimestamp();
-    controller.addBadWord(word);
-    assertTrue(controller.list().contains(word));
-    removeBadWord(word);
-    assertFalse(controller.list().contains(word));
+  @DataSet("badwords/pre-insert.yml")
+  @ExpectedDataSet("badwords/post-insert.yml")
+  void testAdd() {
+    controller.addBadWord("second");
   }
 
-  @Test
-  void testDuplicateBadWord() {
-    final String word = TestUserUtils.newUniqueTimestamp();
-    final int previousCount = controller.list().size();
-    controller.addBadWord(word);
-    controller.addBadWord(word);
-    assertTrue(controller.list().contains(word));
-    assertEquals(previousCount + 1, controller.list().size());
-  }
+  @Nested
+  final class CaseInsensitiveContainsTest {
+    @ParameterizedTest
+    @ValueSource(strings = {"bad", "BAD", "one bad", "Badword"})
+    @DataSet("badwords/bad.yml")
+    void containsCase(final String testValue) {
+      assertThat(controller.containsBadWord(testValue), is(true));
+    }
 
-  private void removeBadWord(final String word) throws Exception {
-    try (Connection con = TestDatabase.newConnection();
-        PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?")) {
-      ps.setString(1, word);
-      ps.execute();
-      con.commit();
+    @ParameterizedTest
+    @ValueSource(strings = {"ok", "B A D", ""})
+    @DataSet("badwords/bad.yml")
+    void doesNotContainCase(final String doesNotContain) {
+      assertThat(controller.containsBadWord(doesNotContain), is(false));
     }
   }
 }

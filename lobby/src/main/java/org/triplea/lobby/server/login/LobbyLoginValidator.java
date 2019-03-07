@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -110,10 +109,8 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return "Wrong version, we require " + LobbyConstants.LOBBY_VERSION.toString() + " but trying to log in with "
           + clientVersionString;
     }
-    for (final String s : getBadWords()) {
-      if (user.getUsername().toLowerCase().contains(s.toLowerCase())) {
-        return ErrorMessages.THATS_NOT_A_NICE_NAME;
-      }
+    if (database.getBadWordDao().containsBadWord(user.getUsername())) {
+      return ErrorMessages.THATS_NOT_A_NICE_NAME;
     }
     if (!MacFinder.isValidHashedMacAddress(user.getHashedMacAddress())) {
       // Must have been tampered with
@@ -188,10 +185,6 @@ public final class LobbyLoginValidator implements ILoginValidator {
     }
     sb.append(minutes).append(" Minutes");
     return sb.toString();
-  }
-
-  private List<String> getBadWords() {
-    return database.getBadWordDao().list();
   }
 
   private @Nullable String authenticateRegisteredUser(final Map<String, String> response, final User user) {

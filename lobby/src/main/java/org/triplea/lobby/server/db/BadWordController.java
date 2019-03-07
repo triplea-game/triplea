@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
 import lombok.AllArgsConstructor;
@@ -31,17 +29,26 @@ final class BadWordController implements BadWordDao {
   }
 
   @Override
-  public List<String> list() {
-    final String sql = "select word from bad_words";
+  public boolean containsBadWord(final String testString) {
+    if (testString.isEmpty()) {
+      return false;
+    }
+
+    // Query to count if at least one bad word value is contained in the testString.
+    final String sql =
+        "select count(bw.word) "
+            + "from bad_words bw "
+            + "where lower(?) like '%' || lower(bw.word) || '%'";
 
     try (Connection con = connection.get();
-        PreparedStatement ps = con.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery()) {
-      final List<String> badWords = new ArrayList<>();
-      while (rs.next()) {
-        badWords.add(rs.getString(1));
+        PreparedStatement ps = con.prepareStatement(sql)) {
+
+      ps.setString(1, testString);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        rs.next();
+        return rs.getInt(1) > 0;
       }
-      return badWords;
     } catch (final SQLException e) {
       throw new DatabaseException("Error reading bad words", e);
     }
