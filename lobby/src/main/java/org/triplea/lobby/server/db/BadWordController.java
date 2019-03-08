@@ -19,7 +19,7 @@ final class BadWordController implements BadWordDao {
   public void addBadWord(final String word) {
     try (Connection con = connection.get();
         // If the word already is present we don't need to add it twice.
-        PreparedStatement ps = con.prepareStatement("insert into bad_words (word) values (?) on conflict do nothing")) {
+        PreparedStatement ps = con.prepareStatement("insert into bad_word (word) values (?) on conflict do nothing")) {
       ps.setString(1, word);
       ps.execute();
       con.commit();
@@ -37,7 +37,7 @@ final class BadWordController implements BadWordDao {
     // Query to count if at least one bad word value is contained in the testString.
     final String sql =
         "select count(bw.word) "
-            + "from bad_words bw "
+            + "from bad_word bw "
             + "where lower(?) like '%' || lower(bw.word) || '%'";
 
     try (Connection con = connection.get();
