@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -200,8 +201,8 @@ public final class TripleAFrame extends JFrame {
   private final JPanel historyComponent = new JPanel();
   private final JPanel gameSouthPanel;
   private HistoryPanel historyPanel;
-  private boolean inHistory = false;
-  private boolean inGame = true;
+  private final AtomicBoolean inHistory = new AtomicBoolean(false);
+  private final AtomicBoolean inGame = new AtomicBoolean(true);
   private HistorySynchronizer historySyncher;
   private final UiContext uiContext;
   private final JPanel mapAndChatPanel;
@@ -1221,33 +1222,23 @@ public final class TripleAFrame extends JFrame {
       final List<Territory> territoryChoices, final List<Unit> unitChoices, final int unitsPerPick) {
     // total hacks
     messageAndDialogThreadPool.waitForAll();
-    {
-      final CountDownLatch latch1 = new CountDownLatch(1);
-      SwingUtilities.invokeLater(() -> {
-        if (!inGame) {
-          showGame();
-        }
-        if (tabsPanel.indexOfTab("Actions") == -1) {
-          // add actions tab
-          tabsPanel.insertTab("Actions", null, actionButtons, null, 0);
-        }
-        tabsPanel.setSelectedIndex(0);
-        latch1.countDown();
-      });
-      Interruptibles.await(latch1);
-    }
+    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
+      if (inGame.compareAndSet(false, true)) {
+        showGame();
+      }
+      if (tabsPanel.indexOfTab("Actions") == -1) {
+        // add actions tab
+        tabsPanel.insertTab("Actions", null, actionButtons, null, 0);
+      }
+      tabsPanel.setSelectedIndex(0);
+    }));
     actionButtons.changeToPickTerritoryAndUnits(player);
     final Tuple<Territory, Set<Unit>> territoryAndUnits =
         actionButtons.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
     final int index = tabsPanel.indexOfTab("Actions");
-    if (index != -1 && inHistory) {
-      final CountDownLatch latch2 = new CountDownLatch(1);
-      SwingUtilities.invokeLater(() -> {
-        // remove actions tab
-        tabsPanel.remove(index);
-        latch2.countDown();
-      });
-      Interruptibles.await(latch2);
+    if (index != -1 && inHistory.get()) {
+      // remove actions tab
+      Interruptibles.await(() -> SwingAction.invokeAndWait(() -> tabsPanel.remove(index)));
     }
     actionButtons.getCurrent().ifPresent(actionPanel -> actionPanel.setActive(false));
     return territoryAndUnits;
@@ -1652,13 +1643,13 @@ public final class TripleAFrame extends JFrame {
     // if the game control has passed to someone else and we are not just showing the map, show the history
     if (player != null && !player.isNull()) {
       if (isPlaying) {
-        if (inHistory) {
+        if (inHistory.get()) {
           requiredTurnSeries.put(player, true);
           // if the game control is with us, show the current game
           showGame();
         }
       } else {
-        if (!inHistory && !uiContext.getShowMapOnly()) {
+        if (inHistory.compareAndSet(false, true) && !uiContext.getShowMapOnly()) {
           showHistory();
         }
       }
@@ -1817,8 +1808,8 @@ public final class TripleAFrame extends JFrame {
   }
 
   private void showHistory() {
-    inHistory = true;
-    inGame = false;
+    inHistory.set(true);
+    inGame.set(false);
     setWidgetActivation();
     final GameData clonedGameData;
     data.acquireReadLock();
@@ -1979,12 +1970,11 @@ public final class TripleAFrame extends JFrame {
   }
 
   private void showGame() {
-    inGame = true;
+    inGame.set(true);
     uiContext.setShowMapOnly(false);
     // Are we coming from showHistory mode or showMapOnly mode?
     SwingUtilities.invokeLater(() -> {
-      if (inHistory) {
-        inHistory = false;
+      if (inHistory.compareAndSet(true, false)) {
         if (historySyncher != null) {
           historySyncher.deactivate();
           historySyncher = null;
@@ -2029,8 +2019,7 @@ public final class TripleAFrame extends JFrame {
 
   private void showMapOnly() {
     // Are we coming from showHistory mode or showGame mode?
-    if (inHistory) {
-      inHistory = false;
+    if (inHistory.compareAndSet(true, false)) {
       if (historySyncher != null) {
         historySyncher.deactivate();
         historySyncher = null;
@@ -2049,7 +2038,7 @@ public final class TripleAFrame extends JFrame {
       getContentPane().add(gameMainPanel, BorderLayout.CENTER);
       mapPanel.setRoute(null);
     } else {
-      inGame = false;
+      inGame.set(false);
     }
     uiContext.setShowMapOnly(true);
     setWidgetActivation();
@@ -2058,8 +2047,8 @@ public final class TripleAFrame extends JFrame {
 
   private void setWidgetActivation() {
     SwingAction.invokeNowOrLater(() -> {
-      showHistoryAction.setEnabled(!(inHistory || uiContext.getShowMapOnly()));
-      showGameAction.setEnabled(!inGame);
+      showHistoryAction.setEnabled(!(inHistory.get() || uiContext.getShowMapOnly()));
+      showGameAction.setEnabled(!inGame.get());
       // We need to check and make sure there are no local human players
       boolean foundHuman = false;
       for (final IGamePlayer gamePlayer : localPlayers.getLocalPlayers()) {
@@ -2068,7 +2057,7 @@ public final class TripleAFrame extends JFrame {
         }
       }
       if (!foundHuman) {
-        showMapOnlyAction.setEnabled(inGame || inHistory);
+        showMapOnlyAction.setEnabled(inGame.get() || inHistory.get());
       } else {
         showMapOnlyAction.setEnabled(false);
       }
