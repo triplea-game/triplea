@@ -1,4 +1,3 @@
-leakHunter: true
 caseInsensitiveStrategy: !!com.github.database.rider.core.api.configuration.Orthography 'LOWERCASE'
 connectionConfig:
   driver: "org.postgresql.Driver"
