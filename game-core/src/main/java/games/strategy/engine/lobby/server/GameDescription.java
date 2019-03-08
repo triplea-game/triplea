@@ -34,9 +34,7 @@ public class GameDescription implements Externalizable, Cloneable {
    */
   @AllArgsConstructor
   public enum GameStatus {
-    LAUNCHING("Launching"),
-    IN_PROGRESS("In Progress"),
-    WAITING_FOR_PLAYERS("Waiting For Players");
+    LAUNCHING("Launching"), IN_PROGRESS("In Progress"), WAITING_FOR_PLAYERS("Waiting For Players");
 
     private final String displayName;
 
