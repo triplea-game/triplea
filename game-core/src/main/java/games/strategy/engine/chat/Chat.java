@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
 
+import org.triplea.java.Interruptibles;
 import org.triplea.util.Tuple;
 
 import games.strategy.engine.chat.IChatController.Tag;
@@ -34,15 +36,12 @@ public class Chat {
   private final String chatChannelName;
   private final String chatName;
   private final SentMessagesHistory sentMessages;
-  private volatile long chatInitVersion = -1;
+  private final long chatInitVersion;
   // mutex used for access synchronization to nodes
   // TODO: check if this mutex is used for something else as well
   private final Object mutexNodes = new Object();
   private final List<INode> nodes;
-  // this queue is filled ONLY in init phase when chatInitVersion is default (-1) and nodes should not be changed
-  // until end of initialization synchronizes access to queue
-  private final Object mutexQueue = new Object();
-  private List<Runnable> queuedInitMessages = new ArrayList<>();
+  private final CountDownLatch latch = new CountDownLatch(1);
   private final List<ChatMessage> chatHistory = new ArrayList<>();
   private final StatusManager statusManager;
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
@@ -99,16 +98,12 @@ public class Chat {
     @Override
     public void speakerAdded(final INode node, final Tag tag, final long version) {
       assertMessageFromServer();
-      if (chatInitVersion == -1) {
-        synchronized (mutexQueue) {
-          if (queuedInitMessages == null) {
-            speakerAdded(node, tag, version);
-          } else {
-            queuedInitMessages.add(() -> speakerAdded(node, tag, version));
-          }
-        }
+      // Wait for latch in different Thread if we're still initialising this instance.
+      if (nodes == null) {
+        new Thread(() -> speakerAdded(node, tag, version)).start();
         return;
       }
+      Interruptibles.await(latch);
       if (version > chatInitVersion) {
         synchronized (mutexNodes) {
           nodes.add(node);
@@ -127,16 +122,7 @@ public class Chat {
     @Override
     public void speakerRemoved(final INode node, final long version) {
       assertMessageFromServer();
-      if (chatInitVersion == -1) {
-        synchronized (mutexQueue) {
-          if (queuedInitMessages == null) {
-            speakerRemoved(node, version);
-          } else {
-            queuedInitMessages.add(() -> speakerRemoved(node, version));
-          }
-        }
-        return;
-      }
+      Interruptibles.await(latch);
       if (version > chatInitVersion) {
         synchronized (mutexNodes) {
           nodes.remove(node);
@@ -203,24 +189,29 @@ public class Chat {
     this.chatName = chatName;
     sentMessages = new SentMessagesHistory();
 
-    // the order of events is significant.
-    // 1 register our channel listener. Once the channel is registered, we are guaranteed that
-    // when we receive the response from our init(...) message, our channel
-    // subscriber has been added, and will see any messages broadcasted by the server
-    // 2 call the init message on the server remote. Any add or join messages sent from the server
-    // will queue until we receive the init return value (they queue since they see the init version is -1)
-    // 3 when we receive the init message response, acquire the lock, and initialize our state
-    // and run any queued messages. Queued messages may be ignored if the server version is incorrect.
-    // this all seems a lot more involved than it needs to be.
+    /*
+     * The order of events is significant.
+     *
+     * 1. Register our channel listener. Once the channel is registered, we are guaranteed that
+     * when we receive the response from our init message, our channel subscriber has been added,
+     * and will see any messages broadcasted by the server.
+     *
+     * 2. Call the init message on the server remote. Any add or join messages sent from the server
+     * will wait until we receive the init return value.
+     *
+     * 3. When we receive the init message response, initialize our state and release the latch
+     * so all pending messages will get processed. Messages may be ignored if the server version is incorrect.
+     * This all seems a lot more involved than it needs to be.
+     */
+
     final IChatController controller = messengers.getRemoteChatController(chatName);
     messengers.addChatChannelSubscriber(chatChannelSubscriber, chatChannelName);
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
     final Map<INode, Tag> chatters = init.getFirst();
     nodes = new ArrayList<>(chatters.keySet());
     chatInitVersion = init.getSecond();
-    queuedInitMessages.forEach(Runnable::run);
+    latch.countDown();
     assignNodeTags(chatters);
-    queuedInitMessages = null;
     updateConnections();
   }
 
