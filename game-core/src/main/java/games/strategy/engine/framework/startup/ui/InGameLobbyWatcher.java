@@ -25,7 +25,6 @@ import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -106,7 +105,6 @@ public class InGameLobbyWatcher {
     final INode publicNode = new Node(messenger.getLocalNode().getName(), publicView);
     gameDescription = GameDescription.builder()
         .hostedBy(publicNode)
-        .port(customPort.isPresent() ? publicNode.getPort() : serverMessenger.getLocalNode().getPort())
         .startDateTime(startDateTime)
         .gameName("???")
         .playerCount(playerCount)
@@ -115,7 +113,6 @@ public class InGameLobbyWatcher {
         .hostName(serverMessenger.getLocalNode().getName())
         .comment(System.getProperty(LOBBY_GAME_COMMENTS))
         .passworded(passworded)
-        .engineVersion(ClientContext.engineVersion().toString())
         .gameVersion("0")
         .build();
     final ILobbyGameController controller =

@@ -84,7 +84,7 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
 
-  protected ILobbyGameBroadcaster getLobbyGameBroadcaster() {
+  ILobbyGameBroadcaster getLobbyGameBroadcaster() {
     return lobbyGameBroadcaster;
   }
 

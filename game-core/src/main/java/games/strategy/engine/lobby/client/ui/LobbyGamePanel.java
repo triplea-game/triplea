@@ -210,7 +210,7 @@ class LobbyGamePanel extends JPanel {
     }
     // we sort the table, so get the correct index
     final GameDescription description = gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
-    GameRunner.joinGame(description, messengers, getParent());
+    GameRunner.joinGame(description, messengers);
   }
 
   private void hostGame() {

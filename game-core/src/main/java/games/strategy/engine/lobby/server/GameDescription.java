@@ -10,7 +10,10 @@ import org.triplea.game.server.HeadlessGameServer;
 
 import games.strategy.net.INode;
 import games.strategy.net.Node;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 // TODO: move this class to lobby.common upon next lobby-incompatible release; it is shared between client and server
@@ -18,6 +21,10 @@ import lombok.ToString;
 /**
  * NOTE - this class is not thread safe. Modifications should be done holding an external lock.
  */
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+// if you add a field, add it to write/read object as well for Externalizable
+@NoArgsConstructor
 @ToString
 public class GameDescription implements Externalizable, Cloneable {
   private static final long serialVersionUID = 508593169141567546L;
@@ -25,92 +32,32 @@ public class GameDescription implements Externalizable, Cloneable {
   /**
    * Represents the game states displayed to users looking at the list of available lobby games.
    */
+  @AllArgsConstructor
   public enum GameStatus {
-    LAUNCHING {
-      @Override
-      public String toString() {
-        return "Launching";
-      }
-    },
-    IN_PROGRESS {
-      @Override
-      public String toString() {
-        return "In Progress";
-      }
-    },
-    WAITING_FOR_PLAYERS {
-      @Override
-      public String toString() {
-        return "Waiting For Players";
-      }
+    LAUNCHING("Launching"),
+    IN_PROGRESS("In Progress"),
+    WAITING_FOR_PLAYERS("Waiting For Players");
+
+    private final String displayName;
+
+    @Override
+    public String toString() {
+      return displayName;
     }
   }
 
   private INode hostedBy;
-
-  /**
-   * Kept for compatibility. Remove in the next lobby-incompatible release.
-   *
-   * @deprecated This field is redundant, the Node stored in hostedBy is completely sufficient.
-   */
-  @Deprecated
-  private int port;
-
-  /**
-   * Represents when the game started, used to be displayed on lobby table, now no longer.
-   *
-   * @deprecated No longer used, waiting for non-compatible change opportunity to remove.
-   */
-  @Deprecated
   private Instant startDateTime;
   private String gameName;
   private int playerCount;
   private String round;
   private GameStatus status;
+  @Builder.Default
   private int version = Integer.MIN_VALUE;
   private String hostName;
   private String comment;
   private boolean passworded;
-  /**
-   * Engine version, used to be useful when multiple engine versions were in same lobby,
-   * now that lobby has homogeneous versions and should going forward, this column is no longer useful.
-   *
-   * @deprecated No longer used, waiting for non-compatible change opportunity to remove.
-   */
-  @Deprecated
-  private String engineVersion;
   private String gameVersion;
-
-  // if you add a field, add it to write/read object as well for Externalizable
-  public GameDescription() {}
-
-  @Builder
-  private GameDescription(
-      final INode hostedBy,
-      final int port,
-      final Instant startDateTime,
-      final String gameName,
-      final int playerCount,
-      final GameStatus status,
-      final String round,
-      final String hostName,
-      final String comment,
-      final boolean passworded,
-      final String engineVersion,
-      final String gameVersion) {
-    this.hostName = hostName;
-    this.hostedBy = hostedBy;
-    this.port = port;
-    this.startDateTime = startDateTime;
-    this.gameName = gameName;
-    this.playerCount = playerCount;
-    this.status = status;
-    this.round = round;
-    this.comment = comment;
-    this.passworded = passworded;
-    this.engineVersion = engineVersion;
-    this.gameVersion = gameVersion;
-  }
 
   @Override
   public Object clone() {
@@ -134,30 +81,14 @@ public class GameDescription implements Externalizable, Cloneable {
     this.gameName = gameName;
   }
 
-  public void setHostedBy(final INode hostedBy) {
-    version++;
-    this.hostedBy = hostedBy;
-  }
-
   public void setPlayerCount(final int playerCount) {
     version++;
     this.playerCount = playerCount;
   }
 
-  @Deprecated
-  public void setPort(final int port) {
-    version++;
-    this.port = port;
-  }
-
   public void setRound(final String round) {
     version++;
     this.round = round;
-  }
-
-  public void setStartDateTime(final Instant startDateTime) {
-    version++;
-    this.startDateTime = startDateTime;
   }
 
   public void setStatus(final GameStatus status) {
@@ -174,18 +105,9 @@ public class GameDescription implements Externalizable, Cloneable {
     return passworded;
   }
 
-  public void setEngineVersion(final String engineVersion) {
-    version++;
-    this.engineVersion = engineVersion;
-  }
-
   public void setGameVersion(final String gameVersion) {
     version++;
     this.gameVersion = gameVersion;
-  }
-
-  public String getEngineVersion() {
-    return engineVersion;
   }
 
   public String getGameVersion() {
@@ -213,16 +135,6 @@ public class GameDescription implements Externalizable, Cloneable {
     return playerCount;
   }
 
-  /**
-   * Kept for backwards compatibility. Should no longer be used.
-   *
-   * @deprecated Use {@link #getHostedBy()}{@code .getPort()} instead in the next incompatible lobby release.
-   */
-  @Deprecated
-  public int getPort() {
-    return port;
-  }
-
   public Instant getStartDateTime() {
     return startDateTime;
   }
@@ -233,11 +145,6 @@ public class GameDescription implements Externalizable, Cloneable {
 
   public String getHostName() {
     return hostName;
-  }
-
-  public void setHostName(final String hostName) {
-    version++;
-    this.hostName = hostName;
   }
 
   public String getComment() {
@@ -253,8 +160,6 @@ public class GameDescription implements Externalizable, Cloneable {
   public void readExternal(final ObjectInput in) throws IOException {
     hostedBy = new Node();
     ((Node) hostedBy).readExternal(in);
-    port = in.readInt();
-    startDateTime = Instant.ofEpochMilli(in.readLong());
     playerCount = in.readByte();
     round = in.readUTF();
     status = GameStatus.values()[in.readByte()];
@@ -263,17 +168,12 @@ public class GameDescription implements Externalizable, Cloneable {
     comment = in.readUTF();
     gameName = in.readUTF();
     passworded = in.readBoolean();
-    engineVersion = in.readUTF();
     gameVersion = in.readUTF();
-    // TODO: was bot support email, delete this when ready to break 1.9.0 network compatibility
-    in.readUTF();
   }
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
     ((Node) hostedBy).writeExternal(out);
-    out.writeInt(port);
-    out.writeLong(startDateTime.toEpochMilli());
     out.writeByte(playerCount);
     out.writeUTF(round);
     out.writeByte(status.ordinal());
@@ -282,9 +182,6 @@ public class GameDescription implements Externalizable, Cloneable {
     out.writeUTF(comment);
     out.writeUTF(gameName);
     out.writeBoolean(passworded);
-    out.writeUTF(engineVersion);
     out.writeUTF(gameVersion);
-    // TODO: was bot support email, delete this when ready to break 1.9.0 network compatibility
-    out.writeUTF("");
   }
 }
