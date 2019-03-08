@@ -91,9 +91,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
         .inetAddress(((InetSocketAddress) remoteAddress).getAddress())
         .hashedMacAddress(clientMac)
         .build();
-    final @Nullable String errorMessage = authenticateUser(response, user);
-    logAuthenticationResult(user, getUserTypeFor(response), errorMessage);
-    return errorMessage;
+    return authenticateUser(response, user);
   }
 
   private @Nullable String authenticateUser(final Map<String, String> response, final User user) {
@@ -145,16 +143,6 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
   private static UserType getUserTypeFor(final Map<String, String> response) {
     return response.containsKey(LobbyLoginResponseKeys.ANONYMOUS_LOGIN) ? UserType.ANONYMOUS : UserType.REGISTERED;
-  }
-
-  private void logAuthenticationResult(final User user, final UserType userType, final @Nullable String errorMessage) {
-    if (errorMessage == null) {
-      try {
-        database.getAccessLogDao().insert(user, userType);
-      } catch (final SQLException e) {
-        log.log(Level.SEVERE, "failed to record successful authentication in database", e);
-      }
-    }
   }
 
   private static String getBanDurationBreakdown(final Timestamp stamp) {

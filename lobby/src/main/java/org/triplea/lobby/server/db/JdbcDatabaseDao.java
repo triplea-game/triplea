@@ -10,7 +10,6 @@ import lombok.Getter;
 @Getter(onMethod_ = {@Override})
 class JdbcDatabaseDao implements DatabaseDao {
 
-  private final AccessLogDao accessLogDao;
   private final BadWordDao badWordDao;
   private final BannedUsernameDao bannedUsernameDao;
   private final BannedMacDao bannedMacDao;
@@ -21,7 +20,6 @@ class JdbcDatabaseDao implements DatabaseDao {
   JdbcDatabaseDao(final Database database) {
     final Supplier<Connection> connection = connectionSupplier(database);
 
-    accessLogDao = new AccessLogController(connection);
     badWordDao = new BadWordController(connection);
     bannedMacDao = new BannedMacController(connection);
     bannedUsernameDao = new BannedUsernameController(connection);
