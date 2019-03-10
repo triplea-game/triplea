@@ -14,6 +14,12 @@ import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;
 
+/**
+ * Immutable Data class being used to send information about the
+ * current game state to the lobby.
+ */
+// See https://github.com/google/error-prone/pull/1195 and https://github.com/rzwitserloot/lombok/issues/737
+@SuppressWarnings("ReferenceEquality")
 @Value
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -27,9 +33,7 @@ public class GameDescription implements Serializable {
    */
   @AllArgsConstructor
   public enum GameStatus {
-    LAUNCHING("Launching"),
-    IN_PROGRESS("In Progress"),
-    WAITING_FOR_PLAYERS("Waiting For Players");
+    LAUNCHING("Launching"), IN_PROGRESS("In Progress"), WAITING_FOR_PLAYERS("Waiting For Players");
 
     private final String displayName;
 
