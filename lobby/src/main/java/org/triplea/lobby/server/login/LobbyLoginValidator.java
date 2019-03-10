@@ -2,14 +2,12 @@ package org.triplea.lobby.server.login;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
