@@ -110,7 +110,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
