@@ -49,7 +49,7 @@ public class GameDescription implements Externalizable, Cloneable {
   private Instant startDateTime;
   private String gameName;
   private int playerCount;
-  private String round;
+  private int round;
   private GameStatus status;
   private String hostName;
   private String comment;
@@ -73,7 +73,7 @@ public class GameDescription implements Externalizable, Cloneable {
     this.playerCount = playerCount;
   }
 
-  public void setRound(final String round) {
+  public void setRound(final int round) {
     this.round = round;
   }
 
@@ -102,7 +102,7 @@ public class GameDescription implements Externalizable, Cloneable {
         && HeadlessGameServer.BOT_GAME_HOST_COMMENT.equals(comment);
   }
 
-  public String getRound() {
+  public int getRound() {
     return round;
   }
 
@@ -142,8 +142,9 @@ public class GameDescription implements Externalizable, Cloneable {
   public void readExternal(final ObjectInput in) throws IOException {
     hostedBy = new Node();
     hostedBy.readExternal(in);
+    startDateTime = Instant.ofEpochMilli(in.readLong());
     playerCount = in.readByte();
-    round = in.readUTF();
+    round = in.readInt();
     status = GameStatus.values()[in.readByte()];
     hostName = in.readUTF();
     comment = in.readUTF();
@@ -155,8 +156,9 @@ public class GameDescription implements Externalizable, Cloneable {
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
     hostedBy.writeExternal(out);
+    out.writeLong(startDateTime.toEpochMilli());
     out.writeByte(playerCount);
-    out.writeUTF(round);
+    out.writeInt(round);
     out.writeByte(status.ordinal());
     out.writeUTF(hostName);
     out.writeUTF(comment);

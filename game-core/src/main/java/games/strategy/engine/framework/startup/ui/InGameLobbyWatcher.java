@@ -94,9 +94,9 @@ public class InGameLobbyWatcher {
         (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getStatus() == null)
             ? GameDescription.GameStatus.WAITING_FOR_PLAYERS
             : oldWatcher.gameDescription.getStatus();
-    final String gameRound =
-        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
-            ? "-"
+    final int gameRound =
+        (oldWatcher == null || oldWatcher.gameDescription == null)
+            ? -1
             : oldWatcher.gameDescription.getRound();
     final Optional<Integer> customPort = Optional.ofNullable(Integer.getInteger("customPort"));
     final InetSocketAddress publicView = Optional.ofNullable(System.getProperty("customHost"))
@@ -243,8 +243,8 @@ public class InGameLobbyWatcher {
 
   private void gameStepChanged(final int round) {
     synchronized (mutex) {
-      if (!gameDescription.getRound().equals(Integer.toString(round))) {
-        gameDescription.setRound(round + "");
+      if (gameDescription.getRound() != round) {
+        gameDescription.setRound(round);
       }
       postUpdate();
     }
@@ -309,11 +309,7 @@ public class InGameLobbyWatcher {
   void setGameStatus(final GameDescription.GameStatus status, final IGame game) {
     synchronized (mutex) {
       gameDescription.setStatus(status);
-      if (game == null) {
-        gameDescription.setRound("-");
-      } else {
-        gameDescription.setRound(game.getData().getSequence().getRound() + "");
-      }
+      gameDescription.setRound(game == null ? -1 : game.getData().getSequence().getRound());
       setGame(game);
       postUpdate();
     }
