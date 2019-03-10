@@ -110,7 +110,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
@@ -297,9 +296,6 @@ public final class TripleAFrame extends JFrame {
       territoryInfo.repaint();
     }
   };
-
-  private final GameStepListener stepListener =
-      (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
 
   private final GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
     @Override
@@ -586,7 +582,7 @@ public final class TripleAFrame extends JFrame {
     // force a data change event to update the UI for edit mode
     dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     data.addDataChangeListener(dataChangeListener);
-    game.addGameStepListener(stepListener);
+    game.addGameStepListener((stepName, delegateName, player1, round1, stepDisplayName) -> updateStep());
     uiContext.addShutdownWindow(this);
   }
 
@@ -1649,7 +1645,7 @@ public final class TripleAFrame extends JFrame {
           showGame();
         }
       } else {
-        if (inHistory.compareAndSet(false, true) && !uiContext.getShowMapOnly()) {
+        if (!uiContext.getShowMapOnly() && inHistory.compareAndSet(false, true)) {
           showHistory();
         }
       }
