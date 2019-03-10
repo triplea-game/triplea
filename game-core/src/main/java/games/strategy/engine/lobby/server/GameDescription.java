@@ -8,7 +8,6 @@ import java.time.Instant;
 
 import org.triplea.game.server.HeadlessGameServer;
 
-import games.strategy.net.INode;
 import games.strategy.net.Node;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -46,7 +45,7 @@ public class GameDescription implements Externalizable, Cloneable {
     }
   }
 
-  private INode hostedBy;
+  private Node hostedBy;
   private Instant startDateTime;
   private String gameName;
   private int playerCount;
@@ -111,7 +110,7 @@ public class GameDescription implements Externalizable, Cloneable {
     return gameName;
   }
 
-  public INode getHostedBy() {
+  public Node getHostedBy() {
     return hostedBy;
   }
 
@@ -142,7 +141,7 @@ public class GameDescription implements Externalizable, Cloneable {
   @Override
   public void readExternal(final ObjectInput in) throws IOException {
     hostedBy = new Node();
-    ((Node) hostedBy).readExternal(in);
+    hostedBy.readExternal(in);
     playerCount = in.readByte();
     round = in.readUTF();
     status = GameStatus.values()[in.readByte()];
@@ -155,7 +154,7 @@ public class GameDescription implements Externalizable, Cloneable {
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
-    ((Node) hostedBy).writeExternal(out);
+    hostedBy.writeExternal(out);
     out.writeByte(playerCount);
     out.writeUTF(round);
     out.writeByte(status.ordinal());

@@ -102,7 +102,7 @@ public class InGameLobbyWatcher {
     final InetSocketAddress publicView = Optional.ofNullable(System.getProperty("customHost"))
         .map(s -> new InetSocketAddress(s, customPort.orElse(3300)))
         .orElse(messenger.getLocalNode().getSocketAddress());
-    final INode publicNode = new Node(messenger.getLocalNode().getName(), publicView);
+    final Node publicNode = new Node(messenger.getLocalNode().getName(), publicView);
     gameDescription = GameDescription.builder()
         .hostedBy(publicNode)
         .startDateTime(startDateTime)
