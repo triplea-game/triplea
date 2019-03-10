@@ -298,9 +298,6 @@ public final class TripleAFrame extends JFrame {
     }
   };
 
-  private final GameStepListener stepListener =
-      (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep();
-
   private final GameDataChangeListener dataChangeListener = new GameDataChangeListener() {
     @Override
     public void gameDataChanged(final Change change) {
@@ -586,7 +583,7 @@ public final class TripleAFrame extends JFrame {
     // force a data change event to update the UI for edit mode
     dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     data.addDataChangeListener(dataChangeListener);
-    game.addGameStepListener(stepListener);
+    game.addGameStepListener((stepName, delegateName, player1, round1, stepDisplayName) -> updateStep());
     uiContext.addShutdownWindow(this);
   }
 
@@ -1649,7 +1646,7 @@ public final class TripleAFrame extends JFrame {
           showGame();
         }
       } else {
-        if (inHistory.compareAndSet(false, true) && !uiContext.getShowMapOnly()) {
+        if (!uiContext.getShowMapOnly() && inHistory.compareAndSet(false, true)) {
           showHistory();
         }
       }
