@@ -34,6 +34,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
+import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.ProgressWindow;
 import org.triplea.swing.SwingAction;
@@ -49,7 +50,6 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.pro.ProAi;
 

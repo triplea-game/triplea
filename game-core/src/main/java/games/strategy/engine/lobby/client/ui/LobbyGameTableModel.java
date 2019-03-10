@@ -12,13 +12,13 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
+import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.util.Tuple;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.Messengers;

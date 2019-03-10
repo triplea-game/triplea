@@ -1,4 +1,4 @@
-package games.strategy.engine.lobby.server;
+package org.triplea.lobby.common;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -13,8 +13,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;
-
-// TODO: move this class to lobby.common upon next lobby-incompatible release; it is shared between client and server
 
 @Value
 @Builder

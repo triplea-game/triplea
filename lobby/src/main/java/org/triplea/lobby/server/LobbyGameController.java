@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.ILobbyGameController;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;

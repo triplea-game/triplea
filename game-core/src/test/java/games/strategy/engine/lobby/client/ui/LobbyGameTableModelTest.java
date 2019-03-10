@@ -17,13 +17,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.Interruptibles;
+import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.Tuple;
 
 import com.google.common.util.concurrent.Runnables;
 
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;

@@ -2,7 +2,6 @@ package org.triplea.lobby.common;
 
 import java.util.Map;
 
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.GUID;
