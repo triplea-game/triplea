@@ -98,8 +98,12 @@ public class Chat {
     @Override
     public void speakerAdded(final INode node, final Tag tag, final long version) {
       assertMessageFromServer();
-      if (version > chatInitVersion && chatInitVersion != 0) {
-        Interruptibles.await(latch);
+      // Ignore first speaker, it's ourselves.
+      if (version == 1) {
+        return;
+      }
+      Interruptibles.await(latch);
+      if (version > chatInitVersion) {
         synchronized (mutexNodes) {
           nodes.add(node);
           addToNotesMap(node, tag);
@@ -117,8 +121,8 @@ public class Chat {
     @Override
     public void speakerRemoved(final INode node, final long version) {
       assertMessageFromServer();
+      Interruptibles.await(latch);
       if (version > chatInitVersion) {
-        Interruptibles.await(latch);
         synchronized (mutexNodes) {
           nodes.remove(node);
           notesMap.remove(node);
