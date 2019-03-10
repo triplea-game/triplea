@@ -81,13 +81,6 @@ final class LobbyGameController implements ILobbyGameController {
   public void updateGame(final GUID gameId, final GameDescription description) {
     assertCorrectGameOwner(gameId);
     synchronized (mutex) {
-      final GameDescription oldDescription = allGames.get(gameId);
-      // out of order updates
-      // ignore, we already have the latest
-      // TODO: Check if this method can ever be called out of order. TCP should be able to handle that.
-      if (oldDescription.getVersion() > description.getVersion()) {
-        return;
-      }
       allGames.put(gameId, description);
     }
     broadcaster.gameUpdated(gameId, description);

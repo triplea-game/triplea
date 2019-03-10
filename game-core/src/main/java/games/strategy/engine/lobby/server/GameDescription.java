@@ -34,7 +34,9 @@ public class GameDescription implements Externalizable, Cloneable {
    */
   @AllArgsConstructor
   public enum GameStatus {
-    LAUNCHING("Launching"), IN_PROGRESS("In Progress"), WAITING_FOR_PLAYERS("Waiting For Players");
+    LAUNCHING("Launching"),
+    IN_PROGRESS("In Progress"),
+    WAITING_FOR_PLAYERS("Waiting For Players");
 
     private final String displayName;
 
@@ -50,8 +52,6 @@ public class GameDescription implements Externalizable, Cloneable {
   private int playerCount;
   private String round;
   private GameStatus status;
-  @Builder.Default
-  private int version = Integer.MIN_VALUE;
   private String hostName;
   private String comment;
   private boolean passworded;
@@ -66,36 +66,23 @@ public class GameDescription implements Externalizable, Cloneable {
     }
   }
 
-  /**
-   * The version number is updated after every change. This handles
-   * synchronization problems where updates arrive out of order
-   */
-  public int getVersion() {
-    return version;
-  }
-
   public void setGameName(final String gameName) {
-    version++;
     this.gameName = gameName;
   }
 
   public void setPlayerCount(final int playerCount) {
-    version++;
     this.playerCount = playerCount;
   }
 
   public void setRound(final String round) {
-    version++;
     this.round = round;
   }
 
   public void setStatus(final GameStatus status) {
-    version++;
     this.status = status;
   }
 
   public void setPassworded(final boolean passworded) {
-    version++;
     this.passworded = passworded;
   }
 
@@ -104,7 +91,6 @@ public class GameDescription implements Externalizable, Cloneable {
   }
 
   public void setGameVersion(final String gameVersion) {
-    version++;
     this.gameVersion = gameVersion;
   }
 
@@ -150,7 +136,6 @@ public class GameDescription implements Externalizable, Cloneable {
   }
 
   public void setComment(final String comment) {
-    version++;
     this.comment = comment;
   }
 
@@ -161,7 +146,6 @@ public class GameDescription implements Externalizable, Cloneable {
     playerCount = in.readByte();
     round = in.readUTF();
     status = GameStatus.values()[in.readByte()];
-    version = in.readInt();
     hostName = in.readUTF();
     comment = in.readUTF();
     gameName = in.readUTF();
@@ -175,7 +159,6 @@ public class GameDescription implements Externalizable, Cloneable {
     out.writeByte(playerCount);
     out.writeUTF(round);
     out.writeByte(status.ordinal());
-    out.writeInt(version);
     out.writeUTF(hostName);
     out.writeUTF(comment);
     out.writeUTF(gameName);
