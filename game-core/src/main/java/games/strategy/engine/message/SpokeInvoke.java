@@ -7,7 +7,6 @@ import java.io.ObjectOutput;
 import games.strategy.engine.message.unifiedmessenger.Invoke;
 import games.strategy.net.GUID;
 import games.strategy.net.INode;
-import games.strategy.net.Node;
 
 /**
  * A request forwarded by the hub node to invoke a remote method on a spoke node. Instances of this class should only be
@@ -33,13 +32,12 @@ public class SpokeInvoke extends Invoke {
   @Override
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
     super.readExternal(in);
-    invoker = new Node();
-    ((Node) invoker).readExternal(in);
+    invoker = (INode) in.readObject();
   }
 
   @Override
   public void writeExternal(final ObjectOutput out) throws IOException {
     super.writeExternal(out);
-    ((Node) invoker).writeExternal(out);
+    out.writeObject(invoker);
   }
 }

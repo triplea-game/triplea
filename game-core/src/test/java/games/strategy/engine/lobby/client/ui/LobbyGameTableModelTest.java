@@ -82,8 +82,7 @@ final class LobbyGameTableModelTest {
       assertThat(testObj.getValueAt(0, commentColumnIndex), nullValue());
 
       final String newComment = "comment";
-      final GameDescription newDescription = new GameDescription();
-      newDescription.setComment(newComment);
+      final GameDescription newDescription = GameDescription.builder().comment(newComment).build();
 
       testObj.getLobbyGameBroadcaster().gameUpdated(fakeGame.getFirst(), newDescription);
       waitForSwingThreads();
@@ -93,14 +92,14 @@ final class LobbyGameTableModelTest {
 
     @Test
     void updateGameAddsIfDoesNotExist() {
-      testObj.getLobbyGameBroadcaster().gameUpdated(new GUID(), new GameDescription());
+      testObj.getLobbyGameBroadcaster().gameUpdated(new GUID(), GameDescription.builder().build());
       waitForSwingThreads();
       assertThat(testObj.getRowCount(), is(2));
     }
 
     @Test
     void updateGameWithNullGuidIsIgnored() {
-      testObj.getLobbyGameBroadcaster().gameUpdated(null, new GameDescription());
+      testObj.getLobbyGameBroadcaster().gameUpdated(null, GameDescription.builder().build());
       waitForSwingThreads();
       assertThat("expect row count to remain 1, null guid is bogus data",
           testObj.getRowCount(), is(1));

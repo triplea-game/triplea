@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Observer;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
@@ -66,8 +67,7 @@ public class InGameLobbyWatcher {
   // we create this messenger, and use it to connect to the game lobby
   private final IMessenger messenger;
   private final IRemoteMessenger remoteMessenger;
-  private final GameDescription gameDescription;
-  private final Object mutex = new Object();
+  private final AtomicReference<GameDescription> gameDescription;
   private final IConnectionChangeListener connectionChangeListener;
   private final IMessengerErrorListener messengerErrorListener;
   private final boolean isHandlerPlayer;
@@ -84,26 +84,25 @@ public class InGameLobbyWatcher {
     this.isHandlerPlayer = handler.isPlayer();
     final String password = System.getProperty(SERVER_PASSWORD);
     final boolean passworded = password != null && password.length() > 0;
-    final Instant startDateTime = (oldWatcher == null || oldWatcher.gameDescription == null
-        || oldWatcher.gameDescription.getStartDateTime() == null) ? Instant.now()
-            : oldWatcher.gameDescription.getStartDateTime();
-    final int playerCount = (oldWatcher == null || oldWatcher.gameDescription == null)
+    final boolean oldWatcherExists = oldWatcher == null || oldWatcher.gameDescription.get() == null;
+    final Instant startDateTime = (oldWatcherExists || oldWatcher.gameDescription.get().getStartDateTime() == null)
+        ? Instant.now()
+        : oldWatcher.gameDescription.get().getStartDateTime();
+    final int playerCount = oldWatcherExists
         ? (isHandlerPlayer ? 1 : 0)
-        : oldWatcher.gameDescription.getPlayerCount();
+        : oldWatcher.gameDescription.get().getPlayerCount();
     final GameDescription.GameStatus gameStatus =
-        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getStatus() == null)
+        (oldWatcherExists || oldWatcher.gameDescription.get().getStatus() == null)
             ? GameDescription.GameStatus.WAITING_FOR_PLAYERS
-            : oldWatcher.gameDescription.getStatus();
-    final int gameRound =
-        (oldWatcher == null || oldWatcher.gameDescription == null)
-            ? -1
-            : oldWatcher.gameDescription.getRound();
+            : oldWatcher.gameDescription.get().getStatus();
+    final int gameRound = oldWatcherExists ? -1 : oldWatcher.gameDescription.get().getRound();
+
     final Optional<Integer> customPort = Optional.ofNullable(Integer.getInteger("customPort"));
     final InetSocketAddress publicView = Optional.ofNullable(System.getProperty("customHost"))
         .map(s -> new InetSocketAddress(s, customPort.orElse(3300)))
         .orElse(messenger.getLocalNode().getSocketAddress());
-    final Node publicNode = new Node(messenger.getLocalNode().getName(), publicView);
-    gameDescription = GameDescription.builder()
+    final INode publicNode = new Node(messenger.getLocalNode().getName(), publicView);
+    gameDescription = new AtomicReference<>(GameDescription.builder()
         .hostedBy(publicNode)
         .startDateTime(startDateTime)
         .gameName("???")
@@ -114,12 +113,10 @@ public class InGameLobbyWatcher {
         .comment(System.getProperty(LOBBY_GAME_COMMENTS))
         .passworded(passworded)
         .gameVersion("0")
-        .build();
+        .build());
     final ILobbyGameController controller =
         (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
-    synchronized (mutex) {
-      controller.postGame(gameId, (GameDescription) gameDescription.clone());
-    }
+    controller.postGame(gameId, gameDescription.get());
     messengerErrorListener = e -> shutDown();
     this.messenger.addErrorListener(messengerErrorListener);
     connectionChangeListener = new IConnectionChangeListener() {
@@ -135,8 +132,8 @@ public class InGameLobbyWatcher {
     };
     // when players join or leave the game update the connection count
     this.serverMessenger.addConnectionChangeListener(connectionChangeListener);
-    if (oldWatcher != null && oldWatcher.gameDescription != null) {
-      this.setGameStatus(oldWatcher.gameDescription.getStatus(), oldWatcher.game);
+    if (oldWatcher != null && oldWatcher.gameDescription.get() != null) {
+      this.setGameStatus(oldWatcher.gameDescription.get().getStatus(), oldWatcher.game);
     }
     // if we loose our connection, then shutdown
     new Thread(() -> {
@@ -242,20 +239,12 @@ public class InGameLobbyWatcher {
   }
 
   private void gameStepChanged(final int round) {
-    synchronized (mutex) {
-      if (gameDescription.getRound() != round) {
-        gameDescription.setRound(round);
-      }
-      postUpdate();
-    }
+    postUpdate(gameDescription.get().withRound(round));
   }
 
   private void gameSelectorModelUpdated() {
-    synchronized (mutex) {
-      gameDescription.setGameName(gameSelectorModel.getGameName());
-      gameDescription.setGameVersion(gameSelectorModel.getGameVersion());
-      postUpdate();
-    }
+    postUpdate(gameDescription.get().withGameName(gameSelectorModel.getGameName())
+        .withGameVersion(gameSelectorModel.getGameVersion()));
   }
 
   void setGameSelectorModel(final GameSelectorModel model) {
@@ -274,21 +263,17 @@ public class InGameLobbyWatcher {
   }
 
   private void updatePlayerCount() {
-    synchronized (mutex) {
-      gameDescription.setPlayerCount(serverMessenger.getNodes().size() - (isHandlerPlayer ? 0 : 1));
-      postUpdate();
-    }
+    postUpdate(gameDescription.get().withPlayerCount(serverMessenger.getNodes().size() - (isHandlerPlayer ? 0 : 1)));
   }
 
-  private void postUpdate() {
-    if (isShutdown) {
+  private void postUpdate(final GameDescription newDescription) {
+    if (isShutdown || newDescription.equals(gameDescription.get())) {
       return;
     }
-    synchronized (mutex) {
-      final ILobbyGameController controller =
-          (ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
-      controller.updateGame(gameId, (GameDescription) gameDescription.clone());
-    }
+    gameDescription.set(newDescription);
+    final ILobbyGameController controller =
+        (ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
+    controller.updateGame(gameId, newDescription);
   }
 
   void shutDown() {
@@ -307,29 +292,20 @@ public class InGameLobbyWatcher {
   }
 
   void setGameStatus(final GameDescription.GameStatus status, final IGame game) {
-    synchronized (mutex) {
-      gameDescription.setStatus(status);
-      gameDescription.setRound(game == null ? -1 : game.getData().getSequence().getRound());
-      setGame(game);
-      postUpdate();
-    }
+    setGame(game);
+    postUpdate(gameDescription.get()
+        .withStatus(status).withRound(game == null ? -1 : game.getData().getSequence().getRound()));
   }
 
   public String getComments() {
-    return gameDescription.getComment();
+    return gameDescription.get().getComment();
   }
 
   void setGameComments(final String comments) {
-    synchronized (mutex) {
-      gameDescription.setComment(comments);
-      postUpdate();
-    }
+    postUpdate(gameDescription.get().withComment(comments));
   }
 
   void setPassworded(final boolean passworded) {
-    synchronized (mutex) {
-      gameDescription.setPassworded(passworded);
-      postUpdate();
-    }
+    postUpdate(gameDescription.get().withPassworded(passworded));
   }
 }
