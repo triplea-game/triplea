@@ -397,24 +397,21 @@ public class HeadlessGameServer {
   }
 
   /**
-   * Bans the specified player from this headless game server for the specified duration at the request of a remote
-   * moderator.
+   * Bans the specified player from this headless game server at the request of a remote moderator.
    *
    * @param playerName The name of the player to ban.
-   * @param hours The duration (in hours) of the ban.
    * @param hashedPassword The hashed server password provided by the remote moderator.
    * @param salt The salt used to hash the server password.
    *
    * @return {@code null} if the operation succeeded; otherwise an error message if the operation failed.
    */
-  public String remoteBanPlayer(final String playerName, final int hours, final String hashedPassword,
+  public String remoteBanPlayer(final String playerName, final String hashedPassword,
       final String salt) {
     final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
     if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
       return "Host not accepting remote requests!";
     }
     // milliseconds (30 days max)
-    final Instant expire = Instant.now().plus(Duration.ofHours(Math.min(24 * 30, hours)));
     if (hashPassword(password, salt).equals(hashedPassword)) {
       new Thread(() -> {
         if (getServerModel() == null) {
@@ -436,17 +433,17 @@ public class HeadlessGameServer {
             if (realName.equals(playerName)) {
               log.info("Remote Ban of Player: " + playerName);
               try {
-                messenger.notifyUsernameMiniBanningOfPlayer(realName, expire);
+                messenger.notifyUsernameMiniBanningOfPlayer(realName);
               } catch (final Exception e) {
                 log.log(Level.SEVERE, "Failed to notify username ban of player", e);
               }
               try {
-                messenger.notifyIpMiniBanningOfPlayer(ip, expire);
+                messenger.notifyIpMiniBanningOfPlayer(ip);
               } catch (final Exception e) {
                 log.log(Level.SEVERE, "Failed to notify IP ban of player", e);
               }
               try {
-                messenger.notifyMacMiniBanningOfPlayer(mac, expire);
+                messenger.notifyMacMiniBanningOfPlayer(mac);
               } catch (final Exception e) {
                 log.log(Level.SEVERE, "Failed to notify MAC ban of player", e);
               }

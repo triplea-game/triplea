@@ -77,8 +77,10 @@ final class RemoteHostUtils implements IRemoteHostUtils {
   }
 
   @Override
-  public String banPlayerHeadlessHostBot(final String playerNameToBeBanned, final int hours,
-      final String hashedPassword, final String salt) {
+  public String banPlayerHeadlessHostBot(
+      final String playerNameToBeBanned,
+      final String hashedPassword,
+      final String salt) {
     if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
@@ -86,7 +88,7 @@ final class RemoteHostUtils implements IRemoteHostUtils {
     if (instance == null) {
       return "Not a headless host bot!";
     }
-    return instance.remoteBanPlayer(playerNameToBeBanned, hours, hashedPassword, salt);
+    return instance.remoteBanPlayer(playerNameToBeBanned, hashedPassword, salt);
   }
 
   @Override

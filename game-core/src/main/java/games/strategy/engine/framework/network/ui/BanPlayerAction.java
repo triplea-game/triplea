@@ -51,9 +51,9 @@ public class BanPlayerAction extends AbstractAction {
         final String realName = IServerMessenger.getRealName(node.getName());
         final String ip = node.getAddress().getHostAddress();
         final String mac = messenger.getPlayerMac(node.getName());
-        messenger.notifyUsernameMiniBanningOfPlayer(realName, null);
-        messenger.notifyIpMiniBanningOfPlayer(ip, null);
-        messenger.notifyMacMiniBanningOfPlayer(mac, null);
+        messenger.notifyUsernameMiniBanningOfPlayer(realName);
+        messenger.notifyIpMiniBanningOfPlayer(ip);
+        messenger.notifyMacMiniBanningOfPlayer(mac);
         messenger.removeConnection(node);
         return;
       }

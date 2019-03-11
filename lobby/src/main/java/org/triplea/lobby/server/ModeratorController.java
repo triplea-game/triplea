@@ -266,7 +266,7 @@ final class ModeratorController implements IModeratorController {
   }
 
   @Override
-  public String banPlayerHeadlessHostBot(final INode node, final String playerNameToBeBanned, final int hours,
+  public String banPlayerHeadlessHostBot(final INode node, final String playerNameToBeBanned,
       final String hashedPassword, final String salt) {
     assertUserIsAdmin();
     if (serverMessenger.getServerNode().equals(node)) {
@@ -275,11 +275,12 @@ final class ModeratorController implements IModeratorController {
     final INode modNode = MessageContext.getSender();
     final String mac = getNodeMacAddress(node);
     final IRemoteHostUtils remoteHostUtils = getRemoteHostUtilsForNode(node);
-    final String response = remoteHostUtils.banPlayerHeadlessHostBot(playerNameToBeBanned, hours, hashedPassword, salt);
+    final String response = remoteHostUtils.banPlayerHeadlessHostBot(playerNameToBeBanned, hashedPassword, salt);
     log.info(String.format(
-        (response == null ? "Successful" : "Failed (" + response + ")") + " Remote Ban of " + playerNameToBeBanned
-            + " for " + hours
-            + "hours  In Headless HostBot. Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
+        (response == null
+            ? "Successful"
+            : "Failed (" + response + ")") + " Remote Ban of " + playerNameToBeBanned
+            + "' Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     return response;
