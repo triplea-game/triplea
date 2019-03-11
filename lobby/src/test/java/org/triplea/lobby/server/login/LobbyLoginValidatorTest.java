@@ -29,7 +29,6 @@ import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
-import org.triplea.lobby.server.db.AccessLogDao;
 import org.triplea.lobby.server.db.BadWordDao;
 import org.triplea.lobby.server.db.BannedMacDao;
 import org.triplea.lobby.server.db.BannedUsernameDao;
@@ -58,9 +57,6 @@ final class LobbyLoginValidatorTest {
 
     @Mock
     BannedUsernameDao bannedUsernameDao;
-
-    @Mock
-    AccessLogDao accessLog;
 
     @Mock
     BadWordDao badWordDao;
@@ -176,10 +172,6 @@ final class LobbyLoginValidatorTest {
           remoteAddress);
     }
 
-    final void thenAccessLogShouldReceiveSuccessfulAuthentication(final UserType userType) throws Exception {
-      verify(accessLog).insert(eq(user), eq(userType));
-    }
-
     final void thenAuthenticationShouldFail() {
       assertThat(authenticationErrorMessage, is(not(nullValue())));
     }
@@ -248,7 +240,6 @@ final class LobbyLoginValidatorTest {
       @Test
       void shouldNotCreateOrUpdateUserWhenAuthenticationSucceeds() {
         givenAnonymousAuthenticationWillSucceed();
-        when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
         whenAuthenticating(givenAuthenticationResponse());
 
@@ -283,7 +274,6 @@ final class LobbyLoginValidatorTest {
         @Test
         void shouldCreateNewUserWithOnlyMd5CryptedPassword() {
           givenUserDoesNotExist();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -307,7 +297,6 @@ final class LobbyLoginValidatorTest {
         @Test
         void shouldCreateNewUserWithBothPasswords() {
           givenUserDoesNotExist();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -337,7 +326,6 @@ final class LobbyLoginValidatorTest {
         void shouldNotUpdatePasswordsWhenUserHasOnlyMd5CryptedPassword() {
           givenUserDoesNotHaveBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -350,7 +338,6 @@ final class LobbyLoginValidatorTest {
         void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -386,7 +373,6 @@ final class LobbyLoginValidatorTest {
           givenUserHasMd5CryptedPassword();
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -401,7 +387,6 @@ final class LobbyLoginValidatorTest {
           givenUserHasMd5CryptedPassword();
           givenUserDoesNotHaveBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -417,7 +402,6 @@ final class LobbyLoginValidatorTest {
           givenUserDoesNotHaveMd5CryptedPassword();
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -446,12 +430,10 @@ final class LobbyLoginValidatorTest {
       @Test
       void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
         givenAnonymousAuthenticationWillSucceed();
-        when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldSucceed();
-        thenAccessLogShouldReceiveSuccessfulAuthentication(UserType.ANONYMOUS);
       }
 
       @Test
@@ -477,12 +459,10 @@ final class LobbyLoginValidatorTest {
       void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
-        when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldSucceed();
-        thenAccessLogShouldReceiveSuccessfulAuthentication(UserType.REGISTERED);
       }
 
       @Test
