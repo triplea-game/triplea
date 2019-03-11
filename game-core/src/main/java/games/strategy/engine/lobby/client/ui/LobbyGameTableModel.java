@@ -146,7 +146,7 @@ class LobbyGameTableModel extends AbstractTableModel {
         return description.getHostName();
       case Round:
         final int round = description.getRound();
-        return round == -1 ? "-" : String.valueOf(round);
+        return round == 0 ? "-" : String.valueOf(round);
       case Name:
         return description.getGameName();
       case Players:

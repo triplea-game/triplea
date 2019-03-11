@@ -95,7 +95,7 @@ public class InGameLobbyWatcher {
         (oldWatcherExists || oldWatcher.gameDescription.get().getStatus() == null)
             ? GameDescription.GameStatus.WAITING_FOR_PLAYERS
             : oldWatcher.gameDescription.get().getStatus();
-    final int gameRound = oldWatcherExists ? -1 : oldWatcher.gameDescription.get().getRound();
+    final int gameRound = oldWatcherExists ? 0 : oldWatcher.gameDescription.get().getRound();
 
     final Optional<Integer> customPort = Optional.ofNullable(Integer.getInteger("customPort"));
     final InetSocketAddress publicView = Optional.ofNullable(System.getProperty("customHost"))
@@ -295,7 +295,7 @@ public class InGameLobbyWatcher {
   void setGameStatus(final GameDescription.GameStatus status, final IGame game) {
     setGame(game);
     postUpdate(gameDescription.get()
-        .withStatus(status).withRound(game == null ? -1 : game.getData().getSequence().getRound()));
+        .withStatus(status).withRound(game == null ? 0 : game.getData().getSequence().getRound()));
   }
 
   public String getComments() {
