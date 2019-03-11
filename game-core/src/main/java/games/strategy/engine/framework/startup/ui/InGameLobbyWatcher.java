@@ -100,7 +100,8 @@ public class InGameLobbyWatcher {
     final Optional<Integer> customPort = Optional.ofNullable(Integer.getInteger("customPort"));
     final InetSocketAddress publicView = Optional.ofNullable(System.getProperty("customHost"))
         .map(s -> new InetSocketAddress(s, customPort.orElse(3300)))
-        .orElse(messenger.getLocalNode().getSocketAddress());
+        .orElse(new InetSocketAddress(messenger.getLocalNode().getSocketAddress().getHostName(),
+            serverMessenger.getLocalNode().getPort()));
     final INode publicNode = new Node(messenger.getLocalNode().getName(), publicView);
     gameDescription = new AtomicReference<>(GameDescription.builder()
         .hostedBy(publicNode)

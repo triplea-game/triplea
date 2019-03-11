@@ -54,8 +54,7 @@ final class LobbyGameController implements ILobbyGameController {
       while (keys.hasNext()) {
         final Map.Entry<GUID, GameDescription> entry = keys.next();
         final GUID key = entry.getKey();
-        final GameDescription game = entry.getValue();
-        if (game.getHostedBy().equals(to)) {
+        if (hostToGame.get(to).contains(key)) {
           keys.remove();
           removed.add(key);
         }
