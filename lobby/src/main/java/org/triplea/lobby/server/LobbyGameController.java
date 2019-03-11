@@ -48,20 +48,13 @@ final class LobbyGameController implements ILobbyGameController {
   }
 
   private void connectionLost(final INode to) {
-    final List<GUID> removed = new ArrayList<>();
+    final Set<GUID> games;
     synchronized (mutex) {
-      final Iterator<Map.Entry<GUID, GameDescription>> keys = allGames.entrySet().iterator();
-      while (keys.hasNext()) {
-        final Map.Entry<GUID, GameDescription> entry = keys.next();
-        final GUID key = entry.getKey();
-        if (hostToGame.get(to).contains(key)) {
-          keys.remove();
-          removed.add(key);
-        }
-      }
+      games = hostToGame.get(to);
+      allGames.keySet().removeAll(games);
       hostToGame.remove(to);
     }
-    for (final GUID guid : removed) {
+    for (final GUID guid : games) {
       broadcaster.gameRemoved(guid);
     }
   }
