@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 
 import org.triplea.java.collections.IntegerMap;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 
 import games.strategy.triplea.delegate.Matches;
@@ -144,9 +145,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param distance maximal distance of the neighboring territories
    */
   public Set<Territory> getNeighbors(final Territory territory, final int distance) {
-    if (distance < 0) {
-      throw new IllegalArgumentException("Distance must be positive not: " + distance);
-    }
+    Preconditions.checkArgument(distance < 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
       return Collections.emptySet();
     }
@@ -164,9 +163,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * Does NOT include the original/starting territory in the returned Set.
    */
   public Set<Territory> getNeighbors(final Territory territory, final int distance, final Predicate<Territory> cond) {
-    if (distance < 0) {
-      throw new IllegalArgumentException("Distance must be positive not: " + distance);
-    }
+    Preconditions.checkArgument(distance < 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
       return Collections.emptySet();
     }
@@ -216,9 +213,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public Set<Territory> getNeighborsIgnoreEnd(final Territory territory, final int distance,
       final Predicate<Territory> cond) {
-    if (distance < 0) {
-      throw new IllegalArgumentException("Distance must be positive not: " + distance);
-    }
+    Preconditions.checkArgument(distance < 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
       return Collections.emptySet();
     }
