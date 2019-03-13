@@ -231,8 +231,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   private Set<Territory> getNeighborsIgnoreEnd(final Set<Territory> frontier, final Set<Territory> searched,
       final int distance, @Nullable final Predicate<Territory> cond) {
-    if (distance == 0) {
-      return searched;
+    if (distance == 0 || frontier.isEmpty()) {
+      return searched; // End condition for recursion
     }
     final Predicate<Territory> neighborCond = (distance == 1) ? Predicates.alwaysTrue() : cond;
     final Set<Territory> newFrontier = frontier.stream()
