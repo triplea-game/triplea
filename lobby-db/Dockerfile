@@ -5,7 +5,7 @@
 FROM postgres:9.5
 MAINTAINER "tripleabuilderbot@gmail.com"
 
-ENV POSTGRES_DB=ta_users
+ENV POSTGRES_DB=lobby
 
 # TODO: Copy a production-like snapshot. Snapshots include the flyway tracking tables, 
 # running flyway would then be incremental and run only new migrations, better simulating

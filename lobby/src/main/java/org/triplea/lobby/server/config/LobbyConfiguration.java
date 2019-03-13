@@ -18,7 +18,7 @@ public final class LobbyConfiguration {
   public LobbyConfiguration() {
     port = Integer.valueOf(EnvironmentVariable.PORT.getValue());
     databaseDao = Database.builder()
-        .postgresDatabase("ta_users")
+        .postgresDatabase(EnvironmentVariable.POSTGRES_DATABASE.getValue())
         .postgresHost(EnvironmentVariable.POSTGRES_HOST.getValue())
         .postgresPassword(EnvironmentVariable.POSTGRES_PASSWORD.getValue())
         .postgresUser(EnvironmentVariable.POSTGRES_USER.getValue())

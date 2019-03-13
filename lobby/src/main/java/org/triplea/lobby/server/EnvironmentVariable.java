@@ -15,7 +15,9 @@ public enum EnvironmentVariable {
 
   POSTGRES_HOST("localhost"),
 
-  POSTGRES_PORT("5432");
+  POSTGRES_PORT("5432"),
+
+  POSTGRES_DATABASE("lobby");
 
   private final String defaultValue;
 

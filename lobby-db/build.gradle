@@ -11,7 +11,7 @@ plugins {
 
 flyway {
     driver = 'org.postgresql.Driver'
-    url= 'jdbc:postgresql://localhost:5432/ta_users'
+    url= 'jdbc:postgresql://localhost:5432/lobby'
     user = 'postgres'
     password = 'postgres'
 }
