@@ -156,17 +156,12 @@ final class ModeratorController implements IModeratorController {
       throw new IllegalStateException("Can't mute an admin");
     }
 
-    final User mutedUser = getUserForNode(node);
-    final User moderator = getUserForNode(MessageContext.getSender());
-
-    database.getMutedMacDao().addMutedMac(mutedUser, muteExpires, moderator);
-    serverMessenger.notifyMacMutingOfPlayer(mutedUser.getHashedMacAddress(), muteExpires);
+    final String hashedMac = getNodeMacAddress(node);
+    database.getMutedMacDao().addMutedMac(
+        node.getAddress(), hashedMac, muteExpires, MessageContext.getSender().getName());
+    serverMessenger.notifyMacMutingOfPlayer(hashedMac, muteExpires);
     log.info(String.format(
-        "User was muted in the lobby (by MAC); "
-            + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
-        mutedUser.getUsername(), mutedUser.getInetAddress().getHostAddress(), mutedUser.getHashedMacAddress(),
-        moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
-        muteExpires == null ? "forever" : muteExpires.toString()));
+        "Node was muted: %s, until: %s, by: %s", node, muteExpires, MessageContext.getSender().getName()));
   }
 
   @Override
