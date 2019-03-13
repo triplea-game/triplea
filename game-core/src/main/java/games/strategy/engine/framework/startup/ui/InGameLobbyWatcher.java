@@ -84,18 +84,18 @@ public class InGameLobbyWatcher {
     this.isHandlerPlayer = handler.isPlayer();
     final String password = System.getProperty(SERVER_PASSWORD);
     final boolean passworded = password != null && password.length() > 0;
-    final boolean oldWatcherExists = oldWatcher == null || oldWatcher.gameDescription.get() == null;
-    final Instant startDateTime = (oldWatcherExists || oldWatcher.gameDescription.get().getStartDateTime() == null)
+    final boolean oldWatcherMissing = oldWatcher == null || oldWatcher.gameDescription.get() == null;
+    final Instant startDateTime = (oldWatcherMissing || oldWatcher.gameDescription.get().getStartDateTime() == null)
         ? Instant.now()
         : oldWatcher.gameDescription.get().getStartDateTime();
-    final int playerCount = oldWatcherExists
+    final int playerCount = oldWatcherMissing
         ? (isHandlerPlayer ? 1 : 0)
         : oldWatcher.gameDescription.get().getPlayerCount();
     final GameDescription.GameStatus gameStatus =
-        (oldWatcherExists || oldWatcher.gameDescription.get().getStatus() == null)
+        (oldWatcherMissing || oldWatcher.gameDescription.get().getStatus() == null)
             ? GameDescription.GameStatus.WAITING_FOR_PLAYERS
             : oldWatcher.gameDescription.get().getStatus();
-    final int gameRound = oldWatcherExists ? 0 : oldWatcher.gameDescription.get().getRound();
+    final int gameRound = oldWatcherMissing ? 0 : oldWatcher.gameDescription.get().getRound();
 
     final Optional<Integer> customPort = Optional.ofNullable(Integer.getInteger("customPort"));
     final InetSocketAddress publicView = Optional.ofNullable(System.getProperty("customHost"))

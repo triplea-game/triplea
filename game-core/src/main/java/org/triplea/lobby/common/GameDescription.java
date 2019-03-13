@@ -9,8 +9,6 @@ import games.strategy.net.INode;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;
 
@@ -23,8 +21,6 @@ import lombok.experimental.Wither;
 @Value
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@EqualsAndHashCode
-@ToString
 public class GameDescription implements Serializable {
   private static final long serialVersionUID = 508593169141567546L;
 
@@ -33,7 +29,11 @@ public class GameDescription implements Serializable {
    */
   @AllArgsConstructor
   public enum GameStatus {
-    LAUNCHING("Launching"), IN_PROGRESS("In Progress"), WAITING_FOR_PLAYERS("Waiting For Players");
+    LAUNCHING("Launching"),
+
+    IN_PROGRESS("In Progress"),
+
+    WAITING_FOR_PLAYERS("Waiting For Players");
 
     private final String displayName;
 

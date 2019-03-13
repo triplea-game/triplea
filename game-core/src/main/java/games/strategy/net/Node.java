@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Written very often over the network, so make externalizable to make faster and reduce traffic.
+ * Class to hold information about a packet destination or source.
  */
 @ToString
 @Getter(onMethod_ = {@Override})
