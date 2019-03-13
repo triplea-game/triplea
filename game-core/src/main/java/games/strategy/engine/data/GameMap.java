@@ -207,9 +207,9 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * Returns all neighbors within a certain distance of the starting territory that territories
-   * between the 2 match the condition. Does NOT include the original/starting territory in the
-   * returned Set.
+   * Returns all neighbors within a certain distance of the starting territory where all
+   * territories between the 2 match the condition. Does NOT include the original/starting
+   * territory in the returned Set.
    */
   public Set<Territory> getNeighborsIgnoreEnd(final Territory territory, final int distance,
       final Predicate<Territory> cond) {
