@@ -48,9 +48,7 @@ public class MutePlayerAction extends AbstractAction {
     final String name = (String) combo.getSelectedItem();
     for (final INode node : messenger.getNodes()) {
       if (node.getName().equals(name)) {
-        final String realName = IServerMessenger.getRealName(node.getName());
         final String mac = messenger.getPlayerMac(node.getName());
-        messenger.notifyUsernameMutingOfPlayer(realName, null);
         messenger.notifyMacMutingOfPlayer(mac, null);
         return;
       }
