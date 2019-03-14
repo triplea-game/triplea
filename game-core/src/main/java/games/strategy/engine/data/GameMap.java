@@ -145,7 +145,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param distance maximal distance of the neighboring territories
    */
   public Set<Territory> getNeighbors(final Territory territory, final int distance) {
-    Preconditions.checkArgument(distance < 0, "Distance must be non-negative: " + distance);
+    Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
       return Collections.emptySet();
     }
@@ -163,7 +163,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * Does NOT include the original/starting territory in the returned Set.
    */
   public Set<Territory> getNeighbors(final Territory territory, final int distance, final Predicate<Territory> cond) {
-    Preconditions.checkArgument(distance < 0, "Distance must be non-negative: " + distance);
+    Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
       return Collections.emptySet();
     }
@@ -213,7 +213,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    */
   public Set<Territory> getNeighborsIgnoreEnd(final Territory territory, final int distance,
       final Predicate<Territory> cond) {
-    Preconditions.checkArgument(distance < 0, "Distance must be non-negative: " + distance);
+    Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
       return Collections.emptySet();
     }
