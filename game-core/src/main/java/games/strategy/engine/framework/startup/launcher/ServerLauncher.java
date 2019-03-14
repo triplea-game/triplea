@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 
 import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.java.Interruptibles;
+import org.triplea.lobby.common.GameDescription;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -31,7 +32,6 @@ import games.strategy.engine.framework.startup.mc.IClientChannel;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.MessengerException;
 import games.strategy.engine.player.IGamePlayer;

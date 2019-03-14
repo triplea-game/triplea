@@ -3,22 +3,19 @@ package org.triplea.lobby.server;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.ILobbyGameController;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
@@ -48,21 +45,12 @@ final class LobbyGameController implements ILobbyGameController {
   }
 
   private void connectionLost(final INode to) {
-    final List<GUID> removed = new ArrayList<>();
+    final Set<GUID> games;
     synchronized (mutex) {
-      final Iterator<Map.Entry<GUID, GameDescription>> keys = allGames.entrySet().iterator();
-      while (keys.hasNext()) {
-        final Map.Entry<GUID, GameDescription> entry = keys.next();
-        final GUID key = entry.getKey();
-        final GameDescription game = entry.getValue();
-        if (game.getHostedBy().equals(to)) {
-          keys.remove();
-          removed.add(key);
-        }
-      }
-      hostToGame.remove(to);
+      games = hostToGame.remove(to);
+      allGames.keySet().removeAll(games);
     }
-    for (final GUID guid : removed) {
+    for (final GUID guid : games) {
       broadcaster.gameRemoved(guid);
     }
   }
@@ -81,13 +69,6 @@ final class LobbyGameController implements ILobbyGameController {
   public void updateGame(final GUID gameId, final GameDescription description) {
     assertCorrectGameOwner(gameId);
     synchronized (mutex) {
-      final GameDescription oldDescription = allGames.get(gameId);
-      // out of order updates
-      // ignore, we already have the latest
-      // TODO: Check if this method can ever be called out of order. TCP should be able to handle that.
-      if (oldDescription.getVersion() > description.getVersion()) {
-        return;
-      }
       allGames.put(gameId, description);
     }
     broadcaster.gameUpdated(gameId, description);
@@ -115,13 +96,12 @@ final class LobbyGameController implements ILobbyGameController {
       return "No such game found";
     }
     // make sure we are being tested from the right node
-    final int port = description.getPort();
-    final String host = description.getHostedBy().getAddress().getHostAddress();
+    final InetSocketAddress address = description.getHostedBy().getSocketAddress();
     try (Socket s = new Socket()) {
-      s.connect(new InetSocketAddress(host, port), 10 * 1000);
+      s.connect(address, 10 * 1000);
       return null;
     } catch (final IOException e) {
-      return "host:" + host + " " + " port:" + port;
+      return "host:" + address.getHostName() + " " + " port:" + address.getPort();
     }
   }
 

@@ -1,6 +1,5 @@
 package org.triplea.lobby.common;
 
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.GUID;

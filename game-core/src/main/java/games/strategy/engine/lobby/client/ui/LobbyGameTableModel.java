@@ -12,13 +12,13 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
+import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.util.Tuple;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.Messengers;
@@ -84,7 +84,7 @@ class LobbyGameTableModel extends AbstractTableModel {
   }
 
 
-  protected ILobbyGameBroadcaster getLobbyGameBroadcaster() {
+  ILobbyGameBroadcaster getLobbyGameBroadcaster() {
     return lobbyGameBroadcaster;
   }
 
@@ -145,13 +145,14 @@ class LobbyGameTableModel extends AbstractTableModel {
       case Host:
         return description.getHostName();
       case Round:
-        return description.getRound();
+        final int round = description.getRound();
+        return round == 0 ? "-" : String.valueOf(round);
       case Name:
         return description.getGameName();
       case Players:
         return description.getPlayerCount();
       case P:
-        return (description.getPassworded() ? "*" : "");
+        return (description.isPassworded() ? "*" : "");
       case GV:
         return description.getGameVersion();
       case Status:

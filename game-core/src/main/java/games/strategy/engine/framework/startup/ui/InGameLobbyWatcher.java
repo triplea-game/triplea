@@ -17,6 +17,7 @@ import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
+import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.lobby.common.IRemoteHostUtils;
 import org.triplea.lobby.common.LobbyConstants;
@@ -25,11 +26,9 @@ import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
-import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
@@ -67,10 +66,10 @@ public class InGameLobbyWatcher {
   // we create this messenger, and use it to connect to the game lobby
   private final IMessenger messenger;
   private final IRemoteMessenger remoteMessenger;
-  private final GameDescription gameDescription;
-  private final Object mutex = new Object();
+  private final Object postMutex = new Object();
+  private GameDescription gameDescription;
   private final IConnectionChangeListener connectionChangeListener;
-  private final IMessengerErrorListener messengerErrorListener;
+  private final IMessengerErrorListener messengerErrorListener = e -> shutDown();
   private final boolean isHandlerPlayer;
 
   private InGameLobbyWatcher(
@@ -85,28 +84,27 @@ public class InGameLobbyWatcher {
     this.isHandlerPlayer = handler.isPlayer();
     final String password = System.getProperty(SERVER_PASSWORD);
     final boolean passworded = password != null && password.length() > 0;
-    final Instant startDateTime = (oldWatcher == null || oldWatcher.gameDescription == null
-        || oldWatcher.gameDescription.getStartDateTime() == null) ? Instant.now()
-            : oldWatcher.gameDescription.getStartDateTime();
-    final int playerCount = (oldWatcher == null || oldWatcher.gameDescription == null)
+    final boolean oldWatcherMissing = oldWatcher == null || oldWatcher.gameDescription == null;
+    final Instant startDateTime = (oldWatcherMissing || oldWatcher.gameDescription.getStartDateTime() == null)
+        ? Instant.now()
+        : oldWatcher.gameDescription.getStartDateTime();
+    final int playerCount = oldWatcherMissing
         ? (isHandlerPlayer ? 1 : 0)
         : oldWatcher.gameDescription.getPlayerCount();
     final GameDescription.GameStatus gameStatus =
-        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getStatus() == null)
+        (oldWatcherMissing || oldWatcher.gameDescription.getStatus() == null)
             ? GameDescription.GameStatus.WAITING_FOR_PLAYERS
             : oldWatcher.gameDescription.getStatus();
-    final String gameRound =
-        (oldWatcher == null || oldWatcher.gameDescription == null || oldWatcher.gameDescription.getRound() == null)
-            ? "-"
-            : oldWatcher.gameDescription.getRound();
+    final int gameRound = oldWatcherMissing ? 0 : oldWatcher.gameDescription.getRound();
+
     final Optional<Integer> customPort = Optional.ofNullable(Integer.getInteger("customPort"));
     final InetSocketAddress publicView = Optional.ofNullable(System.getProperty("customHost"))
         .map(s -> new InetSocketAddress(s, customPort.orElse(3300)))
-        .orElse(messenger.getLocalNode().getSocketAddress());
+        .orElse(new InetSocketAddress(messenger.getLocalNode().getSocketAddress().getHostName(),
+            serverMessenger.getLocalNode().getPort()));
     final INode publicNode = new Node(messenger.getLocalNode().getName(), publicView);
     gameDescription = GameDescription.builder()
         .hostedBy(publicNode)
-        .port(customPort.isPresent() ? publicNode.getPort() : serverMessenger.getLocalNode().getPort())
         .startDateTime(startDateTime)
         .gameName("???")
         .playerCount(playerCount)
@@ -115,15 +113,13 @@ public class InGameLobbyWatcher {
         .hostName(serverMessenger.getLocalNode().getName())
         .comment(System.getProperty(LOBBY_GAME_COMMENTS))
         .passworded(passworded)
-        .engineVersion(ClientContext.engineVersion().toString())
         .gameVersion("0")
         .build();
     final ILobbyGameController controller =
         (ILobbyGameController) this.remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
-    synchronized (mutex) {
-      controller.postGame(gameId, (GameDescription) gameDescription.clone());
+    synchronized (postMutex) {
+      controller.postGame(gameId, gameDescription);
     }
-    messengerErrorListener = e -> shutDown();
     this.messenger.addErrorListener(messengerErrorListener);
     connectionChangeListener = new IConnectionChangeListener() {
       @Override
@@ -245,19 +241,15 @@ public class InGameLobbyWatcher {
   }
 
   private void gameStepChanged(final int round) {
-    synchronized (mutex) {
-      if (!gameDescription.getRound().equals(Integer.toString(round))) {
-        gameDescription.setRound(round + "");
-      }
-      postUpdate();
+    synchronized (postMutex) {
+      postUpdate(gameDescription.withRound(round));
     }
   }
 
   private void gameSelectorModelUpdated() {
-    synchronized (mutex) {
-      gameDescription.setGameName(gameSelectorModel.getGameName());
-      gameDescription.setGameVersion(gameSelectorModel.getGameVersion());
-      postUpdate();
+    synchronized (postMutex) {
+      postUpdate(gameDescription.withGameName(gameSelectorModel.getGameName())
+          .withGameVersion(gameSelectorModel.getGameVersion()));
     }
   }
 
@@ -277,21 +269,19 @@ public class InGameLobbyWatcher {
   }
 
   private void updatePlayerCount() {
-    synchronized (mutex) {
-      gameDescription.setPlayerCount(serverMessenger.getNodes().size() - (isHandlerPlayer ? 0 : 1));
-      postUpdate();
+    synchronized (postMutex) {
+      postUpdate(gameDescription.withPlayerCount(serverMessenger.getNodes().size() - (isHandlerPlayer ? 0 : 1)));
     }
   }
 
-  private void postUpdate() {
-    if (isShutdown) {
+  private void postUpdate(final GameDescription newDescription) {
+    if (isShutdown || newDescription.equals(gameDescription)) {
       return;
     }
-    synchronized (mutex) {
-      final ILobbyGameController controller =
-          (ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
-      controller.updateGame(gameId, (GameDescription) gameDescription.clone());
-    }
+    gameDescription = newDescription;
+    final ILobbyGameController controller =
+        (ILobbyGameController) remoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME);
+    controller.updateGame(gameId, newDescription);
   }
 
   void shutDown() {
@@ -310,15 +300,10 @@ public class InGameLobbyWatcher {
   }
 
   void setGameStatus(final GameDescription.GameStatus status, final IGame game) {
-    synchronized (mutex) {
-      gameDescription.setStatus(status);
-      if (game == null) {
-        gameDescription.setRound("-");
-      } else {
-        gameDescription.setRound(game.getData().getSequence().getRound() + "");
-      }
-      setGame(game);
-      postUpdate();
+    setGame(game);
+    synchronized (postMutex) {
+      postUpdate(gameDescription
+          .withStatus(status).withRound(game == null ? 0 : game.getData().getSequence().getRound()));
     }
   }
 
@@ -327,16 +312,14 @@ public class InGameLobbyWatcher {
   }
 
   void setGameComments(final String comments) {
-    synchronized (mutex) {
-      gameDescription.setComment(comments);
-      postUpdate();
+    synchronized (postMutex) {
+      postUpdate(gameDescription.withComment(comments));
     }
   }
 
   void setPassworded(final boolean passworded) {
-    synchronized (mutex) {
-      gameDescription.setPassworded(passworded);
-      postUpdate();
+    synchronized (postMutex) {
+      postUpdate(gameDescription.withPassworded(passworded));
     }
   }
 }

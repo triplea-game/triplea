@@ -15,7 +15,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.event.WindowEvent;
@@ -35,16 +34,14 @@ import javax.swing.filechooser.FileFilter;
 
 import org.triplea.game.ApplicationContext;
 import org.triplea.java.Interruptibles;
+import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.ProgressWindow;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.ExitStatus;
 import org.triplea.util.Services;
-import org.triplea.util.Version;
 
-import games.strategy.engine.ClientContext;
-import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.auto.update.UpdateChecks;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -53,7 +50,6 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.pro.ProAi;
 
@@ -261,18 +257,9 @@ public final class GameRunner {
   /**
    * Spawns a new process to join a network game.
    */
-  public static void joinGame(final GameDescription description, final Messengers messengers, final Container parent) {
+  public static void joinGame(final GameDescription description, final Messengers messengers) {
     final GameDescription.GameStatus status = description.getStatus();
     if (GameDescription.GameStatus.LAUNCHING == status) {
-      return;
-    }
-
-    final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
-    if (!GameEngineVersion.of(ClientContext.engineVersion()).isCompatibleWithEngineVersion(engineVersionOfGameToJoin)) {
-      JOptionPane.showMessageDialog(parent,
-          "Host is using version " + engineVersionOfGameToJoin.toStringFull()
-              + ". You need to have a compatible engine version in order to join this game.",
-          "Incompatible TripleA engine", JOptionPane.ERROR_MESSAGE);
       return;
     }
 
@@ -280,7 +267,7 @@ public final class GameRunner {
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
     final String prefix = "-D";
     commands.add(prefix + TRIPLEA_CLIENT + "=true");
-    commands.add(prefix + TRIPLEA_PORT + "=" + description.getPort());
+    commands.add(prefix + TRIPLEA_PORT + "=" + description.getHostedBy().getPort());
     commands.add(prefix + TRIPLEA_HOST + "=" + description.getHostedBy().getAddress().getHostAddress());
     commands.add(prefix + TRIPLEA_NAME + "=" + messengers.getLocalNode().getName());
     commands.add(Services.loadAny(ApplicationContext.class).getMainClass().getName());

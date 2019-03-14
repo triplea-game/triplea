@@ -11,7 +11,7 @@ import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
-import games.strategy.engine.lobby.server.GameDescription;
+import org.triplea.lobby.common.GameDescription;
 
 class LobbyGameTable extends JTable {
   private static final long serialVersionUID = 8632519876114231003L;

@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.triplea.game.server.HeadlessGameServer;
 
-import games.strategy.engine.lobby.server.GameDescription;
-
 final class GameDescriptionTest {
   @Nested
   final class IsBotTest {
