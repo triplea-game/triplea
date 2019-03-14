@@ -5,24 +5,14 @@
 
 ## Building and Running the Code  / Typical gradle commands
 
-Apply project formatting and cleanups:
-```
-./gradlew spotlessApply
-```
-
-Run tests:
-```
-./gradlew test
-```
-
 Launch the headed-game client:
 ```
 ./gradlew run 
 ```
 
-Perform all code checks and tests (run **this** before submitting PR):
+Perform all code formatting, checks and tests (run **this** to verify PR builds):
 ```
-./gradlew --parallel check
+./verify
 ```
 
 ## Building installers
