@@ -95,23 +95,23 @@ class ProNonCombatMoveAi {
     territoryManager.populateEnemyAttackOptions(movedOneDefenderToTerritories, territoryManager.getDefendTerritories());
     determineIfMoveTerritoriesCanBeHeld();
 
-    // Get list of territories that can't be held and find move value for each territory
-    final List<Territory> territoriesThatCantBeHeld = territoryManager.getCantHoldTerritories();
-    final Map<Territory, Double> territoryValueMap =
-        ProTerritoryValueUtils.findTerritoryValues(player, territoriesThatCantBeHeld, new ArrayList<>());
-    final Map<Territory, Double> seaTerritoryValueMap =
-        ProTerritoryValueUtils.findSeaTerritoryValues(player, territoriesThatCantBeHeld);
-
     // Prioritize territories to defend
     Map<Territory, ProTerritory> factoryMoveMap = initialFactoryMoveMap;
-    final List<ProTerritory> prioritizedTerritories = prioritizeDefendOptions(factoryMoveMap, territoryValueMap);
+    final List<ProTerritory> prioritizedTerritories = prioritizeDefendOptions(factoryMoveMap);
 
     // Determine which territories to defend and how many units each one needs
     final int enemyDistance = ProUtils.getClosestEnemyLandTerritoryDistance(data, player, ProData.myCapital);
-    moveUnitsToDefendTerritories(prioritizedTerritories, enemyDistance, territoryValueMap);
+    moveUnitsToDefendTerritories(prioritizedTerritories, enemyDistance);
 
     // Copy data in case capital defense needs increased
     final ProTerritoryManager territoryManagerCopy = new ProTerritoryManager(calc, territoryManager);
+
+    // Get list of territories that can't be held and find move value for each territory
+    final List<Territory> territoriesThatCantBeHeld = territoryManager.getCantHoldTerritories();
+    final Map<Territory, Double> territoryValueMap = ProTerritoryValueUtils.findTerritoryValues(player,
+        territoriesThatCantBeHeld, new ArrayList<>(), new HashSet<>(territoryManager.getDefendTerritories()));
+    final Map<Territory, Double> seaTerritoryValueMap = ProTerritoryValueUtils.findSeaTerritoryValues(player,
+        territoriesThatCantBeHeld, territoryManager.getDefendTerritories());
 
     // Use loop to ensure capital is protected after moves
     if (ProData.myCapital != null) {
@@ -416,8 +416,7 @@ class ProNonCombatMoveAi {
     }
   }
 
-  private List<ProTerritory> prioritizeDefendOptions(final Map<Territory, ProTerritory> factoryMoveMap,
-      final Map<Territory, Double> territoryValueMap) {
+  private List<ProTerritory> prioritizeDefendOptions(final Map<Territory, ProTerritory> factoryMoveMap) {
 
     ProLogger.info("Prioritizing territories to try to defend");
 
@@ -526,6 +525,12 @@ class ProNonCombatMoveAi {
         ProMatches.territoryHasFactoryAndIsNotConqueredOwnedLand(player, data));
     seaFactories = CollectionUtils.getMatches(seaFactories,
         ProMatches.territoryHasInfraFactoryAndIsOwnedLandAdjacentToSea(player, data));
+    final Set<Territory> territoriesToCheck = new HashSet<>(seaFactories);
+    for (final Territory t : seaFactories) {
+      territoriesToCheck.addAll(data.getMap().getNeighbors(t, ProMatches.territoryCanMoveSeaUnits(player, data, true)));
+    }
+    final Map<Territory, Double> territoryValueMap = ProTerritoryValueUtils.findTerritoryValues(player,
+        territoryManager.getCantHoldTerritories(), new ArrayList<>(), territoriesToCheck);
     for (final Territory t : seaFactories) {
       if (territoryValueMap.get(t) >= 1) {
         continue;
@@ -561,8 +566,7 @@ class ProNonCombatMoveAi {
     return prioritizedTerritories;
   }
 
-  private void moveUnitsToDefendTerritories(final List<ProTerritory> prioritizedTerritories, final int enemyDistance,
-      final Map<Territory, Double> territoryValueMap) {
+  private void moveUnitsToDefendTerritories(final List<ProTerritory> prioritizedTerritories, final int enemyDistance) {
 
     ProLogger.info("Determine units to defend territories with");
     if (prioritizedTerritories.isEmpty()) {
@@ -878,6 +882,18 @@ class ProNonCombatMoveAi {
       // Determine if all defenses are successful
       boolean areSuccessful = true;
       boolean containsCapital = false;
+      final Set<Territory> territoriesToCheck = new HashSet<>();
+      for (final ProTerritory patd : territoriesToTryToDefend) {
+        final Territory t = patd.getTerritory();
+        territoriesToCheck.add(t);
+        final List<Unit> nonAirDefenders =
+            CollectionUtils.getMatches(moveMap.get(t).getTempUnits(), Matches.unitIsNotAir());
+        for (final Unit u : nonAirDefenders) {
+          territoriesToCheck.add(unitTerritoryMap.get(u));
+        }
+      }
+      final Map<Territory, Double> territoryValueMap = ProTerritoryValueUtils.findTerritoryValues(player,
+          territoryManager.getCantHoldTerritories(), new ArrayList<>(), territoriesToCheck);
       ProLogger.debug("Current number of territories: " + numToDefend);
       for (final ProTerritory patd : territoriesToTryToDefend) {
         final Territory t = patd.getTerritory();

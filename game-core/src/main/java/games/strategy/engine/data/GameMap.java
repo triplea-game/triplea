@@ -19,6 +19,9 @@ import javax.annotation.Nullable;
 
 import org.triplea.java.collections.IntegerMap;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicates;
+
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 
@@ -112,7 +115,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     // ok since all entries in connections are already unmodifiable
     final Set<Territory> neighbors = connections.get(territory);
     if (neighbors == null) {
-      throw new IllegalArgumentException("No neighbors for:" + territory);
+      throw new IllegalArgumentException("No neighbors for: " + territory);
     }
     return neighbors;
   }
@@ -142,9 +145,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param distance maximal distance of the neighboring territories
    */
   public Set<Territory> getNeighbors(final Territory territory, final int distance) {
-    if (distance < 0) {
-      throw new IllegalArgumentException("Distance must be positive not:" + distance);
-    }
+    Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
       return Collections.emptySet();
     }
@@ -162,9 +163,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * Does NOT include the original/starting territory in the returned Set.
    */
   public Set<Territory> getNeighbors(final Territory territory, final int distance, final Predicate<Territory> cond) {
-    if (distance < 0) {
-      throw new IllegalArgumentException("Distance must be positive not:" + distance);
-    }
+    Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
     if (distance == 0) {
       return Collections.emptySet();
     }
@@ -190,7 +189,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched, final int distance,
       @Nullable final Predicate<Territory> cond) {
-    if (distance == 0) {
+    if (distance == 0 || frontier.isEmpty()) {
       return searched;
     }
     final Set<Territory> newFrontier = frontier.stream()
@@ -205,6 +204,44 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched,
       final int distance) {
     return getNeighbors(frontier, searched, distance, null);
+  }
+
+  /**
+   * Returns all neighbors within a certain distance of the starting territory where all
+   * territories between the 2 match the condition. Does NOT include the original/starting
+   * territory in the returned Set.
+   */
+  public Set<Territory> getNeighborsIgnoreEnd(final Territory territory, final int distance,
+      final Predicate<Territory> cond) {
+    Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
+    if (distance == 0) {
+      return Collections.emptySet();
+    }
+    final Set<Territory> neighbors = new HashSet<>(getNeighbors(territory));
+    if (distance == 1) {
+      return neighbors;
+    }
+    final Set<Territory> start = getNeighbors(territory, cond);
+    for (int i = 2; i <= distance; i++) {
+      neighbors.addAll(getNeighborsIgnoreEnd(start, new HashSet<>(start), i - 1, cond));
+    }
+    neighbors.remove(territory);
+    return neighbors;
+  }
+
+  private Set<Territory> getNeighborsIgnoreEnd(final Set<Territory> frontier, final Set<Territory> searched,
+      final int distance, @Nullable final Predicate<Territory> cond) {
+    if (distance == 0 || frontier.isEmpty()) {
+      return searched; // End condition for recursion
+    }
+    final Predicate<Territory> neighborCond = (distance == 1) ? Predicates.alwaysTrue() : cond;
+    final Set<Territory> newFrontier = frontier.stream()
+        .map(t -> getNeighbors(t, neighborCond))
+        .flatMap(Collection::stream)
+        .filter(t -> !searched.contains(t))
+        .collect(Collectors.toSet());
+    searched.addAll(newFrontier);
+    return getNeighborsIgnoreEnd(newFrontier, searched, distance - 1, cond);
   }
 
   Set<Territory> getNeighborsValidatingCanals(final Territory territory, final Predicate<Territory> neighborFilter,

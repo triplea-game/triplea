@@ -92,7 +92,7 @@ public final class ProUtils {
     return true;
   }
 
-  private static List<PlayerId> getEnemyPlayers(final PlayerId player) {
+  public static List<PlayerId> getEnemyPlayers(final PlayerId player) {
     final GameData data = ProData.getData();
     final List<PlayerId> enemyPlayers = new ArrayList<>();
     for (final PlayerId players : data.getPlayerList().getPlayers()) {

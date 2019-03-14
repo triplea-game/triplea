@@ -90,11 +90,7 @@ class ProCombatMoveAi {
       clearedTerritories.add(patd.getTerritory());
     }
     territoryManager.populateEnemyAttackOptions(clearedTerritories, clearedTerritories);
-    Set<Territory> territoriesToCheck = new HashSet<>(clearedTerritories);
-    territoriesToCheck.addAll(ProData.myUnitTerritories);
-    Map<Territory, Double> territoryValueMap =
-        ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), clearedTerritories, territoriesToCheck);
-    determineTerritoriesThatCanBeHeld(attackOptions, territoryValueMap);
+    determineTerritoriesThatCanBeHeld(attackOptions, clearedTerritories);
     prioritizeAttackOptions(player, attackOptions);
     removeTerritoriesThatArentWorthAttacking(attackOptions);
 
@@ -113,11 +109,7 @@ class ProCombatMoveAi {
     }
     possibleTransportTerritories.addAll(clearedTerritories);
     territoryManager.populateEnemyAttackOptions(clearedTerritories, new ArrayList<>(possibleTransportTerritories));
-    territoriesToCheck = new HashSet<>(clearedTerritories);
-    territoriesToCheck.addAll(ProData.myUnitTerritories);
-    territoryValueMap =
-        ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), clearedTerritories, territoriesToCheck);
-    determineTerritoriesThatCanBeHeld(attackOptions, territoryValueMap);
+    determineTerritoriesThatCanBeHeld(attackOptions, clearedTerritories);
     removeTerritoriesThatArentWorthAttacking(attackOptions);
 
     // Determine how many units to attack each territory with
@@ -375,7 +367,7 @@ class ProCombatMoveAi {
   }
 
   private void determineTerritoriesThatCanBeHeld(final List<ProTerritory> prioritizedTerritories,
-      final Map<Territory, Double> territoryValueMap) {
+      final List<Territory> clearedTerritories) {
 
     ProLogger.info("Check if we should try to hold attack territories");
 
@@ -383,6 +375,17 @@ class ProCombatMoveAi {
     final Map<Territory, ProTerritory> attackMap = territoryManager.getAttackOptions().getTerritoryMap();
 
     // Determine which territories to try and hold
+    final Set<Territory> territoriesToCheck = new HashSet<>();
+    for (final ProTerritory patd : prioritizedTerritories) {
+      final Territory t = patd.getTerritory();
+      territoriesToCheck.add(t);
+      final List<Unit> nonAirAttackers = CollectionUtils.getMatches(patd.getMaxUnits(), Matches.unitIsNotAir());
+      for (final Unit u : nonAirAttackers) {
+        territoriesToCheck.add(ProData.unitTerritoryMap.get(u));
+      }
+    }
+    final Map<Territory, Double> territoryValueMap =
+        ProTerritoryValueUtils.findTerritoryValues(player, new ArrayList<>(), clearedTerritories, territoriesToCheck);
     for (final ProTerritory patd : prioritizedTerritories) {
       final Territory t = patd.getTerritory();
 

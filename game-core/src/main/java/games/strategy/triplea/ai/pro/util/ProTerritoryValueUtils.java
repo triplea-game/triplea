@@ -49,13 +49,6 @@ public final class ProTerritoryValueUtils {
     return value;
   }
 
-  public static Map<Territory, Double> findTerritoryValues(final PlayerId player,
-      final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToAttack) {
-
-    return findTerritoryValues(player, territoriesThatCantBeHeld, territoriesToAttack,
-        new HashSet<>(ProData.getData().getMap().getTerritories()));
-  }
-
   /**
    * Returns the value of each territory in {@code territoriesToCheck}.
    */
@@ -64,7 +57,6 @@ public final class ProTerritoryValueUtils {
       final Set<Territory> territoriesToCheck) {
 
     final int maxLandMassSize = findMaxLandMassSize(player);
-
     final Map<Territory, Double> enemyCapitalsAndFactoriesMap =
         findEnemyCapitalsAndFactoriesValue(player, maxLandMassSize, territoriesThatCantBeHeld, territoriesToAttack);
 
@@ -92,12 +84,12 @@ public final class ProTerritoryValueUtils {
    * Returns the value of each sea territory in {@link ProData#getData()}.
    */
   public static Map<Territory, Double> findSeaTerritoryValues(final PlayerId player,
-      final List<Territory> territoriesThatCantBeHeld) {
+      final List<Territory> territoriesThatCantBeHeld, final List<Territory> territoriesToCheck) {
 
     // Determine value for water territories
     final Map<Territory, Double> territoryValueMap = new HashMap<>();
     final GameData data = ProData.getData();
-    for (final Territory t : data.getMap().getTerritories()) {
+    for (final Territory t : territoriesToCheck) {
       if (!territoriesThatCantBeHeld.contains(t) && t.isWater()
           && !data.getMap().getNeighbors(t, Matches.territoryIsWater()).isEmpty()) {
 
@@ -302,7 +294,8 @@ public final class ProTerritoryValueUtils {
 
     // Determine value based on nearby territory production
     double nearbyLandValue = 0;
-    final Set<Territory> nearbyTerritories = data.getMap().getNeighbors(t, 3);
+    final Set<Territory> nearbyTerritories =
+        data.getMap().getNeighborsIgnoreEnd(t, 3, ProMatches.territoryCanMoveSeaUnits(player, data, true));
     final List<Territory> nearbyLandTerritories =
         CollectionUtils.getMatches(nearbyTerritories, ProMatches.territoryCanPotentiallyMoveLandUnits(player, data));
     nearbyLandTerritories.removeAll(territoriesToAttack);
