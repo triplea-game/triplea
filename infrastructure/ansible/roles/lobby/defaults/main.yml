@@ -17,3 +17,6 @@ lobby_postgres_password: ""
 lobby_postgres_host: "10.0.2.2"
 
 lobby_postgres_port: "5432"
+
+lobby_postgres_database: "lobby"
+

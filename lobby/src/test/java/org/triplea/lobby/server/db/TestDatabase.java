@@ -25,7 +25,7 @@ final class TestDatabase {
         "jdbc:postgresql://%s:%d/%s",
         "localhost",
         5432,
-        "ta_users");
+        "lobby");
   }
 
   private static Properties getConnectionProperties() {
