@@ -411,7 +411,7 @@ class ProPurchaseAi {
     // Find strategic value for each territory
     ProLogger.info("Find strategic value for place territories");
     final Set<Territory> territoriesToCheck = new HashSet<>();
-    for (final ProPurchaseTerritory t : purchaseTerritories.values()) {
+    for (final ProPurchaseTerritory t : placeNonConstructionTerritories.values()) {
       for (final ProPlaceTerritory ppt : t.getCanPlaceTerritories()) {
         territoriesToCheck.add(ppt.getTerritory());
       }
