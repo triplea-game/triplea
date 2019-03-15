@@ -14,12 +14,12 @@ import lombok.AllArgsConstructor;
  * Utility class to create/read/delete banned usernames (there is no update).
  */
 @AllArgsConstructor
-class PlayerNameBlackListController implements UsernameBlacklistDao {
+class UsernameBlacklistController implements UsernameBlacklistDao {
   private final Supplier<Connection> connection;
 
   @Override
-  public void addName(final String playerNameToBan, final String moderatorName) {
-    checkNotNull(playerNameToBan);
+  public void addName(final String usernameToBan, final String moderatorName) {
+    checkNotNull(usernameToBan);
     checkNotNull(moderatorName);
 
     final String sql = ""
@@ -28,12 +28,12 @@ class PlayerNameBlackListController implements UsernameBlacklistDao {
         + "on conflict (username) do nothing";
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, playerNameToBan);
+      ps.setString(1, usernameToBan);
       ps.setString(2, moderatorName);
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new DatabaseException("Error inserting banned username: " + playerNameToBan, e);
+      throw new DatabaseException("Error inserting banned username: " + usernameToBan, e);
     }
   }
 

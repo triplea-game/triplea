@@ -8,12 +8,12 @@ public interface UsernameBlacklistDao {
    * Adds the specified banned username to the table if it does not exist or updates the instant at which the ban will
    * expire if it already exists.
    *
-   * @param playerNameToBan The username will be banned.
+   * @param usernameToBan The username will be banned.
    * @param moderatorName The name of the moderator executing the ban.
    *
    * @throws IllegalStateException If an error occurs while adding, updating, or removing the ban.
    */
-  void addName(String playerNameToBan, String moderatorName);
+  void addName(String usernameToBan, String moderatorName);
 
   /**
    * Indicates if the specified username is banned.

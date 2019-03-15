@@ -21,7 +21,7 @@ class JdbcDatabaseDao implements DatabaseDao {
 
     badWordDao = new BadWordController(connection);
     bannedMacDao = new BannedMacController(connection);
-    usernameBlacklistDao = new PlayerNameBlackListController(connection);
+    usernameBlacklistDao = new UsernameBlacklistController(connection);
     mutedMacDao = new MutedMacController(connection);
     userDao = new UserController(connection);
   }
