@@ -27,11 +27,9 @@ public interface IModeratorController extends IRemote {
   void boot(INode node);
 
   /**
-   * Ban the username of the given INode.
-   *
-   * @param banExpires {@code null} for a permanent ban.
+   * Blacklist the given username. The exact name will no longer be allowed for future usage.
    */
-  void banUsername(INode node, @Nullable Date banExpires);
+  void addUsernameToBlacklist(String username);
 
   /**
    * Ban the IP address of the given INode.
@@ -57,24 +55,6 @@ public interface IModeratorController extends IRemote {
    * @param banExpires {@code null} for a permanent ban.
    */
   void banMac(INode node, String hashedMac, @Nullable Date banExpires);
-
-  /**
-   * Mute the username of the given INode.
-   *
-   * @param muteExpires {@code null} for a permanent mute.
-   */
-  void muteUsername(INode node, @Nullable Date muteExpires);
-
-  /**
-   * Mute the IP address of the given INode.
-   *
-   * @param node The node to mute.
-   * @param muteExpires {@code null} for a permanent mute.
-   *
-   * @deprecated Kept to maintain backwards compatibility. Remove with next lobby-incompatible release.
-   */
-  @Deprecated
-  default void muteIp(final INode node, final @Nullable Date muteExpires) {}
 
   /**
    * Mute the mac of the given INode.

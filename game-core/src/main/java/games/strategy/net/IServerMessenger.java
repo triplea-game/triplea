@@ -43,25 +43,10 @@ public interface IServerMessenger extends IMessenger {
   void notifyMacMiniBanningOfPlayer(String mac);
 
   /**
-   * Notifies the server that the specified username has been banned.
-   *
-   * @param username The username to ban.
-   */
-  void notifyUsernameMiniBanningOfPlayer(String username);
-
-  /**
    * Returns the hashed MAC address for the user with the specified name or {@code null} if unknown.
    */
   @Nullable
   String getPlayerMac(String name);
-
-  /**
-   * Notifies the server that the specified username has been muted until the specified instant.
-   *
-   * @param username The username to mute.
-   * @param muteExpires The time at which the mute expires or {@code null} if the mute is indefinite.
-   */
-  void notifyUsernameMutingOfPlayer(String username, @Nullable Instant muteExpires);
 
   /**
    * Notifies the server that the specified hashed MAC address has been muted until the specified instant.
@@ -70,8 +55,6 @@ public interface IServerMessenger extends IMessenger {
    * @param muteExpires The time at which the mute expires or {@code null} if the mute is indefinite.
    */
   void notifyMacMutingOfPlayer(String mac, @Nullable Instant muteExpires);
-
-  boolean isUsernameMiniBanned(String username);
 
   boolean isIpMiniBanned(String ip);
 

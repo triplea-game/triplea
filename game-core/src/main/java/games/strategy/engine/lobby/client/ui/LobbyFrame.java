@@ -28,8 +28,6 @@ import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 
-import com.google.common.collect.ImmutableList;
-
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
@@ -44,12 +42,6 @@ import games.strategy.triplea.ui.menubar.LobbyMenu;
  */
 public class LobbyFrame extends JFrame {
   private static final long serialVersionUID = -388371674076362572L;
-
-  private static final List<String> banOrMuteOptions = ImmutableList.of(
-      "Mac Address Only",
-      "User Name only",
-      "Name and Mac",
-      "Cancel");
 
   private final LobbyClient client;
   private final ChatMessagePanel chatMessagePanel;
@@ -117,58 +109,16 @@ public class LobbyFrame extends JFrame {
       controller.boot(clickedOn);
     }));
     actions.add(SwingAction.of("Ban Player", e -> {
-      final int resultBanType = JOptionPane.showOptionDialog(LobbyFrame.this,
-          "Select the type of ban:",
-          "Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-          banOrMuteOptions.toArray(), banOrMuteOptions.get(banOrMuteOptions.size() - 1));
-      if (resultBanType < 0) {
-        return;
-      }
-      final String selectedBanType = banOrMuteOptions.get(resultBanType);
-      if (selectedBanType.equals("Cancel")) {
-        return;
-      }
-
       TimespanDialog.prompt(this, "Select Timespan",
           "Please consult other admins before banning longer than 1 day. \n"
               + "And please remember to report this ban.",
           date -> {
-            if (selectedBanType.toLowerCase().contains("name")) {
-              controller.banUsername(clickedOn, date);
-            }
-            if (selectedBanType.toLowerCase().contains("mac")) {
-              controller.banMac(clickedOn, date);
-            }
-            // Should we keep this auto?
+            controller.banMac(clickedOn, date);
             controller.boot(clickedOn);
           });
     }));
 
     actions.add(SwingAction.of("Mute Player", e -> {
-      final int resultMuteType = JOptionPane.showOptionDialog(LobbyFrame.this,
-          "<html>Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
-          "Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-          banOrMuteOptions.toArray(), banOrMuteOptions.get(banOrMuteOptions.size() - 1));
-      if (resultMuteType < 0) {
-        return;
-      }
-      final String selectedMuteType = banOrMuteOptions.get(resultMuteType);
-      if (selectedMuteType.equals("Cancel")) {
-        return;
-      }
-      TimespanDialog.prompt(this, "Select Timespan",
-          "Please consult other admins before muting longer than 1 day. \n"
-              + "And please remember to report this mute.",
-          date -> {
-            if (selectedMuteType.toLowerCase().contains("name")) {
-              controller.muteUsername(clickedOn, date);
-            }
-            if (selectedMuteType.toLowerCase().contains("mac")) {
-              controller.muteMac(clickedOn, date);
-            }
-          });
-    }));
-    actions.add(SwingAction.of("Quick Mute", e -> {
       final JLabel label = new JLabel("How many minutes should this player be muted?");
       final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 0, 60 * 24 * 2, 1));
       final JPanel panel = new JPanel();
@@ -186,7 +136,6 @@ public class LobbyFrame extends JFrame {
           return;
         }
         final Instant expire = Instant.now().plus(Duration.ofMinutes(resultMuteLengthInMinutes));
-        controller.muteUsername(clickedOn, Date.from(expire));
         controller.muteMac(clickedOn, Date.from(expire));
       }
     }));

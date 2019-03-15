@@ -165,15 +165,6 @@ final class ChatIntegrationTest {
     }).start();
   }
 
-  @Test
-  void shouldBeAbleToMuteNodeByUsername() {
-    runChatTest((server, client1, client2) -> {
-      messenger.notifyUsernameMutingOfPlayer(client1.getLocalNode().getName(), null);
-      client1.sendMessage("Test", false);
-      waitFor(() -> nodeToReceiveMessage(client1ChatListener, TestServerMessenger.ADMINISTRATIVE_MUTE_CHAT_MESSAGE));
-    });
-  }
-
   private static void nodeToReceiveMessage(final TestChatListener chatListener, final String message) {
     assertThat(chatListener.lastMessageReceived.get(), is(message));
   }
