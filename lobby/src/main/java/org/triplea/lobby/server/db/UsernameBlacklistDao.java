@@ -3,7 +3,7 @@ package org.triplea.lobby.server.db;
 /**
  * Data access object for the banned username table.
  */
-public interface PlayerNameBlackListDao {
+public interface UsernameBlacklistDao {
   /**
    * Adds the specified banned username to the table if it does not exist or updates the instant at which the ban will
    * expire if it already exists.

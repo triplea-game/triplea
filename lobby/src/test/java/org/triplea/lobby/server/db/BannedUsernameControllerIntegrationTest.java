@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 
 final class BannedUsernameControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
-  private final PlayerNameBlackListDao controller =
-      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getPlayerNameBlackListDao();
+  private final UsernameBlacklistDao controller =
+      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getUsernameBlacklistDao();
 
   @Test
   void testBanUsername() {

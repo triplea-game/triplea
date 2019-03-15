@@ -144,12 +144,12 @@ public final class LobbyMenu extends JMenuBar {
   private void addBanUsernameMenuItem(final JMenu parentMenu) {
     final JMenuItem menuItem = new JMenuItem("Blacklist Username");
     menuItem.addActionListener(e -> {
-      final String message = "Enter the player name that you want to blacklist from the lobby.\n"
+      final String message = "Enter the username that you want to blacklist from the lobby.\n"
           + "\n"
           + "Note that this ban is effective on any username, registered or anonymous, online or offline.";
       showInputDialog(message)
           .filter(this::validateUsername)
-          .ifPresent(username -> getModeratorController().addPlayerNameToBlackList(username));
+          .ifPresent(username -> getModeratorController().addUsernameToBlacklist(username));
     });
     parentMenu.add(menuItem);
   }

@@ -34,12 +34,12 @@ final class ModeratorController implements IModeratorController {
   private final DatabaseDao database;
 
   @Override
-  public void addPlayerNameToBlackList(final String name) {
+  public void addUsernameToBlacklist(final String name) {
     assertUserIsAdmin();
 
     // TODO: The User object here probably is not needed, can be simplified as we just need moderator name.
     final User moderator = getUserForNode(MessageContext.getSender());
-    database.getPlayerNameBlackListDao().addName(name, moderator.getUsername());
+    database.getUsernameBlacklistDao().addName(name, moderator.getUsername());
     log.info(String.format("User name was blacklisted: %s, by: %sj", name, moderator.getUsername()));
   }
 

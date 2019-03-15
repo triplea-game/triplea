@@ -33,7 +33,7 @@ import org.triplea.lobby.server.db.BadWordDao;
 import org.triplea.lobby.server.db.BannedMacDao;
 import org.triplea.lobby.server.db.DatabaseDao;
 import org.triplea.lobby.server.db.HashedPassword;
-import org.triplea.lobby.server.db.PlayerNameBlackListDao;
+import org.triplea.lobby.server.db.UsernameBlacklistDao;
 import org.triplea.lobby.server.db.UserDao;
 import org.triplea.test.common.security.TestSecurityUtils;
 import org.triplea.util.Md5Crypt;
@@ -56,7 +56,7 @@ final class LobbyLoginValidatorTest {
     BannedMacDao bannedMacDao;
 
     @Mock
-    PlayerNameBlackListDao bannedUsernameDao;
+    UsernameBlacklistDao bannedUsernameDao;
 
     @Mock
     BadWordDao badWordDao;
@@ -227,7 +227,7 @@ final class LobbyLoginValidatorTest {
     }
 
     private void givenNoUsernameIsBanned() {
-      when(databaseDao.getPlayerNameBlackListDao()).thenReturn(bannedUsernameDao);
+      when(databaseDao.getUsernameBlacklistDao()).thenReturn(bannedUsernameDao);
       when(bannedUsernameDao.isUsernameBanned(anyString())).thenReturn(false);
     }
   }

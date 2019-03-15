@@ -27,9 +27,9 @@ public interface IModeratorController extends IRemote {
   void boot(INode node);
 
   /**
-   * Black-List the username of the given INode.
+   * Blacklist the given username. The exact name will no longer be allowed for future usage.
    */
-  void addPlayerNameToBlackList(String name);
+  void addUsernameToBlacklist(String username);
 
   /**
    * Ban the IP address of the given INode.

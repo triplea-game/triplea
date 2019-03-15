@@ -119,7 +119,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     }
     // test for username ban after testing normal bans, because if it is only a username ban then the user should know
     // they can change their name
-    final boolean usernameBanned = database.getPlayerNameBlackListDao().isUsernameBanned(user.getUsername());
+    final boolean usernameBanned = database.getUsernameBlacklistDao().isUsernameBanned(user.getUsername());
     if (usernameBanned) {
       return ErrorMessages.USERNAME_HAS_BEEN_BANNED;
     }

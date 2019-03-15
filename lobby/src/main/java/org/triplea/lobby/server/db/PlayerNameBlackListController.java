@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
  * Utility class to create/read/delete banned usernames (there is no update).
  */
 @AllArgsConstructor
-class PlayerNameBlackListController implements PlayerNameBlackListDao {
+class PlayerNameBlackListController implements UsernameBlacklistDao {
   private final Supplier<Connection> connection;
 
   @Override

@@ -5,7 +5,7 @@ package org.triplea.lobby.server.db;
  * Instances of this interface can be used to get an instance of any DB DAO.
  */
 public interface DatabaseDao {
-  PlayerNameBlackListDao getPlayerNameBlackListDao();
+  UsernameBlacklistDao getUsernameBlacklistDao();
 
   BannedMacDao getBannedMacDao();
 
