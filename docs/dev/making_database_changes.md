@@ -1,8 +1,7 @@
 ## Overview
 
-Database SQL to be executed is first checked in to a migration file and
-then run as part of a release. All updates to database should flow 
-through migration files.
+Database SQL to be executed is first checked in to a migration file and then run as part of a 
+release. All updates to database should flow through migration files.
 
 ### Flyway Migration File Versioning
 
@@ -18,9 +17,9 @@ might be named:  `V1.10.01.20190313.1200__description_of_change.sql` (where 2018
 is the noon hour).
 
 
-### Migration file Squashing
+### Migration File Squashing
 
-At some point before release changes will start to be squashed together. Any squashing of files will be to
+At some point before release, changes will start to be squashed together. Any squashing of files will be to
 already checked in files and with the date suffix above will not conflict with any in-flight changes.
 
 So for example one might see the following migration file listing:
