@@ -1,5 +1,5 @@
 
--- mute only by network identifiers, drop mute by player name
+-- mute only by network identifiers, drop mute by username
 drop table muted_usernames;
 
 -- 'banned_usernames' will now keep track of username blacklist with no expiration
