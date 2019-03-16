@@ -137,6 +137,20 @@ public final class GameStepPropertiesHelper {
   }
 
   /**
+   * For various things related to movement validation.
+   * Specifically is it a PBF/PBEM post only delegate - no movement allowed.
+   */
+  public static boolean isPostOnlyMove(final GameData data) {
+    data.acquireReadLock();
+    try {
+      final String prop = data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.POST_ONLY_MOVE);
+      // If post only not specified, assume it to be false
+      return prop != null && Boolean.parseBoolean(prop);
+    } finally {
+      data.releaseReadLock();
+    }
+  }
+  /**
    * Repairs damaged units. Normally would occur at either start of combat move or end of turn, depending.
    */
   static boolean isRepairUnits(final GameData data) {

@@ -35,6 +35,7 @@ public class GameStep extends GameDataComponent {
     String AIRBORNE_MOVE = "airborneMove";
     String COMBAT_MOVE = "combatMove";
     String NON_COMBAT_MOVE = "nonCombatMove";
+    String POST_ONLY_MOVE = "postOnlyMove";
     String FIRE_ROCKETS = "fireRockets";
     String REPAIR_UNITS = "repairUnits";
     String GIVE_BONUS_MOVEMENT = "giveBonusMovement";
