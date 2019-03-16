@@ -25,13 +25,15 @@ public final class GameStepPropertiesHelper {
   private GameStepPropertiesHelper() {}
 
   /**
-   * Indicates we skip posting the game summary and save to a forum or email.
+   * Indicates we skip posting the game summary and save to a forum or email. Defaults to true for
+   * purchase phase and false for all others.
    */
   public static boolean isSkipPosting(final GameData data) {
     data.acquireReadLock();
     try {
-      return Boolean.parseBoolean(
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.SKIP_POSTING, "false"));
+      final String defaultSkipPosting = isPurchaseDelegate(data) ? "true" : "false";
+      return Boolean.parseBoolean(data.getSequence().getStep().getProperties()
+          .getProperty(GameStep.PropertyKeys.SKIP_POSTING, defaultSkipPosting));
     } finally {
       data.releaseReadLock();
     }
@@ -285,4 +287,9 @@ public final class GameStepPropertiesHelper {
   private static boolean isBidPlaceDelegate(final GameData data) {
     return data.getSequence().getStep().getName().endsWith("BidPlace");
   }
+
+  private static boolean isPurchaseDelegate(final GameData data) {
+    return data.getSequence().getStep().getName().endsWith("Purchase");
+  }
+
 }

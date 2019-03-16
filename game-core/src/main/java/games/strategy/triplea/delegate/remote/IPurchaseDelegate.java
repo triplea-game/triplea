@@ -7,13 +7,11 @@ import org.triplea.java.collections.IntegerMap;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.message.IRemote;
 
 /**
  * Logic for purchasing and repairing units.
  */
-public interface IPurchaseDelegate extends IRemote, IDelegate {
+public interface IPurchaseDelegate extends IAbstractForumPosterDelegate {
   /**
    * Purchases the specified units.
    *

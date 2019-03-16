@@ -130,6 +130,10 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       tech();
     } else if (name.endsWith("Bid") || name.endsWith("Purchase")) { // the delegate handles everything
       purchase(GameStepPropertiesHelper.isBid(getGameData()));
+      if (!GameStepPropertiesHelper.isBid(getGameData())) {
+        ui.waitForMoveForumPoster(getPlayerId(), getPlayerBridge());
+        // TODO only do forum post if there is a combat
+      }
     } else if (name.endsWith("Move")) {
       final boolean nonCombat = GameStepPropertiesHelper.isNonCombatMove(getGameData(), false);
       move(nonCombat, name);
