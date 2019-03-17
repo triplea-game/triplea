@@ -380,7 +380,6 @@ public class BattleTracker implements Serializable {
       presentFromStartTilEnd.removeAll(unitsNotUnloadedTilEndOfRoute);
     }
     final boolean canConquerMiddleSteps = presentFromStartTilEnd.stream().anyMatch(Matches.unitIsNotAir());
-    final boolean scramblingEnabled = Properties.getScrambleRulesInEffect(data);
     final Predicate<Territory> conquerable = Matches.territoryIsEmptyOfCombatUnits(data, id)
         .and(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id)
             .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)));
