@@ -420,44 +420,21 @@ public class BattleTracker implements Serializable {
       if (precede == null) {
         precede = getPendingBombingBattle(route.getEnd());
       }
-      // if we have a preceding battle, then we must use a non-fighting-battle
-      // if we have scrambling on, and this is an amphibious attack,
-      // we may wish to scramble to kill the transports, so must use non-fighting-battle also
-      if (precede != null || (scramblingEnabled && route.isUnload() && route.hasExactlyOneStep())) {
-        IBattle nonFight = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
-        if (nonFight == null) {
-          nonFight = new NonFightingBattle(route.getEnd(), id, this, data);
-          pendingBattles.add(nonFight);
-          getBattleRecords().addBattle(id, nonFight.getBattleId(), route.getEnd(), nonFight.getBattleType());
-        }
-        final Change change = nonFight.addAttackChange(route, units, null);
-        bridge.addChange(change);
-        if (changeTracker != null) {
-          changeTracker.addChange(change);
-        }
-        if (precede != null) {
-          addDependency(nonFight, precede);
-        }
-      } else {
-        if (Matches.isTerritoryEnemy(id, data).test(route.getEnd())) {
-          if (Matches.territoryIsBlitzable(id, data).test(route.getEnd())) {
-            this.blitzed.add(route.getEnd());
-          }
-          this.conquered.add(route.getEnd());
-        }
-        IBattle nonFight = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
-        if (nonFight == null) {
-          nonFight = new FinishedBattle(route.getEnd(), id, this, false, BattleType.NORMAL, data,
-              BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER);
-          pendingBattles.add(nonFight);
-          getBattleRecords().addBattle(id, nonFight.getBattleId(), route.getEnd(), nonFight.getBattleType());
-        }
-        final Change change = nonFight.addAttackChange(route, units, null);
-        bridge.addChange(change);
-        if (changeTracker != null) {
-          changeTracker.addChange(change);
-        }
-        takeOver(route.getEnd(), id, bridge, changeTracker, units);
+      // There is no reason to avoid a NonFightingBattle any more.
+      // If Combat Move is before Purchase, capital plunders have to be after purchase.
+      IBattle nonFight = getPendingBattle(route.getEnd(), false, BattleType.NORMAL);
+      if (nonFight == null) {
+        nonFight = new NonFightingBattle(route.getEnd(), id, this, data);
+        pendingBattles.add(nonFight);
+        getBattleRecords().addBattle(id, nonFight.getBattleId(), route.getEnd(), nonFight.getBattleType());
+      }
+      final Change change = nonFight.addAttackChange(route, units, null);
+      bridge.addChange(change);
+      if (changeTracker != null) {
+        changeTracker.addChange(change);
+      }
+      if (precede != null) {
+        addDependency(nonFight, precede);
       }
     }
     // TODO: else what?
