@@ -128,7 +128,8 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     boolean badStep = false;
     if (name.endsWith("Tech")) {
       tech();
-    } else if (name.endsWith("Bid") || name.endsWith("Purchase")) { // the delegate handles everything
+    } else if (name.endsWith("Bid") || name.endsWith("Purchase") || name.endsWith("Repair")) {
+      // the delegate handles Bid vs Purchase. This program handles repair only.
       purchase(GameStepPropertiesHelper.isBid(getGameData()));
       if (!GameStepPropertiesHelper.isBid(getGameData())) {
         ui.waitForMoveForumPoster(getPlayerId(), getPlayerBridge());
@@ -358,6 +359,8 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     if (getPlayerBridge().isGameOver()) {
       return;
     }
+    final GameData data = getGameData();
+    final boolean repairOnInoperative = GameStepPropertiesHelper.isRepairOnInoperative(data);
 
     final PlayerId id = getPlayerId();
     // play a sound for this phase
@@ -368,9 +371,11 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     // Check if any factories need to be repaired
     if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null
         && !id.getRepairFrontier().getRules().isEmpty()) {
-      final GameData data = getGameData();
       if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-        final Predicate<Unit> myDamaged = Matches.unitIsOwnedBy(id).and(Matches.unitHasTakenSomeBombingUnitDamage());
+        Predicate<Unit> myDamaged = Matches.unitIsOwnedBy(id).and(Matches.unitHasTakenSomeBombingUnitDamage());
+        if (repairOnInoperative) {
+          myDamaged = myDamaged.and(Matches.unitIsDisabled()).and(Matches.unitIsInfrastructure());
+        }
         final Collection<Unit> damagedUnits = new ArrayList<>();
         for (final Territory t : data.getMap().getTerritories()) {
           damagedUnits.addAll(CollectionUtils.getMatches(t.getUnits(), myDamaged));
@@ -398,6 +403,9 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
           }
         }
       }
+    }
+    if (repairOnInoperative) {
+      return;
     }
     final IntegerMap<ProductionRule> prod = ui.getProduction(id, bid);
     if (prod == null) {

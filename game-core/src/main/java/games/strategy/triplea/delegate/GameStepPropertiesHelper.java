@@ -40,6 +40,21 @@ public final class GameStepPropertiesHelper {
   }
 
   /**
+   * Allow a purchase step which only repairs. Does not actually purchase.
+   * Triggered if a base is inoperative.
+   */
+  public static boolean isRepairOnInoperative(final GameData data) {
+    data.acquireReadLock();
+    try {
+      final String prop = data.getSequence().getStep().getProperties()
+          .getProperty(GameStep.PropertyKeys.REPAIR_ON_INOPERATIVE);
+      return prop != null && Boolean.parseBoolean(prop);  // default to false
+    } finally {
+      data.releaseReadLock();
+    }
+  }
+
+  /**
    * What players is this turn summary for? If more than 1 player, whose phases are touching or intermeshed, then we
    * will summarize for all those phases.
    *

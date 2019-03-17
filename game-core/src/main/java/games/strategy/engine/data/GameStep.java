@@ -37,6 +37,7 @@ public class GameStep extends GameDataComponent {
     String NON_COMBAT_MOVE = "nonCombatMove";
     String FIRE_ROCKETS = "fireRockets";
     String REPAIR_UNITS = "repairUnits";
+    String REPAIR_ON_INOPERATIVE = "repairOnInoperative";
     String GIVE_BONUS_MOVEMENT = "giveBonusMovement";
     String REMOVE_AIR_THAT_CAN_NOT_LAND = "removeAirThatCanNotLand";
     String RESET_UNIT_STATE_AT_START = "resetUnitStateAtStart";
