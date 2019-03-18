@@ -8,7 +8,6 @@ import java.time.Instant;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 
 final class MutedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
@@ -26,7 +25,6 @@ final class MutedMacControllerIntegrationTest extends AbstractModeratorServiceCo
   void testMuteMac() {
     final Instant muteUntil = Instant.now().plusSeconds(100L);
     muteMac(muteUntil);
-    assertMutedUserEquals(user);
     assertTrue(isMacMuted(Instant.now()));
     assertEquals(Optional.of(muteUntil), getMacUnmuteTime());
 
@@ -62,19 +60,12 @@ final class MutedMacControllerIntegrationTest extends AbstractModeratorServiceCo
     assertEquals(Optional.of(muteUntil), getMacUnmuteTime());
   }
 
-  @Test
-  void testMuteMacUpdatesMutedUserAndModerator() {
-    muteMac();
-
-    assertModeratorEquals(moderator);
-  }
-
   private void muteMac() {
     muteMac(null);
   }
 
   private void muteMac(final Instant expiry) {
-    controller.addMutedMac(user, expiry, moderator);
+    controller.addMutedMac(user.getInetAddress(), user.getHashedMacAddress(), expiry, moderator.getUsername());
   }
 
   private Optional<Instant> getMacUnmuteTime() {
@@ -83,21 +74,5 @@ final class MutedMacControllerIntegrationTest extends AbstractModeratorServiceCo
 
   private boolean isMacMuted(final Instant checkTime) {
     return controller.isMacMuted(checkTime, user.getHashedMacAddress());
-  }
-
-  private void assertMutedUserEquals(final User expected) {
-    assertUserEquals(
-        expected,
-        "select username, ip, mac from muted_macs where mac=?",
-        ps -> ps.setString(1, user.getHashedMacAddress()),
-        "unknown muted hashed MAC address: " + user.getHashedMacAddress());
-  }
-
-  private void assertModeratorEquals(final User expected) {
-    assertUserEquals(
-        expected,
-        "select mod_username, mod_ip, mod_mac from muted_macs where mac=?",
-        ps -> ps.setString(1, user.getHashedMacAddress()),
-        "unknown muted hashed MAC address: " + user.getHashedMacAddress());
   }
 }

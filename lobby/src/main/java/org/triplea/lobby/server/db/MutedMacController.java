@@ -2,6 +2,7 @@ package org.triplea.lobby.server.db;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,8 +13,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
-
-import org.triplea.lobby.server.User;
 
 import lombok.AllArgsConstructor;
 
@@ -35,33 +34,36 @@ class MutedMacController implements MutedMacDao {
    * @throws IllegalStateException If an error occurs while adding, updating, or removing the mute.
    */
   @Override
-  public void addMutedMac(final User mutedUser, final @Nullable Instant muteTill, final User moderator) {
-    checkNotNull(mutedUser);
-    checkNotNull(moderator);
+  public void addMutedMac(
+      final InetAddress netAddress,
+      final String hashedMac,
+      final @Nullable Instant muteTill,
+      final String moderatorName) {
+    checkNotNull(netAddress);
+    checkNotNull(netAddress.getHostAddress());
+    checkNotNull(hashedMac);
+    checkNotNull(moderatorName);
 
     final String sql = ""
         + "insert into muted_macs "
-        + "  (username, ip, mac, mute_till, mod_username, mod_ip, mod_mac) values (?, ?::inet, ?, ?, ?, ?::inet, ?) "
+        + "  (ip, mac, mute_till, mod_username) values (?::inet, ?, ?, ?) "
         + "on conflict (mac) do update set "
-        + "  username=excluded.username, "
         + "  ip=excluded.ip, "
         + "  mute_till=excluded.mute_till, "
-        + "  mod_username=excluded.mod_username, "
-        + "  mod_ip=excluded.mod_ip, "
-        + "  mod_mac=excluded.mod_mac";
+        + "  mod_username=excluded.mod_username";
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
-      ps.setString(1, mutedUser.getUsername());
-      ps.setString(2, mutedUser.getInetAddress().getHostAddress());
-      ps.setString(3, mutedUser.getHashedMacAddress());
-      ps.setTimestamp(4, muteTill != null ? Timestamp.from(muteTill) : null);
-      ps.setString(5, moderator.getUsername());
-      ps.setString(6, moderator.getInetAddress().getHostAddress());
-      ps.setString(7, moderator.getHashedMacAddress());
+      ps.setString(1, netAddress.getHostAddress());
+      ps.setString(2, hashedMac);
+      ps.setTimestamp(3, Optional.ofNullable(muteTill).map(Timestamp::from).orElse(null));
+      ps.setString(4, moderatorName);
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new DatabaseException("Error inserting muted mac: " + mutedUser.getHashedMacAddress(), e);
+      throw new DatabaseException(
+          String.format("Error inserting muted mac, address: %s, mac: %s, expiration: %s",
+              netAddress, hashedMac, muteTill),
+          e);
     }
   }
 
