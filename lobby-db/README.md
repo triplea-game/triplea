@@ -1,7 +1,8 @@
 # lobby-db
 
+TODO: rename this project to lobby-db-schema and ensure production migration scripts still work
 
-- locallobby database: [Dockerfile](https://github.com/triplea-game/triplea/blob/master/lobby-db/Dockerfile) 
+- local lobby database: [Dockerfile](https://github.com/triplea-game/triplea/blob/master/lobby-db/Dockerfile) 
 - [migrations files](https://github.com/triplea-game/triplea/tree/master/lobby-db/src/main/resources/db/migration).
 is where we check-in SQL commands to update database. Any new files are run automatically as part of lobby deployment.
 
