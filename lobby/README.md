@@ -1,7 +1,6 @@
 # Lobby
 
-This is the well-known running TripleA lobby server.
-
+Java based TripleA lobby server application.
 
 ## Build
 
@@ -32,8 +31,8 @@ This project is a server side component, a stand-alone http(s) server.
 ### Functionality Provided / Strategic fit in the TripleA project
 
 We envision two kinds of client-server communication, over http or over websocket.
-Currently, lobby-server, uses Java RMI, which we would like to deprecate as it 
-can be difficult to work with for development.
+Currently, lobby-server, uses a slightly customized variant of Java RMI, which we 
+would like to deprecate as it  can be difficult to work with for development.
 
 This server will accumulate new features that make sense for http communication,
 and will accumulate some migrated features from `lobby-server`. Some features may
