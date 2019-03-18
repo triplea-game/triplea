@@ -44,6 +44,7 @@ public class GameStep extends GameDataComponent {
     String BID = "bid";
     String COMBINED_TURNS = "combinedTurns";
     String REPAIR_PLAYERS = "repairPlayers";
+    String ONLY_REPAIR_IF_DISABLED = "onlyRepairIfDisabled";
   }
 
   /**
