@@ -31,10 +31,10 @@ import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.db.BadWordDao;
 import org.triplea.lobby.server.db.BannedMacDao;
-import org.triplea.lobby.server.db.BannedUsernameDao;
 import org.triplea.lobby.server.db.DatabaseDao;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserDao;
+import org.triplea.lobby.server.db.UsernameBlacklistDao;
 import org.triplea.test.common.security.TestSecurityUtils;
 import org.triplea.util.Md5Crypt;
 import org.triplea.util.Tuple;
@@ -56,7 +56,7 @@ final class LobbyLoginValidatorTest {
     BannedMacDao bannedMacDao;
 
     @Mock
-    BannedUsernameDao bannedUsernameDao;
+    UsernameBlacklistDao bannedUsernameDao;
 
     @Mock
     BadWordDao badWordDao;
@@ -227,8 +227,8 @@ final class LobbyLoginValidatorTest {
     }
 
     private void givenNoUsernameIsBanned() {
-      when(databaseDao.getBannedUsernameDao()).thenReturn(bannedUsernameDao);
-      when(bannedUsernameDao.isUsernameBanned(any(), anyString())).thenReturn(Tuple.of(false, new Timestamp(0L)));
+      when(databaseDao.getUsernameBlacklistDao()).thenReturn(bannedUsernameDao);
+      when(bannedUsernameDao.isUsernameBanned(anyString())).thenReturn(false);
     }
   }
 
@@ -428,7 +428,7 @@ final class LobbyLoginValidatorTest {
     @Nested
     final class WhenUserIsAnonymous extends AbstractNoBansTestCase {
       @Test
-      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
+      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
         givenAnonymousAuthenticationWillSucceed();
 
         whenAuthenticating(givenAuthenticationResponse());
@@ -456,7 +456,7 @@ final class LobbyLoginValidatorTest {
     @Nested
     final class WhenUserIsRegistered extends AbstractNoBansTestCase {
       @Test
-      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
+      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
 

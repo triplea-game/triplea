@@ -11,9 +11,8 @@ import lombok.Getter;
 class JdbcDatabaseDao implements DatabaseDao {
 
   private final BadWordDao badWordDao;
-  private final BannedUsernameDao bannedUsernameDao;
+  private final UsernameBlacklistDao usernameBlacklistDao;
   private final BannedMacDao bannedMacDao;
-  private final MutedUsernameDao mutedUsernameDao;
   private final MutedMacDao mutedMacDao;
   private final UserDao userDao;
 
@@ -22,8 +21,7 @@ class JdbcDatabaseDao implements DatabaseDao {
 
     badWordDao = new BadWordController(connection);
     bannedMacDao = new BannedMacController(connection);
-    bannedUsernameDao = new BannedUsernameController(connection);
-    mutedUsernameDao = new MutedUsernameController(connection);
+    usernameBlacklistDao = new UsernameBlacklistController(connection);
     mutedMacDao = new MutedMacController(connection);
     userDao = new UserController(connection);
   }

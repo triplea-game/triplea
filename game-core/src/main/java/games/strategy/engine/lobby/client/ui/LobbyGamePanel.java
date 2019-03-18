@@ -332,7 +332,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final Object minutes = JOptionPane.showInputDialog(getTopLevelAncestor(),
-        "Minutes to Mute for?  (between 0 and 2880, choose zero to unmute [works only if players is in the host])",
+        "Minutes to Mute for?  (between 0 and 2880 [works only if players is in the host])",
         "Minutes to Mute for?", JOptionPane.QUESTION_MESSAGE, null, null, 10);
     if (minutes == null) {
       return;

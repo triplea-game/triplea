@@ -37,17 +37,7 @@ final class LobbyServerMessenger extends AbstractServerMessenger {
   }
 
   @Override
-  protected Optional<Instant> getUsernameUnmuteTime(final String username) {
-    return databaseDao.getMutedUsernameDao().getUsernameUnmuteTime(username);
-  }
-
-  @Override
   protected boolean isMacMutedInBackingStore(final String mac) {
     return databaseDao.getMutedMacDao().isMacMuted(Instant.now(), mac);
-  }
-
-  @Override
-  protected boolean isUsernameMutedInBackingStore(final String username) {
-    return databaseDao.getMutedUsernameDao().isUsernameMuted(Instant.now(), username);
   }
 }

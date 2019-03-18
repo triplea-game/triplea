@@ -62,11 +62,9 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   private final Set<String> miniBannedIpAddresses = new ConcurrentSkipListSet<>();
   // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a
   // message was sent, which can be very slow
-  private final Set<String> liveMutedUsernames = new ConcurrentSkipListSet<>();
   private final Set<String> miniBannedMacAddresses = new ConcurrentSkipListSet<>();
   private final Set<String> liveMutedMacAddresses = new ConcurrentSkipListSet<>();
   // The following code is used in hosted lobby games by the host for player mini-banning and mini-muting
-  private final Set<String> miniBannedUsernames = new ConcurrentSkipListSet<>();
   private final Map<String, String> playersThatLeftMacsLast10 = new ConcurrentHashMap<>();
 
   protected AbstractServerMessenger(final String name, final int port, final IObjectStreamFactory objectStreamFactory)
@@ -145,18 +143,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
         .orElseGet(() -> playersThatLeftMacsLast10.get(name));
   }
 
-  private boolean isUsernameMutedInCache(final String username) {
-    return liveMutedUsernames.contains(username);
-  }
-
-  @Override
-  public void notifyUsernameMutingOfPlayer(final String username, final @Nullable Instant muteExpires) {
-    liveMutedUsernames.add(username);
-    if (muteExpires != null) {
-      scheduleUsernameUnmuteAt(username, muteExpires);
-    }
-  }
-
   private boolean isMacMutedInCache(final String mac) {
     return liveMutedMacAddresses.contains(mac);
   }
@@ -167,28 +153,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     if (muteExpires != null) {
       scheduleMacUnmuteAt(mac, muteExpires);
     }
-  }
-
-  private void scheduleUsernameUnmuteAt(final String username, final Instant expires) {
-    final Timer unmuteUsernameTimer = new Timer("Username unmute timer");
-    unmuteUsernameTimer.schedule(
-        newUnmuteTimerTask(() -> isUsernameMutedInBackingStore(username), () -> liveMutedUsernames.remove(username)),
-        millisBetweenNowAnd(expires));
-  }
-
-  /**
-   * Returns {@code true} if the user associated with the specified username is muted according to the backing store
-   * (e.g. a database); otherwise {@code false}.
-   *
-   * <p>
-   * Subclasses may override and are not required to call the superclass implementation. This implementation returns
-   * {@code false} indicating the user is not currently muted.
-   * </p>
-   *
-   * @param username The username of the user.
-   */
-  protected boolean isUsernameMutedInBackingStore(final String username) {
-    return false;
   }
 
   private TimerTask newUnmuteTimerTask(final BooleanSupplier isUserMuted, final Runnable unmuteUser) {
@@ -235,17 +199,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
    */
   public void notifyPlayerLogin(final String uniquePlayerName, final String mac) {
     cachedMacAddresses.put(uniquePlayerName, mac);
-    final String realName = IServerMessenger.getRealName(uniquePlayerName);
-    if (!liveMutedUsernames.contains(realName)) {
-      final Optional<Instant> muteTill = getUsernameUnmuteTime(realName);
-      muteTill.ifPresent(instant -> {
-        if (instant.isAfter(Instant.now())) {
-          // Signal the player as muted
-          liveMutedUsernames.add(realName);
-          scheduleUsernameUnmuteAt(realName, instant);
-        }
-      });
-    }
     if (!liveMutedMacAddresses.contains(mac)) {
       final Optional<Instant> muteTill = getMacUnmuteTime(mac);
       muteTill.ifPresent(instant -> {
@@ -304,8 +257,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     }
     if (msg.getMessage() instanceof HubInvoke) { // Chat messages are always HubInvoke's
       if (((HubInvoke) msg.getMessage()).call.getRemoteName().equals(getChatControlChannelName())) {
-        final String realName = IServerMessenger.getRealName(msg.getFrom().getName());
-        if (isUsernameMutedInCache(realName) || isMacMutedInCache(getPlayerMac(msg.getFrom().getName()))) {
+        if (isMacMutedInCache(getPlayerMac(msg.getFrom().getName()))) {
           bareBonesSendChatMessage(getAdministrativeMuteChatMessage(), msg.getFrom());
           return;
         }
@@ -347,16 +299,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
         IChatChannel.class);
     final SpokeInvoke spokeInvoke = new SpokeInvoke(null, false, call, getServerNode());
     send(spokeInvoke, to);
-  }
-
-  @Override
-  public boolean isUsernameMiniBanned(final String username) {
-    return miniBannedUsernames.contains(username);
-  }
-
-  @Override
-  public void notifyUsernameMiniBanningOfPlayer(final String username) {
-    miniBannedUsernames.add(username);
   }
 
   @Override

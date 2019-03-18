@@ -336,7 +336,6 @@ public class HeadlessGameServer {
             final String mac = messenger.getPlayerMac(node.getName());
             if (realName.equals(playerName)) {
               log.info("Remote Mute of Player: " + playerName);
-              messenger.notifyUsernameMutingOfPlayer(realName, expire);
               messenger.notifyMacMutingOfPlayer(mac, expire);
               return;
             }
@@ -432,11 +431,6 @@ public class HeadlessGameServer {
             final String mac = messenger.getPlayerMac(node.getName());
             if (realName.equals(playerName)) {
               log.info("Remote Ban of Player: " + playerName);
-              try {
-                messenger.notifyUsernameMiniBanningOfPlayer(realName);
-              } catch (final Exception e) {
-                log.log(Level.SEVERE, "Failed to notify username ban of player", e);
-              }
               try {
                 messenger.notifyIpMiniBanningOfPlayer(ip);
               } catch (final Exception e) {

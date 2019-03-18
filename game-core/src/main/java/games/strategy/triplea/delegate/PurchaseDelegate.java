@@ -27,7 +27,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
-import games.strategy.engine.message.IRemote;
+import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
@@ -37,6 +37,7 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitTypeComparator;
+import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 
@@ -46,7 +47,7 @@ import games.strategy.triplea.formatter.MyFormatter;
  * Subclasses can over ride addToPlayer(...) and removeFromPlayer(...) to change how
  * the adding or removing of resources is done.
  */
-public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate {
+public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate, IAbstractForumPosterDelegate {
   public static final String NOT_ENOUGH_RESOURCES = "Not enough resources";
   private static final Comparator<RepairRule> repairRuleComparator = Comparator.comparing(
       o -> (UnitType) o.getResults().keySet().iterator().next(),
@@ -329,7 +330,7 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
   }
 
   @Override
-  public Class<? extends IRemote> getRemoteType() {
+  public Class<IPurchaseDelegate> getRemoteType() {
     return IPurchaseDelegate.class;
   }
 
@@ -347,6 +348,21 @@ public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDe
       changes.add(change);
     }
     return returnString.toString();
+  }
+
+  @Override
+  public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary) {
+    // nothing for now
+  }
+
+  @Override
+  public boolean getHasPostedTurnSummary() {
+    return false;
+  }
+
+  @Override
+  public boolean postTurnSummary(final PbemMessagePoster poster, final String title) {
+    return poster.post(bridge.getHistoryWriter(), title);
   }
 
 }

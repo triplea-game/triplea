@@ -34,25 +34,13 @@ final class ModeratorController implements IModeratorController {
   private final DatabaseDao database;
 
   @Override
-  public void banUsername(final INode node, final @Nullable Date banExpires) {
-    banUsername(node, banExpires != null ? banExpires.toInstant() : null);
-  }
-
-  private void banUsername(final INode node, final @Nullable Instant banExpires) {
+  public void addUsernameToBlacklist(final String name) {
     assertUserIsAdmin();
-    if (isPlayerAdmin(node)) {
-      throw new IllegalStateException("Can't ban an admin");
-    }
 
-    final User bannedUser = getUserForNode(node);
+    // TODO: The User object here probably is not needed, can be simplified as we just need moderator name.
     final User moderator = getUserForNode(MessageContext.getSender());
-    database.getBannedUsernameDao().addBannedUsername(bannedUser, banExpires, moderator);
-    log.info(String.format(
-        "User was banned from the lobby (by username); "
-            + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
-        bannedUser.getUsername(), bannedUser.getInetAddress().getHostAddress(), bannedUser.getHashedMacAddress(),
-        moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
-        banExpires == null ? "forever" : banExpires.toString()));
+    database.getUsernameBlacklistDao().addName(name, moderator.getUsername());
+    log.info(String.format("User name was blacklisted: %s, by: %sj", name, moderator.getUsername()));
   }
 
   private void assertUserIsAdmin() {
@@ -123,29 +111,6 @@ final class ModeratorController implements IModeratorController {
   }
 
   @Override
-  public void muteUsername(final INode node, final @Nullable Date muteExpires) {
-    muteUsername(node, muteExpires != null ? muteExpires.toInstant() : null);
-  }
-
-  private void muteUsername(final INode node, final @Nullable Instant muteExpires) {
-    assertUserIsAdmin();
-    if (isPlayerAdmin(node)) {
-      throw new IllegalStateException("Can't mute an admin");
-    }
-
-    final User mutedUser = getUserForNode(node);
-    final User moderator = getUserForNode(MessageContext.getSender());
-    database.getMutedUsernameDao().addMutedUsername(mutedUser, muteExpires, moderator);
-    serverMessenger.notifyUsernameMutingOfPlayer(mutedUser.getUsername(), muteExpires);
-    log.info(String.format(
-        "User was muted in the lobby (by username); "
-            + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
-        mutedUser.getUsername(), mutedUser.getInetAddress().getHostAddress(), mutedUser.getHashedMacAddress(),
-        moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
-        muteExpires == null ? "forever" : muteExpires.toString()));
-  }
-
-  @Override
   public void muteMac(final INode node, final @Nullable Date muteExpires) {
     muteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
   }
@@ -156,17 +121,12 @@ final class ModeratorController implements IModeratorController {
       throw new IllegalStateException("Can't mute an admin");
     }
 
-    final User mutedUser = getUserForNode(node);
-    final User moderator = getUserForNode(MessageContext.getSender());
-
-    database.getMutedMacDao().addMutedMac(mutedUser, muteExpires, moderator);
-    serverMessenger.notifyMacMutingOfPlayer(mutedUser.getHashedMacAddress(), muteExpires);
+    final String hashedMac = getNodeMacAddress(node);
+    database.getMutedMacDao().addMutedMac(
+        node.getAddress(), hashedMac, muteExpires, MessageContext.getSender().getName());
+    serverMessenger.notifyMacMutingOfPlayer(hashedMac, muteExpires);
     log.info(String.format(
-        "User was muted in the lobby (by MAC); "
-            + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
-        mutedUser.getUsername(), mutedUser.getInetAddress().getHostAddress(), mutedUser.getHashedMacAddress(),
-        moderator.getUsername(), moderator.getInetAddress().getHostAddress(), moderator.getHashedMacAddress(),
-        muteExpires == null ? "forever" : muteExpires.toString()));
+        "Node was muted: %s, until: %s, by: %s", node, muteExpires, MessageContext.getSender().getName()));
   }
 
   @Override
