@@ -48,7 +48,7 @@ public final class GameStepPropertiesHelper {
     try {
       final String prop = data.getSequence().getStep().getProperties()
           .getProperty(GameStep.PropertyKeys.REPAIR_ON_INOPERATIVE);
-      return prop != null && Boolean.parseBoolean(prop);  // default to false
+      return prop != null && Boolean.parseBoolean(prop); // default to false
     } finally {
       data.releaseReadLock();
     }
