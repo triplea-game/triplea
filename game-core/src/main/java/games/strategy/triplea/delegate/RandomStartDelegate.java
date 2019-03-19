@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
@@ -93,9 +92,6 @@ public class RandomStartDelegate extends BaseTripleADelegate {
     while (!allPickableTerritories.isEmpty() && !playersCanPick.isEmpty()) {
       if (currentPickingPlayer == null || !playersCanPick.contains(currentPickingPlayer)) {
         currentPickingPlayer = playersCanPick.get(0);
-      }
-      if (!Interruptibles.sleep(10)) {
-        return; // TODO: determine if this sleep is needed
       }
       Territory picked;
       if (randomTerritories) {

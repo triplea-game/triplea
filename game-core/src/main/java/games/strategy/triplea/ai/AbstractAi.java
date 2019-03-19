@@ -292,7 +292,6 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   @Override
   public Tuple<Territory, Set<Unit>> pickTerritoryAndUnits(final List<Territory> territoryChoices,
       final List<Unit> unitChoices, final int unitsPerPick) {
-    pause();
     final GameData data = getGameData();
     final PlayerId me = getPlayerId();
     final Territory picked;
