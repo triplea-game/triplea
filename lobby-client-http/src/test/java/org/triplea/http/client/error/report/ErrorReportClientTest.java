@@ -22,8 +22,6 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.ServiceResponse;
-import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportResponse;
 import org.triplea.test.common.Integration;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -53,9 +51,9 @@ class ErrorReportClientTest {
   void sendErrorReportSuccessCase(@WiremockResolver.Wiremock final WireMockServer server) {
     givenHttpServerSuccessResponse(server);
 
-    final ServiceResponse<ErrorReportResponse> response = doServiceCall(server);
+    final ServiceResponse<ErrorUploadResponse> response = doServiceCall(server);
 
-    verify(postRequestedFor(urlMatching(ErrorReportClient.ERROR_REPORT_PATH))
+    verify(postRequestedFor(urlMatching(ErrorUploadClient.ERROR_REPORT_PATH))
         .withRequestBody(containing(MESSAGE_FROM_USER))
         .withHeader(HttpHeaders.CONTENT_TYPE, matching(CONTENT_TYPE_JSON)));
 
@@ -67,7 +65,7 @@ class ErrorReportClientTest {
 
 
   private static void givenHttpServerSuccessResponse(final WireMockServer wireMockServer) {
-    wireMockServer.stubFor(post(urlEqualTo(ErrorReportClient.ERROR_REPORT_PATH))
+    wireMockServer.stubFor(post(urlEqualTo(ErrorUploadClient.ERROR_REPORT_PATH))
         .withHeader(HttpHeaders.ACCEPT, equalTo(CONTENT_TYPE_JSON))
         .willReturn(aResponse()
             .withStatus(HttpStatus.SC_OK)
@@ -76,11 +74,11 @@ class ErrorReportClientTest {
                 "", LINK))));
   }
 
-  private static ServiceResponse<ErrorReportResponse> doServiceCall(final WireMockServer wireMockServer) {
+  private static ServiceResponse<ErrorUploadResponse> doServiceCall(final WireMockServer wireMockServer) {
     WireMock.configureFor("localhost", wireMockServer.port());
     final URI hostUri = URI.create(wireMockServer.url(""));
-    return ErrorReportClientFactory.newErrorUploader(hostUri)
-        .apply(ErrorReport.builder()
+    return ErrorUploadClientFactory.newErrorUploader(hostUri)
+        .apply(ErrorUploadRequest.builder()
             .title("Guttuss cadunt in germanus oenipons!")
             .body(MESSAGE_FROM_USER)
             .build());
@@ -99,7 +97,7 @@ class ErrorReportClientTest {
   private static void testFaultHandling(final WireMockServer wireMockServer, final Fault fault) {
     givenFaultyConnection(wireMockServer, fault);
 
-    final ServiceResponse<ErrorReportResponse> response = doServiceCall(wireMockServer);
+    final ServiceResponse<ErrorUploadResponse> response = doServiceCall(wireMockServer);
 
     assertThat(response.getPayload(), isEmpty());
     assertThat(response.getThrown(), isPresent());
@@ -107,7 +105,7 @@ class ErrorReportClientTest {
   }
 
   private static void givenFaultyConnection(final WireMockServer wireMockServer, final Fault fault) {
-    wireMockServer.stubFor(post(urlEqualTo(ErrorReportClient.ERROR_REPORT_PATH))
+    wireMockServer.stubFor(post(urlEqualTo(ErrorUploadClient.ERROR_REPORT_PATH))
         .withHeader(HttpHeaders.ACCEPT, equalTo(CONTENT_TYPE_JSON))
         .willReturn(aResponse()
             .withFault(fault)
@@ -120,7 +118,7 @@ class ErrorReportClientTest {
   void server500(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
     givenServer500(wireMockServer);
 
-    final ServiceResponse<ErrorReportResponse> response = doServiceCall(wireMockServer);
+    final ServiceResponse<ErrorUploadResponse> response = doServiceCall(wireMockServer);
 
     assertThat(response.getPayload(), isEmpty());
     assertThat(response.getThrown(), isPresent());
@@ -128,7 +126,7 @@ class ErrorReportClientTest {
   }
 
   private static void givenServer500(final WireMockServer wireMockServer) {
-    wireMockServer.stubFor(post(urlEqualTo(ErrorReportClient.ERROR_REPORT_PATH))
+    wireMockServer.stubFor(post(urlEqualTo(ErrorUploadClient.ERROR_REPORT_PATH))
         .withHeader(HttpHeaders.ACCEPT, equalTo(CONTENT_TYPE_JSON))
         .willReturn(aResponse()
             .withStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR)

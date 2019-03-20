@@ -17,13 +17,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.ServiceClient;
 import org.triplea.http.client.ServiceResponse;
-import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorUploadResponse;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorUploadStrategyTest {
-  private static final ErrorReport ERROR_REPORT = ErrorReport.builder()
+  private static final ErrorUploadRequest ERROR_REPORT = ErrorUploadRequest.builder()
       .title("Decors volare in amivadum!")
       .body("Brabeuta camerarius imber est.")
       .build();
@@ -33,13 +33,13 @@ class ErrorUploadStrategyTest {
       .build();
 
   @Mock
-  private ServiceClient<ErrorReport, CreateIssueResponse> serviceClient;
+  private ServiceClient<ErrorUploadRequest, CreateIssueResponse> serviceClient;
   @Mock
   private ServiceResponse<CreateIssueResponse> serviceResponse;
   @Mock
-  private ErrorReportResponse errorReportResponse;
+  private ErrorUploadResponse errorReportResponse;
   @Mock
-  private Function<ServiceResponse<CreateIssueResponse>, ErrorReportResponse> responseAdapter;
+  private Function<ServiceResponse<CreateIssueResponse>, ErrorUploadResponse> responseAdapter;
   @Mock
   private Predicate<ErrorReportRequest> allowErrorReport;
 
@@ -62,7 +62,7 @@ class ErrorUploadStrategyTest {
     when(responseAdapter.apply(serviceResponse)).thenReturn(errorReportResponse);
     when(serviceClient.apply(ERROR_REPORT)).thenReturn(serviceResponse);
 
-    final ErrorReportResponse response = errorUploadStrategy.apply(ERROR_REPORT_REQUEST);
+    final ErrorUploadResponse response = errorUploadStrategy.apply(ERROR_REPORT_REQUEST);
 
     assertThat(response, sameInstance(errorReportResponse));
   }
@@ -72,7 +72,7 @@ class ErrorUploadStrategyTest {
   void filterRejectsRequest() {
     when(allowErrorReport.test(ERROR_REPORT_REQUEST)).thenReturn(false);
 
-    final ErrorReportResponse response = errorUploadStrategy.apply(ERROR_REPORT_REQUEST);
+    final ErrorUploadResponse response = errorUploadStrategy.apply(ERROR_REPORT_REQUEST);
 
     assertThat(response.getError(), not(emptyString()));
     assertThat(response.getGithubIssueLink(), isEmpty());
