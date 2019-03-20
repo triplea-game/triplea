@@ -29,8 +29,8 @@ import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.chat.ChatMessagePanel;
-import games.strategy.engine.chat.ChatPlayerPanel;
+import games.strategy.engine.chat.ui.panel.ChatMessagePanel;
+import games.strategy.engine.chat.ui.panel.ChatPlayerPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;

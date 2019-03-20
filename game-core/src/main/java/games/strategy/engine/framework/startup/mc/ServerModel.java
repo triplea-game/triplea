@@ -41,8 +41,8 @@ import com.google.common.base.Preconditions;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
-import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.HeadlessChat;
+import games.strategy.engine.chat.ui.panel.ChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.properties.GameProperties;

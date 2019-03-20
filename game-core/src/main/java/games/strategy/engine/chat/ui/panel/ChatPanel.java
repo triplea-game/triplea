@@ -1,4 +1,4 @@
-package games.strategy.engine.chat;
+package games.strategy.engine.chat.ui.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -12,6 +12,7 @@ import org.triplea.game.chat.ChatModel;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.net.Messengers;
 

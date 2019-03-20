@@ -247,7 +247,7 @@ public class Chat {
     return tagText;
   }
 
-  String getNotesForNode(final INode node) {
+  public String getNotesForNode(final INode node) {
     final Set<String> notes = notesMap.get(node);
     if (notes == null) {
       return null;
@@ -260,24 +260,24 @@ public class Chat {
     return sb.toString();
   }
 
-  SentMessagesHistory getSentMessagesHistory() {
+  public SentMessagesHistory getSentMessagesHistory() {
     return sentMessages;
   }
 
-  void addChatListener(final IChatListener listener) {
+  public void addChatListener(final IChatListener listener) {
     listeners.add(listener);
     updateConnections();
   }
 
-  StatusManager getStatusManager() {
+  public StatusManager getStatusManager() {
     return statusManager;
   }
 
-  void removeChatListener(final IChatListener listener) {
+  public void removeChatListener(final IChatListener listener) {
     listeners.remove(listener);
   }
 
-  Object getMutex() {
+  public Object getMutex() {
     return mutexNodes;
   }
 
@@ -306,7 +306,7 @@ public class Chat {
     }
   }
 
-  void sendSlap(final String playerName) {
+  public void sendSlap(final String playerName) {
     final IChatChannel remote = (IChatChannel) messengers.getChannelBroadcaster(
         new RemoteName(chatChannelName, IChatChannel.class));
     remote.slapOccured(playerName);
@@ -323,7 +323,7 @@ public class Chat {
     sentMessages.append(message);
   }
 
-  void setIgnored(final INode node, final boolean isIgnored) {
+  public void setIgnored(final INode node, final boolean isIgnored) {
     if (isIgnored) {
       ignoreList.add(node.getName());
     } else {
@@ -331,7 +331,7 @@ public class Chat {
     }
   }
 
-  boolean isIgnored(final INode node) {
+  public boolean isIgnored(final INode node) {
     return ignoreList.shouldIgnore(node.getName());
   }
 
@@ -356,7 +356,7 @@ public class Chat {
    *
    * @return the messages that have occurred so far.
    */
-  List<ChatMessage> getChatHistory() {
+  public List<ChatMessage> getChatHistory() {
     return chatHistory;
   }
 }

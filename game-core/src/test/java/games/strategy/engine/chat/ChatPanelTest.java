@@ -7,6 +7,8 @@ import javax.swing.text.StyledDocument;
 
 import org.junit.jupiter.api.Test;
 
+import games.strategy.engine.chat.ui.panel.ChatMessagePanel;
+
 class ChatPanelTest {
 
   @Test

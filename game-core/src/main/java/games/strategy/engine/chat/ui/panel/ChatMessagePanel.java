@@ -1,4 +1,4 @@
-package games.strategy.engine.chat;
+package games.strategy.engine.chat.ui.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -33,6 +33,12 @@ import org.triplea.swing.SwingAction;
 
 import com.google.common.base.Ascii;
 
+import games.strategy.engine.chat.AdministrativeChatMessages;
+import games.strategy.engine.chat.Chat;
+import games.strategy.engine.chat.ChatFloodControl;
+import games.strategy.engine.chat.ChatMessage;
+import games.strategy.engine.chat.IChatListener;
+import games.strategy.engine.chat.SentMessagesHistory;
 import games.strategy.net.INode;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;

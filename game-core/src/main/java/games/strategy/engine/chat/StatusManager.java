@@ -61,7 +61,7 @@ public class StatusManager {
     }
   }
 
-  void setStatus(final String status) {
+  public void setStatus(final String status) {
     ((IStatusController) messengers.getRemote(IStatusController.STATUS_CONTROLLER))
         .setStatus(status);
   }

@@ -1,4 +1,4 @@
-package games.strategy.engine.chat;
+package games.strategy.engine.chat.ui.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -32,6 +32,11 @@ import javax.swing.UIManager;
 
 import org.triplea.swing.SwingAction;
 
+import games.strategy.engine.chat.Chat;
+import games.strategy.engine.chat.IChatListener;
+import games.strategy.engine.chat.IPlayerActionFactory;
+import games.strategy.engine.chat.IStatusListener;
+import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.net.INode;
 
 /**

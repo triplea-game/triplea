@@ -24,7 +24,7 @@ import javax.swing.SwingUtilities;
 
 import org.triplea.swing.SwingAction;
 
-import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.ui.panel.ChatPanel;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.ClientModel;

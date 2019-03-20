@@ -33,7 +33,7 @@ import org.triplea.swing.SwingAction;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.ui.panel.ChatPanel;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;

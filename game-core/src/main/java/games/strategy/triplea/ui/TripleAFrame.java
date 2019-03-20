@@ -94,8 +94,8 @@ import org.triplea.util.Tuple;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.chat.Chat;
-import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.chat.PlayerChatRenderer;
+import games.strategy.engine.chat.ui.panel.ChatPanel;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
