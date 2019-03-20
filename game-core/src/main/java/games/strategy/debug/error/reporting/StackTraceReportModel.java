@@ -7,7 +7,7 @@ import java.util.logging.LogRecord;
 
 import javax.annotation.Nonnull;
 
-import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
 
 import lombok.Builder;
 
@@ -19,11 +19,11 @@ class StackTraceReportModel {
   @Nonnull
   private final LogRecord stackTraceRecord;
   @Nonnull
-  private final BiFunction<String, LogRecord, ErrorReport> formatter;
+  private final BiFunction<String, LogRecord, ErrorUploadRequest> formatter;
   @Nonnull
-  private final Predicate<ErrorReport> uploader;
+  private final Predicate<ErrorUploadRequest> uploader;
   @Nonnull
-  private final Consumer<ErrorReport> preview;
+  private final Consumer<ErrorUploadRequest> preview;
 
   void submitAction() {
     if (uploader.test(readErrorReportFromUi())) {
@@ -31,7 +31,7 @@ class StackTraceReportModel {
     }
   }
 
-  private ErrorReport readErrorReportFromUi() {
+  private ErrorUploadRequest readErrorReportFromUi() {
     return formatter.apply(view.readUserDescription(), stackTraceRecord);
   }
 

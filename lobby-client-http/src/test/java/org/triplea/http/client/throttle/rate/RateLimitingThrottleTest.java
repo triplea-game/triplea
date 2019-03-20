@@ -10,12 +10,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
 
 @ExtendWith(MockitoExtension.class)
 class RateLimitingThrottleTest {
 
-  private static final ErrorReport ERROR_REPORT = ErrorReport.builder()
+  private static final ErrorUploadRequest ERROR_REPORT = ErrorUploadRequest.builder()
       .title("Hunger is a scurvy tuna.")
       .body("Woodchucks are the sails of the scrawny desolation.")
       .build();
@@ -30,7 +30,7 @@ class RateLimitingThrottleTest {
 
   @Test
   void throttleNumberOfRequestPer() {
-    final Consumer<ErrorReport> throttle =
+    final Consumer<ErrorUploadRequest> throttle =
         new RateLimitingThrottle<>(MIN_MILLIS_BETWEEN_REQUSETS, instantSupplier);
 
     Mockito.when(instantSupplier.get())

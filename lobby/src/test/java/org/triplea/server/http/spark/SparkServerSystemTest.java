@@ -17,9 +17,9 @@ import org.mockito.Mockito;
 import org.triplea.http.client.SendResult;
 import org.triplea.http.client.ServiceClient;
 import org.triplea.http.client.ServiceResponse;
-import org.triplea.http.client.error.report.ErrorReportClientFactory;
-import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.http.client.error.report.ErrorUploadClientFactory;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorUploadResponse;
 import org.triplea.server.ServerConfiguration;
 import org.triplea.server.reporting.error.ErrorReportRequest;
 import org.triplea.server.reporting.error.ErrorUploadStrategy;
@@ -41,7 +41,7 @@ class SparkServerSystemTest {
       ErrorReportRequest.builder()
           .clientIp("")
           .errorReport(
-              ErrorReport.builder()
+              ErrorUploadRequest.builder()
                   .title("Ah there's nothing like the salty endurance stuttering on the plunder.")
                   .body("Where is the shiny jack?")
                   .build())
@@ -70,15 +70,15 @@ class SparkServerSystemTest {
 
   @Test
   void errorReportEndpont() {
-    final ServiceClient<ErrorReport, ErrorReportResponse> client =
-        ErrorReportClientFactory.newErrorUploader(LOCAL_HOST);
+    final ServiceClient<ErrorUploadRequest, ErrorUploadResponse> client =
+        ErrorUploadClientFactory.newErrorUploader(LOCAL_HOST);
 
     when(errorUploadStrategy.apply(Mockito.any()))
-        .thenReturn(ErrorReportResponse.builder()
+        .thenReturn(ErrorUploadResponse.builder()
             .githubIssueLink(LINK)
             .build());
 
-    final ServiceResponse<ErrorReportResponse> response =
+    final ServiceResponse<ErrorUploadResponse> response =
         client.apply(ERROR_REPORT.getErrorReport());
 
     assertThat(response.getSendResult(), is(SendResult.SENT));

@@ -1,4 +1,4 @@
-package org.triplea.http.client.error.report.create;
+package org.triplea.http.client.error.report;
 
 import java.net.URI;
 import java.util.Optional;
@@ -14,7 +14,7 @@ import lombok.ToString;
  */
 @ToString
 @Builder
-public class ErrorReportResponse {
+public class ErrorUploadResponse {
   /**
    * A link to the github issue created (empty if there were problems creating the link).
    */

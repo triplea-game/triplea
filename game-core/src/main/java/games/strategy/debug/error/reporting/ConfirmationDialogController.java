@@ -11,7 +11,7 @@ import javax.swing.event.HyperlinkEvent;
 
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.http.client.ServiceResponse;
-import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.http.client.error.report.ErrorUploadResponse;
 import org.triplea.swing.JPanelBuilder;
 
 import games.strategy.triplea.UrlConstants;
@@ -23,11 +23,11 @@ import games.strategy.triplea.UrlConstants;
 final class ConfirmationDialogController {
   private ConfirmationDialogController() {}
 
-  static void showFailureConfirmation(final ServiceResponse<ErrorReportResponse> response) {
+  static void showFailureConfirmation(final ServiceResponse<ErrorUploadResponse> response) {
     SwingUtilities.invokeLater(() -> doShowFailureConfirmation(response));
   }
 
-  private static void doShowFailureConfirmation(final ServiceResponse<ErrorReportResponse> response) {
+  private static void doShowFailureConfirmation(final ServiceResponse<ErrorUploadResponse> response) {
     final JEditorPane editorPane = new JEditorPane("text/html",
         "Failure uploading report, please try again or <a href='" + UrlConstants.GITHUB_ISSUES
             + "'>contact support</a>.<br/><br/>"
@@ -36,7 +36,7 @@ final class ConfirmationDialogController {
             + response.getExceptionMessage()
                 .map(error -> "Errors reported: " + error)
                 .orElseGet(() -> response.getPayload()
-                    .map(ErrorReportResponse::getError)
+                    .map(ErrorUploadResponse::getError)
                     .map(e -> "<br/>Error reported from server:<br/>" + e)
                     .orElse("")));
     editorPane.setEditable(false);

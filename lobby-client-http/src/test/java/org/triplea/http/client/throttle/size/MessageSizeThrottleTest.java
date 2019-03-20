@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
 
 class MessageSizeThrottleTest {
 
-  private static final ErrorReport ERROR_REPORT = ErrorReport.builder()
+  private static final ErrorUploadRequest ERROR_REPORT = ErrorUploadRequest.builder()
       .title("never drink a doubloons. ")
       .body("The corsair stutters malaria like a rainy dubloon.")
       .build();

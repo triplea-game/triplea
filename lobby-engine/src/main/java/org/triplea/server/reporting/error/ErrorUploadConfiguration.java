@@ -1,7 +1,7 @@
 package org.triplea.server.reporting.error;
 
 import org.triplea.http.client.ServiceClient;
-import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.github.issues.GithubIssueClientFactory;
 import org.triplea.http.client.github.issues.IssueClientParams;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
@@ -14,7 +14,7 @@ public final class ErrorUploadConfiguration {
    * Factory method for {@code ErrorUploader}.
    */
   public static ErrorUploadStrategy newErrorUploader(final IssueClientParams issueClientParams) {
-    final ServiceClient<ErrorReport, CreateIssueResponse> createIssueClient =
+    final ServiceClient<ErrorUploadRequest, CreateIssueResponse> createIssueClient =
         GithubIssueClientFactory.newGithubIssueCreator(issueClientParams);
 
     return ErrorUploadStrategy.builder()
