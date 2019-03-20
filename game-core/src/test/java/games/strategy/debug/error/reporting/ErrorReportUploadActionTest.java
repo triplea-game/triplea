@@ -24,23 +24,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.SendResult;
 import org.triplea.http.client.ServiceClient;
 import org.triplea.http.client.ServiceResponse;
-import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorUploadResponse;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorReportUploadActionTest {
 
-  private static final ErrorReport ERROR_REPORT = ErrorReport.builder()
+  private static final ErrorUploadRequest ERROR_REPORT = ErrorUploadRequest.builder()
       .title("Extums prarere in audax tornacum!")
       .body("Rector de barbatus gemna, desiderium candidatus!")
       .build();
 
   @Mock
-  private ServiceClient<ErrorReport, ErrorReportResponse> serviceClient;
+  private ServiceClient<ErrorUploadRequest, ErrorUploadResponse> serviceClient;
   @Mock
   private Consumer<URI> successConfirmation;
   @Mock
-  private Consumer<ServiceResponse<ErrorReportResponse>> failureConfirmation;
+  private Consumer<ServiceResponse<ErrorUploadResponse>> failureConfirmation;
 
   private ErrorReportUploadAction errorReportUploadAction;
 
@@ -55,7 +55,7 @@ class ErrorReportUploadActionTest {
 
   @ParameterizedTest
   @MethodSource("withNonSuccessSendResults")
-  void nonSuccessSends(final ServiceResponse<ErrorReportResponse> notSuccessfulSend) {
+  void nonSuccessSends(final ServiceResponse<ErrorUploadResponse> notSuccessfulSend) {
     when(serviceClient.apply(ERROR_REPORT)).thenReturn(notSuccessfulSend);
 
     final boolean result = errorReportUploadAction.test(ERROR_REPORT);
@@ -67,7 +67,7 @@ class ErrorReportUploadActionTest {
   }
 
   @SuppressWarnings("unused") // Used by @MethodSource via reflection
-  private static Collection<ServiceResponse<ErrorReportResponse>> withNonSuccessSendResults() {
+  private static Collection<ServiceResponse<ErrorUploadResponse>> withNonSuccessSendResults() {
     // Create ServiceResponses with each of the 'SendResult' values except for the successful SendResult value: 'SENT'
     return stream(SendResult.values())
         .filter(sendResult -> sendResult != SendResult.SENT)
@@ -75,15 +75,15 @@ class ErrorReportUploadActionTest {
         .collect(Collectors.toSet());
   }
 
-  private static ServiceResponse<ErrorReportResponse> serviceResponseWithSendResult(final SendResult sendResult) {
-    return ServiceResponse.<ErrorReportResponse>builder()
+  private static ServiceResponse<ErrorUploadResponse> serviceResponseWithSendResult(final SendResult sendResult) {
+    return ServiceResponse.<ErrorUploadResponse>builder()
         .sendResult(sendResult)
         .build();
   }
 
   @ParameterizedTest
   @MethodSource("withMissingIssueLinkResult")
-  void missingIssueLinkInPaylaod(final ServiceResponse<ErrorReportResponse> missingLinkResult) {
+  void missingIssueLinkInPaylaod(final ServiceResponse<ErrorUploadResponse> missingLinkResult) {
     when(serviceClient.apply(ERROR_REPORT)).thenReturn(missingLinkResult);
 
     final boolean result = errorReportUploadAction.test(ERROR_REPORT);
@@ -95,25 +95,25 @@ class ErrorReportUploadActionTest {
   }
 
   @SuppressWarnings("unused") // Used by @MethodSource via reflection
-  private static Collection<ServiceResponse<ErrorReportResponse>> withMissingIssueLinkResult() {
+  private static Collection<ServiceResponse<ErrorUploadResponse>> withMissingIssueLinkResult() {
     return asList(
-        ServiceResponse.<ErrorReportResponse>builder()
+        ServiceResponse.<ErrorUploadResponse>builder()
             .sendResult(SendResult.SENT)
             .build(),
-        ServiceResponse.<ErrorReportResponse>builder()
+        ServiceResponse.<ErrorUploadResponse>builder()
             .sendResult(SendResult.SENT)
-            .payload(ErrorReportResponse.builder()
+            .payload(ErrorUploadResponse.builder()
                 .build())
             .build(),
-        ServiceResponse.<ErrorReportResponse>builder()
+        ServiceResponse.<ErrorUploadResponse>builder()
             .sendResult(SendResult.SENT)
-            .payload(ErrorReportResponse.builder()
+            .payload(ErrorUploadResponse.builder()
                 .error("simulated error")
                 .build())
             .build(),
-        ServiceResponse.<ErrorReportResponse>builder()
+        ServiceResponse.<ErrorUploadResponse>builder()
             .sendResult(SendResult.SENT)
-            .payload(ErrorReportResponse.builder()
+            .payload(ErrorUploadResponse.builder()
                 .githubIssueLink("")
                 .build())
             .build());
@@ -121,7 +121,7 @@ class ErrorReportUploadActionTest {
 
   @Test
   void successCase() {
-    final ServiceResponse<ErrorReportResponse> successCase = withSuccessfulSend();
+    final ServiceResponse<ErrorUploadResponse> successCase = withSuccessfulSend();
     when(serviceClient.apply(ERROR_REPORT)).thenReturn(successCase);
 
     final boolean result = errorReportUploadAction.test(ERROR_REPORT);
@@ -133,10 +133,10 @@ class ErrorReportUploadActionTest {
         .accept(successCase.getPayload().get().getGithubIssueLink().get());
   }
 
-  private static ServiceResponse<ErrorReportResponse> withSuccessfulSend() {
-    return ServiceResponse.<ErrorReportResponse>builder()
+  private static ServiceResponse<ErrorUploadResponse> withSuccessfulSend() {
+    return ServiceResponse.<ErrorUploadResponse>builder()
         .sendResult(SendResult.SENT)
-        .payload(ErrorReportResponse.builder()
+        .payload(ErrorUploadResponse.builder()
             .githubIssueLink("http://successful.send")
             .build())
         .build();

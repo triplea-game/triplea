@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
 
 import com.google.common.base.Strings;
 
@@ -19,11 +19,11 @@ import games.strategy.engine.framework.system.SystemProperties;
  * Combines user description input with data from a {@code LogRecord} to create an {@code ErrorReport}
  * object that we can send to the HTTP server.
  */
-class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, ErrorReport> {
+class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, ErrorUploadRequest> {
 
   @Override
-  public ErrorReport apply(final String userDescription, final LogRecord logRecord) {
-    return ErrorReport.builder()
+  public ErrorUploadRequest apply(final String userDescription, final LogRecord logRecord) {
+    return ErrorUploadRequest.builder()
         .title(createTitle(logRecord))
         .body(buildBody(userDescription, logRecord))
         .build();

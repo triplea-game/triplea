@@ -7,32 +7,32 @@ import javax.annotation.Nonnull;
 
 import org.triplea.http.client.ServiceClient;
 import org.triplea.http.client.ServiceResponse;
-import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorUploadResponse;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 import lombok.Builder;
 
 /** Performs the steps for uploading an error report from the point of view of the server. */
 @Builder
-public class ErrorUploadStrategy implements Function<ErrorReportRequest, ErrorReportResponse> {
+public class ErrorUploadStrategy implements Function<ErrorReportRequest, ErrorUploadResponse> {
 
   @Nonnull
-  private final Function<ServiceResponse<CreateIssueResponse>, ErrorReportResponse> responseAdapter;
+  private final Function<ServiceResponse<CreateIssueResponse>, ErrorUploadResponse> responseAdapter;
   @Nonnull
-  private final ServiceClient<ErrorReport, CreateIssueResponse> createIssueClient;
+  private final ServiceClient<ErrorUploadRequest, CreateIssueResponse> createIssueClient;
   @Nonnull
   private final Predicate<ErrorReportRequest> allowErrorReport;
 
   @Override
-  public ErrorReportResponse apply(final ErrorReportRequest errorReportRequest) {
+  public ErrorUploadResponse apply(final ErrorReportRequest errorReportRequest) {
     if (allowErrorReport.test(errorReportRequest)) {
       final ServiceResponse<CreateIssueResponse> response =
           createIssueClient.apply(errorReportRequest.getErrorReport());
       return responseAdapter.apply(response);
     }
 
-    return ErrorReportResponse.builder()
+    return ErrorUploadResponse.builder()
         .error("Too many requests, please wait before submitting another request")
         .build();
   }

@@ -14,9 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import org.triplea.http.client.ServiceClient;
-import org.triplea.http.client.error.report.ErrorReportClientFactory;
-import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.http.client.error.report.ErrorUploadClientFactory;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorUploadResponse;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.JPanelBuilder;
@@ -117,7 +117,7 @@ public enum ErrorMessage {
 
   private void setUploadRecord(final LogRecord record) {
 
-    final ServiceClient<ErrorReport, ErrorReportResponse> serviceClient = serviceClient();
+    final ServiceClient<ErrorUploadRequest, ErrorUploadResponse> serviceClient = serviceClient();
 
     if (serviceClient == null) {
       // if no internet connection, do not show 'upload button' as it will not work anyways.
@@ -137,11 +137,11 @@ public enum ErrorMessage {
   }
 
 
-  private static ServiceClient<ErrorReport, ErrorReportResponse> serviceClient() {
+  private static ServiceClient<ErrorUploadRequest, ErrorUploadResponse> serviceClient() {
     return LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
         .fetchLobbyServerProperties()
         .map(LobbyServerProperties::getHttpServerUri)
-        .map(ErrorReportClientFactory::newErrorUploader)
+        .map(ErrorUploadClientFactory::newErrorUploader)
         .orElse(null);
   }
 

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.SendResult;
 import org.triplea.http.client.ServiceResponse;
-import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.http.client.error.report.ErrorUploadResponse;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 class ErrorReportResponseAdapterTest {
@@ -44,7 +44,7 @@ class ErrorReportResponseAdapterTest {
 
   @Test
   void apply() {
-    final ErrorReportResponse errorReportResponse = errorReportResponseAdapter.apply(SERVICE_RESPONSE);
+    final ErrorUploadResponse errorReportResponse = errorReportResponseAdapter.apply(SERVICE_RESPONSE);
 
     assertThat(
         errorReportResponse.getGithubIssueLink(),
@@ -55,7 +55,7 @@ class ErrorReportResponseAdapterTest {
 
   @Test
   void applyWithErrorInput() {
-    final ErrorReportResponse errorReportResponse = errorReportResponseAdapter.apply(ERROR_RESPONSE);
+    final ErrorUploadResponse errorReportResponse = errorReportResponseAdapter.apply(ERROR_RESPONSE);
 
     assertThat(errorReportResponse.getGithubIssueLink(), isEmpty());
     assertThat(errorReportResponse.getError(), is(sampleException.getMessage()));

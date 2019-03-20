@@ -4,13 +4,13 @@ import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
 
-import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.swing.JTextAreaBuilder;
 import org.triplea.swing.SwingComponents;
 
-class ReportPreviewSwingView implements Consumer<ErrorReport> {
+class ReportPreviewSwingView implements Consumer<ErrorUploadRequest> {
   @Override
-  public void accept(final ErrorReport errorReport) {
+  public void accept(final ErrorUploadRequest errorReport) {
     JOptionPane.showMessageDialog(
         null, SwingComponents.newJScrollPane(
             JTextAreaBuilder.builder()

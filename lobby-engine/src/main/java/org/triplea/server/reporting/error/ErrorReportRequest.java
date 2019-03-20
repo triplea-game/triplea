@@ -2,7 +2,7 @@ package org.triplea.server.reporting.error;
 
 import javax.annotation.Nonnull;
 
-import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,7 +14,7 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class ErrorReportRequest {
   @Nonnull
-  private final ErrorReport errorReport;
+  private final ErrorUploadRequest errorReport;
   @Nonnull
   private final String clientIp;
 }

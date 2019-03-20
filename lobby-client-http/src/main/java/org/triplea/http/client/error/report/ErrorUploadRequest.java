@@ -1,4 +1,4 @@
-package org.triplea.http.client.error.report.create;
+package org.triplea.http.client.error.report;
 
 import javax.annotation.Nonnull;
 
@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class ErrorReport {
+public class ErrorUploadRequest {
   @Nonnull
   private final String title;
   @Nonnull

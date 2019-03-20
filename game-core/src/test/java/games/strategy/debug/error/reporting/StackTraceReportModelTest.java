@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
 
 @ExtendWith(MockitoExtension.class)
 class StackTraceReportModelTest {
@@ -29,16 +29,16 @@ class StackTraceReportModelTest {
   private StackTraceReportView stackTraceReportView;
 
   @Mock
-  private Predicate<ErrorReport> uploader;
+  private Predicate<ErrorUploadRequest> uploader;
 
   @Mock
-  private Consumer<ErrorReport> preview;
+  private Consumer<ErrorUploadRequest> preview;
 
   @Mock
-  private BiFunction<String, LogRecord, ErrorReport> formatter;
+  private BiFunction<String, LogRecord, ErrorUploadRequest> formatter;
 
   @Mock
-  private ErrorReport errorReport;
+  private ErrorUploadRequest errorReport;
 
   private StackTraceReportModel viewModel;
 

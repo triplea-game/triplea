@@ -4,8 +4,8 @@ import java.awt.Component;
 import java.util.logging.LogRecord;
 
 import org.triplea.http.client.ServiceClient;
-import org.triplea.http.client.error.report.create.ErrorReport;
-import org.triplea.http.client.error.report.create.ErrorReportResponse;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
+import org.triplea.http.client.error.report.ErrorUploadResponse;
 
 /**
  * Interface for interactions with the stack trace user-reporting window UI.
@@ -42,7 +42,7 @@ public interface StackTraceReportView {
    */
   static void showWindow(
       final Component parentWindow,
-      final ServiceClient<ErrorReport, ErrorReportResponse> uploader,
+      final ServiceClient<ErrorUploadRequest, ErrorUploadResponse> uploader,
       final LogRecord logRecord) {
 
     final StackTraceReportView window = new StackTraceReportSwingView(parentWindow);

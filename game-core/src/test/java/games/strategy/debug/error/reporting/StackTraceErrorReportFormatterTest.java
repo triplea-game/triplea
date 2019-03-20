@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.error.report.create.ErrorReport;
+import org.triplea.http.client.error.report.ErrorUploadRequest;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.system.SystemProperties;
@@ -48,7 +48,7 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
       when(logRecord.getThrown()).thenReturn(null);
 
-      final ErrorReport errorReportResult =
+      final ErrorUploadRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
@@ -61,7 +61,7 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_MESSAGE);
 
-      final ErrorReport errorReportResult =
+      final ErrorUploadRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
@@ -76,7 +76,7 @@ class StackTraceErrorReportFormatterTest {
     void handleNullLogMessageAndNullExceptionMessage() {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
 
-      final ErrorReport errorReportResult =
+      final ErrorUploadRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(
@@ -91,7 +91,7 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getSourceMethodName()).thenReturn(METHOD_NAME);
       when(logRecord.getSourceClassName()).thenReturn("ClassInDefaultPackage");
 
-      final ErrorReport errorReportResult =
+      final ErrorUploadRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertDoesNotThrow(errorReportResult::getTitle);
@@ -108,7 +108,7 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void containsUseSuppliedData() {
-      final ErrorReport errorReportResult =
+      final ErrorUploadRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(errorReportResult.getBody(), containsString(SAMPLE_USER_DESCRIPTION));
@@ -116,7 +116,7 @@ class StackTraceErrorReportFormatterTest {
 
     @Test
     void containsSystemData() {
-      final ErrorReport errorReportResult =
+      final ErrorUploadRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(errorReportResult.getBody(), containsString(SAMPLE_USER_DESCRIPTION));
@@ -128,7 +128,7 @@ class StackTraceErrorReportFormatterTest {
     @Test
     void containsStackTraceData() {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
-      final ErrorReport errorReportResult =
+      final ErrorUploadRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       Arrays.stream(EXCEPTION_WITH_NO_MESSAGE.getStackTrace())
@@ -143,7 +143,7 @@ class StackTraceErrorReportFormatterTest {
       when(logRecord.getMessage()).thenReturn(LOG_MESSAGE);
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_MESSAGE);
 
-      final ErrorReport errorReportResult =
+      final ErrorUploadRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(errorReportResult.getBody(), containsString(EXCEPTION_WITH_MESSAGE.getClass().getName()));
@@ -163,7 +163,7 @@ class StackTraceErrorReportFormatterTest {
     void nullLogMessage() {
       when(logRecord.getThrown()).thenReturn(EXCEPTION_WITH_NO_MESSAGE);
 
-      final ErrorReport errorReportResult =
+      final ErrorUploadRequest errorReportResult =
           new StackTraceErrorReportFormatter().apply(SAMPLE_USER_DESCRIPTION, logRecord);
 
       assertThat(errorReportResult.getBody(), containsString(EXCEPTION_WITH_NO_MESSAGE.getClass().getName()));
