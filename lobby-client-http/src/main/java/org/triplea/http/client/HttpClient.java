@@ -2,7 +2,6 @@ package org.triplea.http.client;
 
 import java.net.URI;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
@@ -24,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 public class HttpClient<ClientTypeT, RequestT, ResponseT>
     implements Function<RequestT, ServiceResponse<ResponseT>> {
 
-  private final Consumer<RequestT> rateLimiter = new RateLimiter<>();
   @Nonnull
   private final Class<ClientTypeT> classType;
   @Nonnull
@@ -33,17 +31,7 @@ public class HttpClient<ClientTypeT, RequestT, ResponseT>
   private final URI hostUri;
 
   @Override
-  public ServiceResponse<ResponseT> apply(
-      final RequestT requestToSend) {
-    try {
-      rateLimiter.accept(requestToSend);
-    } catch (final RuntimeException e) {
-      return ServiceResponse.<ResponseT>builder()
-          .sendResult(SendResult.NOT_SENT)
-          .thrown(e)
-          .build();
-    }
-
+  public ServiceResponse<ResponseT> apply(final RequestT requestToSend) {
     try {
       final ClientTypeT clientInterface = FeignFactory.build(classType, hostUri);
       final ResponseT responseFromServer = sendFunction.apply(clientInterface, requestToSend);
