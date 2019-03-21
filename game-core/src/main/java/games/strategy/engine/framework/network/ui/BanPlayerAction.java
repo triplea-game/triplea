@@ -50,8 +50,7 @@ public class BanPlayerAction extends AbstractAction {
       if (node.getName().equals(name)) {
         final String ip = node.getAddress().getHostAddress();
         final String mac = messenger.getPlayerMac(node.getName());
-        messenger.notifyIpMiniBanningOfPlayer(ip);
-        messenger.notifyMacMiniBanningOfPlayer(mac);
+        messenger.banPlayer(ip, mac);
         messenger.removeConnection(node);
         return;
       }

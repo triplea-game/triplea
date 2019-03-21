@@ -302,22 +302,13 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   }
 
   @Override
-  public boolean isIpMiniBanned(final String ip) {
-    return miniBannedIpAddresses.contains(ip);
+  public boolean isPlayerBanned(final String ip, final String mac) {
+    return miniBannedIpAddresses.contains(ip) || miniBannedMacAddresses.contains(mac);
   }
 
   @Override
-  public void notifyIpMiniBanningOfPlayer(final String ip) {
+  public void banPlayer(final String ip, final String mac) {
     miniBannedIpAddresses.add(ip);
-  }
-
-  @Override
-  public boolean isMacMiniBanned(final String mac) {
-    return miniBannedMacAddresses.contains(mac);
-  }
-
-  @Override
-  public void notifyMacMiniBanningOfPlayer(final String mac) {
     miniBannedMacAddresses.add(mac);
   }
 

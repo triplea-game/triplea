@@ -92,7 +92,7 @@ public final class ClientLoginValidator implements ILoginValidator {
     }
 
     final String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
-    if (serverMessenger.isIpMiniBanned(remoteIp)) {
+    if (serverMessenger.isPlayerBanned(remoteIp, hashedMac)) {
       return ErrorMessages.YOU_HAVE_BEEN_BANNED;
     }
 
@@ -100,8 +100,6 @@ public final class ClientLoginValidator implements ILoginValidator {
       return ErrorMessages.UNABLE_TO_OBTAIN_MAC;
     } else if (!MacFinder.isValidHashedMacAddress(hashedMac)) {
       return ErrorMessages.INVALID_MAC;
-    } else if (serverMessenger.isMacMiniBanned(hashedMac)) {
-      return ErrorMessages.YOU_HAVE_BEEN_BANNED;
     }
 
     if (Boolean.TRUE.toString().equals(propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY))) {

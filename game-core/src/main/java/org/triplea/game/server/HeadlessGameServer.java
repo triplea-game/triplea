@@ -432,14 +432,9 @@ public class HeadlessGameServer {
             if (realName.equals(playerName)) {
               log.info("Remote Ban of Player: " + playerName);
               try {
-                messenger.notifyIpMiniBanningOfPlayer(ip);
+                messenger.banPlayer(ip, mac);
               } catch (final Exception e) {
-                log.log(Level.SEVERE, "Failed to notify IP ban of player", e);
-              }
-              try {
-                messenger.notifyMacMiniBanningOfPlayer(mac);
-              } catch (final Exception e) {
-                log.log(Level.SEVERE, "Failed to notify MAC ban of player", e);
+                log.log(Level.SEVERE, "Failed to ban player", e);
               }
               messenger.removeConnection(node);
             }

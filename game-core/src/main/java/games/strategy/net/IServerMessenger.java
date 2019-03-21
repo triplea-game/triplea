@@ -29,18 +29,12 @@ public interface IServerMessenger extends IMessenger {
   Set<INode> getNodes();
 
   /**
-   * Notifies the server that the specified IP address has been banned.
+   * Notifies the server that the specified IP address and MAC should be banned.
    *
    * @param ip The IP address to ban.
-   */
-  void notifyIpMiniBanningOfPlayer(String ip);
-
-  /**
-   * Notifies the server that the specified hashed MAC address has been banned.
-   *
    * @param mac The hashed MAC address to ban.
    */
-  void notifyMacMiniBanningOfPlayer(String mac);
+  void banPlayer(String ip, String mac);
 
   /**
    * Returns the hashed MAC address for the user with the specified name or {@code null} if unknown.
@@ -56,9 +50,7 @@ public interface IServerMessenger extends IMessenger {
    */
   void notifyMacMutingOfPlayer(String mac, @Nullable Instant muteExpires);
 
-  boolean isIpMiniBanned(String ip);
-
-  boolean isMacMiniBanned(String mac);
+  boolean isPlayerBanned(String ip, String mac);
 
   /**
    * Returns the real username for the specified (possibly unique) username.

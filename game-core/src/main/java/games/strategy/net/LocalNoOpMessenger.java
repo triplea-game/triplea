@@ -89,10 +89,7 @@ public class LocalNoOpMessenger implements IServerMessenger {
   }
 
   @Override
-  public void notifyIpMiniBanningOfPlayer(final String ip) {}
-
-  @Override
-  public void notifyMacMiniBanningOfPlayer(final String mac) {}
+  public void banPlayer(final String ip, final String mac) {}
 
   @Override
   public @Nullable String getPlayerMac(final String name) {
@@ -103,12 +100,7 @@ public class LocalNoOpMessenger implements IServerMessenger {
   public void notifyMacMutingOfPlayer(final String mac, final @Nullable Instant muteExpires) {}
 
   @Override
-  public boolean isIpMiniBanned(final String ip) {
-    return false;
-  }
-
-  @Override
-  public boolean isMacMiniBanned(final String mac) {
+  public boolean isPlayerBanned(final String ip, final String mac) {
     return false;
   }
 }
