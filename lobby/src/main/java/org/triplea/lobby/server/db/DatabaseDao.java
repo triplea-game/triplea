@@ -11,7 +11,5 @@ public interface DatabaseDao {
 
   UserDao getUserDao();
 
-  MutedMacDao getMutedMacDao();
-
   BadWordDao getBadWordDao();
 }

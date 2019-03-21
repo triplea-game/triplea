@@ -31,7 +31,7 @@ class ChannelMessengerTest {
 
   @BeforeEach
   void setUp() throws IOException {
-    serverMessenger = new TestServerMessenger("Server", 0);
+    serverMessenger = new TestServerMessenger();
     serverMessenger.setAcceptNewConnections(true);
     serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();

@@ -10,7 +10,6 @@ import org.triplea.swing.SwingAction;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
-import games.strategy.engine.framework.network.ui.MutePlayerAction;
 import games.strategy.engine.framework.network.ui.SetPasswordAction;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
@@ -34,7 +33,6 @@ final class NetworkMenu extends JMenu {
 
     addBootPlayer();
     addBanPlayer();
-    addMutePlayer();
     watcher.ifPresent(this::addSetGamePassword);
     addShowPlayers();
   }
@@ -56,12 +54,6 @@ final class NetworkMenu extends JMenu {
   private void addBanPlayer() {
     if (isServer()) {
       add(new BanPlayerAction(this, getServerMessenger()));
-    }
-  }
-
-  private void addMutePlayer() {
-    if (isServer()) {
-      add(new MutePlayerAction(this, getServerMessenger()));
     }
   }
 

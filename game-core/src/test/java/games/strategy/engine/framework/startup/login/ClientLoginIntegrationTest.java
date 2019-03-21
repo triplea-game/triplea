@@ -34,7 +34,7 @@ final class ClientLoginIntegrationTest {
   }
 
   private static IServerMessenger newServerMessenger() throws Exception {
-    final IServerMessenger serverMessenger = new TestServerMessenger("server", 0);
+    final IServerMessenger serverMessenger = new TestServerMessenger();
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.setLoginValidator(newLoginValidator(serverMessenger));
     return serverMessenger;

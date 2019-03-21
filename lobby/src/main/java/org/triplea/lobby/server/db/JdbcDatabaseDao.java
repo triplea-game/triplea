@@ -13,7 +13,6 @@ class JdbcDatabaseDao implements DatabaseDao {
   private final BadWordDao badWordDao;
   private final UsernameBlacklistDao usernameBlacklistDao;
   private final BannedMacDao bannedMacDao;
-  private final MutedMacDao mutedMacDao;
   private final UserDao userDao;
 
   JdbcDatabaseDao(final Database database) {
@@ -22,7 +21,6 @@ class JdbcDatabaseDao implements DatabaseDao {
     badWordDao = new BadWordController(connection);
     bannedMacDao = new BannedMacController(connection);
     usernameBlacklistDao = new UsernameBlacklistController(connection);
-    mutedMacDao = new MutedMacController(connection);
     userDao = new UserController(connection);
   }
 

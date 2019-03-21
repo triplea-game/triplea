@@ -11,8 +11,10 @@ import org.triplea.lobby.server.login.LobbyLoginValidator;
 
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.StatusManager;
+import games.strategy.net.DefaultObjectStreamFactory;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
+import games.strategy.net.ServerMessenger;
 import games.strategy.sound.ClipPlayer;
 
 /**
@@ -40,7 +42,8 @@ final class LobbyServer {
   static void start(final LobbyConfiguration lobbyConfiguration) throws IOException {
     ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
 
-    final IServerMessenger server = new LobbyServerMessenger(LobbyConstants.ADMIN_USERNAME, lobbyConfiguration);
+    final IServerMessenger server = new ServerMessenger(
+        LobbyConstants.ADMIN_USERNAME, lobbyConfiguration.getPort(), new DefaultObjectStreamFactory());
     final Messengers messengers = new Messengers(server);
     server.setLoginValidator(
         new LobbyLoginValidator(

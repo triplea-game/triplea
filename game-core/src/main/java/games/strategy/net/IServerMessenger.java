@@ -2,7 +2,6 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.time.Instant;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -47,14 +46,6 @@ public interface IServerMessenger extends IMessenger {
    */
   @Nullable
   String getPlayerMac(String name);
-
-  /**
-   * Notifies the server that the specified hashed MAC address has been muted until the specified instant.
-   *
-   * @param mac The hashed MAC address to mute.
-   * @param muteExpires The time at which the mute expires or {@code null} if the mute is indefinite.
-   */
-  void notifyMacMutingOfPlayer(String mac, @Nullable Instant muteExpires);
 
   boolean isIpMiniBanned(String ip);
 

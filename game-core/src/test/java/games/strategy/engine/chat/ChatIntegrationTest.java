@@ -48,7 +48,7 @@ final class ChatIntegrationTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    messenger = new TestServerMessenger("Server", 0);
+    messenger = new TestServerMessenger();
     messenger.setAcceptNewConnections(true);
     final int serverPort = messenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();
@@ -160,22 +160,7 @@ final class ChatIntegrationTest {
   }
 
   private static void sendMessagesFrom(final Chat node) {
-    new Thread(() -> {
-      IntStream.range(0, MESSAGE_COUNT).forEach(i -> node.sendMessage("Test", false));
-    }).start();
-  }
-
-  private static void nodeToReceiveMessage(final TestChatListener chatListener, final String message) {
-    assertThat(chatListener.lastMessageReceived.get(), is(message));
-  }
-
-  @Test
-  void shouldBeAbleToMuteNodeByMac() {
-    runChatTest((server, client1, client2) -> {
-      messenger.notifyMacMutingOfPlayer(messenger.getPlayerMac(client1.getLocalNode().getName()), null);
-      client1.sendMessage("Test", false);
-      waitFor(() -> nodeToReceiveMessage(client1ChatListener, TestServerMessenger.ADMINISTRATIVE_MUTE_CHAT_MESSAGE));
-    });
+    new Thread(() -> IntStream.range(0, MESSAGE_COUNT).forEach(i -> node.sendMessage("Test", false))).start();
   }
 
   @FunctionalInterface

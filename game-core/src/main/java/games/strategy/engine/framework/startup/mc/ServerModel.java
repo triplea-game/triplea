@@ -64,6 +64,7 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
+import games.strategy.net.ServerMessenger;
 import games.strategy.triplea.settings.ClientSetting;
 import lombok.extern.java.Log;
 
@@ -358,7 +359,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 
   private void createServerMessenger(@Nonnull final ServerConnectionProps props) {
     try {
-      this.serverMessenger = new GameServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
+      this.serverMessenger = new ServerMessenger(props.getName(), props.getPort(), objectStreamFactory);
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
       clientLoginValidator.setGamePassword(props.getPassword());
       serverMessenger.setLoginValidator(clientLoginValidator);
