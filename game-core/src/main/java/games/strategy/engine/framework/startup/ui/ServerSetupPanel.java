@@ -34,7 +34,6 @@ import org.triplea.util.ExitStatus;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.network.ui.BanPlayerAction;
 import games.strategy.engine.framework.network.ui.BootPlayerAction;
-import games.strategy.engine.framework.network.ui.MutePlayerAction;
 import games.strategy.engine.framework.network.ui.SetPasswordAction;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
@@ -423,7 +422,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
     final List<Action> actions = new ArrayList<>();
     actions.add(new BootPlayerAction(this, model.getMessenger()));
     actions.add(new BanPlayerAction(this, model.getMessenger()));
-    actions.add(new MutePlayerAction(this, model.getMessenger()));
     actions.add(
         new SetPasswordAction(this, lobbyWatcher, (ClientLoginValidator) model.getMessenger().getLoginValidator()));
     if (lobbyWatcher.isActive()) {

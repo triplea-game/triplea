@@ -51,19 +51,6 @@ final class RemoteHostUtils implements IRemoteHostUtils {
   }
 
   @Override
-  public String mutePlayerHeadlessHostBot(final String playerNameToBeMuted, final int minutes,
-      final String hashedPassword, final String salt) {
-    if (!MessageContext.getSender().equals(serverNode)) {
-      return "Not accepted!";
-    }
-    final HeadlessGameServer instance = HeadlessGameServer.getInstance();
-    if (instance == null) {
-      return "Not a headless host bot!";
-    }
-    return instance.remoteMutePlayer(playerNameToBeMuted, minutes, hashedPassword, salt);
-  }
-
-  @Override
   public String bootPlayerHeadlessHostBot(final String playerNameToBeBooted, final String hashedPassword,
       final String salt) {
     if (!MessageContext.getSender().equals(serverNode)) {

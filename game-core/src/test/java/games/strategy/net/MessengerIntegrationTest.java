@@ -30,7 +30,7 @@ class MessengerIntegrationTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    serverMessenger = new TestServerMessenger("Server", 0);
+    serverMessenger = new TestServerMessenger();
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.addMessageListener(serverMessageListener);
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();

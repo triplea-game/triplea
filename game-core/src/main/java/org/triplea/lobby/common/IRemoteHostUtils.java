@@ -15,8 +15,6 @@ public interface IRemoteHostUtils extends IRemote {
 
   String getChatLogHeadlessHostBot(String hashedPassword, String salt);
 
-  String mutePlayerHeadlessHostBot(String playerNameToBeMuted, int minutes, String hashedPassword, String salt);
-
   String bootPlayerHeadlessHostBot(String playerNameToBeBooted, String hashedPassword, String salt);
 
   String banPlayerHeadlessHostBot(String playerNameToBeBanned, String hashedPassword, String salt);

@@ -4,23 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.Action;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
-import javax.swing.SpinnerNumberModel;
 
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.LobbyConstants;
@@ -118,27 +110,6 @@ public class LobbyFrame extends JFrame {
           });
     }));
 
-    actions.add(SwingAction.of("Mute Player", e -> {
-      final JLabel label = new JLabel("How many minutes should this player be muted?");
-      final JSpinner spinner = new JSpinner(new SpinnerNumberModel(10, 0, 60 * 24 * 2, 1));
-      final JPanel panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-      panel.add(label);
-      panel.add(spinner);
-      if (JOptionPane.showConfirmDialog(LobbyFrame.this, panel, "Mute Player",
-          JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-        final Object value = spinner.getValue();
-        if (value == null) {
-          return;
-        }
-        final long resultMuteLengthInMinutes = Long.parseLong(value.toString());
-        if (resultMuteLengthInMinutes < 0) {
-          return;
-        }
-        final Instant expire = Instant.now().plus(Duration.ofMinutes(resultMuteLengthInMinutes));
-        controller.muteMac(clickedOn, Date.from(expire));
-      }
-    }));
     actions.add(SwingAction.of("Show player information", e -> {
       final String text = controller.getInformationOn(clickedOn);
       final JTextPane textPane = new JTextPane();

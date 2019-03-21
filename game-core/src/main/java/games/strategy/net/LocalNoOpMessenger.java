@@ -3,7 +3,6 @@ package games.strategy.net;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.time.Instant;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -98,9 +97,6 @@ public class LocalNoOpMessenger implements IServerMessenger {
   public @Nullable String getPlayerMac(final String name) {
     return null;
   }
-
-  @Override
-  public void notifyMacMutingOfPlayer(final String mac, final @Nullable Instant muteExpires) {}
 
   @Override
   public boolean isIpMiniBanned(final String ip) {
