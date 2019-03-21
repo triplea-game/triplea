@@ -68,9 +68,9 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
   MainPanel(
       final GameSelectorPanel gameSelectorPanel,
       final Consumer<MainPanel> launchAction,
-      final Supplier<Optional<ChatModel>> chatPanelSupplier,
+      final Supplier<Optional<ChatModel>> chatModelSupplier,
       final Runnable cancelAction) {
-    this.chatModelSupplier = chatPanelSupplier;
+    this.chatModelSupplier = chatModelSupplier;
     playButton.addActionListener(e -> launchAction.accept(this));
     cancelButton.addActionListener(e -> cancelAction.run());
 
