@@ -1,28 +1,15 @@
 package org.triplea.server.http.spark;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
 
 import java.net.URI;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.triplea.http.client.SendResult;
-import org.triplea.http.client.ServiceClient;
-import org.triplea.http.client.ServiceResponse;
-import org.triplea.http.client.error.report.ErrorUploadClientFactory;
-import org.triplea.http.client.error.report.ErrorUploadRequest;
-import org.triplea.http.client.error.report.ErrorUploadResponse;
 import org.triplea.server.ServerConfiguration;
-import org.triplea.server.reporting.error.ErrorReportRequest;
-import org.triplea.server.reporting.error.ErrorUploadStrategy;
+import org.triplea.server.reporting.error.CreateIssueStrategy;
 import org.triplea.test.common.Integration;
 
 import spark.Spark;
@@ -31,23 +18,11 @@ import spark.Spark;
 @Integration
 class SparkServerSystemTest {
 
+  static final CreateIssueStrategy errorUploadStrategy = Mockito.mock(CreateIssueStrategy.class);
+
   private static final int SPARK_PORT = 5000;
 
-  private static final URI LOCAL_HOST = URI.create("http://localhost:" + SPARK_PORT);
-
-  private static final ErrorUploadStrategy errorUploadStrategy = Mockito.mock(ErrorUploadStrategy.class);
-
-  private static final ErrorReportRequest ERROR_REPORT =
-      ErrorReportRequest.builder()
-          .clientIp("")
-          .errorReport(
-              ErrorUploadRequest.builder()
-                  .title("Ah there's nothing like the salty endurance stuttering on the plunder.")
-                  .body("Where is the shiny jack?")
-                  .build())
-          .build();
-
-  private static final String LINK = "http://fictitious-link";
+  static final URI LOCAL_HOST = URI.create("http://localhost:" + SPARK_PORT);
 
   @BeforeAll
   static void startServer() {
@@ -66,25 +41,5 @@ class SparkServerSystemTest {
   @AfterAll
   static void stopServer() {
     Spark.stop();
-  }
-
-  @Test
-  void errorReportEndpont() {
-    final ServiceClient<ErrorUploadRequest, ErrorUploadResponse> client =
-        ErrorUploadClientFactory.newErrorUploader(LOCAL_HOST);
-
-    when(errorUploadStrategy.apply(Mockito.any()))
-        .thenReturn(ErrorUploadResponse.builder()
-            .githubIssueLink(LINK)
-            .build());
-
-    final ServiceResponse<ErrorUploadResponse> response =
-        client.apply(ERROR_REPORT.getErrorReport());
-
-    assertThat(response.getSendResult(), is(SendResult.SENT));
-    assertThat(response.getPayload(), isPresent());
-    assertThat(
-        response.getPayload().get().getGithubIssueLink(),
-        isPresentAndIs(URI.create(LINK)));
   }
 }
