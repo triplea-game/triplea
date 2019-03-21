@@ -15,4 +15,6 @@ public interface ChatModel {
   String getAllText();
 
   void setShowChatTime(boolean showTime);
+
+  boolean isHeadless();
 }

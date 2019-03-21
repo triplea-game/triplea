@@ -106,4 +106,9 @@ public class ChatPanel extends JPanel implements ChatModel {
   public ChatMessagePanel getChatMessagePanel() {
     return chatMessagePanel;
   }
+
+  @Override
+  public boolean isHeadless() {
+    return false;
+  }
 }

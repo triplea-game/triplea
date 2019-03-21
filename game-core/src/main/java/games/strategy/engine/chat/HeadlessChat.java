@@ -137,4 +137,9 @@ public class HeadlessChat implements IChatListener, ChatModel {
     }
     allText.append(fullMessage);
   }
+
+  @Override
+  public boolean isHeadless() {
+    return true;
+  }
 }

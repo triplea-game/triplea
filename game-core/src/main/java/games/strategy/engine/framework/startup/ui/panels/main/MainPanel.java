@@ -26,6 +26,7 @@ import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingAction;
 
+import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.framework.startup.ui.panels.main.game.selector.GameSelectorPanel;
@@ -59,7 +60,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
       .build();
   private SetupPanel gameSetupPanel;
   private boolean isChatShowing;
-  private final Supplier<Optional<ChatModel>> chatPanelSupplier;
+  private final Supplier<Optional<ChatModel>> chatModelSupplier;
 
   /**
    * MainPanel is the full contents of the 'mainFrame'. This panel represents the welcome screen and subsequent screens.
@@ -69,7 +70,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
       final Consumer<MainPanel> launchAction,
       final Supplier<Optional<ChatModel>> chatPanelSupplier,
       final Runnable cancelAction) {
-    this.chatPanelSupplier = chatPanelSupplier;
+    this.chatModelSupplier = chatPanelSupplier;
     playButton.addActionListener(e -> launchAction.accept(this));
     cancelButton.addActionListener(e -> cancelAction.run());
 
@@ -112,9 +113,9 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
     remove(mainPanel);
     remove(chatSplit);
     chatPanelHolder.removeAll();
-    final ChatModel chat = chatPanelSupplier.get().orElse(null);
-    if (chat instanceof SetupPanel) {
-      chatPanelHolder.add((SetupPanel) chat, BorderLayout.CENTER);
+    final ChatModel chat = chatModelSupplier.get().orElse(null);
+    if ((chat != null) && !chat.isHeadless()) {
+      chatPanelHolder.add(new ChatPanel(chat.getChat()), BorderLayout.CENTER);
       chatSplit.setTopComponent(mainPanel);
       chatSplit.setBottomComponent(chatPanelHolder);
       add(chatSplit, BorderLayout.CENTER);
@@ -145,7 +146,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
       cancelPanel.add(cancelButton);
       gameSetupPanelHolder.add(cancelPanel, BorderLayout.SOUTH);
     }
-    final boolean panelHasChat = chatPanelSupplier.get().isPresent();
+    final boolean panelHasChat = chatModelSupplier.get().isPresent();
     if (panelHasChat != isChatShowing) {
       addChat();
     }
