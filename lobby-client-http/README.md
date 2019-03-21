@@ -10,7 +10,7 @@ between a given client and server.
 
 Http-clients will typically have 2 components:
 (1) Feign annotated interface. This will describe the http
-methods available, POST or GEt, which parameters and headers.
+methods available, POST or GET, which parameters and headers.
 (2) Request and response objects, these are converted to 
 JSON automatically.
 
