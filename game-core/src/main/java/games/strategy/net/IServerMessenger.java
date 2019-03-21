@@ -2,7 +2,6 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.time.Instant;
 import java.util.Set;
 
 import javax.annotation.Nullable;
