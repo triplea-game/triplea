@@ -113,16 +113,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
         synchronized (chat.getMutex()) {
           text.setText("");
           for (final ChatMessage message : chat.getChatHistory()) {
-            if (message.getFrom().equals(chat.getServerNode().getName())) {
-              if (message.getMessage().equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-                addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
-                    "ADMIN_CHAT_CONTROL", false);
-                continue;
-              } else if (message.getMessage().equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_GAME)) {
-                addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
-                continue;
-              }
-            }
             addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
           }
         }
@@ -249,16 +239,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       if (from == null || chat == null || chat.getServerNode() == null || chat.getServerNode().getName() == null) {
         // someone likely disconnected from the game.
         return;
-      }
-      if (from.equals(chat.getServerNode().getName())) {
-        if (message.equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-          addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
-              "ADMIN_CHAT_CONTROL", false);
-          return;
-        } else if (message.equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_GAME)) {
-          addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
-          return;
-        }
       }
       if (!floodControl.allow(from, System.currentTimeMillis())) {
         if (from.equals(chat.getLocalNode().getName())) {

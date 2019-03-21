@@ -97,7 +97,6 @@ public class LocalNoOpMessenger implements IServerMessenger {
   }
 
   @Override
-  public void notifyMacMutingOfPlayer(final String mac, final @Nullable Instant muteExpires) {}
 
   @Override
   public boolean isPlayerBanned(final String ip, final String mac) {

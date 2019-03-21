@@ -196,7 +196,6 @@ class LobbyGamePanel extends JPanel {
   private Collection<Action> getBotAdminGamesListContextActions() {
     return Arrays.asList(
         SwingAction.of("Get Chat Log Of Headless Host Bot", e -> getChatLogOfHeadlessHostBot()),
-        SwingAction.of("Mute Player In Headless Host Bot", e -> mutePlayerInHeadlessHostBot()),
         SwingAction.of("Boot Player In Headless Host Bot", e -> bootPlayerInHeadlessHostBot()),
         SwingAction.of("Ban Player In Headless Host Bot", e -> banPlayerInHeadlessHostBot()),
         SwingAction.of("Remote Stop Game Headless Host Bot", e -> stopGameHeadlessHostBot()),
@@ -313,58 +312,6 @@ class LobbyGamePanel extends JPanel {
         (hostedByName.endsWith("_" + LobbyConstants.LOBBY_WATCHER_NAME) ? hostedByName
             : hostedByName + "_" + LobbyConstants.LOBBY_WATCHER_NAME),
         description.getHostedBy().getAddress(), description.getHostedBy().getPort());
-  }
-
-  private void mutePlayerInHeadlessHostBot() {
-    final int selectedIndex = gameTable.getSelectedRow();
-    if (selectedIndex == -1) {
-      return;
-    }
-    final int result =
-        JOptionPane.showConfirmDialog(null, "Are you sure you want to perform a remote mute player on this host?",
-            "Remote Player Mute Headless Host Bot", JOptionPane.OK_CANCEL_OPTION);
-    if (result != JOptionPane.OK_OPTION) {
-      return;
-    }
-    final String playerToBeMuted = JOptionPane.showInputDialog(getTopLevelAncestor(), "Player Name To Be Muted?",
-        "Player Name To Be Muted?", JOptionPane.QUESTION_MESSAGE);
-    if (playerToBeMuted == null) {
-      return;
-    }
-    final Object minutes = JOptionPane.showInputDialog(getTopLevelAncestor(),
-        "Minutes to Mute for?  (between 0 and 2880 [works only if players is in the host])",
-        "Minutes to Mute for?", JOptionPane.QUESTION_MESSAGE, null, null, 10);
-    if (minutes == null) {
-      return;
-    }
-    final int min;
-    try {
-      min = Math.max(0, Math.min(60 * 24 * 2, Integer.parseInt((String) minutes)));
-    } catch (final NumberFormatException e) {
-      return;
-    }
-    final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller =
-        (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
-    final JLabel label = new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
-    final JPasswordField passwordField = new JPasswordField();
-    final JPanel panel = new JPanel();
-    panel.setLayout(new BorderLayout());
-    panel.add(label, BorderLayout.NORTH);
-    panel.add(passwordField, BorderLayout.CENTER);
-    final int selectedOption = JOptionPane.showOptionDialog(getTopLevelAncestor(), panel,
-        "Host Remote Access Password?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-    if (selectedOption != JOptionPane.OK_OPTION || passwordField.getPassword() == null) {
-      return;
-    }
-    final String password = new String(passwordField.getPassword());
-    final String salt = controller.getHeadlessHostBotSalt(lobbyWatcherNode);
-    final String hashedPassword = hashPassword(password, salt);
-    final String response =
-        controller.mutePlayerHeadlessHostBot(lobbyWatcherNode, playerToBeMuted, min, hashedPassword, salt);
-    JOptionPane.showMessageDialog(null, (response == null
-        ? "Successfully muted player (" + playerToBeMuted + ") on host"
-        : "Failed: " + response));
   }
 
   private void bootPlayerInHeadlessHostBot() {

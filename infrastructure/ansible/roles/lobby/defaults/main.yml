@@ -20,3 +20,8 @@ lobby_postgres_port: "5432"
 
 lobby_postgres_database: "lobby"
 
+lobby_error_report_github_org: "triplea-game"
+
+lobby_error_report_github_repo: "test"
+
+lobby_error_report_github_token: "token"

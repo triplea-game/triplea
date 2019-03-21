@@ -10,8 +10,6 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,22 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
-import games.strategy.engine.chat.ChatController;
-import games.strategy.engine.chat.IChatChannel;
-import games.strategy.engine.message.HubInvoke;
-import games.strategy.engine.message.RemoteMethodCall;
-import games.strategy.engine.message.RemoteName;
-import games.strategy.engine.message.SpokeInvoke;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
@@ -45,7 +34,7 @@ import lombok.extern.java.Log;
  * A Messenger that can have many clients connected to it.
  */
 @Log
-public abstract class AbstractServerMessenger implements IServerMessenger, NioSocketListener {
+public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private final Selector acceptorSelector;
   private final ServerSocketChannel socketChannel;
   private final Node node;
@@ -60,14 +49,11 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
   private final Map<SocketChannel, INode> channelToNode = new ConcurrentHashMap<>();
   private final Map<String, String> cachedMacAddresses = new ConcurrentHashMap<>();
   private final Set<String> miniBannedIpAddresses = new ConcurrentSkipListSet<>();
-  // We need to cache whether players are muted, because otherwise the database would have to be accessed each time a
-  // message was sent, which can be very slow
   private final Set<String> miniBannedMacAddresses = new ConcurrentSkipListSet<>();
-  private final Set<String> liveMutedMacAddresses = new ConcurrentSkipListSet<>();
-  // The following code is used in hosted lobby games by the host for player mini-banning and mini-muting
+  // The following code is used in hosted lobby games by the host for player mini-banning
   private final Map<String, String> playersThatLeftMacsLast10 = new ConcurrentHashMap<>();
 
-  protected AbstractServerMessenger(final String name, final int port, final IObjectStreamFactory objectStreamFactory)
+  public ServerMessenger(final String name, final int port, final IObjectStreamFactory objectStreamFactory)
       throws IOException {
     socketChannel = ServerSocketChannel.open();
     socketChannel.configureBlocking(false);
@@ -143,55 +129,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
         .orElseGet(() -> playersThatLeftMacsLast10.get(name));
   }
 
-  private boolean isMacMutedInCache(final String mac) {
-    return liveMutedMacAddresses.contains(mac);
-  }
-
-  @Override
-  public void notifyMacMutingOfPlayer(final String mac, final @Nullable Instant muteExpires) {
-    liveMutedMacAddresses.add(mac);
-    if (muteExpires != null) {
-      scheduleMacUnmuteAt(mac, muteExpires);
-    }
-  }
-
-  private TimerTask newUnmuteTimerTask(final BooleanSupplier isUserMuted, final Runnable unmuteUser) {
-    return new TimerTask() {
-      @Override
-      public void run() {
-        if (!isUserMuted.getAsBoolean()) {
-          unmuteUser.run();
-        }
-      }
-    };
-  }
-
-  private static long millisBetweenNowAnd(final Instant end) {
-    return Math.max(0, ChronoUnit.MILLIS.between(Instant.now(), end));
-  }
-
-  private void scheduleMacUnmuteAt(final String mac, final Instant expires) {
-    final Timer unmuteMacTimer = new Timer("Mac unmute timer");
-    unmuteMacTimer.schedule(
-        newUnmuteTimerTask(() -> isMacMutedInBackingStore(mac), () -> liveMutedMacAddresses.remove(mac)),
-        millisBetweenNowAnd(expires));
-  }
-
-  /**
-   * Returns {@code true} if the user associated with the specified MAC is muted according to the backing store (e.g. a
-   * database); otherwise {@code false}.
-   *
-   * <p>
-   * Subclasses may override and are not required to call the superclass implementation. This implementation returns
-   * {@code false} indicating the user is not currently muted.
-   * </p>
-   *
-   * @param mac The MAC of the user.
-   */
-  protected boolean isMacMutedInBackingStore(final String mac) {
-    return false;
-  }
-
   /**
    * Invoked when the node with the specified unique name has successfully logged in. Note that {@code uniquePlayerName}
    * is the node name and may not be identical to the name of the player associated with the node (see
@@ -199,46 +136,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
    */
   public void notifyPlayerLogin(final String uniquePlayerName, final String mac) {
     cachedMacAddresses.put(uniquePlayerName, mac);
-    if (!liveMutedMacAddresses.contains(mac)) {
-      final Optional<Instant> muteTill = getMacUnmuteTime(mac);
-      muteTill.ifPresent(instant -> {
-        if (instant.isAfter(Instant.now())) {
-          // Signal the player as muted
-          liveMutedMacAddresses.add(mac);
-          scheduleMacUnmuteAt(mac, instant);
-        }
-      });
-    }
-  }
-
-  /**
-   * Returns the instant at which the user associated with the specified username is to be unmuted or empty if the user
-   * is not currently muted.
-   *
-   * <p>
-   * Subclasses may override and are not required to call the superclass implementation. This implementation returns an
-   * empty instant indicating the user is not currently muted.
-   * </p>
-   *
-   * @param username The username of the user.
-   */
-  protected Optional<Instant> getUsernameUnmuteTime(final String username) {
-    return Optional.empty();
-  }
-
-  /**
-   * Returns the instant at which the user associated with the specified MAC is to be unmuted or empty if the user is
-   * not currently muted.
-   *
-   * <p>
-   * Subclasses may override and are not required to call the superclass implementation. This implementation returns an
-   * empty instant indicating the user is not currently muted.
-   * </p>
-   *
-   * @param mac The MAC of the user.
-   */
-  protected Optional<Instant> getMacUnmuteTime(final String mac) {
-    return Optional.empty();
   }
 
   private void notifyPlayerRemoval(final INode node) {
@@ -255,14 +152,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     if (!expectedReceive.equals(msg.getFrom())) {
       throw new IllegalStateException("Expected: " + expectedReceive + " not: " + msg.getFrom());
     }
-    if (msg.getMessage() instanceof HubInvoke) { // Chat messages are always HubInvoke's
-      if (((HubInvoke) msg.getMessage()).call.getRemoteName().equals(getChatControlChannelName())) {
-        if (isMacMutedInCache(getPlayerMac(msg.getFrom().getName()))) {
-          bareBonesSendChatMessage(getAdministrativeMuteChatMessage(), msg.getFrom());
-          return;
-        }
-      }
-    }
     if (msg.getTo() == null) {
       forwardBroadcast(msg);
       notifyListeners(msg);
@@ -271,34 +160,6 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
     } else {
       forward(msg);
     }
-  }
-
-  private String getChatControlChannelName() {
-    return ChatController.getChatChannelName(getChatChannelName());
-  }
-
-  /**
-   * Returns the name of the chat channel.
-   */
-  protected abstract String getChatChannelName();
-
-  /**
-   * Returns the administrative chat message to send a user who has been muted.
-   *
-   * @see games.strategy.engine.chat.AdministrativeChatMessages
-   */
-  protected abstract String getAdministrativeMuteChatMessage();
-
-  private void bareBonesSendChatMessage(final String message, final INode to) {
-    final RemoteName rn = new RemoteName(getChatControlChannelName(), IChatChannel.class);
-    final RemoteMethodCall call = new RemoteMethodCall(
-        rn.getName(),
-        "chatOccured",
-        new Object[] {message},
-        new Class<?>[] {String.class},
-        IChatChannel.class);
-    final SpokeInvoke spokeInvoke = new SpokeInvoke(null, false, call, getServerNode());
-    send(spokeInvoke, to);
   }
 
   @Override
@@ -473,7 +334,7 @@ public abstract class AbstractServerMessenger implements IServerMessenger, NioSo
                 loginValidator,
                 socketChannel,
                 nioSocket,
-                AbstractServerMessenger.this);
+                ServerMessenger.this);
             nioSocket.add(socketChannel, conversation);
           } else if (!key.isValid()) {
             key.cancel();

@@ -64,16 +64,6 @@ public class HeadlessChat implements IChatListener, ChatModel {
       synchronized (this.chat.getMutex()) {
         allText = new StringBuilder();
         for (final ChatMessage message : this.chat.getChatHistory()) {
-          if (message.getFrom().equals(this.chat.getServerNode().getName())) {
-            if (message.getMessage().equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-              addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
-                  "ADMIN_CHAT_CONTROL", false);
-              continue;
-            } else if (message.getMessage().equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_GAME)) {
-              addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
-              continue;
-            }
-          }
           addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
         }
       }
@@ -94,16 +84,6 @@ public class HeadlessChat implements IChatListener, ChatModel {
       final String sound) {
     // TODO: I don't really think we need a new thread for this...
     new Thread(() -> {
-      if (from.equals(chat.getServerNode().getName())) {
-        if (message.equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_LOBBY)) {
-          addChatMessage("YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER",
-              "ADMIN_CHAT_CONTROL", false);
-          return;
-        } else if (message.equals(AdministrativeChatMessages.YOU_HAVE_BEEN_MUTED_GAME)) {
-          addChatMessage("YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST", "HOST_CHAT_CONTROL", false);
-          return;
-        }
-      }
       if (!floodControl.allow(from, System.currentTimeMillis())) {
         if (from.equals(chat.getLocalNode().getName())) {
           addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);

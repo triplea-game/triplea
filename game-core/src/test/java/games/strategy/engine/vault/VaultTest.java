@@ -37,7 +37,7 @@ class VaultTest {
 
   @BeforeEach
   void setUp() throws IOException {
-    serverMessenger = new TestServerMessenger("Server", 0);
+    serverMessenger = new TestServerMessenger();
     serverMessenger.setAcceptNewConnections(true);
     final int serverPort = serverMessenger.getLocalNode().getSocketAddress().getPort();
     final String mac = MacFinder.getHashedMacAddress();

@@ -111,25 +111,6 @@ final class ModeratorController implements IModeratorController {
   }
 
   @Override
-  public void muteMac(final INode node, final @Nullable Date muteExpires) {
-    muteMac(node, muteExpires != null ? muteExpires.toInstant() : null);
-  }
-
-  private void muteMac(final INode node, final @Nullable Instant muteExpires) {
-    assertUserIsAdmin();
-    if (isPlayerAdmin(node)) {
-      throw new IllegalStateException("Can't mute an admin");
-    }
-
-    final String hashedMac = getNodeMacAddress(node);
-    database.getMutedMacDao().addMutedMac(
-        node.getAddress(), hashedMac, muteExpires, MessageContext.getSender().getName());
-    serverMessenger.notifyMacMutingOfPlayer(hashedMac, muteExpires);
-    log.info(String.format(
-        "Node was muted: %s, until: %s, by: %s", node, muteExpires, MessageContext.getSender().getName()));
-  }
-
-  @Override
   public void boot(final INode node) {
     assertUserIsAdmin();
     // You can't boot the server node
@@ -180,27 +161,6 @@ final class ModeratorController implements IModeratorController {
         ((response == null || response.equals("Invalid password!")) ? "Failed" : "Successful")
             + " Remote get Chat Log of Headless HostBot. "
             + "Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
-        node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
-        modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
-    return response;
-  }
-
-  @Override
-  public String mutePlayerHeadlessHostBot(final INode node, final String playerNameToBeMuted, final int minutes,
-      final String hashedPassword, final String salt) {
-    assertUserIsAdmin();
-    if (serverMessenger.getServerNode().equals(node)) {
-      throw new IllegalStateException("Cannot do this for server node");
-    }
-    final INode modNode = MessageContext.getSender();
-    final String mac = getNodeMacAddress(node);
-    final IRemoteHostUtils remoteHostUtils = getRemoteHostUtilsForNode(node);
-    final String response =
-        remoteHostUtils.mutePlayerHeadlessHostBot(playerNameToBeMuted, minutes, hashedPassword, salt);
-    log.info(String.format(
-        (response == null ? "Successful" : "Failed (" + response + ")") + " Remote Mute of " + playerNameToBeMuted
-            + " for " + minutes
-            + " minutes In Headless HostBot. Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     return response;

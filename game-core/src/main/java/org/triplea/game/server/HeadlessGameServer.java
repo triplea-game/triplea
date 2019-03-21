@@ -12,8 +12,6 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_SERVER;
 
 import java.io.File;
 import java.io.InputStream;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -295,58 +293,6 @@ public class HeadlessGameServer {
       return chat.getAllText();
     }
     log.info("Attempted remote get chat log with invalid password.");
-    return "Invalid password!";
-  }
-
-  /**
-   * Mutes the specified player within this headless game server for the specified duration at the request of a remote
-   * moderator.
-   *
-   * @param playerName The name of the player to mute.
-   * @param minutes The duration (in minutes) of the mute.
-   * @param hashedPassword The hashed server password provided by the remote moderator.
-   * @param salt The salt used to hash the server password.
-   *
-   * @return {@code null} if the operation succeeded; otherwise an error message if the operation failed.
-   */
-  public String remoteMutePlayer(final String playerName, final int minutes, final String hashedPassword,
-      final String salt) {
-    final String password = System.getProperty(LOBBY_GAME_SUPPORT_PASSWORD, "");
-    if (password.equals(NO_REMOTE_REQUESTS_ALLOWED)) {
-      return "Host not accepting remote requests!";
-    }
-    // (48 hours max)
-    final Instant expire = Instant.now().plus(Duration.ofMinutes(Math.min(60 * 24 * 2, minutes)));
-    if (hashPassword(password, salt).equals(hashedPassword)) {
-      new Thread(() -> {
-        if (getServerModel() == null) {
-          return;
-        }
-        final IServerMessenger messenger = getServerModel().getMessenger();
-        if (messenger == null) {
-          return;
-        }
-        final Set<INode> nodes = messenger.getNodes();
-        if (nodes == null) {
-          return;
-        }
-        try {
-          for (final INode node : nodes) {
-            final String realName = IServerMessenger.getRealName(node.getName());
-            final String mac = messenger.getPlayerMac(node.getName());
-            if (realName.equals(playerName)) {
-              log.info("Remote Mute of Player: " + playerName);
-              messenger.notifyMacMutingOfPlayer(mac, expire);
-              return;
-            }
-          }
-        } catch (final Exception e) {
-          log.log(Level.SEVERE, "Failed to notify mute of player", e);
-        }
-      }).start();
-      return null;
-    }
-    log.info("Attempted remote mute player with invalid password.");
     return "Invalid password!";
   }
 
