@@ -1,5 +1,8 @@
 package org.triplea.game.chat;
 
+import java.awt.Component;
+import java.util.Optional;
+
 import games.strategy.engine.chat.Chat;
 
 /**
@@ -15,4 +18,6 @@ public interface ChatModel {
   String getAllText();
 
   void setShowChatTime(boolean showTime);
+
+  Optional<Component> getViewComponent();
 }

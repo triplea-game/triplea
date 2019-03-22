@@ -1,7 +1,9 @@
 package games.strategy.engine.chat;
 
+import java.awt.Component;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 import org.triplea.game.chat.ChatModel;
 import org.triplea.java.TimeManager;
@@ -116,5 +118,10 @@ public class HeadlessChat implements IChatListener, ChatModel {
       allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2));
     }
     allText.append(fullMessage);
+  }
+
+  @Override
+  public Optional<Component> getViewComponent() {
+    return Optional.empty();
   }
 }

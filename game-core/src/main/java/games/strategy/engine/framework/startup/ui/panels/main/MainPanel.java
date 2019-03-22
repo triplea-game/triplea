@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui.panels.main;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.List;
@@ -8,8 +9,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -58,8 +59,6 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
       .preferredHeight(62)
       .build();
   private SetupPanel gameSetupPanel;
-  private boolean isChatShowing;
-  private final Supplier<Optional<ChatModel>> chatPanelSupplier;
 
   /**
    * MainPanel is the full contents of the 'mainFrame'. This panel represents the welcome screen and subsequent screens.
@@ -67,9 +66,8 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
   MainPanel(
       final GameSelectorPanel gameSelectorPanel,
       final Consumer<MainPanel> launchAction,
-      final Supplier<Optional<ChatModel>> chatPanelSupplier,
+      @Nullable final ChatModel chatModel,
       final Runnable cancelAction) {
-    this.chatPanelSupplier = chatPanelSupplier;
     playButton.addActionListener(e -> launchAction.accept(this));
     cancelButton.addActionListener(e -> cancelAction.run());
 
@@ -90,7 +88,16 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
         .build();
 
     setLayout(new BorderLayout());
-    addChat();
+
+    final Optional<Component> chatComponent =
+        Optional.ofNullable(chatModel)
+            .flatMap(ChatModel::getViewComponent);
+
+    if (chatComponent.isPresent()) {
+      addChat(chatComponent.get());
+    } else {
+      add(mainPanel, BorderLayout.CENTER);
+    }
 
     final JButton quitButton = JButtonBuilder.builder()
         .title("Quit")
@@ -108,20 +115,15 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
     setWidgetActivation();
   }
 
-  private void addChat() {
+  private void addChat(final Component chatComponent) {
     remove(mainPanel);
     remove(chatSplit);
     chatPanelHolder.removeAll();
-    final ChatModel chat = chatPanelSupplier.get().orElse(null);
-    if (chat instanceof SetupPanel) {
-      chatPanelHolder.add((SetupPanel) chat, BorderLayout.CENTER);
-      chatSplit.setTopComponent(mainPanel);
-      chatSplit.setBottomComponent(chatPanelHolder);
-      add(chatSplit, BorderLayout.CENTER);
-    } else {
-      add(mainPanel, BorderLayout.CENTER);
-    }
-    isChatShowing = chat != null;
+
+    chatPanelHolder.add(chatComponent, BorderLayout.CENTER);
+    chatSplit.setTopComponent(mainPanel);
+    chatSplit.setBottomComponent(chatPanelHolder);
+    add(chatSplit, BorderLayout.CENTER);
   }
 
   /**
@@ -145,10 +147,11 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
       cancelPanel.add(cancelButton);
       gameSetupPanelHolder.add(cancelPanel, BorderLayout.SOUTH);
     }
-    final boolean panelHasChat = chatPanelSupplier.get().isPresent();
-    if (panelHasChat != isChatShowing) {
-      addChat();
-    }
+
+    Optional.ofNullable(panel.getChatModel())
+        .flatMap(ChatModel::getViewComponent)
+        .ifPresent(this::addChat);
+
     revalidate();
   }
 
