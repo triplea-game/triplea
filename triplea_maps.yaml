@@ -54,7 +54,7 @@
 - mapName: Great War
   mapCategory: BEST
   url: https://github.com/triplea-maps/great_war/archive/master.zip
-  version: 2
+  version: 3
   description: |
     <br>WWI map
 - mapName: Capture the Flag
