@@ -1,5 +1,8 @@
 package org.triplea.game.chat;
 
+import java.awt.Component;
+import java.util.Optional;
+
 import games.strategy.engine.chat.Chat;
 
 /**
@@ -16,5 +19,5 @@ public interface ChatModel {
 
   void setShowChatTime(boolean showTime);
 
-  boolean isHeadless();
+  Optional<Component> getViewComponent();
 }

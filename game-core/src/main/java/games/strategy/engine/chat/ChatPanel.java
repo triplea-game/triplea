@@ -1,8 +1,10 @@
 package games.strategy.engine.chat;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.util.Optional;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JPanel;
@@ -108,7 +110,7 @@ public class ChatPanel extends JPanel implements ChatModel {
   }
 
   @Override
-  public boolean isHeadless() {
-    return false;
+  public Optional<Component> getViewComponent() {
+    return Optional.of(this);
   }
 }

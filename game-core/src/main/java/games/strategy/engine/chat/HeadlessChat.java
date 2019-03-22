@@ -1,7 +1,9 @@
 package games.strategy.engine.chat;
 
+import java.awt.Component;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 import org.triplea.game.chat.ChatModel;
 import org.triplea.java.TimeManager;
@@ -139,7 +141,7 @@ public class HeadlessChat implements IChatListener, ChatModel {
   }
 
   @Override
-  public boolean isHeadless() {
-    return true;
+  public Optional<Component> getViewComponent() {
+    return Optional.empty();
   }
 }

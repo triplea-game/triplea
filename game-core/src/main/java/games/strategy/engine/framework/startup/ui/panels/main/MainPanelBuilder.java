@@ -47,8 +47,9 @@ public class MainPanelBuilder {
               });
           setupPanelModel.getPanel().postStartGame();
         },
-        () -> Optional.ofNullable(setupPanelModel.getPanel())
-            .map(SetupModel::getChatModel),
+        Optional.ofNullable(setupPanelModel.getPanel())
+            .map(SetupModel::getChatModel)
+            .orElse(null),
         setupPanelModel::showSelectType);
     setupPanelModel.setPanelChangeListener(mainPanel);
     gameSelectorModel.addObserver(mainPanel);
