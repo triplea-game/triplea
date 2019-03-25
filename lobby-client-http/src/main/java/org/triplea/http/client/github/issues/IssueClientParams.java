@@ -1,8 +1,8 @@
 package org.triplea.http.client.github.issues;
 
-import java.net.URI;
-
 import javax.annotation.Nonnull;
+
+import org.triplea.http.client.error.report.ErrorUploadRequest;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,6 +13,7 @@ import lombok.Getter;
  */
 @Getter(AccessLevel.PACKAGE)
 @Builder
+// TODO: rename to: CreateIssueRequest
 public class IssueClientParams {
   /** Github Personal access token with repo permissions. */
   @Nonnull
@@ -23,7 +24,7 @@ public class IssueClientParams {
   /** The name of the github repo, used as part of URL. */
   @Nonnull
   private final String githubRepo;
-  /** URI of github web service API. */
+  /** Error report sent from the TripleA client, we will forward this to github create issue web service. */
   @Nonnull
-  private final URI uri;
+  private final ErrorUploadRequest errorUploadRequest;
 }

@@ -1,63 +1,30 @@
 package org.triplea.server.reporting.error;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.net.URI;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.SendResult;
-import org.triplea.http.client.ServiceResponse;
-import org.triplea.http.client.error.report.ErrorUploadResponse;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 class ErrorReportResponseAdapterTest {
 
-  private static final RuntimeException sampleException =
-      new RuntimeException("Omnes planetaes quaestio nobilis, fatalis calceuses.");
-
-  private static final ServiceResponse<CreateIssueResponse> ERROR_RESPONSE =
-      ServiceResponse.<CreateIssueResponse>builder()
-          .thrown(sampleException)
-          .sendResult(SendResult.SERVER_ERROR)
-          .build();
-
   private static final CreateIssueResponse CREATE_ISSUE_RESPONSE = new CreateIssueResponse("http://html_url");
+  private static final CreateIssueResponse ERROR_RESPONSE = new CreateIssueResponse(null);
 
-  private static final ServiceResponse<CreateIssueResponse> SERVICE_RESPONSE =
-      ServiceResponse.<CreateIssueResponse>builder()
-          .payload(CREATE_ISSUE_RESPONSE)
-          .sendResult(SendResult.SENT)
-          .build();
-
-  private ErrorReportResponseAdapter errorReportResponseAdapter;
-
-
-  @BeforeEach
-  void setup() {
-    errorReportResponseAdapter = new ErrorReportResponseAdapter();
-  }
+  private ErrorReportResponseConverter errorReportResponseAdapter = new ErrorReportResponseConverter();
 
   @Test
   void apply() {
-    final ErrorUploadResponse errorReportResponse = errorReportResponseAdapter.apply(SERVICE_RESPONSE);
-
     assertThat(
-        errorReportResponse.getGithubIssueLink(),
-        isPresentAndIs(URI.create(CREATE_ISSUE_RESPONSE.getHtmlUrl())));
-    assertThat(errorReportResponse.getError(), is(emptyString()));
-
+        errorReportResponseAdapter
+            .apply(CREATE_ISSUE_RESPONSE)
+            .getGithubIssueLink(),
+        is(CREATE_ISSUE_RESPONSE.getHtmlUrl()));
   }
 
   @Test
   void applyWithErrorInput() {
-    final ErrorUploadResponse errorReportResponse = errorReportResponseAdapter.apply(ERROR_RESPONSE);
-
-    assertThat(errorReportResponse.getGithubIssueLink(), isEmpty());
-    assertThat(errorReportResponse.getError(), is(sampleException.getMessage()));
+    assertThrows(CreateErrorReportException.class, () -> errorReportResponseAdapter.apply(ERROR_RESPONSE));
   }
 }

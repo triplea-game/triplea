@@ -1,41 +1,49 @@
 package org.triplea.http.client.github.issues;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
-import com.google.common.annotations.VisibleForTesting;
+import lombok.Builder;
 
-import feign.HeaderMap;
-import feign.Headers;
-import feign.Param;
-import feign.RequestLine;
+/**
+ * Accumulates required args for making requests to create github issues, and then
+ * presents an API to accept user upload data.
+ */
+public class GithubIssueClient {
+  private final String githubOrg;
+  private final String githubRepo;
+  private final String authToken;
+  private final GithubClient githubClient;
 
-@SuppressWarnings("InterfaceNeverImplemented")
-interface GithubIssueClient {
-
-  @VisibleForTesting
-  String CREATE_ISSUE_PATH = "/repos/{org}/{repo}/issues";
-
-  @RequestLine("POST " + CREATE_ISSUE_PATH)
-  @Headers({
-      "Content-Type: application/json",
-      "Accept: application/json"
-  })
-  CreateIssueResponse newIssue(
-      @HeaderMap Map<String, Object> headerMap,
-      @Param("org") String org,
-      @Param("repo") String repo,
-      ErrorUploadRequest errorReport);
+  @Builder
+  public GithubIssueClient(
+      @Nonnull final URI uri,
+      @Nonnull final String githubOrg,
+      @Nonnull final String githubRepo,
+      @Nonnull final String authToken) {
+    githubClient = GithubClient.newClient(uri);
+    this.githubOrg = githubOrg;
+    this.githubRepo = githubRepo;
+    this.authToken = authToken;
+  }
 
 
-  default CreateIssueResponse newIssue(
-      final IssueClientParams params,
-      final ErrorUploadRequest errorReport) {
+  /**
+   * Invokes github web-API to create a github issue with the provided parameter data.
+   *
+   * @param uploadRequest Upload data for creating the body and title of the github issue.
+   * @return Response from server containing link to the newly created issue.
+   * @throws feign.FeignException thrown on error or if non-2xx response is received
+   */
+  public CreateIssueResponse newIssue(final ErrorUploadRequest uploadRequest) {
     final Map<String, Object> tokens = new HashMap<>();
-    tokens.put("Authorization", "token " + params.getAuthToken());
-    return newIssue(tokens, params.getGithubOrg(), params.getGithubRepo(), errorReport);
+    tokens.put("Authorization", "token " + authToken);
+    return githubClient.newIssue(tokens, githubOrg, githubRepo, uploadRequest);
   }
 }

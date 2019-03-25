@@ -6,12 +6,11 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 
-import org.triplea.http.client.SendResult;
-import org.triplea.http.client.ServiceClient;
-import org.triplea.http.client.ServiceResponse;
+import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.error.report.ErrorUploadResponse;
 
+import feign.FeignException;
 import lombok.Builder;
 
 /**
@@ -21,24 +20,21 @@ import lombok.Builder;
 class ErrorReportUploadAction implements Predicate<ErrorUploadRequest> {
 
   @Nonnull
-  private final ServiceClient<ErrorUploadRequest, ErrorUploadResponse> serviceClient;
+  private final ErrorUploadClient serviceClient;
   @Nonnull
   private final Consumer<URI> successConfirmation;
   @Nonnull
-  private final Consumer<ServiceResponse<ErrorUploadResponse>> failureConfirmation;
+  private final Consumer<FeignException> failureConfirmation;
 
 
   @Override
   public boolean test(final ErrorUploadRequest errorReport) {
-    final ServiceResponse<ErrorUploadResponse> response = serviceClient.apply(errorReport);
-    final URI githubLink =
-        response.getPayload().map(pay -> pay.getGithubIssueLink().orElse(null)).orElse(null);
-
-    if ((response.getSendResult() == SendResult.SENT) && (githubLink != null)) {
-      successConfirmation.accept(githubLink);
+    try {
+      final ErrorUploadResponse response = serviceClient.uploadErrorReport(errorReport);
+      successConfirmation.accept(URI.create(response.getGithubIssueLink()));
       return true;
-    } else {
-      failureConfirmation.accept(response);
+    } catch (final FeignException e) {
+      failureConfirmation.accept(e);
       return false;
     }
   }

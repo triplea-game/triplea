@@ -1,11 +1,9 @@
 package org.triplea.http.client.error.report;
 
-import java.net.URI;
-import java.util.Optional;
-
-import com.google.common.base.Strings;
+import javax.annotation.Nonnull;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -14,24 +12,13 @@ import lombok.ToString;
  */
 @ToString
 @Builder
+@Getter
+@EqualsAndHashCode
 public class ErrorUploadResponse {
   /**
    * A link to the github issue created (empty if there were problems creating the link).
+   * Server should return a 500 in case there are any problems creating the error report.
    */
+  @Nonnull
   private final String githubIssueLink;
-
-  /**
-   * Any errors from server while creating the error report.
-   */
-  @Getter
-  private final String error;
-
-
-  /**
-   * Returns the saved report identifier if the server successfully saved the error report request.
-   */
-  public Optional<URI> getGithubIssueLink() {
-    return Optional.ofNullable(Strings.emptyToNull(githubIssueLink))
-        .map(URI::create);
-  }
 }
