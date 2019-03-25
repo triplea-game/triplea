@@ -49,9 +49,9 @@ public final class HeadedGameRunner {
     ClientSetting.initialize();
 
     LoggerManager.setLogLevel(ClientSetting.loggingVerbosity.getValue().map(Level::parse).orElse(Level.INFO));
+    Interruptibles.await(() -> SwingAction.invokeAndWait(LookAndFeel::initialize));
     if (!ClientSetting.useExperimentalJavaFxUi.getValueOrThrow()) {
       Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-        LookAndFeel.initialize();
         ConsoleConfiguration.initialize();
         ErrorMessage.initialize();
       }));

@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.function.Function;
 
+import javax.swing.SwingUtilities;
+
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.engine.ClientContext;
+import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.triplea.UrlConstants;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
@@ -25,7 +28,6 @@ import javafx.scene.layout.VBox;
 class MainMenuPane extends BorderPane {
 
   private final TripleA triplea;
-  private final DownloadPane downloadPane;
   private final SettingsPane settingsPane;
 
   @FXML
@@ -68,8 +70,6 @@ class MainMenuPane extends BorderPane {
     loader.setController(this);
     loader.load();
     version.setText(MessageFormat.format(version.getText(), ClientContext.engineVersion().getExactVersion()));
-    downloadPane = triplea.addRootContent(new DownloadPane(triplea));
-    downloadPane.setVisible(false);
     settingsPane = triplea.addRootContent(new SettingsPane(triplea));
     settingsPane.setVisible(false);
     applyFileSelectionAnimation();
@@ -136,8 +136,7 @@ class MainMenuPane extends BorderPane {
 
   @FXML
   private void showDownloadMenu() {
-    setVisible(false);
-    downloadPane.setVisible(true);
+    SwingUtilities.invokeLater(DownloadMapsWindow::showDownloadMapsWindow);
   }
 
   @FXML

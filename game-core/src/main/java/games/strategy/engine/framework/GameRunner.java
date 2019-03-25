@@ -81,11 +81,9 @@ public final class GameRunner {
    */
   public static void start() {
     SwingUtilities.invokeLater(() -> {
-      final JFrame frame = JFrameBuilder.builder()
-          .title("TripleA")
-          .build();
-      setupPanelModel = new SetupPanelModel(gameSelectorModel, frame);
-      mainFrame = newMainFrame(frame);
+      newMainFrame();
+      setupPanelModel = new SetupPanelModel(gameSelectorModel, mainFrame);
+      mainFrame.add(new MainPanelBuilder().buildMainPanel(setupPanelModel, gameSelectorModel));
       setupPanelModel.showSelectType();
       new Thread(GameRunner::showMainFrame).start();
     });
@@ -93,18 +91,17 @@ public final class GameRunner {
     UpdateChecks.launch();
   }
 
-  private static JFrame newMainFrame(final JFrame frame) {
-    LookAndFeelSwingFrameListener.register(frame);
+  public static void newMainFrame() {
+    mainFrame = JFrameBuilder.builder()
+        .title("TripleA")
+        .build();
+    LookAndFeelSwingFrameListener.register(mainFrame);
+    mainFrame.pack();
 
-    frame.add(new MainPanelBuilder().buildMainPanel(setupPanelModel, gameSelectorModel));
-    frame.pack();
+    mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    mainFrame.setLocationRelativeTo(null);
 
-    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame.setLocationRelativeTo(null);
-
-    SwingComponents.addWindowClosingListener(frame, GameRunner::exitGameIfFinished);
-
-    return frame;
+    SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
   }
 
   /**

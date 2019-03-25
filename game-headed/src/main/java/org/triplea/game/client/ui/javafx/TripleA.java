@@ -2,9 +2,12 @@ package org.triplea.game.client.ui.javafx;
 
 import java.io.File;
 
+import javax.swing.SwingUtilities;
+
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
+import games.strategy.engine.framework.GameRunner;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -51,6 +54,7 @@ public class TripleA extends Application {
     scene.getStylesheets().add(FxmlManager.STYLESHEET_MAIN.toString());
     mainMenu = addRootContent(new MainMenuPane(this));
     setupStage(stage, scene);
+    SwingUtilities.invokeLater(GameRunner::newMainFrame);
   }
 
   private void setupStage(final Stage stage, final Scene scene) {
@@ -62,6 +66,7 @@ public class TripleA extends Application {
     stage.getIcons().add(new Image(getClass().getResourceAsStream(FxmlManager.ICON_LOCATION.toString())));
     stage.setTitle("TripleA");
     stage.show();
+    stage.setOnCloseRequest(e -> exit());
   }
 
   void returnToMainMenu(final Node currentPane) {
@@ -105,6 +110,7 @@ public class TripleA extends Application {
   @SuppressWarnings("static-method")
   private void exit() {
     Platform.exit();
+    SwingUtilities.invokeLater(GameRunner::exitGameIfFinished);
   }
 
   public void displayLoadingScreen(final boolean bool) {
