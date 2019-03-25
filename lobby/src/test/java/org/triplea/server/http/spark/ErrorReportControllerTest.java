@@ -11,19 +11,19 @@ import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.error.report.ErrorUploadResponse;
 import org.triplea.server.reporting.error.CreateErrorReportException;
+import org.triplea.server.reporting.error.ErrorReportRequest;
 
 import feign.FeignException;
 
 class ErrorReportControllerTest extends SparkServerSystemTest {
-  private static final org.triplea.server.reporting.error.ErrorReportRequest ERROR_REPORT =
-      org.triplea.server.reporting.error.ErrorReportRequest.builder()
-          .clientIp("")
-          .errorReport(
-              ErrorUploadRequest.builder()
-                  .title("Ah there's nothing like the salty endurance stuttering on the plunder.")
-                  .body("Where is the shiny jack?")
-                  .build())
-          .build();
+  private static final ErrorReportRequest ERROR_REPORT = ErrorReportRequest.builder()
+      .clientIp("")
+      .errorReport(
+          ErrorUploadRequest.builder()
+              .title("Ah there's nothing like the salty endurance stuttering on the plunder.")
+              .body("Where is the shiny jack?")
+              .build())
+      .build();
   private static final String LINK = "http://fictitious-link";
 
   private final ErrorUploadClient client = ErrorUploadClient.newClient(LOCAL_HOST);
