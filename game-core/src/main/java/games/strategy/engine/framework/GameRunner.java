@@ -84,6 +84,7 @@ public final class GameRunner {
       newMainFrame();
       setupPanelModel = new SetupPanelModel(gameSelectorModel, mainFrame);
       mainFrame.add(new MainPanelBuilder().buildMainPanel(setupPanelModel, gameSelectorModel));
+      mainFrame.pack();
       setupPanelModel.showSelectType();
       new Thread(GameRunner::showMainFrame).start();
     });
@@ -96,7 +97,6 @@ public final class GameRunner {
         .title("TripleA")
         .build();
     LookAndFeelSwingFrameListener.register(mainFrame);
-    mainFrame.pack();
 
     mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     mainFrame.setLocationRelativeTo(null);
