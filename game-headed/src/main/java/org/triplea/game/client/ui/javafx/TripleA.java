@@ -1,5 +1,6 @@
 package org.triplea.game.client.ui.javafx;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 
 import javax.swing.SwingUtilities;
@@ -54,7 +55,10 @@ public class TripleA extends Application {
     scene.getStylesheets().add(FxmlManager.STYLESHEET_MAIN.toString());
     mainMenu = addRootContent(new MainMenuPane(this));
     setupStage(stage, scene);
-    SwingUtilities.invokeLater(GameRunner::newMainFrame);
+    // Don't invoke Swing if headless (for example in tests)
+    if (!GraphicsEnvironment.isHeadless()) {
+      SwingUtilities.invokeLater(GameRunner::newMainFrame);
+    }
   }
 
   private void setupStage(final Stage stage, final Scene scene) {
@@ -110,7 +114,9 @@ public class TripleA extends Application {
   @SuppressWarnings("static-method")
   private void exit() {
     Platform.exit();
-    SwingUtilities.invokeLater(GameRunner::exitGameIfFinished);
+    if (!GraphicsEnvironment.isHeadless()) {
+      SwingUtilities.invokeLater(GameRunner::exitGameIfFinished);
+    }
   }
 
   public void displayLoadingScreen(final boolean bool) {
