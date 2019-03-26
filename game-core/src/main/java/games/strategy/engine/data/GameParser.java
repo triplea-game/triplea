@@ -182,7 +182,7 @@ public final class GameParser {
 
   private void parseMapDetails(final Element root) throws GameParseException {
     final Element variableList = getSingleChild("variableList", root, true);
-    final Map<String, List<String>> variables = variableList != null ? parseVariables(variableList) : new HashMap<>();
+    final Map<String, List<String>> variables = variableList != null ? parseVariables(variableList) : Collections.emptyMap();
     parseMap(getSingleChild("map", root));
     final Element resourceList = getSingleChild("resourceList", root, true);
     if (resourceList != null) {
