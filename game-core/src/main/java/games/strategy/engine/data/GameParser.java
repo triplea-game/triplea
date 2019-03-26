@@ -20,6 +20,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
@@ -38,7 +39,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
 import games.strategy.engine.ClientContext;
@@ -182,7 +182,8 @@ public final class GameParser {
 
   private void parseMapDetails(final Element root) throws GameParseException {
     final Element variableList = getSingleChild("variableList", root, true);
-    final Map<String, List<String>> variables = variableList != null ? parseVariables(variableList) : Collections.emptyMap();
+    final Map<String, List<String>> variables =
+        variableList != null ? parseVariables(variableList) : Collections.emptyMap();
     parseMap(getSingleChild("map", root));
     final Element resourceList = getSingleChild("resourceList", root, true);
     if (resourceList != null) {
@@ -543,25 +544,21 @@ public final class GameParser {
     final Map<String, List<String>> variables = new HashMap<>();
     for (final Element current : getChildren("variable", root)) {
       final String name = current.getAttribute("name");
-      final List<String> values = new ArrayList<>();
-      for (final Element element : getChildren("element", current)) {
-        final String value = element.getAttribute("name");
-        values.addAll(findNestedVariables(value, variables));
-      }
+      final List<String> values = getChildren("element", current).stream()
+          .map(element -> element.getAttribute("name"))
+          .flatMap(value -> findNestedVariables(value, variables))
+          .collect(Collectors.toList());
       variables.put(name, values);
     }
     return variables;
   }
 
-  private List<String> findNestedVariables(final String value, final Map<String, List<String>> variables) {
+  private Stream<String> findNestedVariables(final String value, final Map<String, List<String>> variables) {
     if (!variables.containsKey(value)) {
-      return Collections.singletonList(value);
+      return Stream.of(value);
     }
-    final List<String> result = new ArrayList<>();
-    for (final String s : variables.get(value)) {
-      result.addAll(findNestedVariables(s, variables));
-    }
-    return result;
+    return variables.get(value).stream()
+        .flatMap(s -> findNestedVariables(s, variables));
   }
 
   private void parseMap(final Node map) throws GameParseException {
@@ -1271,10 +1268,11 @@ public final class GameParser {
         for (int i = 0; i < length; i++) {
           final Map<String, String> foreachMap = new HashMap<>();
           for (final String foreachVariable : foreachVariables) {
-            if (length != variables.get(foreachVariable).size()) {
+            final List<String> foreachValue = variables.get(foreachVariable);
+            if (length != foreachValue.size()) {
               throw newGameParseException("Attachment foreach variables must have same number of elements: " + foreach);
             }
-            foreachMap.put("$" + foreachVariable + "$", variables.get(foreachVariable).get(i));
+            foreachMap.put("$" + foreachVariable + "$", foreachValue.get(i));
           }
           parseAttachment(current, variables, foreachMap);
         }
@@ -1338,7 +1336,7 @@ public final class GameParser {
       if (!variables.isEmpty()) {
         final List<String> listWithVariables = new ArrayList<>();
         for (final String s : Splitter.on(':').split(optionValues)) {
-          listWithVariables.add(String.join(":", variables.getOrDefault(s, Collections.singletonList(s)));
+          listWithVariables.add(String.join(":", variables.getOrDefault(s, Collections.singletonList(s))));
         }
         optionValues = String.join(":", listWithVariables);
       }
