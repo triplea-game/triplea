@@ -1340,7 +1340,7 @@ public final class GameParser {
         for (final String s : Splitter.on(':').split(optionValues)) {
           listWithVariables.add(String.join(":", variables.getOrDefault(s, Collections.singletonList(s)));
         }
-        optionValues = Joiner.on(":").join(listWithVariables);
+        optionValues = String.join(":", listWithVariables);
       }
       try {
         attachment.getProperty(name)
