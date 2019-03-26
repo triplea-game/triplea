@@ -1261,7 +1261,7 @@ public final class GameParser {
     for (final Element current : getChildren("attachment", root)) {
       final String foreach = current.getAttribute("foreach");
       if (foreach.isEmpty()) {
-        parseAttachment(current, variables, new HashMap<>());
+        parseAttachment(current, variables, Collections.emptyMap());
       } else {
         final List<String> foreachVariables = Splitter.on(":").splitToList(foreach);
         if (!variables.keySet().containsAll(foreachVariables)) {
