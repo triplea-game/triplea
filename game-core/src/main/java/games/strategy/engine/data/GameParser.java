@@ -1338,7 +1338,7 @@ public final class GameParser {
       if (!variables.isEmpty()) {
         final List<String> listWithVariables = new ArrayList<>();
         for (final String s : Splitter.on(':').split(optionValues)) {
-          listWithVariables.add(variables.containsKey(s) ? Joiner.on(":").join(variables.get(s)) : s);
+          listWithVariables.add(String.join(":", variables.getOrDefault(s, Collections.singletonList(s)));
         }
         optionValues = Joiner.on(":").join(listWithVariables);
       }
