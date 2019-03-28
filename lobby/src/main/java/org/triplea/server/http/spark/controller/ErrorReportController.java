@@ -6,7 +6,6 @@ import java.util.function.Function;
 
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.error.report.ErrorUploadResponse;
-import org.triplea.server.reporting.error.CreateErrorReportException;
 import org.triplea.server.reporting.error.ErrorReportRequest;
 
 import com.google.gson.Gson;
@@ -31,12 +30,8 @@ public class ErrorReportController implements Runnable {
 
   private String uploadErrorReport(final Request req) {
     final org.triplea.server.reporting.error.ErrorReportRequest errorReport = readErrorReport(req);
-    try {
-      final ErrorUploadResponse result = errorReportIngestion.apply(errorReport);
-      return new Gson().toJson(result);
-    } catch (final CreateErrorReportException e) {
-      return e.getMessage();
-    }
+    final ErrorUploadResponse result = errorReportIngestion.apply(errorReport);
+    return new Gson().toJson(result);
   }
 
   private static ErrorReportRequest readErrorReport(final Request request) {
