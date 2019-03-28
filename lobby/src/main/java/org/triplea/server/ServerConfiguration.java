@@ -52,7 +52,7 @@ public class ServerConfiguration {
 
   private static Function<RegisteredUserLoginRequest, LobbyLoginResponse> registeredUserLoginStrategy() {
     // TODO: stubbed value, implement this;
-    return loginRequset -> LobbyLoginResponse.newFailResponse("stubbed response");
+    return loginRequest -> LobbyLoginResponse.newFailResponse("stubbed response");
   }
 
   private static Function<String, LobbyLoginResponse> anonymousUserLoginStrategy() {
