@@ -7819,16 +7819,6 @@
       <option name="requiresUnits" value="$Barracks$"/>
       <option name="canInvadeOnlyFrom" value="none"/>
     </attachment>
-    <!-- <attachment name="unitAttachment" attachTo="germanInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
-      <option name="movement" value="1"/>
-      <option name="attack" value="2"/>
-      <option name="defense" value="3"/>
-      <option name="transportCost" value="2"/>
-      <option name="isLandTransportable" value="true"/>
-      <option name="canBeGivenByTerritoryTo" value="Germany"/>
-      <option name="requiresUnits" value="germanBarracks"/>
-      <option name="canInvadeOnlyFrom" value="none"/>
-    </attachment> -->
     <attachment name="unitAttachment" attachTo="germanAntiTankGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="attack" value="1"/>
       <option name="defense" value="3"/>
@@ -8356,15 +8346,6 @@
       <option name="destroyedWhenCapturedBy" value="China:Russia:Germany:Britain:Italy:Japan:Usa:Spain:Sweden:Turkey:Brazil"/>
     </attachment>
     <!-- Russian Units -->
-    <!-- <attachment name="unitAttachment" attachTo="russianInfantry" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
-      <option name="movement" value="1"/>
-      <option name="attack" value="2"/>
-      <option name="defense" value="3"/>
-      <option name="transportCost" value="2"/>
-      <option name="isLandTransportable" value="true"/>
-      <option name="requiresUnits" value="russianBarracks"/>
-      <option name="canInvadeOnlyFrom" value="none"/>
-    </attachment> -->
     <attachment name="unitAttachment" attachTo="russianAntiTankGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="attack" value="1"/>
       <option name="defense" value="3"/>
@@ -20204,20 +20185,6 @@
       <option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachmentLiberationUsa"/>
       <option name="playerProperty" value="switch" count="true"/>
     </attachment>
-    <!-- <attachment name="triggerAttachmentLiberationUsa1" attachTo="Germany" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-      <option name="conditions" value="conditionAttachmentWashingtonlost:conditionAttachmentChicagolost"/>
-      <option name="when" value="after:germanyBattle"/>
-      <option name="players" value="Usa"/>
-      <option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachmentLiberationUsa"/>
-      <option name="playerProperty" value="switch" count="true"/>
-    </attachment>
-    <attachment name="triggerAttachmentLiberationUsa2" attachTo="Brazil" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
-      <option name="conditions" value="conditionAttachmentWashingtonlost:conditionAttachmentChicagolost"/>
-      <option name="when" value="after:brazilBattle"/>
-      <option name="players" value="Usa"/>
-      <option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachmentLiberationUsa"/>
-      <option name="playerProperty" value="switch" count="true"/>
-    </attachment> -->
     <attachment name="triggerAttachmentLiberationUsa3" attachTo="Spain" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
       <option name="conditions" value="conditionAttachmentWashingtonlost:conditionAttachmentChicagolost"/>
       <option name="when" value="after:spainBattle"/>
