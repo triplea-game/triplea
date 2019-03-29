@@ -7809,14 +7809,14 @@
       <option name="consumesUnits" value="1:Material"/>
       <option name="requiresUnits" value="germanCombatEngineer"/>
     </attachment>
-    <attachment foreach="Infantry:Players:Barracks" name="unitAttachment" attachTo="$Infantry$" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
+    <attachment foreach="$Infantry$:$Players$:$Barracks$" name="unitAttachment" attachTo="@Infantry@" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
       <option name="movement" value="1"/>
       <option name="attack" value="2"/>
       <option name="defense" value="3"/>
       <option name="transportCost" value="2"/>
       <option name="isLandTransportable" value="true"/>
-      <option name="canBeGivenByTerritoryTo" value="$Players$"/>
-      <option name="requiresUnits" value="$Barracks$"/>
+      <option name="canBeGivenByTerritoryTo" value="@Players@"/>
+      <option name="requiresUnits" value="@Barracks@"/>
       <option name="canInvadeOnlyFrom" value="none"/>
     </attachment>
     <attachment name="unitAttachment" attachTo="germanAntiTankGun" javaClass="games.strategy.triplea.attachments.UnitAttachment" type="unitType">
@@ -7824,7 +7824,7 @@
       <option name="defense" value="3"/>
       <option name="isAAforCombatOnly" value="true"/>
       <option name="typeAA" value="AntiTankGun"/>
-      <option name="targetsAA" value="AntiTankTargets"/>
+      <option name="targetsAA" value="$AntiTankTargets$"/>
       <option name="maxAAattacks" value="1"/>
       <option name="transportCost" value="2"/>
       <option name="mayOverStackAA" value="true"/>
@@ -20178,9 +20178,9 @@
       <option name="unitProperty" value="unitPlacementRestrictions" count="Sahara"/>
       <option name="when" value="before:japanNonCombatMove"/>
     </attachment>
-    <attachment foreach="TriggerPlayers:Phases" name="triggerAttachmentLiberationUsaBy$TriggerPlayers$" attachTo="$TriggerPlayers$" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
+    <attachment foreach="$TriggerPlayers$:$Phases$" name="triggerAttachmentLiberationUsaBy@TriggerPlayers@" attachTo="@TriggerPlayers@" javaClass="games.strategy.triplea.attachments.TriggerAttachment" type="player">
       <option name="conditions" value="conditionAttachmentWashingtonlost:conditionAttachmentChicagolost"/>
-      <option name="when" value="after:$Phases$"/>
+      <option name="when" value="after:@Phases@"/>
       <option name="players" value="Usa"/>
       <option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachmentLiberationUsa"/>
       <option name="playerProperty" value="switch" count="true"/>

@@ -543,7 +543,7 @@ public final class GameParser {
   private Map<String, List<String>> parseVariables(final Element root) throws GameParseException {
     final Map<String, List<String>> variables = new HashMap<>();
     for (final Element current : getChildren("variable", root)) {
-      final String name = current.getAttribute("name");
+      final String name = "$" + current.getAttribute("name") + "$";
       final List<String> values = getChildren("element", current).stream()
           .map(element -> element.getAttribute("name"))
           .flatMap(value -> findNestedVariables(value, variables))
@@ -1272,7 +1272,7 @@ public final class GameParser {
             if (length != foreachValue.size()) {
               throw newGameParseException("Attachment foreach variables must have same number of elements: " + foreach);
             }
-            foreachMap.put("$" + foreachVariable + "$", foreachValue.get(i));
+            foreachMap.put("@" + foreachVariable.replace("$", "") + "@", foreachValue.get(i));
           }
           parseAttachment(current, variables, foreachMap);
         }
@@ -1327,32 +1327,26 @@ public final class GameParser {
         throw newGameParseException("Option name with zero length for attachment: " + attachment.getName());
       }
       final String value = option.getAttribute("value");
-      if (containsEmptyForeachVariable(value, foreach)) {
+      final String count = option.getAttribute("count");
+      final String countAndValue = (!count.isEmpty() ? count + ":" : "") + value;
+      if (containsEmptyForeachVariable(countAndValue, foreach)) {
         continue; // Skip adding option if contains empty foreach variable
       }
-      final String valueWithForeach = replaceForeachVariables(value, foreach);
-      final String count = option.getAttribute("count");
-      String optionValues = (!count.isEmpty() ? count + ":" : "") + valueWithForeach;
-      if (!variables.isEmpty()) {
-        final List<String> listWithVariables = new ArrayList<>();
-        for (final String s : Splitter.on(':').split(optionValues)) {
-          listWithVariables.add(String.join(":", variables.getOrDefault(s, Collections.singletonList(s))));
-        }
-        optionValues = String.join(":", listWithVariables);
-      }
+      final String valueWithForeach = replaceForeachVariables(countAndValue, foreach);
+      final String finalValue = replaceVariables(valueWithForeach, variables);
       try {
         attachment.getProperty(name)
             .orElseThrow(() -> newGameParseException(String.format(
                 "Missing property definition for option '%s' in attachment '%s'",
                 name, attachment.getName())))
-            .setValue(optionValues);
+            .setValue(finalValue);
       } catch (final GameParseException e) {
         throw e;
       } catch (final Exception e) {
         throw newGameParseException("Unexpected Exception while setting values for attachment: " + attachment, e);
       }
 
-      results.add(Tuple.of(name, optionValues));
+      results.add(Tuple.of(name, finalValue));
     }
     return results;
   }
@@ -1372,6 +1366,14 @@ public final class GameParser {
       }
     }
     return false;
+  }
+
+  private String replaceVariables(final String s, final Map<String, List<String>> variables) {
+    String result = s;
+    for (final Entry<String, List<String>> entry : variables.entrySet()) {
+      result = result.replace(entry.getKey(), String.join(":", entry.getValue()));
+    }
+    return result;
   }
 
   @VisibleForTesting
