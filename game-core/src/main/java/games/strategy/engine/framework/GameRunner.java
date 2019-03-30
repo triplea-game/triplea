@@ -38,7 +38,6 @@ import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.ProgressWindow;
 import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
 import org.triplea.util.ExitStatus;
 import org.triplea.util.Services;
 
@@ -81,11 +80,10 @@ public final class GameRunner {
    */
   public static void start() {
     SwingUtilities.invokeLater(() -> {
-      final JFrame frame = JFrameBuilder.builder()
-          .title("TripleA")
-          .build();
-      setupPanelModel = new SetupPanelModel(gameSelectorModel, frame);
-      mainFrame = newMainFrame(frame);
+      newMainFrame();
+      setupPanelModel = new SetupPanelModel(gameSelectorModel, mainFrame);
+      mainFrame.add(new MainPanelBuilder().buildMainPanel(setupPanelModel, gameSelectorModel));
+      mainFrame.pack();
       setupPanelModel.showSelectType();
       new Thread(GameRunner::showMainFrame).start();
     });
@@ -93,18 +91,14 @@ public final class GameRunner {
     UpdateChecks.launch();
   }
 
-  private static JFrame newMainFrame(final JFrame frame) {
-    LookAndFeelSwingFrameListener.register(frame);
+  public static void newMainFrame() {
+    mainFrame = JFrameBuilder.builder()
+        .title("TripleA")
+        .windowClosedAction(GameRunner::exitGameIfFinished)
+        .build();
+    LookAndFeelSwingFrameListener.register(mainFrame);
 
-    frame.add(new MainPanelBuilder().buildMainPanel(setupPanelModel, gameSelectorModel));
-    frame.pack();
-
-    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame.setLocationRelativeTo(null);
-
-    SwingComponents.addWindowClosingListener(frame, GameRunner::exitGameIfFinished);
-
-    return frame;
+    mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
   }
 
   /**
