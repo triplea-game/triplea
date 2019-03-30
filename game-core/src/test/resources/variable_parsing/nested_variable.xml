@@ -7,12 +7,12 @@
         </variable>
 
         <variable name="contains-nested">
-            <element name="nested"/>
+            <element name="$nested$"/>
         </variable>
 
         <variable name="many-nested">
-            <element name="nested"/>
-            <element name="contains-nested"/>
+            <element name="$nested$"/>
+            <element name="$contains-nested$"/>
         </variable>
     </variableList>
 </xml>

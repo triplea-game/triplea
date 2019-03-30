@@ -58,7 +58,7 @@ class GameDataVariableParserTest {
 
     final Map<String, List<String>> result = parser.parseVariables(xmlSample);
 
-    assertThat(result, hasEntry("key", singletonList("value")));
+    assertThat(result, hasEntry("$key$", singletonList("value")));
     assertThat(result.keySet(), hasSize(1));
   }
 
@@ -68,10 +68,10 @@ class GameDataVariableParserTest {
 
     final Map<String, List<String>> result = parser.parseVariables(xmlSample);
 
-    assertThat(result, hasEntry("key1", asList("value1", "value2")));
-    assertThat(result, hasEntry("key2", asList("value3", "value4")));
-    assertThat(result, hasEntry("no-values", Collections.emptyList()));
-    assertThat(result, hasEntry("empty-value", singletonList("")));
+    assertThat(result, hasEntry("$key1$", asList("value1", "value2")));
+    assertThat(result, hasEntry("$key2$", asList("value3", "value4")));
+    assertThat(result, hasEntry("$no-values$", Collections.emptyList()));
+    assertThat(result, hasEntry("$empty-value$", singletonList("")));
     assertThat(result.keySet(), hasSize(4));
   }
 
@@ -81,9 +81,9 @@ class GameDataVariableParserTest {
 
     final Map<String, List<String>> result = parser.parseVariables(xmlSample);
 
-    assertThat(result, hasEntry("nested", singletonList("nested-value")));
-    assertThat(result, hasEntry("contains-nested", singletonList("nested-value")));
-    assertThat(result, hasEntry("many-nested", asList("nested-value", "nested-value")));
+    assertThat(result, hasEntry("$nested$", singletonList("nested-value")));
+    assertThat(result, hasEntry("$contains-nested$", singletonList("nested-value")));
+    assertThat(result, hasEntry("$many-nested$", asList("nested-value", "nested-value")));
     assertThat(result.keySet(), hasSize(3));
   }
 }
