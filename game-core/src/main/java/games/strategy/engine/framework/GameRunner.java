@@ -95,13 +95,11 @@ public final class GameRunner {
   public static void newMainFrame() {
     mainFrame = JFrameBuilder.builder()
         .title("TripleA")
+        .windowClosedAction(GameRunner::exitGameIfFinished)
         .build();
     LookAndFeelSwingFrameListener.register(mainFrame);
 
     mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    mainFrame.setLocationRelativeTo(null);
-
-    SwingComponents.addWindowClosingListener(mainFrame, GameRunner::exitGameIfFinished);
   }
 
   /**
