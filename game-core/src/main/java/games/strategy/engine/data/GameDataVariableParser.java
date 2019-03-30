@@ -21,10 +21,9 @@ class GameDataVariableParser {
   }
 
   private Map<String, List<String>> parseVariableElement(final Element root) {
-    checkNotNull(root);
     final Map<String, List<String>> variables = new HashMap<>();
     for (final Element current : nodeFinder.getChildren("variable", root)) {
-      final String name = current.getAttribute("name");
+      final String name = "$" + current.getAttribute("name") + "$";
       final List<String> values = nodeFinder.getChildren("element", current).stream()
           .map(element -> element.getAttribute("name"))
           .flatMap(value -> findNestedVariables(value, variables))
@@ -41,5 +40,4 @@ class GameDataVariableParser {
     return variables.get(value).stream()
         .flatMap(s -> findNestedVariables(s, variables));
   }
-
 }
