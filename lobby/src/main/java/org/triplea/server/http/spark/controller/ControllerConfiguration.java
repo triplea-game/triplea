@@ -1,6 +1,6 @@
 package org.triplea.server.http.spark.controller;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 import org.triplea.server.ServerConfiguration;
 
@@ -11,7 +11,9 @@ import lombok.AllArgsConstructor;
 public class ControllerConfiguration {
 
   public static Iterable<Runnable> getControllers(final ServerConfiguration serverConfiguration) {
-    return Collections.singletonList(
-        new ErrorReportController(serverConfiguration.getErrorUploader()));
+    return Arrays.asList(
+        new ErrorReportController(serverConfiguration.getErrorUploader()),
+        new AnonymousUserLoginController(serverConfiguration.getAnonymousUserLogin()),
+        new RegisteredUserLoginController(serverConfiguration.getRegisteredUserLogin()));
   }
 }
