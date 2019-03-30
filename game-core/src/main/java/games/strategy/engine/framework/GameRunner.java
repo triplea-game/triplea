@@ -38,7 +38,6 @@ import org.triplea.lobby.common.GameDescription;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.ProgressWindow;
 import org.triplea.swing.SwingAction;
-import org.triplea.swing.SwingComponents;
 import org.triplea.util.ExitStatus;
 import org.triplea.util.Services;
 
