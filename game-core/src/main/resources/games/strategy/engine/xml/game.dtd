@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (info, loader?, triplea?, diceSides?, map, resourceList?, playerList, unitList?, relationshipTypes?, territoryEffectList?, gamePlay, production?, technology?, attachmentList? , initialize?, propertyList?)>
+<!ELEMENT game (info, loader?, triplea?, diceSides?, variableList?, map, resourceList?, playerList, unitList?, relationshipTypes?, territoryEffectList?, gamePlay, production?, technology?, attachmentList?, initialize?, propertyList?)>
 
 <!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
 <!ELEMENT info EMPTY>
@@ -26,6 +26,16 @@
 <!ATTLIST diceSides
 	value CDATA #REQUIRED
 >
+
+<!ELEMENT variableList (variable+) >
+	<!ELEMENT variable (element+) >
+	<!ATTLIST variable 
+		name CDATA #REQUIRED
+	>
+		<!ELEMENT element EMPTY > 
+		<!ATTLIST element
+			name CDATA #REQUIRED
+		>
 
 <!ELEMENT map ((grid | territory)+ , connection*, remove-connection*)>
 	<!ELEMENT grid EMPTY>
@@ -205,6 +215,7 @@
 <!ELEMENT attachmentList (attachment+) >
 	<!ELEMENT attachment (option+) >
 	<!ATTLIST attachment 
+		foreach CDATA #IMPLIED
 		name CDATA #REQUIRED
 		attachTo CDATA #REQUIRED
 		javaClass CDATA #REQUIRED

@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+
+<xml>
+    <variableList>
+        <variable name="key">
+            <element name="value"/>
+        </variable>
+    </variableList>
+</xml>
