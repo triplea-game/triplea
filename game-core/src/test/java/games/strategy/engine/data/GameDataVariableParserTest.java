@@ -22,7 +22,6 @@ import org.w3c.dom.Element;
 
 class GameDataVariableParserTest {
 
-
   private static final String FOLDER = "src/test/resources/variable_parsing/";
   private static final String EMPTY_LIST = FOLDER + "empty_list.xml";
   private static final String SINGLE_ELEMENT_LIST = FOLDER + "single_element_list.xml";

@@ -9,9 +9,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 class NodeFinder {
-  /**
-   * If optional is true, will not throw an exception if there are 0 children.
-   */
+
   Element getSingleChild(final String name, final Node node) throws GameParseException {
     final List<Element> children = getChildren(name, node);
     if (children.size() != 1) {
@@ -22,11 +20,9 @@ class NodeFinder {
 
   Element getOptionalSingleChild(final String name, final Node node) throws GameParseException {
     final List<Element> children = getChildren(name, node);
-
     if (children.size() > 1) {
-      throw new GameParseException("Too many children named " + name);
+      throw new GameParseException("Too many children named: " + name);
     }
-
     return children.size() == 0 ? null : children.get(0);
   }
 
