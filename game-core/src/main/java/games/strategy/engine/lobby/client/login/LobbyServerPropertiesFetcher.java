@@ -1,7 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -21,6 +20,10 @@ import games.strategy.triplea.settings.GameSetting;
  * Fetches the lobby server properties from the remote Source of Truth.
  */
 public final class LobbyServerPropertiesFetcher {
+
+  public static final int TEST_LOBBY_DEFAULT_PORT = 3304;
+  public static final int TEST_LOBBY_DEFAULT_HTTPS_PORT = 4567;
+
   private final BiFunction<String, Function<InputStream, LobbyServerProperties>,
       Optional<LobbyServerProperties>> fileDownloader;
   @Nullable
@@ -73,20 +76,22 @@ public final class LobbyServerPropertiesFetcher {
     return getTestOverrideProperties(
         ClientSetting.testLobbyHost,
         ClientSetting.testLobbyPort,
-        ClientSetting.httpLobbyUriOverride);
+        ClientSetting.testLobbyHttpsPort);
   }
+
+
 
   @VisibleForTesting
   static Optional<LobbyServerProperties> getTestOverrideProperties(
       final GameSetting<String> testLobbyHostSetting,
       final GameSetting<Integer> testLobbyPortSetting,
-      final GameSetting<URI> testLobbyHttpUri) {
-    if (testLobbyHostSetting.isSet() && testLobbyPortSetting.isSet() && testLobbyHttpUri.isSet()) {
+      final GameSetting<Integer> testLobbyHttpsPort) {
+    if (testLobbyHostSetting.isSet()) {
       return Optional.of(
           LobbyServerProperties.builder()
               .host(testLobbyHostSetting.getValueOrThrow())
-              .port(testLobbyPortSetting.getValueOrThrow())
-              .httpServerUri(testLobbyHttpUri.getValueOrThrow())
+              .port(testLobbyPortSetting.getValue().orElse(TEST_LOBBY_DEFAULT_PORT))
+              .httpsPort(testLobbyHttpsPort.getValue().orElse(TEST_LOBBY_DEFAULT_HTTPS_PORT))
               .build());
     }
 
@@ -101,21 +106,18 @@ public final class LobbyServerPropertiesFetcher {
     lobbyProps.ifPresent(props -> {
       ClientSetting.lobbyLastUsedHost.setValue(props.getHost());
       ClientSetting.lobbyLastUsedPort.setValue(props.getPort());
-      ClientSetting.lobbyLastUsedHttpHostUri.setValue(props.getHttpServerUri());
+      ClientSetting.lobbyLastUsedHttpsPort.setValue(props.getHttpsPort());
       ClientSetting.flush();
     });
     return lobbyProps;
   }
 
   private static Optional<LobbyServerProperties> getLastUsedProperties() {
-    if (ClientSetting.lobbyLastUsedHost.isSet()
-        && ClientSetting.lobbyLastUsedPort.isSet()
-        && ClientSetting.lobbyLastUsedHttpHostUri.isSet()) {
-
+    if (ClientSetting.lobbyLastUsedHost.isSet()) {
       return Optional.of(LobbyServerProperties.builder()
           .host(ClientSetting.lobbyLastUsedHost.getValueOrThrow())
-          .port(ClientSetting.lobbyLastUsedPort.getValueOrThrow())
-          .httpServerUri(ClientSetting.lobbyLastUsedHttpHostUri.getValueOrThrow())
+          .port(ClientSetting.lobbyLastUsedPort.getValue().orElse(TEST_LOBBY_DEFAULT_PORT))
+          .httpsPort(ClientSetting.lobbyLastUsedHttpsPort.getValue().orElse(TEST_LOBBY_DEFAULT_HTTPS_PORT))
           .build());
     }
 

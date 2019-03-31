@@ -136,7 +136,7 @@ public enum ErrorMessage {
   private static ErrorUploadClient serviceClient() {
     return LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
         .fetchLobbyServerProperties()
-        .map(LobbyServerProperties::getHttpServerUri)
+        .map(LobbyServerProperties::getHttpsServerUri)
         .map(ErrorUploadClient::newClient)
         .orElse(null);
   }

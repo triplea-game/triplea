@@ -2,7 +2,6 @@ package games.strategy.triplea.settings;
 
 import static com.google.common.base.Predicates.not;
 
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
@@ -72,7 +71,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SPACE_BAR_CONFIRMS_CASUALTIES", true);
   public static final ClientSetting<String> lobbyLastUsedHost = new StringClientSetting("LOBBY_LAST_USED_HOST");
   public static final ClientSetting<Integer> lobbyLastUsedPort = new IntegerClientSetting("LOBBY_LAST_USED_PORT");
-  public static final ClientSetting<URI> lobbyLastUsedHttpHostUri = new UriClientSetting("LOBBY_LAST_USED_HTTP_HOST");
+  public static final ClientSetting<Integer> lobbyLastUsedHttpsPort =
+      new IntegerClientSetting("LOBBY_LAST_USED_HTTPS_PORT");
   public static final ClientSetting<String> lookAndFeel =
       new StringClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
   public static final ClientSetting<Integer> mapEdgeScrollSpeed = new IntegerClientSetting("MAP_EDGE_SCROLL_SPEED", 30);
@@ -97,7 +97,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Boolean> showConsole = new BooleanClientSetting("SHOW_CONSOLE", false);
   public static final ClientSetting<String> testLobbyHost = new StringClientSetting("TEST_LOBBY_HOST");
   public static final ClientSetting<Integer> testLobbyPort = new IntegerClientSetting("TEST_LOBBY_PORT");
-  public static final ClientSetting<URI> httpLobbyUriOverride = new UriClientSetting("TEST_HTTP_LOBBY_URI");
+  public static final ClientSetting<Integer> testLobbyHttpsPort = new IntegerClientSetting("TEST_LOBBY_HTTPS_PORT");
   public static final ClientSetting<Boolean> firstTimeThisVersion =
       new BooleanClientSetting("TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY", true);
   public static final ClientSetting<String> lastCheckForEngineUpdate =

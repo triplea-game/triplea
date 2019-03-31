@@ -8,14 +8,13 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.proxySet
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 import static games.strategy.triplea.settings.SelectionComponentFactory.textField;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
+import games.strategy.engine.lobby.client.login.LobbyServerPropertiesFetcher;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -223,30 +222,22 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Lobby Port Override",
       SettingType.TESTING,
       "Specifies the port for connecting to a test lobby.\n"
-          + "Set to 0 for no override") {
+          + "Set to 0 for no override, defaults to: "
+          + LobbyServerPropertiesFetcher.TEST_LOBBY_DEFAULT_PORT) {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return intValueRange(ClientSetting.testLobbyPort, 1, 65535, true);
     }
   },
 
-  TEST_HTTP_LOBBY_URI(
-      "HTTP Lobby URI",
+  TEST_HTTPS_LOBBY_PORT(
+      "HTTPS Lobby Port",
       SettingType.TESTING,
-      "Specifies host and port for connecting to a test HTTP lobby.") {
+      "Specifies port for connecting to a test HTTPS lobby, defaults to: "
+          + LobbyServerPropertiesFetcher.TEST_LOBBY_DEFAULT_HTTPS_PORT) {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return textField(
-          ClientSetting.httpLobbyUriOverride,
-          Object::toString,
-          encodedValue -> {
-            try {
-              return new URI(encodedValue);
-            } catch (final URISyntaxException e) {
-              throw new SelectionComponentFactory.ValueEncodingException(e);
-            }
-          },
-          "must be a valid URI, e.g. \"http://localhost:5678\"");
+      return intValueRange(ClientSetting.testLobbyHttpsPort, 1, 65535, true);
     }
   },
 

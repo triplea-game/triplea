@@ -10,7 +10,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -75,7 +74,7 @@ class LobbyServerPropertiesFetcherTest {
     private GameSetting<Integer> testLobbyPortSetting;
 
     @Mock
-    private GameSetting<URI> testLobbyHttpUriSetting;
+    private GameSetting<Integer> testLobbyHttpsPort;
 
     private Optional<LobbyServerProperties> result;
 
@@ -83,13 +82,8 @@ class LobbyServerPropertiesFetcherTest {
       when(testLobbyHostSetting.isSet()).thenReturn(false);
     }
 
-    private void givenTestLobbyHostIsSet() {
-      when(testLobbyHostSetting.isSet()).thenReturn(true);
-    }
-
     private void givenTestLobbyHttpUriIsSet() {
-      when(testLobbyHttpUriSetting.isSet()).thenReturn(true);
-      when(testLobbyHttpUriSetting.getValueOrThrow()).thenReturn(URI.create("http://uri"));
+      when(testLobbyHttpsPort.getValue()).thenReturn(Optional.of(999));
     }
 
     private void givenTestLobbyHostIsSetTo(final String host) {
@@ -97,19 +91,15 @@ class LobbyServerPropertiesFetcherTest {
       when(testLobbyHostSetting.getValueOrThrow()).thenReturn(host);
     }
 
-    private void givenTestLobbyPortIsNotSet() {
-      when(testLobbyPortSetting.isSet()).thenReturn(false);
-    }
 
     private void givenTestLobbyPortIsSetTo(final int port) {
-      when(testLobbyPortSetting.isSet()).thenReturn(true);
-      when(testLobbyPortSetting.getValueOrThrow()).thenReturn(port);
+      when(testLobbyPortSetting.getValue()).thenReturn(Optional.of(port));
     }
 
     private void whenGetTestOverrideProperties() {
       result =
           LobbyServerPropertiesFetcher.getTestOverrideProperties(
-              testLobbyHostSetting, testLobbyPortSetting, testLobbyHttpUriSetting);
+              testLobbyHostSetting, testLobbyPortSetting, testLobbyHttpsPort);
     }
 
     private void thenResultIsEmpty() {
@@ -136,13 +126,12 @@ class LobbyServerPropertiesFetcherTest {
     }
 
     @Test
-    void shouldReturnEmptyWhenHostSetAndPortNotSet() {
-      givenTestLobbyHostIsSet();
-      givenTestLobbyPortIsNotSet();
+    void shouldReturnDefaultPortWhenHostIsSetAndPortNotSet() {
+      givenTestLobbyHostIsSetTo("foo");
 
       whenGetTestOverrideProperties();
 
-      thenResultIsEmpty();
+      thenResultHasHostAndPort("foo", LobbyServerPropertiesFetcher.TEST_LOBBY_DEFAULT_PORT);
     }
 
     @Test
@@ -166,7 +155,6 @@ class LobbyServerPropertiesFetcherTest {
     }
   }
 
-
   private interface TestData {
     Version version = new Version("0.0.0.0");
     String url = "someUrl";
@@ -174,7 +162,7 @@ class LobbyServerPropertiesFetcherTest {
         LobbyServerProperties.builder()
             .host("host")
             .port(123)
-            .httpServerUri(URI.create("http://demo"))
+            .httpsPort(333)
             .build();
   }
 }
