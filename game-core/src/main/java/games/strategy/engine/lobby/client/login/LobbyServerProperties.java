@@ -1,16 +1,20 @@
 package games.strategy.engine.lobby.client.login;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.apache.http.client.utils.URIBuilder;
 
 import com.google.common.base.Strings;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Server properties.
@@ -29,7 +33,9 @@ import lombok.Getter;
 @Builder
 @Getter
 @EqualsAndHashCode
+@ToString
 public final class LobbyServerProperties {
+
   /** The host address of the lobby, typically an IP address. */
   @Nonnull
   private final String host;
@@ -38,9 +44,9 @@ public final class LobbyServerProperties {
   @Nonnull
   private final Integer port;
 
-  /** URI for the http lobby server. */
+  /** The port the https lobby server is listening on. */
   @Nonnull
-  private final URI httpServerUri;
+  private final Integer httpsPort;
 
   @Nullable
   private final String serverErrorMessage;
@@ -57,5 +63,22 @@ public final class LobbyServerProperties {
 
   public Optional<String> getServerErrorMessage() {
     return Optional.ofNullable(Strings.emptyToNull(serverErrorMessage));
+  }
+
+  /**
+   * Convenience method to get the URI of the lobby https server.
+   */
+  public URI getHttpsServerUri() {
+    try {
+      return new URIBuilder()
+          .setScheme(
+              // allow env variable override of https so we can do local development with http
+              Optional.ofNullable(System.getenv("HTTP_SERVER_PROTOCOL")).orElse("https"))
+          .setHost(host)
+          .setPort(httpsPort)
+          .build();
+    } catch (final URISyntaxException e) {
+      throw new RuntimeException("Error with lobby properties: " + this, e);
+    }
   }
 }

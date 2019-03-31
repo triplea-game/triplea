@@ -7,7 +7,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -24,7 +23,7 @@ class LobbyPropertyFileParserTest {
     testProps1.errorMessage = TestData.errorMessage;
     testProps1.message = TestData.message;
     testProps1.version = TestData.version0;
-    testProps1.httpHostUri = TestData.httpHostUri;
+    testProps1.httpsPort = TestData.httpsPort;
 
     final TestProps testProps2 = new TestProps();
     testProps2.host = TestData.host;
@@ -32,7 +31,7 @@ class LobbyPropertyFileParserTest {
     testProps2.errorMessage = TestData.errorMessage;
     testProps2.message = TestData.message;
     testProps2.version = TestData.version1;
-    testProps2.httpHostUri = TestData.httpHostUri;
+    testProps2.httpsPort = TestData.httpsPort;
 
     final TestProps testPropsMatch = new TestProps();
     testPropsMatch.host = TestData.hostOther;
@@ -40,7 +39,7 @@ class LobbyPropertyFileParserTest {
     testPropsMatch.errorMessage = "";
     testPropsMatch.message = "";
     testPropsMatch.version = TestData.clientCurrentVersion;
-    testPropsMatch.httpHostUri = TestData.httpHostUri;
+    testPropsMatch.httpsPort = TestData.httpsPort;
 
     return new TestProps[] {
         testProps1, testProps2, testPropsMatch
@@ -56,7 +55,7 @@ class LobbyPropertyFileParserTest {
     final TestProps testProps = new TestProps();
     testProps.host = TestData.host;
     testProps.port = TestData.port;
-    testProps.httpHostUri = TestData.httpHostUri;
+    testProps.httpsPort = TestData.httpsPort;
     testProps.errorMessage = TestData.errorMessage;
     testProps.message = TestData.message;
     testProps.version = TestData.clientCurrentVersion;
@@ -67,7 +66,7 @@ class LobbyPropertyFileParserTest {
         LobbyPropertyFileParser.parse(stream, new Version(TestData.clientCurrentVersion));
     assertThat(result.getHost(), is(TestData.host));
     assertThat(result.getPort(), is(Integer.valueOf(TestData.port)));
-    assertThat(result.getHttpServerUri(), is(TestData.httpHostUri));
+    assertThat(result.getHttpsPort(), is(Integer.valueOf(TestData.httpsPort)));
     assertThat(result.getServerMessage(), isPresentAndIs(TestData.message));
     assertThat(result.getServerErrorMessage(), isPresentAndIs(TestData.errorMessage));
   }
@@ -100,7 +99,7 @@ class LobbyPropertyFileParserTest {
     String portOther = "4141";
     String host = "host";
     String hostOther = "another_host";
-    URI httpHostUri = URI.create("hostDomain.com:1255");
+    String httpsPort = "1255";
     String message = "message";
     String errorMessage = "err err err test message";
     String version0 = "0.0.0.0";
@@ -114,7 +113,7 @@ class LobbyPropertyFileParserTest {
   private static class TestProps {
     String host;
     String port;
-    URI httpHostUri;
+    String httpsPort;
     String message;
     String errorMessage;
     String version;
@@ -132,8 +131,8 @@ class LobbyPropertyFileParserTest {
           host,
           LobbyPropertyFileParser.YAML_PORT,
           port,
-          LobbyPropertyFileParser.YAML_HTTP_SERVER_URI,
-          httpHostUri,
+          LobbyPropertyFileParser.YAML_HTTPS_PORT,
+          httpsPort,
           LobbyPropertyFileParser.YAML_MESSAGE,
           message,
           LobbyPropertyFileParser.YAML_ERROR_MESSAGE,

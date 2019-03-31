@@ -3,7 +3,6 @@ package games.strategy.engine.lobby.client.login;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,7 @@ final class LobbyPropertyFileParser {
   @VisibleForTesting
   static final String YAML_PORT = "port";
   @VisibleForTesting
-  static final String YAML_HTTP_SERVER_URI = "http_server_uri";
+  static final String YAML_HTTPS_PORT = "http_server_uri";
   @VisibleForTesting
   static final String YAML_MESSAGE = "message";
   @VisibleForTesting
@@ -38,11 +37,11 @@ final class LobbyPropertyFileParser {
     final Map<?, ?> yamlProps = matchCurrentVersion((List<?>) load.loadFromInputStream(stream), currentVersion);
 
     return LobbyServerProperties.builder()
-        .host((String) yamlProps.get("host"))
-        .port((Integer) yamlProps.get("port"))
-        .serverMessage((String) yamlProps.get("message"))
-        .serverErrorMessage((String) yamlProps.get("error_message"))
-        .httpServerUri(URI.create((String) yamlProps.get(YAML_HTTP_SERVER_URI)))
+        .host((String) yamlProps.get(YAML_HOST))
+        .port((Integer) yamlProps.get(YAML_PORT))
+        .serverMessage((String) yamlProps.get(YAML_MESSAGE))
+        .serverErrorMessage((String) yamlProps.get(YAML_ERROR_MESSAGE))
+        .httpsPort((Integer) yamlProps.get(YAML_HTTPS_PORT))
         .build();
   }
 
