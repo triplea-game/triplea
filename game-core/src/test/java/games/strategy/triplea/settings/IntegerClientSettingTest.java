@@ -2,6 +2,7 @@ package games.strategy.triplea.settings;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Nested;
@@ -35,8 +36,12 @@ final class IntegerClientSettingTest {
 
     @Test
     void shouldThrowExceptionWhenEncodedValueIsIllegal() {
-      assertThrows(ClientSetting.ValueEncodingException.class, () -> clientSetting.decodeValue(""));
       assertThrows(ClientSetting.ValueEncodingException.class, () -> clientSetting.decodeValue("a123"));
+    }
+
+    @Test
+    void emptyStringValuesAreDecodedToNull() throws Exception {
+      assertThat(clientSetting.decodeValue(""), nullValue());
     }
   }
 }
