@@ -24,7 +24,7 @@ final class LobbyPropertyFileParser {
   @VisibleForTesting
   static final String YAML_PORT = "port";
   @VisibleForTesting
-  static final String YAML_HTTPS_PORT = "http_server_uri";
+  static final String YAML_HTTPS_PORT = "https_port";
   @VisibleForTesting
   static final String YAML_MESSAGE = "message";
   @VisibleForTesting
