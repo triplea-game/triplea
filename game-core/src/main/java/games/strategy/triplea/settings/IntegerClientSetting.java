@@ -1,5 +1,7 @@
 package games.strategy.triplea.settings;
 
+import javax.annotation.Nullable;
+
 final class IntegerClientSetting extends ClientSetting<Integer> {
   IntegerClientSetting(final String name) {
     super(Integer.class, name);
@@ -15,8 +17,12 @@ final class IntegerClientSetting extends ClientSetting<Integer> {
   }
 
   @Override
+  @Nullable
   protected Integer decodeValue(final String encodedValue) throws ValueEncodingException {
     try {
+      if (encodedValue.isEmpty()) {
+        return null;
+      }
       return Integer.valueOf(encodedValue);
     } catch (final NumberFormatException e) {
       throw new ValueEncodingException(e);
