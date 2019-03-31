@@ -128,7 +128,6 @@ class LobbyServerPropertiesFetcherTest {
     @Test
     void shouldReturnDefaultPortWhenHostIsSetAndPortNotSet() {
       givenTestLobbyHostIsSetTo("foo");
-      // givenTestLobbyPortIsNotSet();
 
       whenGetTestOverrideProperties();
 
