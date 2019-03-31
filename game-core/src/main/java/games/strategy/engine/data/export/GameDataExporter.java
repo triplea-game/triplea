@@ -17,7 +17,6 @@ import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
-import games.strategy.engine.data.GameParser;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.NamedAttachable;
@@ -34,6 +33,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.XmlReader;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.ComboProperty;
@@ -642,7 +642,7 @@ public class GameDataExporter {
 
   private void init(final GameData data) {
     xmlfile.append("<?xml version=\"1.0\"?>\n");
-    xmlfile.append("<!DOCTYPE game SYSTEM \"" + GameParser.DTD_FILE_NAME + "\">\n");
+    xmlfile.append("<!DOCTYPE game SYSTEM \"" + XmlReader.DTD_FILE_NAME + "\">\n");
     xmlfile.append("<game>\n");
     xmlfile.append("    <info name=\"").append(data.getGameName()).append("\" version=\"")
         .append(data.getGameVersion().toString()).append("\"/>\n");

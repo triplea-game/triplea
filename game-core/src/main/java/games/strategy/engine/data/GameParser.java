@@ -3,9 +3,7 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,22 +18,14 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -67,13 +57,15 @@ import lombok.extern.java.Log;
  */
 @Log
 public final class GameParser {
-  public static final String DTD_FILE_NAME = "game.dtd";
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
   private final GameData data;
   private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   private final String mapName;
   private final XmlGameElementMapper xmlGameElementMapper;
+
+  private final GameDataVariableParser variableParser = new GameDataVariableParser();
+  private final NodeFinder nodeFinder = new NodeFinder();
 
   @VisibleForTesting
   GameParser(final GameData gameData, final String mapName) {
@@ -110,7 +102,7 @@ public final class GameParser {
   }
 
   private GameData parse(final InputStream stream) throws GameParseException, EngineVersionException {
-    final Element root = parseDom(stream);
+    final Element root = XmlReader.parseDom(mapName, stream, errorsSax);
     parseMapProperties(root);
     parseMapDetails(root);
     return data;
@@ -142,17 +134,9 @@ public final class GameParser {
   }
 
   private GameData parseShallow(final InputStream stream) throws GameParseException, EngineVersionException {
-    final Element root = parseDom(stream);
+    final Element root = XmlReader.parseDom(mapName, stream, errorsSax);
     parseMapProperties(root);
     return data;
-  }
-
-  private Element parseDom(final InputStream stream) throws GameParseException {
-    try {
-      return getDocument(stream).getDocumentElement();
-    } catch (final SAXException e) {
-      throw newGameParseException("failed to parse XML document", e);
-    }
   }
 
   private void parseMapProperties(final Element root) throws GameParseException, EngineVersionException {
@@ -181,9 +165,7 @@ public final class GameParser {
   }
 
   private void parseMapDetails(final Element root) throws GameParseException {
-    final Element variableList = getSingleChild("variableList", root, true);
-    final Map<String, List<String>> variables =
-        variableList != null ? parseVariables(variableList) : Collections.emptyMap();
+    final Map<String, List<String>> variables = variableParser.parseVariables(root);
     parseMap(getSingleChild("map", root));
     final Element resourceList = getSingleChild("resourceList", root, true);
     if (resourceList != null) {
@@ -305,44 +287,6 @@ public final class GameParser {
   private void validateAttachments(final Attachable attachable) throws GameParseException {
     for (final IAttachment a : attachable.getAttachments().values()) {
       a.validate(data);
-    }
-  }
-
-  private Document getDocument(final InputStream input) throws SAXException {
-    try {
-      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      factory.setValidating(true);
-      // Not mandatory, but better than relying on the default implementation to prevent XXE
-      factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-      factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "file");
-      // get the dtd location
-      final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
-      final URL url = GameParser.class.getResource(dtdFile);
-      if (url == null) {
-        throw new RuntimeException(String.format("Map: %s, Could not find in classpath %s", mapName, dtdFile));
-      }
-      final DocumentBuilder builder = factory.newDocumentBuilder();
-      builder.setErrorHandler(new ErrorHandler() {
-        @Override
-        public void fatalError(final SAXParseException exception) {
-          errorsSax.add(exception);
-        }
-
-        @Override
-        public void error(final SAXParseException exception) {
-          errorsSax.add(exception);
-        }
-
-        @Override
-        public void warning(final SAXParseException exception) {
-          errorsSax.add(exception);
-        }
-      });
-      final String dtdSystem = url.toExternalForm();
-      final String system = dtdSystem.substring(0, dtdSystem.length() - DTD_FILE_NAME.length());
-      return builder.parse(input, system);
-    } catch (final IOException | ParserConfigurationException e) {
-      throw new IllegalStateException("Error parsing: " + mapName, e);
     }
   }
 
@@ -485,38 +429,24 @@ public final class GameParser {
 
   /**
    * Get the given child.
-   * If there is not exactly one child throw a SAXExcpetion
+   * If there is not exactly one child throws a GameParseException
    */
   private Element getSingleChild(final String name, final Element node) throws GameParseException {
-    return getSingleChild(name, node, false);
+    return nodeFinder.getSingleChild(name, node);
   }
 
   /**
    * If optional is true, will not throw an exception if there are 0 children.
    */
   private Element getSingleChild(final String name, final Node node, final boolean optional) throws GameParseException {
-    final List<Element> children = getChildren(name, node);
-    // none found
-    if (children.size() == 0) {
-      if (optional) {
-        return null;
-      }
-      throw newGameParseException("No child called " + name);
+    if (optional) {
+      return nodeFinder.getOptionalSingleChild(name, node);
     }
-    // too many found
-    if (children.size() > 1) {
-      throw newGameParseException("Too many children named " + name);
-    }
-    return children.get(0);
+    return nodeFinder.getSingleChild(name, node);
   }
 
-  private static List<Element> getChildren(final String name, final Node node) {
-    final NodeList children = node.getChildNodes();
-    return IntStream.range(0, children.getLength())
-        .mapToObj(children::item)
-        .filter(current -> current.getNodeName().equals(name))
-        .map(Element.class::cast)
-        .collect(Collectors.toList());
+  private List<Element> getChildren(final String name, final Node node) {
+    return nodeFinder.getChildren(name, node);
   }
 
   private static List<Node> getNonTextNodesIgnoringValue(final Node node) {
@@ -538,27 +468,6 @@ public final class GameParser {
     data.setGameName(gameName);
     final String version = ((Element) info).getAttribute("version");
     data.setGameVersion(new Version(version));
-  }
-
-  private Map<String, List<String>> parseVariables(final Element root) throws GameParseException {
-    final Map<String, List<String>> variables = new HashMap<>();
-    for (final Element current : getChildren("variable", root)) {
-      final String name = "$" + current.getAttribute("name") + "$";
-      final List<String> values = getChildren("element", current).stream()
-          .map(element -> element.getAttribute("name"))
-          .flatMap(value -> findNestedVariables(value, variables))
-          .collect(Collectors.toList());
-      variables.put(name, values);
-    }
-    return variables;
-  }
-
-  private Stream<String> findNestedVariables(final String value, final Map<String, List<String>> variables) {
-    if (!variables.containsKey(value)) {
-      return Stream.of(value);
-    }
-    return variables.get(value).stream()
-        .flatMap(s -> findNestedVariables(s, variables));
   }
 
   private void parseMap(final Node map) throws GameParseException {
@@ -1272,7 +1181,7 @@ public final class GameParser {
             if (length != foreachValue.size()) {
               throw newGameParseException("Attachment foreach variables must have same number of elements: " + foreach);
             }
-            foreachMap.put("@" + foreachVariable.replace("$", "") + "@", foreachValue.get(i));
+            foreachMap.put("$" + foreachVariable + "$", foreachValue.get(i));
           }
           parseAttachment(current, variables, foreachMap);
         }
@@ -1327,26 +1236,32 @@ public final class GameParser {
         throw newGameParseException("Option name with zero length for attachment: " + attachment.getName());
       }
       final String value = option.getAttribute("value");
-      final String count = option.getAttribute("count");
-      final String countAndValue = (!count.isEmpty() ? count + ":" : "") + value;
-      if (containsEmptyForeachVariable(countAndValue, foreach)) {
+      if (containsEmptyForeachVariable(value, foreach)) {
         continue; // Skip adding option if contains empty foreach variable
       }
-      final String valueWithForeach = replaceForeachVariables(countAndValue, foreach);
-      final String finalValue = replaceVariables(valueWithForeach, variables);
+      final String valueWithForeach = replaceForeachVariables(value, foreach);
+      final String count = option.getAttribute("count");
+      String optionValues = (!count.isEmpty() ? count + ":" : "") + valueWithForeach;
+      if (!variables.isEmpty()) {
+        final List<String> listWithVariables = new ArrayList<>();
+        for (final String s : Splitter.on(':').split(optionValues)) {
+          listWithVariables.add(String.join(":", variables.getOrDefault(s, Collections.singletonList(s))));
+        }
+        optionValues = String.join(":", listWithVariables);
+      }
       try {
         attachment.getProperty(name)
             .orElseThrow(() -> newGameParseException(String.format(
                 "Missing property definition for option '%s' in attachment '%s'",
                 name, attachment.getName())))
-            .setValue(finalValue);
+            .setValue(optionValues);
       } catch (final GameParseException e) {
         throw e;
       } catch (final Exception e) {
         throw newGameParseException("Unexpected Exception while setting values for attachment: " + attachment, e);
       }
 
-      results.add(Tuple.of(name, finalValue));
+      results.add(Tuple.of(name, optionValues));
     }
     return results;
   }
@@ -1366,14 +1281,6 @@ public final class GameParser {
       }
     }
     return false;
-  }
-
-  private String replaceVariables(final String s, final Map<String, List<String>> variables) {
-    String result = s;
-    for (final Entry<String, List<String>> entry : variables.entrySet()) {
-      result = result.replace(entry.getKey(), String.join(":", entry.getValue()));
-    }
-    return result;
   }
 
   @VisibleForTesting
