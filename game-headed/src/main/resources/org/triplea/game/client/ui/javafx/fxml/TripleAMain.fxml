@@ -28,7 +28,7 @@
       </VBox>
       <VBox fx:id="exitOverlay" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: rgba(0, 0, 0, 0.5);" visible="false">
          <children>
-            <VBox alignment="CENTER" style="-fx-background-color: #52602F; -fx-border-color: #2B3318; -fx-border-width: 4px;">
+            <VBox fx:id="exitFrame" alignment="CENTER" style="-fx-background-color: #52602F; -fx-border-color: #2B3318; -fx-border-width: 4px;">
                <children>
                   <Label id="exitOverlayQuestion" text="%main.label.overlay_question" />
                   <HBox alignment="CENTER" prefHeight="45.0" prefWidth="952.0">

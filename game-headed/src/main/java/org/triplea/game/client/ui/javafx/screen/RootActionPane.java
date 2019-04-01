@@ -10,12 +10,16 @@ import org.triplea.game.client.ui.javafx.util.FxmlManager;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.framework.GameRunner;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 public class RootActionPane extends StackPane implements ScreenController<Screens> {
 
@@ -36,7 +40,8 @@ public class RootActionPane extends StackPane implements ScreenController<Screen
   @FXML
   private VBox exitOverlay;
 
-
+  @FXML
+  private VBox exitFrame;
 
   public RootActionPane() throws Exception {
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.ROOT_CONTAINER.toString()));
@@ -79,8 +84,11 @@ public class RootActionPane extends StackPane implements ScreenController<Screen
   public void switchScreen(final Screens identifier) {
     Preconditions.checkNotNull(identifier);
 
+
     switch (identifier) {
       case EXIT:
+        final Timeline fadeIn = getAnimation(exitFrame);
+        fadeIn.play();
         exitOverlay.setVisible(true);
         break;
       case LOADING:
@@ -92,5 +100,17 @@ public class RootActionPane extends StackPane implements ScreenController<Screen
         rootPane.setVisible(true);
         break;
     }
+  }
+
+  private static Timeline getAnimation(final Node node) {
+    return new Timeline(
+        new KeyFrame(Duration.ZERO,
+            new KeyValue(node.scaleXProperty(), 0.0),
+            new KeyValue(node.scaleYProperty(), 0.0)),
+        new KeyFrame(new Duration(100), new KeyValue(node.scaleYProperty(), 1.1)),
+        new KeyFrame(new Duration(200), new KeyValue(node.scaleXProperty(), 0.4)),
+        new KeyFrame(new Duration(300),
+            new KeyValue(node.scaleXProperty(), 1.0),
+            new KeyValue(node.scaleYProperty(), 1.0)));
   }
 }
