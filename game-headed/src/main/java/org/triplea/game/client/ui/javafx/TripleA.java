@@ -1,28 +1,18 @@
 package org.triplea.game.client.ui.javafx;
 
 import java.awt.GraphicsEnvironment;
-import java.io.File;
 
 import javax.swing.SwingUtilities;
 
-import org.triplea.awt.OpenFileUtility;
 import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.engine.framework.GameRunner;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 

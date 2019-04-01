@@ -7,7 +7,6 @@ import java.util.function.Function;
 import javax.swing.SwingUtilities;
 
 import org.triplea.awt.OpenFileUtility;
-import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
@@ -69,7 +68,8 @@ class MainMenuPane extends BorderPane {
    * @param actionPane The root pane.
    * @throws IOException If the FXML file is not present.
    */
-  MainMenuPane(final RootActionPane actionPane, final ScreenController<Class<? extends Node>> screenController) throws IOException {
+  MainMenuPane(final RootActionPane actionPane, final ScreenController<Class<? extends Node>> screenController)
+      throws IOException {
     this.actionPane = actionPane;
     this.screenController = screenController;
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.MAIN_MENU_PANE.toString()));

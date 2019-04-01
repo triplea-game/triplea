@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import org.triplea.game.client.ui.javafx.screen.NavigationPane;
-import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.util.ClientSettingJavaFxUiBinding;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
