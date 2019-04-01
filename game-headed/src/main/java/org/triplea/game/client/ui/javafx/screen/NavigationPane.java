@@ -9,6 +9,12 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 
+/**
+ * The default implementation of {@link ScreenController}.
+ * Using this class enables to swap screens with a rather flat
+ * call tree by using the class name as the identifier.
+ * Make sure to register Screens before using them.
+ */
 public class NavigationPane extends StackPane implements ScreenController<Class<? extends Node>> {
   private final Map<Class<? extends Node>, Node> screens = new HashMap<>();
 

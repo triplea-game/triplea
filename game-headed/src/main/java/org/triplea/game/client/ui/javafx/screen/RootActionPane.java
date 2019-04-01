@@ -21,6 +21,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+/**
+ * Root JavaFX Panel that supports a variety of options
+ * such as prompting the user to exit the Application.
+ */
 public class RootActionPane extends StackPane implements ScreenController<Screens> {
 
   enum Screens {
@@ -99,6 +103,8 @@ public class RootActionPane extends StackPane implements ScreenController<Screen
         loadingOverlay.setVisible(false);
         rootPane.setVisible(true);
         break;
+      default:
+        throw new AssertionError("Invalid Switch Case");
     }
   }
 

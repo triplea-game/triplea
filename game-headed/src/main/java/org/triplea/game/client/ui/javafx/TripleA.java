@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 
 /**
  * The Main-UI-Class for the JavaFX-UI.
- * The root of everything.
+ * It sets up the Stage accordingly.
  */
 public class TripleA extends Application {
 
