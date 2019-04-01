@@ -6,6 +6,10 @@ import java.util.function.Function;
 
 import javax.swing.SwingUtilities;
 
+import org.triplea.awt.OpenFileUtility;
+import org.triplea.game.client.ui.javafx.screen.NavigationPane;
+import org.triplea.game.client.ui.javafx.screen.RootActionPane;
+import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.engine.ClientContext;
@@ -24,11 +28,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import lombok.extern.java.Log;
 
+@Log
 class MainMenuPane extends BorderPane {
 
-  private final TripleA triplea;
-  private final SettingsPane settingsPane;
+  private final RootActionPane actionPane;
+  private final ScreenController<Class<? extends Node>> screenController;
 
   @FXML
   private Label loggedIn;
@@ -60,18 +66,17 @@ class MainMenuPane extends BorderPane {
   /**
    * Initializes a new instance of the MainMenuPane class.
    *
-   * @param triplea The root pane.
+   * @param actionPane The root pane.
    * @throws IOException If the FXML file is not present.
    */
-  MainMenuPane(final TripleA triplea) throws IOException {
-    this.triplea = triplea;
+  MainMenuPane(final RootActionPane actionPane, final ScreenController<Class<? extends Node>> screenController) throws IOException {
+    this.actionPane = actionPane;
+    this.screenController = screenController;
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.MAIN_MENU_PANE.toString()));
     loader.setRoot(this);
     loader.setController(this);
     loader.load();
     version.setText(MessageFormat.format(version.getText(), ClientContext.engineVersion().getExactVersion()));
-    settingsPane = triplea.addRootContent(new SettingsPane(triplea));
-    settingsPane.setVisible(false);
     applyFileSelectionAnimation();
   }
 
@@ -101,12 +106,16 @@ class MainMenuPane extends BorderPane {
 
   @FXML
   private void showHelp() {
-    triplea.open(UrlConstants.GITHUB_HELP);
+    open(UrlConstants.GITHUB_HELP);
   }
 
   @FXML
   private void showRuleBook() {
-    triplea.open(UrlConstants.RULE_BOOK);
+    open(UrlConstants.RULE_BOOK);
+  }
+
+  private void open(final String url) {
+    OpenFileUtility.openUrl(url, () -> log.warning("Desktop API not supported. Could not open " + url));
   }
 
   @FXML
@@ -141,8 +150,7 @@ class MainMenuPane extends BorderPane {
 
   @FXML
   private void showSettingsMenu() {
-    setVisible(false);
-    settingsPane.setVisible(true);
+    screenController.switchScreen(SettingsPane.class);
   }
 
   @FXML
@@ -154,7 +162,7 @@ class MainMenuPane extends BorderPane {
 
   @FXML
   private void showExitConfirmDialog() {
-    triplea.promptExit();
+    actionPane.promptExit();
   }
 
   @FXML

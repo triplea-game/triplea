@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import org.triplea.game.client.ui.javafx.screen.NavigationPane;
+import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.util.ClientSettingJavaFxUiBinding;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
@@ -35,7 +37,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
 class SettingsPane extends StackPane {
-  private final TripleA triplea;
+  private final NavigationPane navigationPane;
   private final Map<ClientSettingJavaFxUiBinding, SelectionComponent<Region>> selectionComponentsBySetting =
       Arrays.stream(ClientSettingJavaFxUiBinding.values()).collect(Collectors.toMap(
           Function.identity(),
@@ -51,15 +53,15 @@ class SettingsPane extends StackPane {
   /**
    * Initializes a new instance of the SettingsPane class.
    *
-   * @param triplea The root pane.
+   * @param navigationPane The root pane.
    * @throws IOException If the FXML file is not present.
    */
-  SettingsPane(final TripleA triplea) throws IOException {
+  SettingsPane(final NavigationPane navigationPane) throws IOException {
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.SETTINGS_PANE.toString()));
     loader.setRoot(this);
     loader.setController(this);
     loader.load();
-    this.triplea = triplea;
+    this.navigationPane = navigationPane;
     final ResourceBundle bundle = loader.getResources();
     Arrays.stream(SettingType.values()).forEach(type -> {
       final Tab tab = new Tab();
@@ -103,8 +105,7 @@ class SettingsPane extends StackPane {
 
   @FXML
   private void back() {
-    // TODO check if some changes haven't been saved
-    triplea.returnToMainMenu(this);
+    navigationPane.switchScreen(MainMenuPane.class);
   }
 
   @FXML

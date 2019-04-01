@@ -12,8 +12,6 @@ import javafx.fxml.FXMLLoader;
 public enum FxmlManager {
   ROOT_CONTAINER("/org/triplea/game/client/ui/javafx/fxml/TripleAMain.fxml"),
 
-  DOWNLOAD_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleADownload.fxml"),
-
   MAIN_MENU_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleAMainMenu.fxml"),
 
   SETTINGS_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleASettings.fxml"),

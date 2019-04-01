@@ -1,7 +1,6 @@
 package org.triplea.game.client.ui.javafx.screen;
 
 import java.awt.GraphicsEnvironment;
-import java.util.EnumMap;
 
 import javax.swing.SwingUtilities;
 
@@ -15,9 +14,10 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class RootActionPane extends AbstractNavigationPane<Screens> {
+public class RootActionPane extends StackPane implements ScreenController<Screens> {
 
   enum Screens {
     EXIT,
@@ -28,26 +28,29 @@ public class RootActionPane extends AbstractNavigationPane<Screens> {
   }
 
   @FXML
+  private StackPane rootPane;
+
+  @FXML
   private VBox loadingOverlay;
 
   @FXML
   private VBox exitOverlay;
 
 
-  public RootActionPane() {
-    super(new EnumMap<>(Screens.class));
-    final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.ROOT_CONTAINER.toString()));
-    loader.setController(this);
-    this.populateMap();
-  }
 
-  private void populateMap() {
-    screens.put(Screens.EXIT, exitOverlay);
-    screens.put(Screens.LOADING, loadingOverlay);
+  public RootActionPane() throws Exception {
+    final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.ROOT_CONTAINER.toString()));
+    loader.setRoot(this);
+    loader.setController(this);
+    loader.load();
   }
 
   public void setContent(final Node node) {
-    screens.put(Screens.CONTENT, node);
+    Preconditions.checkNotNull(node);
+    Preconditions.checkState(Platform.isFxApplicationThread());
+
+    rootPane.getChildren().clear();
+    rootPane.getChildren().add(node);
   }
 
   public void setLoadingOverlay(final boolean loading) {
@@ -75,7 +78,6 @@ public class RootActionPane extends AbstractNavigationPane<Screens> {
   @Override
   public void switchScreen(final Screens identifier) {
     Preconditions.checkNotNull(identifier);
-    Preconditions.checkArgument(screens.containsKey(identifier), "Screen of Type " + identifier + " not present");
 
     switch (identifier) {
       case EXIT:
@@ -87,7 +89,7 @@ public class RootActionPane extends AbstractNavigationPane<Screens> {
       case CONTENT:
         exitOverlay.setVisible(false);
         loadingOverlay.setVisible(false);
-        screens.get(Screens.CONTENT).setVisible(true);
+        rootPane.setVisible(true);
         break;
     }
   }
