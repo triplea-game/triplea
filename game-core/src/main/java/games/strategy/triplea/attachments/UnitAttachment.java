@@ -31,12 +31,14 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.formatter.MyFormatter;
 
 /**
@@ -762,12 +764,15 @@ public class UnitAttachment extends DefaultAttachment {
     canOnlyBePlacedInTerritoryValuedAtX = -1;
   }
 
-  private void setUnitPlacementRestrictions(final String value) {
+  private void setUnitPlacementRestrictions(final String value) throws GameParseException {
     if (value == null) {
       unitPlacementRestrictions = null;
       return;
     }
-    unitPlacementRestrictions = splitOnColon(value);
+    final Collection<Territory> restrictedTerritories = getListedTerritories(splitOnColon(value));
+    unitPlacementRestrictions = restrictedTerritories.stream()
+        .map(Territory::getName)
+        .toArray(String[]::new);
   }
 
   private void setUnitPlacementRestrictions(final String[] value) {
@@ -2494,9 +2499,6 @@ public class UnitAttachment extends DefaultAttachment {
           "Constructions must have constructionsPerTerrPerTypePerTurn Less than maxConstructionsPerTypePerTerr, "
               + thisErrorMsg());
     }
-    if (unitPlacementRestrictions != null) {
-      getListedTerritories(unitPlacementRestrictions);
-    }
     if (requiresUnits != null) {
       for (final String[] combo : requiresUnits) {
         getListedUnits(combo);
@@ -2568,14 +2570,26 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private Collection<Territory> getListedTerritories(final String[] list) throws GameParseException {
-    final List<Territory> territories = new ArrayList<>();
+    final Set<Territory> territories = new HashSet<>();
     for (final String name : list) {
       // Validate all territories exist
       final Territory territory = getData().getMap().getTerritory(name);
-      if (territory == null) {
-        throw new GameParseException("No territory called: " + name + thisErrorMsg());
+      if (territory != null) {
+        territories.add(territory);
+      } else {
+        // Check if its a territory effect and get all territories
+        if (getData().getTerritoryEffectList().keySet().contains(name)) {
+          for (final Territory t : getData().getMap().getTerritories()) {
+            for (final TerritoryEffect te : TerritoryEffectHelper.getEffects(t)) {
+              if (name.equals(te.getName())) {
+                territories.add(t);
+              }
+            }
+          }
+        } else {
+          throw new GameParseException("No territory or territory effect called: " + name + thisErrorMsg());
+        }
       }
-      territories.add(territory);
     }
     return territories;
   }
