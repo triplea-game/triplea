@@ -2578,7 +2578,7 @@ public class UnitAttachment extends DefaultAttachment {
         territories.add(territory);
       } else {
         // Check if its a territory effect and get all territories
-        if (getData().getTerritoryEffectList().keySet().contains(name)) {
+        if (getData().getTerritoryEffectList().containsKey(name)) {
           for (final Territory t : getData().getMap().getTerritories()) {
             for (final TerritoryEffect te : TerritoryEffectHelper.getEffects(t)) {
               if (name.equals(te.getName())) {
