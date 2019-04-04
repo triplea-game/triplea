@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" type="StackPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <StackPane fx:id="rootPane" prefHeight="200.0" prefWidth="200.0" />
+      <StackPane fx:id="rootPane" />
       <VBox fx:id="loadingOverlay" alignment="CENTER" minWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false" StackPane.alignment="CENTER">
          <children>
             <VBox alignment="CENTER" minWidth="200.0">
@@ -28,7 +28,7 @@
       </VBox>
       <VBox fx:id="exitOverlay" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: rgba(0, 0, 0, 0.5);" visible="false">
          <children>
-            <VBox alignment="CENTER" style="-fx-background-color: #52602F; -fx-border-color: #2B3318; -fx-border-width: 4px;">
+            <VBox fx:id="exitFrame" alignment="CENTER" style="-fx-background-color: #52602F; -fx-border-color: #2B3318; -fx-border-width: 4px;">
                <children>
                   <Label id="exitOverlayQuestion" text="%main.label.overlay_question" />
                   <HBox alignment="CENTER" prefHeight="45.0" prefWidth="952.0">
@@ -50,4 +50,4 @@
          </children>
       </VBox>
    </children>
-</StackPane>
+</fx:root>

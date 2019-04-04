@@ -1,67 +1,50 @@
 package org.triplea.game.client.ui.javafx;
 
 import java.awt.GraphicsEnvironment;
-import java.io.File;
 
 import javax.swing.SwingUtilities;
 
-import org.triplea.awt.OpenFileUtility;
+import org.triplea.game.client.ui.javafx.screen.NavigationPane;
+import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.engine.framework.GameRunner;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
  * The Main-UI-Class for the JavaFX-UI.
- * The root of everything.
+ * It sets up the Stage accordingly.
  */
 public class TripleA extends Application {
 
-  @FXML
-  private VBox loadingOverlay;
-
-  @FXML
-  private VBox exitOverlay;
-
-  @FXML
-  private Tooltip progressTooltip;
-
-  @FXML
-  private Label progressLabel;
-
-  @FXML
-  private StackPane rootPane;
-
-  private MainMenuPane mainMenu;
-
   @Override
   public void start(final Stage stage) throws Exception {
-    final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.ROOT_CONTAINER.toString()));
-    loader.setController(this);
-    final Scene scene = new Scene(loader.load());
+    final RootActionPane rootActionPane = new RootActionPane();
+    final Scene scene = new Scene(rootActionPane);
     scene.getStylesheets().add(FxmlManager.STYLESHEET_MAIN.toString());
-    mainMenu = addRootContent(new MainMenuPane(this));
-    setupStage(stage, scene);
+
+    final NavigationPane navigationPane = new NavigationPane();
+
+    navigationPane.registerScreen(new MainMenuPane(rootActionPane, navigationPane));
+    navigationPane.registerScreen(new SettingsPane(navigationPane));
+
+    rootActionPane.setContent(navigationPane);
+
+    navigationPane.switchScreen(MainMenuPane.class);
+
+    setupStage(stage, scene, rootActionPane);
     // Don't invoke Swing if headless (for example in tests)
     if (!GraphicsEnvironment.isHeadless()) {
       SwingUtilities.invokeLater(GameRunner::newMainFrame);
     }
   }
 
-  private void setupStage(final Stage stage, final Scene scene) {
+  private void setupStage(final Stage stage, final Scene scene, final RootActionPane rootActionPane) {
     stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
     stage.setFullScreen(true);
 
@@ -70,61 +53,9 @@ public class TripleA extends Application {
     stage.getIcons().add(new Image(getClass().getResourceAsStream(FxmlManager.ICON_LOCATION.toString())));
     stage.setTitle("TripleA");
     stage.show();
-    stage.setOnCloseRequest(e -> exit());
-  }
-
-  void returnToMainMenu(final Node currentPane) {
-    currentPane.setVisible(false);
-    mainMenu.setVisible(true);
-  }
-
-  public void promptExit() {
-    exitOverlay.setVisible(true);
-  }
-
-  public void open(final File file) {
-    OpenFileUtility.openFile(file, () -> showDesktopApiNotSupportedError(file.getAbsolutePath()));
-  }
-
-  public void open(final String url) {
-    OpenFileUtility.openUrl(url, () -> showDesktopApiNotSupportedError(url));
-  }
-
-  private void showDesktopApiNotSupportedError(final String path) {
-    showErrorMessage("Desktop API not supported", "Could not open '" + path + "' automatically!");
-  }
-
-  public void showErrorMessage(
-      @SuppressWarnings("unused") final String title,
-      @SuppressWarnings("unused") final String message) {
-    // TODO
-  }
-
-  <T extends Node> T addRootContent(final T node) {
-    rootPane.getChildren().add(node);
-    return node;
-  }
-
-  @FXML
-  private void hideExitConfirm() {
-    exitOverlay.setVisible(false);
-  }
-
-  @FXML
-  @SuppressWarnings("static-method")
-  private void exit() {
-    Platform.exit();
-    if (!GraphicsEnvironment.isHeadless()) {
-      SwingUtilities.invokeLater(GameRunner::exitGameIfFinished);
-    }
-  }
-
-  public void displayLoadingScreen(final boolean bool) {
-    loadingOverlay.setVisible(bool);
-  }
-
-  public void setLoadingMessage(final String message) {
-    progressLabel.setText(message);
-    progressTooltip.setText(message);
+    stage.setOnCloseRequest(e -> {
+      e.consume();
+      rootActionPane.promptExit();
+    });
   }
 }
