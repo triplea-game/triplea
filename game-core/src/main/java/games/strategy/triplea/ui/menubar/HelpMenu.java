@@ -51,7 +51,6 @@ import games.strategy.triplea.util.TuvUtils;
  * The help menu.
  */
 public final class HelpMenu extends JMenu {
-  public static final JEditorPane gameNotesPane = new JEditorPane();
   private static final long serialVersionUID = 4070541434144687452L;
 
   private final UiContext uiContext;
@@ -246,17 +245,9 @@ public final class HelpMenu extends JMenu {
     // displays whatever is in the notes field in html
     final String trimmedNotes = gameData.getProperties().get("notes", "").trim();
     if (!trimmedNotes.isEmpty()) {
-      final CompletableFuture<?> future = CompletableFuture
-          .supplyAsync(() -> LocalizeHtml.localizeImgLinksInHtml(trimmedNotes))
-          .thenAccept(notes -> SwingUtilities.invokeLater(() -> gameNotesPane.setText(notes)));
-      CompletableFutureUtils.logExceptionWhenComplete(future, "Failed to set game notes text");
-      gameNotesPane.setEditable(false);
-      gameNotesPane.setContentType("text/html");
-      gameNotesPane.setForeground(Color.BLACK);
-
       final String gameNotesTitle = "Game Notes";
       add(SwingAction.of(gameNotesTitle, e -> SwingUtilities.invokeLater(() -> {
-        final JScrollPane scroll = new JScrollPane(gameNotesPane);
+        final JScrollPane scroll = new JScrollPane(createNotesPanel(trimmedNotes));
         scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
         final JDialog dialog = new JDialog((JFrame) null, gameNotesTitle);
         dialog.add(scroll, BorderLayout.CENTER);
@@ -291,6 +282,18 @@ public final class HelpMenu extends JMenu {
         dialog.setVisible(true);
       }))).setMnemonic(KeyEvent.VK_N);
     }
+  }
+
+  public static JEditorPane createNotesPanel(final String trimmedNotes) {
+    final JEditorPane gameNotesPane = new JEditorPane();
+    final CompletableFuture<?> future = CompletableFuture
+        .supplyAsync(() -> LocalizeHtml.localizeImgLinksInHtml(trimmedNotes))
+        .thenAccept(notes -> SwingUtilities.invokeLater(() -> gameNotesPane.setText(notes)));
+    CompletableFutureUtils.logExceptionWhenComplete(future, "Failed to set game notes text");
+    gameNotesPane.setEditable(false);
+    gameNotesPane.setContentType("text/html");
+    gameNotesPane.setForeground(Color.BLACK);
+    return gameNotesPane;
   }
 
   private void addAboutMenu() {

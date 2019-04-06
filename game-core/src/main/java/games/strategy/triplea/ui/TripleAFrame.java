@@ -528,7 +528,7 @@ public final class TripleAFrame extends JFrame {
     } else {
       addTab(objectivePanel.getName(), objectivePanel, 'O');
     }
-    notesPanel = new NotesPanel(HelpMenu.gameNotesPane);
+    notesPanel = new NotesPanel(data.getProperties().get("notes", "").trim());
     addTab("Notes", notesPanel, 'N');
     details = new TerritoryDetailPanel(mapPanel, data, uiContext, this);
     addTab("Territory", details, 'T');
@@ -540,13 +540,6 @@ public final class TripleAFrame extends JFrame {
       final int sel = pane.getSelectedIndex();
       if (sel == -1) {
         return;
-      }
-      if (pane.getComponentAt(sel).equals(notesPanel)) {
-        notesPanel.layoutNotes();
-      } else {
-        // for memory management reasons the notes are in a SoftReference,
-        // so we must remove our hard reference link to them so it can be reclaimed if needed
-        notesPanel.removeNotes();
       }
       if (pane.getComponentAt(sel).equals(editPanel)) {
         data.acquireReadLock();
