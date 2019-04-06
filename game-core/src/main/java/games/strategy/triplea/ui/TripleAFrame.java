@@ -23,7 +23,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -377,14 +376,19 @@ public final class TripleAFrame extends JFrame {
     this.game = game;
     data = game.getData();
     addZoomKeyboardShortcuts();
-    this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    final WindowListener windowListener = new WindowAdapter() {
+    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
         leaveGame();
       }
-    };
-    this.addWindowListener(windowListener);
+    });
+    addWindowFocusListener(new WindowAdapter() {
+      @Override
+      public void windowGainedFocus(final WindowEvent e) {
+        mapPanel.requestFocusInWindow();
+      }
+    });
     this.uiContext = uiContext;
     this.setCursor(uiContext.getCursor());
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
@@ -493,7 +497,7 @@ public final class TripleAFrame extends JFrame {
       @Override
       public void focusGained(final FocusEvent e) {
         // give the focus back to the map panel
-        mapPanel.requestFocusInWindow();
+        mapPanel.requestFocus();
       }
     };
     rightHandSidePanel.addFocusListener(focusToMapPanelFocusListener);

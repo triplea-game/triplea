@@ -264,7 +264,6 @@ public class MapPanel extends ImageScrollerLargeView {
     addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
     executor.execute(() -> recreateTiles(data, uiContext));
     uiContext.addActive(() -> {
-      // super.deactivate
       deactivate();
       clearPendingDrawOperations();
       executor.shutdown();
