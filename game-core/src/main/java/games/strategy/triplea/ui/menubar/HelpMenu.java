@@ -188,28 +188,11 @@ public final class HelpMenu extends JMenu {
   private void addUnitHelpMenu() {
     final String unitHelpTitle = "Unit Help";
     final JMenuItem unitMenuItem = add(SwingAction.of(unitHelpTitle, e -> {
-      final JEditorPane editorPane = new JEditorPane();
+      final JEditorPane editorPane = new JEditorPane("text/html", getUnitStatsTable(gameData, uiContext));
       editorPane.setEditable(false);
-      editorPane.setContentType("text/html");
-      editorPane.setText(getUnitStatsTable(gameData, uiContext));
       editorPane.setCaretPosition(0);
       final JScrollPane scroll = new JScrollPane(editorPane);
       scroll.setBorder(BorderFactory.createEmptyBorder());
-      final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-      // not only do we have a start bar, but we also have the message dialog to account for just the scroll bars plus
-      // the window sides
-      final int availHeight = screenResolution.height - 120;
-      final int availWidth = screenResolution.width - 40;
-      scroll
-          .setPreferredSize(new Dimension(
-              (scroll.getPreferredSize().width > availWidth ? availWidth
-                  : (scroll.getPreferredSize().height > availHeight
-                      ? Math.min(availWidth, scroll.getPreferredSize().width + 22)
-                      : scroll.getPreferredSize().width)),
-              (scroll.getPreferredSize().height > availHeight ? availHeight
-                  : (scroll.getPreferredSize().width > availWidth
-                      ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
-                      : scroll.getPreferredSize().height))));
       createInformationDialog(scroll, unitHelpTitle).setVisible(true);
     }));
     unitMenuItem.setMnemonic(KeyEvent.VK_U);
