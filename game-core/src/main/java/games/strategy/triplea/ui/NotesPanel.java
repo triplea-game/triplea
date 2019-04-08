@@ -7,6 +7,9 @@ import javax.swing.JScrollPane;
 
 import org.triplea.util.LocalizeHtml;
 
+/**
+ * Wrapper class to display game related notes in a swing component.
+ */
 public class NotesPanel extends JScrollPane {
   private static final long serialVersionUID = 2746643868463714526L;
 
