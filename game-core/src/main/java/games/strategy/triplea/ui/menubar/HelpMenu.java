@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -209,27 +210,7 @@ public final class HelpMenu extends JMenu {
                   : (scroll.getPreferredSize().width > availWidth
                       ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
                       : scroll.getPreferredSize().height))));
-      final JDialog dialog = new JDialog((JFrame) null, unitHelpTitle);
-      dialog.add(scroll, BorderLayout.CENTER);
-      final JPanel buttons = new JPanel();
-      final JButton button = new JButton(SwingAction.of("OK", event -> {
-        dialog.setVisible(false);
-        dialog.removeAll();
-        dialog.dispose();
-      }));
-      buttons.add(button);
-      dialog.getRootPane().setDefaultButton(button);
-      dialog.add(buttons, BorderLayout.SOUTH);
-      dialog.pack();
-      dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowOpened(final WindowEvent e) {
-          scroll.getVerticalScrollBar().getModel().setValue(0);
-          scroll.getHorizontalScrollBar().getModel().setValue(0);
-          button.requestFocus();
-        }
-      });
-      dialog.setVisible(true);
+      createInformationDialog(scroll, unitHelpTitle).setVisible(true);
     }));
     unitMenuItem.setMnemonic(KeyEvent.VK_U);
     unitMenuItem.setAccelerator(
@@ -243,19 +224,7 @@ public final class HelpMenu extends JMenu {
     if (!trimmedNotes.isEmpty()) {
       final String gameNotesTitle = "Game Notes";
       add(SwingAction.of(gameNotesTitle, e -> SwingUtilities.invokeLater(() -> {
-        final JDialog dialog = new JDialog((JFrame) null, gameNotesTitle);
-        final NotesPanel notesPanel = new NotesPanel(trimmedNotes);
-        dialog.add(notesPanel, BorderLayout.CENTER);
-        final JPanel buttons = new JPanel();
-        final JButton button = new JButton(SwingAction.of("OK", event -> {
-          dialog.setVisible(false);
-          dialog.removeAll();
-          dialog.dispose();
-        }));
-        buttons.add(button);
-        dialog.getRootPane().setDefaultButton(button);
-        dialog.add(buttons, BorderLayout.SOUTH);
-        dialog.pack();
+        final JDialog dialog = createInformationDialog(new NotesPanel(trimmedNotes), gameNotesTitle);
         if (dialog.getWidth() < 400) {
           dialog.setSize(400, dialog.getHeight());
         }
@@ -268,12 +237,6 @@ public final class HelpMenu extends JMenu {
         if (dialog.getHeight() > 600) {
           dialog.setSize(dialog.getWidth(), 600);
         }
-        dialog.addWindowListener(new WindowAdapter() {
-          @Override
-          public void windowOpened(final WindowEvent e) {
-            button.requestFocus();
-          }
-        });
         dialog.setVisible(true);
       }))).setMnemonic(KeyEvent.VK_N);
     }
@@ -322,5 +285,27 @@ public final class HelpMenu extends JMenu {
   private void addReportBugsMenu() {
     add(SwingAction.of("Send Bug Report",
         e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES))).setMnemonic(KeyEvent.VK_B);
+  }
+
+  private static JDialog createInformationDialog(final JComponent component, final String title) {
+    final JDialog dialog = new JDialog((JFrame) null, title);
+    dialog.add(component, BorderLayout.CENTER);
+    final JPanel buttons = new JPanel();
+    final JButton button = new JButton(SwingAction.of("OK", event -> {
+      dialog.setVisible(false);
+      dialog.removeAll();
+      dialog.dispose();
+    }));
+    buttons.add(button);
+    dialog.getRootPane().setDefaultButton(button);
+    dialog.add(buttons, BorderLayout.SOUTH);
+    dialog.pack();
+    dialog.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowOpened(final WindowEvent e) {
+        button.requestFocus();
+      }
+    });
+    return dialog;
   }
 }
