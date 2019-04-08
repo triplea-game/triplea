@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -26,6 +25,8 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.triplea.java.Interruptibles;
+import org.triplea.java.Interruptibles.Result;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -35,6 +36,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -188,7 +190,10 @@ public final class HelpMenu extends JMenu {
   private void addUnitHelpMenu() {
     final String unitHelpTitle = "Unit Help";
     final JMenuItem unitMenuItem = add(SwingAction.of(unitHelpTitle, e -> {
-      final JEditorPane editorPane = new JEditorPane("text/html", getUnitStatsTable(gameData, uiContext));
+      final Result<String> result = Interruptibles.awaitResult(() -> GameRunner.newBackgroundTaskRunner()
+          .runInBackgroundAndReturn("Calculating Data", () -> getUnitStatsTable(gameData, uiContext)));
+      final JEditorPane editorPane = new JEditorPane("text/html",
+          result.result.orElse("Failed to calculate Data"));
       editorPane.setEditable(false);
       editorPane.setCaretPosition(0);
       final JScrollPane scroll = new JScrollPane(editorPane);
