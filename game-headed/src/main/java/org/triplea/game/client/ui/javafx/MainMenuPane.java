@@ -19,7 +19,9 @@ import javafx.beans.binding.NumberBinding;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -115,7 +117,7 @@ class MainMenuPane extends BorderPane {
   }
 
   private void open(final String url) {
-    OpenFileUtility.openUrl(url, () -> log.warning("Desktop API not supported. Could not open " + url));
+    OpenFileUtility.openUrl(url, () -> new Alert(Alert.AlertType.INFORMATION, url, ButtonType.CLOSE).show());
   }
 
   @FXML
