@@ -12,7 +12,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -28,7 +27,6 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import org.triplea.java.concurrency.CompletableFutureUtils;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -285,13 +283,8 @@ public final class HelpMenu extends JMenu {
   }
 
   public static JEditorPane createNotesPanel(final String trimmedNotes) {
-    final JEditorPane gameNotesPane = new JEditorPane();
-    final CompletableFuture<?> future = CompletableFuture
-        .supplyAsync(() -> LocalizeHtml.localizeImgLinksInHtml(trimmedNotes))
-        .thenAccept(notes -> SwingUtilities.invokeLater(() -> gameNotesPane.setText(notes)));
-    CompletableFutureUtils.logExceptionWhenComplete(future, "Failed to set game notes text");
+    final JEditorPane gameNotesPane = new JEditorPane("text/html", LocalizeHtml.localizeImgLinksInHtml(trimmedNotes));
     gameNotesPane.setEditable(false);
-    gameNotesPane.setContentType("text/html");
     gameNotesPane.setForeground(Color.BLACK);
     return gameNotesPane;
   }
