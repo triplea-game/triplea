@@ -268,7 +268,7 @@ public class MapPanel extends ImageScrollerLargeView {
       deactivate();
       clearPendingDrawOperations();
       executor.shutdown();
-      // Desperate attempt tp fix a memory leak
+      // Desperate attempt to fix a memory leak
       KeyboardFocusManager.getCurrentKeyboardFocusManager().focusNextComponent();
     });
   }
