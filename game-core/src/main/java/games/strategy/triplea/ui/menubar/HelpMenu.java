@@ -1,9 +1,7 @@
 package games.strategy.triplea.ui.menubar;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -30,7 +28,6 @@ import javax.swing.SwingUtilities;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
-import org.triplea.util.LocalizeHtml;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
@@ -41,6 +38,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MacOsIntegration;
+import games.strategy.triplea.ui.NotesPanel;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
@@ -245,10 +243,9 @@ public final class HelpMenu extends JMenu {
     if (!trimmedNotes.isEmpty()) {
       final String gameNotesTitle = "Game Notes";
       add(SwingAction.of(gameNotesTitle, e -> SwingUtilities.invokeLater(() -> {
-        final JScrollPane scroll = new JScrollPane(createNotesPanel(trimmedNotes));
-        scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
         final JDialog dialog = new JDialog((JFrame) null, gameNotesTitle);
-        dialog.add(scroll, BorderLayout.CENTER);
+        final NotesPanel notesPanel = new NotesPanel(trimmedNotes);
+        dialog.add(notesPanel, BorderLayout.CENTER);
         final JPanel buttons = new JPanel();
         final JButton button = new JButton(SwingAction.of("OK", event -> {
           dialog.setVisible(false);
@@ -280,13 +277,6 @@ public final class HelpMenu extends JMenu {
         dialog.setVisible(true);
       }))).setMnemonic(KeyEvent.VK_N);
     }
-  }
-
-  public static JEditorPane createNotesPanel(final String trimmedNotes) {
-    final JEditorPane gameNotesPane = new JEditorPane("text/html", LocalizeHtml.localizeImgLinksInHtml(trimmedNotes));
-    gameNotesPane.setEditable(false);
-    gameNotesPane.setForeground(Color.BLACK);
-    return gameNotesPane;
   }
 
   private void addAboutMenu() {
