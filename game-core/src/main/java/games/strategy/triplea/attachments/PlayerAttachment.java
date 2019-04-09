@@ -40,6 +40,7 @@ public class PlayerAttachment extends DefaultAttachment {
   // number of capitals needed before we lose ability to gain money and produce units
   private int retainCapitalProduceNumber = 1;
   private List<PlayerId> giveUnitControl = new ArrayList<>();
+  private boolean giveUnitControlInAllTerritories = false;
   private List<PlayerId> captureUnitOnEnteringBy = new ArrayList<>();
   // gives any technology researched to this player automatically
   private List<PlayerId> shareTechnology = new ArrayList<>();
@@ -395,6 +396,22 @@ public class PlayerAttachment extends DefaultAttachment {
     giveUnitControl = new ArrayList<>();
   }
 
+  private void setGiveUnitControlInAllTerritories(final String value) throws GameParseException {
+    giveUnitControlInAllTerritories = getBool(value);
+  }
+
+  private void setGiveUnitControlInAllTerritories(final boolean value) {
+    giveUnitControlInAllTerritories = value;
+  }
+
+  public boolean getGiveUnitControlInAllTerritories() {
+    return giveUnitControlInAllTerritories;
+  }
+
+  private void resetGiveUnitControlInAllTerritories() {
+    giveUnitControlInAllTerritories = false;
+  }
+
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
     final String[] temp = splitOnColon(value);
     for (final String name : temp) {
@@ -535,6 +552,12 @@ public class PlayerAttachment extends DefaultAttachment {
                 this::setGiveUnitControl,
                 this::getGiveUnitControl,
                 this::resetGiveUnitControl))
+        .put("giveUnitControlInAllTerritories",
+            MutableProperty.of(
+                this::setGiveUnitControlInAllTerritories,
+                this::setGiveUnitControlInAllTerritories,
+                this::getGiveUnitControlInAllTerritories,
+                this::resetGiveUnitControlInAllTerritories))
         .put("captureUnitOnEnteringBy",
             MutableProperty.of(
                 this::setCaptureUnitOnEnteringBy,

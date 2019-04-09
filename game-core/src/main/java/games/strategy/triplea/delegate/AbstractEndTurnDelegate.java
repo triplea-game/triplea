@@ -316,24 +316,23 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implem
     final PlayerId player = bridge.getPlayerId();
     final PlayerAttachment pa = PlayerAttachment.get(player);
     final Collection<PlayerId> possibleNewOwners = pa.getGiveUnitControl();
-    final Collection<Territory> territories = bridge.getData().getMap().getTerritories();
+    final boolean inAllTerritories = pa.getGiveUnitControlInAllTerritories();
     final CompositeChange change = new CompositeChange();
-    final Collection<Tuple<Territory, Collection<Unit>>> changeList =
-        new ArrayList<>();
-    for (final Territory currTerritory : territories) {
+    final Collection<Tuple<Territory, Collection<Unit>>> changeList = new ArrayList<>();
+    for (final Territory currTerritory : bridge.getData().getMap().getTerritories()) {
       final TerritoryAttachment ta = TerritoryAttachment.get(currTerritory);
       // if ownership should change in this territory
-      if (ta != null && ta.getChangeUnitOwners() != null && !ta.getChangeUnitOwners().isEmpty()) {
-        final Collection<PlayerId> terrNewOwners = ta.getChangeUnitOwners();
-        for (final PlayerId terrNewOwner : terrNewOwners) {
-          if (possibleNewOwners.contains(terrNewOwner)) {
-            // PlayerOwnerChange
-            final Collection<Unit> units = currTerritory.getUnitCollection()
-                .getMatches(Matches.unitOwnedBy(player).and(Matches.unitCanBeGivenByTerritoryTo(terrNewOwner)));
-            if (!units.isEmpty()) {
-              change.add(ChangeFactory.changeOwner(units, terrNewOwner, currTerritory));
-              changeList.add(Tuple.of(currTerritory, units));
-            }
+      if (inAllTerritories || (ta != null && !ta.getChangeUnitOwners().isEmpty())) {
+        final List<PlayerId> newOwners = (ta != null && !ta.getChangeUnitOwners().isEmpty())
+            ? ta.getChangeUnitOwners()
+            : bridge.getData().getPlayerList().getPlayers();
+        newOwners.retainAll(possibleNewOwners);
+        for (final PlayerId newOwner : newOwners) {
+          final Collection<Unit> units = currTerritory.getUnitCollection()
+              .getMatches(Matches.unitOwnedBy(player).and(Matches.unitCanBeGivenByTerritoryTo(newOwner)));
+          if (!units.isEmpty()) {
+            change.add(ChangeFactory.changeOwner(units, newOwner, currTerritory));
+            changeList.add(Tuple.of(currTerritory, units));
           }
         }
       }
