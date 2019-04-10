@@ -30,8 +30,8 @@ public class TripleA extends Application {
 
     final NavigationPane navigationPane = new NavigationPane();
 
-    navigationPane.registerScreen(new MainMenuPane(rootActionPane, navigationPane));
-    navigationPane.registerScreen(new SettingsPane(navigationPane));
+    navigationPane.registerScreen(new MainMenuPane(rootActionPane));
+    navigationPane.registerScreen(new SettingsPane());
 
     rootActionPane.setContent(navigationPane);
 

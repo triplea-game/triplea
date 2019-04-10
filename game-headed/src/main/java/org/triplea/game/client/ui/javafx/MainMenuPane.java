@@ -7,6 +7,8 @@ import java.util.function.Function;
 import javax.swing.SwingUtilities;
 
 import org.triplea.awt.OpenFileUtility;
+import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
+import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
@@ -29,10 +31,10 @@ import javafx.scene.layout.VBox;
 import lombok.extern.java.Log;
 
 @Log
-class MainMenuPane extends BorderPane {
+class MainMenuPane extends BorderPane implements ControlledScreen<NavigationPane> {
 
   private final RootActionPane actionPane;
-  private final ScreenController<Class<? extends Node>> screenController;
+  private NavigationPane screenController;
 
   @FXML
   private Button buttonBack;
@@ -55,10 +57,9 @@ class MainMenuPane extends BorderPane {
    * @param actionPane The root pane.
    * @throws IOException If the FXML file is not present.
    */
-  MainMenuPane(final RootActionPane actionPane, final ScreenController<Class<? extends Node>> screenController)
+  MainMenuPane(final RootActionPane actionPane)
       throws IOException {
     this.actionPane = actionPane;
-    this.screenController = screenController;
     final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.MAIN_MENU_PANE.toString()));
     loader.setRoot(this);
     loader.setController(this);
@@ -147,5 +148,15 @@ class MainMenuPane extends BorderPane {
   @FXML
   private void showExitConfirmDialog() {
     actionPane.promptExit();
+  }
+
+  @Override
+  public void connect(final NavigationPane screenController) {
+    this.screenController = screenController;
+  }
+
+  @Override
+  public Node getNode() {
+    return this;
   }
 }
