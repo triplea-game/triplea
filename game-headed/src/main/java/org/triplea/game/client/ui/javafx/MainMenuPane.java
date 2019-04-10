@@ -9,6 +9,7 @@ import org.triplea.awt.OpenFileUtility;
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
 import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
+import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -123,7 +124,7 @@ public class MainMenuPane implements ControlledScreen<NavigationPane> {
 
   @FXML
   private void showSettingsMenu() {
-    screenController.switchScreen(SettingsPane.class);
+    screenController.switchScreen(FxmlManager.SETTINGS_PANE);
   }
 
   @FXML

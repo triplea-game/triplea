@@ -39,12 +39,12 @@ public class TripleA extends Application {
     final MainMenuPane mainMenuPane = FxmlManager.MAIN_MENU_PANE.<MainMenuPane, Node>load().getController();
     mainMenuPane.setRootActionPane(loadedNode.getController());
 
-    navigationPane.registerScreen(mainMenuPane);
-    navigationPane.registerScreen(FxmlManager.SETTINGS_PANE.<SettingsPane, Node>load().getController());
+    navigationPane.registerScreen(FxmlManager.MAIN_MENU_PANE, mainMenuPane);
+    navigationPane.registerScreen(FxmlManager.SETTINGS_PANE);
 
     loadedNode.getController().setContent(navigationPane);
 
-    navigationPane.switchScreen(MainMenuPane.class);
+    navigationPane.switchScreen(FxmlManager.MAIN_MENU_PANE);
 
     setupStage(stage, scene, loadedNode.getController());
     // Don't invoke Swing if headless (for example in tests)

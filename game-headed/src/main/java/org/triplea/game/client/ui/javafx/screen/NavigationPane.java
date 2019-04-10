@@ -1,7 +1,9 @@
 package org.triplea.game.client.ui.javafx.screen;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
+
+import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import com.google.common.base.Preconditions;
 
@@ -15,27 +17,25 @@ import javafx.scene.layout.StackPane;
  * call tree by using the class name as the identifier.
  * Make sure to register Screens before using them.
  */
-public class NavigationPane extends StackPane implements ScreenController<Class<? extends ControlledScreen<NavigationPane>>> {
-  private final Map<Class<? extends ControlledScreen<NavigationPane>>, Node> screens = new HashMap<>();
+public class NavigationPane extends StackPane implements ScreenController<FxmlManager> {
+  private final Map<FxmlManager, Node> screens = new EnumMap<>(FxmlManager.class);
 
-  public void registerScreen(final ControlledScreen<NavigationPane> screen) {
+  public void registerScreen(final FxmlManager manager, final ControlledScreen<NavigationPane> screen) {
     Preconditions.checkState(Platform.isFxApplicationThread());
+    Preconditions.checkNotNull(manager);
     Preconditions.checkNotNull(screen);
-    screens.put(unchecked(screen.getClass()), screen.getNode());
+    screens.put(manager, screen.getNode());
     screen.connect(this);
   }
 
-  /**
-   * This method exists because generics in Java are terrible to work with,
-   * you should probably not be using it.
-   */
-  @SuppressWarnings("unchecked")
-  private static Class<? extends ControlledScreen<NavigationPane>> unchecked(final Class<?> clazz) {
-    return (Class<? extends ControlledScreen<NavigationPane>>) clazz;
+  public void registerScreen(final FxmlManager manager) {
+    Preconditions.checkState(Platform.isFxApplicationThread());
+    Preconditions.checkNotNull(manager);
+    registerScreen(manager, manager.<ControlledScreen<NavigationPane>, Object>load().getController());
   }
 
   @Override
-  public void switchScreen(final Class<? extends ControlledScreen<NavigationPane>> identifier) {
+  public void switchScreen(final FxmlManager identifier) {
     Preconditions.checkNotNull(identifier);
     Preconditions.checkArgument(screens.containsKey(identifier), "Screen of Type " + identifier + " not present");
 

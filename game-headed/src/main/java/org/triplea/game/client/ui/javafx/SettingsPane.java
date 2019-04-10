@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
 import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.util.ClientSettingJavaFxUiBinding;
+import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.SelectionComponent;
@@ -97,7 +98,7 @@ public class SettingsPane implements ControlledScreen<NavigationPane> {
 
   @FXML
   private void back() {
-    navigationPane.switchScreen(MainMenuPane.class);
+    navigationPane.switchScreen(FxmlManager.MAIN_MENU_PANE);
   }
 
   @FXML
