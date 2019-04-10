@@ -166,10 +166,4 @@ class MainMenuPane extends BorderPane {
   private void showExitConfirmDialog() {
     actionPane.promptExit();
   }
-
-  @FXML
-  private void startHover(@SuppressWarnings("unused") final MouseEvent e) {}
-
-  @FXML
-  private void endHover(@SuppressWarnings("unused") final MouseEvent e) {}
 }
