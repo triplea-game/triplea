@@ -23,9 +23,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -36,18 +33,6 @@ class MainMenuPane extends BorderPane {
 
   private final RootActionPane actionPane;
   private final ScreenController<Class<? extends Node>> screenController;
-
-  @FXML
-  private Label loggedIn;
-
-  @FXML
-  private HBox loginForm;
-
-  @FXML
-  private TextField username;
-
-  @FXML
-  private PasswordField password;
 
   @FXML
   private Button buttonBack;
@@ -93,9 +78,6 @@ class MainMenuPane extends BorderPane {
           : numberBinding);
     });
   }
-
-  @FXML
-  private void login() {}
 
   @FXML
   private void showLastMenu() {
