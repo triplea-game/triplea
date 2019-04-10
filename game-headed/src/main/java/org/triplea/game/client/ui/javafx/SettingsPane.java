@@ -69,7 +69,8 @@ public class SettingsPane implements ControlledScreen<NavigationPane> {
             final Tooltip tooltip =
                 new Tooltip(resources.getString("settings.tooltip." + entry.getKey().name().toLowerCase()));
             final Region element = entry.getValue().getUiComponent();
-            final Label description = new Label(resources.getString(getSettingLocalizationKey(element, entry.getKey())));
+            final Label description =
+                new Label(resources.getString(getSettingLocalizationKey(element, entry.getKey())));
             description.setTooltip(tooltip);
             addTooltipRecursively(element, tooltip);
             pane.addColumn(0, description);
