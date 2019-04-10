@@ -20,7 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 /**
- * Root JavaFX Panel that supports a variety of options
+ * Root JavaFX Panel Controller that supports a variety of options
  * such as prompting the user to exit the Application.
  */
 public class RootActionPane implements ScreenController<Screens> {

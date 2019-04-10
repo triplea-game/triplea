@@ -34,6 +34,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
+/**
+ * SettingsPane Controller class that represents the JavaFX implementation
+ * of our Settings framework.
+ */
 public class SettingsPane implements ControlledScreen<NavigationPane> {
   private NavigationPane navigationPane;
   private final Map<ClientSettingJavaFxUiBinding, SelectionComponent<Region>> selectionComponentsBySetting =

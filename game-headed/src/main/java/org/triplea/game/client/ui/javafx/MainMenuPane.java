@@ -25,9 +25,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import lombok.extern.java.Log;
 
-@Log
+/**
+ * Controller representing the MainMenu JavaFX implementation.
+ */
 public class MainMenuPane implements ControlledScreen<NavigationPane> {
 
   private RootActionPane actionPane;

@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Enum with relative Paths to fxml-related resources.
+ * Enum used to build Node instances from FXML files.
  */
 public enum FxmlManager {
   ROOT_CONTAINER("/org/triplea/game/client/ui/javafx/fxml/TripleAMain.fxml"),
@@ -31,6 +31,12 @@ public enum FxmlManager {
     return value;
   }
 
+  /**
+   * Helper class to wrap a controller and the root node in a single class.
+   *
+   * @param <C> Type of the controller.
+   * @param <N> Type of the root node.
+   */
   @AllArgsConstructor
   @Getter
   public static final class LoadedNode<C, N> {
