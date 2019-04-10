@@ -21,12 +21,15 @@ import javafx.stage.Stage;
  * It sets up the Stage accordingly.
  */
 public class TripleA extends Application {
+  private static final String STYLESHEET_MAIN = "/org/triplea/game/client/ui/javafx/css/main.css";
+  private static final String FONT_PATH = "/org/triplea/game/client/ui/javafx/css/fonts/1942-report.ttf";
+  private static final String ICON_LOCATION = "/org/triplea/swing/ta_icon.png";
 
   @Override
   public void start(final Stage stage) throws Exception {
     final RootActionPane rootActionPane = new RootActionPane();
     final Scene scene = new Scene(rootActionPane);
-    scene.getStylesheets().add(FxmlManager.STYLESHEET_MAIN.toString());
+    scene.getStylesheets().add(STYLESHEET_MAIN);
 
     final NavigationPane navigationPane = new NavigationPane();
 
@@ -48,9 +51,9 @@ public class TripleA extends Application {
     stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
     stage.setFullScreen(true);
 
-    Font.loadFont(TripleA.class.getResourceAsStream(FxmlManager.FONT_PATH.toString()), 14);
+    Font.loadFont(TripleA.class.getResourceAsStream(FONT_PATH), 14);
     stage.setScene(scene);
-    stage.getIcons().add(new Image(getClass().getResourceAsStream(FxmlManager.ICON_LOCATION.toString())));
+    stage.getIcons().add(new Image(getClass().getResourceAsStream(ICON_LOCATION)));
     stage.setTitle("TripleA");
     stage.show();
     stage.setOnCloseRequest(e -> {

@@ -14,15 +14,9 @@ public enum FxmlManager {
 
   MAIN_MENU_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleAMainMenu.fxml"),
 
-  SETTINGS_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleASettings.fxml"),
+  SETTINGS_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleASettings.fxml");
 
-  LANG_CLASS_BASENAME("org.triplea.game.client.ui.javafx.lang.TripleA"),
-
-  STYLESHEET_MAIN("/org/triplea/game/client/ui/javafx/css/main.css"),
-
-  FONT_PATH("/org/triplea/game/client/ui/javafx/css/fonts/1942-report.ttf"),
-
-  ICON_LOCATION("/org/triplea/swing/ta_icon.png");
+  private static final String LANG_CLASS_BASENAME = "org.triplea.game.client.ui.javafx.lang.TripleA";
 
   private final String value;
 
@@ -44,7 +38,7 @@ public enum FxmlManager {
   public static FXMLLoader getLoader(final URL location) {
     final FXMLLoader loader = new FXMLLoader(location);
     // TODO load locale based on user setting
-    loader.setResources(ResourceBundle.getBundle(LANG_CLASS_BASENAME.toString(), new Locale("en", "US")));
+    loader.setResources(ResourceBundle.getBundle(LANG_CLASS_BASENAME, new Locale("en", "US")));
     return loader;
   }
 }
