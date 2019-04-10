@@ -7,12 +7,15 @@ import javax.swing.SwingUtilities;
 import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
+import org.triplea.game.client.ui.javafx.util.FxmlManager.LoadedNode;
 
 import games.strategy.engine.framework.GameRunner;
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -26,21 +29,24 @@ public class TripleA extends Application {
   private static final String ICON_LOCATION = "/org/triplea/swing/ta_icon.png";
 
   @Override
-  public void start(final Stage stage) throws Exception {
-    final RootActionPane rootActionPane = new RootActionPane();
-    final Scene scene = new Scene(rootActionPane);
+  public void start(final Stage stage) {
+    final LoadedNode<RootActionPane, StackPane> loadedNode = FxmlManager.ROOT_CONTAINER.load();
+    final Scene scene = new Scene(loadedNode.getNode());
     scene.getStylesheets().add(STYLESHEET_MAIN);
 
     final NavigationPane navigationPane = new NavigationPane();
 
-    navigationPane.registerScreen(new MainMenuPane(rootActionPane));
-    navigationPane.registerScreen(new SettingsPane());
+    final MainMenuPane mainMenuPane = FxmlManager.MAIN_MENU_PANE.<MainMenuPane, Node>load().getController();
+    mainMenuPane.setRootActionPane(loadedNode.getController());
 
-    rootActionPane.setContent(navigationPane);
+    navigationPane.registerScreen(mainMenuPane);
+    navigationPane.registerScreen(FxmlManager.SETTINGS_PANE.<SettingsPane, Node>load().getController());
+
+    loadedNode.getController().setContent(navigationPane);
 
     navigationPane.switchScreen(MainMenuPane.class);
 
-    setupStage(stage, scene, rootActionPane);
+    setupStage(stage, scene, loadedNode.getController());
     // Don't invoke Swing if headless (for example in tests)
     if (!GraphicsEnvironment.isHeadless()) {
       SwingUtilities.invokeLater(GameRunner::newMainFrame);

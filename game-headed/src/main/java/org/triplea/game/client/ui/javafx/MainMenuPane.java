@@ -1,6 +1,5 @@
 package org.triplea.game.client.ui.javafx;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.function.Function;
 
@@ -10,8 +9,6 @@ import org.triplea.awt.OpenFileUtility;
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
 import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
-import org.triplea.game.client.ui.javafx.screen.ScreenController;
-import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -19,7 +16,6 @@ import games.strategy.triplea.UrlConstants;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -31,9 +27,9 @@ import javafx.scene.layout.VBox;
 import lombok.extern.java.Log;
 
 @Log
-class MainMenuPane extends BorderPane implements ControlledScreen<NavigationPane> {
+public class MainMenuPane implements ControlledScreen<NavigationPane> {
 
-  private final RootActionPane actionPane;
+  private RootActionPane actionPane;
   private NavigationPane screenController;
 
   @FXML
@@ -51,19 +47,11 @@ class MainMenuPane extends BorderPane implements ControlledScreen<NavigationPane
   @FXML
   private VBox mainOptions;
 
-  /**
-   * Initializes a new instance of the MainMenuPane class.
-   *
-   * @param actionPane The root pane.
-   * @throws IOException If the FXML file is not present.
-   */
-  MainMenuPane(final RootActionPane actionPane)
-      throws IOException {
-    this.actionPane = actionPane;
-    final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.MAIN_MENU_PANE.toString()));
-    loader.setRoot(this);
-    loader.setController(this);
-    loader.load();
+  @FXML
+  private BorderPane root;
+
+  @FXML
+  private void initialize() {
     version.setText(MessageFormat.format(version.getText(), ClientContext.engineVersion().getExactVersion()));
     applyFileSelectionAnimation();
   }
@@ -155,8 +143,12 @@ class MainMenuPane extends BorderPane implements ControlledScreen<NavigationPane
     this.screenController = screenController;
   }
 
+  void setRootActionPane(final RootActionPane actionPane) {
+    this.actionPane = actionPane;
+  }
+
   @Override
   public Node getNode() {
-    return this;
+    return root;
   }
 }

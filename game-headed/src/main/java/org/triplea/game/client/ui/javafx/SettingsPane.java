@@ -1,6 +1,5 @@
 package org.triplea.game.client.ui.javafx;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
@@ -13,13 +12,11 @@ import javax.annotation.Nullable;
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
 import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.util.ClientSettingJavaFxUiBinding;
-import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SettingType;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -36,7 +33,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
-class SettingsPane extends StackPane implements ControlledScreen<NavigationPane> {
+public class SettingsPane implements ControlledScreen<NavigationPane> {
   private NavigationPane navigationPane;
   private final Map<ClientSettingJavaFxUiBinding, SelectionComponent<Region>> selectionComponentsBySetting =
       Arrays.stream(ClientSettingJavaFxUiBinding.values()).collect(Collectors.toMap(
@@ -51,19 +48,10 @@ class SettingsPane extends StackPane implements ControlledScreen<NavigationPane>
   private TabPane tabPane;
 
   @FXML
-  private ResourceBundle resources;
+  private StackPane root;
 
-  /**
-   * Initializes a new instance of the SettingsPane class.
-   *
-   * @throws IOException If the FXML file is not present.
-   */
-  SettingsPane() throws IOException {
-    final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.SETTINGS_PANE.toString()));
-    loader.setRoot(this);
-    loader.setController(this);
-    loader.load();
-  }
+  @FXML
+  private ResourceBundle resources;
 
   @FXML
   private void initialize() {
@@ -155,6 +143,6 @@ class SettingsPane extends StackPane implements ControlledScreen<NavigationPane>
 
   @Override
   public Node getNode() {
-    return this;
+    return root;
   }
 }

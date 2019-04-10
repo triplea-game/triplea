@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<fx:root id="rootPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" prefHeight="540.0" prefWidth="960.0" style="-fx-background-color: #EEE;" type="BorderPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane id="rootPane" fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" prefHeight="540.0" prefWidth="960.0" style="-fx-background-color: #EEE;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.triplea.game.client.ui.javafx.MainMenuPane">
    <top>
       <VBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
@@ -226,4 +226,4 @@
          </children>
       </StackPane>
    </center>
-</fx:root>
+</BorderPane>
