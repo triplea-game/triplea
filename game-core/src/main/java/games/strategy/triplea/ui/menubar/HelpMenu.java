@@ -1,9 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -12,10 +9,10 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -28,21 +25,23 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import org.triplea.java.concurrency.CompletableFutureUtils;
+import org.triplea.java.Interruptibles;
+import org.triplea.java.Interruptibles.Result;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
-import org.triplea.util.LocalizeHtml;
 
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MacOsIntegration;
+import games.strategy.triplea.ui.NotesPanel;
 import games.strategy.triplea.ui.TooltipProperties;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.util.TuvUtils;
@@ -51,7 +50,6 @@ import games.strategy.triplea.util.TuvUtils;
  * The help menu.
  */
 public final class HelpMenu extends JMenu {
-  public static final JEditorPane gameNotesPane = new JEditorPane();
   private static final long serialVersionUID = 4070541434144687452L;
 
   private final UiContext uiContext;
@@ -192,49 +190,15 @@ public final class HelpMenu extends JMenu {
   private void addUnitHelpMenu() {
     final String unitHelpTitle = "Unit Help";
     final JMenuItem unitMenuItem = add(SwingAction.of(unitHelpTitle, e -> {
-      final JEditorPane editorPane = new JEditorPane();
+      final Result<String> result = Interruptibles.awaitResult(() -> GameRunner.newBackgroundTaskRunner()
+          .runInBackgroundAndReturn("Calculating Data", () -> getUnitStatsTable(gameData, uiContext)));
+      final JEditorPane editorPane = new JEditorPane("text/html",
+          result.result.orElse("Failed to calculate Data"));
       editorPane.setEditable(false);
-      editorPane.setContentType("text/html");
-      editorPane.setText(getUnitStatsTable(gameData, uiContext));
       editorPane.setCaretPosition(0);
       final JScrollPane scroll = new JScrollPane(editorPane);
       scroll.setBorder(BorderFactory.createEmptyBorder());
-      final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-      // not only do we have a start bar, but we also have the message dialog to account for just the scroll bars plus
-      // the window sides
-      final int availHeight = screenResolution.height - 120;
-      final int availWidth = screenResolution.width - 40;
-      scroll
-          .setPreferredSize(new Dimension(
-              (scroll.getPreferredSize().width > availWidth ? availWidth
-                  : (scroll.getPreferredSize().height > availHeight
-                      ? Math.min(availWidth, scroll.getPreferredSize().width + 22)
-                      : scroll.getPreferredSize().width)),
-              (scroll.getPreferredSize().height > availHeight ? availHeight
-                  : (scroll.getPreferredSize().width > availWidth
-                      ? Math.min(availHeight, scroll.getPreferredSize().height + 22)
-                      : scroll.getPreferredSize().height))));
-      final JDialog dialog = new JDialog((JFrame) null, unitHelpTitle);
-      dialog.add(scroll, BorderLayout.CENTER);
-      final JPanel buttons = new JPanel();
-      final JButton button = new JButton(SwingAction.of("OK", event -> {
-        dialog.setVisible(false);
-        dialog.removeAll();
-        dialog.dispose();
-      }));
-      buttons.add(button);
-      dialog.getRootPane().setDefaultButton(button);
-      dialog.add(buttons, BorderLayout.SOUTH);
-      dialog.pack();
-      dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowOpened(final WindowEvent e) {
-          scroll.getVerticalScrollBar().getModel().setValue(0);
-          scroll.getHorizontalScrollBar().getModel().setValue(0);
-          button.requestFocus();
-        }
-      });
-      dialog.setVisible(true);
+      createInformationDialog(scroll, unitHelpTitle).setVisible(true);
     }));
     unitMenuItem.setMnemonic(KeyEvent.VK_U);
     unitMenuItem.setAccelerator(
@@ -246,30 +210,9 @@ public final class HelpMenu extends JMenu {
     // displays whatever is in the notes field in html
     final String trimmedNotes = gameData.getProperties().get("notes", "").trim();
     if (!trimmedNotes.isEmpty()) {
-      final CompletableFuture<?> future = CompletableFuture
-          .supplyAsync(() -> LocalizeHtml.localizeImgLinksInHtml(trimmedNotes))
-          .thenAccept(notes -> SwingUtilities.invokeLater(() -> gameNotesPane.setText(notes)));
-      CompletableFutureUtils.logExceptionWhenComplete(future, "Failed to set game notes text");
-      gameNotesPane.setEditable(false);
-      gameNotesPane.setContentType("text/html");
-      gameNotesPane.setForeground(Color.BLACK);
-
       final String gameNotesTitle = "Game Notes";
       add(SwingAction.of(gameNotesTitle, e -> SwingUtilities.invokeLater(() -> {
-        final JScrollPane scroll = new JScrollPane(gameNotesPane);
-        scroll.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
-        final JDialog dialog = new JDialog((JFrame) null, gameNotesTitle);
-        dialog.add(scroll, BorderLayout.CENTER);
-        final JPanel buttons = new JPanel();
-        final JButton button = new JButton(SwingAction.of("OK", event -> {
-          dialog.setVisible(false);
-          dialog.removeAll();
-          dialog.dispose();
-        }));
-        buttons.add(button);
-        dialog.getRootPane().setDefaultButton(button);
-        dialog.add(buttons, BorderLayout.SOUTH);
-        dialog.pack();
+        final JDialog dialog = createInformationDialog(new NotesPanel(trimmedNotes), gameNotesTitle);
         if (dialog.getWidth() < 400) {
           dialog.setSize(400, dialog.getHeight());
         }
@@ -282,12 +225,6 @@ public final class HelpMenu extends JMenu {
         if (dialog.getHeight() > 600) {
           dialog.setSize(dialog.getWidth(), 600);
         }
-        dialog.addWindowListener(new WindowAdapter() {
-          @Override
-          public void windowOpened(final WindowEvent e) {
-            button.requestFocus();
-          }
-        });
         dialog.setVisible(true);
       }))).setMnemonic(KeyEvent.VK_N);
     }
@@ -336,5 +273,27 @@ public final class HelpMenu extends JMenu {
   private void addReportBugsMenu() {
     add(SwingAction.of("Send Bug Report",
         e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_ISSUES))).setMnemonic(KeyEvent.VK_B);
+  }
+
+  private static JDialog createInformationDialog(final JComponent component, final String title) {
+    final JDialog dialog = new JDialog((JFrame) null, title);
+    dialog.add(component, BorderLayout.CENTER);
+    final JPanel buttons = new JPanel();
+    final JButton button = new JButton(SwingAction.of("OK", event -> {
+      dialog.setVisible(false);
+      dialog.removeAll();
+      dialog.dispose();
+    }));
+    buttons.add(button);
+    dialog.getRootPane().setDefaultButton(button);
+    dialog.add(buttons, BorderLayout.SOUTH);
+    dialog.pack();
+    dialog.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowOpened(final WindowEvent e) {
+        button.requestFocus();
+      }
+    });
+    return dialog;
   }
 }

@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.KeyboardFocusManager;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
@@ -264,10 +265,11 @@ public class MapPanel extends ImageScrollerLargeView {
     addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
     executor.execute(() -> recreateTiles(data, uiContext));
     uiContext.addActive(() -> {
-      // super.deactivate
       deactivate();
       clearPendingDrawOperations();
       executor.shutdown();
+      // Desperate attempt to fix a memory leak
+      KeyboardFocusManager.getCurrentKeyboardFocusManager().focusNextComponent();
     });
   }
 
