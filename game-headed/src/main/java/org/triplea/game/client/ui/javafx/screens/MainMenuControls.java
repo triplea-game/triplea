@@ -41,7 +41,7 @@ public class MainMenuControls implements ControlledScreen<ScreenController<FxmlM
       node.translateYProperty().bind(numberBinding.multiply(-1));
       node.getParent().translateYProperty().bind(!mainOptions.equals(node.getParent().getParent())
           ? Bindings.add(numberBinding,
-          hoverBinding.apply(node.getParent().getParent().getChildrenUnmodifiable().get(0)).multiply(-1))
+              hoverBinding.apply(node.getParent().getParent().getChildrenUnmodifiable().get(0)).multiply(-1))
           : numberBinding);
     });
   }
