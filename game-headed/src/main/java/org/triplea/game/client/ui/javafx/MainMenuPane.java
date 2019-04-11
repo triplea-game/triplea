@@ -1,14 +1,14 @@
 package org.triplea.game.client.ui.javafx;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.function.Function;
 
 import javax.swing.SwingUtilities;
 
 import org.triplea.awt.OpenFileUtility;
+import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
+import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
-import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.engine.ClientContext;
@@ -17,37 +17,22 @@ import games.strategy.triplea.UrlConstants;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import lombok.extern.java.Log;
 
-@Log
-class MainMenuPane extends BorderPane {
+/**
+ * Controller representing the MainMenu JavaFX implementation.
+ */
+public class MainMenuPane implements ControlledScreen<NavigationPane> {
 
-  private final RootActionPane actionPane;
-  private final ScreenController<Class<? extends Node>> screenController;
-
-  @FXML
-  private Label loggedIn;
-
-  @FXML
-  private HBox loginForm;
-
-  @FXML
-  private TextField username;
-
-  @FXML
-  private PasswordField password;
+  private RootActionPane actionPane;
+  private NavigationPane screenController;
 
   @FXML
   private Button buttonBack;
@@ -64,20 +49,11 @@ class MainMenuPane extends BorderPane {
   @FXML
   private VBox mainOptions;
 
-  /**
-   * Initializes a new instance of the MainMenuPane class.
-   *
-   * @param actionPane The root pane.
-   * @throws IOException If the FXML file is not present.
-   */
-  MainMenuPane(final RootActionPane actionPane, final ScreenController<Class<? extends Node>> screenController)
-      throws IOException {
-    this.actionPane = actionPane;
-    this.screenController = screenController;
-    final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.MAIN_MENU_PANE.toString()));
-    loader.setRoot(this);
-    loader.setController(this);
-    loader.load();
+  @FXML
+  private BorderPane root;
+
+  @FXML
+  private void initialize() {
     version.setText(MessageFormat.format(version.getText(), ClientContext.engineVersion().getExactVersion()));
     applyFileSelectionAnimation();
   }
@@ -93,9 +69,6 @@ class MainMenuPane extends BorderPane {
           : numberBinding);
     });
   }
-
-  @FXML
-  private void login() {}
 
   @FXML
   private void showLastMenu() {
@@ -152,7 +125,7 @@ class MainMenuPane extends BorderPane {
 
   @FXML
   private void showSettingsMenu() {
-    screenController.switchScreen(SettingsPane.class);
+    screenController.switchScreen(FxmlManager.SETTINGS_PANE);
   }
 
   @FXML
@@ -167,9 +140,17 @@ class MainMenuPane extends BorderPane {
     actionPane.promptExit();
   }
 
-  @FXML
-  private void startHover(@SuppressWarnings("unused") final MouseEvent e) {}
+  @Override
+  public void connect(final NavigationPane screenController) {
+    this.screenController = screenController;
+  }
 
-  @FXML
-  private void endHover(@SuppressWarnings("unused") final MouseEvent e) {}
+  void setRootActionPane(final RootActionPane actionPane) {
+    this.actionPane = actionPane;
+  }
+
+  @Override
+  public Node getNode() {
+    return root;
+  }
 }

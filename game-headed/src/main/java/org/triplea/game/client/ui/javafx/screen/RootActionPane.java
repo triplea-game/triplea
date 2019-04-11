@@ -5,7 +5,6 @@ import java.awt.GraphicsEnvironment;
 import javax.swing.SwingUtilities;
 
 import org.triplea.game.client.ui.javafx.screen.RootActionPane.Screens;
-import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import com.google.common.base.Preconditions;
 
@@ -15,17 +14,16 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 /**
- * Root JavaFX Panel that supports a variety of options
+ * Root JavaFX Panel Controller that supports a variety of options
  * such as prompting the user to exit the Application.
  */
-public class RootActionPane extends StackPane implements ScreenController<Screens> {
+public class RootActionPane implements ScreenController<Screens> {
 
   enum Screens {
     EXIT,
@@ -46,13 +44,6 @@ public class RootActionPane extends StackPane implements ScreenController<Screen
 
   @FXML
   private VBox exitFrame;
-
-  public RootActionPane() throws Exception {
-    final FXMLLoader loader = FxmlManager.getLoader(getClass().getResource(FxmlManager.ROOT_CONTAINER.toString()));
-    loader.setRoot(this);
-    loader.setController(this);
-    loader.load();
-  }
 
   public void setContent(final Node node) {
     Preconditions.checkNotNull(node);

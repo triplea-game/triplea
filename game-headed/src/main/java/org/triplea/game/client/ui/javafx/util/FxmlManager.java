@@ -1,28 +1,24 @@
 package org.triplea.game.client.ui.javafx.util;
 
-import java.net.URL;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXMLLoader;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
- * Enum with relative Paths to fxml-related resources.
+ * Enum used to build Node instances from FXML files.
  */
 public enum FxmlManager {
   ROOT_CONTAINER("/org/triplea/game/client/ui/javafx/fxml/TripleAMain.fxml"),
 
   MAIN_MENU_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleAMainMenu.fxml"),
 
-  SETTINGS_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleASettings.fxml"),
+  SETTINGS_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleASettings.fxml");
 
-  LANG_CLASS_BASENAME("org.triplea.game.client.ui.javafx.lang.TripleA"),
-
-  STYLESHEET_MAIN("/org/triplea/game/client/ui/javafx/css/main.css"),
-
-  FONT_PATH("/org/triplea/game/client/ui/javafx/css/fonts/1942-report.ttf"),
-
-  ICON_LOCATION("/org/triplea/swing/ta_icon.png");
+  private static final String LANG_CLASS_BASENAME = "org.triplea.game.client.ui.javafx.lang.TripleA";
 
   private final String value;
 
@@ -36,15 +32,32 @@ public enum FxmlManager {
   }
 
   /**
-   * Simplified way of getting an {@link FXMLLoader} with the default settings for TripleA.
+   * Helper class to wrap a controller and the root node in a single class.
    *
-   * @param location The FXML File to load
-   * @return An FXMLLoader object
+   * @param <C> Type of the controller.
+   * @param <N> Type of the root node.
    */
-  public static FXMLLoader getLoader(final URL location) {
-    final FXMLLoader loader = new FXMLLoader(location);
-    // TODO load locale based on user setting
-    loader.setResources(ResourceBundle.getBundle(LANG_CLASS_BASENAME.toString(), new Locale("en", "US")));
-    return loader;
+  @AllArgsConstructor
+  @Getter
+  public static final class LoadedNode<C, N> {
+    private final C controller;
+    private final N node;
+  }
+
+  /**
+   * Simplified way to load a Node & Controller.
+   *
+   * @return A LoadedNode object
+   */
+  public <C, N> LoadedNode<C, N> load() {
+    try {
+      final FXMLLoader loader = new FXMLLoader(getClass().getResource(value));
+      // TODO load locale based on user setting
+      loader.setResources(ResourceBundle.getBundle(LANG_CLASS_BASENAME, new Locale("en", "US")));
+      loader.load();
+      return new LoadedNode<>(loader.getController(), loader.getRoot());
+    } catch (final IOException e) {
+      throw new IllegalStateException("Failed to load FXML " + value, e);
+    }
   }
 }
