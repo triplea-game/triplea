@@ -40,7 +40,7 @@ public class TripleA extends Application {
     navigationPane.registerScreen(FxmlManager.MAIN_MENU_PANE);
     navigationPane.registerScreen(FxmlManager.SETTINGS_PANE);
 
-    loadedNode.getController().setContent(navigationPane);
+    loadedNode.getController().setContent(navigationPane.getNode());
 
     navigationPane.switchScreen(FxmlManager.MAIN_MENU_PANE);
 

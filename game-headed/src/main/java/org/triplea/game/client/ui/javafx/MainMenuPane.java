@@ -33,7 +33,7 @@ public class MainMenuPane implements ControlledScreen<NavigationPane> {
   private void initialize() {
     version.setText(MessageFormat.format(version.getText(), ClientContext.engineVersion().getExactVersion()));
     navigationPane = new NavigationPane();
-    content.getChildren().add(0, navigationPane);
+    content.getChildren().add(0, navigationPane.getNode());
 
     navigationPane.registerScreen(FxmlManager.GAME_SELECTION_CONTROLS);
     navigationPane.registerScreen(FxmlManager.ABOUT_INFORMATION);
