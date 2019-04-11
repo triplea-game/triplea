@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="aboutSection" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.triplea.game.client.ui.javafx.AboutInformation">
+<VBox fx:id="aboutSection" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.triplea.game.client.ui.javafx.screens.AboutInformation">
    <children>
       <Label id="aboutTitle" text="%main.label.about_title" />
       <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="normal-font-size" text="%main.text.about_description" />

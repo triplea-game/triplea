@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<VBox fx:id="mainOptions" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.triplea.game.client.ui.javafx.MainMenuControls">
+<VBox fx:id="mainOptions" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.triplea.game.client.ui.javafx.screens.MainMenuControls">
    <children>
       <VBox alignment="TOP_CENTER" styleClass="file-container" VBox.vgrow="ALWAYS">
          <children>

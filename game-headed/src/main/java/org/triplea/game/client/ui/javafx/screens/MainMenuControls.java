@@ -1,4 +1,4 @@
-package org.triplea.game.client.ui.javafx;
+package org.triplea.game.client.ui.javafx.screens;
 
 import java.util.function.Function;
 
