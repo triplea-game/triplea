@@ -11,6 +11,9 @@ import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import lombok.NoArgsConstructor;
 
+/**
+ * Controller class for the Game Type selection screen.
+ */
 @NoArgsConstructor
 public class GameSelectionControls implements ControlledScreen<ScreenController<FxmlManager>> {
 

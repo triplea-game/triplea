@@ -19,6 +19,9 @@ import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import lombok.NoArgsConstructor;
 
+/**
+ * Controller class for the main screen navigation menu.
+ */
 @NoArgsConstructor
 public class MainMenuControls implements ControlledScreen<ScreenController<FxmlManager>> {
 

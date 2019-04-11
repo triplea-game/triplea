@@ -15,6 +15,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
 import lombok.NoArgsConstructor;
 
+/**
+ * Controller class for the About Screen.
+ */
 @NoArgsConstructor
 public class AboutInformation implements ControlledScreen<ScreenController<FxmlManager>> {
 
