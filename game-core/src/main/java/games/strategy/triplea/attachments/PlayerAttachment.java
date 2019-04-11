@@ -396,20 +396,12 @@ public class PlayerAttachment extends DefaultAttachment {
     giveUnitControl = new ArrayList<>();
   }
 
-  private void setGiveUnitControlInAllTerritories(final String value) throws GameParseException {
-    giveUnitControlInAllTerritories = getBool(value);
-  }
-
   private void setGiveUnitControlInAllTerritories(final boolean value) {
     giveUnitControlInAllTerritories = value;
   }
 
   public boolean getGiveUnitControlInAllTerritories() {
     return giveUnitControlInAllTerritories;
-  }
-
-  private void resetGiveUnitControlInAllTerritories() {
-    giveUnitControlInAllTerritories = false;
   }
 
   private void setCaptureUnitOnEnteringBy(final String value) throws GameParseException {
@@ -553,11 +545,11 @@ public class PlayerAttachment extends DefaultAttachment {
                 this::getGiveUnitControl,
                 this::resetGiveUnitControl))
         .put("giveUnitControlInAllTerritories",
-            MutableProperty.of(
-                this::setGiveUnitControlInAllTerritories,
+            MutableProperty.ofMapper(
+                DefaultAttachment::getBool,
                 this::setGiveUnitControlInAllTerritories,
                 this::getGiveUnitControlInAllTerritories,
-                this::resetGiveUnitControlInAllTerritories))
+                () -> false))
         .put("captureUnitOnEnteringBy",
             MutableProperty.of(
                 this::setCaptureUnitOnEnteringBy,
