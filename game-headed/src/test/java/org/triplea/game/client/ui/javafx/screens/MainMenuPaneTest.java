@@ -66,7 +66,7 @@ class MainMenuPaneTest {
   }
 
   @AfterAll
-  static void cleanup() {
-    Application.setUserAgentStylesheet(null);
+  static void cleanup() throws Exception {
+    FieldSetter.setField(null, Application.class.getDeclaredField("userAgentStylesheet"), null);
   }
 }

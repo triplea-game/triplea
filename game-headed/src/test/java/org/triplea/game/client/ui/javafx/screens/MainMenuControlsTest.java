@@ -43,7 +43,7 @@ class MainMenuControlsTest {
           .findNestedClasses(Node.class, ReadOnlyObjectWrapper.class::isAssignableFrom).get(0);
       final Constructor<?> constructor = clazz.getDeclaredConstructor(Node.class);
       constructor.setAccessible(true);
-      ObjectPropertyBase<Scene> propertyBase = (ObjectPropertyBase<Scene>) constructor.newInstance(mock);
+      final ObjectPropertyBase<Scene> propertyBase = (ObjectPropertyBase<Scene>) constructor.newInstance(mock);
       FieldSetter.setField(mock, Node.class.getDeclaredField("scene"), propertyBase);
       propertyBase.set(scene);
     }

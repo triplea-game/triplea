@@ -2,7 +2,6 @@ package org.triplea.game.client.ui.javafx;
 
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.hasChildren;
-import static org.testfx.matcher.base.NodeMatchers.isInvisible;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
 import org.junit.jupiter.api.Nested;
@@ -12,6 +11,7 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.triplea.test.common.Integration;
 
 import games.strategy.triplea.settings.ClientSetting;
+import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 @Integration
@@ -30,7 +30,7 @@ final class TripleAApplicationTest extends ApplicationTest {
   }
 
   @Override
-  public void start(final Stage stage) throws Exception {
+  public void start(final Stage stage) {
     new TripleA().start(stage);
   }
 
@@ -43,8 +43,7 @@ final class TripleAApplicationTest extends ApplicationTest {
 
     @Test
     void shouldInitiallyHideCertainElements() {
-      verifyThat("#gameOptions", isInvisible());
-      verifyThat("#aboutSection", isInvisible());
+      verifyThat("#root > StackPane", node -> ((Parent) node).getChildrenUnmodifiable().size() == 1);
     }
 
     @Test
