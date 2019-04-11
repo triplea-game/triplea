@@ -5,8 +5,8 @@ import java.util.function.Function;
 import javax.swing.SwingUtilities;
 
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
-import org.triplea.game.client.ui.javafx.screen.NavigationPane;
 import org.triplea.game.client.ui.javafx.screen.RootActionPane;
+import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -16,12 +16,12 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 
-public class MainMenuControls implements ControlledScreen<NavigationPane> {
+public class MainMenuControls implements ControlledScreen<ScreenController<FxmlManager>> {
 
   @FXML
   private VBox mainOptions;
 
-  private NavigationPane navigationPane;
+  private ScreenController<FxmlManager> screenController;
 
   @FXML
   private void initialize() {
@@ -38,7 +38,7 @@ public class MainMenuControls implements ControlledScreen<NavigationPane> {
 
   @FXML
   private void showPlayOptions() {
-    navigationPane.switchScreen(FxmlManager.GAME_SELECTION_CONTROLS);
+    screenController.switchScreen(FxmlManager.GAME_SELECTION_CONTROLS);
   }
 
   @FXML
@@ -48,12 +48,12 @@ public class MainMenuControls implements ControlledScreen<NavigationPane> {
 
   @FXML
   private void showSettingsMenu() {
-    navigationPane.switchScreen(FxmlManager.SETTINGS_PANE);
+    screenController.switchScreen(FxmlManager.SETTINGS_PANE);
   }
 
   @FXML
   private void showAboutSection() {
-    navigationPane.switchScreen(FxmlManager.ABOUT_INFORMATION);
+    screenController.switchScreen(FxmlManager.ABOUT_INFORMATION);
   }
 
   @FXML
@@ -62,8 +62,8 @@ public class MainMenuControls implements ControlledScreen<NavigationPane> {
   }
 
   @Override
-  public void connect(final NavigationPane screenController) {
-    navigationPane = screenController;
+  public void connect(final ScreenController<FxmlManager> screenController) {
+    this.screenController = screenController;
   }
 
   @Override

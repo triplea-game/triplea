@@ -2,7 +2,7 @@ package org.triplea.game.client.ui.javafx.screens;
 
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
-import org.triplea.game.client.ui.javafx.screen.NavigationPane;
+import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import games.strategy.triplea.UrlConstants;
@@ -12,12 +12,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
 
-public class AboutInformation implements ControlledScreen<NavigationPane> {
+public class AboutInformation implements ControlledScreen<ScreenController<FxmlManager>> {
 
   @FXML
   private VBox aboutSection;
 
-  private NavigationPane screenController;
+  private ScreenController<FxmlManager> screenController;
 
   @FXML
   private void showHelp() {
@@ -34,7 +34,7 @@ public class AboutInformation implements ControlledScreen<NavigationPane> {
   }
 
   @Override
-  public void connect(final NavigationPane screenController) {
+  public void connect(final ScreenController<FxmlManager> screenController) {
     this.screenController = screenController;
   }
 

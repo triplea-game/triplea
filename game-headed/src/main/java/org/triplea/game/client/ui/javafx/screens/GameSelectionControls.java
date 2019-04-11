@@ -1,19 +1,19 @@
 package org.triplea.game.client.ui.javafx.screens;
 
 import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
-import org.triplea.game.client.ui.javafx.screen.NavigationPane;
+import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 
-public class GameSelectionControls implements ControlledScreen<NavigationPane> {
+public class GameSelectionControls implements ControlledScreen<ScreenController<FxmlManager>> {
 
   @FXML
   private BorderPane gameOptions;
 
-  private NavigationPane screenController;
+  private ScreenController<FxmlManager> screenController;
 
   @FXML
   private void showLobbyMenu() {}
@@ -34,7 +34,7 @@ public class GameSelectionControls implements ControlledScreen<NavigationPane> {
   private void showPlayByEmailMenu() {}
 
   @Override
-  public void connect(final NavigationPane screenController) {
+  public void connect(final ScreenController<FxmlManager> screenController) {
     this.screenController = screenController;
   }
 

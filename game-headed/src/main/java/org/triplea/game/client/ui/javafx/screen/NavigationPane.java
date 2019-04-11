@@ -22,7 +22,7 @@ import javafx.scene.layout.StackPane;
 public class NavigationPane implements ScreenController<FxmlManager> {
   private final Pane root;
   private final Map<FxmlManager, Node> screens = new EnumMap<>(FxmlManager.class);
-  private NavigationPane parent;
+  private ScreenController<FxmlManager> parent;
 
   public NavigationPane() {
     this(new StackPane());
@@ -68,7 +68,7 @@ public class NavigationPane implements ScreenController<FxmlManager> {
     }
   }
 
-  public void setParent(final NavigationPane parent) {
+  public void setParent(final ScreenController<FxmlManager> parent) {
     this.parent = parent;
   }
 
