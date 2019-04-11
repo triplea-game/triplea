@@ -17,7 +17,7 @@ ext {
 
 dependencies {
     if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-        compileOnly remoteLib(javaFxRuntimeUrl)
+        implementation remoteLib(javaFxRuntimeUrl)
     }
 
     implementation project(':game-core')
@@ -25,16 +25,14 @@ dependencies {
     implementation project(':swing-lib')
     implementation 'org.pushing-pixels:radiance-substance:1.0.2'
 
-    if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-        testCompileOnly remoteLib(javaFxRuntimeUrl)
-    }
-
     testImplementation project(':test-common')
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
     testImplementation "org.testfx:testfx-core:$testFxVersion"
     testImplementation "org.testfx:testfx-junit5:$testFxVersion"
 
-    if (JavaVersion.current() == JavaVersion.VERSION_1_9) {
+    if (JavaVersion.current() == JavaVersion.VERSION_11) {
+        testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-11+26'
+    } else if (JavaVersion.current() == JavaVersion.VERSION_1_9) {
         testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-9+181'
     } else if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
         testRuntimeOnly 'org.testfx:openjfx-monocle:8u76-b04'
