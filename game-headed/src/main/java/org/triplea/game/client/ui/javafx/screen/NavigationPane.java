@@ -19,10 +19,9 @@ import javafx.scene.layout.StackPane;
  */
 public class NavigationPane extends StackPane implements ScreenController<FxmlManager> {
   private final Map<FxmlManager, Node> screens = new EnumMap<>(FxmlManager.class);
+  private NavigationPane parent;
 
-  public void registerScreen(final FxmlManager manager, final ControlledScreen<NavigationPane> screen) {
-    Preconditions.checkState(Platform.isFxApplicationThread());
-    Preconditions.checkNotNull(manager);
+  private void registerScreen(final FxmlManager manager, final ControlledScreen<NavigationPane> screen) {
     Preconditions.checkNotNull(screen);
     screens.put(manager, screen.getNode());
     screen.connect(this);
@@ -37,7 +36,15 @@ public class NavigationPane extends StackPane implements ScreenController<FxmlMa
   @Override
   public void switchScreen(final FxmlManager identifier) {
     Preconditions.checkNotNull(identifier);
-    Preconditions.checkArgument(screens.containsKey(identifier), "Screen of Type " + identifier + " not present");
+
+    // Pass request to parent if we can't handle it.
+    if (!screens.containsKey(identifier)) {
+      if (parent != null) {
+        parent.switchScreen(identifier);
+        return;
+      }
+      throw new IllegalArgumentException("Screen of Type " + identifier + " not present");
+    }
 
     final Node screen = screens.get(identifier);
 
@@ -46,5 +53,9 @@ public class NavigationPane extends StackPane implements ScreenController<FxmlMa
     } else {
       getChildren().set(0, screen);
     }
+  }
+
+  public void setParent(final NavigationPane parent) {
+    this.parent = parent;
   }
 }

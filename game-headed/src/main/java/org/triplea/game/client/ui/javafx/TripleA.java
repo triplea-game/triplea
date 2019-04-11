@@ -11,7 +11,6 @@ import org.triplea.game.client.ui.javafx.util.FxmlManager.LoadedNode;
 
 import games.strategy.engine.framework.GameRunner;
 import javafx.application.Application;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCombination;
@@ -34,12 +33,11 @@ public class TripleA extends Application {
     final Scene scene = new Scene(loadedNode.getNode());
     scene.getStylesheets().add(STYLESHEET_MAIN);
 
+    stage.setUserData(loadedNode.getController());
+
     final NavigationPane navigationPane = new NavigationPane();
 
-    final MainMenuPane mainMenuPane = FxmlManager.MAIN_MENU_PANE.<MainMenuPane, Node>load().getController();
-    mainMenuPane.setRootActionPane(loadedNode.getController());
-
-    navigationPane.registerScreen(FxmlManager.MAIN_MENU_PANE, mainMenuPane);
+    navigationPane.registerScreen(FxmlManager.MAIN_MENU_PANE);
     navigationPane.registerScreen(FxmlManager.SETTINGS_PANE);
 
     loadedNode.getController().setContent(navigationPane);

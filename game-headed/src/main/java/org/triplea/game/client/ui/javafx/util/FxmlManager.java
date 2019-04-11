@@ -16,7 +16,13 @@ public enum FxmlManager {
 
   MAIN_MENU_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleAMainMenu.fxml"),
 
-  SETTINGS_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleASettings.fxml");
+  SETTINGS_PANE("/org/triplea/game/client/ui/javafx/fxml/TripleASettings.fxml"),
+
+  ABOUT_INFORMATION("/org/triplea/game/client/ui/javafx/fxml/AboutInformation.fxml"),
+
+  GAME_SELECTION_CONTROLS("/org/triplea/game/client/ui/javafx/fxml/GameSelectionControls.fxml"),
+
+  MAIN_MENU_CONTROLS("/org/triplea/game/client/ui/javafx/fxml/MainMenuControls.fxml");
 
   private static final String LANG_CLASS_BASENAME = "org.triplea.game.client.ui.javafx.lang.TripleA";
 
