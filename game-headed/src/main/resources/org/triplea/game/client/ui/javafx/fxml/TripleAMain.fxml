@@ -9,9 +9,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.triplea.game.client.ui.javafx.screen.RootActionPane">
+<StackPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="540.0" minWidth="960.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.triplea.game.client.ui.javafx.screen.RootActionPane">
    <children>
-      <StackPane fx:id="rootPane" />
       <VBox fx:id="loadingOverlay" alignment="CENTER" minWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0.2);" visible="false" StackPane.alignment="CENTER">
          <children>
             <VBox alignment="CENTER" minWidth="200.0">
