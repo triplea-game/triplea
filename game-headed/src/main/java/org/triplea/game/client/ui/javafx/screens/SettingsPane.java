@@ -14,6 +14,8 @@ import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.ClientSettingJavaFxUiBinding;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.triplea.settings.GameSetting;
 import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SettingType;
@@ -33,21 +35,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import lombok.NoArgsConstructor;
 
 /**
  * SettingsPane Controller class that represents the JavaFX implementation
  * of our Settings framework.
  */
+@NoArgsConstructor
 public class SettingsPane implements ControlledScreen<ScreenController<FxmlManager>> {
   private ScreenController<FxmlManager> screenController;
-  private final Map<ClientSettingJavaFxUiBinding, SelectionComponent<Region>> selectionComponentsBySetting =
-      Arrays.stream(ClientSettingJavaFxUiBinding.values()).collect(Collectors.toMap(
-          Function.identity(),
-          ClientSettingJavaFxUiBinding::newSelectionComponent,
-          (oldValue, newValue) -> {
-            throw new AssertionError("impossible condition: enum contains duplicate values");
-          },
-          () -> new EnumMap<>(ClientSettingJavaFxUiBinding.class)));
+  private Map<ClientSettingJavaFxUiBinding, SelectionComponent<Region>> selectionComponentsBySetting;
 
   @FXML
   private TabPane tabPane;
@@ -58,8 +55,21 @@ public class SettingsPane implements ControlledScreen<ScreenController<FxmlManag
   @FXML
   private ResourceBundle resources;
 
+  @VisibleForTesting
+  SettingsPane(final StackPane root) {
+    this.root = root;
+  }
+
   @FXML
   private void initialize() {
+    selectionComponentsBySetting = Arrays.stream(ClientSettingJavaFxUiBinding.values()).collect(Collectors.toMap(
+        Function.identity(),
+        ClientSettingJavaFxUiBinding::newSelectionComponent,
+        (oldValue, newValue) -> {
+          throw new AssertionError("impossible condition: enum contains duplicate values");
+        },
+        () -> new EnumMap<>(ClientSettingJavaFxUiBinding.class)));
+
     Arrays.stream(SettingType.values()).forEach(type -> {
       final Tab tab = new Tab();
       final GridPane pane = new GridPane();
@@ -102,7 +112,8 @@ public class SettingsPane implements ControlledScreen<ScreenController<FxmlManag
   }
 
   @FXML
-  private void back() {
+  @VisibleForTesting
+  void back() {
     screenController.switchScreen(FxmlManager.MAIN_MENU_PANE);
   }
 

@@ -4,16 +4,25 @@ import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class GameSelectionControls implements ControlledScreen<ScreenController<FxmlManager>> {
 
   @FXML
   private BorderPane gameOptions;
 
   private ScreenController<FxmlManager> screenController;
+
+  @VisibleForTesting
+  GameSelectionControls(final BorderPane gameOptions) {
+    this.gameOptions = gameOptions;
+  }
 
   @FXML
   private void showLobbyMenu() {}
@@ -44,7 +53,8 @@ public class GameSelectionControls implements ControlledScreen<ScreenController<
   }
 
   @FXML
-  private void back() {
+  @VisibleForTesting
+  void back() {
     screenController.switchScreen(FxmlManager.MAIN_MENU_CONTROLS);
   }
 }

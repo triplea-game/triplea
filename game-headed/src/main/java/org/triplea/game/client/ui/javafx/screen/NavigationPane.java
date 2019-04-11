@@ -33,14 +33,14 @@ public class NavigationPane implements ScreenController<FxmlManager> {
     this.root = root;
   }
 
-  private void registerScreen(final FxmlManager manager, final ControlledScreen<NavigationPane> screen) {
+  @VisibleForTesting
+  void registerScreen(final FxmlManager manager, final ControlledScreen<NavigationPane> screen) {
     Preconditions.checkNotNull(screen);
     screens.put(manager, screen.getNode());
     screen.connect(this);
   }
 
   public void registerScreen(final FxmlManager manager) {
-    Preconditions.checkState(Platform.isFxApplicationThread());
     Preconditions.checkNotNull(manager);
     registerScreen(manager, manager.<ControlledScreen<NavigationPane>, Object>load().getController());
   }
@@ -48,7 +48,6 @@ public class NavigationPane implements ScreenController<FxmlManager> {
   @Override
   public void switchScreen(final FxmlManager identifier) {
     Preconditions.checkNotNull(identifier);
-    Preconditions.checkState(Platform.isFxApplicationThread());
 
     // Pass request to parent if we can't handle it.
     if (!screens.containsKey(identifier)) {

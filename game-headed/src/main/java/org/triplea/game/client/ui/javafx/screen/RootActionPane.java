@@ -6,6 +6,7 @@ import javax.swing.SwingUtilities;
 
 import org.triplea.game.client.ui.javafx.screen.RootActionPane.Screens;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.framework.GameRunner;
@@ -18,11 +19,13 @@ import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import lombok.NoArgsConstructor;
 
 /**
  * Root JavaFX Panel Controller that supports a variety of options
  * such as prompting the user to exit the Application.
  */
+@NoArgsConstructor
 public class RootActionPane implements ScreenController<Screens> {
 
   enum Screens {
@@ -44,6 +47,11 @@ public class RootActionPane implements ScreenController<Screens> {
 
   @FXML
   private VBox exitFrame;
+
+  @VisibleForTesting
+  RootActionPane(final StackPane root) {
+    this.root = root;
+  }
 
   public void setContent(final Node node) {
     Preconditions.checkNotNull(node);

@@ -9,13 +9,17 @@ import org.triplea.game.client.ui.javafx.screen.RootActionPane;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class MainMenuControls implements ControlledScreen<ScreenController<FxmlManager>> {
 
   @FXML
@@ -23,8 +27,14 @@ public class MainMenuControls implements ControlledScreen<ScreenController<FxmlM
 
   private ScreenController<FxmlManager> screenController;
 
+  @VisibleForTesting
+  MainMenuControls(final VBox mainOptions) {
+    this.mainOptions = mainOptions;
+  }
+
   @FXML
-  private void initialize() {
+  @VisibleForTesting
+  void initialize() {
     mainOptions.lookupAll(".button").forEach(node -> {
       final Function<Node, NumberBinding> hoverBinding = n -> Bindings.when(n.hoverProperty()).then(-10).otherwise(0);
       final NumberBinding numberBinding = hoverBinding.apply(node);
@@ -37,27 +47,32 @@ public class MainMenuControls implements ControlledScreen<ScreenController<FxmlM
   }
 
   @FXML
-  private void showPlayOptions() {
+  @VisibleForTesting
+  void showPlayOptions() {
     screenController.switchScreen(FxmlManager.GAME_SELECTION_CONTROLS);
   }
 
   @FXML
-  private void showDownloadMenu() {
+  @VisibleForTesting
+  void showDownloadMenu() {
     SwingUtilities.invokeLater(DownloadMapsWindow::showDownloadMapsWindow);
   }
 
   @FXML
-  private void showSettingsMenu() {
+  @VisibleForTesting
+  void showSettingsMenu() {
     screenController.switchScreen(FxmlManager.SETTINGS_PANE);
   }
 
   @FXML
-  private void showAboutSection() {
+  @VisibleForTesting
+  void showAboutSection() {
     screenController.switchScreen(FxmlManager.ABOUT_INFORMATION);
   }
 
   @FXML
-  private void showExitConfirmDialog() {
+  @VisibleForTesting
+  void showExitConfirmDialog() {
     ((RootActionPane) mainOptions.getScene().getWindow().getUserData()).promptExit();
   }
 

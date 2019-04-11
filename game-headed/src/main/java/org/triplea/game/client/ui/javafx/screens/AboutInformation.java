@@ -5,19 +5,28 @@ import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
 import org.triplea.game.client.ui.javafx.screen.ScreenController;
 import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import games.strategy.triplea.UrlConstants;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class AboutInformation implements ControlledScreen<ScreenController<FxmlManager>> {
 
   @FXML
   private VBox aboutSection;
 
   private ScreenController<FxmlManager> screenController;
+
+  @VisibleForTesting
+  AboutInformation(final VBox aboutSection) {
+    this.aboutSection = aboutSection;
+  }
 
   @FXML
   private void showHelp() {
@@ -44,7 +53,8 @@ public class AboutInformation implements ControlledScreen<ScreenController<FxmlM
   }
 
   @FXML
-  private void back() {
+  @VisibleForTesting
+  void back() {
     screenController.switchScreen(FxmlManager.MAIN_MENU_CONTROLS);
   }
 }
