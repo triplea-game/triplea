@@ -1,6 +1,7 @@
 package org.triplea.game.client.ui.javafx.screen;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -31,7 +32,7 @@ class NavigationPaneTest {
   void testSwapInvalidScreen() {
     final Exception exception = assertThrows(IllegalArgumentException.class, () -> navigationPane.switchScreen(
         FxmlManager.MAIN_MENU_CONTROLS));
-    assertThat(exception.getMessage()).contains(FxmlManager.MAIN_MENU_CONTROLS.toString());
+    assertThat(exception.getMessage(), containsString(FxmlManager.MAIN_MENU_CONTROLS.toString()));
   }
 
   @Test
