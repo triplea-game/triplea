@@ -274,7 +274,8 @@ public final class GameStepPropertiesHelper {
     data.acquireReadLock();
     try {
       return Boolean.parseBoolean(
-          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.SKIP_POSTING, "false"));
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.ONLY_REPAIR_IF_DISABLED,
+              "false"));
     } finally {
       data.releaseReadLock();
     }
