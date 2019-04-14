@@ -39,6 +39,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
+import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
@@ -122,8 +123,11 @@ class ProductionRepairPanel extends JPanel {
     try {
       this.id = player;
       this.allowedPlayersToRepair = allowedPlayersToRepair;
-      final Predicate<Unit> myDamagedUnits = Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair)
+      Predicate<Unit> myDamagedUnits = Matches.unitIsOwnedByOfAnyOfThesePlayers(this.allowedPlayersToRepair)
           .and(Matches.unitHasTakenSomeBombingUnitDamage());
+      if (GameStepPropertiesHelper.isOnlyRepairIfDisabled(data)) {
+        myDamagedUnits = myDamagedUnits.and(Matches.unitIsDisabled());
+      }
       final Collection<Territory> terrsWithPotentiallyDamagedUnits = CollectionUtils
           .getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myDamagedUnits));
       for (final RepairRule repairRule : player.getRepairFrontier()) {

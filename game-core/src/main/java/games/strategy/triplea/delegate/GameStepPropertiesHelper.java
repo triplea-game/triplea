@@ -265,6 +265,22 @@ public final class GameStepPropertiesHelper {
     return getPlayersFromProperty(data, GameStep.PropertyKeys.REPAIR_PLAYERS, player);
   }
 
+  /**
+   * Allow a purchase phase which only occurs if infrastructure is disabled and allows repairing it.
+   * This is useful for when combat move is before main purchase phase but want to allow repairing
+   * infrastructure that provides movement bonus or repairs unit HP.
+   */
+  public static boolean isOnlyRepairIfDisabled(final GameData data) {
+    data.acquireReadLock();
+    try {
+      return Boolean.parseBoolean(
+          data.getSequence().getStep().getProperties().getProperty(GameStep.PropertyKeys.ONLY_REPAIR_IF_DISABLED,
+              "false"));
+    } finally {
+      data.releaseReadLock();
+    }
+  }
+
   // private static members for testing default situation based on name of delegate
   private static boolean isNonCombatDelegate(final GameData data) {
     return data.getSequence().getStep().getName().endsWith("NonCombatMove");

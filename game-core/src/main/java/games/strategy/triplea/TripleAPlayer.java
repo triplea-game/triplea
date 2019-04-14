@@ -128,7 +128,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
     boolean badStep = false;
     if (name.endsWith("Tech")) {
       tech();
-    } else if (name.endsWith("Bid") || name.endsWith("Purchase")) { // the delegate handles everything
+    } else if (name.endsWith("Bid") || name.endsWith("Purchase")) {
       purchase(GameStepPropertiesHelper.isBid(getGameData()));
       if (!GameStepPropertiesHelper.isBid(getGameData())) {
         ui.waitForMoveForumPoster(getPlayerId(), getPlayerBridge());
@@ -366,11 +366,16 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
       soundPlayedAlreadyPurchase = true;
     }
     // Check if any factories need to be repaired
+    final GameData data = getGameData();
+    final boolean isOnlyRepairIfDisabled = GameStepPropertiesHelper.isOnlyRepairIfDisabled(data);
     if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null
         && !id.getRepairFrontier().getRules().isEmpty()) {
-      final GameData data = getGameData();
+
       if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) {
-        final Predicate<Unit> myDamaged = Matches.unitIsOwnedBy(id).and(Matches.unitHasTakenSomeBombingUnitDamage());
+        Predicate<Unit> myDamaged = Matches.unitIsOwnedBy(id).and(Matches.unitHasTakenSomeBombingUnitDamage());
+        if (isOnlyRepairIfDisabled) {
+          myDamaged = myDamaged.and(Matches.unitIsDisabled());
+        }
         final Collection<Unit> damagedUnits = new ArrayList<>();
         for (final Territory t : data.getMap().getTerritories()) {
           damagedUnits.addAll(CollectionUtils.getMatches(t.getUnits(), myDamaged));
@@ -398,6 +403,9 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
           }
         }
       }
+    }
+    if (isOnlyRepairIfDisabled) {
+      return;
     }
     final IntegerMap<ProductionRule> prod = ui.getProduction(id, bid);
     if (prod == null) {
