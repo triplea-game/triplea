@@ -102,7 +102,7 @@ public class ProTerritory {
     cantMoveUnits = new ArrayList<>(patd.getCantMoveUnits());
     maxEnemyUnits = new ArrayList<>(patd.getMaxEnemyUnits());
     maxEnemyBombardUnits = new HashSet<>(patd.getMaxEnemyBombardUnits());
-    minBattleResult = patd.getMaxBattleResult();
+    maxBattleResult = patd.getMaxBattleResult();
     canHold = patd.isCanHold();
     canAttack = patd.isCanAttack();
     strengthEstimate = patd.getStrengthEstimate();
