@@ -209,7 +209,7 @@ public class BattleTracker implements Serializable {
   void undoBattle(final Route route, final Collection<Unit> units, final PlayerId player,
       final IDelegateBridge bridge) {
     for (final IBattle battle : new ArrayList<>(pendingBattles)) {
-      if (battle.getTerritory().equals(route.getEnd())) {
+      if (!battle.getTerritory().equals(route.getStart())) {
         battle.removeAttack(route, units);
         if (battle.isEmpty()) {
           removeBattleForUndo(player, battle);
