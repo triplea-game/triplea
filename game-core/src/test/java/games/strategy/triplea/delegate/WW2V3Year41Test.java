@@ -836,6 +836,26 @@ class WW2V3Year41Test {
   }
 
   @Test
+  void testAttackUndoAndBattlesCleared() {
+    final MoveDelegate move = moveDelegate(gameData);
+    final IDelegateBridge bridge = newDelegateBridge(germans(gameData));
+    advanceToStep(bridge, "CombatMove");
+    move.setDelegateBridgeAndPlayer(bridge);
+    move.start();
+    final Territory libya = territory("Libya", gameData);
+    final Territory egypt = territory("Egypt", gameData);
+    final Territory sudan = territory("Anglo-Egypt Sudan", gameData);
+    final Route r = new Route(libya, egypt, sudan);
+    egypt.getUnitCollection().clear();
+    // blitz tank
+    move(libya.getUnitCollection().getMatches(Matches.unitCanBlitz()), r);
+    // undo it
+    move.undoMove(0);
+    // verify both blitz battles were cleared
+    assertEquals(true, AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites().isEmpty());
+  }
+
+  @Test
   void testAttackSubsOnSubs() {
     final String defender = "Germans";
     final String attacker = "British";
