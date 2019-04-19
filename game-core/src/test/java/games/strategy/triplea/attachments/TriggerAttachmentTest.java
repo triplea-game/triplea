@@ -3,6 +3,7 @@ package games.strategy.triplea.attachments;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,11 +22,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.util.Tuple;
 
-import com.google.common.collect.ImmutableSet;
-
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionFrontierList;
@@ -43,7 +41,7 @@ class TriggerAttachmentTest {
   private IDelegateHistoryWriter historyWriter;
 
   @BeforeEach
-  void setUp() throws MutableProperty.InvalidValueException {
+  void setUp() throws Exception {
     final GameData gameData = new GameData();
 
     when(bridge.getData()).thenReturn(gameData);
@@ -52,10 +50,9 @@ class TriggerAttachmentTest {
 
   @Test
   void testTriggerProductionFrontierEditChange() {
-
     final GameData gameData = bridge.getData();
     final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
-    final Set<TriggerAttachment> satisfiedTriggers = ImmutableSet.of(triggerAttachment);
+    final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
     when(triggerAttachment.getProductionRule())
         .thenReturn(Arrays.asList("frontier:rule1", "frontier:-rule2", "frontier:rule3"));
@@ -96,11 +93,10 @@ class TriggerAttachmentTest {
   }
 
   @Test
-  void testTriggerPlayerPropertyChange() throws MutableProperty.InvalidValueException {
-
+  void testTriggerPlayerPropertyChange() throws Exception {
     final GameData gameData = bridge.getData();
     final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
-    final Set<TriggerAttachment> satisfiedTriggers = ImmutableSet.of(triggerAttachment);
+    final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
     when(triggerAttachment.getPropertyMap()).thenCallRealMethod();
     triggerAttachment.getPropertyMap().get("playerAttachmentName").setValue("rulesAttachment:RulesAttachment");
@@ -124,9 +120,6 @@ class TriggerAttachmentTest {
         false, // testUses
         false, // testChance
         false); // testWhen
-    final ArgumentCaptor<CompositeChange> argument = ArgumentCaptor.forClass(CompositeChange.class);
-    verify(bridge).addChange(argument.capture());
-    final CompositeChange change = argument.getValue();
-    assertFalse(change.isEmpty());
+    verify(bridge).addChange(argThat((arg) -> !arg.isEmpty()));
   }
 }

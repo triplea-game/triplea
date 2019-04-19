@@ -18,6 +18,7 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.data.Attachable;
@@ -802,6 +803,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     players = value;
   }
 
+  @VisibleForTesting
   List<PlayerId> getPlayers() {
     return players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerId) getAttachedTo())) : players;
   }
@@ -888,6 +890,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     playerProperty = value;
   }
 
+  @VisibleForTesting
   List<Tuple<String, String>> getPlayerProperty() {
     return playerProperty;
   }
@@ -1413,7 +1416,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       trigs = CollectionUtils.getMatches(trigs, availableUses);
     }
     final CompositeChange change = new CompositeChange();
-    // TODO add other attachment changes here if they attach to a player
     final Map<String, BiFunction<PlayerId, String, DefaultAttachment>> attachmentNameToAttachmentGetter =
         ImmutableMap.<String, BiFunction<PlayerId, String, DefaultAttachment>>builder()
             .put("PlayerAttachment", PlayerAttachment::get)
