@@ -3,6 +3,7 @@ package games.strategy.triplea.attachments;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -22,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.util.Tuple;
 
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -41,7 +43,7 @@ class TriggerAttachmentTest {
   private IDelegateHistoryWriter historyWriter;
 
   @BeforeEach
-  void setUp() throws Exception {
+  void setUp() {
     final GameData gameData = new GameData();
 
     when(bridge.getData()).thenReturn(gameData);
@@ -101,14 +103,14 @@ class TriggerAttachmentTest {
     when(triggerAttachment.getPropertyMap()).thenCallRealMethod();
     triggerAttachment.getPropertyMap().get("playerAttachmentName").setValue("rulesAttachment:RulesAttachment");
     when(triggerAttachment.getPlayerProperty())
-        .thenReturn(Arrays.asList(
+        .thenReturn(Collections.singletonList(
             Tuple.of("productionPerXTerritories", "someNewValue")));
     when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
 
     final PlayerId playerId = mock(PlayerId.class);
     when(playerId.getAttachment("rulesAttachment"))
         .thenReturn(new RulesAttachment(null, null, gameData));
-    when(triggerAttachment.getPlayers()).thenReturn(Arrays.asList(playerId));
+    when(triggerAttachment.getPlayers()).thenReturn(Collections.singletonList(playerId));
 
 
     TriggerAttachment.triggerPlayerPropertyChange(
@@ -120,6 +122,6 @@ class TriggerAttachmentTest {
         false, // testUses
         false, // testChance
         false); // testWhen
-    verify(bridge).addChange(argThat((arg) -> !arg.isEmpty()));
+    verify(bridge).addChange(not(argThat(Change::isEmpty)));
   }
 }
