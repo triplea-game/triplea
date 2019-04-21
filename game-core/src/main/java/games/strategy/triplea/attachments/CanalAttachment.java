@@ -30,6 +30,7 @@ public class CanalAttachment extends DefaultAttachment {
   private String canalName = null;
   private Set<Territory> landTerritories = null;
   private Set<UnitType> excludedUnits = null;
+  private boolean canNotMoveThroughDuringCombatMove = false;
 
   public CanalAttachment(final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
@@ -154,6 +155,14 @@ public class CanalAttachment extends DefaultAttachment {
     excludedUnits = null;
   }
 
+  private void setCanNotMoveThroughDuringCombatMove(final boolean value) {
+    canNotMoveThroughDuringCombatMove = value;
+  }
+
+  public boolean getCanNotMoveThroughDuringCombatMove() {
+    return canNotMoveThroughDuringCombatMove;
+  }
+
   @Override
   public void validate(final GameData data) throws GameParseException {
     if (canalName == null) {
@@ -193,6 +202,12 @@ public class CanalAttachment extends DefaultAttachment {
                 this::setExcludedUnits,
                 this::getExcludedUnits,
                 this::resetExcludedUnits))
+        .put("canNotMoveThroughDuringCombatMove",
+            MutableProperty.ofMapper(
+                DefaultAttachment::getBool,
+                this::setCanNotMoveThroughDuringCombatMove,
+                this::getCanNotMoveThroughDuringCombatMove,
+                () -> false))
         .build();
   }
 }

@@ -1291,7 +1291,7 @@ public class MoveValidator {
     if (unit != null && Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()).test(unit)) {
       return Optional.empty();
     }
-    return checkCanalOwnership(canalAttachment, player, data);
+    return checkCanalStepAndOwnership(canalAttachment, player, data);
   }
 
   private static Optional<String> canAnyPassThroughCanal(final CanalAttachment canalAttachment,
@@ -1299,11 +1299,14 @@ public class MoveValidator {
     if (units.stream().anyMatch(Matches.unitIsOfTypes(canalAttachment.getExcludedUnits()))) {
       return Optional.empty();
     }
-    return checkCanalOwnership(canalAttachment, player, data);
+    return checkCanalStepAndOwnership(canalAttachment, player, data);
   }
 
-  private static Optional<String> checkCanalOwnership(final CanalAttachment canalAttachment,
+  private static Optional<String> checkCanalStepAndOwnership(final CanalAttachment canalAttachment,
       final PlayerId player, final GameData data) {
+    if (GameStepPropertiesHelper.isCombatMove(data) && canalAttachment.getCanNotMoveThroughDuringCombatMove()) {
+      return Optional.of("Can only move through " + canalAttachment.getCanalName() + " during non-combat move");
+    }
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {
       if (!data.getRelationshipTracker().canMoveThroughCanals(player, borderTerritory.getOwner())) {
         return Optional.of("Must control " + canalAttachment.getCanalName() + " to move through");
