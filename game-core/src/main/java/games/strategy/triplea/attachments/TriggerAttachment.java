@@ -1595,12 +1595,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getTerritoryProperty()) {
+        final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
+
         for (final Territory territory : t.getTerritories()) {
           territoriesNeedingReDraw.add(territory);
-
-          final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
-          final boolean clearFirst = clearFirstNewValue.getFirst();
-          final String newValue = clearFirstNewValue.getSecond();
 
           // covers TerritoryAttachment, CanalAttachment
           if (t.getTerritoryAttachmentName().getFirst().equals("TerritoryAttachment")) {
@@ -1610,35 +1608,25 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               // water territories may not have an attachment, so this could be null
               throw new IllegalStateException("Triggers: No territory attachment for:" + territory.getName());
             }
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
-            }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
-            }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getTerritoryAttachmentName().getSecond() + " attached to " + territory.getName());
+
+            getPropertyChangeHistoryStartEvent(
+                t, attachment, property.getFirst(), clearFirstNewValue,
+                t.getTerritoryAttachmentName().getSecond(), territory)
+                    .ifPresent(propertyChangeEvent -> {
+                      change.add(propertyChangeEvent.getFirst());
+                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
+                    });
           } else if (t.getTerritoryAttachmentName().getFirst().equals("CanalAttachment")) {
             final CanalAttachment attachment =
                 CanalAttachment.get(territory, t.getTerritoryAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
-            }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
-            }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getTerritoryAttachmentName().getSecond() + " attached to " + territory.getName());
+
+            getPropertyChangeHistoryStartEvent(
+                t, attachment, property.getFirst(), clearFirstNewValue,
+                t.getTerritoryAttachmentName().getSecond(), territory)
+                    .ifPresent(propertyChangeEvent -> {
+                      change.add(propertyChangeEvent.getFirst());
+                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
+                    });
           }
           // TODO add other attachment changes here if they attach to a territory
         }
