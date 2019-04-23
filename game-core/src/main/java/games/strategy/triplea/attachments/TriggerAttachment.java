@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -29,6 +30,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.MutableProperty;
+import games.strategy.engine.data.Named;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
@@ -66,6 +68,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final long serialVersionUID = -3327739180569606093L;
   private static final String PREFIX_CLEAR = "-clear-";
   private static final String PREFIX_RESET = "-reset-";
+  private static final Map<String,
+      BiFunction<PlayerId, String, DefaultAttachment>> playerPropertyChangeAttachmentNameToAttachmentGetter =
+          ImmutableMap.<String, BiFunction<PlayerId, String, DefaultAttachment>>builder()
+              .put("PlayerAttachment", PlayerAttachment::get)
+              .put("RulesAttachment", RulesAttachment::get)
+              .put("TriggerAttachment", TriggerAttachment::get)
+              .put("TechAttachment", TechAttachment::get)
+              .put("PoliticalActionAttachment", PoliticalActionAttachment::get)
+              .put("UserActionAttachment", UserActionAttachment::get)
+              .build();
 
   private ProductionFrontier frontier = null;
   private List<String> productionRule = null;
@@ -1355,6 +1367,40 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     return Tuple.of(clearFirst, newValue);
   }
 
+  /**
+   * Returns the property change as well as history start event message.
+   *
+   * <p>
+   * No side-effects.
+   * </p>
+   */
+  static Optional<Tuple<Change, String>> getPropertyChangeHistoryStartEvent(
+      final TriggerAttachment triggerAttachment,
+      final DefaultAttachment propertyAttachment, final String propertyName,
+      final Tuple<Boolean, String> clearFirstNewValue,
+      final String propertyAttachmentName, final Named attachedTo) {
+    final boolean clearFirst = clearFirstNewValue.getFirst();
+    final String newValue = clearFirstNewValue.getSecond();
+
+    final boolean isValueTheSame = newValue.equals(propertyAttachment.getRawPropertyString(propertyName));
+
+    if (!isValueTheSame) {
+
+      final Change change = clearFirst && newValue.isEmpty()
+          ? ChangeFactory.attachmentPropertyReset(propertyAttachment, propertyName)
+          : ChangeFactory.attachmentPropertyChange(propertyAttachment, newValue, propertyName, clearFirst);
+
+      final String startEvent =
+          MyFormatter.attachmentNameToText(triggerAttachment.getName()) + ": Setting " + propertyName
+              + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
+              + propertyAttachmentName + " attached to " + attachedTo.getName();
+
+      return Optional.of(Tuple.of(change, startEvent));
+    }
+
+    return Optional.empty();
+  }
+
   // And now for the actual triggers, as called throughout the engine.
   // Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the
   // default location for when 'when' is not used.
@@ -1429,15 +1475,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       trigs = CollectionUtils.getMatches(trigs, availableUses);
     }
     final CompositeChange change = new CompositeChange();
-    final Map<String, BiFunction<PlayerId, String, DefaultAttachment>> attachmentNameToAttachmentGetter =
-        ImmutableMap.<String, BiFunction<PlayerId, String, DefaultAttachment>>builder()
-            .put("PlayerAttachment", PlayerAttachment::get)
-            .put("RulesAttachment", RulesAttachment::get)
-            .put("TriggerAttachment", TriggerAttachment::get)
-            .put("TechAttachment", TechAttachment::get)
-            .put("PoliticalActionAttachment", PoliticalActionAttachment::get)
-            .put("UserActionAttachment", UserActionAttachment::get)
-            .build();
     for (final TriggerAttachment t : trigs) {
       if (testChance && !t.testChance(bridge)) {
         continue;
@@ -1446,30 +1483,24 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getPlayerProperty()) {
+
+        final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
+
         for (final PlayerId player : t.getPlayers()) {
 
-          final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
-          final boolean clearFirst = clearFirstNewValue.getFirst();
-          final String newValue = clearFirstNewValue.getSecond();
-
           final String attachmentName = t.getPlayerAttachmentName().getFirst();
-          if (attachmentNameToAttachmentGetter.containsKey(attachmentName)) {
-            final DefaultAttachment attachment = attachmentNameToAttachmentGetter
+          if (playerPropertyChangeAttachmentNameToAttachmentGetter.containsKey(attachmentName)) {
+            final DefaultAttachment attachment = playerPropertyChangeAttachmentNameToAttachmentGetter
                 .get(attachmentName)
                 .apply(player, t.getPlayerAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
-            }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
-            }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getPlayerAttachmentName().getSecond() + " attached to " + player.getName());
+
+            getPropertyChangeHistoryStartEvent(
+                t, attachment, property.getFirst(), clearFirstNewValue,
+                t.getPlayerAttachmentName().getSecond(), player)
+                    .ifPresent(propertyChangeEvent -> {
+                      change.add(propertyChangeEvent.getFirst());
+                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
+                    });
           }
         }
       }
@@ -1479,7 +1510,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       bridge.addChange(change);
     }
   }
-
 
   /**
    * Triggers all relationship type property changes associated with {@code satisfiedTriggers}. Only relationship type
@@ -1524,9 +1554,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               change.add(
                   ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
             }
-            bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting "
-                + property.getFirst() + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                + t.getRelationshipTypeAttachmentName().getSecond() + " attached to " + relationshipType.getName());
+            bridge.getHistoryWriter()
+                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
+                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
+                    + t.getRelationshipTypeAttachmentName().getSecond() + " attached to " + relationshipType.getName());
           }
           // TODO add other attachment changes here if they attach to a territory
         }

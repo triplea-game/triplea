@@ -13,7 +13,9 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -27,11 +29,13 @@ import org.triplea.util.Tuple;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Named;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionFrontierList;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.ProductionRuleList;
+import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 
@@ -116,7 +120,6 @@ class TriggerAttachmentTest {
           .thenReturn(new RulesAttachment(null, null, gameData));
       when(triggerAttachment.getPlayers()).thenReturn(Collections.singletonList(playerId));
 
-
       TriggerAttachment.triggerPlayerPropertyChange(
           satisfiedTriggers,
           bridge,
@@ -132,7 +135,6 @@ class TriggerAttachmentTest {
 
   @Test
   void testGetClearFirstNewValue() {
-
     {
       final Tuple<Boolean, String> r = TriggerAttachment.getClearFirstNewValue("-clear-");
       assertTrue(r.getFirst());
@@ -155,6 +157,60 @@ class TriggerAttachmentTest {
       final Tuple<Boolean, String> r = TriggerAttachment.getClearFirstNewValue("clearValueWithoutDash");
       assertFalse(r.getFirst());
       assertEquals(r.getSecond(), "clearValueWithoutDash");
+    }
+  }
+
+  @Test
+  void testGetPropertyChangeHistoryStartEvent() {
+    final BiFunction<String, String, Optional<Tuple<Change, String>>> fun =
+        (startValue, newValue) -> {
+
+          final TriggerAttachment triggerAttachment = new TriggerAttachment("aTriggerAName", null, null);
+          final TestAttachment propertyAttachment = new TestAttachment("aTestAName", null, null);
+          propertyAttachment.setValue(startValue);
+          final Named attachedTo = mock(Named.class);
+
+          return TriggerAttachment.getPropertyChangeHistoryStartEvent(
+              triggerAttachment, propertyAttachment,
+              "value", // Property name in 'TestAttachment'. Authentic name: "productionPerXTerritories".
+              Tuple.of(true, newValue),
+              "rulesAttachment", attachedTo);
+        };
+
+    {
+      final Optional<Tuple<Change, String>> r = fun.apply("2:conscript", "4:conscript");
+
+      assertTrue(r.isPresent());
+      assertFalse(r.get().getFirst().isEmpty());
+      assertFalse(r.get().getSecond().isEmpty());
+    }
+
+    {
+      final Optional<Tuple<Change, String>> r = fun.apply("", "4:conscript");
+
+      assertTrue(r.isPresent());
+      assertFalse(r.get().getFirst().isEmpty());
+      assertFalse(r.get().getSecond().isEmpty());
+    }
+
+    {
+      final Optional<Tuple<Change, String>> r = fun.apply("4:conscript", "4:conscript");
+
+      assertFalse(r.isPresent());
+    }
+
+    {
+      final Optional<Tuple<Change, String>> r = fun.apply("4:conscript", "");
+
+      assertTrue(r.isPresent());
+      assertFalse(r.get().getFirst().isEmpty());
+      assertFalse(r.get().getSecond().isEmpty());
+    }
+
+    {
+      final Optional<Tuple<Change, String>> r = fun.apply("", "");
+
+      assertFalse(r.isPresent());
     }
   }
 }
