@@ -165,6 +165,10 @@ class TriggerAttachmentTest {
           false); // testWhen
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
+
+    // TODO: Any existing games using 'triggerTerritoryEffectPropertyChange', to base the test parameters on?
+
+    // TODO: Any existing games using 'triggerUnitPropertyChange', to base the test parameters on?
   }
 
   @Test
