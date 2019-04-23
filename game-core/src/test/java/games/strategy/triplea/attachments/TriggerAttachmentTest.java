@@ -35,6 +35,7 @@ import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionFrontierList;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.ProductionRuleList;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -121,6 +122,39 @@ class TriggerAttachmentTest {
       when(triggerAttachment.getPlayers()).thenReturn(Collections.singletonList(playerId));
 
       TriggerAttachment.triggerPlayerPropertyChange(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    // TODO: Any existing games using 'triggerRelationshipTypePropertyChange', to base the test parameters on?
+
+    @Test
+    void testTriggerTerritoryPropertyChange() throws Exception {
+      final GameData gameData = bridge.getData();
+      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      when(triggerAttachment.getPropertyMap()).thenCallRealMethod();
+      triggerAttachment.getPropertyMap().get("territoryAttachmentName")
+          .setValue("territoryAttachment:TerritoryAttachment");
+      when(triggerAttachment.getTerritoryProperty())
+          .thenReturn(Collections.singletonList(
+              Tuple.of("kamikazeZone", "true")));
+      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
+
+      final Territory territory = mock(Territory.class);
+      when(territory.getAttachment("territoryAttachment"))
+          .thenReturn(new TerritoryAttachment(null, null, gameData));
+      when(triggerAttachment.getTerritories()).thenReturn(Collections.singletonList(territory));
+
+      TriggerAttachment.triggerTerritoryPropertyChange(
           satisfiedTriggers,
           bridge,
           "beforeOrAfter",

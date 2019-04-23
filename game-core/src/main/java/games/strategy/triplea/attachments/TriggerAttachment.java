@@ -722,7 +722,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territories = value;
   }
 
-  private List<Territory> getTerritories() {
+  @VisibleForTesting
+  List<Territory> getTerritories() {
     return territories;
   }
 
@@ -792,7 +793,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territoryProperty = value;
   }
 
-  private List<Tuple<String, String>> getTerritoryProperty() {
+  @VisibleForTesting
+  List<Tuple<String, String>> getTerritoryProperty() {
     return territoryProperty;
   }
 
