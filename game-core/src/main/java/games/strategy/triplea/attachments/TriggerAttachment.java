@@ -1342,6 +1342,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     bridge.addChange(change);
   }
 
+  /**
+   * Test if we are resetting/clearing the variable first, and if so, remove the leading "-reset-" or "-clear-"
+   * from the new value.
+   */
+  public static Tuple<Boolean, String> getClearFirstNewValue(final String preNewValue) {
+    final boolean clearFirst = preNewValue.length() > 0
+        && (preNewValue.startsWith(PREFIX_CLEAR) || preNewValue.startsWith(PREFIX_RESET));
+    final String newValue = clearFirst
+        ? preNewValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "")
+        : preNewValue;
+    return Tuple.of(clearFirst, newValue);
+  }
+
   // And now for the actual triggers, as called throughout the engine.
   // Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the
   // default location for when 'when' is not used.
@@ -1434,13 +1447,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final Tuple<String, String> property : t.getPlayerProperty()) {
         for (final PlayerId player : t.getPlayers()) {
-          String newValue = property.getSecond();
-          boolean clearFirst = false;
-          // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
-          if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
-            newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
-            clearFirst = true;
-          }
+
+          final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
+          final boolean clearFirst = clearFirstNewValue.getFirst();
+          final String newValue = clearFirstNewValue.getSecond();
+
           final String attachmentName = t.getPlayerAttachmentName().getFirst();
           if (attachmentNameToAttachmentGetter.containsKey(attachmentName)) {
             final DefaultAttachment attachment = attachmentNameToAttachmentGetter
@@ -1469,6 +1480,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
   }
 
+
   /**
    * Triggers all relationship type property changes associated with {@code satisfiedTriggers}. Only relationship type
    * property changes associated with the following attachments will be triggered: {@link RelationshipTypeAttachment}.
@@ -1494,13 +1506,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final Tuple<String, String> property : t.getRelationshipTypeProperty()) {
         for (final RelationshipType relationshipType : t.getRelationshipTypes()) {
-          String newValue = property.getSecond();
-          boolean clearFirst = false;
-          // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
-          if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
-            newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
-            clearFirst = true;
-          }
+
+          final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
+          final boolean clearFirst = clearFirstNewValue.getFirst();
+          final String newValue = clearFirstNewValue.getSecond();
+
           // covers RelationshipTypeAttachment
           if (t.getRelationshipTypeAttachmentName().getFirst().equals("RelationshipTypeAttachment")) {
             final RelationshipTypeAttachment attachment =
@@ -1554,13 +1564,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       for (final Tuple<String, String> property : t.getTerritoryProperty()) {
         for (final Territory territory : t.getTerritories()) {
           territoriesNeedingReDraw.add(territory);
-          String newValue = property.getSecond();
-          boolean clearFirst = false;
-          // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
-          if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
-            newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
-            clearFirst = true;
-          }
+
+          final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
+          final boolean clearFirst = clearFirstNewValue.getFirst();
+          final String newValue = clearFirstNewValue.getSecond();
+
           // covers TerritoryAttachment, CanalAttachment
           if (t.getTerritoryAttachmentName().getFirst().equals("TerritoryAttachment")) {
             final TerritoryAttachment attachment =
@@ -1635,13 +1643,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final Tuple<String, String> property : t.getTerritoryEffectProperty()) {
         for (final TerritoryEffect territoryEffect : t.getTerritoryEffects()) {
-          String newValue = property.getSecond();
-          boolean clearFirst = false;
-          // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
-          if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
-            newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
-            clearFirst = true;
-          }
+
+          final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
+          final boolean clearFirst = clearFirstNewValue.getFirst();
+          final String newValue = clearFirstNewValue.getSecond();
+
           // covers TerritoryEffectAttachment
           if (t.getTerritoryEffectAttachmentName().getFirst().equals("TerritoryEffectAttachment")) {
             final TerritoryEffectAttachment attachment =
@@ -1693,13 +1699,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       }
       for (final Tuple<String, String> property : t.getUnitProperty()) {
         for (final UnitType unitType : t.getUnitType()) {
-          String newValue = property.getSecond();
-          boolean clearFirst = false;
-          // test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
-          if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET))) {
-            newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
-            clearFirst = true;
-          }
+
+          final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
+          final boolean clearFirst = clearFirstNewValue.getFirst();
+          final String newValue = clearFirstNewValue.getSecond();
+
           // covers UnitAttachment, UnitSupportAttachment
           if (t.getUnitAttachmentName().getFirst().equals("UnitAttachment")) {
             final UnitAttachment attachment = UnitAttachment.get(unitType, t.getUnitAttachmentName().getSecond());
