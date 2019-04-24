@@ -1304,7 +1304,7 @@ public class MoveValidator {
 
   private static Optional<String> checkCanalStepAndOwnership(final CanalAttachment canalAttachment,
       final PlayerId player, final GameData data) {
-    if (GameStepPropertiesHelper.isCombatMove(data) && canalAttachment.getCanNotMoveThroughDuringCombatMove()) {
+    if (canalAttachment.getCanNotMoveThroughDuringCombatMove() && GameStepPropertiesHelper.isCombatMove(data, true)) {
       return Optional.of("Can only move through " + canalAttachment.getCanalName() + " during non-combat move");
     }
     for (final Territory borderTerritory : canalAttachment.getLandTerritories()) {
