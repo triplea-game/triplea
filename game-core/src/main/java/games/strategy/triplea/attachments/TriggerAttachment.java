@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.collections.CollectionUtils;
@@ -66,8 +67,6 @@ import lombok.extern.java.Log;
 @Log
 public class TriggerAttachment extends AbstractTriggerAttachment {
   private static final long serialVersionUID = -3327739180569606093L;
-  private static final String PREFIX_CLEAR = "-clear-";
-  private static final String PREFIX_RESET = "-reset-";
   private static final Map<String,
       BiFunction<PlayerId, String, DefaultAttachment>> playerPropertyChangeAttachmentNameToAttachmentGetter =
           ImmutableMap.<String, BiFunction<PlayerId, String, DefaultAttachment>>builder()
@@ -78,6 +77,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               .put("PoliticalActionAttachment", PoliticalActionAttachment::get)
               .put("UserActionAttachment", UserActionAttachment::get)
               .build();
+  // Matches prefixes of "-clear-" and "-reset-". Non-capture-group.
+  private static final Pattern clearFirstNewValueRegex = Pattern.compile("^-(:?clear|reset)-");
 
   private ProductionFrontier frontier = null;
   private List<String> productionRule = null;
@@ -1361,11 +1362,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * from the new value.
    */
   public static Tuple<Boolean, String> getClearFirstNewValue(final String preNewValue) {
-    final boolean clearFirst = preNewValue.length() > 0
-        && (preNewValue.startsWith(PREFIX_CLEAR) || preNewValue.startsWith(PREFIX_RESET));
-    final String newValue = clearFirst
-        ? preNewValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "")
-        : preNewValue;
+    // Remove any leading reset/clear-instruction part.
+    final String newValue = clearFirstNewValueRegex.matcher(preNewValue).replaceFirst("");
+    final boolean clearFirst = !newValue.equals(preNewValue);
     return Tuple.of(clearFirst, newValue);
   }
 
@@ -1393,9 +1392,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           : ChangeFactory.attachmentPropertyChange(propertyAttachment, newValue, propertyName, clearFirst);
 
       final String startEvent =
-          MyFormatter.attachmentNameToText(triggerAttachment.getName()) + ": Setting " + propertyName
-              + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-              + propertyAttachmentName + " attached to " + attachedTo.getName();
+          String.format("%s: Setting %s %s for %s attached to %s",
+              MyFormatter.attachmentNameToText(triggerAttachment.getName()),
+              propertyName,
+              (newValue.isEmpty() ? "cleared" : "to " + newValue),
+              propertyAttachmentName,
+              attachedTo.getName());
 
       return Optional.of(Tuple.of(change, startEvent));
     }

@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -27,7 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.util.Tuple;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Named;
 import games.strategy.engine.data.PlayerId;
@@ -89,10 +87,7 @@ class TriggerAttachmentTest {
           false, // testUses
           false, // testChance
           false); // testWhen
-      final ArgumentCaptor<CompositeChange> argument = ArgumentCaptor.forClass(CompositeChange.class);
-      verify(bridge).addChange(argument.capture());
-      final CompositeChange change = argument.getValue();
-      assertFalse(change.isEmpty());
+      verify(bridge).addChange(not(argThat(Change::isEmpty)));
       final ArgumentCaptor<String> ruleAddArgument = ArgumentCaptor.forClass(String.class);
       verify(historyWriter, times(3)).startEvent(ruleAddArgument.capture());
       final List<String> allValues = ruleAddArgument.getAllValues();
@@ -171,82 +166,114 @@ class TriggerAttachmentTest {
     // TODO: Any existing games using 'triggerUnitPropertyChange', to base the test parameters on?
   }
 
-  @Test
-  void testGetClearFirstNewValue() {
-    {
+  @Nested
+  class ClearFirstNewValueTest {
+
+    @Test
+    void testClear() {
       final Tuple<Boolean, String> r = TriggerAttachment.getClearFirstNewValue("-clear-");
       assertTrue(r.getFirst());
       assertTrue(r.getSecond().isEmpty());
     }
 
-    {
+    @Test
+    void testReset() {
       final Tuple<Boolean, String> r = TriggerAttachment.getClearFirstNewValue("-reset-");
       assertTrue(r.getFirst());
       assertTrue(r.getSecond().isEmpty());
     }
 
-    {
+    @Test
+    void testClearAndValue() {
       final Tuple<Boolean, String> r = TriggerAttachment.getClearFirstNewValue("-clear-4:conscript");
       assertTrue(r.getFirst());
       assertEquals(r.getSecond(), "4:conscript");
     }
 
-    {
+    @Test
+    void testNoClear() {
       final Tuple<Boolean, String> r = TriggerAttachment.getClearFirstNewValue("clearValueWithoutDash");
       assertFalse(r.getFirst());
       assertEquals(r.getSecond(), "clearValueWithoutDash");
     }
+
+    @Test
+    void testEmpty() {
+      final Tuple<Boolean, String> r = TriggerAttachment.getClearFirstNewValue("");
+      assertFalse(r.getFirst());
+      assertEquals(r.getSecond(), "");
+    }
+
+    @Test
+    void testInnerClear() {
+      final Tuple<Boolean, String> r = TriggerAttachment.getClearFirstNewValue("clearValue-clear-");
+      assertFalse(r.getFirst());
+      assertEquals(r.getSecond(), "clearValue-clear-");
+    }
+
+    @Test
+    void testInnerReset() {
+      final Tuple<Boolean, String> r = TriggerAttachment.getClearFirstNewValue("clearValue-reset-");
+      assertFalse(r.getFirst());
+      assertEquals(r.getSecond(), "clearValue-reset-");
+    }
   }
 
-  @Test
-  void testGetPropertyChangeHistoryStartEvent() {
-    final BiFunction<String, String, Optional<Tuple<Change, String>>> fun =
-        (startValue, newValue) -> {
+  @Nested
+  class GetPropertyChangeHistoryStartEventTest {
 
-          final TriggerAttachment triggerAttachment = new TriggerAttachment("aTriggerAName", null, null);
-          final TestAttachment propertyAttachment = new TestAttachment("aTestAName", null, null);
-          propertyAttachment.setValue(startValue);
-          final Named attachedTo = mock(Named.class);
+    private Optional<Tuple<Change, String>> applyWithOldNewValue(
+        final String startValue, final String newValue) {
 
-          return TriggerAttachment.getPropertyChangeHistoryStartEvent(
-              triggerAttachment, propertyAttachment,
-              "value", // Property name in 'TestAttachment'. Authentic name: "productionPerXTerritories".
-              Tuple.of(true, newValue),
-              "rulesAttachment", attachedTo);
-        };
+      final TriggerAttachment triggerAttachment = new TriggerAttachment("aTriggerAName", null, null);
+      final TestAttachment propertyAttachment = new TestAttachment("aTestAName", null, null);
+      propertyAttachment.setValue(startValue);
+      final Named attachedTo = mock(Named.class);
 
-    {
-      final Optional<Tuple<Change, String>> r = fun.apply("2:conscript", "4:conscript");
+      return TriggerAttachment.getPropertyChangeHistoryStartEvent(
+          triggerAttachment, propertyAttachment,
+          "value", // Property name in 'TestAttachment'. Authentic name: "productionPerXTerritories".
+          Tuple.of(true, newValue),
+          "rulesAttachment", attachedTo);
+    }
+
+    @Test
+    void testNewValue() {
+      final Optional<Tuple<Change, String>> r = applyWithOldNewValue("2:conscript", "4:conscript");
 
       assertTrue(r.isPresent());
       assertFalse(r.get().getFirst().isEmpty());
       assertFalse(r.get().getSecond().isEmpty());
     }
 
-    {
-      final Optional<Tuple<Change, String>> r = fun.apply("", "4:conscript");
+    @Test
+    void testEmptyToNew() {
+      final Optional<Tuple<Change, String>> r = applyWithOldNewValue("", "4:conscript");
 
       assertTrue(r.isPresent());
       assertFalse(r.get().getFirst().isEmpty());
       assertFalse(r.get().getSecond().isEmpty());
     }
 
-    {
-      final Optional<Tuple<Change, String>> r = fun.apply("4:conscript", "4:conscript");
+    @Test
+    void testSameValue() {
+      final Optional<Tuple<Change, String>> r = applyWithOldNewValue("4:conscript", "4:conscript");
 
       assertFalse(r.isPresent());
     }
 
-    {
-      final Optional<Tuple<Change, String>> r = fun.apply("4:conscript", "");
+    @Test
+    void testOldToEmpty() {
+      final Optional<Tuple<Change, String>> r = applyWithOldNewValue("4:conscript", "");
 
       assertTrue(r.isPresent());
       assertFalse(r.get().getFirst().isEmpty());
       assertFalse(r.get().getSecond().isEmpty());
     }
 
-    {
-      final Optional<Tuple<Change, String>> r = fun.apply("", "");
+    @Test
+    void testEmptyToEmpty() {
+      final Optional<Tuple<Change, String>> r = applyWithOldNewValue("", "");
 
       assertFalse(r.isPresent());
     }
