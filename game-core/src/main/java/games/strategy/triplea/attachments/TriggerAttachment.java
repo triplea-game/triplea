@@ -77,6 +77,13 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
               .put("PoliticalActionAttachment", PoliticalActionAttachment::get)
               .put("UserActionAttachment", UserActionAttachment::get)
               .build();
+  private static final Map<String,
+      BiFunction<UnitType, String, DefaultAttachment>> unitPropertyChangeAttachmentNameToAttachmentGetter =
+          ImmutableMap.<String, BiFunction<UnitType, String, DefaultAttachment>>builder()
+              .put("UnitAttachment", UnitAttachment::get)
+              .put("UnitSupportAttachment", UnitSupportAttachment::get)
+              .build();
+
   // Matches prefixes of "-clear-" and "-reset-". Non-capture-group.
   private static final Pattern clearFirstNewValueRegex = Pattern.compile("^-(:?clear|reset)-");
 
@@ -630,7 +637,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     unitTypes = value;
   }
 
-  private List<UnitType> getUnitType() {
+  @VisibleForTesting
+  List<UnitType> getUnitType() {
     return unitTypes;
   }
 
@@ -700,7 +708,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     unitProperty = value;
   }
 
-  private List<Tuple<String, String>> getUnitProperty() {
+  @VisibleForTesting
+  List<Tuple<String, String>> getUnitProperty() {
     return unitProperty;
   }
 
@@ -1021,7 +1030,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territoryEffects = value;
   }
 
-  private List<TerritoryEffect> getTerritoryEffects() {
+  @VisibleForTesting
+  List<TerritoryEffect> getTerritoryEffects() {
     return territoryEffects;
   }
 
@@ -1090,7 +1100,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territoryEffectProperty = value;
   }
 
-  private List<Tuple<String, String>> getTerritoryEffectProperty() {
+  @VisibleForTesting
+  List<Tuple<String, String>> getTerritoryEffectProperty() {
     return territoryEffectProperty;
   }
 
@@ -1668,26 +1679,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         for (final TerritoryEffect territoryEffect : t.getTerritoryEffects()) {
 
           final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
-          final boolean clearFirst = clearFirstNewValue.getFirst();
-          final String newValue = clearFirstNewValue.getSecond();
 
           // covers TerritoryEffectAttachment
           if (t.getTerritoryEffectAttachmentName().getFirst().equals("TerritoryEffectAttachment")) {
             final TerritoryEffectAttachment attachment =
                 TerritoryEffectAttachment.get(territoryEffect, t.getTerritoryEffectAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
-            }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
-            }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getTerritoryEffectAttachmentName().getSecond() + " attached to " + territoryEffect.getName());
+
+            getPropertyChangeHistoryStartEvent(
+                t, attachment, property.getFirst(), clearFirstNewValue,
+                t.getTerritoryEffectAttachmentName().getSecond(), territoryEffect)
+                    .ifPresent(propertyChangeEvent -> {
+                      change.add(propertyChangeEvent.getFirst());
+                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
+                    });
           }
           // TODO add other attachment changes here if they attach to a territory
         }
@@ -1724,43 +1728,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         for (final UnitType unitType : t.getUnitType()) {
 
           final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
-          final boolean clearFirst = clearFirstNewValue.getFirst();
-          final String newValue = clearFirstNewValue.getSecond();
 
-          // covers UnitAttachment, UnitSupportAttachment
-          if (t.getUnitAttachmentName().getFirst().equals("UnitAttachment")) {
-            final UnitAttachment attachment = UnitAttachment.get(unitType, t.getUnitAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
-            }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
-            }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getUnitAttachmentName().getSecond() + " attached to " + unitType.getName());
-          } else if (t.getUnitAttachmentName().getFirst().equals("UnitSupportAttachment")) {
-            final UnitSupportAttachment attachment =
-                UnitSupportAttachment.get(unitType, t.getUnitAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
-            }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
-            }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getUnitAttachmentName().getSecond() + " attached to " + unitType.getName());
+          final String attachmentName = t.getUnitAttachmentName().getFirst();
+          if (unitPropertyChangeAttachmentNameToAttachmentGetter.containsKey(attachmentName)) {
+            final DefaultAttachment attachment = unitPropertyChangeAttachmentNameToAttachmentGetter
+                .get(attachmentName)
+                .apply(unitType, t.getUnitAttachmentName().getSecond());
+
+            getPropertyChangeHistoryStartEvent(
+                t, attachment, property.getFirst(), clearFirstNewValue,
+                t.getUnitAttachmentName().getSecond(), unitType)
+                    .ifPresent(propertyChangeEvent -> {
+                      change.add(propertyChangeEvent.getFirst());
+                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
+                    });
           }
-          // TODO add other attachment changes here if they attach to a unitType
         }
       }
     }

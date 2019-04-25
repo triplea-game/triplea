@@ -34,7 +34,9 @@ import games.strategy.engine.data.ProductionFrontierList;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.ProductionRuleList;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.TestAttachment;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 
@@ -161,9 +163,67 @@ class TriggerAttachmentTest {
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
-    // TODO: Any existing games using 'triggerTerritoryEffectPropertyChange', to base the test parameters on?
+    @Test
+    void testTriggerTerritoryEffectPropertyChange() throws Exception {
+      final GameData gameData = bridge.getData();
+      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
-    // TODO: Any existing games using 'triggerUnitPropertyChange', to base the test parameters on?
+      when(triggerAttachment.getPropertyMap()).thenCallRealMethod();
+      triggerAttachment.getPropertyMap().get("territoryEffectAttachmentName")
+          .setValue("territoryEffectAttachment:TerritoryEffectAttachment");
+      when(triggerAttachment.getTerritoryEffectProperty())
+          .thenReturn(Collections.singletonList(
+              Tuple.of("unitsNotAllowed", "conscript:veteran:champion")));
+      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
+
+      final TerritoryEffect territoryEffect = mock(TerritoryEffect.class);
+      when(territoryEffect.getAttachment("territoryEffectAttachment"))
+          .thenReturn(new TerritoryEffectAttachment(null, null, gameData));
+      when(triggerAttachment.getTerritoryEffects()).thenReturn(Collections.singletonList(territoryEffect));
+
+      TriggerAttachment.triggerTerritoryEffectPropertyChange(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    @Test
+    void testTriggerUnitPropertyChange() throws Exception {
+      final GameData gameData = bridge.getData();
+      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      when(triggerAttachment.getPropertyMap()).thenCallRealMethod();
+      triggerAttachment.getPropertyMap().get("unitAttachmentName")
+          .setValue("unitAttachment:UnitAttachment");
+      when(triggerAttachment.getUnitProperty())
+          .thenReturn(Collections.singletonList(
+              Tuple.of("movement", "4")));
+      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
+
+      final UnitType unitType = mock(UnitType.class);
+      when(unitType.getAttachment("unitAttachment"))
+          .thenReturn(new UnitAttachment(null, null, gameData));
+      when(triggerAttachment.getUnitType()).thenReturn(Collections.singletonList(unitType));
+
+      TriggerAttachment.triggerUnitPropertyChange(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge).addChange(not(argThat(Change::isEmpty)));
+    }
   }
 
   @Nested
