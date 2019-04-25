@@ -938,7 +938,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     relationshipTypes = value;
   }
 
-  private List<RelationshipType> getRelationshipTypes() {
+  @VisibleForTesting
+  List<RelationshipType> getRelationshipTypes() {
     return relationshipTypes;
   }
 
@@ -1007,7 +1008,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     relationshipTypeProperty = value;
   }
 
-  private List<Tuple<String, String>> getRelationshipTypeProperty() {
+  @VisibleForTesting
+  List<Tuple<String, String>> getRelationshipTypeProperty() {
     return relationshipTypeProperty;
   }
 
@@ -1498,7 +1500,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getPlayerProperty()) {
-
         final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
 
         for (final PlayerId player : t.getPlayers()) {
@@ -1550,29 +1551,22 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getRelationshipTypeProperty()) {
-        for (final RelationshipType relationshipType : t.getRelationshipTypes()) {
+        final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
 
-          final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
-          final boolean clearFirst = clearFirstNewValue.getFirst();
-          final String newValue = clearFirstNewValue.getSecond();
+        for (final RelationshipType relationshipType : t.getRelationshipTypes()) {
 
           // covers RelationshipTypeAttachment
           if (t.getRelationshipTypeAttachmentName().getFirst().equals("RelationshipTypeAttachment")) {
             final RelationshipTypeAttachment attachment =
                 RelationshipTypeAttachment.get(relationshipType, t.getRelationshipTypeAttachmentName().getSecond());
-            if (newValue.equals(attachment.getRawPropertyString(property.getFirst()))) {
-              continue;
-            }
-            if (clearFirst && newValue.length() < 1) {
-              change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst()));
-            } else {
-              change.add(
-                  ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), clearFirst));
-            }
-            bridge.getHistoryWriter()
-                .startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst()
-                    + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
-                    + t.getRelationshipTypeAttachmentName().getSecond() + " attached to " + relationshipType.getName());
+
+            getPropertyChangeHistoryStartEvent(
+                t, attachment, property.getFirst(), clearFirstNewValue,
+                t.getRelationshipTypeAttachmentName().getSecond(), relationshipType)
+                    .ifPresent(propertyChangeEvent -> {
+                      change.add(propertyChangeEvent.getFirst());
+                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
+                    });
           }
           // TODO add other attachment changes here if they attach to a territory
         }
@@ -1676,9 +1670,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getTerritoryEffectProperty()) {
-        for (final TerritoryEffect territoryEffect : t.getTerritoryEffects()) {
+        final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
 
-          final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
+        for (final TerritoryEffect territoryEffect : t.getTerritoryEffects()) {
 
           // covers TerritoryEffectAttachment
           if (t.getTerritoryEffectAttachmentName().getFirst().equals("TerritoryEffectAttachment")) {
@@ -1725,9 +1719,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getUnitProperty()) {
-        for (final UnitType unitType : t.getUnitType()) {
+        final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
 
-          final Tuple<Boolean, String> clearFirstNewValue = getClearFirstNewValue(property.getSecond());
+        for (final UnitType unitType : t.getUnitType()) {
 
           final String attachmentName = t.getUnitAttachmentName().getFirst();
           if (unitPropertyChangeAttachmentNameToAttachmentGetter.containsKey(attachmentName)) {

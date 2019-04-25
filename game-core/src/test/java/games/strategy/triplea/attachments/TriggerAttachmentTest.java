@@ -33,6 +33,7 @@ import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionFrontierList;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.ProductionRuleList;
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.TestAttachment;
@@ -130,7 +131,36 @@ class TriggerAttachmentTest {
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
-    // TODO: Any existing games using 'triggerRelationshipTypePropertyChange', to base the test parameters on?
+    @Test
+    void testTriggerRelationshipTypePropertyChange() throws Exception {
+      final GameData gameData = bridge.getData();
+      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      when(triggerAttachment.getPropertyMap()).thenCallRealMethod();
+      triggerAttachment.getPropertyMap().get("relationshipTypeAttachmentName")
+          .setValue("relationshipTypeAttachment:RelationshipTypeAttachment");
+      when(triggerAttachment.getRelationshipTypeProperty())
+          .thenReturn(Collections.singletonList(
+              Tuple.of("canMoveLandUnitsOverOwnedLand", "true")));
+      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
+
+      final RelationshipType relationshipType = mock(RelationshipType.class);
+      when(relationshipType.getAttachment("relationshipTypeAttachment"))
+          .thenReturn(new RelationshipTypeAttachment(null, null, gameData));
+      when(triggerAttachment.getRelationshipTypes()).thenReturn(Collections.singletonList(relationshipType));
+
+      TriggerAttachment.triggerRelationshipTypePropertyChange(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge).addChange(not(argThat(Change::isEmpty)));
+    }
 
     @Test
     void testTriggerTerritoryPropertyChange() throws Exception {
