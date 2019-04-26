@@ -11,8 +11,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.triplea.java.ObjectUtils;
@@ -1375,9 +1377,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * from the new value.
    */
   public static Tuple<Boolean, String> getClearFirstNewValue(final String preNewValue) {
+    final Matcher matcher = clearFirstNewValueRegex.matcher(preNewValue);
+    final boolean clearFirst = matcher.lookingAt();
     // Remove any leading reset/clear-instruction part.
-    final String newValue = clearFirstNewValueRegex.matcher(preNewValue).replaceFirst("");
-    final boolean clearFirst = !newValue.equals(preNewValue);
+    final String newValue = matcher.replaceFirst("");
     return Tuple.of(clearFirst, newValue);
   }
 
@@ -1388,6 +1391,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * No side-effects.
    * </p>
    */
+  @VisibleForTesting
   static Optional<Tuple<Change, String>> getPropertyChangeHistoryStartEvent(
       final TriggerAttachment triggerAttachment,
       final DefaultAttachment propertyAttachment, final String propertyName,
@@ -1416,6 +1420,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     }
 
     return Optional.empty();
+  }
+
+  private static Consumer<Tuple<Change, String>> appendChangeWriteEvent(
+      final IDelegateBridge bridge, final CompositeChange compositeChange) {
+    return propertyChangeEvent -> {
+      compositeChange.add(propertyChangeEvent.getFirst());
+      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
+    };
   }
 
   // And now for the actual triggers, as called throughout the engine.
@@ -1513,10 +1525,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             getPropertyChangeHistoryStartEvent(
                 t, attachment, property.getFirst(), clearFirstNewValue,
                 t.getPlayerAttachmentName().getSecond(), player)
-                    .ifPresent(propertyChangeEvent -> {
-                      change.add(propertyChangeEvent.getFirst());
-                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
-                    });
+                    .ifPresent(appendChangeWriteEvent(bridge, change));
           }
         }
       }
@@ -1563,10 +1572,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             getPropertyChangeHistoryStartEvent(
                 t, attachment, property.getFirst(), clearFirstNewValue,
                 t.getRelationshipTypeAttachmentName().getSecond(), relationshipType)
-                    .ifPresent(propertyChangeEvent -> {
-                      change.add(propertyChangeEvent.getFirst());
-                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
-                    });
+                    .ifPresent(appendChangeWriteEvent(bridge, change));
           }
           // TODO add other attachment changes here if they attach to a territory
         }
@@ -1619,10 +1625,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             getPropertyChangeHistoryStartEvent(
                 t, attachment, property.getFirst(), clearFirstNewValue,
                 t.getTerritoryAttachmentName().getSecond(), territory)
-                    .ifPresent(propertyChangeEvent -> {
-                      change.add(propertyChangeEvent.getFirst());
-                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
-                    });
+                    .ifPresent(appendChangeWriteEvent(bridge, change));
           } else if (t.getTerritoryAttachmentName().getFirst().equals("CanalAttachment")) {
             final CanalAttachment attachment =
                 CanalAttachment.get(territory, t.getTerritoryAttachmentName().getSecond());
@@ -1630,10 +1633,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             getPropertyChangeHistoryStartEvent(
                 t, attachment, property.getFirst(), clearFirstNewValue,
                 t.getTerritoryAttachmentName().getSecond(), territory)
-                    .ifPresent(propertyChangeEvent -> {
-                      change.add(propertyChangeEvent.getFirst());
-                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
-                    });
+                    .ifPresent(appendChangeWriteEvent(bridge, change));
           }
           // TODO add other attachment changes here if they attach to a territory
         }
@@ -1682,10 +1682,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             getPropertyChangeHistoryStartEvent(
                 t, attachment, property.getFirst(), clearFirstNewValue,
                 t.getTerritoryEffectAttachmentName().getSecond(), territoryEffect)
-                    .ifPresent(propertyChangeEvent -> {
-                      change.add(propertyChangeEvent.getFirst());
-                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
-                    });
+                    .ifPresent(appendChangeWriteEvent(bridge, change));
           }
           // TODO add other attachment changes here if they attach to a territory
         }
@@ -1732,10 +1729,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             getPropertyChangeHistoryStartEvent(
                 t, attachment, property.getFirst(), clearFirstNewValue,
                 t.getUnitAttachmentName().getSecond(), unitType)
-                    .ifPresent(propertyChangeEvent -> {
-                      change.add(propertyChangeEvent.getFirst());
-                      bridge.getHistoryWriter().startEvent(propertyChangeEvent.getSecond());
-                    });
+                    .ifPresent(appendChangeWriteEvent(bridge, change));
           }
         }
       }
