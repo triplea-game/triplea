@@ -581,27 +581,15 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // remove casualties
     steps.add(REMOVE_CASUALTIES);
-    // retreat subs
-    if (battleSite.isWater()) {
+    // retreat attacking subs
+    if (attackingUnits.stream().anyMatch(Matches.unitIsSub())) {
       if (canSubsSubmerge()) {
         if (!isSubRetreatBeforeBattle()) {
-          if (attackingUnits.stream().anyMatch(Matches.unitIsSub())) {
-            steps.add(attacker.getName() + SUBS_SUBMERGE);
-          }
-          if (defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
-            steps.add(defender.getName() + SUBS_SUBMERGE);
-          }
+          steps.add(attacker.getName() + SUBS_SUBMERGE);
         }
       } else {
         if (canAttackerRetreatSubs()) {
-          if (attackingUnits.stream().anyMatch(Matches.unitIsSub())) {
-            steps.add(attacker.getName() + SUBS_WITHDRAW);
-          }
-        }
-        if (canDefenderRetreatSubs()) {
-          if (defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
-            steps.add(defender.getName() + SUBS_WITHDRAW);
-          }
+          steps.add(attacker.getName() + SUBS_WITHDRAW);
         }
       }
     }
@@ -614,6 +602,18 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final boolean someAirAtSea = battleSite.isWater() && attackingUnits.stream().anyMatch(Matches.unitIsAir());
     if (canAttackerRetreat() || someAirAtSea || canAttackerRetreatPartialAmphib() || canAttackerRetreatPlanes()) {
       steps.add(attacker.getName() + ATTACKER_WITHDRAW);
+    }
+    // retreat defending subs
+    if (defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
+      if (canSubsSubmerge()) {
+        if (!isSubRetreatBeforeBattle()) {
+          steps.add(defender.getName() + SUBS_SUBMERGE);
+        }
+      } else {
+        if (canDefenderRetreatSubs()) {
+          steps.add(defender.getName() + SUBS_WITHDRAW);
+        }
+      }
     }
     return steps;
   }
@@ -825,24 +825,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
     });
     steps.add(new IExecutable() {
-      private static final long serialVersionUID = -1544916305666912480L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        if (!isOver) {
-          if (canDefenderRetreatSubs() && !isSubRetreatBeforeBattle()) {
-            defenderRetreatSubs(bridge);
-          }
-          // If no defenders left, then battle is over. The reason we test a "second" time here, is because otherwise
-          // the attackers can retreat even though the battle is over (illegal).
-          if (defendingUnits.isEmpty()) {
-            endBattle(bridge);
-            attackerWins(bridge);
-          }
-        }
-      }
-    });
-    steps.add(new IExecutable() {
       private static final long serialVersionUID = -1150863964807721395L;
 
       @Override
@@ -869,6 +851,24 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
         if (!isOver) {
           attackerRetreat(bridge);
+        }
+      }
+    });
+    steps.add(new IExecutable() {
+      private static final long serialVersionUID = -1544916305666912480L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        if (!isOver) {
+          if (canDefenderRetreatSubs() && !isSubRetreatBeforeBattle()) {
+            defenderRetreatSubs(bridge);
+          }
+          // If no defenders left, then battle is over. The reason we test a "second" time here, is because otherwise
+          // the attackers can retreat even though the battle is over (illegal).
+          if (defendingUnits.isEmpty()) {
+            endBattle(bridge);
+            attackerWins(bridge);
+          }
         }
       }
     });
