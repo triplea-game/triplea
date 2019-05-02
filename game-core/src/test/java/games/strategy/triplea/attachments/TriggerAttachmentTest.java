@@ -54,6 +54,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.BattleTracker;
+import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.ui.display.ITripleADisplay;
@@ -748,6 +749,39 @@ class TriggerAttachmentTest {
           false, // testChance
           false); // testWhen
       verify(bridge, times(2)).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    @Test
+    void testTriggerVictory() throws Exception {
+      final GameData gameData = bridge.getData();
+
+      final PlayerId player = new PlayerId("somePlayer", gameData);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", player, gameData);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      final String notificationMessageKey = "IndomitableCenterVictory";
+      final String notificationMessage = "<body><h2>Victory!<br>The Indomitable Center Has Conquered!</h2>...</body>";
+      triggerAttachment.getPropertyMap().get("victory").setValue(notificationMessageKey);
+
+      final EndRoundDelegate endRoundDelegate = mock(EndRoundDelegate.class);
+      when(endRoundDelegate.getName()).thenReturn("endRound");
+      gameData.addDelegate(endRoundDelegate);
+
+      final NotificationMessages notificationMessages = mock(NotificationMessages.class);
+      when(notificationMessages.getMessage(notificationMessageKey)).thenReturn(notificationMessage);
+
+      TriggerAttachment.triggerVictory(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false, // testWhen
+          notificationMessages);
+      verify(endRoundDelegate).signalGameOver(any(), any(), any());
     }
   }
 

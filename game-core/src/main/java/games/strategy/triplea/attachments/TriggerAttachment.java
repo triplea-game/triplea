@@ -1445,7 +1445,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
     // TODO: This check is currently (2019-04-28) needed due to another test failing otherwise, namely
     // MustFightBattleTest, reg. property files. That may or may not indicate a bug and/or other.
-    if (satisfiedTriggers.stream().anyMatch(t -> t.getNotification() != null)) {
+    if (satisfiedTriggers.stream().anyMatch(t -> notificationMatch().test(t))) {
       triggerNotifications(
           satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
           NotificationMessages.getInstance());
@@ -2326,6 +2326,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   public static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
+
+    // TODO: This check is currently (2019-05-01) needed due to other tests failing reg. property files.
+    // That may or may not indicate a bug and/or other.
+    if (satisfiedTriggers.stream().anyMatch(t -> victoryMatch().test(t))) {
+      triggerVictory(
+          satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
+          NotificationMessages.getInstance());
+    }
+  }
+
+  @VisibleForTesting
+  static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
+      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
+      final boolean testChance, final boolean testWhen,
+      final NotificationMessages notificationMessages) {
     final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = CollectionUtils.getMatches(satisfiedTriggers, victoryMatch());
     if (testWhen) {
@@ -2344,8 +2359,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (t.getVictory() == null || t.getPlayers() == null) {
         continue;
       }
-      final String victoryMessage = NotificationMessages.getInstance().getMessage(t.getVictory().trim());
-      final String sounds = NotificationMessages.getInstance().getSoundsKey(t.getVictory().trim());
+      final String victoryMessage = notificationMessages.getMessage(t.getVictory().trim());
+      final String sounds = notificationMessages.getSoundsKey(t.getVictory().trim());
       if (victoryMessage != null) {
         if (sounds != null) { // only play the sound if we are also notifying everyone
           bridge.getSoundChannelBroadcaster().playSoundToPlayers(
