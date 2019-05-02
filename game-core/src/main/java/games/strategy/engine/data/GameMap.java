@@ -68,7 +68,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
         .noneMatch(i -> coordinate[i] >= gridDimensions[i] || coordinate[i] < 0);
   }
 
-  // TODO: Adding a lot of 'VisibleForTesting'. Is this a good idea?
   @VisibleForTesting
   public void addTerritory(final Territory t1) {
     if (territories.contains(t1)) {

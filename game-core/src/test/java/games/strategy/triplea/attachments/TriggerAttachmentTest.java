@@ -485,8 +485,6 @@ class TriggerAttachmentTest {
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
-    // TODO: Too little/much usage of mocking in the various added unit tests? Poor usage of mocking?
-
     @Test
     void testTriggerChangeOwnership() throws Exception {
       final GameData gameData = bridge.getData();
@@ -622,8 +620,6 @@ class TriggerAttachmentTest {
           false); // testWhen
       verify(bridge, times(3)).addChange(not(argThat(Change::isEmpty)));
     }
-
-    // TODO: Refactor and maybe update some of the test methods.
 
     @Test
     void testTriggerUnitPlacement() throws Exception {

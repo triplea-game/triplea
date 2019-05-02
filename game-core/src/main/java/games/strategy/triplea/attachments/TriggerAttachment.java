@@ -616,8 +616,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     relationshipChange = value;
   }
 
-  @VisibleForTesting
-  List<String> getRelationshipChange() {
+  private List<String> getRelationshipChange() {
     return relationshipChange;
   }
 
@@ -640,8 +639,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     unitTypes = value;
   }
 
-  @VisibleForTesting
-  List<UnitType> getUnitType() {
+  private List<UnitType> getUnitType() {
     return unitTypes;
   }
 
@@ -711,8 +709,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     unitProperty = value;
   }
 
-  @VisibleForTesting
-  List<Tuple<String, String>> getUnitProperty() {
+  private List<Tuple<String, String>> getUnitProperty() {
     return unitProperty;
   }
 
@@ -735,8 +732,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territories = value;
   }
 
-  @VisibleForTesting
-  List<Territory> getTerritories() {
+  private List<Territory> getTerritories() {
     return territories;
   }
 
@@ -806,8 +802,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territoryProperty = value;
   }
 
-  @VisibleForTesting
-  List<Tuple<String, String>> getTerritoryProperty() {
+  private List<Tuple<String, String>> getTerritoryProperty() {
     return territoryProperty;
   }
 
@@ -916,8 +911,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     playerProperty = value;
   }
 
-  @VisibleForTesting
-  List<Tuple<String, String>> getPlayerProperty() {
+  private List<Tuple<String, String>> getPlayerProperty() {
     return playerProperty;
   }
 
@@ -940,8 +934,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     relationshipTypes = value;
   }
 
-  @VisibleForTesting
-  List<RelationshipType> getRelationshipTypes() {
+  private List<RelationshipType> getRelationshipTypes() {
     return relationshipTypes;
   }
 
@@ -1010,8 +1003,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     relationshipTypeProperty = value;
   }
 
-  @VisibleForTesting
-  List<Tuple<String, String>> getRelationshipTypeProperty() {
+  private List<Tuple<String, String>> getRelationshipTypeProperty() {
     return relationshipTypeProperty;
   }
 
@@ -1034,8 +1026,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territoryEffects = value;
   }
 
-  @VisibleForTesting
-  List<TerritoryEffect> getTerritoryEffects() {
+  private List<TerritoryEffect> getTerritoryEffects() {
     return territoryEffects;
   }
 
@@ -1104,8 +1095,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territoryEffectProperty = value;
   }
 
-  @VisibleForTesting
-  List<Tuple<String, String>> getTerritoryEffectProperty() {
+  private List<Tuple<String, String>> getTerritoryEffectProperty() {
     return territoryEffectProperty;
   }
 
