@@ -42,6 +42,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.ProductionRuleList;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -667,6 +668,32 @@ class TriggerAttachmentTest {
           false, // testChance
           false); // testWhen
       verify(bridge, times(3)).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    @Test
+    void testTriggerResourceChange() throws Exception {
+      final GameData gameData = bridge.getData();
+
+      final PlayerId player = new PlayerId("somePlayer", gameData);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", player, gameData);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      gameData.getResourceList().addResource(new Resource(Constants.PUS, gameData));
+
+      triggerAttachment.getPropertyMap().get("resource").setValue(Constants.PUS);
+      triggerAttachment.getPropertyMap().get("resourceCount").setValue("23");
+
+      TriggerAttachment.triggerResourceChange(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge, times(1)).addChange(not(argThat(Change::isEmpty)));
     }
   }
 

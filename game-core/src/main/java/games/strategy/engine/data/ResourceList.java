@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
  * A collection of {@link Resource}s keyed on the resource name.
  */
@@ -17,7 +19,8 @@ public class ResourceList extends GameDataComponent {
     super(data);
   }
 
-  protected void addResource(final Resource resource) {
+  @VisibleForTesting
+  public void addResource(final Resource resource) {
     resources.put(resource.getName(), resource);
   }
 
