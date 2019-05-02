@@ -695,6 +695,60 @@ class TriggerAttachmentTest {
           false); // testWhen
       verify(bridge, times(1)).addChange(not(argThat(Change::isEmpty)));
     }
+
+    @Test
+    void testTriggerActivateTriggerOther() throws Exception {
+      final GameData gameData = bridge.getData();
+
+      // Background mocking, please ignore.
+      {
+        final BattleDelegate battleDelegate = mock(BattleDelegate.class);
+        when(battleDelegate.getName()).thenReturn("battle");
+        gameData.addDelegate(battleDelegate);
+        final BattleTracker battleTracker = mock(BattleTracker.class);
+        when(battleDelegate.getBattleTracker()).thenReturn(battleTracker);
+      }
+
+      // The trigger to be fired is for tech: trigger option "tech", method "triggerTechChange()".
+      final TriggerAttachment triggerToBeFiredTriggerAttachment;
+      {
+        final PlayerId playerId = new PlayerId("somePlayer", gameData);
+        gameData.getPlayerList().addPlayerId(playerId);
+
+        triggerToBeFiredTriggerAttachment =
+            new TriggerAttachment("triggerToBeFired", playerId, gameData);
+        playerId.addAttachment("somekey", triggerToBeFiredTriggerAttachment);
+
+        final TechnologyFrontier gameTechnologyFrontier = gameData.getTechnologyFrontier();
+        gameTechnologyFrontier.addAdvance(
+            TechAdvance.findDefinedAdvanceAndCreateAdvance("longRangeAir", gameData));
+        gameTechnologyFrontier.addAdvance(
+            TechAdvance.findDefinedAdvanceAndCreateAdvance("jetPower", gameData));
+        gameTechnologyFrontier.addAdvance(
+            TechAdvance.findDefinedAdvanceAndCreateAdvance("heavyBomber", gameData));
+
+        triggerToBeFiredTriggerAttachment.getPropertyMap().get("tech").setValue("longRangeAir:heavyBomber");
+      }
+
+      final TriggerAttachment activateTriggerTriggerAttachment =
+          new TriggerAttachment("activateTrigger", null, gameData);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(activateTriggerTriggerAttachment);
+
+      activateTriggerTriggerAttachment.getPropertyMap().get("activateTrigger").setValue(
+          String.format("%s:1:false:false:false:false", triggerToBeFiredTriggerAttachment.getName()));
+
+      TriggerAttachment.triggerActivateTriggerOther(
+          Collections.emptyMap(),
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge, times(2)).addChange(not(argThat(Change::isEmpty)));
+    }
   }
 
   @Nested
