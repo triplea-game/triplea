@@ -11,7 +11,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -88,24 +87,23 @@ class TriggerAttachmentTest {
     }
 
     @Test
-    void testTriggerNotifications() {
-      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+    void testTriggerNotifications() throws Exception {
+      final GameData gameData = bridge.getData();
+      final TriggerAttachment triggerAttachment = new TriggerAttachment(
+          "triggerAttachment", new PlayerId("somePlayerName", gameData), gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
       final String notificationMessageKey = "BlackIce";
       final String notificationMessage =
           "<body><h2>The Land of Black Ice</h2>Whether out of duty, ...<br>never heard from again.</body>";
 
-      when(triggerAttachment.getNotification()).thenReturn(notificationMessageKey);
-      final PlayerId playerId = mock(PlayerId.class);
-      when(playerId.getName()).thenReturn("somePlayerName");
-      when(triggerAttachment.getPlayers()).thenReturn(Collections.singletonList(playerId));
-
       final ITripleADisplay display = mock(ITripleADisplay.class);
       when(bridge.getDisplayChannelBroadcaster()).thenReturn(display);
 
       final NotificationMessages notificationMessages = mock(NotificationMessages.class);
       when(notificationMessages.getMessage(notificationMessageKey)).thenReturn(notificationMessage);
+
+      triggerAttachment.getPropertyMap().get("notification").setValue(notificationMessageKey);
 
       TriggerAttachment.triggerNotifications(
           satisfiedTriggers,
@@ -126,14 +124,11 @@ class TriggerAttachmentTest {
 
     // TODO: Should this be moved down so as to fit with the order of definition of methods in TriggerAttachment?
     @Test
-    void testTriggerProductionFrontierEditChange() {
+    void testTriggerProductionFrontierEditChange() throws Exception {
       final GameData gameData = bridge.getData();
-      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
-
-      when(triggerAttachment.getProductionRule())
-          .thenReturn(Arrays.asList("frontier:rule1", "frontier:-rule2", "frontier:rule3"));
-      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
 
       final ProductionRuleList productionRuleList = gameData.getProductionRuleList();
       productionRuleList.addProductionRule(new ProductionRule("rule1", gameData));
@@ -145,6 +140,12 @@ class TriggerAttachmentTest {
       productionFrontierList
           .addProductionFrontier(
               new ProductionFrontier("frontier", gameData, Collections.singletonList(productionRule2)));
+
+      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
+      final MutableProperty<?> productionRuleProperty = propertyMap.get("productionRule");
+      productionRuleProperty.setValue("frontier:rule1");
+      productionRuleProperty.setValue("frontier:-rule2");
+      productionRuleProperty.setValue("frontier:rule3");
 
       TriggerAttachment.triggerProductionFrontierEditChange(
           satisfiedTriggers,
@@ -169,20 +170,19 @@ class TriggerAttachmentTest {
     @Test
     void testTriggerPlayerPropertyChange() throws Exception {
       final GameData gameData = bridge.getData();
-      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
-      when(triggerAttachment.getPropertyMap()).thenCallRealMethod();
-      triggerAttachment.getPropertyMap().get("playerAttachmentName").setValue("rulesAttachment:RulesAttachment");
-      when(triggerAttachment.getPlayerProperty())
-          .thenReturn(Collections.singletonList(
-              Tuple.of("productionPerXTerritories", "someNewValue")));
-      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
+      final PlayerId playerId = new PlayerId("somePlayer", gameData);
+      playerId.addAttachment("rulesAttachment", new RulesAttachment(null, null, gameData));
+      gameData.getPlayerList().addPlayerId(playerId);
 
-      final PlayerId playerId = mock(PlayerId.class);
-      when(playerId.getAttachment("rulesAttachment"))
-          .thenReturn(new RulesAttachment(null, null, gameData));
-      when(triggerAttachment.getPlayers()).thenReturn(Collections.singletonList(playerId));
+      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
+      propertyMap.get("playerAttachmentName").setValue("rulesAttachment:RulesAttachment");
+      // NOTE: The 'count' part is prepended in the game parser.
+      propertyMap.get("playerProperty").setValue("someNewValue:productionPerXTerritories");
+      propertyMap.get("players").setValue("somePlayer");
 
       TriggerAttachment.triggerPlayerPropertyChange(
           satisfiedTriggers,
@@ -199,21 +199,21 @@ class TriggerAttachmentTest {
     @Test
     void testTriggerRelationshipTypePropertyChange() throws Exception {
       final GameData gameData = bridge.getData();
-      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
-      when(triggerAttachment.getPropertyMap()).thenCallRealMethod();
-      triggerAttachment.getPropertyMap().get("relationshipTypeAttachmentName")
-          .setValue("relationshipTypeAttachment:RelationshipTypeAttachment");
-      when(triggerAttachment.getRelationshipTypeProperty())
-          .thenReturn(Collections.singletonList(
-              Tuple.of("canMoveLandUnitsOverOwnedLand", "true")));
-      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
+      final RelationshipType relationshipType = new RelationshipType("someRelationshipType", gameData);
+      relationshipType.addAttachment("relationshipTypeAttachment",
+          new RelationshipTypeAttachment(null, null, gameData));
+      gameData.getRelationshipTypeList().addRelationshipType(relationshipType);
 
-      final RelationshipType relationshipType = mock(RelationshipType.class);
-      when(relationshipType.getAttachment("relationshipTypeAttachment"))
-          .thenReturn(new RelationshipTypeAttachment(null, null, gameData));
-      when(triggerAttachment.getRelationshipTypes()).thenReturn(Collections.singletonList(relationshipType));
+      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
+      propertyMap.get("relationshipTypeAttachmentName")
+          .setValue("relationshipTypeAttachment:RelationshipTypeAttachment");
+      // NOTE: The 'count' part is prepended in the game parser.
+      propertyMap.get("relationshipTypeProperty").setValue("true:canMoveLandUnitsOverOwnedLand");
+      propertyMap.get("relationshipTypes").setValue("someRelationshipType");
 
       TriggerAttachment.triggerRelationshipTypePropertyChange(
           satisfiedTriggers,
@@ -230,21 +230,20 @@ class TriggerAttachmentTest {
     @Test
     void testTriggerTerritoryPropertyChange() throws Exception {
       final GameData gameData = bridge.getData();
-      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
-      when(triggerAttachment.getPropertyMap()).thenCallRealMethod();
-      triggerAttachment.getPropertyMap().get("territoryAttachmentName")
-          .setValue("territoryAttachment:TerritoryAttachment");
-      when(triggerAttachment.getTerritoryProperty())
-          .thenReturn(Collections.singletonList(
-              Tuple.of("kamikazeZone", "true")));
-      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
+      final String territoryName = "Sea Zone 9";
+      final Territory territory = new Territory(territoryName, gameData);
+      territory.addAttachment("territoryAttachment", new TerritoryAttachment(null, null, gameData));
+      gameData.getMap().addTerritory(territory);
 
-      final Territory territory = mock(Territory.class);
-      when(territory.getAttachment("territoryAttachment"))
-          .thenReturn(new TerritoryAttachment(null, null, gameData));
-      when(triggerAttachment.getTerritories()).thenReturn(Collections.singletonList(territory));
+      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
+      propertyMap.get("territoryAttachmentName").setValue("territoryAttachment:TerritoryAttachment");
+      // NOTE: The 'count' part is prepended in the game parser.
+      propertyMap.get("territoryProperty").setValue("true:kamikazeZone");
+      propertyMap.get("territories").setValue(territoryName);
 
       TriggerAttachment.triggerTerritoryPropertyChange(
           satisfiedTriggers,
@@ -261,21 +260,21 @@ class TriggerAttachmentTest {
     @Test
     void testTriggerTerritoryEffectPropertyChange() throws Exception {
       final GameData gameData = bridge.getData();
-      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
-      when(triggerAttachment.getPropertyMap()).thenCallRealMethod();
-      triggerAttachment.getPropertyMap().get("territoryEffectAttachmentName")
-          .setValue("territoryEffectAttachment:TerritoryEffectAttachment");
-      when(triggerAttachment.getTerritoryEffectProperty())
-          .thenReturn(Collections.singletonList(
-              Tuple.of("unitsNotAllowed", "conscript:veteran:champion")));
-      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
+      final String territoryEffectName = "someTerritoryEffect";
+      final TerritoryEffect territoryEffect = new TerritoryEffect(territoryEffectName, gameData);
+      territoryEffect.addAttachment(
+          "territoryEffectAttachment", new TerritoryEffectAttachment(null, null, gameData));
+      gameData.getTerritoryEffectList().put(territoryEffectName, territoryEffect);
 
-      final TerritoryEffect territoryEffect = mock(TerritoryEffect.class);
-      when(territoryEffect.getAttachment("territoryEffectAttachment"))
-          .thenReturn(new TerritoryEffectAttachment(null, null, gameData));
-      when(triggerAttachment.getTerritoryEffects()).thenReturn(Collections.singletonList(territoryEffect));
+      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
+      propertyMap.get("territoryEffectAttachmentName").setValue("territoryEffectAttachment:TerritoryEffectAttachment");
+      // NOTE: The 'count' part is prepended in the game parser.
+      propertyMap.get("territoryEffectProperty").setValue("conscript:veteran:champion:unitsNotAllowed");
+      propertyMap.get("territoryEffects").setValue("someTerritoryEffect");
 
       TriggerAttachment.triggerTerritoryEffectPropertyChange(
           satisfiedTriggers,

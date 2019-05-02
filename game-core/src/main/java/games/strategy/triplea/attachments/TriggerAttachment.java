@@ -830,8 +830,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     players = value;
   }
 
-  @VisibleForTesting
-  List<PlayerId> getPlayers() {
+  private List<PlayerId> getPlayers() {
     return players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerId) getAttachedTo())) : players;
   }
 
