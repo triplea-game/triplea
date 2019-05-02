@@ -528,6 +528,37 @@ class TriggerAttachmentTest {
           false); // testWhen
       verify(bridge, times(2)).addChange(not(argThat(Change::isEmpty)));
     }
+
+    @Test
+    void testTriggerPurchase() throws Exception {
+      final GameData gameData = bridge.getData();
+
+      final PlayerId playerId = new PlayerId("somePlayer", gameData);
+
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", playerId, gameData);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      gameData.getUnitTypeList().addUnitType(new UnitType("brigantine", gameData));
+      gameData.getUnitTypeList().addUnitType(new UnitType("sellsword", gameData));
+      gameData.getUnitTypeList().addUnitType(new UnitType("skirmisher", gameData));
+
+      final MutableProperty<?> purchase = triggerAttachment.getPropertyMap().get("purchase");
+      // NOTE: The 'count' part is prepended in the game parser.
+      purchase.setValue("1:brigantine");
+      purchase.setValue("2:sellsword:skirmisher");
+
+      TriggerAttachment.triggerPurchase(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge).addChange(not(argThat(Change::isEmpty)));
+    }
   }
 
   @Nested
