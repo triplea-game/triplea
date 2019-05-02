@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -608,6 +609,55 @@ class TriggerAttachmentTest {
       removeUnits.setValue("5:all:sellsword");
 
       TriggerAttachment.triggerUnitRemoval(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge, times(3)).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    // TODO: Refactor and maybe update some of the test methods.
+
+    @Test
+    void testTriggerUnitPlacement() throws Exception {
+      final GameData gameData = bridge.getData();
+
+      final PlayerId player = new PlayerId("somePlayer", gameData);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", player, gameData);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      final Consumer<String> addUnitType = unitType -> {
+        final UnitType unitTypeConscript = new UnitType(unitType, gameData);
+        gameData.getUnitTypeList().addUnitType(unitTypeConscript);
+        unitTypeConscript.addAttachment(
+            Constants.UNIT_ATTACHMENT_NAME, new UnitAttachment("somename", null, gameData));
+      };
+      addUnitType.accept("conscript");
+      addUnitType.accept("sellsword");
+
+      final GameMap gameMap = gameData.getMap();
+      final Consumer<String> addTerritory = (territoryName) -> {
+        final Territory territory = new Territory(territoryName, gameData);
+        territory.addAttachment(
+            Constants.TERRITORY_ATTACHMENT_NAME,
+            new TerritoryAttachment(null, null, null));
+        gameMap.addTerritory(territory);
+      };
+      addTerritory.accept("Corusk Pass");
+      addTerritory.accept("Hraak Pass");
+      addTerritory.accept("Soull Pass");
+
+      final MutableProperty<?> placement = triggerAttachment.getPropertyMap().get("placement");
+      placement.setValue("3:Corusk Pass:conscript");
+      placement.setValue("2:Hraak Pass:conscript:sellsword");
+      placement.setValue("Soull Pass:sellsword");
+
+      TriggerAttachment.triggerUnitPlacement(
           satisfiedTriggers,
           bridge,
           "beforeOrAfter",
