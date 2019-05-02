@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -42,6 +43,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.ProductionRuleList;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.RelationshipTypeList;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
@@ -61,6 +63,13 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 
 @ExtendWith(MockitoExtension.class)
 class TriggerAttachmentTest {
+
+  private static BattleDelegate mockAddBattleDelegate(final GameData gameData) {
+    final BattleDelegate battleDelegate = mock(BattleDelegate.class);
+    when(battleDelegate.getName()).thenReturn("battle");
+    gameData.addDelegate(battleDelegate);
+    return battleDelegate;
+  }
 
   @Nested
   class TriggerFireTest {
@@ -283,21 +292,18 @@ class TriggerAttachmentTest {
     @Test
     void testTriggerUnitPropertyChange() throws Exception {
       final GameData gameData = bridge.getData();
-      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final TriggerAttachment triggerAttachment = new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
-      when(triggerAttachment.getPropertyMap()).thenCallRealMethod();
-      triggerAttachment.getPropertyMap().get("unitAttachmentName")
-          .setValue("unitAttachment:UnitAttachment");
-      when(triggerAttachment.getUnitProperty())
-          .thenReturn(Collections.singletonList(
-              Tuple.of("movement", "4")));
-      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
+      final UnitType unitType = new UnitType("someUnit", gameData);
+      gameData.getUnitTypeList().addUnitType(unitType);
+      unitType.addAttachment("unitAttachment", new UnitAttachment(null, null, gameData));
 
-      final UnitType unitType = mock(UnitType.class);
-      when(unitType.getAttachment("unitAttachment"))
-          .thenReturn(new UnitAttachment(null, null, gameData));
-      when(triggerAttachment.getUnitType()).thenReturn(Collections.singletonList(unitType));
+      final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
+      propertyMap.get("unitAttachmentName").setValue("unitAttachment:UnitAttachment");
+      // NOTE: The 'count' part is prepended in the game parser.
+      propertyMap.get("unitProperty").setValue("4:movement");
+      propertyMap.get("unitType").setValue("someUnit");
 
       TriggerAttachment.triggerUnitPropertyChange(
           satisfiedTriggers,
@@ -312,14 +318,11 @@ class TriggerAttachmentTest {
     }
 
     @Test
-    void testTriggerRelationshipChange() {
+    void testTriggerRelationshipChange() throws Exception {
       final GameData gameData = bridge.getData();
-      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
-
-      when(triggerAttachment.getRelationshipChange())
-          .thenReturn(Collections.singletonList("Keoland:Furyondy:any:allied"));
-      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
 
       final PlayerId playerKeoland = new PlayerId("Keoland", gameData);
       final PlayerId playerFuryondy = new PlayerId("Furyondy", gameData);
@@ -330,17 +333,18 @@ class TriggerAttachmentTest {
           new RelationshipType(Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL, gameData);
       final RelationshipType newRelationshipType =
           new RelationshipType(Constants.RELATIONSHIP_ARCHETYPE_ALLIED, gameData);
-      gameData.getRelationshipTypeList().addRelationshipType(existingRelationshipType);
-      gameData.getRelationshipTypeList().addRelationshipType(newRelationshipType);
+      final RelationshipTypeList relationshipTypeList = gameData.getRelationshipTypeList();
+      relationshipTypeList.addRelationshipType(existingRelationshipType);
+      relationshipTypeList.addRelationshipType(newRelationshipType);
 
       final RelationshipTracker relationshipTracker = gameData.getRelationshipTracker();
       relationshipTracker.setRelationship(playerKeoland, playerFuryondy, existingRelationshipType);
 
-      final BattleDelegate battleDelegate = mock(BattleDelegate.class);
-      when(battleDelegate.getName()).thenReturn("battle");
-      gameData.addDelegate(battleDelegate);
+      final BattleDelegate battleDelegate = mockAddBattleDelegate(gameData);
       final BattleTracker battleTracker = mock(BattleTracker.class);
       when(battleDelegate.getBattleTracker()).thenReturn(battleTracker);
+
+      triggerAttachment.getPropertyMap().get("relationshipChange").setValue("Keoland:Furyondy:any:allied");
 
       TriggerAttachment.triggerRelationshipChange(
           satisfiedTriggers,
@@ -487,9 +491,7 @@ class TriggerAttachmentTest {
     @Test
     void testTriggerChangeOwnership() throws Exception {
       final GameData gameData = bridge.getData();
-      final BattleDelegate battleDelegate = mock(BattleDelegate.class);
-      when(battleDelegate.getName()).thenReturn("battle");
-      gameData.addDelegate(battleDelegate);
+      mockAddBattleDelegate(gameData);
 
       final TriggerAttachment triggerAttachment =
           new TriggerAttachment("triggerAttachment", null, gameData);
@@ -701,14 +703,7 @@ class TriggerAttachmentTest {
     void testTriggerActivateTriggerOther() throws Exception {
       final GameData gameData = bridge.getData();
 
-      // Background mocking, please ignore.
-      {
-        final BattleDelegate battleDelegate = mock(BattleDelegate.class);
-        when(battleDelegate.getName()).thenReturn("battle");
-        gameData.addDelegate(battleDelegate);
-        final BattleTracker battleTracker = mock(BattleTracker.class);
-        when(battleDelegate.getBattleTracker()).thenReturn(battleTracker);
-      }
+      mockAddBattleDelegate(gameData);
 
       // The trigger to be fired is for tech: trigger option "tech", method "triggerTechChange()".
       final TriggerAttachment triggerToBeFiredTriggerAttachment;
