@@ -1170,8 +1170,9 @@ public final class GameParser {
         parseAttachment(current, variables, Collections.emptyMap());
       } else {
         final List<String> nestedForeach = Splitter.on("^").splitToList(foreach);
-        if (nestedForeach.size() > 2) {
-          throw newGameParseException("Currently only supports using one '^' for nested foreach: " + foreach);
+        if (nestedForeach.isEmpty() || nestedForeach.size() > 2) {
+          throw newGameParseException(
+              "Invalid foreach expression, can only use variables, ':', and at most 1 '^': " + foreach);
         }
         final List<String> foreachVariables1 = Splitter.on(":").splitToList(nestedForeach.get(0));
         final List<String> foreachVariables2 =
