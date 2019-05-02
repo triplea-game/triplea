@@ -616,7 +616,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     relationshipChange = value;
   }
 
-  private List<String> getRelationshipChange() {
+  @VisibleForTesting
+  List<String> getRelationshipChange() {
     return relationshipChange;
   }
 

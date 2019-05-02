@@ -35,6 +35,7 @@ import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionFrontierList;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.ProductionRuleList;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -42,6 +43,9 @@ import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.BattleDelegate;
+import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 
@@ -285,6 +289,49 @@ class TriggerAttachmentTest {
       when(triggerAttachment.getUnitType()).thenReturn(Collections.singletonList(unitType));
 
       TriggerAttachment.triggerUnitPropertyChange(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    @Test
+    void testTriggerRelationshipChange() {
+      final GameData gameData = bridge.getData();
+      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      when(triggerAttachment.getRelationshipChange())
+          .thenReturn(Collections.singletonList("Keoland:Furyondy:any:allied"));
+      when(triggerAttachment.getName()).thenReturn("mockedTriggerAttachment");
+
+      final PlayerId playerKeoland = new PlayerId("Keoland", gameData);
+      final PlayerId playerFuryondy = new PlayerId("Furyondy", gameData);
+      gameData.getPlayerList().addPlayerId(playerKeoland);
+      gameData.getPlayerList().addPlayerId(playerFuryondy);
+
+      final RelationshipType existingRelationshipType =
+          new RelationshipType(Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL, gameData);
+      final RelationshipType newRelationshipType =
+          new RelationshipType(Constants.RELATIONSHIP_ARCHETYPE_ALLIED, gameData);
+      gameData.getRelationshipTypeList().addRelationshipType(existingRelationshipType);
+      gameData.getRelationshipTypeList().addRelationshipType(newRelationshipType);
+
+      final RelationshipTracker relationshipTracker = gameData.getRelationshipTracker();
+      relationshipTracker.setRelationship(playerKeoland, playerFuryondy, existingRelationshipType);
+
+      final BattleDelegate battleDelegate = mock(BattleDelegate.class);
+      when(battleDelegate.getName()).thenReturn("battle");
+      gameData.addDelegate(battleDelegate);
+      final BattleTracker battleTracker = mock(BattleTracker.class);
+      when(battleDelegate.getBattleTracker()).thenReturn(battleTracker);
+
+      TriggerAttachment.triggerRelationshipChange(
           satisfiedTriggers,
           bridge,
           "beforeOrAfter",
