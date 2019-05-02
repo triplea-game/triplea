@@ -1169,24 +1169,59 @@ public final class GameParser {
       if (foreach.isEmpty()) {
         parseAttachment(current, variables, Collections.emptyMap());
       } else {
-        final List<String> foreachVariables = Splitter.on(":").splitToList(foreach);
-        if (!variables.keySet().containsAll(foreachVariables)) {
-          throw newGameParseException("Attachment has invalid variables in foreach: " + foreach);
+        final List<String> nestedForeach = Splitter.on("^").splitToList(foreach);
+        if (nestedForeach.isEmpty() || nestedForeach.size() > 2) {
+          throw newGameParseException(
+              "Invalid foreach expression, can only use variables, ':', and at most 1 '^': " + foreach);
         }
-        final int length = variables.get(foreachVariables.get(0)).size();
-        for (int i = 0; i < length; i++) {
-          final Map<String, String> foreachMap = new HashMap<>();
-          for (final String foreachVariable : foreachVariables) {
-            final List<String> foreachValue = variables.get(foreachVariable);
-            if (length != foreachValue.size()) {
-              throw newGameParseException("Attachment foreach variables must have same number of elements: " + foreach);
+        final List<String> foreachVariables1 = Splitter.on(":").splitToList(nestedForeach.get(0));
+        final List<String> foreachVariables2 =
+            nestedForeach.size() == 2 ? Splitter.on(":").splitToList(nestedForeach.get(1)) : Collections.emptyList();
+        validateForeachVariables(foreachVariables1, variables, foreach);
+        validateForeachVariables(foreachVariables2, variables, foreach);
+        final int length1 = variables.get(foreachVariables1.get(0)).size();
+        for (int i = 0; i < length1; i++) {
+          final Map<String, String> foreachMap1 = createForeachVariablesMap(foreachVariables1, i, variables);
+          if (foreachVariables2.isEmpty()) {
+            parseAttachment(current, variables, foreachMap1);
+          } else {
+            final int length2 = variables.get(foreachVariables2.get(0)).size();
+            for (int j = 0; j < length2; j++) {
+              final Map<String, String> foreachMap2 = createForeachVariablesMap(foreachVariables2, j, variables);
+              foreachMap2.putAll(foreachMap1);
+              parseAttachment(current, variables, foreachMap2);
             }
-            foreachMap.put("@" + foreachVariable.replace("$", "") + "@", foreachValue.get(i));
           }
-          parseAttachment(current, variables, foreachMap);
         }
       }
     }
+  }
+
+  private void validateForeachVariables(final List<String> foreachVariables, final Map<String, List<String>> variables,
+      final String foreach) throws GameParseException {
+    if (foreachVariables.isEmpty()) {
+      return;
+    }
+    if (!variables.keySet().containsAll(foreachVariables)) {
+      throw newGameParseException("Attachment has invalid variables in foreach: " + foreach);
+    }
+    final int length = variables.get(foreachVariables.get(0)).size();
+    for (final String foreachVariable : foreachVariables) {
+      final List<String> foreachValue = variables.get(foreachVariable);
+      if (length != foreachValue.size()) {
+        throw newGameParseException("Attachment foreach variables must have same number of elements: " + foreach);
+      }
+    }
+  }
+
+  private static Map<String, String> createForeachVariablesMap(final List<String> foreachVariables,
+      final int currentIndex, final Map<String, List<String>> variables) {
+    final Map<String, String> foreachMap = new HashMap<>();
+    for (final String foreachVariable : foreachVariables) {
+      final List<String> foreachValue = variables.get(foreachVariable);
+      foreachMap.put("@" + foreachVariable.replace("$", "") + "@", foreachValue.get(currentIndex));
+    }
+    return foreachMap;
   }
 
   private void parseAttachment(final Element current, final Map<String, List<String>> variables,
