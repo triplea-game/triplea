@@ -1441,6 +1441,22 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
+
+    // TODO: This check is currently (2019-04-28) needed due to another test failing otherwise, namely
+    // MustFightBattleTest, reg. property files. That may or may not indicate a bug and/or other.
+    if (satisfiedTriggers.stream().anyMatch(t -> t.getNotification() != null)) {
+      triggerNotifications(
+          satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
+          NotificationMessages.getInstance());
+    }
+  }
+
+  @VisibleForTesting
+  static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
+      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
+      final boolean testChance, final boolean testWhen,
+      final NotificationMessages notificationMessages) {
+
     final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = CollectionUtils.getMatches(satisfiedTriggers, notificationMatch());
     if (testWhen) {
@@ -1460,14 +1476,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (!notifications.contains(t.getNotification())) {
         notifications.add(t.getNotification());
         final String notificationMessageKey = t.getNotification().trim();
-        final String sounds = NotificationMessages.getInstance().getSoundsKey(notificationMessageKey);
+        final String sounds = notificationMessages.getSoundsKey(notificationMessageKey);
         if (sounds != null) {
           // play to observers if we are playing to everyone
           bridge.getSoundChannelBroadcaster().playSoundToPlayers(
               SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND + sounds.trim(), t.getPlayers(), null,
               t.getPlayers().containsAll(data.getPlayerList().getPlayers()));
         }
-        final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
+        final String message = notificationMessages.getMessage(notificationMessageKey);
         if (message != null) {
           String messageForRecord = message.trim();
           if (messageForRecord.length() > 190) {

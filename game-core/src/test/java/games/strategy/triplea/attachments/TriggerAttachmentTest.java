@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.AdditionalMatchers.not;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -40,12 +42,14 @@ import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
+import games.strategy.triplea.ui.NotificationMessages;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 
 @ExtendWith(MockitoExtension.class)
 class TriggerAttachmentTest {
 
   @Nested
-  class TriggerChangeTest {
+  class TriggerFireTest {
 
     @Mock
     private IDelegateBridge bridge;
@@ -58,6 +62,43 @@ class TriggerAttachmentTest {
 
       when(bridge.getData()).thenReturn(gameData);
       when(bridge.getHistoryWriter()).thenReturn(historyWriter);
+    }
+
+    @Test
+    void testTriggerNotifications() {
+      final TriggerAttachment triggerAttachment = mock(TriggerAttachment.class);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      final String notificationMessageKey = "BlackIce";
+      final String notificationMessage =
+          "<body><h2>The Land of Black Ice</h2>Whether out of duty, ...<br>never heard from again.</body>";
+
+      when(triggerAttachment.getNotification()).thenReturn(notificationMessageKey);
+      final PlayerId playerId = mock(PlayerId.class);
+      when(playerId.getName()).thenReturn("somePlayerName");
+      when(triggerAttachment.getPlayers()).thenReturn(Collections.singletonList(playerId));
+
+      final ITripleADisplay display = mock(ITripleADisplay.class);
+      when(bridge.getDisplayChannelBroadcaster()).thenReturn(display);
+
+      final NotificationMessages notificationMessages = mock(NotificationMessages.class);
+      when(notificationMessages.getMessage(notificationMessageKey)).thenReturn(notificationMessage);
+
+      TriggerAttachment.triggerNotifications(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false, // testWhen
+          notificationMessages);
+      verify(display).reportMessageToPlayers(
+          not(argThat(Collection::isEmpty)), // Players.
+          any(),
+          argThat(htmlMessage -> htmlMessage.contains(notificationMessage)),
+          any());
     }
 
     @Test
