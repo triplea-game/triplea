@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -44,6 +45,7 @@ import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.TestAttachment;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
@@ -558,6 +560,63 @@ class TriggerAttachmentTest {
           false, // testChance
           false); // testWhen
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    @Test
+    void testTriggerUnitRemoval() throws Exception {
+      final GameData gameData = bridge.getData();
+
+      final PlayerId player = new PlayerId("somePlayer", gameData);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", player, gameData);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      final GameMap gameMap = gameData.getMap();
+      final Function<String, Territory> addTerritory = (territoryName) -> {
+        final Territory territory = new Territory(territoryName, gameData);
+        territory.addAttachment(
+            Constants.TERRITORY_ATTACHMENT_NAME,
+            new TerritoryAttachment(null, null, null));
+        gameMap.addTerritory(territory);
+        return territory;
+      };
+      final Territory territoryCorusk = addTerritory.apply("Corusk Pass");
+      final Territory territoryHraak = addTerritory.apply("Hraak Pass");
+      final Territory territorySoull = addTerritory.apply("Soull Pass");
+
+      final UnitType unitTypeConscript = new UnitType("conscript", gameData);
+      gameData.getUnitTypeList().addUnitType(unitTypeConscript);
+      final UnitType unitTypeSellsword = new UnitType("sellsword", gameData);
+      gameData.getUnitTypeList().addUnitType(unitTypeSellsword);
+
+      final BiConsumer<Territory, UnitType> addUnit =
+          (territory, unitType) -> territory.getUnitCollection().add(new Unit(unitType, player, gameData));
+
+      addUnit.accept(territoryCorusk, unitTypeConscript);
+      addUnit.accept(territoryCorusk, unitTypeConscript);
+
+      addUnit.accept(territoryHraak, unitTypeConscript);
+
+      addUnit.accept(territorySoull, unitTypeSellsword);
+      addUnit.accept(territorySoull, unitTypeSellsword);
+      addUnit.accept(territorySoull, unitTypeConscript);
+
+      final MutableProperty<?> removeUnits = triggerAttachment.getPropertyMap().get("removeUnits");
+      // NOTE: The 'count' part is prepended in the game parser.
+      removeUnits.setValue("5:Corusk Pass:all");
+      removeUnits.setValue("5:Hraak Pass:conscript");
+      removeUnits.setValue("5:all:sellsword");
+
+      TriggerAttachment.triggerUnitRemoval(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge, times(3)).addChange(not(argThat(Change::isEmpty)));
     }
   }
 
