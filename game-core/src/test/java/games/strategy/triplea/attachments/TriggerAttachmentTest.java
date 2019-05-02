@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -29,6 +30,8 @@ import org.triplea.util.Tuple;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
+import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Named;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionFrontier;
@@ -472,6 +475,58 @@ class TriggerAttachmentTest {
           false, // testChance
           false); // testWhen
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    // TODO: Too little/much usage of mocking in the various added unit tests? Poor usage of mocking?
+
+    @Test
+    void testTriggerChangeOwnership() throws Exception {
+      final GameData gameData = bridge.getData();
+      final BattleDelegate battleDelegate = mock(BattleDelegate.class);
+      when(battleDelegate.getName()).thenReturn("battle");
+      gameData.addDelegate(battleDelegate);
+
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", null, gameData);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      final PlayerId playerChina = new PlayerId("China", gameData);
+      final PlayerId playerRussia = new PlayerId("Russia", gameData);
+      final PlayerId playerBritain = new PlayerId("Britain", gameData);
+      gameData.getPlayerList().addPlayerId(playerChina);
+      gameData.getPlayerList().addPlayerId(playerRussia);
+      gameData.getPlayerList().addPlayerId(playerBritain);
+
+      final GameMap gameMap = gameData.getMap();
+      final BiConsumer<PlayerId, String> addTerritory = (player, territoryName) -> {
+        final Territory territory = new Territory(territoryName, gameData);
+        territory.addAttachment(
+            Constants.TERRITORY_ATTACHMENT_NAME,
+            new TerritoryAttachment(null, null, null));
+        territory.setOwner(player);
+        gameMap.addTerritory(territory);
+      };
+      addTerritory.accept(playerChina, "Altay");
+      addTerritory.accept(playerChina, "Archangel");
+      addTerritory.accept(playerRussia, "Eastern Szechwan");
+
+      // NOTE: Currently not testing "booleanCaptured?" option nor the BattleDelegate part reg. capturing
+      // (ie. the boolean part last in "Altay:China:Russia:false" is always set to false in this test).
+      final MutableProperty<?> changeOwnership = triggerAttachment.getPropertyMap().get("changeOwnership");
+      changeOwnership.setValue("Altay:China:Russia:false");
+      changeOwnership.setValue("Archangel:Russia:Britain:false"); // Belonging to non-Russia, so should not match.
+      changeOwnership.setValue("Eastern Szechwan:any:China:false");
+
+      TriggerAttachment.triggerChangeOwnership(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge, times(2)).addChange(not(argThat(Change::isEmpty)));
     }
   }
 
