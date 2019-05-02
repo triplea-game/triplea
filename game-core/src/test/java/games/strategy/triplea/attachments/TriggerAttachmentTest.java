@@ -37,6 +37,7 @@ import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.ProductionRuleList;
 import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.TestAttachment;
@@ -46,6 +47,7 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.BattleTracker;
+import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 
@@ -105,6 +107,7 @@ class TriggerAttachmentTest {
           any());
     }
 
+    // TODO: Should this be moved down so as to fit with the order of definition of methods in TriggerAttachment?
     @Test
     void testTriggerProductionFrontierEditChange() {
       final GameData gameData = bridge.getData();
@@ -332,6 +335,134 @@ class TriggerAttachmentTest {
       when(battleDelegate.getBattleTracker()).thenReturn(battleTracker);
 
       TriggerAttachment.triggerRelationshipChange(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    @Test
+    void testTriggerAvailableTechChange() throws Exception {
+      final GameData gameData = bridge.getData();
+
+      final PlayerId playerId = new PlayerId("somePlayer", gameData);
+      playerId.getTechnologyFrontierList().addTechnologyFrontier(new TechnologyFrontier("airCategory", gameData));
+
+      final TriggerAttachment triggerAttachment = new TriggerAttachment("triggerAttachment", playerId, gameData);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      final TechnologyFrontier gameTechnologyFrontier = gameData.getTechnologyFrontier();
+      gameTechnologyFrontier.addAdvance(
+          TechAdvance.findDefinedAdvanceAndCreateAdvance("longRangeAir", gameData));
+      gameTechnologyFrontier.addAdvance(
+          TechAdvance.findDefinedAdvanceAndCreateAdvance("jetPower", gameData));
+      gameTechnologyFrontier.addAdvance(
+          TechAdvance.findDefinedAdvanceAndCreateAdvance("heavyBomber", gameData));
+
+      triggerAttachment.getPropertyMap().get("availableTech")
+          .setValue("airCategory:longRangeAir:jetPower:heavyBomber");
+
+      TriggerAttachment.triggerAvailableTechChange(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge, times(3)).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    @Test
+    void testTriggerTechChange() throws Exception {
+      final GameData gameData = bridge.getData();
+
+      final PlayerId playerId = new PlayerId("somePlayer", gameData);
+
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", playerId, gameData);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      final TechnologyFrontier gameTechnologyFrontier = gameData.getTechnologyFrontier();
+      gameTechnologyFrontier.addAdvance(
+          TechAdvance.findDefinedAdvanceAndCreateAdvance("longRangeAir", gameData));
+      gameTechnologyFrontier.addAdvance(
+          TechAdvance.findDefinedAdvanceAndCreateAdvance("jetPower", gameData));
+      gameTechnologyFrontier.addAdvance(
+          TechAdvance.findDefinedAdvanceAndCreateAdvance("heavyBomber", gameData));
+
+      triggerAttachment.getPropertyMap().get("tech").setValue("longRangeAir:heavyBomber");
+
+      TriggerAttachment.triggerTechChange(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge, times(2)).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    @Test
+    void testTriggerProductionChange() throws Exception {
+      final GameData gameData = bridge.getData();
+
+      final ProductionFrontier startingFrontier = new ProductionFrontier("production", gameData);
+      final ProductionFrontier newFrontier =
+          new ProductionFrontier("Americans_Super_Carrier_production", gameData);
+
+      gameData.getProductionFrontierList().addProductionFrontier(startingFrontier);
+      gameData.getProductionFrontierList().addProductionFrontier(newFrontier);
+
+      final PlayerId playerId = new PlayerId("somePlayer", gameData);
+      playerId.setProductionFrontier(startingFrontier);
+
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", playerId, gameData);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      triggerAttachment.getPropertyMap().get("frontier").setValue("Americans_Super_Carrier_production");
+
+      TriggerAttachment.triggerProductionChange(
+          satisfiedTriggers,
+          bridge,
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+      verify(bridge).addChange(not(argThat(Change::isEmpty)));
+    }
+
+    @Test
+    void testTriggerSupportChange() throws Exception {
+      final GameData gameData = bridge.getData();
+
+      final UnitType battleshipUnitType = new UnitType("battleship", gameData);
+      battleshipUnitType.addAttachment(
+          "something",
+          new UnitSupportAttachment("supportAttachmentBattlefleet_Support", null, gameData));
+      gameData.getUnitTypeList().addUnitType(battleshipUnitType);
+
+      final PlayerId playerId = new PlayerId("somePlayer", gameData);
+
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", playerId, gameData);
+      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
+
+      triggerAttachment.getPropertyMap().get("support")
+          .setValue("supportAttachmentBattlefleet_Support");
+
+      TriggerAttachment.triggerSupportChange(
           satisfiedTriggers,
           bridge,
           "beforeOrAfter",

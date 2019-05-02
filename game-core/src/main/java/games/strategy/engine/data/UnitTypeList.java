@@ -7,6 +7,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
  * A collection of unit types.
  */
@@ -19,7 +21,8 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
     super(data);
   }
 
-  protected void addUnitType(final UnitType type) {
+  @VisibleForTesting
+  public void addUnitType(final UnitType type) {
     unitTypes.put(type.getName(), type);
   }
 
