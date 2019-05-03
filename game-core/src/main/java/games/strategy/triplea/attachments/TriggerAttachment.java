@@ -1434,7 +1434,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
     // TODO: This check is currently (2019-04-28) needed due to another test failing otherwise, namely
     // MustFightBattleTest, reg. property files. That may or may not indicate a bug and/or other.
-    if (satisfiedTriggers.stream().anyMatch(t -> notificationMatch().test(t))) {
+    if (satisfiedTriggers.stream().anyMatch(notificationMatch())) {
       triggerNotifications(
           satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
           NotificationMessages.getInstance());
@@ -2318,7 +2318,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
 
     // TODO: This check is currently (2019-05-01) needed due to other tests failing reg. property files.
     // That may or may not indicate a bug and/or other.
-    if (satisfiedTriggers.stream().anyMatch(t -> victoryMatch().test(t))) {
+    if (satisfiedTriggers.stream().anyMatch(victoryMatch())) {
       triggerVictory(
           satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
           NotificationMessages.getInstance());

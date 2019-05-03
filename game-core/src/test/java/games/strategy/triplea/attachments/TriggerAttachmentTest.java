@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -84,6 +82,28 @@ class TriggerAttachmentTest {
 
       when(bridge.getData()).thenReturn(gameData);
       when(bridge.getHistoryWriter()).thenReturn(historyWriter);
+    }
+
+    // Assumes 'gameData.getMap()' has the relevant parts set up.
+    private Territory addTerritoryPlayer(final String territoryName, final PlayerId player) {
+
+      final GameData gameData = bridge.getData();
+      final GameMap gameMap = gameData.getMap();
+
+      final Territory territory = new Territory(territoryName, gameData);
+      territory.addAttachment(
+          Constants.TERRITORY_ATTACHMENT_NAME,
+          new TerritoryAttachment(null, null, null));
+      if (player != null) {
+        territory.setOwner(player);
+      }
+      gameMap.addTerritory(territory);
+      return territory;
+    }
+
+    // Assumes 'gameData.getMap()' has the relevant parts set up.
+    private Territory addTerritory(final String territoryName) {
+      return addTerritoryPlayer(territoryName, null);
     }
 
     @Test
@@ -501,18 +521,9 @@ class TriggerAttachmentTest {
       gameData.getPlayerList().addPlayerId(playerRussia);
       gameData.getPlayerList().addPlayerId(playerBritain);
 
-      final GameMap gameMap = gameData.getMap();
-      final BiConsumer<PlayerId, String> addTerritory = (player, territoryName) -> {
-        final Territory territory = new Territory(territoryName, gameData);
-        territory.addAttachment(
-            Constants.TERRITORY_ATTACHMENT_NAME,
-            new TerritoryAttachment(null, null, null));
-        territory.setOwner(player);
-        gameMap.addTerritory(territory);
-      };
-      addTerritory.accept(playerChina, "Altay");
-      addTerritory.accept(playerChina, "Archangel");
-      addTerritory.accept(playerRussia, "Eastern Szechwan");
+      addTerritoryPlayer("Altay", playerChina);
+      addTerritoryPlayer("Archangel", playerChina);
+      addTerritoryPlayer("Eastern Szechwan", playerRussia);
 
       // NOTE: Currently not testing "booleanCaptured?" option nor the BattleDelegate part reg. capturing
       // (ie. the boolean part last in "Altay:China:Russia:false" is always set to false in this test).
@@ -573,18 +584,9 @@ class TriggerAttachmentTest {
           new TriggerAttachment("triggerAttachment", player, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
-      final GameMap gameMap = gameData.getMap();
-      final Function<String, Territory> addTerritory = (territoryName) -> {
-        final Territory territory = new Territory(territoryName, gameData);
-        territory.addAttachment(
-            Constants.TERRITORY_ATTACHMENT_NAME,
-            new TerritoryAttachment(null, null, null));
-        gameMap.addTerritory(territory);
-        return territory;
-      };
-      final Territory territoryCorusk = addTerritory.apply("Corusk Pass");
-      final Territory territoryHraak = addTerritory.apply("Hraak Pass");
-      final Territory territorySoull = addTerritory.apply("Soull Pass");
+      final Territory territoryCorusk = addTerritory("Corusk Pass");
+      final Territory territoryHraak = addTerritory("Hraak Pass");
+      final Territory territorySoull = addTerritory("Soull Pass");
 
       final UnitType unitTypeConscript = new UnitType("conscript", gameData);
       gameData.getUnitTypeList().addUnitType(unitTypeConscript);
@@ -621,6 +623,14 @@ class TriggerAttachmentTest {
       verify(bridge, times(3)).addChange(not(argThat(Change::isEmpty)));
     }
 
+    private void addUnitType(final String unitTypeName) {
+      final GameData gameData = bridge.getData();
+      final UnitType unitTypeConscript = new UnitType(unitTypeName, gameData);
+      gameData.getUnitTypeList().addUnitType(unitTypeConscript);
+      unitTypeConscript.addAttachment(
+          Constants.UNIT_ATTACHMENT_NAME, new UnitAttachment("somename", null, gameData));
+    }
+
     @Test
     void testTriggerUnitPlacement() throws Exception {
       final GameData gameData = bridge.getData();
@@ -630,26 +640,12 @@ class TriggerAttachmentTest {
           new TriggerAttachment("triggerAttachment", player, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
-      final Consumer<String> addUnitType = unitType -> {
-        final UnitType unitTypeConscript = new UnitType(unitType, gameData);
-        gameData.getUnitTypeList().addUnitType(unitTypeConscript);
-        unitTypeConscript.addAttachment(
-            Constants.UNIT_ATTACHMENT_NAME, new UnitAttachment("somename", null, gameData));
-      };
-      addUnitType.accept("conscript");
-      addUnitType.accept("sellsword");
+      addUnitType("conscript");
+      addUnitType("sellsword");
 
-      final GameMap gameMap = gameData.getMap();
-      final Consumer<String> addTerritory = (territoryName) -> {
-        final Territory territory = new Territory(territoryName, gameData);
-        territory.addAttachment(
-            Constants.TERRITORY_ATTACHMENT_NAME,
-            new TerritoryAttachment(null, null, null));
-        gameMap.addTerritory(territory);
-      };
-      addTerritory.accept("Corusk Pass");
-      addTerritory.accept("Hraak Pass");
-      addTerritory.accept("Soull Pass");
+      addTerritory("Corusk Pass");
+      addTerritory("Hraak Pass");
+      addTerritory("Soull Pass");
 
       final MutableProperty<?> placement = triggerAttachment.getPropertyMap().get("placement");
       placement.setValue("3:Corusk Pass:conscript");
