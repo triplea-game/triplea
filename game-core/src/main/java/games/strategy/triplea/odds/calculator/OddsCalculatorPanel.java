@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
+import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -46,6 +47,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.history.History;
 import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -102,8 +104,7 @@ class OddsCalculatorPanel extends JPanel {
   private final Territory location;
   private final JList<String> territoryEffectsJList;
 
-  OddsCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location,
-      final Window parent) {
+  OddsCalculatorPanel(final GameData data, final History history, final UiContext uiContext, final Territory location) {
     this.data = data;
     this.uiContext = uiContext;
     this.location = location;
@@ -389,9 +390,14 @@ class OddsCalculatorPanel extends JPanel {
     closeButton.addActionListener(e -> {
       attackerOrderOfLosses = null;
       defenderOrderOfLosses = null;
-      parent.setVisible(false);
+      Window parent = SwingUtilities.getWindowAncestor(OddsCalculatorPanel.this);
+      if (parent != null) {
+        parent.setVisible(false);
+      }
       shutdown();
-      parent.dispatchEvent(new WindowEvent(parent, WindowEvent.WINDOW_CLOSING));
+      if (parent != null) {
+        parent.dispatchEvent(new WindowEvent(parent, WindowEvent.WINDOW_CLOSING));
+      }
     });
     clearButton.addActionListener(e -> {
       defendingUnitsPanel.clear();
@@ -440,8 +446,8 @@ class OddsCalculatorPanel extends JPanel {
         landBattleCheckBox.setSelected(!location.isWater());
 
         // Default attacker to current player
-        final PlayerId currentPlayer = data.getSequence().getStep().getPlayerId();
-        if (currentPlayer != null && !currentPlayer.isNull()) {
+        final PlayerId currentPlayer = getCurrentPlayer(history);
+        if (currentPlayer != null) {
           attackerCombo.setSelectedItem(currentPlayer);
         }
 
@@ -498,6 +504,17 @@ class OddsCalculatorPanel extends JPanel {
     calculator.setGameData(data);
     setWidgetActivation();
     revalidate();
+  }
+
+  private @Nullable PlayerId getCurrentPlayer(final History history) {
+    PlayerId player = history.getActivePlayer();
+    if (player == null || player.isNull()) {
+      player = data.getSequence().getStep().getPlayerId();
+    }
+    if (!player.isNull()) {
+      return player;
+    }
+    return null;
   }
 
   void shutdown() {

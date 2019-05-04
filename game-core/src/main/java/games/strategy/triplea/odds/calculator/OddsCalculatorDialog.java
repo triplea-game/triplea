@@ -18,6 +18,7 @@ import org.triplea.swing.SwingComponents;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.history.History;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
@@ -32,9 +33,9 @@ public class OddsCalculatorDialog extends JDialog {
   private static List<OddsCalculatorDialog> instances = new ArrayList<>();
   private final OddsCalculatorPanel panel;
 
-  OddsCalculatorDialog(final GameData data, final UiContext uiContext, final JFrame parent, final Territory location) {
+  OddsCalculatorDialog(final OddsCalculatorPanel panel, final JFrame parent) {
     super(parent, "Odds Calculator");
-    panel = new OddsCalculatorPanel(data, uiContext, location, this);
+    this.panel = panel;
     getContentPane().setLayout(new BorderLayout());
     getContentPane().add(panel, BorderLayout.CENTER);
     pack();
@@ -43,9 +44,13 @@ public class OddsCalculatorDialog extends JDialog {
   /**
    * Shows the Odds Calculator dialog and initializes it using the current state of the specified territory.
    */
-  public static void show(final TripleAFrame taFrame, final Territory t) {
-    final OddsCalculatorDialog dialog =
-        new OddsCalculatorDialog(taFrame.getGame().getData(), taFrame.getUiContext(), taFrame, t);
+  public static void show(final TripleAFrame taFrame, final Territory t, final History history) {
+    // Note: The history param may not be the same as taFrame.getGame().getData().getHistory() as GameData
+    // gets cloned when showing history with a different History instance that doesn't correspond to what's
+    // shown.
+    final OddsCalculatorPanel panel =
+        new OddsCalculatorPanel(taFrame.getGame().getData(), history, taFrame.getUiContext(), t);
+    final OddsCalculatorDialog dialog = new OddsCalculatorDialog(panel, taFrame);
     dialog.pack();
 
     dialog.addWindowListener(new WindowAdapter() {

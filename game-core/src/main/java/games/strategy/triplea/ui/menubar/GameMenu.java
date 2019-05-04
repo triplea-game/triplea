@@ -73,7 +73,7 @@ final class GameMenu extends JMenu {
     addNotificationSettings();
     addShowDiceStats();
     addRollDice();
-    addMenuItemWithHotkey(SwingAction.of("Battle Calculator", e -> OddsCalculatorDialog.show(frame, null)),
+    addMenuItemWithHotkey(SwingAction.of("Battle Calculator", e -> OddsCalculatorDialog.show(frame, null, gameData.getHistory())),
         KeyEvent.VK_B);
   }
 
