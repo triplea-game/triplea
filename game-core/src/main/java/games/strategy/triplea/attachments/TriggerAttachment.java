@@ -1432,8 +1432,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
 
-    // TODO: This check is currently (2019-04-28) needed due to another test failing otherwise, namely
-    // MustFightBattleTest, reg. property files. That may or may not indicate a bug and/or other.
+    // NOTE: The check is needed to ensure that UI-related code (namely 'NotificationMessages.getInstance()') is
+    // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
     if (satisfiedTriggers.stream().anyMatch(notificationMatch())) {
       triggerNotifications(
           satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
@@ -2316,8 +2316,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
 
-    // TODO: This check is currently (2019-05-01) needed due to other tests failing reg. property files.
-    // That may or may not indicate a bug and/or other.
+    // NOTE: The check is needed to ensure that UI-related code (namely 'NotificationMessages.getInstance()') is
+    // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
     if (satisfiedTriggers.stream().anyMatch(victoryMatch())) {
       triggerVictory(
           satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,

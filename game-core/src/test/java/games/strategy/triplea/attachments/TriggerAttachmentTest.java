@@ -142,7 +142,6 @@ class TriggerAttachmentTest {
           any());
     }
 
-    // TODO: Should this be moved down so as to fit with the order of definition of methods in TriggerAttachment?
     @Test
     void testTriggerProductionFrontierEditChange() throws Exception {
       final GameData gameData = bridge.getData();
