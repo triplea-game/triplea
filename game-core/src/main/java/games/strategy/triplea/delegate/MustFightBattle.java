@@ -519,11 +519,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final boolean onlyAttackerSneakAttack = !defenderSubsFireFirst
         && returnFireAgainstAttackingSubs() == ReturnFire.NONE && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
     // attacker subs sneak attack, no sneak attack if destroyers are present
-    if (battleSite.isWater()) {
-      if (attackingUnits.stream().anyMatch(Matches.unitIsSub())) {
-        steps.add(attacker.getName() + SUBS_FIRE);
-        steps.add(defender.getName() + SELECT_SUB_CASUALTIES);
-      }
+    if (attackingUnits.stream().anyMatch(Matches.unitIsSub())) {
+      steps.add(attacker.getName() + SUBS_FIRE);
+      steps.add(defender.getName() + SELECT_SUB_CASUALTIES);
       if (onlyAttackerSneakAttack) {
         steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
       }
@@ -533,14 +531,13 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         && !Properties.getWW2V2(gameData) && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
     // defender subs sneak attack, no sneak attack in Pacific/Europe Theaters or if destroyers are present
     final boolean defendingSubsFireWithAllDefendersAlways = !defendingSubsSneakAttack3();
-    if (battleSite.isWater()) {
-      if (!defendingSubsFireWithAllDefendersAlways && !defendingSubsFireWithAllDefenders && !defenderSubsFireFirst
-          && defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
-        steps.add(defender.getName() + SUBS_FIRE);
-        steps.add(attacker.getName() + SELECT_SUB_CASUALTIES);
-      }
+    if (!defendingSubsFireWithAllDefendersAlways && !defendingSubsFireWithAllDefenders && !defenderSubsFireFirst
+        && defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
+      steps.add(defender.getName() + SUBS_FIRE);
+      steps.add(attacker.getName() + SELECT_SUB_CASUALTIES);
     }
-    if (battleSite.isWater() && !defenderSubsFireFirst && !onlyAttackerSneakAttack
+    if ((attackingUnits.stream().anyMatch(Matches.unitIsSub()) || defendingUnits.stream().anyMatch(Matches.unitIsSub()))
+        && !defenderSubsFireFirst && !onlyAttackerSneakAttack
         && (returnFireAgainstDefendingSubs() != ReturnFire.ALL || returnFireAgainstAttackingSubs() != ReturnFire.ALL)) {
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
     }
@@ -556,21 +553,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // classic rules, subs fire with all defenders
     // also, ww2v3/global rules, defending subs without sneak attack fire with all defenders
-    if (battleSite.isWater()) {
-      final Collection<Unit> units = new ArrayList<>(defendingUnits.size() + defendingWaitingToDie.size());
-      units.addAll(defendingUnits);
-      units.addAll(defendingWaitingToDie);
-      if (units.stream().anyMatch(Matches.unitIsSub()) && !defenderSubsFireFirst
-          && (defendingSubsFireWithAllDefenders || defendingSubsFireWithAllDefendersAlways)) {
-        steps.add(defender.getName() + SUBS_FIRE);
-        steps.add(attacker.getName() + SELECT_SUB_CASUALTIES);
-      }
+    final Collection<Unit> units = new ArrayList<>(defendingUnits.size() + defendingWaitingToDie.size());
+    units.addAll(defendingUnits);
+    units.addAll(defendingWaitingToDie);
+    if (units.stream().anyMatch(Matches.unitIsSub()) && !defenderSubsFireFirst
+        && (defendingSubsFireWithAllDefenders || defendingSubsFireWithAllDefendersAlways)) {
+      steps.add(defender.getName() + SUBS_FIRE);
+      steps.add(attacker.getName() + SELECT_SUB_CASUALTIES);
     }
     // Air Units can't attack subs without Destroyers present
-    if (battleSite.isWater() && isAirAttackSubRestricted()) {
-      final Collection<Unit> units = new ArrayList<>(defendingUnits.size() + defendingWaitingToDie.size());
-      units.addAll(defendingUnits);
-      units.addAll(defendingWaitingToDie);
+    if (isAirAttackSubRestricted()) {
       if (defendingUnits.stream().anyMatch(Matches.unitIsAir()) && !canAirAttackSubs(attackingUnits, units)) {
         steps.add(AIR_DEFEND_NON_SUBS);
       }
@@ -1792,8 +1784,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean canAirAttackSubs(final Collection<Unit> firedAt, final Collection<Unit> firing) {
-    return !(battleSite.isWater() && firedAt.stream().anyMatch(Matches.unitIsSub())
-        && firing.stream().noneMatch(Matches.unitIsDestroyer()));
+    return !(firedAt.stream().anyMatch(Matches.unitIsSub()) && firing.stream().noneMatch(Matches.unitIsDestroyer()));
   }
 
   private void defendAirOnNonSubs() {
@@ -2500,7 +2491,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender, attackerLostTuv, defenderLostTuv,
         battleResultDescription, new BattleResults(this, gameData));
 
-    if (Matches.territoryIsWater().test(battleSite)) {
+    if (battleSite.isWater()) {
       if (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir())) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
             attacker);
