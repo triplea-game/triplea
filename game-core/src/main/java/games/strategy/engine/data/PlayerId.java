@@ -199,10 +199,10 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
   }
 
   public static Optional<PlayerId> asOptional(@Nullable final PlayerId player) {
-    if (player.isNull()) {
+    if (player == null || player.isNull()) {
       return Optional.empty();
     }
-    return Optional.ofNullable(player);
+    return Optional.of(player);
   }
 
   public boolean isDefaultTypeAi() {
