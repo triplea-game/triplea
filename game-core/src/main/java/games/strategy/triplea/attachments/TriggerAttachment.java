@@ -639,8 +639,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     unitTypes = value;
   }
 
-  @VisibleForTesting
-  List<UnitType> getUnitType() {
+  private List<UnitType> getUnitType() {
     return unitTypes;
   }
 
@@ -710,8 +709,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     unitProperty = value;
   }
 
-  @VisibleForTesting
-  List<Tuple<String, String>> getUnitProperty() {
+  private List<Tuple<String, String>> getUnitProperty() {
     return unitProperty;
   }
 
@@ -734,8 +732,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territories = value;
   }
 
-  @VisibleForTesting
-  List<Territory> getTerritories() {
+  private List<Territory> getTerritories() {
     return territories;
   }
 
@@ -805,8 +802,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territoryProperty = value;
   }
 
-  @VisibleForTesting
-  List<Tuple<String, String>> getTerritoryProperty() {
+  private List<Tuple<String, String>> getTerritoryProperty() {
     return territoryProperty;
   }
 
@@ -829,8 +825,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     players = value;
   }
 
-  @VisibleForTesting
-  List<PlayerId> getPlayers() {
+  private List<PlayerId> getPlayers() {
     return players.isEmpty() ? new ArrayList<>(Collections.singletonList((PlayerId) getAttachedTo())) : players;
   }
 
@@ -916,8 +911,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     playerProperty = value;
   }
 
-  @VisibleForTesting
-  List<Tuple<String, String>> getPlayerProperty() {
+  private List<Tuple<String, String>> getPlayerProperty() {
     return playerProperty;
   }
 
@@ -940,8 +934,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     relationshipTypes = value;
   }
 
-  @VisibleForTesting
-  List<RelationshipType> getRelationshipTypes() {
+  private List<RelationshipType> getRelationshipTypes() {
     return relationshipTypes;
   }
 
@@ -1010,8 +1003,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     relationshipTypeProperty = value;
   }
 
-  @VisibleForTesting
-  List<Tuple<String, String>> getRelationshipTypeProperty() {
+  private List<Tuple<String, String>> getRelationshipTypeProperty() {
     return relationshipTypeProperty;
   }
 
@@ -1034,8 +1026,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territoryEffects = value;
   }
 
-  @VisibleForTesting
-  List<TerritoryEffect> getTerritoryEffects() {
+  private List<TerritoryEffect> getTerritoryEffects() {
     return territoryEffects;
   }
 
@@ -1104,8 +1095,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     territoryEffectProperty = value;
   }
 
-  @VisibleForTesting
-  List<Tuple<String, String>> getTerritoryEffectProperty() {
+  private List<Tuple<String, String>> getTerritoryEffectProperty() {
     return territoryEffectProperty;
   }
 
@@ -1441,6 +1431,22 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
+
+    // NOTE: The check is needed to ensure that UI-related code (namely 'NotificationMessages.getInstance()') is
+    // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
+    if (satisfiedTriggers.stream().anyMatch(notificationMatch())) {
+      triggerNotifications(
+          satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
+          NotificationMessages.getInstance());
+    }
+  }
+
+  @VisibleForTesting
+  static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
+      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
+      final boolean testChance, final boolean testWhen,
+      final NotificationMessages notificationMessages) {
+
     final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = CollectionUtils.getMatches(satisfiedTriggers, notificationMatch());
     if (testWhen) {
@@ -1460,14 +1466,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (!notifications.contains(t.getNotification())) {
         notifications.add(t.getNotification());
         final String notificationMessageKey = t.getNotification().trim();
-        final String sounds = NotificationMessages.getInstance().getSoundsKey(notificationMessageKey);
+        final String sounds = notificationMessages.getSoundsKey(notificationMessageKey);
         if (sounds != null) {
           // play to observers if we are playing to everyone
           bridge.getSoundChannelBroadcaster().playSoundToPlayers(
               SoundPath.CLIP_TRIGGERED_NOTIFICATION_SOUND + sounds.trim(), t.getPlayers(), null,
               t.getPlayers().containsAll(data.getPlayerList().getPlayers()));
         }
-        final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
+        final String message = notificationMessages.getMessage(notificationMessageKey);
         if (message != null) {
           String messageForRecord = message.trim();
           if (messageForRecord.length() > 190) {
@@ -2309,6 +2315,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   public static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
       final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
       final boolean testChance, final boolean testWhen) {
+
+    // NOTE: The check is needed to ensure that UI-related code (namely 'NotificationMessages.getInstance()') is
+    // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
+    if (satisfiedTriggers.stream().anyMatch(victoryMatch())) {
+      triggerVictory(
+          satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
+          NotificationMessages.getInstance());
+    }
+  }
+
+  @VisibleForTesting
+  static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
+      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
+      final boolean testChance, final boolean testWhen,
+      final NotificationMessages notificationMessages) {
     final GameData data = bridge.getData();
     Collection<TriggerAttachment> trigs = CollectionUtils.getMatches(satisfiedTriggers, victoryMatch());
     if (testWhen) {
@@ -2327,8 +2348,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       if (t.getVictory() == null || t.getPlayers() == null) {
         continue;
       }
-      final String victoryMessage = NotificationMessages.getInstance().getMessage(t.getVictory().trim());
-      final String sounds = NotificationMessages.getInstance().getSoundsKey(t.getVictory().trim());
+      final String victoryMessage = notificationMessages.getMessage(t.getVictory().trim());
+      final String sounds = notificationMessages.getSoundsKey(t.getVictory().trim());
       if (victoryMessage != null) {
         if (sounds != null) { // only play the sound if we are also notifying everyone
           bridge.getSoundChannelBroadcaster().playSoundToPlayers(

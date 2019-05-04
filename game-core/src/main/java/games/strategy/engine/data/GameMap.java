@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 
 import org.triplea.java.collections.IntegerMap;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 
@@ -67,7 +68,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
         .noneMatch(i -> coordinate[i] >= gridDimensions[i] || coordinate[i] < 0);
   }
 
-  protected void addTerritory(final Territory t1) {
+  @VisibleForTesting
+  public void addTerritory(final Territory t1) {
     if (territories.contains(t1)) {
       throw new IllegalArgumentException("Map already contains " + t1.getName());
     }
