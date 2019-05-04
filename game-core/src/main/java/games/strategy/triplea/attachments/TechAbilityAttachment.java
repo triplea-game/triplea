@@ -860,7 +860,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
             taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
             ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
             final List<UnitType> allDestroyers =
-                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsDestroyer());
+                CollectionUtils.getMatches(data.getUnitTypeList().getAllUnitTypes(),
+                    Matches.unitTypeIsDestroyer().and(Matches.unitTypeIsSea()));
             for (final UnitType destroyer : allDestroyers) {
               taa.setUnitAbilitiesGained(destroyer.getName() + ":" + ABILITY_CAN_BOMBARD);
             }
