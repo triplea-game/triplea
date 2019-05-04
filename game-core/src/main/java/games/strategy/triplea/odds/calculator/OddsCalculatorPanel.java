@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
-import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -446,16 +445,16 @@ class OddsCalculatorPanel extends JPanel {
         landBattleCheckBox.setSelected(!location.isWater());
 
         // Default attacker to current player
-        final PlayerId currentPlayer = getCurrentPlayer(history);
-        if (currentPlayer != null) {
-          attackerCombo.setSelectedItem(currentPlayer);
+        final Optional<PlayerId> currentPlayer = getCurrentPlayer(history);
+        if (currentPlayer.isPresent()) {
+          attackerCombo.setSelectedItem(currentPlayer.get());
         }
 
         // Get players with units sorted
         final List<PlayerId> players = location.getUnitCollection().getPlayersByUnitCount();
-        if (players.contains(currentPlayer)) {
-          players.remove(currentPlayer);
-          players.add(0, currentPlayer);
+        if (currentPlayer.isPresent() && players.contains(currentPlayer.get())) {
+          players.remove(currentPlayer.get());
+          players.add(0, currentPlayer.get());
         }
 
         // Check location to determine optimal attacker and defender
@@ -506,15 +505,12 @@ class OddsCalculatorPanel extends JPanel {
     revalidate();
   }
 
-  private @Nullable PlayerId getCurrentPlayer(final History history) {
-    PlayerId player = history.getActivePlayer();
-    if (player == null || player.isNull()) {
-      player = data.getSequence().getStep().getPlayerId();
-    }
-    if (!player.isNull()) {
+  private Optional<PlayerId> getCurrentPlayer(final History history) {
+    Optional<PlayerId> player = history.getActivePlayer();
+    if (player.isPresent()) {
       return player;
     }
-    return null;
+    return PlayerId.asOptional(data.getSequence().getStep().getPlayerId());
   }
 
   void shutdown() {

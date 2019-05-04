@@ -4,9 +4,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.base.Splitter;
 
+import javax.annotation.Nullable;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
@@ -193,6 +195,13 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
       currentPlayers.put(player.getName(), player.getPlayerType().name);
     }
     return currentPlayers;
+  }
+
+  public static Optional<PlayerId> asOptional(@Nullable final PlayerId player) {
+    if (player.isNull()) {
+      return Optional.empty();
+    }
+    return Optional.ofNullable(player);
   }
 
   public boolean isDefaultTypeAi() {

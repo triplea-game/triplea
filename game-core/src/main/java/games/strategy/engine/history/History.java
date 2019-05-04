@@ -3,8 +3,8 @@ package games.strategy.engine.history;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 
-import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -61,11 +61,11 @@ public class History extends DefaultTreeModel {
     }
   }
 
-  public @Nullable PlayerId getActivePlayer() {
+  public Optional<PlayerId> getActivePlayer() {
     if (currentNode instanceof Step) {
-      return ((Step) currentNode).getPlayerId();
+      return PlayerId.asOptional(((Step) currentNode).getPlayerId());
     }
-    return null;
+    return Optional.empty();
   }
 
   public HistoryNode getLastNode() {
