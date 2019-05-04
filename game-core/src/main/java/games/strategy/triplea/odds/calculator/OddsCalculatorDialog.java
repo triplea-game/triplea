@@ -16,12 +16,10 @@ import javax.swing.WindowConstants;
 
 import org.triplea.swing.SwingComponents;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.history.History;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.UiContext;
 
 /**
  * A dialog that allows the user to set up an arbitrary battle and calculate the attacker's odds of successfully winning

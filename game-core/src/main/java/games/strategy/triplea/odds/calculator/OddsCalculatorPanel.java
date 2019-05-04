@@ -47,8 +47,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.history.History;
 import games.strategy.engine.framework.ui.background.WaitDialog;
+import games.strategy.engine.history.History;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -390,7 +390,7 @@ class OddsCalculatorPanel extends JPanel {
     closeButton.addActionListener(e -> {
       attackerOrderOfLosses = null;
       defenderOrderOfLosses = null;
-      Window parent = SwingUtilities.getWindowAncestor(OddsCalculatorPanel.this);
+      final Window parent = SwingUtilities.getWindowAncestor(OddsCalculatorPanel.this);
       if (parent != null) {
         parent.setVisible(false);
       }
