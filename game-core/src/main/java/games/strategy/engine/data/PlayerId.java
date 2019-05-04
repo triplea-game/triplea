@@ -6,9 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Splitter;
 
-import javax.annotation.Nullable;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;

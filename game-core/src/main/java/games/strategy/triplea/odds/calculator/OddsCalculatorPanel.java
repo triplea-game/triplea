@@ -506,7 +506,7 @@ class OddsCalculatorPanel extends JPanel {
   }
 
   private Optional<PlayerId> getCurrentPlayer(final History history) {
-    Optional<PlayerId> player = history.getActivePlayer();
+    final Optional<PlayerId> player = history.getActivePlayer();
     if (player.isPresent()) {
       return player;
     }
