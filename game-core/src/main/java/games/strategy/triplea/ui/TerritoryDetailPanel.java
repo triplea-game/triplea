@@ -59,9 +59,9 @@ class TerritoryDetailPanel extends AbstractStatPanel {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 0, 0));
 
-    showOdds.addActionListener(e -> OddsCalculatorDialog.show(frame, currentTerritory));
+    showOdds.addActionListener(e -> OddsCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
     SwingComponents.addKeyListenerWithMetaAndCtrlMasks(
-        frame, 'B', () -> OddsCalculatorDialog.show(frame, currentTerritory));
+        frame, 'B', () -> OddsCalculatorDialog.show(frame, currentTerritory, gameData.getHistory()));
 
     addAttackers.addActionListener(e -> OddsCalculatorDialog.addAttackers(currentTerritory));
     SwingComponents.addKeyListenerWithMetaAndCtrlMasks(

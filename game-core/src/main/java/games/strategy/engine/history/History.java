@@ -3,6 +3,7 @@ package games.strategy.engine.history;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -11,6 +12,7 @@ import javax.swing.tree.DefaultTreeModel;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.ui.history.HistoryPanel;
 
 /**
@@ -57,6 +59,13 @@ public class History extends DefaultTreeModel {
     if (panel != null) {
       panel.goToEnd();
     }
+  }
+
+  public Optional<PlayerId> getActivePlayer() {
+    if (currentNode instanceof Step) {
+      return PlayerId.asOptional(((Step) currentNode).getPlayerId());
+    }
+    return Optional.empty();
   }
 
   public HistoryNode getLastNode() {

@@ -4,6 +4,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Splitter;
 
@@ -193,6 +196,13 @@ public class PlayerId extends NamedAttachable implements NamedUnitHolder {
       currentPlayers.put(player.getName(), player.getPlayerType().name);
     }
     return currentPlayers;
+  }
+
+  public static Optional<PlayerId> asOptional(@Nullable final PlayerId player) {
+    if (player == null || player.isNull()) {
+      return Optional.empty();
+    }
+    return Optional.of(player);
   }
 
   public boolean isDefaultTypeAi() {

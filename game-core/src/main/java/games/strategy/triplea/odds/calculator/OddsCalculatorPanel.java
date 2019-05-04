@@ -47,6 +47,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.ui.background.WaitDialog;
+import games.strategy.engine.history.History;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -102,8 +103,7 @@ class OddsCalculatorPanel extends JPanel {
   private final Territory location;
   private final JList<String> territoryEffectsJList;
 
-  OddsCalculatorPanel(final GameData data, final UiContext uiContext, final Territory location,
-      final Window parent) {
+  OddsCalculatorPanel(final GameData data, final History history, final UiContext uiContext, final Territory location) {
     this.data = data;
     this.uiContext = uiContext;
     this.location = location;
@@ -389,9 +389,14 @@ class OddsCalculatorPanel extends JPanel {
     closeButton.addActionListener(e -> {
       attackerOrderOfLosses = null;
       defenderOrderOfLosses = null;
-      parent.setVisible(false);
+      final Window parent = SwingUtilities.getWindowAncestor(OddsCalculatorPanel.this);
+      if (parent != null) {
+        parent.setVisible(false);
+      }
       shutdown();
-      parent.dispatchEvent(new WindowEvent(parent, WindowEvent.WINDOW_CLOSING));
+      if (parent != null) {
+        parent.dispatchEvent(new WindowEvent(parent, WindowEvent.WINDOW_CLOSING));
+      }
     });
     clearButton.addActionListener(e -> {
       defendingUnitsPanel.clear();
@@ -440,16 +445,16 @@ class OddsCalculatorPanel extends JPanel {
         landBattleCheckBox.setSelected(!location.isWater());
 
         // Default attacker to current player
-        final PlayerId currentPlayer = data.getSequence().getStep().getPlayerId();
-        if (currentPlayer != null && !currentPlayer.isNull()) {
-          attackerCombo.setSelectedItem(currentPlayer);
+        final Optional<PlayerId> currentPlayer = getCurrentPlayer(history);
+        if (currentPlayer.isPresent()) {
+          attackerCombo.setSelectedItem(currentPlayer.get());
         }
 
         // Get players with units sorted
         final List<PlayerId> players = location.getUnitCollection().getPlayersByUnitCount();
-        if (players.contains(currentPlayer)) {
-          players.remove(currentPlayer);
-          players.add(0, currentPlayer);
+        if (currentPlayer.isPresent() && players.contains(currentPlayer.get())) {
+          players.remove(currentPlayer.get());
+          players.add(0, currentPlayer.get());
         }
 
         // Check location to determine optimal attacker and defender
@@ -498,6 +503,14 @@ class OddsCalculatorPanel extends JPanel {
     calculator.setGameData(data);
     setWidgetActivation();
     revalidate();
+  }
+
+  private Optional<PlayerId> getCurrentPlayer(final History history) {
+    final Optional<PlayerId> player = history.getActivePlayer();
+    if (player.isPresent()) {
+      return player;
+    }
+    return PlayerId.asOptional(data.getSequence().getStep().getPlayerId());
   }
 
   void shutdown() {
