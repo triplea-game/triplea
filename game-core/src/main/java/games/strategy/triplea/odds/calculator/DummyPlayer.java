@@ -117,7 +117,6 @@ class DummyPlayer extends AbstractAi {
     }
     if (submerge) {
       // submerge if all air vs subs
-      final Predicate<Unit> seaSub = Matches.unitIsSea().and(Matches.unitIsSub());
       final Predicate<Unit> planeNotDestroyer = Matches.unitIsAir().and(Matches.unitIsDestroyer().negate());
       final List<Unit> ourUnits = getOurUnits();
       final List<Unit> enemyUnits = getEnemyUnits();
@@ -125,7 +124,7 @@ class DummyPlayer extends AbstractAi {
         return null;
       }
       if (!enemyUnits.isEmpty() && enemyUnits.stream().allMatch(planeNotDestroyer) && !ourUnits.isEmpty()
-          && ourUnits.stream().allMatch(seaSub)) {
+          && ourUnits.stream().allMatch(Matches.unitIsSub())) {
         return possibleTerritories.iterator().next();
       }
       return null;
