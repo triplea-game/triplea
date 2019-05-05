@@ -2439,7 +2439,7 @@ public class UnitAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) throws GameParseException {
     if (isAir) {
-      if (isSea || isSub || transportCost != -1 || carrierCapacity != -1 || canBlitz
+      if (isSea || transportCost != -1 || carrierCapacity != -1 || canBlitz
           || canBombard || isMarine != 0 || isLandTransportable || isLandTransport
           || isAirTransportable || isCombatTransport) {
         throw new GameParseException("air units cannot have certain properties, " + thisErrorMsg());
@@ -2451,7 +2451,7 @@ public class UnitAttachment extends DefaultAttachment {
         throw new GameParseException("sea units cannot have certain properties, " + thisErrorMsg());
       }
     } else { // if land
-      if (canBombard || isSub || carrierCapacity != -1 || bombard != -1
+      if (canBombard || carrierCapacity != -1 || bombard != -1
           || isAirTransport || isCombatTransport || isKamikaze) {
         throw new GameParseException("land units cannot have certain properties, " + thisErrorMsg());
       }
