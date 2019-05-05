@@ -27,6 +27,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
+import games.strategy.triplea.attachments.FireTriggerParams;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -110,10 +111,12 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
             CollectionUtils.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
-        TriggerAttachment.triggerActivateTriggerOther(testedConditions, toFireTestedAndSatisfied, bridge, null, null,
-            true, true, true, true);
+        final FireTriggerParams fireTriggerParams = new FireTriggerParams(
+            null, null, true, true, true, true);
+        TriggerAttachment.triggerActivateTriggerOther(testedConditions, toFireTestedAndSatisfied, bridge,
+            fireTriggerParams);
         // will call
-        TriggerAttachment.triggerVictory(toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
+        TriggerAttachment.triggerVictory(toFireTestedAndSatisfied, bridge, fireTriggerParams);
         // signalGameOver itself
       }
     }

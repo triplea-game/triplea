@@ -14,6 +14,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attachments.FireTriggerParams;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
@@ -68,10 +69,11 @@ public class TechActivationDelegate extends BaseTripleADelegate {
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
             CollectionUtils.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
-        TriggerAttachment.triggerUnitPropertyChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
-            true);
-        TriggerAttachment.triggerTechChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
-        TriggerAttachment.triggerSupportChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
+        final FireTriggerParams fireTriggerParams = new FireTriggerParams(
+            null, null, true, true, true, true);
+        TriggerAttachment.triggerUnitPropertyChange(toFireTestedAndSatisfied, bridge, fireTriggerParams);
+        TriggerAttachment.triggerTechChange(toFireTestedAndSatisfied, bridge, fireTriggerParams);
+        TriggerAttachment.triggerSupportChange(toFireTestedAndSatisfied, bridge, fireTriggerParams);
       }
     }
     shareTechnology();

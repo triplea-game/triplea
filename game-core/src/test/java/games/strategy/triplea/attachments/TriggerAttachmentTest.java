@@ -61,6 +61,15 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 @ExtendWith(MockitoExtension.class)
 class TriggerAttachmentTest {
 
+  private static final FireTriggerParams defaultFireTriggerParams =
+      new FireTriggerParams(
+          "beforeOrAfter",
+          "stepName",
+          false, // useUses
+          false, // testUses
+          false, // testChance
+          false); // testWhen
+
   private static BattleDelegate mockAddBattleDelegate(final GameData gameData) {
     final BattleDelegate battleDelegate = mock(BattleDelegate.class);
     when(battleDelegate.getName()).thenReturn("battle");
@@ -125,15 +134,7 @@ class TriggerAttachmentTest {
 
       triggerAttachment.getPropertyMap().get("notification").setValue(notificationMessageKey);
 
-      TriggerAttachment.triggerNotifications(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false, // testWhen
+      TriggerAttachment.triggerNotifications(satisfiedTriggers, bridge, defaultFireTriggerParams,
           notificationMessages);
       verify(display).reportMessageToPlayers(
           not(argThat(Collection::isEmpty)), // Players.
@@ -166,15 +167,7 @@ class TriggerAttachmentTest {
       productionRuleProperty.setValue("frontier:-rule2");
       productionRuleProperty.setValue("frontier:rule3");
 
-      TriggerAttachment.triggerProductionFrontierEditChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerProductionFrontierEditChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
       final ArgumentCaptor<String> ruleAddArgument = ArgumentCaptor.forClass(String.class);
       verify(historyWriter, times(3)).startEvent(ruleAddArgument.capture());
@@ -203,15 +196,7 @@ class TriggerAttachmentTest {
       propertyMap.get("playerProperty").setValue("someNewValue:productionPerXTerritories");
       propertyMap.get("players").setValue("somePlayer");
 
-      TriggerAttachment.triggerPlayerPropertyChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerPlayerPropertyChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -234,15 +219,7 @@ class TriggerAttachmentTest {
       propertyMap.get("relationshipTypeProperty").setValue("true:canMoveLandUnitsOverOwnedLand");
       propertyMap.get("relationshipTypes").setValue("someRelationshipType");
 
-      TriggerAttachment.triggerRelationshipTypePropertyChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerRelationshipTypePropertyChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -264,15 +241,7 @@ class TriggerAttachmentTest {
       propertyMap.get("territoryProperty").setValue("true:kamikazeZone");
       propertyMap.get("territories").setValue(territoryName);
 
-      TriggerAttachment.triggerTerritoryPropertyChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerTerritoryPropertyChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -295,15 +264,7 @@ class TriggerAttachmentTest {
       propertyMap.get("territoryEffectProperty").setValue("conscript:veteran:champion:unitsNotAllowed");
       propertyMap.get("territoryEffects").setValue("someTerritoryEffect");
 
-      TriggerAttachment.triggerTerritoryEffectPropertyChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerTerritoryEffectPropertyChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -323,15 +284,7 @@ class TriggerAttachmentTest {
       propertyMap.get("unitProperty").setValue("4:movement");
       propertyMap.get("unitType").setValue("someUnit");
 
-      TriggerAttachment.triggerUnitPropertyChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerUnitPropertyChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -364,15 +317,7 @@ class TriggerAttachmentTest {
 
       triggerAttachment.getPropertyMap().get("relationshipChange").setValue("Keoland:Furyondy:any:allied");
 
-      TriggerAttachment.triggerRelationshipChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerRelationshipChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -397,15 +342,7 @@ class TriggerAttachmentTest {
       triggerAttachment.getPropertyMap().get("availableTech")
           .setValue("airCategory:longRangeAir:jetPower:heavyBomber");
 
-      TriggerAttachment.triggerAvailableTechChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerAvailableTechChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(3)).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -429,15 +366,7 @@ class TriggerAttachmentTest {
 
       triggerAttachment.getPropertyMap().get("tech").setValue("longRangeAir:heavyBomber");
 
-      TriggerAttachment.triggerTechChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerTechChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(2)).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -461,15 +390,7 @@ class TriggerAttachmentTest {
 
       triggerAttachment.getPropertyMap().get("frontier").setValue("Americans_Super_Carrier_production");
 
-      TriggerAttachment.triggerProductionChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerProductionChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -492,15 +413,7 @@ class TriggerAttachmentTest {
       triggerAttachment.getPropertyMap().get("support")
           .setValue("supportAttachmentBattlefleet_Support");
 
-      TriggerAttachment.triggerSupportChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerSupportChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -531,15 +444,7 @@ class TriggerAttachmentTest {
       changeOwnership.setValue("Archangel:Russia:Britain:false"); // Belonging to non-Russia, so should not match.
       changeOwnership.setValue("Eastern Szechwan:any:China:false");
 
-      TriggerAttachment.triggerChangeOwnership(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerChangeOwnership(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(2)).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -562,15 +467,7 @@ class TriggerAttachmentTest {
       purchase.setValue("1:brigantine");
       purchase.setValue("2:sellsword:skirmisher");
 
-      TriggerAttachment.triggerPurchase(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerPurchase(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -610,15 +507,7 @@ class TriggerAttachmentTest {
       removeUnits.setValue("5:Hraak Pass:conscript");
       removeUnits.setValue("5:all:sellsword");
 
-      TriggerAttachment.triggerUnitRemoval(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerUnitRemoval(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(3)).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -651,15 +540,7 @@ class TriggerAttachmentTest {
       placement.setValue("2:Hraak Pass:conscript:sellsword");
       placement.setValue("Soull Pass:sellsword");
 
-      TriggerAttachment.triggerUnitPlacement(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerUnitPlacement(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(3)).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -677,15 +558,7 @@ class TriggerAttachmentTest {
       triggerAttachment.getPropertyMap().get("resource").setValue(Constants.PUS);
       triggerAttachment.getPropertyMap().get("resourceCount").setValue("23");
 
-      TriggerAttachment.triggerResourceChange(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+      TriggerAttachment.triggerResourceChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(1)).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -724,15 +597,7 @@ class TriggerAttachmentTest {
           String.format("%s:1:false:false:false:false", triggerToBeFiredTriggerAttachment.getName()));
 
       TriggerAttachment.triggerActivateTriggerOther(
-          Collections.emptyMap(),
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false); // testWhen
+          Collections.emptyMap(), satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(2)).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -756,16 +621,7 @@ class TriggerAttachmentTest {
       final NotificationMessages notificationMessages = mock(NotificationMessages.class);
       when(notificationMessages.getMessage(notificationMessageKey)).thenReturn(notificationMessage);
 
-      TriggerAttachment.triggerVictory(
-          satisfiedTriggers,
-          bridge,
-          "beforeOrAfter",
-          "stepName",
-          false, // useUses
-          false, // testUses
-          false, // testChance
-          false, // testWhen
-          notificationMessages);
+      TriggerAttachment.triggerVictory(satisfiedTriggers, bridge, defaultFireTriggerParams, notificationMessages);
       verify(endRoundDelegate).signalGameOver(any(), any(), any());
     }
   }

@@ -197,7 +197,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
       return;
     }
     TriggerAttachment.fireTriggers(new HashSet<>(toFireTestedAndSatisfied), testedConditions, bridge,
-        beforeOrAfter, stepName, true, true, true, true);
+        new FireTriggerParams(beforeOrAfter, stepName, true, true, true, true));
   }
 
   public static Set<TriggerAttachment> collectForAllTriggersMatching(final Set<PlayerId> players,
@@ -232,54 +232,56 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    */
   public static void fireTriggers(final Set<TriggerAttachment> triggersToBeFired,
       final Map<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge,
-      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
-      final boolean testChance, final boolean testWhen) {
+      final FireTriggerParams initialFireTriggerParams) {
     // all triggers at this point have their conditions satisfied so we now test chance (because we test chance last),
     // and remove any conditions that do not succeed in their dice rolls
     final Set<TriggerAttachment> triggersToFire = new HashSet<>();
     for (final TriggerAttachment t : triggersToBeFired) {
-      if (testChance && !t.testChance(bridge)) {
+      if (initialFireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
       triggersToFire.add(t);
     }
+    final FireTriggerParams noChanceFireTriggerParams = new FireTriggerParams(
+        initialFireTriggerParams.beforeOrAfter,
+        initialFireTriggerParams.stepName,
+        initialFireTriggerParams.useUses,
+        initialFireTriggerParams.testUses,
+        false,
+        initialFireTriggerParams.testWhen);
     // Order: Notifications, Attachment Property Changes (Player, Relationship, Territory, TerritoryEffect, Unit),
     // Relationship, AvailableTech, Tech, ProductionFrontier, ProductionEdit, Support, Purchase, UnitPlacement,
     // Resource, Victory Notifications to current player
-    triggerNotifications(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerNotifications(triggersToFire, bridge, noChanceFireTriggerParams);
     // Attachment property changes
-    triggerPlayerPropertyChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerRelationshipTypePropertyChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false,
-        testWhen);
-    triggerTerritoryPropertyChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false,
-        testWhen);
-    triggerTerritoryEffectPropertyChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false,
-        testWhen);
-    triggerUnitPropertyChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerPlayerPropertyChange(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerRelationshipTypePropertyChange(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerTerritoryPropertyChange(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerTerritoryEffectPropertyChange(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerUnitPropertyChange(triggersToFire, bridge, noChanceFireTriggerParams);
     // Misc changes that only need to happen once (twice or more is meaningless)
-    triggerRelationshipChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerAvailableTechChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerTechChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerProductionChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerProductionFrontierEditChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false,
-        testWhen);
-    triggerSupportChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerChangeOwnership(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerRelationshipChange(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerAvailableTechChange(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerTechChange(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerProductionChange(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerProductionFrontierEditChange(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerSupportChange(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerChangeOwnership(triggersToFire, bridge, noChanceFireTriggerParams);
     // Misc changes that can happen multiple times, because they add or subtract, something from the game (and therefore
     // can use "each")
-    triggerUnitRemoval(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerPurchase(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerUnitPlacement(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
-    triggerResourceChange(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerUnitRemoval(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerPurchase(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerUnitPlacement(triggersToFire, bridge, noChanceFireTriggerParams);
+    triggerResourceChange(triggersToFire, bridge, noChanceFireTriggerParams);
     // Activating other triggers, and trigger victory, should ALWAYS be LAST in this list!
-    triggerActivateTriggerOther(testedConditionsSoFar, triggersToFire, bridge, beforeOrAfter, stepName, useUses,
-        testUses, false, testWhen); // Triggers firing other triggers
+    // Triggers firing other triggers
+    triggerActivateTriggerOther(testedConditionsSoFar, triggersToFire, bridge, noChanceFireTriggerParams);
     // Victory messages and recording of winners
-    triggerVictory(triggersToFire, bridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+    triggerVictory(triggersToFire, bridge, noChanceFireTriggerParams);
     // for both 'when' and 'activated triggers', we can change the uses now. (for other triggers, we change at end of
     // each round)
-    if (useUses) {
-      setUsesForWhenTriggers(triggersToFire, bridge, useUses);
+    if (initialFireTriggerParams.useUses) {
+      setUsesForWhenTriggers(triggersToFire, bridge, initialFireTriggerParams.useUses);
     }
   }
 
@@ -1429,14 +1431,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    *
    * @param customPredicate Must have no side-effects.
    */
-  static Collection<TriggerAttachment> filterSatisfiedTriggers(
+  private static Collection<TriggerAttachment> filterSatisfiedTriggers(
       final Set<TriggerAttachment> satisfiedTriggers, final Predicate<TriggerAttachment> customPredicate,
-      final String beforeOrAfter, final String stepName, final boolean testUses, final boolean testWhen) {
+      final FireTriggerParams fireTriggerParams) {
     Predicate<TriggerAttachment> combinedPredicate = customPredicate;
-    if (testWhen) {
-      combinedPredicate = combinedPredicate.and(whenOrDefaultMatch(beforeOrAfter, stepName));
+    if (fireTriggerParams.testWhen) {
+      combinedPredicate = combinedPredicate
+          .and(whenOrDefaultMatch(fireTriggerParams.beforeOrAfter, fireTriggerParams.stepName));
     }
-    if (testUses) {
+    if (fireTriggerParams.testUses) {
       combinedPredicate = combinedPredicate.and(availableUses);
     }
     return CollectionUtils.getMatches(satisfiedTriggers, combinedPredicate);
@@ -1451,33 +1454,30 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all notifications associated with {@code satisfiedTriggers}.
    */
   public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
-      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
-      final boolean testChance, final boolean testWhen) {
+      final FireTriggerParams fireTriggerParams) {
 
     // NOTE: The check is needed to ensure that UI-related code (namely 'NotificationMessages.getInstance()') is
     // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
     if (satisfiedTriggers.stream().anyMatch(notificationMatch())) {
       triggerNotifications(
-          satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
+          satisfiedTriggers, bridge, fireTriggerParams,
           NotificationMessages.getInstance());
     }
   }
 
   @VisibleForTesting
   static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
-      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
-      final boolean testChance, final boolean testWhen,
-      final NotificationMessages notificationMessages) {
+      final FireTriggerParams fireTriggerParams, final NotificationMessages notificationMessages) {
 
     final GameData data = bridge.getData();
-    final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, notificationMatch(), beforeOrAfter, stepName, testUses, testWhen);
+    final Collection<TriggerAttachment> trigs =
+        filterSatisfiedTriggers(satisfiedTriggers, notificationMatch(), fireTriggerParams);
     final Set<String> notifications = new HashSet<>();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       if (!notifications.contains(t.getNotification())) {
@@ -1517,16 +1517,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * {@link UserActionAttachment}.
    */
   public static void triggerPlayerPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, playerPropertyMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, playerPropertyMatch(), fireTriggerParams);
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getPlayerProperty()) {
@@ -1559,16 +1558,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * property changes associated with the following attachments will be triggered: {@link RelationshipTypeAttachment}.
    */
   public static void triggerRelationshipTypePropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, relationshipTypePropertyMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, relationshipTypePropertyMatch(), fireTriggerParams);
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getRelationshipTypeProperty()) {
@@ -1601,17 +1599,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * {@link CanalAttachment}.
    */
   public static void triggerTerritoryPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, territoryPropertyMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, territoryPropertyMatch(), fireTriggerParams);
     final CompositeChange change = new CompositeChange();
     final Set<Territory> territoriesNeedingReDraw = new HashSet<>();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getTerritoryProperty()) {
@@ -1659,16 +1656,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * property changes associated with the following attachments will be triggered: {@link TerritoryEffectAttachment}.
    */
   public static void triggerTerritoryEffectPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, territoryEffectPropertyMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, territoryEffectPropertyMatch(), fireTriggerParams);
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getTerritoryEffectProperty()) {
@@ -1700,16 +1696,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * with the following attachments will be triggered: {@link UnitAttachment} and {@link UnitSupportAttachment}.
    */
   public static void triggerUnitPropertyChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, unitPropertyMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, unitPropertyMatch(), fireTriggerParams);
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       for (final Tuple<String, String> property : t.getUnitProperty()) {
@@ -1740,17 +1735,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all relationship changes associated with {@code satisfiedTriggers}.
    */
   public static void triggerRelationshipChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams) {
     final GameData data = bridge.getData();
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, relationshipChangeMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, relationshipChangeMatch(), fireTriggerParams);
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       for (final String relationshipChange : t.getRelationshipChange()) {
@@ -1792,15 +1786,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all available technology advance changes associated with {@code satisfiedTriggers}.
    */
   public static void triggerAvailableTechChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, techAvailableMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, techAvailableMatch(), fireTriggerParams);
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       for (final PlayerId player : t.getPlayers()) {
@@ -1831,15 +1824,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all technology advance changes associated with {@code satisfiedTriggers}.
    */
   public static void triggerTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
-      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
-      final boolean testChance, final boolean testWhen) {
+      final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, techMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, techMatch(), fireTriggerParams);
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       for (final PlayerId player : t.getPlayers()) {
@@ -1859,16 +1851,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all production changes associated with {@code satisfiedTriggers}.
    */
   public static void triggerProductionChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, prodMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, prodMatch(), fireTriggerParams);
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       for (final PlayerId player : t.getPlayers()) {
@@ -1886,17 +1877,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all production frontier edit changes associated with {@code satisfiedTriggers}.
    */
   public static void triggerProductionFrontierEditChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams) {
     final GameData data = bridge.getData();
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, prodFrontierEditMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, prodFrontierEditMatch(), fireTriggerParams);
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment triggerAttachment : trigs) {
-      if (testChance && !triggerAttachment.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !triggerAttachment.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         triggerAttachment.use(bridge);
       }
       triggerAttachment.getProductionRule().stream()
@@ -1933,17 +1923,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all unit support changes associated with {@code satisfiedTriggers}.
    */
   public static void triggerSupportChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
-      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
-      final boolean testChance, final boolean testWhen) {
+      final FireTriggerParams fireTriggerParams) {
     final GameData data = bridge.getData();
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, supportMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, supportMatch(), fireTriggerParams);
     final CompositeChange change = new CompositeChange();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       for (final PlayerId player : t.getPlayers()) {
@@ -1986,17 +1975,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all territory ownership changes associated with {@code satisfiedTriggers}.
    */
   public static void triggerChangeOwnership(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams) {
     final GameData data = bridge.getData();
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, changeOwnershipMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, changeOwnershipMatch(), fireTriggerParams);
     final BattleTracker bt = DelegateFinder.battleDelegate(data).getBattleTracker();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       for (final String value : t.getChangeOwnership()) {
@@ -2037,15 +2025,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all purchase changes associated with {@code satisfiedTriggers}.
    */
   public static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
-      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
-      final boolean testChance, final boolean testWhen) {
+      final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, purchaseMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, purchaseMatch(), fireTriggerParams);
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
@@ -2071,15 +2058,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all unit removal changes associated with {@code satisfiedTriggers}.
    */
   public static void triggerUnitRemoval(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
-      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
-      final boolean testChance, final boolean testWhen) {
+      final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, removeUnitsMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, removeUnitsMatch(), fireTriggerParams);
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
@@ -2097,15 +2083,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all unit placement changes associated with {@code satisfiedTriggers}.
    */
   public static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
-      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
-      final boolean testChance, final boolean testWhen) {
+      final FireTriggerParams fireTriggerParams) {
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, placeMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, placeMatch(), fireTriggerParams);
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
@@ -2124,33 +2109,33 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    */
   public static IntegerMap<Resource> findResourceIncome(final Set<TriggerAttachment> satisfiedTriggers,
       final IDelegateBridge bridge) {
-    return triggerResourceChange(satisfiedTriggers, bridge, null, null, true, true, true, true, new StringBuilder());
+    return triggerResourceChange(satisfiedTriggers, bridge,
+        new FireTriggerParams(
+            null, null, true, true, true, true),
+        new StringBuilder());
   }
 
   /**
    * Triggers all resource changes based on satisfied triggers and returns string summary of the changes.
    */
   public static String triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams) {
     final StringBuilder endOfTurnReport = new StringBuilder();
-    triggerResourceChange(satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
-        endOfTurnReport);
+    triggerResourceChange(satisfiedTriggers, bridge, fireTriggerParams, endOfTurnReport);
     return endOfTurnReport.toString();
   }
 
   private static IntegerMap<Resource> triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers,
-      final IDelegateBridge bridge, final String beforeOrAfter, final String stepName, final boolean useUses,
-      final boolean testUses, final boolean testChance, final boolean testWhen, final StringBuilder endOfTurnReport) {
+      final IDelegateBridge bridge, final FireTriggerParams fireTriggerParams, final StringBuilder endOfTurnReport) {
     final GameData data = bridge.getData();
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, resourceMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, resourceMatch(), fireTriggerParams);
     final IntegerMap<Resource> resources = new IntegerMap<>();
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
@@ -2183,17 +2168,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all trigger activations associated with {@code satisfiedTriggers}.
    */
   public static void triggerActivateTriggerOther(final Map<ICondition, Boolean> testedConditionsSoFar,
-      final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge, final String beforeOrAfter,
-      final String stepName, final boolean useUses, final boolean testUses, final boolean testChance,
-      final boolean testWhen) {
+      final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
+      final FireTriggerParams activateFireTriggerParams) {
     final GameData data = bridge.getData();
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, activateTriggerMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, activateTriggerMatch(), activateFireTriggerParams);
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (activateFireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (activateFireTriggerParams.useUses) {
         t.use(bridge);
       }
       final int eachMultiple = getEachMultiple(t);
@@ -2229,11 +2213,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
             continue;
           }
         }
+        final FireTriggerParams toFireTriggerParams = new FireTriggerParams(
+            activateFireTriggerParams.beforeOrAfter,
+            activateFireTriggerParams.stepName,
+            useUsesToFire, testUsesToFire, testChanceToFire, false);
         for (int i = 0; i < numberOfTimesToFire * eachMultiple; ++i) {
           bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName())
               + " activates a trigger called: " + MyFormatter.attachmentNameToText(toFire.getName()));
-          fireTriggers(toFireSet, testedConditionsSoFar, bridge, beforeOrAfter, stepName, useUsesToFire,
-              testUsesToFire, testChanceToFire, false);
+          fireTriggers(toFireSet, testedConditionsSoFar, bridge, toFireTriggerParams);
         }
       }
     }
@@ -2243,31 +2230,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
    * Triggers all victory notifications associated with {@code satisfiedTriggers}.
    */
   public static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
-      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
-      final boolean testChance, final boolean testWhen) {
+      final FireTriggerParams fireTriggerParams) {
 
     // NOTE: The check is needed to ensure that UI-related code (namely 'NotificationMessages.getInstance()') is
     // not executed when unit testing non-UI related code such as 'MustFightBattleTest'.
     if (satisfiedTriggers.stream().anyMatch(victoryMatch())) {
       triggerVictory(
-          satisfiedTriggers, bridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen,
+          satisfiedTriggers, bridge, fireTriggerParams,
           NotificationMessages.getInstance());
     }
   }
 
   @VisibleForTesting
   static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge bridge,
-      final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses,
-      final boolean testChance, final boolean testWhen,
-      final NotificationMessages notificationMessages) {
+      final FireTriggerParams fireTriggerParams, final NotificationMessages notificationMessages) {
     final GameData data = bridge.getData();
     final Collection<TriggerAttachment> trigs = filterSatisfiedTriggers(
-        satisfiedTriggers, victoryMatch(), beforeOrAfter, stepName, testUses, testWhen);
+        satisfiedTriggers, victoryMatch(), fireTriggerParams);
     for (final TriggerAttachment t : trigs) {
-      if (testChance && !t.testChance(bridge)) {
+      if (fireTriggerParams.testChance && !t.testChance(bridge)) {
         continue;
       }
-      if (useUses) {
+      if (fireTriggerParams.useUses) {
         t.use(bridge);
       }
       if (t.getPlayers() == null) {
@@ -2307,7 +2291,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   }
 
   public static Predicate<TriggerAttachment> prodFrontierEditMatch() {
-    return t -> t.getProductionRule() != null && t.getProductionRule().size() > 0;
+    return t -> t.getProductionRule() != null && !t.getProductionRule().isEmpty();
   }
 
   public static Predicate<TriggerAttachment> techMatch() {

@@ -26,6 +26,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attachments.FireTriggerParams;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
 import games.strategy.triplea.attachments.RulesAttachment;
@@ -62,8 +63,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
         final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
             CollectionUtils.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
-        TriggerAttachment.triggerRelationshipChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
-            true);
+        TriggerAttachment.triggerRelationshipChange(toFireTestedAndSatisfied, bridge, new FireTriggerParams(
+            null, null, true, true, true, true));
       }
     }
     chainAlliancesTogether(bridge);

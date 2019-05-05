@@ -31,6 +31,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
+import games.strategy.triplea.attachments.FireTriggerParams;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -107,20 +108,16 @@ public class MoveDelegate extends AbstractMoveDelegate {
                 .getMatches(toFireBeforeBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
 
             // now list out individual types to fire, once for each of the matches above.
-            TriggerAttachment.triggerNotifications(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
-                true);
-            TriggerAttachment.triggerPlayerPropertyChange(toFireTestedAndSatisfied, bridge, null, null, true, true,
-                true, true);
-            TriggerAttachment.triggerRelationshipTypePropertyChange(toFireTestedAndSatisfied, bridge, null, null,
-                true, true, true, true);
-            TriggerAttachment.triggerTerritoryPropertyChange(toFireTestedAndSatisfied, bridge, null, null, true,
-                true, true, true);
-            TriggerAttachment.triggerTerritoryEffectPropertyChange(toFireTestedAndSatisfied, bridge, null, null,
-                true, true, true, true);
-            TriggerAttachment.triggerChangeOwnership(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
-                true);
-            TriggerAttachment.triggerUnitRemoval(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
-                true);
+            final FireTriggerParams fireTriggerParams = new FireTriggerParams(
+                null, null, true, true, true, true);
+            TriggerAttachment.triggerNotifications(toFireTestedAndSatisfied, bridge, fireTriggerParams);
+            TriggerAttachment.triggerPlayerPropertyChange(toFireTestedAndSatisfied, bridge, fireTriggerParams);
+            TriggerAttachment.triggerRelationshipTypePropertyChange(toFireTestedAndSatisfied, bridge,
+                fireTriggerParams);
+            TriggerAttachment.triggerTerritoryPropertyChange(toFireTestedAndSatisfied, bridge, fireTriggerParams);
+            TriggerAttachment.triggerTerritoryEffectPropertyChange(toFireTestedAndSatisfied, bridge, fireTriggerParams);
+            TriggerAttachment.triggerChangeOwnership(toFireTestedAndSatisfied, bridge, fireTriggerParams);
+            TriggerAttachment.triggerUnitRemoval(toFireTestedAndSatisfied, bridge, fireTriggerParams);
           }
         }
       }
@@ -151,8 +148,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
               .getMatches(toFireAfterBonus, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
 
           // now list out individual types to fire, once for each of the matches above.
-          TriggerAttachment.triggerUnitPlacement(toFireTestedAndSatisfied, bridge, null, null, true, true, true,
-              true);
+          TriggerAttachment.triggerUnitPlacement(toFireTestedAndSatisfied, bridge, new FireTriggerParams(
+              null, null, true, true, true, true));
         }
       }
       if (GameStepPropertiesHelper.isResetUnitStateAtStart(data)) {
