@@ -1784,7 +1784,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean canAirAttackSubs(final Collection<Unit> firedAt, final Collection<Unit> firing) {
-    return !(firedAt.stream().anyMatch(Matches.unitIsSub()) && firing.stream().noneMatch(Matches.unitIsDestroyer()));
+    return firedAt.stream().noneMatch(Matches.unitIsSub()) || firing.stream().anyMatch(Matches.unitIsDestroyer());
   }
 
   private void defendAirOnNonSubs() {
