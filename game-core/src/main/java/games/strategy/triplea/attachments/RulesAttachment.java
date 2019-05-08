@@ -987,7 +987,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
           allUnits.retainAll(
               CollectionUtils.getMatches(allUnits, Matches.enemyUnitOfAnyOfThesePlayers(players, data)
                   .and(Matches.unitIsSea())
-                  .and(Matches.unitIsNotSub())
+                  .and(Matches.unitCanEvade().negate())
                   .and(Matches.unitIsNotTransportButCouldBeCombatTransport())));
           break;
         default:
