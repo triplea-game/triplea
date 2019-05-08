@@ -110,7 +110,7 @@ public class ProPurchaseOption {
     transportCost = unitAttachment.getTransportCost() * quantity;
     carrierCost = unitAttachment.getCarrierCost() * quantity;
     isAir = unitAttachment.getIsAir();
-    isSub = unitAttachment.getIsSub();
+    isSub = !unitAttachment.getCantTarget().isEmpty();
     isDestroyer = unitAttachment.getIsDestroyer();
     isTransport = unitAttachment.getTransportCapacity() > 0;
     isLandTransport = unitAttachment.isLandTransport();

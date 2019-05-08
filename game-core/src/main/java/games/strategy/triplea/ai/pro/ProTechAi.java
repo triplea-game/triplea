@@ -520,12 +520,11 @@ final class ProTechAi {
     if (start == null || destination == null || !start.isWater() || !destination.isWater()) {
       return null;
     }
-    final Predicate<Unit> sub = Matches.unitIsSub().negate();
     final Predicate<Unit> transport = Matches.unitIsTransport().negate().and(Matches.unitIsLand().negate());
     final Predicate<Unit> unitCond = PredicateBuilder.of(Matches.unitIsInfrastructure().negate())
         .and(Matches.alliedUnit(player, data).negate())
+        .and(Matches.unitCanBeMovedThroughByEnemies().negate())
         .andIf(Properties.getIgnoreTransportInMovement(data), transport)
-        .andIf(Properties.getIgnoreSubInMovement(data), sub)
         .build();
     final Predicate<Territory> routeCond = Matches.territoryHasUnitsThatMatch(unitCond).negate()
         .and(Matches.territoryIsWater());

@@ -577,7 +577,7 @@ class ProPurchaseAi {
 
       // Determine if need destroyer
       boolean needDestroyer = false;
-      if (enemyAttackOptions.getMax(t).getMaxUnits().stream().anyMatch(Matches.unitIsSub())
+      if (enemyAttackOptions.getMax(t).getMaxUnits().stream().anyMatch(Matches.unitHasSubBattleAbilities())
           && ownedLocalUnits.stream().noneMatch(Matches.unitIsDestroyer())) {
         needDestroyer = true;
       }
@@ -1173,7 +1173,7 @@ class ProPurchaseAi {
       if (enemyAttackOptions.getMax(t) != null) {
 
         // Determine if need destroyer
-        if (enemyAttackOptions.getMax(t).getMaxUnits().stream().anyMatch(Matches.unitIsSub())
+        if (enemyAttackOptions.getMax(t).getMaxUnits().stream().anyMatch(Matches.unitHasSubBattleAbilities())
             && t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player)).stream()
                 .noneMatch(Matches.unitIsDestroyer())) {
           needDestroyer = true;
@@ -1186,7 +1186,7 @@ class ProPurchaseAi {
             initialDefendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits());
         boolean hasOnlyRetreatingSubs =
             Properties.getSubRetreatBeforeBattle(data)
-                && !initialDefendingUnits.isEmpty() && initialDefendingUnits.stream().allMatch(Matches.unitIsSub())
+                && !initialDefendingUnits.isEmpty() && initialDefendingUnits.stream().allMatch(Matches.unitCanEvade())
                 && enemyAttackOptions.getMax(t).getMaxUnits().stream().noneMatch(Matches.unitIsDestroyer());
         final List<Unit> unitsToPlace = new ArrayList<>();
         for (final ProPurchaseTerritory purchaseTerritory : selectedPurchaseTerritories) {
@@ -1253,7 +1253,7 @@ class ProPurchaseAi {
                 defendingUnits, enemyAttackOptions.getMax(t).getMaxBombardUnits());
             hasOnlyRetreatingSubs =
                 Properties.getSubRetreatBeforeBattle(data) && !defendingUnits.isEmpty()
-                    && defendingUnits.stream().allMatch(Matches.unitIsSub())
+                    && defendingUnits.stream().allMatch(Matches.unitCanEvade())
                     && enemyAttackOptions.getMax(t).getMaxUnits().stream().noneMatch(Matches.unitIsDestroyer());
           }
         }
@@ -1324,7 +1324,8 @@ class ProPurchaseAi {
       }
 
       // Check if destroyer is needed
-      final int numEnemySubs = CollectionUtils.countMatches(enemyUnitsInSeaTerritories, Matches.unitIsSub());
+      final int numEnemySubs =
+          CollectionUtils.countMatches(enemyUnitsInSeaTerritories, Matches.unitHasSubBattleAbilities());
       final int numMyDestroyers = CollectionUtils.countMatches(myUnitsInSeaTerritories, Matches.unitIsDestroyer());
       if (numEnemySubs > 2 * numMyDestroyers) {
         needDestroyer = true;

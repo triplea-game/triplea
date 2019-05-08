@@ -1797,7 +1797,8 @@ class ProNonCombatMoveAi {
         final int numLandAttackTerritories = CollectionUtils.countMatches(possibleAttackTerritories,
             ProMatches.territoryIsEnemyOrCantBeHeldAndIsAdjacentToMyLandUnits(player, data, territoriesThatCantBeHeld));
         final int numSeaAttackTerritories = CollectionUtils.countMatches(possibleAttackTerritories, Matches
-            .territoryHasEnemySeaUnits(player, data).and(Matches.territoryHasUnitsThatMatch(Matches.unitIsNotSub())));
+            .territoryHasEnemySeaUnits(player, data)
+            .and(Matches.territoryHasUnitsThatMatch(Matches.unitHasSubBattleAbilities().negate())));
         final Set<Territory> possibleMoveTerritories =
             data.getMap().getNeighbors(t, range, ProMatches.territoryCanMoveAirUnits(player, data, true));
         final int numNearbyEnemyTerritories = CollectionUtils.countMatches(possibleMoveTerritories,
