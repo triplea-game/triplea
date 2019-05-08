@@ -1450,7 +1450,7 @@ class WW2V3Year41Test {
     final Territory uk = territory("United Kingdom", gameData);
     final Territory sz5 = territory("5 Sea Zone", gameData);
     // remove the sub
-    removeFrom(sz5, sz5.getUnitCollection().getMatches(Matches.unitIsSub()));
+    removeFrom(sz5, sz5.getUnitCollection().getMatches(Matches.unitCanEvade()));
 
     move(uk.getUnitCollection().getMatches(Matches.unitIsAir()), gameData.getMap().getRoute(uk, sz5));
     // move units for amphib assault
