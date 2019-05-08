@@ -496,7 +496,7 @@ public class BattleTracker implements Serializable {
       // TODO check if istrn and NOT isDD
       // If subs are restricted from controlling sea zones, subtract them
       if (Properties.getSubControlSeaZoneRestricted(data)) {
-        totalMatches -= CollectionUtils.countMatches(arrivedUnits, Matches.unitIsSub());
+        totalMatches -= CollectionUtils.countMatches(arrivedUnits, Matches.unitCanBeMovedThroughByEnemies());
       }
       if (totalMatches == 0) {
         return;

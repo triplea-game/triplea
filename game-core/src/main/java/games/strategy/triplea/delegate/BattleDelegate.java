@@ -397,9 +397,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final PlayerId player = bridge.getPlayerId();
     final GameData data = bridge.getData();
     final boolean ignoreTransports = isIgnoreTransportInMovement(data);
-    final boolean ignoreSubs = isIgnoreSubInMovement(data);
     final Predicate<Unit> seaTransports = Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea());
-    final Predicate<Unit> seaTranportsOrSubs = seaTransports.or(Matches.unitIsSub());
+    final Predicate<Unit> seaTranportsOrSubs = seaTransports.or(Matches.unitCanEvade());
     // we want to match all sea zones with our units and enemy units
     final Predicate<Territory> anyTerritoryWithOwnAndEnemy = Matches.territoryHasUnitsOwnedBy(player)
         .and(Matches.territoryHasEnemyUnits(player, data));
@@ -495,41 +494,37 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           }
           continue;
         }
-        // Check for ignored units
-        if (ignoreTransports || ignoreSubs) {
-          // TODO check if incoming units can attack before asking
-          // if only enemy transports... attack them?
-          if (ignoreTransports && !enemyUnits.isEmpty() && enemyUnits.stream().allMatch(seaTransports)) {
-            if (!remotePlayer.selectAttackTransports(territory)) {
-              final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
-              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
-                  BattleRecord.BattleResultDescription.NO_BATTLE, results);
-              battle.cancelBattle(bridge);
-              battleTracker.removeBattle(battle, data);
-            }
-            continue;
+        // TODO check if incoming units can attack before asking
+        // if only enemy transports... attack them?
+        if (ignoreTransports && !enemyUnits.isEmpty() && enemyUnits.stream().allMatch(seaTransports)) {
+          if (!remotePlayer.selectAttackTransports(territory)) {
+            final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
+            battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
+                BattleRecord.BattleResultDescription.NO_BATTLE, results);
+            battle.cancelBattle(bridge);
+            battleTracker.removeBattle(battle, data);
           }
-          // if only enemy subs... attack them?
-          if (ignoreSubs && !enemyUnits.isEmpty() && enemyUnits.stream().allMatch(Matches.unitIsSub())) {
-            if (!remotePlayer.selectAttackSubs(territory)) {
-              final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
-              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
-                  BattleRecord.BattleResultDescription.NO_BATTLE, results);
-              battle.cancelBattle(bridge);
-              battleTracker.removeBattle(battle, data);
-            }
-            continue;
+          continue;
+        }
+        // if only enemy subs... attack them?
+        if (!enemyUnits.isEmpty() && enemyUnits.stream().allMatch(Matches.unitCanBeMovedThroughByEnemies())) {
+          if (!remotePlayer.selectAttackSubs(territory)) {
+            final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
+            battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
+                BattleRecord.BattleResultDescription.NO_BATTLE, results);
+            battle.cancelBattle(bridge);
+            battleTracker.removeBattle(battle, data);
           }
-          // if only enemy transports and subs... attack them?
-          if (ignoreSubs && ignoreTransports && !enemyUnits.isEmpty()
-              && enemyUnits.stream().allMatch(seaTranportsOrSubs)) {
-            if (!remotePlayer.selectAttackUnits(territory)) {
-              final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
-              battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
-                  BattleRecord.BattleResultDescription.NO_BATTLE, results);
-              battle.cancelBattle(bridge);
-              battleTracker.removeBattle(battle, data);
-            }
+          continue;
+        }
+        // if only enemy transports and subs... attack them?
+        if (ignoreTransports && !enemyUnits.isEmpty() && enemyUnits.stream().allMatch(seaTranportsOrSubs)) {
+          if (!remotePlayer.selectAttackUnits(territory)) {
+            final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
+            battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleId(), null, 0, 0,
+                BattleRecord.BattleResultDescription.NO_BATTLE, results);
+            battle.cancelBattle(bridge);
+            battleTracker.removeBattle(battle, data);
           }
         }
       }
@@ -1195,7 +1190,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Predicate<Unit> canBeAttackedDefault = Matches.unitIsOwnedBy(player)
         .and(Matches.unitIsSea())
         .and(Matches.unitIsNotTransportButCouldBeCombatTransport())
-        .and(Matches.unitIsNotSub());
+        .and(Matches.unitCanEvade().negate());
     final boolean onlyWhereThereAreBattlesOrAmphibious =
         Properties.getKamikazeSuicideAttacksOnlyWhereBattlesAre(data);
     final Collection<Territory> pendingBattles = battleTracker.getPendingBattleSites(false);
@@ -1500,10 +1495,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
 
   private static boolean isIgnoreTransportInMovement(final GameData data) {
     return Properties.getIgnoreTransportInMovement(data);
-  }
-
-  private static boolean isIgnoreSubInMovement(final GameData data) {
-    return Properties.getIgnoreSubInMovement(data);
   }
 
   @Override
