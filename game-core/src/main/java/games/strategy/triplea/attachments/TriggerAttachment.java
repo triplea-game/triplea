@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.triplea.java.ObjectUtils;
+import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
@@ -1434,14 +1435,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
   private static Collection<TriggerAttachment> filterSatisfiedTriggers(
       final Set<TriggerAttachment> satisfiedTriggers, final Predicate<TriggerAttachment> customPredicate,
       final FireTriggerParams fireTriggerParams) {
-    Predicate<TriggerAttachment> combinedPredicate = customPredicate;
-    if (fireTriggerParams.testWhen) {
-      combinedPredicate = combinedPredicate
-          .and(whenOrDefaultMatch(fireTriggerParams.beforeOrAfter, fireTriggerParams.stepName));
-    }
-    if (fireTriggerParams.testUses) {
-      combinedPredicate = combinedPredicate.and(availableUses);
-    }
+    final Predicate<TriggerAttachment> combinedPredicate = PredicateBuilder
+        .of(customPredicate)
+        .andIf(fireTriggerParams.testWhen,
+            whenOrDefaultMatch(fireTriggerParams.beforeOrAfter, fireTriggerParams.stepName))
+        .andIf(fireTriggerParams.testUses, availableUses)
+        .build();
     return CollectionUtils.getMatches(satisfiedTriggers, combinedPredicate);
   }
 
