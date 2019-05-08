@@ -106,10 +106,6 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getIsSea();
   }
 
-  // public static Predicate<Unit> unitIsSub() {
-  // return unit -> UnitAttachment.get(unit.getType()).getIsSub();
-  // }
-
   public static Predicate<Unit> unitHasSubBattleAbilities() {
     return unitCanEvade().or(unitIsFirstStrike()).or(unitCantBeTargetedByAll());
   }
@@ -131,7 +127,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitCantTargetAll() {
-    return unit -> !UnitAttachment.get(unit.getType()).getCantBeTargetedBy().isEmpty();
+    return unit -> !UnitAttachment.get(unit.getType()).getCantTarget().isEmpty();
   }
 
   public static Predicate<Unit> unitCantBeTargetedByAll() {
