@@ -14,6 +14,8 @@ import games.strategy.triplea.delegate.MustFightBattle.RetreatType;
  */
 public final class SoundUtils {
 
+  private SoundUtils() {}
+
   /**
    * Plays appropriate sound clip for type of battle (land, air, sea, subs).
    */
