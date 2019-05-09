@@ -124,7 +124,7 @@ class DummyPlayer extends AbstractAi {
         return null;
       }
       if (!enemyUnits.isEmpty() && enemyUnits.stream().allMatch(planeNotDestroyer) && !ourUnits.isEmpty()
-          && ourUnits.stream().allMatch(Matches.unitCantBeTargetedByAll())) {
+          && ourUnits.stream().allMatch(Matches.unitCanNotBeTargetedByAll())) {
         return possibleTerritories.iterator().next();
       }
       return null;

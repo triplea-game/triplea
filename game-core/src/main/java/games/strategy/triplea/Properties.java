@@ -304,7 +304,7 @@ public final class Properties implements Constants {
 
   /**
    * Air restricted from attacking subs unless DD present. When 'isSub' unit option is used this
-   * sets 'cantBeTargetedBy' unit option to all air units.
+   * sets 'canNotBeTargetedBy' unit option to all air units.
    */
   public static boolean getAirAttackSubRestricted(final GameData data) {
     return data.getProperties().get(AIR_ATTACK_SUB_RESTRICTED, false);

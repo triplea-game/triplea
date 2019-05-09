@@ -107,7 +107,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitHasSubBattleAbilities() {
-    return unitCanEvade().or(unitIsFirstStrike()).or(unitCantBeTargetedByAll());
+    return unitCanEvade().or(unitIsFirstStrike()).or(unitCanNotBeTargetedByAll());
   }
 
   public static Predicate<Unit> unitCanEvade() {
@@ -126,12 +126,12 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getCanBeMovedThroughByEnemies();
   }
 
-  public static Predicate<Unit> unitCantTargetAll() {
-    return unit -> !UnitAttachment.get(unit.getType()).getCantTarget().isEmpty();
+  public static Predicate<Unit> unitCanNotTargetAll() {
+    return unit -> !UnitAttachment.get(unit.getType()).getCanNotTarget().isEmpty();
   }
 
-  public static Predicate<Unit> unitCantBeTargetedByAll() {
-    return unit -> !UnitAttachment.get(unit.getType()).getCantBeTargetedBy().isEmpty();
+  public static Predicate<Unit> unitCanNotBeTargetedByAll() {
+    return unit -> !UnitAttachment.get(unit.getType()).getCanNotBeTargetedBy().isEmpty();
   }
 
   private static Predicate<Unit> unitIsCombatTransport() {

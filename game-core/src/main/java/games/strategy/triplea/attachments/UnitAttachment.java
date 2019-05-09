@@ -83,8 +83,8 @@ public class UnitAttachment extends DefaultAttachment {
   // sub/destroyer related
   private boolean canEvade = false;
   private boolean isFirstStrike = false;
-  private Set<UnitType> cantTarget = new HashSet<>();
-  private Set<UnitType> cantBeTargetedBy = new HashSet<>();
+  private Set<UnitType> canNotTarget = new HashSet<>();
+  private Set<UnitType> canNotBeTargetedBy = new HashSet<>();
   private boolean canMoveThroughEnemies = false;
   private boolean canBeMovedThroughByEnemies = false;
   private boolean isDestroyer = false;
@@ -603,11 +603,11 @@ public class UnitAttachment extends DefaultAttachment {
     setCanMoveThroughEnemies(s && Properties.getSubmersibleSubs(getData()));
     setCanBeMovedThroughByEnemies(s && Properties.getIgnoreSubInMovement(getData()));
     if (s) {
-      cantTarget = null;
-      cantBeTargetedBy = Properties.getAirAttackSubRestricted(getData()) ? null : new HashSet<>();
+      canNotTarget = null;
+      canNotBeTargetedBy = Properties.getAirAttackSubRestricted(getData()) ? null : new HashSet<>();
     } else {
-      resetCantTarget();
-      resetCantBeTargetedBy();
+      resetCanNotTarget();
+      resetCanNotBeTargetedBy();
     }
   }
 
@@ -643,58 +643,58 @@ public class UnitAttachment extends DefaultAttachment {
     return canBeMovedThroughByEnemies;
   }
 
-  private void setCantTarget(final String value) throws GameParseException {
+  private void setCanNotTarget(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
-        throw new GameParseException("cantTarget: no such unit type: " + u + thisErrorMsg());
+        throw new GameParseException("canNotTarget: no such unit type: " + u + thisErrorMsg());
       }
-      cantTarget.add(ut);
+      canNotTarget.add(ut);
     }
   }
 
-  private void setCantTarget(final Set<UnitType> value) {
-    cantTarget = value;
+  private void setCanNotTarget(final Set<UnitType> value) {
+    canNotTarget = value;
   }
 
-  public Set<UnitType> getCantTarget() {
-    if (cantTarget == null) {
-      cantTarget = new HashSet<>(
+  public Set<UnitType> getCanNotTarget() {
+    if (canNotTarget == null) {
+      canNotTarget = new HashSet<>(
           CollectionUtils.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
     }
-    return cantTarget;
+    return canNotTarget;
   }
 
-  private void resetCantTarget() {
-    cantTarget = new HashSet<>();
+  private void resetCanNotTarget() {
+    canNotTarget = new HashSet<>();
   }
 
-  private void setCantBeTargetedBy(final String value) throws GameParseException {
+  private void setCanNotBeTargetedBy(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
-        throw new GameParseException("cantBeTargetedBy: no such unit type: " + u + thisErrorMsg());
+        throw new GameParseException("canNotBeTargetedBy: no such unit type: " + u + thisErrorMsg());
       }
-      cantBeTargetedBy.add(ut);
+      canNotBeTargetedBy.add(ut);
     }
   }
 
-  private void setCantBeTargetedBy(final Set<UnitType> value) {
-    cantBeTargetedBy = value;
+  private void setCanNotBeTargetedBy(final Set<UnitType> value) {
+    canNotBeTargetedBy = value;
   }
 
-  public Set<UnitType> getCantBeTargetedBy() {
-    if (cantBeTargetedBy == null) {
-      cantBeTargetedBy = new HashSet<>(
+  public Set<UnitType> getCanNotBeTargetedBy() {
+    if (canNotBeTargetedBy == null) {
+      canNotBeTargetedBy = new HashSet<>(
           CollectionUtils.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
     }
-    return cantBeTargetedBy;
+    return canNotBeTargetedBy;
   }
 
-  private void resetCantBeTargetedBy() {
-    cantBeTargetedBy = new HashSet<>();
+  private void resetCanNotBeTargetedBy() {
+    canNotBeTargetedBy = new HashSet<>();
   }
 
   private void setIsCombatTransport(final String s) {
@@ -2745,8 +2745,8 @@ public class UnitAttachment extends DefaultAttachment {
         + "  carrierCost:" + carrierCost
         + "  canEvade:" + canEvade
         + "  isFirstStrike:" + isFirstStrike
-        + "  cantTarget:" + (cantTarget.isEmpty() ? "empty" : cantTarget.toString())
-        + "  cantBeTargetedBy:" + (cantBeTargetedBy.isEmpty() ? "empty" : cantBeTargetedBy.toString())
+        + "  canNotTarget:" + (canNotTarget.isEmpty() ? "empty" : canNotTarget.toString())
+        + "  canNotBeTargetedBy:" + (canNotBeTargetedBy.isEmpty() ? "empty" : canNotBeTargetedBy.toString())
         + "  canMoveThroughEnemies:" + canMoveThroughEnemies
         + "  canBeMovedThroughByEnemies:" + canBeMovedThroughByEnemies
         + "  isDestroyer:" + isDestroyer
@@ -3042,16 +3042,16 @@ public class UnitAttachment extends DefaultAttachment {
     if (getCanBeMovedThroughByEnemies()) {
       tuples.add(Tuple.of("Can Be Moved Through By Enemies", ""));
     }
-    if (!getCantTarget().isEmpty()) {
-      if (getCantTarget().size() <= 4) {
-        tuples.add(Tuple.of("Can't Target: ", getCantTarget().toString()));
+    if (!getCanNotTarget().isEmpty()) {
+      if (getCanNotTarget().size() <= 4) {
+        tuples.add(Tuple.of("Can't Target: ", getCanNotTarget().toString()));
       } else {
         tuples.add(Tuple.of("Can't Target Some Units", ""));
       }
     }
-    if (!getCantBeTargetedBy().isEmpty()) {
-      if (getCantBeTargetedBy().size() <= 4) {
-        tuples.add(Tuple.of("Can't Be Targeted By: ", getCantBeTargetedBy().toString()));
+    if (!getCanNotBeTargetedBy().isEmpty()) {
+      if (getCanNotBeTargetedBy().size() <= 4) {
+        tuples.add(Tuple.of("Can't Be Targeted By: ", getCanNotBeTargetedBy().toString()));
       } else {
         tuples.add(Tuple.of("Can't Be Targeted By Some Units", ""));
       }
@@ -3411,18 +3411,18 @@ public class UnitAttachment extends DefaultAttachment {
                 this::setIsFirstStrike,
                 this::getIsFirstStrike,
                 () -> false))
-        .put("cantTarget",
+        .put("canNotTarget",
             MutableProperty.of(
-                this::setCantTarget,
-                this::setCantTarget,
-                this::getCantTarget,
-                this::resetCantTarget))
-        .put("cantBeTargetedBy",
+                this::setCanNotTarget,
+                this::setCanNotTarget,
+                this::getCanNotTarget,
+                this::resetCanNotTarget))
+        .put("canNotBeTargetedBy",
             MutableProperty.of(
-                this::setCantBeTargetedBy,
-                this::setCantBeTargetedBy,
-                this::getCantBeTargetedBy,
-                this::resetCantBeTargetedBy))
+                this::setCanNotBeTargetedBy,
+                this::setCanNotBeTargetedBy,
+                this::getCanNotBeTargetedBy,
+                this::resetCanNotBeTargetedBy))
         .put("canMoveThroughEnemies",
             MutableProperty.ofMapper(
                 DefaultAttachment::getBool,
