@@ -39,6 +39,28 @@ public final class SoundUtils {
   }
 
   /**
+   * Plays appropriate sound clip for firing battle AA based on type and whether it got any hits.
+   */
+  public static void playFireBattleAa(final PlayerId firingPlayer, final String aaType, final boolean isHit,
+      final IDelegateBridge bridge) {
+    if (aaType.equals("AA")) {
+      if (isHit) {
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT, firingPlayer);
+      } else {
+        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS, firingPlayer);
+      }
+    } else {
+      if (isHit) {
+        bridge.getSoundChannelBroadcaster().playSoundForAll(
+            SoundPath.CLIP_BATTLE_X_PREFIX + aaType.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT, firingPlayer);
+      } else {
+        bridge.getSoundChannelBroadcaster().playSoundForAll(
+            SoundPath.CLIP_BATTLE_X_PREFIX + aaType.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS, firingPlayer);
+      }
+    }
+  }
+
+  /**
    * Plays appropriate sound clip for type of retreat (land, air, sea, subs).
    */
   public static void playRetreatType(final PlayerId attacker, final Collection<Unit> units,

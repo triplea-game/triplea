@@ -17,7 +17,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
-import games.strategy.sound.SoundPath;
+import games.strategy.sound.SoundUtils;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.MustFightBattle.ReturnFire;
@@ -100,25 +100,7 @@ public class FireAa implements IExecutable {
               dice = DiceRoll.rollAa(validTargets, firingGroup, allEnemyUnitsAliveOrWaitingToDie,
                   allFriendlyUnitsAliveOrWaitingToDie, bridge, battleSite, defending);
               if (!headless) {
-                if (aaType.equals("AA")) {
-                  if (dice.getHits() > 0) {
-                    bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
-                        firingPlayer);
-                  } else {
-                    bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
-                        firingPlayer);
-                  }
-                } else {
-                  if (dice.getHits() > 0) {
-                    bridge.getSoundChannelBroadcaster().playSoundForAll(
-                        SoundPath.CLIP_BATTLE_X_PREFIX + aaType.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                        firingPlayer);
-                  } else {
-                    bridge.getSoundChannelBroadcaster().playSoundForAll(
-                        SoundPath.CLIP_BATTLE_X_PREFIX + aaType.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                        firingPlayer);
-                  }
-                }
+                SoundUtils.playFireBattleAa(firingPlayer, aaType, dice.getHits() > 0, bridge);
               }
             }
           }
