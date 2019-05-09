@@ -21,6 +21,7 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 import games.strategy.engine.data.Change;
@@ -246,8 +247,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   /**
-   * Add bombardment units to battles. Made public for test purposes only.
+   * Add bombardment units to battles.
    */
+  @VisibleForTesting
   void addBombardmentSources() {
     final PlayerId attacker = bridge.getPlayerId();
     final ITripleAPlayer remotePlayer = getRemotePlayer();

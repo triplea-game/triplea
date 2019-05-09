@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.triplea.java.Interruptibles;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -34,13 +33,13 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.sound.SoundPath;
+import games.strategy.sound.SoundUtils;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.BattleRecord;
-import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TuvUtils;
@@ -59,7 +58,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     ALL, SUBS, NONE
   }
 
-  private enum RetreatType {
+  /**
+   * Determines the type of retreat.
+   */
+  public enum RetreatType {
     DEFAULT, SUBS, PLANES, PARTIAL_AMPHIB
   }
 
@@ -258,8 +260,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void updateDefendingAaUnits() {
-    final Collection<Unit> canFire = new ArrayList<>(defendingUnits.size() + defendingWaitingToDie.size());
-    canFire.addAll(defendingUnits);
+    final Collection<Unit> canFire = new ArrayList<>(defendingUnits);
     canFire.addAll(defendingWaitingToDie);
     final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
         TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData);
@@ -272,8 +273,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void updateOffensiveAaUnits() {
-    final Collection<Unit> canFire = new ArrayList<>(attackingUnits.size() + attackingWaitingToDie.size());
-    canFire.addAll(attackingUnits);
+    final Collection<Unit> canFire = new ArrayList<>(attackingUnits);
     canFire.addAll(attackingWaitingToDie);
     // no airborne targets for offensive aa
     offensiveAa = CollectionUtils.getMatches(canFire, Matches.unitIsAaThatCanFire(defendingUnits,
@@ -286,8 +286,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   @Override
   public void fight(final IDelegateBridge bridge) {
-    // remove units that may already be dead due to a previous event (like they died from a strategic bombing raid,
-    // rocket attack, etc)
     removeUnitsThatNoLongerExist();
     if (stack.isExecuting()) {
       final ITripleADisplay display = getDisplay(bridge);
@@ -303,23 +301,18 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     bridge.getHistoryWriter().startEvent("Battle in " + battleSite, battleSite);
     removeAirNoLongerInTerritory();
     writeUnitsToHistory(bridge);
-    // it is possible that no attacking units are present, if so end now changed to only look at units that can be
-    // destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
-    if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).size() == 0) {
+    if (CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotInfrastructure()).isEmpty()) {
       endBattle(bridge);
       defenderWins(bridge);
       return;
     }
-    // it is possible that no defending units exist, changed to only look at units that can be destroyed in combat, and
-    // therefore not include factories, aa guns, and infrastructure.
-    if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure()).size() == 0) {
+    if (CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotInfrastructure()).isEmpty()) {
       endBattle(bridge);
       attackerWins(bridge);
       return;
     }
     addDependentUnits(TransportTracker.transporting(defendingUnits));
     addDependentUnits(TransportTracker.transporting(attackingUnits));
-    // determine any AA
     updateOffensiveAaUnits();
     updateDefendingAaUnits();
     stepStrings = determineStepStrings(true);
@@ -338,22 +331,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         BattleCalculator.sortPreBattle(attackingUnits);
       }
       BattleCalculator.sortPreBattle(defendingUnits);
-      // play a sound
-      if (attackingUnits.stream().anyMatch(Matches.unitIsSea())
-          || defendingUnits.stream().anyMatch(Matches.unitIsSea())) {
-        if ((!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitCanEvade()))
-            || (attackingUnits.stream().anyMatch(Matches.unitCanEvade())
-                && defendingUnits.stream().anyMatch(Matches.unitCanEvade()))) {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUBS, attacker);
-        } else {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_NORMAL, attacker);
-        }
-      } else if (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir())
-          && !defendingUnits.isEmpty() && defendingUnits.stream().allMatch(Matches.unitIsAir())) {
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR, attacker);
-      } else {
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_LAND, attacker);
-      }
+      SoundUtils.playBattleType(attacker, attackingUnits, defendingUnits, bridge);
     }
     // push on stack in opposite order of execution
     pushFightLoopOnStack(true);
@@ -530,7 +508,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final boolean defendingSubsFireWithAllDefenders = !defenderSubsFireFirst
         && !Properties.getWW2V2(gameData) && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
     // defender subs sneak attack, no sneak attack in Pacific/Europe Theaters or if destroyers are present
-    final boolean defendingSubsFireWithAllDefendersAlways = !defendingSubsSneakAttack3();
+    final boolean defendingSubsFireWithAllDefendersAlways = !defendingSubsSneakAttack();
     if (!defendingSubsFireWithAllDefendersAlways && !defendingSubsFireWithAllDefenders && !defenderSubsFireFirst
         && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike())) {
       steps.add(defender.getName() + SUBS_FIRE);
@@ -977,7 +955,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     });
     final boolean defendingSubsFireWithAllDefenders = !defenderSubsFireFirst()
         && !Properties.getWW2V2(gameData) && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
-    if (defendingSubsSneakAttack3() && !defenderSubsFireFirst() && !defendingSubsFireWithAllDefenders) {
+    if (defendingSubsSneakAttack() && !defenderSubsFireFirst() && !defendingSubsFireWithAllDefenders) {
       steps.add(new DefendSubs() {
         private static final long serialVersionUID = 99992L;
 
@@ -1005,7 +983,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         attackNonSubs();
       }
     });
-    if (!defenderSubsFireFirst() && (!defendingSubsSneakAttack3() || defendingSubsFireWithAllDefenders)) {
+    if (!defenderSubsFireFirst() && (!defendingSubsSneakAttack() || defendingSubsFireWithAllDefenders)) {
       steps.add(new DefendSubs() {
         private static final long serialVersionUID = 999921L;
 
@@ -1036,7 +1014,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private ReturnFire returnFireAgainstAttackingSubs() {
     final boolean attackingSubsSneakAttack = defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
-    final boolean defendingSubsSneakAttack = defendingSubsSneakAttack2();
+    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers();
     final ReturnFire returnFireAgainstAttackingSubs;
     if (!attackingSubsSneakAttack) {
       returnFireAgainstAttackingSubs = ReturnFire.ALL;
@@ -1050,7 +1028,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private ReturnFire returnFireAgainstDefendingSubs() {
     final boolean attackingSubsSneakAttack = defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
-    final boolean defendingSubsSneakAttack = defendingSubsSneakAttack2();
+    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers();
     final ReturnFire returnFireAgainstDefendingSubs;
     if (!defendingSubsSneakAttack) {
       returnFireAgainstDefendingSubs = ReturnFire.ALL;
@@ -1062,11 +1040,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return returnFireAgainstDefendingSubs;
   }
 
-  private boolean defendingSubsSneakAttack2() {
-    return attackingUnits.stream().noneMatch(Matches.unitIsDestroyer()) && defendingSubsSneakAttack3();
+  private boolean defendingSubsSneakAttackAndNoAttackingDestroyers() {
+    return attackingUnits.stream().noneMatch(Matches.unitIsDestroyer()) && defendingSubsSneakAttack();
   }
 
-  private boolean defendingSubsSneakAttack3() {
+  private boolean defendingSubsSneakAttack() {
     return isWW2V2() || Properties.getDefendingSubsSneakAttack(gameData);
   }
 
@@ -1322,45 +1300,24 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         // this is illegal in ww2v2 revised and beyond (the fighters should die). still checking if illegal in classic.
         isOver = true;
       }
+      if (!headless) {
+        SoundUtils.playRetreatType(attacker, units, retreatType, bridge);
+      }
       if (subs && battleSite.equals(retreatTo) && (submerge || canDefendingSubsSubmergeOrRetreat)) {
-        if (!headless) {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SUBMERGE, attacker);
-        }
         submergeUnits(units, defender, bridge);
         final String messageShort = retreatingPlayer.getName() + " submerges subs";
         getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
       } else if (planes) {
-        if (!headless) {
-          bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, attacker);
-        }
         retreatPlanes(units, defender, bridge);
         final String messageShort = retreatingPlayer.getName() + " retreats planes";
         getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
       } else if (partialAmphib) {
-        if (!headless) {
-          if (units.stream().anyMatch(Matches.unitIsSea())) {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SEA, attacker);
-          } else if (units.stream().anyMatch(Matches.unitIsLand())) {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_LAND, attacker);
-          } else {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, attacker);
-          }
-        }
         // remove amphib units from those retreating
         units = CollectionUtils.getMatches(units, Matches.unitWasNotAmphibious());
         retreatUnitsAndPlanes(units, retreatTo, defender, bridge);
         final String messageShort = retreatingPlayer.getName() + " retreats non-amphibious units";
         getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
       } else {
-        if (!headless) {
-          if (units.stream().anyMatch(Matches.unitIsSea())) {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_SEA, attacker);
-          } else if (units.stream().anyMatch(Matches.unitIsLand())) {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_LAND, attacker);
-          } else {
-            bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_RETREAT_AIR, attacker);
-          }
-        }
         retreatUnits(units, retreatTo, defender, bridge);
         final String messageShort = retreatingPlayer.getName() + " retreats";
         final String messageLong;
@@ -1583,7 +1540,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    * Breaks list of units into groups of non suicide on hit units and each type of suicide on hit units
    * since each type of suicide on hit units need to roll separately to know which ones get hits.
    */
-  private static List<Collection<Unit>> newFiringUnitGroups(final Collection<Unit> units) {
+  static List<Collection<Unit>> newFiringUnitGroups(final Collection<Unit> units) {
 
     // Sort suicide on hit units by type
     final Map<UnitType, Collection<Unit>> map = new HashMap<>();
@@ -1902,7 +1859,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void fireNavalBombardment(final IDelegateBridge bridge) {
-    // TODO - check within the method for the bombarding limitations
     final Collection<Unit> bombard = getBombardingUnits();
     final Collection<Unit> attacked = CollectionUtils.getMatches(defendingUnits,
         Matches.unitIsNotInfrastructureAndNotCapturedOnEntering(attacker, battleSite, gameData));
@@ -1911,13 +1867,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Change change = ChangeFactory.markNoMovementChange(bombard);
       bridge.addChange(change);
     }
-    /*
-     * TODO This code is actually a bug- the property is intended to tell if the return fire is
-     * RESTRICTED- but it's used as if it's ALLOWED. The reason is the default values on the
-     * property definition. However, fixing this will entail a fix to the XML to reverse
-     * all values. We'll leave it as is for now and try to figure out a patch strategy later.
-     */
-    final boolean canReturnFire = isNavalBombardCasualtiesReturnFire();
+    final boolean canReturnFire = Properties.getNavalBombardCasualtiesReturnFire(gameData);
     if (bombard.size() > 0 && attacked.size() > 0) {
       if (!headless) {
         bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_BOMBARD, attacker);
@@ -2007,10 +1957,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return Properties.getAttackerRetreatPlanes(gameData);
   }
 
-  private boolean isNavalBombardCasualtiesReturnFire() {
-    return Properties.getNavalBombardCasualtiesReturnFireRestricted(gameData);
-  }
-
   private boolean isSuicideAndMunitionCasualtiesRestricted() {
     return Properties.getSuicideAndMunitionCasualtiesRestricted(gameData);
   }
@@ -2028,162 +1974,23 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private void fireOffensiveAaGuns() {
-    stack.push(new FireAa(false));
+    final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
+    allFriendlyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
+    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
+    allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
+    stack.push(
+        new FireAa(defendingUnits, attacker, defender, offensiveAa, this, false, dependentUnits, headless, battleSite,
+            territoryEffects, allFriendlyUnitsAliveOrWaitingToDie, allEnemyUnitsAliveOrWaitingToDie, offensiveAaTypes));
   }
 
   private void fireDefensiveAaGuns() {
-    stack.push(new FireAa(true));
-  }
-
-  class FireAa implements IExecutable {
-    private static final long serialVersionUID = -6406659798754841382L;
-
-    private final boolean defending;
-    private DiceRoll dice;
-    private CasualtyDetails casualties;
-    private final Collection<Unit> casualtiesSoFar = new ArrayList<>();
-
-    private FireAa(final boolean defending) {
-      this.defending = defending;
-    }
-
-    @Override
-    public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-      if ((defending && !canFireDefendingAa()) || (!defending && !canFireOffensiveAa())) {
-        return;
-      }
-
-      // Find all friendly and enemy units that could potentially provide support
-      final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>();
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
-      if (defending) {
-        allFriendlyUnitsAliveOrWaitingToDie.addAll(defendingUnits);
-        allFriendlyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
-        allEnemyUnitsAliveOrWaitingToDie.addAll(attackingUnits);
-        allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
-      } else {
-        allFriendlyUnitsAliveOrWaitingToDie.addAll(attackingUnits);
-        allFriendlyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
-        allEnemyUnitsAliveOrWaitingToDie.addAll(defendingUnits);
-        allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
-      }
-
-      // Loop through each type of AA and break into firing groups based on suicideOnHit
-      for (final String aaType : (defending ? defendingAaTypes : offensiveAaTypes)) {
-        final Collection<Unit> aaTypeUnits = CollectionUtils.getMatches((defending ? defendingAa : offensiveAa),
-            Matches.unitIsAaOfTypeAa(aaType));
-        final List<Collection<Unit>> firingGroups = newFiringUnitGroups(aaTypeUnits);
-        for (final Collection<Unit> firingGroup : firingGroups) {
-          final Set<UnitType> validTargetTypes =
-              UnitAttachment.get(firingGroup.iterator().next().getType()).getTargetsAa(gameData);
-          final Set<UnitType> airborneTypesTargeted =
-              defending ? TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData).get(aaType)
-                  : new HashSet<>();
-          final Collection<Unit> validTargets = CollectionUtils
-              .getMatches((defending ? attackingUnits : defendingUnits), Matches.unitIsOfTypes(validTargetTypes)
-                  .or(Matches.unitIsAirborne().and(Matches.unitIsOfTypes(airborneTypesTargeted))));
-          final IExecutable rollDice = new IExecutable() {
-            private static final long serialVersionUID = 6435935558879109347L;
-
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              validTargets.removeAll(casualtiesSoFar);
-              if (!validTargets.isEmpty()) {
-                dice = DiceRoll.rollAa(validTargets, firingGroup, allEnemyUnitsAliveOrWaitingToDie,
-                    allFriendlyUnitsAliveOrWaitingToDie, bridge, battleSite, defending);
-                if (!headless) {
-                  if (aaType.equals("AA")) {
-                    if (dice.getHits() > 0) {
-                      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_HIT,
-                          (defending ? defender : attacker));
-                    } else {
-                      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AA_MISS,
-                          (defending ? defender : attacker));
-                    }
-                  } else {
-                    if (dice.getHits() > 0) {
-                      bridge.getSoundChannelBroadcaster().playSoundForAll(
-                          SoundPath.CLIP_BATTLE_X_PREFIX + aaType.toLowerCase() + SoundPath.CLIP_BATTLE_X_HIT,
-                          (defending ? defender : attacker));
-                    } else {
-                      bridge.getSoundChannelBroadcaster().playSoundForAll(
-                          SoundPath.CLIP_BATTLE_X_PREFIX + aaType.toLowerCase() + SoundPath.CLIP_BATTLE_X_MISS,
-                          (defending ? defender : attacker));
-                    }
-                  }
-                }
-              }
-            }
-          };
-          final IExecutable selectCasualties = new IExecutable() {
-            private static final long serialVersionUID = 7943295620796835166L;
-
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              if (!validTargets.isEmpty()) {
-                final CasualtyDetails details = selectCasualties(validTargets, firingGroup, bridge, aaType);
-                markDamaged(details.getDamaged(), bridge);
-                casualties = details;
-                casualtiesSoFar.addAll(details.getKilled());
-              }
-            }
-          };
-          final IExecutable notifyCasualties = new IExecutable() {
-            private static final long serialVersionUID = -6759782085212899725L;
-
-            @Override
-            public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-              if (!validTargets.isEmpty()) {
-                notifyCasualtiesAa(bridge, aaType);
-                removeCasualties(casualties.getKilled(), ReturnFire.ALL, !defending, bridge);
-                removeSuicideOnHitCasualties(firingGroup, dice.getHits(), defending, bridge);
-              }
-            }
-          };
-          // push in reverse order of execution
-          stack.push(notifyCasualties);
-          stack.push(selectCasualties);
-          stack.push(rollDice);
-        }
-      }
-    }
-
-    private CasualtyDetails selectCasualties(final Collection<Unit> validAttackingUnitsForThisRoll,
-        final Collection<Unit> defendingAa, final IDelegateBridge bridge, final String currentTypeAa) {
-      // send defender the dice roll so he can see what the dice are while he waits for attacker to select casualties
-      getDisplay(bridge).notifyDice(dice, (defending ? attacker.getName() : defender.getName())
-          + SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
-      return BattleCalculator.getAaCasualties(!defending, validAttackingUnitsForThisRoll,
-          (defending ? attackingUnits : defendingUnits), defendingAa,
-          (defending ? defendingUnits : attackingUnits), dice, bridge,
-          (defending ? attacker : defender), battleId, battleSite, territoryEffects, isAmphibious,
-          amphibiousLandAttackers);
-    }
-
-    private void notifyCasualtiesAa(final IDelegateBridge bridge, final String currentTypeAa) {
-      if (headless) {
-        return;
-      }
-      getDisplay(bridge).casualtyNotification(battleId,
-          (defending ? attacker.getName() : defender.getName()) + REMOVE_PREFIX + currentTypeAa
-              + CASUALTIES_SUFFIX,
-          dice, (defending ? attacker : defender), new ArrayList<>(casualties.getKilled()),
-          new ArrayList<>(casualties.getDamaged()), dependentUnits);
-      getRemote((defending ? attacker : defender), bridge).confirmOwnCasualties(battleId,
-          "Press space to continue");
-      final Thread t = new Thread(() -> {
-        try {
-          getRemote((defending ? defender : attacker), bridge).confirmEnemyCasualties(battleId,
-              "Press space to continue", (defending ? attacker : defender));
-        } catch (final Exception e) {
-          // ignore
-        }
-      }, "click to continue waiter");
-      t.start();
-      bridge.leaveDelegateExecution();
-      Interruptibles.join(t);
-      bridge.enterDelegateExecution();
-    }
+    final List<Unit> allFriendlyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
+    allFriendlyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
+    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
+    allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
+    stack.push(
+        new FireAa(attackingUnits, defender, attacker, defendingAa, this, true, dependentUnits, headless, battleSite,
+            territoryEffects, allFriendlyUnitsAliveOrWaitingToDie, allEnemyUnitsAliveOrWaitingToDie, defendingAaTypes));
   }
 
   private boolean canFireDefendingAa() {
@@ -2470,23 +2277,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     showCasualties(bridge);
     battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender, attackerLostTuv, defenderLostTuv,
         battleResultDescription, new BattleResults(this, gameData));
-
-    if (battleSite.isWater()) {
-      if (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir())) {
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
-            attacker);
-      } else {
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL,
-            attacker);
-      }
-    } else {
-      // no sounds for a successful land battle, because land battle means we are going to capture a territory, and we
-      // have capture sounds for that
-      if (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir())) {
-        bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL,
-            attacker);
-      }
-    }
+    SoundUtils.playAttackerWinsAirOrSea(attacker, attackingUnits, battleSite.isWater(), bridge);
   }
 
   /**
@@ -2501,10 +2292,8 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!battleSite.isWater()) {
       return;
     }
-    // TODO: why do we keep checking throughout this entire class if the units in defendingUnits are allied with
-    // defender, and if the units in attackingUnits are allied with the attacker? Does it really matter?
-    final Predicate<Unit> alliedDefendingAir = Matches.unitIsAir().and(Matches.unitWasScrambled().negate());
-    final Collection<Unit> defendingAir = CollectionUtils.getMatches(defendingUnits, alliedDefendingAir);
+    final Predicate<Unit> unscrambledAir = Matches.unitIsAir().and(Matches.unitWasScrambled().negate());
+    final Collection<Unit> defendingAir = CollectionUtils.getMatches(defendingUnits, unscrambledAir);
     if (defendingAir.isEmpty()) {
       return;
     }
@@ -2512,7 +2301,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final int carrierCapacity = AirMovementValidator.carrierCapacity(defendingUnits, battleSite);
     // add dependent air to carrier cost
     carrierCost += AirMovementValidator
-        .carrierCost(CollectionUtils.getMatches(getDependentUnits(defendingUnits), alliedDefendingAir));
+        .carrierCost(CollectionUtils.getMatches(getDependentUnits(defendingUnits), unscrambledAir));
     // all planes can land, exit
     if (carrierCapacity >= carrierCost) {
       return;
@@ -2520,7 +2309,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // find out what we must remove by removing all the air that can land on carriers from defendingAir
     carrierCost = 0;
     carrierCost += AirMovementValidator
-        .carrierCost(CollectionUtils.getMatches(getDependentUnits(defendingUnits), alliedDefendingAir));
+        .carrierCost(CollectionUtils.getMatches(getDependentUnits(defendingUnits), unscrambledAir));
     for (final Unit currentUnit : new ArrayList<>(defendingAir)) {
       if (!Matches.unitCanLandOnCarrier().test(currentUnit)) {
         defendingAir.remove(currentUnit);

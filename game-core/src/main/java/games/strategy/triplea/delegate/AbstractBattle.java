@@ -121,6 +121,9 @@ abstract class AbstractBattle implements IBattle {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Remove any units killed by a previous event (like they died from a strategic bombing raid, rocket attack, etc).
+   */
   protected void removeUnitsThatNoLongerExist() {
     if (headless) {
       return;

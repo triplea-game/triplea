@@ -209,8 +209,8 @@ public final class Properties implements Constants {
   /**
    * Naval Bombard casualties restricted from return fire.
    */
-  public static boolean getNavalBombardCasualtiesReturnFireRestricted(final GameData data) {
-    return data.getProperties().get(NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE_RESTRICTED, false);
+  public static boolean getNavalBombardCasualtiesReturnFire(final GameData data) {
+    return data.getProperties().get(NAVAL_BOMBARD_CASUALTIES_RETURN_FIRE, false);
   }
 
   /**
