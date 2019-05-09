@@ -69,7 +69,7 @@ class UnitInformation {
             + (!currentAttachment.getIsSea() ? "-" : "true") + "," + currentAttachment.getHitPoints() + ","
             + (currentAttachment.getTransportCapacity() == -1 ? "-" : currentAttachment.getTransportCapacity()) + ","
             + (currentAttachment.getCarrierCapacity() == -1 ? "-" : currentAttachment.getCarrierCapacity()) + ","
-            + (!currentAttachment.getIsSub() ? "-" : "true") + ","
+            + (!(currentAttachment.getCanEvade() && currentAttachment.getIsFirstStrike()) ? "-" : "true") + ","
             + (!currentAttachment.getIsDestroyer() ? "-" : "true"));
         unitInformation.write("\r\n");
       }

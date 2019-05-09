@@ -1030,7 +1030,7 @@ class ProCombatMoveAi {
 
         // Add destroyer if territory has subs and a destroyer has been already added
         final List<Unit> defendingUnits = attackMap.get(t).getMaxEnemyDefenders(player, data);
-        if (defendingUnits.stream().anyMatch(Matches.unitIsSub())
+        if (defendingUnits.stream().anyMatch(Matches.unitHasSubBattleAbilities())
             && attackMap.get(t).getUnits().stream().noneMatch(Matches.unitIsDestroyer())) {
           attackMap.get(t).addUnit(unit);
           addedUnits.add(unit);

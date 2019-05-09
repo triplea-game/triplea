@@ -173,10 +173,9 @@ public final class ProMatches {
   private static Predicate<Territory> territoryHasOnlyIgnoredUnits(final PlayerId player, final GameData data) {
     return t -> {
       final Predicate<Unit> subOnly = Matches.unitIsInfrastructure()
-          .or(Matches.unitIsSub())
+          .or(Matches.unitCanBeMovedThroughByEnemies())
           .or(Matches.enemyUnit(player, data).negate());
-      return (Properties.getIgnoreSubInMovement(data) && t.getUnitCollection().allMatch(subOnly))
-          || Matches.territoryHasNoEnemyUnits(player, data).test(t);
+      return t.getUnitCollection().allMatch(subOnly) || Matches.territoryHasNoEnemyUnits(player, data).test(t);
     };
   }
 

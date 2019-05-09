@@ -120,7 +120,7 @@ public class ProOddsCalculator {
       final double tuv = TuvUtils.getTuv(mainCombatDefenders, ProData.unitValueMap);
       return new ProBattleResult(100, 0.1 + tuv, true, attackingUnits, new ArrayList<>(), 0);
     } else if (checkSubmerge && Properties.getSubRetreatBeforeBattle(data) && !defendingUnits.isEmpty()
-        && defendingUnits.stream().allMatch(Matches.unitIsSub())
+        && defendingUnits.stream().allMatch(Matches.unitCanEvade())
         && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())) {
       return new ProBattleResult();
     }

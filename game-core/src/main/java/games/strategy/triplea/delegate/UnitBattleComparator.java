@@ -69,8 +69,8 @@ public class UnitBattleComparator implements Comparator<Unit> {
         || (!transporting1 && Matches.unitIsTransport().test(u1));
     final boolean airOrCarrierOrTransport2 = Matches.unitIsAir().test(u2) || Matches.unitIsCarrier().test(u2)
         || (!transporting2 && Matches.unitIsTransport().test(u2));
-    final boolean subDestroyer1 = Matches.unitIsSub().test(u1) || Matches.unitIsDestroyer().test(u1);
-    final boolean subDestroyer2 = Matches.unitIsSub().test(u2) || Matches.unitIsDestroyer().test(u2);
+    final boolean subDestroyer1 = Matches.unitHasSubBattleAbilities().test(u1) || Matches.unitIsDestroyer().test(u1);
+    final boolean subDestroyer2 = Matches.unitHasSubBattleAbilities().test(u2) || Matches.unitIsDestroyer().test(u2);
     final boolean multiHpCanRepair1 = multiHitpointCanRepair.contains(u1.getType());
     final boolean multiHpCanRepair2 = multiHitpointCanRepair.contains(u2.getType());
     if (!ignorePrimaryPower) {

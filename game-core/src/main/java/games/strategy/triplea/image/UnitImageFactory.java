@@ -244,7 +244,7 @@ public class UnitImageFactory {
           name.append("_hb");
         }
       }
-      if (UnitAttachment.get(type).getIsSub()
+      if (UnitAttachment.get(type).getIsFirstStrike()
           && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0)) {
         if (TechTracker.hasSuperSubs(id)) {
           name.append("_ss");

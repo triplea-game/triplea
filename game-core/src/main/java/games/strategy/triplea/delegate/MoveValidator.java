@@ -454,26 +454,19 @@ public class MoveValidator {
         return result.setErrorReturnResult("Cannot advance units to battle in non combat");
       }
     }
-    // Subs can't travel under DDs
-    if (isSubmersibleSubsAllowed(data) && !units.isEmpty() && units.stream().allMatch(Matches.unitIsSub())) {
-      // this is ok unless there are destroyer on the path
-      if (MoveValidator.enemyDestroyerOnPath(route, player, data)) {
-        return result.setErrorReturnResult("Cannot move submarines under destroyers");
-      }
+    // Subs can't move under destroyers
+    if (!units.isEmpty() && units.stream().allMatch(Matches.unitCanMoveThroughEnemies())
+        && MoveValidator.enemyDestroyerOnPath(route, player, data)) {
+      return result.setErrorReturnResult("Cannot move submarines under destroyers");
     }
-    if (end.getUnitCollection().anyMatch(Matches.enemyUnit(player, data))) {
-      if (!onlyIgnoredUnitsOnPath(route, player, data, false)) {
-        final Predicate<Unit> friendlyOrSubmerged =
-            Matches.enemyUnit(player, data).negate().or(Matches.unitIsSubmerged());
-        if (!end.getUnitCollection().allMatch(friendlyOrSubmerged)
-            && !(!units.isEmpty() && units.stream().allMatch(Matches.unitIsAir()) && end.isWater())) {
-          if (units.isEmpty() || !units.stream().allMatch(Matches.unitIsSub())
-              || !Properties.getSubsCanEndNonCombatMoveWithEnemies(data)) {
-
-            return result.setErrorReturnResult("Cannot advance to battle in non combat");
-          }
-        }
-      }
+    // Can't advance to battle unless only ignored units on route, only air units to sea, or only units that can enter
+    // territories with enemy units during NCM
+    if (end.getUnitCollection().anyMatch(Matches.enemyUnit(player, data).and(Matches.unitIsSubmerged().negate()))
+        && !onlyIgnoredUnitsOnPath(route, player, data, false)
+        && !(end.isWater() && units.stream().allMatch(Matches.unitIsAir()))
+        && !(Properties.getSubsCanEndNonCombatMoveWithEnemies(data)
+            && units.stream().allMatch(Matches.unitCanMoveThroughEnemies()))) {
+      return result.setErrorReturnResult("Cannot advance to battle in non combat");
     }
     // if there are enemy units on the path blocking us, that is validated elsewhere (validateNonEnemyUnitsOnPath)
     // now check if we can move over neutral or enemies territories in noncombat
@@ -548,14 +541,12 @@ public class MoveValidator {
       return result;
     }
     // subs may possibly carry units...
-    if (isSubmersibleSubsAllowed(data)) {
-      final Collection<Unit> matches = CollectionUtils.getMatches(units, Matches.unitIsBeingTransported().negate());
-      if (!matches.isEmpty() && matches.stream().allMatch(Matches.unitIsSub())) {
-        // this is ok unless there are destroyer on the path
-        return MoveValidator.enemyDestroyerOnPath(route, player, data)
-            ? result.setErrorReturnResult("Cannot move submarines under destroyers")
-            : result;
-      }
+    final Collection<Unit> matches = CollectionUtils.getMatches(units, Matches.unitIsBeingTransported().negate());
+    if (!matches.isEmpty() && matches.stream().allMatch(Matches.unitCanMoveThroughEnemies())) {
+      // this is ok unless there are destroyer on the path
+      return MoveValidator.enemyDestroyerOnPath(route, player, data)
+          ? result.setErrorReturnResult("Cannot move submarines under destroyers")
+          : result;
     }
     if (onlyIgnoredUnitsOnPath(route, player, data, true)) {
       return result;
@@ -812,16 +803,13 @@ public class MoveValidator {
    */
   static boolean onlyIgnoredUnitsOnPath(final Route route, final PlayerId player, final GameData data,
       final boolean ignoreRouteEnd) {
-    final Predicate<Unit> subOnly =
-        Matches.unitIsInfrastructure().or(Matches.unitIsSub()).or(Matches.enemyUnit(player, data).negate());
     final Predicate<Unit> transportOnly =
         Matches.unitIsInfrastructure().or(Matches.unitIsTransportButNotCombatTransport()).or(Matches.unitIsLand())
             .or(Matches.enemyUnit(player, data).negate());
-    final Predicate<Unit> transportOrSubOnly =
-        Matches.unitIsInfrastructure().or(Matches.unitIsTransportButNotCombatTransport()).or(Matches.unitIsLand())
-            .or(Matches.unitIsSub()).or(Matches.enemyUnit(player, data).negate());
+    final Predicate<Unit> subOnly = Matches.unitIsInfrastructure().or(Matches.unitCanBeMovedThroughByEnemies())
+        .or(Matches.enemyUnit(player, data).negate());
+    final Predicate<Unit> transportOrSubOnly = transportOnly.or(subOnly);
     final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
-    final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
     final List<Territory> steps;
     if (ignoreRouteEnd) {
       steps = route.getMiddleSteps();
@@ -836,17 +824,8 @@ public class MoveValidator {
     boolean validMove = false;
     for (final Territory current : steps) {
       if (current.isWater()) {
-        if (getIgnoreTransportInMovement && getIgnoreSubInMovement
-            && current.getUnitCollection().allMatch(transportOrSubOnly)) {
-          validMove = true;
-          continue;
-        }
-        if (getIgnoreTransportInMovement && !getIgnoreSubInMovement
-            && current.getUnitCollection().allMatch(transportOnly)) {
-          validMove = true;
-          continue;
-        }
-        if (!getIgnoreTransportInMovement && getIgnoreSubInMovement && current.getUnitCollection().allMatch(subOnly)) {
+        if ((getIgnoreTransportInMovement && current.getUnitCollection().allMatch(transportOrSubOnly))
+            || current.getUnitCollection().allMatch(subOnly)) {
           validMove = true;
           continue;
         }
@@ -1014,9 +993,10 @@ public class MoveValidator {
       final Collection<Unit> transports = TransportUtils.mapTransports(route, units, null).values();
       final boolean isScramblingOrKamikazeAttacksEnabled =
           Properties.getScrambleRulesInEffect(data) || Properties.getUseKamikazeSuicideAttacks(data);
-      final boolean submarinesPreventUnescortedAmphibAssaults =
+      final boolean subsPreventUnescortedAmphibAssaults =
           Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(data);
-      final Predicate<Unit> enemySubmarineMatch = Matches.unitIsEnemyOf(data, player).and(Matches.unitIsSub());
+      final Predicate<Unit> enemySubMatch =
+          Matches.unitIsEnemyOf(data, player).and(Matches.unitCanBeMovedThroughByEnemies());
       final Predicate<Unit> ownedSeaNonTransportMatch = Matches.unitIsOwnedBy(player).and(Matches.unitIsSea())
           .and(Matches.unitIsNotTransportButCouldBeCombatTransport());
       for (final Unit transport : transports) {
@@ -1024,9 +1004,9 @@ public class MoveValidator {
           if (Matches.territoryHasEnemyUnits(player, data).test(routeEnd)
               || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(routeEnd)) {
             // this is an amphibious assault
-            if (submarinesPreventUnescortedAmphibAssaults
+            if (subsPreventUnescortedAmphibAssaults
                 && !Matches.territoryHasUnitsThatMatch(ownedSeaNonTransportMatch).test(routeStart)
-                && Matches.territoryHasUnitsThatMatch(enemySubmarineMatch).test(routeStart)) {
+                && Matches.territoryHasUnitsThatMatch(enemySubMatch).test(routeStart)) {
               // we must have at least one warship (non-transport) unit, otherwise the enemy sub
               // stops our unloading for amphibious assault
               for (final Unit unit : TransportTracker.transporting(transport)) {
@@ -1588,15 +1568,7 @@ public class MoveValidator {
     return numberOfTerritories * Properties.getNeutralCharge(data);
   }
 
-  private static boolean isSubmersibleSubsAllowed(final GameData data) {
-    return Properties.getSubmersibleSubs(data);
-  }
-
   private static boolean isIgnoreTransportInMovement(final GameData data) {
     return Properties.getIgnoreTransportInMovement(data);
-  }
-
-  private static boolean isIgnoreSubInMovement(final GameData data) {
-    return Properties.getIgnoreSubInMovement(data);
   }
 }

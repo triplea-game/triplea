@@ -106,12 +106,32 @@ public final class Matches {
     return unit -> UnitAttachment.get(unit.getType()).getIsSea();
   }
 
-  public static Predicate<Unit> unitIsSub() {
-    return unit -> UnitAttachment.get(unit.getType()).getIsSub();
+  public static Predicate<Unit> unitHasSubBattleAbilities() {
+    return unitCanEvade().or(unitIsFirstStrike()).or(unitCanNotBeTargetedByAll());
   }
 
-  public static Predicate<Unit> unitIsNotSub() {
-    return unitIsSub().negate();
+  public static Predicate<Unit> unitCanEvade() {
+    return unit -> UnitAttachment.get(unit.getType()).getCanEvade();
+  }
+
+  public static Predicate<Unit> unitIsFirstStrike() {
+    return unit -> UnitAttachment.get(unit.getType()).getIsFirstStrike();
+  }
+
+  public static Predicate<Unit> unitCanMoveThroughEnemies() {
+    return unit -> UnitAttachment.get(unit.getType()).getCanMoveThroughEnemies();
+  }
+
+  public static Predicate<Unit> unitCanBeMovedThroughByEnemies() {
+    return unit -> UnitAttachment.get(unit.getType()).getCanBeMovedThroughByEnemies();
+  }
+
+  public static Predicate<Unit> unitCanNotTargetAll() {
+    return unit -> !UnitAttachment.get(unit.getType()).getCanNotTarget().isEmpty();
+  }
+
+  public static Predicate<Unit> unitCanNotBeTargetedByAll() {
+    return unit -> !UnitAttachment.get(unit.getType()).getCanNotBeTargetedBy().isEmpty();
   }
 
   private static Predicate<Unit> unitIsCombatTransport() {
@@ -1414,8 +1434,8 @@ public final class Matches {
     return u -> TripleAUnit.get(u).getSubmerged();
   }
 
-  public static Predicate<UnitType> unitTypeIsSub() {
-    return type -> UnitAttachment.get(type).getIsSub();
+  public static Predicate<UnitType> unitTypeIsFirstStrike() {
+    return type -> UnitAttachment.get(type).getIsFirstStrike();
   }
 
   static Predicate<Unit> unitOwnerHasImprovedArtillerySupportTech() {
@@ -1433,8 +1453,8 @@ public final class Matches {
     final Predicate<Unit> unitCond = PredicateBuilder
         .of(unitIsInfrastructure().negate())
         .and(alliedUnit(player, data).negate())
+        .and(unitCanBeMovedThroughByEnemies().negate())
         .andIf(Properties.getIgnoreTransportInMovement(data), transport)
-        .andIf(Properties.getIgnoreSubInMovement(data), unitIsSub().negate())
         .build();
     return territoryHasUnitsThatMatch(unitCond).negate().and(territoryIsWater());
   }

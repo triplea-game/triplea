@@ -291,7 +291,8 @@ public final class Properties implements Constants {
   }
 
   /**
-   * Subs do not restrict movement of other units.
+   * Subs do not restrict movement of other units. When 'isSub' unit option is used this
+   * sets 'canBeMovedThroughByEnemies' unit option to true.
    */
   public static boolean getIgnoreSubInMovement(final GameData data) {
     return data.getProperties().get(IGNORE_SUB_IN_MOVEMENT, false);
@@ -302,7 +303,8 @@ public final class Properties implements Constants {
   }
 
   /**
-   * Air restricted from attacking subs unless DD present.
+   * Air restricted from attacking subs unless DD present. When 'isSub' unit option is used this
+   * sets 'canNotBeTargetedBy' unit option to all air units.
    */
   public static boolean getAirAttackSubRestricted(final GameData data) {
     return data.getProperties().get(AIR_ATTACK_SUB_RESTRICTED, false);

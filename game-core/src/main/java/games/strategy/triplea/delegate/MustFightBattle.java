@@ -341,9 +341,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       // play a sound
       if (attackingUnits.stream().anyMatch(Matches.unitIsSea())
           || defendingUnits.stream().anyMatch(Matches.unitIsSea())) {
-        if ((!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsSub()))
-            || (attackingUnits.stream().anyMatch(Matches.unitIsSub())
-                && defendingUnits.stream().anyMatch(Matches.unitIsSub()))) {
+        if ((!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitCanEvade()))
+            || (attackingUnits.stream().anyMatch(Matches.unitCanEvade())
+                && defendingUnits.stream().anyMatch(Matches.unitCanEvade()))) {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_SUBS, attacker);
         } else {
           bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_BATTLE_SEA_NORMAL, attacker);
@@ -494,11 +494,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // Check if defending subs can submerge before battle
     if (isSubRetreatBeforeBattle()) {
       if (defendingUnits.stream().noneMatch(Matches.unitIsDestroyer())
-          && attackingUnits.stream().anyMatch(Matches.unitIsSub())) {
+          && attackingUnits.stream().anyMatch(Matches.unitCanEvade())) {
         steps.add(attacker.getName() + SUBS_SUBMERGE);
       }
       if (attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
-          && defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
+          && defendingUnits.stream().anyMatch(Matches.unitCanEvade())) {
         steps.add(defender.getName() + SUBS_SUBMERGE);
       }
     }
@@ -511,7 +511,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     // if attacker has no sneak attack subs, then defender sneak attack subs fire first and remove casualties
     final boolean defenderSubsFireFirst = defenderSubsFireFirst();
-    if (defenderSubsFireFirst && defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
+    if (defenderSubsFireFirst && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike())) {
       steps.add(defender.getName() + SUBS_FIRE);
       steps.add(attacker.getName() + SELECT_SUB_CASUALTIES);
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
@@ -519,7 +519,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final boolean onlyAttackerSneakAttack = !defenderSubsFireFirst
         && returnFireAgainstAttackingSubs() == ReturnFire.NONE && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
     // attacker subs sneak attack, no sneak attack if destroyers are present
-    if (attackingUnits.stream().anyMatch(Matches.unitIsSub())) {
+    if (attackingUnits.stream().anyMatch(Matches.unitIsFirstStrike())) {
       steps.add(attacker.getName() + SUBS_FIRE);
       steps.add(defender.getName() + SELECT_SUB_CASUALTIES);
       if (onlyAttackerSneakAttack) {
@@ -532,49 +532,50 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // defender subs sneak attack, no sneak attack in Pacific/Europe Theaters or if destroyers are present
     final boolean defendingSubsFireWithAllDefendersAlways = !defendingSubsSneakAttack3();
     if (!defendingSubsFireWithAllDefendersAlways && !defendingSubsFireWithAllDefenders && !defenderSubsFireFirst
-        && defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
+        && defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike())) {
       steps.add(defender.getName() + SUBS_FIRE);
       steps.add(attacker.getName() + SELECT_SUB_CASUALTIES);
     }
-    if ((attackingUnits.stream().anyMatch(Matches.unitIsSub()) || defendingUnits.stream().anyMatch(Matches.unitIsSub()))
+    if ((attackingUnits.stream().anyMatch(Matches.unitIsFirstStrike())
+        || defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike()))
         && !defenderSubsFireFirst && !onlyAttackerSneakAttack
         && (returnFireAgainstDefendingSubs() != ReturnFire.ALL || returnFireAgainstAttackingSubs() != ReturnFire.ALL)) {
       steps.add(REMOVE_SNEAK_ATTACK_CASUALTIES);
     }
     // Air units can't attack subs without Destroyers present
-    if (isAirAttackSubRestricted() && attackingUnits.stream().anyMatch(Matches.unitIsAir())
+    if (attackingUnits.stream().anyMatch(Matches.unitIsAir())
+        && defendingUnits.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())
         && !canAirAttackSubs(defendingUnits, attackingUnits)) {
       steps.add(SUBMERGE_SUBS_VS_AIR_ONLY);
       steps.add(AIR_ATTACK_NON_SUBS);
     }
-    if (attackingUnits.stream().anyMatch(Matches.unitIsNotSub())) {
+    if (attackingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
       steps.add(attacker.getName() + FIRE);
       steps.add(defender.getName() + SELECT_CASUALTIES);
     }
     // classic rules, subs fire with all defenders
     // also, ww2v3/global rules, defending subs without sneak attack fire with all defenders
-    final Collection<Unit> units = new ArrayList<>(defendingUnits.size() + defendingWaitingToDie.size());
-    units.addAll(defendingUnits);
+    final Collection<Unit> units = new ArrayList<>(defendingUnits);
     units.addAll(defendingWaitingToDie);
-    if (units.stream().anyMatch(Matches.unitIsSub()) && !defenderSubsFireFirst
+    if (units.stream().anyMatch(Matches.unitCanNotTargetAll()) && !defenderSubsFireFirst
         && (defendingSubsFireWithAllDefenders || defendingSubsFireWithAllDefendersAlways)) {
       steps.add(defender.getName() + SUBS_FIRE);
       steps.add(attacker.getName() + SELECT_SUB_CASUALTIES);
     }
     // Air Units can't attack subs without Destroyers present
-    if (isAirAttackSubRestricted()) {
-      if (defendingUnits.stream().anyMatch(Matches.unitIsAir()) && !canAirAttackSubs(attackingUnits, units)) {
-        steps.add(AIR_DEFEND_NON_SUBS);
-      }
+    if (defendingUnits.stream().anyMatch(Matches.unitIsAir())
+        && attackingUnits.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())
+        && !canAirAttackSubs(attackingUnits, units)) {
+      steps.add(AIR_DEFEND_NON_SUBS);
     }
-    if (defendingUnits.stream().anyMatch(Matches.unitIsNotSub())) {
+    if (defendingUnits.stream().anyMatch(Matches.unitIsFirstStrike().negate())) {
       steps.add(defender.getName() + FIRE);
       steps.add(attacker.getName() + SELECT_CASUALTIES);
     }
     // remove casualties
     steps.add(REMOVE_CASUALTIES);
     // retreat attacking subs
-    if (attackingUnits.stream().anyMatch(Matches.unitIsSub())) {
+    if (attackingUnits.stream().anyMatch(Matches.unitCanEvade())) {
       if (canSubsSubmerge()) {
         if (!isSubRetreatBeforeBattle()) {
           steps.add(attacker.getName() + SUBS_SUBMERGE);
@@ -596,7 +597,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       steps.add(attacker.getName() + ATTACKER_WITHDRAW);
     }
     // retreat defending subs
-    if (defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
+    if (defendingUnits.stream().anyMatch(Matches.unitCanEvade())) {
       if (canSubsSubmerge()) {
         if (!isSubRetreatBeforeBattle()) {
           steps.add(defender.getName() + SUBS_SUBMERGE);
@@ -946,16 +947,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       });
     }
     // Submerge subs if -vs air only & air restricted from attacking subs
-    if (isAirAttackSubRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 99990L;
+    steps.add(new IExecutable() {
+      private static final long serialVersionUID = 99990L;
 
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          submergeSubsVsOnlyAir(bridge);
-        }
-      });
-    }
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        submergeSubsVsOnlyAir(bridge);
+      }
+    });
     final ReturnFire returnFireAgainstAttackingSubs = returnFireAgainstAttackingSubs();
     final ReturnFire returnFireAgainstDefendingSubs = returnFireAgainstDefendingSubs();
     if (defenderSubsFireFirst()) {
@@ -989,16 +988,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       });
     }
     // Attacker air fire on non-subs
-    if (isAirAttackSubRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 99993L;
+    steps.add(new IExecutable() {
+      private static final long serialVersionUID = 99993L;
 
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          attackAirOnNonSubs();
-        }
-      });
-    }
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        attackAirOnNonSubs();
+      }
+    });
     // Attacker fire remaining units
     steps.add(new IExecutable() {
       private static final long serialVersionUID = 99994L;
@@ -1019,16 +1016,14 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       });
     }
     // Defender air fire on non-subs
-    if (isAirAttackSubRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 1560702114917865123L;
+    steps.add(new IExecutable() {
+      private static final long serialVersionUID = 1560702114917865123L;
 
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendAirOnNonSubs();
-        }
-      });
-    }
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        defendAirOnNonSubs();
+      }
+    });
     steps.add(new IExecutable() {
       private static final long serialVersionUID = 1560702114917865290L;
 
@@ -1072,7 +1067,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean defendingSubsSneakAttack3() {
-    return isWW2V2() || isDefendingSubsSneakAttack();
+    return isWW2V2() || Properties.getDefendingSubsSneakAttack(gameData);
   }
 
   private boolean canAttackerRetreatPlanes() {
@@ -1111,7 +1106,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         .and(Matches.unitIsNotInfrastructure())
         .and(Matches.unitIsBeingTransported().negate())
         .and(Matches.unitIsSubmerged().negate())
-        .andIf(Properties.getIgnoreSubInMovement(gameData), Matches.unitIsNotSub())
+        .and(Matches.unitCanBeMovedThroughByEnemies().negate())
         .andIf(Properties.getIgnoreTransportInMovement(gameData), Matches.unitIsNotTransportButCouldBeCombatTransport())
         .build();
     Collection<Territory> possible = CollectionUtils.getMatches(attackingFrom,
@@ -1206,7 +1201,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     return attackingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
         && (getEmptyOrFriendlySeaNeighbors(defender,
-            CollectionUtils.getMatches(defendingUnits, Matches.unitIsSub())).size() != 0
+            CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade())).size() != 0
             || canSubsSubmerge());
   }
 
@@ -1214,7 +1209,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!canAttackerRetreatSubs()) {
       return;
     }
-    if (attackingUnits.stream().anyMatch(Matches.unitIsSub())) {
+    if (attackingUnits.stream().anyMatch(Matches.unitCanEvade())) {
       queryRetreat(false, RetreatType.SUBS, bridge, getAttackerRetreatTerritories());
     }
   }
@@ -1223,9 +1218,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (!canDefenderRetreatSubs()) {
       return;
     }
-    if (!isOver && defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
+    if (!isOver && defendingUnits.stream().anyMatch(Matches.unitCanEvade())) {
       queryRetreat(true, RetreatType.SUBS, bridge, getEmptyOrFriendlySeaNeighbors(defender,
-          CollectionUtils.getMatches(defendingUnits, Matches.unitIsSub())));
+          CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade())));
     }
   }
 
@@ -1270,7 +1265,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       units.removeAll(killed);
     }
     if (subs) {
-      units = CollectionUtils.getMatches(units, Matches.unitIsSub());
+      units = CollectionUtils.getMatches(units, Matches.unitCanEvade());
     } else if (planes) {
       units = CollectionUtils.getMatches(units, Matches.unitIsAir());
     } else if (partialAmphib) {
@@ -1720,17 +1715,18 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
    */
   private void submergeSubsVsOnlyAir(final IDelegateBridge bridge) {
     // if All attackers are AIR, submerge any defending subs
+    final Predicate<Unit> subMatch = Matches.unitCanEvade().and(Matches.unitCanNotBeTargetedByAll());
     if (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir())
-        && defendingUnits.stream().anyMatch(Matches.unitIsSub())) {
+        && defendingUnits.stream().anyMatch(subMatch)) {
       // Get all defending subs (including allies) in the territory
-      final List<Unit> defendingSubs = CollectionUtils.getMatches(defendingUnits, Matches.unitIsSub());
+      final List<Unit> defendingSubs = CollectionUtils.getMatches(defendingUnits, subMatch);
       // submerge defending subs
       submergeUnits(defendingSubs, true, bridge);
       // checking defending air on attacking subs
     } else if (!defendingUnits.isEmpty() && defendingUnits.stream().allMatch(Matches.unitIsAir())
-        && attackingUnits.stream().anyMatch(Matches.unitIsSub())) {
+        && attackingUnits.stream().anyMatch(subMatch)) {
       // Get all attacking subs in the territory
-      final List<Unit> attackingSubs = CollectionUtils.getMatches(attackingUnits, Matches.unitIsSub());
+      final List<Unit> attackingSubs = CollectionUtils.getMatches(attackingUnits, subMatch);
       // submerge attacking subs
       submergeUnits(attackingSubs, false, bridge);
     }
@@ -1740,19 +1736,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (attackingUnits.size() == 0) {
       return;
     }
-    Collection<Unit> units = new ArrayList<>(defendingUnits.size() + defendingWaitingToDie.size());
-    units.addAll(defendingUnits);
+    Collection<Unit> units = new ArrayList<>(defendingUnits);
     units.addAll(defendingWaitingToDie);
-    units = CollectionUtils.getMatches(units, Matches.unitIsNotSub());
+    units = CollectionUtils.getMatches(units, Matches.unitIsFirstStrike().negate());
     // if restricted, remove aircraft from attackers
-    if (isAirAttackSubRestricted() && !canAirAttackSubs(attackingUnits, units)) {
+    if (!canAirAttackSubs(attackingUnits, units)) {
       units.removeAll(CollectionUtils.getMatches(units, Matches.unitIsAir()));
     }
     if (units.isEmpty()) {
       return;
     }
-    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
-    allEnemyUnitsAliveOrWaitingToDie.addAll(attackingUnits);
+    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
     fire(attacker.getName() + SELECT_CASUALTIES, units, attackingUnits, allEnemyUnitsAliveOrWaitingToDie, true,
         ReturnFire.ALL, "Defenders fire, ");
@@ -1765,8 +1759,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (defendingUnits.size() == 0) {
       return;
     }
-    Collection<Unit> units = new ArrayList<>(attackingUnits.size() + attackingWaitingToDie.size());
-    units.addAll(attackingUnits);
+    Collection<Unit> units = new ArrayList<>(attackingUnits);
     units.addAll(attackingWaitingToDie);
     // See if allied air can participate in combat
     if (!isAlliedAirIndependent()) {
@@ -1774,9 +1767,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
     if (!canAirAttackSubs(defendingUnits, units)) {
       units = CollectionUtils.getMatches(units, Matches.unitIsAir());
-      final Collection<Unit> enemyUnitsNotSubs = CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotSub());
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
-      allEnemyUnitsAliveOrWaitingToDie.addAll(defendingUnits);
+      final Collection<Unit> enemyUnitsNotSubs =
+          CollectionUtils.getMatches(defendingUnits, Matches.unitCanNotBeTargetedByAll().negate());
+      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
       allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
       fire(defender.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, allEnemyUnitsAliveOrWaitingToDie, false,
           ReturnFire.ALL, "Attacker's aircraft fire,");
@@ -1784,25 +1777,24 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   }
 
   private boolean canAirAttackSubs(final Collection<Unit> firedAt, final Collection<Unit> firing) {
-    return firedAt.stream().noneMatch(Matches.unitIsSub()) || firing.stream().anyMatch(Matches.unitIsDestroyer());
+    return firedAt.stream().noneMatch(Matches.unitCanNotBeTargetedByAll())
+        || firing.stream().anyMatch(Matches.unitIsDestroyer());
   }
 
   private void defendAirOnNonSubs() {
     if (attackingUnits.size() == 0) {
       return;
     }
-    Collection<Unit> units = new ArrayList<>(defendingUnits.size() + defendingWaitingToDie.size());
-    units.addAll(defendingUnits);
+    Collection<Unit> units = new ArrayList<>(defendingUnits);
     units.addAll(defendingWaitingToDie);
-
     if (!canAirAttackSubs(attackingUnits, units)) {
       units = CollectionUtils.getMatches(units, Matches.unitIsAir());
-      final Collection<Unit> enemyUnitsNotSubs = CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotSub());
+      final Collection<Unit> enemyUnitsNotSubs =
+          CollectionUtils.getMatches(attackingUnits, Matches.unitCanNotBeTargetedByAll().negate());
       if (enemyUnitsNotSubs.isEmpty()) {
         return;
       }
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
-      allEnemyUnitsAliveOrWaitingToDie.addAll(attackingUnits);
+      final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
       allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
       fire(attacker.getName() + SELECT_CASUALTIES, units, enemyUnitsNotSubs, allEnemyUnitsAliveOrWaitingToDie, true,
           ReturnFire.ALL, "Defender's aircraft fire,");
@@ -1817,35 +1809,33 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (defendingUnits.size() == 0) {
       return;
     }
-    Collection<Unit> units = CollectionUtils.getMatches(attackingUnits, Matches.unitIsNotSub());
-    units.addAll(CollectionUtils.getMatches(attackingWaitingToDie, Matches.unitIsNotSub()));
+    Collection<Unit> units = CollectionUtils.getMatches(attackingUnits, Matches.unitIsFirstStrike().negate());
+    units.addAll(CollectionUtils.getMatches(attackingWaitingToDie, Matches.unitIsFirstStrike().negate()));
     // See if allied air can participate in combat
     if (!isAlliedAirIndependent()) {
       units = CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(attacker));
     }
     // if restricted, remove aircraft from attackers
-    if (isAirAttackSubRestricted() && !canAirAttackSubs(defendingUnits, units)) {
+    if (!canAirAttackSubs(defendingUnits, units)) {
       units.removeAll(CollectionUtils.getMatches(units, Matches.unitIsAir()));
     }
     if (units.isEmpty()) {
       return;
     }
-    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
-    allEnemyUnitsAliveOrWaitingToDie.addAll(defendingUnits);
+    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
     fire(defender.getName() + SELECT_CASUALTIES, units, defendingUnits, allEnemyUnitsAliveOrWaitingToDie, false,
         ReturnFire.ALL, "Attackers fire,");
   }
 
   private void attackSubs(final ReturnFire returnFire) {
-    final Collection<Unit> firing = CollectionUtils.getMatches(attackingUnits, Matches.unitIsSub());
+    final Collection<Unit> firing = CollectionUtils.getMatches(attackingUnits, Matches.unitIsFirstStrike());
     if (firing.isEmpty()) {
       return;
     }
     final Collection<Unit> attacked = CollectionUtils.getMatches(defendingUnits, Matches.unitIsNotAir());
     // if there are destroyers in the attacked units, we can return fire.
-    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
-    allEnemyUnitsAliveOrWaitingToDie.addAll(defendingUnits);
+    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(defendingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(defendingWaitingToDie);
     fire(defender.getName() + SELECT_SUB_CASUALTIES, firing, attacked, allEnemyUnitsAliveOrWaitingToDie, false,
         returnFire, "Subs fire,");
@@ -1855,10 +1845,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (attackingUnits.size() == 0) {
       return;
     }
-    Collection<Unit> firing = new ArrayList<>(defendingUnits.size() + defendingWaitingToDie.size());
-    firing.addAll(defendingUnits);
+    Collection<Unit> firing = new ArrayList<>(defendingUnits);
     firing.addAll(defendingWaitingToDie);
-    firing = CollectionUtils.getMatches(firing, Matches.unitIsSub());
+    firing = CollectionUtils.getMatches(firing, Matches.unitIsFirstStrike());
     if (firing.isEmpty()) {
       return;
     }
@@ -1866,8 +1855,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     if (attacked.isEmpty()) {
       return;
     }
-    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>();
-    allEnemyUnitsAliveOrWaitingToDie.addAll(attackingUnits);
+    final List<Unit> allEnemyUnitsAliveOrWaitingToDie = new ArrayList<>(attackingUnits);
     allEnemyUnitsAliveOrWaitingToDie.addAll(attackingWaitingToDie);
     fire(attacker.getName() + SELECT_SUB_CASUALTIES, firing, attacked, allEnemyUnitsAliveOrWaitingToDie, true,
         returnFire, "Subs defend, ");
@@ -1897,11 +1885,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     } else if (returnFire == ReturnFire.SUBS) {
       // move to waiting to die
       if (defender) {
-        defendingWaitingToDie.addAll(CollectionUtils.getMatches(killed, Matches.unitIsSub()));
+        defendingWaitingToDie.addAll(CollectionUtils.getMatches(killed, Matches.unitIsFirstStrike()));
       } else {
-        attackingWaitingToDie.addAll(CollectionUtils.getMatches(killed, Matches.unitIsSub()));
+        attackingWaitingToDie.addAll(CollectionUtils.getMatches(killed, Matches.unitIsFirstStrike()));
       }
-      remove(CollectionUtils.getMatches(killed, Matches.unitIsNotSub()), bridge, battleSite, defender);
+      remove(CollectionUtils.getMatches(killed, Matches.unitIsFirstStrike().negate()), bridge, battleSite, defender);
     } else if (returnFire == ReturnFire.NONE) {
       remove(killed, bridge, battleSite, defender);
     }
@@ -1951,11 +1939,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Collection<Unit> attackedDefenders = CollectionUtils.getMatches(defendingUnits, attackableUnits);
     // comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no destroyers, you can't
     // attack subs with anything.
-    if (isAirAttackSubRestricted() && attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
-        && attackedDefenders.stream().anyMatch(Matches.unitIsSub())) {
-      attackedDefenders.removeAll(CollectionUtils.getMatches(attackedDefenders, Matches.unitIsSub()));
+    if (attackingUnits.stream().noneMatch(Matches.unitIsDestroyer())
+        && attackedDefenders.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())) {
+      attackedDefenders.removeAll(CollectionUtils.getMatches(attackedDefenders, Matches.unitCanNotBeTargetedByAll()));
     }
-    if (!suicideAttackers.isEmpty() && suicideAttackers.stream().allMatch(Matches.unitIsSub())) {
+    if (!suicideAttackers.isEmpty() && suicideAttackers.stream().allMatch(Matches.unitCanNotTargetAll())) {
       attackedDefenders.removeAll(CollectionUtils.getMatches(attackedDefenders, Matches.unitIsAir()));
     }
     if (suicideAttackers.size() == 0 || attackedDefenders.size() == 0) {
@@ -1980,11 +1968,11 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Collection<Unit> attackedAttackers = CollectionUtils.getMatches(attackingUnits, attackableUnits);
     // comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no destroyers, you can't
     // attack subs with anything.
-    if (isAirAttackSubRestricted() && defendingUnits.stream().noneMatch(Matches.unitIsDestroyer())
-        && attackedAttackers.stream().anyMatch(Matches.unitIsSub())) {
-      attackedAttackers.removeAll(CollectionUtils.getMatches(attackedAttackers, Matches.unitIsSub()));
+    if (defendingUnits.stream().noneMatch(Matches.unitIsDestroyer())
+        && attackedAttackers.stream().anyMatch(Matches.unitCanNotBeTargetedByAll())) {
+      attackedAttackers.removeAll(CollectionUtils.getMatches(attackedAttackers, Matches.unitCanNotBeTargetedByAll()));
     }
-    if (!suicideDefenders.isEmpty() && suicideDefenders.stream().allMatch(Matches.unitIsSub())) {
+    if (!suicideDefenders.isEmpty() && suicideDefenders.stream().allMatch(Matches.unitCanNotTargetAll())) {
       suicideDefenders.removeAll(CollectionUtils.getMatches(suicideDefenders, Matches.unitIsAir()));
     }
     if (suicideDefenders.size() == 0 || attackedAttackers.size() == 0) {
@@ -2015,10 +2003,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return Properties.getAlliedAirIndependent(gameData);
   }
 
-  private boolean isDefendingSubsSneakAttack() {
-    return Properties.getDefendingSubsSneakAttack(gameData);
-  }
-
   private boolean isAttackerRetreatPlanes() {
     return Properties.getAttackerRetreatPlanes(gameData);
   }
@@ -2033,10 +2017,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private boolean isDefendingSuicideAndMunitionUnitsDoNotFire() {
     return Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(gameData);
-  }
-
-  private boolean isAirAttackSubRestricted() {
-    return Properties.getAirAttackSubRestricted(gameData);
   }
 
   private boolean isSubRetreatBeforeBattle() {

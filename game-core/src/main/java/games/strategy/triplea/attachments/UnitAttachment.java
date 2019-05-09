@@ -62,14 +62,13 @@ public class UnitAttachment extends DefaultAttachment {
   private IntegerMap<Resource> fuelFlatCost = new IntegerMap<>();
   private boolean canNotMoveDuringCombatMove = false;
   private Tuple<Integer, String> movementLimit = null;
+
   // combat related
   private int attack = 0;
   private int defense = 0;
   private boolean isInfrastructure = false;
   private boolean canBombard = false;
   private int bombard = -1;
-  private boolean isSub = false;
-  private boolean isDestroyer = false;
   private boolean artillery = false;
   private boolean artillerySupportable = false;
   private int unitSupportCount = -1;
@@ -80,6 +79,16 @@ public class UnitAttachment extends DefaultAttachment {
   private int attackRolls = 1;
   private int defenseRolls = 1;
   private boolean chooseBestRoll = false;
+
+  // sub/destroyer related
+  private boolean canEvade = false;
+  private boolean isFirstStrike = false;
+  private Set<UnitType> canNotTarget = new HashSet<>();
+  private Set<UnitType> canNotBeTargetedBy = new HashSet<>();
+  private boolean canMoveThroughEnemies = false;
+  private boolean canBeMovedThroughByEnemies = false;
+  private boolean isDestroyer = false;
+
   // transportation related
   private boolean isCombatTransport = false;
   // -1 if cant transport
@@ -94,6 +103,7 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean isAirTransportable = false;
   private boolean isLandTransport = false;
   private boolean isLandTransportable = false;
+
   // aa related
   // "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa related setters. Must
   // keep.
@@ -119,6 +129,7 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean damageableAa = false;
   // if these enemy units are present, the gun does not fire at all
   private Set<UnitType> willNotFireIfPresent = new HashSet<>();
+
   // strategic bombing related
   private boolean isStrategicBomber = false;
   private int bombingMaxDieSides = -1;
@@ -131,6 +142,7 @@ public class UnitAttachment extends DefaultAttachment {
   private int airAttack = 0;
   // null means they can target any unit that can be damaged
   private Set<UnitType> bombingTargets = null;
+
   // production related
   // this has been split into canProduceUnits, isConstruction, canBeDamaged, and isInfrastructure
   private boolean canProduceUnits = false;
@@ -138,6 +150,7 @@ public class UnitAttachment extends DefaultAttachment {
   private int canProduceXUnits = -1;
   private IntegerMap<UnitType> createsUnitsList = new IntegerMap<>();
   private IntegerMap<Resource> createsResourcesList = new IntegerMap<>();
+
   // damage related
   private int hitPoints = 1;
   private boolean canBeDamaged = false;
@@ -147,6 +160,7 @@ public class UnitAttachment extends DefaultAttachment {
   // -1 if can't be disabled
   private int maxOperationalDamage = -1;
   private boolean canDieFromReachingMaxDamage = false;
+
   // placement related
   private boolean isConstruction = false;
   // can be any String except for "none" if isConstruction is true
@@ -171,6 +185,7 @@ public class UnitAttachment extends DefaultAttachment {
   // -1 if infinite (infinite is default)
   private int maxBuiltPerPlayer = -1;
   private Tuple<Integer, String> placementLimit = null;
+
   // scrambling related
   private boolean canScramble = false;
   private boolean isAirBase = false;
@@ -180,6 +195,7 @@ public class UnitAttachment extends DefaultAttachment {
   private int maxScrambleCount = -1;
   // -1 for infinite
   private int maxInterceptCount = -1;
+
   // special abilities
   private int blockade = 0;
   // a colon delimited list of the units this unit can repair.
@@ -578,19 +594,107 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setIsSub(final String s) {
-    isSub = getBool(s);
+    setIsSub(getBool(s));
   }
 
   private void setIsSub(final Boolean s) {
-    isSub = s;
+    setCanEvade(s);
+    setIsFirstStrike(s);
+    setCanMoveThroughEnemies(s && Properties.getSubmersibleSubs(getData()));
+    setCanBeMovedThroughByEnemies(s && Properties.getIgnoreSubInMovement(getData()));
+    if (s) {
+      canNotTarget = null;
+      canNotBeTargetedBy = Properties.getAirAttackSubRestricted(getData()) ? null : new HashSet<>();
+    } else {
+      resetCanNotTarget();
+      resetCanNotBeTargetedBy();
+    }
   }
 
-  public boolean getIsSub() {
-    return isSub;
+  private void setCanEvade(final Boolean s) {
+    canEvade = s;
   }
 
-  private void resetIsSub() {
-    isSub = false;
+  public boolean getCanEvade() {
+    return canEvade;
+  }
+
+  private void setIsFirstStrike(final Boolean s) {
+    isFirstStrike = s;
+  }
+
+  public boolean getIsFirstStrike() {
+    return isFirstStrike;
+  }
+
+  private void setCanMoveThroughEnemies(final Boolean s) {
+    canMoveThroughEnemies = s;
+  }
+
+  public boolean getCanMoveThroughEnemies() {
+    return canMoveThroughEnemies;
+  }
+
+  private void setCanBeMovedThroughByEnemies(final Boolean s) {
+    canBeMovedThroughByEnemies = s;
+  }
+
+  public boolean getCanBeMovedThroughByEnemies() {
+    return canBeMovedThroughByEnemies;
+  }
+
+  private void setCanNotTarget(final String value) throws GameParseException {
+    final String[] s = splitOnColon(value);
+    for (final String u : s) {
+      final UnitType ut = getData().getUnitTypeList().getUnitType(u);
+      if (ut == null) {
+        throw new GameParseException("canNotTarget: no such unit type: " + u + thisErrorMsg());
+      }
+      canNotTarget.add(ut);
+    }
+  }
+
+  private void setCanNotTarget(final Set<UnitType> value) {
+    canNotTarget = value;
+  }
+
+  public Set<UnitType> getCanNotTarget() {
+    if (canNotTarget == null) {
+      canNotTarget = new HashSet<>(
+          CollectionUtils.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
+    }
+    return canNotTarget;
+  }
+
+  private void resetCanNotTarget() {
+    canNotTarget = new HashSet<>();
+  }
+
+  private void setCanNotBeTargetedBy(final String value) throws GameParseException {
+    final String[] s = splitOnColon(value);
+    for (final String u : s) {
+      final UnitType ut = getData().getUnitTypeList().getUnitType(u);
+      if (ut == null) {
+        throw new GameParseException("canNotBeTargetedBy: no such unit type: " + u + thisErrorMsg());
+      }
+      canNotBeTargetedBy.add(ut);
+    }
+  }
+
+  private void setCanNotBeTargetedBy(final Set<UnitType> value) {
+    canNotBeTargetedBy = value;
+  }
+
+  public Set<UnitType> getCanNotBeTargetedBy() {
+    if (canNotBeTargetedBy == null) {
+      canNotBeTargetedBy = new HashSet<>(
+          CollectionUtils.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
+    }
+    return canNotBeTargetedBy;
+  }
+
+  private void resetCanNotBeTargetedBy() {
+    canNotBeTargetedBy = new HashSet<>();
   }
 
   private void setIsCombatTransport(final String s) {
@@ -1376,7 +1480,7 @@ public class UnitAttachment extends DefaultAttachment {
   public int getDefense(final PlayerId player) {
     int defenseValue =
         defense + TechAbilityAttachment.getDefenseBonus((UnitType) this.getAttachedTo(), player, getData());
-    if (defenseValue > 0 && isSub && TechTracker.hasSuperSubs(player)) {
+    if (defenseValue > 0 && isFirstStrike && TechTracker.hasSuperSubs(player)) {
       final int bonus = Properties.getSuperSubDefenseBonus(getData());
       defenseValue += bonus;
     }
@@ -2639,7 +2743,12 @@ public class UnitAttachment extends DefaultAttachment {
         + "  transportCost:" + transportCost
         + "  carrierCapacity:" + carrierCapacity
         + "  carrierCost:" + carrierCost
-        + "  isSub:" + isSub
+        + "  canEvade:" + canEvade
+        + "  isFirstStrike:" + isFirstStrike
+        + "  canNotTarget:" + (canNotTarget.isEmpty() ? "empty" : canNotTarget.toString())
+        + "  canNotBeTargetedBy:" + (canNotBeTargetedBy.isEmpty() ? "empty" : canNotBeTargetedBy.toString())
+        + "  canMoveThroughEnemies:" + canMoveThroughEnemies
+        + "  canBeMovedThroughByEnemies:" + canBeMovedThroughByEnemies
         + "  isDestroyer:" + isDestroyer
         + "  canBombard:" + canBombard
         + "  bombard:" + bombard
@@ -2921,8 +3030,31 @@ public class UnitAttachment extends DefaultAttachment {
       tuples.add(Tuple.of("Air Defense", (defenseRolls > 1 ? (defenseRolls + "x") : "") + getAirDefense(player)));
     }
 
-    if (getIsSub()) {
-      tuples.add(Tuple.of("Is Stealth", ""));
+    if (getCanEvade()) {
+      tuples.add(Tuple.of("Can Evade", ""));
+    }
+    if (getIsFirstStrike()) {
+      tuples.add(Tuple.of("Is First Strike", ""));
+    }
+    if (getCanMoveThroughEnemies()) {
+      tuples.add(Tuple.of("Can Move Through Enemies", ""));
+    }
+    if (getCanBeMovedThroughByEnemies()) {
+      tuples.add(Tuple.of("Can Be Moved Through By Enemies", ""));
+    }
+    if (!getCanNotTarget().isEmpty()) {
+      if (getCanNotTarget().size() <= 4) {
+        tuples.add(Tuple.of("Can't Target: ", getCanNotTarget().toString()));
+      } else {
+        tuples.add(Tuple.of("Can't Target Some Units", ""));
+      }
+    }
+    if (!getCanNotBeTargetedBy().isEmpty()) {
+      if (getCanNotBeTargetedBy().size() <= 4) {
+        tuples.add(Tuple.of("Can't Be Targeted By: ", getCanNotBeTargetedBy().toString()));
+      } else {
+        tuples.add(Tuple.of("Can't Be Targeted By Some Units", ""));
+      }
     }
     if (getIsDestroyer()) {
       tuples.add(Tuple.of("Is Anti-Stealth", ""));
@@ -3264,11 +3396,45 @@ public class UnitAttachment extends DefaultAttachment {
                 this::getBombard,
                 () -> -1))
         .put("isSub",
+            MutableProperty.<Boolean>ofWriteOnly(
+                this::setIsSub,
+                this::setIsSub))
+        .put("canEvade",
+            MutableProperty.ofMapper(
+                DefaultAttachment::getBool,
+                this::setCanEvade,
+                this::getCanEvade,
+                () -> false))
+        .put("isFirstStrike",
+            MutableProperty.ofMapper(
+                DefaultAttachment::getBool,
+                this::setIsFirstStrike,
+                this::getIsFirstStrike,
+                () -> false))
+        .put("canNotTarget",
             MutableProperty.of(
-                this::setIsSub,
-                this::setIsSub,
-                this::getIsSub,
-                this::resetIsSub))
+                this::setCanNotTarget,
+                this::setCanNotTarget,
+                this::getCanNotTarget,
+                this::resetCanNotTarget))
+        .put("canNotBeTargetedBy",
+            MutableProperty.of(
+                this::setCanNotBeTargetedBy,
+                this::setCanNotBeTargetedBy,
+                this::getCanNotBeTargetedBy,
+                this::resetCanNotBeTargetedBy))
+        .put("canMoveThroughEnemies",
+            MutableProperty.ofMapper(
+                DefaultAttachment::getBool,
+                this::setCanMoveThroughEnemies,
+                this::getCanMoveThroughEnemies,
+                () -> false))
+        .put("canBeMovedThroughByEnemies",
+            MutableProperty.ofMapper(
+                DefaultAttachment::getBool,
+                this::setCanBeMovedThroughByEnemies,
+                this::getCanBeMovedThroughByEnemies,
+                () -> false))
         .put("isDestroyer",
             MutableProperty.of(
                 this::setIsDestroyer,
