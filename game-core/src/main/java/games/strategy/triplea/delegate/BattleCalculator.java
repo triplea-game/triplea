@@ -54,14 +54,44 @@ public class BattleCalculator {
     oolCache.clear();
   }
 
-  // There is a problem with this variable, that it isn't being cleared out when we switch maps.
-  // private static IntegerMap<UnitType> costsForTuvForAllPlayersMergedAndAveraged;
-  // we want to sort in a determined way so that those looking at the dice results can tell what dice is for who
-  // we also want to sort by movement, so casualties will be chosen as the units with least movement
+  /**
+   * Sort in a determined way so that the dice results appear in a logical order. Also sort by movement, so casualties
+   * will be chosen as the units with least movement.
+   */
   static void sortPreBattle(final List<Unit> units) {
     units.sort(Comparator.comparing(Unit::getType,
         Comparator.comparing(UnitType::getName))
         .thenComparing(UnitComparator.getLowestToHighestMovementComparator()));
+  }
+
+  /**
+   * In an amphibious assault, sort on who is unloading from transports first as this will allow the marines with higher
+   * scores to get killed last.
+   */
+  public static void sortAmphib(final List<Unit> units, final List<Unit> amphibiousLandAttackers) {
+    final Comparator<Unit> decreasingMovement = UnitComparator.getLowestToHighestMovementComparator();
+    units.sort(Comparator.comparing(Unit::getType, Comparator.comparing(UnitType::getName))
+        .thenComparing((u1, u2) -> {
+          final UnitAttachment ua = UnitAttachment.get(u1.getType());
+          final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+          if (ua.getIsMarine() != 0 && ua2.getIsMarine() != 0) {
+            return compareAccordingToAmphibious(u1, u2, amphibiousLandAttackers);
+          }
+          return 0;
+        })
+        .thenComparing(decreasingMovement));
+  }
+
+  private static int compareAccordingToAmphibious(final Unit u1, final Unit u2,
+      final List<Unit> amphibiousLandAttackers) {
+    if (amphibiousLandAttackers.contains(u1) && !amphibiousLandAttackers.contains(u2)) {
+      return -1;
+    } else if (amphibiousLandAttackers.contains(u2) && !amphibiousLandAttackers.contains(u1)) {
+      return 1;
+    }
+    final int m1 = UnitAttachment.get(u1.getType()).getIsMarine();
+    final int m2 = UnitAttachment.get(u2.getType()).getIsMarine();
+    return m2 - m1;
   }
 
   /**
