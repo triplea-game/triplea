@@ -20,7 +20,6 @@ import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Sets;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
@@ -245,6 +244,69 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       } else {
         dependentUnits.put(holder, new LinkedHashSet<>(transporting));
       }
+    }
+  }
+
+  @Override
+  public List<Unit> getRemainingAttackingUnits() {
+    final List<Unit> remaining = new ArrayList<>(attackingUnitsRetreated);
+    final Collection<Unit> unitsLeftInTerritory = battleSite.getUnits();
+    unitsLeftInTerritory.removeAll(killed);
+    remaining.addAll(CollectionUtils.getMatches(unitsLeftInTerritory, getWhoWon() != WhoWon.DEFENDER
+        ? Matches.unitOwnedBy(attacker)
+        : Matches.unitOwnedBy(attacker).and(Matches.unitIsAir()).and(Matches.unitIsNotInfrastructure())));
+    return remaining;
+  }
+
+  @Override
+  public List<Unit> getRemainingDefendingUnits() {
+    final List<Unit> remaining = new ArrayList<>(defendingUnitsRetreated);
+    if (getWhoWon() != WhoWon.ATTACKER || attackingUnits.stream().allMatch(Matches.unitIsAir())) {
+      final Collection<Unit> unitsLeftInTerritory = battleSite.getUnits();
+      unitsLeftInTerritory.removeAll(killed);
+      remaining.addAll(CollectionUtils.getMatches(unitsLeftInTerritory, Matches.enemyUnit(attacker, gameData)));
+    }
+    return remaining;
+  }
+
+  /**
+   * Used for setting stuff when we make a scrambling battle when there was no previous battle there, and we need
+   * retreat spaces.
+   */
+  void setAttackingFromAndMap(final Map<Territory, Collection<Unit>> attackingFromMap) {
+    this.attackingFromMap = attackingFromMap;
+    attackingFrom = new HashSet<>(attackingFromMap.keySet());
+  }
+
+  @Override
+  public void unitsLostInPrecedingBattle(final Collection<Unit> units,
+      final IDelegateBridge bridge, final boolean withdrawn) {
+    Collection<Unit> lost = getDependentUnits(units);
+    lost.addAll(CollectionUtils.intersection(units, attackingUnits));
+    // if all the amphibious attacking land units are lost, then we are no longer a naval invasion
+    amphibiousLandAttackers.removeAll(lost);
+    if (amphibiousLandAttackers.isEmpty()) {
+      isAmphibious = false;
+      bombardingUnits.clear();
+    }
+    attackingUnits.removeAll(lost);
+    // now that they are definitely removed from our attacking list, make sure that they were not already removed from
+    // the territory by the previous battle's remove method
+    lost = CollectionUtils.getMatches(lost, Matches.unitIsInTerritory(battleSite));
+    if (!withdrawn) {
+      remove(lost, bridge, battleSite, false);
+    }
+    if (attackingUnits.isEmpty()) {
+      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
+      final int tuvLostAttacker = (withdrawn ? 0 : TuvUtils.getTuv(lost, attacker, costs, gameData));
+      attackerLostTuv += tuvLostAttacker;
+      whoWon = WhoWon.DEFENDER;
+      if (!headless) {
+        battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender,
+            attackerLostTuv, defenderLostTuv, BattleRecord.BattleResultDescription.LOST,
+            new BattleResults(this, gameData));
+      }
+      battleTracker.removeBattle(this, gameData);
     }
   }
 
@@ -646,8 +708,57 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         && defendingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
   }
 
+  @VisibleForTesting
+  Collection<Territory> getAttackerRetreatTerritories() {
+    // TODO: when attacking with paratroopers (air + carried land), there are several bugs in retreating.
+    // TODO: air should always be able to retreat. paratroopers can only retreat if there are other
+    // non-paratrooper non-amphibious land units.
+
+    // If attacker is all planes, just return collection of current territory
+    if (headless || (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir()))
+        || Properties.getRetreatingUnitsRemainInPlace(gameData)) {
+      return Collections.singleton(battleSite);
+    }
+    // its possible that a sub retreated to a territory we came from, if so we can no longer retreat there
+    // or if we are moving out of a territory containing enemy units, we cannot retreat back there
+    final Predicate<Unit> enemyUnitsThatPreventRetreat = PredicateBuilder
+        .of(Matches.enemyUnit(attacker, gameData))
+        .and(Matches.unitIsNotInfrastructure())
+        .and(Matches.unitIsBeingTransported().negate())
+        .and(Matches.unitIsSubmerged().negate())
+        .and(Matches.unitCanBeMovedThroughByEnemies().negate())
+        .andIf(Properties.getIgnoreTransportInMovement(gameData), Matches.unitIsNotTransportButCouldBeCombatTransport())
+        .build();
+    Collection<Territory> possible = CollectionUtils.getMatches(attackingFrom,
+        Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
+    // In WW2V2 and WW2V3 we need to filter out territories where only planes
+    // came from since planes cannot define retreat paths
+    if (isWW2V2() || isWW2V3()) {
+      possible = CollectionUtils.getMatches(possible, t -> {
+        final Collection<Unit> units = attackingFromMap.get(t);
+        return units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir());
+      });
+    }
+
+    // the air unit may have come from a conquered or enemy territory, don't allow retreating
+    final Predicate<Territory> conqueuredOrEnemy =
+        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(attacker, gameData)
+            .or(Matches.territoryIsWater().and(Matches.territoryWasFoughOver(battleTracker)));
+    possible.removeAll(CollectionUtils.getMatches(possible, conqueuredOrEnemy));
+
+    // the battle site is in the attacking from if sea units are fighting a submerged sub
+    possible.remove(battleSite);
+    if (attackingUnits.stream().anyMatch(Matches.unitIsLand()) && !battleSite.isWater()) {
+      possible = CollectionUtils.getMatches(possible, Matches.territoryIsLand());
+    }
+    if (attackingUnits.stream().anyMatch(Matches.unitIsSea())) {
+      possible = CollectionUtils.getMatches(possible, Matches.territoryIsWater());
+    }
+    return possible;
+  }
+
   private boolean canAttackerRetreatPlanes() {
-    return (isWW2V2() || isAttackerRetreatPlanes() || isPartialAmphibiousRetreat()) && isAmphibious
+    return (isWW2V2() || Properties.getAttackerRetreatPlanes(gameData) || isPartialAmphibiousRetreat()) && isAmphibious
         && attackingUnits.stream().anyMatch(Matches.unitIsAir());
   }
 
@@ -663,6 +774,16 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       }
     }
     return false;
+  }
+
+  private boolean canDefenderRetreatSubs() {
+    if (attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
+      return false;
+    }
+    return attackingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
+        && (getEmptyOrFriendlySeaNeighbors(defender,
+            CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade())).size() != 0
+            || canSubsSubmerge());
   }
 
   private void pushFightLoopOnStack(final boolean firstRun) {
@@ -1091,63 +1212,17 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     });
   }
 
-  @VisibleForTesting
-  Collection<Territory> getAttackerRetreatTerritories() {
-    // TODO: when attacking with paratroopers (air + carried land), there are several bugs in retreating.
-    // TODO: air should always be able to retreat. paratroopers can only retreat if there are other
-    // non-paratrooper non-amphibious land units.
-
-    // If attacker is all planes, just return collection of current territory
-    if (headless || (!attackingUnits.isEmpty() && attackingUnits.stream().allMatch(Matches.unitIsAir()))
-        || Properties.getRetreatingUnitsRemainInPlace(gameData)) {
-      return Collections.singleton(battleSite);
+  private void attackerRetreatPlanes(final IDelegateBridge bridge) {
+    // planes retreat to the same square the battle is in, and then should move during non combat to their landing site,
+    // or be scrapped if they can't find one.
+    if (attackingUnits.stream().anyMatch(Matches.unitIsAir())) {
+      queryRetreat(false, RetreatType.PLANES, bridge, Collections.singleton(battleSite));
     }
-    // its possible that a sub retreated to a territory we came from, if so we can no longer retreat there
-    // or if we are moving out of a territory containing enemy units, we cannot retreat back there
-    final Predicate<Unit> enemyUnitsThatPreventRetreat = PredicateBuilder
-        .of(Matches.enemyUnit(attacker, gameData))
-        .and(Matches.unitIsNotInfrastructure())
-        .and(Matches.unitIsBeingTransported().negate())
-        .and(Matches.unitIsSubmerged().negate())
-        .and(Matches.unitCanBeMovedThroughByEnemies().negate())
-        .andIf(Properties.getIgnoreTransportInMovement(gameData), Matches.unitIsNotTransportButCouldBeCombatTransport())
-        .build();
-    Collection<Territory> possible = CollectionUtils.getMatches(attackingFrom,
-        Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).negate());
-    // In WW2V2 and WW2V3 we need to filter out territories where only planes
-    // came from since planes cannot define retreat paths
-    if (isWW2V2() || isWW2V3()) {
-      possible = CollectionUtils.getMatches(possible, t -> {
-        final Collection<Unit> units = attackingFromMap.get(t);
-        return units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir());
-      });
-    }
-
-    // the air unit may have come from a conquered or enemy territory, don't allow retreating
-    final Predicate<Territory> conqueuredOrEnemy =
-        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(attacker, gameData)
-            .or(Matches.territoryIsWater().and(Matches.territoryWasFoughOver(battleTracker)));
-    possible.removeAll(CollectionUtils.getMatches(possible, conqueuredOrEnemy));
-
-    // the battle site is in the attacking from if sea units are fighting a submerged sub
-    possible.remove(battleSite);
-    if (attackingUnits.stream().anyMatch(Matches.unitIsLand()) && !battleSite.isWater()) {
-      possible = CollectionUtils.getMatches(possible, Matches.territoryIsLand());
-    }
-    if (attackingUnits.stream().anyMatch(Matches.unitIsSea())) {
-      possible = CollectionUtils.getMatches(possible, Matches.territoryIsWater());
-    }
-    return possible;
   }
 
-  /**
-   * Added for test case calls.
-   */
-  @VisibleForTesting
-  void externalRetreat(final Collection<Unit> retreaters, final Territory retreatTo, final boolean defender,
-      final IDelegateBridge bridge) {
-    isOver = true;
-    retreatUnits(retreaters, retreatTo, defender, bridge);
+  private void attackerRetreatNonAmphibUnits(final IDelegateBridge bridge) {
+    final Collection<Territory> possible = getAttackerRetreatTerritories();
+    queryRetreat(false, RetreatType.PARTIAL_AMPHIB, bridge, possible);
   }
 
   private void attackerRetreat(final IDelegateBridge bridge) {
@@ -1162,29 +1237,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         queryRetreat(false, RetreatType.DEFAULT, bridge, possible);
       }
     }
-  }
-
-  private void attackerRetreatPlanes(final IDelegateBridge bridge) {
-    // planes retreat to the same square the battle is in, and then should move during non combat to their landing site,
-    // or be scrapped if they can't find one.
-    if (attackingUnits.stream().anyMatch(Matches.unitIsAir())) {
-      queryRetreat(false, RetreatType.PLANES, bridge, Collections.singleton(battleSite));
-    }
-  }
-
-  private void attackerRetreatNonAmphibUnits(final IDelegateBridge bridge) {
-    final Collection<Territory> possible = getAttackerRetreatTerritories();
-    queryRetreat(false, RetreatType.PARTIAL_AMPHIB, bridge, possible);
-  }
-
-  private boolean canDefenderRetreatSubs() {
-    if (attackingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return attackingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
-        && (getEmptyOrFriendlySeaNeighbors(defender,
-            CollectionUtils.getMatches(defendingUnits, Matches.unitCanEvade())).size() != 0
-            || canSubsSubmerge());
   }
 
   private void attackerRetreatSubs(final IDelegateBridge bridge) {
@@ -1294,7 +1346,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(battleId,
         (submerge || canDefendingSubsSubmergeOrRetreat), battleSite, availableTerritories, text);
     if (retreatTo != null && !availableTerritories.contains(retreatTo) && !subs) {
-      log.severe("Invalid retreat selection :" + retreatTo + " not in "
+      log.severe("Invalid retreat selection: " + retreatTo + " not in "
           + MyFormatter.defaultNamedToTextList(availableTerritories));
       return;
     }
@@ -1335,72 +1387,21 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  @Override
-  public List<Unit> getRemainingAttackingUnits() {
-    final List<Unit> remaining = new ArrayList<>(attackingUnitsRetreated);
-    final Collection<Unit> unitsLeftInTerritory = battleSite.getUnits();
-    unitsLeftInTerritory.removeAll(killed);
-    remaining.addAll(CollectionUtils.getMatches(unitsLeftInTerritory, getWhoWon() != WhoWon.DEFENDER
-        ? Matches.unitOwnedBy(attacker)
-        : Matches.unitOwnedBy(attacker).and(Matches.unitIsAir()).and(Matches.unitIsNotInfrastructure())));
-    return remaining;
-  }
-
-  @Override
-  public List<Unit> getRemainingDefendingUnits() {
-    final List<Unit> remaining = new ArrayList<>(defendingUnitsRetreated);
-    if (getWhoWon() != WhoWon.ATTACKER || attackingUnits.stream().allMatch(Matches.unitIsAir())) {
-      final Collection<Unit> unitsLeftInTerritory = battleSite.getUnits();
-      unitsLeftInTerritory.removeAll(killed);
-      remaining.addAll(CollectionUtils.getMatches(unitsLeftInTerritory, Matches.enemyUnit(attacker, gameData)));
-    }
-    return remaining;
-  }
-
-  private Change retreatFromDependents(final Collection<Unit> units, final Territory retreatTo,
-      final Collection<IBattle> dependentBattles) {
+  private void submergeUnits(final Collection<Unit> submerging, final boolean defender, final IDelegateBridge bridge) {
+    final String transcriptText = MyFormatter.unitsToText(submerging) + " Submerged";
+    final Collection<Unit> units = defender ? defendingUnits : attackingUnits;
+    final Collection<Unit> unitsRetreated = defender ? defendingUnitsRetreated : attackingUnitsRetreated;
     final CompositeChange change = new CompositeChange();
-    for (final IBattle dependent : dependentBattles) {
-      final Route route = new Route();
-      route.setStart(battleSite);
-      route.add(dependent.getTerritory());
-      final Collection<Unit> retreatedUnits = dependent.getDependentUnits(units);
-      dependent.removeAttack(route, retreatedUnits);
-      reLoadTransports(units, change);
-      change.add(ChangeFactory.moveUnits(dependent.getTerritory(), retreatTo, retreatedUnits));
+    for (final Unit u : submerging) {
+      change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.SUBMERGED));
     }
-    return change;
-  }
-
-  /**
-   * Retreat landed units from allied territory when their transport retreats.
-   */
-  private Change retreatFromNonCombat(final Collection<Unit> units, final Territory retreatTo) {
-    final CompositeChange change = new CompositeChange();
-    final Collection<Unit> transports = CollectionUtils.getMatches(units, Matches.unitIsTransport());
-    final Collection<Unit> retreated = getTransportDependents(transports);
-    if (!retreated.isEmpty()) {
-      for (final Unit unit : transports) {
-        final Territory retreatedFrom = TransportTracker.getTerritoryTransportHasUnloadedTo(unit);
-        if (retreatedFrom != null) {
-          reLoadTransports(transports, change);
-          change.add(ChangeFactory.moveUnits(retreatedFrom, retreatTo, retreated));
-        }
-      }
+    bridge.addChange(change);
+    units.removeAll(submerging);
+    unitsRetreated.addAll(submerging);
+    if (!units.isEmpty() && !isOver) {
+      getDisplay(bridge).notifyRetreat(battleId, submerging);
     }
-    return change;
-  }
-
-  void reLoadTransports(final Collection<Unit> units, final CompositeChange change) {
-    final Collection<Unit> transports = CollectionUtils.getMatches(units, Matches.unitCanTransport());
-    // Put units back on their transports
-    for (final Unit transport : transports) {
-      final Collection<Unit> unloaded = TransportTracker.unloaded(transport);
-      for (final Unit load : unloaded) {
-        final Change loadChange = TransportTracker.loadTransportChange((TripleAUnit) transport, load);
-        change.add(loadChange);
-      }
-    }
+    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(submerging));
   }
 
   private void retreatPlanes(final Collection<Unit> retreating, final boolean defender, final IDelegateBridge bridge) {
@@ -1422,21 +1423,54 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(retreating));
   }
 
-  private void submergeUnits(final Collection<Unit> submerging, final boolean defender, final IDelegateBridge bridge) {
-    final String transcriptText = MyFormatter.unitsToText(submerging) + " Submerged";
+  private void retreatUnitsAndPlanes(final Collection<Unit> retreating, final Territory to, final boolean defender,
+      final IDelegateBridge bridge) {
+    // Remove air from battle
     final Collection<Unit> units = defender ? defendingUnits : attackingUnits;
     final Collection<Unit> unitsRetreated = defender ? defendingUnitsRetreated : attackingUnitsRetreated;
+    units.removeAll(CollectionUtils.getMatches(units, Matches.unitIsAir()));
+    // add all land units' dependents
+    retreating.addAll(getDependentUnits(units));
+    // our own air units don't retreat with land units
+    final Predicate<Unit> notMyAir = Matches.unitIsNotAir().or(Matches.unitIsOwnedBy(attacker).negate());
+    final Collection<Unit> nonAirRetreating = CollectionUtils.getMatches(retreating, notMyAir);
+    final String transcriptText = MyFormatter.unitsToTextNoOwner(nonAirRetreating) + " retreated to " + to.getName();
+    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(nonAirRetreating));
     final CompositeChange change = new CompositeChange();
-    for (final Unit u : submerging) {
-      change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.SUBMERGED));
+    change.add(ChangeFactory.moveUnits(battleSite, to, nonAirRetreating));
+    if (isOver) {
+      final Collection<IBattle> dependentBattles = battleTracker.getBlocked(this);
+      // If there are no dependent battles, check landings in allied territories
+      if (dependentBattles.isEmpty()) {
+        change.add(retreatFromNonCombat(nonAirRetreating, to));
+        // Else retreat the units from combat when their transport retreats
+      } else {
+        change.add(retreatFromDependents(nonAirRetreating, to, dependentBattles));
+      }
     }
     bridge.addChange(change);
-    units.removeAll(submerging);
-    unitsRetreated.addAll(submerging);
-    if (!units.isEmpty() && !isOver) {
-      getDisplay(bridge).notifyRetreat(battleId, submerging);
+    units.removeAll(nonAirRetreating);
+    unitsRetreated.addAll(nonAirRetreating);
+    if (units.isEmpty() || isOver) {
+      endBattle(bridge);
+      if (defender) {
+        attackerWins(bridge);
+      } else {
+        defenderWins(bridge);
+      }
+    } else {
+      getDisplay(bridge).notifyRetreat(battleId, retreating);
     }
-    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(submerging));
+  }
+
+  /**
+   * Added for test case calls.
+   */
+  @VisibleForTesting
+  void externalRetreat(final Collection<Unit> retreaters, final Territory retreatTo, final boolean defender,
+      final IDelegateBridge bridge) {
+    isOver = true;
+    retreatUnits(retreaters, retreatTo, defender, bridge);
   }
 
   private void retreatUnits(final Collection<Unit> initialRetreating, final Territory to, final boolean defender,
@@ -1483,89 +1517,38 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void retreatUnitsAndPlanes(final Collection<Unit> retreating, final Territory to, final boolean defender,
-      final IDelegateBridge bridge) {
-    // Remove air from battle
-    final Collection<Unit> units = defender ? defendingUnits : attackingUnits;
-    final Collection<Unit> unitsRetreated = defender ? defendingUnitsRetreated : attackingUnitsRetreated;
-    units.removeAll(CollectionUtils.getMatches(units, Matches.unitIsAir()));
-    // add all land units' dependents
-    retreating.addAll(getDependentUnits(units));
-    // our own air units don't retreat with land units
-    final Predicate<Unit> notMyAir = Matches.unitIsNotAir().or(Matches.unitIsOwnedBy(attacker).negate());
-    final Collection<Unit> nonAirRetreating = CollectionUtils.getMatches(retreating, notMyAir);
-    final String transcriptText = MyFormatter.unitsToTextNoOwner(nonAirRetreating) + " retreated to " + to.getName();
-    bridge.getHistoryWriter().addChildToEvent(transcriptText, new ArrayList<>(nonAirRetreating));
-    final CompositeChange change = new CompositeChange();
-    change.add(ChangeFactory.moveUnits(battleSite, to, nonAirRetreating));
-    if (isOver) {
-      final Collection<IBattle> dependentBattles = battleTracker.getBlocked(this);
-      // If there are no dependent battles, check landings in allied territories
-      if (dependentBattles.isEmpty()) {
-        change.add(retreatFromNonCombat(nonAirRetreating, to));
-        // Else retreat the units from combat when their transport retreats
-      } else {
-        change.add(retreatFromDependents(nonAirRetreating, to, dependentBattles));
-      }
-    }
-    bridge.addChange(change);
-    units.removeAll(nonAirRetreating);
-    unitsRetreated.addAll(nonAirRetreating);
-    if (units.isEmpty() || isOver) {
-      endBattle(bridge);
-      if (defender) {
-        attackerWins(bridge);
-      } else {
-        defenderWins(bridge);
-      }
-    } else {
-      getDisplay(bridge).notifyRetreat(battleId, retreating);
-    }
-  }
-
-  private void fire(final String stepName, final Collection<Unit> firingUnits, final Collection<Unit> attackableUnits,
-      final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defender, final ReturnFire returnFire,
-      final String text) {
-    final PlayerId firing = defender ? this.defender : attacker;
-    final PlayerId defending = !defender ? this.defender : attacker;
-    if (firingUnits.isEmpty()) {
-      return;
-    }
-
-    // Fire each type of suicide on hit unit separately and then remaining units
-    final List<Collection<Unit>> firingGroups = newFiringUnitGroups(firingUnits);
-    for (final Collection<Unit> units : firingGroups) {
-      stack.push(new Fire(attackableUnits, returnFire, firing, defending, units, stepName, text, this, defender,
-          dependentUnits, headless, battleSite, territoryEffects, allEnemyUnitsAliveOrWaitingToDie));
-    }
-  }
-
   /**
-   * Breaks list of units into groups of non suicide on hit units and each type of suicide on hit units
-   * since each type of suicide on hit units need to roll separately to know which ones get hits.
+   * Retreat landed units from allied territory when their transport retreats.
    */
-  static List<Collection<Unit>> newFiringUnitGroups(final Collection<Unit> units) {
-
-    // Sort suicide on hit units by type
-    final Map<UnitType, Collection<Unit>> map = new HashMap<>();
-    for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit())) {
-      final UnitType type = unit.getType();
-      if (map.containsKey(type)) {
-        map.get(type).add(unit);
-      } else {
-        final Collection<Unit> unitList = new ArrayList<>();
-        unitList.add(unit);
-        map.put(type, unitList);
+  private Change retreatFromNonCombat(final Collection<Unit> units, final Territory retreatTo) {
+    final CompositeChange change = new CompositeChange();
+    final Collection<Unit> transports = CollectionUtils.getMatches(units, Matches.unitIsTransport());
+    final Collection<Unit> retreated = getTransportDependents(transports);
+    if (!retreated.isEmpty()) {
+      for (final Unit unit : transports) {
+        final Territory retreatedFrom = TransportTracker.getTerritoryTransportHasUnloadedTo(unit);
+        if (retreatedFrom != null) {
+          TransportTracker.reloadTransports(transports, change);
+          change.add(ChangeFactory.moveUnits(retreatedFrom, retreatTo, retreated));
+        }
       }
     }
+    return change;
+  }
 
-    // Add all suicide on hit groups and the remaining units
-    final List<Collection<Unit>> result = new ArrayList<>(map.values());
-    final Collection<Unit> remainingUnits = CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit().negate());
-    if (!remainingUnits.isEmpty()) {
-      result.add(remainingUnits);
+  private Change retreatFromDependents(final Collection<Unit> units, final Territory retreatTo,
+      final Collection<IBattle> dependentBattles) {
+    final CompositeChange change = new CompositeChange();
+    for (final IBattle dependent : dependentBattles) {
+      final Route route = new Route();
+      route.setStart(battleSite);
+      route.add(dependent.getTerritory());
+      final Collection<Unit> retreatedUnits = dependent.getDependentUnits(units);
+      dependent.removeAttack(route, retreatedUnits);
+      TransportTracker.reloadTransports(units, change);
+      change.add(ChangeFactory.moveUnits(dependent.getTerritory(), retreatTo, retreatedUnits));
     }
-    return result;
+    return change;
   }
 
   /**
@@ -1941,6 +1924,51 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         SUICIDE_DEFEND);
   }
 
+  private void fire(final String stepName, final Collection<Unit> firingUnits, final Collection<Unit> attackableUnits,
+      final List<Unit> allEnemyUnitsAliveOrWaitingToDie, final boolean defender, final ReturnFire returnFire,
+      final String text) {
+    final PlayerId firing = defender ? this.defender : attacker;
+    final PlayerId defending = !defender ? this.defender : attacker;
+    if (firingUnits.isEmpty()) {
+      return;
+    }
+
+    // Fire each type of suicide on hit unit separately and then remaining units
+    final List<Collection<Unit>> firingGroups = newFiringUnitGroups(firingUnits);
+    for (final Collection<Unit> units : firingGroups) {
+      stack.push(new Fire(attackableUnits, returnFire, firing, defending, units, stepName, text, this, defender,
+          dependentUnits, headless, battleSite, territoryEffects, allEnemyUnitsAliveOrWaitingToDie));
+    }
+  }
+
+  /**
+   * Breaks list of units into groups of non suicide on hit units and each type of suicide on hit units
+   * since each type of suicide on hit units need to roll separately to know which ones get hits.
+   */
+  static List<Collection<Unit>> newFiringUnitGroups(final Collection<Unit> units) {
+
+    // Sort suicide on hit units by type
+    final Map<UnitType, Collection<Unit>> map = new HashMap<>();
+    for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit())) {
+      final UnitType type = unit.getType();
+      if (map.containsKey(type)) {
+        map.get(type).add(unit);
+      } else {
+        final Collection<Unit> unitList = new ArrayList<>();
+        unitList.add(unit);
+        map.put(type, unitList);
+      }
+    }
+
+    // Add all suicide on hit groups and the remaining units
+    final List<Collection<Unit>> result = new ArrayList<>(map.values());
+    final Collection<Unit> remainingUnits = CollectionUtils.getMatches(units, Matches.unitIsSuicideOnHit().negate());
+    if (!remainingUnits.isEmpty()) {
+      result.add(remainingUnits);
+    }
+    return result;
+  }
+
   private boolean isWW2V2() {
     return Properties.getWW2V2(gameData);
   }
@@ -1955,10 +1983,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private boolean isAlliedAirIndependent() {
     return Properties.getAlliedAirIndependent(gameData);
-  }
-
-  private boolean isAttackerRetreatPlanes() {
-    return Properties.getAttackerRetreatPlanes(gameData);
   }
 
   private boolean isSuicideAndMunitionCasualtiesRestricted() {
@@ -2332,34 +2356,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     battleTracker.addToDefendingAirThatCanNotLand(defendingAir, battleSite);
   }
 
-  static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,
-      final Territory battleSite, final PlayerId attacker, final GameData data) {
-    final CompositeChange change = new CompositeChange();
-    // Clear the transported_by for successfully won battles where there was an allied air unit held as cargo by an
-    // carrier unit
-    final Collection<Unit> carriers = CollectionUtils.getMatches(attackingUnits, Matches.unitIsCarrier());
-    if (!carriers.isEmpty() && !Properties.getAlliedAirIndependent(data)) {
-      final Predicate<Unit> alliedFighters = Matches.isUnitAllied(attacker, data)
-          .and(Matches.unitIsOwnedBy(attacker).negate())
-          .and(Matches.unitIsAir())
-          .and(Matches.unitCanLandOnCarrier());
-      final Collection<Unit> alliedAirInTerr = CollectionUtils.getMatches(
-          Sets.union(Sets.newHashSet(attackingUnits), Sets.newHashSet(battleSite.getUnitCollection())),
-          alliedFighters);
-      for (final Unit fighter : alliedAirInTerr) {
-        final TripleAUnit taUnit = (TripleAUnit) fighter;
-        if (taUnit.getTransportedBy() != null) {
-          final Unit carrierTransportingThisUnit = taUnit.getTransportedBy();
-          if (!Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER)
-              .test(carrierTransportingThisUnit)) {
-            change.add(ChangeFactory.unitPropertyChange(fighter, null, TripleAUnit.TRANSPORTED_BY));
-          }
-        }
-      }
-    }
-    return change;
-  }
-
   private void showCasualties(final IDelegateBridge bridge) {
     if (killed.isEmpty()) {
       return;
@@ -2384,12 +2380,12 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
     // Must clear transportedby for allied air on carriers for both attacking units and retreating units
     final CompositeChange clearAlliedAir =
-        clearTransportedByForAlliedAirOnCarrier(attackingUnits, battleSite, attacker, gameData);
+        TransportTracker.clearTransportedByForAlliedAirOnCarrier(attackingUnits, battleSite, attacker, gameData);
     if (!clearAlliedAir.isEmpty()) {
       bridge.addChange(clearAlliedAir);
     }
-    final CompositeChange clearAlliedAirRetreated =
-        clearTransportedByForAlliedAirOnCarrier(attackingUnitsRetreated, battleSite, attacker, gameData);
+    final CompositeChange clearAlliedAirRetreated = TransportTracker
+        .clearTransportedByForAlliedAirOnCarrier(attackingUnitsRetreated, battleSite, attacker, gameData);
     if (!clearAlliedAirRetreated.isEmpty()) {
       bridge.addChange(clearAlliedAirRetreated);
     }
@@ -2433,45 +2429,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     final int m1 = UnitAttachment.get(u1.getType()).getIsMarine();
     final int m2 = UnitAttachment.get(u2.getType()).getIsMarine();
     return m2 - m1;
-  }
-
-  // used for setting stuff when we make a scrambling battle when there was no previous battle there, and we need
-  // retreat spaces
-  public void setAttackingFromAndMap(final Map<Territory, Collection<Unit>> attackingFromMap) {
-    this.attackingFromMap = attackingFromMap;
-    attackingFrom = new HashSet<>(attackingFromMap.keySet());
-  }
-
-  @Override
-  public void unitsLostInPrecedingBattle(final Collection<Unit> units,
-      final IDelegateBridge bridge, final boolean withdrawn) {
-    Collection<Unit> lost = getDependentUnits(units);
-    lost.addAll(CollectionUtils.intersection(units, attackingUnits));
-    // if all the amphibious attacking land units are lost, then we are no longer a naval invasion
-    amphibiousLandAttackers.removeAll(lost);
-    if (amphibiousLandAttackers.isEmpty()) {
-      isAmphibious = false;
-      bombardingUnits.clear();
-    }
-    attackingUnits.removeAll(lost);
-    // now that they are definitely removed from our attacking list, make sure that they were not already removed from
-    // the territory by the previous battle's remove method
-    lost = CollectionUtils.getMatches(lost, Matches.unitIsInTerritory(battleSite));
-    if (!withdrawn) {
-      remove(lost, bridge, battleSite, false);
-    }
-    if (attackingUnits.isEmpty()) {
-      final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(attacker, gameData);
-      final int tuvLostAttacker = (withdrawn ? 0 : TuvUtils.getTuv(lost, attacker, costs, gameData));
-      attackerLostTuv += tuvLostAttacker;
-      whoWon = WhoWon.DEFENDER;
-      if (!headless) {
-        battleTracker.getBattleRecords().addResultToBattle(attacker, battleId, defender,
-            attackerLostTuv, defenderLostTuv, BattleRecord.BattleResultDescription.LOST,
-            new BattleResults(this, gameData));
-      }
-      battleTracker.removeBattle(this, gameData);
-    }
   }
 
 }

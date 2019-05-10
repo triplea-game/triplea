@@ -845,7 +845,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           if (attackingUnits.stream().anyMatch(Matches.unitIsTransport())) {
             // first, we have to reset the "transportedBy" setting for all the land units that were offloaded
             final CompositeChange change1 = new CompositeChange();
-            mfb.reLoadTransports(attackingUnits, change1);
+            TransportTracker.reloadTransports(attackingUnits, change1);
             if (!change1.isEmpty()) {
               bridge.addChange(change1);
             }

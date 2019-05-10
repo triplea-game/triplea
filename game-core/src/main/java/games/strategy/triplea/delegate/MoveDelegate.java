@@ -449,7 +449,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // now cycle through those now-repaired carriers, and remove allied air from being dependent
     final CompositeChange clearAlliedAir = new CompositeChange();
     for (final Unit carrier : damagedCarriers) {
-      final CompositeChange change = MustFightBattle.clearTransportedByForAlliedAirOnCarrier(
+      final CompositeChange change = TransportTracker.clearTransportedByForAlliedAirOnCarrier(
           Collections.singleton(carrier), fullyRepaired.get(carrier), carrier.getOwner(), data);
       if (!change.isEmpty()) {
         clearAlliedAir.add(change);

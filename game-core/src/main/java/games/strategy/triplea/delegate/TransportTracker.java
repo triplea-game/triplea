@@ -6,10 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
+
+import org.triplea.java.collections.CollectionUtils;
+
+import com.google.common.collect.Sets;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -166,6 +172,18 @@ public class TransportTracker {
     return change;
   }
 
+  static void reloadTransports(final Collection<Unit> units, final CompositeChange change) {
+    final Collection<Unit> transports = CollectionUtils.getMatches(units, Matches.unitCanTransport());
+    // Put units back on their transports
+    for (final Unit transport : transports) {
+      final Collection<Unit> unloaded = TransportTracker.unloaded(transport);
+      for (final Unit load : unloaded) {
+        final Change loadChange = TransportTracker.loadTransportChange((TripleAUnit) transport, load);
+        change.add(loadChange);
+      }
+    }
+  }
+
   static Change loadTransportChange(final TripleAUnit transport, final Unit unit) {
     assertTransport(transport);
     final CompositeChange change = new CompositeChange();
@@ -281,5 +299,33 @@ public class TransportTracker {
     final TripleAUnit taUnit = (TripleAUnit) transport;
     return GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true) && taUnit.getWasInCombat()
         && taUnit.getWasLoadedAfterCombat();
+  }
+
+  static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,
+      final Territory battleSite, final PlayerId attacker, final GameData data) {
+    final CompositeChange change = new CompositeChange();
+    // Clear the transported_by for successfully won battles where there was an allied air unit held as cargo by an
+    // carrier unit
+    final Collection<Unit> carriers = CollectionUtils.getMatches(attackingUnits, Matches.unitIsCarrier());
+    if (!carriers.isEmpty() && !Properties.getAlliedAirIndependent(data)) {
+      final Predicate<Unit> alliedFighters = Matches.isUnitAllied(attacker, data)
+          .and(Matches.unitIsOwnedBy(attacker).negate())
+          .and(Matches.unitIsAir())
+          .and(Matches.unitCanLandOnCarrier());
+      final Collection<Unit> alliedAirInTerr = CollectionUtils.getMatches(
+          Sets.union(Sets.newHashSet(attackingUnits), Sets.newHashSet(battleSite.getUnitCollection())),
+          alliedFighters);
+      for (final Unit fighter : alliedAirInTerr) {
+        final TripleAUnit taUnit = (TripleAUnit) fighter;
+        if (taUnit.getTransportedBy() != null) {
+          final Unit carrierTransportingThisUnit = taUnit.getTransportedBy();
+          if (!Matches.unitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER)
+              .test(carrierTransportingThisUnit)) {
+            change.add(ChangeFactory.unitPropertyChange(fighter, null, TripleAUnit.TRANSPORTED_BY));
+          }
+        }
+      }
+    }
+    return change;
   }
 }
