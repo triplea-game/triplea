@@ -19,6 +19,7 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 
 import games.strategy.engine.data.Change;
@@ -113,11 +114,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final BattleTracker battleTracker) {
     super(battleSite, attacker, battleTracker, data);
     defendingUnits.addAll(this.battleSite.getUnitCollection().getMatches(Matches.enemyUnit(attacker, data)));
-    if (battleSite.isWater()) {
-      maxRounds = Properties.getSeaBattleRounds(data);
-    } else {
-      maxRounds = Properties.getLandBattleRounds(data);
-    }
+    maxRounds = battleSite.isWater() ? Properties.getSeaBattleRounds(data) : Properties.getLandBattleRounds(data);
   }
 
   public void resetDefendingUnits(final PlayerId attacker, final GameData data) {
@@ -142,10 +139,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   public boolean shouldEndBattleDueToMaxRounds() {
     return maxRounds > 0 && maxRounds <= round;
-  }
-
-  private boolean canSubsSubmerge() {
-    return Properties.getSubmersibleSubs(gameData);
   }
 
   @Override
@@ -255,35 +248,6 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private String getBattleTitle() {
-    return attacker.getName() + " attack " + defender.getName() + " in " + battleSite.getName();
-  }
-
-  private void updateDefendingAaUnits() {
-    final Collection<Unit> canFire = new ArrayList<>(defendingUnits);
-    canFire.addAll(defendingWaitingToDie);
-    final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
-        TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData);
-    defendingAa = CollectionUtils.getMatches(canFire, Matches.unitIsAaThatCanFire(attackingUnits,
-        airborneTechTargetsAllowed, attacker, Matches.unitIsAaForCombatOnly(), round, true, gameData));
-    // comes ordered alphabetically
-    defendingAaTypes = UnitAttachment.getAllOfTypeAas(defendingAa);
-    // stacks are backwards
-    Collections.reverse(defendingAaTypes);
-  }
-
-  private void updateOffensiveAaUnits() {
-    final Collection<Unit> canFire = new ArrayList<>(attackingUnits);
-    canFire.addAll(attackingWaitingToDie);
-    // no airborne targets for offensive aa
-    offensiveAa = CollectionUtils.getMatches(canFire, Matches.unitIsAaThatCanFire(defendingUnits,
-        new HashMap<>(), defender, Matches.unitIsAaForCombatOnly(), round, false, gameData));
-    // comes ordered alphabetically
-    offensiveAaTypes = UnitAttachment.getAllOfTypeAas(offensiveAa);
-    // stacks are backwards
-    Collections.reverse(offensiveAaTypes);
-  }
-
   @Override
   public void fight(final IDelegateBridge bridge) {
     removeUnitsThatNoLongerExist();
@@ -336,6 +300,20 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // push on stack in opposite order of execution
     pushFightLoopOnStack(true);
     stack.execute(bridge);
+  }
+
+  private String getBattleTitle() {
+    return attacker.getName() + " attack " + defender.getName() + " in " + battleSite.getName();
+  }
+
+  private void removeAirNoLongerInTerritory() {
+    if (headless) {
+      return;
+    }
+    // remove any air units that were once in this attack, but have now
+    // moved out of the territory this is an inelegant way to handle this bug
+    final Predicate<Unit> airNotInTerritory = Matches.unitIsInTerritory(battleSite).negate();
+    attackingUnits.removeAll(CollectionUtils.getMatches(attackingUnits, airNotInTerritory));
   }
 
   private void writeUnitsToHistory(final IDelegateBridge bridge) {
@@ -418,14 +396,29 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void removeAirNoLongerInTerritory() {
-    if (headless) {
-      return;
-    }
-    // remove any air units that were once in this attack, but have now
-    // moved out of the territory this is an inelegant way to handle this bug
-    final Predicate<Unit> airNotInTerritory = Matches.unitIsInTerritory(battleSite).negate();
-    attackingUnits.removeAll(CollectionUtils.getMatches(attackingUnits, airNotInTerritory));
+  private void updateOffensiveAaUnits() {
+    final Collection<Unit> canFire = new ArrayList<>(attackingUnits);
+    canFire.addAll(attackingWaitingToDie);
+    // no airborne targets for offensive aa
+    offensiveAa = CollectionUtils.getMatches(canFire, Matches.unitIsAaThatCanFire(defendingUnits,
+        new HashMap<>(), defender, Matches.unitIsAaForCombatOnly(), round, false, gameData));
+    // comes ordered alphabetically
+    offensiveAaTypes = UnitAttachment.getAllOfTypeAas(offensiveAa);
+    // stacks are backwards
+    Collections.reverse(offensiveAaTypes);
+  }
+
+  private void updateDefendingAaUnits() {
+    final Collection<Unit> canFire = new ArrayList<>(defendingUnits);
+    canFire.addAll(defendingWaitingToDie);
+    final Map<String, Set<UnitType>> airborneTechTargetsAllowed =
+        TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData);
+    defendingAa = CollectionUtils.getMatches(canFire, Matches.unitIsAaThatCanFire(attackingUnits,
+        airborneTechTargetsAllowed, attacker, Matches.unitIsAaForCombatOnly(), round, true, gameData));
+    // comes ordered alphabetically
+    defendingAaTypes = UnitAttachment.getAllOfTypeAas(defendingAa);
+    // stacks are backwards
+    Collections.reverse(defendingAaTypes);
   }
 
   List<String> determineStepStrings(final boolean showFirstRun) {
@@ -593,7 +586,120 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return returnFireAgainstAttackingSubs() == ReturnFire.ALL && returnFireAgainstDefendingSubs() == ReturnFire.NONE;
   }
 
-  private void addFightStartToStack(final boolean firstRun, final List<IExecutable> steps) {
+  private ReturnFire returnFireAgainstAttackingSubs() {
+    final boolean attackingSubsSneakAttack = defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
+    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers();
+    final ReturnFire returnFireAgainstAttackingSubs;
+    if (!attackingSubsSneakAttack) {
+      returnFireAgainstAttackingSubs = ReturnFire.ALL;
+    } else if (defendingSubsSneakAttack || isWW2V2()) {
+      returnFireAgainstAttackingSubs = ReturnFire.SUBS;
+    } else {
+      returnFireAgainstAttackingSubs = ReturnFire.NONE;
+    }
+    return returnFireAgainstAttackingSubs;
+  }
+
+  private ReturnFire returnFireAgainstDefendingSubs() {
+    final boolean attackingSubsSneakAttack = defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
+    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers();
+    final ReturnFire returnFireAgainstDefendingSubs;
+    if (!defendingSubsSneakAttack) {
+      returnFireAgainstDefendingSubs = ReturnFire.ALL;
+    } else if (attackingSubsSneakAttack || isWW2V2()) {
+      returnFireAgainstDefendingSubs = ReturnFire.SUBS;
+    } else {
+      returnFireAgainstDefendingSubs = ReturnFire.NONE;
+    }
+    return returnFireAgainstDefendingSubs;
+  }
+
+  private boolean defendingSubsSneakAttackAndNoAttackingDestroyers() {
+    return attackingUnits.stream().noneMatch(Matches.unitIsDestroyer()) && defendingSubsSneakAttack();
+  }
+
+  private boolean defendingSubsSneakAttack() {
+    return isWW2V2() || Properties.getDefendingSubsSneakAttack(gameData);
+  }
+
+  private boolean canAttackerRetreatSubs() {
+    if (defendingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
+      return false;
+    }
+    return defendingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
+        && (canAttackerRetreat() || canSubsSubmerge());
+  }
+
+  private boolean canAttackerRetreat() {
+    if (onlyDefenselessDefendingTransportsLeft()) {
+      return false;
+    }
+    if (isAmphibious) {
+      return false;
+    }
+    return !getAttackerRetreatTerritories().isEmpty();
+  }
+
+  private boolean onlyDefenselessDefendingTransportsLeft() {
+    return isTransportCasualtiesRestricted()
+        && !defendingUnits.isEmpty()
+        && defendingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
+  }
+
+  private boolean canAttackerRetreatPlanes() {
+    return (isWW2V2() || isAttackerRetreatPlanes() || isPartialAmphibiousRetreat()) && isAmphibious
+        && attackingUnits.stream().anyMatch(Matches.unitIsAir());
+  }
+
+  private boolean canAttackerRetreatPartialAmphib() {
+    if (isAmphibious && isPartialAmphibiousRetreat()) {
+      // Only include land units when checking for allow amphibious retreat
+      final List<Unit> landUnits = CollectionUtils.getMatches(attackingUnits, Matches.unitIsLand());
+      for (final Unit unit : landUnits) {
+        final TripleAUnit taUnit = (TripleAUnit) unit;
+        if (!taUnit.getWasAmphibious()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private void pushFightLoopOnStack(final boolean firstRun) {
+    if (isOver) {
+      return;
+    }
+    final List<IExecutable> steps = getBattleExecutables(firstRun);
+    // add in the reverse order we create them
+    Collections.reverse(steps);
+    for (final IExecutable step : steps) {
+      stack.push(step);
+    }
+  }
+
+  /**
+   * The code here is a bit odd to read but basically, we need to break the code into separate atomic pieces. If there
+   * is a network error, or some other unfortunate event, then we need to keep track of what pieces we have executed,
+   * and what is left to do. Each atomic step is in its own IExecutable with the definition of atomic is that either:
+   * <ol>
+   * <li>The code does not call to an IDisplay, IPlayer, or IRandomSource</li>
+   * <li>If the code calls to an IDisplay, IPlayer, IRandomSource, and an exception is called from one of those methods,
+   * the exception will be propagated out of execute() and the execute method can be called again.</li>
+   * </ol>
+   * It is allowed for an IExecutable to add other IExecutables to the stack.
+   * If you read the code in linear order, ignore wrapping stuff in anonymous IExecutables, then the code
+   * can be read as it will execute. The steps are added to the stack and then reversed at the end.
+   */
+  @VisibleForTesting
+  List<IExecutable> getBattleExecutables(final boolean firstRun) {
+    final List<IExecutable> steps = new ArrayList<>();
+    addFightStartSteps(firstRun, steps);
+    addFightSteps(steps);
+    addCheckEndBattleAndRetreatingSteps(steps);
+    return steps;
+  }
+
+  private void addFightStartSteps(final boolean firstRun, final List<IExecutable> steps) {
     final boolean offensiveAa = canFireOffensiveAa();
     final boolean defendingAa = canFireDefendingAa();
     if (offensiveAa) {
@@ -688,33 +794,142 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     }
   }
 
-  private void pushFightLoopOnStack(final boolean firstRun) {
-    if (isOver) {
-      return;
+  private void addFightSteps(final List<IExecutable> steps) {
+    // Ask to retreat defending subs before battle
+    if (isSubRetreatBeforeBattle()) {
+      steps.add(new IExecutable() {
+        private static final long serialVersionUID = 6775880082912594489L;
+
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          if (!isOver) {
+            attackerRetreatSubs(bridge);
+          }
+        }
+      });
+      steps.add(new IExecutable() {
+        private static final long serialVersionUID = 7056448091800764539L;
+
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          if (!isOver) {
+            defenderRetreatSubs(bridge);
+          }
+        }
+      });
     }
-    final List<IExecutable> steps = getBattleExecutables(firstRun);
-    // add in the reverse order we create them
-    Collections.reverse(steps);
-    for (final IExecutable step : steps) {
-      stack.push(step);
+    // Remove Suicide Units
+    steps.add(new IExecutable() {
+      private static final long serialVersionUID = 99988L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        checkSuicideUnits(bridge);
+      }
+    });
+    // Remove undefended transports
+    if (isTransportCasualtiesRestricted()) {
+      steps.add(new IExecutable() {
+        private static final long serialVersionUID = 99989L;
+
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          checkUndefendedTransports(bridge, defender);
+          checkUndefendedTransports(bridge, attacker);
+          checkForUnitsThatCanRollLeft(bridge, true);
+          checkForUnitsThatCanRollLeft(bridge, false);
+        }
+      });
     }
+    // Submerge subs if -vs air only & air restricted from attacking subs
+    steps.add(new IExecutable() {
+      private static final long serialVersionUID = 99990L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        submergeSubsVsOnlyAir(bridge);
+      }
+    });
+    final ReturnFire returnFireAgainstAttackingSubs = returnFireAgainstAttackingSubs();
+    final ReturnFire returnFireAgainstDefendingSubs = returnFireAgainstDefendingSubs();
+    if (defenderSubsFireFirst()) {
+      steps.add(new DefendSubs() {
+        private static final long serialVersionUID = 99992L;
+
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          defendSubs(returnFireAgainstDefendingSubs);
+        }
+      });
+    }
+    steps.add(new AttackSubs() {
+      private static final long serialVersionUID = 99991L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        attackSubs(returnFireAgainstAttackingSubs);
+      }
+    });
+    final boolean defendingSubsFireWithAllDefenders = !defenderSubsFireFirst()
+        && !Properties.getWW2V2(gameData) && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
+    if (defendingSubsSneakAttack() && !defenderSubsFireFirst() && !defendingSubsFireWithAllDefenders) {
+      steps.add(new DefendSubs() {
+        private static final long serialVersionUID = 99992L;
+
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          defendSubs(returnFireAgainstDefendingSubs);
+        }
+      });
+    }
+    // Attacker air fire on non-subs
+    steps.add(new IExecutable() {
+      private static final long serialVersionUID = 99993L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        attackAirOnNonSubs();
+      }
+    });
+    // Attacker fire remaining units
+    steps.add(new IExecutable() {
+      private static final long serialVersionUID = 99994L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        attackNonSubs();
+      }
+    });
+    if (!defenderSubsFireFirst() && (!defendingSubsSneakAttack() || defendingSubsFireWithAllDefenders)) {
+      steps.add(new DefendSubs() {
+        private static final long serialVersionUID = 999921L;
+
+        @Override
+        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+          defendSubs(returnFireAgainstDefendingSubs);
+        }
+      });
+    }
+    // Defender air fire on non-subs
+    steps.add(new IExecutable() {
+      private static final long serialVersionUID = 1560702114917865123L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        defendAirOnNonSubs();
+      }
+    });
+    steps.add(new IExecutable() {
+      private static final long serialVersionUID = 1560702114917865290L;
+
+      @Override
+      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+        defendNonSubs();
+      }
+    });
   }
 
-  List<IExecutable> getBattleExecutables(final boolean firstRun) {
-    // The code here is a bit odd to read but basically, we need to break the code into separate atomic pieces.
-    // If there is a network error, or some other unfortunate event, then we need to keep track of what pieces we have
-    // executed, and what is left to do.
-    // Each atomic step is in its own IExecutable with the definition of atomic is that either:
-    // 1) the code does not call to an IDisplay,IPlayer, or IRandomSource
-    // 2) if the code calls to an IDisplay, IPlayer, IRandomSource, and an exception is called from one of those
-    // methods, the exception will be propagated out of execute() and the execute method can be called again.
-    // It is allowed for an IExecutable to add other IExecutables to the stack.
-    // If you read the code in linear order, ignore wrapping stuff in anonymous IExecutables, then the code
-    // can be read as it will execute. The steps are added to the stack and then reversed at the end.
-    final List<IExecutable> steps = new ArrayList<>();
-    addFightStartToStack(firstRun, steps);
-    addFightStepsNonEditMode(steps);
-
+  private void addCheckEndBattleAndRetreatingSteps(final List<IExecutable> steps) {
     steps.add(new IExecutable() {
       private static final long serialVersionUID = 8611067962952500496L;
 
@@ -874,199 +1089,9 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
         }
       }
     });
-    return steps;
   }
 
-  private void addFightStepsNonEditMode(final List<IExecutable> steps) {
-    // Ask to retreat defending subs before battle
-    if (isSubRetreatBeforeBattle()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 6775880082912594489L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          if (!isOver) {
-            attackerRetreatSubs(bridge);
-          }
-        }
-      });
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 7056448091800764539L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          if (!isOver) {
-            defenderRetreatSubs(bridge);
-          }
-        }
-      });
-    }
-    // Remove Suicide Units
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 99988L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        checkSuicideUnits(bridge);
-      }
-    });
-    // Remove undefended transports
-    if (isTransportCasualtiesRestricted()) {
-      steps.add(new IExecutable() {
-        private static final long serialVersionUID = 99989L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          checkUndefendedTransports(bridge, defender);
-          checkUndefendedTransports(bridge, attacker);
-          checkForUnitsThatCanRollLeft(bridge, true);
-          checkForUnitsThatCanRollLeft(bridge, false);
-        }
-      });
-    }
-    // Submerge subs if -vs air only & air restricted from attacking subs
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 99990L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        submergeSubsVsOnlyAir(bridge);
-      }
-    });
-    final ReturnFire returnFireAgainstAttackingSubs = returnFireAgainstAttackingSubs();
-    final ReturnFire returnFireAgainstDefendingSubs = returnFireAgainstDefendingSubs();
-    if (defenderSubsFireFirst()) {
-      steps.add(new DefendSubs() {
-        private static final long serialVersionUID = 99992L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendSubs(returnFireAgainstDefendingSubs);
-        }
-      });
-    }
-    steps.add(new AttackSubs() {
-      private static final long serialVersionUID = 99991L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        attackSubs(returnFireAgainstAttackingSubs);
-      }
-    });
-    final boolean defendingSubsFireWithAllDefenders = !defenderSubsFireFirst()
-        && !Properties.getWW2V2(gameData) && returnFireAgainstDefendingSubs() == ReturnFire.ALL;
-    if (defendingSubsSneakAttack() && !defenderSubsFireFirst() && !defendingSubsFireWithAllDefenders) {
-      steps.add(new DefendSubs() {
-        private static final long serialVersionUID = 99992L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendSubs(returnFireAgainstDefendingSubs);
-        }
-      });
-    }
-    // Attacker air fire on non-subs
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 99993L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        attackAirOnNonSubs();
-      }
-    });
-    // Attacker fire remaining units
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 99994L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        attackNonSubs();
-      }
-    });
-    if (!defenderSubsFireFirst() && (!defendingSubsSneakAttack() || defendingSubsFireWithAllDefenders)) {
-      steps.add(new DefendSubs() {
-        private static final long serialVersionUID = 999921L;
-
-        @Override
-        public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-          defendSubs(returnFireAgainstDefendingSubs);
-        }
-      });
-    }
-    // Defender air fire on non-subs
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 1560702114917865123L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        defendAirOnNonSubs();
-      }
-    });
-    steps.add(new IExecutable() {
-      private static final long serialVersionUID = 1560702114917865290L;
-
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        defendNonSubs();
-      }
-    });
-  }
-
-  private ReturnFire returnFireAgainstAttackingSubs() {
-    final boolean attackingSubsSneakAttack = defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
-    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers();
-    final ReturnFire returnFireAgainstAttackingSubs;
-    if (!attackingSubsSneakAttack) {
-      returnFireAgainstAttackingSubs = ReturnFire.ALL;
-    } else if (defendingSubsSneakAttack || isWW2V2()) {
-      returnFireAgainstAttackingSubs = ReturnFire.SUBS;
-    } else {
-      returnFireAgainstAttackingSubs = ReturnFire.NONE;
-    }
-    return returnFireAgainstAttackingSubs;
-  }
-
-  private ReturnFire returnFireAgainstDefendingSubs() {
-    final boolean attackingSubsSneakAttack = defendingUnits.stream().noneMatch(Matches.unitIsDestroyer());
-    final boolean defendingSubsSneakAttack = defendingSubsSneakAttackAndNoAttackingDestroyers();
-    final ReturnFire returnFireAgainstDefendingSubs;
-    if (!defendingSubsSneakAttack) {
-      returnFireAgainstDefendingSubs = ReturnFire.ALL;
-    } else if (attackingSubsSneakAttack || isWW2V2()) {
-      returnFireAgainstDefendingSubs = ReturnFire.SUBS;
-    } else {
-      returnFireAgainstDefendingSubs = ReturnFire.NONE;
-    }
-    return returnFireAgainstDefendingSubs;
-  }
-
-  private boolean defendingSubsSneakAttackAndNoAttackingDestroyers() {
-    return attackingUnits.stream().noneMatch(Matches.unitIsDestroyer()) && defendingSubsSneakAttack();
-  }
-
-  private boolean defendingSubsSneakAttack() {
-    return isWW2V2() || Properties.getDefendingSubsSneakAttack(gameData);
-  }
-
-  private boolean canAttackerRetreatPlanes() {
-    return (isWW2V2() || isAttackerRetreatPlanes() || isPartialAmphibiousRetreat()) && isAmphibious
-        && attackingUnits.stream().anyMatch(Matches.unitIsAir());
-  }
-
-  private boolean canAttackerRetreatPartialAmphib() {
-    if (isAmphibious && isPartialAmphibiousRetreat()) {
-      // Only include land units when checking for allow amphibious retreat
-      final List<Unit> landUnits = CollectionUtils.getMatches(attackingUnits, Matches.unitIsLand());
-      for (final Unit unit : landUnits) {
-        final TripleAUnit taUnit = (TripleAUnit) unit;
-        if (!taUnit.getWasAmphibious()) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
+  @VisibleForTesting
   Collection<Territory> getAttackerRetreatTerritories() {
     // TODO: when attacking with paratroopers (air + carried land), there are several bugs in retreating.
     // TODO: air should always be able to retreat. paratroopers can only retreat if there are other
@@ -1115,31 +1140,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     return possible;
   }
 
-  private boolean canAttackerRetreat() {
-    if (onlyDefenselessDefendingTransportsLeft()) {
-      return false;
-    }
-    if (isAmphibious) {
-      return false;
-    }
-    return !getAttackerRetreatTerritories().isEmpty();
-  }
-
-  private boolean onlyDefenselessDefendingTransportsLeft() {
-    return isTransportCasualtiesRestricted()
-        && !defendingUnits.isEmpty()
-        && defendingUnits.stream().allMatch(Matches.unitIsTransportButNotCombatTransport());
-  }
-
-  private boolean canAttackerRetreatSubs() {
-    if (defendingUnits.stream().anyMatch(Matches.unitIsDestroyer())) {
-      return false;
-    }
-    return defendingWaitingToDie.stream().noneMatch(Matches.unitIsDestroyer())
-        && (canAttackerRetreat() || canSubsSubmerge());
-  }
-
-  // Added for test case calls
+  /**
+   * Added for test case calls.
+   */
+  @VisibleForTesting
   void externalRetreat(final Collection<Unit> retreaters, final Territory retreatTo, final boolean defender,
       final IDelegateBridge bridge) {
     isOver = true;
@@ -1963,6 +1967,10 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
 
   private boolean isDefendingSuicideAndMunitionUnitsDoNotFire() {
     return Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(gameData);
+  }
+
+  private boolean canSubsSubmerge() {
+    return Properties.getSubmersibleSubs(gameData);
   }
 
   private boolean isSubRetreatBeforeBattle() {
