@@ -483,18 +483,18 @@ public class MovePanel extends AbstractMovePanel {
           return;
         }
       } else if ((route.isUnload() && units.stream().anyMatch(Matches.unitIsLand())) || paratroopsLanding) {
-        final List<Unit> unloadAble = CollectionUtils.getMatches(selectedUnits, getUnloadableMatch());
-        final Collection<Unit> canMove = new ArrayList<>(getUnitsToUnload(route, unloadAble));
-        canMove.addAll(CollectionUtils.getMatches(selectedUnits, getUnloadableMatch().negate()));
-        if (paratroopsLanding) {
-          transports = canMove;
-        }
-        if (canMove.isEmpty()) {
+        units.clear();
+        units.addAll(getUnitsToUnload(route, CollectionUtils.getMatches(selectedUnits, getUnloadableMatch())));
+        units.addAll(CollectionUtils.getMatches(selectedUnits, getUnloadableMatch().negate()));
+        if (units.isEmpty()) {
           cancelMove();
           return;
         }
+        if (paratroopsLanding) {
+          transports = units;
+        }
         selectedUnits.clear();
-        selectedUnits.addAll(canMove);
+        selectedUnits.addAll(units);
       } else {
         // keep a map of the max number of each eligible unitType that can be chosen
         final IntegerMap<UnitType> maxMap = new IntegerMap<>();
