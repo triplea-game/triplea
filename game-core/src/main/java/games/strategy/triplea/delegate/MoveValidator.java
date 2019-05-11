@@ -60,6 +60,7 @@ public class MoveValidator {
   public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
   public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT =
       "Transport cannot both load AND unload after being in combat";
+  public static final String TRANSPORT_CANNOT_LOAD_AFTER_COMBAT = "Transport cannot load after being in combat";
   public static final String NOT_ALL_UNITS_CAN_BLITZ = "Not all units can blitz";
 
   private MoveValidator() {}
@@ -1116,6 +1117,8 @@ public class MoveValidator {
           }
           if (TransportTracker.hasTransportUnloadedInPreviousPhase(transport)) {
             result.addDisallowedUnit(TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE, unit);
+          } else if (TransportTracker.isTransportLoadRestrictedAfterCombat(transport)) {
+            result.addDisallowedUnit(TRANSPORT_CANNOT_LOAD_AFTER_COMBAT, unit);
           } else if (TransportTracker.isTransportUnloadRestrictedToAnotherTerritory(transport, route.getEnd())) {
             Territory alreadyUnloadedTo = getTerritoryTransportHasUnloadedTo(undoableMoves, transport);
             for (final Unit transportToLoad : transportsToLoad) {

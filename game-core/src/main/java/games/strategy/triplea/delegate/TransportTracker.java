@@ -276,10 +276,21 @@ public class TransportTracker {
     return ((TripleAUnit) unloaded.iterator().next()).getUnloadedTo();
   }
 
-  // If a transport has been in combat, it cannot load AND unload in non-combat
+  /**
+   * If a transport has been in combat, it cannot load AND unload in non-combat.
+   */
   static boolean isTransportUnloadRestrictedInNonCombat(final Unit transport) {
     final TripleAUnit taUnit = (TripleAUnit) transport;
     return GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true) && taUnit.getWasInCombat()
         && taUnit.getWasLoadedAfterCombat();
+  }
+
+  /**
+   * For ww2v3+, if a transport has been in combat then it can't load or unload in NCM.
+   */
+  static boolean isTransportLoadRestrictedAfterCombat(final Unit transport) {
+    final TripleAUnit taUnit = (TripleAUnit) transport;
+    return Properties.getWW2V3(transport.getData())
+        && GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true) && taUnit.getWasInCombat();
   }
 }
