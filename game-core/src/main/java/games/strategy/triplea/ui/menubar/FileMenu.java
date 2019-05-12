@@ -82,7 +82,7 @@ final class FileMenu extends JMenu {
     }));
     menuPbem.setMnemonic(KeyEvent.VK_P);
     menuPbem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     return menuPbem;
   }
 
