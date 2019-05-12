@@ -313,7 +313,7 @@ public class TransportTracker {
     return Properties.getWW2V3(transport.getData())
         && GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true) && taUnit.getWasInCombat();
   }
-  
+
   static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,
       final Territory battleSite, final PlayerId attacker, final GameData data) {
     final CompositeChange change = new CompositeChange();
@@ -341,5 +341,5 @@ public class TransportTracker {
     }
     return change;
   }
- 
+
 }
