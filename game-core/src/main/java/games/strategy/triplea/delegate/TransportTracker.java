@@ -249,14 +249,14 @@ public class TransportTracker {
     return Properties.getWW2V2(data);
   }
 
-  // TODO here's a bug COMCO
   private static boolean isTransportUnloadRestricted(final GameData data) {
     return Properties.getTransportUnloadRestricted(data);
   }
 
-  // In some versions, a transport can never unload into multiple territories in a given turn.
-  // In WW2V1 a transport can unload to multiple territories in
-  // non-combat phase, provided they are both adjacent to the sea zone.
+  /**
+   * In some versions, a transport can never unload into multiple territories in a given turn. In WW2V1 a transport can
+   * unload to multiple territories in non-combat phase, provided they are both adjacent to the sea zone.
+   */
   static boolean isTransportUnloadRestrictedToAnotherTerritory(final Unit transport, final Territory territory) {
     final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
     if (unloaded.isEmpty()) {
@@ -282,10 +282,12 @@ public class TransportTracker {
     return false;
   }
 
-  // This method should be called after isTransportUnloadRestrictedToAnotherTerritory() returns false, in order to
-  // populate the error message. However, we only need to call this method to determine why we can't unload an
-  // additional unit. Since transports only hold up to two units, we only need to return one territory, not multiple
-  // territories.
+  /**
+   * This method should be called after isTransportUnloadRestrictedToAnotherTerritory() returns false, in order to
+   * populate the error message. However, we only need to call this method to determine why we can't unload an
+   * additional unit. Since transports only hold up to two units, we only need to return one territory, not multiple
+   * territories.
+   */
   static Territory getTerritoryTransportHasUnloadedTo(final Unit transport) {
     final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
     if (unloaded.isEmpty()) {
@@ -294,13 +296,24 @@ public class TransportTracker {
     return ((TripleAUnit) unloaded.iterator().next()).getUnloadedTo();
   }
 
-  // If a transport has been in combat, it cannot load AND unload in non-combat
+  /**
+   * If a transport has been in combat, it cannot both load AND unload in NCM.
+   */
   static boolean isTransportUnloadRestrictedInNonCombat(final Unit transport) {
     final TripleAUnit taUnit = (TripleAUnit) transport;
     return GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true) && taUnit.getWasInCombat()
         && taUnit.getWasLoadedAfterCombat();
   }
 
+  /**
+   * For ww2v3+, if a transport has been in combat then it can't load in NCM.
+   */
+  static boolean isTransportLoadRestrictedAfterCombat(final Unit transport) {
+    final TripleAUnit taUnit = (TripleAUnit) transport;
+    return Properties.getWW2V3(transport.getData())
+        && GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true) && taUnit.getWasInCombat();
+  }
+  
   static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,
       final Territory battleSite, final PlayerId attacker, final GameData data) {
     final CompositeChange change = new CompositeChange();
@@ -328,4 +341,5 @@ public class TransportTracker {
     }
     return change;
   }
+ 
 }
