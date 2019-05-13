@@ -1,9 +1,14 @@
 package games.strategy.triplea.attachments;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Value;
 
 /**
  * Parameter object for fire trigger methods, first and foremost in {@link TriggerAttachment}.
  */
+@Value
+@Getter(AccessLevel.NONE)
 public class FireTriggerParams {
 
   /**
@@ -27,29 +32,17 @@ public class FireTriggerParams {
   public final String stepName;
 
   /**
-   * TODO: Document.
-   *
-   * <p>
    * See documentation for trigger attachment option "uses".
-   * </p>
    */
   public final boolean useUses;
 
   /**
-   * TODO: Document.
-   *
-   * <p>
    * See documentation for trigger attachment option "uses".
-   * </p>
    */
   public final boolean testUses;
 
   /**
-   * TODO: Document.
-   *
-   * <p>
    * See documentation for trigger attachment option "chance".
-   * </p>
    */
   public final boolean testChance;
 
@@ -62,14 +55,4 @@ public class FireTriggerParams {
    * </p>
    */
   public final boolean testWhen;
-
-  public FireTriggerParams(final String beforeOrAfter, final String stepName,
-      final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen) {
-    this.beforeOrAfter = beforeOrAfter;
-    this.stepName = stepName;
-    this.useUses = useUses;
-    this.testUses = testUses;
-    this.testChance = testChance;
-    this.testWhen = testWhen;
-  }
 }
