@@ -1494,8 +1494,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
           String messageForRecord = message.trim();
           if (messageForRecord.length() > 190) {
             // We don't want to record a giant string in the history panel, so just put a shortened version in instead.
-            messageForRecord = messageForRecord.replaceAll("\\<br.*?>", " ");
-            messageForRecord = messageForRecord.replaceAll("\\<.*?>", "");
+            messageForRecord = messageForRecord.replaceAll("<br.*?>", " ");
+            messageForRecord = messageForRecord.replaceAll("<.*?>", "");
             if (messageForRecord.length() > 195) {
               messageForRecord = messageForRecord.substring(0, 190) + "....";
             }
@@ -2267,8 +2267,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         }
         String messageForRecord = victoryMessage.trim();
         if (messageForRecord.length() > 150) {
-          messageForRecord = messageForRecord.replaceAll("\\<br.*?>", " ");
-          messageForRecord = messageForRecord.replaceAll("\\<.*?>", "");
+          messageForRecord = messageForRecord.replaceAll("<br.*?>", " ");
+          messageForRecord = messageForRecord.replaceAll("<.*?>", "");
           if (messageForRecord.length() > 155) {
             messageForRecord = messageForRecord.substring(0, 150) + "....";
           }
