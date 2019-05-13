@@ -27,6 +27,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
+import games.strategy.triplea.attachments.FireTriggerParams;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -85,7 +86,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
             CollectionUtils.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions));
         // now list out individual types to fire, once for each of the matches above.
         TriggerAttachment.triggerAvailableTechChange(new HashSet<>(toFireTestedAndSatisfied), bridge,
-            null, null, true, true, true, true);
+            new FireTriggerParams(
+                null, null, true, true, true, true));
       }
     }
     needToInitialize = false;

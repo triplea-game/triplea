@@ -32,6 +32,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.AbstractConditionsAttachment;
 import games.strategy.triplea.attachments.AbstractTriggerAttachment;
+import games.strategy.triplea.attachments.FireTriggerParams;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -273,8 +274,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate {
     if (useTriggers && !triggers.isEmpty()) {
       final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
           CollectionUtils.getMatches(triggers, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
-      endTurnReport.append(TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null, true,
-          true, true, true)).append("<br />");
+      endTurnReport.append(TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge,
+          new FireTriggerParams(
+              null, null, true, true, true, true)))
+          .append("<br />");
     }
 
     // Execute national objectives

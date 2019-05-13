@@ -134,11 +134,13 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
           continue;
         }
       }
+      final FireTriggerParams fireTriggerParams = new FireTriggerParams(
+          null, null, useUsesToFire,
+          testUsesToFire, testChanceToFire, false);
       for (int i = 0; i < numberOfTimesToFire; ++i) {
         bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(actionAttachment.getName())
             + " activates a trigger called: " + MyFormatter.attachmentNameToText(toFire.getName()));
-        TriggerAttachment.fireTriggers(toFireSet, testedConditionsSoFar, bridge, null, null, useUsesToFire,
-            testUsesToFire, testChanceToFire, false);
+        TriggerAttachment.fireTriggers(toFireSet, testedConditionsSoFar, bridge, fireTriggerParams);
       }
     }
   }
