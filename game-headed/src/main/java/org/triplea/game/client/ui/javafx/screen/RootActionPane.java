@@ -49,7 +49,7 @@ public class RootActionPane implements ScreenController<Screens> {
     Preconditions.checkNotNull(node);
     Preconditions.checkState(Platform.isFxApplicationThread());
 
-    if (root.getChildren().size() == 3) {
+    if (root.getChildren().size() == Screens.values().length) {
       root.getChildren().set(0, node);
     } else {
       root.getChildren().add(0, node);
@@ -95,7 +95,7 @@ public class RootActionPane implements ScreenController<Screens> {
       case CONTENT:
         exitOverlay.setVisible(false);
         loadingOverlay.setVisible(false);
-        if (root.getChildren().size() == 3) {
+        if (root.getChildren().size() == Screens.values().length) {
           root.getChildren().get(0).setVisible(true);
         }
         break;
