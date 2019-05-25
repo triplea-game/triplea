@@ -12,7 +12,7 @@ mainClassName = 'org.triplea.game.client.HeadedGameRunner'
 ext {
     releasesDir = file("$buildDir/releases")
 }
-if (JavaVersion.current() == JavaVersion.VERSION_11) {
+if (JavaVersion.current() >= JavaVersion.VERSION_11) {
     apply plugin: 'org.openjfx.javafxplugin'
     javafx {
         modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
