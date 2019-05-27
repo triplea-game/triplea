@@ -133,6 +133,7 @@ subprojects {
             check 'UnsafeReflectiveConstructionCast', CheckSeverity.ERROR
             check 'UnsynchronizedOverridesSynchronized', CheckSeverity.ERROR
             check 'WaitNotInLoop', CheckSeverity.ERROR
+            disable 'UnusedVariable' // Workaround for https://github.com/google/error-prone/issues/1250
         }
         options.incremental = true
 
