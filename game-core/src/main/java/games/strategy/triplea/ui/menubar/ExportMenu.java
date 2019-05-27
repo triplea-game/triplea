@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
@@ -98,7 +99,7 @@ final class ExportMenu extends JMenu {
     final int round = gameData.getCurrentRound();
     final String defaultFileName = FileNameUtils.removeIllegalCharacters(
         String.format("xml_%s_%s_round_%s",
-            dateTimeFormatter.format(LocalDateTime.now()), gameData.getGameName(), round))
+            dateTimeFormatter.format(LocalDateTime.now(ZoneId.systemDefault())), gameData.getGameName(), round))
         + ".xml";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
@@ -152,7 +153,7 @@ final class ExportMenu extends JMenu {
     final int currentRound = gameData.getCurrentRound();
     final String defaultFileName = FileNameUtils.removeIllegalCharacters(
         String.format("stats_%s_%s_round_%s_%s",
-            dateTimeFormatter.format(LocalDateTime.now()), gameData.getGameName(),
+            dateTimeFormatter.format(LocalDateTime.now(ZoneId.systemDefault())), gameData.getGameName(),
             currentRound, showPhaseStats ? "full" : "short"))
         + ".csv";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
