@@ -5,7 +5,7 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.20.0'
     id 'io.franzbecker.gradle-lombok' version '2.0' apply false
     id 'net.ltgt.errorprone' version '0.8' apply false
-    id 'com.diffplug.gradle.spotless' version '3.23.0'
+    id 'com.diffplug.gradle.spotless' version '3.23.0' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -36,6 +36,7 @@ task validateYamls(group: 'verification', description: 'Validates YAML files.') 
 }
 
 allprojects {
+    apply plugin: 'com.diffplug.gradle.spotless'
     spotless {
         groovyGradle {
             target '*.gradle', 'gradle/**/*.gradle'
