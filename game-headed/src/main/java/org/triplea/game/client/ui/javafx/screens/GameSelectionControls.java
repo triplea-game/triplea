@@ -27,21 +27,27 @@ public class GameSelectionControls implements ControlledScreen<ScreenController<
     this.gameOptions = gameOptions;
   }
 
+  @SuppressWarnings("unused")
   @FXML
   private void showLobbyMenu() {}
 
+  @SuppressWarnings("unused")
   @FXML
   private void showLocalGameMenu() {}
 
+  @SuppressWarnings("unused")
   @FXML
   private void showHostNetworkGameMenu() {}
 
+  @SuppressWarnings("unused")
   @FXML
   private void showJoinNetworkGameMenu() {}
 
+  @SuppressWarnings("unused")
   @FXML
   private void showPlayByForumMenu() {}
 
+  @SuppressWarnings("unused")
   @FXML
   private void showPlayByEmailMenu() {}
 
