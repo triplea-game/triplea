@@ -28,9 +28,6 @@
     state: started
     enabled: yes
 
-  alter database lobby owner to triplea_lobby;
-
-
 - name: Ensure user has access to the database
   become: true
   become_user: postgres
