@@ -19,7 +19,7 @@
 - name: create ssh directory
   become: true
   file:
-    path: /home/triplea/.ssh/
+    path: "/home/{{ admin_user }}/.ssh/"
     state: directory
     mode: "700"
     owner: "{{ admin_user }}"

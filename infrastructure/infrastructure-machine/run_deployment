@@ -1,0 +1,106 @@
+#!/bin/bash
+
+# This script is used to execute prereleae and production deployments.
+# It should be run from the infrastructure machine.
+# The script is saved in git repository so that we can track changes to it.
+# If the script is updated, upload a new copy to the infrastructure machine
+# to /home/ansible.
+
+
+VERSION=${1-}
+INVENTORY_FILE=${2-}
+
+function usage() {
+  echo "Usage: $0 [Version] [InventoryFile]"
+  echo "  Version: The version of tripleA to be downloaded and installed, eg: 1.10.0.141"
+  echo "  InventoryFile: The inventory file to run, one of: {production|prerelease}"
+  echo "Example: $0 1.10.5252 prerelease"
+  exit 1
+}
+
+if [ -e "$VERSION" ] || [ -e "$INVENTORY_FILE" ]; then
+  usage
+fi
+export VERSION=$VERSION
+
+if [ "$INVENTORY_FILE" != production ] && [ "$INVENTORY_FILE" != prerelease ]; then
+  usage
+fi
+
+
+function downloadAnsible() {
+  # Download ansible files and then extract them
+  DL_LOCATION="https://github.com/triplea-game/triplea/releases/download/$VERSION/ansible.zip"
+  rm -f ansible.zip
+  wget $DL_LOCATION
+  if [ ! -f ansible.zip ]; then
+    echo "ERROR: failed to download ansible.zip from $DL_LOCATION"
+    exit 1
+  fi
+  unzip ansible.zip -d ansible
+}
+
+downloadAnsible
+
+
+function downloadLobbyJar() {
+  # Download lobby zip file and copy to ansible roles
+  LOBBY_ZIP="triplea-lobby-$VERSION.zip"
+  rm -f $LOBBY_ZIP
+  LOBBY_DL_LOCATION="https://github.com/triplea-game/triplea/releases/download/$VERSION/$LOBBY_ZIP"
+  wget $LOBBY_DL_LOCATION
+  if [ ! -f "$LOBBY_ZIP" ]; then
+    echo "ERROR: failed to download lobby zip from: $LOBBY_DL_LOCATION"
+    exit 1
+  fi
+
+  rm -rf lobby/
+  unzip $LOBBY_ZIP -d lobby
+  rm $LOBBY_ZIP
+
+  mkdir -p ansible/roles/lobby/files/
+  mv lobby/bin/triplea-lobby-$VERSION.jar ansible/roles/lobby/files/
+}
+
+downloadLobbyJar
+
+
+function downloadBotJar() {
+  BOT_ZIP="triplea-game-headless-$VERSION.zip"
+  rm -f $BOT_ZIP
+  BOT_DL_LOCATION="https://github.com/triplea-game/triplea/releases/download/$VERSION/$BOT_ZIP"
+  wget $BOT_DL_LOCATION
+  if [ ! -f "$BOT_ZIP" ]; then
+    echo "ERROR: failed to download bot zip from: $BOT_DL_LOCATION"
+  fi
+  rm -rf bot/
+  unzip $BOT_ZIP -d bot
+  rm $BOT_ZIP
+  mkdir -p ansible/roles/bot/files/
+  mv bot/bin/triplea-game-headless-$VERSION.jar ansible/roles/bot/files/
+}
+
+downloadBotJar
+
+
+function downloadMigrations() {
+  local migrationsZip="migrations.zip"
+  rm -f $migrationsZip
+  local migrationsDlLocation="https://github.com/triplea-game/triplea/releases/download/$VERSION/migrations.zip"
+  wget $migrationsDlLocation
+  if [ ! -f "$migrationsZip" ]; then
+    echo "ERROR: failed to download migrations zip from: $migrationsDlLocation"
+  fi
+  
+  rm $BOT_ZIP
+  mkdir -p ansible/roles/flyway/files/
+  mv $migrationsZip ansible/roles/flyway/files/
+}
+
+downloadMigrations
+
+source secrets
+ansible-playbook -D -v \
+   ansible/site.yml \
+   -i ansible/inventory/prerelease
+

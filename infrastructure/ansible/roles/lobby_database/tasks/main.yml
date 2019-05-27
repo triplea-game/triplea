@@ -1,0 +1,56 @@
+- name: Ensure latest bash and ssl
+  become: true
+  apt:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - bash
+      - openssl
+      - libssl-dev
+      - libssl-doc
+
+- name: Install PostgreSQL
+  become: true
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - postgresql
+      - postgresql-contrib
+      - libpq-dev
+      - python3-psycopg2
+
+- name: Ensure the PostgreSQL service is running
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+
+  alter database lobby owner to triplea_lobby;
+
+
+- name: Ensure user has access to the database
+  become: true
+  become_user: postgres
+  postgresql_user:
+    db: "{{ lobby_db_name }}"
+    name: "{{ lobby_db_user }}"
+    password: "{{ lobby_db_password }}"
+    login_password: "{{ lobby_db_password }}"
+    encrypted: yes
+    priv: "ALL"
+    role_attr_flags: NOSUPERUSER,NOCREATEDB
+    state: "present"
+
+- name: Ensure database is created
+  become: true
+  become_user: postgres
+  postgresql_db:
+    name: "{{ lobby_db_name }}"
+    owner: "{{ lobby_db_user }}"
+
+- name: Hack, set password of triplea_lobby user
+  shell: echo "alter role triplea_lobby with password '{{ lobby_db_password }}';"  | sudo -u postgres psql
+  become_user: postgres

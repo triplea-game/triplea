@@ -29,6 +29,6 @@ server {
       proxy_pass          http://localhost:4567;
       proxy_read_timeout  90;
 
-      proxy_redirect      http://localhost:443 https://localhost:{{ nginx_http_server_port }};
+      proxy_redirect      http://localhost:443 https://localhost:{{ http_server_port }};
     }
 }

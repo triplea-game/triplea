@@ -7,9 +7,6 @@ lobby.triplea-game.org
 [lobbyHosts]
 lobby.triplea-game.org
 
-[httpServerHosts]
-lobby.triplea-game.org
-
 [botHosts]
 bot01.triplea-game.org
 bot02.triplea-game.org
@@ -20,5 +17,4 @@ bot04.triplea-game.org
 ansibleMasterHost
 lobbyDatabaseHosts
 lobbyHosts
-httpServerHosts
 botHosts

@@ -4,8 +4,7 @@
 #
 
 - hosts:
-    - ansibleMasterHost
-    - httpServerHosts
+    - lobbyDatabaseHosts
     - lobbyHosts
     - botHosts
   gather_facts: no
@@ -17,14 +16,14 @@
     - firewall
     - security
 
-- hosts: httpServerHosts
+- hosts: lobbyDatabaseHosts
   gather_facts: no
   serial: 100%
   strategy: free
+  tags: lobbyDb
   roles:
-    - java
-    - nginx
-    - http_server
+    - lobby_database
+    - flyway
 
 - hosts: lobbyHosts
   gather_facts: no
@@ -33,6 +32,7 @@
   roles:
     - java
     - lobby
+    - nginx
 
 - hosts: botHosts
   gather_facts: no
