@@ -72,3 +72,10 @@ so we can see how they work out in our context and in-practice:
 * Java Spark
 * DropWizard
 
+
+### Viewing Logs
+
+```bash
+journalctl -u lobby.service
+```
+
