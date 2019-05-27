@@ -34,7 +34,7 @@ public class RootActionPane implements ScreenController<Screens> {
   }
 
   @FXML
-  private StackPane rootPane;
+  private StackPane root;
 
   @FXML
   private VBox loadingOverlay;
@@ -49,8 +49,11 @@ public class RootActionPane implements ScreenController<Screens> {
     Preconditions.checkNotNull(node);
     Preconditions.checkState(Platform.isFxApplicationThread());
 
-    rootPane.getChildren().clear();
-    rootPane.getChildren().add(node);
+    if (root.getChildren().size() == Screens.values().length) {
+      root.getChildren().set(0, node);
+    } else {
+      root.getChildren().add(0, node);
+    }
   }
 
   public void setLoadingOverlay(final boolean loading) {
@@ -92,7 +95,9 @@ public class RootActionPane implements ScreenController<Screens> {
       case CONTENT:
         exitOverlay.setVisible(false);
         loadingOverlay.setVisible(false);
-        rootPane.setVisible(true);
+        if (root.getChildren().size() == Screens.values().length) {
+          root.getChildren().get(0).setVisible(true);
+        }
         break;
       default:
         throw new AssertionError("Invalid Switch Case");

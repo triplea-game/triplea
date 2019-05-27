@@ -2,7 +2,7 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '4.0.4'
     id 'com.install4j.gradle' version '7.0.9'
-    id 'de.undercouch.download' version '3.4.3'
+    id 'org.openjfx.javafxplugin' version '0.0.7' apply false
 }
 
 archivesBaseName = "$group-$name"
@@ -10,35 +10,23 @@ description = 'TripleA Headed Game Client'
 mainClassName = 'org.triplea.game.client.HeadedGameRunner'
 
 ext {
-    javaFxRuntimeUrl = 'https://github.com/triplea-game/assets/raw/master/javafx/jfxrt-1.8.0_181.jar'
     releasesDir = file("$buildDir/releases")
-    testFxVersion = '4.0.15-alpha'
+}
+if (JavaVersion.current() >= JavaVersion.VERSION_11) {
+    apply plugin: 'org.openjfx.javafxplugin'
+    javafx {
+        modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
+    }
 }
 
 dependencies {
-    if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-        compileOnly remoteLib(javaFxRuntimeUrl)
-    }
-
     implementation project(':game-core')
     implementation project(':java-extras')
     implementation project(':swing-lib')
     implementation 'org.pushing-pixels:radiance-substance:1.0.2'
 
-    if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-        testCompileOnly remoteLib(javaFxRuntimeUrl)
-    }
-
     testImplementation project(':test-common')
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
-    testImplementation "org.testfx:testfx-core:$testFxVersion"
-    testImplementation "org.testfx:testfx-junit5:$testFxVersion"
-
-    if (JavaVersion.current() == JavaVersion.VERSION_1_9) {
-        testRuntimeOnly 'org.testfx:openjfx-monocle:jdk-9+181'
-    } else if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
-        testRuntimeOnly 'org.testfx:openjfx-monocle:8u76-b04'
-    }
 }
 
 install4j {
