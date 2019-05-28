@@ -9,11 +9,11 @@ Group={{ lobby_user }}
 ExecStart={{ lobby_folder }}/run_server
 Restart=always
 Environment="PORT={{ lobby_port }}"
-Environment="POSTGRES_USER={{ lobby_postgres_user }}"
-Environment="POSTGRES_PASSWORD={{ lobby_postgres_password }}"
+Environment="POSTGRES_USER={{ lobby_db_user }}"
+Environment="POSTGRES_PASSWORD={{ lobby_db_password }}"
 Environment="POSTGRES_HOST={{ lobby_postgres_host }}"
 Environment="POSTGRES_PORT={{ lobby_postgres_port }}"
-Environment="POSTGRES_DATABASE={{ lobby_postgres_database }}"
+Environment="POSTGRES_DATABASE={{ lobby_db_name }}"
 Environment="ERROR_REPORTING_GITHUB_ORG={{ lobby_error_report_github_org }}"
 Environment="ERROR_REPORTING_GITHUB_REPO={{ lobby_error_report_github_repo }}"
 Environment="GITHUB_API_AUTH_TOKEN={{ lobby_error_report_github_token }}"

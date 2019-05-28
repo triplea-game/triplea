@@ -1,5 +1,3 @@
 nginx_ssl_certificate: /etc/nginx/cert.crt
 
 nginx_ssl_certificate_key: /etc/nginx/cert.key
-
-nginx_http_server_port: "4567"

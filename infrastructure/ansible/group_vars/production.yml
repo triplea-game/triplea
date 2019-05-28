@@ -1,7 +1,2 @@
-# TODO: get these values from environment variables
-papertrail_token: ""
-lobby_postgres_user: ""
-lobby_postgres_password: ""
-lobby_postgres_port: ""
-http_server_error_report_github_token: ""
 http_server_error_report_github_repo: "triplea"
+bot_lobby_address: production.triplea-game.org
