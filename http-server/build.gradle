@@ -1,0 +1,38 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'de.undercouch.download' version '3.4.3'
+}
+
+archivesBaseName = "$group-$name"
+description = 'TripleA DropWizard Http Server'
+mainClassName = '' // org.triplea.game.client.HeadedGameRunner'
+
+ext {
+    releasesDir = file("$buildDir/releases")
+}
+
+dependencies {
+    implementation 'io.dropwizard:dropwizard-core:1.3.11'
+    implementation project(':java-extras')
+    implementation project(':http-clients')
+    testImplementation project(':test-common')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task portableInstaller(type: Zip, group: 'release', dependsOn: shadowJar) {
+    from(shadowJar.outputs) {
+        into 'bin'
+    }
+}
+
+task release(group: 'release', dependsOn: portableInstaller) {
+    doLast {
+        publishArtifacts(portableInstaller.outputs.files)
+    }
+}
