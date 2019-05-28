@@ -1,22 +1,11 @@
 import net.ltgt.gradle.errorprone.CheckSeverity
 
-// TODO: Remove once Spotless 3.17.0 is published to Gradle plugin portal and replace with entry under plugins
-// see https://github.com/triplea-game/triplea/pull/4569#discussion_r247326720
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.diffplug.spotless:spotless-plugin-gradle:3.17.0'
-    }
-}
-
 plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.20.0'
     id 'io.franzbecker.gradle-lombok' version '2.0' apply false
-    id 'net.ltgt.errorprone' version '0.7' apply false
+    id 'net.ltgt.errorprone' version '0.8' apply false
+    id 'com.diffplug.gradle.spotless' version '3.23.0' apply false
 }
 
 apply from: 'gradle/scripts/yaml.gradle'
@@ -48,7 +37,6 @@ task validateYamls(group: 'verification', description: 'Validates YAML files.') 
 
 allprojects {
     apply plugin: 'com.diffplug.gradle.spotless'
-
     spotless {
         groovyGradle {
             target '*.gradle', 'gradle/**/*.gradle'
@@ -91,7 +79,7 @@ subprojects {
     }
 
     dependencies {
-        errorprone 'com.google.errorprone:error_prone_core:2.3.2'
+        errorprone 'com.google.errorprone:error_prone_core:2.3.3'
 
         if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
             errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
@@ -136,7 +124,6 @@ subprojects {
             check 'NonAtomicVolatileUpdate', CheckSeverity.ERROR
             check 'ObjectToString', CheckSeverity.ERROR
             check 'OperatorPrecedence', CheckSeverity.ERROR
-            check 'ParameterName', CheckSeverity.OFF // workaround for https://github.com/google/error-prone/issues/780
             check 'PrivateConstructorForUtilityClass', CheckSeverity.ERROR
             check 'ReferenceEquality', CheckSeverity.ERROR
             check 'StringSplitter', CheckSeverity.ERROR
@@ -146,6 +133,7 @@ subprojects {
             check 'UnsafeReflectiveConstructionCast', CheckSeverity.ERROR
             check 'UnsynchronizedOverridesSynchronized', CheckSeverity.ERROR
             check 'WaitNotInLoop', CheckSeverity.ERROR
+            disable 'UnusedVariable' // Workaround for https://github.com/google/error-prone/issues/1250
         }
         options.incremental = true
 

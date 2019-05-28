@@ -1,6 +1,7 @@
 package org.triplea.java;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -20,7 +21,7 @@ public final class TimeManager {
    */
   public static String getLocalizedTime() {
     return new DateTimeFormatterBuilder().appendLocalized(null, FormatStyle.MEDIUM).toFormatter()
-        .format(LocalDateTime.now());
+        .format(LocalDateTime.now(ZoneId.systemDefault()));
   }
 
   /**

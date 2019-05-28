@@ -60,6 +60,7 @@ public class SettingsPane implements ControlledScreen<ScreenController<FxmlManag
     this.root = root;
   }
 
+  @SuppressWarnings("unused")
   @FXML
   private void initialize() {
     selectionComponentsBySetting = Arrays.stream(ClientSettingJavaFxUiBinding.values()).collect(Collectors.toMap(
@@ -117,16 +118,19 @@ public class SettingsPane implements ControlledScreen<ScreenController<FxmlManag
     screenController.switchScreen(FxmlManager.MAIN_MENU_PANE);
   }
 
+  @SuppressWarnings("unused")
   @FXML
   private void reset() {
     selectionComponentsBySetting.values().forEach(SelectionComponent::reset);
   }
 
+  @SuppressWarnings("unused")
   @FXML
   private void resetToDefault() {
     selectionComponentsBySetting.values().forEach(SelectionComponent::resetToDefault);
   }
 
+  @SuppressWarnings("unused")
   @FXML
   private void save() {
     final SelectionComponent.SaveContext context = new SelectionComponent.SaveContext() {
