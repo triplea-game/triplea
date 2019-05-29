@@ -1,6 +1,6 @@
 package org.triplea.server.error.reporting;
 
-import java.time.Clock;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -45,7 +45,7 @@ public class CreateIssueStrategy implements Function<ErrorReportRequest, ErrorUp
       final ErrorUploadResponse errorUploadResponse = sendRequest(errorReportRequest);
 
       errorReportingDao.insertHistoryRecord(errorReportRequest.getClientIp());
-      errorReportingDao.purgeOld(Clock.systemUTC().instant().minus(2, ChronoUnit.DAYS));
+      errorReportingDao.purgeOld(Instant.now().minus(2, ChronoUnit.DAYS));
 
       return errorUploadResponse;
     }
