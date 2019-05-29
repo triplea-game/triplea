@@ -11,11 +11,7 @@ mainClassName = 'org.triplea.lobby.server.LobbyRunner'
 dependencies {
     implementation project(':java-extras')
     implementation project(':game-core')
-    implementation project(':lobby-engine')
-    implementation project(':lobby-client-http')
     implementation "org.mindrot:jbcrypt:$jbcryptVersion"
-    implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.sparkjava:spark-core:2.8.0'
 
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.21'
