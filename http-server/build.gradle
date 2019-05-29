@@ -13,6 +13,8 @@ ext {
 
 configurations {
     testImplementation {
+        // database-rider brings in slf4j-simple as a transitive dependency
+        // DropWizard has logback baked in and cannot have multiple slf4j bindings.
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
 }
