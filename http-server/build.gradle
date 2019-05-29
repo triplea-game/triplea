@@ -37,8 +37,7 @@ dependencies {
 
     testImplementation project(':test-common')
     testImplementation 'com.github.database-rider:rider-junit5:1.5.2'
-
-    testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: '1.3.12'
+    testImplementation 'io.dropwizarddropwizard-testing:1.3.12'
 }
 
 jar {
