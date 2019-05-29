@@ -1,5 +1,4 @@
 dependencies {
     implementation project(':java-extras')
     implementation project(':lobby-client-http')
-    implementation project(':lobby-db-dao')
 }
