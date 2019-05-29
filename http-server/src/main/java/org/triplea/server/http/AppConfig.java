@@ -24,19 +24,31 @@ import lombok.Setter;
  * whether to use prerelease or production configuration by specifying the appropriate file.
  * In the YML files secret or sensitive values are defined by environment variables.
  */
-public class AppConfig extends Configuration {
+class AppConfig extends Configuration {
   static final String GITHUB_ORG = "triplea-game";
   static final URI GITHUB_WEB_SERVICE_API_URL = URI.create("https://api.github.com");
   static final int MAX_ERROR_REPORTS_PER_DAY = 5;
 
+  /**
+   * Webservice token, should be an API token for the TripleA builder bot account.
+   */
   @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
   private String githubApiToken;
 
+  /**
+   * Repo where we will create github issues from bug report uploads.
+   */
   @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
   private String githubRepo;
 
+  /**
+   * Flag that indicates if we are running in production. This can be used to verify we do not have
+   * any magic stubbing and to do any additional configuration checks to be really sure production is
+   * well configured. Because we vary configuration values between prod and test, there can be prod-only
+   * cases where we perhaps have something misconfigured, hence the risk we are trying to defend against.
+   */
   @Getter(onMethod_ = {@JsonProperty})
   @Setter(onMethod_ = {@JsonProperty})
   private boolean prod;

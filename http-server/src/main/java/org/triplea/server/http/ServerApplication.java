@@ -61,7 +61,7 @@ public class ServerApplication extends Application<AppConfig> {
   public void run(final AppConfig configuration, final Environment environment) {
     environment.jersey().register(new ClientExceptionMapper());
 
-    if(configuration.isProd()) {
+    if (configuration.isProd()) {
       configuration.verifyProdEnvironmentVariables();
     }
 
