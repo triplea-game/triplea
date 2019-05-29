@@ -33,6 +33,7 @@
     - java
     - lobby
     - nginx
+    - http_server
 
 - hosts: botHosts
   gather_facts: no

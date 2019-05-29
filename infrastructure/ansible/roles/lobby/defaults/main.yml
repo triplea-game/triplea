@@ -15,9 +15,3 @@ lobby_postgres_password: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
 lobby_postgres_host: "127.0.0.1"  # For vagrant host machine, use: 10.0.2.2
 
 lobby_postgres_port: "5432"
-
-lobby_error_report_github_org: "triplea-game"
-
-lobby_error_report_github_repo: "test"
-
-lobby_error_report_github_token: "token"
