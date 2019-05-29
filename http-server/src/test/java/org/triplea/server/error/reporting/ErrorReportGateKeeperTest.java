@@ -1,17 +1,17 @@
 package org.triplea.server.error.reporting;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
@@ -46,24 +46,23 @@ class ErrorReportGateKeeperTest {
   @Test
   void allowedIfUnderMax() {
     givenErrorReportCount(MAX_REPORTS_PER_DAY - 1);
-    MatcherAssert.assertThat(
+    assertThat(
         errorReportGateKeeper.test(USER_IP),
         is(true));
   }
 
   private void givenErrorReportCount(final int count) {
-    Mockito.when(clock.instant()).thenReturn(INSTANT);
+    when(clock.instant()).thenReturn(INSTANT);
 
     final Instant oneDayAgo = INSTANT.minus(1, ChronoUnit.DAYS);
 
-    Mockito.when(dao.countRecordsByIpSince(USER_IP, oneDayAgo))
-        .thenReturn(count);
+    when(dao.countRecordsByIpSince(USER_IP, oneDayAgo)).thenReturn(count);
   }
 
   @Test
   void notAllowedIfAtMax() {
     givenErrorReportCount(MAX_REPORTS_PER_DAY);
-    MatcherAssert.assertThat(
+    assertThat(
         errorReportGateKeeper.test(USER_IP),
         is(false));
   }
@@ -71,7 +70,7 @@ class ErrorReportGateKeeperTest {
   @Test
   void notAllowedIfExceedingMax() {
     givenErrorReportCount(MAX_REPORTS_PER_DAY + 1);
-    MatcherAssert.assertThat(
+    assertThat(
         errorReportGateKeeper.test(USER_IP),
         is(false));
   }
