@@ -1,34 +1,40 @@
 package org.triplea.server.error.reporting;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.error.report.ErrorUploadResponse;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 /**
  * Http controller that binds the error upload endpoint with the error report upload handler.
  */
-@AllArgsConstructor
-@Path(ErrorReportController.ERROR_REPORT_PATH)
+@Builder
 @Produces(MediaType.APPLICATION_JSON)
+@Path("/")
 public class ErrorReportController {
 
-  static final String ERROR_REPORT_PATH = "/error-report";
-
+  @Nonnull
   private final Function<ErrorReportRequest, ErrorUploadResponse> errorReportIngestion;
+  @Nonnull
+  private final Predicate<String> errorReportRateChecker;
 
   @POST
+  @Path(ErrorUploadClient.ERROR_REPORT_PATH)
   public ErrorUploadResponse uploadErrorReport(
-      @Context final HttpServletRequest req,
+      @Context final HttpServletRequest request,
       final ErrorUploadRequest errorReport) {
 
     if (errorReport.getBody() == null || errorReport.getTitle() == null) {
@@ -36,7 +42,7 @@ public class ErrorReportController {
     }
 
     return errorReportIngestion.apply(ErrorReportRequest.builder()
-        .clientIp(extractClientIp(req))
+        .clientIp(extractClientIp(request))
         .errorReport(errorReport)
         .build());
   }
@@ -48,5 +54,17 @@ public class ErrorReportController {
     }
 
     return request.getRemoteHost();
+  }
+
+  /**
+   * Checks if the user has hit their rate limit for submitting error reports.
+   *
+   * @return True if the user can submit an error report, false if they
+   *         have hit their limit.
+   */
+  @GET
+  @Path(ErrorUploadClient.CAN_REPORT_PATH)
+  public boolean canSubmitErrorReport(@Context final HttpServletRequest request) {
+    return errorReportRateChecker.test(extractClientIp(request));
   }
 }

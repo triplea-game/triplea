@@ -33,6 +33,13 @@ public class GithubIssueClient {
     this.authToken = authToken;
   }
 
+  /**
+   * For local or integration testing, we may want to have a fake that does not actually
+   * call github. This method returns true if we are doing a fake call to github.
+   */
+  public boolean isTest() {
+    return authToken.equalsIgnoreCase("test");
+  }
 
   /**
    * Invokes github web-API to create a github issue with the provided parameter data.

@@ -42,7 +42,13 @@ Of note, a reference to `AppConfig` is passed to the main server application
 
 ```bash
 curl -X POST  -H "Content-Type: application/json" \
-  -d '{"title":"my-title", "body":"my-body"}' localhost:8080/error-report
+  -d '{"title":"my-title", "body":"my-body"}' \
+  localhost:8080/error-report
+```
+
+```bash
+curl -X GET -H "Content-Type: application/json" \
+  localhost:8080/can-submit-error-report
 ```
 
 
@@ -52,3 +58,16 @@ curl -X POST  -H "Content-Type: application/json" \
   valid configuration.
 - [ ] see if we can create an integration test with mocked out backend that
   can verify http server/client interactions
+
+# WARNINGS!
+
+## Multiple SLF4J Bindings Not Allowed
+
+Dropwizard uses Logback and has a binding with SLF4J baked in. Additional SLF4J bindings 
+should generate a warning, but will ultimately cause problems (when run from gradle) and drop 
+wizard may fail to start with this error:
+
+```bash
+java.lang.IllegalStateException: Unable to acquire the logger context
+    at io.dropwizard.logging.LoggingUtil.getLoggerContext(LoggingUtil.java:46)
+```

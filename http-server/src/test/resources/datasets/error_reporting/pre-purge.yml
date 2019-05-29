@@ -1,0 +1,13 @@
+error_report_history:
+  - id: 1
+    user_ip: first
+    date_created: 2016-01-01 23:59:20.0
+  - id: 2
+    user_ip: first
+    date_created: 2016-01-02 23:59:20.0
+  - id: 3
+    user_ip: first
+    date_created: 2016-01-03 23:59:20.0
+  - id: 4
+    user_ip: second
+    date_created: 2016-01-03 23:59:20.0
