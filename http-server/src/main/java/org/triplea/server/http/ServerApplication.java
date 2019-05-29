@@ -61,6 +61,10 @@ public class ServerApplication extends Application<AppConfig> {
   public void run(final AppConfig configuration, final Environment environment) {
     environment.jersey().register(new ClientExceptionMapper());
 
+    if(configuration.isProd()) {
+      configuration.verifyProdEnvironmentVariables();
+    }
+
     final JdbiFactory factory = new JdbiFactory();
     final Jdbi jdbi = factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
 

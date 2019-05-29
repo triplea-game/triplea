@@ -1,5 +1,5 @@
 githubRepo: triplea
-githubApiToken: ${GITHUB_ISSUES_API_TOKEN}
+githubApiToken: ${GITHUB_API_TOKEN}
 # if we are using any stubbing, we'll assert that this value is false.
 # this is to help guarantee that we do not accidently use test configuration in prod.
 prod: true
