@@ -1,0 +1,2 @@
+githubRepo: test
+githubApiToken: ${GITHUB_ISSUES_API_TOKEN}

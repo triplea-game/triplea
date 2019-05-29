@@ -1,0 +1,2 @@
+githubRepo: triplea
+githubApiToken: ${GITHUB_ISSUES_API_TOKEN}
