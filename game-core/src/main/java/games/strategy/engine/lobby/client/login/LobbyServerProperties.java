@@ -71,9 +71,10 @@ public final class LobbyServerProperties {
   public URI getHttpsServerUri() {
     try {
       return new URIBuilder()
+          // TODO: use https
           .setScheme(
               // allow env variable override of https so we can do local development with http
-              Optional.ofNullable(System.getenv("HTTP_SERVER_PROTOCOL")).orElse("https"))
+              Optional.ofNullable(System.getenv("HTTP_SERVER_PROTOCOL")).orElse("http"))
           .setHost(host)
           .setPort(httpsPort)
           .build();

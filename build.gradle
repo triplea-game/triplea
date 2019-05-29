@@ -98,7 +98,6 @@ subprojects {
 
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.4.0'
-        testRuntimeOnly 'org.slf4j:slf4j-nop:1.7.25'
     }
 
     tasks.withType(JavaCompile).configureEach {
