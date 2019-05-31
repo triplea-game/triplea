@@ -5,13 +5,6 @@ package org.triplea.lobby.server.db;
  */
 public interface BadWordDao {
   /**
-   * Adds the specified bad word to the table.
-   *
-   * @param word The bad word to add.
-   */
-  void addBadWord(String word);
-
-  /**
    * Checks if a given string contains a bad word.
    *
    * @param testString The value to check for a bad word
