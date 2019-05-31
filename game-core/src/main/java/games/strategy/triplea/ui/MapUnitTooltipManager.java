@@ -24,7 +24,6 @@ import org.triplea.java.StringUtils;
 
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attachments.UnitAttachment;
 
 /**
  * Responsible for showing tool tips when hovering over units on the main map.
@@ -121,10 +120,9 @@ public final class MapUnitTooltipManager implements ActionListener {
    * @return The tooltip text.
    */
   public static String getTooltipTextForUnit(final UnitType unitType, final PlayerId player, final int count) {
-    final UnitAttachment ua = UnitAttachment.get(unitType);
     final String firstLine = String.format("<b>%s%s (%s)</b><br />", count == 1 ? "" : (count + " "),
         StringUtils.capitalize(unitType.getName()), player.getName());
-    return firstLine + ua.toStringShortAndOnlyImportantDifferences(player);
+    return firstLine + TooltipProperties.getInstance().getTooltip(unitType, player);
   }
 
   /**
