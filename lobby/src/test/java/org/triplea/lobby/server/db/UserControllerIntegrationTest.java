@@ -80,7 +80,7 @@ final class UserControllerIntegrationTest {
         new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
         new HashedPassword(password2));
     try (Connection con = TestDatabase.newConnection()) {
-      final String sql = " select * from ta_users where username = '" + user.getName() + "'";
+      final String sql = " select * from lobby_user where username = '" + user.getName() + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
       assertEquals(email2, rs.getString("email"));
@@ -108,7 +108,7 @@ final class UserControllerIntegrationTest {
 
   private int getUserCount() throws Exception {
     try (Connection dbConnection = TestDatabase.newConnection()) {
-      final String sql = "select count(*) from TA_USERS";
+      final String sql = "select count(*) from lobby_user";
       final ResultSet rs = dbConnection.createStatement().executeQuery(sql);
       assertTrue(rs.next());
       return rs.getInt(1);

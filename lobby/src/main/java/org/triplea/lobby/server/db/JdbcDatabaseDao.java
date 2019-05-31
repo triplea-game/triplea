@@ -14,6 +14,7 @@ class JdbcDatabaseDao implements DatabaseDao {
   private final UsernameBlacklistDao usernameBlacklistDao;
   private final BannedMacDao bannedMacDao;
   private final UserDao userDao;
+  private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
   JdbcDatabaseDao(final Database database) {
     final Supplier<Connection> connection = connectionSupplier(database);
@@ -22,6 +23,7 @@ class JdbcDatabaseDao implements DatabaseDao {
     bannedMacDao = new BannedMacController(connection);
     usernameBlacklistDao = new UsernameBlacklistController(connection);
     userDao = new UserController(connection);
+    moderatorAuditHistoryDao = new ModeratorAuditHistoryController(connection);
   }
 
   private static Supplier<Connection> connectionSupplier(final Database database) {
