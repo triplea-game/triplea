@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -12,7 +11,6 @@ import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.DBUnitExtension;
 
 @ExtendWith(DBUnitExtension.class)
@@ -20,13 +18,6 @@ import com.github.database.rider.junit5.DBUnitExtension;
 final class BadWordControllerIntegrationTest {
   private final BadWordDao controller =
       TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBadWordDao();
-
-  @Test
-  @DataSet("badwords/pre-insert.yml")
-  @ExpectedDataSet("badwords/post-insert.yml")
-  void testAdd() {
-    controller.addBadWord("second");
-  }
 
   @Nested
   final class CaseInsensitiveContainsTest {

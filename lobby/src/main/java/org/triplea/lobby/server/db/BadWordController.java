@@ -16,19 +16,6 @@ final class BadWordController implements BadWordDao {
   private final Supplier<Connection> connection;
 
   @Override
-  public void addBadWord(final String word) {
-    try (Connection con = connection.get();
-        // If the word already is present we don't need to add it twice.
-        PreparedStatement ps = con.prepareStatement("insert into bad_word (word) values (?) on conflict do nothing")) {
-      ps.setString(1, word);
-      ps.execute();
-      con.commit();
-    } catch (final SQLException e) {
-      throw new DatabaseException("Error inserting banned word: " + word, e);
-    }
-  }
-
-  @Override
   public boolean containsBadWord(final String testString) {
     if (testString.isEmpty()) {
       return false;

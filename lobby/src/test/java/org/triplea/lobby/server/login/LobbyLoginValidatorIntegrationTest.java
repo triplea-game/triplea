@@ -1,7 +1,6 @@
 package org.triplea.lobby.server.login;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,7 +9,6 @@ import static org.triplea.lobby.common.login.RsaAuthenticator.hashPasswordWithSa
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -125,20 +123,6 @@ class LobbyLoginValidatorIntegrationTest {
     // create a user, verify we can't login with a username that already exists
     // we should not be able to login now
     assertNotNull(generateChallenge(new HashedPassword(md5Crypt("foo"))).apply(challenge -> response));
-  }
-
-  @Test
-  void testAnonymousLoginBadName() {
-    final String name = "bitCh" + TestUserUtils.newUniqueTimestamp();
-    try {
-      TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBadWordDao().addBadWord("bitCh");
-    } catch (final Exception ignore) {
-      // this is probably a duplicate insertion error, we can ignore that as it only means we already added the bad
-      // word previously
-    }
-    assertEquals(LobbyLoginValidator.ErrorMessages.THATS_NOT_A_NICE_NAME,
-        generateChallenge(name, new HashedPassword(md5Crypt("foo"))).apply(challenge -> new HashMap<>(
-            Collections.singletonMap(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString()))));
   }
 
   @Test
