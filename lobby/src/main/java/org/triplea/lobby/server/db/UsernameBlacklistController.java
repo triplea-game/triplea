@@ -35,6 +35,13 @@ class UsernameBlacklistController implements UsernameBlacklistDao {
     } catch (final SQLException e) {
       throw new DatabaseException("Error inserting banned username: " + usernameToBan, e);
     }
+
+    new ModeratorAuditHistoryController(connection).addAuditRecord(
+        ModeratorAuditHistoryDao.AuditArgs.builder()
+            .moderatorName(moderatorName)
+            .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USERNAME)
+            .actionTarget(usernameToBan)
+            .build());
   }
 
   /**

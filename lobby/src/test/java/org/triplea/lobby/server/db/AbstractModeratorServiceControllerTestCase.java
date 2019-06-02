@@ -13,7 +13,11 @@ import java.sql.SQLException;
 import org.triplea.java.function.ThrowingConsumer;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
+import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
+import org.triplea.util.Md5Crypt;
+
+import games.strategy.engine.lobby.server.userDB.DBUser;
 
 /**
  * Superclass for fixtures that test a moderator service controller.
@@ -25,11 +29,18 @@ public abstract class AbstractModeratorServiceControllerTestCase {
 
   protected AbstractModeratorServiceControllerTestCase() {}
 
+
   /**
    * Creates a new unique user.
    */
   protected static User newUser() {
-    return TestUserUtils.newUser();
+    final User user = TestUserUtils.newUser();
+    TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getUserDao().createUser(
+        new DBUser(
+            new DBUser.UserName(user.getUsername()),
+            new DBUser.UserEmail("email@email.com")),
+        new HashedPassword(Md5Crypt.hash("pass", "salt")));
+    return user;
   }
 
   /**

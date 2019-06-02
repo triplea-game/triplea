@@ -35,7 +35,8 @@ final class UserController implements UserDao {
   private HashedPassword getPassword(final String username, final boolean legacy) {
     try (Connection con = connection.get();
         PreparedStatement ps = con
-            .prepareStatement("select password, coalesce(bcrypt_password, password) from ta_users where username=?")) {
+            .prepareStatement(
+                "select password, coalesce(bcrypt_password, password) from lobby_user where username = ?")) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
@@ -50,7 +51,7 @@ final class UserController implements UserDao {
 
   @Override
   public boolean doesUserExist(final String username) {
-    final String sql = "select username from ta_users where upper(username) = upper(?)";
+    final String sql = "select username from lobby_user where upper(username) = upper(?)";
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
@@ -68,14 +69,14 @@ final class UserController implements UserDao {
 
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(
-            String.format("update ta_users set %s=?, email=? where username=?", getPasswordColumn(hashedPassword)))) {
+            String.format("update lobby_user set %s=?, email=? where username=?", getPasswordColumn(hashedPassword)))) {
       ps.setString(1, hashedPassword.value);
       ps.setString(2, user.getEmail());
       ps.setString(3, user.getName());
       ps.execute();
       if (!hashedPassword.isBcrypted()) {
         try (PreparedStatement ps2 =
-            con.prepareStatement("update ta_users set bcrypt_password=null where username=?")) {
+            con.prepareStatement("update lobby_user set bcrypt_password = null where username=?")) {
           ps2.setString(1, user.getName());
           ps2.execute();
         }
@@ -105,7 +106,7 @@ final class UserController implements UserDao {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
     try (Connection con = connection.get();
-        PreparedStatement ps = con.prepareStatement("update ta_users set admin=? where username = ?")) {
+        PreparedStatement ps = con.prepareStatement("update lobby_user set admin = ? where username = ?")) {
       ps.setBoolean(1, user.isAdmin());
       ps.setString(2, user.getName());
       ps.execute();
@@ -122,7 +123,7 @@ final class UserController implements UserDao {
 
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(
-            "insert into ta_users (username, password, bcrypt_password, email) values (?, ?, ?, ?)")) {
+            "insert into lobby_user (username, password, bcrypt_password, email) values (?, ?, ?, ?)")) {
       ps.setString(1, user.getName());
       ps.setString(2, hashedPassword.isBcrypted() ? null : hashedPassword.value);
       ps.setString(3, hashedPassword.isBcrypted() ? hashedPassword.value : null);
@@ -140,7 +141,7 @@ final class UserController implements UserDao {
     try (Connection con = connection.get()) {
       if (hashedPassword.isHashedWithSalt()) {
         try (PreparedStatement ps =
-            con.prepareStatement("select username from  ta_users where username = ? and password = ?")) {
+            con.prepareStatement("select username from  lobby_user where username = ? and password = ?")) {
           ps.setString(1, username);
           ps.setString(2, hashedPassword.value);
           try (ResultSet rs = ps.executeQuery()) {
@@ -160,7 +161,7 @@ final class UserController implements UserDao {
         }
       }
       // update last login time
-      try (PreparedStatement ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ?")) {
+      try (PreparedStatement ps = con.prepareStatement("update lobby_user set last_login = ? where username = ?")) {
         ps.setTimestamp(1, Timestamp.from(Instant.now()));
         ps.setString(2, username);
         ps.execute();
@@ -175,7 +176,7 @@ final class UserController implements UserDao {
 
   @Override
   public DBUser getUserByName(final String username) {
-    final String sql = "select * from ta_users where username = ?";
+    final String sql = "select * from lobby_user where username = ?";
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);

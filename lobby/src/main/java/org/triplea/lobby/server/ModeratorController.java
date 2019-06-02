@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IRemoteHostUtils;
 import org.triplea.lobby.server.db.DatabaseDao;
+import org.triplea.lobby.server.db.ModeratorAuditHistoryDao;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -124,6 +125,11 @@ final class ModeratorController implements IModeratorController {
         "User was booted from the lobby. Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+    database.getModeratorAuditHistoryDao().addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
+        .moderatorName(modNode.getName())
+        .actionName(ModeratorAuditHistoryDao.AuditAction.BOOT_USER_FROM_LOBBY)
+        .actionTarget(node.getName())
+        .build());
   }
 
   @Override
@@ -182,6 +188,13 @@ final class ModeratorController implements IModeratorController {
             + " In Headless HostBot. Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+
+    database.getModeratorAuditHistoryDao().addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
+        .moderatorName(modNode.getName())
+        .actionName(ModeratorAuditHistoryDao.AuditAction.BOOT_USER_FROM_BOT)
+        .actionTarget(node.getName())
+        .build());
+
     return response;
   }
 
@@ -203,6 +216,13 @@ final class ModeratorController implements IModeratorController {
             + "' Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
+
+    database.getModeratorAuditHistoryDao().addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
+        .moderatorName(modNode.getName())
+        .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_PLAYER_FROM_BOT)
+        .actionTarget(node.getName())
+        .build());
+
     return response;
   }
 
