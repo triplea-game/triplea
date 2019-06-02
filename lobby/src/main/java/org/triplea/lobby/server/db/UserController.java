@@ -36,7 +36,7 @@ final class UserController implements UserDao {
     try (Connection con = connection.get();
         PreparedStatement ps = con
             .prepareStatement(
-                "select password, coalesce(bcrypt_password, password) from lobby_user where username=?")) {
+                "select password, coalesce(bcrypt_password, password) from lobby_user where username = ?")) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
@@ -76,7 +76,7 @@ final class UserController implements UserDao {
       ps.execute();
       if (!hashedPassword.isBcrypted()) {
         try (PreparedStatement ps2 =
-            con.prepareStatement("update lobby_user set bcrypt_password=null where username=?")) {
+            con.prepareStatement("update lobby_user set bcrypt_password = null where username=?")) {
           ps2.setString(1, user.getName());
           ps2.execute();
         }
@@ -106,7 +106,7 @@ final class UserController implements UserDao {
     Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
 
     try (Connection con = connection.get();
-        PreparedStatement ps = con.prepareStatement("update lobby_user set admin=? where username = ?")) {
+        PreparedStatement ps = con.prepareStatement("update lobby_user set admin = ? where username = ?")) {
       ps.setBoolean(1, user.isAdmin());
       ps.setString(2, user.getName());
       ps.execute();
