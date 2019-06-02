@@ -32,6 +32,8 @@ insert into lobby_user (username, password, email, date_created, last_login, adm
 select username, password, email, joined, lastLogin, admin
 from ta_users;
 
+drop table ta_users;
+
 create table moderator_action_history
 (
     id            serial primary key,
