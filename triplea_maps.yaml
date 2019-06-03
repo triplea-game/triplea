@@ -39,30 +39,12 @@
   version: 1
   description: |
     <br>This is a tutorial for players new to TripleA and its game engine.
-- mapName: MiniMap
-  mapCategory: BEST
-  url: https://github.com/triplea-maps/minimap/archive/master.zip
-  version: 1
-  description: |
-    <br>
 - mapName: Big World
   mapCategory: BEST
   url: https://github.com/triplea-maps/big_world/archive/master.zip
   version: 3
   description: |
     <br>WWII style map, larger version of revised.
-- mapName: Great War
-  mapCategory: BEST
-  url: https://github.com/triplea-maps/great_war/archive/master.zip
-  version: 3
-  description: |
-    <br>WWI map
-- mapName: Capture the Flag
-  mapCategory: BEST
-  url: https://github.com/triplea-maps/capture_the_flag/archive/master.zip
-  version: 1
-  description: |
-    <br>Small even balanced map
 - mapName: Middle Earth
   mapCategory: BEST
   url: https://github.com/triplea-maps/middle_earth/archive/master.zip
@@ -171,24 +153,6 @@
     <br> by Dr.Che
     <br>270BC is a beautifully made fun map. With its slow and few units, and no air, but a very dynamic income situation, as well as nicely interlinked theaters of war, it plays refreshingly different.
     <br>
-- mapName: 270BC Variants
-  mapCategory: BEST
-  url: https://github.com/triplea-maps/270bc_variants/archive/master.zip
-  version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/270bc_variants/master/270bc_variants_mini.png
-  description: |
-    <br>2 Variants of 270BC
-    <br>
-    <br>270BC Cernel Variant (by Cernel)
-    <br>  A low level reworking of 270BC, mainly to rebalance the units and redefine the round 1 gameplay dynamics.
-    <br>  It can be seen as an unofficial new version of 270BC, close to the original.
-    <br>
-    <br>270BC 40% (by Cernel)
-    <br>  A mod of "270BC Cernel Variant" (see above) where starting units, productions and the city cost are decreased to about 40%. The ruleset is, otherwise, the same as "270BC Cernel Variant".
-    <br>  Aims at keeping closely the gameplay of the original, but with fewer units.
-    <br>  It is an easy to learn and play (but not so easy to master) game, with a detailed suggestions section in notes, written to aid new players.
-    <br>  Special thanks to guerrilla_J, Dany, epinikion for high quality testing (hopefully the game is well balanced, both for dice and low luck).
-    <br>
 - mapName: Civil War
   mapCategory: BEST
   url: https://github.com/triplea-maps/civil_war/archive/master.zip
@@ -262,33 +226,15 @@
     <br>If link does not work, download manually from:
     <br>https://sourceforge.net/projects/tripleamaps/files/
     <br>
-- mapName: Diplomacy
+- mapName: Domination 1914 No Mans Land
   mapCategory: BEST
-  url: https://github.com/triplea-maps/diplomacy/archive/master.zip
-  version: 2
-  img: https://raw.githubusercontent.com/triplea-maps/diplomacy/master/description/TripleA_diplomacy_mini.png
+  url: https://github.com/triplea-maps/domination_1914_no_mans_land/archive/master.zip
+  version: 3
   description: |
-    <br>An adaptation of the game "Diplomacy" for TripleA.
-    <br>Includes 3 Free-For-All (ffa) games, and 1 normal
+    <br>by Imbaked
     <br>
-    <br>1) Diplomacy
-    <br>This is as close as TripleA lets us come to the real Diplomacy board game. Uses some complex rules, be sure to read the game notes.
+    <br>WW1 mod of Domination map.
     <br>
-    <br>2) Diplomacy: FFA V3 Rules
-    <br>This is the Diplomacy map of Europe, with ww2v3 units and rules.  Easy to learn.
-    <br>
-    <br>3) Diplomacy: FFA Great War Style
-    <br>This is the Diplomacy map of Europe, with "Great War" units.  Also very easy to learn.
-    <br>
-    <br>4) Diplomacy: WW1
-    <br>Unlike the other 3, this is a normal non-ffa game.  It pits Germany, Austria, and Turkey, against France, England, and Russia.  (Italy is neutral)
-        It uses Diplomacy style units, Armies and Navies, with 3 territory types: Land, Sea, and Coastal.
-    <br>
-    <br>
-    <br>Be sure to download some of the map skins for this game.
-    <br>
-    <br>by Veqryn
-    <br>With help from Pulicat and Bung
 - mapName: World War II Classic
   mapCategory: BEST
   url: https://github.com/triplea-maps/world_war_ii_classic/archive/master.zip
@@ -429,6 +375,86 @@
     <br>4. Cannot build new factories.
     <br>5. Carrier and battleship costs decreased to 12 and 16 PUs.
     <br>6. SZ18 (Black Sea) can't be accessed by ships.
+    <br>
+- mapName: Battle for Arda
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/battle_for_arda/archive/master.zip
+  version: 2
+  img: https://user-images.githubusercontent.com/15109713/44813046-1f871700-abd9-11e8-9b33-cf70308a1302.png
+  description: |
+    <br>Important!!! Requires TripleA pre-release above 1.9.0.0.11000 to function properly!
+    <br>Watch trailer: https://youtu.be/iucvX0wSO30
+    <br>
+    <br>Black clouds are gathering over Mordor. The mightiest realms of the Third Age stand prepared for yet another war, to forever seal the fate of Arda... Will the Shadow once again cover Middle Earth - or will the forces of Good heal it of what Evil had wrought? Lead the forces of Good or Evil to victory in this epic conflict, the Battle for Arda!
+    <br>
+    <br>The game takes place in a slightly altered timeline (includes realms that never coexisted).
+    <br>Middle Earth: Battle for Arda features a vast map with hundreds of territories and sixteen factions, each of which coming with unique unit sets. The great variety in unit abilities and the interconnectedness of the theaters leaves a lot of room for exploration in strategy.
+    <br>
+    <br>Game design by alkexr. Visual style by Hepps. Contributions by Frostion and redrum. Thanks for the members of the TripleA community for their feedback and ideas, who enabled turning this into a truly great map.
+    <br>This map is the continuation of the (deprecated) Large Middle Earth map. Currently in balance testing period.
+    <br>Version 2.0.7, last update 2018.10.08. for engine 1.9.0.0.11000+
+- mapName: Diplomacy
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/diplomacy/archive/master.zip
+  version: 2
+  img: https://raw.githubusercontent.com/triplea-maps/diplomacy/master/description/TripleA_diplomacy_mini.png
+  description: |
+    <br>An adaptation of the game "Diplomacy" for TripleA.
+    <br>Includes 3 Free-For-All (ffa) games, and 1 normal
+    <br>
+    <br>1) Diplomacy
+    <br>This is as close as TripleA lets us come to the real Diplomacy board game. Uses some complex rules, be sure to read the game notes.
+    <br>
+    <br>2) Diplomacy: FFA V3 Rules
+    <br>This is the Diplomacy map of Europe, with ww2v3 units and rules.  Easy to learn.
+    <br>
+    <br>3) Diplomacy: FFA Great War Style
+    <br>This is the Diplomacy map of Europe, with "Great War" units.  Also very easy to learn.
+    <br>
+    <br>4) Diplomacy: WW1
+    <br>Unlike the other 3, this is a normal non-ffa game.  It pits Germany, Austria, and Turkey, against France, England, and Russia.  (Italy is neutral)
+        It uses Diplomacy style units, Armies and Navies, with 3 territory types: Land, Sea, and Coastal.
+    <br>
+    <br>
+    <br>Be sure to download some of the map skins for this game.
+    <br>
+    <br>by Veqryn
+    <br>With help from Pulicat and Bung
+- mapName: 270BC Variants
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/270bc_variants/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/270bc_variants/master/270bc_variants_mini.png
+  description: |
+    <br>2 Variants of 270BC
+    <br>
+    <br>270BC Cernel Variant (by Cernel)
+    <br>  A low level reworking of 270BC, mainly to rebalance the units and redefine the round 1 gameplay dynamics.
+    <br>  It can be seen as an unofficial new version of 270BC, close to the original.
+    <br>
+    <br>270BC 40% (by Cernel)
+    <br>  A mod of "270BC Cernel Variant" (see above) where starting units, productions and the city cost are decreased to about 40%. The ruleset is, otherwise, the same as "270BC Cernel Variant".
+    <br>  Aims at keeping closely the gameplay of the original, but with fewer units.
+    <br>  It is an easy to learn and play (but not so easy to master) game, with a detailed suggestions section in notes, written to aid new players.
+    <br>  Special thanks to guerrilla_J, Dany, epinikion for high quality testing (hopefully the game is well balanced, both for dice and low luck).
+    <br>
+- mapName: Capture the Flag
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/capture_the_flag/archive/master.zip
+  version: 1
+  description: |
+    <br>Small even balanced map
+- mapName: Great War
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/great_war/archive/master.zip
+  version: 3
+  description: |
+    <br>WWI map
+- mapName: MiniMap
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/minimap/archive/master.zip
+  version: 1
+  description: |
     <br>
 - mapName: Age of Tribes
   mapCategory: GOOD
@@ -672,18 +698,6 @@
     <br>
     <br>c.) General tips:
     <br>Hard AI is recommended. Human players must select the "I am Human" option to enable certain features for their faction. Consult the game notes for further tips, rules, and details, or visit the development forum: http://tinyurl.com/ghwars
-    <br>
-- mapName: Greyhawk
-  mapCategory: GOOD
-  url: https://github.com/triplea-maps/greyhawk/archive/master.zip
-  version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/greyhawk/master/description/TripleA_greyhawk_mini.png
-  description: |
-    <br>by Panguitch
-    <br>Version 0.9.9
-    <br>Suggestions to ghpanguitch@gmail.com
-    <br>
-    <br>This version of Greyhawk continues to function, but is being deprecated. Please install the new, massively revised Greyhawk Wars: http://tinyurl.com/ghwars
     <br>
 - mapName: Caribbean Trade War
   mapCategory: GOOD
@@ -1069,6 +1083,18 @@
   description: |
     <br>This is a MAP SKIN for "Diplomacy"
     <br>A very basic style.  I made this one for people who hate the cursive writing of the other 3 skins.  It has a simple font, no textures, and no cursive.
+- mapName: Greyhawk
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/greyhawk/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/greyhawk/master/description/TripleA_greyhawk_mini.png
+  description: |
+    <br>by Panguitch
+    <br>Version 0.9.9
+    <br>Suggestions to ghpanguitch@gmail.com
+    <br>
+    <br>This version of Greyhawk continues to function, but is being deprecated. Please install the new, massively revised Greyhawk Wars: http://tinyurl.com/ghwars
+    <br>
 - mapName: World At War Variants
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/world_at_war_variants/archive/master.zip
@@ -1483,23 +1509,6 @@
     <br>- Free For All game option
     <br>
     <br>Read game notes before playing, unless you want to have your strongest units killed by some unexpected enemy ability.
-- mapName: Battle for Arda
-  mapCategory: EXPERIMENTAL
-  url: https://github.com/triplea-maps/battle_for_arda/archive/master.zip
-  version: 2
-  img: https://user-images.githubusercontent.com/15109713/44813046-1f871700-abd9-11e8-9b33-cf70308a1302.png
-  description: |
-    <br>Important!!! Requires TripleA pre-release above 1.9.0.0.11000 to function properly!
-    <br>Watch trailer: https://youtu.be/iucvX0wSO30
-    <br>
-    <br>Black clouds are gathering over Mordor. The mightiest realms of the Third Age stand prepared for yet another war, to forever seal the fate of Arda... Will the Shadow once again cover Middle Earth - or will the forces of Good heal it of what Evil had wrought? Lead the forces of Good or Evil to victory in this epic conflict, the Battle for Arda!
-    <br>
-    <br>The game takes place in a slightly altered timeline (includes realms that never coexisted).
-    <br>Middle Earth: Battle for Arda features a vast map with hundreds of territories and sixteen factions, each of which coming with unique unit sets. The great variety in unit abilities and the interconnectedness of the theaters leaves a lot of room for exploration in strategy.
-    <br>
-    <br>Game design by alkexr. Visual style by Hepps. Contributions by Frostion and redrum. Thanks for the members of the TripleA community for their feedback and ideas, who enabled turning this into a truly great map.
-    <br>This map is the continuation of the (deprecated) Large Middle Earth map. Currently in balance testing period.
-    <br>Version 2.0.7, last update 2018.10.08. for engine 1.9.0.0.11000+
 - mapName: Alagaesia
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/alagaesia/archive/master.zip
@@ -1858,15 +1867,6 @@
     <br>HexGlobe10 is a 4 player game with no alliances.
     <br>
   version: 2
-- mapName: Domination 1914 No Mans Land
-  mapCategory: GOOD
-  url: https://github.com/triplea-maps/domination_1914_no_mans_land/archive/master.zip
-  version: 3
-  description: |
-    <br>by Imbaked
-    <br>
-    <br>WW1 mod of Domination map.
-    <br>
 - mapName: Domination 1914-Weltpolitik
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/domination_1914-weltpolitik/archive/master.zip
