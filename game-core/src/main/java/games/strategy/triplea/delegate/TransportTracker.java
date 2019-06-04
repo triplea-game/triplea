@@ -306,12 +306,13 @@ public class TransportTracker {
   }
 
   /**
-   * For ww2v3+, if a transport has been in combat then it can't load in NCM.
+   * For ww2v3+ and LHTR, if a transport has been in combat then it can't load in NCM.
    */
   static boolean isTransportLoadRestrictedAfterCombat(final Unit transport) {
     final TripleAUnit taUnit = (TripleAUnit) transport;
-    return Properties.getWW2V3(transport.getData())
-        && GameStepPropertiesHelper.isNonCombatMove(transport.getData(), true) && taUnit.getWasInCombat();
+    final GameData data = transport.getData();
+    return (Properties.getWW2V3(data) || Properties.getLhtrCarrierProductionRules(data))
+        && GameStepPropertiesHelper.isNonCombatMove(data, true) && taUnit.getWasInCombat();
   }
 
   static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits,

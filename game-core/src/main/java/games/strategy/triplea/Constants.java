@@ -44,7 +44,7 @@ public interface Constants {
   String FACTORIES_PER_COUNTRY_PROPERTY = "maxFactoriesPerTerritory";
   String TWO_HIT_BATTLESHIP_PROPERTY = "Two hit battleship";
   String ALWAYS_ON_AA_PROPERTY = "Always on AA";
-  // allows lhtr carrier/fighter production
+  // allows lhtr carrier/fighter production and not loading transports that were in a battle
   String LHTR_CARRIER_PRODUCTION_RULES = "LHTR Carrier production rules";
   // Break up fighter/carrier production into atomic units
   // allow fighters to be placed on newly produced carriers
