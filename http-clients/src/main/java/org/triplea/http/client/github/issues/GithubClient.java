@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Map;
 
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.HttpConstants;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
@@ -27,10 +28,7 @@ interface GithubClient {
    * @throws FeignException Thrown on non-2xx responses.
    */
   @RequestLine("POST " + CREATE_ISSUE_PATH)
-  @Headers({
-      "Content-Type: application/json",
-      "Accept: application/json"
-  })
+  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   CreateIssueResponse newIssue(
       @HeaderMap Map<String, Object> headerMap,
       @Param("org") String org,
