@@ -3,6 +3,7 @@ package org.triplea.http.client.error.report;
 import java.net.URI;
 
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.HttpConstants;
 
 import feign.FeignException;
 import feign.Headers;
@@ -23,10 +24,7 @@ public interface ErrorUploadClient {
    * @throws FeignException Thrown on non-2xx responses.
    */
   @RequestLine("POST " + ERROR_REPORT_PATH)
-  @Headers({
-      "Content-Type: application/json",
-      "Accept: application/json"
-  })
+  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   ErrorUploadResponse uploadErrorReport(ErrorUploadRequest request);
 
   @RequestLine("GET " + CAN_REPORT_PATH)

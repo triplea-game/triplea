@@ -3,6 +3,7 @@ package org.triplea.http.client.lobby.login;
 import java.net.URI;
 
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.HttpConstants;
 
 import feign.Headers;
 import feign.RequestLine;
@@ -39,10 +40,7 @@ public interface LobbyLoginClient {
    * </pre>
    */
   @RequestLine("POST " + LOGIN_PATH)
-  @Headers({
-      "Content-Type: application/json",
-      "Accept: application/json"
-  })
+  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   LobbyLoginResponse login(RegisteredUserLoginRequest loginRequest);
 
 
@@ -64,9 +62,6 @@ public interface LobbyLoginClient {
    * </pre>
    */
   @RequestLine("POST " + ANONYMOUS_LOGIN_PATH)
-  @Headers({
-      "Content-Type: application/json",
-      "Accept: application/json"
-  })
+  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   LobbyLoginResponse anonymousLogin(String name);
 }
