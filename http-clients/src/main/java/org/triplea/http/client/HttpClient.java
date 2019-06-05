@@ -86,12 +86,12 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
         .map(body -> {
           try (BufferedReader reader = new BufferedReader(body.asReader())) {
             final String errorMessageBody = reader.lines().collect(Collectors.joining("\n"));
-            return new HttpCommunicationException(response.status(), firstLine + "\n" + errorMessageBody);
+            return new HttpInteractionException(response.status(), firstLine + "\n" + errorMessageBody);
           } catch (final IOException e) {
             log.log(Level.INFO, "An additional error occurred when decoding response", e);
-            return new HttpCommunicationException(response.status(), firstLine);
+            return new HttpInteractionException(response.status(), firstLine);
           }
         })
-        .orElseGet(() -> new HttpCommunicationException(response.status(), firstLine));
+        .orElseGet(() -> new HttpInteractionException(response.status(), firstLine));
   }
 }

@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 class UsernameBlacklistController implements UsernameBlacklistDao {
   private final Supplier<Connection> connection;
+  private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
   @Override
   public void addName(final String usernameToBan, final String moderatorName) {
@@ -36,7 +37,7 @@ class UsernameBlacklistController implements UsernameBlacklistDao {
       throw new DatabaseException("Error inserting banned username: " + usernameToBan, e);
     }
 
-    new ModeratorAuditHistoryController(connection).addAuditRecord(
+    moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .moderatorName(moderatorName)
             .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USERNAME)

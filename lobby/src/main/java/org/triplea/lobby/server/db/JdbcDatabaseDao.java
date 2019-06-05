@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.function.Supplier;
 
+import org.jdbi.v3.core.Jdbi;
+
 import lombok.Getter;
 
 
@@ -17,13 +19,15 @@ class JdbcDatabaseDao implements DatabaseDao {
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
   JdbcDatabaseDao(final Database database) {
-    final Supplier<Connection> connection = connectionSupplier(database);
+    final Jdbi jdbi = JdbiDatabase.newConnection();
+    moderatorAuditHistoryDao = jdbi.onDemand(ModeratorAuditHistoryDao.class);
 
+    final Supplier<Connection> connection = connectionSupplier(database);
     badWordDao = new BadWordController(connection);
-    bannedMacDao = new BannedMacController(connection);
-    usernameBlacklistDao = new UsernameBlacklistController(connection);
+    bannedMacDao = new BannedMacController(connection, moderatorAuditHistoryDao);
+    usernameBlacklistDao = new UsernameBlacklistController(connection, moderatorAuditHistoryDao);
     userDao = new UserController(connection);
-    moderatorAuditHistoryDao = new ModeratorAuditHistoryController(connection);
+
   }
 
   private static Supplier<Connection> connectionSupplier(final Database database) {

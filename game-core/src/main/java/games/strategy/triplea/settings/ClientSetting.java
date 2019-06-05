@@ -80,6 +80,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("MAP_EDGE_SCROLL_ZONE_SIZE", 30);
   public static final ClientSetting<Path> mapFolderOverride = new PathClientSetting("MAP_FOLDER_OVERRIDE");
   public static final ClientSetting<Path> mapListOverride = new PathClientSetting("MAP_LIST_OVERRIDE");
+  public static final ClientSetting<String> moderatorApiKey = new StringClientSetting("MODERATOR_API_KEY");
   public static final ClientSetting<HttpProxy.ProxyChoice> proxyChoice =
       new EnumClientSetting<>(HttpProxy.ProxyChoice.class, "PROXY_CHOICE", HttpProxy.ProxyChoice.NONE);
   public static final ClientSetting<String> proxyHost = new StringClientSetting("PROXY_HOST");

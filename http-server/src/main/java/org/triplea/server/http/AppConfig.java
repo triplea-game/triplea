@@ -24,10 +24,10 @@ import lombok.Setter;
  * whether to use prerelease or production configuration by specifying the appropriate file.
  * In the YML files secret or sensitive values are defined by environment variables.
  */
-class AppConfig extends Configuration {
-  static final String GITHUB_ORG = "triplea-game";
-  static final URI GITHUB_WEB_SERVICE_API_URL = URI.create("https://api.github.com");
-  static final int MAX_ERROR_REPORTS_PER_DAY = 5;
+public class AppConfig extends Configuration {
+  public static final String GITHUB_ORG = "triplea-game";
+  public static final URI GITHUB_WEB_SERVICE_API_URL = URI.create("https://api.github.com");
+  public static final int MAX_ERROR_REPORTS_PER_DAY = 5;
 
   /**
    * Webservice token, should be an API token for the TripleA builder bot account.
