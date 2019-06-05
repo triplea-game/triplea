@@ -47,6 +47,7 @@ class GithubIssueClientTest {
         wireMockServer,
         String.format(
             "/repos/%s/%s/issues", GITHUB_ORG, GITHUB_REPO),
+        HttpClientTesting.RequestType.POST,
         GithubIssueClientTest::doServiceCall);
   }
 }

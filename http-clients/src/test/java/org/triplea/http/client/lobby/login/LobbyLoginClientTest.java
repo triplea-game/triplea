@@ -81,7 +81,10 @@ class LobbyLoginClientTest {
     @Test
     void errorHandling(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
       HttpClientTesting.verifyErrorHandling(
-          wireMockServer, ErrorUploadClient.ERROR_REPORT_PATH, this::doServiceCall);
+          wireMockServer,
+          ErrorUploadClient.ERROR_REPORT_PATH,
+          HttpClientTesting.RequestType.POST,
+          this::doServiceCall);
     }
   }
 
@@ -125,7 +128,10 @@ class LobbyLoginClientTest {
     @Test
     void errorHandling(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
       HttpClientTesting.verifyErrorHandling(
-          wireMockServer, ErrorUploadClient.ERROR_REPORT_PATH, this::doServiceCall);
+          wireMockServer,
+          ErrorUploadClient.ERROR_REPORT_PATH,
+          HttpClientTesting.RequestType.POST,
+          this::doServiceCall);
     }
   }
 }

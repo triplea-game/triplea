@@ -58,7 +58,10 @@ class ErrorReportClientTest {
   @Test
   void errorHandling(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
     HttpClientTesting.verifyErrorHandling(
-        wireMockServer, ErrorUploadClient.ERROR_REPORT_PATH, ErrorReportClientTest::doServiceCall);
+        wireMockServer,
+        ErrorUploadClient.ERROR_REPORT_PATH,
+        HttpClientTesting.RequestType.POST,
+        ErrorReportClientTest::doServiceCall);
   }
 
 
