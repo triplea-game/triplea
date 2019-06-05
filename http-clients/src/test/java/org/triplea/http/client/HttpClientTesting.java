@@ -3,6 +3,7 @@ package org.triplea.http.client;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -22,6 +23,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
@@ -103,6 +105,14 @@ public final class HttpClientTesting {
     return response;
   }
 
+  @Builder
+  private static final class ErrorHandlingArg<T> {
+    @Nonnull
+    private final String path;
+    @Nonnull
+    private final Function<URI, T> serviceCall;
+  }
+
 
   /**
    * Verifies http client behavior on error cases, eg: communication error, server 500.
@@ -110,16 +120,30 @@ public final class HttpClientTesting {
   public static <T> void verifyErrorHandling(
       final WireMockServer wireMockServer,
       final String expectedRequestPath,
+      final RequestType requestType,
       final Function<URI, T> serviceCall) {
-    server500(wireMockServer, expectedRequestPath, serviceCall);
-    faultCases(wireMockServer, expectedRequestPath, serviceCall);
+    server500(wireMockServer, expectedRequestPath, requestType, serviceCall);
+    faultCases(wireMockServer, expectedRequestPath, requestType, serviceCall);
+  }
+
+  /**
+   * Enum indicating whether we expect an HTTP POST or GET request.
+   */
+  public enum RequestType {
+    POST, GET;
+
+    private MappingBuilder verifyPath(final String expectedPath) {
+      return this == POST ? post(urlEqualTo(expectedPath))
+          : get(urlEqualTo(expectedPath));
+    }
   }
 
   private static <T> void server500(
       final WireMockServer wireMockServer,
       final String expectedRequestPath,
+      final RequestType requestType,
       final Function<URI, T> serviceCall) {
-    givenServer500(wireMockServer, expectedRequestPath);
+    givenServer500(wireMockServer, expectedRequestPath, requestType);
     final URI hostUri = configureWireMock(wireMockServer);
 
     assertThrows(HttpCommunicationException.class, () -> serviceCall.apply(hostUri));
@@ -130,8 +154,11 @@ public final class HttpClientTesting {
     return URI.create(wireMockServer.url(""));
   }
 
-  private static void givenServer500(final WireMockServer wireMockServer, final String expectedRequestPath) {
-    wireMockServer.stubFor(post(urlEqualTo(expectedRequestPath))
+  private static void givenServer500(
+      final WireMockServer wireMockServer,
+      final String expectedRequestPath,
+      final RequestType requestType) {
+    wireMockServer.stubFor(requestType.verifyPath(expectedRequestPath)
         .withHeader(HttpHeaders.ACCEPT, equalTo(CONTENT_TYPE_JSON))
         .willReturn(aResponse()
             .withStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR)
@@ -145,21 +172,24 @@ public final class HttpClientTesting {
   private static <T> void faultCases(
       final WireMockServer wireMockServer,
       final String expectedRequestPath,
+      final RequestType requestType,
       final Function<URI, T> serviceCall) {
     Arrays.asList(
         // caution, one of the wiremock faults is known to cause a hang in windows, so to aviod that
         // problem do not use the full available list of of wiremock faults
         Fault.EMPTY_RESPONSE,
         Fault.RANDOM_DATA_THEN_CLOSE)
-        .forEach(fault -> testFaultHandling(wireMockServer, expectedRequestPath, serviceCall, fault));
+        .forEach(fault -> testFaultHandling(
+            wireMockServer, expectedRequestPath, requestType, serviceCall, fault));
   }
 
   private static <T> void testFaultHandling(
       final WireMockServer wireMockServer,
       final String expectedRequestPath,
+      final RequestType requestType,
       final Function<URI, T> serviceCall,
       final Fault fault) {
-    givenFaultyConnection(wireMockServer, expectedRequestPath, fault);
+    givenFaultyConnection(wireMockServer, expectedRequestPath, requestType, fault);
     final URI hostUri = configureWireMock(wireMockServer);
 
     assertThrows(FeignException.class, () -> serviceCall.apply(hostUri));
@@ -168,8 +198,9 @@ public final class HttpClientTesting {
   private static void givenFaultyConnection(
       final WireMockServer wireMockServer,
       final String expectedRequestPath,
+      final RequestType requestType,
       final Fault fault) {
-    wireMockServer.stubFor(post(urlEqualTo(expectedRequestPath))
+    wireMockServer.stubFor(requestType.verifyPath(expectedRequestPath)
         .withHeader(HttpHeaders.ACCEPT, equalTo(CONTENT_TYPE_JSON))
         .willReturn(aResponse()
             .withFault(fault)
