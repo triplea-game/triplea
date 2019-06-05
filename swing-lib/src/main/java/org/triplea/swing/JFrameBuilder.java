@@ -32,6 +32,9 @@ public class JFrameBuilder {
   private final Collection<Component> children = new ArrayList<>();
   private boolean escapeClosesWindow;
   private boolean alwaysOnTop;
+  private boolean pack;
+  private boolean visible;
+
   private String title;
   @Nullable
   private Component parent;
@@ -90,6 +93,10 @@ public class JFrameBuilder {
 
     children.forEach(frame::add);
 
+    if (pack) {
+      frame.pack();
+    }
+    frame.setVisible(visible);
     return frame;
   }
 
@@ -163,6 +170,16 @@ public class JFrameBuilder {
    */
   public JFrameBuilder windowActivatedAction(final Runnable windowActivatedAction) {
     this.windowActivatedAction = windowActivatedAction;
+    return this;
+  }
+
+  public JFrameBuilder pack() {
+    this.pack = true;
+    return this;
+  }
+
+  public JFrameBuilder visible(final boolean visible) {
+    this.visible = visible;
     return this;
   }
 }
