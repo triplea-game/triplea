@@ -28,7 +28,12 @@ public class JButtonBuilder {
   private String toolTip;
   private Consumer<Component> clickAction;
   private boolean selected;
+  private boolean enabled = true;
   private int biggerFont;
+
+  public JButtonBuilder(final String title) {
+    this.title = title;
+  }
 
   private JButtonBuilder() {}
 
@@ -49,6 +54,7 @@ public class JButtonBuilder {
     Optional.ofNullable(toolTip).ifPresent(button::setToolTipText);
 
     button.setSelected(selected);
+    button.setEnabled(enabled);
 
     if (biggerFont > 0) {
       button.setFont(
@@ -141,6 +147,14 @@ public class JButtonBuilder {
    */
   public JButtonBuilder actionListener(final Consumer<Component> clickAction) {
     this.clickAction = checkNotNull(clickAction);
+    return this;
+  }
+
+  /**
+   * Sets whether the button can be clicked or not. By default buttons are enabled.
+   */
+  public JButtonBuilder enabled(final boolean enabled) {
+    this.enabled = enabled;
     return this;
   }
 }

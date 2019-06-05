@@ -75,6 +75,23 @@ public final class SwingAction {
   }
 
   /**
+   * Creates a swing abstract action.
+   *
+   * @param consumer The potentially nullable source of the event will be passed to the consumer
+   */
+  public static <T> AbstractAction of(final Consumer<T> consumer) {
+    return new AbstractAction() {
+      private static final long serialVersionUID = 611055501471099500L;
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        consumer.accept((T) e.getSource());
+      }
+    };
+  }
+
+  /**
    * Synchronously executes the specified action on the Swing event dispatch thread.
    *
    * <p>

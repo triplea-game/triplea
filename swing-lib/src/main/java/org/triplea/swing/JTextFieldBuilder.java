@@ -35,6 +35,7 @@ import lombok.NoArgsConstructor;
 public class JTextFieldBuilder {
 
   private String text;
+  private String toolTip;
   private Integer columns;
   private Integer maxLength;
 
@@ -64,6 +65,9 @@ public class JTextFieldBuilder {
 
     Optional.ofNullable(text)
         .ifPresent(textField::setText);
+
+    Optional.ofNullable(toolTip)
+        .ifPresent(textField::setToolTipText);
 
     textField.setEnabled(enabled);
     textField.setEditable(!readOnly);
@@ -163,6 +167,12 @@ public class JTextFieldBuilder {
    */
   public JTextFieldBuilder disabled() {
     this.enabled = false;
+    return this;
+  }
+
+  public JTextFieldBuilder toolTip(final String toolTip) {
+    Preconditions.checkArgument(toolTip != null && !toolTip.isEmpty());
+    this.toolTip = toolTip;
     return this;
   }
 }
