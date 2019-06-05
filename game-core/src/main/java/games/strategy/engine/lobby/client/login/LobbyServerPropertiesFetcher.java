@@ -22,7 +22,7 @@ import games.strategy.triplea.settings.GameSetting;
 public final class LobbyServerPropertiesFetcher {
 
   public static final int TEST_LOBBY_DEFAULT_PORT = 3304;
-  public static final int TEST_LOBBY_DEFAULT_HTTPS_PORT = 4567;
+  public static final int TEST_LOBBY_DEFAULT_HTTPS_PORT = 8080;
 
   private final BiFunction<String, Function<InputStream, LobbyServerProperties>,
       Optional<LobbyServerProperties>> fileDownloader;
