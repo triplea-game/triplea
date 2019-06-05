@@ -1,5 +1,7 @@
 package org.triplea.http.client;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URI;
@@ -16,10 +18,10 @@ import feign.Feign;
 import feign.Logger;
 import feign.Request;
 import feign.Response;
+import feign.Retryer;
 import feign.codec.Decoder;
-import feign.codec.Encoder;
 import feign.gson.GsonDecoder;
-import feign.gson.GsonEncoder;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
@@ -31,9 +33,9 @@ import lombok.extern.java.Log;
  */
 @Log
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
 
-  private static final Encoder gsonEncoder = new GsonEncoder();
   private static final Decoder gsonDecoder = new GsonDecoder();
   /**
    * How long we can take to start receiving a message.
@@ -49,15 +51,18 @@ public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
   @Nonnull
   private final URI hostUri;
 
+  private Integer maxAttempts = 3;
+
   @Override
   public ClientTypeT get() {
     Preconditions.checkNotNull(classType);
     Preconditions.checkNotNull(hostUri);
 
     return Feign.builder()
-        .encoder(gsonEncoder)
+        .encoder(new JsonEncoder())
         .decoder(gsonDecoder)
         .errorDecoder(HttpClient::errorDecoder)
+        .retryer(new Retryer.Default(100, SECONDS.toMillis(1), maxAttempts))
         .logger(new Logger() {
           @Override
           protected void log(final String configKey, final String format, final Object... args) {
