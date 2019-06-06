@@ -17,7 +17,7 @@ public class ModeratorToolboxTabsFactory {
         // .addTab("Bans", BansTab.buildTab(frame))
         .addTab("Bad Words", BadWordsTab.buildTab(badWordsTabActions(frame, moderatorToolboxClient)))
         // .addTab("Moderators", ModeratorsTab.buildTab(frame, new ModeratorsTabModel()))
-        .addTab("Event Log", EventLogTab.buildTab(new EventLogTabModel()))
+        .addTab("Event Log", EventLogTab.buildTab(new EventLogTabModel(moderatorToolboxClient)))
         .build();
   }
 

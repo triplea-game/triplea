@@ -17,7 +17,7 @@ import com.google.common.annotations.VisibleForTesting;
  * a success string result for most methods, otherwise the return value is any error message
  * returned back from the server.
  */
-public final class ModeratorToolboxClient {
+public class ModeratorToolboxClient {
 
   /**
    * Success string, any simple GET/POST method returning a string value other than this
