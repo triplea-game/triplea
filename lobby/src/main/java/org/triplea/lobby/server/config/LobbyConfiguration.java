@@ -3,6 +3,7 @@ package org.triplea.lobby.server.config;
 import org.triplea.lobby.server.EnvironmentVariable;
 import org.triplea.lobby.server.db.Database;
 import org.triplea.lobby.server.db.DatabaseDao;
+import org.triplea.lobby.server.db.DatabaseEnvironmentVariable;
 
 import lombok.Getter;
 
@@ -18,11 +19,11 @@ public final class LobbyConfiguration {
   public LobbyConfiguration() {
     port = Integer.valueOf(EnvironmentVariable.PORT.getValue());
     databaseDao = Database.builder()
-        .postgresDatabase(EnvironmentVariable.POSTGRES_DATABASE.getValue())
-        .postgresHost(EnvironmentVariable.POSTGRES_HOST.getValue())
-        .postgresPassword(EnvironmentVariable.POSTGRES_PASSWORD.getValue())
-        .postgresUser(EnvironmentVariable.POSTGRES_USER.getValue())
-        .postgresPort(Integer.valueOf(EnvironmentVariable.POSTGRES_PORT.getValue()))
+        .postgresDatabase(DatabaseEnvironmentVariable.POSTGRES_DATABASE.getValue())
+        .postgresHost(DatabaseEnvironmentVariable.POSTGRES_HOST.getValue())
+        .postgresPassword(DatabaseEnvironmentVariable.POSTGRES_PASSWORD.getValue())
+        .postgresUser(DatabaseEnvironmentVariable.POSTGRES_USER.getValue())
+        .postgresPort(Integer.valueOf(DatabaseEnvironmentVariable.POSTGRES_PORT.getValue()))
         .build()
         .newDatabaseDao();
   }

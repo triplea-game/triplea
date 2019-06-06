@@ -26,7 +26,9 @@ import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
+import games.strategy.engine.lobby.moderator.toolbox.ToolBoxWindow;
 import games.strategy.net.INode;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
 
 /**
@@ -117,6 +119,11 @@ public class LobbyFrame extends JFrame {
       textPane.setText(text);
       JOptionPane.showMessageDialog(null, textPane, "Player Info", JOptionPane.INFORMATION_MESSAGE);
     }));
+
+    if (ClientSetting.showBetaFeatures.getValue().orElse(false)) {
+      actions.add(
+          SwingAction.of("(Beta) Moderator Toolbox", e -> ToolBoxWindow.verifyApiKeyAndShowWindow(this)));
+    }
     return actions;
   }
 

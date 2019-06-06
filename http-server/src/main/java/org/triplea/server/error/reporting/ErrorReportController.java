@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.error.report.ErrorUploadResponse;
+import org.triplea.server.http.IpAddressExtractor;
 
 import lombok.Builder;
 
@@ -25,7 +26,6 @@ import lombok.Builder;
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/")
 public class ErrorReportController {
-
   @Nonnull
   private final Function<ErrorReportRequest, ErrorUploadResponse> errorReportIngestion;
   @Nonnull
@@ -42,19 +42,11 @@ public class ErrorReportController {
     }
 
     return errorReportIngestion.apply(ErrorReportRequest.builder()
-        .clientIp(extractClientIp(request))
+        .clientIp(IpAddressExtractor.extractClientIp(request))
         .errorReport(errorReport)
         .build());
   }
 
-  private String extractClientIp(final HttpServletRequest request) {
-    final String forwarded = request.getHeader("X-Forwarded-For");
-    if (forwarded != null) {
-      return forwarded;
-    }
-
-    return request.getRemoteHost();
-  }
 
   /**
    * Checks if the user has hit their rate limit for submitting error reports.
@@ -65,6 +57,6 @@ public class ErrorReportController {
   @GET
   @Path(ErrorUploadClient.CAN_REPORT_PATH)
   public boolean canSubmitErrorReport(@Context final HttpServletRequest request) {
-    return errorReportRateChecker.test(extractClientIp(request));
+    return errorReportRateChecker.test(IpAddressExtractor.extractClientIp(request));
   }
 }

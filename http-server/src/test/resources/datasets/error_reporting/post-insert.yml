@@ -1,3 +1,0 @@
-error_report_history:
-  - id:  "regex:\\d+" #any number
-    user_ip: second

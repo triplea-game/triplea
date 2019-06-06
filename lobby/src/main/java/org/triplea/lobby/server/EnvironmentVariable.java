@@ -7,17 +7,7 @@ import lombok.AllArgsConstructor;
 /** Class that represent OS environment variable keys with default values. */
 @AllArgsConstructor
 public enum EnvironmentVariable {
-  PORT("3304"),
-
-  POSTGRES_USER("postgres"),
-
-  POSTGRES_PASSWORD("postgres"),
-
-  POSTGRES_HOST("localhost"),
-
-  POSTGRES_PORT("5432"),
-
-  POSTGRES_DATABASE("lobby");
+  PORT("3304");
 
   private final String defaultValue;
 

@@ -11,8 +11,11 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JdbiDatabase {
+
   /**
-   * Creates a new connection to database.
+   * Creates a new connection to database. This connection should
+   * only be used by the TripleA Java Lobby. DropWizard will create
+   * a connection from configuration automatically.
    */
   public static Jdbi newConnection() {
     final Jdbi jdbi = Jdbi.create(
@@ -24,6 +27,15 @@ public final class JdbiDatabase {
         DatabaseEnvironmentVariable.POSTGRES_USER.getValue(),
         DatabaseEnvironmentVariable.POSTGRES_PASSWORD.getValue());
     jdbi.installPlugin(new SqlObjectPlugin());
+    registerRowMappers(jdbi);
     return jdbi;
+  }
+
+  /**
+   * Registers all JDBI row mappers. These are classes that map result set values to corresponding return objects.
+   */
+  public static void registerRowMappers(final Jdbi jdbi) {
+    jdbi.registerRowMapper(
+        ModeratorAuditHistoryItem.class, ModeratorAuditHistoryItem.moderatorAuditHistoryItemMapper());
   }
 }

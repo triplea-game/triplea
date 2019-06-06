@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
@@ -29,7 +30,7 @@ import lombok.extern.java.Log;
  */
 @Log
 public class JFrameBuilder {
-  private final Collection<Component> children = new ArrayList<>();
+  private final Collection<Function<JFrame, Component>> children = new ArrayList<>();
   private boolean escapeClosesWindow;
   private boolean alwaysOnTop;
   private boolean pack;
@@ -91,7 +92,7 @@ public class JFrameBuilder {
     Optional.ofNullable(parent).ifPresent(frame::setLocationRelativeTo);
     Optional.ofNullable(layoutManager).ifPresent(frame.getContentPane()::setLayout);
 
-    children.forEach(frame::add);
+    children.stream().map(component -> component.apply(frame)).forEach(frame::add);
 
     if (pack) {
       frame.pack();
@@ -153,6 +154,15 @@ public class JFrameBuilder {
    * Adds a component to the frame, can be called multiple times and will keep appending to the current frame.
    */
   public JFrameBuilder add(final Component componentToAdd) {
+    add(frame -> componentToAdd);
+    return this;
+  }
+
+  /**
+   * Adds a component to the frame. The function parameter provides a reference to the frame that will be
+   * created for the cases when for example the new component needs a 'parent-frame' reference.
+   */
+  public JFrameBuilder add(final Function<JFrame, Component> componentToAdd) {
     children.add(componentToAdd);
     return this;
   }
