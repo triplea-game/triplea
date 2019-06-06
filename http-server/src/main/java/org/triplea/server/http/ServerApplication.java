@@ -4,10 +4,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import lombok.extern.java.Log;
-import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.logging.LoggingFeature;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.reflect.BeanMapper;
 import org.triplea.lobby.server.db.JdbiDatabase;
@@ -23,6 +20,7 @@ import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import lombok.extern.java.Log;
 
 /**
  * Main entry-point for launching drop wizard HTTP server.
@@ -65,12 +63,12 @@ public class ServerApplication extends Application<AppConfig> {
   public void run(final AppConfig configuration, final Environment environment) {
     environment.jersey().register(new ClientExceptionMapper());
 
-    // logs JSON responses
-    environment.jersey().register(
-        new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),
-            Level.INFO,
-            LoggingFeature.Verbosity.PAYLOAD_ANY, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
-//    environment.jersey().register(new LoggingFeature(log, LoggingFeature.Verbosity.PAYLOAD_ANY));
+    if (configuration.isLogJsonResponse()) {
+      environment.jersey().register(
+          new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),
+              Level.INFO,
+              LoggingFeature.Verbosity.PAYLOAD_ANY, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+    }
 
     if (configuration.isProd()) {
       configuration.verifyProdEnvironmentVariables();

@@ -53,6 +53,10 @@ public class AppConfig extends Configuration {
   @Setter(onMethod_ = {@JsonProperty})
   private boolean prod;
 
+  @Getter(onMethod_ = {@JsonProperty})
+  @Setter(onMethod_ = {@JsonProperty})
+  private boolean logJsonResponse;
+
   @Valid
   @NotNull
   @JsonProperty
