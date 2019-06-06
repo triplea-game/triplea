@@ -7,12 +7,14 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 
 import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
+import org.triplea.server.http.IpAddressExtractor;
 import org.triplea.server.moderator.toolbox.api.key.validation.exception.ApiKeyVerificationLockOutException;
 import org.triplea.server.moderator.toolbox.api.key.validation.exception.IncorrectApiKeyException;
 
 import com.google.common.base.Preconditions;
 
 import lombok.Builder;
+import lombok.extern.java.Log;
 
 
 /**
@@ -20,6 +22,7 @@ import lombok.Builder;
  * address or against all IP address if there are too many failed attempts. It's important that when we do
  * rate-limiting we do not access database to help avoid a DDOS attack against the system.
  */
+@Log
 @Builder
 public class ApiKeyValidationService {
   @Nonnull
@@ -76,6 +79,7 @@ public class ApiKeyValidationService {
     }
 
     invalidKeyLockOut.recordInvalid(request);
+    log.warning("API key authentication failed for IP: " + IpAddressExtractor.extractClientIp(request));
     throw new IncorrectApiKeyException();
   }
 }

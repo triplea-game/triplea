@@ -23,7 +23,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeySecurityService;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 import com.google.common.collect.ImmutableList;
@@ -35,9 +34,7 @@ class BadWordsControllerTest {
   private static final List<String> BAD_WORD_LIST = ImmutableList.of("bad-word", "another-bad-word");
 
   @Mock
-  private ApiKeySecurityService apiKeySecurityService;
-  @Mock
-  private ApiKeyValidationService validationService;
+  private ApiKeyValidationService apiKeyValidationService;
   @Mock
   private BadWordsService badWordsService;
   @InjectMocks
@@ -91,6 +88,7 @@ class BadWordsControllerTest {
     final Response response = badWordsController.removeBadWord(servletRequest, TEST_VALUE);
 
     assertThat(response.getStatus(), is(400));
+    verify(apiKeyValidationService).verifyApiKey(httpServletRequest);
   }
 
   @Test

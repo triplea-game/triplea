@@ -3,8 +3,7 @@ package org.triplea.server.moderator.toolbox.bad.words;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.BadWordsDao;
 import org.triplea.lobby.server.db.ModeratorAuditHistoryDao;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeySecurityService;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationControllerFactory;
+import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationServiceFactory;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -17,12 +16,11 @@ public final class BadWordControllerFactory {
 
   public static BadWordsController badWordController(final Jdbi jdbi) {
     return BadWordsController.builder()
+        .apiKeyValidationService(ApiKeyValidationServiceFactory.apiKeyValidationService(jdbi))
         .badWordsService(
             new BadWordsService(
                 jdbi.onDemand(BadWordsDao.class),
                 jdbi.onDemand(ModeratorAuditHistoryDao.class)))
-        .apiKeySecurityService(new ApiKeySecurityService())
-        .apiKeyValidationService(ApiKeyValidationControllerFactory.apiKeyValidationService(jdbi))
         .build();
   }
 }
