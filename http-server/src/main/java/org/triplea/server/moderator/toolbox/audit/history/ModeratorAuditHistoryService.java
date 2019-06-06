@@ -9,7 +9,6 @@ import org.triplea.lobby.server.db.ModeratorAuditHistoryDao;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-// TODO: test-me
 class ModeratorAuditHistoryService {
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 

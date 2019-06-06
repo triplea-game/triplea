@@ -2,6 +2,10 @@ package org.triplea.server.moderator.toolbox.api.key.validation;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
+
+import com.google.common.base.Preconditions;
+
 /**
  * Verifies rate limiting to prevent brute-force cracking of moderator API key. This is done
  * by limiting number of bad tries by IP address per unit time and by limiting the number of bad
@@ -14,7 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 public class ApiKeySecurityService {
 
   // TODO: implement-me
-  public boolean allowValidation(final HttpServletRequest servletRequest) {
+  public boolean allowValidation(final HttpServletRequest request) {
+    Preconditions.checkArgument(request.getHeader(ModeratorToolboxClient.MODERATOR_API_KEY_HEADER) != null);
+
     return true;
   }
 }

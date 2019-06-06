@@ -15,6 +15,8 @@ import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeySecurityService;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
+import com.google.common.base.Preconditions;
+
 import lombok.Builder;
 
 /**
@@ -75,6 +77,7 @@ public class BadWordsController {
   @GET
   @Path(ModeratorToolboxClient.BAD_WORD_GET_PATH)
   public Response getBadWords(@Context final HttpServletRequest request) {
+
     if (!apiKeySecurityService.allowValidation(request)) {
       return ApiKeyValidationService.LOCK_OUT_RESPONSE;
     }

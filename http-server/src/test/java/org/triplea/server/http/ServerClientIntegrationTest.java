@@ -8,6 +8,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.moderator.toolbox.AddBadWordArgs;
+import org.triplea.http.client.moderator.toolbox.LookupModeratorEventsArgs;
+import org.triplea.http.client.moderator.toolbox.ModeratorEvent;
 import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
 import org.triplea.http.client.moderator.toolbox.RemoveBadWordArgs;
 import org.triplea.test.common.Integration;
@@ -120,5 +123,17 @@ class ServerClientIntegrationTest {
             .badWord(badWord)
             .build()),
         is(ModeratorToolboxClient.SUCCESS));
+  }
+
+  @Test
+  void lookupModeratorEvents() {
+    final List<ModeratorEvent> results =
+        moderatorToolboxClient.lookupModeratorEvents(LookupModeratorEventsArgs.builder()
+            .apiKey(moderatorApiKey)
+            .rowCount(10)
+            .rowStart(30)
+            .build());
+
+    assertThat(results, notNullValue());
   }
 }

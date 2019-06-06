@@ -24,7 +24,6 @@ import lombok.Builder;
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
 @Builder
-// TODO: test-me
 public class ModeratorAuditHistoryController {
   @Nonnull
   private final ApiKeySecurityService apiKeySecurityService;

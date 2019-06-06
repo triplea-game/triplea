@@ -19,8 +19,8 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public class ApiKeyValidationService {
-  public static final Response LOCK_OUT_RESPONSE = Response.status(401).entity("Request rejected").build();
-  public static final Response API_KEY_NOT_FOUND_RESPONSE = Response.status(403).entity("Invalid API key").build();
+  public static final Response LOCK_OUT_RESPONSE = Response.status(403).entity("Request rejected").build();
+  public static final Response API_KEY_NOT_FOUND_RESPONSE = Response.status(401).entity("Invalid API key").build();
 
   private final ApiKeyDao apiKeyDao;
 

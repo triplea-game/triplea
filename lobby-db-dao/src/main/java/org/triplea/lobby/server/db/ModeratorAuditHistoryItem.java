@@ -1,15 +1,15 @@
 package org.triplea.lobby.server.db;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.time.Instant;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
 public class ModeratorAuditHistoryItem {
   private Instant dateCreated;
