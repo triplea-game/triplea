@@ -12,7 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeySecurityService;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 import com.google.common.base.Preconditions;
@@ -30,62 +29,45 @@ public class BadWordsController {
   @Nonnull
   private final BadWordsService badWordsService;
   @Nonnull
-  private final ApiKeySecurityService apiKeySecurityService;
-  @Nonnull
   private final ApiKeyValidationService apiKeyValidationService;
 
   @POST
   @Path(ModeratorToolboxClient.BAD_WORD_REMOVE_PATH)
   public Response removeBadWord(@Context final HttpServletRequest request, final String word) {
-    if (!apiKeySecurityService.allowValidation(request)) {
-      return ApiKeyValidationService.LOCK_OUT_RESPONSE;
-    }
-    return apiKeyValidationService.lookupModeratorIdByApiKey(request)
-        .map(moderatorId -> badWordsService.removeBadWord(moderatorId, word)
-            ? Response
-                .status(200)
-                .entity(ModeratorToolboxClient.SUCCESS)
-                .build()
-            : Response
-                .status(400)
-                .entity(word + " was not removed, it may already have been deleted")
-                .build())
-        .orElse(ApiKeyValidationService.API_KEY_NOT_FOUND_RESPONSE);
+    Preconditions.checkArgument(word != null && !word.isEmpty());
+    final int moderatorId = apiKeyValidationService.lookupModeratorIdByApiKey(request);
+    return badWordsService.removeBadWord(moderatorId, word)
+        ? Response
+            .status(200)
+            .entity(ModeratorToolboxClient.SUCCESS)
+            .build()
+        : Response
+            .status(400)
+            .entity(word + " was not removed, it may already have been deleted")
+            .build();
   }
 
 
   @POST
   @Path(ModeratorToolboxClient.BAD_WORD_ADD_PATH)
   public Response addBadWord(@Context final HttpServletRequest request, final String word) {
-    if (!apiKeySecurityService.allowValidation(request)) {
-      return ApiKeyValidationService.LOCK_OUT_RESPONSE;
-    }
-
-    return apiKeyValidationService.lookupModeratorIdByApiKey(request)
-        .map(moderatorId -> badWordsService.addBadWord(moderatorId, word)
-            ? Response
-                .status(200)
-                .entity(ModeratorToolboxClient.SUCCESS)
-                .build()
-            : Response
-                .status(400)
-                .entity(word + " was not added, it may already have been added")
-                .build())
-        .orElse(ApiKeyValidationService.API_KEY_NOT_FOUND_RESPONSE);
+    Preconditions.checkArgument(word != null && !word.isEmpty());
+    final int moderatorId = apiKeyValidationService.lookupModeratorIdByApiKey(request);
+    return badWordsService.addBadWord(moderatorId, word)
+        ? Response
+            .status(200)
+            .entity(ModeratorToolboxClient.SUCCESS)
+            .build()
+        : Response
+            .status(400)
+            .entity(word + " was not added, it may already have been added")
+            .build();
   }
 
   @GET
   @Path(ModeratorToolboxClient.BAD_WORD_GET_PATH)
   public Response getBadWords(@Context final HttpServletRequest request) {
-
-    if (!apiKeySecurityService.allowValidation(request)) {
-      return ApiKeyValidationService.LOCK_OUT_RESPONSE;
-    }
-
-    if (!apiKeyValidationService.lookupModeratorIdByApiKey(request).isPresent()) {
-      return ApiKeyValidationService.API_KEY_NOT_FOUND_RESPONSE;
-    }
-
+    apiKeyValidationService.verifyApiKey(request);
     return Response.status(200).entity(badWordsService.getBadWords()).build();
   }
 }

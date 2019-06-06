@@ -8,7 +8,7 @@ import javax.ws.rs.ext.ExceptionMapper;
  * by http endpoint controllers to return HTTP status 400 codes.
  * Without this, those errors would be 500s.
  */
-class ClientExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
+class IllegalArgumentMapper implements ExceptionMapper<IllegalArgumentException> {
   @Override
   public Response toResponse(final IllegalArgumentException exception) {
     return Response

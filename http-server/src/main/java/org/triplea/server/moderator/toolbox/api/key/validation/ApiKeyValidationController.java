@@ -13,18 +13,12 @@ import lombok.AllArgsConstructor;
 @Path("")
 @AllArgsConstructor
 public class ApiKeyValidationController {
-  private final ApiKeySecurityService apiKeySecurityService;
   private final ApiKeyValidationService apiKeyValidationService;
 
   @POST
   @Path(ModeratorToolboxClient.VALIDATE_API_KEY_PATH)
   public Response validateApiKey(@Context final HttpServletRequest request) {
-    if (!apiKeySecurityService.allowValidation(request)) {
-      return ApiKeyValidationService.LOCK_OUT_RESPONSE;
-    }
-
-    return apiKeyValidationService.lookupModeratorIdByApiKey(request).isPresent()
-        ? Response.status(200).entity(ModeratorToolboxClient.SUCCESS).build()
-        : ApiKeyValidationService.API_KEY_NOT_FOUND_RESPONSE;
+    apiKeyValidationService.verifyApiKey(request);
+    return Response.status(200).entity(ModeratorToolboxClient.SUCCESS).build();
   }
 }

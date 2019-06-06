@@ -4,7 +4,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.BadWordsDao;
 import org.triplea.lobby.server.db.ModeratorAuditHistoryDao;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeySecurityService;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationFactory;
+import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationControllerFactory;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ public final class BadWordControllerFactory {
                 jdbi.onDemand(BadWordsDao.class),
                 jdbi.onDemand(ModeratorAuditHistoryDao.class)))
         .apiKeySecurityService(new ApiKeySecurityService())
-        .apiKeyValidationService(ApiKeyValidationFactory.apiKeyValidationService(jdbi))
+        .apiKeyValidationService(ApiKeyValidationControllerFactory.apiKeyValidationService(jdbi))
         .build();
   }
 }

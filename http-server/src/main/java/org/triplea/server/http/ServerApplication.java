@@ -1,6 +1,6 @@
 package org.triplea.server.http;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,9 +9,13 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.reflect.BeanMapper;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationFactory;
+import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationControllerFactory;
+import org.triplea.server.moderator.toolbox.api.key.validation.exception.ApiKeyVerificationLockOutMapper;
+import org.triplea.server.moderator.toolbox.api.key.validation.exception.IncorrectApiKeyMapper;
 import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
 import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
+
+import com.google.common.collect.ImmutableList;
 
 import io.dropwizard.Application;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
@@ -61,7 +65,9 @@ public class ServerApplication extends Application<AppConfig> {
 
   @Override
   public void run(final AppConfig configuration, final Environment environment) {
-    environment.jersey().register(new ClientExceptionMapper());
+    if (configuration.isProd()) {
+      configuration.verifyProdEnvironmentVariables();
+    }
 
     if (configuration.isLogJsonResponse()) {
       environment.jersey().register(
@@ -70,22 +76,35 @@ public class ServerApplication extends Application<AppConfig> {
               LoggingFeature.Verbosity.PAYLOAD_ANY, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
     }
 
-    if (configuration.isProd()) {
-      configuration.verifyProdEnvironmentVariables();
-    }
+    exceptionMappers()
+        .forEach(mapper -> environment.jersey().register(mapper));
 
-    final JdbiFactory factory = new JdbiFactory();
-    final Jdbi jdbi = factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
+    endPointControllers(configuration, environment)
+        .forEach(controller -> environment.jersey().register(controller));
+  }
 
-    JdbiDatabase.BEAN_MAPPER_CLASSES.forEach(mapperClass -> jdbi.registerRowMapper(BeanMapper.factory(mapperClass)));
 
-    // register all endpoint handlers here:
-    Arrays.asList(
-        ApiKeyValidationFactory.apiKeyValidationController(jdbi),
+  private List<Object> exceptionMappers() {
+    return ImmutableList.of(
+        new IllegalArgumentMapper(),
+        new IncorrectApiKeyMapper(),
+        new ApiKeyVerificationLockOutMapper());
+  }
+
+
+  private List<Object> endPointControllers(final AppConfig configuration, final Environment environment) {
+    final Jdbi jdbi = createJdbi(configuration, environment);
+    return ImmutableList.of(
+        ApiKeyValidationControllerFactory.apiKeyValidationController(jdbi),
         BadWordControllerFactory.badWordController(jdbi),
         ErrorReportControllerFactory.errorReportController(configuration, jdbi),
-        ModeratorAuditHistoryControllerFactory.moderatorAuditHistoryController(jdbi))
-        .forEach(
-            controller -> environment.jersey().register(controller));
+        ModeratorAuditHistoryControllerFactory.moderatorAuditHistoryController(jdbi));
+  }
+
+  private Jdbi createJdbi(final AppConfig configuration, final Environment environment) {
+    final JdbiFactory factory = new JdbiFactory();
+    final Jdbi jdbi = factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
+    JdbiDatabase.BEAN_MAPPER_CLASSES.forEach(mapperClass -> jdbi.registerRowMapper(BeanMapper.factory(mapperClass)));
+    return jdbi;
   }
 }

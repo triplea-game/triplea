@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 
 import org.triplea.http.client.moderator.toolbox.ModeratorEvent;
 import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeySecurityService;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 import com.google.common.base.Preconditions;
@@ -25,8 +24,6 @@ import lombok.Builder;
 @Produces(MediaType.APPLICATION_JSON)
 @Builder
 public class ModeratorAuditHistoryController {
-  @Nonnull
-  private final ApiKeySecurityService apiKeySecurityService;
   @Nonnull
   private final ApiKeyValidationService apiKeyValidationService;
   @Nonnull
@@ -41,13 +38,7 @@ public class ModeratorAuditHistoryController {
       @QueryParam(ModeratorToolboxClient.ROW_COUNT_PARAM) final Integer rowCount) {
     Preconditions.checkArgument(rowNumber != null);
     Preconditions.checkArgument(rowCount != null);
-
-    if (!apiKeySecurityService.allowValidation(request)) {
-      return ApiKeyValidationService.LOCK_OUT_RESPONSE;
-    }
-    if (!apiKeyValidationService.lookupModeratorIdByApiKey(request).isPresent()) {
-      return ApiKeyValidationService.API_KEY_NOT_FOUND_RESPONSE;
-    }
+    apiKeyValidationService.verifyApiKey(request);
 
     final List<ModeratorEvent> moderatorEvents =
         moderatorAuditHistoryService.lookupHistory(rowNumber, rowCount);

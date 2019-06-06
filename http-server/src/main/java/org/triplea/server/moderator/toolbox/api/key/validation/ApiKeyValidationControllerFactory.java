@@ -10,15 +10,12 @@ import lombok.NoArgsConstructor;
  * Factory class to create api key validation and security (rate-limiting) classes.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ApiKeyValidationFactory {
+public final class ApiKeyValidationControllerFactory {
 
-  // TODO: implement-me
-  public static ApiKeyValidationService apiKeyValidationService(final Jdbi jdbi) {
-    return new ApiKeyValidationService(jdbi.onDemand(ApiKeyDao.class));
-  }
+
 
   // TODO: implement-me
   public static ApiKeyValidationController apiKeyValidationController(final Jdbi jdbi) {
-    return new ApiKeyValidationController(new ApiKeySecurityService(), apiKeyValidationService(jdbi));
+    return new ApiKeyValidationController(ApiKeyValidationServiceFactory.apiKeyValidationService(jdbi));
   }
 }
