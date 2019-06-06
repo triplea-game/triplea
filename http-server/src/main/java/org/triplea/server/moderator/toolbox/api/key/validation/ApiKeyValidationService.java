@@ -71,7 +71,7 @@ public class ApiKeyValidationService {
     final Optional<Integer> lookupResult = apiKeyLookup.apply(apiKey);
 
     if (lookupResult.isPresent()) {
-      validKeyCache.recordValid(apiKey);
+      validKeyCache.recordValid(apiKey, lookupResult.get());
       return lookupResult.get();
     }
 

@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -86,7 +87,7 @@ class ApiKeyValidationServiceTest {
 
     assertThat(apiKeyValidationService.lookupModeratorIdByApiKey(httpServletRequest), is(MODERATOR_ID));
 
-    verify(validKeyCache).recordValid(API_KEY);
+    verify(validKeyCache).recordValid(API_KEY, MODERATOR_ID);
     verify(invalidKeyLockOut, never()).recordInvalid(any());
   }
 
@@ -99,7 +100,7 @@ class ApiKeyValidationServiceTest {
 
     assertThat(apiKeyValidationService.lookupModeratorIdByApiKey(httpServletRequest), is(MODERATOR_ID));
 
-    verify(validKeyCache, never()).recordValid(any());
+    verify(validKeyCache, never()).recordValid(any(), anyInt());
     verify(invalidKeyLockOut).recordInvalid(httpServletRequest);
   }
 }

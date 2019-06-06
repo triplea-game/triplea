@@ -3,8 +3,6 @@ package org.triplea.server.moderator.toolbox.api.key.validation;
 
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * A cache where we will remember valid API keys. If we are in lock-out mode, then we'll use this cache
  * to remember already validated API keys and will not lock-out authenticated API keys that are in the cache.
@@ -13,9 +11,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 class ValidKeyCache {
   Optional<Integer> get(final String apiKey) {
-    
+    return Optional.empty();
   }
 
-  void recordValid(final String apiKey) {
+  void recordValid(final String apiKey, final int moderatorId) {
+
   }
 }
