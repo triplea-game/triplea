@@ -3,10 +3,14 @@ package org.triplea.http.client.moderator.toolbox;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 
 import java.net.URI;
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -19,6 +23,7 @@ import org.triplea.http.client.HttpClientTesting;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.google.gson.Gson;
 
 import lombok.Builder;
 import ru.lanwen.wiremock.ext.WiremockResolver;
@@ -29,9 +34,22 @@ import ru.lanwen.wiremock.ext.WiremockUriResolver;
     WiremockUriResolver.class
 })
 class ModeratorToolboxFeignClientTest {
-
   private static final String SUCCESS_JSON = "SUCCESS";
   private static final String INPUT_JSON = "word";
+
+  private static final ModeratorEvent EVENT_1 = ModeratorEvent.builder()
+      .date(Instant.now())
+      .actionTarget("Malaria is a cloudy pin.")
+      .moderatorAction("Jolly roger, real pin. go to puerto rico.")
+      .moderatorName("All parrots loot rainy, stormy fish.")
+      .build();
+
+  private static final ModeratorEvent EVENT_2 = ModeratorEvent.builder()
+      .date(Instant.now().minusSeconds(1000L))
+      .actionTarget("Strength is a gutless tuna.")
+      .moderatorAction("Doubloons travel with booty at the stormy madagascar!")
+      .moderatorName("The son crushes with life, love the lighthouse.")
+      .build();
 
   private static final Map<String, Object> headerMap;
 
@@ -97,9 +115,9 @@ class ModeratorToolboxFeignClientTest {
   }
 
   @Test
-  void getBadWords(@WiremockResolver.Wiremock final WireMockServer server) {
-    final ModeratorToolboxFeignClient client = newClient(server);
-    stubForGetBadWods(server);
+  void getBadWords(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
+    final ModeratorToolboxFeignClient client = newClient(wireMockServer);
+    stubForGetBadWods(wireMockServer);
 
     assertThat(
         client.getBadWords(headerMap),
@@ -116,10 +134,29 @@ class ModeratorToolboxFeignClientTest {
                     .withBody("[ \"value\", \"value2\" ]")));
   }
 
+  @Test
+  void lookupAuditHistory(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
+    wireMockServer.stubFor(
+        WireMock.get(ModeratorToolboxClient.AUDIT_HISTORY_PATH + "?rowStart=3&rowCount=10")
+            .withHeader(HEADER_KEY, equalTo(HEADER_VALUE))
+            .withQueryParam("rowStart", equalTo("3"))
+            .withQueryParam("rowCount", equalTo("10"))
+            .willReturn(
+                WireMock.aResponse()
+                    .withStatus(200)
+                    .withBody(new Gson().toJson(Arrays.asList(EVENT_1, EVENT_2)))));
+
+    final List<ModeratorEvent> results = newClient(wireMockServer)
+        .lookupModeratorEvents(headerMap, 3, 10);
+
+    assertThat(results, hasSize(2));
+    assertThat(results.get(0), is(EVENT_1));
+    assertThat(results.get(1), is(EVENT_2));
+  }
 
   @Test
-  void verifyErrorHandling(@WiremockResolver.Wiremock final WireMockServer server) {
-    final ModeratorToolboxFeignClient client = newClient(server);
+  void verifyErrorHandling(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
+    final ModeratorToolboxFeignClient client = newClient(wireMockServer);
 
     asList(
         ErrorHandlingArg.builder()
@@ -141,9 +178,14 @@ class ModeratorToolboxFeignClientTest {
             .path(ModeratorToolboxClient.BAD_WORD_REMOVE_PATH)
             .requestType(HttpClientTesting.RequestType.POST)
             .serviceCall(uri -> client.removeBadWord(new HashMap<>(), "word"))
+            .build(),
+        ErrorHandlingArg.builder()
+            .path(ModeratorToolboxClient.AUDIT_HISTORY_PATH)
+            .requestType(HttpClientTesting.RequestType.GET)
+            .serviceCall(uri -> client.lookupModeratorEvents(new HashMap<>(), 0, 1))
             .build())
                 .forEach(arg -> HttpClientTesting.verifyErrorHandling(
-                    server,
+                    wireMockServer,
                     arg.path,
                     arg.requestType,
                     arg.serviceCall));

@@ -1,5 +1,6 @@
 package org.triplea.lobby.server.db;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -60,4 +61,13 @@ public interface ModeratorAuditHistoryDao {
       @Bind("moderatorId") int moderatorId,
       @Bind("actionName") String actionName,
       @Bind("actionTarget") String actionTarget);
+
+  @SqlQuery("select h.date_created, u.username, h.action_name, h.action_target\n"
+      + "from moderator_action_history h \n"
+      + "join lobby_user u on u.id = h.lobby_user_id\n"
+      + "order by h.date_created desc\n"
+      + "offset :rowOffset rows\n"
+      + "fetch next :rowCount rows only")
+  List<ModeratorAuditHistoryItem> lookupHistoryItems(
+      @Bind("rowOffset") int rowOffset, @Bind("rowCount") int rowCount);
 }

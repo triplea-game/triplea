@@ -2,13 +2,14 @@ package games.strategy.engine.lobby.moderator.toolbox.tabs;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+
+import lombok.AllArgsConstructor;
+import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
 
 
-
+@AllArgsConstructor
 public class EventLogTabModel {
-  private Consumer<String> eventLogListener;
-
+  private final ModeratorToolboxClient moderatorToolboxClient;
 
   static List<String> getEventLogTableHeaders() {
     return Arrays.asList("Date", "Moderator", "Action", "Value");

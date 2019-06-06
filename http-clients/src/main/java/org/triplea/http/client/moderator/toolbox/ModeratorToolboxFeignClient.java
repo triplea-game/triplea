@@ -7,6 +7,7 @@ import org.triplea.http.client.HttpConstants;
 
 import feign.HeaderMap;
 import feign.Headers;
+import feign.Param;
 import feign.RequestLine;
 
 /**
@@ -40,4 +41,11 @@ interface ModeratorToolboxFeignClient {
   @RequestLine("GET " + ModeratorToolboxClient.BAD_WORD_GET_PATH)
   @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   List<String> getBadWords(@HeaderMap Map<String, Object> headerMap);
+
+  @RequestLine("GET " + ModeratorToolboxClient.AUDIT_HISTORY_PATH + "?rowStart={rowStart}&rowCount={rowCount}")
+  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
+  List<ModeratorEvent> lookupModeratorEvents(
+      @HeaderMap Map<String, Object> headerMap,
+      @Param("rowStart") int rowStart,
+      @Param("rowCount") int rowCount);
 }

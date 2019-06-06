@@ -1,6 +1,8 @@
 package org.triplea.server.http;
 
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.mapper.reflect.BeanMapper;
+import org.triplea.http.client.moderator.toolbox.ModeratorEvent;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationFactory;
 import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
@@ -59,6 +61,8 @@ public class ServerApplication extends Application<AppConfig> {
 
     final JdbiFactory factory = new JdbiFactory();
     final Jdbi jdbi = factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
+
+    jdbi.registerRowMapper(BeanMapper.factory(ModeratorEvent.class));
 
     // register all endpoint handlers here:
     environment.jersey().register(ErrorReportControllerFactory.errorReportController(configuration, jdbi));

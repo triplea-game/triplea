@@ -1,6 +1,7 @@
 package org.triplea.lobby.server.db;
 
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.mapper.reflect.BeanMapper;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import lombok.AccessLevel;
@@ -24,6 +25,8 @@ public final class JdbiDatabase {
         DatabaseEnvironmentVariable.POSTGRES_USER.getValue(),
         DatabaseEnvironmentVariable.POSTGRES_PASSWORD.getValue());
     jdbi.installPlugin(new SqlObjectPlugin());
+
+    jdbi.registerRowMapper(BeanMapper.factory(ModeratorAuditHistoryItem.class));
     return jdbi;
   }
 }

@@ -29,6 +29,7 @@ public final class ModeratorToolboxClient {
   public static final String BAD_WORD_ADD_PATH = "/moderator-toolbox/bad-words/add";
   public static final String BAD_WORD_REMOVE_PATH = "/moderator-toolbox/bad-words/remove";
   public static final String BAD_WORD_GET_PATH = "/moderator-toolbox/bad-words/get";
+  public static final String AUDIT_HISTORY_PATH = "/moderator-toolbox/audit-history/lookup";
   public static final String MODERATOR_API_KEY_HEADER = "moderator-api-key";
 
   private final ModeratorToolboxFeignClient client;
@@ -94,5 +95,19 @@ public final class ModeratorToolboxClient {
     checkArgument(apiKey != null && !apiKey.isEmpty());
 
     return client.getBadWords(createHeaders(apiKey));
+  }
+
+  /**
+   * Method to lookup moderator audit history events with paging.
+   */
+  public List<ModeratorEvent> lookupModeratorEvents(final LookupModeratorEventsArgs lookupModeratorEventsArgs) {
+    checkArgument(!lookupModeratorEventsArgs.getApiKey().isEmpty());
+    checkArgument(lookupModeratorEventsArgs.getRowStart() >= 0);
+    checkArgument(lookupModeratorEventsArgs.getRowCount() >= 1);
+
+    return client.lookupModeratorEvents(
+        createHeaders(lookupModeratorEventsArgs.getApiKey()),
+        lookupModeratorEventsArgs.getRowStart(),
+        lookupModeratorEventsArgs.getRowCount());
   }
 }

@@ -25,7 +25,7 @@ class EventLogTab {
 
   private static JTable eventLogTable(final EventLogTabModel eventLogTabModel) {
     return JTableBuilder.builder()
-        .columnNames(eventLogTabModel.getEventLogTableHeaders())
+        .columnNames(EventLogTabModel.getEventLogTableHeaders())
         .tableData(eventLogTabModel.getEventLogTableData())
         .build();
   }
