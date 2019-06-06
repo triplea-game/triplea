@@ -1,10 +1,19 @@
 package org.triplea.server.http;
 
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import lombok.extern.java.Log;
+import org.glassfish.jersey.filter.LoggingFilter;
+import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.reflect.BeanMapper;
-import org.triplea.http.client.moderator.toolbox.ModeratorEvent;
+import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationFactory;
+import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
 import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
 
 import io.dropwizard.Application;
@@ -21,6 +30,7 @@ import io.dropwizard.setup.Environment;
  * registering resources (controllers) and injecting those resources
  * with configuration properties from 'AppConfig'.
  */
+@Log
 public class ServerApplication extends Application<AppConfig> {
 
   private static final String[] DEFAULT_ARGS =
@@ -55,6 +65,13 @@ public class ServerApplication extends Application<AppConfig> {
   public void run(final AppConfig configuration, final Environment environment) {
     environment.jersey().register(new ClientExceptionMapper());
 
+    // logs JSON responses
+    environment.jersey().register(
+        new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),
+            Level.INFO,
+            LoggingFeature.Verbosity.PAYLOAD_ANY, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
+//    environment.jersey().register(new LoggingFeature(log, LoggingFeature.Verbosity.PAYLOAD_ANY));
+
     if (configuration.isProd()) {
       configuration.verifyProdEnvironmentVariables();
     }
@@ -62,11 +79,15 @@ public class ServerApplication extends Application<AppConfig> {
     final JdbiFactory factory = new JdbiFactory();
     final Jdbi jdbi = factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
 
-    jdbi.registerRowMapper(BeanMapper.factory(ModeratorEvent.class));
+    JdbiDatabase.BEAN_MAPPER_CLASSES.forEach(mapperClass -> jdbi.registerRowMapper(BeanMapper.factory(mapperClass)));
 
     // register all endpoint handlers here:
-    environment.jersey().register(ErrorReportControllerFactory.errorReportController(configuration, jdbi));
-    environment.jersey().register(BadWordControllerFactory.badWordController(jdbi));
-    environment.jersey().register(ApiKeyValidationFactory.apiKeyValidationController(jdbi));
+    Arrays.asList(
+        ApiKeyValidationFactory.apiKeyValidationController(jdbi),
+        BadWordControllerFactory.badWordController(jdbi),
+        ErrorReportControllerFactory.errorReportController(configuration, jdbi),
+        ModeratorAuditHistoryControllerFactory.moderatorAuditHistoryController(jdbi))
+        .forEach(
+            controller -> environment.jersey().register(controller));
   }
 }

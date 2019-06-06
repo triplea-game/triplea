@@ -1,5 +1,6 @@
 package org.triplea.server.error.reporting;
 
+import java.time.Clock;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -12,9 +13,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.error.report.ErrorUploadResponse;
+import org.triplea.http.client.github.issues.GithubIssueClient;
+import org.triplea.lobby.server.db.ErrorReportingDao;
+import org.triplea.server.http.AppConfig;
+
+import com.google.common.base.Preconditions;
 
 import lombok.Builder;
 
@@ -25,7 +32,6 @@ import lombok.Builder;
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/")
 public class ErrorReportController {
-
   @Nonnull
   private final Function<ErrorReportRequest, ErrorUploadResponse> errorReportIngestion;
   @Nonnull

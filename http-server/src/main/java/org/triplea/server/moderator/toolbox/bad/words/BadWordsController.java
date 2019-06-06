@@ -22,6 +22,7 @@ import lombok.Builder;
  */
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 @Builder
 public class BadWordsController {
   @Nonnull
@@ -33,8 +34,6 @@ public class BadWordsController {
 
   @POST
   @Path(ModeratorToolboxClient.BAD_WORD_REMOVE_PATH)
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   public Response removeBadWord(@Context final HttpServletRequest request, final String word) {
     if (!apiKeySecurityService.allowValidation(request)) {
       return ApiKeyValidationService.LOCK_OUT_RESPONSE;
@@ -55,8 +54,6 @@ public class BadWordsController {
 
   @POST
   @Path(ModeratorToolboxClient.BAD_WORD_ADD_PATH)
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   public Response addBadWord(@Context final HttpServletRequest request, final String word) {
     if (!apiKeySecurityService.allowValidation(request)) {
       return ApiKeyValidationService.LOCK_OUT_RESPONSE;
@@ -77,8 +74,6 @@ public class BadWordsController {
 
   @GET
   @Path(ModeratorToolboxClient.BAD_WORD_GET_PATH)
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   public Response getBadWords(@Context final HttpServletRequest request) {
     if (!apiKeySecurityService.allowValidation(request)) {
       return ApiKeyValidationService.LOCK_OUT_RESPONSE;

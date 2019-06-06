@@ -42,10 +42,12 @@ interface ModeratorToolboxFeignClient {
   @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   List<String> getBadWords(@HeaderMap Map<String, Object> headerMap);
 
-  @RequestLine("GET " + ModeratorToolboxClient.AUDIT_HISTORY_PATH + "?rowStart={rowStart}&rowCount={rowCount}")
+  @RequestLine("GET " + ModeratorToolboxClient.AUDIT_HISTORY_PATH
+      + "?" + ModeratorToolboxClient.ROW_START_PARAM + "={" + ModeratorToolboxClient.ROW_START_PARAM  + "}"
+      + "&" + ModeratorToolboxClient.ROW_COUNT_PARAM + "={" + ModeratorToolboxClient.ROW_COUNT_PARAM + "}")
   @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   List<ModeratorEvent> lookupModeratorEvents(
       @HeaderMap Map<String, Object> headerMap,
-      @Param("rowStart") int rowStart,
-      @Param("rowCount") int rowCount);
+      @Param(ModeratorToolboxClient.ROW_START_PARAM) int rowStart,
+      @Param(ModeratorToolboxClient.ROW_COUNT_PARAM) int rowCount);
 }

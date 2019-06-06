@@ -15,9 +15,11 @@ class EventLogTab {
   static Component buildTab(final EventLogTabModel eventLogTabModel) {
     final JTable dataTable = eventLogTable(eventLogTabModel);
     final JButton loadMoreButton = loadMoreButton(dataTable, eventLogTabModel);
+    final JButton refreshButton = refreshButton(dataTable, eventLogTabModel);
 
     return JPanelBuilder.builder()
         .border(30)
+        .addNorth(refreshButton)
         .addCenter(SwingComponents.newJScrollPane(dataTable))
         .addSouth(loadMoreButton)
         .build();
@@ -27,6 +29,13 @@ class EventLogTab {
     return JTableBuilder.builder()
         .columnNames(EventLogTabModel.getEventLogTableHeaders())
         .tableData(eventLogTabModel.getEventLogTableData())
+        .build();
+  }
+
+  private static JButton refreshButton(final JTable table, final EventLogTabModel eventLogTabModel) {
+    return JButtonBuilder.builder()
+        .title("Refresh")
+        .actionListener(() -> JTableBuilder.setData(table, eventLogTabModel.getEventLogTableData()))
         .build();
   }
 

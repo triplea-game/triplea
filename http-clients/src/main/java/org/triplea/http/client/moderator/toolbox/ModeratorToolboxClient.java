@@ -7,7 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import feign.HeaderMap;
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
 import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.HttpConstants;
 import org.triplea.http.client.HttpInteractionException;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -31,6 +36,9 @@ public class ModeratorToolboxClient {
   public static final String BAD_WORD_GET_PATH = "/moderator-toolbox/bad-words/get";
   public static final String AUDIT_HISTORY_PATH = "/moderator-toolbox/audit-history/lookup";
   public static final String MODERATOR_API_KEY_HEADER = "moderator-api-key";
+
+  public static final String ROW_START_PARAM = "rowStart";
+  public static final String ROW_COUNT_PARAM = "rowCount";
 
   private final ModeratorToolboxFeignClient client;
 

@@ -20,7 +20,6 @@ import feign.Request;
 import feign.Response;
 import feign.Retryer;
 import feign.codec.Decoder;
-import feign.gson.GsonDecoder;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -36,7 +35,7 @@ import lombok.extern.java.Log;
 @AllArgsConstructor
 public class HttpClient<ClientTypeT> implements Supplier<ClientTypeT> {
 
-  private static final Decoder gsonDecoder = new GsonDecoder();
+  private static final Decoder gsonDecoder = JsonDecoder.gsonDecoder();
   /**
    * How long we can take to start receiving a message.
    */

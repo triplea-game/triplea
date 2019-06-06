@@ -1,7 +1,16 @@
 package org.triplea.http.client;
 
 import java.lang.reflect.Type;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import feign.RequestTemplate;
 import feign.codec.Encoder;
 import feign.gson.GsonEncoder;
@@ -20,6 +29,11 @@ public class JsonEncoder implements Encoder {
     if (bodyType.getTypeName().equals(String.class.getName())) {
       template.body(object.toString());
     } else {
+//      Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
+//      template.body(gson.toJson(object, bodyType));
+//
+//
+//
       gsonEncoder.encode(object, bodyType, template);
     }
   }
