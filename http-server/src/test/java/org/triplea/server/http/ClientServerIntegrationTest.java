@@ -39,7 +39,7 @@ import io.dropwizard.testing.DropwizardTestSupport;
 @Integration
 @DataSet("integration.yml")
 @ExtendWith(DBUnitExtension.class)
-class ServerClientIntegrationTest {
+class ClientServerIntegrationTest {
   private static final URI LOCALHOST = URI.create("http://localhost:8080");
 
   private static final DropwizardTestSupport<AppConfig> SUPPORT =
@@ -57,6 +57,8 @@ class ServerClientIntegrationTest {
       SUPPORT.before();
     } catch (final Exception e) {
       // ignore server is already started
+      // This is here to support an already running server to be integration tested.
+      // Some care should be taken to ensure the server is restarted when/as expected.
     }
     moderatorToolboxClient = ModeratorToolboxClient.newClient(LOCALHOST);
     errorUploadClient = ErrorUploadClient.newClient(LOCALHOST);

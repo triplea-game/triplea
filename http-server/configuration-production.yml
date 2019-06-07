@@ -4,6 +4,7 @@ githubApiToken: ${GITHUB_API_TOKEN}
 # this is to help guarantee that we do not accidently use test configuration in prod.
 prod: true
 logRequestAndResponses: false
+logSqlStatements: false
 
 database:
   driverClass: org.postgresql.Driver

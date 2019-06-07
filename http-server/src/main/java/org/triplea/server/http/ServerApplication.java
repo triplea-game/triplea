@@ -102,7 +102,10 @@ public class ServerApplication extends Application<AppConfig> {
     final JdbiFactory factory = new JdbiFactory();
     final Jdbi jdbi = factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
     JdbiDatabase.registerRowMappers(jdbi);
-    JdbiDatabase.registerSqlLogger(jdbi);
+
+    if (configuration.isLogSqlStatements()) {
+      JdbiDatabase.registerSqlLogger(jdbi);
+    }
     return jdbi;
   }
 }

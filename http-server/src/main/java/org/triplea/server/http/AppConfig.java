@@ -78,6 +78,10 @@ public class AppConfig extends Configuration {
   @Setter(onMethod_ = {@JsonProperty})
   private boolean logRequestAndResponses;
 
+  @Getter(onMethod_ = {@JsonProperty})
+  @Setter(onMethod_ = {@JsonProperty})
+  private boolean logSqlStatements;
+
   @Valid
   @NotNull
   @JsonProperty

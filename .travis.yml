@@ -1,4 +1,4 @@
-dist: xenial 
+dist: xenial
 sudo: false
 language: java
 matrix:
@@ -15,6 +15,8 @@ addons:
 install:
  - echo "create database lobby" | psql -h localhost -U postgres
  - ./gradlew flywayMigrate
+ # launch http server so that logged output will be displayed. This is to support eventual integration
+ # testing of client/server interactions and allow for debugging in case of problems.
  - ./gradlew shadowJar
  - "java -jar http-server/build/libs/triplea-http-server-1.10.dev.jar server ./http-server/configuration-prerelease.yml &"
 before_script:
