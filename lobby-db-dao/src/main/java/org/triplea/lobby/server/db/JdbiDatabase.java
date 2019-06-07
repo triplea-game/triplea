@@ -47,6 +47,9 @@ public final class JdbiDatabase {
         ModeratorAuditHistoryItem.class, ModeratorAuditHistoryItem.moderatorAuditHistoryItemMapper());
   }
 
+  /**
+   * Adds a logger to JDBI that will log SQL statements before they are executed.
+   */
   public static void registerSqlLogger(final Jdbi jdbi) {
     jdbi.setSqlLogger(new SqlLogger() {
       @Override
