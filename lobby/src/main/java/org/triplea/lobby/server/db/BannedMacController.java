@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 class BannedMacController implements BannedMacDao {
 
   private final Supplier<Connection> connection;
+  private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
   @Override
   public void addBannedMac(final User bannedUser, final @Nullable Instant banTill, final User moderator) {
@@ -59,7 +60,7 @@ class BannedMacController implements BannedMacDao {
     } catch (final SQLException e) {
       throw new DatabaseException("Error inserting banned mac: " + bannedUser.getHashedMacAddress(), e);
     }
-    new ModeratorAuditHistoryController(connection).addAuditRecord(
+    moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .moderatorName(moderator.getUsername())
             .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_MAC)
