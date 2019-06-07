@@ -44,8 +44,7 @@ The following project-specific Docker images, which may be useful during develop
 
 Connect to localhost database:
 ```bash
-psql -h localhost -U postgres
-\c lobby
+psql -h localhost -U postgres lobby
 ```
 
 Copy/paste below to reset data and create a moderator user with password 'password' 
