@@ -1,14 +1,21 @@
 package org.triplea.lobby.server.db;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.SqlLogger;
+import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
 /**
  * Utility to get connections to the Postgres lobby database.
  */
+@Log
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JdbiDatabase {
 
@@ -28,6 +35,7 @@ public final class JdbiDatabase {
         DatabaseEnvironmentVariable.POSTGRES_PASSWORD.getValue());
     jdbi.installPlugin(new SqlObjectPlugin());
     registerRowMappers(jdbi);
+    registerSqlLogger(jdbi);
     return jdbi;
   }
 
@@ -37,5 +45,24 @@ public final class JdbiDatabase {
   public static void registerRowMappers(final Jdbi jdbi) {
     jdbi.registerRowMapper(
         ModeratorAuditHistoryItem.class, ModeratorAuditHistoryItem.moderatorAuditHistoryItemMapper());
+  }
+
+  public static void registerSqlLogger(final Jdbi jdbi) {
+    jdbi.setSqlLogger(new SqlLogger() {
+      @Override
+      public void logBeforeExecution(final StatementContext context) {
+        log.info("Executing SQL: " + context.getRawSql());
+      }
+
+      @Override
+      public void logAfterExecution(final StatementContext context) {
+
+      }
+
+      @Override
+      public void logException(final StatementContext context, final SQLException ex) {
+        log.log(Level.SEVERE, "Exception executing SQL: " + context.getRawSql(), ex);
+      }
+    });
   }
 }

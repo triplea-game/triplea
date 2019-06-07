@@ -56,7 +56,7 @@ class ServerClientIntegrationTest {
     try {
       SUPPORT.before();
     } catch (final Exception e) {
-      // ignore
+      // ignore server is already started
     }
     moderatorToolboxClient = ModeratorToolboxClient.newClient(LOCALHOST);
     errorUploadClient = ErrorUploadClient.newClient(LOCALHOST);
