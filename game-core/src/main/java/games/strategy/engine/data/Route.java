@@ -43,7 +43,6 @@ import games.strategy.triplea.delegate.Matches;
  */
 public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
-  private static final List<Territory> EMPTY_TERRITORY_LIST = Collections.emptyList();
 
   private final List<Territory> steps = new ArrayList<>();
   private @Nullable Territory start;
@@ -251,20 +250,19 @@ public class Route implements Serializable, Iterable<Territory> {
    * Returns collection of all territories in this route, without the start.
    */
   public List<Territory> getSteps() {
-    if (numberOfSteps() > 0) {
-      return new ArrayList<>(steps);
-    }
-    return EMPTY_TERRITORY_LIST;
+
+    return numberOfSteps() > 0
+        ? steps
+        : new ArrayList<>();
   }
 
   /**
    * Returns collection of all territories in this route without the start or the end.
    */
   public List<Territory> getMiddleSteps() {
-    if (numberOfSteps() > 1) {
-      return new ArrayList<>(steps).subList(0, numberOfSteps() - 1);
-    }
-    return EMPTY_TERRITORY_LIST;
+    return numberOfSteps() > 1
+        ? new ArrayList<>(steps).subList(0, numberOfSteps() - 1)
+        : new ArrayList<>();
   }
 
   /**

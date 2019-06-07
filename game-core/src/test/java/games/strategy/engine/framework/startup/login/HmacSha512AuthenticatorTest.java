@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Nested;
@@ -165,7 +166,7 @@ final class HmacSha512AuthenticatorTest {
     @Test
     void shouldThrowExceptionWhenResponseDoesNotContainDigest() throws Exception {
       final Map<String, String> challenge = HmacSha512Authenticator.newChallenge();
-      final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
+      final Map<String, String> response = new HashMap<>(HmacSha512Authenticator.newResponse(PASSWORD, challenge));
 
       response.remove(ResponsePropertyNames.DIGEST);
 

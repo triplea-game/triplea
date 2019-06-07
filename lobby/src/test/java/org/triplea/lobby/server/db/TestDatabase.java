@@ -5,27 +5,29 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-final class TestDatabase {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-  private TestDatabase() {}
 
-  static Connection newConnection() {
-    try {
-      final Connection connection =
-          DriverManager.getConnection(getConnectionUrl(), getConnectionProperties());
-      connection.setAutoCommit(false);
-      return connection;
-    } catch (final SQLException e) {
-      throw new RuntimeException(e);
-    }
-  }
+/**
+ * Utility class for creating DB connections in test.
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class TestDatabase {
+  private static final String CONNECTION_URL = String.format(
+      "jdbc:postgresql://%s:%d/%s",
+      "localhost",
+      5432,
+      "lobby");
 
-  private static String getConnectionUrl() {
-    return String.format(
-        "jdbc:postgresql://%s:%d/%s",
-        "localhost",
-        5432,
-        "lobby");
+  /**
+   * Creates a new DB connection to localhost.
+   */
+  public static Connection newConnection() throws SQLException {
+    final Connection connection =
+        DriverManager.getConnection(CONNECTION_URL, getConnectionProperties());
+    connection.setAutoCommit(false);
+    return connection;
   }
 
   private static Properties getConnectionProperties() {

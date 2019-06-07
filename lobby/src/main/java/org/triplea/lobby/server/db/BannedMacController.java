@@ -60,7 +60,6 @@ class BannedMacController implements BannedMacDao {
     } catch (final SQLException e) {
       throw new DatabaseException("Error inserting banned mac: " + bannedUser.getHashedMacAddress(), e);
     }
-
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .moderatorName(moderator.getUsername())

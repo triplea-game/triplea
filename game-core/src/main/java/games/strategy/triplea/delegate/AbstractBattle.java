@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
+import com.google.common.collect.ImmutableList;
+
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -113,12 +115,13 @@ abstract class AbstractBattle implements IBattle {
     if (headless) {
       return Collections.emptyList();
     } else if (targets.stream().noneMatch(Matches.unitCanTransport())) {
-      return new ArrayList<>();
+      return Collections.emptyList();
     }
-    return targets.stream()
-        .map(TransportTracker::transportingAndUnloaded)
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
+    return ImmutableList.copyOf(
+        targets.stream()
+            .map(TransportTracker::transportingAndUnloaded)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList()));
   }
 
   /**

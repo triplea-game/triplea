@@ -185,16 +185,24 @@ public final class LobbyLoginValidator implements ILoginValidator {
         if (hashedPassword.isBcrypted()) {
           if (database.getUserDao().login(username, new HashedPassword(pass))) {
             if (legacyHashedPassword != null && database.getUserDao().getLegacyPassword(username).value.isEmpty()) {
-              database.getUserDao().updateUser(database.getUserDao().getUserByName(username),
+              final DBUser dbUser = database.getUserDao().getUserByName(username);
+              database.getUserDao().updateUser(
+                  dbUser.getName(),
+                  dbUser.getEmail(),
                   new HashedPassword(legacyHashedPassword));
-              database.getUserDao().updateUser(database.getUserDao().getUserByName(username),
+              database.getUserDao().updateUser(
+                  dbUser.getName(),
+                  dbUser.getEmail(),
                   new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get())));
             }
             return null;
           }
           return errorMessage;
         } else if (database.getUserDao().login(username, new HashedPassword(legacyHashedPassword))) {
-          database.getUserDao().updateUser(database.getUserDao().getUserByName(username),
+          final DBUser dbUser = database.getUserDao().getUserByName(username);
+          database.getUserDao().updateUser(
+              dbUser.getName(),
+              dbUser.getEmail(),
               new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get())));
           return null;
         } else {
@@ -248,10 +256,10 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return rsaAuthenticator.decryptPasswordForAction(response, pass -> {
         final HashedPassword newPass = new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get()));
         if (password.isHashedWithSalt()) {
-          database.getUserDao().createUser(dbUser, password);
-          database.getUserDao().updateUser(dbUser, newPass);
+          database.getUserDao().createUser(dbUser.getName(), dbUser.getEmail(), password);
+          database.getUserDao().updateUser(dbUser.getName(), dbUser.getEmail(), newPass);
         } else {
-          database.getUserDao().createUser(dbUser, newPass);
+          database.getUserDao().createUser(dbUser.getName(), dbUser.getEmail(), newPass);
         }
         return null;
       });
@@ -261,7 +269,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     }
 
     try {
-      database.getUserDao().createUser(dbUser, password);
+      database.getUserDao().createUser(dbUser.getName(), dbUser.getEmail(), password);
       return null;
     } catch (final Exception e) {
       return e.getMessage();

@@ -20,6 +20,8 @@ import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.SwingAction;
 
+import com.google.common.collect.ImmutableList;
+
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatMessagePanel;
 import games.strategy.engine.chat.ChatPlayerPanel;
@@ -124,7 +126,7 @@ public class LobbyFrame extends JFrame {
       actions.add(
           SwingAction.of("(Beta) Moderator Toolbox", e -> ToolBoxWindow.verifyApiKeyAndShowWindow(this)));
     }
-    return actions;
+    return ImmutableList.copyOf(actions);
   }
 
   private boolean confirm(final String question) {

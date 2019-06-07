@@ -38,6 +38,7 @@ import org.triplea.swing.SwingAction;
 import org.triplea.util.Version;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatController;
@@ -555,7 +556,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         localPlayerMappings.put(player, localPlayerTypes.getOrDefault(player, defaultLocalType));
       }
     }
-    return localPlayerMappings;
+    return ImmutableMap.copyOf(localPlayerMappings);
   }
 
   /**
