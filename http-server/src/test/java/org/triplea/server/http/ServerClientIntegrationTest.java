@@ -52,7 +52,12 @@ class ServerClientIntegrationTest {
 
   @BeforeAll
   static void beforeClass() {
-    SUPPORT.before();
+
+    try {
+      SUPPORT.before();
+    } catch (final Exception e) {
+      // ignore
+    }
     moderatorToolboxClient = ModeratorToolboxClient.newClient(LOCALHOST);
     errorUploadClient = ErrorUploadClient.newClient(LOCALHOST);
   }

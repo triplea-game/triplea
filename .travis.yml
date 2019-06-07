@@ -17,6 +17,8 @@ addons:
 install:
  - echo "create database lobby" | psql -h localhost -U postgres
  - ./gradlew flywayMigrate
+ - ./gradlew shadowJar
+ - "java -jar http-server/build/libs/triplea-http-server-1.10.dev.jar server ./http-server/configuration-prerelease.yml &"
 before_script:
 - ./.travis/setup_gpg
 - ./.travis/setup_gradle
