@@ -8,7 +8,7 @@ matrix:
   - jdk: openjdk11
     env: TRIPLEA_RELEASE=false
 addons:
-  postgresql: "9.5"
+  postgresql: "10"
   apt:
     packages:
       # python for map file splitter
