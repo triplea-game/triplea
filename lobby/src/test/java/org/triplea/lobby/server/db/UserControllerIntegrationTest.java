@@ -52,8 +52,11 @@ final class UserControllerIntegrationTest {
 
   @Test
   void testCreateDupe() {
+    final DBUser user = newUserWithMd5CryptHash();
     assertThrows(Exception.class,
-        () -> controller.createUser(newUserWithMd5CryptHash(),
+        () -> controller.createUser(
+            user.getName(),
+            user.getEmail(),
             new HashedPassword(md5Crypt(TestUserUtils.newUniqueTimestamp()))),
         "Should not be allowed to create a dupe user");
   }
@@ -62,7 +65,7 @@ final class UserControllerIntegrationTest {
   void testLogin() {
     final String password = md5Crypt(TestUserUtils.newUniqueTimestamp());
     final DBUser user = newUserWithHash(password, Function.identity());
-    controller.updateUser(user, new HashedPassword(bcrypt(obfuscate(password))));
+    controller.updateUser(user.getName(), user.getEmail(), new HashedPassword(bcrypt(obfuscate(password))));
     assertTrue(controller.login(user.getName(), new HashedPassword(password)));
     assertTrue(controller.login(user.getName(), new HashedPassword(obfuscate(password))));
   }
@@ -74,10 +77,12 @@ final class UserControllerIntegrationTest {
     final String password2 = md5Crypt("foo");
     final String email2 = "foo@foo.foo";
     controller.updateUser(
-        new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
+        user.getName(),
+        email2,
         new HashedPassword(bcrypt(obfuscate(TestUserUtils.newUniqueTimestamp()))));
     controller.updateUser(
-        new DBUser(new DBUser.UserName(user.getName()), new DBUser.UserEmail(email2)),
+        user.getName(),
+        email2,
         new HashedPassword(password2));
     try (Connection con = TestDatabase.newConnection()) {
       final String sql = " select * from lobby_user where username = '" + user.getName() + "'";
@@ -102,7 +107,7 @@ final class UserControllerIntegrationTest {
     final DBUser user = new DBUser(
         new DBUser.UserName(name),
         new DBUser.UserEmail(name + "@none.none"));
-    controller.createUser(user, new HashedPassword(hashingMethod.apply(password)));
+    controller.createUser(user.getName(), user.getEmail(), new HashedPassword(hashingMethod.apply(password)));
     return user;
   }
 

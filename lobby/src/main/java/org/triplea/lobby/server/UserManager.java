@@ -38,7 +38,9 @@ final class UserManager implements IUserManager {
     final HashedPassword password = new HashedPassword(hashedPassword);
 
     try {
-      database.getUserDao().updateUser(user,
+      database.getUserDao().updateUser(
+          user.getName(),
+          user.getEmail(),
           password.isHashedWithSalt() ? password : new HashedPassword(BCrypt.hashpw(hashedPassword, BCrypt.gensalt())));
     } catch (final IllegalStateException e) {
       return e.getMessage();

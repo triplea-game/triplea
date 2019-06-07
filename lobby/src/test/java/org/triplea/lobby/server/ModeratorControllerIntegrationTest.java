@@ -6,7 +6,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,7 +19,6 @@ import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserDao;
 import org.triplea.test.common.Integration;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
@@ -42,23 +40,22 @@ class ModeratorControllerIntegrationTest {
   }
 
   @BeforeEach
-  void setUp() throws UnknownHostException {
+  void setUp() throws Exception {
     moderatorController = new ModeratorController(
         serverMessenger, null, TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao());
     final String adminName = TestUserUtils.newUniqueTimestamp();
-
-    final DBUser dbUser = new DBUser(new DBUser.UserName(adminName), new DBUser.UserEmail("n@n.n"), DBUser.Role.ADMIN);
+    final String email = "n@n.n";
 
     final UserDao userController = TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getUserDao();
-    userController.createUser(dbUser, new HashedPassword(BCrypt.hashpw(adminName, BCrypt.gensalt())));
-    userController.makeAdmin(dbUser);
+    userController.createUser(adminName, email, new HashedPassword(BCrypt.hashpw(adminName, BCrypt.gensalt())));
+    UserDaoTestSupport.makeAdmin(adminName);
 
     adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
     when(serverMessenger.getPlayerMac(adminName)).thenReturn(newHashedMacAddress());
   }
 
   @Test
-  void testBoot() throws UnknownHostException {
+  void testBoot() throws Exception {
     MessageContext.setSenderNodeForThread(adminNode);
     connectionChangeListener = new ConnectionChangeListener();
     final INode booted = new Node("foo", InetAddress.getByAddress(new byte[] {1, 2, 3, 4}), 0);

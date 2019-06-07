@@ -185,31 +185,33 @@ final class LobbyLoginValidatorTest {
     }
 
     final void thenUserShouldBeCreatedWithMd5CryptedPassword() {
-      verify(userDao).createUser(dbUser, new HashedPassword(md5Crypt(PASSWORD)));
+      verify(userDao).createUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void thenUserShouldBeUpdatedWithBcryptedPassword() {
-      verify(userDao).updateUser(dbUser, new HashedPassword(bcrypt(PASSWORD)));
+      verify(userDao).updateUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(bcrypt(PASSWORD)));
     }
 
     final void thenUserShouldBeUpdatedWithMd5CryptedPassword() {
-      verify(userDao).updateUser(dbUser, new HashedPassword(md5Crypt(PASSWORD)));
+      verify(userDao).updateUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void thenUserShouldNotBeCreated() {
-      verify(userDao, never()).createUser(any(DBUser.class), any(HashedPassword.class));
+      verify(userDao, never()).createUser(any(), any(), any());
     }
 
     final void thenUserShouldNotBeUpdatedWithBcryptedPassword() {
-      verify(userDao, never()).updateUser(eq(dbUser), argThat(HashedPassword::isBcrypted));
+      verify(userDao, never())
+          .updateUser(eq(dbUser.getName()), eq(dbUser.getEmail()), argThat(HashedPassword::isBcrypted));
     }
 
     final void thenUserShouldNotBeUpdatedWithMd5CryptedPassword() {
-      verify(userDao, never()).updateUser(eq(dbUser), argThat(HashedPassword::isMd5Crypted));
+      verify(userDao, never())
+          .updateUser(eq(dbUser.getName()), eq(dbUser.getEmail()), argThat(HashedPassword::isMd5Crypted));
     }
 
     final void thenUserShouldNotBeUpdated() {
-      verify(userDao, never()).updateUser(any(DBUser.class), any(HashedPassword.class));
+      verify(userDao, never()).updateUser(any(), any(), any());
     }
   }
 
