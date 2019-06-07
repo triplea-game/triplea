@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
 import games.strategy.engine.data.Unit;
 
 /**
@@ -85,7 +87,7 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
     if (index == -1) {
       return Collections.emptyList();
     }
-    return new ArrayList<>(unresolvedUnitsList.get(index));
+    return ImmutableList.copyOf(unresolvedUnitsList.get(index));
   }
 
   public String getDisallowedUnitWarning(final int index) {

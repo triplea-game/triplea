@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import org.triplea.java.collections.CollectionUtils;
 
+import com.google.common.collect.ImmutableList;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -203,7 +205,7 @@ public final class ProTransportUtils {
   public static List<Unit> findBestUnitsToLandTransport(final Unit unit, final Territory t,
       final List<Unit> usedUnits) {
     if (usedUnits.contains(unit)) {
-      return new ArrayList<>();
+      return Collections.emptyList();
     }
     final PlayerId player = unit.getOwner();
     final List<Unit> units = t.getUnitCollection().getMatches(Matches.unitIsOwnedBy(player)
@@ -225,7 +227,7 @@ public final class ProTransportUtils {
           .thenComparing(getDecreasingAttackComparator(player)));
       results.addAll(selectUnitsToTransportFromList(unit, units));
     }
-    return results;
+    return ImmutableList.copyOf(results);
   }
 
   private static Comparator<Unit> getDecreasingAttackComparator(final PlayerId player) {

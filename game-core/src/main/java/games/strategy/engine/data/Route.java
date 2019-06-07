@@ -20,6 +20,8 @@ import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
+import com.google.common.collect.ImmutableList;
+
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -252,7 +254,7 @@ public class Route implements Serializable, Iterable<Territory> {
    */
   public List<Territory> getSteps() {
     if (numberOfSteps() > 0) {
-      return new ArrayList<>(steps);
+      return ImmutableList.copyOf(steps);
     }
     return EMPTY_TERRITORY_LIST;
   }

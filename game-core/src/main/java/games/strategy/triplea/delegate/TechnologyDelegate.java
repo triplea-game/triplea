@@ -15,6 +15,8 @@ import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
+import com.google.common.collect.ImmutableList;
+
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -391,7 +393,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       }
     }
     bridge.getHistoryWriter().startEvent("Rolls to resolve tech hits:" + MyFormatter.asDice(random));
-    return newAdvances;
+    return ImmutableList.copyOf(newAdvances);
   }
 
   private List<TechAdvance> getAvailableAdvances() {
