@@ -20,8 +20,6 @@ import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
-import com.google.common.collect.ImmutableList;
-
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -253,20 +251,19 @@ public class Route implements Serializable, Iterable<Territory> {
    * Returns collection of all territories in this route, without the start.
    */
   public List<Territory> getSteps() {
-    if (numberOfSteps() > 0) {
-      return ImmutableList.copyOf(steps);
-    }
-    return EMPTY_TERRITORY_LIST;
+
+    return numberOfSteps() > 0
+        ? steps
+        : new ArrayList<>();
   }
 
   /**
    * Returns collection of all territories in this route without the start or the end.
    */
   public List<Territory> getMiddleSteps() {
-    if (numberOfSteps() > 1) {
-      return new ArrayList<>(steps).subList(0, numberOfSteps() - 1);
-    }
-    return EMPTY_TERRITORY_LIST;
+    return numberOfSteps() > 1
+        ? new ArrayList<>(steps).subList(0, numberOfSteps() - 1)
+        : new ArrayList<>();
   }
 
   /**
