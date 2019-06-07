@@ -1,3 +1,5 @@
 extraction:
   java:
-    java_version: 11
+    index:
+      java_version: 11
+
