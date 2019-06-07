@@ -28,6 +28,8 @@ import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
+import com.google.common.collect.ImmutableList;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
@@ -669,7 +671,7 @@ public class MovePanel extends AbstractMovePanel {
     final Collection<Unit> allUnits = getFirstSelectedTerritory().getUnits();
     final List<Unit> candidateUnits = CollectionUtils.getMatches(allUnits, getUnloadableMatch(route, unitsToUnload));
     if (unitsToUnload.size() == candidateUnits.size()) {
-      return unitsToUnload;
+      return ImmutableList.copyOf(unitsToUnload);
     }
     final List<Unit> candidateTransports =
         CollectionUtils.getMatches(allUnits, Matches.unitIsTransportingSomeCategories(candidateUnits));
@@ -684,14 +686,14 @@ public class MovePanel extends AbstractMovePanel {
 
     // Just one transport, don't bother to ask
     if (candidateTransports.size() == 1) {
-      return unitsToUnload;
+      return ImmutableList.copyOf(unitsToUnload);
     }
 
     // Are the transports all of the same type and if they are, then don't ask
     final Collection<UnitCategory> categories =
         UnitSeparator.categorize(candidateTransports, mustMoveWithDetails.getMustMoveWith(), true, false);
     if (categories.size() == 1) {
-      return unitsToUnload;
+      return ImmutableList.copyOf(unitsToUnload);
     }
     sortTransportsToUnload(candidateTransports, route);
 
@@ -815,7 +817,7 @@ public class MovePanel extends AbstractMovePanel {
         }
       }
     }
-    return selectedUnitsToUnload;
+    return ImmutableList.copyOf(selectedUnitsToUnload);
   }
 
   private Predicate<Unit> getUnloadableMatch(final Route route, final Collection<Unit> units) {

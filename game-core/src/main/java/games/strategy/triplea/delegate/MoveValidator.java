@@ -17,6 +17,8 @@ import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 
+import com.google.common.collect.ImmutableMap;
+
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ResourceCollection;
@@ -1410,7 +1412,7 @@ public class MoveValidator {
       alliedAir.removeAll(carrying);
       mapping.put(carrier, carrying);
     }
-    return mapping;
+    return ImmutableMap.copyOf(mapping);
   }
 
   private static Collection<Unit> getCanCarry(final Unit carrier, final Collection<Unit> selectFrom,

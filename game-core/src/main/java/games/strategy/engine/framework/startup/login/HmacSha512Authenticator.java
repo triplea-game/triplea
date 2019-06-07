@@ -103,9 +103,10 @@ final class HmacSha512Authenticator {
     }
 
     try {
-      return Maps.newHashMap(ImmutableMap.<String, String>builder()
-          .put(encodeProperty(ResponsePropertyNames.DIGEST, digest(password, salt, nonce)))
-          .build());
+      return ImmutableMap.copyOf(
+          Maps.newHashMap(ImmutableMap.<String, String>builder()
+              .put(encodeProperty(ResponsePropertyNames.DIGEST, digest(password, salt, nonce)))
+              .build()));
     } catch (final GeneralSecurityException e) {
       throw new AuthenticationException("security framework failure when creating response", e);
     }
