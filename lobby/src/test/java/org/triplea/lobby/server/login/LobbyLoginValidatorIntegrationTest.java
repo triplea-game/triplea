@@ -27,7 +27,6 @@ import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.test.common.Integration;
 import org.triplea.util.Md5Crypt;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
 
@@ -73,9 +72,7 @@ class LobbyLoginValidatorIntegrationTest {
     TestLobbyConfigurations.INTEGRATION_TEST
         .getDatabaseDao()
         .getUserDao()
-        .createUser(
-            new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(EMAIL)),
-            password);
+        .createUser(name, EMAIL, password);
   }
 
   @SuppressWarnings("deprecation") // required for testing; remove upon next lobby-incompatible release

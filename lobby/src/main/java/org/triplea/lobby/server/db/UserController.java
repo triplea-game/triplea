@@ -64,27 +64,25 @@ final class UserController implements UserDao {
   }
 
   @Override
-  public void updateUser(final DBUser user, final HashedPassword hashedPassword) {
-    Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
-
+  public void updateUser(final String name, final String email, final HashedPassword hashedPassword) {
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(
             String.format("update lobby_user set %s=?, email=? where username=?", getPasswordColumn(hashedPassword)))) {
       ps.setString(1, hashedPassword.value);
-      ps.setString(2, user.getEmail());
-      ps.setString(3, user.getName());
+      ps.setString(2, email);
+      ps.setString(3, name);
       ps.execute();
       if (!hashedPassword.isBcrypted()) {
         try (PreparedStatement ps2 =
             con.prepareStatement("update lobby_user set bcrypt_password = null where username=?")) {
-          ps2.setString(1, user.getName());
+          ps2.setString(1, name);
           ps2.execute();
         }
       }
       con.commit();
     } catch (final SQLException e) {
       throw new DatabaseException(String.format("Error updating name: %s, email: %s, (masked) pwd: %s",
-          user.getName(), user.getEmail(), hashedPassword.mask()), e);
+          name, email, hashedPassword.mask()), e);
     }
   }
 
@@ -96,43 +94,23 @@ final class UserController implements UserDao {
     return hashedPassword.isBcrypted() ? "bcrypt_password" : "password";
   }
 
-  /**
-   * A method similar to update user, used by tests only.
-   * Does only affect the admin state of the given user.
-   * The DB is updated with user.isAdmin()
-   */
-  @Override
-  public void makeAdmin(final DBUser user) {
-    Preconditions.checkArgument(user.isValid(), user.getValidationErrorMessage());
-
-    try (Connection con = connection.get();
-        PreparedStatement ps = con.prepareStatement("update lobby_user set admin = ? where username = ?")) {
-      ps.setBoolean(1, user.isAdmin());
-      ps.setString(2, user.getName());
-      ps.execute();
-      con.commit();
-    } catch (final SQLException e) {
-      throw new DatabaseException(String.format("Error while trying to make %s an admin", user.getName()), e);
-    }
-  }
 
   @Override
-  public void createUser(final DBUser user, final HashedPassword hashedPassword) {
+  public void createUser(final String name, final String email, final HashedPassword hashedPassword) {
     Preconditions.checkState(hashedPassword.isHashedWithSalt());
-    Preconditions.checkState(user.isValid(), user.getValidationErrorMessage());
 
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(
             "insert into lobby_user (username, password, bcrypt_password, email) values (?, ?, ?, ?)")) {
-      ps.setString(1, user.getName());
+      ps.setString(1, name);
       ps.setString(2, hashedPassword.isBcrypted() ? null : hashedPassword.value);
       ps.setString(3, hashedPassword.isBcrypted() ? hashedPassword.value : null);
-      ps.setString(4, user.getEmail());
+      ps.setString(4, email);
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
       throw new DatabaseException(String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
-          user.getName(), user.getEmail(), hashedPassword.mask()), e);
+          name, email, hashedPassword.mask()), e);
     }
   }
 

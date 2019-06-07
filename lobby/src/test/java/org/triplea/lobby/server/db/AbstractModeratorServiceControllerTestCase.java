@@ -17,8 +17,6 @@ import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 import org.triplea.util.Md5Crypt;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
-
 /**
  * Superclass for fixtures that test a moderator service controller.
  */
@@ -27,18 +25,15 @@ public abstract class AbstractModeratorServiceControllerTestCase {
   protected final User user = newUser();
   protected final User moderator = newUser();
 
-  protected AbstractModeratorServiceControllerTestCase() {}
-
 
   /**
    * Creates a new unique user.
    */
-  protected static User newUser() {
+  private static User newUser() {
     final User user = TestUserUtils.newUser();
     TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getUserDao().createUser(
-        new DBUser(
-            new DBUser.UserName(user.getUsername()),
-            new DBUser.UserEmail("email@email.com")),
+        user.getUsername(),
+        "email@email.com",
         new HashedPassword(Md5Crypt.hash("pass", "salt")));
     return user;
   }
@@ -54,7 +49,7 @@ public abstract class AbstractModeratorServiceControllerTestCase {
    *        for the user.
    * @param unknownUserMessage The failure message to be used when the requested user does not exist.
    */
-  protected void assertUserEquals(
+  void assertUserEquals(
       final User expected,
       final String userQuerySql,
       final ThrowingConsumer<PreparedStatement, SQLException> preparedStatementInitializer,

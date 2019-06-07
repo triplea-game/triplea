@@ -19,13 +19,11 @@ public interface UserDao {
 
   boolean doesUserExist(String username);
 
-  void updateUser(DBUser user, HashedPassword password);
+  void updateUser(String name, String email, HashedPassword password);
 
-  void createUser(DBUser user, HashedPassword password);
+  void createUser(String name, String email, HashedPassword password);
 
   boolean login(String username, HashedPassword password);
 
   DBUser getUserByName(String username);
-
-  void makeAdmin(DBUser dbUser);
 }
