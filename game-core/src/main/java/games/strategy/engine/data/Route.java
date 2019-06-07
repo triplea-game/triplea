@@ -43,7 +43,6 @@ import games.strategy.triplea.delegate.Matches;
  */
 public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
-  private static final List<Territory> EMPTY_TERRITORY_LIST = Collections.emptyList();
 
   private final List<Territory> steps = new ArrayList<>();
   private @Nullable Territory start;
