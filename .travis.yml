@@ -3,10 +3,8 @@ sudo: false
 language: java
 matrix:
   include:
-  - jdk: oraclejdk8
-    env: TRIPLEA_RELEASE=true
   - jdk: openjdk11
-    env: TRIPLEA_RELEASE=false
+    env: TRIPLEA_RELEASE=true
 addons:
   postgresql: "9.5"
   apt:

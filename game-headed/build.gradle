@@ -25,6 +25,7 @@ dependencies {
     implementation project(':java-extras')
     implementation project(':swing-lib')
     implementation 'org.pushing-pixels:radiance-substance:1.0.2'
+    implementation 'org.openjfx:javafx:11'
 
     testImplementation project(':test-common')
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
@@ -51,9 +52,8 @@ task downloadPlatformInstallerAssets(group: 'release') {
             'icons/triplea_icon_64_64.png',
             'icons/triplea_icon_128_128.png',
             'icons/triplea_icon_256_256.png',
-            'install4j/macosx-amd64-1.8.0_144.tar.gz',
-            'install4j/windows-amd64-1.8.0_144.tar.gz',
-            'install4j/windows-x86-1.8.0_144.tar.gz'
+            'install4j/macosx-amd64-11.0.3.tar.gz',
+            'install4j/windows-amd64-11.0.3.tar.gz',
         ].each { path ->
             download {
                 src "https://raw.githubusercontent.com/triplea-game/assets/master/$path"
@@ -94,7 +94,6 @@ task release(group: 'release', dependsOn: [portableInstaller, platformInstallers
         publishArtifacts(portableInstaller.outputs.files + [
             file("$releasesDir/TripleA_${version}_macos.dmg"),
             file("$releasesDir/TripleA_${version}_unix.sh"),
-            file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
             file("$releasesDir/TripleA_${version}_windows-64bit.exe")
         ])
     }

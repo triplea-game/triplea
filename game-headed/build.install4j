@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="7.0.9" transformSequenceNumber="7">
   <directoryPresets config=".triplea-root" />
-  <application name="TripleA" distributionSourceDir="" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.fullName}_${compiler:sys.version}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="true" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="false" shrinkRuntime="true" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="http://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" backupOnSave="false" autoSave="true" convertDotsToUnderscores="false" macSignature="????" macVolumeId="af9346379363d40e" javaMinVersion="1.8" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="">
+  <application name="TripleA" distributionSourceDir="" applicationId="5251-3669-9623-1649" mediaDir="build/releases" mediaFilePattern="${compiler:sys.fullName}_${compiler:sys.version}_${compiler:sys.platform}" compression="9" lzmaCompression="true" pack200Compression="true" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="false" shrinkRuntime="true" shortName="TripleA" publisher="TripleA Developer Team" publisherWeb="http://triplea-game.org" version="${compiler:sys.version}" allPathsRelative="true" backupOnSave="false" autoSave="true" convertDotsToUnderscores="false" macSignature="????" macVolumeId="af9346379363d40e" javaMinVersion="11" javaMaxVersion="" allowBetaVM="true" jdkMode="jdk" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
       <additionalLanguages />
@@ -1497,7 +1497,7 @@ return true;</string>
               <group name="" id="339" customizedId="" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" enabled="true" commentSet="false" comment="" actionElevationType="inherit" useExternalParametrization="true" externalParametrizationName="Customize title bar" externalParametrizationMode="include">
                 <serializedBean>
                   <java class="java.beans.XMLDecoder">
-                    <object class="com.install4j.runtime.beans.groups.VerticalFormComponentGroup">
+                    <object class="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" id="VerticalFormComponentGroup0">
                       <void property="backgroundColor">
                         <object class="java.awt.Color">
                           <int>255</int>
@@ -1527,19 +1527,21 @@ return true;</string>
                           <string>icon:${installer:sys.installerApplicationMode}_header.png</string>
                         </object>
                       </void>
+                      <void id="Integer0" property="cellSpacing" />
+                      <void id="Integer1" property="borderWidth" />
                       <void property="imageInsets">
                         <object class="java.awt.Insets">
-                          <int>0</int>
+                          <object idref="Integer0" />
                           <int>5</int>
-                          <int>1</int>
-                          <int>1</int>
+                          <object idref="Integer1" />
+                          <object idref="Integer1" />
                         </object>
                       </void>
                       <void property="insets">
                         <object class="java.awt.Insets">
-                          <int>0</int>
+                          <object idref="Integer0" />
                           <int>20</int>
-                          <int>0</int>
+                          <object idref="Integer0" />
                           <int>10</int>
                         </object>
                       </void>
@@ -1621,16 +1623,17 @@ return true;</string>
               <group name="" id="343" customizedId="" beanClass="com.install4j.runtime.beans.groups.HorizontalFormComponentGroup" enabled="true" commentSet="false" comment="" actionElevationType="inherit" useExternalParametrization="false" externalParametrizationName="" externalParametrizationMode="all">
                 <serializedBean>
                   <java class="java.beans.XMLDecoder">
-                    <object class="com.install4j.runtime.beans.groups.HorizontalFormComponentGroup">
+                    <object class="com.install4j.runtime.beans.groups.HorizontalFormComponentGroup" id="HorizontalFormComponentGroup0">
                       <void property="alignFirstLabel">
                         <boolean>false</boolean>
                       </void>
+                      <void id="Integer0" property="cellSpacing" />
                       <void property="insets">
                         <object class="java.awt.Insets">
                           <int>3</int>
-                          <int>5</int>
+                          <object idref="Integer0" />
                           <int>8</int>
-                          <int>5</int>
+                          <object idref="Integer0" />
                         </object>
                       </void>
                     </object>
@@ -1717,7 +1720,7 @@ return true;</string>
     </styles>
   </installerGui>
   <mediaSets>
-    <windows name="Windows 32 bit" id="90" customizedId="" mediaFileName="${compiler:sys.fullName}_${compiler:sys.version}_windows-32bit" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="build/assets/install4j/windows-x86-1.8.0_144.tar.gz" manualJREEntry="true" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/windows-x86-1.8.0_144.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" customInstallBaseDir="" contentFilesType="1" verifyIntegrity="true">
+    <windows name="Windows 64 bit" id="87" customizedId="" mediaFileName="${compiler:sys.fullName}_${compiler:sys.version}_windows-64bit" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="64" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="build/assets/install4j/windows-amd64-11.0.3.tar.gz" manualJREEntry="true" bundleType="1" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/windows-amd64-11.0.3.tar.gz" jreShared="false" directDownload="true" installOnlyIfNecessary="false" customInstallBaseDir="" contentFilesType="1" verifyIntegrity="true">
       <excludedComponents />
       <includedDownloadableComponents />
       <excludedLaunchers />
@@ -1730,20 +1733,7 @@ return true;</string>
         <customAttributes />
       </autoUpdate>
     </windows>
-    <windows name="Windows 64 bit" id="87" customizedId="" mediaFileName="${compiler:sys.fullName}_${compiler:sys.version}_windows-64bit" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="64" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="build/assets/install4j/windows-amd64-1.8.0_144.tar.gz" manualJREEntry="true" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/windows-amd64-1.8.0_144.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" customInstallBaseDir="" contentFilesType="1" verifyIntegrity="true">
-      <excludedComponents />
-      <includedDownloadableComponents />
-      <excludedLaunchers />
-      <excludedBeans />
-      <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
-      <exclude />
-      <variables />
-      <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
-        <commentFiles />
-        <customAttributes />
-      </autoUpdate>
-    </windows>
-    <macos name="Mac OS X" id="35" customizedId="" mediaFileName="" installDir="${compiler:sys.fullName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="build/assets/install4j/macosx-amd64-1.8.0_144.tar.gz" manualJREEntry="true" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/macosx-amd64-1.8.0_144.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" requiredVmIdPrefix="" customInstallBaseDir="" contentFilesType="1" installerName="${i18n:InstallerName(${compiler:sys.fullName})}" volumeName="${compiler:sys.shortName}" compressDmg="true" launcherId="33">
+    <macos name="Mac OS X" id="35" customizedId="" mediaFileName="" installDir="${compiler:sys.fullName}" overridePrincipalLanguage="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="build/assets/install4j/macosx-amd64-11.0.3.tar.gz" manualJREEntry="true" bundleType="1" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/macosx-amd64-11.0.3.tar.gz" jreShared="true" directDownload="true" installOnlyIfNecessary="true" requiredVmIdPrefix="" customInstallBaseDir="" contentFilesType="1" installerName="${i18n:InstallerName(${compiler:sys.fullName})}" volumeName="${compiler:sys.shortName}" compressDmg="true" launcherId="33">
       <excludedComponents />
       <includedDownloadableComponents />
       <excludedBeans />
