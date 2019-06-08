@@ -1,13 +1,10 @@
 package org.triplea.server.moderator.toolbox.api.key.validation;
 
-import java.util.concurrent.TimeUnit;
-
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.ApiKeyDao;
 import org.triplea.server.http.AppConfig;
 
 import com.google.common.base.Charsets;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.hash.Hashing;
 
 import lombok.AccessLevel;
@@ -18,13 +15,6 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ApiKeyValidationServiceFactory {
-
-  static {
-    InvalidKeyCache.setCache(
-        CacheBuilder.newBuilder()
-            .expireAfterWrite(AppConfig.FAILED_API_KEY_CACHE_EXPIRATION, TimeUnit.MINUTES)
-            .build());
-  }
 
   /**
    * Creates a {@code ApiKeyValidationService} with dependencies.

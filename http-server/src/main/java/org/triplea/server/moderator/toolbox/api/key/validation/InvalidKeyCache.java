@@ -1,14 +1,18 @@
 package org.triplea.server.moderator.toolbox.api.key.validation;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.triplea.server.http.AppConfig;
 import org.triplea.server.http.IpAddressExtractor;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import lombok.Setter;
 
@@ -16,8 +20,14 @@ import lombok.Setter;
  * Essentially a wrapper around a static Guava cache. Provides a nicer API and easier testing.
  */
 class InvalidKeyCache {
+  static {
+    InvalidKeyCache.setCache(
+        CacheBuilder.newBuilder()
+            .expireAfterWrite(AppConfig.FAILED_API_KEY_CACHE_EXPIRATION, TimeUnit.MINUTES)
+            .build());
+  }
 
-  @Setter
+  @Setter(onMethod_ = {@VisibleForTesting})
   private static Cache<String, AtomicInteger> cache;
 
   InvalidKeyCache() {
