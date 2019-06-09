@@ -33,7 +33,7 @@ public class MetaSetupPanel extends SetupPanel {
   private JButton connectToLobby;
   private JButton enginePreferences;
   private JButton ruleBook;
-  private JButton helpButton;
+  private JButton userGuideButton;
 
   private final SetupPanelModel model;
 
@@ -71,7 +71,7 @@ public class MetaSetupPanel extends SetupPanel {
     enginePreferences = new JButton("Engine Preferences");
     enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
     ruleBook = new JButton("Rule Book");
-    helpButton = new JButton("Help");
+    userGuideButton = new JButton("User Guide & Help");
     ruleBook.setToolTipText("Download a manual of how to play");
   }
 
@@ -103,7 +103,7 @@ public class MetaSetupPanel extends SetupPanel {
     add(mapCreator, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
 
-    add(helpButton, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
+    add(userGuideButton, new GridBagConstraints(0, 10, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
         new Insets(10, 0, 0, 0), 0, 0));
 
     // top space
@@ -119,15 +119,15 @@ public class MetaSetupPanel extends SetupPanel {
     connectToLobby.addActionListener(e -> model.login());
     enginePreferences.addActionListener(e -> ClientSetting.showSettingsWindow());
     ruleBook.addActionListener(e -> ruleBook());
-    helpButton.addActionListener(e -> helpPage());
+    userGuideButton.addActionListener(e -> userGuidePage());
   }
 
   private static void ruleBook() {
     SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.RULE_BOOK);
   }
 
-  private static void helpPage() {
-    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.GITHUB_HELP);
+  private static void userGuidePage() {
+    SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.USER_GUIDE);
   }
 
   @Override

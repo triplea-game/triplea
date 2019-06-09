@@ -33,7 +33,7 @@ public class AboutInformation implements ControlledScreen<ScreenController<FxmlM
 
   @FXML
   private void showHelp() {
-    open(UrlConstants.GITHUB_HELP);
+    open(UrlConstants.USER_GUIDE);
   }
 
   @FXML
