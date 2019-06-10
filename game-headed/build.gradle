@@ -14,10 +14,9 @@ ext {
     releasesDir = file("$buildDir/releases")
 }
 
-apply plugin: 'org.openjfx.javafxplugin'
-  javafx {
-      modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
-  }
+javafx {
+    modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
+}
 
 dependencies {
     implementation project(':game-core')
