@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,7 +28,7 @@ class InvalidKeyCacheTest {
 
 
   @Mock
-  private Cache<String, AtomicInteger> cache;
+  private Cache<String, Integer> cache;
 
   @Mock
   private HttpServletRequest httpServletRequest;
@@ -55,17 +54,17 @@ class InvalidKeyCacheTest {
 
     invalidKeyCache.increment(httpServletRequest);
 
-    verify(cache).put(IP_ADDRESS_1, new AtomicInteger(1));
+    verify(cache).put(IP_ADDRESS_1, 1);
   }
 
   @Test
   void incrementWithExistingKey() {
     when(httpServletRequest.getRemoteHost()).thenReturn(IP_ADDRESS_1);
-    when(cache.getIfPresent(IP_ADDRESS_1)).thenReturn(new AtomicInteger(1));
+    when(cache.getIfPresent(IP_ADDRESS_1)).thenReturn(1);
 
     invalidKeyCache.increment(httpServletRequest);
 
-    verify(cache).put(IP_ADDRESS_1, new AtomicInteger(1));
+    verify(cache).put(IP_ADDRESS_1, 1);
   }
 
   @Test
@@ -79,17 +78,17 @@ class InvalidKeyCacheTest {
   @Test
   void getCountWithExistingKey() {
     when(httpServletRequest.getRemoteHost()).thenReturn(IP_ADDRESS_1);
-    when(cache.getIfPresent(IP_ADDRESS_1)).thenReturn(new AtomicInteger(1));
+    when(cache.getIfPresent(IP_ADDRESS_1)).thenReturn(1);
 
     assertThat(invalidKeyCache.getCount(httpServletRequest), is(1));
   }
 
   @Test
   void totalSumWithNoEntries() {
-    final ConcurrentHashMap<String, AtomicInteger> map = new ConcurrentHashMap<>();
-    map.put(IP_ADDRESS_1, new AtomicInteger(5));
-    map.put(IP_ADDRESS_2, new AtomicInteger(10));
-    map.put(IP_ADDRESS_3, new AtomicInteger(15));
+    final ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+    map.put(IP_ADDRESS_1, 5);
+    map.put(IP_ADDRESS_2, 10);
+    map.put(IP_ADDRESS_3, 15);
     when(cache.asMap()).thenReturn(map);
 
     assertThat(invalidKeyCache.totalSum(), is(30));

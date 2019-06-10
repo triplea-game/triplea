@@ -2,7 +2,6 @@ package org.triplea.server.moderator.toolbox.api.key.validation;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +27,7 @@ class InvalidKeyCache {
   }
 
   @Setter(onMethod_ = {@VisibleForTesting})
-  private static Cache<String, AtomicInteger> cache;
+  private static Cache<String, Integer> cache;
 
   InvalidKeyCache() {
     Preconditions.checkNotNull(cache);
@@ -37,22 +36,19 @@ class InvalidKeyCache {
   synchronized void increment(final HttpServletRequest request) {
     final String ip = IpAddressExtractor.extractClientIp(request);
 
-    final AtomicInteger integer = Optional.ofNullable(cache.getIfPresent(ip))
-        .orElseGet(() -> new AtomicInteger(0));
+    final int integer = Optional.ofNullable(cache.getIfPresent(ip))
+        .orElse(0);
 
-    integer.incrementAndGet();
-
-    cache.put(ip, integer);
+    cache.put(ip, integer + 1);
   }
 
   int getCount(final HttpServletRequest request) {
     final String ip = IpAddressExtractor.extractClientIp(request);
     return Optional.ofNullable(cache.getIfPresent(ip))
-        .orElseGet(() -> new AtomicInteger(0))
-        .get();
+        .orElse(0);
   }
 
   int totalSum() {
-    return cache.asMap().values().stream().mapToInt(AtomicInteger::get).sum();
+    return cache.asMap().values().stream().mapToInt(i -> i).sum();
   }
 }
