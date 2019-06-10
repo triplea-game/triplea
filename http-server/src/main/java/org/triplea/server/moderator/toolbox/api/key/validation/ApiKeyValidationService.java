@@ -47,6 +47,9 @@ public class ApiKeyValidationService {
    * the moderator that owns that key. If no key is found, or if verification is locked down, or no key
    * is present, then an exception is thrown.
    *
+   * <p>Synchronized so that the check for locked out request and then incrementing the failed
+   * request count is atomic.
+   *
    * @param request Server request object expected to contain an API key header.
    * @return The moderator database ID that matches the API key. Otherwise an exception will be thrown.
    *
@@ -58,7 +61,7 @@ public class ApiKeyValidationService {
    *         are cached and will by-pass the lock-out if we enter into that state. We do a lock-out for all
    *         IP addresses in case an attacker sets up many computers or is able to spoof their IP address.
    */
-  public int lookupModeratorIdByApiKey(final HttpServletRequest request) {
+  public synchronized int lookupModeratorIdByApiKey(final HttpServletRequest request) {
     final String apiKey = request.getHeader(ModeratorToolboxClient.MODERATOR_API_KEY_HEADER);
     Preconditions.checkArgument(apiKey != null && !apiKey.isEmpty());
 
