@@ -2,7 +2,7 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '4.0.4'
     id 'com.install4j.gradle' version '7.0.9'
-    id 'org.openjfx.javafxplugin' version '0.0.7' apply false
+    id 'org.openjfx.javafxplugin' version '0.0.7'
     id 'de.undercouch.download' version '3.4.3'
 }
 
@@ -13,11 +13,9 @@ mainClassName = 'org.triplea.game.client.HeadedGameRunner'
 ext {
     releasesDir = file("$buildDir/releases")
 }
-if (JavaVersion.current() >= JavaVersion.VERSION_11) {
-    apply plugin: 'org.openjfx.javafxplugin'
-    javafx {
-        modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
-    }
+
+javafx {
+    modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
 }
 
 dependencies {
@@ -25,6 +23,7 @@ dependencies {
     implementation project(':java-extras')
     implementation project(':swing-lib')
     implementation 'org.pushing-pixels:radiance-substance:1.0.2'
+    implementation 'org.openjfx:javafx:11'
 
     testImplementation project(':test-common')
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
@@ -51,9 +50,9 @@ task downloadPlatformInstallerAssets(group: 'release') {
             'icons/triplea_icon_64_64.png',
             'icons/triplea_icon_128_128.png',
             'icons/triplea_icon_256_256.png',
-            'install4j/macosx-amd64-1.8.0_144.tar.gz',
-            'install4j/windows-amd64-1.8.0_144.tar.gz',
-            'install4j/windows-x86-1.8.0_144.tar.gz'
+            'install4j/macosx-amd64-11.0.3.tar.gz',
+            'install4j/windows-amd64-11.0.3.tar.gz',
+            'install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.3_7.tar.gz',
         ].each { path ->
             download {
                 src "https://raw.githubusercontent.com/triplea-game/assets/master/$path"
