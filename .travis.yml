@@ -20,7 +20,7 @@ install:
  - ./gradlew shadowJar
  - "java -jar http-server/build/libs/triplea-http-server-1.10.dev.jar server ./http-server/configuration-prerelease.yml &"
 before_script:
-- ./.travis/setup_gpg
+#- ./.travis/setup_gpg
 - ./.travis/setup_gradle
 script:
 - ./gradlew --parallel check jacocoTestReport
@@ -31,7 +31,7 @@ before_deploy:
 - ./.travis/install_install4j "$INSTALL4J_HOME"
 - ./gradlew -Pinstall4jHomeDir="$INSTALL4J_HOME" release
 - ./.travis/collect_artifacts
-- ./.travis/generate_artifact_checksums
+#- ./.travis/generate_artifact_checksums
 - ./.travis/push_tag
 ## Live update maps list on website, read the maps in 'triplea_maps.yaml' and commit updated data files
 ## to website json data directory.
