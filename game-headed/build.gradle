@@ -2,7 +2,7 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '4.0.4'
     id 'com.install4j.gradle' version '7.0.9'
-    id 'org.openjfx.javafxplugin' version '0.0.7' apply false
+    id 'org.openjfx.javafxplugin' version '0.0.7'
     id 'de.undercouch.download' version '3.4.3'
 }
 
@@ -13,12 +13,11 @@ mainClassName = 'org.triplea.game.client.HeadedGameRunner'
 ext {
     releasesDir = file("$buildDir/releases")
 }
-if (JavaVersion.current() >= JavaVersion.VERSION_11) {
-    apply plugin: 'org.openjfx.javafxplugin'
-    javafx {
-        modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
-    }
-}
+
+apply plugin: 'org.openjfx.javafxplugin'
+  javafx {
+      modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
+  }
 
 dependencies {
     implementation project(':game-core')
