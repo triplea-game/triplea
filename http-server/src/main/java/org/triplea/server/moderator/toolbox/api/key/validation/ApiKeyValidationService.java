@@ -47,7 +47,8 @@ public class ApiKeyValidationService {
    * the moderator that owns that key. If no key is found, or if verification is locked down, or no key
    * is present, then an exception is thrown.
    *
-   * <p>Synchronized so that the check for locked out request and then incrementing the failed
+   * <p>
+   * Synchronized so that the check for locked out request and then incrementing the failed
    * request count is atomic.
    *
    * @param request Server request object expected to contain an API key header.
