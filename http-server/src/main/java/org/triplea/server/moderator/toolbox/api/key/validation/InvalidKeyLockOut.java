@@ -41,7 +41,7 @@ class InvalidKeyLockOut {
    *
    * @param request Request containing moderator api key as a header.
    */
-  boolean isLockedOut(final HttpServletRequest request) {
+  synchronized boolean isLockedOut(final HttpServletRequest request) {
     return invalidKeyCache.getCount(request) >= maxFailsByIpAddress
         || invalidKeyCache.totalSum() >= maxTotalFails;
   }

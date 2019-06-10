@@ -33,7 +33,7 @@ class InvalidKeyCache {
     Preconditions.checkNotNull(cache);
   }
 
-  synchronized void increment(final HttpServletRequest request) {
+  void increment(final HttpServletRequest request) {
     final String ip = IpAddressExtractor.extractClientIp(request);
 
     final int integer = Optional.ofNullable(cache.getIfPresent(ip))
