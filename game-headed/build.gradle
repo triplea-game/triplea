@@ -54,6 +54,7 @@ task downloadPlatformInstallerAssets(group: 'release') {
             'icons/triplea_icon_256_256.png',
             'install4j/macosx-amd64-11.0.3.tar.gz',
             'install4j/windows-amd64-11.0.3.tar.gz',
+            'install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.3_7.tar.gz',
         ].each { path ->
             download {
                 src "https://raw.githubusercontent.com/triplea-game/assets/master/$path"
@@ -94,6 +95,7 @@ task release(group: 'release', dependsOn: [portableInstaller, platformInstallers
         publishArtifacts(portableInstaller.outputs.files + [
             file("$releasesDir/TripleA_${version}_macos.dmg"),
             file("$releasesDir/TripleA_${version}_unix.sh"),
+            file("$releasesDir/TripleA_${version}_windows-32bit.exe"),
             file("$releasesDir/TripleA_${version}_windows-64bit.exe")
         ])
     }

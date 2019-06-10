@@ -1720,6 +1720,19 @@ return true;</string>
     </styles>
   </installerGui>
   <mediaSets>
+    <windows name="Windows 32 bit" id="90" customizedId="" mediaFileName="${compiler:sys.fullName}_${compiler:sys.version}_windows-32bit" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="build/assets/install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.3_7.tar.gz" manualJREEntry="true" bundleType="2" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/OpenJDK11U-jre_x86-32_windows_hotspot_11.0.3_7.tar.gz" jreShared="false" directDownload="true" installOnlyIfNecessary="false" customInstallBaseDir="" contentFilesType="1" verifyIntegrity="true">
+      <excludedComponents />
+      <includedDownloadableComponents />
+      <excludedLaunchers />
+      <excludedBeans />
+      <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
+      <exclude />
+      <variables />
+      <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
+        <commentFiles />
+        <customAttributes />
+      </autoUpdate>
+    </windows>
     <windows name="Windows 64 bit" id="87" customizedId="" mediaFileName="${compiler:sys.fullName}_${compiler:sys.version}_windows-64bit" installDir="${compiler:sys.shortName}" overridePrincipalLanguage="false" jreBitType="64" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" useLegacyMediaFileIds="false" legacyMediaFileIds="" downloadURL="" includeAllDownloadableComponents="false" includedJRE="build/assets/install4j/windows-amd64-11.0.3.tar.gz" manualJREEntry="true" bundleType="1" jreURL="https://raw.githubusercontent.com/triplea-game/assets/master/install4j/windows-amd64-11.0.3.tar.gz" jreShared="false" directDownload="true" installOnlyIfNecessary="false" customInstallBaseDir="" contentFilesType="1" verifyIntegrity="true">
       <excludedComponents />
       <includedDownloadableComponents />
