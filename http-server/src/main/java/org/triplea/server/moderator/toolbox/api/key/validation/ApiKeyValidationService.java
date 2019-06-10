@@ -46,8 +46,6 @@ public class ApiKeyValidationService {
    * Does a lookup of API key contained in request header and returns the user id of
    * the moderator that owns that key. If no key is found, or if verification is locked down, or no key
    * is present, then an exception is thrown.
-   *
-   * <p>
    * Synchronized so that the check for locked out request and then incrementing the failed
    * request count is atomic.
    *
