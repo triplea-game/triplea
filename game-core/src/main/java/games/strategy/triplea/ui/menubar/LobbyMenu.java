@@ -36,12 +36,14 @@ import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.client.ui.TimespanDialog;
+import games.strategy.engine.lobby.moderator.toolbox.ToolBoxWindow;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
 
 /**
@@ -77,8 +79,17 @@ public final class LobbyMenu extends JMenuBar {
   private void createAdminMenu(final LobbyMenu menuBar) {
     final JMenu powerUser = new JMenu("Admin");
     menuBar.add(powerUser);
+    if (ClientSetting.showBetaFeatures.getValue().orElse(false)) {
+      createToolBoxWindowMenu(powerUser);
+    }
     createDiagnosticsMenu(powerUser);
     createToolboxMenu(powerUser);
+  }
+
+  private void createToolBoxWindowMenu(final JMenu menuBar) {
+    final JMenuItem menuItem = new JMenuItem("Open Toolbox (Beta)");
+    menuItem.addActionListener(event -> ToolBoxWindow.verifyApiKeyAndShowWindow(lobbyFrame));
+    menuBar.add(menuItem);
   }
 
   private void createDiagnosticsMenu(final JMenu menuBar) {

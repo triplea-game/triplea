@@ -15,6 +15,7 @@ import feign.gson.GsonEncoder;
 public class JsonEncoder implements Encoder {
   private static final GsonEncoder gsonEncoder = new GsonEncoder();
 
+  @SuppressWarnings("deprecation")
   @Override
   public void encode(final Object object, final Type bodyType, final RequestTemplate template) {
     if (bodyType.getTypeName().equals(String.class.getName())) {

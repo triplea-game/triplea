@@ -1,18 +1,28 @@
 package org.triplea.lobby.server.db;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.SqlLogger;
+import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
 /**
  * Utility to get connections to the Postgres lobby database.
  */
+@Log
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JdbiDatabase {
+
   /**
-   * Creates a new connection to database.
+   * Creates a new connection to database. This connection should
+   * only be used by the TripleA Java Lobby. DropWizard will create
+   * a connection from configuration automatically.
    */
   public static Jdbi newConnection() {
     final Jdbi jdbi = Jdbi.create(
@@ -24,6 +34,38 @@ public final class JdbiDatabase {
         DatabaseEnvironmentVariable.POSTGRES_USER.getValue(),
         DatabaseEnvironmentVariable.POSTGRES_PASSWORD.getValue());
     jdbi.installPlugin(new SqlObjectPlugin());
+    registerRowMappers(jdbi);
+    registerSqlLogger(jdbi);
     return jdbi;
+  }
+
+  /**
+   * Registers all JDBI row mappers. These are classes that map result set values to corresponding return objects.
+   */
+  public static void registerRowMappers(final Jdbi jdbi) {
+    jdbi.registerRowMapper(
+        ModeratorAuditHistoryItem.class, ModeratorAuditHistoryItem.moderatorAuditHistoryItemMapper());
+  }
+
+  /**
+   * Adds a logger to JDBI that will log SQL statements before they are executed.
+   */
+  public static void registerSqlLogger(final Jdbi jdbi) {
+    jdbi.setSqlLogger(new SqlLogger() {
+      @Override
+      public void logBeforeExecution(final StatementContext context) {
+        log.info("Executing SQL: " + context.getRawSql());
+      }
+
+      @Override
+      public void logAfterExecution(final StatementContext context) {
+
+      }
+
+      @Override
+      public void logException(final StatementContext context, final SQLException ex) {
+        log.log(Level.SEVERE, "Exception executing SQL: " + context.getRawSql(), ex);
+      }
+    });
   }
 }

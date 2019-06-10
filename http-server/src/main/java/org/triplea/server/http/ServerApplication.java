@@ -1,17 +1,20 @@
 package org.triplea.server.http;
 
-import java.time.Clock;
-import java.util.function.Predicate;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.http.client.github.issues.GithubIssueClient;
-import org.triplea.server.error.reporting.CreateIssueStrategy;
-import org.triplea.server.error.reporting.ErrorReportController;
-import org.triplea.server.error.reporting.ErrorReportGateKeeper;
-import org.triplea.server.error.reporting.ErrorReportResponseConverter;
-import org.triplea.server.error.reporting.ErrorReportingDao;
+import org.triplea.lobby.server.db.JdbiDatabase;
+import org.triplea.server.error.reporting.ErrorReportControllerFactory;
+import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationControllerFactory;
+import org.triplea.server.moderator.toolbox.api.key.validation.exception.ApiKeyVerificationLockOutMapper;
+import org.triplea.server.moderator.toolbox.api.key.validation.exception.IncorrectApiKeyMapper;
+import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
+import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
 
-import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 import io.dropwizard.Application;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
@@ -59,50 +62,50 @@ public class ServerApplication extends Application<AppConfig> {
 
   @Override
   public void run(final AppConfig configuration, final Environment environment) {
-    environment.jersey().register(new ClientExceptionMapper());
-
     if (configuration.isProd()) {
       configuration.verifyProdEnvironmentVariables();
     }
 
-    final JdbiFactory factory = new JdbiFactory();
-    final Jdbi jdbi = factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
-
-    // register all endpoint handlers here:
-    environment.jersey().register(errorReportController(configuration, jdbi));
-  }
-
-  private static ErrorReportController errorReportController(
-      final AppConfig configuration,
-      final Jdbi jdbi) {
-    final GithubIssueClient githubIssueClient = GithubIssueClient.builder()
-        .uri(AppConfig.GITHUB_WEB_SERVICE_API_URL)
-        .authToken(configuration.getGithubApiToken())
-        .githubOrg(AppConfig.GITHUB_ORG)
-        .githubRepo(configuration.getGithubRepo())
-        .build();
-
-    final ErrorReportingDao errorReportingDao = jdbi.onDemand(ErrorReportingDao.class);
-    final Predicate<String> errorReportGateKeeper = ErrorReportGateKeeper.builder()
-        .maxReportsPerDay(AppConfig.MAX_ERROR_REPORTS_PER_DAY)
-        .dao(errorReportingDao)
-        .clock(Clock.systemUTC())
-        .build();
-
-
-    if (githubIssueClient.isTest()) {
-      Preconditions.checkState(!configuration.isProd());
+    if (configuration.isLogRequestAndResponses()) {
+      environment.jersey().register(
+          new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME),
+              Level.INFO,
+              LoggingFeature.Verbosity.PAYLOAD_ANY, LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
     }
 
-    return ErrorReportController.builder()
-        .errorReportIngestion(CreateIssueStrategy.builder()
-            .githubIssueClient(githubIssueClient)
-            .allowErrorReport(errorReportGateKeeper)
-            .responseAdapter(new ErrorReportResponseConverter())
-            .isProduction(configuration.isProd())
-            .errorReportingDao(errorReportingDao)
-            .build())
-        .errorReportRateChecker(errorReportGateKeeper)
-        .build();
+    exceptionMappers()
+        .forEach(mapper -> environment.jersey().register(mapper));
+
+    endPointControllers(configuration, environment)
+        .forEach(controller -> environment.jersey().register(controller));
+  }
+
+
+  private List<Object> exceptionMappers() {
+    return ImmutableList.of(
+        new IllegalArgumentMapper(),
+        new IncorrectApiKeyMapper(),
+        new ApiKeyVerificationLockOutMapper());
+  }
+
+
+  private List<Object> endPointControllers(final AppConfig configuration, final Environment environment) {
+    final Jdbi jdbi = createJdbi(configuration, environment);
+    return ImmutableList.of(
+        ApiKeyValidationControllerFactory.apiKeyValidationController(jdbi),
+        BadWordControllerFactory.badWordController(jdbi),
+        ErrorReportControllerFactory.errorReportController(configuration, jdbi),
+        ModeratorAuditHistoryControllerFactory.moderatorAuditHistoryController(jdbi));
+  }
+
+  private Jdbi createJdbi(final AppConfig configuration, final Environment environment) {
+    final JdbiFactory factory = new JdbiFactory();
+    final Jdbi jdbi = factory.build(environment, configuration.getDatabase(), "postgresql-connection-pool");
+    JdbiDatabase.registerRowMappers(jdbi);
+
+    if (configuration.isLogSqlStatements()) {
+      JdbiDatabase.registerSqlLogger(jdbi);
+    }
+    return jdbi;
   }
 }

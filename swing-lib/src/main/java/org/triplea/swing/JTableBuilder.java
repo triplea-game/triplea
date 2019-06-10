@@ -76,6 +76,12 @@ public class JTableBuilder {
     rows.forEach(row -> model.addRow(row.toArray(new String[0])));
   }
 
+  public static void setData(final JTable table, final List<List<String>> rows) {
+    final DefaultTableModel model = (DefaultTableModel) table.getModel();
+    model.setRowCount(0);
+    addRows(table, rows);
+  }
+
 
   public JTableBuilder columnNames(final String... columnNames) {
     return columnNames(Arrays.asList(columnNames));

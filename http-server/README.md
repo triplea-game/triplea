@@ -71,3 +71,29 @@ wizard may fail to start with this error:
 java.lang.IllegalStateException: Unable to acquire the logger context
     at io.dropwizard.logging.LoggingUtil.getLoggerContext(LoggingUtil.java:46)
 ```
+
+## Stream is already closed
+
+This can happen when the server side does not fail fast on incorrect input.
+This can be if we use headers that are missing or do not check that parameters are present.
+
+The stack trace indicating this will look like this:
+```bash
+ERROR [2019-06-06 05:07:22,247] org.glassfish.jersey.server.ServerRuntime$Responder: An I/O error has occurred while writing a response message entity to the container output stream.
+! java.lang.IllegalStateException: The output stream has already been closed.
+```
+
+The impact of this is: 
+- server thread hangs
+- client hangs
+- server does not shutdown cleanly
+
+This is bad as it could be used in a DDOS attack.
+
+### Prevention
+
+Essentially fail-fast:
+- When looking for headers, verify headers exist or terminate the request
+- Verify that all needed GET parameters are present or terminate the request
+
+To terminate the request, just throw a IllegalArgumentException, it'l be mapped to a 400.
