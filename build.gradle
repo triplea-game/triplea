@@ -133,13 +133,13 @@ subprojects {
             check 'UnsynchronizedOverridesSynchronized', CheckSeverity.ERROR
             check 'WaitNotInLoop', CheckSeverity.ERROR
             disable 'UnusedVariable' // Workaround for https://github.com/google/error-prone/issues/1250
+
+            // Finally check is broken in Java 12.  See https://github.com/google/error-prone/issues/1257
+            if ((JavaVersion.current().majorVersion as Integer) > 11) {
+                check('Finally', CheckSeverity.OFF)
+            }
         }
         options.incremental = true
-
-        // workaround for https://github.com/gradle/gradle/issues/2510
-        if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-            options.compilerArgs += ['--release', '8']
-        }
     }
 
     tasks.withType(Test).configureEach {
