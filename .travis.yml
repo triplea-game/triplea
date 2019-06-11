@@ -16,10 +16,11 @@ install:
  - echo "create database lobby" | psql -h localhost -U postgres
  - ./.travis/setup_gradle
  - ./gradlew flywayMigrate
+ - ./gradlew shadowJar
+ - RELEASE_VERSION=$(sed "s/@buildId@/$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties  | sed 's/version\s*=\s*//')
  # launch http server so that logged output will be displayed. This is to support eventual integration
  # testing of client/server interactions and allow for debugging in case of problems.
- - ./gradlew shadowJar
- - "java -jar http-server/build/libs/triplea-http-server-1.10.dev.jar server ./http-server/configuration-prerelease.yml &"
+ - "java -jar http-server/build/libs/triplea-http-server-${RELEASE_VERSION}.jar server ./http-server/configuration-prerelease.yml &"
 before_script:
 #- ./.travis/setup_gpg
 script:
