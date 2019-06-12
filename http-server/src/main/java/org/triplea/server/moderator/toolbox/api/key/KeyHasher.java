@@ -22,6 +22,7 @@ public final class KeyHasher {
   public static String applyHash(final String valueToHash) {
     Preconditions.checkNotNull(valueToHash);
     Preconditions.checkArgument(!valueToHash.isEmpty());
+    // TODO: Use bcrypt hash
     return Hashing.sha512().hashString(valueToHash, Charsets.UTF_8).toString();
   }
 }
