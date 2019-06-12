@@ -30,6 +30,10 @@ interface ModeratorToolboxFeignClient {
   @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   String validateApiKey(@HeaderMap Map<String, Object> headerMap);
 
+  @RequestLine("POST " + ModeratorToolboxClient.REGISTER_API_KEY_PATH)
+  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
+  RegisterApiKeyResult registerKey(RegisterApiKeyParam registerApiKeyParam);
+
   @RequestLine("POST " + ModeratorToolboxClient.BAD_WORD_REMOVE_PATH)
   @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   String removeBadWord(@HeaderMap Map<String, Object> headerMap, String word);

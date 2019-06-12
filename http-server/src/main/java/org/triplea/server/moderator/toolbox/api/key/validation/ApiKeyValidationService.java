@@ -1,15 +1,17 @@
 package org.triplea.server.moderator.toolbox.api.key.validation;
 
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 
 import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
+import org.triplea.lobby.server.db.ApiKeyValidationDao;
 import org.triplea.server.http.IpAddressExtractor;
-import org.triplea.server.moderator.toolbox.api.key.validation.exception.ApiKeyVerificationLockOutException;
-import org.triplea.server.moderator.toolbox.api.key.validation.exception.IncorrectApiKeyException;
+import org.triplea.server.moderator.toolbox.api.key.InvalidKeyLockOut;
+import org.triplea.server.moderator.toolbox.api.key.exception.ApiKeyLockOutException;
+import org.triplea.server.moderator.toolbox.api.key.exception.IncorrectApiKeyException;
 
 import com.google.common.base.Preconditions;
 
@@ -30,7 +32,9 @@ public class ApiKeyValidationService {
   @Nonnull
   private final InvalidKeyLockOut invalidKeyLockOut;
   @Nonnull
-  private final Function<String, Optional<Integer>> apiKeyLookup;
+  private final BiFunction<String, String, String> keyHasher;
+  @Nonnull
+  private final ApiKeyValidationDao apiKeyValidationDao;
 
 
   /**
@@ -54,34 +58,46 @@ public class ApiKeyValidationService {
    *
    * @throws IllegalArgumentException Thrown if the http servlet request headers do not contain a moderator api key.
    * @throws IncorrectApiKeyException Thrown if the provided API key does not match any known keys.
-   * @throws ApiKeyVerificationLockOutException Thrown if rate-limiting has kicked in and the API key verification
+   * @throws ApiKeyLockOutException Thrown if rate-limiting has kicked in and the API key verification
    *         was not attempted. This can be caused by too many attempts from a specific IP address, or too many failed
    *         attempts across all IP addresses. To avoid the latter case from locking all users out, valid API keys
    *         are cached and will by-pass the lock-out if we enter into that state. We do a lock-out for all
    *         IP addresses in case an attacker sets up many computers or is able to spoof their IP address.
    */
   public synchronized int lookupModeratorIdByApiKey(final HttpServletRequest request) {
-    final String apiKey = request.getHeader(ModeratorToolboxClient.MODERATOR_API_KEY_HEADER);
-    Preconditions.checkArgument(apiKey != null && !apiKey.isEmpty());
+    final String hashedKey = extractHashedKey(request);
 
-    final Optional<Integer> cacheResult = validKeyCache.get(apiKey);
+    final Optional<Integer> cacheResult = validKeyCache.get(hashedKey);
     if (cacheResult.isPresent()) {
       return cacheResult.get();
     }
 
     if (invalidKeyLockOut.isLockedOut(request)) {
-      throw new ApiKeyVerificationLockOutException();
+      throw new ApiKeyLockOutException();
     }
 
-    final Optional<Integer> lookupResult = apiKeyLookup.apply(apiKey);
+    final Optional<Integer> lookupResult = apiKeyValidationDao.lookupModeratorIdByApiKey(hashedKey);
 
     if (lookupResult.isPresent()) {
-      validKeyCache.recordValid(apiKey, lookupResult.get());
-      return lookupResult.get();
+      validKeyCache.recordValid(hashedKey, lookupResult.get());
+      apiKeyValidationDao.recordKeyUsage(hashedKey);
+      final int moderatorId = lookupResult.get();
+      log.info("API Key for moderator ID: " + moderatorId + " validated successfully.");
+      return moderatorId;
     }
 
     invalidKeyLockOut.recordInvalid(request);
     log.warning("API key authentication failed for IP: " + IpAddressExtractor.extractClientIp(request));
     throw new IncorrectApiKeyException();
+  }
+
+  private String extractHashedKey(final HttpServletRequest request) {
+    final String apiKey = request.getHeader(ModeratorToolboxClient.API_KEY_HEADER);
+    Preconditions.checkArgument(apiKey != null && !apiKey.isEmpty());
+
+    final String apiKeyPassword = request.getHeader(ModeratorToolboxClient.API_KEY_PASSWORD_HEADER);
+    Preconditions.checkArgument(apiKeyPassword != null && !apiKeyPassword.isEmpty());
+
+    return keyHasher.apply(apiKey, apiKeyPassword);
   }
 }

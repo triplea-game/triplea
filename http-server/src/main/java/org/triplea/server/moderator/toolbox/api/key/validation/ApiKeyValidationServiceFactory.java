@@ -1,11 +1,11 @@
 package org.triplea.server.moderator.toolbox.api.key.validation;
 
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.lobby.server.db.ApiKeyDao;
+import org.triplea.lobby.server.db.ApiKeyValidationDao;
 import org.triplea.server.http.AppConfig;
-
-import com.google.common.base.Charsets;
-import com.google.common.hash.Hashing;
+import org.triplea.server.moderator.toolbox.api.key.InvalidKeyCache;
+import org.triplea.server.moderator.toolbox.api.key.InvalidKeyLockOut;
+import org.triplea.server.moderator.toolbox.api.key.KeyHasher;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -21,11 +21,8 @@ public final class ApiKeyValidationServiceFactory {
    */
   public static ApiKeyValidationService apiKeyValidationService(final Jdbi jdbi) {
     return ApiKeyValidationService.builder()
-        .apiKeyLookup(
-            ApiKeyLookup.builder()
-                .apiKeyDao(jdbi.onDemand(ApiKeyDao.class))
-                .hashingFunction(apiKey -> Hashing.sha512().hashString(apiKey, Charsets.UTF_8).toString())
-                .build())
+        .keyHasher(KeyHasher::applyHash)
+        .apiKeyValidationDao(jdbi.onDemand(ApiKeyValidationDao.class))
         .invalidKeyLockOut(InvalidKeyLockOut.builder()
             .invalidKeyCache(new InvalidKeyCache())
             .maxFailsByIpAddress(AppConfig.MAX_API_KEY_FAILS_BY_IP)

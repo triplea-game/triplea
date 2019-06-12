@@ -12,4 +12,5 @@ public final class HttpConstants {
   public static final String ACCEPT_TEXT = "Accept: text/plain";
   public static final String CONTENT_TYPE_JSON = "Content-Type: application/json";
   public static final String CONTENT_TYPE_TEXT = "Content-Type: text/plain";
+  public static final String APPLICATION_FORM_URLENCODED = "Content-Type: application/x-www-form-urlencoded";
 }

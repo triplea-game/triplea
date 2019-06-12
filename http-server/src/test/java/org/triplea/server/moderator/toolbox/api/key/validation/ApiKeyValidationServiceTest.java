@@ -10,7 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,14 +20,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
-import org.triplea.server.moderator.toolbox.api.key.validation.exception.ApiKeyVerificationLockOutException;
-import org.triplea.server.moderator.toolbox.api.key.validation.exception.IncorrectApiKeyException;
+import org.triplea.lobby.server.db.ApiKeyValidationDao;
+import org.triplea.server.moderator.toolbox.api.key.InvalidKeyLockOut;
+import org.triplea.server.moderator.toolbox.api.key.exception.ApiKeyLockOutException;
+import org.triplea.server.moderator.toolbox.api.key.exception.IncorrectApiKeyException;
 
 
 @ExtendWith(MockitoExtension.class)
 class ApiKeyValidationServiceTest {
 
   private static final String API_KEY = "The cloud screams faith like a fine tuna.";
+  private static final String API_KEY_PASSWORD = "Life ho! blow to be desired.";
+  private static final String HASHED_KEY = "Aye, haul me cockroach, ye fine jolly roger!";
   private static final int MODERATOR_ID = 77;
 
   @Mock
@@ -35,7 +39,9 @@ class ApiKeyValidationServiceTest {
   @Mock
   private InvalidKeyLockOut invalidKeyLockOut;
   @Mock
-  private Function<String, Optional<Integer>> apiKeyLookup;
+  private BiFunction<String, String, String> keyHasher;
+  @Mock
+  private ApiKeyValidationDao apiKeyValidationDao;
 
   @InjectMocks
   private ApiKeyValidationService apiKeyValidationService;
@@ -45,64 +51,92 @@ class ApiKeyValidationServiceTest {
 
   @Test
   void missingKeyThrows() {
-    when(httpServletRequest.getHeader(ModeratorToolboxClient.MODERATOR_API_KEY_HEADER)).thenReturn(null);
+    when(httpServletRequest.getHeader(ModeratorToolboxClient.API_KEY_HEADER)).thenReturn(null);
+    assertThrows(IllegalArgumentException.class, () -> apiKeyValidationService.verifyApiKey(httpServletRequest));
+  }
+
+  @Test
+  void missingKeyPasswordThrows() {
+    when(httpServletRequest.getHeader(ModeratorToolboxClient.API_KEY_HEADER)).thenReturn(API_KEY);
+    when(httpServletRequest.getHeader(ModeratorToolboxClient.API_KEY_PASSWORD_HEADER)).thenReturn(null);
     assertThrows(IllegalArgumentException.class, () -> apiKeyValidationService.verifyApiKey(httpServletRequest));
   }
 
   @Test
   void emptyKeyThrows() {
-    when(httpServletRequest.getHeader(ModeratorToolboxClient.MODERATOR_API_KEY_HEADER)).thenReturn("");
+    when(httpServletRequest.getHeader(ModeratorToolboxClient.API_KEY_HEADER)).thenReturn("");
     assertThrows(IllegalArgumentException.class, () -> apiKeyValidationService.verifyApiKey(httpServletRequest));
   }
 
   @Test
+  void emptyKeyPasswordThrows() {
+    when(httpServletRequest.getHeader(ModeratorToolboxClient.API_KEY_HEADER)).thenReturn(API_KEY);
+    when(httpServletRequest.getHeader(ModeratorToolboxClient.API_KEY_PASSWORD_HEADER)).thenReturn("");
+    assertThrows(IllegalArgumentException.class, () -> apiKeyValidationService.verifyApiKey(httpServletRequest));
+  }
+
+
+  @Test
   void cachedValuesReturnedImmediately() {
-    when(httpServletRequest.getHeader(ModeratorToolboxClient.MODERATOR_API_KEY_HEADER)).thenReturn(API_KEY);
-    when(validKeyCache.get(API_KEY)).thenReturn(Optional.of(MODERATOR_ID));
+    givenKeyAndPasswordIsInHeader();
+    when(keyHasher.apply(API_KEY, API_KEY_PASSWORD)).thenReturn(HASHED_KEY);
+    when(validKeyCache.get(HASHED_KEY)).thenReturn(Optional.of(MODERATOR_ID));
 
     assertThat(apiKeyValidationService.lookupModeratorIdByApiKey(httpServletRequest), is(MODERATOR_ID));
 
-    verify(apiKeyLookup, never()).apply(any());
+    verify(apiKeyValidationDao, never()).lookupModeratorIdByApiKey(any());
     verify(invalidKeyLockOut, never()).isLockedOut(any());
+  }
+
+  private void givenKeyAndPasswordIsInHeader() {
+    when(httpServletRequest.getHeader(ModeratorToolboxClient.API_KEY_HEADER)).thenReturn(API_KEY);
+    when(httpServletRequest.getHeader(ModeratorToolboxClient.API_KEY_PASSWORD_HEADER)).thenReturn(API_KEY_PASSWORD);
   }
 
   @Test
   void lockoutDoesNotAttemptKeyLookup() {
-    when(httpServletRequest.getHeader(ModeratorToolboxClient.MODERATOR_API_KEY_HEADER)).thenReturn(API_KEY);
-    when(validKeyCache.get(API_KEY)).thenReturn(Optional.empty());
+    givenKeyAndPasswordIsInHeaderWithCacheMiss();
     when(invalidKeyLockOut.isLockedOut(httpServletRequest)).thenReturn(true);
 
     assertThrows(
-        ApiKeyVerificationLockOutException.class,
+        ApiKeyLockOutException.class,
         () -> apiKeyValidationService.lookupModeratorIdByApiKey(httpServletRequest));
 
-    verify(apiKeyLookup, never()).apply(any());
+    verify(apiKeyValidationDao, never()).lookupModeratorIdByApiKey(any());
   }
+
+  private void givenKeyAndPasswordIsInHeaderWithCacheMiss() {
+    when(httpServletRequest.getHeader(ModeratorToolboxClient.API_KEY_HEADER)).thenReturn(API_KEY);
+    when(httpServletRequest.getHeader(ModeratorToolboxClient.API_KEY_PASSWORD_HEADER)).thenReturn(API_KEY_PASSWORD);
+    when(keyHasher.apply(API_KEY, API_KEY_PASSWORD)).thenReturn(HASHED_KEY);
+    when(validKeyCache.get(HASHED_KEY)).thenReturn(Optional.empty());
+  }
+
 
   @Test
   void verifyKeyLookup() {
-    when(httpServletRequest.getHeader(ModeratorToolboxClient.MODERATOR_API_KEY_HEADER)).thenReturn(API_KEY);
-    when(validKeyCache.get(API_KEY)).thenReturn(Optional.empty());
+    givenKeyAndPasswordIsInHeaderWithCacheMiss();
     when(invalidKeyLockOut.isLockedOut(httpServletRequest)).thenReturn(false);
-    when(apiKeyLookup.apply(API_KEY)).thenReturn(Optional.of(MODERATOR_ID));
+    when(apiKeyValidationDao.lookupModeratorIdByApiKey(HASHED_KEY)).thenReturn(Optional.of(MODERATOR_ID));
 
     assertThat(apiKeyValidationService.lookupModeratorIdByApiKey(httpServletRequest), is(MODERATOR_ID));
 
-    verify(validKeyCache).recordValid(API_KEY, MODERATOR_ID);
+    verify(validKeyCache).recordValid(HASHED_KEY, MODERATOR_ID);
+    verify(apiKeyValidationDao).recordKeyUsage(HASHED_KEY);
     verify(invalidKeyLockOut, never()).recordInvalid(any());
   }
 
   @Test
   void invalidKeysAreRecordedAndThrow() {
-    when(httpServletRequest.getHeader(ModeratorToolboxClient.MODERATOR_API_KEY_HEADER)).thenReturn(API_KEY);
-    when(validKeyCache.get(API_KEY)).thenReturn(Optional.empty());
+    givenKeyAndPasswordIsInHeaderWithCacheMiss();
     when(invalidKeyLockOut.isLockedOut(httpServletRequest)).thenReturn(false);
-    when(apiKeyLookup.apply(API_KEY)).thenReturn(Optional.empty());
+    when(apiKeyValidationDao.lookupModeratorIdByApiKey(HASHED_KEY)).thenReturn(Optional.empty());
 
     assertThrows(
         IncorrectApiKeyException.class, () -> apiKeyValidationService.lookupModeratorIdByApiKey(httpServletRequest));
 
-    verify(validKeyCache, never()).recordValid(any(), anyInt());
     verify(invalidKeyLockOut).recordInvalid(httpServletRequest);
+    verify(validKeyCache, never()).recordValid(any(), anyInt());
+    verify(apiKeyValidationDao, never()).recordKeyUsage(any());
   }
 }

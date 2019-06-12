@@ -33,6 +33,7 @@ dependencies {
     implementation 'com.sun.xml.bind:jaxb-impl:2.3.2'
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
     implementation 'javax.activation:activation:1.1.1'
+    implementation "org.mindrot:jbcrypt:$jbcryptVersion"
 
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"
 

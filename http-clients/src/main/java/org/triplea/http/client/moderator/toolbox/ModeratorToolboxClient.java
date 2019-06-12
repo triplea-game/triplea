@@ -1,6 +1,7 @@
 package org.triplea.http.client.moderator.toolbox;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -10,13 +11,17 @@ import java.util.Map;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpInteractionException;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 
 /**
  * Wrapper around moderator toolbox feign client. This wrapper handles exceptions and returns
  * a success string result for most methods, otherwise the return value is any error message
  * returned back from the server.
  */
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class ModeratorToolboxClient {
 
   /**
@@ -25,35 +30,68 @@ public class ModeratorToolboxClient {
    */
   public static final String SUCCESS = "SUCCESS";
 
+  public static final int API_KEY_PASSWORD_MIN_LENGTH = 4;
+  public static final int API_KEY_PASSWORD_MAX_LENGTH = 64;
+
   public static final String VALIDATE_API_KEY_PATH = "/moderator-toolbox/validate-api-key";
+  public static final String REGISTER_API_KEY_PATH = "/moderator-toolbox/register-api-key";
   public static final String BAD_WORD_ADD_PATH = "/moderator-toolbox/bad-words/add";
   public static final String BAD_WORD_REMOVE_PATH = "/moderator-toolbox/bad-words/remove";
   public static final String BAD_WORD_GET_PATH = "/moderator-toolbox/bad-words/get";
   public static final String AUDIT_HISTORY_PATH = "/moderator-toolbox/audit-history/lookup";
-  public static final String MODERATOR_API_KEY_HEADER = "moderator-api-key";
+  public static final String API_KEY_HEADER = "moderator-api-key";
+  public static final String API_KEY_PASSWORD_HEADER = "api-key-password";
 
   public static final String ROW_START_PARAM = "rowStart";
   public static final String ROW_COUNT_PARAM = "rowCount";
 
+
+  public static final String SINGLE_USE_KEY_PARAM = "singleUseKey";
+  public static final String NEW_API_KEY_PASSWORD_PARAM = "newApiKey";
+
   private final ModeratorToolboxFeignClient client;
+  private final String apiKeyPassword;
 
-  private ModeratorToolboxClient(final URI uri) {
-    this(new HttpClient<>(ModeratorToolboxFeignClient.class, uri).get());
-  }
-
-  @VisibleForTesting
-  ModeratorToolboxClient(final ModeratorToolboxFeignClient feignClient) {
-    client = feignClient;
-  }
 
   /**
    * Creates a ModeratorToolboxClient, used by moderators interact with the server
    * to view/add/remove database data (eg: player bans, bad words table).
    */
-  public static ModeratorToolboxClient newClient(final URI uri) {
-    return new ModeratorToolboxClient(uri);
+  public static ModeratorToolboxClient newClient(final URI uri, final String password) {
+    Preconditions.checkNotNull(uri);
+    Preconditions.checkNotNull(password);
+
+    return new ModeratorToolboxClient(
+        new HttpClient<>(ModeratorToolboxFeignClient.class, uri).get(),
+        password);
   }
 
+  /**
+   * Sends a new single-use key API to server for validation. If things go well we'll get back a new
+   * API key that should be stored in client settings. The password sent along with this API key should
+   * be sent along with the new API key for future validations.
+   */
+  public RegisterApiKeyResult registerNewKey(final String singleUseKey) {
+    checkArgument(singleUseKey != null && !singleUseKey.isEmpty());
+    checkState(apiKeyPassword != null);
+
+    try {
+      return client.registerKey(
+          RegisterApiKeyParam.builder()
+              .singleUseKey(singleUseKey)
+              .newPassword(apiKeyPassword)
+              .build());
+    } catch (final RuntimeException e) {
+      return RegisterApiKeyResult.builder()
+          .errorMessage(e.getMessage())
+          .build();
+    }
+  }
+
+  /**
+   * Sends an API key for validation. Note, this is not the single-use key initially issued but a moderators
+   * long-term API key that is stored in client settings.
+   */
   public String validateApiKey(final String apiKey) {
     checkArgument(apiKey != null && !apiKey.isEmpty());
 
@@ -64,7 +102,7 @@ public class ModeratorToolboxClient {
     }
   }
 
-  public String removeBadWord(final RemoveBadWordArgs badWordArgs) {
+  public String removeBadWord(final UpdateBadWordsArg badWordArgs) {
     checkArgument(badWordArgs != null);
     try {
       return client.removeBadWord(createHeaders(badWordArgs.getApiKey()), badWordArgs.getBadWord());
@@ -73,13 +111,14 @@ public class ModeratorToolboxClient {
     }
   }
 
-  private static Map<String, Object> createHeaders(final String apiKey) {
+  private Map<String, Object> createHeaders(final String apiKey) {
     final Map<String, Object> headerMap = new HashMap<>();
-    headerMap.put(MODERATOR_API_KEY_HEADER, apiKey);
+    headerMap.put(API_KEY_HEADER, apiKey);
+    headerMap.put(API_KEY_PASSWORD_HEADER, apiKeyPassword);
     return headerMap;
   }
 
-  public String addBadWord(final AddBadWordArgs addBadWordArgs) {
+  public String addBadWord(final UpdateBadWordsArg addBadWordArgs) {
     checkArgument(addBadWordArgs != null);
     try {
       return client.addBadWord(createHeaders(addBadWordArgs.getApiKey()), addBadWordArgs.getBadWord());

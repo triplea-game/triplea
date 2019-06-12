@@ -8,9 +8,10 @@ import org.glassfish.jersey.logging.LoggingFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
+import org.triplea.server.moderator.toolbox.api.key.exception.ApiKeyLockOutMapper;
+import org.triplea.server.moderator.toolbox.api.key.exception.IncorrectApiKeyMapper;
+import org.triplea.server.moderator.toolbox.api.key.registration.ApiKeyRegistrationControllerFactory;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationControllerFactory;
-import org.triplea.server.moderator.toolbox.api.key.validation.exception.ApiKeyVerificationLockOutMapper;
-import org.triplea.server.moderator.toolbox.api.key.validation.exception.IncorrectApiKeyMapper;
 import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
 import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
 
@@ -80,18 +81,17 @@ public class ServerApplication extends Application<AppConfig> {
         .forEach(controller -> environment.jersey().register(controller));
   }
 
-
   private List<Object> exceptionMappers() {
     return ImmutableList.of(
         new IllegalArgumentMapper(),
         new IncorrectApiKeyMapper(),
-        new ApiKeyVerificationLockOutMapper());
+        new ApiKeyLockOutMapper());
   }
-
 
   private List<Object> endPointControllers(final AppConfig configuration, final Environment environment) {
     final Jdbi jdbi = createJdbi(configuration, environment);
     return ImmutableList.of(
+        ApiKeyRegistrationControllerFactory.apiKeyRegistrationController(jdbi),
         ApiKeyValidationControllerFactory.apiKeyValidationController(jdbi),
         BadWordControllerFactory.badWordController(jdbi),
         ErrorReportControllerFactory.errorReportController(configuration, jdbi),

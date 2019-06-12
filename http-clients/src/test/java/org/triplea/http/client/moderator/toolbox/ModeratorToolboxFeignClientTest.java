@@ -1,5 +1,6 @@
 package org.triplea.http.client.moderator.toolbox;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,6 +23,7 @@ import org.triplea.http.client.HttpClientTesting;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.google.gson.Gson;
 
 import lombok.Builder;
 import ru.lanwen.wiremock.ext.WiremockResolver;
@@ -58,6 +60,56 @@ class ModeratorToolboxFeignClientTest {
   static {
     headerMap = new HashMap<>();
     headerMap.put(HEADER_KEY, HEADER_VALUE);
+  }
+
+
+  private static final String API_KEY_PASSWORD = "Ah, yer not ransacking me without a punishment!";
+  private static final String API_KEY = "Amnesty ho! sail to be robed.";
+
+
+  private static final RegisterApiKeyResult REGISTER_API_KEY_SUCCESS_RESULT =
+      RegisterApiKeyResult.newApiKeyResult("result");
+  private static final RegisterApiKeyResult REGISTER_API_KEY_ERROR_RESULT =
+      RegisterApiKeyResult.newErrorResult("error");
+
+
+  @Test
+  void registerApiKeySuccessResponse(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
+    stubRegisterKeyResponse(wireMockServer, REGISTER_API_KEY_SUCCESS_RESULT);
+
+    final ModeratorToolboxFeignClient client = newClient(wireMockServer);
+
+    assertThat(
+        client.registerKey(RegisterApiKeyParam.builder()
+            .singleUseKey(API_KEY)
+            .newPassword(API_KEY_PASSWORD)
+            .build()),
+        is(REGISTER_API_KEY_SUCCESS_RESULT));
+  }
+
+  private void stubRegisterKeyResponse(final WireMockServer wireMockServer, final RegisterApiKeyResult response) {
+    wireMockServer.stubFor(
+        WireMock.post(ModeratorToolboxClient.REGISTER_API_KEY_PATH)
+            .withRequestBody(containing(API_KEY_PASSWORD))
+            .withRequestBody(containing(API_KEY_PASSWORD))
+            .willReturn(
+                WireMock.aResponse()
+                    .withStatus(200)
+                    .withBody(new Gson().toJson(response))));
+  }
+
+  @Test
+  void registerApiKeyErrorResponse(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
+    stubRegisterKeyResponse(wireMockServer, REGISTER_API_KEY_ERROR_RESULT);
+
+    final ModeratorToolboxFeignClient client = newClient(wireMockServer);
+
+    assertThat(
+        client.registerKey(RegisterApiKeyParam.builder()
+            .singleUseKey(API_KEY)
+            .newPassword(API_KEY_PASSWORD)
+            .build()),
+        is(REGISTER_API_KEY_ERROR_RESULT));
   }
 
   @Test

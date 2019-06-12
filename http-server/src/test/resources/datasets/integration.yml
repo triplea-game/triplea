@@ -6,8 +6,14 @@ lobby_user:
     email: "email@email.com"
     password: "1234567890"
 
+moderator_single_use_key:
+  - lobby_user_id: 5000
+    # api_key == sha512('password', UTF-8)
+    api_key: b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
+    date_created: 2300-01-01 23:59:59.000
+    date_used:
+
 moderator_api_key:
   - lobby_user_id: 5000
     # api_key == sha512('password', UTF-8)
     api_key: b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
-

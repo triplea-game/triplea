@@ -1,4 +1,4 @@
-package org.triplea.server.moderator.toolbox.api.key.validation;
+package org.triplea.server.moderator.toolbox.api.key;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +18,7 @@ import lombok.Setter;
 /**
  * Essentially a wrapper around a static Guava cache. Provides a nicer API and easier testing.
  */
-class InvalidKeyCache {
+public class InvalidKeyCache {
   static {
     InvalidKeyCache.setCache(
         CacheBuilder.newBuilder()
@@ -29,7 +29,7 @@ class InvalidKeyCache {
   @Setter(onMethod_ = {@VisibleForTesting})
   private static Cache<String, Integer> cache;
 
-  InvalidKeyCache() {
+  public InvalidKeyCache() {
     Preconditions.checkNotNull(cache);
   }
 

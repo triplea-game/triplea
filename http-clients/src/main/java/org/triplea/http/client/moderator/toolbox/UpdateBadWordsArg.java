@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Builder
 @Getter(AccessLevel.PACKAGE)
-public class RemoveBadWordArgs {
+public class UpdateBadWordsArg {
   @Nonnull
   private final String apiKey;
   @Nonnull
