@@ -15,7 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
-import org.triplea.server.moderator.toolbox.api.key.validation.exception.ApiKeyVerificationLockOutException;
+import org.triplea.server.moderator.toolbox.api.key.exception.ApiKeyLockOutException;
 
 @ExtendWith(MockitoExtension.class)
 class ApiKeyValidationControllerTest {
@@ -40,9 +40,9 @@ class ApiKeyValidationControllerTest {
 
   @Test
   void validateApiKeyFailureCase() {
-    doThrow(new ApiKeyVerificationLockOutException())
+    doThrow(new ApiKeyLockOutException())
         .when(apiKeyValidationService).verifyApiKey(request);
 
-    assertThrows(ApiKeyVerificationLockOutException.class, () -> apiKeyValidationController.validateApiKey(request));
+    assertThrows(ApiKeyLockOutException.class, () -> apiKeyValidationController.validateApiKey(request));
   }
 }

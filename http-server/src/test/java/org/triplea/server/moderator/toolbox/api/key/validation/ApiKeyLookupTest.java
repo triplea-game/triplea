@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.lobby.server.db.ApiKeyDao;
+import org.triplea.lobby.server.db.ApiKeyValidationDao;
 
 @ExtendWith(MockitoExtension.class)
 class ApiKeyLookupTest {
@@ -24,7 +24,7 @@ class ApiKeyLookupTest {
 
 
   @Mock
-  private ApiKeyDao apiKeyDao;
+  private ApiKeyValidationDao apiKeyDao;
   @Mock
   private Function<String, String> hashFunction;
 

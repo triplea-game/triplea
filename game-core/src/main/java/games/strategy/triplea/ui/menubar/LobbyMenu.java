@@ -36,7 +36,7 @@ import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.client.ui.TimespanDialog;
-import games.strategy.engine.lobby.moderator.toolbox.ToolBoxWindow;
+import games.strategy.engine.lobby.moderator.toolbox.ShowToolboxController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
@@ -88,7 +88,7 @@ public final class LobbyMenu extends JMenuBar {
 
   private void createToolBoxWindowMenu(final JMenu menuBar) {
     final JMenuItem menuItem = new JMenuItem("Open Toolbox (Beta)");
-    menuItem.addActionListener(event -> ToolBoxWindow.verifyApiKeyAndShowWindow(lobbyFrame));
+    menuItem.addActionListener(event -> ShowToolboxController.showToolbox(lobbyFrame));
     menuBar.add(menuItem);
   }
 

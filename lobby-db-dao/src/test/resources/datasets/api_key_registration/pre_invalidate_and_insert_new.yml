@@ -1,0 +1,14 @@
+lobby_user:
+  - id: 300000
+    username: moderator
+    password: 12345678901234567890123456
+    email: email
+    admin: false
+
+moderator_single_use_key:
+  - lobby_user_id: 300000
+    api_key: aaaaaaabbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
+    date_created: 2300-01-01 23:59:59.000
+
+moderator_action_history:
+moderator_api_key:

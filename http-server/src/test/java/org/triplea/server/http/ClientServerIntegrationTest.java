@@ -15,11 +15,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
-import org.triplea.http.client.moderator.toolbox.AddBadWordArgs;
 import org.triplea.http.client.moderator.toolbox.LookupModeratorEventsArgs;
 import org.triplea.http.client.moderator.toolbox.ModeratorEvent;
 import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
-import org.triplea.http.client.moderator.toolbox.RemoveBadWordArgs;
+import org.triplea.http.client.moderator.toolbox.UpdateBadWordsArg;
 import org.triplea.test.common.Integration;
 
 import com.github.database.rider.core.api.dataset.DataSet;
@@ -48,7 +47,9 @@ class ClientServerIntegrationTest {
 
   private static ModeratorToolboxClient moderatorToolboxClient;
   private static ErrorUploadClient errorUploadClient;
-  private static final String moderatorApiKey = "password";
+  private static final String MODERATOR_API_KEY = "pass";
+  private static final String PASSWORD = "word";
+  private static final String SINGLE_USE_KEY = "password";
 
   @BeforeAll
   static void beforeClass() {
@@ -60,7 +61,7 @@ class ClientServerIntegrationTest {
       // This is here to support an already running server to be integration tested.
       // Some care should be taken to ensure the server is restarted when/as expected.
     }
-    moderatorToolboxClient = ModeratorToolboxClient.newClient(LOCALHOST);
+    moderatorToolboxClient = ModeratorToolboxClient.newClient(LOCALHOST, PASSWORD);
     errorUploadClient = ErrorUploadClient.newClient(LOCALHOST);
   }
 
@@ -87,7 +88,7 @@ class ClientServerIntegrationTest {
   @Test
   void validateApiKey() {
     assertThat(
-        moderatorToolboxClient.validateApiKey(moderatorApiKey),
+        moderatorToolboxClient.validateApiKey(MODERATOR_API_KEY),
         is(ModeratorToolboxClient.SUCCESS));
   }
 
@@ -99,16 +100,23 @@ class ClientServerIntegrationTest {
   }
 
   @Test
+  void registerApiKey() {
+    assertThat(
+        moderatorToolboxClient.registerNewKey(SINGLE_USE_KEY).getNewApiKey(),
+        notNullValue());
+  }
+
+  @Test
   void getBadWords() {
-    assertThat(moderatorToolboxClient.getBadWords(moderatorApiKey), notNullValue());
+    assertThat(moderatorToolboxClient.getBadWords(MODERATOR_API_KEY), notNullValue());
     assertThrows(RuntimeException.class, () -> moderatorToolboxClient.getBadWords("badKey"));
   }
 
   @Test
   void addBadWord() {
     assertThat(
-        moderatorToolboxClient.addBadWord(AddBadWordArgs.builder()
-            .apiKey(moderatorApiKey)
+        moderatorToolboxClient.addBadWord(UpdateBadWordsArg.builder()
+            .apiKey(MODERATOR_API_KEY)
             .badWord("bad-word " + Math.random())
             .build()),
         is(ModeratorToolboxClient.SUCCESS));
@@ -118,14 +126,14 @@ class ClientServerIntegrationTest {
   void removeBadWord() {
     final String badWord = "bad-word" + Math.random();
 
-    moderatorToolboxClient.addBadWord(AddBadWordArgs.builder()
-        .apiKey(moderatorApiKey)
+    moderatorToolboxClient.addBadWord(UpdateBadWordsArg.builder()
+        .apiKey(MODERATOR_API_KEY)
         .badWord(badWord)
         .build());
 
     assertThat(
-        moderatorToolboxClient.removeBadWord(RemoveBadWordArgs.builder()
-            .apiKey(moderatorApiKey)
+        moderatorToolboxClient.removeBadWord(UpdateBadWordsArg.builder()
+            .apiKey(MODERATOR_API_KEY)
             .badWord(badWord)
             .build()),
         is(ModeratorToolboxClient.SUCCESS));
@@ -135,7 +143,7 @@ class ClientServerIntegrationTest {
   void lookupModeratorEvents() {
     final List<ModeratorEvent> results =
         moderatorToolboxClient.lookupModeratorEvents(LookupModeratorEventsArgs.builder()
-            .apiKey(moderatorApiKey)
+            .apiKey(MODERATOR_API_KEY)
             .rowCount(10)
             .rowStart(0)
             .build());

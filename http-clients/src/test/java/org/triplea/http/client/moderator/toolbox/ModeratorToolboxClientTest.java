@@ -4,6 +4,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -13,10 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.core.IsSame;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.HttpInteractionException;
@@ -34,23 +34,46 @@ class ModeratorToolboxClientTest {
   private static final int ROW_START = 10;
 
   private static final String API_KEY = "api-key";
+  private static final String PASSWORD = "password";
   private static final Map<String, Object> expectedHeader;
 
   static {
     expectedHeader = new HashMap<>();
-    expectedHeader.put(ModeratorToolboxClient.MODERATOR_API_KEY_HEADER, API_KEY);
+    expectedHeader.put(ModeratorToolboxClient.API_KEY_HEADER, API_KEY);
+    expectedHeader.put(ModeratorToolboxClient.API_KEY_PASSWORD_HEADER, PASSWORD);
   }
+
+  private static final RegisterApiKeyResult REGISTER_API_KEY_RESULT = RegisterApiKeyResult.builder()
+      .build();
+
 
   @Mock
   private ModeratorToolboxFeignClient moderatorToolboxFeignClient;
 
-  @InjectMocks
   private ModeratorToolboxClient moderatorToolboxClient;
-
 
   @Mock
   private ModeratorEvent moderatorEvent;
 
+  @BeforeEach
+  void setup() {
+    moderatorToolboxClient = new ModeratorToolboxClient(moderatorToolboxFeignClient, PASSWORD);
+  }
+
+
+  @Test
+  void registerApiKey() {
+    when(moderatorToolboxFeignClient.registerKey(
+        RegisterApiKeyParam.builder()
+            .singleUseKey(API_KEY)
+            .newPassword(PASSWORD)
+            .build()))
+                .thenReturn(REGISTER_API_KEY_RESULT);
+
+    assertThat(
+        moderatorToolboxClient.registerNewKey(API_KEY),
+        sameInstance(REGISTER_API_KEY_RESULT));
+  }
 
   @Test
   void validateApiKey() {
@@ -76,7 +99,7 @@ class ModeratorToolboxClientTest {
     when(moderatorToolboxFeignClient.addBadWord(expectedHeader, TEST_VALUE)).thenReturn(RETURN_VALUE);
 
     assertThat(
-        moderatorToolboxClient.addBadWord(AddBadWordArgs.builder()
+        moderatorToolboxClient.addBadWord(UpdateBadWordsArg.builder()
             .apiKey(API_KEY)
             .badWord(TEST_VALUE)
             .build()),
@@ -89,7 +112,7 @@ class ModeratorToolboxClientTest {
     when(moderatorToolboxFeignClient.addBadWord(expectedHeader, TEST_VALUE)).thenThrow(EXCEPTION);
 
     assertThat(
-        moderatorToolboxClient.addBadWord(AddBadWordArgs.builder()
+        moderatorToolboxClient.addBadWord(UpdateBadWordsArg.builder()
             .apiKey(API_KEY)
             .badWord(TEST_VALUE)
             .build()),
@@ -102,7 +125,7 @@ class ModeratorToolboxClientTest {
     when(moderatorToolboxFeignClient.removeBadWord(expectedHeader, TEST_VALUE)).thenReturn(RETURN_VALUE);
 
     assertThat(
-        moderatorToolboxClient.removeBadWord(RemoveBadWordArgs.builder()
+        moderatorToolboxClient.removeBadWord(UpdateBadWordsArg.builder()
             .apiKey(API_KEY)
             .badWord(TEST_VALUE)
             .build()),
@@ -115,7 +138,7 @@ class ModeratorToolboxClientTest {
     when(moderatorToolboxFeignClient.removeBadWord(expectedHeader, TEST_VALUE)).thenThrow(EXCEPTION);
 
     assertThat(
-        moderatorToolboxClient.removeBadWord(RemoveBadWordArgs.builder()
+        moderatorToolboxClient.removeBadWord(UpdateBadWordsArg.builder()
             .apiKey(API_KEY)
             .badWord(TEST_VALUE)
             .build()),
@@ -153,6 +176,6 @@ class ModeratorToolboxClientTest {
             .build());
 
     assertThat(results, hasSize(1));
-    assertThat(results.get(0), IsSame.sameInstance(moderatorEvent));
+    assertThat(results.get(0), sameInstance(moderatorEvent));
   }
 }

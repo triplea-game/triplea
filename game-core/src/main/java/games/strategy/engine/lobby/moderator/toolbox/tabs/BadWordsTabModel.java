@@ -4,9 +4,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.triplea.http.client.moderator.toolbox.AddBadWordArgs;
 import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
-import org.triplea.http.client.moderator.toolbox.RemoveBadWordArgs;
+import org.triplea.http.client.moderator.toolbox.UpdateBadWordsArg;
 
 import games.strategy.triplea.settings.ClientSetting;
 import lombok.Builder;
@@ -22,7 +21,7 @@ class BadWordsTabModel {
 
   String removeBadWord(final String wordToRemove) {
     return moderatorToolboxClient.removeBadWord(
-        RemoveBadWordArgs.builder()
+        UpdateBadWordsArg.builder()
             .apiKey(ClientSetting.moderatorApiKey.getValueOrThrow())
             .badWord(wordToRemove)
             .build());
@@ -34,7 +33,7 @@ class BadWordsTabModel {
 
   String addBadWord(final String newBadWord) {
     return moderatorToolboxClient.addBadWord(
-        AddBadWordArgs.builder()
+        UpdateBadWordsArg.builder()
             .apiKey(ClientSetting.moderatorApiKey.getValueOrThrow())
             .badWord(newBadWord)
             .build());

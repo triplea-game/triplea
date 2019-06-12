@@ -53,12 +53,19 @@ and api key 'password':
 ```sql
 delete from moderator_action_history;
 delete from moderator_api_key;
+delete from moderator_single_use_key;
 delete from lobby_user;
 
 insert into lobby_user(id, username, email, admin, bcrypt_password) 
 values 
   (1000, 'moderator', 'email@email.com', true,
    '$2a$10$C4rHfjK/seKexc6KlyknP.oFVBZ7Wi.kp91qUQFgmkKajwgczXzcS');
+
+insert into moderator_single_use_key(lobby_user_id, api_key)
+values(
+ 1000,
+'b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86'
+);
 
 insert into moderator_api_key(lobby_user_id, api_key)
 values(

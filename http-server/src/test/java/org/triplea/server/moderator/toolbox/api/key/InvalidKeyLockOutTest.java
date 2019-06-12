@@ -1,4 +1,4 @@
-package org.triplea.server.moderator.toolbox.api.key.validation;
+package org.triplea.server.moderator.toolbox.api.key;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

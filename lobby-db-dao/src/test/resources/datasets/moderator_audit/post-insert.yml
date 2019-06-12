@@ -1,4 +1,5 @@
 moderator_api_key:
+moderator_single_use_key:
 
 lobby_user:
   - id: 900000

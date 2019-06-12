@@ -28,7 +28,7 @@ import games.strategy.engine.chat.ChatPlayerPanel;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
-import games.strategy.engine.lobby.moderator.toolbox.ToolBoxWindow;
+import games.strategy.engine.lobby.moderator.toolbox.ShowToolboxController;
 import games.strategy.net.INode;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.menubar.LobbyMenu;
@@ -124,7 +124,7 @@ public class LobbyFrame extends JFrame {
 
     if (ClientSetting.showBetaFeatures.getValue().orElse(false)) {
       actions.add(
-          SwingAction.of("(Beta) Moderator Toolbox", e -> ToolBoxWindow.verifyApiKeyAndShowWindow(this)));
+          SwingAction.of("(Beta) Moderator Toolbox", e -> ShowToolboxController.showToolbox(this)));
     }
     return ImmutableList.copyOf(actions);
   }

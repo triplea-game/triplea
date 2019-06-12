@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 
-import org.triplea.lobby.server.db.ApiKeyDao;
+import org.triplea.lobby.server.db.ApiKeyValidationDao;
 
 import lombok.Builder;
 
@@ -17,7 +17,7 @@ import lombok.Builder;
 class ApiKeyLookup implements Function<String, Optional<Integer>> {
 
   @Nonnull
-  private final ApiKeyDao apiKeyDao;
+  private final ApiKeyValidationDao apiKeyDao;
   @Nonnull
   private final Function<String, String> hashingFunction;
 
