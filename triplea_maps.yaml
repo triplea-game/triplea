@@ -226,14 +226,22 @@
     <br>If link does not work, download manually from:
     <br>https://sourceforge.net/projects/tripleamaps/files/
     <br>
-- mapName: Domination 1914 No Mans Land
+- mapName: Domination 1914 No Man's Land
   mapCategory: BEST
   url: https://github.com/triplea-maps/domination_1914_no_mans_land/archive/master.zip
-  version: 3
+  version: 4
+  img: https://raw.githubusercontent.com/triplea-maps/domination_1914_no_mans_land/master/map/doc/images/mapScreenshot.png
   description: |
-    <br>by Imbaked
+    <br>By Imbaked
+    <br>Updated by Redrum
     <br>
     <br>WW1 mod of Domination map.
+    <br>
+    <br>Fall 1914. With the death of the Arch Duke Franz Ferdinand, Europe is plunged into war.
+    <br>Titantic armies never seen before muster for battle.
+    <br>Colonial forces of the great powers skirmish around the world.
+    <br>Soldiers of all sides are told they will be home for Christmas.
+    <br>No one suspects they will battle for years over a few miles of no mans land.
     <br>
 - mapName: World War II Classic
   mapCategory: BEST
