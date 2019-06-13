@@ -3,16 +3,21 @@
   port: 3304
   https_port: 5432
   message: |
-    Welcome to TripleA 1.9 - Got a question, please visit the forums: https://forums.triplea-game.org/
-    No talking politics in the lobby! Take your political comments to a private game!
-    Lobby Rules: https://forums.triplea-game.org/topic/4
+    The latest TripleA has important feature and security updates, please be sure you have updated in the last couple months:
+    https://triplea-game.org/download/
 
-    It's recommended that all players download and install the latest release here: https://triplea-game.org/download/
-    
     Join the TripleA ranked ladder by posting here:
     https://forums.triplea-game.org/topic/1068/invitation-requests-to-the-new-ladder-and-tournament-site
-    
+
     Sign up for Revised Tournament of Champions (ToC 14): https://forums.triplea-game.org/topic/1364/revised-tournament-of-champions-toc-14-st-nazaire-raiders
+
+    For questions or help, please visit the forums: https://forums.triplea-game.org/
+    
+    Conversations in the lobby are restricted to finding games and about TripleA game play.
+    People of all ages play TripleA, conversations here should be appropriate and welcoming.
+    Disrespect, off-topic conversations, *anything* about current politics will result in bans without warning.
+    
+    Welcome to TripleA, we are pleased you are here.
   error_message:
 - version: "1.10"
   host: lobby.triplea-game.org
