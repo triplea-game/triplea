@@ -12,6 +12,7 @@ import lombok.Getter;
 @Getter(onMethod_ = {@Override})
 class JdbcDatabaseDao implements DatabaseDao {
 
+  private final AccessLogDao accessLogDao;
   private final BadWordDao badWordDao;
   private final UsernameBlacklistDao usernameBlacklistDao;
   private final BannedMacDao bannedMacDao;
@@ -23,6 +24,8 @@ class JdbcDatabaseDao implements DatabaseDao {
     moderatorAuditHistoryDao = jdbi.onDemand(ModeratorAuditHistoryDao.class);
 
     final Supplier<Connection> connection = connectionSupplier(database);
+
+    accessLogDao = new AccessLogController(connection);
     badWordDao = new BadWordController(connection);
     bannedMacDao = new BannedMacController(connection, moderatorAuditHistoryDao);
     usernameBlacklistDao = new UsernameBlacklistController(connection, moderatorAuditHistoryDao);

@@ -11,6 +11,8 @@ public interface DatabaseDao {
 
   UserDao getUserDao();
 
+  AccessLogDao getAccessLogDao();
+
   BadWordDao getBadWordDao();
 
   ModeratorAuditHistoryDao getModeratorAuditHistoryDao();
