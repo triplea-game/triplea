@@ -3,7 +3,7 @@
   port: 3304
   https_port: 5432
   message: |
-    The latest TripleA has important feature and security updatse, please be sure you have updated in the last couple months:
+    The latest TripleA has important feature and security updates, please be sure you have updated in the last couple months:
     https://triplea-game.org/download/
 
     Join the TripleA ranked ladder by posting here:
