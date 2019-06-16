@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.error.report.ErrorUploadClient;
-import org.triplea.test.common.Integration;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.google.gson.Gson;
@@ -24,7 +23,6 @@ import ru.lanwen.wiremock.ext.WiremockUriResolver;
     WiremockResolver.class,
     WiremockUriResolver.class
 })
-@Integration
 class LobbyLoginClientTest {
   private static final LobbyLoginResponse SUCCESS_LOGIN = LobbyLoginResponse.newSuccessResponse("success");
   private static final LobbyLoginResponse FAILED_LOGIN = LobbyLoginResponse.newFailResponse("fail-reason");

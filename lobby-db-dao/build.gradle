@@ -1,5 +1,5 @@
 archivesBaseName = "$group-$name"
-description = 'TripleA Lobby DB data access layer'
+description = 'TripleA Lobby DB data access layer, Java code to query database'
 
 dependencies {
     runtimeOnly "org.postgresql:postgresql:$postgresqlVersion"

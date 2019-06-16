@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IRemoteHostUtils;
 import org.triplea.lobby.server.db.DatabaseDao;
-import org.triplea.lobby.server.db.ModeratorAuditHistoryDao;
+import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -126,7 +126,8 @@ final class ModeratorController implements IModeratorController {
         node.getName(), node.getAddress().getHostAddress(), mac, modNode.getName(),
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
     database.getModeratorAuditHistoryDao().addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
-        .moderatorName(modNode.getName())
+        .moderatorUserId(database.getUserLookupDao().lookupUserIdByName(modNode.getName())
+            .orElseThrow(() -> new IllegalStateException("Failed to find user: " + modNode.getName())))
         .actionName(ModeratorAuditHistoryDao.AuditAction.BOOT_USER_FROM_LOBBY)
         .actionTarget(node.getName())
         .build());
@@ -190,7 +191,8 @@ final class ModeratorController implements IModeratorController {
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
 
     database.getModeratorAuditHistoryDao().addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
-        .moderatorName(modNode.getName())
+        .moderatorUserId(database.getUserLookupDao().lookupUserIdByName(modNode.getName())
+            .orElseThrow(() -> new IllegalStateException("Failed to find user: " + modNode.getName())))
         .actionName(ModeratorAuditHistoryDao.AuditAction.BOOT_USER_FROM_BOT)
         .actionTarget(node.getName())
         .build());
@@ -218,7 +220,8 @@ final class ModeratorController implements IModeratorController {
         modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode)));
 
     database.getModeratorAuditHistoryDao().addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
-        .moderatorName(modNode.getName())
+        .moderatorUserId(database.getUserLookupDao().lookupUserIdByName(modNode.getName())
+            .orElseThrow(() -> new IllegalStateException("Failed to find user: " + modNode.getName())))
         .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_PLAYER_FROM_BOT)
         .actionTarget(node.getName())
         .build());

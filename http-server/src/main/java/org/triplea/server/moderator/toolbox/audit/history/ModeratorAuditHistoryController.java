@@ -4,16 +4,16 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.triplea.http.client.moderator.toolbox.ModeratorEvent;
-import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
+import org.triplea.http.client.moderator.toolbox.PagingParams;
+import org.triplea.http.client.moderator.toolbox.event.log.ModeratorEvent;
+import org.triplea.http.client.moderator.toolbox.event.log.ToolboxEventLogClient;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 import com.google.common.base.Preconditions;
@@ -37,21 +37,19 @@ public class ModeratorAuditHistoryController {
    * Use this method to retrieve moderator audit history rows. Presents a paged interface.
    *
    * @param request Contains headers, used to grab and verify moderator API key which must be present.
-   * @param rowNumber The start number when returning paged results, should be non-negative.
-   * @param rowCount The number of rows to return (ie: page size).
+   * @param pagingParams Parameter JSON object for page number and page size.
    */
-  @GET
-  @Path(ModeratorToolboxClient.AUDIT_HISTORY_PATH)
+  @POST
+  @Path(ToolboxEventLogClient.AUDIT_HISTORY_PATH)
   public Response lookupAuditHistory(
-      @Context final HttpServletRequest request,
-      @QueryParam(ModeratorToolboxClient.ROW_START_PARAM) final Integer rowNumber,
-      @QueryParam(ModeratorToolboxClient.ROW_COUNT_PARAM) final Integer rowCount) {
-    Preconditions.checkArgument(rowNumber != null);
-    Preconditions.checkArgument(rowCount != null);
+      @Context final HttpServletRequest request, final PagingParams pagingParams) {
+    Preconditions.checkArgument(pagingParams != null);
+    Preconditions.checkArgument(pagingParams.getRowNumber() >= 0);
+    Preconditions.checkArgument(pagingParams.getPageSize() > 0);
     apiKeyValidationService.verifyApiKey(request);
 
-    final List<ModeratorEvent> moderatorEvents =
-        moderatorAuditHistoryService.lookupHistory(rowNumber, rowCount);
+    final List<ModeratorEvent> moderatorEvents = moderatorAuditHistoryService.lookupHistory(
+        pagingParams.getRowNumber(), pagingParams.getPageSize());
 
     return Response
         .status(200)

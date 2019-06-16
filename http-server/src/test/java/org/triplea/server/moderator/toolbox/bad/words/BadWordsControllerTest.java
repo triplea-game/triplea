@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 import com.google.common.collect.ImmutableList;
@@ -53,7 +52,6 @@ class BadWordsControllerTest {
     final Response response = badWordsController.removeBadWord(servletRequest, TEST_VALUE);
 
     assertThat(response.getStatus(), is(200));
-    assertThat(response.getEntity(), is(ModeratorToolboxClient.SUCCESS));
   }
 
   @Test
@@ -74,7 +72,6 @@ class BadWordsControllerTest {
     final Response response = badWordsController.addBadWord(servletRequest, TEST_VALUE);
 
     assertThat(response.getStatus(), is(200));
-    assertThat(response.getEntity(), is(ModeratorToolboxClient.SUCCESS));
   }
 
   @Test

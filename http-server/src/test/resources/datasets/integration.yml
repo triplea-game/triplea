@@ -1,19 +1,98 @@
 error_report_history:
-moderator_action_history:
+bad_word:
+  - date_created: 2010-01-01 23:59:20.0
+    word: bad
+  - date_created: 2010-01-01 23:59:20.0
+    word: awful
+  - date_created: 2010-01-01 23:59:20.0
+    word: not nice
+
+banned_usernames:
+  - date_created: 2010-01-01 23:59:20.0
+    username: bad
+  - date_created: 2010-01-01 23:59:20.0
+    username: awful
+  - date_created: 2010-01-01 23:59:20.0
+    username: not nice
+
+banned_user:
+  - id: 1000
+    public_id: xyz
+    username: banned
+    hashed_mac: $1$AA$AA7qDBliIofq8jOm4nM0H/
+    ip: 1.1.1.1
+    ban_expiry: 2100-01-01 23:59:20.0
+    date_created: 2010-01-01 23:59:20.0
+  - id: 1001
+    public_id: 123
+    username: another ban
+    hashed_mac: $1$AA$AA7qDBliIofq8jOm4nMAA/
+    ip: 1.1.1.2
+    ban_expiry: 2100-01-01 23:59:20.0
+    date_created: 2010-01-01 23:59:20.0
+
 lobby_user:
   - id: 5000
-    username: "moderator"
-    email: "email@email.com"
+    username: "super-mod"
+    email: "test@test.com"
     password: "1234567890"
+    admin: true
+    super_mod: true
+  - id: 5001
+    username: "mod"
+    email: "test1@test.com"
+    password: "1234567890"
+    admin: true
+    super_mod: false
+  - id: 5002
+    username: "mod2"
+    email: "test2@test.com"
+    password: "1234567890"
+    admin: true
+    super_mod: false
+  - id: 5003
+    username: "mod3"
+    email: "test3@test.com"
+    password: "1234567890"
+    admin: true
+    super_mod: false
+  - id: 5004
+    username: "not-mod"
+    email: "test3@test.com"
+    password: "1234567890"
+    admin: false
+    super_mod: false
+
+moderator_action_history:
+  - id: 1000
+    lobby_user_id: 5000
+    date_created: 2010-01-01 23:59:20.0
+    action_name: example
+    action_target: troll
+
+access_log:
+  - access_time: 2010-01-01 23:59:20.0
+    username: example
+    ip: 1.1.1.1
+    mac: $1$AA$AA7qDBliIofq8jOm4nM0H/
+    registered: false
 
 moderator_single_use_key:
   - lobby_user_id: 5000
-    # api_key == sha512('password', UTF-8)
-    api_key: b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
+    # api_key == test
+    api_key: $2a$10$IhIXWg4HkQRWrZqjj9kV0uLrpfZqMiKSWoLDp.Yl89itgB9FRwqIW
     date_created: 2300-01-01 23:59:59.000
     date_used:
 
 moderator_api_key:
   - lobby_user_id: 5000
-    # api_key == sha512('password', UTF-8)
-    api_key: b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
+    public_id: 99999
+    # api_key password == test
+    # api_key = test
+    api_key: $2a$10$IhIXWg4HkQRWrZqjj9kV0uvcsllbXH32XMebGbNU4Stk2GsInF9VO
+  - lobby_user_id: 5000
+    public_id: 123-xyz
+    api_key: $2a$10$IhIXWg4HkQRWrZqjj9kV0uvcsllbXH32XMebGbNU4Stk2GsInFAAA
+  - lobby_user_id: 5000
+    public_id: abc
+    api_key: $2a$10$IhIXWg4HkQRWrZqjj9kV0uvcsllbXH32XMebGbNU4Stk2GsInFABC

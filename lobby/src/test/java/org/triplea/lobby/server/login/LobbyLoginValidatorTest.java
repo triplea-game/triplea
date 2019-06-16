@@ -13,8 +13,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.InetSocketAddress;
-import java.sql.Timestamp;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +29,7 @@ import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
+import org.triplea.lobby.server.db.AccessLogDao;
 import org.triplea.lobby.server.db.BadWordDao;
 import org.triplea.lobby.server.db.BannedMacDao;
 import org.triplea.lobby.server.db.DatabaseDao;
@@ -37,7 +38,6 @@ import org.triplea.lobby.server.db.UserDao;
 import org.triplea.lobby.server.db.UsernameBlacklistDao;
 import org.triplea.test.common.security.TestSecurityUtils;
 import org.triplea.util.Md5Crypt;
-import org.triplea.util.Tuple;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -57,6 +57,9 @@ final class LobbyLoginValidatorTest {
 
     @Mock
     UsernameBlacklistDao bannedUsernameDao;
+
+    @Mock
+    AccessLogDao accessLog;
 
     @Mock
     BadWordDao badWordDao;
@@ -172,6 +175,10 @@ final class LobbyLoginValidatorTest {
           remoteAddress);
     }
 
+    final void thenAccessLogShouldReceiveSuccessfulAuthentication(final UserType userType) throws Exception {
+      verify(accessLog).insert(eq(user), eq(userType));
+    }
+
     final void thenAuthenticationShouldFail() {
       assertThat(authenticationErrorMessage, is(not(nullValue())));
     }
@@ -225,7 +232,7 @@ final class LobbyLoginValidatorTest {
 
     private void givenNoMacIsBanned() {
       when(databaseDao.getBannedMacDao()).thenReturn(bannedMacDao);
-      when(bannedMacDao.isMacBanned(any(), anyString())).thenReturn(Tuple.of(false, new Timestamp(0L)));
+      when(bannedMacDao.isMacBanned(any(), anyString())).thenReturn(Optional.empty());
     }
 
     private void givenNoUsernameIsBanned() {
@@ -242,6 +249,7 @@ final class LobbyLoginValidatorTest {
       @Test
       void shouldNotCreateOrUpdateUserWhenAuthenticationSucceeds() {
         givenAnonymousAuthenticationWillSucceed();
+        when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
         whenAuthenticating(givenAuthenticationResponse());
 
@@ -276,6 +284,7 @@ final class LobbyLoginValidatorTest {
         @Test
         void shouldCreateNewUserWithOnlyMd5CryptedPassword() {
           givenUserDoesNotExist();
+          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -299,6 +308,7 @@ final class LobbyLoginValidatorTest {
         @Test
         void shouldCreateNewUserWithBothPasswords() {
           givenUserDoesNotExist();
+          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -328,6 +338,7 @@ final class LobbyLoginValidatorTest {
         void shouldNotUpdatePasswordsWhenUserHasOnlyMd5CryptedPassword() {
           givenUserDoesNotHaveBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
+          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -340,6 +351,7 @@ final class LobbyLoginValidatorTest {
         void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
+          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -375,6 +387,7 @@ final class LobbyLoginValidatorTest {
           givenUserHasMd5CryptedPassword();
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
+          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -389,6 +402,7 @@ final class LobbyLoginValidatorTest {
           givenUserHasMd5CryptedPassword();
           givenUserDoesNotHaveBcryptedPassword();
           givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
+          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -404,6 +418,7 @@ final class LobbyLoginValidatorTest {
           givenUserDoesNotHaveMd5CryptedPassword();
           givenUserHasBcryptedPassword();
           givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
+          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
           whenAuthenticating(givenAuthenticationResponse());
 
@@ -430,12 +445,14 @@ final class LobbyLoginValidatorTest {
     @Nested
     final class WhenUserIsAnonymous extends AbstractNoBansTestCase {
       @Test
-      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
+      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
         givenAnonymousAuthenticationWillSucceed();
+        when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldSucceed();
+        thenAccessLogShouldReceiveSuccessfulAuthentication(UserType.ANONYMOUS);
       }
 
       @Test
@@ -458,13 +475,15 @@ final class LobbyLoginValidatorTest {
     @Nested
     final class WhenUserIsRegistered extends AbstractNoBansTestCase {
       @Test
-      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
+      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
+        when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
         whenAuthenticating(givenAuthenticationResponse());
 
         thenAuthenticationShouldSucceed();
+        thenAccessLogShouldReceiveSuccessfulAuthentication(UserType.REGISTERED);
       }
 
       @Test

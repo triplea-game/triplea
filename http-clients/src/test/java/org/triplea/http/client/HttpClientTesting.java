@@ -3,6 +3,7 @@ package org.triplea.http.client;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -21,7 +22,13 @@ import javax.annotation.Nonnull;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
+import org.triplea.http.client.moderator.toolbox.PagingParams;
+import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -29,16 +36,77 @@ import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 
 import feign.FeignException;
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 /**
  * Utility class with tests for common http client error scenarios.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HttpClientTesting {
+
+  public static final ApiKeyPassword API_KEY_PASSWORD = ApiKeyPassword.builder()
+      .apiKey("api-key")
+      .password("key-password")
+      .build();
+
+  public static final PagingParams PAGING_PARAMS = PagingParams.builder()
+      .pageSize(10)
+      .build();
+
   private static final String CONTENT_TYPE_JSON = "application/json";
   private static final String FAILURE_MESSAGE_FROM_SERVER = "simulated failure message from server";
+  private static final ObjectMapper objectMapper;
 
-  private HttpClientTesting() {}
+  static {
+    objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+  }
+
+  /**
+   * Utility method where we send a post request with an expected string as the request body, server
+   * responds only with a status code.
+   */
+  public static void serve200ForToolboxPostWithBody(
+      final WireMockServer server, final String path, final String body) {
+    server.stubFor(
+        WireMock.post(path)
+            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY_PASSWORD.getApiKey()))
+            .withHeader(ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER, equalTo(API_KEY_PASSWORD.getPassword()))
+            .withRequestBody(equalTo(body))
+            .willReturn(WireMock.aResponse()
+                .withStatus(200)));
+  }
+
+
+  /**
+   * Utility method where we send a post request with an expected JSON as the request body, server
+   * responds only with a status code.
+   */
+  public static <T> void serve200ForToolboxPostWithBodyJson(
+      final WireMockServer server, final String path, final T jsonObject) {
+    server.stubFor(
+        WireMock.post(path)
+            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY_PASSWORD.getApiKey()))
+            .withHeader(ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER, equalTo(API_KEY_PASSWORD.getPassword()))
+            .withRequestBody(equalToJson(toJson(jsonObject)))
+            .willReturn(WireMock.aResponse()
+                .withStatus(200)));
+  }
+
+  /**
+   * Utility method to convert objects to JSON. Serialization of Instant classes is customized so that
+   * instant is serialized as "epoch_second.nanos". Without this default Instants are serialized to be
+   * JSON objects (example of what we do not want: Instant: {"second":value, "nano":value"})
+   */
+  public static <T> String toJson(final T object) {
+    try {
+      return objectMapper.writeValueAsString(object);
+    } catch (final JsonProcessingException e) {
+      throw new RuntimeException("Failed to convert to JSON string: " + object, e);
+    }
+  }
 
   /**
    * Sends a service call and simulates a 500 response coming back.

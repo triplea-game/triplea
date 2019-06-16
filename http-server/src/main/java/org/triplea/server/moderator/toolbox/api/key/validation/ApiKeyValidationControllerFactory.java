@@ -1,6 +1,7 @@
 package org.triplea.server.moderator.toolbox.api.key.validation;
 
 import org.jdbi.v3.core.Jdbi;
+import org.triplea.server.http.AppConfig;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ApiKeyValidationControllerFactory {
 
-  public static ApiKeyValidationController apiKeyValidationController(final Jdbi jdbi) {
-    return new ApiKeyValidationController(ApiKeyValidationServiceFactory.apiKeyValidationService(jdbi));
+  public static ApiKeyValidationController buildController(
+      final AppConfig appConfig, final Jdbi jdbi) {
+    return new ApiKeyValidationController(
+        ApiKeyValidationServiceFactory.apiKeyValidationService(appConfig, jdbi));
   }
 }

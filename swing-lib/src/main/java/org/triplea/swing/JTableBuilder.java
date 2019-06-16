@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import javax.swing.JTable;
@@ -34,16 +35,21 @@ public class JTableBuilder {
     return new JTableBuilder();
   }
 
+  /**
+   * Constructs the JTable swing component.
+   */
   public JTable build() {
     Preconditions.checkNotNull(columnNames);
-    Preconditions.checkNotNull(rowData);
-    verifyRowLengthsMatchHeader(rowData, columnNames.size());
+    Optional.ofNullable(rowData)
+        .ifPresent(data -> verifyRowLengthsMatchHeader(data, columnNames.size()));
 
     final DefaultTableModel model = new DefaultTableModel();
     columnNames.forEach(model::addColumn);
-    rowData.stream()
-        .map(row -> row.toArray(new String[0]))
-        .forEach(model::addRow);
+
+    Optional.ofNullable(rowData)
+        .ifPresent(data -> data.stream()
+            .map(row -> row.toArray(new String[0]))
+            .forEach(model::addRow));
     return new JTable(model);
   }
 

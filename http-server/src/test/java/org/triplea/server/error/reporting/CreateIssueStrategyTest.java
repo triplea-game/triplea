@@ -19,7 +19,7 @@ import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.error.report.ErrorUploadResponse;
 import org.triplea.http.client.github.issues.GithubIssueClient;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
-import org.triplea.lobby.server.db.ErrorReportingDao;
+import org.triplea.lobby.server.db.dao.ErrorReportingDao;
 
 @ExtendWith(MockitoExtension.class)
 class CreateIssueStrategyTest {

@@ -6,8 +6,11 @@ import java.net.URI;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
-import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
+import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
+import org.triplea.http.client.moderator.toolbox.api.key.ToolboxApiKeyClient;
+import org.triplea.java.OptionalUtils;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JPanelBuilder;
@@ -28,8 +31,6 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class EnterApiKeyPasswordWindow {
-
-
   private static final String CANCEL_BUTTON_TOOL_TIP = "Closes this window";
 
   private static final String RE_REGISTER_BUTTON_TOOL_TIP =
@@ -55,6 +56,10 @@ final class EnterApiKeyPasswordWindow {
    * </pre>
    */
   static void show(final JFrame parent, final URI serverUri) {
+    SwingUtilities.invokeLater(() -> showAction(parent, serverUri));
+  }
+
+  private static void showAction(final JFrame parent, final URI serverUri) {
     if (!ClientSetting.moderatorApiKey.isSet()) {
       SwingComponents.showDialog("Error", "Error API key not found on system");
       CreateNewApiKeyWindow.show(parent, serverUri);
@@ -77,7 +82,8 @@ final class EnterApiKeyPasswordWindow {
     final JFrame frame = JFrameBuilder.builder()
         .title("Enter API Key Password")
         .locateRelativeTo(parent)
-        .size(750, 100)
+        .size(600, 125)
+        .minSize(400, 100)
         .add(
             newFrame -> JPanelBuilder.builder()
                 .verticalBoxLayout()
@@ -144,21 +150,22 @@ final class EnterApiKeyPasswordWindow {
     return e -> new BackgroundTaskRunner(frame)
         .awaitRunInBackground(
             "Verifying", () -> {
-              final ModeratorToolboxClient toolboxClient =
-                  ModeratorToolboxClient.newClient(serverUri, passwordField.getText().trim());
-              final String storedKey = ClientSetting.moderatorApiKey.getValueOrThrow();
-              final String result = toolboxClient.validateApiKey(storedKey);
+              final ApiKeyPassword apiKeyPassword = ApiKeyPassword.builder()
+                  .password(passwordField.getText().trim())
+                  .apiKey(ClientSetting.moderatorApiKey.getValueOrThrow())
+                  .build();
 
-              if (result.equalsIgnoreCase(ModeratorToolboxClient.SUCCESS)) {
-                frame.dispose();
-                ToolBoxWindow.showWindow(frame, toolboxClient);
-              } else {
-                SwingComponents.showDialog(
-                    "Incorrect Password",
-                    "API key validation failed.\n"
-                        + "Too many failed attempts will result in lockout.\n"
-                        + "Error: " + result);
-              }
+              OptionalUtils.ifPresentOrElse(
+                  ToolboxApiKeyClient.newClient(serverUri, apiKeyPassword).validateApiKey(),
+                  error -> SwingComponents.showDialog(
+                      "Incorrect Password",
+                      "API key validation failed.\n"
+                          + "Too many failed attempts will result in lockout.\n"
+                          + "Error: " + error),
+                  () -> {
+                    frame.dispose();
+                    ToolBoxWindow.showWindow(frame, serverUri, apiKeyPassword);
+                  });
             });
   }
 }

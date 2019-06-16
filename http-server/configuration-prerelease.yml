@@ -5,6 +5,7 @@ githubApiToken: ${GITHUB_API_TOKEN:-test}
 prod: false
 logRequestAndResponses: true
 logSqlStatements: true
+bcryptSalt: $2a$10$IhIXWg4HkQRWrZqjj9kV0u
 
 database:
   driverClass: org.postgresql.Driver

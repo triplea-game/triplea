@@ -8,12 +8,17 @@ import org.glassfish.jersey.logging.LoggingFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
+import org.triplea.server.moderator.toolbox.access.log.AccessLogControllerFactory;
+import org.triplea.server.moderator.toolbox.api.key.ApiKeyControllerFactory;
 import org.triplea.server.moderator.toolbox.api.key.exception.ApiKeyLockOutMapper;
 import org.triplea.server.moderator.toolbox.api.key.exception.IncorrectApiKeyMapper;
 import org.triplea.server.moderator.toolbox.api.key.registration.ApiKeyRegistrationControllerFactory;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationControllerFactory;
 import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
 import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
+import org.triplea.server.moderator.toolbox.banned.names.UsernameBanControllerFactory;
+import org.triplea.server.moderator.toolbox.banned.users.UserBanControllerFactory;
+import org.triplea.server.moderator.toolbox.moderators.ModeratorsControllerFactory;
 
 import com.google.common.collect.ImmutableList;
 
@@ -88,14 +93,19 @@ public class ServerApplication extends Application<AppConfig> {
         new ApiKeyLockOutMapper());
   }
 
-  private List<Object> endPointControllers(final AppConfig configuration, final Environment environment) {
-    final Jdbi jdbi = createJdbi(configuration, environment);
+  private List<Object> endPointControllers(final AppConfig appConfig, final Environment environment) {
+    final Jdbi jdbi = createJdbi(appConfig, environment);
     return ImmutableList.of(
-        ApiKeyRegistrationControllerFactory.apiKeyRegistrationController(jdbi),
-        ApiKeyValidationControllerFactory.apiKeyValidationController(jdbi),
-        BadWordControllerFactory.badWordController(jdbi),
-        ErrorReportControllerFactory.errorReportController(configuration, jdbi),
-        ModeratorAuditHistoryControllerFactory.moderatorAuditHistoryController(jdbi));
+        AccessLogControllerFactory.buildController(appConfig, jdbi),
+        ApiKeyControllerFactory.buildController(appConfig, jdbi),
+        ApiKeyRegistrationControllerFactory.buildController(appConfig, jdbi),
+        ApiKeyValidationControllerFactory.buildController(appConfig, jdbi),
+        BadWordControllerFactory.buildController(appConfig, jdbi),
+        UsernameBanControllerFactory.buildController(appConfig, jdbi),
+        UserBanControllerFactory.buildController(appConfig, jdbi),
+        ErrorReportControllerFactory.buildController(appConfig, jdbi),
+        ModeratorAuditHistoryControllerFactory.buildController(appConfig, jdbi),
+        ModeratorsControllerFactory.buildController(appConfig, jdbi));
   }
 
   private Jdbi createJdbi(final AppConfig configuration, final Environment environment) {

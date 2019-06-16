@@ -1,6 +1,7 @@
 package org.triplea.swing;
 
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.LayoutManager;
@@ -97,6 +98,7 @@ public class JFrameBuilder {
     if (pack) {
       frame.pack();
     }
+    frame.setModalExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
     frame.setVisible(visible);
     return frame;
   }

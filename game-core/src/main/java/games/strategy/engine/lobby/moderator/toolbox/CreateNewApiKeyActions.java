@@ -1,9 +1,11 @@
 package games.strategy.engine.lobby.moderator.toolbox;
 
 import java.net.URI;
+import java.util.Optional;
 
-import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
-import org.triplea.http.client.moderator.toolbox.RegisterApiKeyResult;
+import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
+import org.triplea.http.client.moderator.toolbox.register.key.RegisterApiKeyResult;
+import org.triplea.http.client.moderator.toolbox.register.key.ToolboxRegisterNewKeyClient;
 import org.triplea.swing.SwingComponents;
 
 import games.strategy.triplea.settings.ClientSetting;
@@ -16,23 +18,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class CreateNewApiKeyActions {
 
-  static boolean registerApiKey(
-      final URI serverUri,
-      final String apiKey,
-      final String newPassword) {
+  static boolean registerApiKey(final URI serverUri, final ApiKeyPassword apiKeyPassword) {
 
-    final ModeratorToolboxClient toolboxClient =
-        ModeratorToolboxClient.newClient(serverUri, newPassword);
+    final ToolboxRegisterNewKeyClient registerNewKeyClient =
+        ToolboxRegisterNewKeyClient.newClient(serverUri);
 
-    final RegisterApiKeyResult result = toolboxClient.registerNewKey(apiKey);
+    final RegisterApiKeyResult result = registerNewKeyClient.registerNewKey(apiKeyPassword);
 
-    return result.getNewApiKey()
+    return Optional.ofNullable(result.getNewApiKey())
         .map(newKey -> {
           ClientSetting.moderatorApiKey.setValueAndFlush(newKey);
           return true;
         })
         .orElseGet(() -> {
-          final String error = result.getErrorMessage()
+          final String error = Optional.ofNullable(result.getErrorMessage())
               .orElseThrow(() -> new IllegalStateException(
                   "Coding bug, both API key and error message results were empty. Expected"
                       + "at least an error message or an api key to be present."));

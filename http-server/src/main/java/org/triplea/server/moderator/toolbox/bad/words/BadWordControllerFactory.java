@@ -1,8 +1,9 @@
 package org.triplea.server.moderator.toolbox.bad.words;
 
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.lobby.server.db.BadWordsDao;
-import org.triplea.lobby.server.db.ModeratorAuditHistoryDao;
+import org.triplea.lobby.server.db.dao.BadWordsDao;
+import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.server.http.AppConfig;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationServiceFactory;
 
 import lombok.AccessLevel;
@@ -14,9 +15,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BadWordControllerFactory {
 
-  public static BadWordsController badWordController(final Jdbi jdbi) {
+  public static BadWordsController buildController(
+      final AppConfig appConfig, final Jdbi jdbi) {
     return BadWordsController.builder()
-        .apiKeyValidationService(ApiKeyValidationServiceFactory.apiKeyValidationService(jdbi))
+        .apiKeyValidationService(
+            ApiKeyValidationServiceFactory.apiKeyValidationService(appConfig, jdbi))
         .badWordsService(
             new BadWordsService(
                 jdbi.onDemand(BadWordsDao.class),

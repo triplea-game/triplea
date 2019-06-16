@@ -10,7 +10,6 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
-import org.triplea.test.common.Integration;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -23,7 +22,6 @@ import ru.lanwen.wiremock.ext.WiremockUriResolver;
     WiremockResolver.class,
     WiremockUriResolver.class
 })
-@Integration
 class ErrorReportClientTest {
   private static final String MESSAGE_FROM_USER = "msg";
   private static final String LINK = "http://localhost";

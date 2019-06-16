@@ -23,7 +23,7 @@ class IpAddressExtractorTest {
   @Test
   void extractClientIp() {
     when(httpServletRequest.getHeader(IpAddressExtractor.XFORWARDED_HEADER)).thenReturn(null);
-    when(httpServletRequest.getRemoteHost()).thenReturn(REMOTE_HOST);
+    when(httpServletRequest.getRemoteAddr()).thenReturn(REMOTE_HOST);
 
     assertThat(IpAddressExtractor.extractClientIp(httpServletRequest), is(REMOTE_HOST));
   }

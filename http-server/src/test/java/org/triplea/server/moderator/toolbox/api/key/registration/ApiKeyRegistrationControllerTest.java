@@ -12,8 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.RegisterApiKeyParam;
-import org.triplea.http.client.moderator.toolbox.RegisterApiKeyResult;
+import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
+import org.triplea.http.client.moderator.toolbox.register.key.RegisterApiKeyParam;
+import org.triplea.http.client.moderator.toolbox.register.key.RegisterApiKeyResult;
 import org.triplea.server.moderator.toolbox.api.key.exception.IncorrectApiKeyException;
 
 
@@ -36,15 +37,18 @@ class ApiKeyRegistrationControllerTest {
       .newPassword("Seashell of a real life, fire the yellow fever!")
       .build();
 
-
   @Test
   void registerApiKeySuccessCase() {
+    when(httpServletRequest.getHeader(ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER))
+        .thenReturn(registerApiKeyParam.getNewPassword());
+    when(httpServletRequest.getHeader(ToolboxHttpHeaders.API_KEY_HEADER))
+        .thenReturn(registerApiKeyParam.getSingleUseKey());
     when(apiKeyRegistrationService.registerKey(
         httpServletRequest, registerApiKeyParam.getSingleUseKey(), registerApiKeyParam.getNewPassword()))
             .thenReturn(NEW_KEY);
 
     final Response response =
-        apiKeyRegistrationController.registerApiKey(httpServletRequest, registerApiKeyParam);
+        apiKeyRegistrationController.registerApiKey(httpServletRequest);
 
     assertThat(response.getStatus(), is(200));
     assertThat(response.getEntity(), is(RegisterApiKeyResult.newApiKeyResult(NEW_KEY)));
@@ -52,12 +56,16 @@ class ApiKeyRegistrationControllerTest {
 
   @Test
   void registerApiKeyFailureCase() {
+    when(httpServletRequest.getHeader(ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER))
+        .thenReturn(registerApiKeyParam.getNewPassword());
+    when(httpServletRequest.getHeader(ToolboxHttpHeaders.API_KEY_HEADER))
+        .thenReturn(registerApiKeyParam.getSingleUseKey());
     when(apiKeyRegistrationService.registerKey(
         httpServletRequest, registerApiKeyParam.getSingleUseKey(), registerApiKeyParam.getNewPassword()))
             .thenThrow(new IncorrectApiKeyException());
 
     final Response response =
-        apiKeyRegistrationController.registerApiKey(httpServletRequest, registerApiKeyParam);
+        apiKeyRegistrationController.registerApiKey(httpServletRequest);
 
     assertThat(response.getStatus(), is(400));
     assertThat(

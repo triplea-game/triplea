@@ -7,6 +7,12 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.SqlLogger;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
+import org.triplea.lobby.server.db.data.AccessLogDaoData;
+import org.triplea.lobby.server.db.data.ApiKeyDaoData;
+import org.triplea.lobby.server.db.data.ModeratorAuditHistoryDaoData;
+import org.triplea.lobby.server.db.data.ModeratorUserDaoData;
+import org.triplea.lobby.server.db.data.UserBanDaoData;
+import org.triplea.lobby.server.db.data.UsernameBanDaoData;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -43,8 +49,12 @@ public final class JdbiDatabase {
    * Registers all JDBI row mappers. These are classes that map result set values to corresponding return objects.
    */
   public static void registerRowMappers(final Jdbi jdbi) {
-    jdbi.registerRowMapper(
-        ModeratorAuditHistoryItem.class, ModeratorAuditHistoryItem.moderatorAuditHistoryItemMapper());
+    jdbi.registerRowMapper(AccessLogDaoData.class, AccessLogDaoData.buildResultMapper());
+    jdbi.registerRowMapper(ApiKeyDaoData.class, ApiKeyDaoData.buildResultMapper());
+    jdbi.registerRowMapper(UserBanDaoData.class, UserBanDaoData.buildResultMapper());
+    jdbi.registerRowMapper(UsernameBanDaoData.class, UsernameBanDaoData.buildResultMapper());
+    jdbi.registerRowMapper(ModeratorAuditHistoryDaoData.class, ModeratorAuditHistoryDaoData.buildResultMapper());
+    jdbi.registerRowMapper(ModeratorUserDaoData.class, ModeratorUserDaoData.buildResultMapper());
   }
 
   /**

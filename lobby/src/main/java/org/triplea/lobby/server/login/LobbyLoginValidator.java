@@ -2,12 +2,15 @@ package org.triplea.lobby.server.login;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
@@ -20,7 +23,6 @@ import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.db.DatabaseDao;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.util.Md5Crypt;
-import org.triplea.util.Tuple;
 import org.triplea.util.Version;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -89,7 +91,9 @@ public final class LobbyLoginValidator implements ILoginValidator {
         .inetAddress(((InetSocketAddress) remoteAddress).getAddress())
         .hashedMacAddress(clientMac)
         .build();
-    return authenticateUser(response, user);
+    final @Nullable String errorMessage = authenticateUser(response, user);
+    logAuthenticationResult(user, getUserTypeFor(response), errorMessage);
+    return errorMessage;
   }
 
   private @Nullable String authenticateUser(final Map<String, String> response, final User user) {
@@ -112,10 +116,11 @@ public final class LobbyLoginValidator implements ILoginValidator {
       // Must have been tampered with
       return ErrorMessages.INVALID_MAC;
     }
-    final Tuple<Boolean, Timestamp> macBanned = database.getBannedMacDao().isMacBanned(
-        Instant.now(), user.getHashedMacAddress());
-    if (macBanned.getFirst()) {
-      return ErrorMessages.YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(macBanned.getSecond());
+    final Optional<Timestamp> banExpiry = database.getBannedMacDao().isMacBanned(
+        user.getInetAddress(), user.getHashedMacAddress());
+
+    if (banExpiry.isPresent() && banExpiry.get().toInstant().isAfter(Instant.now())) {
+      return ErrorMessages.YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(banExpiry.get());
     }
     // test for username ban after testing normal bans, because if it is only a username ban then the user should know
     // they can change their name
@@ -142,10 +147,17 @@ public final class LobbyLoginValidator implements ILoginValidator {
     return response.containsKey(LobbyLoginResponseKeys.ANONYMOUS_LOGIN) ? UserType.ANONYMOUS : UserType.REGISTERED;
   }
 
-  private static String getBanDurationBreakdown(final Timestamp stamp) {
-    if (stamp == null) {
-      return "Banned Forever";
+  private void logAuthenticationResult(final User user, final UserType userType, final @Nullable String errorMessage) {
+    if (errorMessage == null) {
+      try {
+        database.getAccessLogDao().insert(user, userType);
+      } catch (final SQLException e) {
+        log.log(Level.SEVERE, "failed to record successful authentication in database", e);
+      }
     }
+  }
+
+  private static String getBanDurationBreakdown(final Timestamp stamp) {
     final long millis = stamp.getTime() - System.currentTimeMillis();
     if (millis < 0) {
       return "Ban time left: 1 Minute";
