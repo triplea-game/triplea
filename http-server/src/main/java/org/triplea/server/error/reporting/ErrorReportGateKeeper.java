@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Predicate;
 
-import org.triplea.lobby.server.db.ErrorReportingDao;
+import org.triplea.lobby.server.db.dao.ErrorReportingDao;
 
 import lombok.Builder;
 import lombok.NonNull;

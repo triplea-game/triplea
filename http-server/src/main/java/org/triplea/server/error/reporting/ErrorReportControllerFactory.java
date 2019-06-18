@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.http.client.github.issues.GithubIssueClient;
-import org.triplea.lobby.server.db.ErrorReportingDao;
+import org.triplea.lobby.server.db.dao.ErrorReportingDao;
 import org.triplea.server.http.AppConfig;
 
 import com.google.common.base.Preconditions;
@@ -21,7 +21,7 @@ public final class ErrorReportControllerFactory {
   /**
    * Creates a {@code ErrorReportController} with dependencies.
    */
-  public static ErrorReportController errorReportController(
+  public static ErrorReportController buildController(
       final AppConfig configuration,
       final Jdbi jdbi) {
     final GithubIssueClient githubIssueClient = GithubIssueClient.builder()

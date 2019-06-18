@@ -27,7 +27,7 @@ public class Toast {
   private final JFrame parent;
 
   private final int windowHeight = 75;
-  private final int windowWidth = 200;
+  private final int windowWidth = 400;
 
   public void showtoast() {
     SwingUtilities.invokeLater(this::showInBackground);

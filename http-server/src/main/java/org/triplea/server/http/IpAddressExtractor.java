@@ -15,7 +15,7 @@ public final class IpAddressExtractor {
   static final String XFORWARDED_HEADER = "X-Forwarded-For";
 
   /**
-   * Exracts remote host IP from either X-Forwarded-For header, and if not present, extracts
+   * Extracts remote host IP from either X-Forwarded-For header, and if not present, extracts
    * the IP address from the request object.
    *
    * @param request Request object containing remote host IP and/or X-Forwarded-For header.
@@ -25,6 +25,6 @@ public final class IpAddressExtractor {
     if (forwarded != null) {
       return forwarded;
     }
-    return request.getRemoteHost();
+    return request.getRemoteAddr();
   }
 }

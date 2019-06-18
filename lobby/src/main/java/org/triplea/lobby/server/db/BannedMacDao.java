@@ -1,12 +1,13 @@
 package org.triplea.lobby.server.db;
 
+import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 import org.triplea.lobby.server.User;
-import org.triplea.util.Tuple;
 
 /**
  * Data access object for the banned MAC table.
@@ -27,11 +28,10 @@ public interface BannedMacDao {
   /**
    * Indicates if the specified MAC is banned relative to the checkTime provided.
    *
-   * @param nowTime Typically 'now', relative time to check for a ban.
+   * @param ipAddress IP of the user to query for ban.
    * @param mac The MAC to query for a ban.
    *
-   * @return A tuple whose first element indicates if the MAC is banned or not. If the MAC is banned, the second element
-   *         is the instant at which the ban will expire or {@code null} if the MAC is banned forever.
+   * @return If MAC or IP was banned, returns the timestamp of the ban expiration.
    */
-  Tuple<Boolean, /* @Nullable */ Timestamp> isMacBanned(Instant nowTime, String mac);
+  Optional<Timestamp> isMacBanned(InetAddress ipAddress, String mac);
 }

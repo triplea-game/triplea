@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
-import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
+import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
@@ -30,16 +30,14 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class CreateNewApiKeyWindow {
-
+  private static final int API_KEY_PASSWORD_MIN_LENGTH = 4;
   private static final String WINDOW_TITLE = "Enter API Key & Create Password";
 
   private static final String DESCRIPTION_LABEL =
       String.format(
-          "<html>Enter the API key provided to you below.<br/>"
-              + "Password field is a value of your choosing, make it easy to remember.<br/>"
-              + "This is a new password for your API key.<br/>"
-              + "Password must be at least %s characters long.",
-          ModeratorToolboxClient.API_KEY_PASSWORD_MIN_LENGTH);
+          "<html>Enter the API key provided to you below. Password field is a is a new password for your API key.<br/>"
+              + "Choose a password that is easy to remember. Password must be at least %s characters long.",
+          API_KEY_PASSWORD_MIN_LENGTH);
 
   private static final String API_KEY_FIELD_LABEL = "API Key Provided to You:";
   private static final String API_KEY_FIELD_TOOL_TIP =
@@ -93,7 +91,8 @@ final class CreateNewApiKeyWindow {
     final JFrame frame = JFrameBuilder.builder()
         .title(WINDOW_TITLE)
         .locateRelativeTo(parent)
-        .size(750, 200)
+        .size(750, 250)
+        .minSize(600, 225)
         .add(
             JPanelBuilder.builder()
                 .borderLayout()
@@ -132,8 +131,10 @@ final class CreateNewApiKeyWindow {
                     () -> {
                       if (CreateNewApiKeyActions.registerApiKey(
                           serverUri,
-                          apiKeyField.getText().trim(),
-                          passwordField.getText().trim())) {
+                          ApiKeyPassword.builder()
+                              .apiKey(apiKeyField.getText().trim())
+                              .password(passwordField.getText().trim())
+                              .build())) {
                         frame.dispose();
                         EnterApiKeyPasswordWindow.show(frame, serverUri);
                       }
@@ -151,7 +152,7 @@ final class CreateNewApiKeyWindow {
 
     return () -> submitButton.setEnabled(
         // we're assuming here that the min api key length is at least the API key password min.
-        apiKeyField.getText().trim().length() >= ModeratorToolboxClient.API_KEY_PASSWORD_MIN_LENGTH
-            && passwordField.getText().trim().length() >= ModeratorToolboxClient.API_KEY_PASSWORD_MIN_LENGTH);
+        apiKeyField.getText().trim().length() >= API_KEY_PASSWORD_MIN_LENGTH
+            && passwordField.getText().trim().length() >= API_KEY_PASSWORD_MIN_LENGTH);
   }
 }

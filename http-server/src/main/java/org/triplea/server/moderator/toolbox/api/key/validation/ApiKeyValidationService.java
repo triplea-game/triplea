@@ -6,8 +6,8 @@ import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 
-import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
-import org.triplea.lobby.server.db.ApiKeyValidationDao;
+import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
+import org.triplea.lobby.server.db.dao.ModeratorApiKeyDao;
 import org.triplea.server.http.IpAddressExtractor;
 import org.triplea.server.moderator.toolbox.api.key.InvalidKeyLockOut;
 import org.triplea.server.moderator.toolbox.api.key.exception.ApiKeyLockOutException;
@@ -34,7 +34,7 @@ public class ApiKeyValidationService {
   @Nonnull
   private final BiFunction<String, String, String> keyHasher;
   @Nonnull
-  private final ApiKeyValidationDao apiKeyValidationDao;
+  private final ModeratorApiKeyDao moderatorApiKeyDao;
 
 
   /**
@@ -76,11 +76,11 @@ public class ApiKeyValidationService {
       throw new ApiKeyLockOutException();
     }
 
-    final Optional<Integer> lookupResult = apiKeyValidationDao.lookupModeratorIdByApiKey(hashedKey);
+    final Optional<Integer> lookupResult = moderatorApiKeyDao.lookupModeratorIdByApiKey(hashedKey);
 
     if (lookupResult.isPresent()) {
       validKeyCache.recordValid(hashedKey, lookupResult.get());
-      apiKeyValidationDao.recordKeyUsage(hashedKey);
+      Preconditions.checkState(moderatorApiKeyDao.recordKeyUsage(hashedKey, request.getRemoteAddr()) == 1);
       final int moderatorId = lookupResult.get();
       log.info("API Key for moderator ID: " + moderatorId + " validated successfully.");
       return moderatorId;
@@ -92,12 +92,26 @@ public class ApiKeyValidationService {
   }
 
   private String extractHashedKey(final HttpServletRequest request) {
-    final String apiKey = request.getHeader(ModeratorToolboxClient.API_KEY_HEADER);
+    final String apiKey = request.getHeader(ToolboxHttpHeaders.API_KEY_HEADER);
     Preconditions.checkArgument(apiKey != null && !apiKey.isEmpty());
 
-    final String apiKeyPassword = request.getHeader(ModeratorToolboxClient.API_KEY_PASSWORD_HEADER);
+    final String apiKeyPassword = request.getHeader(ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER);
     Preconditions.checkArgument(apiKeyPassword != null && !apiKeyPassword.isEmpty());
 
     return keyHasher.apply(apiKey, apiKeyPassword);
+  }
+
+  public int verifySuperMod(final HttpServletRequest request) {
+    return lookupSuperModByApiKey(request).orElseThrow(IncorrectApiKeyException::new);
+  }
+
+  public Optional<Integer> lookupSuperModByApiKey(final HttpServletRequest request) {
+    final String hashedKey = extractHashedKey(request);
+
+    return moderatorApiKeyDao.lookupSuperModeratorIdByApiKey(hashedKey);
+  }
+
+  void clearLockoutCache(final HttpServletRequest request) {
+    invalidKeyLockOut.clearLockouts(request);
   }
 }

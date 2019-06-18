@@ -5,7 +5,7 @@
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/http-server" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="org.triplea.lobby.server.db.*" />
+        <option name="PATTERN" value="org.triplea.lobby.server.db.dao.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

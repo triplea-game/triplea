@@ -2,8 +2,8 @@ package org.triplea.server.moderator.toolbox.bad.words;
 
 import java.util.List;
 
-import org.triplea.lobby.server.db.BadWordsDao;
-import org.triplea.lobby.server.db.ModeratorAuditHistoryDao;
+import org.triplea.lobby.server.db.dao.BadWordsDao;
+import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 
 import lombok.AllArgsConstructor;
 

@@ -82,6 +82,13 @@ public class AppConfig extends Configuration {
   @Setter(onMethod_ = {@JsonProperty})
   private boolean logSqlStatements;
 
+  /**
+   * Salt value for bcrypt hashing.
+   */
+  @Getter(onMethod_ = {@JsonProperty})
+  @Setter(onMethod_ = {@JsonProperty})
+  private String bcryptSalt;
+
   @Valid
   @NotNull
   @JsonProperty

@@ -3,8 +3,8 @@ package org.triplea.server.moderator.toolbox.audit.history;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.triplea.http.client.moderator.toolbox.ModeratorEvent;
-import org.triplea.lobby.server.db.ModeratorAuditHistoryDao;
+import org.triplea.http.client.moderator.toolbox.event.log.ModeratorEvent;
+import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 
 import lombok.AllArgsConstructor;
 

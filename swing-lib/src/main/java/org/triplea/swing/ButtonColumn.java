@@ -22,6 +22,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
+import com.google.common.base.Preconditions;
+
 
 /**
  * Based on code from: http://www.camick.com/java/source/ButtonColumn.java
@@ -92,6 +94,7 @@ public class ButtonColumn extends AbstractCellEditor
       final JTable table,
       final int column,
       final BiConsumer<Integer, DefaultTableModel> buttonListener) {
+    Preconditions.checkState(table.getModel().getColumnCount() > column);
 
     new ButtonColumn(table, column, new AbstractAction() {
       private static final long serialVersionUID = 786926815237533866L;

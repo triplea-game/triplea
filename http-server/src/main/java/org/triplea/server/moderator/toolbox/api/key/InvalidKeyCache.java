@@ -51,4 +51,11 @@ public class InvalidKeyCache {
   int totalSum() {
     return cache.asMap().values().stream().mapToInt(i -> i).sum();
   }
+
+  /**
+   * Method to be used only in pre-prod and test to clear out the invalid key cache.
+   */
+  void clear() {
+    cache.invalidateAll();
+  }
 }

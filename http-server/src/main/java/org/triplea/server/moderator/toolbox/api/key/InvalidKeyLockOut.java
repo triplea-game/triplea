@@ -22,18 +22,22 @@ public class InvalidKeyLockOut {
   private final Integer maxTotalFails;
   @Nonnull
   private final Integer maxFailsByIpAddress;
+  @Nonnull
+  private final Boolean production;
 
   @Builder
   public InvalidKeyLockOut(
       @Nonnull final InvalidKeyCache invalidKeyCache,
       final int maxTotalFails,
-      final int maxFailsByIpAddress) {
+      final int maxFailsByIpAddress,
+      final boolean production) {
     Preconditions.checkNotNull(invalidKeyCache);
     Preconditions.checkArgument(maxTotalFails >= maxFailsByIpAddress);
     Preconditions.checkArgument(maxFailsByIpAddress > 0);
     this.invalidKeyCache = invalidKeyCache;
     this.maxTotalFails = maxTotalFails;
     this.maxFailsByIpAddress = maxFailsByIpAddress;
+    this.production = production;
   }
 
   /**
@@ -44,14 +48,29 @@ public class InvalidKeyLockOut {
    * @param request Request containing moderator api key as a header.
    */
   public boolean isLockedOut(final HttpServletRequest request) {
-    final boolean lockedOut = invalidKeyCache.getCount(request) >= maxFailsByIpAddress
-        || invalidKeyCache.totalSum() >= maxTotalFails;
-
-    log.warning("Request for API key validation by: " + request.getRemoteHost() + " is locked out");
-    return lockedOut;
+    if (invalidKeyCache.getCount(request) >= maxFailsByIpAddress
+        || invalidKeyCache.totalSum() >= maxTotalFails) {
+      log.warning("Request for API key validation by: " + request.getRemoteHost() + " is locked out");
+      return true;
+    }
+    return false;
   }
 
   public void recordInvalid(final HttpServletRequest request) {
     invalidKeyCache.increment(request);
+  }
+
+  /**
+   * May only be used in non-prod, when called resets the lockout cache. This is to enable testing.
+   */
+  public synchronized void clearLockouts(final HttpServletRequest request) {
+    if (production) {
+      // if accessed in production, not allowed, immediately lock out.
+      for (int i = 0; i < maxFailsByIpAddress; i++) {
+        invalidKeyCache.increment(request);
+      }
+    }
+    Preconditions.checkArgument(!production);
+    invalidKeyCache.clear();
   }
 }

@@ -1,28 +1,42 @@
 package org.triplea.server.moderator.toolbox.api.key;
 
-import com.google.common.base.Charsets;
+import java.util.function.BiFunction;
+
+import javax.annotation.Nonnull;
+
+import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.server.http.AppConfig;
+
 import com.google.common.base.Preconditions;
-import com.google.common.hash.Hashing;
 
 import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Utility class to provide hashing functions for moderator API key.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public final class KeyHasher {
 
-  public static String applyHash(final String apiKey, final String password) {
+  @Nonnull
+  private final String keySalt;
+  @Nonnull
+  private final BiFunction<String, String, String> hashFunction;
+
+  public KeyHasher(final AppConfig appConfig) {
+    this(appConfig.getBcryptSalt(), BCrypt::hashpw);
+  }
+
+  public String applyHash(final String apiKey, final String password) {
     Preconditions.checkNotNull(apiKey);
     Preconditions.checkNotNull(password);
     return applyHash(apiKey + password);
   }
 
-  public static String applyHash(final String valueToHash) {
+  public String applyHash(final String valueToHash) {
     Preconditions.checkNotNull(valueToHash);
     Preconditions.checkArgument(!valueToHash.isEmpty());
-    // TODO: Use bcrypt hash
-    return Hashing.sha512().hashString(valueToHash, Charsets.UTF_8).toString();
+
+    return hashFunction.apply(valueToHash, keySalt);
   }
 }

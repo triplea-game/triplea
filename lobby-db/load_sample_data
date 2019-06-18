@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cat sample_data.sql | psql -h localhost -U postgres lobby

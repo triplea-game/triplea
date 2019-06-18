@@ -12,8 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.lobby.server.db.BadWordsDao;
-import org.triplea.lobby.server.db.ModeratorAuditHistoryDao;
+import org.triplea.lobby.server.db.dao.BadWordsDao;
+import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 
 import com.google.common.collect.ImmutableList;
 

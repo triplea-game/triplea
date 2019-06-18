@@ -17,7 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.ModeratorEvent;
+import org.triplea.http.client.moderator.toolbox.PagingParams;
+import org.triplea.http.client.moderator.toolbox.event.log.ModeratorEvent;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 import com.google.common.collect.ImmutableList;
@@ -47,11 +48,22 @@ class ModeratorAuditHistoryControllerTest {
   private HttpServletRequest httpServletRequest;
 
   @Test
-  void verifiesGetParameters() {
+  void verifiesPagingParameters() {
     assertThrows(IllegalArgumentException.class,
-        () -> moderatorAuditHistoryController.lookupAuditHistory(httpServletRequest, null, 1));
+        () -> moderatorAuditHistoryController.lookupAuditHistory(
+            httpServletRequest,
+            PagingParams.builder()
+                .rowNumber(-1)
+                .pageSize(100)
+                .build()));
+
     assertThrows(IllegalArgumentException.class,
-        () -> moderatorAuditHistoryController.lookupAuditHistory(httpServletRequest, 1, null));
+        () -> moderatorAuditHistoryController.lookupAuditHistory(
+            httpServletRequest,
+            PagingParams.builder()
+                .rowNumber(0)
+                .pageSize(0)
+                .build()));
   }
 
   @Test
@@ -60,7 +72,12 @@ class ModeratorAuditHistoryControllerTest {
         ImmutableList.of(EVENT_1));
 
     final Response response =
-        moderatorAuditHistoryController.lookupAuditHistory(httpServletRequest, ROW_NUMBER, ROW_COUNT);
+        moderatorAuditHistoryController.lookupAuditHistory(
+            httpServletRequest,
+            PagingParams.builder()
+                .rowNumber(ROW_NUMBER)
+                .pageSize(ROW_COUNT)
+                .build());
 
     assertThat(response.getStatus(), is(200));
     assertThat(((List) response.getEntity()).get(0), is(EVENT_1));

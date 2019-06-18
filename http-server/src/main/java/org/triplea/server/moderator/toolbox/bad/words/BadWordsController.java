@@ -11,7 +11,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.triplea.http.client.moderator.toolbox.ModeratorToolboxClient;
+import org.triplea.http.client.moderator.toolbox.bad.words.ToolboxBadWordsClient;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 import com.google.common.base.Preconditions;
@@ -38,15 +38,12 @@ public class BadWordsController {
    * @param word The new bad word entry to remove. We expect this to exist in the table or else we return a 400.
    */
   @POST
-  @Path(ModeratorToolboxClient.BAD_WORD_REMOVE_PATH)
+  @Path(ToolboxBadWordsClient.BAD_WORD_REMOVE_PATH)
   public Response removeBadWord(@Context final HttpServletRequest request, final String word) {
     Preconditions.checkArgument(word != null && !word.isEmpty());
     final int moderatorId = apiKeyValidationService.lookupModeratorIdByApiKey(request);
     return badWordsService.removeBadWord(moderatorId, word)
-        ? Response
-            .status(200)
-            .entity(ModeratorToolboxClient.SUCCESS)
-            .build()
+        ? Response.ok().build()
         : Response
             .status(400)
             .entity(word + " was not removed, it may already have been deleted")
@@ -60,15 +57,12 @@ public class BadWordsController {
    * @param word The new bad word entry to add.
    */
   @POST
-  @Path(ModeratorToolboxClient.BAD_WORD_ADD_PATH)
+  @Path(ToolboxBadWordsClient.BAD_WORD_ADD_PATH)
   public Response addBadWord(@Context final HttpServletRequest request, final String word) {
     Preconditions.checkArgument(word != null && !word.isEmpty());
     final int moderatorId = apiKeyValidationService.lookupModeratorIdByApiKey(request);
     return badWordsService.addBadWord(moderatorId, word)
-        ? Response
-            .status(200)
-            .entity(ModeratorToolboxClient.SUCCESS)
-            .build()
+        ? Response.ok().build()
         : Response
             .status(400)
             .entity(word + " was not added, it may already have been added")
@@ -76,7 +70,7 @@ public class BadWordsController {
   }
 
   @GET
-  @Path(ModeratorToolboxClient.BAD_WORD_GET_PATH)
+  @Path(ToolboxBadWordsClient.BAD_WORD_GET_PATH)
   public Response getBadWords(@Context final HttpServletRequest request) {
     apiKeyValidationService.verifyApiKey(request);
     return Response.status(200).entity(badWordsService.getBadWords()).build();

@@ -4,7 +4,7 @@ create table moderator_single_use_key
     lobby_user_id int            not null references lobby_user (id),
     date_created  timestamptz    not null default current_timestamp,
     date_used     timestamptz,
-    api_key       character(128) not null unique check (char_length(api_key) = 128)
+    api_key       varchar(128) not null unique
 );
 
 -- alter table moderator_single_use_key owner to triplea_lobby;
@@ -15,7 +15,6 @@ comment on table moderator_single_use_key is $$Stores single use api-keys used b
   key is provided to a moderator at which point they use it to do an initial authentication. If successful
   the backend generates a new, permanent key and invalidates the single use key. The single use key is
   only valid for a limited time and is valid for only one usage.$$;
-
 comment on column moderator_single_use_key.id is 'Synthetic PK column';
 comment on column moderator_single_use_key.lobby_user_id is
     'FK to lobby_user table, this is the moderator to whom the key is assigned';

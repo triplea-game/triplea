@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Supplier;
 
+import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.lobby.server.db.dao.UserLookupDao;
+
 import lombok.AllArgsConstructor;
 
 /**
@@ -17,6 +20,7 @@ import lombok.AllArgsConstructor;
 class UsernameBlacklistController implements UsernameBlacklistDao {
   private final Supplier<Connection> connection;
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+  private final UserLookupDao userLookupDao;
 
   @Override
   public void addName(final String usernameToBan, final String moderatorName) {
@@ -25,12 +29,11 @@ class UsernameBlacklistController implements UsernameBlacklistDao {
 
     final String sql = ""
         + "insert into banned_usernames "
-        + "  (username, mod_username) values (?, ?) "
+        + "  (username) values (?) "
         + "on conflict (username) do nothing";
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, usernameToBan);
-      ps.setString(2, moderatorName);
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
@@ -39,7 +42,8 @@ class UsernameBlacklistController implements UsernameBlacklistDao {
 
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
-            .moderatorName(moderatorName)
+            .moderatorUserId(userLookupDao.lookupUserIdByName(moderatorName)
+                .orElseThrow(() -> new IllegalStateException("Failed to find user: " + moderatorName)))
             .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USERNAME)
             .actionTarget(usernameToBan)
             .build());

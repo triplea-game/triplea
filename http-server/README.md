@@ -34,30 +34,85 @@ Of note, a reference to `AppConfig` is passed to the main server application
 'controllers' that would need configuration values.
 
 
+## Typical Design of Endpoints
 
-## Sample Curl Requests for local Testing
-
-
-### Error reporting
-
-```bash
-curl -X POST  -H "Content-Type: application/json" \
-  -d '{"title":"my-title", "body":"my-body"}' \
-  localhost:8080/error-report
-```
-
-```bash
-curl -X GET -H "Content-Type: application/json" \
-  localhost:8080/can-submit-error-report
-```
+Endpoints typically are powered by four types of classes.
 
 
-# TODO
+### (1) ControllerFactory class
+Wires up all dependencies and creates the controller class.
 
-- [ ] create an integration test that will simply launch the server to verify we have a 
-  valid configuration.
-- [ ] see if we can create an integration test with mocked out backend that
-  can verify http server/client interactions
+
+
+### (2) Controller class
+Controller classes need to be registered in `ServerApplicaton.java`
+to be enabled.
+
+This class contains endpoint markups and recieves HTTP requests.
+The controller methods should do quick/basic validation and then
+delegate as much as possible to a 'service' class. 
+
+### (3) Service class
+The service class contains 'business' logic and should perform any database
+interactions. The service class is also a translation layer to aggregate
+and transform data from what we get database to what the front-end HTTP
+client expects.
+
+### (4) DAO class
+
+These classes live in the `lobby-db` subproject, they interact
+with database and should have simple input/output parameters.
+
+Any transaction methods can live there as a 'default' method.
+
+For example, password hashing should be done at the service layer
+(unless we can do it by DB function in SQL directly), and then
+the hashed password is passed to DAO for lookup.
+
+
+# Design Notes
+
+## API Keys for Moderators
+
+HTTP endpoints are publicly available, they can be found and attacked.
+Any endpoint that initiates a moderator action will accept
+headers for a moderator API key and a password for that key.
+
+Any such endpoints that take moderator keys should verify
+the keys and lock out IP addresses that make too many attempts.
+
+### Key Distribution
+
+Super-moderators can elevate users to moderator and generate
+a 'single-use-key'. This key is then provided to that moderator.
+
+The moderator can then 'register' the key, where they provide
+the single-use-key and a password. The backend verifies
+the single-use-key and then generates a new key. This is 
+done so that only the moderator will then 'know' the value
+of their new key. The password provided is used as a salt.
+
+### API Key Password
+
+The purpose behind this is so that if an API key is compromised,
+it won't be useful unless the password is also compromised too.
+
+This means a moderator will need to have their OS data to
+be hacked and also a key logger or something that can scrape
+the password from in-memory of TripleA.
+
+The API key password is stored in-memory when TripleA launches
+and shall not be persisted anyways.
+
+API keys are stored in "client settings", which are stored
+with the OS and persist across TripleA installations.
+
+
+## API Key Rate Limiting
+
+Rate-limiting: of note, the backend implementation should be careful to apply rate limiting
+to any/all endpoints that take an API key so as to avoid brute-force attacks to try and crack
+an API key value.
 
 # WARNINGS!
 
@@ -97,3 +152,9 @@ Essentially fail-fast:
 - Verify that all needed GET parameters are present or terminate the request
 
 To terminate the request, just throw a IllegalArgumentException, it'l be mapped to a 400.
+
+## 404 error, but endpoint is registered!?
+
+Make sure in addition to the `@Path` annotation on the endpoint method,
+ensure the controller class has a `@Path("")` annotation on it.
+

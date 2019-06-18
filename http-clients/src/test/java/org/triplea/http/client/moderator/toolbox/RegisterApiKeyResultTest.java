@@ -1,10 +1,11 @@
 package org.triplea.http.client.moderator.toolbox;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 
 import org.junit.jupiter.api.Test;
+import org.triplea.http.client.moderator.toolbox.register.key.RegisterApiKeyResult;
 
 class RegisterApiKeyResultTest {
 
@@ -15,15 +16,15 @@ class RegisterApiKeyResultTest {
   void newApiKeyResult() {
     final RegisterApiKeyResult result = RegisterApiKeyResult.newApiKeyResult(API_KEY);
 
-    assertThat(result.getNewApiKey(), isPresentAndIs(API_KEY));
-    assertThat(result.getErrorMessage(), isEmpty());
+    assertThat(result.getNewApiKey(), is(API_KEY));
+    assertThat(result.getErrorMessage(), nullValue());
   }
 
   @Test
   void newErrorResult() {
     final RegisterApiKeyResult result = RegisterApiKeyResult.newErrorResult(ERROR_MESSAGE);
 
-    assertThat(result.getNewApiKey(), isEmpty());
-    assertThat(result.getErrorMessage(), isPresentAndIs(ERROR_MESSAGE));
+    assertThat(result.getNewApiKey(), nullValue());
+    assertThat(result.getErrorMessage(), is(ERROR_MESSAGE));
   }
 }

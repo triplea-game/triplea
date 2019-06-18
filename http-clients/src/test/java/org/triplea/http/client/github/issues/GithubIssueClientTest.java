@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
-import org.triplea.test.common.Integration;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
@@ -18,7 +17,6 @@ import ru.lanwen.wiremock.ext.WiremockUriResolver;
     WiremockResolver.class,
     WiremockUriResolver.class
 })
-@Integration
 class GithubIssueClientTest {
 
   private static final String AUTH_TOKEN = "Where is the coal-black ship?";
