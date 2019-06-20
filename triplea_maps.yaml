@@ -72,7 +72,7 @@
 - mapName: Total World War
   mapCategory: BEST
   url: https://github.com/triplea-maps/total_world_war/archive/master.zip
-  version: 13
+  version: 14
   img: https://raw.githubusercontent.com/triplea-maps/total_world_war/master/description/TripleA_total_world_war_mini.png
   description: |
     <br><em><b style="font-size: x-large;">Created by Rolf Larsson and Hepster</b></em>
@@ -101,7 +101,7 @@
     <br>
     <b>This manual is also accessible within the game using the help tab.</b>
     <br>
-    <br><b>Triplea 1.9.0.0.13066 is required to play T.W.W. 2.8.0.5 & 3.0.0.0</b>
+    <br><b>Triplea 1.9.0.0.13066 is required to play</b>
     <br>
     <p style="font-size: x-large;"><b><em>Features</em></b></p>
     <br>
@@ -110,7 +110,7 @@
       <li><b>A real technology tree and research system</b></li>
       <li><b>A 12-sided dice based game system</b></li>
       <li><b>New units like Heavy Tanks unlocked by technologies</b></li>
-      <li><b>New unit abilities that offer strategic/tactical avantages when facing certain terrains or enemy units</b></li>
+      <li><b>New unit abilities that offer strategic/tactical advantages when facing certain terrains or enemy units</b></li>
       <li><b>Lend & Lease possiblities for the Allied nations</b></li>
       <li><b>Beautiful in-game pop-up newspaper images</b></li>
       <li><b>Major & Minor nations: limiting regional capabilities</b></li>
