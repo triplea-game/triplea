@@ -147,11 +147,18 @@
 - mapName: 270BC
   mapCategory: BEST
   url: https://github.com/triplea-maps/270bc/archive/master.zip
-  version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/270bc/master/description/TripleA_270BC_mini.png
+  version: 2
+  img: https://raw.githubusercontent.com/triplea-maps/270bc/master/map/doc/images/mapScreenshot.png
   description: |
-    <br> by Dr.Che
-    <br>270BC is a beautifully made fun map. With its slow and few units, and no air, but a very dynamic income situation, as well as nicely interlinked theaters of war, it plays refreshingly different.
+    <br>By Doctor Che
+    <br>Updated by Redrum
+    <br>
+    <br>Ancient Era Map of the Mediterranean
+    <br>
+    <br>Make yourself an empire around the Mediterranean Sea (the known world),
+    <br>in the era when Hellenes, Romans, and Phoenicians ruled. Choose from a arsenal of
+    <br>legionaires, hoplites, onagers, cataphracts, triremes, war elephants, and many more.
+    <br>Territory names are based on cities at the time give or take 500 years.
     <br>
 - mapName: Civil War
   mapCategory: BEST
@@ -229,7 +236,7 @@
 - mapName: Domination 1914 No Mans Land
   mapCategory: BEST
   url: https://github.com/triplea-maps/domination_1914_no_mans_land/archive/master.zip
-  version: 6
+  version: 7
   img: https://raw.githubusercontent.com/triplea-maps/domination_1914_no_mans_land/master/map/doc/images/mapScreenshot.png
   description: |
     <br>By Imbaked
