@@ -54,9 +54,22 @@
 - mapName: Napoleonic Empires
   mapCategory: BEST
   url: https://github.com/triplea-maps/napoleonic_empires/archive/master.zip
-  version: 2
+  version: 3
+  img: https://raw.githubusercontent.com/triplea-maps/napoleonic_empires/master/map/doc/images/mapScreenshot.png
   description: |
+    <br>By LSSAH
+    <br>Updated by Veqryn and Redrum
+    <br>
     <br>Preindustrial Napoleonic era European conquest
+    <br>
+    <br>The empires of Europe are at war.
+    <br>The upstart French Republic has followed in the footsteps of their American compatriots across the sea and cast off the trappings of monarchy.
+    <br>Can this new light in Europe survive against a host of squabbling adversaries?
+    <br>Or will it fall victim to its own aspirations for an empire...
+    <br>Will the Russians be forced to sing La Marseillaise?
+    <br>Will the English see the Guillotine raised in Piccadilly?
+    <br>Or will the rule of the monarchs be ensured by the restoration of Louis XVIII to the Parisian throne?
+    <br>
 - mapName: New World Order
   url: https://github.com/triplea-maps/new_world_order/archive/master.zip
   mapCategory: BEST
