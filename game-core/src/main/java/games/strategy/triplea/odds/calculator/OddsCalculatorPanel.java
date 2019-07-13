@@ -182,6 +182,7 @@ class OddsCalculatorPanel extends JPanel {
         + "does not include Bombarding sea units for land battles.");
     retreatWhenOnlyAirLeftCheckBox.setToolTipText("We retreat if only air is left, and if 'retreat when x units "
         + "left' is positive we will retreat when x of non-air is left too.");
+    amphibiousCheckBox.setToolTipText("Determines if isMarine bonus is applied for all attacking land units");
     attackerUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
         + "include Bombarding sea units for land battles.");
     defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
