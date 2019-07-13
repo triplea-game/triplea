@@ -79,8 +79,8 @@ class OddsCalculatorPanel extends JPanel {
   private final IntTextField retreatAfterXUnitsLeft = new IntTextField();
   private final JButton calculateButton = new JButton("Pls Wait, Copying Data...");
   private final JCheckBox keepOneAttackingLandUnitCheckBox = new JCheckBox("One attacking land must live");
-  private final JCheckBox amphibiousCheckBox = new JCheckBox("Battle is Amphibious");
-  private final JCheckBox landBattleCheckBox = new JCheckBox("Land Battle");
+  private final JCheckBox amphibiousCheckBox = new JCheckBox("Add amphibious attack modifiers");
+  private final JCheckBox landBattleCheckBox = new JCheckBox("Land battle");
   private final JCheckBox retreatWhenOnlyAirLeftCheckBox = new JCheckBox("Retreat when only air left");
   private final UiContext uiContext;
   private final GameData data;
@@ -182,7 +182,7 @@ class OddsCalculatorPanel extends JPanel {
         + "does not include Bombarding sea units for land battles.");
     retreatWhenOnlyAirLeftCheckBox.setToolTipText("We retreat if only air is left, and if 'retreat when x units "
         + "left' is positive we will retreat when x of non-air is left too.");
-    amphibiousCheckBox.setToolTipText("Determines if isMarine bonus is applied for all attacking land units");
+    amphibiousCheckBox.setToolTipText("Applies amphibious attack modifiers to all attacking land units");
     attackerUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
         + "include Bombarding sea units for land battles.");
     defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
