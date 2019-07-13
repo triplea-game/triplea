@@ -598,21 +598,10 @@ class OddsCalculatorPanel extends JPanel {
         }
         calculator.setRetreatAfterRound(retreatAfterXRounds.getValue());
         calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft.getValue());
-        if (retreatWhenOnlyAirLeftCheckBox.isSelected()) {
-          calculator.setRetreatWhenOnlyAirLeft(true);
-        } else {
-          calculator.setRetreatWhenOnlyAirLeft(false);
-        }
-        if (landBattleCheckBox.isSelected() && keepOneAttackingLandUnitCheckBox.isSelected()) {
-          calculator.setKeepOneAttackingLandUnit(true);
-        } else {
-          calculator.setKeepOneAttackingLandUnit(false);
-        }
-        if (isAmphibiousBattle()) {
-          calculator.setAmphibious(true);
-        } else {
-          calculator.setAmphibious(false);
-        }
+        calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeftCheckBox.isSelected());
+        calculator.setKeepOneAttackingLandUnit(
+            landBattleCheckBox.isSelected() && keepOneAttackingLandUnitCheckBox.isSelected());
+        calculator.setAmphibious(isAmphibiousBattle());
         calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
         calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
         final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
@@ -756,21 +745,15 @@ class OddsCalculatorPanel extends JPanel {
       final int defenseHitPoints = BattleCalculator.getTotalHitpointsLeft(defenders);
       attackerUnitsTotalHitpoints.setText("HP: " + attackHitPoints);
       defenderUnitsTotalHitpoints.setText("HP: " + defenseHitPoints);
-      final boolean isAmphibiousBattle = isAmphibiousBattle();
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
       attackers.sort(new UnitBattleComparator(false, costs, territoryEffects, data, false, false));
       Collections.reverse(attackers);
       final int attackPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers, defenders,
-          false, data, location, territoryEffects, isAmphibiousBattle,
-          (isAmphibiousBattle ? attackers : new ArrayList<>())), data);
+          false, data, location, territoryEffects, isAmphibiousBattle(), attackers), data);
       // defender is never amphibious
-      final int defensePower =
-          DiceRoll
-              .getTotalPower(
-                  DiceRoll.getUnitPowerAndRollsForNormalBattles(defenders, attackers, true,
-                      data, location, territoryEffects, isAmphibiousBattle, new ArrayList<>()),
-                  data);
+      final int defensePower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(defenders,
+          attackers, true, data, location, territoryEffects, false, new ArrayList<>()), data);
       attackerUnitsTotalPower.setText("Power: " + attackPower);
       defenderUnitsTotalPower.setText("Power: " + defensePower);
     } finally {
