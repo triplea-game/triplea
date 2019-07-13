@@ -50,6 +50,7 @@ import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.engine.history.History;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -596,6 +597,11 @@ class OddsCalculatorPanel extends JPanel {
         if (isLand()) {
           bombarding = CollectionUtils.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
           attacking.removeAll(bombarding);
+          final int numLandUnits = CollectionUtils.countMatches(attacking, Matches.unitIsLand());
+          if (Properties.getShoreBombardPerGroundUnitRestricted(data) && numLandUnits < bombarding.size()) {
+            BattleDelegate.sortUnitsToBombard(bombarding);
+            bombarding = new ArrayList<>(bombarding.subList(0, numLandUnits));
+          }
         }
         calculator.setRetreatAfterRound(retreatAfterXRounds.getValue());
         calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft.getValue());

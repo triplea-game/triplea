@@ -238,10 +238,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     return battleTracker.getPendingBattleSites();
   }
 
-  private static boolean isShoreBombardPerGroundUnitRestricted(final GameData data) {
-    return Properties.getShoreBombardPerGroundUnitRestricted(data);
-  }
-
   public BattleTracker getBattleTracker() {
     return battleTracker;
   }
@@ -255,7 +251,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final ITripleAPlayer remotePlayer = getRemotePlayer();
     final Predicate<Unit> ownedAndCanBombard = Matches.unitCanBombard(attacker).and(Matches.unitIsOwnedBy(attacker));
     final Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
-    final boolean shoreBombardPerGroundUnitRestricted = isShoreBombardPerGroundUnitRestricted(getData());
     for (final Territory t : adjBombardment.keySet()) {
       if (!battleTracker.hasPendingBattle(t, false)) {
         Collection<IBattle> battles = adjBombardment.get(t);
@@ -263,7 +258,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (!battles.isEmpty()) {
           final Collection<Unit> bombardUnits = t.getUnitCollection().getMatches(ownedAndCanBombard);
           final List<Unit> listedBombardUnits = new ArrayList<>(bombardUnits);
-          sortUnitsToBombard(listedBombardUnits, attacker);
+          sortUnitsToBombard(listedBombardUnits);
           if (!bombardUnits.isEmpty()) {
             // ask if they want to bombard
             if (!remotePlayer.selectShoreBombard(t)) {
@@ -273,11 +268,10 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
           for (final Unit u : listedBombardUnits) {
             final IBattle battle = selectBombardingBattle(u, t, battles);
             if (battle != null) {
-              if (shoreBombardPerGroundUnitRestricted) {
-                if (battle.getAmphibiousLandAttackers().size() <= battle.getBombardingUnits().size()) {
-                  battles.remove(battle);
-                  break;
-                }
+              if (Properties.getShoreBombardPerGroundUnitRestricted(getData())
+                  && battle.getAmphibiousLandAttackers().size() <= battle.getBombardingUnits().size()) {
+                battles.remove(battle);
+                break;
               }
               battle.addBombardingUnit(u);
             }
@@ -290,11 +284,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   /**
    * Sort the specified units in preferred movement or unload order.
    */
-  private static void sortUnitsToBombard(final List<Unit> units, final PlayerId player) {
+  public static void sortUnitsToBombard(final List<Unit> units) {
     if (units.isEmpty()) {
       return;
     }
-    units.sort(UnitComparator.getDecreasingAttackComparator(player));
+    units.sort(UnitComparator.getDecreasingBombardComparator());
   }
 
   /**
@@ -334,7 +328,6 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
    */
   private IBattle selectBombardingBattle(final Unit u, final Territory unitTerritory,
       final Collection<IBattle> battles) {
-    final boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(getData());
     // If only one battle to select from just return that battle
     if ((battles.size() == 1)) {
       return battles.iterator().next();
@@ -343,11 +336,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Map<Territory, IBattle> battleTerritories = new HashMap<>();
     for (final IBattle battle : battles) {
       // If Restricted & # of bombarding units => landing units, don't add territory to list to bombard
-      if (bombardRestricted) {
-        if (battle.getBombardingUnits().size() < battle.getAmphibiousLandAttackers().size()) {
-          territories.add(battle.getTerritory());
-        }
-      } else {
+      if (!Properties.getShoreBombardPerGroundUnitRestricted(getData())
+          || (battle.getBombardingUnits().size() < battle.getAmphibiousLandAttackers().size())) {
         territories.add(battle.getTerritory());
       }
       battleTerritories.put(battle.getTerritory(), battle);
