@@ -600,6 +600,7 @@ class OddsCalculatorPanel extends JPanel {
           final int numLandUnits = CollectionUtils.countMatches(attacking, Matches.unitIsLand());
           if (Properties.getShoreBombardPerGroundUnitRestricted(data) && numLandUnits < bombarding.size()) {
             BattleDelegate.sortUnitsToBombard(bombarding);
+            // Create new list as needs to be serializable which subList isn't
             bombarding = new ArrayList<>(bombarding.subList(0, numLandUnits));
           }
         }
