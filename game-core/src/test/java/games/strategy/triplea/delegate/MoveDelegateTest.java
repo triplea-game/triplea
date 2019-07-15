@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -505,7 +506,9 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final List<Unit> attackList = bomber.create(2, russians);
     attackList.addAll(attackTrns);
     whenGetRandom(bridge).thenAnswer(withValues(1, 1));
-    final DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, bridge, mock(IBattle.class), "",
+    final IBattle battle = mock(IBattle.class);
+    when(battle.getTerritory()).thenReturn(westEurope);
+    final DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, bridge, battle, "",
         TerritoryEffectHelper.getEffects(balticSeaZone), null);
     assertEquals(2, roll.getHits());
     advanceToStep(bridge, "russianNonCombatMove");

@@ -50,6 +50,7 @@ import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.engine.history.History;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -79,8 +80,8 @@ class OddsCalculatorPanel extends JPanel {
   private final IntTextField retreatAfterXUnitsLeft = new IntTextField();
   private final JButton calculateButton = new JButton("Pls Wait, Copying Data...");
   private final JCheckBox keepOneAttackingLandUnitCheckBox = new JCheckBox("One attacking land must live");
-  private final JCheckBox amphibiousCheckBox = new JCheckBox("Battle is Amphibious");
-  private final JCheckBox landBattleCheckBox = new JCheckBox("Land Battle");
+  private final JCheckBox amphibiousCheckBox = new JCheckBox("Add amphibious attack modifiers");
+  private final JCheckBox landBattleCheckBox = new JCheckBox("Land battle");
   private final JCheckBox retreatWhenOnlyAirLeftCheckBox = new JCheckBox("Retreat when only air left");
   private final UiContext uiContext;
   private final GameData data;
@@ -182,6 +183,7 @@ class OddsCalculatorPanel extends JPanel {
         + "does not include Bombarding sea units for land battles.");
     retreatWhenOnlyAirLeftCheckBox.setToolTipText("We retreat if only air is left, and if 'retreat when x units "
         + "left' is positive we will retreat when x of non-air is left too.");
+    amphibiousCheckBox.setToolTipText("Applies amphibious attack modifiers to all attacking land units");
     attackerUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
         + "include Bombarding sea units for land battles.");
     defenderUnitsTotalNumber.setToolTipText("Totals do not include AA guns and other infrastructure, and does not "
@@ -595,24 +597,19 @@ class OddsCalculatorPanel extends JPanel {
         if (isLand()) {
           bombarding = CollectionUtils.getMatches(attacking, Matches.unitCanBombard(getAttacker()));
           attacking.removeAll(bombarding);
+          final int numLandUnits = CollectionUtils.countMatches(attacking, Matches.unitIsLand());
+          if (Properties.getShoreBombardPerGroundUnitRestricted(data) && numLandUnits < bombarding.size()) {
+            BattleDelegate.sortUnitsToBombard(bombarding);
+            // Create new list as needs to be serializable which subList isn't
+            bombarding = new ArrayList<>(bombarding.subList(0, numLandUnits));
+          }
         }
         calculator.setRetreatAfterRound(retreatAfterXRounds.getValue());
         calculator.setRetreatAfterXUnitsLeft(retreatAfterXUnitsLeft.getValue());
-        if (retreatWhenOnlyAirLeftCheckBox.isSelected()) {
-          calculator.setRetreatWhenOnlyAirLeft(true);
-        } else {
-          calculator.setRetreatWhenOnlyAirLeft(false);
-        }
-        if (landBattleCheckBox.isSelected() && keepOneAttackingLandUnitCheckBox.isSelected()) {
-          calculator.setKeepOneAttackingLandUnit(true);
-        } else {
-          calculator.setKeepOneAttackingLandUnit(false);
-        }
-        if (isAmphibiousBattle()) {
-          calculator.setAmphibious(true);
-        } else {
-          calculator.setAmphibious(false);
-        }
+        calculator.setRetreatWhenOnlyAirLeft(retreatWhenOnlyAirLeftCheckBox.isSelected());
+        calculator.setKeepOneAttackingLandUnit(
+            landBattleCheckBox.isSelected() && keepOneAttackingLandUnitCheckBox.isSelected());
+        calculator.setAmphibious(isAmphibiousBattle());
         calculator.setAttackerOrderOfLosses(attackerOrderOfLosses);
         calculator.setDefenderOrderOfLosses(defenderOrderOfLosses);
         final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
@@ -756,21 +753,15 @@ class OddsCalculatorPanel extends JPanel {
       final int defenseHitPoints = BattleCalculator.getTotalHitpointsLeft(defenders);
       attackerUnitsTotalHitpoints.setText("HP: " + attackHitPoints);
       defenderUnitsTotalHitpoints.setText("HP: " + defenseHitPoints);
-      final boolean isAmphibiousBattle = isAmphibiousBattle();
       final Collection<TerritoryEffect> territoryEffects = getTerritoryEffects();
       final IntegerMap<UnitType> costs = TuvUtils.getCostsForTuv(getAttacker(), data);
       attackers.sort(new UnitBattleComparator(false, costs, territoryEffects, data, false, false));
       Collections.reverse(attackers);
       final int attackPower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(attackers, defenders,
-          false, data, location, territoryEffects, isAmphibiousBattle,
-          (isAmphibiousBattle ? attackers : new ArrayList<>())), data);
+          false, data, location, territoryEffects, isAmphibiousBattle(), attackers), data);
       // defender is never amphibious
-      final int defensePower =
-          DiceRoll
-              .getTotalPower(
-                  DiceRoll.getUnitPowerAndRollsForNormalBattles(defenders, attackers, true,
-                      data, location, territoryEffects, isAmphibiousBattle, new ArrayList<>()),
-                  data);
+      final int defensePower = DiceRoll.getTotalPower(DiceRoll.getUnitPowerAndRollsForNormalBattles(defenders,
+          attackers, true, data, location, territoryEffects, false, new ArrayList<>()), data);
       attackerUnitsTotalPower.setText("Power: " + attackPower);
       defenderUnitsTotalPower.setText("Power: " + defensePower);
     } finally {

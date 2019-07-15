@@ -127,9 +127,9 @@ public final class UnitComparator {
         .thenComparing(getMovableUnitsComparator(units, route));
   }
 
-  static Comparator<Unit> getDecreasingAttackComparator(final PlayerId player) {
+  static Comparator<Unit> getDecreasingBombardComparator() {
     return Comparator.comparing(Unit::getType,
         Comparator.comparing(UnitAttachment::get,
-            Comparator.<UnitAttachment>comparingInt(u -> u.getAttack(player)).reversed()));
+            Comparator.comparingInt(UnitAttachment::getBombard).reversed()));
   }
 }
