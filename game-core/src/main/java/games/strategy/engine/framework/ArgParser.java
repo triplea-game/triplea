@@ -1,6 +1,5 @@
 package games.strategy.engine.framework;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
@@ -32,13 +31,8 @@ public final class ArgParser {
   }
 
   private static void handleMapDownloadArg(final String arg) {
-    final String encoding = StandardCharsets.UTF_8.displayName();
-    try {
-      setSystemPropertyOrClientSetting(CliProperties.TRIPLEA_MAP_DOWNLOAD,
-          URLDecoder.decode(arg.substring(TRIPLEA_PROTOCOL.length()), encoding));
-    } catch (final UnsupportedEncodingException e) {
-      throw new AssertionError(encoding + " is not a supported encoding!", e);
-    }
+    setSystemPropertyOrClientSetting(CliProperties.TRIPLEA_MAP_DOWNLOAD,
+        URLDecoder.decode(arg.substring(TRIPLEA_PROTOCOL.length()), StandardCharsets.UTF_8));
   }
 
   private static void setSystemPropertyOrClientSetting(final String key, final String value) {
