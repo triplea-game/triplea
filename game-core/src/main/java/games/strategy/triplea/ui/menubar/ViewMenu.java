@@ -512,7 +512,7 @@ final class ViewMenu extends JMenu {
   private void addFindTerritory() {
     final JMenuItem menuItem = add(new FindTerritoryAction(frame));
     menuItem
-        .setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        .setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
     menuItem.setMnemonic(KeyEvent.VK_F);
   }
 }

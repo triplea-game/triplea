@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +41,7 @@ class InvalidKeyCacheTest {
     invalidKeyCache = new InvalidKeyCache();
   }
 
+  @SuppressWarnings("unchecked")
   @AfterEach
   void tearDown() {
     reset(cache);
