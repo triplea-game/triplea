@@ -126,8 +126,8 @@ final class GameMenu extends JMenu {
       final int availWidth = screenResolution.width - 40;
 
       scroll.setPreferredSize(
-          new Dimension((Math.min(scroll.getPreferredSize().width, availWidth)),
-              (Math.min(scroll.getPreferredSize().height, availHeight))));
+          new Dimension(Math.min(scroll.getPreferredSize().width, availWidth),
+              Math.min(scroll.getPreferredSize().height, availHeight)));
 
       JOptionPane.showMessageDialog(frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
     }));
