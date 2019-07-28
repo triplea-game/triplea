@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -65,7 +66,7 @@ class DownloadFileProperties {
   void setFrom(final DownloadFileDescription selected) {
     setVersion(selected.getVersion());
     props.setProperty("map.url", selected.getUrl());
-    props.setProperty("download.time", TimeManager.toDateString(LocalDateTime.now()));
+    props.setProperty("download.time", TimeManager.toDateString(LocalDateTime.now(ZoneId.systemDefault())));
     props.setProperty("engine.version", ClientContext.engineVersion().toString());
   }
 }

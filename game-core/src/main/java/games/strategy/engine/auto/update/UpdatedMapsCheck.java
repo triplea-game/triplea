@@ -1,6 +1,7 @@
 package games.strategy.engine.auto.update;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -14,7 +15,7 @@ final class UpdatedMapsCheck {
 
   static boolean isMapUpdateCheckRequired() {
     return isMapUpdateCheckRequired(
-        LocalDate.now(),
+        LocalDate.now(ZoneId.systemDefault()),
         ClientSetting.lastCheckForMapUpdates,
         ClientSetting::flush);
   }
