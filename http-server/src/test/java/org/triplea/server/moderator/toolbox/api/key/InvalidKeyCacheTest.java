@@ -50,7 +50,7 @@ class InvalidKeyCacheTest {
 
   @Test
   void incrementWithNewKey() {
-    when(httpServletRequest.getRemoteHost()).thenReturn(IP_ADDRESS_1);
+    when(httpServletRequest.getRemoteAddr()).thenReturn(IP_ADDRESS_1);
     when(cache.getIfPresent(IP_ADDRESS_1)).thenReturn(null);
 
     invalidKeyCache.increment(httpServletRequest);
@@ -60,17 +60,17 @@ class InvalidKeyCacheTest {
 
   @Test
   void incrementWithExistingKey() {
-    when(httpServletRequest.getRemoteHost()).thenReturn(IP_ADDRESS_1);
+    when(httpServletRequest.getRemoteAddr()).thenReturn(IP_ADDRESS_1);
     when(cache.getIfPresent(IP_ADDRESS_1)).thenReturn(1);
 
     invalidKeyCache.increment(httpServletRequest);
 
-    verify(cache).put(IP_ADDRESS_1, 1);
+    verify(cache).put(IP_ADDRESS_1, 2);
   }
 
   @Test
   void getCountWithNewKey() {
-    when(httpServletRequest.getRemoteHost()).thenReturn(IP_ADDRESS_1);
+    when(httpServletRequest.getRemoteAddr()).thenReturn(IP_ADDRESS_1);
     when(cache.getIfPresent(IP_ADDRESS_1)).thenReturn(null);
 
     assertThat(invalidKeyCache.getCount(httpServletRequest), is(0));
@@ -78,7 +78,7 @@ class InvalidKeyCacheTest {
 
   @Test
   void getCountWithExistingKey() {
-    when(httpServletRequest.getRemoteHost()).thenReturn(IP_ADDRESS_1);
+    when(httpServletRequest.getRemoteAddr()).thenReturn(IP_ADDRESS_1);
     when(cache.getIfPresent(IP_ADDRESS_1)).thenReturn(1);
 
     assertThat(invalidKeyCache.getCount(httpServletRequest), is(1));
