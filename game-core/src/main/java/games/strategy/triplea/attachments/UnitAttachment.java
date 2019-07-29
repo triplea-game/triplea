@@ -2745,7 +2745,7 @@ public class UnitAttachment extends DefaultAttachment {
         + "  carrierCost:" + carrierCost
         + "  canEvade:" + canEvade
         + "  isFirstStrike:" + isFirstStrike
-        + "  canNotTarget:" + (canNotTarget.isEmpty() ? "empty" : canNotTarget.toString())
+        + "  canNotTarget:" + (canNotTarget == null || canNotTarget.isEmpty() ? "empty" : canNotTarget.toString())
         + "  canNotBeTargetedBy:" + (canNotBeTargetedBy.isEmpty() ? "empty" : canNotBeTargetedBy.toString())
         + "  canMoveThroughEnemies:" + canMoveThroughEnemies
         + "  canBeMovedThroughByEnemies:" + canBeMovedThroughByEnemies
