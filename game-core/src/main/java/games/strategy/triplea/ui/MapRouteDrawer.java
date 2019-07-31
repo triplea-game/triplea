@@ -431,11 +431,9 @@ public class MapRouteDrawer {
    */
   private void drawArrow(final Graphics2D graphics, final Point2D from, final Point2D to) {
     final Shape arrow = newArrowTipShape(Math.atan2(to.getY() - from.getY(), to.getX() - from.getX()));
-    final double scale = mapPanel.getScale();
-    final Shape antiScaledArrow = AffineTransform.getScaleInstance(1 / scale, 1 / scale).createTransformedShape(arrow);
     final AffineTransform transform = getDrawingTransform();
     transform.translate(to.getX(), to.getY());
-    graphics.fill(transform.createTransformedShape(antiScaledArrow));
+    graphics.fill(transform.createTransformedShape(arrow));
   }
 
   private AffineTransform getDrawingTransform() {

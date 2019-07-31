@@ -98,6 +98,8 @@ public class ImageScrollerLargeView extends JComponent {
         // compute the amount to move
         int dx = 0;
         int dy = 0;
+        // In java 11 SHIFT_DOWN_MASK seems to be true for sideways scrolling
+        // this doesn't seem to be documented anywhere, but we'll take it for now
         if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
           dx = (int) (e.getPreciseWheelRotation() * ClientSetting.wheelScrollAmount.getValueOrThrow());
         } else {

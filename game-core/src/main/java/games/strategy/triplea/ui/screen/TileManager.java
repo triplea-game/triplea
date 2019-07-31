@@ -480,7 +480,7 @@ public class TileManager {
         final IDrawable drawable = iter.next();
         if (drawable instanceof MapTileDrawable) {
           iter.remove();
-          toAdd.add(((MapTileDrawable) drawable).getUnscaledCopy());
+          toAdd.add(drawable);
         }
       }
       drawablesSet.addAll(toAdd);

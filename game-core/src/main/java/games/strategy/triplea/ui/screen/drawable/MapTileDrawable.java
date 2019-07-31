@@ -21,16 +21,12 @@ public abstract class MapTileDrawable implements IDrawable {
   @SuppressWarnings("checkstyle:MemberName")
   protected final int y;
   protected final UiContext uiContext;
-  protected boolean unscaled;
 
   protected MapTileDrawable(final int x, final int y, final UiContext uiContext) {
     this.x = x;
     this.y = y;
     this.uiContext = uiContext;
-    unscaled = false;
   }
-
-  public abstract MapTileDrawable getUnscaledCopy();
 
   protected abstract Image getImage();
 
