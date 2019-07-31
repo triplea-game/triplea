@@ -14,7 +14,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,8 +84,8 @@ public class ImageScrollerLargeView extends JComponent {
     setMaximumSize(getImageDimensions());
     final MouseWheelListener mouseWheelListener = e -> {
       if (e.isControlDown()) {
-        final var oldWidth = model.getBoxWidth();
-        final var oldHeight = model.getBoxHeight();
+        final int oldWidth = model.getBoxWidth();
+        final int oldHeight = model.getBoxHeight();
         setScale(scale - 0.1 * e.getPreciseWheelRotation());
         model.set(
             model.getX() + (int) ((getMousePosition().getX() / getWidth()) * (oldWidth - model.getBoxWidth())),

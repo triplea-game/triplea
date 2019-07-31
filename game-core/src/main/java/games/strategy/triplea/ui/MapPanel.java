@@ -718,7 +718,6 @@ public class MapPanel extends ImageScrollerLargeView {
           images.add(tile);
         }
         if (img != null) {
-          var start = System.nanoTime();
           g.drawImage(img, AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y), this);
         }
       } finally {
