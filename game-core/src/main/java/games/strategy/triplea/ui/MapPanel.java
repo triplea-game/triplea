@@ -704,6 +704,7 @@ public class MapPanel extends ImageScrollerLargeView {
 
   private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data,
       final Rectangle2D.Double bounds, final List<Tile> undrawn) {
+    g.translate(-bounds.getX(), -bounds.getY());
     for (final Tile tile : tileManager.getTiles(bounds)) {
       tile.acquireLock();
       try {
@@ -717,14 +718,14 @@ public class MapPanel extends ImageScrollerLargeView {
           images.add(tile);
         }
         if (img != null) {
-          final AffineTransform t = new AffineTransform();
-          t.translate(tile.getBounds().x - bounds.getX(), tile.getBounds().y - bounds.getY());
-          g.drawImage(img, t, this);
+          var start = System.nanoTime();
+          g.drawImage(img, AffineTransform.getTranslateInstance(tile.getBounds().x, tile.getBounds().y), this);
         }
       } finally {
         tile.releaseLock();
       }
     }
+    g.translate(bounds.getX(), bounds.getY());
   }
 
   Image getTerritoryImage(final Territory territory) {
