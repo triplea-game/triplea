@@ -22,7 +22,7 @@ dependencies {
     implementation project(':game-core')
     implementation project(':java-extras')
     implementation project(':swing-lib')
-    implementation 'org.pushing-pixels:radiance-substance:1.0.2'
+    implementation 'org.pushing-pixels:radiance-substance:2.0.1'
     implementation 'org.openjfx:javafx:11'
 
     testImplementation project(':test-common')
