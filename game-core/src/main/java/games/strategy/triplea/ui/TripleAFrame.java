@@ -705,14 +705,14 @@ public final class TripleAFrame extends JFrame {
   /**
    * Sets the map scale.
    *
-   * @param value a number between 10 and 200.
+   * @param value a number between 15 and 100.
    */
   public void setScale(final double value) {
     getMapPanel().setScale(value / 100);
   }
 
   /**
-   * Returns a scale between 10 and 200.
+   * Returns a scale between 15 and 100.
    */
   private double getScale() {
     return getMapPanel().getScale() * 100;
