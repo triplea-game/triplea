@@ -563,9 +563,10 @@ public class MapPanel extends ImageScrollerLargeView {
         try {
           final Image img = tile.getImage(gameData, uiContext.getMapData());
           if (img != null) {
-            final AffineTransform t = new AffineTransform();
-            t.translate((tile.getBounds().x - bounds.getX()) * scale, (tile.getBounds().y - bounds.getY()) * scale);
-            g2d.drawImage(img, t, this);
+            g2d.drawImage(img,
+                AffineTransform.getTranslateInstance(
+                    tile.getBounds().x - bounds.getX(),
+                    tile.getBounds().y - bounds.getY()), this);
           }
         } finally {
           tile.releaseLock();
