@@ -43,8 +43,7 @@ public interface IDrawable {
    * The affine transform will be set to the scaled version.
    * </p>
    */
-  void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled,
-      AffineTransform scaled);
+  void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled);
 
   int getLevel();
 

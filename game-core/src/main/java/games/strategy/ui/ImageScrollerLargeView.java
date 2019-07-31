@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +84,14 @@ public class ImageScrollerLargeView extends JComponent {
     setPreferredSize(getImageDimensions());
     setMaximumSize(getImageDimensions());
     final MouseWheelListener mouseWheelListener = e -> {
-      if (!e.isAltDown()) {
+      if (e.isControlDown()) {
+        final var oldWidth = model.getBoxWidth();
+        final var oldHeight = model.getBoxHeight();
+        setScale(scale - 0.1 * e.getPreciseWheelRotation());
+        model.set(
+            model.getX() + (int) ((getMousePosition().getX() / getWidth()) * (oldWidth - model.getBoxWidth())),
+            model.getY() + (int) ((getMousePosition().getY() / getHeight()) * (oldHeight - model.getBoxHeight())));
+      } else {
         if (edge == NONE) {
           insideCount = 0;
         }
@@ -91,47 +99,12 @@ public class ImageScrollerLargeView extends JComponent {
         int dx = 0;
         int dy = 0;
         if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
-          dx = e.getWheelRotation() * ClientSetting.wheelScrollAmount.getValueOrThrow();
+          dx = (int) (e.getPreciseWheelRotation() * ClientSetting.wheelScrollAmount.getValueOrThrow());
         } else {
-          dy = e.getWheelRotation() * ClientSetting.wheelScrollAmount.getValueOrThrow();
+          dy = (int) (e.getPreciseWheelRotation() * ClientSetting.wheelScrollAmount.getValueOrThrow());
         }
         // Update the model, which will handle its own clamping or wrapping depending on the map.
         this.model.set(this.model.getX() + dx, this.model.getY() + dy);
-      } else {
-        double value = scale;
-        int positive = 1;
-        if (e.getUnitsToScroll() > 0) {
-          positive = -1;
-        }
-        if ((positive > 0 && value == 1) || (positive < 0 && value <= .21)) {
-          return;
-        }
-        if (positive > 0) {
-          if (value >= .79) {
-            value = 1.0;
-          } else if (value >= .59) {
-            value = .8;
-          } else if (value >= .39) {
-            value = .6;
-          } else if (value >= .19) {
-            value = .4;
-          } else {
-            value = .2;
-          }
-        } else {
-          if (value <= .41) {
-            value = .2;
-          } else if (value <= .61) {
-            value = .4;
-          } else if (value <= .81) {
-            value = .6;
-          } else if (value <= 1.0) {
-            value = .8;
-          } else {
-            value = 1.0;
-          }
-        }
-        setScale(value);
       }
     };
     addMouseWheelListener(mouseWheelListener);

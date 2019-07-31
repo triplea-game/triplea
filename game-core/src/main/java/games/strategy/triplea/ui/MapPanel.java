@@ -580,7 +580,8 @@ public class MapPanel extends ImageScrollerLargeView {
   public void paint(final Graphics g) {
     final Graphics2D g2d = (Graphics2D) g;
     super.paint(g2d);
-    g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth() * scale, getImageHeight() * scale));
+    g2d.scale(scale, scale);
+    g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight()));
     int x = model.getX();
     int y = model.getY();
     final List<Tile> images = new ArrayList<>();
@@ -619,10 +620,9 @@ public class MapPanel extends ImageScrollerLargeView {
     drawTiles(g2d, images, data, mainBounds, undrawnTiles);
     if (routeDescription != null && mouseShadowImage != null && routeDescription.getEnd() != null) {
       final AffineTransform t = new AffineTransform();
-      t.translate(scale * normalizeX(routeDescription.getEnd().getX() - getXOffset()),
-          scale * normalizeY(routeDescription.getEnd().getY() - getYOffset()));
+      t.translate(normalizeX(routeDescription.getEnd().getX() - getXOffset()),
+          normalizeY(routeDescription.getEnd().getY() - getYOffset()));
       t.translate(mouseShadowImage.getWidth() / -2.0, mouseShadowImage.getHeight() / -2.0);
-      t.scale(scale, scale);
       g2d.drawImage(mouseShadowImage, t, this);
     }
     if (routeDescription != null) {
@@ -644,8 +644,8 @@ public class MapPanel extends ImageScrollerLargeView {
           final Optional<Image> image = uiContext.getUnitImageFactory().getHighlightImage(category.getType(),
               category.getOwner(), category.hasDamageOrBombingUnitDamage(), category.getDisabled());
           if (image.isPresent()) {
-            final AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
-            transform.translate(normalizeX(r.getX() - getXOffset()), normalizeY(r.getY() - getYOffset()));
+            final AffineTransform transform = AffineTransform
+                .getTranslateInstance(normalizeX(r.getX() - getXOffset()), normalizeY(r.getY() - getYOffset()));
             g2d.drawImage(image.get(), transform, this);
           }
         }
@@ -716,7 +716,7 @@ public class MapPanel extends ImageScrollerLargeView {
         }
         if (img != null) {
           final AffineTransform t = new AffineTransform();
-          t.translate(scale * (tile.getBounds().x - bounds.getX()), scale * (tile.getBounds().y - bounds.getY()));
+          t.translate(tile.getBounds().x - bounds.getX(), tile.getBounds().y - bounds.getY());
           g.drawImage(img, t, this);
         }
       } finally {
@@ -765,7 +765,6 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     }
     uiContext.setScale(normalizedScale);
-    recreateTiles(getData(), uiContext);
     repaint();
   }
 
@@ -819,7 +818,7 @@ public class MapPanel extends ImageScrollerLargeView {
         final UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(),
             category.getOwner().getName(), place, category.getDamaged(), category.getBombingDamage(),
             category.getDisabled(), false, "", uiContext);
-        drawer.draw(bounds, gameData, g, uiContext.getMapData(), null, null);
+        drawer.draw(bounds, gameData, g, uiContext.getMapData(), null);
         i++;
       }
     } finally {

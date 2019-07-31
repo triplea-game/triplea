@@ -34,7 +34,7 @@ public class TerritoryNameDrawable implements IDrawable {
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+      final AffineTransform unscaled) {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final TerritoryAttachment ta = TerritoryAttachment.get(territory);
     final boolean drawFromTopLeft = mapData.drawNamesFromTopLeft();

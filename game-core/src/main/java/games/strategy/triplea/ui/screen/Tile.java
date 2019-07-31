@@ -29,14 +29,12 @@ public class Tile {
 
   private final Image image;
   private final Rectangle bounds;
-  private final double scale;
   private final Lock lock = new ReentrantLock();
   private final Queue<IDrawable> contents = new PriorityQueue<>(Comparator.comparingInt(IDrawable::getLevel));
 
-  Tile(final Rectangle bounds, final double scale) {
+  Tile(final Rectangle bounds) {
     this.bounds = bounds;
-    this.scale = scale;
-    image = Util.newImage((int) (bounds.getWidth() * scale), (int) (bounds.getHeight() * scale), true);
+    image = Util.newImage((int) bounds.getWidth(), (int) bounds.getHeight(), true);
   }
 
   public boolean isDirty() {
@@ -88,20 +86,12 @@ public class Tile {
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
     final AffineTransform unscaled = g.getTransform();
-    final AffineTransform scaled;
-    if (scale != 1) {
-      scaled = new AffineTransform();
-      scaled.scale(scale, scale);
-      g.setTransform(scaled);
-    } else {
-      scaled = unscaled;
-    }
     // clear
     g.setColor(Color.BLACK);
     g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
     final Queue<IDrawable> queue = new PriorityQueue<>(contents);
     while (!queue.isEmpty()) {
-      queue.remove().draw(bounds, data, g, mapData, unscaled, scaled);
+      queue.remove().draw(bounds, data, g, mapData, unscaled);
     }
     isDirty = false;
   }

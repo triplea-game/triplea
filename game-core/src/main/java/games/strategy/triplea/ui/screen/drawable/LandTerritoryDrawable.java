@@ -24,7 +24,7 @@ public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawabl
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+      final AffineTransform unscaled) {
     draw(bounds, data, graphics, mapData, 1.0f);
   }
 

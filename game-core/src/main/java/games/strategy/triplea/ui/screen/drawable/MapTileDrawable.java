@@ -36,7 +36,7 @@ public abstract class MapTileDrawable implements IDrawable {
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+      final AffineTransform unscaled) {
     final Image img = getImage();
     if (img == null) {
       return;
@@ -52,9 +52,6 @@ public abstract class MapTileDrawable implements IDrawable {
       graphics.setTransform(unscaled);
     }
     graphics.drawImage(img, x * TileManager.TILE_SIZE - bounds.x, y * TileManager.TILE_SIZE - bounds.y, null);
-    if (unscaled != null) {
-      graphics.setTransform(scaled);
-    }
     if (oldAlphaValue == null) {
       graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
           RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);

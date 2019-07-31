@@ -113,8 +113,6 @@ public class MapRouteDrawer {
         final Ellipse2D circle = new Ellipse2D.Double(jointsize / -2.0, jointsize / -2.0, jointsize, jointsize);
         final AffineTransform ellipseTransform = getDrawingTransform();
         ellipseTransform.translate(p.getX(), p.getY());
-        final double scale = mapPanel.getScale();
-        ellipseTransform.scale(1 / scale, 1 / scale);
         graphics.fill(ellipseTransform.createTransformedShape(circle));
       }
     }
@@ -441,9 +439,6 @@ public class MapRouteDrawer {
   }
 
   private AffineTransform getDrawingTransform() {
-    final double scale = mapPanel.getScale();
-    final AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
-    transform.translate(-mapPanel.getXOffset(), -mapPanel.getYOffset());
-    return transform;
+    return AffineTransform.getTranslateInstance(-mapPanel.getXOffset(), -mapPanel.getYOffset());
   }
 }

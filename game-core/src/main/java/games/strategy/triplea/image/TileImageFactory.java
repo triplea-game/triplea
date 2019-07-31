@@ -41,7 +41,6 @@ public final class TileImageFactory {
   private static float showMapBlendAlpha;
   private static final GraphicsConfiguration configuration =
       GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-  private double scale = 1.0;
   // maps image name to ImageRef
   private final Map<String, SoftReference<Image>> imageCache = Collections.synchronizedMap(new HashMap<>());
   private ResourceLoader resourceLoader;
@@ -68,14 +67,6 @@ public final class TileImageFactory {
 
   private static float getShowMapBlendAlpha() {
     return showMapBlendAlpha;
-  }
-
-  public void setScale(final double newScale) {
-    if (newScale > 1) {
-      throw new IllegalArgumentException("Wrong scale");
-    }
-    scale = newScale;
-    imageCache.clear();
   }
 
   public static void setShowReliefImages(final boolean showReliefImages) {
@@ -252,11 +243,6 @@ public final class TileImageFactory {
       final BufferedImage blendedImage =
           new BufferedImage(reliefFile.getWidth(null), reliefFile.getHeight(null), BufferedImage.TYPE_INT_ARGB);
       final Graphics2D g2 = blendedImage.createGraphics();
-      if (scaled && scale != 1.0) {
-        final AffineTransform transform = new AffineTransform();
-        transform.scale(scale, scale);
-        g2.setTransform(transform);
-      }
       g2.drawImage(reliefFile, 0, 0, null);
       final BlendingMode blendMode = BlendComposite.BlendingMode.valueOf(getShowMapBlendMode());
       final BlendComposite blendComposite = BlendComposite.getInstance(blendMode).derive(alpha);
@@ -288,11 +274,6 @@ public final class TileImageFactory {
       // we should try to find a way to avoid it, and load the png directly as the right type
       image = Util.newImage(fromFile.getWidth(null), fromFile.getHeight(null), transparent);
       final Graphics2D g = (Graphics2D) image.getGraphics();
-      if (scaled && scale != 1.0) {
-        final AffineTransform transform = new AffineTransform();
-        transform.scale(scale, scale);
-        g.setTransform(transform);
-      }
       g.drawImage(fromFile, 0, 0, null);
       g.dispose();
       fromFile.flush();

@@ -32,7 +32,7 @@ public class CapitolMarkerDrawable implements IDrawable {
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+      final AffineTransform unscaled) {
     // Changed back to use Large flags
     final Image img = uiContext.getFlagImageFactory().getLargeFlag(data.getPlayerList().getPlayerId(player));
     final Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(location));

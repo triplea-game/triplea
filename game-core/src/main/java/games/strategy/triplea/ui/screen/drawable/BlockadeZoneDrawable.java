@@ -21,7 +21,7 @@ public class BlockadeZoneDrawable implements IDrawable {
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+      final AffineTransform unscaled) {
     // Find blockade.png from misc folder
     final Point point = mapData.getBlockadePlacementPoint(data.getMap().getTerritory(location));
     drawImage(graphics, mapData.getBlockadeImage(), point, bounds);

@@ -21,7 +21,7 @@ public class VcDrawable implements IDrawable {
 
   @Override
   public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+      final AffineTransform unscaled) {
 
     final Point point = mapData.getVcPlacementPoint(location);
     drawImage(graphics, mapData.getVcImage(), point, bounds);
