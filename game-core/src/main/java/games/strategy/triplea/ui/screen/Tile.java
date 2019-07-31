@@ -85,13 +85,15 @@ public class Tile {
   }
 
   private void draw(final Graphics2D g, final GameData data, final MapData mapData) {
-    final AffineTransform unscaled = g.getTransform();
+    final AffineTransform original = g.getTransform();
     // clear
     g.setColor(Color.BLACK);
     g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
     final Queue<IDrawable> queue = new PriorityQueue<>(contents);
     while (!queue.isEmpty()) {
-      queue.remove().draw(bounds, data, g, mapData, unscaled);
+      queue.remove().draw(bounds, data, g, mapData);
+      // Make sure we don't mess up other draws
+      g.setTransform(original);
     }
     isDirty = false;
   }

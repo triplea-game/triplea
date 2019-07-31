@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 import java.util.List;
 
 import games.strategy.engine.data.GameData;
@@ -23,8 +22,7 @@ public class SeaZoneOutlineDrawable implements IDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled) {
+  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
     graphics.setColor(Color.BLACK);

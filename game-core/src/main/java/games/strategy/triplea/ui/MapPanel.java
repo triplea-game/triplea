@@ -822,7 +822,7 @@ public class MapPanel extends ImageScrollerLargeView {
         final UnitsDrawer drawer = new UnitsDrawer(category.getUnits().size(), category.getType().getName(),
             category.getOwner().getName(), place, category.getDamaged(), category.getBombingDamage(),
             category.getDisabled(), false, "", uiContext);
-        drawer.draw(bounds, gameData, g, uiContext.getMapData(), null);
+        drawer.draw(bounds, gameData, g, uiContext.getMapData());
         i++;
       }
     } finally {

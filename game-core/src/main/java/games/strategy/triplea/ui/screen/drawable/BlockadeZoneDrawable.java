@@ -3,7 +3,6 @@ package games.strategy.triplea.ui.screen.drawable;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
@@ -20,8 +19,7 @@ public class BlockadeZoneDrawable implements IDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled) {
+  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
     // Find blockade.png from misc folder
     final Point point = mapData.getBlockadePlacementPoint(data.getMap().getTerritory(location));
     drawImage(graphics, mapData.getBlockadeImage(), point, bounds);
