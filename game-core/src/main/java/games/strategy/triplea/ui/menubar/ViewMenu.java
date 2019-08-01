@@ -150,7 +150,7 @@ final class ViewMenu extends JMenu {
         return;
       }
       final Number value = (Number) model.getValue();
-      frame.setScale(value.doubleValue());
+      frame.getMapPanel().setScale(value.doubleValue() / 100);
 
     });
     add(mapZoom).setMnemonic(KeyEvent.VK_Z);
@@ -288,7 +288,7 @@ final class ViewMenu extends JMenu {
       TileImageFactory.setShowMapBlendMode(uiContext.getMapData().getMapBlendMode());
       TileImageFactory.setShowMapBlendAlpha(uiContext.getMapData().getMapBlendAlpha());
       new Thread(() -> {
-        frame.setScale(uiContext.getScale() * 100);
+        frame.getMapPanel().setScale(uiContext.getScale());
         frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
       }, "Triplea : Show map Blends thread").start();
     });

@@ -83,9 +83,10 @@ public class ImageScrollerLargeView extends JComponent {
     setMaximumSize(getImageDimensions());
     final MouseWheelListener mouseWheelListener = e -> {
       if (e.isControlDown()) {
+        final float zoomFactor = ClientSetting.mapZoomFactor.getValueOrThrow() / 100f;
         final int oldWidth = model.getBoxWidth();
         final int oldHeight = model.getBoxHeight();
-        setScale(scale - 0.1 * e.getPreciseWheelRotation());
+        setScale(scale - zoomFactor * e.getPreciseWheelRotation());
         model.set(
             model.getX() + (int) ((getMousePosition().getX() / getWidth()) * (oldWidth - model.getBoxWidth())),
             model.getY() + (int) ((getMousePosition().getY() / getHeight()) * (oldHeight - model.getBoxHeight())));

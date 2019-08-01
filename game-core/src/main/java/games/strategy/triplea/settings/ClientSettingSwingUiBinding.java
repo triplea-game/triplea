@@ -54,6 +54,16 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
+  MAP_ZOOM_FACTOR_BINDING(
+      "Map zoom factor",
+      SettingType.MAP_SCROLLING,
+      "How fast you zoom in on maps when using the mousewheel or zoom keys") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return intValueRange(ClientSetting.mapZoomFactor, 1, 100);
+    }
+  },
+
   BATTLE_CALC_SIMULATION_COUNT_DICE_BINDING(
       "Simulation Count (Dice)",
       SettingType.BATTLE_SIMULATOR,

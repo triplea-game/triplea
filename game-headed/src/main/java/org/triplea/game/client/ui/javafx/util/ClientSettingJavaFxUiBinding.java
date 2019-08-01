@@ -93,6 +93,13 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
     }
   },
 
+  MAP_ZOOM_FACTOR_BINDING(SettingType.MAP_SCROLLING) {
+    @Override
+    public SelectionComponent<Region> newSelectionComponent() {
+      return intValueRange(ClientSetting.mapZoomFactor, 1, 100);
+    }
+  },
+
   SERVER_START_GAME_SYNC_WAIT_TIME_BINDING(SettingType.NETWORK_TIMEOUTS) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {

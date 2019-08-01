@@ -679,9 +679,11 @@ public final class TripleAFrame extends JFrame {
   }
 
   private void addZoomKeyboardShortcuts() {
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '=', () -> setScale(getScale() + 10));
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '=',
+        () -> mapPanel.setScale(mapPanel.getScale() + (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
 
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '-', () -> setScale(getScale() - 10));
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '-',
+        () -> mapPanel.setScale(mapPanel.getScale() - (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
   }
 
   private void addTab(final String title, final Component component, final char hotkey) {
@@ -692,23 +694,6 @@ public final class TripleAFrame extends JFrame {
 
   public LocalPlayers getLocalPlayers() {
     return localPlayers;
-  }
-
-  /**
-   * Sets the map scale.
-   *
-   * @param value a number between 1 and 100 (inclusive),
-   *              will be clamped based on the window size.
-   */
-  public void setScale(final double value) {
-    getMapPanel().setScale(value / 100);
-  }
-
-  /**
-   * Returns a scale in (1, 100].
-   */
-  private double getScale() {
-    return getMapPanel().getScale() * 100;
   }
 
   /**

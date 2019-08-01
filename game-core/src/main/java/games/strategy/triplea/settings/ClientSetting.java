@@ -78,6 +78,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Integer> mapEdgeScrollSpeed = new IntegerClientSetting("MAP_EDGE_SCROLL_SPEED", 30);
   public static final ClientSetting<Integer> mapEdgeScrollZoneSize =
       new IntegerClientSetting("MAP_EDGE_SCROLL_ZONE_SIZE", 30);
+  public static final ClientSetting<Integer> mapZoomFactor = new IntegerClientSetting("MAP_ZOOM_FACTOR", 10);
   public static final ClientSetting<Path> mapFolderOverride = new PathClientSetting("MAP_FOLDER_OVERRIDE");
   public static final ClientSetting<Path> mapListOverride = new PathClientSetting("MAP_LIST_OVERRIDE");
   public static final ClientSetting<String> moderatorApiKey = new StringClientSetting("MODERATOR_API_KEY");
