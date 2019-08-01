@@ -45,7 +45,6 @@ public class ImageScrollerLargeView extends JComponent {
 
   protected final ImageScrollModel model;
   protected double scale = 1;
-  private final int tileSize;
   private int dragScrollingLastX;
   private int dragScrollingLastY;
   private boolean wasLastActionDragging = false;
@@ -73,10 +72,7 @@ public class ImageScrollerLargeView extends JComponent {
   private int edge = NONE;
   private final List<ScrollListener> scrollListeners = new ArrayList<>();
 
-  public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model, final int tileSize) {
-    checkArgument(tileSize > 0, "tile size must be positive");
-
-    this.tileSize = tileSize;
+  public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     this.model = model;
     this.model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
