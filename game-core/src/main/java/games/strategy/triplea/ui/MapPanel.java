@@ -764,20 +764,7 @@ public class MapPanel extends ImageScrollerLargeView {
   public void setScale(final double newScale) {
     super.setScale(newScale);
     // setScale will check bounds, and normalize the scale correctly
-    final double normalizedScale = scale;
-    final OptionalExtraBorderLevel drawBorderOption = uiContext.getDrawTerritoryBordersAgain();
-    // so what is happening here is that when we zoom out, the territory borders get blurred or even removed
-    // so we have a special setter to have them be drawn a second time, on top of the relief tiles
-    if (normalizedScale >= 1) {
-      if (drawBorderOption != OptionalExtraBorderLevel.LOW) {
-        uiContext.resetDrawTerritoryBordersAgain();
-      }
-    } else {
-      if (drawBorderOption == OptionalExtraBorderLevel.LOW) {
-        uiContext.setDrawTerritoryBordersAgainToMedium();
-      }
-    }
-    uiContext.setScale(normalizedScale);
+    uiContext.setScale(scale);
     repaint();
   }
 
