@@ -115,7 +115,6 @@ public final class ScreenshotExporter {
         titleY = 15;
         titleSize = 15;
       }
-      // everything else should be scaled down onto map image
       mapGraphics.setFont(new Font("Arial", Font.BOLD, titleSize));
       mapGraphics.setColor(titleColor);
       if (uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {

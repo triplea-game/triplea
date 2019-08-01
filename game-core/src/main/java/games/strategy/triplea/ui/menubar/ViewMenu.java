@@ -112,7 +112,7 @@ final class ViewMenu extends JMenu {
     final Action mapZoom = SwingAction.of("Map Zoom", e -> {
       final SpinnerNumberModel model = new SpinnerNumberModel();
       model.setMaximum(100);
-      model.setMinimum(15);
+      model.setMinimum(Math.ceil(frame.getMapPanel().getMinScale()));
       model.setStepSize(1);
       model.setValue((int) Math.round(frame.getMapPanel().getScale() * 100));
       final JSpinner spinner = new JSpinner(model);
@@ -132,16 +132,16 @@ final class ViewMenu extends JMenu {
         final double screenWidth = frame.getMapPanel().getWidth();
         final double mapWidth = frame.getMapPanel().getImageWidth();
         double ratio = screenWidth / mapWidth;
-        ratio = Math.max(0.15, ratio);
+        ratio = Math.max(frame.getMapPanel().getMinScale(), ratio);
         ratio = Math.min(1, ratio);
-        model.setValue((int) (ratio * 100));
+        model.setValue((int) Math.round(ratio * 100));
       });
       fitHeight.addActionListener(event -> {
         final double screenHeight = frame.getMapPanel().getHeight();
         final double mapHeight = frame.getMapPanel().getImageHeight();
         double ratio = screenHeight / mapHeight;
-        ratio = Math.max(0.15, ratio);
-        model.setValue((int) (ratio * 100));
+        ratio = Math.max(frame.getMapPanel().getMinScale(), ratio);
+        model.setValue((int) Math.round(ratio * 100));
       });
       reset.addActionListener(event -> model.setValue(100));
       final int result = JOptionPane.showOptionDialog(frame, panel, "Choose Map Scale", JOptionPane.OK_CANCEL_OPTION,

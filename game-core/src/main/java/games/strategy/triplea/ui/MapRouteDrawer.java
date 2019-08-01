@@ -180,7 +180,7 @@ public class MapRouteDrawer {
   }
 
   /**
-   * Draws a line to the Screen regarding the Map-Offset and scale.
+   * Draws a line to the Screen regarding the Map-Offset.
    *
    * @param graphics The {@linkplain Graphics2D} Object to be drawn on
    * @param shape The Shape to be drawn

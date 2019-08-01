@@ -22,7 +22,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.primitives.Doubles;
 
 import games.strategy.triplea.settings.ClientSetting;
@@ -273,7 +272,7 @@ public class ImageScrollerLargeView extends JComponent {
   /**
    * Sets the view scale.
    *
-   * @param value The new scale value. Constrained to the bounds of no less than 0.15 and no greater than 1.
+   * @param value The new scale value. Constrained to the bounds of {@link #getMinScale()} and no greater than 1.
    *        If out of bounds the nearest boundary value is used.
    */
   public void setScale(final double value) {
@@ -281,11 +280,15 @@ public class ImageScrollerLargeView extends JComponent {
     refreshBoxSize();
   }
 
-  private double constrainScale(final double value) {
+  public double getMinScale() {
     final double minScale = scale * Math.max(
         (double) model.getBoxWidth() / model.getMaxWidth(),
         (double) model.getBoxHeight() / model.getMaxHeight());
-    return Doubles.constrainToRange(value, Math.min(minScale, 1), 1.0);
+    return Math.min(minScale, 1);
+  }
+
+  private double constrainScale(final double value) {
+    return Doubles.constrainToRange(value, getMinScale(), 1.0);
   }
 
   /**
