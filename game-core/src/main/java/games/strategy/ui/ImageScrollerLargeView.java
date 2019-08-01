@@ -1,7 +1,5 @@
 package games.strategy.ui;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
