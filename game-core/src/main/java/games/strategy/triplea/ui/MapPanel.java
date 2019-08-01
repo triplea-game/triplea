@@ -65,7 +65,6 @@ import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
-import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
 import games.strategy.ui.ImageScrollModel;
@@ -267,7 +266,7 @@ public class MapPanel extends ImageScrollerLargeView {
     addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
     addComponentListener(new ComponentAdapter() {
       @Override
-      public void componentResized(ComponentEvent e) {
+      public void componentResized(final ComponentEvent e) {
         // Adjust scale factor to new window bounds
         setScale(getScale());
       }
