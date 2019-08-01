@@ -403,10 +403,10 @@ public final class TripleAFrame extends JFrame {
     });
     SwingUtilities.invokeLater(() -> this.setJMenuBar(new TripleAMenuBar(this)));
     final ImageScrollModel model = new ImageScrollModel();
-    model.setScrollX(uiContext.getMapData().scrollWrapX());
-    model.setScrollY(uiContext.getMapData().scrollWrapY());
     model.setMaxBounds(uiContext.getMapData().getMapDimensions().width,
         uiContext.getMapData().getMapDimensions().height);
+    model.setScrollX(uiContext.getMapData().scrollWrapX());
+    model.setScrollY(uiContext.getMapData().scrollWrapY());
     final Image small = uiContext.getMapImage().getSmallMapImage();
     smallView = new MapPanelSmallView(small, model, uiContext.getMapData());
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);

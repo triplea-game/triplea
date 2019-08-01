@@ -15,6 +15,8 @@ import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -263,6 +265,13 @@ public class MapPanel extends ImageScrollerLargeView {
       }
     }));
     addScrollListener((x2, y2) -> SwingUtilities.invokeLater(this::repaint));
+    addComponentListener(new ComponentAdapter() {
+      @Override
+      public void componentResized(ComponentEvent e) {
+        // Adjust scale factor to new window bounds
+        setScale(getScale());
+      }
+    });
     executor.execute(() -> recreateTiles(data, uiContext));
     uiContext.addActive(() -> {
       deactivate();

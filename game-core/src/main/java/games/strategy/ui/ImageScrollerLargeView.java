@@ -277,21 +277,15 @@ public class ImageScrollerLargeView extends JComponent {
    *        If out of bounds the nearest boundary value is used.
    */
   public void setScale(final double value) {
-    scale = discretizeScale(constrainScale(value), tileSize);
+    scale = constrainScale(value);
     refreshBoxSize();
   }
 
-  private static double constrainScale(final double value) {
-    return Doubles.constrainToRange(value, 0.15, 1.0);
-  }
-
-  /**
-   * Maps {@code value} to the nearest discrete value (rounding towards zero) that is a multiple of
-   * {@code 1 / tileSize}. This ensures that a scaled tile will always have an integer width and height.
-   */
-  @VisibleForTesting
-  static double discretizeScale(final double value, final int tileSize) {
-    return (int) (value * tileSize) / (double) tileSize;
+  private double constrainScale(final double value) {
+    final double minScale = scale * Math.max(
+        (double) model.getBoxWidth() / model.getMaxWidth(),
+        (double) model.getBoxHeight() / model.getMaxHeight());
+    return Doubles.constrainToRange(value, Math.min(minScale, 1), 1.0);
   }
 
   /**

@@ -70,10 +70,6 @@ public class ImageScrollModel extends Observable {
         y += maxHeight;
       }
     }
-    // if the box is bigger than the map, put us at 0,0
-    if (boxHeight > maxHeight) {
-      y = 0;
-    }
     if (!scrollX) {
       if (x < 0) {
         x = 0;
@@ -90,10 +86,6 @@ public class ImageScrollModel extends Observable {
       while (x < -maxWidth) {
         x += maxWidth;
       }
-    }
-    // if the box is bigger than the map, put us at 0,0
-    if (boxWidth > maxWidth) {
-      x = 0;
     }
   }
 
