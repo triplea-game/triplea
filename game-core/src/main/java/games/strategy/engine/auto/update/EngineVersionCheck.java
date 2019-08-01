@@ -1,6 +1,7 @@
 package games.strategy.engine.auto.update;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -41,7 +42,7 @@ final class EngineVersionCheck {
 
   private static boolean isEngineUpdateCheckRequired() {
     return isEngineUpdateCheckRequired(
-        LocalDate.now(),
+        LocalDate.now(ZoneId.systemDefault()),
         ClientSetting.firstTimeThisVersion,
         ClientSetting.lastCheckForEngineUpdate,
         ClientSetting::flush);

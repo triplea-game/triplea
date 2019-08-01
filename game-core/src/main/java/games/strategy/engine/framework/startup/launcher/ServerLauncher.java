@@ -3,6 +3,7 @@ package games.strategy.engine.framework.startup.launcher;
 import java.awt.Component;
 import java.io.File;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -289,7 +290,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
     final File f = headless
         ? AutoSaveFileUtils.getHeadlessAutoSaveFile()
-        : AutoSaveFileUtils.getLostConnectionAutoSaveFile(LocalDateTime.now());
+        : AutoSaveFileUtils.getLostConnectionAutoSaveFile(LocalDateTime.now(ZoneId.systemDefault()));
     try {
       serverGame.saveGame(f);
     } catch (final Exception e) {

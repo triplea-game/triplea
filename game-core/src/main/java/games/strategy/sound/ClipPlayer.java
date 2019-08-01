@@ -2,12 +2,12 @@ package games.strategy.sound;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -397,14 +397,9 @@ public class ClipPlayer {
         final String zipFilePath = soundFilePath.substring(index1,
             Math.max(index1, Math.min(soundFilePath.length(), soundFilePath.lastIndexOf("!"))));
         if (zipFilePath.length() > 5 && zipFilePath.endsWith(".zip")) {
-          String decoded;
-          try {
-            // the file path may have spaces, which in a URL are equal to %20, but if we make a file using that it will
-            // fail, so we need to decode
-            decoded = URLDecoder.decode(zipFilePath, "UTF-8");
-          } catch (final UnsupportedEncodingException uee) {
-            decoded = zipFilePath.replaceAll("%20", " ");
-          }
+          // the file path may have spaces, which in a URL are equal to %20, but if we make a file using that it will
+          // fail, so we need to decode
+          final String decoded = URLDecoder.decode(zipFilePath, StandardCharsets.UTF_8);
 
           try {
             final File zipFile = new File(decoded);

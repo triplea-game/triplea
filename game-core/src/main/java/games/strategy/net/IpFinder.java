@@ -10,7 +10,6 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -46,12 +45,7 @@ public final class IpFinder {
    * @return java.net.InetAddress the ip address to use
    */
   public static InetAddress findInetAddress() throws SocketException, UnknownHostException {
-    final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-    if (interfaces == null) {
-      return Node.getLocalHost();
-    }
-
-    return Collections.list(interfaces).stream()
+    return NetworkInterface.networkInterfaces()
         .map(NetworkInterface::getInetAddresses)
         .map(Collections::list)
         .flatMap(Collection::stream)

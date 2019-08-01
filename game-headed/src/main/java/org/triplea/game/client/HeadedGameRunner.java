@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.awt.GraphicsEnvironment;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
@@ -60,14 +59,9 @@ public final class HeadedGameRunner {
 
     if (SystemProperties.isMac()) {
       MacOsIntegration.addOpenUriHandler(uri -> {
-        final String encoding = StandardCharsets.UTF_8.displayName();
-        try {
-          final String mapName = URLDecoder.decode(
-              uri.toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()), encoding);
-          SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
-        } catch (final UnsupportedEncodingException e) {
-          throw new AssertionError(encoding + " is not a supported encoding!", e);
-        }
+        final String mapName = URLDecoder.decode(
+            uri.toString().substring(ArgParser.TRIPLEA_PROTOCOL.length()), StandardCharsets.UTF_8);
+        SwingUtilities.invokeLater(() -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
       });
     }
 

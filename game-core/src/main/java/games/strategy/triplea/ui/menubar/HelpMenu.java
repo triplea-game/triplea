@@ -49,7 +49,7 @@ import games.strategy.triplea.util.TuvUtils;
 /**
  * The help menu.
  */
-public final class HelpMenu extends JMenu {
+final class HelpMenu extends JMenu {
   private static final long serialVersionUID = 4070541434144687452L;
 
   private final UiContext uiContext;
@@ -202,7 +202,7 @@ public final class HelpMenu extends JMenu {
     }));
     unitMenuItem.setMnemonic(KeyEvent.VK_U);
     unitMenuItem.setAccelerator(
-        KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
   }
 
   private void addGameNotesMenu() {
