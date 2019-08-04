@@ -12,7 +12,6 @@ import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -46,7 +47,6 @@ import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.drawable.KamikazeZoneDrawable;
 import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
-import games.strategy.triplea.ui.screen.drawable.MapTileDrawable;
 import games.strategy.triplea.ui.screen.drawable.OptionalExtraTerritoryBordersDrawable;
 import games.strategy.triplea.ui.screen.drawable.ReliefMapDrawable;
 import games.strategy.triplea.ui.screen.drawable.SeaZoneOutlineDrawable;
@@ -465,14 +465,12 @@ public class TileManager {
 
   private void drawForCreate(final Territory selected, final GameData data, final MapData mapData,
       final Rectangle bounds, final Graphics2D graphics, final boolean drawOutline) {
-    final Set<IDrawable> drawablesSet = new HashSet<>();
+    final SortedSet<IDrawable> drawablesSet = new TreeSet<>();
     final List<Tile> intersectingTiles = getTiles(bounds);
     for (final Tile tile : intersectingTiles) {
       drawablesSet.addAll(tile.getDrawables());
     }
-    final List<IDrawable> orderedDrawables = new ArrayList<>(drawablesSet);
-    orderedDrawables.sort(Comparator.comparing(IDrawable::getLevel));
-    for (final IDrawable drawer : orderedDrawables) {
+    for (final IDrawable drawer : drawablesSet) {
       if (drawer.getLevel().ordinal() >= IDrawable.DrawLevel.UNITS_LEVEL.ordinal()) {
         break;
       }
