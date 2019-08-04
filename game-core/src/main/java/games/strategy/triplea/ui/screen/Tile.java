@@ -30,7 +30,7 @@ public class Tile {
   private final Image image;
   private final Rectangle bounds;
   private final Lock lock = new ReentrantLock();
-  private final Queue<IDrawable> contents = new PriorityQueue<>(Comparator.comparingInt(IDrawable::getLevel));
+  private final Queue<IDrawable> contents = new PriorityQueue<>(Comparator.comparing(IDrawable::getLevel));
 
   Tile(final Rectangle bounds) {
     this.bounds = bounds;

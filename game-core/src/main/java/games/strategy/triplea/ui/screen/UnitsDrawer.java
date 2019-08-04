@@ -248,8 +248,8 @@ public class UnitsDrawer implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return UNITS_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.UNITS_LEVEL;
   }
 
   @Override

@@ -486,12 +486,12 @@ public class TileManager {
       drawablesSet.addAll(toAdd);
     }
     final List<IDrawable> orderedDrawables = new ArrayList<>(drawablesSet);
-    orderedDrawables.sort(Comparator.comparingInt(IDrawable::getLevel));
+    orderedDrawables.sort(Comparator.comparing(IDrawable::getLevel));
     for (final IDrawable drawer : orderedDrawables) {
-      if (drawer.getLevel() >= IDrawable.UNITS_LEVEL) {
+      if (drawer.getLevel().ordinal() >= IDrawable.DrawLevel.UNITS_LEVEL.ordinal()) {
         break;
       }
-      if (drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL) {
+      if (drawer.getLevel() == IDrawable.DrawLevel.TERRITORY_TEXT_LEVEL) {
         continue;
       }
       drawer.draw(bounds, data, graphics, mapData);

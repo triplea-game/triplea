@@ -29,7 +29,7 @@ public class ReliefMapDrawable extends MapTileDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return RELIEF_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.RELIEF_LEVEL;
   }
 }

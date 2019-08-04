@@ -26,7 +26,7 @@ public class TerritoryEffectDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return TERRITORY_EFFECT_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.TERRITORY_EFFECT_LEVEL;
   }
 }

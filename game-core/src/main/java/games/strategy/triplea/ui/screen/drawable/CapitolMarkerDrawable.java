@@ -38,7 +38,7 @@ public class CapitolMarkerDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return CAPITOL_MARKER_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.CAPITOL_MARKER_LEVEL;
   }
 }

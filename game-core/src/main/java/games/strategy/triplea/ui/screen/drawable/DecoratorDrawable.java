@@ -26,7 +26,7 @@ public class DecoratorDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return DECORATOR_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.DECORATOR_LEVEL;
   }
 }

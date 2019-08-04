@@ -53,7 +53,7 @@ class TerritoryOverLayDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return TERRITORY_OVERLAY_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.TERRITORY_OVERLAY_LEVEL;
   }
 }

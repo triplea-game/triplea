@@ -77,7 +77,7 @@ public class BattleDrawable extends TerritoryDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return BATTLE_HIGHLIGHT_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.BATTLE_HIGHLIGHT_LEVEL;
   }
 }

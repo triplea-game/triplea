@@ -38,10 +38,10 @@ public class OptionalExtraTerritoryBordersDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
+  public DrawLevel getLevel() {
     if (level == OptionalExtraBorderLevel.HIGH) {
-      return OPTIONAL_EXTRA_TERRITORY_BORDERS_HIGH_LEVEL;
+      return DrawLevel.OPTIONAL_EXTRA_TERRITORY_BORDERS_HIGH_LEVEL;
     }
-    return OPTIONAL_EXTRA_TERRITORY_BORDERS_MEDIUM_LEVEL;
+    return DrawLevel.OPTIONAL_EXTRA_TERRITORY_BORDERS_MEDIUM_LEVEL;
   }
 }

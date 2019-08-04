@@ -36,7 +36,7 @@ public class SeaZoneOutlineDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return POLYGONS_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.POLYGONS_LEVEL;
   }
 }

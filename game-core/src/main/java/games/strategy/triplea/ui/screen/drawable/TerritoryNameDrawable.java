@@ -205,7 +205,7 @@ public class TerritoryNameDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return TERRITORY_TEXT_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.TERRITORY_TEXT_LEVEL;
   }
 }

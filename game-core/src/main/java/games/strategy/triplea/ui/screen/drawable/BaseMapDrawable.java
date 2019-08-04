@@ -25,7 +25,7 @@ public class BaseMapDrawable extends MapTileDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return BASE_MAP_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.BASE_MAP_LEVEL;
   }
 }

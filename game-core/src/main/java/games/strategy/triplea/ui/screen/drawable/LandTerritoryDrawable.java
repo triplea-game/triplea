@@ -47,7 +47,7 @@ public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawabl
   }
 
   @Override
-  public int getLevel() {
-    return POLYGONS_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.POLYGONS_LEVEL;
   }
 }

@@ -26,7 +26,7 @@ public class VcDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return VC_MARKER_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.VC_MARKER_LEVEL;
   }
 }
