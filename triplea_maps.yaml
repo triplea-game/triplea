@@ -1816,15 +1816,13 @@
 - mapName: Game of Thrones
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/game_of_thrones/archive/master.zip
-  version: 1
+  version: 2
   img: https://raw.githubusercontent.com/triplea-maps/game_of_thrones/master/description/TripleA_game_of_thrones_mini.png
   description: |
     <br>
     <br>An FFA map with the background of George R. R. Martins novel: A Song of Ice and Fire.
     <br>
-    <br>Alpha stage.
-    <br>Modified to work, by Rolf Larsson.
-    <br>abandoned? Excellent map already, needs a little work, feel free to take over.
+    <br>Updated redrum
     <br>
 - mapName: New World Order 1915Lebowski
   mapCategory: EXPERIMENTAL
