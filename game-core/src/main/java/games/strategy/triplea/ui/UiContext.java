@@ -105,12 +105,6 @@ public interface UiContext {
 
   void setShowUnits(boolean showUnits);
 
-  OptionalExtraBorderLevel getDrawTerritoryBordersAgain();
-
-  void setDrawTerritoryBordersAgain(OptionalExtraBorderLevel level);
-
-  void setDrawTerritoryBordersAgainToMedium();
-
   void setShowTerritoryEffects(boolean showTerritoryEffects);
 
   boolean getShowTerritoryEffects();

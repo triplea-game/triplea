@@ -78,9 +78,6 @@ public class HeadedUiContext extends AbstractUiContext {
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
     final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
     scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
-    if (scale < 1) {
-      setDrawTerritoryBordersAgainToMedium();
-    }
     unitImageFactory.setResourceLoader(resourceLoader, unitScale, mapData.getDefaultUnitWidth(),
         mapData.getDefaultUnitHeight(), mapData.getDefaultUnitCounterOffsetWidth(),
         mapData.getDefaultUnitCounterOffsetHeight());
@@ -191,21 +188,6 @@ public class HeadedUiContext extends AbstractUiContext {
   @Override
   public void setShowUnits(final boolean showUnits) {
     drawUnits = showUnits;
-  }
-
-  @Override
-  public OptionalExtraBorderLevel getDrawTerritoryBordersAgain() {
-    return extraTerritoryBorderLevel;
-  }
-
-  @Override
-  public void setDrawTerritoryBordersAgain(final OptionalExtraBorderLevel level) {
-    extraTerritoryBorderLevel = level;
-  }
-
-  @Override
-  public void setDrawTerritoryBordersAgainToMedium() {
-    extraTerritoryBorderLevel = OptionalExtraBorderLevel.MEDIUM;
   }
 
   @Override

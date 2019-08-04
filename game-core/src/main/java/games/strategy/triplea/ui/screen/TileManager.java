@@ -44,10 +44,8 @@ import games.strategy.triplea.ui.screen.drawable.CapitolMarkerDrawable;
 import games.strategy.triplea.ui.screen.drawable.ConvoyZoneDrawable;
 import games.strategy.triplea.ui.screen.drawable.DecoratorDrawable;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
-import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.drawable.KamikazeZoneDrawable;
 import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
-import games.strategy.triplea.ui.screen.drawable.OptionalExtraTerritoryBordersDrawable;
 import games.strategy.triplea.ui.screen.drawable.ReliefMapDrawable;
 import games.strategy.triplea.ui.screen.drawable.SeaZoneOutlineDrawable;
 import games.strategy.triplea.ui.screen.drawable.TerritoryEffectDrawable;
@@ -302,10 +300,6 @@ public class TileManager {
         }
       }
       drawing.add(new SeaZoneOutlineDrawable(territory.getName()));
-    }
-    final OptionalExtraBorderLevel optionalBorderLevel = uiContext.getDrawTerritoryBordersAgain();
-    if (optionalBorderLevel != OptionalExtraBorderLevel.LOW) {
-      drawing.add(new OptionalExtraTerritoryBordersDrawable(territory.getName(), optionalBorderLevel));
     }
     drawing.add(new TerritoryNameDrawable(territory.getName(), uiContext));
     if (ta != null && ta.isCapital() && mapData.drawCapitolMarkers()) {

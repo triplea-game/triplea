@@ -26,13 +26,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 import org.triplea.swing.SwingAction;
 
@@ -49,7 +46,6 @@ import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
-import games.strategy.triplea.ui.screen.drawable.IDrawable;
 import lombok.extern.java.Log;
 
 @Log
@@ -83,7 +79,6 @@ final class ViewMenu extends JMenu {
     addMapSkinsMenu();
     addShowMapDetails();
     addShowMapBlends();
-    addDrawTerritoryBordersAgain();
     addMapFontAndColorEditorMenu();
     addChatTimeMenu();
     addShowCommentLog();
@@ -163,7 +158,7 @@ final class ViewMenu extends JMenu {
       private static final long serialVersionUID = -6280511505686687867L;
       private final double scaleFactor;
 
-      UnitSizeAction(final double scaleFactor) {
+      private UnitSizeAction(final double scaleFactor) {
         super(decimalFormat.format(scaleFactor * 100) + "%");
         this.scaleFactor = scaleFactor;
       }
@@ -305,66 +300,6 @@ final class ViewMenu extends JMenu {
       frame.getMapPanel().resetMap();
     });
     add(showUnitsBox);
-  }
-
-  private void addDrawTerritoryBordersAgain() {
-    final JMenu drawBordersMenu = new JMenu();
-    drawBordersMenu.setMnemonic(KeyEvent.VK_O);
-    drawBordersMenu.setText("Draw Borders On Top");
-    final JRadioButton noneButton = new JRadioButton("Low");
-    noneButton.setMnemonic(KeyEvent.VK_L);
-    final JRadioButton mediumButton = new JRadioButton("Medium");
-    mediumButton.setMnemonic(KeyEvent.VK_M);
-    final JRadioButton highButton = new JRadioButton("High");
-    highButton.setMnemonic(KeyEvent.VK_H);
-    final ButtonGroup group = new ButtonGroup();
-    group.add(noneButton);
-    group.add(mediumButton);
-    group.add(highButton);
-    drawBordersMenu.addMenuListener(new MenuListener() {
-      @Override
-      public void menuSelected(final MenuEvent e) {
-        final IDrawable.OptionalExtraBorderLevel current = uiContext.getDrawTerritoryBordersAgain();
-        if (current == IDrawable.OptionalExtraBorderLevel.LOW) {
-          noneButton.setSelected(true);
-        } else if (current == IDrawable.OptionalExtraBorderLevel.MEDIUM) {
-          mediumButton.setSelected(true);
-        } else if (current == IDrawable.OptionalExtraBorderLevel.HIGH) {
-          highButton.setSelected(true);
-        }
-      }
-
-      @Override
-      public void menuDeselected(final MenuEvent e) {}
-
-      @Override
-      public void menuCanceled(final MenuEvent e) {}
-    });
-    noneButton.addActionListener(e -> {
-      if (noneButton.isSelected()
-          && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.LOW) {
-        uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.LOW);
-        frame.getMapPanel().resetMap();
-      }
-    });
-    mediumButton.addActionListener(e -> {
-      if (mediumButton.isSelected()
-          && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.MEDIUM) {
-        uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.MEDIUM);
-        frame.getMapPanel().resetMap();
-      }
-    });
-    highButton.addActionListener(e -> {
-      if (highButton.isSelected()
-          && uiContext.getDrawTerritoryBordersAgain() != IDrawable.OptionalExtraBorderLevel.HIGH) {
-        uiContext.setDrawTerritoryBordersAgain(IDrawable.OptionalExtraBorderLevel.HIGH);
-        frame.getMapPanel().resetMap();
-      }
-    });
-    drawBordersMenu.add(noneButton);
-    drawBordersMenu.add(mediumButton);
-    drawBordersMenu.add(highButton);
-    add(drawBordersMenu);
   }
 
   private void addMapFontAndColorEditorMenu() {

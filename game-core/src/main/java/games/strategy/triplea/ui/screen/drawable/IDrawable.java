@@ -18,7 +18,6 @@ public interface IDrawable extends Comparable<IDrawable> {
     BASE_MAP_LEVEL,
     POLYGONS_LEVEL,
     RELIEF_LEVEL,
-    OPTIONAL_EXTRA_TERRITORY_BORDERS_MEDIUM_LEVEL,
     TERRITORY_EFFECT_LEVEL,
     CAPITOL_MARKER_LEVEL,
     VC_MARKER_LEVEL,
@@ -27,7 +26,6 @@ public interface IDrawable extends Comparable<IDrawable> {
     BATTLE_HIGHLIGHT_LEVEL,
     UNITS_LEVEL,
     TERRITORY_OVERLAY_LEVEL,
-    OPTIONAL_EXTRA_TERRITORY_BORDERS_HIGH_LEVEL,
   }
 
   /**
