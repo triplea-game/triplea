@@ -20,16 +20,27 @@ public interface IDrawable extends Comparable<IDrawable> {
    */
   enum DrawLevel {
     BASE_MAP_LEVEL,
+
     POLYGONS_LEVEL,
+
     RELIEF_LEVEL,
+
     TERRITORY_EFFECT_LEVEL,
+
     CAPITOL_MARKER_LEVEL,
+
     VC_MARKER_LEVEL,
+
     DECORATOR_LEVEL,
+
     TERRITORY_TEXT_LEVEL,
+
     BATTLE_HIGHLIGHT_LEVEL,
+
     UNITS_LEVEL,
+
     TERRITORY_OVERLAY_LEVEL,
+
   }
 
   /**
