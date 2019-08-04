@@ -470,21 +470,6 @@ public class TileManager {
     for (final Tile tile : intersectingTiles) {
       drawablesSet.addAll(tile.getDrawables());
     }
-    // the base tiles are scaled to save memory
-    // but we want to draw them unscaled here
-    // so unscale them
-    if (uiContext.getScale() != 1) {
-      final List<IDrawable> toAdd = new ArrayList<>();
-      final Iterator<IDrawable> iter = drawablesSet.iterator();
-      while (iter.hasNext()) {
-        final IDrawable drawable = iter.next();
-        if (drawable instanceof MapTileDrawable) {
-          iter.remove();
-          toAdd.add(drawable);
-        }
-      }
-      drawablesSet.addAll(toAdd);
-    }
     final List<IDrawable> orderedDrawables = new ArrayList<>(drawablesSet);
     orderedDrawables.sort(Comparator.comparing(IDrawable::getLevel));
     for (final IDrawable drawer : orderedDrawables) {
