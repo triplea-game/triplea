@@ -53,7 +53,7 @@ public class MapImage {
   public static Font getPropertyMapFont() {
     if (propertyMapFont == null) {
       final Preferences pref = Preferences.userNodeForPackage(MapImage.class);
-      propertyMapFont = new Font("Ariel", Font.BOLD, pref.getInt(PROPERTY_MAP_FONT_SIZE_STRING, MAP_FONT_SIZE_DEFAULT));
+      propertyMapFont = new Font("Arial", Font.BOLD, pref.getInt(PROPERTY_MAP_FONT_SIZE_STRING, MAP_FONT_SIZE_DEFAULT));
     }
     return propertyMapFont;
   }
@@ -173,7 +173,7 @@ public class MapImage {
 
   public static void resetPropertyMapFont() {
     removeProperty(PROPERTY_MAP_FONT_SIZE_STRING);
-    propertyMapFont = new Font("Ariel", Font.BOLD, MAP_FONT_SIZE_DEFAULT);
+    propertyMapFont = new Font("Arial", Font.BOLD, MAP_FONT_SIZE_DEFAULT);
   }
 
   public static void resetPropertyTerritoryNameAndPuAndCommentColor() {

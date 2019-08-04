@@ -294,7 +294,7 @@ public final class DecorationPlacer {
           repaint();
         }
       });
-      locationLabel.setFont(new Font("Ariel", Font.BOLD, 16));
+      locationLabel.setFont(new Font("Arial", Font.BOLD, 16));
       /*
        * Add a mouse listener to monitor for right mouse button being clicked.
        */

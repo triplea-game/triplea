@@ -354,7 +354,7 @@ final class ViewMenu extends JMenu {
         MapImage.resetPropertyUnitHitDamageOutline();
         frame.getMapPanel().resetMap();
       } else if (result == 0) {
-        MapImage.setPropertyMapFont(new Font("Ariel", Font.BOLD, fontsize.getValue()));
+        MapImage.setPropertyMapFont(new Font("Arial", Font.BOLD, fontsize.getValue()));
         MapImage.setPropertyTerritoryNameAndPuAndCommentColor(territoryNameColor.getValue());
         MapImage.setPropertyUnitCountColor(unitCountColor.getValue());
         MapImage.setPropertyUnitCountOutline(unitCountOutline.getValue());
