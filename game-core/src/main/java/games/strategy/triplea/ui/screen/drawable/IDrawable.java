@@ -14,6 +14,10 @@ import games.strategy.triplea.ui.mapdata.MapData;
  * levels). The lowest layer is drawn first with each successive layer drawn on top of it.
  */
 public interface IDrawable extends Comparable<IDrawable> {
+  /**
+   * Util enum to determine the drawing order of tiles.
+   * The tiles will be drawn in ascending ordinal order.
+   */
   enum DrawLevel {
     BASE_MAP_LEVEL,
     POLYGONS_LEVEL,
