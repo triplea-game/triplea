@@ -11,7 +11,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 /**
  * Draws a custom image at a given point on the map.
  */
-public class DecoratorDrawable implements IDrawable {
+public class DecoratorDrawable extends AbstractDrawable {
   private final Point point;
   private final Image image;
 

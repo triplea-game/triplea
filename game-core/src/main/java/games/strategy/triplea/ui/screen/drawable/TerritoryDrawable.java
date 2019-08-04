@@ -15,7 +15,7 @@ import games.strategy.ui.Util;
  * Superclass for {@link IDrawable} implementations that draws a black outline around a territory and uses an instance
  * of {@link Paint} provided by the subclass to fill the territory interior.
  */
-public abstract class TerritoryDrawable {
+public abstract class TerritoryDrawable extends AbstractDrawable {
   protected TerritoryDrawable() {}
 
   protected static void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,

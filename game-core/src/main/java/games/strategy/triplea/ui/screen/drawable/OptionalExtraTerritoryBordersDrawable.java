@@ -14,7 +14,7 @@ import games.strategy.ui.Util;
 /**
  * Draws a black outline around the associated territory.
  */
-public class OptionalExtraTerritoryBordersDrawable implements IDrawable {
+public class OptionalExtraTerritoryBordersDrawable extends AbstractDrawable {
   private final String territoryName;
   private final OptionalExtraBorderLevel level;
 

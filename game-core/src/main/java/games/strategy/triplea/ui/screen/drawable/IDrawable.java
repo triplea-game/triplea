@@ -13,7 +13,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
  * A service responsible for drawing a single layer of the map. The map is rendered as a sequence of layers (or
  * levels). The lowest layer is drawn first with each successive layer drawn on top of it.
  */
-public interface IDrawable {
+public interface IDrawable extends Comparable<IDrawable> {
   enum DrawLevel {
     BASE_MAP_LEVEL,
     POLYGONS_LEVEL,

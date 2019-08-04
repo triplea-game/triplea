@@ -13,7 +13,7 @@ import games.strategy.triplea.ui.screen.TileManager;
 /**
  * Superclass for {@link IDrawable} implementations that draws a single rectangular map tile.
  */
-public abstract class MapTileDrawable implements IDrawable {
+public abstract class MapTileDrawable extends AbstractDrawable {
   protected boolean noImage = false;
   @SuppressWarnings("checkstyle:MemberName")
   protected final int x;

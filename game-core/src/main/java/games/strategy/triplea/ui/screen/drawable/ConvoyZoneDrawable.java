@@ -14,7 +14,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 /**
  * Draws the convoy flag image for the associated territory.
  */
-public class ConvoyZoneDrawable implements IDrawable {
+public class ConvoyZoneDrawable extends AbstractDrawable {
   private final String player;
   private final String location;
   private final UiContext uiContext;
