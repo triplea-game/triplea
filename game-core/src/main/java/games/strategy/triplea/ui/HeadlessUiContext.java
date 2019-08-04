@@ -18,7 +18,6 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 
 /**
  * Headless version, so that we don't get error in linux when the system has no graphics configuration.

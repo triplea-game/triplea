@@ -29,13 +29,6 @@ public interface IDrawable extends Comparable<IDrawable> {
   }
 
   /**
-   * This is for the optional extra territory borders. LOW means off
-   */
-  enum OptionalExtraBorderLevel {
-    LOW, MEDIUM, HIGH
-  }
-
-  /**
    * Draw the tile. If the graphics are scaled, then unscaled and scaled will be non null.
    *
    * <p>

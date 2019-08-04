@@ -29,7 +29,6 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import lombok.extern.java.Log;
 
 /**
@@ -50,7 +49,6 @@ public class HeadedUiContext extends AbstractUiContext {
   private boolean drawUnits = true;
   private boolean drawTerritoryEffects = false;
   private boolean drawMapOnly = false;
-  private OptionalExtraBorderLevel extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
   private Cursor cursor = Cursor.getDefaultCursor();
 
   HeadedUiContext() {

@@ -22,7 +22,6 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 
 /**
  * Provides a context for UI-dependent operations to execute without requiring specific knowledge of the underlying UI
