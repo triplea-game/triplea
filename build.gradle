@@ -4,7 +4,7 @@ plugins {
     id 'java'
     id 'com.github.ben-manes.versions' version '0.20.0'
     id 'io.franzbecker.gradle-lombok' version '2.0' apply false
-    id 'net.ltgt.errorprone' version '0.8' apply false
+    id 'net.ltgt.errorprone' version '0.8.1' apply false
     id 'com.diffplug.gradle.spotless' version '3.23.0' apply false
 }
 
@@ -130,6 +130,7 @@ subprojects {
             check 'WaitNotInLoop', CheckSeverity.ERROR
             disable 'UnusedVariable' // Workaround for https://github.com/google/error-prone/issues/1250
         }
+        options.errorprone.errorproneArgs = ['-Xep:Finally:OFF'] // Workaround for https://github.com/google/error-prone/issues/1257
         options.incremental = true
     }
 
