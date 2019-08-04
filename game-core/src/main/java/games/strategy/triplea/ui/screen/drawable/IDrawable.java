@@ -13,26 +13,34 @@ import games.strategy.triplea.ui.mapdata.MapData;
  * A service responsible for drawing a single layer of the map. The map is rendered as a sequence of layers (or
  * levels). The lowest layer is drawn first with each successive layer drawn on top of it.
  */
-public interface IDrawable {
-  int BASE_MAP_LEVEL = 1;
-  int POLYGONS_LEVEL = 2;
-  int RELIEF_LEVEL = 3;
-  int OPTIONAL_EXTRA_TERRITORY_BORDERS_MEDIUM_LEVEL = 4;
-  int OPTIONAL_EXTRA_TERRITORY_BORDERS_HIGH_LEVEL = 18;
-  int TERRITORY_EFFECT_LEVEL = 6;
-  int CAPITOL_MARKER_LEVEL = 8;
-  int VC_MARKER_LEVEL = 9;
-  int DECORATOR_LEVEL = 11;
-  int TERRITORY_TEXT_LEVEL = 13;
-  int BATTLE_HIGHLIGHT_LEVEL = 14;
-  int UNITS_LEVEL = 15;
-  int TERRITORY_OVERLAY_LEVEL = 16;
-
+public interface IDrawable extends Comparable<IDrawable> {
   /**
-   * This is for the optional extra territory borders. LOW means off
+   * Util enum to determine the drawing order of tiles.
+   * The tiles will be drawn in ascending ordinal order.
    */
-  enum OptionalExtraBorderLevel {
-    LOW, MEDIUM, HIGH
+  enum DrawLevel {
+    BASE_MAP_LEVEL,
+
+    POLYGONS_LEVEL,
+
+    RELIEF_LEVEL,
+
+    TERRITORY_EFFECT_LEVEL,
+
+    CAPITOL_MARKER_LEVEL,
+
+    VC_MARKER_LEVEL,
+
+    DECORATOR_LEVEL,
+
+    TERRITORY_TEXT_LEVEL,
+
+    BATTLE_HIGHLIGHT_LEVEL,
+
+    UNITS_LEVEL,
+
+    TERRITORY_OVERLAY_LEVEL,
+
   }
 
   /**
@@ -44,7 +52,7 @@ public interface IDrawable {
    */
   void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData);
 
-  int getLevel();
+  DrawLevel getLevel();
 
   default void drawImage(final Graphics2D graphics, final Optional<Image> image, final Point location,
       final Rectangle bounds) {

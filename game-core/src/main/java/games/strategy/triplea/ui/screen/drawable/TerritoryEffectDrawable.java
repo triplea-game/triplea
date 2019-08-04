@@ -11,7 +11,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 /**
  * Draws a territory effect image at a given point on the map.
  */
-public class TerritoryEffectDrawable implements IDrawable {
+public class TerritoryEffectDrawable extends AbstractDrawable {
   private final TerritoryEffect effect;
   private final Point point;
 
@@ -26,7 +26,7 @@ public class TerritoryEffectDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return TERRITORY_EFFECT_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.TERRITORY_EFFECT_LEVEL;
   }
 }

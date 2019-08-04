@@ -9,10 +9,10 @@ import java.util.List;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.drawable.IDrawable;
+import games.strategy.triplea.ui.screen.drawable.AbstractDrawable;
 import games.strategy.ui.Util;
 
-class TerritoryOverLayDrawable implements IDrawable {
+class TerritoryOverLayDrawable extends AbstractDrawable {
   enum Operation {
     FILL, DRAW
   }
@@ -53,7 +53,7 @@ class TerritoryOverLayDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return TERRITORY_OVERLAY_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.TERRITORY_OVERLAY_LEVEL;
   }
 }

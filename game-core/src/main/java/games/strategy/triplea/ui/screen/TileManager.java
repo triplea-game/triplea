@@ -12,7 +12,6 @@ import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -43,11 +44,8 @@ import games.strategy.triplea.ui.screen.drawable.CapitolMarkerDrawable;
 import games.strategy.triplea.ui.screen.drawable.ConvoyZoneDrawable;
 import games.strategy.triplea.ui.screen.drawable.DecoratorDrawable;
 import games.strategy.triplea.ui.screen.drawable.IDrawable;
-import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.drawable.KamikazeZoneDrawable;
 import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
-import games.strategy.triplea.ui.screen.drawable.MapTileDrawable;
-import games.strategy.triplea.ui.screen.drawable.OptionalExtraTerritoryBordersDrawable;
 import games.strategy.triplea.ui.screen.drawable.ReliefMapDrawable;
 import games.strategy.triplea.ui.screen.drawable.SeaZoneOutlineDrawable;
 import games.strategy.triplea.ui.screen.drawable.TerritoryEffectDrawable;
@@ -303,10 +301,6 @@ public class TileManager {
       }
       drawing.add(new SeaZoneOutlineDrawable(territory.getName()));
     }
-    final OptionalExtraBorderLevel optionalBorderLevel = uiContext.getDrawTerritoryBordersAgain();
-    if (optionalBorderLevel != OptionalExtraBorderLevel.LOW) {
-      drawing.add(new OptionalExtraTerritoryBordersDrawable(territory.getName(), optionalBorderLevel));
-    }
     drawing.add(new TerritoryNameDrawable(territory.getName(), uiContext));
     if (ta != null && ta.isCapital() && mapData.drawCapitolMarkers()) {
       final PlayerId capitalOf = data.getPlayerList().getPlayerId(ta.getCapital());
@@ -465,33 +459,16 @@ public class TileManager {
 
   private void drawForCreate(final Territory selected, final GameData data, final MapData mapData,
       final Rectangle bounds, final Graphics2D graphics, final boolean drawOutline) {
-    final Set<IDrawable> drawablesSet = new HashSet<>();
+    final SortedSet<IDrawable> drawablesSet = new TreeSet<>();
     final List<Tile> intersectingTiles = getTiles(bounds);
     for (final Tile tile : intersectingTiles) {
       drawablesSet.addAll(tile.getDrawables());
     }
-    // the base tiles are scaled to save memory
-    // but we want to draw them unscaled here
-    // so unscale them
-    if (uiContext.getScale() != 1) {
-      final List<IDrawable> toAdd = new ArrayList<>();
-      final Iterator<IDrawable> iter = drawablesSet.iterator();
-      while (iter.hasNext()) {
-        final IDrawable drawable = iter.next();
-        if (drawable instanceof MapTileDrawable) {
-          iter.remove();
-          toAdd.add(drawable);
-        }
-      }
-      drawablesSet.addAll(toAdd);
-    }
-    final List<IDrawable> orderedDrawables = new ArrayList<>(drawablesSet);
-    orderedDrawables.sort(Comparator.comparingInt(IDrawable::getLevel));
-    for (final IDrawable drawer : orderedDrawables) {
-      if (drawer.getLevel() >= IDrawable.UNITS_LEVEL) {
+    for (final IDrawable drawer : drawablesSet) {
+      if (drawer.getLevel().ordinal() >= IDrawable.DrawLevel.UNITS_LEVEL.ordinal()) {
         break;
       }
-      if (drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL) {
+      if (drawer.getLevel() == IDrawable.DrawLevel.TERRITORY_TEXT_LEVEL) {
         continue;
       }
       drawer.draw(bounds, data, graphics, mapData);

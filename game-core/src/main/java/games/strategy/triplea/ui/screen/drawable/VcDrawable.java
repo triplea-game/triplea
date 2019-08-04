@@ -11,7 +11,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 /**
  * Draws the victory city image for the associated territory.
  */
-public class VcDrawable implements IDrawable {
+public class VcDrawable extends AbstractDrawable {
   private final Territory location;
 
   public VcDrawable(final Territory location) {
@@ -26,7 +26,7 @@ public class VcDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return VC_MARKER_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.VC_MARKER_LEVEL;
   }
 }

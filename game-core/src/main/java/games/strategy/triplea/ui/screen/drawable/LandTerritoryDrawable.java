@@ -14,7 +14,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
  * color is based on the territory owner and whether or not the territory is impassable. Intended only for use with land
  * territories.
  */
-public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable {
+public class LandTerritoryDrawable extends TerritoryDrawable {
   private final String territoryName;
 
   public LandTerritoryDrawable(final String territoryName) {
@@ -47,7 +47,7 @@ public class LandTerritoryDrawable extends TerritoryDrawable implements IDrawabl
   }
 
   @Override
-  public int getLevel() {
-    return POLYGONS_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.POLYGONS_LEVEL;
   }
 }

@@ -48,7 +48,7 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 /**
  * Pro combat move AI.
  */
-class ProCombatMoveAi {
+public class ProCombatMoveAi {
 
   private static final int MIN_BOMBING_SCORE = 4; // Avoid bombing low production factories with AA
 

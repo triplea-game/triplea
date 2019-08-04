@@ -14,7 +14,7 @@ import games.strategy.ui.Util;
 /**
  * Draws a black outline around the associated territory. Intended only for use with water territories (sea zones).
  */
-public class SeaZoneOutlineDrawable implements IDrawable {
+public class SeaZoneOutlineDrawable extends AbstractDrawable {
   private final String territoryName;
 
   public SeaZoneOutlineDrawable(final String territoryName) {
@@ -36,7 +36,7 @@ public class SeaZoneOutlineDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return POLYGONS_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.POLYGONS_LEVEL;
   }
 }

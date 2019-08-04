@@ -21,7 +21,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 /**
  * Draws the name, comments, and production value for the associated territory.
  */
-public class TerritoryNameDrawable implements IDrawable {
+public class TerritoryNameDrawable extends AbstractDrawable {
   private final String territoryName;
   private final UiContext uiContext;
   private Rectangle territoryBounds;
@@ -205,7 +205,7 @@ public class TerritoryNameDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return TERRITORY_TEXT_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.TERRITORY_TEXT_LEVEL;
   }
 }

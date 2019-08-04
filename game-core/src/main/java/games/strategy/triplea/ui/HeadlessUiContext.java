@@ -18,7 +18,6 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 
 /**
  * Headless version, so that we don't get error in linux when the system has no graphics configuration.
@@ -100,17 +99,6 @@ public class HeadlessUiContext extends AbstractUiContext {
 
   @Override
   public void setShowUnits(final boolean showUnits) {}
-
-  @Override
-  public OptionalExtraBorderLevel getDrawTerritoryBordersAgain() {
-    return null;
-  }
-
-  @Override
-  public void setDrawTerritoryBordersAgain(final OptionalExtraBorderLevel level) {}
-
-  @Override
-  public void setDrawTerritoryBordersAgainToMedium() {}
 
   @Override
   public void setShowTerritoryEffects(final boolean showTerritoryEffects) {}

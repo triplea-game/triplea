@@ -11,7 +11,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
 /**
  * Draws the blockade image for the associated territory.
  */
-public class BlockadeZoneDrawable implements IDrawable {
+public class BlockadeZoneDrawable extends AbstractDrawable {
   private final String location;
 
   public BlockadeZoneDrawable(final Territory location) {
@@ -26,7 +26,7 @@ public class BlockadeZoneDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return CAPITOL_MARKER_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.CAPITOL_MARKER_LEVEL;
   }
 }

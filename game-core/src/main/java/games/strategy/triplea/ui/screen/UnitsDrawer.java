@@ -26,7 +26,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.drawable.IDrawable;
+import games.strategy.triplea.ui.screen.drawable.AbstractDrawable;
 import lombok.extern.java.Log;
 
 /**
@@ -39,7 +39,7 @@ import lombok.extern.java.Log;
  * </p>
  */
 @Log
-public class UnitsDrawer implements IDrawable {
+public class UnitsDrawer extends AbstractDrawable {
   public static boolean enabledFlags = false;
   private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.NEXT_TO;
 
@@ -248,8 +248,8 @@ public class UnitsDrawer implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return UNITS_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.UNITS_LEVEL;
   }
 
   @Override

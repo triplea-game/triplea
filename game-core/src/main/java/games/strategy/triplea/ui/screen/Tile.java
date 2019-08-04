@@ -8,7 +8,6 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -30,7 +29,7 @@ public class Tile {
   private final Image image;
   private final Rectangle bounds;
   private final Lock lock = new ReentrantLock();
-  private final Queue<IDrawable> contents = new PriorityQueue<>(Comparator.comparingInt(IDrawable::getLevel));
+  private final Queue<IDrawable> contents = new PriorityQueue<>();
 
   Tile(final Rectangle bounds) {
     this.bounds = bounds;

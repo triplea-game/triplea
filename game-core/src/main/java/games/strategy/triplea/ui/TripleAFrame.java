@@ -569,7 +569,7 @@ public final class TripleAFrame extends JFrame {
 
       @Override
       protected void paintComponent(final Graphics g) {
-        g.setFont(new Font("Ariel", Font.BOLD, 50));
+        g.setFont(new Font("Arial", Font.BOLD, 50));
         g.setColor(new Color(255, 255, 255, 175));
         final Dimension size = mapPanel.getSize();
         g.drawString("Edit Mode", (int) ((size.getWidth() - 200) / 2), (int) ((size.getHeight() - 100) / 2));

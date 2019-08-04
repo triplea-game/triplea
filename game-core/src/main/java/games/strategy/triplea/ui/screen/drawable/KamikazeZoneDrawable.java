@@ -17,7 +17,7 @@ import games.strategy.triplea.ui.mapdata.MapData;
  * Draws the faded flag image of the original owner for the associated territory. Intended only for use with kamikaze
  * zones.
  */
-public class KamikazeZoneDrawable implements IDrawable {
+public class KamikazeZoneDrawable extends AbstractDrawable {
   private final String location;
   private final UiContext uiContext;
 
@@ -53,7 +53,7 @@ public class KamikazeZoneDrawable implements IDrawable {
   }
 
   @Override
-  public int getLevel() {
-    return CAPITOL_MARKER_LEVEL;
+  public DrawLevel getLevel() {
+    return DrawLevel.CAPITOL_MARKER_LEVEL;
   }
 }

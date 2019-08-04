@@ -29,7 +29,6 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.drawable.IDrawable.OptionalExtraBorderLevel;
 import lombok.extern.java.Log;
 
 /**
@@ -50,7 +49,6 @@ public class HeadedUiContext extends AbstractUiContext {
   private boolean drawUnits = true;
   private boolean drawTerritoryEffects = false;
   private boolean drawMapOnly = false;
-  private OptionalExtraBorderLevel extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
   private Cursor cursor = Cursor.getDefaultCursor();
 
   HeadedUiContext() {
@@ -78,9 +76,6 @@ public class HeadedUiContext extends AbstractUiContext {
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
     final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
     scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
-    if (scale < 1) {
-      setDrawTerritoryBordersAgainToMedium();
-    }
     unitImageFactory.setResourceLoader(resourceLoader, unitScale, mapData.getDefaultUnitWidth(),
         mapData.getDefaultUnitHeight(), mapData.getDefaultUnitCounterOffsetWidth(),
         mapData.getDefaultUnitCounterOffsetHeight());
@@ -191,21 +186,6 @@ public class HeadedUiContext extends AbstractUiContext {
   @Override
   public void setShowUnits(final boolean showUnits) {
     drawUnits = showUnits;
-  }
-
-  @Override
-  public OptionalExtraBorderLevel getDrawTerritoryBordersAgain() {
-    return extraTerritoryBorderLevel;
-  }
-
-  @Override
-  public void setDrawTerritoryBordersAgain(final OptionalExtraBorderLevel level) {
-    extraTerritoryBorderLevel = level;
-  }
-
-  @Override
-  public void setDrawTerritoryBordersAgainToMedium() {
-    extraTerritoryBorderLevel = OptionalExtraBorderLevel.MEDIUM;
   }
 
   @Override
