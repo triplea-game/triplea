@@ -7,7 +7,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -93,8 +92,7 @@ public class UnitsDrawer implements IDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-      final AffineTransform unscaled, final AffineTransform scaled) {
+  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
 
     // If there are too many Units at one point a black line is drawn to make clear which units belong to where
     if (overflow) {

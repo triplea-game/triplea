@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 import java.util.Optional;
 
 import games.strategy.engine.data.GameData;
@@ -43,8 +42,7 @@ public interface IDrawable {
    * The affine transform will be set to the scaled version.
    * </p>
    */
-  void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled,
-      AffineTransform scaled);
+  void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData);
 
   int getLevel();
 

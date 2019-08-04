@@ -38,20 +38,20 @@ import lombok.extern.java.Log;
 @Log
 public class HeadedUiContext extends AbstractUiContext {
   protected MapData mapData;
-  protected final TileImageFactory tileImageFactory = new TileImageFactory();
-  protected final UnitImageFactory unitImageFactory = new UnitImageFactory();
-  protected final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
-  protected final TerritoryEffectImageFactory territoryEffectImageFactory = new TerritoryEffectImageFactory();
-  protected final MapImage mapImage;
-  protected final UnitIconImageFactory unitIconImageFactory = new UnitIconImageFactory();
-  protected final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
-  protected DiceImageFactory diceImageFactory;
-  protected final PuImageFactory puImageFactory = new PuImageFactory();
-  protected boolean drawUnits = true;
-  protected boolean drawTerritoryEffects = false;
-  protected boolean drawMapOnly = false;
-  protected OptionalExtraBorderLevel extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
-  protected Cursor cursor = Cursor.getDefaultCursor();
+  private final TileImageFactory tileImageFactory = new TileImageFactory();
+  private final UnitImageFactory unitImageFactory = new UnitImageFactory();
+  private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
+  private final TerritoryEffectImageFactory territoryEffectImageFactory = new TerritoryEffectImageFactory();
+  private final MapImage mapImage;
+  private final UnitIconImageFactory unitIconImageFactory = new UnitIconImageFactory();
+  private final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
+  private DiceImageFactory diceImageFactory;
+  private final PuImageFactory puImageFactory = new PuImageFactory();
+  private boolean drawUnits = true;
+  private boolean drawTerritoryEffects = false;
+  private boolean drawMapOnly = false;
+  private OptionalExtraBorderLevel extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
+  private Cursor cursor = Cursor.getDefaultCursor();
 
   HeadedUiContext() {
     mapImage = new MapImage();
@@ -65,7 +65,6 @@ public class HeadedUiContext extends AbstractUiContext {
   @Override
   public void setScale(final double scale) {
     super.setScale(scale);
-    tileImageFactory.setScale(scale);
   }
 
   @Override
@@ -92,7 +91,6 @@ public class HeadedUiContext extends AbstractUiContext {
     flagIconImageFactory.setResourceLoader(resourceLoader);
     puImageFactory.setResourceLoader(resourceLoader);
     tileImageFactory.setMapDir(resourceLoader);
-    tileImageFactory.setScale(scale);
     // load map data
     mapImage.loadMaps(resourceLoader);
     mapDir = dir;
@@ -206,11 +204,6 @@ public class HeadedUiContext extends AbstractUiContext {
   }
 
   @Override
-  public void resetDrawTerritoryBordersAgain() {
-    extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
-  }
-
-  @Override
   public void setDrawTerritoryBordersAgainToMedium() {
     extraTerritoryBorderLevel = OptionalExtraBorderLevel.MEDIUM;
   }
@@ -246,5 +239,4 @@ public class HeadedUiContext extends AbstractUiContext {
       log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
     }
   }
-
 }

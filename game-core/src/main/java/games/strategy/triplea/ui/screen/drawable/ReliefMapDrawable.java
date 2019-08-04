@@ -14,13 +14,6 @@ public class ReliefMapDrawable extends MapTileDrawable {
   }
 
   @Override
-  public MapTileDrawable getUnscaledCopy() {
-    final ReliefMapDrawable copy = new ReliefMapDrawable(x, y, uiContext);
-    copy.unscaled = true;
-    return copy;
-  }
-
-  @Override
   protected Image getImage() {
     if (noImage) {
       return null;
@@ -28,12 +21,7 @@ public class ReliefMapDrawable extends MapTileDrawable {
     if (!TileImageFactory.getShowReliefImages()) {
       return null;
     }
-    final Image image;
-    if (unscaled) {
-      image = uiContext.getTileImageFactory().getUnscaledUncachedReliefTile(x, y);
-    } else {
-      image = uiContext.getTileImageFactory().getReliefTile(x, y);
-    }
+    final Image image = uiContext.getTileImageFactory().getReliefTile(x, y);
     if (image == null) {
       noImage = true;
     }

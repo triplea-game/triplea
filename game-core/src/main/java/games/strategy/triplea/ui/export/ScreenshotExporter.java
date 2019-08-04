@@ -5,7 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -85,19 +85,15 @@ public final class ScreenshotExporter {
       }
     }
     final UiContext uiContext = frame.getUiContext();
-    final double scale = uiContext.getScale();
     // print map panel to image
     final MapPanel mapPanel = frame.getMapPanel();
     final BufferedImage mapImage =
-        Util.newImage((int) (scale * mapPanel.getImageWidth()), (int) (scale * mapPanel.getImageHeight()), false);
+        Util.newImage(mapPanel.getImageWidth(), mapPanel.getImageHeight(), false);
     final Graphics2D mapGraphics = mapImage.createGraphics();
+    mapGraphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    mapGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
     try {
-      // workaround to get the whole map (otherwise the map is cut if current window is not on top of map)
-      final int offsetX = mapPanel.getXOffset();
-      final int offsetY = mapPanel.getYOffset();
-      mapPanel.setTopLeft(0, 0);
       mapPanel.drawMapImage(mapGraphics);
-      mapPanel.setTopLeft(offsetX, offsetY);
       // overlay title
       Color titleColor = uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
       if (titleColor == null) {
@@ -110,20 +106,16 @@ public final class ScreenshotExporter {
       int titleY;
       int titleSize;
       try {
-        titleX = (int) (Integer.parseInt(encodedTitleX) * scale);
-        titleY = (int) (Integer.parseInt(encodedTitleY) * scale);
+        titleX = Integer.parseInt(encodedTitleX);
+        titleY = Integer.parseInt(encodedTitleY);
         titleSize = Integer.parseInt(encodedTitleSize);
       } catch (final NumberFormatException nfe) {
         // choose safe defaults
-        titleX = (int) (15 * scale);
-        titleY = (int) (15 * scale);
+        titleX = 15;
+        titleY = 15;
         titleSize = 15;
       }
-      // everything else should be scaled down onto map image
-      final AffineTransform transform = new AffineTransform();
-      transform.scale(scale, scale);
-      mapGraphics.setTransform(transform);
-      mapGraphics.setFont(new Font("Ariel", Font.BOLD, titleSize));
+      mapGraphics.setFont(new Font("Arial", Font.BOLD, titleSize));
       mapGraphics.setColor(titleColor);
       if (uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED)) {
         mapGraphics.drawString(gameData.getGameName() + " Round " + round, titleX, titleY);

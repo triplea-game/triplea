@@ -168,7 +168,7 @@ public class TileManager {
       tiles = new ArrayList<>();
       for (int x = 0; x * TILE_SIZE < bounds.width; x++) {
         for (int y = 0; y * TILE_SIZE < bounds.height; y++) {
-          tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), uiContext.getScale()));
+          tiles.add(new Tile(new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)));
         }
       }
     } finally {
@@ -480,7 +480,7 @@ public class TileManager {
         final IDrawable drawable = iter.next();
         if (drawable instanceof MapTileDrawable) {
           iter.remove();
-          toAdd.add(((MapTileDrawable) drawable).getUnscaledCopy());
+          toAdd.add(drawable);
         }
       }
       drawablesSet.addAll(toAdd);
@@ -494,12 +494,12 @@ public class TileManager {
       if (drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL) {
         continue;
       }
-      drawer.draw(bounds, data, graphics, mapData, null, null);
+      drawer.draw(bounds, data, graphics, mapData);
     }
     if (!drawOutline) {
       final Color c = selected.isWater() ? Color.RED : Color.BLACK;
       final TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(), 100, Operation.FILL);
-      told.draw(bounds, data, graphics, mapData, null, null);
+      told.draw(bounds, data, graphics, mapData);
     }
     graphics.setStroke(new BasicStroke(10));
     graphics.setColor(Color.RED);

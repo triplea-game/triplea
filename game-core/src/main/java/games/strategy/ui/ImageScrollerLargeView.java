@@ -1,7 +1,5 @@
 package games.strategy.ui;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +20,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.primitives.Doubles;
 
 import games.strategy.triplea.settings.ClientSetting;
@@ -46,7 +43,6 @@ public class ImageScrollerLargeView extends JComponent {
 
   protected final ImageScrollModel model;
   protected double scale = 1;
-  private final int tileSize;
   private int dragScrollingLastX;
   private int dragScrollingLastY;
   private boolean wasLastActionDragging = false;
@@ -74,64 +70,36 @@ public class ImageScrollerLargeView extends JComponent {
   private int edge = NONE;
   private final List<ScrollListener> scrollListeners = new ArrayList<>();
 
-  public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model, final int tileSize) {
-    checkArgument(tileSize > 0, "tile size must be positive");
-
-    this.tileSize = tileSize;
+  public ImageScrollerLargeView(final Dimension dimension, final ImageScrollModel model) {
     this.model = model;
     this.model.setMaxBounds((int) dimension.getWidth(), (int) dimension.getHeight());
     setPreferredSize(getImageDimensions());
     setMaximumSize(getImageDimensions());
     final MouseWheelListener mouseWheelListener = e -> {
-      if (!e.isAltDown()) {
+      if (e.isControlDown()) {
+        final float zoomFactor = ClientSetting.mapZoomFactor.getValueOrThrow() / 100f;
+        final int oldWidth = model.getBoxWidth();
+        final int oldHeight = model.getBoxHeight();
+        setScale(scale - zoomFactor * e.getPreciseWheelRotation());
+        model.set(
+            model.getX() + (int) ((getMousePosition().getX() / getWidth()) * (oldWidth - model.getBoxWidth())),
+            model.getY() + (int) ((getMousePosition().getY() / getHeight()) * (oldHeight - model.getBoxHeight())));
+      } else {
         if (edge == NONE) {
           insideCount = 0;
         }
         // compute the amount to move
         int dx = 0;
         int dy = 0;
+        // In java 11 SHIFT_DOWN_MASK seems to be true for sideways scrolling
+        // this doesn't seem to be documented anywhere, but we'll take it for now
         if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
-          dx = e.getWheelRotation() * ClientSetting.wheelScrollAmount.getValueOrThrow();
+          dx = (int) (e.getPreciseWheelRotation() * ClientSetting.wheelScrollAmount.getValueOrThrow());
         } else {
-          dy = e.getWheelRotation() * ClientSetting.wheelScrollAmount.getValueOrThrow();
+          dy = (int) (e.getPreciseWheelRotation() * ClientSetting.wheelScrollAmount.getValueOrThrow());
         }
         // Update the model, which will handle its own clamping or wrapping depending on the map.
         this.model.set(this.model.getX() + dx, this.model.getY() + dy);
-      } else {
-        double value = scale;
-        int positive = 1;
-        if (e.getUnitsToScroll() > 0) {
-          positive = -1;
-        }
-        if ((positive > 0 && value == 1) || (positive < 0 && value <= .21)) {
-          return;
-        }
-        if (positive > 0) {
-          if (value >= .79) {
-            value = 1.0;
-          } else if (value >= .59) {
-            value = .8;
-          } else if (value >= .39) {
-            value = .6;
-          } else if (value >= .19) {
-            value = .4;
-          } else {
-            value = .2;
-          }
-        } else {
-          if (value <= .41) {
-            value = .2;
-          } else if (value <= .61) {
-            value = .4;
-          } else if (value <= .81) {
-            value = .6;
-          } else if (value <= 1.0) {
-            value = .8;
-          } else {
-            value = 1.0;
-          }
-        }
-        setScale(value);
       }
     };
     addMouseWheelListener(mouseWheelListener);
@@ -299,25 +267,23 @@ public class ImageScrollerLargeView extends JComponent {
   /**
    * Sets the view scale.
    *
-   * @param value The new scale value. Constrained to the bounds of no less than 0.15 and no greater than 1.
+   * @param value The new scale value. Constrained to the bounds of {@link #getMinScale()} and no greater than 1.
    *        If out of bounds the nearest boundary value is used.
    */
   public void setScale(final double value) {
-    scale = discretizeScale(constrainScale(value), tileSize);
+    scale = constrainScale(value);
     refreshBoxSize();
   }
 
-  private static double constrainScale(final double value) {
-    return Doubles.constrainToRange(value, 0.15, 1.0);
+  public double getMinScale() {
+    final double minScale = scale * Math.max(
+        (double) model.getBoxWidth() / model.getMaxWidth(),
+        (double) model.getBoxHeight() / model.getMaxHeight());
+    return Math.min(minScale, 1);
   }
 
-  /**
-   * Maps {@code value} to the nearest discrete value (rounding towards zero) that is a multiple of
-   * {@code 1 / tileSize}. This ensures that a scaled tile will always have an integer width and height.
-   */
-  @VisibleForTesting
-  static double discretizeScale(final double value, final int tileSize) {
-    return (int) (value * tileSize) / (double) tileSize;
+  private double constrainScale(final double value) {
+    return Doubles.constrainToRange(value, getMinScale(), 1.0);
   }
 
   /**

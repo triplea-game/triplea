@@ -403,10 +403,10 @@ public final class TripleAFrame extends JFrame {
     });
     SwingUtilities.invokeLater(() -> this.setJMenuBar(new TripleAMenuBar(this)));
     final ImageScrollModel model = new ImageScrollModel();
-    model.setScrollX(uiContext.getMapData().scrollWrapX());
-    model.setScrollY(uiContext.getMapData().scrollWrapY());
     model.setMaxBounds(uiContext.getMapData().getMapDimensions().width,
         uiContext.getMapData().getMapDimensions().height);
+    model.setScrollX(uiContext.getMapData().scrollWrapX());
+    model.setScrollY(uiContext.getMapData().scrollWrapY());
     final Image small = uiContext.getMapImage().getSmallMapImage();
     smallView = new MapPanelSmallView(small, model, uiContext.getMapData());
     mapPanel = new MapPanel(data, smallView, uiContext, model, this::computeScrollSpeed);
@@ -679,17 +679,11 @@ public final class TripleAFrame extends JFrame {
   }
 
   private void addZoomKeyboardShortcuts() {
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '=', () -> {
-      if (getScale() < 100) {
-        setScale(getScale() + 10);
-      }
-    });
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '=',
+        () -> mapPanel.setScale(mapPanel.getScale() + (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
 
-    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '-', () -> {
-      if (getScale() > 16) {
-        setScale(getScale() - 10);
-      }
-    });
+    SwingComponents.addKeyListenerWithMetaAndCtrlMasks(this, '-',
+        () -> mapPanel.setScale(mapPanel.getScale() - (ClientSetting.mapZoomFactor.getValueOrThrow() / 100f)));
   }
 
   private void addTab(final String title, final Component component, final char hotkey) {
@@ -700,22 +694,6 @@ public final class TripleAFrame extends JFrame {
 
   public LocalPlayers getLocalPlayers() {
     return localPlayers;
-  }
-
-  /**
-   * Sets the map scale.
-   *
-   * @param value a number between 10 and 200.
-   */
-  public void setScale(final double value) {
-    getMapPanel().setScale(value / 100);
-  }
-
-  /**
-   * Returns a scale between 10 and 200.
-   */
-  private double getScale() {
-    return getMapPanel().getScale() * 100;
   }
 
   /**
