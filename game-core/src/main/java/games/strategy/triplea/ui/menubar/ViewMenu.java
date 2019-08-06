@@ -282,7 +282,8 @@ final class ViewMenu extends JMenu {
       TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
       TileImageFactory.setShowMapBlendMode(uiContext.getMapData().getMapBlendMode());
       TileImageFactory.setShowMapBlendAlpha(uiContext.getMapData().getMapBlendAlpha());
-      new Thread(() -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()), "Show map Blends thread").start();
+      new Thread(() -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()),
+          "Show map Blends thread").start();
     });
     add(showMapBlends);
   }
