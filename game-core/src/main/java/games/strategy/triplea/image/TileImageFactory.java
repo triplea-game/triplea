@@ -31,6 +31,7 @@ import lombok.extern.java.Log;
 @Log
 public final class TileImageFactory {
   // one instance in the application
+  private static boolean isDirty = false;
   private static final String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief2";
   private static boolean showReliefImages;
   private static final String SHOW_MAP_BLENDS_PREFERENCE = "ShowBlends";
@@ -44,7 +45,6 @@ public final class TileImageFactory {
   // maps image name to ImageRef
   private final Map<String, SoftReference<Image>> imageCache = Collections.synchronizedMap(new HashMap<>());
   private ResourceLoader resourceLoader;
-  private static boolean isDirty = false;
 
   static {
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
