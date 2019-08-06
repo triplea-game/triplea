@@ -14,6 +14,11 @@ import games.strategy.engine.player.IGamePlayer;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 
+/**
+ * Abstraction to allow decoupling the UI framework (namely swing)
+ * from the launching code.
+ * Ideally the common launching code has no compile-time dependency on swing at all.
+ */
 public interface LaunchAction {
   void handleGameInterruption(GameSelectorModel gameSelectorModel, ServerModel serverModel);
 

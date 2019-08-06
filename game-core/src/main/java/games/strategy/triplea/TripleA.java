@@ -36,10 +36,9 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 public class TripleA implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
 
-  private transient ISound soundChannel;
-
   protected transient ITripleADisplay display;
   protected transient IGame game;
+  private transient ISound soundChannel;
 
   @Override
   public Set<IGamePlayer> newPlayers(final Map<String, PlayerType> playerNames) {

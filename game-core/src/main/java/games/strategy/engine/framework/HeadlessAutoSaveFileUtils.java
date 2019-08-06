@@ -5,6 +5,10 @@ import static games.strategy.engine.framework.GameDataFileUtils.addExtension;
 
 import java.io.File;
 
+/**
+ * Headless variant of {@link AutoSaveFileUtils}
+ * with slightly shortened save-game names.
+ */
 public class HeadlessAutoSaveFileUtils extends AutoSaveFileUtils {
   @Override
   String getAutoSaveFileName(final String baseFileName) {

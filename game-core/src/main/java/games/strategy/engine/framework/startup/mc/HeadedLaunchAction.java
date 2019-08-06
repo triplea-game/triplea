@@ -27,6 +27,10 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
 
+/**
+ * Headed and default implementation of {@link LaunchAction}.
+ * Ideally replaceable with any other graphics framework.
+ */
 public class HeadedLaunchAction implements LaunchAction {
 
   private final Component ui;
@@ -46,7 +50,7 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public void onEnd(String message) {
+  public void onEnd(final String message) {
     SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message));
   }
 
@@ -85,7 +89,7 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public void onLaunch(ServerGame serverGame) {}
+  public void onLaunch(final ServerGame serverGame) {}
 
   @Override
   public AutoSaveFileUtils getAutoSaveFileUtils() {
