@@ -13,6 +13,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -30,6 +31,7 @@ import lombok.extern.java.Log;
 @Log
 public final class TileImageFactory {
   // one instance in the application
+  private static boolean isDirty = false;
   private static final String SHOW_RELIEF_IMAGES_PREFERENCE = "ShowRelief2";
   private static boolean showReliefImages;
   private static final String SHOW_MAP_BLENDS_PREFERENCE = "ShowBlends";
@@ -69,6 +71,7 @@ public final class TileImageFactory {
   }
 
   public static void setShowReliefImages(final boolean showReliefImages) {
+    isDirty |= TileImageFactory.showReliefImages != showReliefImages;
     TileImageFactory.showReliefImages = showReliefImages;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.putBoolean(SHOW_RELIEF_IMAGES_PREFERENCE, TileImageFactory.showReliefImages);
@@ -80,6 +83,7 @@ public final class TileImageFactory {
   }
 
   public static void setShowMapBlends(final boolean showMapBlends) {
+    isDirty |= TileImageFactory.showMapBlends != showMapBlends;
     TileImageFactory.showMapBlends = showMapBlends;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.putBoolean(SHOW_MAP_BLENDS_PREFERENCE, TileImageFactory.showMapBlends);
@@ -91,6 +95,7 @@ public final class TileImageFactory {
   }
 
   public static void setShowMapBlendMode(final String showMapBlendMode) {
+    isDirty |= !Objects.equals(TileImageFactory.showMapBlendMode, showMapBlendMode);
     TileImageFactory.showMapBlendMode = showMapBlendMode;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.put(SHOW_MAP_BLEND_MODE, TileImageFactory.showMapBlendMode);
@@ -102,6 +107,7 @@ public final class TileImageFactory {
   }
 
   public static void setShowMapBlendAlpha(final float showMapBlendAlpha) {
+    isDirty |= TileImageFactory.showMapBlendAlpha != showMapBlendAlpha;
     TileImageFactory.showMapBlendAlpha = showMapBlendAlpha;
     final Preferences prefs = Preferences.userNodeForPackage(TileImageFactory.class);
     prefs.putFloat(SHOW_MAP_BLEND_ALPHA, TileImageFactory.showMapBlendAlpha);
@@ -138,6 +144,10 @@ public final class TileImageFactory {
   }
 
   private Image getImage(final String fileName, final boolean transparent) {
+    if (isDirty) {
+      isDirty = false;
+      imageCache.clear();
+    }
     final Image image = isImageLoaded(fileName);
     if (image != null) {
       return image;
