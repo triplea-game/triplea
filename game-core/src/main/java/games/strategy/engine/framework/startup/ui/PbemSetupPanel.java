@@ -29,6 +29,7 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EmailSenderEditor;
 import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
@@ -193,6 +194,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     final PlayerListing pl =
         new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
-    return Optional.of(new LocalLauncher(gameSelectorModel, randomSource, pl, this));
+    return Optional.of(new LocalLauncher(gameSelectorModel, randomSource, pl, this, new HeadedLaunchAction(this)));
   }
 }

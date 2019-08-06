@@ -109,7 +109,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       final byte[] gameDataAsBytes = gameData.toBytes();
       final Set<IGamePlayer> localPlayerSet =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
-      serverGame = new ServerGame(gameData, localPlayerSet, remotePlayers, messengers, launchAction.isHeadless());
+      serverGame = new ServerGame(gameData, localPlayerSet, remotePlayers, messengers, launchAction);
       serverGame.setInGameLobbyWatcher(inGameLobbyWatcher);
       launchAction.onLaunch(serverGame);
       // tell the clients to start, later we will wait for them to all signal that they are ready.

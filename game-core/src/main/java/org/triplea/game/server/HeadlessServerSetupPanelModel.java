@@ -6,7 +6,7 @@ import java.util.logging.Level;
 
 import org.triplea.game.startup.ServerSetupModel;
 
-import games.strategy.engine.framework.AutoSaveFileUtils;
+import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -36,7 +36,7 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
           // if we do not do this, we can get into an infinite loop of launching a game,
           // then crashing out, then launching, etc.
           serverModel.setAllPlayersToNullNodes();
-          final File f1 = AutoSaveFileUtils.getHeadlessAutoSaveFile();
+          final File f1 = getAutoSaveFileUtils().getHeadlessAutoSaveFile();
           if (!f1.exists() || !gameSelectorModel.load(f1)) {
             gameSelectorModel.resetGameDataToNull();
           }
@@ -64,12 +64,17 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
 
       @Override
       public File getAutoSaveFile() {
-        return AutoSaveFileUtils.getHeadlessAutoSaveFile();
+        return getAutoSaveFileUtils().getHeadlessAutoSaveFile();
       }
 
       @Override
       public void onLaunch(final ServerGame serverGame) {
         HeadlessGameServer.setServerGame(serverGame);
+      }
+
+      @Override
+      public HeadlessAutoSaveFileUtils getAutoSaveFileUtils() {
+        return new HeadlessAutoSaveFileUtils();
       }
     }).createServerMessenger();
   }

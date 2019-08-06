@@ -65,35 +65,7 @@ public class SetupPanelModel implements ServerSetupModel {
    * Starts the game server and displays the game start screen afterwards, awaiting remote game clients.
    */
   public void showServer() {
-    new ServerModel(gameSelectorModel, this, ui, new LaunchAction() {
-      @Override
-      public void handleGameInterruption(final GameSelectorModel gameSelectorModel, final ServerModel serverModel) {
-        gameSelectorModel.loadDefaultGameNewThread();
-      }
-
-      @Override
-      public void onGameInterrupt() {
-        SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(ui).setVisible(true));
-      }
-
-      @Override
-      public void onEnd(String message) {
-        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message));
-      }
-
-      @Override
-      public boolean isHeadless() {
-        return false;
-      }
-
-      @Override
-      public File getAutoSaveFile() {
-        return AutoSaveFileUtils.getLostConnectionAutoSaveFile(LocalDateTime.now(ZoneId.systemDefault()));
-      }
-
-      @Override
-      public void onLaunch(ServerGame serverGame) {}
-    }).createServerMessenger();
+    new ServerModel(gameSelectorModel, this, ui, new HeadedLaunchAction(ui)).createServerMessenger();
   }
 
   @Override

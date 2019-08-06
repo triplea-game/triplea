@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.launcher;
 
 import java.io.File;
 
+import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
@@ -13,4 +14,5 @@ public interface LaunchAction {
   boolean isHeadless(); // Intermediate solution, remove when no longer necessary
   File getAutoSaveFile();
   void onLaunch(final ServerGame serverGame);
+  AutoSaveFileUtils getAutoSaveFileUtils();
 }
