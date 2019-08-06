@@ -260,7 +260,7 @@ final class ViewMenu extends JMenu {
       }
       TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
       new Thread(() -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()),
-          "Triplea : Show map details thread").start();
+          "Show map details thread").start();
     });
     add(showMapDetails);
   }
@@ -282,10 +282,7 @@ final class ViewMenu extends JMenu {
       TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
       TileImageFactory.setShowMapBlendMode(uiContext.getMapData().getMapBlendMode());
       TileImageFactory.setShowMapBlendAlpha(uiContext.getMapData().getMapBlendAlpha());
-      new Thread(() -> {
-        frame.getMapPanel().setScale(uiContext.getScale());
-        frame.getMapPanel().updateCountries(gameData.getMap().getTerritories());
-      }, "Triplea : Show map Blends thread").start();
+      new Thread(() -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()), "Show map Blends thread").start();
     });
     add(showMapBlends);
   }
