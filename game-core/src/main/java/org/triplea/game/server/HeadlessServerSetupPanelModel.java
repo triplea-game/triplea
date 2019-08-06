@@ -78,7 +78,7 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
       }
 
       @Override
-      public ISound getSoundChannel(LocalPlayers localPlayers) {
+      public ISound getSoundChannel(final LocalPlayers localPlayers) {
         return new HeadlessSoundChannel();
       }
 
