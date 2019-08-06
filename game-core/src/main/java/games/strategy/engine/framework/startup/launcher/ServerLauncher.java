@@ -1,9 +1,6 @@
 package games.strategy.engine.framework.startup.launcher;
 
-import java.awt.Component;
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,16 +12,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import javax.annotation.Nullable;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
-import org.triplea.game.server.HeadlessGameServer;
 import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.mc.ClientModel;
@@ -50,14 +43,13 @@ import lombok.extern.java.Log;
 public class ServerLauncher extends AbstractLauncher<Void> {
   private final GameData gameData;
   private final GameSelectorModel gameSelectorModel;
-  private final boolean headless;
+  private final LaunchAction launchAction;
   private final int clientCount;
   private final Messengers messengers;
   private final PlayerListing playerListing;
   private final Map<String, INode> remotePlayers;
   private final ServerModel serverModel;
   private ServerGame serverGame;
-  private Component ui;
   private ServerReady serverReady;
   private final CountDownLatch errorLatch = new CountDownLatch(1);
   private volatile boolean isLaunching = true;
@@ -75,9 +67,9 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       final PlayerListing playerListing,
       final Map<String, INode> remotePlayers,
       final ServerModel serverModel,
-      final boolean headless) {
+      final LaunchAction launchAction) {
     this.gameSelectorModel = gameSelectorModel;
-    this.headless = headless;
+    this.launchAction = launchAction;
     this.clientCount = clientCount;
     this.messengers = messengers;
     this.playerListing = playerListing;
@@ -101,7 +93,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
   }
 
   @Override
-  Optional<Void> loadGame(final Component parent) {
+  Optional<Void> loadGame() {
     try {
       // the order of this stuff does matter
       serverModel.setServerLauncher(this);
@@ -110,7 +102,6 @@ public class ServerLauncher extends AbstractLauncher<Void> {
         inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.LAUNCHING, null);
       }
       serverModel.allowRemoveConnections();
-      ui = parent;
       log.info("Game Status: Launching");
       messengers.registerRemote(serverReady, ClientModel.CLIENT_READY_CHANNEL);
       gameData.doPreGameStartDataModifications(playerListing);
@@ -118,11 +109,9 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       final byte[] gameDataAsBytes = gameData.toBytes();
       final Set<IGamePlayer> localPlayerSet =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
-      serverGame = new ServerGame(gameData, localPlayerSet, remotePlayers, messengers, headless);
+      serverGame = new ServerGame(gameData, localPlayerSet, remotePlayers, messengers, launchAction.isHeadless());
       serverGame.setInGameLobbyWatcher(inGameLobbyWatcher);
-      if (headless) {
-        HeadlessGameServer.setServerGame(serverGame);
-      }
+      launchAction.onLaunch(serverGame);
       // tell the clients to start, later we will wait for them to all signal that they are ready.
       ((IClientChannel) messengers.getChannelBroadcaster(IClientChannel.CHANNEL_NAME))
           .doneSelectingPlayers(gameDataAsBytes, serverGame.getPlayerManager().getPlayerMapping());
@@ -137,7 +126,8 @@ public class ServerLauncher extends AbstractLauncher<Void> {
         serverGame.setRandomSource(randomSource);
       }
       try {
-        gameData.getGameLoader().startGame(serverGame, localPlayerSet, headless, serverModel.getChatModel().getChat());
+        gameData.getGameLoader().startGame(serverGame, localPlayerSet, launchAction.isHeadless(),
+            serverModel.getChatModel().getChat());
       } catch (final Exception e) {
         log.log(Level.SEVERE, "Failed to launch", e);
         abortLaunch = true;
@@ -161,7 +151,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
   }
 
   @Override
-  void launchInternal(final Component parent, @Nullable final Void none) {
+  void launchInternal(@Nullable final Void none) {
     try {
       isLaunching = false;
       abortLaunch = testShouldWeAbort();
@@ -174,8 +164,6 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       } else {
         stopGame();
       }
-    } catch (final ConnectionLostException e) {
-      // no-op, this is a simple player disconnect, no need to scare the user with some giant stack trace
     } catch (final MessengerException me) {
       // we lost a connection
       // wait for the connection handler to notice, and shut us down
@@ -187,44 +175,25 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       });
       stopGame();
     } catch (final RuntimeException e) {
-      final String errorMessage = "Unrecognized error occurred. If this is a repeatable error, "
-          + "please make a copy of this savegame and report to:\n" + UrlConstants.GITHUB_ISSUES;
-      log.log(Level.SEVERE, errorMessage, e);
-      stopGame();
+      // no-op, this is a simple player disconnect, no need to scare the user with some giant stack trace
+      if (!(e.getCause() != null && e.getCause() instanceof ConnectionLostException)) {
+        final String errorMessage = "Unrecognized error occurred. If this is a repeatable error, "
+            + "please make a copy of this savegame and report to:\n" + UrlConstants.GITHUB_ISSUES;
+        log.log(Level.SEVERE, errorMessage, e);
+        stopGame();
+      }
     }
     // having an oddball issue with the zip stream being closed while parsing to load default game. might be
     // caused by closing of stream while unloading map resources.
     Interruptibles.sleep(200);
     // either game ended, or aborted, or a player left or disconnected
-    if (headless) {
-      try {
-        log.info("Game ended, going back to waiting.");
-        // if we do not do this, we can get into an infinite loop of launching a game,
-        // then crashing out, then launching, etc.
-        serverModel.setAllPlayersToNullNodes();
-        final File f1 = AutoSaveFileUtils.getHeadlessAutoSaveFile();
-        if (!f1.exists() || !gameSelectorModel.load(f1)) {
-          gameSelectorModel.resetGameDataToNull();
-        }
-      } catch (final Exception e1) {
-        log.log(Level.SEVERE, "Failed to load game", e1);
-        gameSelectorModel.resetGameDataToNull();
-      }
-    } else {
-      gameSelectorModel.loadDefaultGameNewThread();
-    }
-    if (parent != null) {
-      SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(parent).setVisible(true));
-    }
+    launchAction.handleGameInterruption(gameSelectorModel, serverModel);
     serverModel.setServerLauncher(null);
     serverModel.newGame();
     if (inGameLobbyWatcher != null) {
       inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
     }
-    if (headless) {
-      // tell headless server to wait for new connections:
-      HeadlessGameServer.waitForUsersHeadlessInstance();
-    }
+    launchAction.onGameInterrupt();
     log.info("Game Status: Waiting For Players");
   }
 
@@ -288,9 +257,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
 
   private void saveAndEndGame(final INode node) {
     // a hack, if headless save to the autosave to avoid polluting our savegames folder with a million saves
-    final File f = headless
-        ? AutoSaveFileUtils.getHeadlessAutoSaveFile()
-        : AutoSaveFileUtils.getLostConnectionAutoSaveFile(LocalDateTime.now(ZoneId.systemDefault()));
+    final File f = launchAction.getAutoSaveFile();
     try {
       serverGame.saveGame(f);
     } catch (final Exception e) {
@@ -300,11 +267,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
     stopGame();
 
     final String message = "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
-    if (headless) {
-      log.info(message);
-    } else {
-      SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message));
-    }
+    launchAction.onEnd(message);
   }
 
   static class ServerReady implements IServerReady {

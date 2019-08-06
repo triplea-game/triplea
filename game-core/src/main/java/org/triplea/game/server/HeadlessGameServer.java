@@ -439,7 +439,7 @@ public class HeadlessGameServer {
 
         final boolean launched = setupPanelModel.getPanel().getLauncher()
             .map(launcher -> {
-              new Thread(() -> launcher.launch(null)).start();
+              new Thread(launcher::launch).start();
               return true;
             }).orElse(false);
         setupPanelModel.getPanel().postStartGame();

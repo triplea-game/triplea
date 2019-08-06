@@ -61,6 +61,6 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public Optional<ILauncher> getLauncher() {
-    return Optional.of(LauncherFactory.getLocalLaunchers(gameSelectorModel, playerTypes));
+    return Optional.of(LauncherFactory.getLocalLaunchers(gameSelectorModel, playerTypes, this));
   }
 }

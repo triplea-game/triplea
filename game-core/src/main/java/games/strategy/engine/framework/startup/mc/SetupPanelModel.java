@@ -1,18 +1,25 @@
 package games.strategy.engine.framework.startup.mc;
 
 import java.awt.Dimension;
+import java.io.File;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.triplea.game.startup.ServerSetupModel;
 
 import com.google.common.base.Preconditions;
 
+import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
@@ -58,7 +65,35 @@ public class SetupPanelModel implements ServerSetupModel {
    * Starts the game server and displays the game start screen afterwards, awaiting remote game clients.
    */
   public void showServer() {
-    new ServerModel(gameSelectorModel, this, ui).createServerMessenger();
+    new ServerModel(gameSelectorModel, this, ui, new LaunchAction() {
+      @Override
+      public void handleGameInterruption(final GameSelectorModel gameSelectorModel, final ServerModel serverModel) {
+        gameSelectorModel.loadDefaultGameNewThread();
+      }
+
+      @Override
+      public void onGameInterrupt() {
+        SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(ui).setVisible(true));
+      }
+
+      @Override
+      public void onEnd(String message) {
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message));
+      }
+
+      @Override
+      public boolean isHeadless() {
+        return false;
+      }
+
+      @Override
+      public File getAutoSaveFile() {
+        return AutoSaveFileUtils.getLostConnectionAutoSaveFile(LocalDateTime.now(ZoneId.systemDefault()));
+      }
+
+      @Override
+      public void onLaunch(ServerGame serverGame) {}
+    }).createServerMessenger();
   }
 
   @Override
@@ -67,8 +102,8 @@ public class SetupPanelModel implements ServerSetupModel {
       setGameTypePanel(new ServerSetupPanel(serverModel, gameSelectorModel));
       // for whatever reason, the server window is showing very very small, causing the nation info to be cut and
       // requiring scroll bars
-      final int x = (ui.getPreferredSize().width > 800 ? ui.getPreferredSize().width : 800);
-      final int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
+      final int x = Math.max(ui.getPreferredSize().width, 800);
+      final int y = Math.max(ui.getPreferredSize().height, 660);
       ui.setPreferredSize(new Dimension(x, y));
       ui.setSize(new Dimension(x, y));
     });

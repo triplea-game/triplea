@@ -54,6 +54,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameState;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.PlayerType;
@@ -92,6 +93,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   private final GameSelectorModel gameSelectorModel;
   @Nullable
   private final JFrame ui;
+  private final LaunchAction launchAction;
   private ChatModel chatModel;
   private ChatController chatController;
   private final Map<String, PlayerType> localPlayerTypes = new HashMap<>();
@@ -243,11 +245,12 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
   };
 
   public ServerModel(final GameSelectorModel gameSelectorModel, final ServerSetupModel serverSetupModel,
-      @Nullable final JFrame ui) {
+      @Nullable final JFrame ui, final LaunchAction launchAction) {
     this.gameSelectorModel = Preconditions.checkNotNull(gameSelectorModel);
     this.serverSetupModel = Preconditions.checkNotNull(serverSetupModel);
     this.gameSelectorModel.addObserver(gameSelectorObserver);
     this.ui = ui;
+    this.launchAction = launchAction;
   }
 
   static RemoteName getObserverWaitingToStartName(final INode node) {
@@ -582,7 +585,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         }
       }
       return Optional.of(new ServerLauncher(clientCount, messengers, gameSelectorModel, getPlayerListingInternal(),
-          remotePlayers, this, ui == null));
+          remotePlayers, this, launchAction));
     }
   }
 

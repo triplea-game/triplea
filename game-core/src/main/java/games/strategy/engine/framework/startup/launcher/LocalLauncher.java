@@ -31,17 +31,19 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
   private final GameSelectorModel gameSelectorModel;
   private final IRandomSource randomSource;
   private final PlayerListing playerListing;
+  private final Component parent;
 
   public LocalLauncher(final GameSelectorModel gameSelectorModel, final IRandomSource randomSource,
-      final PlayerListing playerListing) {
+      final PlayerListing playerListing, final Component parent) {
     this.randomSource = randomSource;
     this.playerListing = playerListing;
     this.gameSelectorModel = gameSelectorModel;
     this.gameData = gameSelectorModel.getGameData();
+    this.parent = parent;
   }
 
   @Override
-  protected void launchInternal(final Component parent, @Nullable final ServerGame game) {
+  protected void launchInternal(@Nullable final ServerGame game) {
     try {
       if (game != null) {
         game.startGame();
@@ -57,7 +59,7 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
   }
 
   @Override
-  Optional<ServerGame> loadGame(final Component parent) {
+  Optional<ServerGame> loadGame() {
     try {
       gameData.doPreGameStartDataModifications(playerListing);
       final Messengers messengers = new Messengers(new LocalNoOpMessenger());

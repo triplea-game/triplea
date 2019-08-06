@@ -193,6 +193,6 @@ public class PbemSetupPanel extends SetupPanel implements Observer {
     final PlayerListing pl =
         new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
-    return Optional.of(new LocalLauncher(gameSelectorModel, randomSource, pl));
+    return Optional.of(new LocalLauncher(gameSelectorModel, randomSource, pl, this));
   }
 }

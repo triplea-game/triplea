@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.startup.launcher;
 
+import java.awt.Component;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,7 +22,8 @@ public final class LauncherFactory {
    */
   public static ILauncher getLocalLaunchers(
       final GameSelectorModel gameSelectorModel,
-      final Collection<? extends PlayerCountrySelection> playerRows) {
+      final Collection<? extends PlayerCountrySelection> playerRows,
+      final Component parent) {
 
     final Map<String, PlayerType> playerTypes = playerRows.stream()
         .collect(Collectors.toMap(PlayerCountrySelection::getPlayerName, PlayerCountrySelection::getPlayerType));
@@ -33,6 +35,6 @@ public final class LauncherFactory {
     final PlayerListing pl =
         new PlayerListing(null, playersEnabled, playerTypes, gameSelectorModel.getGameData().getGameVersion(),
             gameSelectorModel.getGameName(), gameSelectorModel.getGameRound(), null, null);
-    return new LocalLauncher(gameSelectorModel, new PlainRandomSource(), pl);
+    return new LocalLauncher(gameSelectorModel, new PlainRandomSource(), pl, parent);
   }
 }
