@@ -16,11 +16,18 @@ import games.strategy.triplea.ui.display.ITripleADisplay;
 
 public interface LaunchAction {
   void handleGameInterruption(GameSelectorModel gameSelectorModel, ServerModel serverModel);
+
   void onGameInterrupt();
+
   void onEnd(String message);
+
   ITripleADisplay startGame(LocalPlayers localPlayers, IGame game, Set<IGamePlayer> players, Chat chat);
+
   ISound getSoundChannel(LocalPlayers localPlayers);
+
   File getAutoSaveFile();
+
   void onLaunch(ServerGame serverGame);
+
   AutoSaveFileUtils getAutoSaveFileUtils();
 }

@@ -1,7 +1,6 @@
 package games.strategy.engine.framework;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.GameDataFileUtils.addExtension;
 import static org.triplea.java.StringUtils.capitalize;
 

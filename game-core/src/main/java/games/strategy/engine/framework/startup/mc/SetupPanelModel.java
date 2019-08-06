@@ -1,25 +1,18 @@
 package games.strategy.engine.framework.startup.mc;
 
 import java.awt.Dimension;
-import java.io.File;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.triplea.game.startup.ServerSetupModel;
 
 import com.google.common.base.Preconditions;
 
-import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.ServerGame;
-import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
 import games.strategy.engine.framework.startup.ui.MetaSetupPanel;

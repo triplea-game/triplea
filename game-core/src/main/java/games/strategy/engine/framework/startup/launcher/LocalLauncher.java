@@ -82,6 +82,7 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
       return Optional.empty();
     }
   }
+
   /**
    * Creates a launcher for a single player local (no network) game.
    */
