@@ -48,6 +48,7 @@ import games.strategy.engine.framework.network.ui.ChangeToAutosaveClientAction;
 import games.strategy.engine.framework.network.ui.GetGameSaveClientAction;
 import games.strategy.engine.framework.network.ui.SetMapClientAction;
 import games.strategy.engine.framework.startup.launcher.IServerReady;
+import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.PlayerType;
@@ -79,6 +80,7 @@ public class ClientModel implements IMessengerErrorListener {
   private final GameSelectorModel gameSelectorModel;
   private final SetupPanelModel typePanelModel;
   private final WaitWindow gameLoadingWindow;
+  private final LaunchAction launchAction;
   private IRemoteModelListener listener = IRemoteModelListener.NULL_LISTENER;
   private Messengers messengers;
   private IClientMessenger messenger;
@@ -138,7 +140,9 @@ public class ClientModel implements IMessengerErrorListener {
     }
   };
 
-  public ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel) {
+  ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel,
+      final LaunchAction launchAction) {
+    this.launchAction = launchAction;
     this.typePanelModel = typePanelModel;
     this.gameSelectorModel = gameSelectorModel;
     final Interruptibles.Result<WaitWindow> window = Interruptibles
@@ -316,7 +320,7 @@ public class ClientModel implements IMessengerErrorListener {
         // game will be null if we loose the connection
         if (game != null) {
           try {
-            data.getGameLoader().startGame(game, playerSet, false, getChatPanel().getChat());
+            data.getGameLoader().startGame(game, playerSet, launchAction, getChatPanel().getChat());
           } catch (final Exception e) {
             log.log(Level.SEVERE, "Failed to start Game", e);
             game.shutDown();
@@ -392,11 +396,6 @@ public class ClientModel implements IMessengerErrorListener {
     return messenger;
   }
 
-  public IServerStartupRemote getServerStartupRemote() {
-    return getServerStartup();
-  }
-
-
   @Override
   public void messengerInvalid(final Throwable reason) {
     // The self chat disconnect notification is simply so we have an on-screen notification of the disconnect.
@@ -428,7 +427,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public Action getHostBotChangeGameOptionsClientAction(final Component parent) {
-    return new ChangeGameOptionsClientAction(parent, getServerStartupRemote());
+    return new ChangeGameOptionsClientAction(parent, getServerStartup());
   }
 
   public Action getHostBotChangeGameToSaveGameClientAction() {
@@ -441,7 +440,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   public Action getHostBotGetGameSaveClientAction(final Component parent) {
-    return new GetGameSaveClientAction(parent, getServerStartupRemote());
+    return new GetGameSaveClientAction(parent, getServerStartup());
   }
 
   @Getter

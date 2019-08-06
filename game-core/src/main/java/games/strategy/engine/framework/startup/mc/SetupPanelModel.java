@@ -87,7 +87,7 @@ public class SetupPanelModel implements ServerSetupModel {
    */
   public void showClient() {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
-    final ClientModel model = new ClientModel(gameSelectorModel, this);
+    final ClientModel model = new ClientModel(gameSelectorModel, this, new HeadedLaunchAction(ui));
     if (model.createClientMessenger(ui)) {
       SwingUtilities.invokeLater(() -> setGameTypePanel(new ClientSetupPanel(model)));
     } else {

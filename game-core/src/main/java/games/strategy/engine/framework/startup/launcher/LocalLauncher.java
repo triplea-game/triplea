@@ -75,7 +75,7 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
       final ServerGame game = new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers, launchAction);
       game.setRandomSource(randomSource);
-      gameData.getGameLoader().startGame(game, gamePlayers, false, null);
+      gameData.getGameLoader().startGame(game, gamePlayers, launchAction, null);
       return Optional.of(game);
     } catch (final Exception ex) {
       log.log(Level.SEVERE, "Failed to start game", ex);

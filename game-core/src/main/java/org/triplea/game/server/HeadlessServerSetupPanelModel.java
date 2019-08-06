@@ -2,15 +2,26 @@ package org.triplea.game.server;
 
 import java.io.File;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.triplea.game.startup.ServerSetupModel;
 
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
+import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.player.IGamePlayer;
+import games.strategy.sound.HeadlessSoundChannel;
+import games.strategy.sound.ISound;
+import games.strategy.triplea.ui.HeadlessUiContext;
+import games.strategy.triplea.ui.UiContext;
+import games.strategy.triplea.ui.display.HeadlessDisplay;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 import lombok.extern.java.Log;
 
 /**
@@ -58,8 +69,17 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
       }
 
       @Override
-      public boolean isHeadless() {
-        return true;
+      public ITripleADisplay startGame(final LocalPlayers localPlayers, final IGame game,
+          final Set<IGamePlayer> players, final Chat chat) {
+        final UiContext uiContext = new HeadlessUiContext();
+        uiContext.setDefaultMapDir(game.getData());
+        uiContext.setLocalPlayers(localPlayers);
+        return new HeadlessDisplay();
+      }
+
+      @Override
+      public ISound getSoundChannel(LocalPlayers localPlayers) {
+        return new HeadlessSoundChannel();
       }
 
       @Override

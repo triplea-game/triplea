@@ -1,18 +1,26 @@
 package games.strategy.engine.framework.startup.launcher;
 
 import java.io.File;
+import java.util.Set;
 
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.AutoSaveFileUtils;
+import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.player.IGamePlayer;
+import games.strategy.sound.ISound;
+import games.strategy.triplea.ui.display.ITripleADisplay;
 
 public interface LaunchAction {
-  void handleGameInterruption(final GameSelectorModel gameSelectorModel, final ServerModel serverModel);
+  void handleGameInterruption(GameSelectorModel gameSelectorModel, ServerModel serverModel);
   void onGameInterrupt();
-  void onEnd(final String message);
-  boolean isHeadless(); // Intermediate solution, remove when no longer necessary
+  void onEnd(String message);
+  ITripleADisplay startGame(LocalPlayers localPlayers, IGame game, Set<IGamePlayer> players, Chat chat);
+  ISound getSoundChannel(LocalPlayers localPlayers);
   File getAutoSaveFile();
-  void onLaunch(final ServerGame serverGame);
+  void onLaunch(ServerGame serverGame);
   AutoSaveFileUtils getAutoSaveFileUtils();
 }

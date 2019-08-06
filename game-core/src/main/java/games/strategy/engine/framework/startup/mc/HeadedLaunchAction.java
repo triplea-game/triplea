@@ -1,16 +1,31 @@
 package games.strategy.engine.framework.startup.mc;
 
 import java.awt.Component;
+import java.awt.Frame;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import games.strategy.engine.chat.Chat;
 import games.strategy.engine.framework.AutoSaveFileUtils;
+import games.strategy.engine.framework.IGame;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
+import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
+import games.strategy.engine.player.IGamePlayer;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.DefaultSoundChannel;
+import games.strategy.sound.ISound;
+import games.strategy.sound.SoundPath;
+import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.display.ITripleADisplay;
+import games.strategy.triplea.ui.display.TripleADisplay;
 
 public class HeadedLaunchAction implements LaunchAction {
 
@@ -36,8 +51,32 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public boolean isHeadless() {
-    return false;
+  public ITripleADisplay startGame(final LocalPlayers localPlayers, final IGame game,
+      final Set<IGamePlayer> players, final Chat chat) {
+    final TripleAFrame frame = TripleAFrame.create(game, localPlayers, chat);
+
+    SwingUtilities.invokeLater(() -> {
+      LookAndFeelSwingFrameListener.register(frame);
+      frame.setSize(700, 400);
+      frame.setVisible(true);
+      frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+      frame.toFront();
+    });
+
+    final var display = new TripleADisplay(frame);
+    game.addDisplay(display);
+    ClipPlayer.play(SoundPath.CLIP_GAME_START);
+    for (final IGamePlayer player : players) {
+      if (player instanceof TripleAPlayer) {
+        ((TripleAPlayer) player).setFrame(frame);
+      }
+    }
+    return display;
+  }
+
+  @Override
+  public ISound getSoundChannel(final LocalPlayers localPlayers) {
+    return new DefaultSoundChannel(localPlayers);
   }
 
   @Override
