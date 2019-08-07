@@ -5,6 +5,8 @@ matrix:
   include:
   - jdk: openjdk11
     env: TRIPLEA_RELEASE=true
+  - jdk: openjdk12
+    env: TRIPLEA_RELEASE=true
 addons:
   postgresql: "10"
   apt:
