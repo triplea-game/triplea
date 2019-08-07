@@ -35,6 +35,7 @@ done
 for engine in ${ENGINES[@]}; do
   echo "Signing artifact checksums for '$engine'..."
   gpg2 --batch --no-tty --yes --armor --detach-sign \
+      --pinentry-mode loopback \
       --passphrase-file <(echo "$GPG_PRIVATE_KEY_PASSPHRASE") \
       ./${engine}.txt
 done
