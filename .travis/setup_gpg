@@ -6,5 +6,5 @@
 if [[ -z "$GPG_PRIVATE_KEY" ]]; then
   echo "GPG_PRIVATE_KEY not set; GPG operations will not be available in this build"
 else
-  gpg2 --batch --import <(echo "$GPG_PRIVATE_KEY")
+  gpg2 --import <(echo "$GPG_PRIVATE_KEY")
 fi
