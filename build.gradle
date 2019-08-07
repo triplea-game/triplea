@@ -69,7 +69,7 @@ subprojects {
         hamcrestVersion = '2.0.0.0'
         jbcryptVersion = '0.4'
         junitJupiterVersion = '5.4.0'
-        mockitoVersion = '2.24.0'
+        mockitoVersion = '2.24.5'
         postgresqlVersion = '42.2.5'
         sonatypeGoodiesPrefsVersion = '2.2.5'
     }
