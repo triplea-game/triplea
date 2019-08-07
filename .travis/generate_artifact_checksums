@@ -23,6 +23,10 @@ for engine in ${ENGINES[@]}; do
   mv ${checksum_files[$engine]} ./${engine}.txt
 done
 
+## Enable pinentry loopback mode: https://www.fluidkeys.com/tweak-gpg-2.1.11/
+echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+gpgconf --reload gpg-agent
+
 # Sign checksum files
 #
 # We use detached signatures so that
