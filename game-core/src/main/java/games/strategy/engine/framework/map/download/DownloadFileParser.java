@@ -2,8 +2,8 @@ package games.strategy.engine.framework.map.download;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

@@ -1,10 +1,9 @@
 package games.strategy.engine.lobby.client.login;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
