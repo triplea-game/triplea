@@ -3,12 +3,14 @@ package games.strategy.engine.framework.map.download;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.snakeyaml.engine.v1.api.Load;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
+import org.snakeyaml.engine.v1.exceptions.YamlEngineException;
 import org.triplea.util.Version;
 
 import com.google.common.base.Preconditions;
@@ -26,7 +28,15 @@ final class DownloadFileParser {
     url, mapType, version, mapName, description, mapCategory, img
   }
 
-  public static List<DownloadFileDescription> parse(final InputStream is) {
+  public static List<DownloadFileDescription> parse(final InputStream is) throws IOException {
+    try {
+      return parseImpl(is);
+    } catch (final YamlEngineException e) {
+      throw new IOException(e);
+    }
+  }
+
+  private static List<DownloadFileDescription> parseImpl(final InputStream is) throws IOException {
     final Load load = new Load(new LoadSettingsBuilder().build());
     final List<?> yamlData = (List<?>) load.loadFromInputStream(is);
 

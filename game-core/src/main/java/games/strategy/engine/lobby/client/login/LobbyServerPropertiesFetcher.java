@@ -1,12 +1,14 @@
 package games.strategy.engine.lobby.client.login;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import org.triplea.java.function.ThrowingFunction;
 import org.triplea.util.Version;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -24,14 +26,14 @@ public final class LobbyServerPropertiesFetcher {
   public static final int TEST_LOBBY_DEFAULT_PORT = 3304;
   public static final int TEST_LOBBY_DEFAULT_HTTPS_PORT = 8080;
 
-  private final BiFunction<String, Function<InputStream, LobbyServerProperties>,
+  private final BiFunction<String, ThrowingFunction<InputStream, LobbyServerProperties, IOException>,
       Optional<LobbyServerProperties>> fileDownloader;
   @Nullable
   private LobbyServerProperties lobbyServerProperties;
 
 
   LobbyServerPropertiesFetcher(
-      final BiFunction<String, Function<InputStream, LobbyServerProperties>,
+      final BiFunction<String, ThrowingFunction<InputStream, LobbyServerProperties, IOException>,
           Optional<LobbyServerProperties>> fileDownloader) {
     this.fileDownloader = fileDownloader;
   }
