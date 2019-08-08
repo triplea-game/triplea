@@ -57,7 +57,6 @@ subprojects {
     apply plugin: 'io.franzbecker.gradle-lombok'
 
     apply from: rootProject.file('gradle/scripts/release.gradle')
-    apply from: rootProject.file('gradle/scripts/spotless.gradle')
     apply from: rootProject.file('gradle/scripts/version.gradle')
 
     group = 'triplea'
@@ -186,9 +185,8 @@ subprojects {
 
     spotless {
         java {
-            eclipse('4.9.0').configFile rootProject.file('.eclipse/format/triplea_java_eclipse_format_style.xml')
+            googleJavaFormat()
             endWithNewline()
-            importOrder(*getEclipseImportOrder())
             removeUnusedImports()
             trimTrailingWhitespace()
         }
