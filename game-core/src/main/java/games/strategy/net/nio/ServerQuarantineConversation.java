@@ -59,7 +59,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
       switch (step) {
         case READ_NAME:
           // read name, send challenge
-          remoteName = (String) serializable;
+          remoteName = ((String) serializable).trim();
           step = Step.READ_MAC;
           return Action.NONE;
         case READ_MAC:
