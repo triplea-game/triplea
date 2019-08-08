@@ -52,7 +52,6 @@ public final class PlayerNameAssigner {
     final Collection<String> playerNames = new HashSet<>(
         loggedInNodes.stream()
             .map(INode::getName)
-            .parallel()
             .collect(Collectors.toSet()));
     final String originalName = currentName;
     for (int i = 1; playerNames.contains(currentName); i++) {
