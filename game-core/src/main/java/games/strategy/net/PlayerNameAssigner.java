@@ -3,7 +3,9 @@ package games.strategy.net;
 import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -47,8 +49,13 @@ public final class PlayerNameAssigner {
     if (currentName.length() > 50) {
       currentName = currentName.substring(0, 50);
     }
+    final Collection<String> playerNames = new HashSet<>(
+        loggedInNodes.stream()
+            .map(INode::getName)
+            .parallel()
+            .collect(Collectors.toSet()));
     final String originalName = currentName;
-    for (int i = 1; isNameTaken(currentName, loggedInNodes); i++) {
+    for (int i = 1; playerNames.contains(currentName); i++) {
       currentName = originalName + " (" + i + ")";
     }
     return currentName;
@@ -61,12 +68,5 @@ public final class PlayerNameAssigner {
         .filter(node -> node.getAddress().equals(socketAddress))
         .min(Comparator.naturalOrder())
         .map(INode::getName);
-  }
-
-  private static boolean isNameTaken(final String nodeName, final Collection<INode> nodes) {
-    return nodes
-        .stream()
-        .map(INode::getName)
-        .anyMatch(nodeName::equalsIgnoreCase);
   }
 }
