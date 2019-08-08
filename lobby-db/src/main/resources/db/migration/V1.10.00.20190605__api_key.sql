@@ -9,9 +9,7 @@ create table moderator_api_key
     api_key                character(128) not null unique
 );
 
--- alter table moderator_api_key owner to triplea_lobby;
-alter table moderator_api_key
-    owner to postgres;
+alter table moderator_api_key owner to lobby_user;
 
 comment on table moderator_api_key is
     'Stores api-keys used by moderators to authenticate http server requests';

@@ -7,9 +7,7 @@ create table moderator_single_use_key
     api_key       varchar(128) not null unique
 );
 
--- alter table moderator_single_use_key owner to triplea_lobby;
-alter table moderator_single_use_key
-    owner to postgres;
+alter table moderator_single_use_key owner to lobby_user;
 
 comment on table moderator_single_use_key is $$Stores single use api-keys used by moderators. The single-use
   key is provided to a moderator at which point they use it to do an initial authentication. If successful

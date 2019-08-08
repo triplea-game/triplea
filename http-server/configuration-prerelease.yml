@@ -9,10 +9,9 @@ bcryptSalt: $2a$10$IhIXWg4HkQRWrZqjj9kV0u
 
 database:
   driverClass: org.postgresql.Driver
-  ## TODO: change database user to triplea_lobby or create a user for use with the http_server
-  user: postgres
+  user: lobby_user
   password: ${POSTGRES_PASSWORD:-postgres}
-  url: jdbc:postgresql://localhost:5432/lobby
+  url: jdbc:postgresql://localhost:5432/lobby_db
   properties:
     charSet: UTF-8
   # the maximum amount of time to wait on an empty pool before throwing an exception

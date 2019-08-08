@@ -16,9 +16,7 @@ create table banned_user
     date_created timestamptz   not null default now()
 );
 
-alter table banned_user
-    owner to postgres;
--- alter table banned_user owner to triplea_lobby;
+alter table banned_user owner to lobby_user;
 
 -- migrate existing data to the new table name
 insert into banned_user(public_id, username, hashed_mac, ip, ban_expiry)

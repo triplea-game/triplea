@@ -38,7 +38,7 @@ alter table muted_usernames
 
 
 -- Comments
-comment on database lobby is 'The Database of the TripleA Lobby';
+comment on database lobby_db is 'The Database of the TripleA Lobby';
 
 comment on table ta_users is 'The table storing all the information about TripleA users.';
 comment on column ta_users.username is 'Defines the in-game username of everyone. The primary key constraint should probably be moved to an id column, preferably using pseudo_encrypt(nextval(''something'')) as default value.';
@@ -216,6 +216,5 @@ comment on column access_log.ip is 'The IP address of the user accessing the lob
 comment on column access_log.mac is 'The hashed MAC address of the user accessing the lobby.';
 comment on column access_log.registered is 'True if the user was registered when accessing the lobby; otherwise false if the user was anonymous';
 
-alter table access_log owner to postgres;
--- alter table access_log owner to triplea_lobby;
+alter table access_log owner to lobby_user;
 

@@ -4,8 +4,7 @@ create table error_report_history(
   date_created timestamp not null default now()
 );
 
--- alter table error_report_history owner to triplea_lobby;
-alter table error_report_history owner to postgres;
+alter table error_report_history owner to lobby_user;
 
 comment on table error_report_history is 'Table that stores timestamps by user IP address of when error reports were created. Used to do rate limiting.';
 comment on column error_report_history.id is 'Synthetic PK column';

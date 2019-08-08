@@ -42,8 +42,12 @@ A lobby server running on the same host as the lobby database container may conn
 
 Property | Value | Notes
 :-- | :-- | :--
-User | `postgres` |
+User | `lobby_user` |
 Password | _&lt;any&gt;_ | The lobby database is configured with authentication disabled, thus any password may be used.
 Host | `localhost` |
 Port | `5432` |
+
+## Docker DB configuraton
+
+Docker container and Configuration flag documentation can be found at: https://hub.docker.com/_/postgres
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DB=lobby
-PSQL="psql -h localhost -U postgres -w"
+DB=lobby_db
+PSQL="psql -h localhost -U lobby_user -w -d postgres"
 echo "drop database $DB" | $PSQL
 echo "create database $DB" | $PSQL
 
