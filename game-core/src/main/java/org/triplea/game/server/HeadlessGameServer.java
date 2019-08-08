@@ -212,6 +212,7 @@ public class HeadlessGameServer {
     }
   }
 
+  /** Updates current 'HeadlessGameServer.game' instance to be set to the given parameter. */
   public static synchronized void setServerGame(final ServerGame serverGame) {
     final HeadlessGameServer instance = getInstance();
     if (instance != null) {

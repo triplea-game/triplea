@@ -111,6 +111,7 @@ public final class ProUtils {
     return alliedPlayers;
   }
 
+  /** Given a player, finds all non-allied (enemy) playerse. */
   public static List<PlayerId> getPotentialEnemyPlayers(final PlayerId player) {
     final GameData data = ProData.getData();
     final List<PlayerId> otherPlayers = data.getPlayerList().getPlayers();
@@ -126,6 +127,7 @@ public final class ProUtils {
     return otherPlayers;
   }
 
+  /** Computes PU production amount a given player currently has based on a given game data. */
   public static double getPlayerProduction(final PlayerId player, final GameData data) {
     int production = 0;
     for (final Territory place : data.getMap().getTerritories()) {
@@ -140,6 +142,10 @@ public final class ProUtils {
     return production;
   }
 
+  /**
+   * Gets list of enemy capitals for a given player that are currently still held by those enemy
+   * players.
+   */
   public static List<Territory> getLiveEnemyCapitals(final GameData data, final PlayerId player) {
     final List<Territory> enemyCapitals = new ArrayList<>();
     final List<PlayerId> enemyPlayers = getEnemyPlayers(player);
@@ -155,6 +161,7 @@ public final class ProUtils {
     return enemyCapitals;
   }
 
+  /** Gets a list of friendly capitals still held by friendly powers. */
   public static List<Territory> getLiveAlliedCapitals(final GameData data, final PlayerId player) {
     final List<Territory> capitals = new ArrayList<>();
     final List<PlayerId> players = getAlliedPlayers(player);

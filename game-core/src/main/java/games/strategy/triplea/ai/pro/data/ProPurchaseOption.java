@@ -229,6 +229,7 @@ public class ProPurchaseOption {
         0.75, 1, supportAttackFactor, supportDefenseFactor, movement, seaFactor, data);
   }
 
+  /** Calculates amphibious assault efficiency coefficient. */
   public double getAmphibEfficiency(
       final GameData data, final List<Unit> ownedLocalUnits, final List<Unit> unitsToPlace) {
     final double supportAttackFactor =

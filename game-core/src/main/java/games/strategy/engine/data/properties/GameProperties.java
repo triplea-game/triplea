@@ -175,6 +175,7 @@ public class GameProperties extends GameDataComponent {
         });
   }
 
+  /** Updates 'gamePropertiesToBeChanged' with editableProperties. */
   public static void applyByteMapToChangeProperties(
       final byte[] byteArray, final GameProperties gamePropertiesToBeChanged) {
     List<IEditableProperty<?>> editableProperties = null;

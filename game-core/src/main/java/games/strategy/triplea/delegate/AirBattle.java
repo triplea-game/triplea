@@ -74,6 +74,7 @@ public class AirBattle extends AbstractBattle {
     updateDefendingUnits();
   }
 
+  /** Updates the set of defending units from current battle site. */
   public void updateDefendingUnits() {
     // fill in defenders
     if (isBombingRun) {

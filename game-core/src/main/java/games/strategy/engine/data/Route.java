@@ -350,6 +350,7 @@ public class Route implements Serializable, Iterable<Territory> {
     return ((TripleAUnit) unit).getMovementLeft() - numberOfSteps();
   }
 
+  /** Returns a change object that removes fuel after a given set of units crosses a given route. */
   public static Change getFuelChanges(
       final Collection<Unit> units, final Route route, final PlayerId player, final GameData data) {
     final CompositeChange changes = new CompositeChange();

@@ -102,6 +102,11 @@ public enum ErrorMessage {
     LogManager.getLogManager().getLogger(DEFAULT_LOGGER).addHandler(new ErrorMessageHandler());
   }
 
+  /**
+   * Updates the text of the error message dialog and sets the error message dialog to visible.
+   * Note, we hide and reveal the error message dialog instead of creating and disposing it to avoid
+   * swing component creation threading issues.
+   */
   public static void show(final LogRecord record) {
     if (INSTANCE.enableErrorPopup && INSTANCE.isVisible.compareAndSet(false, true)) {
       INSTANCE.setUploadRecord(record);

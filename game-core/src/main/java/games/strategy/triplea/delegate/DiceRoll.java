@@ -975,6 +975,7 @@ public class DiceRoll implements Externalizable {
     sortAaSupportRules(supportsAvailable, defence, allies);
   }
 
+  /** Sorts 'supportsAvailable' lists based on unit support attachment rules. */
   public static void getSortedSupport(
       final Collection<Unit> unitsGivingTheSupport,
       final Set<List<UnitSupportAttachment>> supportsAvailable,

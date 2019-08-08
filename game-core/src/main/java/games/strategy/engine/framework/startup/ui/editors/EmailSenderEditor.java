@@ -181,6 +181,7 @@ public class EmailSenderEditor extends EditorPanel {
         .start();
   }
 
+  /** Checks if fields are set, if so enables them and returns true, false otherwise. */
   public boolean areFieldsValid() {
     final boolean setupValid =
         ClientSetting.emailServerHost.isSet()

@@ -69,6 +69,7 @@ public class ProTerritoryManager {
     enemyAttackOptions = territoryManager.getEnemyAttackOptions();
   }
 
+  /** Sets 'alliedAttackOptions' field to possible available attack options. */
   public void populateAttackOptions() {
     findAttackOptions(
         player,

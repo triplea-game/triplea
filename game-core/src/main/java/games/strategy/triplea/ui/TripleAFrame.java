@@ -1192,6 +1192,7 @@ public final class TripleAFrame extends JFrame {
     return choice == JOptionPane.NO_OPTION;
   }
 
+  /** Asks a given player if they wish confirm a given political action. */
   public boolean acceptAction(
       final PlayerId playerSendingProposal,
       final String acceptanceQuestion,

@@ -79,6 +79,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
     super(name, attachable, gameData);
   }
 
+  /** Returns the corresponding tech ability attachment for a given tech advancement type. */
   public static TechAbilityAttachment get(final TechAdvance type) {
     if (type instanceof GenericTechAdvance) {
       // generic techs can name a hardcoded tech, therefore if it exists we should use the hard

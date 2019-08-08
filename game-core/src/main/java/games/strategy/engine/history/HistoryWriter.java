@@ -113,6 +113,7 @@ public class HistoryWriter implements Serializable {
     history.goToEnd();
   }
 
+  /** Fires a new event with the given event name. */
   public void startEvent(final String eventName) {
     assertCorrectThread();
     if (isCurrentEvent()) {

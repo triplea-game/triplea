@@ -26,21 +26,24 @@ public class RelationshipInterpreter extends GameDataComponent {
     return Matches.relationshipTypeIsAllied().test(getRelationshipType(p1, p2));
   }
 
-  public boolean isAlliedWithAnyOfThesePlayers(final PlayerId p1, final Collection<PlayerId> p2s) {
-    return p2s.stream()
-        .anyMatch(p2 -> Matches.relationshipTypeIsAllied().test(getRelationshipType(p1, p2)));
+  public boolean isAlliedWithAnyOfThesePlayers(
+      final PlayerId playerId, final Collection<PlayerId> possibleAllies) {
+    return possibleAllies.stream()
+        .anyMatch(p2 -> Matches.relationshipTypeIsAllied().test(getRelationshipType(playerId, p2)));
   }
 
-  public Set<PlayerId> getAllies(final PlayerId p1, final boolean includeSelf) {
+  /** Gets the set of allied players for a given player. */
+  public Set<PlayerId> getAllies(final PlayerId playerId, final boolean includeSelf) {
     final Set<PlayerId> allies =
         getData().getPlayerList().getPlayers().stream()
             .filter(
-                player -> Matches.relationshipTypeIsAllied().test(getRelationshipType(p1, player)))
+                player ->
+                    Matches.relationshipTypeIsAllied().test(getRelationshipType(playerId, player)))
             .collect(Collectors.toSet());
     if (includeSelf) {
-      allies.add(p1);
+      allies.add(playerId);
     } else {
-      allies.remove(p1);
+      allies.remove(playerId);
     }
     return allies;
   }

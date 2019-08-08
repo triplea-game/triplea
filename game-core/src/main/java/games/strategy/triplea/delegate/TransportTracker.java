@@ -209,6 +209,7 @@ public class TransportTracker {
     return change;
   }
 
+  /** Given a unit, computes the transport capacity value available for that unit. */
   public static int getAvailableCapacity(final Unit unit) {
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
     // Check if there are transports available, also check for destroyer capacity (Tokyo Express)
@@ -244,6 +245,7 @@ public class TransportTracker {
     return loadedUnits;
   }
 
+  /** Detects if a unit has unloaded units in a previous game phase. */
   public static boolean hasTransportUnloadedInPreviousPhase(final Unit transport) {
     final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
     // See if transport has unloaded anywhere yet

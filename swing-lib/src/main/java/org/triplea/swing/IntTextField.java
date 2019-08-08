@@ -64,6 +64,10 @@ public class IntTextField extends JTextField {
     }
   }
 
+  /**
+   * Sets max length, number of characters of the text field, must be greater than the configured
+   * min.
+   */
   public void setMax(final int max) {
     if (max < min) {
       throw new IllegalArgumentException(
@@ -84,6 +88,7 @@ public class IntTextField extends JTextField {
     this.terr = terr;
   }
 
+  /** Updates the min length of the text field. Must be set to less than the max length. */
   public void setMin(final int min) {
     if (min > max) {
       throw new IllegalArgumentException(

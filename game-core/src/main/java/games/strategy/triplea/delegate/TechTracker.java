@@ -54,6 +54,7 @@ public final class TechTracker {
     return technologyFrontiers;
   }
 
+  /** Grants or adds a tech advance to a given player. */
   public static void addAdvance(
       final PlayerId player, final IDelegateBridge bridge, final TechAdvance advance) {
     final Change attachmentChange;
