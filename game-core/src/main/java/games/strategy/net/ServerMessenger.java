@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
@@ -11,6 +12,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +37,8 @@ import lombok.extern.java.Log;
  */
 @Log
 public class ServerMessenger implements IServerMessenger, NioSocketListener {
+  public final Object newNodeLock = new Object();
+
   private final Selector acceptorSelector;
   private final ServerSocketChannel socketChannel;
   private final Node node;
@@ -131,8 +135,9 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   /**
    * Invoked when the node with the specified unique name has successfully logged in. Note that {@code uniquePlayerName}
-   * is the node name and may not be identical to the name of the player associated with the node (see
-   * {@link #getUniqueName(String)}.
+   * is the node name and may not be identical to the name of the player associated with the node
+   *
+   * @see PlayerNameAssigner#assignName(String, InetAddress, Collection)
    */
   public void notifyPlayerLogin(final String uniquePlayerName, final String mac) {
     cachedMacAddresses.put(uniquePlayerName, mac);
@@ -196,41 +201,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
         nioSocket.send(channel, msg);
       }
     }
-  }
-
-  private boolean isNameTaken(final String nodeName) {
-    return getNodes().stream()
-        .map(INode::getName)
-        .anyMatch(nodeName::equalsIgnoreCase);
-  }
-
-  /**
-   * Returns a node name, based on the specified node name, that is unique across all nodes. The node name is made
-   * unique by adding a numbered suffix to the existing node name. For example, for the second node with the name "foo",
-   * this method will return "foo (1)".
-   */
-  public String getUniqueName(final String name) {
-    String currentName = name;
-    if (currentName.length() > 50) {
-      currentName = currentName.substring(0, 50);
-    }
-    if (currentName.length() < 2) {
-      currentName = "aa" + currentName;
-    }
-    synchronized (node) {
-      if (isNameTaken(currentName)) {
-        int i = 1;
-        while (true) {
-          final String newName = currentName + " (" + i + ")";
-          if (!isNameTaken(newName)) {
-            currentName = newName;
-            break;
-          }
-          i++;
-        }
-      }
-    }
-    return currentName;
   }
 
   private void notifyListeners(final MessageHeader msg) {
@@ -386,7 +356,9 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   public void socketUnqaurantined(final SocketChannel channel, final QuarantineConversation conversation) {
     final ServerQuarantineConversation con = (ServerQuarantineConversation) conversation;
     final INode remote = new Node(con.getRemoteName(), (InetSocketAddress) channel.socket().getRemoteSocketAddress());
-    nodeToChannel.put(remote, channel);
+    synchronized (newNodeLock) {
+      nodeToChannel.put(remote, channel);
+    }
     channelToNode.put(channel, remote);
     notifyConnectionsChanged(true, remote);
     log.info("Connection added to:" + remote);
