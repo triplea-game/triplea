@@ -9,10 +9,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -21,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.OptionalUtils;
+import org.triplea.java.function.ThrowingFunction;
 import org.triplea.util.Version;
 
 import games.strategy.triplea.settings.GameSetting;
@@ -28,7 +29,7 @@ import games.strategy.triplea.settings.GameSetting;
 @ExtendWith(MockitoExtension.class)
 class LobbyServerPropertiesFetcherTest {
   @Mock
-  private BiFunction<String, Function<InputStream, LobbyServerProperties>,
+  private BiFunction<String, ThrowingFunction<InputStream, LobbyServerProperties, IOException>,
       Optional<LobbyServerProperties>> mockFileDownloader;
 
   private LobbyServerPropertiesFetcher testObj;

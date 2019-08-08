@@ -41,7 +41,7 @@ public final class ContentReader {
    * @param uri The resource URI; must not be {@code null}.
    * @param action The action to perform using the give InputStream; must not be {@code null}.
    */
-  public <T> Optional<T> download(final String uri, final Function<InputStream, T> action) {
+  public <T> Optional<T> download(final String uri, final ThrowingFunction<InputStream, T, IOException> action) {
     checkNotNull(uri);
     checkNotNull(action);
 
