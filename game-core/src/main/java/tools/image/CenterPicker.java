@@ -91,15 +91,16 @@ public final class CenterPicker {
           new JLabel(
               "<html>"
                   + "This is the CenterPicker, it will create a centers.txt file for you. "
-                  + "<br>Please click on the center of every single territory and sea zone on your map, and give each a "
-                  + "name. "
-                  + "<br>The point you clicked on will tell TripleA where to put things like any flags, text, unit "
-                  + "placements, etc, "
-                  + "<br>so be sure to click in the exact middle, or slight up and left of the middle, of each territory "
+                  + "<br>Please click on the center of every single territory and sea zone on your "
+                  + "map, and give each a name. "
+                  + "<br>The point you clicked on will tell TripleA where to put things like any "
+                  + "flags, text, unit placements, etc, "
+                  + "<br>so be sure to click in the exact middle, or slight up and left of the "
+                  + "middle, of each territory "
                   + "<br>(but still within the territory borders)."
                   + "<br>Do not use special or illegal characters in territory names."
-                  + "<br><br>You can also load an existing centers.txt file, then make modifications to it, then save it "
-                  + "again."
+                  + "<br><br>You can also load an existing centers.txt file, then make "
+                  + "modifications to it, then save it again."
                   + "<br><br>LEFT CLICK = create a new center point for a territory/zone."
                   + "<br><br>RIGHT CLICK on an existing center = delete that center point."
                   + "<br><br>When finished, save the centers and exit."
@@ -139,8 +140,8 @@ public final class CenterPicker {
       if (file.exists()
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
-                  "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
-                      + "names?",
+                  "A polygons.txt file was found in the map's folder, do you want to use "
+                      + "the file to supply the territories names?",
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
@@ -300,7 +301,8 @@ public final class CenterPicker {
         if (centers.containsKey(name)
             && JOptionPane.showConfirmDialog(
                     this,
-                    "Another center exists with the same name. Are you sure you want to replace it with this one?")
+                    "Another center exists with the same name. "
+                        + "Are you sure you want to replace it with this one?")
                 != 0) {
           return;
         }

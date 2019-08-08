@@ -106,7 +106,12 @@ final class ModeratorController implements IModeratorController {
     log.info(
         String.format(
             "User was banned from the lobby (by MAC); "
-                + "Username: %s, IP: %s, MAC: %s, Mod Username: %s, Mod IP: %s, Mod MAC: %s, Expires: %s",
+                + "Username: %s, IP: %s, "
+                + "MAC: %s, "
+                + "Mod Username: %s, "
+                + "Mod IP: %s, "
+                + "Mod MAC: %s, "
+                + "Expires: %s",
             bannedUser.getUsername(),
             bannedUser.getInetAddress().getHostAddress(),
             bannedUser.getHashedMacAddress(),
@@ -128,7 +133,13 @@ final class ModeratorController implements IModeratorController {
     serverMessenger.removeConnection(node);
     log.info(
         String.format(
-            "User was booted from the lobby. Username: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
+            "User was booted from the lobby. "
+                + "Username: %s, "
+                + "IP: %s, "
+                + "Mac: %s "
+                + "Mod Username: %s. "
+                + "Mod IP: %s, "
+                + "Mod Mac: %s",
             node.getName(),
             node.getAddress().getHostAddress(),
             mac,
@@ -162,7 +173,13 @@ final class ModeratorController implements IModeratorController {
     final String mac = getNodeMacAddress(node);
     log.info(
         String.format(
-            "Getting salt for Headless HostBot. Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
+            "Getting salt for Headless HostBot. "
+                + "Host: %s, "
+                + "IP: %s, "
+                + "Mac: %s, "
+                + "Mod Username: %s, "
+                + "Mod IP: %s, "
+                + "Mod Mac: %s",
             node.getName(),
             node.getAddress().getHostAddress(),
             mac,
@@ -332,7 +349,13 @@ final class ModeratorController implements IModeratorController {
     final String mac = getNodeMacAddress(node);
     log.info(
         String.format(
-            "Started Remote Shutdown of Headless HostBot. Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
+            "Started Remote Shutdown of Headless HostBot. "
+                + "Host: %s, "
+                + "IP: %s, "
+                + "Mac: %s, "
+                + "Mod Username: %s, "
+                + "Mod IP: %s, "
+                + "Mod Mac: %s",
             node.getName(),
             node.getAddress().getHostAddress(),
             mac,

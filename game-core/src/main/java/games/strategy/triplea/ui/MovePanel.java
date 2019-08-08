@@ -707,7 +707,8 @@ public class MovePanel extends AbstractMovePanel {
           (new IllegalArgumentException("route is not supposed to be null"));
       log.log(
           Level.SEVERE,
-          "Programming error, route should not be null here. Aborting sort operation and returning.",
+          "Programming error, route should not be null here. "
+              + "Aborting sort operation and returning.",
           nullRouteError);
       return;
     }

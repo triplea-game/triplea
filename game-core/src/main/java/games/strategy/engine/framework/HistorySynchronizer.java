@@ -98,7 +98,8 @@ public class HistorySynchronizer {
     // this is not the way to use this.
     if (game.getData() == data) {
       throw new IllegalStateException(
-          "You dont need a history synchronizer to synchronize game data that is managed by an IGame");
+          "You dont need a history synchronizer to synchronize game data that is "
+              + "managed by an IGame");
     }
     gameData = data;
     gameData.forceChangesOnlyInSwingEventThread();

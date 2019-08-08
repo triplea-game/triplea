@@ -121,7 +121,8 @@ public class ClientQuarantineConversation extends QuarantineConversation {
                             .parent(null)
                             .title("Already Logged In")
                             .infoMessage(
-                                "<html>Already logged in with another name, cannot use a different name.<br/>"
+                                "<html>Already logged in with another name, "
+                                    + "cannot use a different name.<br/>"
                                     + "Logging in as: "
                                     + assignedName)
                             .showDialog())

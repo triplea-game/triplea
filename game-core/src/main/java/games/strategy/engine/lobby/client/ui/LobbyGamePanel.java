@@ -537,7 +537,8 @@ class LobbyGamePanel extends JPanel {
     final int result =
         JOptionPane.showConfirmDialog(
             null,
-            "Are you sure you want to perform a remote shutdown of this host? \n\nYou MUST email the host's owner FIRST!!",
+            "Are you sure you want to perform a remote shutdown of this host? \n\n"
+                + "You MUST email the host's owner FIRST!!",
             "Remote Shutdown Headless Host Bot",
             JOptionPane.OK_CANCEL_OPTION);
     if (result != JOptionPane.OK_OPTION) {

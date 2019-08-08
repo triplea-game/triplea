@@ -95,17 +95,20 @@ public final class PolygonGrabber {
               "<html>"
                   + "This is the PolygonGrabber, it will create a polygons.txt file for you. "
                   + "<br>In order to run this, you must already have created a center.txt file. "
-                  + "<br>Please click near the center of every single territory and sea zone on your map. "
+                  + "<br>Please click near the center of every single territory and sea zone on "
+                  + "your map. "
                   + "<br>The grabber will then fill in the territory based on the borders it finds."
-                  + "<br>If the territory shape or borders do not match what you intend, then your borders "
+                  + "<br>If the territory shape or borders do not match what you intend, then your "
+                  + "borders "
                   + "<br>might have a gap or differently colored pixel in the border."
                   + "<br>These borders will define the shape of the territory in TripleA."
-                  + "<br><br>When a territory is inside of another territory, you can turn on 'island mode' to be able to "
-                  + "see it."
-                  + "<br><br>You can also load an existing polygons.txt file, then make modifications to it, then save it "
-                  + "again."
+                  + "<br><br>When a territory is inside of another territory, you can turn on "
+                  + "'island mode' to be able to see it."
+                  + "<br><br>You can also load an existing polygons.txt file, then make "
+                  + "modifications to it, then save it again."
                   + "<br><br>LEFT CLICK = fill in a territory's borders."
-                  + "<br><br>Holding CTRL/SHIFT while LEFT CLICKING = add multiple territories together (eg: islands)."
+                  + "<br><br>Holding CTRL/SHIFT while LEFT CLICKING = add multiple territories "
+                  + "together (eg: islands)."
                   + "<br><br>RIGHT CLICK = save or replace those borders for that territory."
                   + "<br><br>When finished, save the polygons and exit."
                   + "</html>"));
@@ -149,8 +152,8 @@ public final class PolygonGrabber {
       if (file.exists()
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
-                  "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories "
-                      + "names?",
+                  "A centers.txt file was found in the map's folder, do you want to use "
+                      + "the file to supply the territories names?",
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
@@ -237,10 +240,12 @@ public final class PolygonGrabber {
                     null,
                     new JLabel(
                         "<html>"
-                            + "You will need to check and go back and do some polygons manually, as Auto does not catch them all. "
-                            + "<br>Also, if a territory has more than 1 part (like an island chain), you will need to go back and "
-                            + "<br>"
-                            + "redo the entire territory chain using CTRL + Click in order to capture each part of the territory."
+                            + "You will need to check and go back and do some polygons manually, "
+                            + "as Auto does not catch them all. "
+                            + "<br>Also, if a territory has more than 1 part (like an island "
+                            + "chain), you will need to go back and "
+                            + "<br>redo the entire territory chain using CTRL + Click in order "
+                            + "to capture each part of the territory."
                             + "</html>"));
                 current = new ArrayList<>();
                 final BufferedImage imageCopy =
@@ -610,8 +615,8 @@ public final class PolygonGrabber {
                   + ","
                   + currentPoint.getY()
                   + "\r\n"
-                  + "Note that this is a common error and can usually be fixed by 'smoothing out' the territory border "
-                  + "and removing any anti-aliasing.");
+                  + "Note that this is a common error and can usually be fixed by 'smoothing out' "
+                  + "the territory border and removing any anti-aliasing.");
           return null;
         }
         for (int i = 2; i >= -3; i--) {

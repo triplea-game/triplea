@@ -20,7 +20,8 @@ class LocalizeHtmlTest {
   private final ResourceLoader loader = mock(ResourceLoader.class);
   private final String testHtml =
       "<audio src='test-audio'> &lt;img src=&quot;test&quot;&gt;"
-          + "<img useless fill src=\"dir/actual-link\" alt='Alternative Text' > <p>  Placeholder </P> <img\n"
+          + "<img useless fill src=\"dir/actual-link\" alt='Alternative Text' > "
+          + "<p>  Placeholder </P> <img\n"
           + " src='another-link.png' />";
 
   @Test

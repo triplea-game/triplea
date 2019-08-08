@@ -174,10 +174,12 @@ class OrderOfLossesInputPanel extends JPanel {
     final JLabel instructions =
         new JLabel(
             "<html>Here you can specify the 'Order of Losses' (OOL) for each side."
-                + "<br />Damageable units will be damanged first always. If the player label is red, your OOL is invalid."
-                + "<br />The engine will take your input and add all units to a list starting on the RIGHT side of your text "
-                + "line."
-                + "<br />Then, during combat, casualties will be chosen starting on the LEFT side of your OOL."
+                + "<br />Damageable units will be damanged first always. If the player label is "
+                + "red, your OOL is invalid."
+                + "<br />The engine will take your input and add all units to a list starting "
+                + "on the RIGHT side of your text line."
+                + "<br />Then, during combat, casualties will be chosen starting on the LEFT side "
+                + "of your OOL."
                 + "<br />"
                 + OOL_SEPARATOR
                 + " separates unit types."
@@ -200,8 +202,8 @@ class OrderOfLossesInputPanel extends JPanel {
                 + OOL_ALL
                 + OOL_AMOUNT_DESCRIPTOR
                 + "fighter"
-                + "<br />The above will take all infantry, then all artillery, then all fighters, then all other units as "
-                + "casualty."
+                + "<br />The above will take all infantry, then all artillery, then all fighters, "
+                + "then all other units as casualty."
                 + "<br /><br />1"
                 + OOL_AMOUNT_DESCRIPTOR
                 + "infantry"
@@ -213,7 +215,8 @@ class OrderOfLossesInputPanel extends JPanel {
                 + "6"
                 + OOL_AMOUNT_DESCRIPTOR
                 + "fighter"
-                + "<br />The above will take 1 infantry, then 2 artillery, then 6 fighters, then all other units as casualty."
+                + "<br />The above will take 1 infantry, then 2 artillery, then 6 fighters, "
+                + "then all other units as casualty."
                 + "<br /><br />"
                 + OOL_ALL
                 + OOL_AMOUNT_DESCRIPTOR
@@ -226,8 +229,8 @@ class OrderOfLossesInputPanel extends JPanel {
                 + "1"
                 + OOL_AMOUNT_DESCRIPTOR
                 + "infantry"
-                + "<br />The above will take all except 1 infantry casualty, then all fighters, then the last infantry, then "
-                + "all other units casualty.</html>");
+                + "<br />The above will take all except 1 infantry casualty, then all fighters, "
+                + "then the last infantry, then all other units casualty.</html>");
     instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
     add(instructions);
     add(Box.createVerticalStrut(30));

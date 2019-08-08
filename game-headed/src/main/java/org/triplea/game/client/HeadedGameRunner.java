@@ -35,8 +35,8 @@ public final class HeadedGameRunner {
     checkNotNull(args);
     checkState(
         !GraphicsEnvironment.isHeadless(),
-        "UI client launcher invoked from headless environment. This is currently prohibited by design to "
-            + "avoid UI rendering errors in the headless environment.");
+        "UI client launcher invoked from headless environment. This is currently "
+            + "prohibited by design to avoid UI rendering errors in the headless environment.");
     Thread.setDefaultUncaughtExceptionHandler(
         (t, e) -> log.log(Level.SEVERE, e.getLocalizedMessage(), e));
 

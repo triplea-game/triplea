@@ -310,7 +310,8 @@ public class UnifiedMessenger {
         Preconditions.checkNotNull(
             latch,
             String.format(
-                "method id: %s, was not present in pending invocations: %s, unified messenger addr: %s",
+                "method id: %s, was not present in pending invocations: %s, "
+                    + "unified messenger addr: %s",
                 methodId, pendingInvocations, super.toString()));
         latch.countDown();
       }

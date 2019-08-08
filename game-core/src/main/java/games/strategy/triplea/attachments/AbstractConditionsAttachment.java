@@ -262,7 +262,8 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
       final int j = getInt(s[1]);
       if (i > j || i < 0 || i > 120 || j > 120) {
         throw new GameParseException(
-            "chance should have a format of \"x:y\" where x is <= y and both x and y are >=0 and <=120"
+            "chance should have a format of \"x:y\" where x is <= y and "
+                + "both x and y are >=0 and <=120"
                 + thisErrorMsg());
       }
     } catch (final IllegalArgumentException iae) {

@@ -95,9 +95,9 @@ public enum ErrorMessage {
   public static void initialize() {
     Preconditions.checkState(
         !GraphicsEnvironment.isHeadless(),
-        "Error, must not enable error pop-up in a headless environment, there will be errors rendering "
-            + "swing components. Check the call flow to this point and make sure we do not enable error reporting "
-            + "unless we are in a non-headless environment");
+        "Error, must not enable error pop-up in a headless environment, there will "
+            + "be errors rendering swing components. Check the call flow to this point and make "
+            + "sure we do not enable error reporting unless we are in a non-headless environment");
     INSTANCE.enableErrorPopup = true;
     LogManager.getLogManager().getLogger(DEFAULT_LOGGER).addHandler(new ErrorMessageHandler());
   }

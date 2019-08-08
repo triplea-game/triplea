@@ -67,9 +67,11 @@ public final class ReliefImageBreaker {
         new JLabel(
             "<html>"
                 + "This is the ReliefImageBreaker, it is no longer used. "
-                + "<br>It will take any image and finalized map folder, and will create cut out images of the relief art "
+                + "<br>It will take any image and finalized map folder, and will create cut "
+                + "out images of the relief art "
                 + "<br>for each territory and sea zone."
-                + "<br><br>TripleA no longer uses these, and instead uses reliefTiles (use the TileImageBreaker for that)."
+                + "<br><br>TripleA no longer uses these, and instead uses reliefTiles (use the "
+                + "TileImageBreaker for that)."
                 + "</html>"));
     final FileSave locationSelection =
         new FileSave("Where to save Relief Images?", null, mapFolderLocation);

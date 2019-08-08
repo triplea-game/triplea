@@ -144,43 +144,44 @@ public final class DecorationPlacer {
           frame,
           new JLabel(
               "<html>"
-                  + "This is the DecorationPlacer, it will create a text file for you containing the points to place "
-                  + "images at. "
-                  + "<br><br>In order to begin this, you must already have the map file, as well as the centers.txt and "
-                  + "polygons.txt finished. "
-                  + "<br>To start, load you map image. Then you will be asked which kind of Image Point File you are "
-                  + "creating. "
-                  + "<br><br>There are basically 2 different kinds of image point files, and with each of those are 2 "
-                  + "different sub-types. "
-                  + "<br>The 1st type is a folder full of many different images, that after being placed on the map will "
-                  + "never be changed. "
-                  + "<br>Examples of this are the decorations.txt file [misc folder] and the name_place.txt file "
-                  + "[territoryNames folder]. "
-                  + "<br>In these files the 'point' string directly corresponds to exact name of an image file in the "
-                  + "folder, with the only "
-                  + "<br>exception being whether the point string needs the .png extension or not (decorations do, "
-                  + "name_place does not). "
-                  + "<br><br>The 2nd type is single image, or small set of images, where the chosen image is determined by "
-                  + "something in the xml file. "
-                  + "<br>Examples of this are the pu_place.txt file [PUs folder] and the capitols.txt file [flags folder]. "
-                  + "<br>In these files, the 'point' string is the exact name of a territory, while the image file has a "
-                  + "different name, "
-                  + "<br>and is chosen by the engine based on the game data.  For things like the pu_place you may want "
-                  + "the decoration placer "
-                  + "<br>to generate placements for all territories, while others like capitols are more rare and you may "
-                  + "want to individually "
+                  + "This is the DecorationPlacer, it will create a text file for you containing "
+                  + "the points to place images at. "
+                  + "<br><br>In order to begin this, you must already have the map file, as well "
+                  + "as the centers.txt and polygons.txt finished. "
+                  + "<br>To start, load you map image. Then you will be asked which kind of Image "
+                  + "Point File you are creating. "
+                  + "<br><br>There are basically 2 different kinds of image point files, and with "
+                  + "each of those are 2 different sub-types. "
+                  + "<br>The 1st type is a folder full of many different images, that after being "
+                  + "placed on the map will never be changed. "
+                  + "<br>Examples of this are the decorations.txt file [misc folder] and the "
+                  + "name_place.txt file [territoryNames folder]. "
+                  + "<br>In these files the 'point' string directly corresponds to exact name of "
+                  + "an image file in the folder, with the only "
+                  + "<br>exception being whether the point string needs the .png extension or "
+                  + "not (decorations do, name_place does not). "
+                  + "<br><br>The 2nd type is single image, or small set of images, where the "
+                  + "chosen image is determined by something in the xml file. "
+                  + "<br>Examples of this are the pu_place.txt file [PUs folder] and the "
+                  + "capitols.txt file [flags folder]. "
+                  + "<br>In these files, the 'point' string is the exact name of a territory, "
+                  + "while the image file has a different name, "
+                  + "<br>and is chosen by the engine based on the game data.  For things like the "
+                  + "pu_place you may want the decoration placer "
+                  + "<br>to generate placements for all territories, while others like capitols "
+                  + "are more rare and you may want to individually "
                   + "<br>select which territories you need a placement point for."
-                  + "<br><br>After selecting the point file type you want to make, the program will choose the default "
-                  + "selections for you, "
-                  + "<br>but it will still confirm with you by asking you the questions. Just hit 'enter' a lot if you do "
-                  + "not know the answers. "
-                  + "<br><br>Any images that this program cannot find the point for, will start in the upper left corner "
-                  + "of the map, "
+                  + "<br><br>After selecting the point file type you want to make, the program "
+                  + "will choose the default selections for you, "
+                  + "<br>but it will still confirm with you by asking you the questions. Just hit "
+                  + "'enter' a lot if you do not know the answers. "
+                  + "<br><br>Any images that this program cannot find the point for, will start "
+                  + "in the upper left corner of the map, "
                   + "<br>and you may click on them to move them to their appropriate place."
-                  + "<br><br>Do not forget to save the points when finished. To save and continue with another set of "
-                  + "images, choose the "
-                  + "<br>option to 'Save Current And Keep On Map And Load New'.  To reset all currently image points, use "
-                  + "'Load Image Points'."
+                  + "<br><br>Do not forget to save the points when finished. To save and continue "
+                  + "with another set of images, choose the "
+                  + "<br>option to 'Save Current And Keep On Map And Load New'.  To reset all "
+                  + "currently image points, use 'Load Image Points'."
                   + "</html>"));
       frame.loadImagesAndPoints();
     } else {
@@ -228,8 +229,8 @@ public final class DecorationPlacer {
       if (fileCenters.exists()
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
-                  "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories "
-                      + "centers?",
+                  "A centers.txt file was found in the map's folder, do you want to use "
+                      + "the file to supply the territories centers?",
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
@@ -270,8 +271,8 @@ public final class DecorationPlacer {
       if (filePoly.exists()
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
-                  "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
-                      + "polygons?",
+                  "A polygons.txt file was found in the map's folder, "
+                      + "do you want to use the file to supply the territories polygons?",
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
@@ -354,7 +355,8 @@ public final class DecorationPlacer {
               });
       keepGoingAction.putValue(
           Action.SHORT_DESCRIPTION,
-          "Save current points to a file, then draw the images onto the map, then load a new points file.");
+          "Save current points to a file, then draw the images onto the map, then "
+              + "load a new points file.");
       final Action exitAction =
           SwingAction.of(
               "Exit",
@@ -574,12 +576,14 @@ public final class DecorationPlacer {
           JOptionPane.showOptionDialog(
                   this,
                   "Are the images shown from the top left, or from the bottom left point? \r\n"
-                      + "All images are shown from the top left, except for 'name_place.txt', 'pu_place.txt', and "
-                      + "'comments.txt'. \r\n"
-                      + "For these 3 files, whether they are top left or bottom left is determined by the \r\n"
-                      + "'map.properties' property: 'map.drawNamesFromTopLeft', which defaults to false if not specified "
-                      + "[meaning bottom left]. \r\n"
-                      + "Do NOT change this from whatever the default has choosen, unless you know exactly what you are doing!",
+                      + "All images are shown from the top left, except for 'name_place.txt', "
+                      + "'pu_place.txt', and 'comments.txt'. \r\n"
+                      + "For these 3 files, whether they are top left or bottom left is determined "
+                      + "by the \r\n"
+                      + "'map.properties' property: 'map.drawNamesFromTopLeft', which defaults to "
+                      + "false if not specified [meaning bottom left]. \r\n"
+                      + "Do NOT change this from whatever the default has choosen, unless you know "
+                      + "exactly what you are doing!",
                   "Show images from top left or bottom left point?",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE,
@@ -598,10 +602,10 @@ public final class DecorationPlacer {
       final Object[] miscOrNamesOptions = {"Folder Full of Images", "Text File Full of Points"};
       if (JOptionPane.showOptionDialog(
               this,
-              "Are you doing a folder full of different images (decorations.txt [misc] and name_place.txt [territoryNames])"
-                  + "\r\n"
-                  + "Or are we doing a per territory static or dynamic image based on game data (pu_place.txt [PUs], "
-                  + "capitols.txt [flags], etc, basically all others) ?",
+              "Are you doing a folder full of different images (decorations.txt [misc] "
+                  + "and name_place.txt [territoryNames])\r\n"
+                  + "Or are we doing a per territory static or dynamic image based on game data "
+                  + "(pu_place.txt [PUs], capitols.txt [flags], etc, basically all others) ?",
               "Folder full of images OR Text file full of points?",
               JOptionPane.YES_NO_OPTION,
               JOptionPane.QUESTION_MESSAGE,
@@ -628,9 +632,10 @@ public final class DecorationPlacer {
         fillCurrentImagePointsBasedOnImageFolder(
             JOptionPane.showOptionDialog(
                     this,
-                    "Does the text file use the exact image file name, including the .png extension (decorations.txt) \r\n"
-                        + "Or does the text file not use the full file name with no extension, just a territory name "
-                        + "(name_place.txt) ?",
+                    "Does the text file use the exact image file name, including the "
+                        + ".png extension (decorations.txt) \r\n"
+                        + "Or does the text file not use the full file name with no extension, "
+                        + "just a territory name (name_place.txt) ?",
                     "Points end in .png OR they do not?",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
@@ -643,20 +648,19 @@ public final class DecorationPlacer {
       } else {
         loadImagePointTextFile();
         topLeftOrBottomLeft();
-        // load all territories? things like pu_place.txt should have all or most territories, while
-        // things like
-        // blockade.txt and kamikaze_place.txt and capitols.txt will only have a small number of
-        // territories
+        // load all territories? things like pu_place.txt should have all or most territories,
+        // while things like blockade.txt and kamikaze_place.txt and capitols.txt will only
+        // have a small number of territories
         log.info("Select Fill in all territories OR let you select them?");
         final Object[] fillAllOptions = {"Fill In All Territories", "Let Me Select Territories"};
         fillCurrentImagePointsBasedOnTextFile(
             JOptionPane.showOptionDialog(
                     this,
                     "Are you going to do a point for every single territory (pu_place.txt) \r\n"
-                        + "Or are you going to do just a few territories (capitols.txt, convoy.txt, vc.txt, etc, most others)?"
-                        + "\r\n"
-                        + "(If you choose the later option, you must Right Click on a territory to create an image for that "
-                        + "territory.)",
+                        + "Or are you going to do just a few territories (capitols.txt, "
+                        + "convoy.txt, vc.txt, etc, most others)?\r\n"
+                        + "(If you choose the later option, you must Right Click on a territory "
+                        + "to create an image for that territory.)",
                     "Fill in all territories OR let you select them?",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
@@ -973,8 +977,8 @@ public final class DecorationPlacer {
         true,
         true,
         false,
-        "name_place.txt only places images with the exact name of the territories on map, using the 'territoryNames' "
-            + "folder",
+        "name_place.txt only places images with the exact name of the territories on "
+            + "map, using the 'territoryNames' folder",
         "<html>name_place.txt only allows 1 point per image/territory. <br>"
             + "Left Click = select closest image  OR  place currently selected image <br>"
             + "Right click = nothing <br>"
@@ -1021,7 +1025,8 @@ public final class DecorationPlacer {
         false,
         false,
         false,
-        "vc.txt is the point where a Victory City icon is shown, and picks the 'vc.png' image from the 'misc' folder",
+        "vc.txt is the point where a Victory City icon is shown, and picks the 'vc.png' "
+            + "image from the 'misc' folder",
         "<html>pu_place.txt only allows 1 point per image/territory. <br>"
             + "Left Click = select closest image  OR  place currently selected image <br>"
             + "Right click = create an image and point for this territory if none exists yet <br>"
@@ -1036,8 +1041,8 @@ public final class DecorationPlacer {
         false,
         false,
         false,
-        "blockade.txt is the point where a blockade zone icon is shown, and picks the 'blockade.png' image from the "
-            + "'misc' folder",
+        "blockade.txt is the point where a blockade zone icon is shown, and picks "
+            + "the 'blockade.png' image from the 'misc' folder",
         "<html>pu_place.txt only allows 1 point per image/territory. <br>"
             + "Left Click = select closest image  OR  place currently selected image <br>"
             + "Right click = create an image and point for this territory if none exists yet <br>"
@@ -1052,8 +1057,8 @@ public final class DecorationPlacer {
         false,
         false,
         false,
-        "convoy.txt is the point where a nation flag is shown on any sea zone that has production ability,"
-            + " and picks the <name>.png image from the 'flags' folder",
+        "convoy.txt is the point where a nation flag is shown on any sea zone that has "
+            + "production ability, and picks the <name>.png image from the 'flags' folder",
         "<html>pu_place.txt only allows 1 point per image/territory. <br>"
             + "Left Click = select closest image  OR  place currently selected image <br>"
             + "Right click = create an image and point for this territory if none exists yet <br>"
@@ -1068,8 +1073,8 @@ public final class DecorationPlacer {
         false,
         true,
         false,
-        "comments.txt is the point where text details about a convoy zone or route is shown, and it does not use any "
-            + "image, instead it writes the text in-game",
+        "comments.txt is the point where text details about a convoy zone or route "
+            + "is shown, and it does not use any image, instead it writes the text in-game",
         "<html>pu_place.txt only allows 1 point per image/territory. <br>"
             + "Left Click = select closest image  OR  place currently selected image <br>"
             + "Right click = create an image and point for this territory if none exists yet <br>"
@@ -1101,7 +1106,8 @@ public final class DecorationPlacer {
         false,
         true,
         "territory_effects.txt is the point where a territory effect image is shown,"
-            + " and it picks the <effect>_large.png or <effect>.png image from the 'territoryEffects' folder",
+            + " and it picks the <effect>_large.png or <effect>.png image from the "
+            + "'territoryEffects' folder",
         "<html>pu_place.txt will allow for multiple points per image. <br>"
             + "Left Click = select closest image  OR  place currently selected image <br>"
             + "Right click = copy selected image OR create an image for this territory<br>"

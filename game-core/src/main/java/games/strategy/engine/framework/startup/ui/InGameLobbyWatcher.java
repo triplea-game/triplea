@@ -151,12 +151,15 @@ public class InGameLobbyWatcher {
                   }
                   final String message =
                       "Your computer is not reachable from the internet.\n"
-                          + "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\n"
-                          + "(The firewall exception must be updated every time a new version of TripleA comes out.)\n"
+                          + "Please make sure your Firewall allows incoming connections (hosting) "
+                          + "for TripleA.\n"
+                          + "(The firewall exception must be updated every time a new version of "
+                          + "TripleA comes out.)\n"
                           + "And that your Router is configured to send TCP traffic on port "
                           + portString
-                          + " to your local ip address.\r\n"
-                          + "See 'How To Host...' in the help menu, at the top of the lobby screen.\n"
+                          + " to your local ip address.\n"
+                          + "See 'How To Host...' in the help menu, at the top of the lobby "
+                          + "screen.\n"
                           + "The server tried to connect to your external ip: "
                           + addressUsed;
                   handler.reportError(message);

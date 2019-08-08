@@ -289,7 +289,7 @@ public class MovePerformer implements Serializable {
                 for (final Territory t :
                     route.getMatches(
                         Matches
-                            .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(
+                            .terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(
                                 id)
                             .and(Matches.territoryIsBlitzable(id, data)))) {
                   if (Matches.isTerritoryEnemy(id, data).test(t)
@@ -340,10 +340,7 @@ public class MovePerformer implements Serializable {
       final PlayerId id, final GameData data) {
     return Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data)
         .or(Matches.territoryHasNonSubmergedEnemyUnits(id, data))
-        .or(
-            Matches
-                .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(
-                    id));
+        .or(Matches.terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(id));
   }
 
   private Change markMovementChange(

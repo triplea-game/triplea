@@ -135,9 +135,10 @@ public class MapData implements Closeable {
             "Error in resource loading. Unable to load expected resource: "
                 + POLYGON_FILE
                 + ", the error"
-                + " is that either we did not find the correct path to load. Check the resource loader to make"
-                + " sure the map zip or dir was added. Failing that, the path in this error message should be available"
-                + " relative to the map folder, or relative to the root of the map zip");
+                + " is that either we did not find the correct path to load. Check the resource "
+                + "loader to make sure the map zip or dir was added. Failing that, the path in "
+                + "this error message should be available relative to the map folder, or relative "
+                + "to the root of the map zip");
       }
 
       place.putAll(readPlacementsOneToMany(optionalResource(PLACEMENT_FILE)));

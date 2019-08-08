@@ -20,12 +20,11 @@ public class ServerQuarantineConversation extends QuarantineConversation {
    * 1) server reads client name
    * 2) server sends challenge (or null if no challenge is to be made)
    * 3) server reads response (or null if no challenge)
-   * 4) server send null then client name and node info on success, or an error message if there is an error
-   * 5) if the client reads an error message, the client sends an acknowledgment (we need to make sur the client gets
-   * the message before
-   * closing the socket).
+   * 4) server send null then client name and node info on success, or an error message
+   * if there is an error
+   * 5) if the client reads an error message, the client sends an acknowledgment (we need to
+   * make sur the client gets the message before closing the socket).
    */
-
   private enum Step {
     READ_NAME,
     READ_MAC,

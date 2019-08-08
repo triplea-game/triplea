@@ -60,7 +60,7 @@ final class RouteTest {
 
     @Test
     void
-        shouldReturnFalseWhenOtherHasSameStepCountAndHasSameStartTerritoryButHasDifferentTerritoryList() {
+        shouldReturnFalseWhenOtherHasSameStepCountAndSameStartTerritoryButDifferentTerritoryList() {
       final Route other = new Route(territory1, new Territory("territory3", gameData));
 
       assertThat(reference.equals(other), is(false));

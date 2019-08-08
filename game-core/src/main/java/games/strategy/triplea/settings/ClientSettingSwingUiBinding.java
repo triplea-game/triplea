@@ -89,7 +89,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   CONFIRM_ENEMY_CASUALTIES_BINDING(
       "Confirm enemy casualties",
       SettingType.COMBAT,
-      "Whether battles should proceed only once every player has confirmed the casualties selected") {
+      "Whether battles should proceed only once every player "
+          + "has confirmed the casualties selected") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return booleanRadioButtons(ClientSetting.confirmEnemyCasualties);
@@ -111,7 +112,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       "Look and Feel",
       SettingType.LOOK_AND_FEEL,
       "Updates UI theme for TripleA.\n"
-          + "WARNING: restart all running TripleA instances after changing this setting to avoid system instability.") {
+          + "WARNING: restart all running TripleA instances after changing this "
+          + "setting to avoid system instability.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       final Collection<UIManager.LookAndFeelInfo> lookAndFeels =
@@ -142,7 +144,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   MAP_EDGE_SCROLL_ZONE_SIZE_BINDING(
       "Scroll Zone Size",
       SettingType.MAP_SCROLLING,
-      "How close to the edge of the map (in pixels) the mouse needs to be for the map to start scrolling") {
+      "How close to the edge of the map (in pixels) the mouse needs "
+          + "to be for the map to start scrolling") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return intValueRange(ClientSetting.mapEdgeScrollZoneSize, 0, 300);
@@ -204,8 +207,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   MAP_LIST_OVERRIDE_BINDING(
       "Map List Override",
       SettingType.TESTING,
-      "Overrides the location of the map listing file. You can, for example, download a copy of the listing file, "
-          + "update it, and put the path to that file here.") {
+      "Overrides the location of the map listing file. You can, for example, download "
+          + "a copy of the listing file, update it, and put the path to that file here.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return filePath(ClientSetting.mapListOverride);
@@ -215,7 +218,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   TEST_LOBBY_HOST_BINDING(
       "Lobby Host Override",
       SettingType.TESTING,
-      "Overrides the IP address or hostname used to connect to the lobby. Useful for connecting to a test lobby.") {
+      "Overrides the IP address or hostname used to connect to the lobby. "
+          + "Useful for connecting to a test lobby.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return textField(ClientSetting.testLobbyHost);

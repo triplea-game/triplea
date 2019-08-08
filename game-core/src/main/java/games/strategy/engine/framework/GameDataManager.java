@@ -102,8 +102,8 @@ public final class GameDataManager {
                           final String message =
                               "Your TripleA engine is OUT OF DATE. "
                                   + "This save was made by a newer version of TripleA.\n\n"
-                                  + "However, because the first 3 version numbers are the same as your current version, we can still open the "
-                                  + "save.\n\n"
+                                  + "However, because the first 3 version numbers are the same "
+                                  + "as your current version, we can still open the save.\n\n"
                                   + "This TripleA engine is version "
                                   + ClientContext.engineVersion().toStringFull()
                                   + " and you are trying "
@@ -113,8 +113,10 @@ public final class GameDataManager {
                                   + "To download the latest version of TripleA, please visit "
                                   + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
                                   + ".\n\n"
-                                  + "It is recommended that you upgrade to the latest version of TripleA before playing this save.\n\n"
-                                  + "Do you wish to continue and open this save with your current 'old' version?";
+                                  + "It is recommended that you upgrade to the latest version of "
+                                  + "TripleA before playing this save.\n\n"
+                                  + "Do you wish to continue and open this save with your "
+                                  + "current 'old' version?";
                           return JOptionPane.showConfirmDialog(
                               null, message, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
                         }))

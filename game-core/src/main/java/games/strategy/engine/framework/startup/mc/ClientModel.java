@@ -246,8 +246,10 @@ public class ClientModel implements IMessengerErrorListener {
           .getChatMessagePanel()
           .addServerMessage(
               "Welcome to an automated dedicated host service (a host bot). "
-                  + "\nIf anyone disconnects, the autosave will be reloaded (a save might be loaded right now). "
-                  + "\nYou can get the current save, or you can load a save (only saves that it has the map for).");
+                  + "\nIf anyone disconnects, the autosave will be reloaded (a save might "
+                  + "be loaded right now). "
+                  + "\nYou can get the current save, or you can load a save (only saves that "
+                  + "it has the map for).");
     }
     messengers.registerRemote(
         observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));

@@ -352,7 +352,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final String[] s = splitOnColon(value);
     if (s.length != 6) {
       throw new GameParseException(
-          "activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:testUses:testConditions:testChance"
+          "activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:"
+              + "testUses:testConditions:testChance"
               + thisErrorMsg());
     }
     TriggerAttachment trigger = null;
@@ -724,7 +725,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
-          "unitAttachmentName must have 2 entries, the type of attachment and the name of the attachment."
+          "unitAttachmentName must have 2 entries, the type of attachment and the "
+              + "name of the attachment."
               + thisErrorMsg());
     }
     // covers UnitAttachment, UnitSupportAttachment
@@ -821,7 +823,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
-          "territoryAttachmentName must have 2 entries, the type of attachment and the name of the attachment."
+          "territoryAttachmentName must have 2 entries, "
+              + "the type of attachment and the name of the attachment."
               + thisErrorMsg());
     }
     // covers TerritoryAttachment, CanalAttachment
@@ -920,7 +923,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
-          "playerAttachmentName must have 2 entries, the type of attachment and the name of the attachment."
+          "playerAttachmentName must have 2 entries, the type of attachment and "
+              + "the name of the attachment."
               + thisErrorMsg());
     }
     // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
@@ -932,7 +936,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
         || s[1].equals("UserActionAttachment"))) {
       throw new GameParseException(
           "playerAttachmentName value must be PlayerAttachment or RulesAttachment or "
-              + "TriggerAttachment or TechAttachment or PoliticalActionAttachment or UserActionAttachment"
+              + "TriggerAttachment or TechAttachment or PoliticalActionAttachment or "
+              + "UserActionAttachment"
               + thisErrorMsg());
     }
     // TODO validate attachment exists?
@@ -1041,7 +1046,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
-          "relationshipTypeAttachmentName must have 2 entries, the type of attachment and the name of the attachment."
+          "relationshipTypeAttachmentName must have 2 entries, the type of attachment and "
+              + "the name of the attachment."
               + thisErrorMsg());
     }
     // covers RelationshipTypeAttachment
@@ -1136,7 +1142,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
     final String[] s = splitOnColon(name);
     if (s.length != 2) {
       throw new GameParseException(
-          "territoryEffectAttachmentName must have 2 entries, the type of attachment and the name of the attachment."
+          "territoryEffectAttachmentName must have 2 entries, the type of "
+              + "attachment and the name of the attachment."
               + thisErrorMsg());
     }
     // covers TerritoryEffectAttachment

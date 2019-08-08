@@ -918,7 +918,8 @@ public final class GameParser {
     final List<Node> children = getNonTextNodes(property);
     if (children.size() != 1) {
       throw newGameParseException(
-          "Editable properties must have exactly 1 child specifying the type. Number of children found:"
+          "Editable properties must have exactly 1 child specifying the type. "
+              + "Number of children found:"
               + children.size()
               + " for node:"
               + property.getNodeName());

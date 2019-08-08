@@ -30,7 +30,8 @@ public final class MapDownloadController {
       if (!outOfDateMapNames.isEmpty()) {
         final StringBuilder text = new StringBuilder();
         text.append(
-            "<html>Some of the maps you have are out of date, and newer versions of those maps exist.<br><br>");
+            "<html>Some of the maps you have are out of date, and newer versions of those "
+                + "maps exist.<br><br>");
         text.append("Would you like to update (re-download) the following maps now?<br><ul>");
         for (final String mapName : outOfDateMapNames) {
           text.append("<li> ").append(mapName).append("</li>");

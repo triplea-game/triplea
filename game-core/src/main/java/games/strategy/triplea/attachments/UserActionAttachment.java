@@ -52,7 +52,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     final String[] s = splitOnColon(value);
     if (s.length != 6) {
       throw new GameParseException(
-          "activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:testUses:testConditions:testChance"
+          "activateTrigger must have 6 parts: "
+              + "triggerName:numberOfTimes:useUses:testUses:testConditions:testChance"
               + thisErrorMsg());
     }
     TriggerAttachment trigger = null;

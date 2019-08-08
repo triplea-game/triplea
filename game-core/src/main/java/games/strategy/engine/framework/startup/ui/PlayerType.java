@@ -75,7 +75,8 @@ public enum PlayerType {
     @Override
     public IGamePlayer newPlayerWithName(final String name) {
       throw new UnsupportedOperationException(
-          "Fail fast - bad configuration, should instantiate dummy player type only for battle calc");
+          "Fail fast - bad configuration, should instantiate dummy player "
+              + "type only for battle calc");
     }
   };
 

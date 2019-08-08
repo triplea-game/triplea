@@ -162,7 +162,8 @@ public final class LobbyMenu extends JMenuBar {
           final String message =
               "Enter the username that you want to blacklist from the lobby.\n"
                   + "\n"
-                  + "Note that this ban is effective on any username, registered or anonymous, online or offline.";
+                  + "Note that this ban is effective on any username, registered or "
+                  + "anonymous, online or offline.";
           showInputDialog(message)
               .filter(this::validateUsername)
               .ifPresent(username -> getModeratorController().addUsernameToBlacklist(username));

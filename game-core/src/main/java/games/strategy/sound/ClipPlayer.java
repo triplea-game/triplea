@@ -77,13 +77,13 @@ import org.triplea.java.UrlStreams;
  * The other is located at
  * "tripleainstallfolder/assets/sounds/classical/battle_land_02_war_trumpets.mp3". Then the entry
  * would look like this: <br>
- * battle_land=generic/battle_land_01_angry_drumming_noise.mp3;classical/battle_land_02_war_trumpets.mp3
- * <br>
+ * battle_land=
+ * generic/battle_land_01_angry_drumming_noise.mp3;classical/battle_land_02_war_trumpets.mp3 <br>
  * If you wanted it to also play every single sound in the
  * "tripleainstallfolder/assets/sounds/ww2/battle_land/" folder, then you would add that folder to
  * path: <br>
- * battle_land=generic/battle_land_01_angry_drumming_noise.mp3;classical/battle_land_02_war_trumpets.mp3;ww2/battle_land
- * <br>
+ * battle_land= generic/battle_land_01_angry_drumming_noise.mp3;
+ * classical/battle_land_02_war_trumpets.mp3;ww2/battle_land <br>
  * <br>
  * Furthermore, we can customize the sound key by adding "_nationName" onto the end of it. So if you
  * want a specific sound for a german land attack, then use: <br>
@@ -340,7 +340,8 @@ public class ClipPlayer {
    * <br>
    * Example sounds.properties keys:<br>
    * Sound.Default.Folder=ww2<br>
-   * battle_aa_miss=ww2/battle_aa_miss/battle_aa_miss_01_aa_artillery_and_flyby.mp3;ww2/battle_aa_miss/
+   * battle_aa_miss=
+   * ww2/battle_aa_miss/battle_aa_miss_01_aa_artillery_and_flyby.mp3;ww2/battle_aa_miss/
    * battle_aa_miss_02_just_aa_artillery. mp3<br>
    * phase_purchase_Germans=phase_purchase_Germans/game_start_Germans_01_anthem.mp3
    */

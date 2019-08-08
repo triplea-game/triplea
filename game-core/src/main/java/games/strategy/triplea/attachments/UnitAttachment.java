@@ -1079,7 +1079,8 @@ public class UnitAttachment extends DefaultAttachment {
     final String[] s = splitOnColon(value);
     if (!(s.length == 3 || s.length == 4)) {
       throw new GameParseException(
-          "whenCombatDamaged must have 3 or 4 parts: value=effect:optionalNumber, count=integer:integer"
+          "whenCombatDamaged must have 3 or 4 parts: "
+              + "value=effect:optionalNumber, count=integer:integer"
               + thisErrorMsg());
     }
     final int from = getInt(s[0]);
@@ -1394,7 +1395,8 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void resetArtillery() {
     throw new IllegalStateException(
-        "Resetting Artillery (UnitAttachment) is not allowed, please use Support Attachments instead.");
+        "Resetting Artillery (UnitAttachment) is not allowed, "
+            + "please use Support Attachments instead.");
   }
 
   private void setArtillerySupportable(final String s) throws GameParseException {
@@ -1417,7 +1419,8 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void resetArtillerySupportable() {
     throw new IllegalStateException(
-        "Resetting Artillery Supportable (UnitAttachment) is not allowed, please use Support Attachments instead.");
+        "Resetting Artillery Supportable (UnitAttachment) is not allowed, "
+            + "please use Support Attachments instead.");
   }
 
   public void setUnitSupportCount(final String s) {
@@ -1436,7 +1439,8 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void resetUnitSupportCount() {
     throw new IllegalStateException(
-        "Resetting Artillery Support Count (UnitAttachment) is not allowed, please use Support Attachments instead.");
+        "Resetting Artillery Support Count (UnitAttachment) is not allowed, "
+            + "please use Support Attachments instead.");
   }
 
   @VisibleForTesting
@@ -2685,7 +2689,8 @@ public class UnitAttachment extends DefaultAttachment {
         || offensiveAttackAaMaxDieSides < -1
         || offensiveAttackAaMaxDieSides > 200) {
       throw new GameParseException(
-          "attackAA or attackAAmaxDieSides or offensiveAttackAA or offensiveAttackAAmaxDieSides is wrong, "
+          "attackAA or attackAAmaxDieSides or offensiveAttackAA or "
+              + "offensiveAttackAAmaxDieSides is wrong, "
               + thisErrorMsg());
     }
     if (carrierCapacity != -1 && carrierCost != -1) {
@@ -2734,7 +2739,8 @@ public class UnitAttachment extends DefaultAttachment {
     }
     if (constructionsPerTerrPerTypePerTurn > maxConstructionsPerTypePerTerr) {
       throw new GameParseException(
-          "Constructions must have constructionsPerTerrPerTypePerTurn Less than maxConstructionsPerTypePerTerr, "
+          "Constructions must have constructionsPerTerrPerTypePerTurn "
+              + "Less than maxConstructionsPerTypePerTerr, "
               + thisErrorMsg());
     }
     if (requiresUnits != null) {
@@ -2746,7 +2752,8 @@ public class UnitAttachment extends DefaultAttachment {
         || (canDieFromReachingMaxDamage && maxDamage < 1)
         || (!canBeDamaged && canDieFromReachingMaxDamage)) {
       throw new GameParseException(
-          "something wrong with canBeDamaged or maxDamage or canDieFromReachingMaxDamage or isFactory, "
+          "something wrong with canBeDamaged or maxDamage or "
+              + "canDieFromReachingMaxDamage or isFactory, "
               + thisErrorMsg());
     }
     if (canInvadeOnlyFrom != null

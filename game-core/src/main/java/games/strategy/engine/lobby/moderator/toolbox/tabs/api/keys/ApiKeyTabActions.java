@@ -12,7 +12,8 @@ import org.triplea.swing.SwingComponents;
 class ApiKeyTabActions {
   private static final String CREATE_NEW_KEY_MESSAGE =
       "<html>New key created below. Copy this key exactly, it will only be shown once.<br />"
-          + "This key can be used on new machines to register that machine. You will assign a password<br/>"
+          + "This key can be used on new machines to register that machine. You will "
+          + "assign a password<br/>"
           + "for the key at that time.<br/>"
           + "This key is only valid for a few days and can only be used once.";
   private final ApiKeyTabModel apiKeyTabModel;

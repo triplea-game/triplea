@@ -47,7 +47,8 @@ class CustomMatcherTest {
    *     "abc",
    *     hashCodesMatch("abc"));
    *
-   * java.lang.AssertionError: In this example, if there is a failure, the ..[shortened]... get the #toString of 'abc'
+   * java.lang.AssertionError: In this example, if there is a failure,
+   * the ..[shortened]... get the #toString of 'abc'
    * Expected: Expected hashcode: 2987023 (hashed from: abc1)
    *      but: Hashcode value is: 96354
    * </pre>
@@ -64,9 +65,9 @@ class CustomMatcherTest {
             AssertionError.class,
             () ->
                 assertThat(
-                    "The hashcodes of different strings do not match, so we'll expect an exception here."
-                        + "This test can be used as an example to demo the debug messaging we get on a a failure by "
-                        + "commenting out the assertThrows",
+                    "The hashcodes of different strings do not match, so we'll expect an "
+                        + "exception here. This test can be used as an example to demo the debug "
+                        + "messaging we get on a a failure by commenting out the assertThrows",
                     "123",
                     hashCodesMatch("abc")));
     assertThat(

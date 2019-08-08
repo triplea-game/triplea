@@ -61,7 +61,8 @@ public final class OpenFileUtility {
   private static void logDesktopApiMessage(final String path) {
     SwingComponents.showDialog(
         "Desktop API not supported",
-        "We're sorry, but it seems that your installed java version doesn't support the Desktop API required to open "
+        "We're sorry, but it seems that your installed java version doesn't support the "
+            + "Desktop API required to open "
             + path);
   }
 }

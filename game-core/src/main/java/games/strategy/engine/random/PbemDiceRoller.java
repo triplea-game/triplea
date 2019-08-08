@@ -249,7 +249,8 @@ public class PbemDiceRoller implements IRandomSource {
         appendText("  2: Firewall could be blocking TripleA from connecting to the Dice Server\n");
         appendText("  3: The e-mail address does not exist\n");
         appendText(
-            "  4: An unknown error, please see the error console and consult the forums for help\n");
+            "  4: An unknown error, please see the error console and consult the "
+                + "forums for help\n");
         appendText("     Visit " + UrlConstants.TRIPLEA_FORUM + "  for extra help\n");
         if (text != null) {
           appendText("Text from dice server:\n" + text + "\n");

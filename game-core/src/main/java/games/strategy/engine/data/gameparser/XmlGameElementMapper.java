@@ -160,10 +160,10 @@ public final class XmlGameElementMapper {
             + objectTypeName
             + " '"
             + objectName
-            + "'. This can be a map configuration "
-            + "problem, and would need to be fixed in the map XML. Or the map XML is using a feature from a newer game "
-            + "engine version, and you will need to install the latest TripleA for it to be enabled. Meanwhile, the "
-            + "functionality provided by this "
+            + "'. This can be a map configuration problem, and would need to be fixed in the "
+            + "map XML. Or the map XML is using a feature from a newer game engine version, "
+            + "and you will need to install the latest TripleA for it to be enabled. Meanwhile, "
+            + "the functionality provided by this "
             + objectTypeName
             + " will not available.");
   }

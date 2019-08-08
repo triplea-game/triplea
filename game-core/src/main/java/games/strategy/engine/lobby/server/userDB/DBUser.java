@@ -123,7 +123,8 @@ public final class DBUser implements Serializable {
    * <code>
    *   String proposedUserName = getUserInput();
    *   if(!DBUser.isValidUserName(proposedUserName)) {
-   *     String validationErrorMessage =  DBUser.getUserNameValidationErrorMessage(proposedUserName();
+   *     String validationErrorMessage =
+   *         DBUser.getUserNameValidationErrorMessage(proposedUserName();
    *     showMessageToUser("User name is invalid: " + validationErrorMessage);
    *   }
    * </code>

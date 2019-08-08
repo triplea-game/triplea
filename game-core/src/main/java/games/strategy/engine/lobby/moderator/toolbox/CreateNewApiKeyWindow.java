@@ -30,8 +30,10 @@ final class CreateNewApiKeyWindow {
 
   private static final String DESCRIPTION_LABEL =
       String.format(
-          "<html>Enter the API key provided to you below. Password field is a is a new password for your API key.<br/>"
-              + "Choose a password that is easy to remember. Password must be at least %s characters long.",
+          "<html>Enter the API key provided to you below. Password field is a is a new password "
+              + "for your API key.<br/>"
+              + "Choose a password that is easy to remember. "
+              + "Password must be at least %s characters long.",
           API_KEY_PASSWORD_MIN_LENGTH);
 
   private static final String API_KEY_FIELD_LABEL = "API Key Provided to You:";

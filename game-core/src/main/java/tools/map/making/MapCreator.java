@@ -129,19 +129,26 @@ public class MapCreator extends JFrame {
     text.setLineWrap(true);
     text.setText(
         "Welcome to Veqryn's map creator program for TripleA."
-            + "\r\nThis program just runs utilities inside the triplea.jar file for you, and you could easily "
-            + "run them yourself from the command line by reading the docs/developer_documentation.html"
-            + "\r\n\r\nBefore you begin, go create a folder in your directory: Users\\yourname\\triplea\\maps"
-            + "\r\nName the folder with a short name of your map, do not use any special characters in the name."
-            + "\r\nNext, create 5 folders inside your map folder, with these names: "
+            + "\nThis program just runs utilities inside the triplea.jar file for you, and you "
+            + "could easily run them yourself from the command line by reading the "
+            + "docs/developer_documentation.html"
+            + "\n\nBefore you begin, go create a folder in your directory: "
+            + "Users\\yourname\\triplea\\maps"
+            + "\nName the folder with a short name of your map, do not use any special characters "
+            + "in the name."
+            + "\nNext, create 5 folders inside your map folder, with these names: "
             + "flags, units, baseTiles, reliefTiles, games"
-            + "\r\nThen, create a text file and rename it \"map.properties\" or use one created by this utility."
-            + "\r\n\r\nTo start the Map Utilities, have a png image of your map with just the territory borders "
-            + "and nothing else. The borders must be in black (hex: 000000) and there should not be any "
-            + "anti-aliasing (smoothing) of the lines or edges that stick out."
-            + "\r\nCreate a small image of the map (approx 250 pixels wide) and name it \"smallMap.jpeg\"."
-            + "\r\nPut these in the map's root folder. You can now start the map maker by clicking and filling "
-            + "in the details below, before moving on to 'Step 2' and running the map utilities.");
+            + "\nThen, create a text file and rename it \"map.properties\" or use one created by "
+            + "this utility."
+            + "\n\nTo start the Map Utilities, have a png image of your map with just the "
+            + "territory borders and nothing else. The borders must be in black (hex: 000000) and "
+            + "there should not be any anti-aliasing (smoothing) of the lines or edges that stick "
+            + "out."
+            + "\nCreate a small image of the map (approx 250 pixels wide) and name "
+            + "it \"smallMap.jpeg\"."
+            + "\nPut these in the map's root folder. You can now start the map maker by clicking "
+            + "and filling in the details below, before moving on to 'Step 2' and running the "
+            + "map utilities.");
     final JScrollPane scrollText = new JScrollPane(text);
     panel1.add(scrollText);
     panel1.add(Box.createVerticalStrut(30));
@@ -235,8 +242,10 @@ public class MapCreator extends JFrame {
     panel1.add(Box.createVerticalStrut(30));
     panel1.add(
         new JLabel(
-            "<html>Here you can set the 'max memory' that utilities like the Polygon Grabber will use.<br>"
-                + "This is useful is you have a very large map, or ever get any Java Heap Space errors.</html>"));
+            "<html>Here you can set the 'max memory' that utilities like the Polygon "
+                + "Grabber will use.<br>"
+                + "This is useful is you have a very large map, or ever get any "
+                + "Java Heap Space errors.</html>"));
     panel1.add(
         new JLabel(
             "Set the amount of memory to use when running new processes (in megabytes [mb]):"));

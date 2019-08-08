@@ -368,10 +368,14 @@ final class ViewMenu extends JMenu {
               ui.add(
                   new JLabel(
                       "<html>Change the font and color of 'text' (not pictures) on the map. "
-                          + "<br /><em>(Some people encounter problems with the color picker, and this "
-                          + "<br />is a bug outside of triplea, located in the 'look and feel' that "
-                          + "<br />you are using. If you have an error come up, try switching to the "
-                          + "<br />basic 'look and feel', then setting the color, then switching back.)</em></html>"),
+                          + "<br /><em>(Some people encounter problems with the color picker, "
+                          + "and this "
+                          + "<br />is a bug outside of triplea, located in the 'look and feel' "
+                          + "that "
+                          + "<br />you are using. If you have an error come up, try switching to "
+                          + "the "
+                          + "<br />basic 'look and feel', then setting the color, then switching "
+                          + "back.)</em></html>"),
                   BorderLayout.NORTH);
               final Object[] options = {"Set Properties", "Reset To Default", "Cancel"};
               final int result =

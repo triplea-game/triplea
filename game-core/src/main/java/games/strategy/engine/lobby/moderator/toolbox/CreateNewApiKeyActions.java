@@ -34,8 +34,9 @@ class CreateNewApiKeyActions {
                       .orElseThrow(
                           () ->
                               new IllegalStateException(
-                                  "Coding bug, both API key and error message results were empty. Expected"
-                                      + "at least an error message or an api key to be present."));
+                                  "Coding bug, both API key and error message results were empty. "
+                                      + "Expected at least an error message or an api key to "
+                                      + "be present."));
 
               SwingComponents.showDialog(
                   "Incorrect API key",

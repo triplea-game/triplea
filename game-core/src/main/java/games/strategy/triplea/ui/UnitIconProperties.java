@@ -64,7 +64,8 @@ public final class UnitIconProperties extends PropertyFile {
                 "Expected "
                     + PROPERTY_FILE
                     + " property key to be of the form "
-                    + "<game_name>.<player>.<unit_type>;attachmentName OR if always true <game_name>.<player>.<unit_type>");
+                    + "<game_name>.<player>.<unit_type>;attachmentName OR if always true "
+                    + "<game_name>.<player>.<unit_type>");
       }
     }
     return builder.build();

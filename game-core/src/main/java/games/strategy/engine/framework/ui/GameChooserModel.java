@@ -131,7 +131,8 @@ public final class GameChooserModel extends DefaultListModel<GameChooserEntry> {
                       message = "File was deleted successfully.";
                     } else if (map.exists()) {
                       message =
-                          "Unable to delete file, please remove it in the file system and restart tripleA:\n"
+                          "Unable to delete file, please remove it in the file system and "
+                              + "restart tripleA:\n"
                               + map.getAbsolutePath();
                       if (errorDetails.isPresent()) {
                         message += "\nError details: " + errorDetails;

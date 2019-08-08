@@ -52,10 +52,12 @@ public final class ImageShrinker {
         new JLabel(
             "<html>"
                 + "This is the ImageShrinker, it will create a smallMap.jpeg file for you. "
-                + "<br>Put in your base map or relief map, and it will spit out a small scaled copy of it."
-                + "<br>Please note that the quality of the image will be worse than if you use a real painting program."
-                + "<br>So we suggest you instead shrink the image with paint.net or photoshop or gimp, etc, then clean it "
-                + "up before saving."
+                + "<br>Put in your base map or relief map, and it will spit out a small "
+                + "scaled copy of it."
+                + "<br>Please note that the quality of the image will be worse than if you use a "
+                + "real painting program."
+                + "<br>So we suggest you instead shrink the image with paint.net or photoshop or "
+                + "gimp, etc, then clean it up before saving."
                 + "</html>"));
     final File mapFile =
         new FileOpen("Select The Large Image", mapFolderLocation, ".gif", ".png").getFile();

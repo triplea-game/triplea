@@ -70,7 +70,8 @@ public interface PropertyReader {
             .log(
                 Level.WARNING,
                 String.format(
-                    "property '%s' has a value ('%s') that is not an integer; using default value (%d) instead",
+                    "property '%s' has a value ('%s') that is not an integer; using default "
+                        + "value (%d) instead",
                     key, value, defaultValue),
                 e);
       }

@@ -222,8 +222,8 @@ final class EditValidator {
     for (final Unit u : units) {
       final int dmg = unitDamageMap.getInt(u);
       if (dmg < 0 || dmg >= UnitAttachment.get(u.getType()).getHitPoints()) {
-        return "Damage cannot be less than zero or equal to or greater than unit hitpoints (if you want to kill the "
-            + "unit, use remove unit)";
+        return "Damage cannot be less than zero or equal to or greater than unit "
+            + "hitpoints (if you want to kill the unit, use remove unit)";
       }
     }
     return null;

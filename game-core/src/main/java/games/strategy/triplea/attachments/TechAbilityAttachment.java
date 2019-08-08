@@ -969,7 +969,8 @@ public class TechAbilityAttachment extends DefaultAttachment {
       final TechAdvance hardCodedAdvance = ((GenericTechAdvance) ta).getAdvance();
       if (hardCodedAdvance != null) {
         throw new GameParseException(
-            "A custom Generic Tech Advance naming a hardcoded tech, may not have a Tech Ability Attachment!"
+            "A custom Generic Tech Advance naming a hardcoded tech, may "
+                + "not have a Tech Ability Attachment!"
                 + this.thisErrorMsg());
       }
     }

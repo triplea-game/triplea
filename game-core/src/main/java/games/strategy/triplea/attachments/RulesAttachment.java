@@ -246,7 +246,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     final String[] s = splitOnColon(value);
     if (s.length < 3 || s.length > 4) {
       throw new GameParseException(
-          "relationship should have value=\"playername1:playername2:relationshiptype:numberOfRoundsExisting\""
+          "relationship should have value=\"playername1:playername2"
+              + ":relationshiptype:numberOfRoundsExisting\""
               + thisErrorMsg());
     }
     if (getData().getPlayerList().getPlayerId(s[0]) == null) {

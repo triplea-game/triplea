@@ -574,7 +574,8 @@ public class DownloadMapsWindow extends JFrame {
             JButtonBuilder.builder()
                 .title("Close")
                 .toolTip(
-                    "Click this button to close the map download window and cancel any in-progress downloads.")
+                    "Click this button to close the map download window and "
+                        + "cancel any in-progress downloads.")
                 .actionListener(
                     () -> {
                       setVisible(false);

@@ -214,7 +214,8 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
                 + (relationshipUpkeepTotalCost < 0 ? " pays " : " taxes ")
                 + (-1 * relationshipUpkeepTotalCost)
                 + MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost)
-                + " in order to maintain current relationships with other players, and ends the turn with "
+                + " in order to maintain current relationships with other players, "
+                + "and ends the turn with "
                 + newTotal
                 + MyFormatter.pluralize(" PU", newTotal);
         bridge.getHistoryWriter().startEvent(transcriptText2);

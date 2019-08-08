@@ -120,7 +120,8 @@ class TriggerAttachmentTest {
 
       final String notificationMessageKey = "BlackIce";
       final String notificationMessage =
-          "<body><h2>The Land of Black Ice</h2>Whether out of duty, ...<br>never heard from again.</body>";
+          "<body><h2>The Land of Black Ice</h2>Whether out of duty, ..."
+              + "<br>never heard from again.</body>";
 
       final ITripleADisplay display = mock(ITripleADisplay.class);
       when(bridge.getDisplayChannelBroadcaster()).thenReturn(display);

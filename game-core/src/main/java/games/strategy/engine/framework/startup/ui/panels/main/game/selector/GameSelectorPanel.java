@@ -56,8 +56,8 @@ public final class GameSelectorPanel extends JPanel implements Observer {
       JButtonBuilder.builder()
           .title("Select Map")
           .toolTip(
-              "<html>Select a game from all the maps/games that come with TripleA, <br>and the ones "
-                  + "you have downloaded.</html>")
+              "<html>Select a game from all the maps/games that come with TripleA, "
+                  + "<br>and the ones you have downloaded.</html>")
           .build();
   private final JButton gameOptions =
       JButtonBuilder.builder()

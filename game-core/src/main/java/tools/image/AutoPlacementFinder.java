@@ -92,19 +92,27 @@ public final class AutoPlacementFinder {
         new JLabel(
             "<html>"
                 + "This is the AutoPlacementFinder, it will create a place.txt file for you. "
-                + "<br>In order to run this, you must already have created a centers.txt file and a polygons.txt file, "
-                + "<br>and you must have already created the map directory structure in its final place."
-                + "<br>Example: the map folder should have a name, with the 2 text files already in that folder, and "
-                + "<br>the folder should be located in your users\\yourname\\triplea\\maps\\ directory."
-                + "<br><br>The program will ask for the folder name (just the name, not the full path)."
-                + "<br>Then it will ask for unit scale (unit zoom) level [normally between 0.5 and 1.0]"
+                + "<br>In order to run this, you must already have created a centers.txt file and "
+                + "a polygons.txt file, "
+                + "<br>and you must have already created the map directory structure in its "
+                + "final place."
+                + "<br>Example: the map folder should have a name, with the 2 text files already "
+                + "in that folder, and "
+                + "<br>the folder should be located in your users\\yourname\\triplea\\maps\\ "
+                + "directory."
+                + "<br><br>The program will ask for the folder name (just the name, not the "
+                + "full path)."
+                + "<br>Then it will ask for unit scale (unit zoom) level [normally between "
+                + "0.5 and 1.0]"
                 + "<br>Then it will ask for the unit image size when not zoomed [normally 48x48]."
-                + "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit "
-                + "size."
-                + "<br><br>When done, the program will attempt to make placements for all territories on your map."
-                + "<br>However, it doesn't do a good job with thin or small territories, or islands, so it is a very good "
-                + "idea"
-                + "<br>to use the PlacementPicker to check all placements and redo some of them by hand."
+                + "<br><br>If you want to have less, or more, room around the edges of your units, "
+                + "you can change the unit size."
+                + "<br><br>When done, the program will attempt to make placements for all "
+                + "territories on your map."
+                + "<br>However, it doesn't do a good job with thin or small territories, or "
+                + "islands, so it is a very good idea"
+                + "<br>to use the PlacementPicker to check all placements and redo some of them "
+                + "by hand."
                 + "</html>"));
     calculate();
   }
@@ -176,7 +184,8 @@ public final class AutoPlacementFinder {
                 JOptionPane.showConfirmDialog(
                     new JPanel(),
                     "A map.properties file was found in the map's folder, "
-                        + "\r\n do you want to use the file to supply the info for the placement box size? "
+                        + "\r\n do you want to use the file to supply the info for "
+                        + "the placement box size? "
                         + "\r\n Zoom = "
                         + scale
                         + ",  Width = "
@@ -305,7 +314,8 @@ public final class AutoPlacementFinder {
       JOptionPane.showMessageDialog(
           null,
           new JLabel(
-              "Could not find map. Make sure it is in finalized location and contains centers.txt and polygons.txt"));
+              "Could not find map. Make sure it is in finalized location and contains "
+                  + "centers.txt and polygons.txt"));
       log.severe("Caught Exception.");
       log.severe("Could be due to some missing text files.");
       log.log(Level.SEVERE, "Or due to the map folder not being in the right location.", e);
@@ -344,7 +354,8 @@ public final class AutoPlacementFinder {
     final String unitsScale =
         JOptionPane.showInputDialog(
             null,
-            "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
+            "Enter the unit's scale (zoom)."
+                + "\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
     return (unitsScale != null) ? unitsScale : "1";
   }
 

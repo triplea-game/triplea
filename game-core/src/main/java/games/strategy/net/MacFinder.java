@@ -178,7 +178,8 @@ public final class MacFinder {
     /*
      * ...
      * [ 405.681688] wlan0_rename: associate with AP 00:16:f8:40:3e:bd
-     * [ 405.683255] wlan0_rename: RX ReassocResp from 00:16:f8:40:3e:bd (capab=0x411 status=0 aid=4)
+     * [ 405.683255] wlan0_rename: RX ReassocResp from 00:16:f8:40:3e:bd
+     *     (capab=0x411 status=0 aid=4)
      * ...
      */
     try {

@@ -105,29 +105,34 @@ public final class PlacementPicker {
         new JLabel(
             "<html>"
                 + "This is the PlacementPicker, it will create a place.txt file for you. "
-                + "<br>In order to run this, you must already have created a centers.txt file and a polygons.txt file. "
-                + "<br><br>The program will ask for unit scale (unit zoom) level [normally between 0.5 and 1.0], "
+                + "<br>In order to run this, you must already have created a centers.txt file "
+                + "and a polygons.txt file. "
+                + "<br><br>The program will ask for unit scale (unit zoom) level [normally "
+                + "between 0.5 and 1.0], "
                 + "<br>Then it will ask for the unit image size when not zoomed [normally 48x48]. "
-                + "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit "
-                + "size. "
-                + "<br><br>After it starts, you may Load an existing place.txt file, that way you can make changes to it "
-                + "then save it. "
+                + "<br><br>If you want to have less, or more, room around the edges of your "
+                + "units, you can change the unit size. "
+                + "<br><br>After it starts, you may Load an existing place.txt file, that way "
+                + "you can make changes to it then save it. "
                 + "<br><br>LEFT CLICK = Select a new territory. "
-                + "<br><br>Holding CTRL/SHIFT + LEFT CLICK = Create a new placement for that territory. "
+                + "<br><br>Holding CTRL/SHIFT + LEFT CLICK = Create a new placement for that "
+                + "territory. "
                 + "<br><br>RIGHT CLICK = Remove last placement for that territory. "
-                + "<br><br>Holding CTRL/SHIFT + RIGHT CLICK = Save all placements for that territory. "
-                + "<br><br>Pressing the 'O' key = Toggle the direction for placement overflow for that territory. "
-                + "<br><br>It is a very good idea to check each territory using the PlacementPicker after running the "
-                + "AutoPlacementFinder "
-                + "<br>to make sure there are enough placements for each territory. If not, you can always add more then "
-                + "save it. "
-                + "<br><br>IF there are not enough placements, by default the units will Overflow to the RIGHT of the "
-                + "very LAST placement made, "
+                + "<br><br>Holding CTRL/SHIFT + RIGHT CLICK = Save all placements for that "
+                + "territory. "
+                + "<br><br>Pressing the 'O' key = Toggle the direction for placement overflow for "
+                + "that territory. "
+                + "<br><br>It is a very good idea to check each territory using the "
+                + "PlacementPicker after running the AutoPlacementFinder "
+                + "<br>to make sure there are enough placements for each territory. If not, you "
+                + "can always add more then save it. "
+                + "<br><br>IF there are not enough placements, by default the units will Overflow "
+                + "to the RIGHT of the very LAST placement made, "
                 + "<br>so be sure that the last placement is on the right side of the territory "
-                + "<br>or that it doesn't overflow directly on top of other placements. Can instead toggle the overflow "
-                + "direction."
-                + "<br><br>To show all placements, or see the overflow direction, or see which territories you have not "
-                + "yet completed enough, "
+                + "<br>or that it doesn't overflow directly on top of other placements. Can "
+                + "instead toggle the overflow direction."
+                + "<br><br>To show all placements, or see the overflow direction, or see which "
+                + "territories you have not yet completed enough, "
                 + "<br>placements for, turn on the mode options in the 'edit' menu. "
                 + "</html>"));
     log.info("Select the map");
@@ -234,7 +239,8 @@ public final class PlacementPicker {
                   JOptionPane.showConfirmDialog(
                       new JPanel(),
                       "A map.properties file was found in the map's folder, "
-                          + "\r\n do you want to use the file to supply the info for the placement box size? "
+                          + "\r\n do you want to use the file to supply the info for "
+                          + "the placement box size? "
                           + "\r\n Zoom = "
                           + scale
                           + ",  Width = "
@@ -284,7 +290,8 @@ public final class PlacementPicker {
           final String width =
               JOptionPane.showInputDialog(
                   null,
-                  "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
+                  "Enter the unit's image width in pixels (unscaled / without zoom).\r\n"
+                      + "(e.g. 48)");
           if (width != null) {
             try {
               placeWidth = (int) (unitZoomPercent * Integer.parseInt(width));
@@ -295,7 +302,8 @@ public final class PlacementPicker {
           final String height =
               JOptionPane.showInputDialog(
                   null,
-                  "Enter the unit's image height in pixels (unscaled / without zoom).\r\n(e.g. 48)");
+                  "Enter the unit's image height in pixels (unscaled / without zoom).\r\n"
+                      + "(e.g. 48)");
           if (height != null) {
             try {
               placeHeight = (int) (unitZoomPercent * Integer.parseInt(height));
@@ -318,7 +326,8 @@ public final class PlacementPicker {
       if (file.exists()
           && JOptionPane.showConfirmDialog(
                   new JPanel(),
-                  "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories?",
+                  "A polygons.txt file was found in the map's folder, do you want to "
+                      + "use the file to supply the territories?",
                   "File Suggestion",
                   JOptionPane.YES_NO_CANCEL_OPTION)
               == 0) {
@@ -439,7 +448,8 @@ public final class PlacementPicker {
               final String num =
                   JOptionPane.showInputDialog(
                       null,
-                      "Enter the minimum number of placements each territory must have.\r\n(examples: 1, 4, etc.)");
+                      "Enter the minimum number of placements each territory must have.\r\n"
+                          + "(examples: 1, 4, etc.)");
               try {
                 incompleteNum = Math.max(1, Math.min(50, Integer.parseInt(num)));
               } catch (final Exception ex) {
@@ -626,7 +636,8 @@ public final class PlacementPicker {
       final String unitsScale =
           JOptionPane.showInputDialog(
               null,
-              "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
+              "Enter the unit's scale (zoom).\r\n"
+                  + "(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
       return (unitsScale != null) ? unitsScale : "1";
     }
   }

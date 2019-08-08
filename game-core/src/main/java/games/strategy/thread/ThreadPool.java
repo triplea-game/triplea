@@ -45,9 +45,9 @@ public class ThreadPool {
       } catch (final ExecutionException e) {
         final Throwable exceptionToLog = e.getCause();
         /*
-         * An {@code ExecutionException} contains no useful information; it's simply an adapter to tunnel exceptions
-         * thrown by tasks through the {@code Executor} API. We only log the cause to reduce the number of
-         * stack trace frames visible to the user.
+         * An {@code ExecutionException} contains no useful information; it's simply an adapter
+         * to tunnel exceptions thrown by tasks through the {@code Executor} API. We only log the
+         * cause to reduce the number of stack trace frames visible to the user.
          */
         log.log(
             Level.SEVERE,

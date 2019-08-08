@@ -95,7 +95,8 @@ class FileSystemAccessStrategy {
   private static void showRemoveFailDialog(final List<DownloadFileDescription> mapList) {
     final String message =
         newDialogMessage(
-            "Unable to delete some of the maps files.<br />Manual removal of the files may be necessary:",
+            "Unable to delete some of the maps files.<br />Manual removal of "
+                + "the files may be necessary:",
             mapList);
     showDialog(message, mapList, (map) -> map.getInstallLocation().getAbsolutePath());
   }

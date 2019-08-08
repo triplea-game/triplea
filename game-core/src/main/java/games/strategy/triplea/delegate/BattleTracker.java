@@ -424,15 +424,12 @@ public class BattleTracker implements Serializable {
     final boolean canConquerMiddleSteps =
         presentFromStartTilEnd.stream().anyMatch(Matches.unitIsNotAir());
     final boolean scramblingEnabled = Properties.getScrambleRulesInEffect(data);
+    final var passableLandAndNotRestricted =
+        Matches.terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(
+                id)
+            .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data));
     final Predicate<Territory> conquerable =
-        Matches.territoryIsEmptyOfCombatUnits(data, id)
-            .and(
-                Matches
-                    .territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(
-                        id)
-                    .or(
-                        Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(
-                            id, data)));
+        Matches.territoryIsEmptyOfCombatUnits(data, id).and(passableLandAndNotRestricted);
     final Collection<Territory> conquered = new ArrayList<>();
     if (canConquerMiddleSteps) {
       conquered.addAll(route.getMatches(conquerable));
@@ -849,7 +846,8 @@ public class BattleTracker implements Serializable {
         bombingBattle.cancelBattle(bridge);
         removeBattle(bombingBattle, data);
         throw new IllegalStateException(
-            "Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!");
+            "Bombing Raids should be dealt with first! Be sure the battle "
+                + "has dependencies set correctly!");
       }
     }
     captureOrDestroyUnits(territory, id, newOwner, bridge, changeTracker);

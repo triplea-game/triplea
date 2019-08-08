@@ -73,8 +73,8 @@ public abstract class AbstractBasePlayer implements IGamePlayer {
                   + stepName
                   + " still does not match player bridge step: "
                   + bridgeStep
-                  + " even after waiting more than 30 seconds. This will probably result in a ClassCastException very "
-                  + "soon. Player Bridge GameOver="
+                  + " even after waiting more than 30 seconds. This will probably result in a "
+                  + "ClassCastException very soon. Player Bridge GameOver="
                   + getPlayerBridge().isGameOver()
                   + ", PlayerId: "
                   + getPlayerId().getName()

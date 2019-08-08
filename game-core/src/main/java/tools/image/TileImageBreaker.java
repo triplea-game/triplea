@@ -71,10 +71,12 @@ public final class TileImageBreaker {
         new JLabel(
             "<html>"
                 + "This is the TileImageBreaker, it will create the map image tiles file for you. "
-                + "<br>It will take any image, and break it up into 256x256 pixel squares, and put them all in a folder. "
-                + "<br>You can use this to create the base tiles (background) as well as the relief tiles (art relief)."
-                + "<br>For the base image (the one used to make centers.txt, etc), please save it to a folder called "
-                + "baseTiles"
+                + "<br>It will take any image, and break it up into 256x256 pixel squares, "
+                + "and put them all in a folder. "
+                + "<br>You can use this to create the base tiles (background) as well as the "
+                + "relief tiles (art relief)."
+                + "<br>For the base image (the one used to make centers.txt, etc), please "
+                + "save it to a folder called baseTiles"
                 + "<br>For the relief image, please save it to a folder called reliefTiles"
                 + "</html>"));
     final FileSave locationSelection =

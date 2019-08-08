@@ -41,9 +41,10 @@ class UnitInformation {
       }
       unitInformation.write("\r\n");
       unitInformation.write(
-          "Unit,Cost,Movement,Attack,Defense,CanBlitz,Artillery?,ArtillerySupportable?"
-              + ",Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,Carrier Cost,"
-              + "Sea Unit?,Hit Points?,Transport Capacity,Carrier Capacity,Submarine?,Destroyer?");
+          "Unit,Cost,Movement,Attack,Defense,CanBlitz,Artillery?,ArtillerySupportable?,"
+              + "Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,"
+              + "Carrier Cost,Sea Unit?,Hit Points?,Transport Capacity,Carrier Capacity,"
+              + "Submarine?,Destroyer?");
       unitInformation.write("\r\n");
       for (final Entry<UnitType, UnitAttachment> entry : unitInfoMap.entrySet()) {
         final UnitType currentType = entry.getKey();

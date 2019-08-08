@@ -31,7 +31,9 @@ final class UserController implements UserDao {
     try (Connection con = connection.get();
         PreparedStatement ps =
             con.prepareStatement(
-                "select password, coalesce(bcrypt_password, password) from lobby_user where username = ?")) {
+                "select password, coalesce(bcrypt_password, password) "
+                    + "from lobby_user "
+                    + "where username = ?")) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
@@ -101,7 +103,8 @@ final class UserController implements UserDao {
     try (Connection con = connection.get();
         PreparedStatement ps =
             con.prepareStatement(
-                "insert into lobby_user (username, password, bcrypt_password, email) values (?, ?, ?, ?)")) {
+                "insert into lobby_user (username, password, bcrypt_password, email) "
+                    + "values (?, ?, ?, ?)")) {
       ps.setString(1, name);
       ps.setString(2, hashedPassword.isBcrypted() ? null : hashedPassword.value);
       ps.setString(3, hashedPassword.isBcrypted() ? hashedPassword.value : null);

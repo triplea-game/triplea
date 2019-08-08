@@ -37,7 +37,8 @@ class ApiKeyRegistrationControllerIntegrationTest extends AbstractDropwizardTest
             ApiKeyPassword.builder()
                 .apiKey("invalid single use key")
                 .password(
-                    "this password is used to salt a new key, does not matter if single-use key is invalid")
+                    "this password is used to salt a new key, does not matter "
+                        + "if single-use key is invalid")
                 .build());
 
     assertThat(newApiKey.getNewApiKey(), nullValue());

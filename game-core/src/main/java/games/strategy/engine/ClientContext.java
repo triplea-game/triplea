@@ -22,7 +22,8 @@ import org.triplea.util.Version;
  *     :
  *   }
  *   private void swingStuff(SharedDependency sharedDependencyWiredThroughAllTheMethods) {
- *     int preferenceValue = new UserSetting(sharedDependencyWiredThroughAllTheMethods).getNumberPreference();
+ *     int preferenceValue =
+ *         new UserSetting(sharedDependencyWiredThroughAllTheMethods).getNumberPreference();
  *     :
  *   }
  *

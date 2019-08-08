@@ -57,8 +57,8 @@ public class JTableBuilder {
                 checkArgument(
                     rowData.get(i).size() == headerCount,
                     String.format(
-                        "Data row number: %s, had incorrect length: %s, needed to match number of column headers: %s,"
-                            + "data row: %s",
+                        "Data row number: %s, had incorrect length: %s, needed to match "
+                            + "number of column headers: %s, data row: %s",
                         i, rowData.get(i).size(), headerCount, rowData.get(i))));
   }
 

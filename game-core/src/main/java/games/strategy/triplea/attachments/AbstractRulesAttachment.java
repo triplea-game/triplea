@@ -80,7 +80,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
   @Override
   protected void setChance(final String chance) throws GameParseException {
     throw new GameParseException(
-        "chance not allowed for use with RulesAttachments, instead use it with Triggers or PoliticalActions"
+        "chance not allowed for use with RulesAttachments, instead use it with "
+            + "Triggers or PoliticalActions"
             + thisErrorMsg());
   }
 

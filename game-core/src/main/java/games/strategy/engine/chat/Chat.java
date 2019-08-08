@@ -198,10 +198,9 @@ public class Chat {
      * will wait until we receive the init return value.
      *
      * 3. When we receive the init message response, initialize our state and release the latch
-     * so all pending messages will get processed. Messages may be ignored if the server version is incorrect.
-     * This all seems a lot more involved than it needs to be.
+     * so all pending messages will get processed. Messages may be ignored if the server
+     * version is incorrect. This all seems a lot more involved than it needs to be.
      */
-
     final IChatController controller = messengers.getRemoteChatController(chatName);
     messengers.addChatChannelSubscriber(chatChannelSubscriber, chatChannelName);
     final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();

@@ -384,10 +384,11 @@ final class PointFileReaderWriterTest {
     @Test
     void shouldReadMultiplePolygonsPerName() throws Exception {
       final String content =
-          ""
-              + "Belarus  <  (1011,1021) (1012,1022) (1013,1023) >\n"
-              + "54 Sea Zone  <  (2011,2021) (2012,2022) (2013,2023) >  <  (2111,2121) (2112,2122) (2113,2123) >\n"
-              + "Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  (3111,3121) (3112,3122) >  <  (3211,3221) >\n";
+          "Belarus  <  (1011,1021) (1012,1022) (1013,1023) >\n"
+              + "54 Sea Zone  <  (2011,2021) (2012,2022) (2013,2023) >  <  "
+              + "(2111,2121) (2112,2122) (2113,2123) >\n"
+              + "Philippines  <  (3011,3021) (3012,3022) (3013,3023) >  <  "
+              + "(3111,3121) (3112,3122) >  <  (3211,3221) >\n";
 
       final Map<String, List<Polygon>> polygonListsByName =
           readFromString(PointFileReaderWriter::readOneToManyPolygons, content);
@@ -434,9 +435,9 @@ final class PointFileReaderWriterTest {
       assertTrue(e1.getMessage().contains("54 Sea Zone"));
 
       final String content2 =
-          ""
-              + "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >\n"
-              + "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >  <  (2111,2121) (2112,2122) (2113,2123) >";
+          "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >\n"
+              + "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >  <  "
+              + "(2111,2121) (2112,2122) (2113,2123) >";
       final Exception e2 =
           assertThrows(
               IOException.class,
@@ -444,10 +445,9 @@ final class PointFileReaderWriterTest {
       assertTrue(e2.getMessage().contains("54 Sea Zone"));
 
       final String content3 =
-          ""
-              + "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >\n"
-              + "54 Sea Zone  <  (2011 , 2021) (2012 , 2022 ) ( 2013,21023) >  <  (2111,2121) (2112,2122) (2113,2123) >";
-
+          "54 Sea Zone  <  (1011,1021) (1012,1022) (1013,1023) >\n"
+              + "54 Sea Zone  <  (2011 , 2021) (2012 , 2022 ) ( 2013,21023) >  <  "
+              + "(2111,2121) (2112,2122) (2113,2123) >";
       final Exception e3 =
           assertThrows(
               IOException.class,
@@ -630,7 +630,8 @@ final class PointFileReaderWriterTest {
           is(
               ""
                   + "Belarus  <  (1011,1021)  (1012,1022)  (1013,1023)  > \r\n"
-                  + "54 Sea Zone  <  (2011,2021)  (2012,2022)  (2013,2023)  >  <  (2111,2121)  (2112,2122)  (2113,2123)  > \r\n"
+                  + "54 Sea Zone  <  (2011,2021)  (2012,2022)  (2013,2023)  > "
+                  + " <  (2111,2121)  (2112,2122)  (2113,2123)  > \r\n"
                   + "Philippines  <  (3011,3021)  (3012,3022)  (3013,3023)  > "
                   + " <  (3111,3121)  (3112,3122)  >  <  (3211,3221)  > "));
     }

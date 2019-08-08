@@ -204,7 +204,8 @@ class StatPanel extends AbstractStatPanel {
     }
 
     /*
-     * Recalcs the underlying data in a lazy manner. Limitation: This is not a thread-safe implementation.
+     * Re-calcs the underlying data in a lazy manner.
+     * Limitation: This is not a thread-safe implementation.
      */
     @Override
     public synchronized Object getValueAt(final int row, final int col) {
@@ -374,7 +375,8 @@ class StatPanel extends AbstractStatPanel {
     }
 
     /*
-     * Recalcs the underlying data in a lazy manner. Limitation: This is not a thread-safe implementation.
+     * Recalcs the underlying data in a lazy manner.
+     * Limitation: This is not a thread-safe implementation.
      */
     @Override
     public Object getValueAt(final int row, final int col) {
@@ -425,7 +427,8 @@ class StatPanel extends AbstractStatPanel {
               .mapToInt(TerritoryAttachment::getProduction)
               .sum();
       /*
-       * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
+       * Match will Check if terr is a Land Convoy Route and check ownership
+       * of neighboring Sea Zone, or if contested
        */
       return (double) production * Properties.getPuMultiplier(data);
     }

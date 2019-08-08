@@ -79,7 +79,8 @@ public class DefaultPlayerBridge implements IPlayerBridge {
           remoteName = ServerGame.getRemoteName(delegate);
         } catch (final Exception e) {
           final String errorMessage =
-              "IDelegate IRemote interface class returned null or was not correct interface. CurrentStep: "
+              "IDelegate IRemote interface class returned null or was not correct "
+                  + "interface. CurrentStep: "
                   + stepName
                   + ", and CurrentDelegate: "
                   + currentDelegate;
@@ -111,7 +112,8 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         final IDelegate delegate = game.getData().getDelegate(name);
         if (delegate == null) {
           final String errorMessage =
-              "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. Looking for delegate named: "
+              "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. "
+                  + "Looking for delegate named: "
                   + name;
           throw new IllegalStateException(errorMessage);
         }

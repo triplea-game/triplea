@@ -66,11 +66,12 @@ public class MetaSetupPanel extends SetupPanel {
     hostGame.setToolTipText(
         "<html>Hosts a network game, which people can connect to. <br>"
             + "Anyone on a LAN will be able to connect. <br>"
-            + "Anyone from the internet can connect as well, but only if the host has configured port forwarding "
-            + "correctly.</html>");
+            + "Anyone from the internet can connect as well, but only if the host has "
+            + "configured port forwarding correctly.</html>");
     connectToHostedGame = new JButton("Connect to Networked Game");
     connectToHostedGame.setToolTipText(
-        "<html>Connects to someone's hosted game, <br>so long as you know their IP address.</html>");
+        "<html>Connects to someone's hosted game, <br>"
+            + "so long as you know their IP address.</html>");
     enginePreferences = new JButton("Engine Preferences");
     enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
     ruleBook = new JButton("Rule Book");

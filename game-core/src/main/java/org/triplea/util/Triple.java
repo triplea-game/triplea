@@ -34,7 +34,8 @@ public final class Triple<F, S, T> implements Serializable {
    * <p>Instead of:
    *
    * <pre>
-   * Triple&lt;String, Integer, String> myTriple = new Triple&lt;String, Integer, String>("abc", 123, "xyz");
+   * Triple&lt;String, Integer, String> myTriple =
+   *     new Triple&lt;String, Integer, String>("abc", 123, "xyz");
    * </pre>
    */
   public static <F, S, T> Triple<F, S, T> of(final F first, final S second, final T third) {

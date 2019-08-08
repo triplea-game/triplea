@@ -81,11 +81,12 @@ public final class ConnectionFinder {
         new JLabel(
             "<html>"
                 + "This is the ConnectionFinder. "
-                + "<br>It will create a file containing the connections between territories, and optionally the territory "
-                + "definitions as well. "
-                + "<br>Copy and paste everything from this file into your game xml file (the 'map' section). "
-                + "<br>The connections file can and Should Be Deleted when finished, because it is Not Needed and not read "
-                + "by the engine. "
+                + "<br>It will create a file containing the connections between territories, "
+                + "and optionally the territory definitions as well. "
+                + "<br>Copy and paste everything from this file into your game xml file "
+                + "(the 'map' section). "
+                + "<br>The connections file can and Should Be Deleted when finished, because "
+                + "it is Not Needed and not read by the engine. "
                 + "</html>"));
     log.info("Select polygons.txt");
     File polyFile = null;

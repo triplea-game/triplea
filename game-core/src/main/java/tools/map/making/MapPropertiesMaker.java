@@ -160,11 +160,14 @@ public final class MapPropertiesMaker {
           new JLabel(
               "<html>"
                   + "This is the MapPropertiesMaker, it will create a map.properties file for you. "
-                  + "<br>The map.properties is located in the map's directory, and it will tell TripleA various "
+                  + "<br>The map.properties is located in the map's directory, and it will tell "
+                  + "TripleA various "
                   + "<br>display related information about your map. "
-                  + "<br>Such things as the dimensions of your map, the colors of each of the players, "
+                  + "<br>Such things as the dimensions of your map, the colors of each of "
+                  + "the players, "
                   + "<br>the size of the unit images, and how zoomed out they are, etc. "
-                  + "<br>To use, just fill in the information in the fields below, and click on 'Show More' to "
+                  + "<br>To use, just fill in the information in the fields below, and click on "
+                  + "'Show More' to "
                   + "<br>show other, optional, fields. "
                   + "</html>"),
           new GridBagConstraints(

@@ -1221,7 +1221,8 @@ class ProNonCombatMoveAi {
                   ProData.myCapital, enemyDistance, player, moveMap)) {
             areSuccessful = false;
             ProLogger.debug(
-                "Capital doesn't have local land superiority after defense moves with enemyDistance="
+                "Capital doesn't have local land superiority after defense "
+                    + "moves with enemyDistance="
                     + enemyDistance);
           }
         }

@@ -245,7 +245,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
           throw new IllegalStateException(
               "getMaxUnitsToBePlaced originally returned: "
                   + maxPlaceable
-                  + ", \nWhich is not the same as it is returning after using freePlacementCapacity: "
+                  + ", \nWhich is not the same as it is returning after using "
+                  + "freePlacementCapacity: "
                   + newMaxForThisProducer
                   + ", \nFor territory: "
                   + at.getName()
@@ -779,8 +780,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     // if its an original factory then unlimited production
     producers.sort(getBestProducerComparator(to, units, player));
     if (!getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(units, to)) {
-      return "Cannot place more units which require units, than production capacity of territories with the required "
-          + "units";
+      return "Cannot place more units which require units, than production capacity of "
+          + "territories with the required units";
     }
     final int maxUnitsToBePlaced = getMaxUnitsToBePlaced(units, to, player);
     if ((maxUnitsToBePlaced != -1) && (maxUnitsToBePlaced < units.size())) {
@@ -1255,11 +1256,13 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (countSwitchedProductionToNeighbors && unitCountAlreadyProduced > 0) {
       if (notUsableAsOtherProducers == null) {
         throw new IllegalStateException(
-            "notUsableAsOtherProducers cannot be null if countSwitchedProductionToNeighbors is true");
+            "notUsableAsOtherProducers cannot be null if "
+                + "countSwitchedProductionToNeighbors is true");
       }
       if (currentAvailablePlacementForOtherProducers == null) {
         throw new IllegalStateException(
-            "currentAvailablePlacementForOtherProducers cannot be null if countSwitchedProductionToNeighbors is true");
+            "currentAvailablePlacementForOtherProducers cannot be null if "
+                + "countSwitchedProductionToNeighbors is true");
       }
       int productionCanNotBeMoved = 0;
       int productionThatCanBeTakenOver = 0;
