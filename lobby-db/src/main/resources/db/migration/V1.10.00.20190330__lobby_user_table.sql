@@ -10,9 +10,7 @@ create table lobby_user
     bcrypt_password character(60) check (char_length(bcrypt_password) = 60)
 );
 
--- alter table user owner to triplea_lobby;
-alter table lobby_user
-    owner to postgres;
+alter table lobby_user owner to lobby_user;
 alter table lobby_user
     add constraint lobby_user_pass_check check (password IS NOT NULL OR bcrypt_password IS NOT NULL);
 
@@ -43,9 +41,7 @@ create table moderator_action_history
     action_target varchar(40) not null
 );
 
--- alter table moderator_action_history owner to triplea_lobby;
-alter table moderator_action_history
-    owner to postgres;
+alter table moderator_action_history owner to lobby_user;
 
 comment on table moderator_action_history is 'Table storing an audit history of actions taken by moderators';
 comment on column moderator_action_history.id is 'Table storing an audit history of actions taken by moderators';

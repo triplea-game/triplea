@@ -11,6 +11,7 @@ is where we check-in SQL commands to update database. Any new files are run auto
 
 To launch a local dabase on Docker, run: `launch_db`
 
+
 ### Prerequisites
 - Docker
 - `psql` (postgres-client) command 
@@ -42,8 +43,12 @@ A lobby server running on the same host as the lobby database container may conn
 
 Property | Value | Notes
 :-- | :-- | :--
-User | `postgres` |
+User | `triplea-lobby` |
 Password | _&lt;any&gt;_ | The lobby database is configured with authentication disabled, thus any password may be used.
 Host | `localhost` |
 Port | `5432` |
+
+## Docker DB configuraton
+
+Configuration flags and other docker container configuration documentation can be found at: https://hub.docker.com/_/postgres
 

@@ -1,11 +1,4 @@
 #!/bin/bash
 
-DB=lobby
-PSQL="psql -h localhost -U postgres -w $DB"
-
-if [[ "$OSTYPE" == darwin* ]]; then
-  PSQL="psql -h localhost -U postgres -w $DB"
-fi
-
-$PSQL
+psql -h localhost -U lobby_user -w -d lobby_db
 

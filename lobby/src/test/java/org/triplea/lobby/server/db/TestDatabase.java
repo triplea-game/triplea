@@ -18,7 +18,7 @@ public final class TestDatabase {
       "jdbc:postgresql://%s:%d/%s",
       "localhost",
       5432,
-      "lobby");
+      "lobby_db");
 
   /**
    * Creates a new DB connection to localhost.
@@ -32,7 +32,7 @@ public final class TestDatabase {
 
   private static Properties getConnectionProperties() {
     final Properties props = new Properties();
-    props.put("user", "postgres");
+    props.put("user", "lobby_user");
     props.put("password", "postgres");
     return props;
   }
