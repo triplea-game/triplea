@@ -311,13 +311,13 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
               socketChannel.configureBlocking(false);
               socketChannel.socket().setKeepAlive(true);
             } catch (final IOException e) {
-              log.log(Level.FINE, "Could not accept channel", e);
+              log.log(Level.SEVERE, "Could not accept channel", e);
               try {
                 if (socketChannel != null) {
                   socketChannel.close();
                 }
               } catch (final IOException e2) {
-                log.log(Level.FINE, "Could not close channel", e2);
+                log.log(Level.SEVERE, "Could not close channel", e2);
               }
               continue;
             }
@@ -326,7 +326,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
               try {
                 socketChannel.close();
               } catch (final IOException e) {
-                log.log(Level.FINE, "Could not close channel", e);
+                log.log(Level.SEVERE, "Could not close channel", e);
               }
               continue;
             }
