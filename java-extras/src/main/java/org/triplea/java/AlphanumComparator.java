@@ -4,14 +4,13 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * "Smart" alphanumeric comparator. Treats sequences of digit characters as numeric values to produce a more expected
- * sort order. For example, consider the strings {@code "foo9bar"} and {@code "foo10bar"}. Using a natural order
- * comparator, the second string would be sorted before the first. However, using this comparator, the first string is
- * sorted before the second.
+ * "Smart" alphanumeric comparator. Treats sequences of digit characters as numeric values to
+ * produce a more expected sort order. For example, consider the strings {@code "foo9bar"} and
+ * {@code "foo10bar"}. Using a natural order comparator, the second string would be sorted before
+ * the first. However, using this comparator, the first string is sorted before the second.
  *
- * <p>
- * This is an updated version with enhancements made by Daniel Migowski, Andre Bogus, and David Koelle.
- * </p>
+ * <p>This is an updated version with enhancements made by Daniel Migowski, Andre Bogus, and David
+ * Koelle.
  */
 public class AlphanumComparator implements Comparator<String>, Serializable {
   private static final long serialVersionUID = 2885360470032673881L;
@@ -20,7 +19,7 @@ public class AlphanumComparator implements Comparator<String>, Serializable {
     return ch >= 48 && ch <= 57;
   }
 
-  /** Length of string is passed in for improved efficiency (only need to calculate it once). **/
+  /** Length of string is passed in for improved efficiency (only need to calculate it once). * */
   private static String getChunk(final String s, final int slength, final int initialMarker) {
     final StringBuilder chunk = new StringBuilder();
     int marker = initialMarker;

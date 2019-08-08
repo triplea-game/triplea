@@ -1,5 +1,10 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.message.MessageContext;
+import games.strategy.engine.message.RemoteName;
+import games.strategy.net.IConnectionChangeListener;
+import games.strategy.net.INode;
+import games.strategy.net.Messengers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -7,19 +12,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.logging.Level;
-
+import lombok.extern.java.Log;
 import org.triplea.util.Tuple;
 
-import games.strategy.engine.message.MessageContext;
-import games.strategy.engine.message.RemoteName;
-import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.INode;
-import games.strategy.net.Messengers;
-import lombok.extern.java.Log;
-
-/**
- * Default implementation of {@link IChatController}.
- */
+/** Default implementation of {@link IChatController}. */
 @Log
 public class ChatController implements IChatController {
   private static final String CHAT_REMOTE = "_ChatRmt";
@@ -32,24 +28,23 @@ public class ChatController implements IChatController {
   private final String chatChannel;
   private long version;
   private final ScheduledExecutorService pingThread = Executors.newScheduledThreadPool(1);
-  private final IConnectionChangeListener connectionChangeListener = new IConnectionChangeListener() {
-    @Override
-    public void connectionAdded(final INode to) {}
+  private final IConnectionChangeListener connectionChangeListener =
+      new IConnectionChangeListener() {
+        @Override
+        public void connectionAdded(final INode to) {}
 
-    @Override
-    public void connectionRemoved(final INode to) {
-      synchronized (mutex) {
-        if (chatters.keySet().contains(to)) {
-          leaveChatInternal(to);
+        @Override
+        public void connectionRemoved(final INode to) {
+          synchronized (mutex) {
+            if (chatters.keySet().contains(to)) {
+              leaveChatInternal(to);
+            }
+          }
         }
-      }
-    }
-  };
+      };
 
   public ChatController(
-      final String name,
-      final Messengers messengers,
-      final Predicate<INode> isModerator) {
+      final String name, final Messengers messengers, final Predicate<INode> isModerator) {
     chatName = name;
     this.messengers = messengers;
     this.isModerator = isModerator;
@@ -67,15 +62,20 @@ public class ChatController implements IChatController {
     return CHAT_CHANNEL + chatName;
   }
 
-  @SuppressWarnings("FutureReturnValueIgnored") // false positive; see https://github.com/google/error-prone/issues/883
+  @SuppressWarnings("FutureReturnValueIgnored") // false positive; see
+  // https://github.com/google/error-prone/issues/883
   private void startPinger() {
-    pingThread.scheduleAtFixedRate(() -> {
-      try {
-        getChatBroadcaster().ping();
-      } catch (final Exception e) {
-        log.log(Level.SEVERE, "Error pinging", e);
-      }
-    }, 180, 60, TimeUnit.SECONDS);
+    pingThread.scheduleAtFixedRate(
+        () -> {
+          try {
+            getChatBroadcaster().ping();
+          } catch (final Exception e) {
+            log.log(Level.SEVERE, "Error pinging", e);
+          }
+        },
+        180,
+        60,
+        TimeUnit.SECONDS);
   }
 
   // clean up
@@ -93,7 +93,8 @@ public class ChatController implements IChatController {
   }
 
   private IChatChannel getChatBroadcaster() {
-    return (IChatChannel) messengers.getChannelBroadcaster(new RemoteName(chatChannel, IChatChannel.class));
+    return (IChatChannel)
+        messengers.getChannelBroadcaster(new RemoteName(chatChannel, IChatChannel.class));
   }
 
   // a player has joined

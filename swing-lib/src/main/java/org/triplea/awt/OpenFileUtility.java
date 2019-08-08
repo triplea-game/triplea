@@ -5,14 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Level;
-
+import lombok.extern.java.Log;
 import org.triplea.swing.SwingComponents;
 
-import lombok.extern.java.Log;
-
-/**
- * A wrapper class for opening Files & URLs using the Desktop API.
- */
+/** A wrapper class for opening Files & URLs using the Desktop API. */
 @Log
 public final class OpenFileUtility {
   private OpenFileUtility() {}
@@ -63,7 +59,8 @@ public final class OpenFileUtility {
   }
 
   private static void logDesktopApiMessage(final String path) {
-    SwingComponents.showDialog("Desktop API not supported",
+    SwingComponents.showDialog(
+        "Desktop API not supported",
         "We're sorry, but it seems that your installed java version doesn't support the Desktop API required to open "
             + path);
   }

@@ -1,5 +1,7 @@
 package org.triplea.server.moderator.toolbox.moderators;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.server.db.dao.ModeratorApiKeyDao;
@@ -12,20 +14,12 @@ import org.triplea.server.moderator.toolbox.api.key.GenerateSingleUseKeyService;
 import org.triplea.server.moderator.toolbox.api.key.KeyHasher;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationServiceFactory;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
-/**
- * Factory class, instantiates {@code ModeratorsController}.
- */
+/** Factory class, instantiates {@code ModeratorsController}. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ModeratorsControllerFactory {
 
-  /**
-   * Factory method , instantiates {@code ModeratorsController} with dependencies.
-   */
-  public static ModeratorsController buildController(
-      final AppConfig appConfig, final Jdbi jdbi) {
+  /** Factory method , instantiates {@code ModeratorsController} with dependencies. */
+  public static ModeratorsController buildController(final AppConfig appConfig, final Jdbi jdbi) {
     final KeyHasher keyHasher = new KeyHasher(appConfig);
     return ModeratorsController.builder()
         .apiKeyValidationService(

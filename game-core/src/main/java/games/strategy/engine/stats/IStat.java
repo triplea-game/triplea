@@ -1,13 +1,12 @@
 package games.strategy.engine.stats;
 
-import java.text.NumberFormat;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
+import java.text.NumberFormat;
 
 /**
- * A game statistic, such as total resources, total unit value, etc. Statistics can be obtained per player or for all
- * players in an alliance.
+ * A game statistic, such as total resources, total unit value, etc. Statistics can be obtained per
+ * player or for all players in an alliance.
  */
 public interface IStat {
   String getName();

@@ -3,13 +3,10 @@ package org.triplea.lobby.server.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.function.Supplier;
-
+import lombok.Getter;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.UserLookupDao;
-
-import lombok.Getter;
-
 
 @Getter(onMethod_ = {@Override})
 class JdbcDatabaseDao implements DatabaseDao {
@@ -32,7 +29,8 @@ class JdbcDatabaseDao implements DatabaseDao {
     accessLogDao = new AccessLogController(connection);
     badWordDao = new BadWordController(connection);
     bannedMacDao = new BannedMacController(connection, moderatorAuditHistoryDao, userLookupDao);
-    usernameBlacklistDao = new UsernameBlacklistController(connection, moderatorAuditHistoryDao, userLookupDao);
+    usernameBlacklistDao =
+        new UsernameBlacklistController(connection, moderatorAuditHistoryDao, userLookupDao);
     userDao = new UserController(connection);
   }
 

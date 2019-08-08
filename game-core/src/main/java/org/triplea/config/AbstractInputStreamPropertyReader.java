@@ -6,12 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * Superclass for implementations of {@link PropertyReader} that use an {@link InputStream} as the property source.
+ * Superclass for implementations of {@link PropertyReader} that use an {@link InputStream} as the
+ * property source.
  */
 @Immutable
 public abstract class AbstractInputStreamPropertyReader extends AbstractPropertyReader {

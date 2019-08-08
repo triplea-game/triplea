@@ -5,11 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Collection;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerId;
@@ -25,6 +20,9 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.Collection;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class ParserTest {
   private GameData gameData;
@@ -110,23 +108,38 @@ class ParserTest {
 
   @Test
   void testPlayerProduction() {
-    final ProductionFrontier cf = gameData.getProductionFrontierList().getProductionFrontier("canProd");
+    final ProductionFrontier cf =
+        gameData.getProductionFrontierList().getProductionFrontier("canProd");
     final PlayerId can = gameData.getPlayerList().getPlayerId("chretian");
     assertEquals(cf, can.getProductionFrontier());
   }
 
   @Test
   void testAttachments() {
-    TestAttachment att = (TestAttachment) gameData.getResourceList().getResource("gold")
-        .getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
+    TestAttachment att =
+        (TestAttachment)
+            gameData
+                .getResourceList()
+                .getResource("gold")
+                .getAttachment(Constants.RESOURCE_ATTACHMENT_NAME);
     assertEquals("gold", att.getValue());
-    final UnitAttachment ua = (UnitAttachment) gameData.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INF)
-        .getAttachment(Constants.UNIT_ATTACHMENT_NAME);
+    final UnitAttachment ua =
+        (UnitAttachment)
+            gameData
+                .getUnitTypeList()
+                .getUnitType(Constants.UNIT_TYPE_INF)
+                .getAttachment(Constants.UNIT_ATTACHMENT_NAME);
     assertEquals(1, ua.getTransportCost());
-    att = (TestAttachment) gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+    att =
+        (TestAttachment)
+            gameData.getMap().getTerritory("us").getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
     assertEquals("us of a", att.getValue());
-    att = (TestAttachment) gameData.getPlayerList().getPlayerId("chretian")
-        .getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
+    att =
+        (TestAttachment)
+            gameData
+                .getPlayerList()
+                .getPlayerId("chretian")
+                .getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
     assertEquals("liberal", att.getValue());
   }
 

@@ -7,18 +7,16 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import java.time.Instant;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.data.ApiKeyDaoData;
 import org.triplea.test.common.Integration;
-
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
 
 @ExtendWith(DBUnitExtension.class)
 @Integration
@@ -47,7 +45,6 @@ class ModeratorApiKeyDaoTest {
   private static final ModeratorApiKeyDao moderatorApiKeyDao =
       JdbiDatabase.newConnection().onDemand(ModeratorApiKeyDao.class);
 
-
   @Test
   void getKeysByUserId() {
     assertThat(moderatorApiKeyDao.getKeysByUserId(1), hasSize(0));
@@ -71,11 +68,7 @@ class ModeratorApiKeyDaoTest {
       orderBy = "public_id",
       ignoreCols = {"id", "date_created"})
   void insertNewKey() {
-    moderatorApiKeyDao.insertNewApiKey(
-        "90.4",
-        MODERATOR_ID,
-        "11.11.11.11",
-        FOURTH_KEY);
+    moderatorApiKeyDao.insertNewApiKey("90.4", MODERATOR_ID, "11.11.11.11", FOURTH_KEY);
   }
 
   @Test
@@ -98,13 +91,15 @@ class ModeratorApiKeyDaoTest {
   @Test
   void lookupModeratorIdByApiKey() {
     assertThat(moderatorApiKeyDao.lookupModeratorIdByApiKey("DNE"), isEmpty());
-    assertThat(moderatorApiKeyDao.lookupModeratorIdByApiKey(SECRET_KEY), isPresentAndIs(MODERATOR_ID));
+    assertThat(
+        moderatorApiKeyDao.lookupModeratorIdByApiKey(SECRET_KEY), isPresentAndIs(MODERATOR_ID));
   }
 
   @Test
   void isSuperModeratorKey() {
     assertThat(moderatorApiKeyDao.lookupModeratorIdByApiKey("DNE"), isEmpty());
-    assertThat(moderatorApiKeyDao.lookupModeratorIdByApiKey(SECRET_KEY), isPresentAndIs(MODERATOR_ID));
+    assertThat(
+        moderatorApiKeyDao.lookupModeratorIdByApiKey(SECRET_KEY), isPresentAndIs(MODERATOR_ID));
   }
 
   @Test
@@ -112,7 +107,9 @@ class ModeratorApiKeyDaoTest {
     assertThat(moderatorApiKeyDao.lookupSuperModeratorIdByApiKey("DNE"), isEmpty());
     assertThat(moderatorApiKeyDao.lookupSuperModeratorIdByApiKey(SECRET_KEY), isEmpty());
     assertThat(moderatorApiKeyDao.lookupSuperModeratorIdByApiKey(SECOND_KEY), isEmpty());
-    assertThat(moderatorApiKeyDao.lookupSuperModeratorIdByApiKey(THIRD_KEY), isPresentAndIs(SUPER_MODERATOR_ID));
+    assertThat(
+        moderatorApiKeyDao.lookupSuperModeratorIdByApiKey(THIRD_KEY),
+        isPresentAndIs(SUPER_MODERATOR_ID));
   }
 
   @Test

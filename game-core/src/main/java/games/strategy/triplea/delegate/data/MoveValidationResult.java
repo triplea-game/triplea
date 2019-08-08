@@ -1,18 +1,16 @@
 package games.strategy.triplea.delegate.data;
 
+import com.google.common.collect.ImmutableList;
+import games.strategy.engine.data.Unit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
-import games.strategy.engine.data.Unit;
-
 /**
- * The result of validating a unit movement action. For an invalid movement action, provides details on which units are
- * not permitted to perform the movement.
+ * The result of validating a unit movement action. For an invalid movement action, provides details
+ * on which units are not permitted to perform the movement.
  */
 public class MoveValidationResult implements Serializable, Comparable<MoveValidationResult> {
   private static final long serialVersionUID = 6648363112533514955L;
@@ -52,7 +50,8 @@ public class MoveValidationResult implements Serializable, Comparable<MoveValida
   }
 
   /**
-   * Removes the specified unit from the list of unresolved units associated with the specified warning.
+   * Removes the specified unit from the list of unresolved units associated with the specified
+   * warning.
    */
   public void removeUnresolvedUnit(final String warning, final Unit unit) {
     final int index = unresolvedUnitWarnings.indexOf(warning);

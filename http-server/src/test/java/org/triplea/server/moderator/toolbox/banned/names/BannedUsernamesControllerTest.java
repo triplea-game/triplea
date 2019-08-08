@@ -6,10 +6,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,19 +23,14 @@ class BannedUsernamesControllerTest {
 
   private static final int MODERATOR_ID = 8878;
   private static final String USERNAME = "Ho-ho-ho! halitosis of treasure.";
-  @Mock
-  private UsernameBanService bannedNamesService;
-  @Mock
-  private ApiKeyValidationService apiKeyValidationService;
+  @Mock private UsernameBanService bannedNamesService;
+  @Mock private ApiKeyValidationService apiKeyValidationService;
 
-  @InjectMocks
-  private UsernameBanController bannedUsernamesController;
+  @InjectMocks private UsernameBanController bannedUsernamesController;
 
-  @Mock
-  private HttpServletRequest request;
+  @Mock private HttpServletRequest request;
 
-  @Mock
-  private UsernameBanData bannedUsernameData;
+  @Mock private UsernameBanData bannedUsernameData;
 
   @Nested
   final class RemoveBannedUsername {

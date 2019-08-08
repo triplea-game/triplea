@@ -7,10 +7,8 @@ import static org.mockito.Mockito.when;
 import static org.triplea.server.moderator.toolbox.ControllerTestUtil.verifyResponse;
 
 import java.util.Collections;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,31 +25,26 @@ class BannedUsersControllerTest {
   private static final int MODERATOR_ID = 1234;
   private static final String BAN_ID = "Aw, salty death!";
 
-  @Mock
-  private UserBanService bannedUsersService;
-  @Mock
-  private ApiKeyValidationService apiKeyValidationService;
+  @Mock private UserBanService bannedUsersService;
+  @Mock private ApiKeyValidationService apiKeyValidationService;
 
-  @InjectMocks
-  private UserBanController bannedUsersController;
+  @InjectMocks private UserBanController bannedUsersController;
 
-  @Mock
-  private HttpServletRequest request;
+  @Mock private HttpServletRequest request;
 
-  @Mock
-  private UserBanData bannedUserData;
+  @Mock private UserBanData bannedUserData;
 
-  private UserBanParams banUserParams = UserBanParams.builder()
-      .hashedMac("Mainlands scream with urchin at the dead jamaica!")
-      .hoursToBan(50)
-      .ip("Hoist me ale, ye shiny sea-dog!")
-      .username("Where is the mighty tobacco?")
-      .build();
+  private UserBanParams banUserParams =
+      UserBanParams.builder()
+          .hashedMac("Mainlands scream with urchin at the dead jamaica!")
+          .hoursToBan(50)
+          .ip("Hoist me ale, ye shiny sea-dog!")
+          .username("Where is the mighty tobacco?")
+          .build();
 
   @Test
   void getUserBans() {
-    when(bannedUsersService.getBannedUsers())
-        .thenReturn(Collections.singletonList(bannedUserData));
+    when(bannedUsersService.getBannedUsers()).thenReturn(Collections.singletonList(bannedUserData));
 
     final Response response = bannedUsersController.getUserBans(request);
 
@@ -81,10 +74,8 @@ class BannedUsersControllerTest {
     }
 
     private void givenBanServiceRemoveBanResult(final boolean result) {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request))
-          .thenReturn(MODERATOR_ID);
-      when(bannedUsersService.removeUserBan(MODERATOR_ID, BAN_ID))
-          .thenReturn(result);
+      when(apiKeyValidationService.lookupModeratorIdByApiKey(request)).thenReturn(MODERATOR_ID);
+      when(bannedUsersService.removeUserBan(MODERATOR_ID, BAN_ID)).thenReturn(result);
     }
   }
 
@@ -95,8 +86,7 @@ class BannedUsersControllerTest {
     void addBanFailureCase() {
       givenBanServiceAddBanResult(false);
 
-      final Response response = bannedUsersController.banUser(
-          request, banUserParams);
+      final Response response = bannedUsersController.banUser(request, banUserParams);
 
       assertThat(response.getStatus(), is(400));
     }
@@ -105,17 +95,14 @@ class BannedUsersControllerTest {
     void addBanSuccessCase() {
       givenBanServiceAddBanResult(true);
 
-      final Response response = bannedUsersController.banUser(
-          request, banUserParams);
+      final Response response = bannedUsersController.banUser(request, banUserParams);
 
       assertThat(response.getStatus(), is(200));
     }
 
     private void givenBanServiceAddBanResult(final boolean result) {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request))
-          .thenReturn(MODERATOR_ID);
-      when(bannedUsersService.banUser(MODERATOR_ID, banUserParams))
-          .thenReturn(result);
+      when(apiKeyValidationService.lookupModeratorIdByApiKey(request)).thenReturn(MODERATOR_ID);
+      when(bannedUsersService.banUser(MODERATOR_ID, banUserParams)).thenReturn(result);
     }
   }
 }

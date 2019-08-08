@@ -2,6 +2,7 @@ package tools.image;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -39,22 +39,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-
+import lombok.extern.java.Log;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.PointFileReaderWriter;
-
-import games.strategy.ui.Util;
-import lombok.extern.java.Log;
 import tools.util.ToolArguments;
 
 /**
  * The center picker map-making tool.
  *
- * <p>
- * This tool will allow you to manually specify center locations for each territory on a given map. Center locations
- * tell the game where to put things like flags, text, unit placements, etc. It will generate a {@code centers.txt} file
- * containing the territory center locations.
- * </p>
+ * <p>This tool will allow you to manually specify center locations for each territory on a given
+ * map. Center locations tell the game where to put things like flags, text, unit placements, etc.
+ * It will generate a {@code centers.txt} file containing the territory center locations.
  */
 @Log
 public final class CenterPicker {
@@ -91,20 +86,24 @@ public final class CenterPicker {
       frame.setSize(800, 600);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
-      JOptionPane.showMessageDialog(frame,
-          new JLabel("<html>" + "This is the CenterPicker, it will create a centers.txt file for you. "
-              + "<br>Please click on the center of every single territory and sea zone on your map, and give each a "
-              + "name. "
-              + "<br>The point you clicked on will tell TripleA where to put things like any flags, text, unit "
-              + "placements, etc, "
-              + "<br>so be sure to click in the exact middle, or slight up and left of the middle, of each territory "
-              + "<br>(but still within the territory borders)."
-              + "<br>Do not use special or illegal characters in territory names."
-              + "<br><br>You can also load an existing centers.txt file, then make modifications to it, then save it "
-              + "again."
-              + "<br><br>LEFT CLICK = create a new center point for a territory/zone."
-              + "<br><br>RIGHT CLICK on an existing center = delete that center point."
-              + "<br><br>When finished, save the centers and exit." + "</html>"));
+      JOptionPane.showMessageDialog(
+          frame,
+          new JLabel(
+              "<html>"
+                  + "This is the CenterPicker, it will create a centers.txt file for you. "
+                  + "<br>Please click on the center of every single territory and sea zone on your map, and give each a "
+                  + "name. "
+                  + "<br>The point you clicked on will tell TripleA where to put things like any flags, text, unit "
+                  + "placements, etc, "
+                  + "<br>so be sure to click in the exact middle, or slight up and left of the middle, of each territory "
+                  + "<br>(but still within the territory borders)."
+                  + "<br>Do not use special or illegal characters in territory names."
+                  + "<br><br>You can also load an existing centers.txt file, then make modifications to it, then save it "
+                  + "again."
+                  + "<br><br>LEFT CLICK = create a new center point for a territory/zone."
+                  + "<br><br>RIGHT CLICK on an existing center = delete that center point."
+                  + "<br><br>When finished, save the centers and exit."
+                  + "</html>"));
     } else {
       log.info("No Image Map Selected. Shutting down.");
     }
@@ -122,8 +121,8 @@ public final class CenterPicker {
     private final JLabel locationLabel = new JLabel();
 
     /**
-     * Sets up all GUI components, initializes variables with default or needed values, and prepares the map for user
-     * commands.
+     * Sets up all GUI components, initializes variables with default or needed values, and prepares
+     * the map for user commands.
      *
      * @param mapName Name of map file.
      */
@@ -137,10 +136,14 @@ public final class CenterPicker {
       if (file == null || !file.exists()) {
         file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
       }
-      if (file.exists() && JOptionPane.showConfirmDialog(new JPanel(),
-          "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
-              + "names?",
-          "File Suggestion", JOptionPane.YES_NO_CANCEL_OPTION) == 0) {
+      if (file.exists()
+          && JOptionPane.showConfirmDialog(
+                  new JPanel(),
+                  "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories "
+                      + "names?",
+                  "File Suggestion",
+                  JOptionPane.YES_NO_CANCEL_OPTION)
+              == 0) {
         try (InputStream is = new FileInputStream(file.getPath())) {
           polygons = PointFileReaderWriter.readOneToManyPolygons(is);
         } catch (final IOException e) {
@@ -148,7 +151,8 @@ public final class CenterPicker {
           throw e;
         }
       } else {
-        final String polyPath = new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
+        final String polyPath =
+            new FileOpen("Select A Polygon File", mapFolderLocation, ".txt").getPathString();
         if (polyPath != null) {
           try (InputStream is = new FileInputStream(polyPath)) {
             polygons = PointFileReaderWriter.readOneToManyPolygons(is);
@@ -163,19 +167,21 @@ public final class CenterPicker {
       /*
        * Add a mouse listener to show X : Y coordinates on the lower left corner of the screen.
        */
-      imagePanel.addMouseMotionListener(new MouseMotionAdapter() {
-        @Override
-        public void mouseMoved(final MouseEvent e) {
-          locationLabel.setText("x:" + e.getX() + " y:" + e.getY());
-        }
-      });
+      imagePanel.addMouseMotionListener(
+          new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(final MouseEvent e) {
+              locationLabel.setText("x:" + e.getX() + " y:" + e.getY());
+            }
+          });
       // Add a mouse listener to monitor for right mouse button being clicked.
-      imagePanel.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(final MouseEvent e) {
-          mouseEvent(e.getPoint(), SwingUtilities.isRightMouseButton(e));
-        }
-      });
+      imagePanel.addMouseListener(
+          new MouseAdapter() {
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+              mouseEvent(e.getPoint(), SwingUtilities.isRightMouseButton(e));
+            }
+          });
       // set up the image panel size dimensions ...etc
       imagePanel.setMinimumSize(new Dimension(image.getWidth(this), image.getHeight(this)));
       imagePanel.setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
@@ -189,10 +195,13 @@ public final class CenterPicker {
       openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Center Points File");
       final Action saveAction = SwingAction.of("Save Centers", e -> saveCenters());
       saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Center Points To File");
-      final Action exitAction = SwingAction.of("Exit", e -> {
-        setVisible(false);
-        dispose();
-      });
+      final Action exitAction =
+          SwingAction.of(
+              "Exit",
+              e -> {
+                setVisible(false);
+                dispose();
+              });
       exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
       // set up the menu items
       final JMenuItem openItem = new JMenuItem(openAction);
@@ -222,9 +231,7 @@ public final class CenterPicker {
       Util.ensureImageLoaded(image);
     }
 
-    /**
-     * Creates the main panel and returns a JPanel object.
-     */
+    /** Creates the main panel and returns a JPanel object. */
     private JPanel newMainPanel() {
       return new JPanel() {
         private static final long serialVersionUID = -7130828419508975924L;
@@ -242,12 +249,11 @@ public final class CenterPicker {
       };
     }
 
-    /**
-     * Saves the centers to disk.
-     */
+    /** Saves the centers to disk. */
     private void saveCenters() {
       final String fileName =
-          new FileSave("Where To Save centers.txt ?", "centers.txt", mapFolderLocation).getPathString();
+          new FileSave("Where To Save centers.txt ?", "centers.txt", mapFolderLocation)
+              .getPathString();
       if (fileName == null) {
         return;
       }
@@ -259,12 +265,11 @@ public final class CenterPicker {
       }
     }
 
-    /**
-     * Loads a pre-defined file with map center points.
-     */
+    /** Loads a pre-defined file with map center points. */
     private void loadCenters() {
       log.info("Load a center file");
-      final String centerName = new FileOpen("Load A Center File", mapFolderLocation, ".txt").getPathString();
+      final String centerName =
+          new FileOpen("Load A Center File", mapFolderLocation, ".txt").getPathString();
       if (centerName == null) {
         return;
       }
@@ -292,8 +297,11 @@ public final class CenterPicker {
         if (name == null || name.trim().length() == 0) {
           return;
         }
-        if (centers.containsKey(name) && JOptionPane.showConfirmDialog(this,
-            "Another center exists with the same name. Are you sure you want to replace it with this one?") != 0) {
+        if (centers.containsKey(name)
+            && JOptionPane.showConfirmDialog(
+                    this,
+                    "Another center exists with the same name. Are you sure you want to replace it with this one?")
+                != 0) {
           return;
         }
         centers.put(name, point);
@@ -306,7 +314,8 @@ public final class CenterPicker {
           }
         }
         if (centerClicked != null
-            && JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this center?") == 0) {
+            && JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this center?")
+                == 0) {
           centers.remove(centerClicked);
         }
       }

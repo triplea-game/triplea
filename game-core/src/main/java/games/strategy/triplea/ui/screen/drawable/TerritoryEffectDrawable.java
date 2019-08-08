@@ -1,16 +1,13 @@
 package games.strategy.triplea.ui.screen.drawable;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.TerritoryEffect;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.TerritoryEffect;
-import games.strategy.triplea.ui.mapdata.MapData;
-
-/**
- * Draws a territory effect image at a given point on the map.
- */
+/** Draws a territory effect image at a given point on the map. */
 public class TerritoryEffectDrawable extends AbstractDrawable {
   private final TerritoryEffect effect;
   private final Point point;
@@ -21,7 +18,11 @@ public class TerritoryEffectDrawable extends AbstractDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData) {
     drawImage(graphics, mapData.getTerritoryEffectImage(effect.getName()), point, bounds);
   }
 

@@ -16,17 +16,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Binds a {@link ClientSetting} to a JavaFX UI component. This is done by adding an enum element. As part of that the
- * corresponding UI component, a {@link SelectionComponent} is specified. This then automatically adds the setting to
- * the settings window.
+ * Binds a {@link ClientSetting} to a JavaFX UI component. This is done by adding an enum element.
+ * As part of that the corresponding UI component, a {@link SelectionComponent} is specified. This
+ * then automatically adds the setting to the settings window.
  *
- * <p>
- * UI component construction is delegated to {@link JavaFxSelectionComponentFactory}.
- * </p>
- * <p>
- * There is a 1:n relationship between {@link SelectionComponent} and {@link ClientSetting}, though typically it will be
- * 1:1, and not all {@link ClientSetting}s will be available in the UI.
- * </p>
+ * <p>UI component construction is delegated to {@link JavaFxSelectionComponentFactory}.
+ *
+ * <p>There is a 1:n relationship between {@link SelectionComponent} and {@link ClientSetting},
+ * though typically it will be 1:1, and not all {@link ClientSetting}s will be available in the UI.
  */
 @AllArgsConstructor
 public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region> {
@@ -180,7 +177,8 @@ public enum ClientSettingJavaFxUiBinding implements GameSettingUiBinding<Region>
   PROXY_CHOICE(SettingType.NETWORK_PROXY) {
     @Override
     public SelectionComponent<Region> newSelectionComponent() {
-      return proxySettings(ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
+      return proxySettings(
+          ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
     }
   },
 

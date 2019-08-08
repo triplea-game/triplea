@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,11 +29,9 @@ class ApiKeyServiceTest {
           .publicId("public id")
           .build();
 
-  @Mock
-  private ModeratorApiKeyDao moderatorApiKeyDao;
+  @Mock private ModeratorApiKeyDao moderatorApiKeyDao;
 
-  @InjectMocks
-  private ApiKeyService apiKeyService;
+  @InjectMocks private ApiKeyService apiKeyService;
 
   @Test
   void getKeys() {
@@ -46,18 +43,14 @@ class ApiKeyServiceTest {
     assertThat(results, hasSize(1));
     assertThat(results.get(0).getLastUsed(), is(API_KEY_DAO_DATA.getLastUsed()));
     assertThat(results.get(0).getPublicId(), is(API_KEY_DAO_DATA.getPublicId()));
-    assertThat(
-        results.get(0).getLastUsedIp(),
-        is(API_KEY_DAO_DATA.getLastUsedByHostAddress()));
+    assertThat(results.get(0).getLastUsedIp(), is(API_KEY_DAO_DATA.getLastUsedByHostAddress()));
   }
 
   @Test
   void deleteKeyThrowsIfNothingDeleted() {
     when(moderatorApiKeyDao.deleteKey(KEY_ID)).thenReturn(0);
 
-    assertThrows(
-        IllegalStateException.class,
-        () -> apiKeyService.deleteKey(KEY_ID));
+    assertThrows(IllegalStateException.class, () -> apiKeyService.deleteKey(KEY_ID));
   }
 
   @Test

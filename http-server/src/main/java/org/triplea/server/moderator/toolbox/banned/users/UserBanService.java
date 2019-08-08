@@ -3,41 +3,36 @@ package org.triplea.server.moderator.toolbox.banned.users;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import javax.annotation.Nonnull;
-
+import lombok.Builder;
 import org.triplea.http.client.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.UserBanDao;
 
-import lombok.Builder;
-
 /**
- * Service layer for managing user bans, get bans, add and remove.
- * User bans are done by MAC and IP address, they are removed by the
- * 'public ban id' that is assigned when a ban is issued.
+ * Service layer for managing user bans, get bans, add and remove. User bans are done by MAC and IP
+ * address, they are removed by the 'public ban id' that is assigned when a ban is issued.
  */
 @Builder
 public class UserBanService {
 
-  @Nonnull
-  private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
-  @Nonnull
-  private final UserBanDao bannedUserDao;
-  @Nonnull
-  private final Supplier<String> publicIdSupplier;
+  @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+  @Nonnull private final UserBanDao bannedUserDao;
+  @Nonnull private final Supplier<String> publicIdSupplier;
 
   List<UserBanData> getBannedUsers() {
     return bannedUserDao.lookupBans().stream()
-        .map(daoData -> UserBanData.builder()
-            .banId(daoData.getPublicBanId())
-            .username(daoData.getUsername())
-            .hashedMac(daoData.getHashedMac())
-            .ip(daoData.getIp())
-            .banDate(daoData.getDateCreated())
-            .banExpiry(daoData.getBanExpiry())
-            .build())
+        .map(
+            daoData ->
+                UserBanData.builder()
+                    .banId(daoData.getPublicBanId())
+                    .username(daoData.getUsername())
+                    .hashedMac(daoData.getHashedMac())
+                    .ip(daoData.getIp())
+                    .banDate(daoData.getDateCreated())
+                    .banExpiry(daoData.getBanExpiry())
+                    .build())
         .collect(Collectors.toList());
   }
 
@@ -57,11 +52,12 @@ public class UserBanService {
 
   boolean banUser(final int moderatorId, final UserBanParams banUserParams) {
     if (bannedUserDao.addBan(
-        publicIdSupplier.get(),
-        banUserParams.getUsername(),
-        banUserParams.getHashedMac(),
-        banUserParams.getIp(),
-        banUserParams.getHoursToBan()) != 1) {
+            publicIdSupplier.get(),
+            banUserParams.getUsername(),
+            banUserParams.getHashedMac(),
+            banUserParams.getIp(),
+            banUserParams.getHoursToBan())
+        != 1) {
       return false;
     }
 

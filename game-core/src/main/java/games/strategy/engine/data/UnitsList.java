@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import games.strategy.net.GUID;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,11 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import games.strategy.net.GUID;
-
-/**
- * A keyed collection of {@link Unit}s.
- */
+/** A keyed collection of {@link Unit}s. */
 public class UnitsList implements Serializable, Iterable<Unit> {
   private static final long serialVersionUID = -3134052492257867416L;
 
@@ -28,9 +25,7 @@ public class UnitsList implements Serializable, Iterable<Unit> {
     allUnits.put(unit.getId(), unit);
   }
 
-  /**
-   * Gets all units currently in the game.
-   */
+  /** Gets all units currently in the game. */
   public Collection<Unit> getUnits() {
     return Collections.unmodifiableCollection(allUnits.values());
   }

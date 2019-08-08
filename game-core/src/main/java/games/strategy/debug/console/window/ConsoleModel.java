@@ -1,14 +1,12 @@
 package games.strategy.debug.console.window;
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.triplea.settings.ClientSetting;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,9 +14,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.java.Log;
 
-/**
- * View-model for console window.
- */
+/** View-model for console window. */
 @Log
 @Builder
 class ConsoleModel {
@@ -30,22 +26,25 @@ class ConsoleModel {
 
   static void setVisibility(final ConsoleView consoleView) {
     // Show console window automatically when the user setting is toggled on.
-    ClientSetting.showConsole.addListener(gameSetting -> {
-      if (gameSetting.getValueOrThrow()) {
-        consoleView.setVisible();
-      }
-    });
+    ClientSetting.showConsole.addListener(
+        gameSetting -> {
+          if (gameSetting.getValueOrThrow()) {
+            consoleView.setVisible();
+          }
+        });
 
     if (ClientSetting.showConsole.getValue().orElse(false)) {
       consoleView.setVisible();
     }
 
-    // if the console is closed by user manually, keep it closed and do not show it again on startup.
+    // if the console is closed by user manually, keep it closed and do not show it again on
+    // startup.
     consoleView.addWindowClosedListener(() -> ClientSetting.showConsole.setValueAndFlush(false));
   }
 
   static String getCurrentLogLevel() {
-    return ClientSetting.loggingVerbosity.getValue()
+    return ClientSetting.loggingVerbosity
+        .getValue()
         .map(Level::parse)
         .map(LogLevelItem::fromLevel)
         .orElse(LogLevelItem.NORMAL.label);
@@ -65,7 +64,6 @@ class ConsoleModel {
     consoleView.append(DebugUtils.getProperties());
   }
 
-
   static void clearAction(final ConsoleView consoleView) {
     consoleView.setText("");
   }
@@ -74,9 +72,7 @@ class ConsoleModel {
     consoleView.append(DebugUtils.getThreadDumps());
   }
 
-  /**
-   * Represents the mapping between user-friendly label and log level.
-   */
+  /** Represents the mapping between user-friendly label and log level. */
   @VisibleForTesting
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   @ToString

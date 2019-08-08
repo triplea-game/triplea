@@ -1,15 +1,12 @@
 package org.triplea.swing;
 
+import com.google.common.base.Preconditions;
 import java.awt.Component;
-
 import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 
-import com.google.common.base.Preconditions;
-
 /**
- * Relatively simple type-safe builder API for constructring a JTabbedPane.
- * <br />
+ * Relatively simple type-safe builder API for constructring a JTabbedPane. <br>
  * Example usage:
  *
  * <pre>
@@ -21,9 +18,9 @@ import com.google.common.base.Preconditions;
  * </code>
  * </pre>
  *
- * <br />
- * Note the builder sets the 'horizontal' or 'vertical' configuration of the
- * split panel automatically. To do the top/bottom version, eg:
+ * <br>
+ * Note the builder sets the 'horizontal' or 'vertical' configuration of the split panel
+ * automatically. To do the top/bottom version, eg:
  *
  * <pre>
  * <code>
@@ -38,7 +35,6 @@ public final class JSplitPaneBuilder {
 
   private int dividerLocation = 150;
 
-
   private boolean extraSpaceToTopAndLeft = false;
   private Component left;
   private Component right;
@@ -46,23 +42,17 @@ public final class JSplitPaneBuilder {
   private Component top;
   private Component bottom;
 
-
-  private JSplitPaneBuilder() {
-
-  }
+  private JSplitPaneBuilder() {}
 
   public static JSplitPaneBuilder builder() {
     return new JSplitPaneBuilder();
   }
 
-  /**
-   * Builds the swing component.
-   */
+  /** Builds the swing component. */
   public JSplitPane build() {
     final JSplitPane pane = new JSplitPane();
     pane.setDividerLocation(dividerLocation);
     pane.setResizeWeight(extraSpaceToTopAndLeft ? 1.0 : 0.0);
-
 
     if (left != null) {
       Preconditions.checkNotNull(right);
@@ -96,9 +86,9 @@ public final class JSplitPaneBuilder {
   }
 
   /**
-   * Adds a component to the right hand side of the split pane.
-   * TODO: maybe we may want a 'add-first' and 'add-second' method so that the client does not have to worry about
-   * calling addRight vs addBottom, they can call 'addSecond'
+   * Adds a component to the right hand side of the split pane. TODO: maybe we may want a
+   * 'add-first' and 'add-second' method so that the client does not have to worry about calling
+   * addRight vs addBottom, they can call 'addSecond'
    */
   public JSplitPaneBuilder addRight(final Component component) {
     this.right = component;
@@ -106,7 +96,8 @@ public final class JSplitPaneBuilder {
   }
 
   /**
-   * Overrides default behavior and allocates extra window space to the left or top panels in the split pane.
+   * Overrides default behavior and allocates extra window space to the left or top panels in the
+   * split pane.
    */
   public JSplitPaneBuilder giveExtraSpaceToTopAndLeftPanes() {
     this.extraSpaceToTopAndLeft = true;
@@ -114,7 +105,8 @@ public final class JSplitPaneBuilder {
   }
 
   /**
-   * Sets spacing flag back to default, extra window space will be given to the bottom or right panes.
+   * Sets spacing flag back to default, extra window space will be given to the bottom or right
+   * panes.
    */
   public JSplitPaneBuilder giveExtraSpaceToBottomAndRightPanes() {
     this.extraSpaceToTopAndLeft = false;
@@ -130,5 +122,4 @@ public final class JSplitPaneBuilder {
     this.bottom = bottom;
     return this;
   }
-
 }

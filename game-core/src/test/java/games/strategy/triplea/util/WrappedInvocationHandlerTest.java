@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-
 import org.junit.jupiter.api.Test;
 
 final class WrappedInvocationHandlerTest {
@@ -22,7 +21,8 @@ final class WrappedInvocationHandlerTest {
   }
 
   @Test
-  void equals_ShouldReturnFalseWhenOtherInstanceIsWrappedInvocationHandlerProxyWithUnequalDelegate() {
+  void
+      equals_ShouldReturnFalseWhenOtherInstanceIsWrappedInvocationHandlerProxyWithUnequalDelegate() {
     final Object proxy1 = newProxy(new WrappedInvocationHandler("test1"));
     final Object proxy2 = newProxy(new WrappedInvocationHandler("test2"));
 

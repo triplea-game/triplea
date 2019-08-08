@@ -1,5 +1,6 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.triplea.ResourceLoader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -7,15 +8,10 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
-
+import lombok.extern.java.Log;
 import org.triplea.java.UrlStreams;
 
-import games.strategy.triplea.ResourceLoader;
-import lombok.extern.java.Log;
-
-/**
- * Same as PoliticsText but for user actions.
- */
+/** Same as PoliticsText but for user actions. */
 @Log
 public class UserActionText {
   // Filename

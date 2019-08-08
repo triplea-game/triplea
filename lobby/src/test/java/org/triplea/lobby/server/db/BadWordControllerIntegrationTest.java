@@ -3,15 +3,14 @@ package org.triplea.lobby.server.db;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
-
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
 
 @ExtendWith(DBUnitExtension.class)
 @Integration

@@ -1,8 +1,5 @@
 package games.strategy.net;
 
-import java.io.Serializable;
-import java.net.InetSocketAddress;
-
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
 import games.strategy.engine.chat.IChatController;
@@ -14,11 +11,11 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
+import java.io.Serializable;
+import java.net.InetSocketAddress;
 import lombok.ToString;
 
-/**
- * Convenience grouping of a messenger, remote messenger and channel messenger.
- */
+/** Convenience grouping of a messenger, remote messenger and channel messenger. */
 @ToString
 public class Messengers implements IMessenger, IRemoteMessenger, IChannelMessenger {
   private final IMessenger messenger;
@@ -41,19 +38,21 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     this.channelMessenger = channelMessenger;
   }
 
-  // TODO: API could be improved, perhaps return an optional, and/or store exact instance types from constructor.
+  // TODO: API could be improved, perhaps return an optional, and/or store exact instance types from
+  // constructor.
   public IServerMessenger getServerMessenger() {
     return (IServerMessenger) messenger;
   }
 
   public IChatController getRemoteChatController(final String chatName) {
-    return (IChatController) remoteMessenger
-        .getRemote(ChatController.getChatControlerRemoteName(chatName));
+    return (IChatController)
+        remoteMessenger.getRemote(ChatController.getChatControlerRemoteName(chatName));
   }
 
-  public void addChatChannelSubscriber(final IChatChannel chatChannelSubscriber, final String chatChannelName) {
-    channelMessenger.registerChannelSubscriber(chatChannelSubscriber,
-        new RemoteName(chatChannelName, IChatChannel.class));
+  public void addChatChannelSubscriber(
+      final IChatChannel chatChannelSubscriber, final String chatChannelName) {
+    channelMessenger.registerChannelSubscriber(
+        chatChannelSubscriber, new RemoteName(chatChannelName, IChatChannel.class));
   }
 
   @Override

@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import games.strategy.net.INode;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -15,7 +16,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
@@ -29,14 +29,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
-
 import org.triplea.swing.SwingAction;
 
-import games.strategy.net.INode;
-
-/**
- * A UI component that displays the players participating in a chat.
- */
+/** A UI component that displays the players participating in a chat. */
 public class ChatPlayerPanel extends JPanel implements IChatListener {
   private static final long serialVersionUID = -3153022965393962945L;
   private static final Icon ignoreIcon;
@@ -77,9 +72,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     hiddenPlayers.add(name);
   }
 
-  /**
-   * Sets the chat whose players will be displayed in this panel.
-   */
+  /** Sets the chat whose players will be displayed in this panel. */
   public void setChat(final Chat chat) {
     if (this.chat != null) {
       this.chat.removeChatListener(this);
@@ -117,23 +110,28 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
     listModel = new DefaultListModel<>();
     players = new JList<>(listModel);
     players.setFocusable(false);
-    players.setCellRenderer((list, node, index, isSelected, cellHasFocus) -> {
-      if (setCellRenderer == null) {
-        return new JLabel();
-      }
-      final DefaultListCellRenderer renderer;
-      if (setCellRenderer instanceof PlayerChatRenderer) {
-        renderer = (DefaultListCellRenderer) setCellRenderer.getListCellRendererComponent(list, node, index,
-            isSelected, cellHasFocus);
-      } else {
-        renderer = (DefaultListCellRenderer) setCellRenderer.getListCellRendererComponent(list,
-            getDisplayString(node), index, isSelected, cellHasFocus);
-      }
-      if (chat.isIgnored(node)) {
-        renderer.setIcon(ignoreIcon);
-      }
-      return renderer;
-    });
+    players.setCellRenderer(
+        (list, node, index, isSelected, cellHasFocus) -> {
+          if (setCellRenderer == null) {
+            return new JLabel();
+          }
+          final DefaultListCellRenderer renderer;
+          if (setCellRenderer instanceof PlayerChatRenderer) {
+            renderer =
+                (DefaultListCellRenderer)
+                    setCellRenderer.getListCellRendererComponent(
+                        list, node, index, isSelected, cellHasFocus);
+          } else {
+            renderer =
+                (DefaultListCellRenderer)
+                    setCellRenderer.getListCellRendererComponent(
+                        list, getDisplayString(node), index, isSelected, cellHasFocus);
+          }
+          if (chat.isIgnored(node)) {
+            renderer.setIcon(ignoreIcon);
+          }
+          return renderer;
+        });
   }
 
   private void layoutComponents() {
@@ -142,40 +140,45 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   }
 
   private void setupListeners() {
-    players.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        mouseOnPlayersList(e);
-      }
+    players.addMouseListener(
+        new MouseAdapter() {
+          @Override
+          public void mouseClicked(final MouseEvent e) {
+            mouseOnPlayersList(e);
+          }
 
-      @Override
-      public void mousePressed(final MouseEvent e) {
-        mouseOnPlayersList(e);
-      }
+          @Override
+          public void mousePressed(final MouseEvent e) {
+            mouseOnPlayersList(e);
+          }
 
-      @Override
-      public void mouseReleased(final MouseEvent e) {
-        mouseOnPlayersList(e);
-      }
-    });
-    actionFactories.add(clickedOn -> {
-      // you can't slap or ignore yourself
-      if (clickedOn.equals(chat.getLocalNode())) {
-        return Collections.emptyList();
-      }
-      final boolean isIgnored = chat.isIgnored(clickedOn);
-      final Action ignore = SwingAction.of(isIgnored ? "Stop Ignoring" : "Ignore", e -> {
-        chat.setIgnored(clickedOn, !isIgnored);
-        repaint();
-      });
-      final Action slap = SwingAction.of("Slap " + clickedOn.getName(), e -> chat.sendSlap(clickedOn.getName()));
-      return Arrays.asList(slap, ignore);
-    });
+          @Override
+          public void mouseReleased(final MouseEvent e) {
+            mouseOnPlayersList(e);
+          }
+        });
+    actionFactories.add(
+        clickedOn -> {
+          // you can't slap or ignore yourself
+          if (clickedOn.equals(chat.getLocalNode())) {
+            return Collections.emptyList();
+          }
+          final boolean isIgnored = chat.isIgnored(clickedOn);
+          final Action ignore =
+              SwingAction.of(
+                  isIgnored ? "Stop Ignoring" : "Ignore",
+                  e -> {
+                    chat.setIgnored(clickedOn, !isIgnored);
+                    repaint();
+                  });
+          final Action slap =
+              SwingAction.of(
+                  "Slap " + clickedOn.getName(), e -> chat.sendSlap(clickedOn.getName()));
+          return Arrays.asList(slap, ignore);
+        });
   }
 
-  /**
-   * The renderer will be passed in a string.
-   */
+  /** The renderer will be passed in a string. */
   public void setPlayerRenderer(final ListCellRenderer<Object> renderer) {
     setCellRenderer = renderer;
     setDynamicPreferredSize();
@@ -211,19 +214,20 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
 
   @Override
   public synchronized void updatePlayerList(final Collection<INode> players) {
-    SwingAction.invokeNowOrLater(() -> {
-      listModel.clear();
-      for (final INode name : players) {
-        if (!hiddenPlayers.contains(name.getName())) {
-          listModel.addElement(name);
-        }
-      }
-    });
+    SwingAction.invokeNowOrLater(
+        () -> {
+          listModel.clear();
+          for (final INode name : players) {
+            if (!hiddenPlayers.contains(name.getName())) {
+              listModel.addElement(name);
+            }
+          }
+        });
   }
 
   @Override
-  public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
-      final String sound) {}
+  public void addMessageWithSound(
+      final String message, final String from, final boolean thirdperson, final String sound) {}
 
   @Override
   public void addMessage(final String message, final String from, final boolean thirdperson) {}
@@ -262,8 +266,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   public void addStatusMessage(final String message) {}
 
   /**
-   * Add an action factory that will be used to populate the pop up many when
-   * right clicking on a player in the chat panel.
+   * Add an action factory that will be used to populate the pop up many when right clicking on a
+   * player in the chat panel.
    */
   public void addActionFactory(final IPlayerActionFactory actionFactory) {
     actionFactories.add(actionFactory);

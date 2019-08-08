@@ -1,11 +1,9 @@
 package org.triplea.server.moderator.toolbox.bad.words;
 
 import java.util.List;
-
+import lombok.AllArgsConstructor;
 import org.triplea.lobby.server.db.dao.BadWordsDao;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-
-import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 class BadWordsService {
@@ -22,11 +20,12 @@ class BadWordsService {
   boolean removeBadWord(final int moderatorUserId, final String badWord) {
     final boolean success = badWordsDao.removeBadWord(badWord) == 1;
     if (success) {
-      moderatorAuditHistoryDao.addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
-          .moderatorUserId(moderatorUserId)
-          .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_BAD_WORD)
-          .actionTarget(badWord)
-          .build());
+      moderatorAuditHistoryDao.addAuditRecord(
+          ModeratorAuditHistoryDao.AuditArgs.builder()
+              .moderatorUserId(moderatorUserId)
+              .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_BAD_WORD)
+              .actionTarget(badWord)
+              .build());
     }
     return success;
   }
@@ -41,18 +40,17 @@ class BadWordsService {
   boolean addBadWord(final int moderatorUserId, final String badWord) {
     final boolean success = badWordsDao.addBadWord(badWord) == 1;
     if (success) {
-      moderatorAuditHistoryDao.addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
-          .moderatorUserId(moderatorUserId)
-          .actionName(ModeratorAuditHistoryDao.AuditAction.ADD_BAD_WORD)
-          .actionTarget(badWord)
-          .build());
+      moderatorAuditHistoryDao.addAuditRecord(
+          ModeratorAuditHistoryDao.AuditArgs.builder()
+              .moderatorUserId(moderatorUserId)
+              .actionName(ModeratorAuditHistoryDao.AuditAction.ADD_BAD_WORD)
+              .actionTarget(badWord)
+              .build());
     }
     return success;
   }
 
-  /**
-   * Returns the list of bad words present in the bad-word table.
-   */
+  /** Returns the list of bad words present in the bad-word table. */
   List<String> getBadWords() {
     return badWordsDao.getBadWords();
   }

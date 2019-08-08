@@ -8,36 +8,28 @@ import static games.strategy.triplea.settings.SelectionComponentFactory.proxySet
 import static games.strategy.triplea.settings.SelectionComponentFactory.selectionBox;
 import static games.strategy.triplea.settings.SelectionComponentFactory.textField;
 
-import java.util.Collection;
-
-import javax.swing.JComponent;
-import javax.swing.UIManager;
-
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.lobby.client.login.LobbyServerPropertiesFetcher;
+import java.util.Collection;
+import javax.swing.JComponent;
+import javax.swing.UIManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Binds a {@code ClientSetting} to a UI component. This is done by adding an enum element. As part of that the
- * corresponding UI component, a {@code SelectionComponent} is specified. This then automatically adds the setting
- * to the settings window.
+ * Binds a {@code ClientSetting} to a UI component. This is done by adding an enum element. As part
+ * of that the corresponding UI component, a {@code SelectionComponent} is specified. This then
+ * automatically adds the setting to the settings window.
  *
- * <p>
- * UI component construction is delegated to {@code SelectionComponentFactory}.
- * </p>
+ * <p>UI component construction is delegated to {@code SelectionComponentFactory}.
  *
- * <p>
- * There is a 1:n between {@code ClientSettingUiBinding} and {@code ClientSetting}, though
+ * <p>There is a 1:n between {@code ClientSettingUiBinding} and {@code ClientSetting}, though
  * typically it will be 1:1, and not all {@code ClientSettings} will be available in the UI.
- * </p>
  */
 @AllArgsConstructor
 enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
   AI_PAUSE_DURATION_BINDING(
-      "AI Pause Duration",
-      SettingType.AI,
-      "Time (in milliseconds) between AI moves") {
+      "AI Pause Duration", SettingType.AI, "Time (in milliseconds) between AI moves") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return intValueRange(ClientSetting.aiPauseDuration, 0, 3000);
@@ -122,14 +114,16 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "WARNING: restart all running TripleA instances after changing this setting to avoid system instability.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      final Collection<UIManager.LookAndFeelInfo> lookAndFeels = LookAndFeel.getAvailableLookAndFeels();
+      final Collection<UIManager.LookAndFeelInfo> lookAndFeels =
+          LookAndFeel.getAvailableLookAndFeels();
       return selectionBox(
           ClientSetting.lookAndFeel,
           UIManager.LookAndFeelInfo.class,
           lookAndFeels,
-          lookAndFeelClassName -> lookAndFeels.stream()
-              .filter(lookAndFeel -> lookAndFeel.getClassName().equals(lookAndFeelClassName))
-              .findAny(),
+          lookAndFeelClassName ->
+              lookAndFeels.stream()
+                  .filter(lookAndFeel -> lookAndFeel.getClassName().equals(lookAndFeelClassName))
+                  .findAny(),
           UIManager.LookAndFeelInfo::getClassName,
           UIManager.LookAndFeelInfo::getName);
     }
@@ -298,7 +292,8 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
           + "This only effects Play-By-Forum games, dice servers, and map downloads.") {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
-      return proxySettings(ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
+      return proxySettings(
+          ClientSetting.proxyChoice, ClientSetting.proxyHost, ClientSetting.proxyPort);
     }
   },
 
@@ -335,8 +330,7 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return SelectionComponentFactory.forumPosterSettings(
-          ClientSetting.tripleaForumUsername,
-          ClientSetting.tripleaForumPassword);
+          ClientSetting.tripleaForumUsername, ClientSetting.tripleaForumPassword);
     }
   },
 
@@ -347,15 +341,15 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     @Override
     public SelectionComponent<JComponent> newSelectionComponent() {
       return SelectionComponentFactory.forumPosterSettings(
-          ClientSetting.aaForumUsername,
-          ClientSetting.aaForumPassword);
+          ClientSetting.aaForumUsername, ClientSetting.aaForumPassword);
     }
   };
 
   @Getter(onMethod_ = {@Override})
   private final String title;
+
   @Getter(onMethod_ = {@Override})
   private final SettingType type;
-  @Getter
-  private final String description;
+
+  @Getter private final String description;
 }

@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.test.common.Integration;
 
-
 @Integration
 @ExtendWith(MockitoExtension.class)
 class ModeratorKeyRegistrationDaoTest {
@@ -31,11 +30,9 @@ class ModeratorKeyRegistrationDaoTest {
   private final ModeratorKeyRegistrationDao moderatorKeyRegistrationDao =
       JdbiDatabase.newConnection().onDemand(ModeratorKeyRegistrationDao.class);
 
-  @Mock
-  private ModeratorApiKeyDao moderatorApiKeyDao;
+  @Mock private ModeratorApiKeyDao moderatorApiKeyDao;
 
-  @Mock
-  private ModeratorSingleUseKeyDao moderatorSingleUseKeyDao;
+  @Mock private ModeratorSingleUseKeyDao moderatorSingleUseKeyDao;
 
   @Test
   void throwsIfSingleUseKeyIsNotUpdated() {
@@ -49,7 +46,8 @@ class ModeratorKeyRegistrationDaoTest {
   void throwsIfNewKeyIsNotInserted() {
     when(moderatorSingleUseKeyDao.invalidateSingleUseKey(SINGLE_USE_KEY)).thenReturn(1);
     when(moderatorApiKeyDao.insertNewApiKey(
-        any(String.class), eq(USER_ID), eq(MACHINE_IP), eq(NEW_KEY))).thenReturn(0);
+            any(String.class), eq(USER_ID), eq(MACHINE_IP), eq(NEW_KEY)))
+        .thenReturn(0);
     assertThrows(
         IllegalStateException.class,
         () -> moderatorKeyRegistrationDao.invalidateSingleUseKeyAndGenerateNew(params()));
@@ -59,7 +57,8 @@ class ModeratorKeyRegistrationDaoTest {
   void successCase() {
     when(moderatorSingleUseKeyDao.invalidateSingleUseKey(SINGLE_USE_KEY)).thenReturn(1);
     when(moderatorApiKeyDao.insertNewApiKey(
-        any(String.class), eq(USER_ID), eq(MACHINE_IP), eq(NEW_KEY))).thenReturn(1);
+            any(String.class), eq(USER_ID), eq(MACHINE_IP), eq(NEW_KEY)))
+        .thenReturn(1);
 
     moderatorKeyRegistrationDao.invalidateSingleUseKeyAndGenerateNew(params());
   }

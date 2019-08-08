@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.map.download;
 
+import games.strategy.engine.ClientContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,12 +11,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Properties;
 import java.util.logging.Level;
-
+import lombok.extern.java.Log;
 import org.triplea.java.TimeManager;
 import org.triplea.util.Version;
-
-import games.strategy.engine.ClientContext;
-import lombok.extern.java.Log;
 
 /** Properties file used to know which map versions have been installed. */
 @Log
@@ -33,7 +31,8 @@ class DownloadFileProperties {
     try (InputStream fis = new FileInputStream(fromZip(zipFile))) {
       downloadFileProperties.props.load(fis);
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
+      log.log(
+          Level.SEVERE, "Failed to read property file: " + fromZip(zipFile).getAbsolutePath(), e);
     }
     return downloadFileProperties;
   }
@@ -42,7 +41,10 @@ class DownloadFileProperties {
     try (OutputStream fos = new FileOutputStream(fromZip(zipFile))) {
       props.props.store(fos, null);
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(), e);
+      log.log(
+          Level.SEVERE,
+          "Failed to write property file to: " + fromZip(zipFile).getAbsolutePath(),
+          e);
     }
   }
 
@@ -66,7 +68,8 @@ class DownloadFileProperties {
   void setFrom(final DownloadFileDescription selected) {
     setVersion(selected.getVersion());
     props.setProperty("map.url", selected.getUrl());
-    props.setProperty("download.time", TimeManager.toDateString(LocalDateTime.now(ZoneId.systemDefault())));
+    props.setProperty(
+        "download.time", TimeManager.toDateString(LocalDateTime.now(ZoneId.systemDefault())));
     props.setProperty("engine.version", ClientContext.engineVersion().toString());
   }
 }

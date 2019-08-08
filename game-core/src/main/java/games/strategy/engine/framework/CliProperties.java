@@ -1,8 +1,6 @@
 package games.strategy.engine.framework;
 
-/**
- * A collection of all CLI related constants.
- */
+/** A collection of all CLI related constants. */
 public class CliProperties {
   public static final String TRIPLEA_GAME = "triplea.game";
   public static final String TRIPLEA_SERVER = "triplea.server";

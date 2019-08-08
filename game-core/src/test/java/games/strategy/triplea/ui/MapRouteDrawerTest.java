@@ -10,28 +10,28 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.image.ResourceImageFactory;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
-
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.triplea.java.collections.IntegerMap;
 
-import games.strategy.engine.data.ResourceCollection;
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.image.ResourceImageFactory;
-import games.strategy.triplea.ui.mapdata.MapData;
-
 final class MapRouteDrawerTest {
-  private final Point[] dummyPoints = new Point[] {new Point(0, 0), new Point(100, 0), new Point(0, 100)};
+  private final Point[] dummyPoints =
+      new Point[] {new Point(0, 0), new Point(100, 0), new Point(0, 100)};
   private final MapData dummyMapData = mock(MapData.class);
-  private final MapRouteDrawer spyRouteDrawer = spy(new MapRouteDrawer(mock(MapPanel.class), dummyMapData));
+  private final MapRouteDrawer spyRouteDrawer =
+      spy(new MapRouteDrawer(mock(MapPanel.class), dummyMapData));
   private final double[] dummyIndex = spyRouteDrawer.newParameterizedIndex(dummyPoints);
   private final Route dummyRoute = spy(new Route(mock(Territory.class), mock(Territory.class)));
   private final RouteDescription dummyRouteDescription =
@@ -56,9 +56,11 @@ final class MapRouteDrawerTest {
   @Test
   void testCurve() {
     final double[] testYValues = new double[] {20, 40, 90};
-    final PolynomialSplineFunction testFunction = new SplineInterpolator().interpolate(dummyIndex, testYValues);
+    final PolynomialSplineFunction testFunction =
+        new SplineInterpolator().interpolate(dummyIndex, testYValues);
     final double[] coords = spyRouteDrawer.getCoords(testFunction, dummyIndex);
-    final double stepSize = testFunction.getKnots()[testFunction.getKnots().length - 1] / coords.length;
+    final double stepSize =
+        testFunction.getKnots()[testFunction.getKnots().length - 1] / coords.length;
     assertEquals(testYValues[0] * stepSize, coords[(int) Math.round(dummyIndex[0])], 1);
     assertEquals(testYValues[1] * stepSize, coords[(int) Math.round(dummyIndex[1])], 1);
     assertEquals(testYValues[2] * stepSize, coords[(int) Math.round(dummyIndex[2])], 1);
@@ -69,10 +71,11 @@ final class MapRouteDrawerTest {
   void testPointSplitting() {
     final double[] expectedXCoords = new double[] {0, 100, 0};
     final double[] expectedYCoords = new double[] {0, 0, 100};
-    assertArrayEquals(expectedXCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getX()));
-    assertArrayEquals(expectedYCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getY()));
+    assertArrayEquals(
+        expectedXCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getX()));
+    assertArrayEquals(
+        expectedYCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getY()));
   }
-
 
   @Test
   void testCorrectParameterHandling() {
@@ -89,10 +92,11 @@ final class MapRouteDrawerTest {
     final ResourceCollection mockResourceCollection = mock(ResourceCollection.class);
     when(mockResourceCollection.getResourcesCopy()).thenReturn(new IntegerMap<>());
     final ResourceImageFactory mockResourceImageFactory = mock(ResourceImageFactory.class);
-    routeDrawer.drawRoute(mockGraphics, dummyRouteDescription, "2", mockResourceCollection, mockResourceImageFactory);
+    routeDrawer.drawRoute(
+        mockGraphics, dummyRouteDescription, "2", mockResourceCollection, mockResourceImageFactory);
     verify(mockGraphics, atLeastOnce()).fill(any(Shape.class));
     verify(mockGraphics, atLeastOnce()).draw(any(Shape.class));
-    verify(mockedMapPanel, atLeastOnce()).getXOffset();// Those methods are needed
+    verify(mockedMapPanel, atLeastOnce()).getXOffset(); // Those methods are needed
     verify(mockedMapPanel, atLeastOnce()).getYOffset();
     verify(mockedMapPanel, atLeastOnce()).getScale();
 

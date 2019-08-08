@@ -1,20 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.CardLayout;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import org.triplea.java.collections.IntegerMap;
-import org.triplea.util.Tuple;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
@@ -31,10 +16,20 @@ import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
+import java.awt.CardLayout;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import javax.annotation.Nullable;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
 
-/**
- * Root panel for all action buttons in a triplea game.
- */
+/** Root panel for all action buttons in a triplea game. */
 public class ActionButtons extends JPanel {
   private static final long serialVersionUID = 2175685892863042399L;
   private final CardLayout layout = new CardLayout();
@@ -51,7 +46,11 @@ public class ActionButtons extends JPanel {
   private UserActionPanel userActionPanel;
   private PickTerritoryAndUnitsPanel pickTerritoryAndUnitsPanel;
 
-  public ActionButtons(final GameData data, final MapPanel map, final MovePanel movePanel, final TripleAFrame parent) {
+  public ActionButtons(
+      final GameData data,
+      final MapPanel map,
+      final MovePanel movePanel,
+      final TripleAFrame parent) {
     battlePanel = new BattlePanel(data, map);
     this.movePanel = movePanel;
     purchasePanel = new PurchasePanel(data, map);
@@ -78,33 +77,36 @@ public class ActionButtons extends JPanel {
     add(userActionPanel, userActionPanel.toString());
     add(pickTerritoryAndUnitsPanel, pickTerritoryAndUnitsPanel.toString());
     // this should not be necessary, but it makes tracking down garbage leaks easier in the profiler
-    // since it removes a lot of links between objects and if there is a memory leak, this will minimize the damage
-    map.getUiContext().addActive(() -> {
-      removeAll();
-      actionPanel = null;
-      battlePanel.removeAll();
-      this.movePanel.removeAll();
-      repairPanel.removeAll();
-      purchasePanel.removeAll();
-      placePanel.removeAll();
-      techPanel.removeAll();
-      endTurnPanel.removeAll();
-      moveForumPosterPanel.removeAll();
-      politicsPanel.removeAll();
-      userActionPanel.removeAll();
-      pickTerritoryAndUnitsPanel.removeAll();
-      battlePanel = null;
-      this.movePanel = null;
-      repairPanel = null;
-      purchasePanel = null;
-      placePanel = null;
-      techPanel = null;
-      endTurnPanel = null;
-      moveForumPosterPanel = null;
-      politicsPanel = null;
-      userActionPanel = null;
-      pickTerritoryAndUnitsPanel = null;
-    });
+    // since it removes a lot of links between objects and if there is a memory leak, this will
+    // minimize the damage
+    map.getUiContext()
+        .addActive(
+            () -> {
+              removeAll();
+              actionPanel = null;
+              battlePanel.removeAll();
+              this.movePanel.removeAll();
+              repairPanel.removeAll();
+              purchasePanel.removeAll();
+              placePanel.removeAll();
+              techPanel.removeAll();
+              endTurnPanel.removeAll();
+              moveForumPosterPanel.removeAll();
+              politicsPanel.removeAll();
+              userActionPanel.removeAll();
+              pickTerritoryAndUnitsPanel.removeAll();
+              battlePanel = null;
+              this.movePanel = null;
+              repairPanel = null;
+              purchasePanel = null;
+              placePanel = null;
+              techPanel = null;
+              endTurnPanel = null;
+              moveForumPosterPanel = null;
+              politicsPanel = null;
+              userActionPanel = null;
+              pickTerritoryAndUnitsPanel = null;
+            });
   }
 
   void changeToMove(final PlayerId id, final boolean nonCombat, final String stepName) {
@@ -128,7 +130,8 @@ public class ActionButtons extends JPanel {
     changeTo(id, placePanel);
   }
 
-  public void changeToBattle(final PlayerId id, final Map<BattleType, Collection<Territory>> battles) {
+  public void changeToBattle(
+      final PlayerId id, final Map<BattleType, Collection<Territory>> battles) {
     battlePanel.setBattlesAndBombing(battles);
     changeTo(id, battlePanel);
   }
@@ -185,8 +188,8 @@ public class ActionButtons extends JPanel {
    *
    * @return null if no move was made.
    */
-  public Map<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid,
-      final Collection<PlayerId> allowedPlayersToRepair) {
+  public Map<Unit, IntegerMap<RepairRule>> waitForRepair(
+      final boolean bid, final Collection<PlayerId> allowedPlayersToRepair) {
     return repairPanel.waitForRepair(bid, allowedPlayersToRepair);
   }
 
@@ -213,8 +216,8 @@ public class ActionButtons extends JPanel {
    *
    * @return null if no action was picked.
    */
-  public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun,
-      final IPoliticsDelegate politicsDelegate) {
+  public PoliticalActionAttachment waitForPoliticalAction(
+      final boolean firstRun, final IPoliticsDelegate politicsDelegate) {
     return politicsPanel.waitForPoliticalAction(firstRun, politicsDelegate);
   }
 
@@ -223,8 +226,8 @@ public class ActionButtons extends JPanel {
    *
    * @return null if no action was picked.
    */
-  public UserActionAttachment waitForUserActionAction(final boolean firstRun,
-      final IUserActionDelegate userActionDelegate) {
+  public UserActionAttachment waitForUserActionAction(
+      final boolean firstRun, final IUserActionDelegate userActionDelegate) {
     return userActionPanel.waitForUserActionAction(firstRun, userActionDelegate);
   }
 
@@ -237,9 +240,7 @@ public class ActionButtons extends JPanel {
     return placePanel.waitForPlace(bid, bridge);
   }
 
-  /**
-   * Blocks until the user selects an end-of-turn action.
-   */
+  /** Blocks until the user selects an end-of-turn action. */
   public void waitForEndTurn(final TripleAFrame frame, final IPlayerBridge bridge) {
     endTurnPanel.waitForEndTurn(frame, bridge);
   }
@@ -248,16 +249,17 @@ public class ActionButtons extends JPanel {
     moveForumPosterPanel.waitForDone(frame, bridge);
   }
 
-  /**
-   * Blocks until the user selects a battle to fight.
-   */
+  /** Blocks until the user selects a battle to fight. */
   public FightBattleDetails waitForBattleSelection() {
     return battlePanel.waitForBattleSelection();
   }
 
-  public Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(final List<Territory> territoryChoices,
-      final List<Unit> unitChoices, final int unitsPerPick) {
-    return pickTerritoryAndUnitsPanel.waitForPickTerritoryAndUnits(territoryChoices, unitChoices, unitsPerPick);
+  public Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(
+      final List<Territory> territoryChoices,
+      final List<Unit> unitChoices,
+      final int unitsPerPick) {
+    return pickTerritoryAndUnitsPanel.waitForPickTerritoryAndUnits(
+        territoryChoices, unitChoices, unitsPerPick);
   }
 
   public Optional<ActionPanel> getCurrent() {

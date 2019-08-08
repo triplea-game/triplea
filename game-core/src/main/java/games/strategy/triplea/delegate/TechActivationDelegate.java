@@ -1,15 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
-
-import org.triplea.java.collections.CollectionUtils;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.message.IRemote;
@@ -18,6 +8,14 @@ import games.strategy.triplea.attachments.FireTriggerParams;
 import games.strategy.triplea.attachments.ICondition;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import org.triplea.java.collections.CollectionUtils;
 
 /**
  * Logic for activating tech rolls. This delegate requires the TechnologyDelegate to run correctly.
@@ -27,9 +25,7 @@ public class TechActivationDelegate extends BaseTripleADelegate {
 
   public TechActivationDelegate() {}
 
-  /**
-   * Called before the delegate will run. In this class, this does all the work.
-   */
+  /** Called before the delegate will run. In this class, this does all the work. */
   @Override
   public void start() {
     super.start();
@@ -38,11 +34,14 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       return;
     }
     // Activate techs
-    final Map<PlayerId, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(data).getAdvances();
+    final Map<PlayerId, Collection<TechAdvance>> techMap =
+        DelegateFinder.techDelegate(data).getAdvances();
     final Collection<TechAdvance> advances = techMap.get(player);
     if ((advances != null) && (advances.size() > 0)) {
       // Start event
-      bridge.getHistoryWriter().startEvent(player.getName() + " activating " + advancesAsString(advances));
+      bridge
+          .getHistoryWriter()
+          .startEvent(player.getName() + " activating " + advancesAsString(advances));
       for (final TechAdvance advance : advances) {
         TechTracker.addAdvance(player, bridge, advance);
       }
@@ -50,28 +49,36 @@ public class TechActivationDelegate extends BaseTripleADelegate {
     // empty
     techMap.put(player, null);
     if (Properties.getTriggers(data)) {
-      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
+      // First set up a match for what we want to have fire as a default in this delegate. List out
+      // as a composite match
       // OR.
-      // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Predicate<TriggerAttachment> techActivationDelegateTriggerMatch = TriggerAttachment.availableUses
-          .and(TriggerAttachment.whenOrDefaultMatch(null, null))
-          .and(TriggerAttachment.unitPropertyMatch()
-              .or(TriggerAttachment.techMatch())
-              .or(TriggerAttachment.supportMatch()));
+      // use 'null, null' because this is the Default firing location for any trigger that does NOT
+      // have 'when' set.
+      final Predicate<TriggerAttachment> techActivationDelegateTriggerMatch =
+          TriggerAttachment.availableUses
+              .and(TriggerAttachment.whenOrDefaultMatch(null, null))
+              .and(
+                  TriggerAttachment.unitPropertyMatch()
+                      .or(TriggerAttachment.techMatch())
+                      .or(TriggerAttachment.supportMatch()));
       // get all possible triggers based on this match.
-      final Set<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<>(Collections.singleton(player)), techActivationDelegateTriggerMatch);
+      final Set<TriggerAttachment> toFirePossible =
+          TriggerAttachment.collectForAllTriggersMatching(
+              new HashSet<>(Collections.singleton(player)), techActivationDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final Map<ICondition, Boolean> testedConditions =
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
         // get all triggers that are satisfied based on the tested conditions.
-        final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-            CollectionUtils.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
+        final Set<TriggerAttachment> toFireTestedAndSatisfied =
+            new HashSet<>(
+                CollectionUtils.getMatches(
+                    toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
-        final FireTriggerParams fireTriggerParams = new FireTriggerParams(
-            null, null, true, true, true, true);
-        TriggerAttachment.triggerUnitPropertyChange(toFireTestedAndSatisfied, bridge, fireTriggerParams);
+        final FireTriggerParams fireTriggerParams =
+            new FireTriggerParams(null, null, true, true, true, true);
+        TriggerAttachment.triggerUnitPropertyChange(
+            toFireTestedAndSatisfied, bridge, fireTriggerParams);
         TriggerAttachment.triggerTechChange(toFireTestedAndSatisfied, bridge, fireTriggerParams);
         TriggerAttachment.triggerSupportChange(toFireTestedAndSatisfied, bridge, fireTriggerParams);
       }
@@ -101,14 +108,22 @@ public class TechActivationDelegate extends BaseTripleADelegate {
       return;
     }
     final GameData data = getData();
-    final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(player, data);
+    final Collection<TechAdvance> currentAdvances =
+        TechTracker.getCurrentTechAdvances(player, data);
     for (final PlayerId p : shareWith) {
       final Collection<TechAdvance> availableTechs = TechnologyDelegate.getAvailableTechs(p, data);
-      final Collection<TechAdvance> toGive = CollectionUtils.intersection(currentAdvances, availableTechs);
+      final Collection<TechAdvance> toGive =
+          CollectionUtils.intersection(currentAdvances, availableTechs);
       if (!toGive.isEmpty()) {
         // Start event
-        bridge.getHistoryWriter()
-            .startEvent(player.getName() + " giving technology to " + p.getName() + ": " + advancesAsString(toGive));
+        bridge
+            .getHistoryWriter()
+            .startEvent(
+                player.getName()
+                    + " giving technology to "
+                    + p.getName()
+                    + ": "
+                    + advancesAsString(toGive));
         for (final TechAdvance advance : toGive) {
           TechTracker.addAdvance(p, bridge, advance);
         }

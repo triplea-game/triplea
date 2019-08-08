@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,8 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 final class LockUtilTest {
   private final LockUtil lockUtil = LockUtil.INSTANCE;
 
-  @Mock
-  private LockUtil.ErrorReporter errorReporter;
+  @Mock private LockUtil.ErrorReporter errorReporter;
 
   private LockUtil.ErrorReporter oldErrorReporter;
 

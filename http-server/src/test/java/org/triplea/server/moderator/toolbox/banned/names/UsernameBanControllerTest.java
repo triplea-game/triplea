@@ -7,10 +7,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,26 +24,20 @@ class UsernameBanControllerTest {
   private static final String USERNAME = "Well, sail me lubber, ye misty sun!";
   private static final List<UsernameBanData> banData = new ArrayList<>();
 
-  @Mock
-  private UsernameBanService bannedNamesService;
-  @Mock
-  private ApiKeyValidationService apiKeyValidationService;
+  @Mock private UsernameBanService bannedNamesService;
+  @Mock private ApiKeyValidationService apiKeyValidationService;
 
-  @InjectMocks
-  private UsernameBanController usernameBanController;
+  @InjectMocks private UsernameBanController usernameBanController;
 
-  @Mock
-  private HttpServletRequest request;
+  @Mock private HttpServletRequest request;
 
   @Nested
   final class RemoveBannedUsernameTest {
 
     @Test
     void removeBannedUsername() {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request))
-          .thenReturn(MODERATOR_ID);
-      when(bannedNamesService.removeUsernameBan(MODERATOR_ID, USERNAME))
-          .thenReturn(true);
+      when(apiKeyValidationService.lookupModeratorIdByApiKey(request)).thenReturn(MODERATOR_ID);
+      when(bannedNamesService.removeUsernameBan(MODERATOR_ID, USERNAME)).thenReturn(true);
 
       final Response response = usernameBanController.removeBannedUsername(request, USERNAME);
       assertThat(response.getStatus(), is(200));
@@ -53,10 +45,8 @@ class UsernameBanControllerTest {
 
     @Test
     void removeBannedUsernameFailCase() {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request))
-          .thenReturn(MODERATOR_ID);
-      when(bannedNamesService.removeUsernameBan(MODERATOR_ID, USERNAME))
-          .thenReturn(false);
+      when(apiKeyValidationService.lookupModeratorIdByApiKey(request)).thenReturn(MODERATOR_ID);
+      when(bannedNamesService.removeUsernameBan(MODERATOR_ID, USERNAME)).thenReturn(false);
       final Response response = usernameBanController.removeBannedUsername(request, USERNAME);
       assertThat(response.getStatus(), is(400));
     }
@@ -66,10 +56,8 @@ class UsernameBanControllerTest {
   final class AddBannedUsernameTest {
     @Test
     void addBannedUsername() {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request))
-          .thenReturn(MODERATOR_ID);
-      when(bannedNamesService.addBannedUserName(MODERATOR_ID, USERNAME))
-          .thenReturn(true);
+      when(apiKeyValidationService.lookupModeratorIdByApiKey(request)).thenReturn(MODERATOR_ID);
+      when(bannedNamesService.addBannedUserName(MODERATOR_ID, USERNAME)).thenReturn(true);
 
       final Response response = usernameBanController.addBannedUsername(request, USERNAME);
       assertThat(response.getStatus(), is(200));
@@ -77,10 +65,8 @@ class UsernameBanControllerTest {
 
     @Test
     void addBannedUsernameFailCase() {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request))
-          .thenReturn(MODERATOR_ID);
-      when(bannedNamesService.addBannedUserName(MODERATOR_ID, USERNAME))
-          .thenReturn(false);
+      when(apiKeyValidationService.lookupModeratorIdByApiKey(request)).thenReturn(MODERATOR_ID);
+      when(bannedNamesService.addBannedUserName(MODERATOR_ID, USERNAME)).thenReturn(false);
 
       final Response response = usernameBanController.addBannedUsername(request, USERNAME);
       assertThat(response.getStatus(), is(400));

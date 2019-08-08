@@ -9,19 +9,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-
-import org.junit.jupiter.api.Test;
-import org.triplea.game.client.ui.javafx.util.FxmlManager;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import org.junit.jupiter.api.Test;
+import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 class NavigationPaneTest {
   private final Pane mock = mock(Pane.class);
   private final NavigationPane navigationPane = new NavigationPane(mock);
-
 
   @Test
   void testGetNode() {
@@ -30,8 +27,10 @@ class NavigationPaneTest {
 
   @Test
   void testSwapInvalidScreen() {
-    final Exception exception = assertThrows(IllegalArgumentException.class, () -> navigationPane.switchScreen(
-        FxmlManager.MAIN_MENU_CONTROLS));
+    final Exception exception =
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> navigationPane.switchScreen(FxmlManager.MAIN_MENU_CONTROLS));
     assertThat(exception.getMessage(), containsString(FxmlManager.MAIN_MENU_CONTROLS.toString()));
   }
 

@@ -22,8 +22,7 @@ class ModeratorsControllerIntegrationTest extends AbstractDropwizardTest {
   @Test
   void checkUserExistsNotAuthorized() {
     assertThrows(
-        HttpInteractionException.class,
-        () -> clientWithBadKey.checkUserExists("any username"));
+        HttpInteractionException.class, () -> clientWithBadKey.checkUserExists("any username"));
   }
 
   @Test
@@ -53,8 +52,7 @@ class ModeratorsControllerIntegrationTest extends AbstractDropwizardTest {
   void generateSingleUseKeyNotAuthorized() {
     // user name exists in DB
     assertThrows(
-        HttpInteractionException.class,
-        () -> clientWithBadKey.generateSingleUseKey("test"));
+        HttpInteractionException.class, () -> clientWithBadKey.generateSingleUseKey("test"));
   }
 
   @Test
@@ -65,8 +63,7 @@ class ModeratorsControllerIntegrationTest extends AbstractDropwizardTest {
   @Test
   void removeModNotAuthorized() {
     assertThrows(
-        HttpInteractionException.class,
-        () -> clientWithBadKey.generateSingleUseKey("mod2"));
+        HttpInteractionException.class, () -> clientWithBadKey.generateSingleUseKey("mod2"));
   }
 
   @Test
@@ -76,8 +73,6 @@ class ModeratorsControllerIntegrationTest extends AbstractDropwizardTest {
 
   @Test
   void setSuperModNotAuthorized() {
-    assertThrows(
-        HttpInteractionException.class,
-        () -> clientWithBadKey.addSuperMod("mod2"));
+    assertThrows(HttpInteractionException.class, () -> clientWithBadKey.addSuperMod("mod2"));
   }
 }

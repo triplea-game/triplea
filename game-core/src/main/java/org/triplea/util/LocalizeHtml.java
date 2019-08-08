@@ -1,43 +1,42 @@
 package org.triplea.util;
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.ui.AbstractUiContext;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ui.AbstractUiContext;
 import lombok.extern.java.Log;
 
 /**
- * Provides methods that convert relative links within a game description into absolute links that will work on the
- * local system.
+ * Provides methods that convert relative links within a game description into absolute links that
+ * will work on the local system.
  */
 @Log
 public final class LocalizeHtml {
   private static final String ASSET_IMAGE_FOLDER = "doc/images/";
   private static final String ASSET_IMAGE_NOT_FOUND = "notFound.png";
   // Match the <img> src
-  private static final Pattern PATTERN_HTML_IMG_SRC_TAG = Pattern
-      .compile("(<img[^>]*src\\s*=\\s*)(?:\"([^\"]+)\"|'([^']+)')([^>]*/?>)", Pattern.CASE_INSENSITIVE);
+  private static final Pattern PATTERN_HTML_IMG_SRC_TAG =
+      Pattern.compile(
+          "(<img[^>]*src\\s*=\\s*)(?:\"([^\"]+)\"|'([^']+)')([^>]*/?>)", Pattern.CASE_INSENSITIVE);
 
   private LocalizeHtml() {}
 
   /**
-   * This is only useful once we are IN a game. Before we go into the game, resource loader will either be null, or be
-   * the last game's resource loader.
+   * This is only useful once we are IN a game. Before we go into the game, resource loader will
+   * either be null, or be the last game's resource loader.
    */
   public static String localizeImgLinksInHtml(final String htmlText) {
     return localizeImgLinksInHtml(htmlText, AbstractUiContext.getResourceLoader());
   }
 
   /**
-   * Replaces relative image links within the HTML document {@code htmlText} with absolute links that point to the
-   * correct location on the local file system.
+   * Replaces relative image links within the HTML document {@code htmlText} with absolute links
+   * that point to the correct location on the local file system.
    */
   public static String localizeImgLinksInHtml(final String htmlText, final String mapNameDir) {
     if (htmlText == null || mapNameDir == null || mapNameDir.trim().isEmpty()) {
@@ -58,16 +57,15 @@ public final class LocalizeHtml {
       assert link != null && !link.isEmpty() : "RegEx is broken";
       final String localized = cache.computeIfAbsent(link, l -> getLocalizedLink(l, loader));
       final char quote = matcher.group(2) != null ? '"' : '\'';
-      matcher.appendReplacement(result, matcher.group(1) + quote + localized + quote + matcher.group(4));
+      matcher.appendReplacement(
+          result, matcher.group(1) + quote + localized + quote + matcher.group(4));
     }
     matcher.appendTail(result);
 
     return result.toString();
   }
 
-  private static String getLocalizedLink(
-      final String link,
-      final ResourceLoader loader) {
+  private static String getLocalizedLink(final String link, final ResourceLoader loader) {
     // remove full parent path
     final String imageFileName = link.substring(Math.max(link.lastIndexOf("/") + 1, 0));
 

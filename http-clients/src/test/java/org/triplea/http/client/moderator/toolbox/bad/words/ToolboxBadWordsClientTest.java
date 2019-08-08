@@ -6,25 +6,19 @@ import static org.hamcrest.core.Is.is;
 import static org.triplea.http.client.HttpClientTesting.API_KEY_PASSWORD;
 import static org.triplea.http.client.HttpClientTesting.serve200ForToolboxPostWithBody;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
-
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
-@ExtendWith({
-    WiremockResolver.class,
-    WiremockUriResolver.class
-})
+@ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
 class ToolboxBadWordsClientTest {
   private static final String BAD_WORD = "Damn yer bilge rat, feed the corsair.";
   private static final List<String> badWords = Arrays.asList("one", "two", "three");
@@ -53,11 +47,10 @@ class ToolboxBadWordsClientTest {
     server.stubFor(
         WireMock.get(ToolboxBadWordsClient.BAD_WORD_GET_PATH)
             .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY_PASSWORD.getApiKey()))
-            .withHeader(ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER, equalTo(API_KEY_PASSWORD.getPassword()))
+            .withHeader(
+                ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER, equalTo(API_KEY_PASSWORD.getPassword()))
             .willReturn(
-                WireMock.aResponse()
-                    .withStatus(200)
-                    .withBody(HttpClientTesting.toJson(badWords))));
+                WireMock.aResponse().withStatus(200).withBody(HttpClientTesting.toJson(badWords))));
 
     final List<String> result = newClient(server).getBadWords();
 

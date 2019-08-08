@@ -1,18 +1,16 @@
 package games.strategy.engine.history;
 
+import games.strategy.engine.data.Change;
+import games.strategy.engine.data.GameData;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import games.strategy.engine.data.Change;
-import games.strategy.engine.data.GameData;
-
 /**
- * DefaultTreeModel is not serializable across jdk versions
- * Instead we use an instance of this class to store our data.
+ * DefaultTreeModel is not serializable across jdk versions Instead we use an instance of this class
+ * to store our data.
  */
 class SerializedHistory implements Serializable {
   private static final long serialVersionUID = -5808427923253751651L;
@@ -22,7 +20,8 @@ class SerializedHistory implements Serializable {
 
   SerializedHistory(final History history, final GameData data, final List<Change> changes) {
     gameData = data;
-    final Enumeration<?> enumeration = ((DefaultMutableTreeNode) history.getRoot()).preorderEnumeration();
+    final Enumeration<?> enumeration =
+        ((DefaultMutableTreeNode) history.getRoot()).preorderEnumeration();
     enumeration.nextElement();
     int changeIndex = 0;
     while (enumeration.hasMoreElements()) {

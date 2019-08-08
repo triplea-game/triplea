@@ -1,7 +1,5 @@
 package games.strategy.triplea.ai.pro.simulate;
 
-import java.util.Properties;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -18,10 +16,11 @@ import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
+import java.util.Properties;
 
 /**
- * Dummy implementation of {@link IDelegateBridge} used during a battle simulation to capture all changes generated
- * during the simulation.
+ * Dummy implementation of {@link IDelegateBridge} used during a battle simulation to capture all
+ * changes generated during the simulation.
  */
 public class ProDummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource randomSource = new PlainRandomSource();
@@ -68,13 +67,18 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerId player, final DiceType diceType,
+  public int[] getRandom(
+      final int max,
+      final int count,
+      final PlayerId player,
+      final DiceType diceType,
       final String annotation) {
     return randomSource.getRandom(max, count, annotation);
   }
 
   @Override
-  public int getRandom(final int max, final PlayerId player, final DiceType diceType, final String annotation) {
+  public int getRandom(
+      final int max, final PlayerId player, final DiceType diceType, final String annotation) {
     return randomSource.getRandom(max, annotation);
   }
 

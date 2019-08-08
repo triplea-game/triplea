@@ -11,23 +11,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.util.Tuple;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -57,6 +40,21 @@ import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.ui.display.ITripleADisplay;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.util.Tuple;
 
 @ExtendWith(MockitoExtension.class)
 class TriggerAttachmentTest {
@@ -80,10 +78,8 @@ class TriggerAttachmentTest {
   @Nested
   class TriggerFireTest {
 
-    @Mock
-    private IDelegateBridge bridge;
-    @Mock
-    private IDelegateHistoryWriter historyWriter;
+    @Mock private IDelegateBridge bridge;
+    @Mock private IDelegateHistoryWriter historyWriter;
 
     @BeforeEach
     void setUp() {
@@ -101,8 +97,7 @@ class TriggerAttachmentTest {
 
       final Territory territory = new Territory(territoryName, gameData);
       territory.addAttachment(
-          Constants.TERRITORY_ATTACHMENT_NAME,
-          new TerritoryAttachment(null, null, null));
+          Constants.TERRITORY_ATTACHMENT_NAME, new TerritoryAttachment(null, null, null));
       if (player != null) {
         territory.setOwner(player);
       }
@@ -118,8 +113,9 @@ class TriggerAttachmentTest {
     @Test
     void testTriggerNotifications() throws Exception {
       final GameData gameData = bridge.getData();
-      final TriggerAttachment triggerAttachment = new TriggerAttachment(
-          "triggerAttachment", new PlayerId("somePlayerName", gameData), gameData);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment(
+              "triggerAttachment", new PlayerId("somePlayerName", gameData), gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
       final String notificationMessageKey = "BlackIce";
@@ -134,13 +130,14 @@ class TriggerAttachmentTest {
 
       triggerAttachment.getPropertyMap().get("notification").setValue(notificationMessageKey);
 
-      TriggerAttachment.triggerNotifications(satisfiedTriggers, bridge, defaultFireTriggerParams,
-          notificationMessages);
-      verify(display).reportMessageToPlayers(
-          not(argThat(Collection::isEmpty)), // Players.
-          any(),
-          argThat(htmlMessage -> htmlMessage.contains(notificationMessage)),
-          any());
+      TriggerAttachment.triggerNotifications(
+          satisfiedTriggers, bridge, defaultFireTriggerParams, notificationMessages);
+      verify(display)
+          .reportMessageToPlayers(
+              not(argThat(Collection::isEmpty)), // Players.
+              any(),
+              argThat(htmlMessage -> htmlMessage.contains(notificationMessage)),
+              any());
     }
 
     @Test
@@ -157,9 +154,8 @@ class TriggerAttachmentTest {
       productionRuleList.addProductionRule(new ProductionRule("rule3", gameData));
 
       final ProductionFrontierList productionFrontierList = gameData.getProductionFrontierList();
-      productionFrontierList
-          .addProductionFrontier(
-              new ProductionFrontier("frontier", gameData, Collections.singletonList(productionRule2)));
+      productionFrontierList.addProductionFrontier(
+          new ProductionFrontier("frontier", gameData, Collections.singletonList(productionRule2)));
 
       final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
       final MutableProperty<?> productionRuleProperty = propertyMap.get("productionRule");
@@ -167,7 +163,8 @@ class TriggerAttachmentTest {
       productionRuleProperty.setValue("frontier:-rule2");
       productionRuleProperty.setValue("frontier:rule3");
 
-      TriggerAttachment.triggerProductionFrontierEditChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
+      TriggerAttachment.triggerProductionFrontierEditChange(
+          satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
       final ArgumentCaptor<String> ruleAddArgument = ArgumentCaptor.forClass(String.class);
       verify(historyWriter, times(3)).startEvent(ruleAddArgument.capture());
@@ -196,7 +193,8 @@ class TriggerAttachmentTest {
       propertyMap.get("playerProperty").setValue("someNewValue:productionPerXTerritories");
       propertyMap.get("players").setValue("somePlayer");
 
-      TriggerAttachment.triggerPlayerPropertyChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
+      TriggerAttachment.triggerPlayerPropertyChange(
+          satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -207,19 +205,22 @@ class TriggerAttachmentTest {
           new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
-      final RelationshipType relationshipType = new RelationshipType("someRelationshipType", gameData);
-      relationshipType.addAttachment("relationshipTypeAttachment",
-          new RelationshipTypeAttachment(null, null, gameData));
+      final RelationshipType relationshipType =
+          new RelationshipType("someRelationshipType", gameData);
+      relationshipType.addAttachment(
+          "relationshipTypeAttachment", new RelationshipTypeAttachment(null, null, gameData));
       gameData.getRelationshipTypeList().addRelationshipType(relationshipType);
 
       final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
-      propertyMap.get("relationshipTypeAttachmentName")
+      propertyMap
+          .get("relationshipTypeAttachmentName")
           .setValue("relationshipTypeAttachment:RelationshipTypeAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
       propertyMap.get("relationshipTypeProperty").setValue("true:canMoveLandUnitsOverOwnedLand");
       propertyMap.get("relationshipTypes").setValue("someRelationshipType");
 
-      TriggerAttachment.triggerRelationshipTypePropertyChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
+      TriggerAttachment.triggerRelationshipTypePropertyChange(
+          satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -236,12 +237,15 @@ class TriggerAttachmentTest {
       gameData.getMap().addTerritory(territory);
 
       final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
-      propertyMap.get("territoryAttachmentName").setValue("territoryAttachment:TerritoryAttachment");
+      propertyMap
+          .get("territoryAttachmentName")
+          .setValue("territoryAttachment:TerritoryAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
       propertyMap.get("territoryProperty").setValue("true:kamikazeZone");
       propertyMap.get("territories").setValue(territoryName);
 
-      TriggerAttachment.triggerTerritoryPropertyChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
+      TriggerAttachment.triggerTerritoryPropertyChange(
+          satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -259,19 +263,25 @@ class TriggerAttachmentTest {
       gameData.getTerritoryEffectList().put(territoryEffectName, territoryEffect);
 
       final Map<String, MutableProperty<?>> propertyMap = triggerAttachment.getPropertyMap();
-      propertyMap.get("territoryEffectAttachmentName").setValue("territoryEffectAttachment:TerritoryEffectAttachment");
+      propertyMap
+          .get("territoryEffectAttachmentName")
+          .setValue("territoryEffectAttachment:TerritoryEffectAttachment");
       // NOTE: The 'count' part is prepended in the game parser.
-      propertyMap.get("territoryEffectProperty").setValue("conscript:veteran:champion:unitsNotAllowed");
+      propertyMap
+          .get("territoryEffectProperty")
+          .setValue("conscript:veteran:champion:unitsNotAllowed");
       propertyMap.get("territoryEffects").setValue("someTerritoryEffect");
 
-      TriggerAttachment.triggerTerritoryEffectPropertyChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
+      TriggerAttachment.triggerTerritoryEffectPropertyChange(
+          satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
     @Test
     void testTriggerUnitPropertyChange() throws Exception {
       final GameData gameData = bridge.getData();
-      final TriggerAttachment triggerAttachment = new TriggerAttachment("triggerAttachment", null, gameData);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", null, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
       final UnitType unitType = new UnitType("someUnit", gameData);
@@ -284,7 +294,8 @@ class TriggerAttachmentTest {
       propertyMap.get("unitProperty").setValue("4:movement");
       propertyMap.get("unitType").setValue("someUnit");
 
-      TriggerAttachment.triggerUnitPropertyChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
+      TriggerAttachment.triggerUnitPropertyChange(
+          satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -315,9 +326,13 @@ class TriggerAttachmentTest {
       final BattleTracker battleTracker = mock(BattleTracker.class);
       when(battleDelegate.getBattleTracker()).thenReturn(battleTracker);
 
-      triggerAttachment.getPropertyMap().get("relationshipChange").setValue("Keoland:Furyondy:any:allied");
+      triggerAttachment
+          .getPropertyMap()
+          .get("relationshipChange")
+          .setValue("Keoland:Furyondy:any:allied");
 
-      TriggerAttachment.triggerRelationshipChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
+      TriggerAttachment.triggerRelationshipChange(
+          satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -326,9 +341,12 @@ class TriggerAttachmentTest {
       final GameData gameData = bridge.getData();
 
       final PlayerId playerId = new PlayerId("somePlayer", gameData);
-      playerId.getTechnologyFrontierList().addTechnologyFrontier(new TechnologyFrontier("airCategory", gameData));
+      playerId
+          .getTechnologyFrontierList()
+          .addTechnologyFrontier(new TechnologyFrontier("airCategory", gameData));
 
-      final TriggerAttachment triggerAttachment = new TriggerAttachment("triggerAttachment", playerId, gameData);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("triggerAttachment", playerId, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
       final TechnologyFrontier gameTechnologyFrontier = gameData.getTechnologyFrontier();
@@ -339,10 +357,13 @@ class TriggerAttachmentTest {
       gameTechnologyFrontier.addAdvance(
           TechAdvance.findDefinedAdvanceAndCreateAdvance("heavyBomber", gameData));
 
-      triggerAttachment.getPropertyMap().get("availableTech")
+      triggerAttachment
+          .getPropertyMap()
+          .get("availableTech")
           .setValue("airCategory:longRangeAir:jetPower:heavyBomber");
 
-      TriggerAttachment.triggerAvailableTechChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
+      TriggerAttachment.triggerAvailableTechChange(
+          satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge, times(3)).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -388,9 +409,13 @@ class TriggerAttachmentTest {
           new TriggerAttachment("triggerAttachment", playerId, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
-      triggerAttachment.getPropertyMap().get("frontier").setValue("Americans_Super_Carrier_production");
+      triggerAttachment
+          .getPropertyMap()
+          .get("frontier")
+          .setValue("Americans_Super_Carrier_production");
 
-      TriggerAttachment.triggerProductionChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
+      TriggerAttachment.triggerProductionChange(
+          satisfiedTriggers, bridge, defaultFireTriggerParams);
       verify(bridge).addChange(not(argThat(Change::isEmpty)));
     }
 
@@ -410,7 +435,9 @@ class TriggerAttachmentTest {
           new TriggerAttachment("triggerAttachment", playerId, gameData);
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
-      triggerAttachment.getPropertyMap().get("support")
+      triggerAttachment
+          .getPropertyMap()
+          .get("support")
           .setValue("supportAttachmentBattlefleet_Support");
 
       TriggerAttachment.triggerSupportChange(satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -437,11 +464,15 @@ class TriggerAttachmentTest {
       addTerritoryPlayer("Archangel", playerChina);
       addTerritoryPlayer("Eastern Szechwan", playerRussia);
 
-      // NOTE: Currently not testing "booleanCaptured?" option nor the BattleDelegate part reg. capturing
-      // (ie. the boolean part last in "Altay:China:Russia:false" is always set to false in this test).
-      final MutableProperty<?> changeOwnership = triggerAttachment.getPropertyMap().get("changeOwnership");
+      // NOTE: Currently not testing "booleanCaptured?" option nor the BattleDelegate part reg.
+      // capturing
+      // (ie. the boolean part last in "Altay:China:Russia:false" is always set to false in this
+      // test).
+      final MutableProperty<?> changeOwnership =
+          triggerAttachment.getPropertyMap().get("changeOwnership");
       changeOwnership.setValue("Altay:China:Russia:false");
-      changeOwnership.setValue("Archangel:Russia:Britain:false"); // Belonging to non-Russia, so should not match.
+      changeOwnership.setValue(
+          "Archangel:Russia:Britain:false"); // Belonging to non-Russia, so should not match.
       changeOwnership.setValue("Eastern Szechwan:any:China:false");
 
       TriggerAttachment.triggerChangeOwnership(satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -490,7 +521,8 @@ class TriggerAttachmentTest {
       gameData.getUnitTypeList().addUnitType(unitTypeSellsword);
 
       final BiConsumer<Territory, UnitType> addUnit =
-          (territory, unitType) -> territory.getUnitCollection().add(new Unit(unitType, player, gameData));
+          (territory, unitType) ->
+              territory.getUnitCollection().add(new Unit(unitType, player, gameData));
 
       addUnit.accept(territoryCorusk, unitTypeConscript);
       addUnit.accept(territoryCorusk, unitTypeConscript);
@@ -586,15 +618,23 @@ class TriggerAttachmentTest {
         gameTechnologyFrontier.addAdvance(
             TechAdvance.findDefinedAdvanceAndCreateAdvance("heavyBomber", gameData));
 
-        triggerToBeFiredTriggerAttachment.getPropertyMap().get("tech").setValue("longRangeAir:heavyBomber");
+        triggerToBeFiredTriggerAttachment
+            .getPropertyMap()
+            .get("tech")
+            .setValue("longRangeAir:heavyBomber");
       }
 
       final TriggerAttachment activateTriggerTriggerAttachment =
           new TriggerAttachment("activateTrigger", null, gameData);
-      final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(activateTriggerTriggerAttachment);
+      final Set<TriggerAttachment> satisfiedTriggers =
+          Collections.singleton(activateTriggerTriggerAttachment);
 
-      activateTriggerTriggerAttachment.getPropertyMap().get("activateTrigger").setValue(
-          String.format("%s:1:false:false:false:false", triggerToBeFiredTriggerAttachment.getName()));
+      activateTriggerTriggerAttachment
+          .getPropertyMap()
+          .get("activateTrigger")
+          .setValue(
+              String.format(
+                  "%s:1:false:false:false:false", triggerToBeFiredTriggerAttachment.getName()));
 
       TriggerAttachment.triggerActivateTriggerOther(
           Collections.emptyMap(), satisfiedTriggers, bridge, defaultFireTriggerParams);
@@ -611,7 +651,8 @@ class TriggerAttachmentTest {
       final Set<TriggerAttachment> satisfiedTriggers = Collections.singleton(triggerAttachment);
 
       final String notificationMessageKey = "IndomitableCenterVictory";
-      final String notificationMessage = "<body><h2>Victory!<br>The Indomitable Center Has Conquered!</h2>...</body>";
+      final String notificationMessage =
+          "<body><h2>Victory!<br>The Indomitable Center Has Conquered!</h2>...</body>";
       triggerAttachment.getPropertyMap().get("victory").setValue(notificationMessageKey);
 
       final EndRoundDelegate endRoundDelegate = mock(EndRoundDelegate.class);
@@ -621,7 +662,8 @@ class TriggerAttachmentTest {
       final NotificationMessages notificationMessages = mock(NotificationMessages.class);
       when(notificationMessages.getMessage(notificationMessageKey)).thenReturn(notificationMessage);
 
-      TriggerAttachment.triggerVictory(satisfiedTriggers, bridge, defaultFireTriggerParams, notificationMessages);
+      TriggerAttachment.triggerVictory(
+          satisfiedTriggers, bridge, defaultFireTriggerParams, notificationMessages);
       verify(endRoundDelegate).signalGameOver(any(), any(), any());
     }
   }
@@ -645,14 +687,16 @@ class TriggerAttachmentTest {
 
     @Test
     void testClearAndValue() {
-      final Tuple<Boolean, String> r = TriggerAttachment.getClearFirstNewValue("-clear-4:conscript");
+      final Tuple<Boolean, String> r =
+          TriggerAttachment.getClearFirstNewValue("-clear-4:conscript");
       assertTrue(r.getFirst());
       assertEquals(r.getSecond(), "4:conscript");
     }
 
     @Test
     void testNoClear() {
-      final Tuple<Boolean, String> r = TriggerAttachment.getClearFirstNewValue("clearValueWithoutDash");
+      final Tuple<Boolean, String> r =
+          TriggerAttachment.getClearFirstNewValue("clearValueWithoutDash");
       assertFalse(r.getFirst());
       assertEquals(r.getSecond(), "clearValueWithoutDash");
     }
@@ -685,16 +729,20 @@ class TriggerAttachmentTest {
     private Optional<Tuple<Change, String>> applyWithOldNewValue(
         final String startValue, final String newValue) {
 
-      final TriggerAttachment triggerAttachment = new TriggerAttachment("aTriggerAName", null, null);
+      final TriggerAttachment triggerAttachment =
+          new TriggerAttachment("aTriggerAName", null, null);
       final TestAttachment propertyAttachment = new TestAttachment("aTestAName", null, null);
       propertyAttachment.setValue(startValue);
       final Named attachedTo = mock(Named.class);
 
       return TriggerAttachment.getPropertyChangeHistoryStartEvent(
-          triggerAttachment, propertyAttachment,
-          "value", // Property name in 'TestAttachment'. Authentic name: "productionPerXTerritories".
+          triggerAttachment,
+          propertyAttachment,
+          "value", // Property name in 'TestAttachment'. Authentic name:
+          // "productionPerXTerritories".
           Tuple.of(true, newValue),
-          "rulesAttachment", attachedTo);
+          "rulesAttachment",
+          attachedTo);
     }
 
     @Test

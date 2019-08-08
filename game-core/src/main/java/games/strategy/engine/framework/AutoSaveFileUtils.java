@@ -4,15 +4,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static games.strategy.engine.framework.GameDataFileUtils.addExtension;
 import static org.triplea.java.StringUtils.capitalize;
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-
-import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.triplea.settings.ClientSetting;
 
 /**
  * Provides methods for getting the names of auto-save files periodically generated during a game.
@@ -20,8 +18,10 @@ import games.strategy.triplea.settings.ClientSetting;
 public class AutoSaveFileUtils {
   @VisibleForTesting
   File getAutoSaveFile(final String baseFileName) {
-    return ClientSetting.saveGamesFolderPath.getValueOrThrow()
-        .resolve(Paths.get("autoSave", getAutoSaveFileName(baseFileName))).toFile();
+    return ClientSetting.saveGamesFolderPath
+        .getValueOrThrow()
+        .resolve(Paths.get("autoSave", getAutoSaveFileName(baseFileName)))
+        .toFile();
   }
 
   @VisibleForTesting
@@ -41,8 +41,10 @@ public class AutoSaveFileUtils {
     checkNotNull(localDateTime);
 
     return getAutoSaveFile(
-        addExtension("connection_lost_on_" + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm",
-            Locale.ENGLISH).format(localDateTime)));
+        addExtension(
+            "connection_lost_on_"
+                + DateTimeFormatter.ofPattern("MMM_dd_'at'_HH_mm", Locale.ENGLISH)
+                    .format(localDateTime)));
   }
 
   public File getBeforeStepAutoSaveFile(final String stepName) {

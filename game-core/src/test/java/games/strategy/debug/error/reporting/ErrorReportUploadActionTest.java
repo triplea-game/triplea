@@ -7,9 +7,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import feign.FeignException;
 import java.net.URI;
 import java.util.function.Consumer;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,40 +19,34 @@ import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.error.report.ErrorUploadResponse;
 
-import feign.FeignException;
-
 @ExtendWith(MockitoExtension.class)
 class ErrorReportUploadActionTest {
 
-  private static final ErrorUploadRequest ERROR_REPORT = ErrorUploadRequest.builder()
-      .title("Extums prarere in audax tornacum!")
-      .body("Rector de barbatus gemna, desiderium candidatus!")
-      .build();
+  private static final ErrorUploadRequest ERROR_REPORT =
+      ErrorUploadRequest.builder()
+          .title("Extums prarere in audax tornacum!")
+          .body("Rector de barbatus gemna, desiderium candidatus!")
+          .build();
 
-  private static final ErrorUploadResponse SUCCESS_RESPONSE = ErrorUploadResponse.builder()
-      .githubIssueLink("http://successful.send")
-      .build();
+  private static final ErrorUploadResponse SUCCESS_RESPONSE =
+      ErrorUploadResponse.builder().githubIssueLink("http://successful.send").build();
 
-  @Mock
-  private ErrorUploadClient errorUploadClient;
-  @Mock
-  private Consumer<URI> successConfirmation;
-  @Mock
-  private Consumer<FeignException> failureConfirmation;
+  @Mock private ErrorUploadClient errorUploadClient;
+  @Mock private Consumer<URI> successConfirmation;
+  @Mock private Consumer<FeignException> failureConfirmation;
 
-  @Mock
-  private FeignException feignException;
-
+  @Mock private FeignException feignException;
 
   private ErrorReportUploadAction errorReportUploadAction;
 
   @BeforeEach
   void setup() {
-    errorReportUploadAction = ErrorReportUploadAction.builder()
-        .serviceClient(errorUploadClient)
-        .failureConfirmation(failureConfirmation)
-        .successConfirmation(successConfirmation)
-        .build();
+    errorReportUploadAction =
+        ErrorReportUploadAction.builder()
+            .serviceClient(errorUploadClient)
+            .failureConfirmation(failureConfirmation)
+            .successConfirmation(successConfirmation)
+            .build();
   }
 
   @Test

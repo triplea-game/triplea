@@ -12,7 +12,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
-
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,6 @@ import org.triplea.http.client.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.UserBanDao;
 import org.triplea.lobby.server.db.data.UserBanDaoData;
-
 
 @ExtendWith(MockitoExtension.class)
 class BannedUsersServiceTest {
@@ -53,29 +51,24 @@ class BannedUsersServiceTest {
           .username("The bucaneer desires with love, break the bahamas until it travels.")
           .build();
 
-  private static final UserBanParams BAN_USER_PARAMS = UserBanParams.builder()
-      .username(USERNAME)
-      .hashedMac("Love ho! fight to be desired.")
-      .ip("Rainy, old pants swiftly desire a warm, lively parrot.")
-      .hoursToBan(20)
-      .build();
+  private static final UserBanParams BAN_USER_PARAMS =
+      UserBanParams.builder()
+          .username(USERNAME)
+          .hashedMac("Love ho! fight to be desired.")
+          .ip("Rainy, old pants swiftly desire a warm, lively parrot.")
+          .hoursToBan(20)
+          .build();
 
+  @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+  @Mock private UserBanDao bannedUserDao;
+  @Mock private Supplier<String> publicIdSupplier;
 
-  @Mock
-  private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
-  @Mock
-  private UserBanDao bannedUserDao;
-  @Mock
-  private Supplier<String> publicIdSupplier;
-
-  @InjectMocks
-  private UserBanService bannedUsersService;
-
+  @InjectMocks private UserBanService bannedUsersService;
 
   @Test
   void getBannedUsers() {
-    when(bannedUserDao.lookupBans()).thenReturn(Arrays.asList(
-        BANNED_USER_DAO_DATA_1, BANNED_USER_DAO_DATA_2));
+    when(bannedUserDao.lookupBans())
+        .thenReturn(Arrays.asList(BANNED_USER_DAO_DATA_1, BANNED_USER_DAO_DATA_2));
 
     final List<UserBanData> result = bannedUsersService.getBannedUsers();
 
@@ -117,15 +110,15 @@ class BannedUsersServiceTest {
       final boolean result = bannedUsersService.removeUserBan(MODERATOR_ID, BAN_ID);
 
       assertThat(result, is(true));
-      verify(moderatorAuditHistoryDao).addAuditRecord(
-          ModeratorAuditHistoryDao.AuditArgs.builder()
-              .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_USER_BAN)
-              .actionTarget(USERNAME)
-              .moderatorUserId(MODERATOR_ID)
-              .build());
+      verify(moderatorAuditHistoryDao)
+          .addAuditRecord(
+              ModeratorAuditHistoryDao.AuditArgs.builder()
+                  .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_USER_BAN)
+                  .actionTarget(USERNAME)
+                  .moderatorUserId(MODERATOR_ID)
+                  .build());
     }
   }
-
 
   @Nested
   final class BanUserTest {
@@ -133,39 +126,33 @@ class BannedUsersServiceTest {
     void banUserFailureCase() {
       givenBanDaoUpdateCount(0);
 
-      assertThat(
-          bannedUsersService.banUser(MODERATOR_ID, BAN_USER_PARAMS),
-          is(false));
+      assertThat(bannedUsersService.banUser(MODERATOR_ID, BAN_USER_PARAMS), is(false));
       verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
     }
 
     private void givenBanDaoUpdateCount(final int updateCount) {
       when(publicIdSupplier.get()).thenReturn(BAN_ID);
       when(bannedUserDao.addBan(
-          BAN_ID,
-          BAN_USER_PARAMS.getUsername(),
-          BAN_USER_PARAMS.getHashedMac(),
-          BAN_USER_PARAMS.getIp(),
-          BAN_USER_PARAMS.getHoursToBan()))
-              .thenReturn(updateCount);
+              BAN_ID,
+              BAN_USER_PARAMS.getUsername(),
+              BAN_USER_PARAMS.getHashedMac(),
+              BAN_USER_PARAMS.getIp(),
+              BAN_USER_PARAMS.getHoursToBan()))
+          .thenReturn(updateCount);
     }
 
     @Test
     void banUserSuccessCase() {
       givenBanDaoUpdateCount(1);
 
-      assertThat(
-          bannedUsersService.banUser(MODERATOR_ID, BAN_USER_PARAMS),
-          is(true));
-      verify(moderatorAuditHistoryDao).addAuditRecord(
-          ModeratorAuditHistoryDao.AuditArgs.builder()
-              .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USER)
-              .actionTarget(USERNAME)
-              .moderatorUserId(MODERATOR_ID)
-              .build());
+      assertThat(bannedUsersService.banUser(MODERATOR_ID, BAN_USER_PARAMS), is(true));
+      verify(moderatorAuditHistoryDao)
+          .addAuditRecord(
+              ModeratorAuditHistoryDao.AuditArgs.builder()
+                  .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USER)
+                  .actionTarget(USERNAME)
+                  .moderatorUserId(MODERATOR_ID)
+                  .build());
     }
   }
-
-
-
 }

@@ -1,5 +1,6 @@
 package games.strategy.debug.console.window;
 
+import games.strategy.engine.framework.system.SystemProperties;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
@@ -8,10 +9,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import games.strategy.engine.framework.system.SystemProperties;
-
 /**
- * A collection of methods that provide information about the JVM state that may be useful for debugging.
+ * A collection of methods that provide information about the JVM state that may be useful for
+ * debugging.
  */
 final class DebugUtils {
   private static final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
@@ -19,22 +19,34 @@ final class DebugUtils {
   private DebugUtils() {}
 
   /**
-   * Returns a message containing the stack trace of each active thread, as well as a listing of possibly-deadlocked
-   * threads.
+   * Returns a message containing the stack trace of each active thread, as well as a listing of
+   * possibly-deadlocked threads.
    */
   static String getThreadDumps() {
     final StringBuilder result = new StringBuilder();
     result.append("THREAD DUMP\n");
-    final ThreadInfo[] threadInfo = threadMxBean.getThreadInfo(threadMxBean.getAllThreadIds(), Integer.MAX_VALUE);
+    final ThreadInfo[] threadInfo =
+        threadMxBean.getThreadInfo(threadMxBean.getAllThreadIds(), Integer.MAX_VALUE);
     for (final ThreadInfo info : threadInfo) {
       if (info != null) {
-        result.append("thread<").append(info.getThreadId()).append(",").append(info.getThreadName()).append(">\n")
+        result
+            .append("thread<")
+            .append(info.getThreadId())
+            .append(",")
+            .append(info.getThreadName())
+            .append(">\n")
             .append("state:")
-            .append(info.getThreadState()).append("\n");
+            .append(info.getThreadState())
+            .append("\n");
         if (info.getLockName() != null) {
-          result.append("locked on:").append(info.getLockName()).append(" locked owned by:<")
+          result
+              .append("locked on:")
+              .append(info.getLockName())
+              .append(" locked owned by:<")
               .append(info.getLockOwnerId())
-              .append(",").append(info.getLockOwnerName()).append(">\n");
+              .append(",")
+              .append(info.getLockOwnerName())
+              .append(">\n");
         }
         final StackTraceElement[] stackTrace = info.getStackTrace();
         for (final StackTraceElement element : stackTrace) {
@@ -56,9 +68,7 @@ final class DebugUtils {
     return result.toString();
   }
 
-  /**
-   * Returns a message containing information about current memory usage.
-   */
+  /** Returns a message containing information about current memory usage. */
   public static String getMemory() {
     System.gc();
     System.runFinalization();
@@ -66,7 +76,9 @@ final class DebugUtils {
     final int mb = 1024 * 1024;
     final StringBuilder buf = new StringBuilder("Heap utilization statistics [MB]\r\n");
     final Runtime runtime = Runtime.getRuntime();
-    buf.append("Used Memory: ").append((runtime.totalMemory() - runtime.freeMemory()) / mb).append("\r\n");
+    buf.append("Used Memory: ")
+        .append((runtime.totalMemory() - runtime.freeMemory()) / mb)
+        .append("\r\n");
     buf.append("Free memory: ").append(runtime.freeMemory() / mb).append("\r\n");
     buf.append("Total memory: ").append(runtime.totalMemory() / mb).append("\r\n");
     buf.append("Max memory: ").append(runtime.maxMemory() / mb).append("\r\n");

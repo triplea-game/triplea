@@ -9,10 +9,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
-/**
- * An extension of Properties which maintains properties file order.
- */
+/** An extension of Properties which maintains properties file order. */
 public class OrderedProperties extends Properties {
 
   private static final long serialVersionUID = 7458143419297149318L;
@@ -64,5 +61,4 @@ public class OrderedProperties extends Properties {
     keys.clear();
     super.clear();
   }
-
 }

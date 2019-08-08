@@ -1,5 +1,11 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.ClientFileSystemHelper;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.framework.LocalPlayers;
+import games.strategy.io.FileUtils;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.ResourceLoader;
 import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
@@ -11,22 +17,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 import javax.swing.SwingUtilities;
-
+import lombok.extern.java.Log;
 import org.triplea.java.concurrency.CountDownLatchHandler;
 
-import games.strategy.engine.ClientFileSystemHelper;
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.LocalPlayers;
-import games.strategy.io.FileUtils;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.ResourceLoader;
-import lombok.extern.java.Log;
-
 /**
- * Superclass for implementations of {@link UiContext} that provides operations common to both headed and headless
- * environments.
+ * Superclass for implementations of {@link UiContext} that provides operations common to both
+ * headed and headless environments.
  */
 @Log
 public abstract class AbstractUiContext implements UiContext {
@@ -70,16 +67,12 @@ public abstract class AbstractUiContext implements UiContext {
     }
   }
 
-  /**
-   * Get the preferences for the map.
-   */
+  /** Get the preferences for the map. */
   protected static Preferences getPreferencesForMap(final String mapName) {
     return Preferences.userNodeForPackage(AbstractUiContext.class).node(mapName);
   }
 
-  /**
-   * Get the preferences for the map or map skin.
-   */
+  /** Get the preferences for the map or map skin. */
   protected static Preferences getPreferencesMapOrSkin(final String mapDir) {
     return Preferences.userNodeForPackage(AbstractUiContext.class).node(mapDir);
   }
@@ -139,9 +132,7 @@ public abstract class AbstractUiContext implements UiContext {
     }
   }
 
-  /**
-   * Add a latch that will be released when the game shuts down.
-   */
+  /** Add a latch that will be released when the game shuts down. */
   @Override
   public void addActive(final Active actor) {
     if (isShutDown) {
@@ -157,9 +148,7 @@ public abstract class AbstractUiContext implements UiContext {
     }
   }
 
-  /**
-   * Add a latch that will be released when the game shuts down.
-   */
+  /** Add a latch that will be released when the game shuts down. */
   @Override
   public void addShutdownLatch(final CountDownLatch latch) {
     latchesToCloseOnShutdown.addShutdownLatch(latch);
@@ -175,9 +164,7 @@ public abstract class AbstractUiContext implements UiContext {
     return latchesToCloseOnShutdown;
   }
 
-  /**
-   * Add a latch that will be released when the game shuts down.
-   */
+  /** Add a latch that will be released when the game shuts down. */
   @Override
   public void addShutdownWindow(final Window window) {
     if (isShutDown) {
@@ -196,9 +183,12 @@ public abstract class AbstractUiContext implements UiContext {
     // If you are calling this method while holding a lock on an object, while the EDT is separately
     // waiting for that lock, then you have a deadlock.
     // A real life example: player disconnects while you have the battle calc open.
-    // Non-EDT thread does shutdown on IGame and HeadedUiContext, causing btl calc to shutdown, which calls the
-    // window closed event on the EDT, and waits for the lock on HeadedUiContext to removeShutdownWindow, meanwhile
-    // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait, resulting in a
+    // Non-EDT thread does shutdown on IGame and HeadedUiContext, causing btl calc to shutdown,
+    // which calls the
+    // window closed event on the EDT, and waits for the lock on HeadedUiContext to
+    // removeShutdownWindow, meanwhile
+    // our non-EDT tries to dispose the battle panel, which requires the EDT with a invokeAndWait,
+    // resulting in a
     // deadlock.
     SwingUtilities.invokeLater(window::dispose);
   }
@@ -237,10 +227,7 @@ public abstract class AbstractUiContext implements UiContext {
     }
   }
 
-  /**
-   * returns the map skins for the game data.
-   * returns is a map of display-name -> map directory
-   */
+  /** returns the map skins for the game data. returns is a map of display-name -> map directory */
   public static Map<String, String> getSkins(final GameData data) {
     final String mapName = data.getProperties().get(Constants.MAP_NAME).toString();
     final Map<String, String> skinsByDisplayName = new LinkedHashMap<>();
@@ -253,7 +240,8 @@ public abstract class AbstractUiContext implements UiContext {
     final Map<String, String> skinsByDisplayName = new HashMap<>();
     for (final File f : FileUtils.listFiles(ClientFileSystemHelper.getUserMapsFolder())) {
       if (mapSkinNameMatchesMapName(f.getName(), mapName)) {
-        final String displayName = f.getName().replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
+        final String displayName =
+            f.getName().replace(mapName + "-", "").replace("-master", "").replace(".zip", "");
         skinsByDisplayName.put(displayName, f.getName());
       }
     }
@@ -261,7 +249,9 @@ public abstract class AbstractUiContext implements UiContext {
   }
 
   private static boolean mapSkinNameMatchesMapName(final String mapSkin, final String mapName) {
-    return mapSkin.startsWith(mapName) && mapSkin.toLowerCase().contains("skin") && mapSkin.contains("-")
+    return mapSkin.startsWith(mapName)
+        && mapSkin.toLowerCase().contains("skin")
+        && mapSkin.contains("-")
         && !mapSkin.endsWith("properties");
   }
 

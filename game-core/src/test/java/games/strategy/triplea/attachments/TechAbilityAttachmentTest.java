@@ -10,18 +10,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.triplea.java.collections.IntegerMap;
-
 import com.google.common.collect.ImmutableMap;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.NamedAttachable;
@@ -31,12 +20,20 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.UnitTypeList;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechAdvance;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.IntegerMap;
 
 class TechAbilityAttachmentTest {
 
   private final GameData data = mock(GameData.class);
-  private final TechAbilityAttachment attachment = spy(new TechAbilityAttachment("",
-      new NamedAttachable("test", data), data));
+  private final TechAbilityAttachment attachment =
+      spy(new TechAbilityAttachment("", new NamedAttachable("test", data), data));
   private final UnitTypeList list = mock(UnitTypeList.class);
   private final UnitType dummyUnitType = mock(UnitType.class);
   private final String name = "Test Name";
@@ -59,14 +56,16 @@ class TechAbilityAttachmentTest {
 
   @Test
   void testSplitAndValidate_emptyString() {
-    final Exception e = assertThrows(GameParseException.class, () -> attachment.splitAndValidate(name, ""));
+    final Exception e =
+        assertThrows(GameParseException.class, () -> attachment.splitAndValidate(name, ""));
     assertTrue(e.getMessage().contains(name));
     assertTrue(e.getMessage().contains(customToString));
   }
 
   @Test
   void testSplitAndValidate_invalidLength() {
-    final Exception e = assertThrows(GameParseException.class, () -> attachment.splitAndValidate(name, "a:b:c"));
+    final Exception e =
+        assertThrows(GameParseException.class, () -> attachment.splitAndValidate(name, "a:b:c"));
     assertTrue(e.getMessage().contains(name));
     assertTrue(e.getMessage().contains(customToString));
   }
@@ -78,7 +77,6 @@ class TechAbilityAttachmentTest {
     assertEquals("a", result[0]);
   }
 
-
   @Test
   void testSplitAndValidate_twoValues() throws Exception {
     final String[] result = attachment.splitAndValidate(name, "a:b");
@@ -87,13 +85,14 @@ class TechAbilityAttachmentTest {
     assertEquals("b", result[1]);
   }
 
-
   @Test
   void testGetIntInRange_noInt() {
-    final Exception e1 = assertThrows(IllegalArgumentException.class,
-        () -> attachment.getIntInRange(name, "NaN", 10, false));
-    final Exception e2 = assertThrows(IllegalArgumentException.class,
-        () -> attachment.getIntInRange(name, "NaN", -10, true));
+    final Exception e1 =
+        assertThrows(
+            IllegalArgumentException.class, () -> attachment.getIntInRange(name, "NaN", 10, false));
+    final Exception e2 =
+        assertThrows(
+            IllegalArgumentException.class, () -> attachment.getIntInRange(name, "NaN", -10, true));
     assertTrue(e1.getCause() instanceof NumberFormatException);
     assertTrue(e2.getCause() instanceof NumberFormatException);
     assertTrue(e1.getMessage().contains("NaN"));
@@ -102,7 +101,9 @@ class TechAbilityAttachmentTest {
 
   @Test
   void testGetIntInRange_tooHigh() {
-    final Exception e = assertThrows(GameParseException.class, () -> attachment.getIntInRange(name, "20", 10, false));
+    final Exception e =
+        assertThrows(
+            GameParseException.class, () -> attachment.getIntInRange(name, "20", 10, false));
     assertTrue(e.getMessage().contains("20"));
     assertTrue(e.getMessage().contains("10"));
     assertTrue(e.getMessage().contains(name));
@@ -111,7 +112,9 @@ class TechAbilityAttachmentTest {
 
   @Test
   void testGetIntInRange_negativeNoUndefined() {
-    final Exception e = assertThrows(GameParseException.class, () -> attachment.getIntInRange(name, "-1", 10, false));
+    final Exception e =
+        assertThrows(
+            GameParseException.class, () -> attachment.getIntInRange(name, "-1", 10, false));
     assertTrue(e.getMessage().contains("-1"));
     assertTrue(e.getMessage().contains("10"));
     assertTrue(e.getMessage().contains(name));
@@ -120,7 +123,9 @@ class TechAbilityAttachmentTest {
 
   @Test
   void testGetIntInRange_negativeUndefined() {
-    final Exception e = assertThrows(GameParseException.class, () -> attachment.getIntInRange(name, "-2", 10, true));
+    final Exception e =
+        assertThrows(
+            GameParseException.class, () -> attachment.getIntInRange(name, "-2", 10, true));
     assertTrue(e.getMessage().contains("-2"));
     assertTrue(e.getMessage().contains("10"));
     assertTrue(e.getMessage().contains(name));
@@ -141,7 +146,6 @@ class TechAbilityAttachmentTest {
     verify(list).getUnitType(testUnitType);
     verify(list).getUnitType(any());
   }
-
 
   @Test
   void testGetUnitType_noValue() {
@@ -165,21 +169,28 @@ class TechAbilityAttachmentTest {
     @SuppressWarnings("unchecked")
     final Function<TechAbilityAttachment, IntegerMap<UnitType>> mapper = mock(Function.class);
     doReturn(
-        new IntegerMap<>(ImmutableMap.of(dummyUnitType, -1)),
-        new IntegerMap<>(ImmutableMap.of(dummyUnitType, 20)),
-        new IntegerMap<>(ImmutableMap.of(dummyUnitType, 300)))
-            .when(mapper).apply(attachment);
-    final int result = TechAbilityAttachment.sumIntegerMap(mapper, dummyUnitType, mock(PlayerId.class), data);
+            new IntegerMap<>(ImmutableMap.of(dummyUnitType, -1)),
+            new IntegerMap<>(ImmutableMap.of(dummyUnitType, 20)),
+            new IntegerMap<>(ImmutableMap.of(dummyUnitType, 300)))
+        .when(mapper)
+        .apply(attachment);
+    final int result =
+        TechAbilityAttachment.sumIntegerMap(mapper, dummyUnitType, mock(PlayerId.class), data);
     assertEquals(319, result);
   }
 
   @Test
   void testSumNumbers() {
     final AtomicInteger counter = new AtomicInteger(1);
-    final int result = TechAbilityAttachment.sumNumbers(a -> {
-      assertEquals(attachment, a);
-      return counter.getAndUpdate(i -> i * -10);
-    }, "NamedAttachable{name=test}", mock(PlayerId.class), data);
+    final int result =
+        TechAbilityAttachment.sumNumbers(
+            a -> {
+              assertEquals(attachment, a);
+              return counter.getAndUpdate(i -> i * -10);
+            },
+            "NamedAttachable{name=test}",
+            mock(PlayerId.class),
+            data);
     assertEquals(101, result);
   }
 }

@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,8 +26,7 @@ class RouteFinderTest {
   private final List<Territory> territories = new ArrayList<>();
 
   /**
-   * This is an adjacency matrix.
-   * It's representing this graph:
+   * This is an adjacency matrix. It's representing this graph:
    *
    * <pre>
    * <code>
@@ -41,15 +39,15 @@ class RouteFinderTest {
    * </pre>
    */
   private final int[][] graph = {
-      {0, 1, 0, 1, 0, 0, 0, 0, 0},
-      {1, 0, 1, 0, 0, 0, 0, 0, 0},
-      {0, 1, 0, 1, 0, 0, 0, 0, 0},
-      {1, 0, 1, 0, 1, 0, 1, 0, 0},
-      {0, 0, 0, 1, 0, 1, 0, 0, 0},
-      {0, 0, 0, 0, 1, 0, 1, 1, 0},
-      {0, 0, 0, 1, 0, 1, 0, 0, 1},
-      {0, 0, 0, 0, 0, 1, 0, 0, 1},
-      {0, 0, 0, 0, 0, 0, 1, 1, 0}
+    {0, 1, 0, 1, 0, 0, 0, 0, 0},
+    {1, 0, 1, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 1, 0, 0, 0, 0, 0},
+    {1, 0, 1, 0, 1, 0, 1, 0, 0},
+    {0, 0, 0, 1, 0, 1, 0, 0, 0},
+    {0, 0, 0, 0, 1, 0, 1, 1, 0},
+    {0, 0, 0, 1, 0, 1, 0, 0, 1},
+    {0, 0, 0, 0, 0, 1, 0, 0, 1},
+    {0, 0, 0, 0, 0, 0, 1, 1, 0}
   };
 
   @BeforeEach
@@ -58,15 +56,16 @@ class RouteFinderTest {
       final Territory territory = mock(Territory.class);
       final int currentIndex = x;
       when(map.getNeighborsValidatingCanals(eq(territory), any(), any(), any()))
-          .thenAnswer(invocation -> {
-            final Set<Territory> neighbours = new LinkedHashSet<>();
-            for (int y = 0; y < graph[currentIndex].length; y++) {
-              if (graph[currentIndex][y] == 1) {
-                neighbours.add(territories.get(y));
-              }
-            }
-            return neighbours;
-          });
+          .thenAnswer(
+              invocation -> {
+                final Set<Territory> neighbours = new LinkedHashSet<>();
+                for (int y = 0; y < graph[currentIndex].length; y++) {
+                  if (graph[currentIndex][y] == 1) {
+                    neighbours.add(territories.get(y));
+                  }
+                }
+                return neighbours;
+              });
       territories.add(territory);
     }
   }
@@ -74,7 +73,8 @@ class RouteFinderTest {
   @Test
   void testFindRoute() {
     final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
-    final Optional<Route> optRoute = routeFinder.findRoute(territories.get(0), territories.get(territories.size() - 1));
+    final Optional<Route> optRoute =
+        routeFinder.findRoute(territories.get(0), territories.get(territories.size() - 1));
     assertTrue(optRoute.isPresent());
     final Route route = optRoute.get();
     final List<Territory> result = route.getAllTerritories();
@@ -96,7 +96,8 @@ class RouteFinderTest {
     when(map.getNeighborsValidatingCanals(eq(territories.get(0)), any(), any(), any()))
         .thenReturn(Collections.singleton(territories.get(1)));
     final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
-    final Optional<Route> optRoute = routeFinder.findRoute(territories.get(0), territories.get(territories.size() - 1));
+    final Optional<Route> optRoute =
+        routeFinder.findRoute(territories.get(0), territories.get(territories.size() - 1));
     assertFalse(optRoute.isPresent());
   }
 }

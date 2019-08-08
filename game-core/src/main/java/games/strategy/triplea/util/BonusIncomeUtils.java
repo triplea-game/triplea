@@ -1,17 +1,14 @@
 package games.strategy.triplea.util;
 
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import org.triplea.java.collections.IntegerMap;
 
-/**
- * Provides methods that assist with player bonus income.
- */
+/** Provides methods that assist with player bonus income. */
 public final class BonusIncomeUtils {
   private BonusIncomeUtils() {}
 
@@ -20,8 +17,8 @@ public final class BonusIncomeUtils {
    *
    * @return string that summarizes all the changes
    */
-  public static String addBonusIncome(final IntegerMap<Resource> income, final IDelegateBridge bridge,
-      final PlayerId player) {
+  public static String addBonusIncome(
+      final IntegerMap<Resource> income, final IDelegateBridge bridge, final PlayerId player) {
     final StringBuilder sb = new StringBuilder();
     for (final Resource resource : income.keySet()) {
       final int amount = income.getInt(resource);
@@ -31,7 +28,8 @@ public final class BonusIncomeUtils {
         puIncomeBonus = Properties.getPuIncomeBonus(player, bridge.getData());
       }
       final int bonusIncome =
-          (int) Math.round(((double) amount * (double) (incomePercent - 100) / 100)) + puIncomeBonus;
+          (int) Math.round(((double) amount * (double) (incomePercent - 100) / 100))
+              + puIncomeBonus;
       if (bonusIncome == 0) {
         continue;
       }
@@ -52,5 +50,4 @@ public final class BonusIncomeUtils {
     }
     return sb.toString();
   }
-
 }

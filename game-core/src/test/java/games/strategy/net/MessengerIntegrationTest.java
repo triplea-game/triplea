@@ -11,9 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.annotation.concurrent.GuardedBy;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -107,7 +105,6 @@ class MessengerIntegrationTest {
     assertEquals(0, serverMessageListener.getMessageCount());
   }
 
-
   @Test
   void testMultipleServer() {
     for (int i = 0; i < 100; i++) {
@@ -130,20 +127,22 @@ class MessengerIntegrationTest {
 
   @Test
   void testCorrectNodeCountInRemove() {
-    // when we receive the notification that a connection has been lost, the node list should reflect that change
+    // when we receive the notification that a connection has been lost, the node list should
+    // reflect that change
     await().until(serverMessenger::getNodes, hasSize(3));
     final AtomicInteger serverCount = new AtomicInteger(3);
-    serverMessenger.addConnectionChangeListener(new IConnectionChangeListener() {
-      @Override
-      public void connectionRemoved(final INode to) {
-        serverCount.decrementAndGet();
-      }
+    serverMessenger.addConnectionChangeListener(
+        new IConnectionChangeListener() {
+          @Override
+          public void connectionRemoved(final INode to) {
+            serverCount.decrementAndGet();
+          }
 
-      @Override
-      public void connectionAdded(final INode to) {
-        fail("A connection should not be added.");
-      }
-    });
+          @Override
+          public void connectionAdded(final INode to) {
+            fail("A connection should not be added.");
+          }
+        });
     client1Messenger.shutDown();
     await().until(serverMessenger::getNodes, hasSize(2));
     assertEquals(2, serverCount.get());

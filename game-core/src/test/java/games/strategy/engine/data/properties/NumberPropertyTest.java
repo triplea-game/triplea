@@ -18,25 +18,28 @@ final class NumberPropertyTest {
 
     @Test
     void shouldThrowExceptionWhenMaxValueLessThanMinValue() {
-      final Exception e = assertThrows(
-          IllegalArgumentException.class,
-          () -> new NumberProperty(NAME, DESCRIPTION, MIN_VALUE - 1, MIN_VALUE, DEFAULT_VALUE));
+      final Exception e =
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> new NumberProperty(NAME, DESCRIPTION, MIN_VALUE - 1, MIN_VALUE, DEFAULT_VALUE));
       assertThat(e.getMessage(), is("Max must be greater than min"));
     }
 
     @Test
     void shouldThrowExceptionWhenDefaultValueGreaterThanMaxValue() {
-      final Exception e = assertThrows(
-          IllegalArgumentException.class,
-          () -> new NumberProperty(NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MAX_VALUE + 1));
+      final Exception e =
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> new NumberProperty(NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MAX_VALUE + 1));
       assertThat(e.getMessage(), is("Default value out of range"));
     }
 
     @Test
     void shouldThrowExceptionWhenDefaultValueLessThanMinValue() {
-      final Exception e = assertThrows(
-          IllegalArgumentException.class,
-          () -> new NumberProperty(NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MIN_VALUE - 1));
+      final Exception e =
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> new NumberProperty(NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MIN_VALUE - 1));
       assertThat(e.getMessage(), is("Default value out of range"));
     }
   }

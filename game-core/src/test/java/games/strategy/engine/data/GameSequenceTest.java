@@ -3,15 +3,12 @@ package games.strategy.engine.data;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import java.util.Properties;
-
-import javax.annotation.Nullable;
-
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.delegate.TestDelegate;
+import java.util.Properties;
+import javax.annotation.Nullable;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 final class GameSequenceTest {
   @Nested

@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -17,9 +16,11 @@ final class EnumClientSettingTest {
   final class EncodeValueTest {
     @Test
     void shouldReturnEnumConstantName() {
-      Arrays.stream(FakeEnum.values()).forEach(value -> {
-        assertThat(clientSetting.encodeValue(value), is(value.toString()));
-      });
+      Arrays.stream(FakeEnum.values())
+          .forEach(
+              value -> {
+                assertThat(clientSetting.encodeValue(value), is(value.toString()));
+              });
     }
   }
 
@@ -34,11 +35,15 @@ final class EnumClientSettingTest {
 
     @Test
     void shouldThrowExceptionWhenEncodedValueIsIllegal() {
-      assertThrows(ClientSetting.ValueEncodingException.class, () -> clientSetting.decodeValue("__unknown__"));
+      assertThrows(
+          ClientSetting.ValueEncodingException.class,
+          () -> clientSetting.decodeValue("__unknown__"));
     }
   }
 
   private enum FakeEnum {
-    ONE, TWO, THREE;
+    ONE,
+    TWO,
+    THREE;
   }
 }

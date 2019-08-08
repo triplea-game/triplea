@@ -1,10 +1,5 @@
 package games.strategy.triplea.ai.pro.data;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerId;
@@ -14,9 +9,14 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
- * Takes all available purchase options, filters out those which the AI can't handle, and sorts them into categories.
+ * Takes all available purchase options, filters out those which the AI can't handle, and sorts them
+ * into categories.
  */
 public class ProPurchaseOptionMap {
 
@@ -65,8 +65,9 @@ public class ProPurchaseOptionMap {
 
       // Add rule to appropriate purchase option list
       if ((UnitAttachment.get(unitType).getMovement(player) <= 0
-          && !UnitAttachment.get(unitType).getCanProduceUnits())
-          || Matches.unitTypeConsumesUnitsOnCreation().test(unitType) || UnitAttachment.get(unitType).getIsSuicide()
+              && !UnitAttachment.get(unitType).getCanProduceUnits())
+          || Matches.unitTypeConsumesUnitsOnCreation().test(unitType)
+          || UnitAttachment.get(unitType).getIsSuicide()
           || UnitAttachment.get(unitType).getIsSuicideOnHit()) {
         final ProPurchaseOption ppo = new ProPurchaseOption(rule, unitType, player, data);
         specialOptions.add(ppo);

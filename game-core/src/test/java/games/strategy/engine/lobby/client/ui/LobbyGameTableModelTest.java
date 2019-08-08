@@ -5,10 +5,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import com.google.common.util.concurrent.Runnables;
+import games.strategy.engine.message.IChannelMessenger;
+import games.strategy.engine.message.IRemoteMessenger;
+import games.strategy.engine.message.MessageContext;
+import games.strategy.net.GUID;
+import games.strategy.net.IMessenger;
+import games.strategy.net.INode;
+import games.strategy.net.Messengers;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,34 +29,19 @@ import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.swing.SwingAction;
 import org.triplea.util.Tuple;
 
-import com.google.common.util.concurrent.Runnables;
-
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.engine.message.MessageContext;
-import games.strategy.net.GUID;
-import games.strategy.net.IMessenger;
-import games.strategy.net.INode;
-import games.strategy.net.Messengers;
-
 final class LobbyGameTableModelTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class RemoveAndUpdateGameTest {
     private LobbyGameTableModel testObj;
-    @Mock
-    private IMessenger mockMessenger;
-    @Mock
-    private IChannelMessenger mockChannelMessenger;
-    @Mock
-    private IRemoteMessenger mockRemoteMessenger;
-    @Mock
-    private ILobbyGameController mockLobbyController;
+    @Mock private IMessenger mockMessenger;
+    @Mock private IChannelMessenger mockChannelMessenger;
+    @Mock private IRemoteMessenger mockRemoteMessenger;
+    @Mock private ILobbyGameController mockLobbyController;
     private Map<GUID, GameDescription> fakeGameMap;
     private Tuple<GUID, GameDescription> fakeGame;
     private GameDescription mockGameDescription = GameDescription.builder().build();
-    @Mock
-    private INode serverNode;
+    @Mock private INode serverNode;
 
     @BeforeEach
     void setUp() {
@@ -60,8 +52,9 @@ final class LobbyGameTableModelTest {
       Mockito.when(mockRemoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME))
           .thenReturn(mockLobbyController);
       Mockito.when(mockLobbyController.listGames()).thenReturn(fakeGameMap);
-      testObj = new LobbyGameTableModel(
-          true, new Messengers(mockMessenger, mockRemoteMessenger, mockChannelMessenger));
+      testObj =
+          new LobbyGameTableModel(
+              true, new Messengers(mockMessenger, mockRemoteMessenger, mockChannelMessenger));
       Mockito.verify(mockLobbyController, Mockito.times(1)).listGames();
 
       MessageContext.setSenderNodeForThread(serverNode);
@@ -100,8 +93,8 @@ final class LobbyGameTableModelTest {
     void updateGameWithNullGuidIsIgnored() {
       testObj.getLobbyGameBroadcaster().gameUpdated(null, GameDescription.builder().build());
       waitForSwingThreads();
-      assertThat("expect row count to remain 1, null guid is bogus data",
-          testObj.getRowCount(), is(1));
+      assertThat(
+          "expect row count to remain 1, null guid is bogus data", testObj.getRowCount(), is(1));
     }
 
     @Test

@@ -4,31 +4,24 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.google.gson.Gson;
 import java.net.URI;
-
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
-
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.google.gson.Gson;
-
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
-@ExtendWith({
-    WiremockResolver.class,
-    WiremockUriResolver.class
-})
+@ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
 class ErrorReportClientTest {
   private static final String MESSAGE_FROM_USER = "msg";
   private static final String LINK = "http://localhost";
 
-  private static final ErrorUploadResponse SUCCESS_RESPONSE = ErrorUploadResponse.builder()
-      .githubIssueLink(LINK)
-      .build();
+  private static final ErrorUploadResponse SUCCESS_RESPONSE =
+      ErrorUploadResponse.builder().githubIssueLink(LINK).build();
 
   @Test
   void sendErrorReportSuccessCase(@WiremockResolver.Wiremock final WireMockServer server) {
@@ -47,10 +40,11 @@ class ErrorReportClientTest {
 
   private static ErrorUploadResponse doServiceCall(final URI hostUri) {
     return ErrorUploadClient.newClient(hostUri)
-        .uploadErrorReport(ErrorUploadRequest.builder()
-            .title("Guttuss cadunt in germanus oenipons!")
-            .body(MESSAGE_FROM_USER)
-            .build());
+        .uploadErrorReport(
+            ErrorUploadRequest.builder()
+                .title("Guttuss cadunt in germanus oenipons!")
+                .body(MESSAGE_FROM_USER)
+                .build());
   }
 
   @Test
@@ -62,24 +56,19 @@ class ErrorReportClientTest {
         ErrorReportClientTest::doServiceCall);
   }
 
-
   @Test
   void canSubmitErrorReport(@WiremockResolver.Wiremock final WireMockServer server) {
     wireMockCanSubmitReport(server, true);
     final URI hostUri = URI.create(server.url(""));
 
-    MatcherAssert.assertThat(
-        ErrorUploadClient.newClient(hostUri).canSubmitErrorReport(),
-        is(true));
+    MatcherAssert.assertThat(ErrorUploadClient.newClient(hostUri).canSubmitErrorReport(), is(true));
   }
 
-  private void wireMockCanSubmitReport(final WireMockServer wireMockServer, final boolean response) {
+  private void wireMockCanSubmitReport(
+      final WireMockServer wireMockServer, final boolean response) {
     wireMockServer.stubFor(
         WireMock.get(ErrorUploadClient.CAN_REPORT_PATH)
-            .willReturn(
-                WireMock.aResponse()
-                    .withStatus(200)
-                    .withBody(String.valueOf(response))));
+            .willReturn(WireMock.aResponse().withStatus(200).withBody(String.valueOf(response))));
   }
 
   @Test
@@ -88,7 +77,6 @@ class ErrorReportClientTest {
     final URI hostUri = URI.create(server.url(""));
 
     MatcherAssert.assertThat(
-        ErrorUploadClient.newClient(hostUri).canSubmitErrorReport(),
-        is(false));
+        ErrorUploadClient.newClient(hostUri).canSubmitErrorReport(), is(false));
   }
 }

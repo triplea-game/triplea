@@ -1,12 +1,9 @@
 package games.strategy.triplea.ai.pro.logging;
 
+import games.strategy.engine.data.ProductionRule;
 import org.triplea.java.collections.IntegerMap;
 
-import games.strategy.engine.data.ProductionRule;
-
-/**
- * Pro AI metrics.
- */
+/** Pro AI metrics. */
 public final class ProMetricUtils {
   private static final IntegerMap<ProductionRule> totalPurchaseMap = new IntegerMap<>();
 

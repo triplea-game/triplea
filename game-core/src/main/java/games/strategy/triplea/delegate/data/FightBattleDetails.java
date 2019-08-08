@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-/**
- * Information about a pending battle that must be fought.
- */
+/** Information about a pending battle that must be fought. */
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter

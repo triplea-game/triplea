@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Calendar;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -20,10 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ModeratorUserDaoDataTest {
   private static final Instant NOW = Instant.now();
   private static final Timestamp timestamp = Timestamp.from(NOW);
-  private static final String USERNAME = "The girl views with strength, hoist the pacific ocean until it laughs.";
+  private static final String USERNAME =
+      "The girl views with strength, hoist the pacific ocean until it laughs.";
 
-  @Mock
-  private ResultSet resultSet;
+  @Mock private ResultSet resultSet;
 
   @Test
   void buildResultMapper() throws Exception {
@@ -31,7 +30,8 @@ class ModeratorUserDaoDataTest {
         .thenReturn(timestamp);
     when(resultSet.getString(ModeratorUserDaoData.USERNAME_COLUMN)).thenReturn(USERNAME);
 
-    final ModeratorUserDaoData result = ModeratorUserDaoData.buildResultMapper().map(resultSet, null);
+    final ModeratorUserDaoData result =
+        ModeratorUserDaoData.buildResultMapper().map(resultSet, null);
 
     assertThat(result.getUsername(), is(USERNAME));
     assertThat(result.getLastLogin(), is(NOW));

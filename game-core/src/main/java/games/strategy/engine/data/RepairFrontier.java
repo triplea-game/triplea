@@ -7,9 +7,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * A collection of {@link RepairRule}s.
- */
+/** A collection of {@link RepairRule}s. */
 public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule> {
   private static final long serialVersionUID = -5148536624986056753L;
 

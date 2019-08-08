@@ -1,18 +1,14 @@
 package games.strategy.engine.data;
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.RelationshipTypeAttachment;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attachments.RelationshipTypeAttachment;
-
-/**
- * A collection of Relationship types.
- */
+/** A collection of Relationship types. */
 public class RelationshipTypeList extends GameDataComponent implements Iterable<RelationshipType> {
   private static final long serialVersionUID = 6590541694575435151L;
 
@@ -26,21 +22,27 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   protected RelationshipTypeList(final GameData data) {
     super(data);
     try {
-      createDefaultRelationship(Constants.RELATIONSHIP_TYPE_SELF, RelationshipTypeAttachment.ARCHETYPE_ALLIED, data);
-      createDefaultRelationship(Constants.RELATIONSHIP_TYPE_NULL, RelationshipTypeAttachment.ARCHETYPE_WAR, data);
-      createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_WAR, RelationshipTypeAttachment.ARCHETYPE_WAR,
-          data);
-      createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED, RelationshipTypeAttachment.ARCHETYPE_ALLIED,
+      createDefaultRelationship(
+          Constants.RELATIONSHIP_TYPE_SELF, RelationshipTypeAttachment.ARCHETYPE_ALLIED, data);
+      createDefaultRelationship(
+          Constants.RELATIONSHIP_TYPE_NULL, RelationshipTypeAttachment.ARCHETYPE_WAR, data);
+      createDefaultRelationship(
+          Constants.RELATIONSHIP_TYPE_DEFAULT_WAR, RelationshipTypeAttachment.ARCHETYPE_WAR, data);
+      createDefaultRelationship(
+          Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED,
+          RelationshipTypeAttachment.ARCHETYPE_ALLIED,
           data);
     } catch (final GameParseException e) {
-      // this should never happen, createDefaultRelationship only throws a GameParseException when the wrong ArcheType
+      // this should never happen, createDefaultRelationship only throws a GameParseException when
+      // the wrong ArcheType
       // is supplied, but we never do that
       throw new IllegalStateException(e);
     }
   }
 
   /**
-   * Convenience method to return the RELATIONSHIP_TYPE_SELF relation (the relation you have with yourself).
+   * Convenience method to return the RELATIONSHIP_TYPE_SELF relation (the relation you have with
+   * yourself).
    *
    * @return the relation one has with oneself.
    */
@@ -49,7 +51,8 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
   }
 
   /**
-   * Convenience method to return the RELATIONSHIP_TYPE_NULL relation (the relation you have with the Neutral Player).
+   * Convenience method to return the RELATIONSHIP_TYPE_NULL relation (the relation you have with
+   * the Neutral Player).
    *
    * @return the relation one has with the Neutral.
    */
@@ -65,13 +68,17 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
    * @param data the GameData object for this relationship
    * @throws GameParseException if the wrong relationshipArcheType is used
    */
-  private void createDefaultRelationship(final String relationshipTypeConstant, final String relationshipArcheType,
-      final GameData data) throws GameParseException {
+  private void createDefaultRelationship(
+      final String relationshipTypeConstant,
+      final String relationshipArcheType,
+      final GameData data)
+      throws GameParseException {
     // create a new relationshipType with the name from the constant
     final RelationshipType relationshipType = new RelationshipType(relationshipTypeConstant, data);
     // create a new attachment to attach to this type
     final RelationshipTypeAttachment at =
-        new RelationshipTypeAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME, relationshipType, data);
+        new RelationshipTypeAttachment(
+            Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME, relationshipType, data);
     at.setArcheType(relationshipArcheType);
     // attach this attachment to this type
     relationshipType.addAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME, at);

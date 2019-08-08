@@ -7,11 +7,11 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-
 import lombok.extern.java.Log;
 
 /**
- * Downloads a map index file, parses it and returns a <code>List</code> of <code>DownloadFileDescription</code>.
+ * Downloads a map index file, parses it and returns a <code>List</code> of <code>
+ * DownloadFileDescription</code>.
  */
 @Log
 public class DownloadRunnable {
@@ -19,17 +19,18 @@ public class DownloadRunnable {
   private DownloadRunnable() {}
 
   /**
-   * Parses a file at the given URL into a List of {@link DownloadFileDescription}s.
-   * If an error occurs this will return an empty list.
+   * Parses a file at the given URL into a List of {@link DownloadFileDescription}s. If an error
+   * occurs this will return an empty list.
    */
   public static List<DownloadFileDescription> download(final String url) {
-    return DownloadConfiguration.contentReader().download(url, DownloadFileParser::parse)
+    return DownloadConfiguration.contentReader()
+        .download(url, DownloadFileParser::parse)
         .orElseGet(Collections::emptyList);
   }
 
   /**
-   * Parses a file at the given {@link Path} into a List of {@link DownloadFileDescription}s.
-   * If an error occurs this will return an empty list.
+   * Parses a file at the given {@link Path} into a List of {@link DownloadFileDescription}s. If an
+   * error occurs this will return an empty list.
    */
   public static List<DownloadFileDescription> readLocalFile(final Path path) {
     try (InputStream inputStream = Files.newInputStream(path)) {

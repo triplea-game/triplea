@@ -4,12 +4,9 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 
-/**
- * Implementation of {@link IServerMessenger} for a local game server.
- */
+/** Implementation of {@link IServerMessenger} for a local game server. */
 public class LocalNoOpMessenger implements IServerMessenger {
 
   private final INode node;

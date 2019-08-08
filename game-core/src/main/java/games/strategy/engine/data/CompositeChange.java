@@ -3,9 +3,7 @@ package games.strategy.engine.data;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A Change made of several changes.
- */
+/** A Change made of several changes. */
 public class CompositeChange extends Change {
   private static final long serialVersionUID = 8152962976769419486L;
 
@@ -35,7 +33,8 @@ public class CompositeChange extends Change {
   @Override
   public Change invert() {
     final List<Change> newChanges = new ArrayList<>();
-    // to invert a list of changes, process the opposite of each change in the reverse order of the original list
+    // to invert a list of changes, process the opposite of each change in the reverse order of the
+    // original list
     for (int i = changes.size() - 1; i >= 0; i--) {
       final Change current = changes.get(i);
       newChanges.add(current.invert());
@@ -50,9 +49,7 @@ public class CompositeChange extends Change {
     }
   }
 
-  /**
-   * Returns true if this change is empty, or composed of empty changes.
-   */
+  /** Returns true if this change is empty, or composed of empty changes. */
   @Override
   public boolean isEmpty() {
     for (final Change c : changes) {

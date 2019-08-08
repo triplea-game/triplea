@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,22 +23,21 @@ class InvalidKeyLockOutTest {
   private static final int MAX_FAILS_BY_IP = 2;
   private static final int MAX_TOTAL_FAILS = 3;
 
-  @Mock
-  private InvalidKeyCache invalidKeyCache;
+  @Mock private InvalidKeyCache invalidKeyCache;
 
   private InvalidKeyLockOut invalidKeyLockOut;
 
-  @Mock
-  private HttpServletRequest httpServletRequest;
+  @Mock private HttpServletRequest httpServletRequest;
 
   @BeforeEach
   void setup() {
-    invalidKeyLockOut = InvalidKeyLockOut.builder()
-        .production(false)
-        .invalidKeyCache(invalidKeyCache)
-        .maxFailsByIpAddress(MAX_FAILS_BY_IP)
-        .maxTotalFails(MAX_TOTAL_FAILS)
-        .build();
+    invalidKeyLockOut =
+        InvalidKeyLockOut.builder()
+            .production(false)
+            .invalidKeyCache(invalidKeyCache)
+            .maxFailsByIpAddress(MAX_FAILS_BY_IP)
+            .maxTotalFails(MAX_TOTAL_FAILS)
+            .build();
   }
 
   @Test
@@ -72,24 +70,23 @@ class InvalidKeyLockOutTest {
     assertThat(invalidKeyLockOut.isLockedOut(httpServletRequest), is(true));
   }
 
-
   @Nested
   final class ClearLockoutTest {
     @Test
     void calledInProductionLocksOut() {
-      invalidKeyLockOut = InvalidKeyLockOut.builder()
-          .production(true)
-          .invalidKeyCache(invalidKeyCache)
-          .maxFailsByIpAddress(MAX_FAILS_BY_IP)
-          .maxTotalFails(MAX_TOTAL_FAILS)
-          .build();
+      invalidKeyLockOut =
+          InvalidKeyLockOut.builder()
+              .production(true)
+              .invalidKeyCache(invalidKeyCache)
+              .maxFailsByIpAddress(MAX_FAILS_BY_IP)
+              .maxTotalFails(MAX_TOTAL_FAILS)
+              .build();
 
       assertThrows(
           IllegalArgumentException.class,
           () -> invalidKeyLockOut.clearLockouts(httpServletRequest));
 
-      verify(invalidKeyCache, times(MAX_FAILS_BY_IP))
-          .increment(httpServletRequest);
+      verify(invalidKeyCache, times(MAX_FAILS_BY_IP)).increment(httpServletRequest);
       verify(invalidKeyCache, never()).clear();
     }
 

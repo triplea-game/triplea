@@ -1,22 +1,16 @@
 package org.triplea.http.client.github.issues;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import java.net.URI;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
-
-import com.github.tomakehurst.wiremock.WireMockServer;
-
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
-@ExtendWith({
-    WiremockResolver.class,
-    WiremockUriResolver.class
-})
+@ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
 class GithubIssueClientTest {
 
   private static final String AUTH_TOKEN = "Where is the coal-black ship?";
@@ -33,18 +27,14 @@ class GithubIssueClientTest {
         .githubRepo(GITHUB_REPO)
         .uri(hostUri)
         .build()
-        .newIssue(ErrorUploadRequest.builder()
-            .title(ISSUE_TITLE)
-            .body(ISSUE_BODY)
-            .build());
+        .newIssue(ErrorUploadRequest.builder().title(ISSUE_TITLE).body(ISSUE_BODY).build());
   }
 
   @Test
   void server500(@WiremockResolver.Wiremock final WireMockServer wireMockServer) {
     HttpClientTesting.verifyErrorHandling(
         wireMockServer,
-        String.format(
-            "/repos/%s/%s/issues", GITHUB_ORG, GITHUB_REPO),
+        String.format("/repos/%s/%s/issues", GITHUB_ORG, GITHUB_REPO),
         HttpClientTesting.RequestType.POST,
         GithubIssueClientTest::doServiceCall);
   }

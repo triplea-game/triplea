@@ -1,14 +1,11 @@
 package games.strategy.engine.data;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.annotations.VisibleForTesting;
-
-/**
- * A collection of {@link ProductionRule}s keyed on the production rule name.
- */
+/** A collection of {@link ProductionRule}s keyed on the production rule name. */
 public class ProductionRuleList extends GameDataComponent {
   private static final long serialVersionUID = -5313215563006788188L;
 

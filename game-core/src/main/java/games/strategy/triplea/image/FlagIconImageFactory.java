@@ -1,12 +1,9 @@
 package games.strategy.triplea.image;
 
+import games.strategy.engine.data.PlayerId;
 import java.awt.Image;
 
-import games.strategy.engine.data.PlayerId;
-
-/**
- * A factory for creating various player (nation, power, etc.) flag images.
- */
+/** A factory for creating various player (nation, power, etc.) flag images. */
 public class FlagIconImageFactory extends ImageFactory {
   private static final String PREFIX = "flags/";
 

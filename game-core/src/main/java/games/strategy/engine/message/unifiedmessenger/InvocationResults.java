@@ -2,17 +2,14 @@ package games.strategy.engine.message.unifiedmessenger;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.engine.message.RemoteMethodCallResults;
+import games.strategy.net.GUID;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import games.strategy.engine.message.RemoteMethodCallResults;
-import games.strategy.net.GUID;
-
-/**
- * The results of a remote invocation.
- */
+/** The results of a remote invocation. */
 public abstract class InvocationResults implements Externalizable {
   private static final long serialVersionUID = -382704036681832123L;
   public RemoteMethodCallResults results;

@@ -1,5 +1,17 @@
 package games.strategy.triplea.ui;
 
+import com.google.common.base.Preconditions;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.NamedAttachable;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.attachments.UnitAttachment;
+import games.strategy.ui.ScrollableTextField;
+import games.strategy.ui.ScrollableTextFieldListener;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -15,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -30,23 +41,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingAction;
-
-import com.google.common.base.Preconditions;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.NamedAttachable;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.ResourceCollection;
-import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.attachments.UnitAttachment;
-import games.strategy.ui.ScrollableTextField;
-import games.strategy.ui.ScrollableTextFieldListener;
 
 class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
@@ -67,8 +63,13 @@ class ProductionPanel extends JPanel {
     this.uiContext = uiContext;
   }
 
-  static IntegerMap<ProductionRule> getProduction(final PlayerId id, final JFrame parent, final GameData data,
-      final boolean bid, final IntegerMap<ProductionRule> initialPurchase, final UiContext uiContext) {
+  static IntegerMap<ProductionRule> getProduction(
+      final PlayerId id,
+      final JFrame parent,
+      final GameData data,
+      final boolean bid,
+      final IntegerMap<ProductionRule> initialPurchase,
+      final UiContext uiContext) {
     return new ProductionPanel(uiContext).show(id, parent, data, bid, initialPurchase);
   }
 
@@ -83,16 +84,20 @@ class ProductionPanel extends JPanel {
     return prod;
   }
 
-  /**
-   * Shows the production panel, and returns a map of selected rules.
-   */
-  IntegerMap<ProductionRule> show(final PlayerId id, final JFrame parent, final GameData data, final boolean bid,
+  /** Shows the production panel, and returns a map of selected rules. */
+  IntegerMap<ProductionRule> show(
+      final PlayerId id,
+      final JFrame parent,
+      final GameData data,
+      final boolean bid,
       final IntegerMap<ProductionRule> initialPurchase) {
     dialog = new JDialog(parent, "Produce", true);
     dialog.getContentPane().add(this);
     final String key = "dialog.close";
     dialog.getRootPane().getActionMap().put(key, SwingAction.of("", e -> dialog.setVisible(false)));
-    dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+    dialog
+        .getRootPane()
+        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), key);
 
     this.bid = bid;
@@ -114,7 +119,8 @@ class ProductionPanel extends JPanel {
     return rules;
   }
 
-  protected void initRules(final PlayerId player, final IntegerMap<ProductionRule> initialPurchase) {
+  protected void initRules(
+      final PlayerId player, final IntegerMap<ProductionRule> initialPurchase) {
     this.data.acquireReadLock();
     try {
       id = player;
@@ -136,13 +142,37 @@ class ProductionPanel extends JPanel {
     final JPanel panel = new JPanel();
     panel.setLayout(new GridBagLayout());
     final JLabel legendLabel = new JLabel("Attack | Defense | Movement");
-    this.add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST,
-        GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
+    this.add(
+        legendLabel,
+        new GridBagConstraints(
+            0,
+            0,
+            30,
+            1,
+            1,
+            1,
+            GridBagConstraints.EAST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(8, 8, 8, 0),
+            0,
+            0));
     int rows = rules.size() / 7;
     rows = Math.max(2, rows);
     for (int x = 0; x < rules.size(); x++) {
-      panel.add(rules.get(x).getPanelComponent(), new GridBagConstraints(x / rows, (x % rows), 1, 1, 10, 10,
-          GridBagConstraints.EAST, GridBagConstraints.BOTH, nullInsets, 0, 0));
+      panel.add(
+          rules.get(x).getPanelComponent(),
+          new GridBagConstraints(
+              x / rows,
+              (x % rows),
+              1,
+              1,
+              10,
+              10,
+              GridBagConstraints.EAST,
+              GridBagConstraints.BOTH,
+              nullInsets,
+              0,
+              0));
     }
     final JScrollPane scroll = new JScrollPane(panel);
     scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -151,25 +181,73 @@ class ProductionPanel extends JPanel {
     final int availWidth = screenResolution.width - 30;
     final int availWidthRules = availWidth - 16;
     final int availHeightRules = availHeight - 116;
-    scroll
-        .setPreferredSize(
-            new Dimension(
-                (scroll.getPreferredSize().width > availWidthRules
-                    ? availWidthRules
-                    : scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeightRules ? 25 : 0)),
-                (scroll.getPreferredSize().height > availHeightRules ? availHeightRules
-                    : scroll.getPreferredSize().height
-                        + (scroll.getPreferredSize().width > availWidthRules ? 25 : 0))));
-    this.add(scroll, new GridBagConstraints(0, 1, 30, 1, 100, 100, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-        new Insets(8, 8, 8, 4), 0, 0));
-    this.add(left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-        new Insets(8, 8, 0, 12), 0, 0));
-    this.add(remainingResources,
-        new GridBagConstraints(1, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-            new Insets(8, 8, 0, 12), 0, 0));
+    scroll.setPreferredSize(
+        new Dimension(
+            (scroll.getPreferredSize().width > availWidthRules
+                ? availWidthRules
+                : scroll.getPreferredSize().width
+                    + (scroll.getPreferredSize().height > availHeightRules ? 25 : 0)),
+            (scroll.getPreferredSize().height > availHeightRules
+                ? availHeightRules
+                : scroll.getPreferredSize().height
+                    + (scroll.getPreferredSize().width > availWidthRules ? 25 : 0))));
+    this.add(
+        scroll,
+        new GridBagConstraints(
+            0,
+            1,
+            30,
+            1,
+            100,
+            100,
+            GridBagConstraints.WEST,
+            GridBagConstraints.BOTH,
+            new Insets(8, 8, 8, 4),
+            0,
+            0));
+    this.add(
+        left,
+        new GridBagConstraints(
+            0,
+            2,
+            1,
+            1,
+            1,
+            1,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(8, 8, 0, 12),
+            0,
+            0));
+    this.add(
+        remainingResources,
+        new GridBagConstraints(
+            1,
+            2,
+            1,
+            1,
+            1,
+            1,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(8, 8, 0, 12),
+            0,
+            0));
     done = new JButton(doneAction);
-    this.add(done, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-        new Insets(0, 0, 8, 0), 0, 0));
+    this.add(
+        done,
+        new GridBagConstraints(
+            0,
+            3,
+            30,
+            1,
+            1,
+            1,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 8, 0),
+            0,
+            0));
     this.setMaximumSize(new Dimension(availWidth, availHeight));
   }
 
@@ -177,7 +255,8 @@ class ProductionPanel extends JPanel {
     remainingResources.removeAll();
     left.setText(String.format("%d total units purchased. Remaining resources: ", totalUnits));
     if (resourceCollection != null) {
-      remainingResources.add(uiContext.getResourceImageFactory().getResourcesPanel(resourceCollection, id));
+      remainingResources.add(
+          uiContext.getResourceImageFactory().getResourcesPanel(resourceCollection, id));
     }
   }
 
@@ -202,7 +281,8 @@ class ProductionPanel extends JPanel {
   protected ResourceCollection getResources() {
     if (bid) {
       Preconditions.checkState(id != null, "bid was true while id is null");
-      // TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple resources can be given?
+      // TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple
+      // resources can be given?
       final String propertyName = id.getName() + " bid";
       final int bid = data.getProperties().get(propertyName, 0);
       final ResourceCollection bidCollection = new ResourceCollection(data);
@@ -224,20 +304,21 @@ class ProductionPanel extends JPanel {
     private final ProductionRule rule;
     private final PlayerId id;
     private final Set<ScrollableTextField> textFields = new HashSet<>();
-    private final ScrollableTextFieldListener listener = new ScrollableTextFieldListener() {
-      @Override
-      public void changedValue(final ScrollableTextField stf) {
-        if (stf.getValue() != quantity) {
-          quantity = stf.getValue();
-          calculateLimits();
-          for (final ScrollableTextField textField : textFields) {
-            if (!stf.equals(textField)) {
-              textField.setValue(quantity);
+    private final ScrollableTextFieldListener listener =
+        new ScrollableTextFieldListener() {
+          @Override
+          public void changedValue(final ScrollableTextField stf) {
+            if (stf.getValue() != quantity) {
+              quantity = stf.getValue();
+              calculateLimits();
+              for (final ScrollableTextField textField : textFields) {
+                if (!stf.equals(textField)) {
+                  textField.setValue(quantity);
+                }
+              }
             }
           }
-        }
-      }
-    };
+        };
 
     Rule(final ProductionRule rule, final PlayerId id) {
       this.rule = rule;
@@ -250,8 +331,10 @@ class ProductionPanel extends JPanel {
       panel.setLayout(new GridBagLayout());
 
       final JLabel name = new JLabel("  ");
-      name.setFont(name.getFont().deriveFont(Collections.singletonMap(
-          TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD)));
+      name.setFont(
+          name.getFont()
+              .deriveFont(
+                  Collections.singletonMap(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD)));
       final JLabel info = new JLabel("  ");
       final Color defaultForegroundLabelColor = name.getForeground();
       Optional<ImageIcon> icon = Optional.empty();
@@ -268,11 +351,15 @@ class ProductionPanel extends JPanel {
           final int movement = attach.getMovement(id);
           final int defense = attach.getDefense(id);
           info.setText(attack + " | " + defense + " | " + movement);
-          tooltip.append(type.getName()).append(": ").append(TooltipProperties.getInstance().getTooltip(type, id));
+          tooltip
+              .append(type.getName())
+              .append(": ")
+              .append(TooltipProperties.getInstance().getTooltip(type, id));
           name.setText(type.getName());
           if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() == 1) {
             name.setForeground(Color.CYAN);
-          } else if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() > 1) {
+          } else if (attach.getConsumesUnits() != null
+              && attach.getConsumesUnits().totalValues() > 1) {
             name.setForeground(Color.BLUE);
           } else {
             name.setForeground(defaultForegroundLabelColor);
@@ -296,18 +383,40 @@ class ProductionPanel extends JPanel {
       costPanel.setBorder(new EmptyBorder(0, 5, 0, 0));
       int count = 0;
       for (final Resource resource : cost.keySet()) {
-        final JLabel resourceLabel =
-            uiContext.getResourceImageFactory().getLabel(resource, cost);
-        costPanel.add(resourceLabel,
-            new GridBagConstraints(0, count++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(1, 0, 0, 0), 0, 0));
+        final JLabel resourceLabel = uiContext.getResourceImageFactory().getLabel(resource, cost);
+        costPanel.add(
+            resourceLabel,
+            new GridBagConstraints(
+                0,
+                count++,
+                1,
+                1,
+                1,
+                1,
+                GridBagConstraints.WEST,
+                GridBagConstraints.NONE,
+                new Insets(1, 0, 0, 0),
+                0,
+                0));
       }
       if (numberOfUnitsGiven > 1) {
-        final JLabel numberOfUnitsLabel = new JLabel("<html>for " + numberOfUnitsGiven + "<br>" + " units</html>");
+        final JLabel numberOfUnitsLabel =
+            new JLabel("<html>for " + numberOfUnitsGiven + "<br>" + " units</html>");
         numberOfUnitsLabel.setFont(numberOfUnitsLabel.getFont().deriveFont(12f));
-        costPanel.add(numberOfUnitsLabel,
-            new GridBagConstraints(0, count, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(1, 0, 0, 0), 0, 0));
+        costPanel.add(
+            numberOfUnitsLabel,
+            new GridBagConstraints(
+                0,
+                count,
+                1,
+                1,
+                1,
+                1,
+                GridBagConstraints.WEST,
+                GridBagConstraints.NONE,
+                new Insets(1, 0, 0, 0),
+                0,
+                0));
       }
       final JPanel label = new JPanel();
       icon.ifPresent(imageIcon -> label.add(new JLabel(imageIcon)));
@@ -321,14 +430,62 @@ class ProductionPanel extends JPanel {
       label.setToolTipText(toolTipText);
 
       final int space = 5;
-      panel.add(name, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.NONE,
-          new Insets(2, 0, 0, 0), 0, 0));
-      panel.add(info, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.SOUTH, GridBagConstraints.NONE,
-          new Insets(space, space, space, space), 0, 0));
-      panel.add(label, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE,
-          new Insets(space, space, space, space), 0, 0));
-      panel.add(textField, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.SOUTH, GridBagConstraints.NONE,
-          new Insets(space, space, space, space), 0, 0));
+      panel.add(
+          name,
+          new GridBagConstraints(
+              0,
+              0,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.NORTH,
+              GridBagConstraints.NONE,
+              new Insets(2, 0, 0, 0),
+              0,
+              0));
+      panel.add(
+          info,
+          new GridBagConstraints(
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.SOUTH,
+              GridBagConstraints.NONE,
+              new Insets(space, space, space, space),
+              0,
+              0));
+      panel.add(
+          label,
+          new GridBagConstraints(
+              0,
+              2,
+              1,
+              1,
+              1,
+              1,
+              GridBagConstraints.CENTER,
+              GridBagConstraints.NONE,
+              new Insets(space, space, space, space),
+              0,
+              0));
+      panel.add(
+          textField,
+          new GridBagConstraints(
+              0,
+              3,
+              1,
+              1,
+              0,
+              0,
+              GridBagConstraints.SOUTH,
+              GridBagConstraints.NONE,
+              new Insets(space, space, space, space),
+              0,
+              0));
       textField.addChangeListener(listener);
       textFields.add(textField);
       panel.setBorder(new EtchedBorder());

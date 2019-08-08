@@ -4,13 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.io.OutputStream;
-
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.io.IoUtils;
+import java.io.OutputStream;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 final class GameDataManagerTest {
   @Nested

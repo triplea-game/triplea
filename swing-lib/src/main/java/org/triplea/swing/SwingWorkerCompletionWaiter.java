@@ -2,26 +2,21 @@ package org.triplea.swing;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.SwingWorker;
-
-import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Manages the display of a window during the execution of a {@code SwingWorker}.
  *
- * <p>
- * Use this class when it is necessary to display progress during a potentially long-running operation. If the <i>Event
- * Dispatch Thread</i> must be blocked until the operation is complete (i.e. the user should not be allowed to perform
- * any other actions in the UI), it is recommended you use a modal dialog.
- * </p>
+ * <p>Use this class when it is necessary to display progress during a potentially long-running
+ * operation. If the <i>Event Dispatch Thread</i> must be blocked until the operation is complete
+ * (i.e. the user should not be allowed to perform any other actions in the UI), it is recommended
+ * you use a modal dialog.
  *
- * <p>
- * For example:
- * </p>
+ * <p>For example:
  *
  * <pre>
  * JDialog dialog = new JDialog(owner, true);
@@ -33,15 +28,15 @@ import com.google.common.annotations.VisibleForTesting;
  * </pre>
  */
 public final class SwingWorkerCompletionWaiter implements PropertyChangeListener {
-  @VisibleForTesting
-  static final String SWING_WORKER_STATE_PROPERTY_NAME = "state";
+  @VisibleForTesting static final String SWING_WORKER_STATE_PROPERTY_NAME = "state";
 
   private final ProgressWindow progressWindow;
 
   /**
    * Initializes a new instance of the {@code SwingWorkerCompletionWaiter} class.
    *
-   * @param window The window to display while the operation is in progress; must not be {@code null}.
+   * @param window The window to display while the operation is in progress; must not be {@code
+   *     null}.
    */
   public SwingWorkerCompletionWaiter(final Window window) {
     this.progressWindow = ProgressWindow.fromWindow(checkNotNull(window));

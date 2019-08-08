@@ -6,8 +6,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 /**
- * The results of a method execution.
- * Note that either one of returnValue or exception will be null, since the method can either throw or return.
+ * The results of a method execution. Note that either one of returnValue or exception will be null,
+ * since the method can either throw or return.
  */
 public class RemoteMethodCallResults implements Externalizable {
   private static final long serialVersionUID = 4562274411264858613L;
@@ -61,5 +61,4 @@ public class RemoteMethodCallResults implements Externalizable {
     final String exceptionMsg = (exception == null) ? "none" : exception.toString();
     return "Return value: '" + returnValue + "', exception: " + exceptionMsg;
   }
-
 }

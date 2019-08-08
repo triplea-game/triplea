@@ -1,8 +1,6 @@
 package games.strategy.triplea.delegate;
 
-/**
- * Constants for the battle steps.
- */
+/** Constants for the battle steps. */
 public interface BattleStepStrings {
 
   String AA_GUNS_FIRE_SUFFIX = " fire";

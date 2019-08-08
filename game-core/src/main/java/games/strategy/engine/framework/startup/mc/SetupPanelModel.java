@@ -1,17 +1,6 @@
 package games.strategy.engine.framework.startup.mc;
 
-import java.awt.Dimension;
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import javax.annotation.Nonnull;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
-import org.triplea.game.startup.ServerSetupModel;
-
 import com.google.common.base.Preconditions;
-
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
 import games.strategy.engine.framework.startup.ui.LocalSetupPanel;
@@ -22,24 +11,25 @@ import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
+import java.awt.Dimension;
+import java.util.Optional;
+import java.util.function.Consumer;
+import javax.annotation.Nonnull;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.triplea.game.startup.ServerSetupModel;
 
-/**
- * This class provides a way to switch between different ISetupPanel displays.
- */
+/** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor
 public class SetupPanelModel implements ServerSetupModel {
-  @Getter
-  protected final GameSelectorModel gameSelectorModel;
+  @Getter protected final GameSelectorModel gameSelectorModel;
   protected SetupPanel panel = null;
 
-  @Setter
-  private Consumer<SetupPanel> panelChangeListener;
-  @Nonnull
-  private final JFrame ui;
-
+  @Setter private Consumer<SetupPanel> panelChangeListener;
+  @Nonnull private final JFrame ui;
 
   @Override
   public void showSelectType() {
@@ -55,28 +45,32 @@ public class SetupPanelModel implements ServerSetupModel {
   }
 
   /**
-   * Starts the game server and displays the game start screen afterwards, awaiting remote game clients.
+   * Starts the game server and displays the game start screen afterwards, awaiting remote game
+   * clients.
    */
   public void showServer() {
-    new ServerModel(gameSelectorModel, this, ui, new HeadedLaunchAction(ui)).createServerMessenger();
+    new ServerModel(gameSelectorModel, this, ui, new HeadedLaunchAction(ui))
+        .createServerMessenger();
   }
 
   @Override
   public void onServerMessengerCreated(final ServerModel serverModel) {
-    SwingUtilities.invokeLater(() -> {
-      setGameTypePanel(new ServerSetupPanel(serverModel, gameSelectorModel));
-      // for whatever reason, the server window is showing very very small, causing the nation info to be cut and
-      // requiring scroll bars
-      final int x = Math.max(ui.getPreferredSize().width, 800);
-      final int y = Math.max(ui.getPreferredSize().height, 660);
-      ui.setPreferredSize(new Dimension(x, y));
-      ui.setSize(new Dimension(x, y));
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          setGameTypePanel(new ServerSetupPanel(serverModel, gameSelectorModel));
+          // for whatever reason, the server window is showing very very small, causing the nation
+          // info to be cut and
+          // requiring scroll bars
+          final int x = Math.max(ui.getPreferredSize().width, 800);
+          final int y = Math.max(ui.getPreferredSize().height, 660);
+          ui.setPreferredSize(new Dimension(x, y));
+          ui.setSize(new Dimension(x, y));
+        });
   }
 
   /**
-   * A method that establishes a connection to a remote game and displays the game start screen afterwards if the
-   * connection was successfully established.
+   * A method that establishes a connection to a remote game and displays the game start screen
+   * afterwards if the connection was successfully established.
    */
   public void showClient() {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
@@ -94,8 +88,7 @@ public class SetupPanelModel implements ServerSetupModel {
     }
     this.panel = panel;
 
-    Optional.ofNullable(panelChangeListener)
-        .ifPresent(listener -> listener.accept(panel));
+    Optional.ofNullable(panelChangeListener).ifPresent(listener -> listener.accept(panel));
   }
 
   public SetupPanel getPanel() {
@@ -108,17 +101,20 @@ public class SetupPanelModel implements ServerSetupModel {
    * user is presented with another try or they can abort. In the abort case this method is a no-op.
    */
   public void login() {
-    LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher().fetchLobbyServerProperties()
-        .ifPresent(lobbyServerProperties -> {
-          final LobbyLogin login = new LobbyLogin(ui, lobbyServerProperties);
+    LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
+        .fetchLobbyServerProperties()
+        .ifPresent(
+            lobbyServerProperties -> {
+              final LobbyLogin login = new LobbyLogin(ui, lobbyServerProperties);
 
-          Optional.ofNullable(login.login())
-              .ifPresent(
-                  lobbyClient -> {
-                    final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyServerProperties);
-                    GameRunner.hideMainFrame();
-                    lobbyFrame.setVisible(true);
-                  });
-        });
+              Optional.ofNullable(login.login())
+                  .ifPresent(
+                      lobbyClient -> {
+                        final LobbyFrame lobbyFrame =
+                            new LobbyFrame(lobbyClient, lobbyServerProperties);
+                        GameRunner.hideMainFrame();
+                        lobbyFrame.setVisible(true);
+                      });
+            });
   }
 }

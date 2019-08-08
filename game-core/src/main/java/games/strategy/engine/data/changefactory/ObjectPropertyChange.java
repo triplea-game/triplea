@@ -1,16 +1,13 @@
 package games.strategy.engine.data.changefactory;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Unit;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
-/**
- * A game data change that captures a change to an object property value.
- */
+/** A game data change that captures a change to an object property value. */
 public class ObjectPropertyChange extends Change {
   private static final long serialVersionUID = 4218093376094170940L;
 
@@ -26,8 +23,8 @@ public class ObjectPropertyChange extends Change {
     oldValue = object.getPropertyOrThrow(property).getValue();
   }
 
-  private ObjectPropertyChange(final Unit object, final String property, final Object newValue,
-      final Object oldValue) {
+  private ObjectPropertyChange(
+      final Unit object, final String property, final Object newValue, final Object oldValue) {
     this.object = object;
     // prevent multiple copies of the property names being held in the game
     this.property = property.intern();
@@ -35,7 +32,8 @@ public class ObjectPropertyChange extends Change {
     this.oldValue = oldValue;
   }
 
-  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+  private void readObject(final ObjectInputStream stream)
+      throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     property = property.intern();
   }
@@ -60,7 +58,13 @@ public class ObjectPropertyChange extends Change {
 
   @Override
   public String toString() {
-    return "Property change, unit:" + object + " property:" + property + " newValue:" + newValue + " oldValue:"
+    return "Property change, unit:"
+        + object
+        + " property:"
+        + property
+        + " newValue:"
+        + newValue
+        + " oldValue:"
         + oldValue;
   }
 }

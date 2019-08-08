@@ -6,18 +6,15 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.cache.Cache;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.google.common.cache.Cache;
 
 @ExtendWith(MockitoExtension.class)
 class InvalidKeyCacheTest {
@@ -26,12 +23,9 @@ class InvalidKeyCacheTest {
   private static final String IP_ADDRESS_2 = "Damn yer parrot, feed the sea-dog.";
   private static final String IP_ADDRESS_3 = "Jolly roger, yer not blowing me without a fortune!";
 
+  @Mock private Cache<String, Integer> cache;
 
-  @Mock
-  private Cache<String, Integer> cache;
-
-  @Mock
-  private HttpServletRequest httpServletRequest;
+  @Mock private HttpServletRequest httpServletRequest;
 
   private InvalidKeyCache invalidKeyCache;
 
@@ -46,7 +40,6 @@ class InvalidKeyCacheTest {
   void tearDown() {
     reset(cache);
   }
-
 
   @Test
   void incrementWithNewKey() {

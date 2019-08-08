@@ -1,16 +1,13 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.banned.users;
 
+import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
 import java.util.function.BiConsumer;
-
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
+import lombok.Builder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
-
-import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
-import lombok.Builder;
 
 @Builder
 class BannedUsersTabActions {
@@ -21,7 +18,8 @@ class BannedUsersTabActions {
     return (rowNum, tableModel) -> {
       final String bannedUserName = String.valueOf(tableModel.getValueAt(rowNum, 1));
 
-      SwingComponents.promptUser("Unban " + bannedUserName,
+      SwingComponents.promptUser(
+          "Unban " + bannedUserName,
           "Are you sure you want to unban " + bannedUserName + "?",
           () -> {
             final String banId = String.valueOf(tableModel.getValueAt(rowNum, 0));

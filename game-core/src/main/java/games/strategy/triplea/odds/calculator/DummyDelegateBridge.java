@@ -1,8 +1,5 @@
 package games.strategy.triplea.odds.calculator;
 
-import java.util.List;
-import java.util.Properties;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -21,10 +18,10 @@ import games.strategy.sound.ISound;
 import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
 import games.strategy.triplea.ui.display.ITripleADisplay;
+import java.util.List;
+import java.util.Properties;
 
-/**
- * Delegate bridge implementation with minimum valid behavior.
- */
+/** Delegate bridge implementation with minimum valid behavior. */
 public class DummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource randomSource = new PlainRandomSource();
   private final ITripleADisplay display = new HeadlessDisplay();
@@ -32,19 +29,42 @@ public class DummyDelegateBridge implements IDelegateBridge {
   private final DummyPlayer attackingPlayer;
   private final DummyPlayer defendingPlayer;
   private final PlayerId attacker;
-  private final DelegateHistoryWriter writer = new DelegateHistoryWriter(new DummyGameModifiedChannel());
+  private final DelegateHistoryWriter writer =
+      new DelegateHistoryWriter(new DummyGameModifiedChannel());
   private final CompositeChange allChanges;
   private final GameData gameData;
   private MustFightBattle battle = null;
 
-  public DummyDelegateBridge(final PlayerId attacker, final GameData data, final CompositeChange allChanges,
-      final List<Unit> attackerOrderOfLosses, final List<Unit> defenderOrderOfLosses,
-      final boolean attackerKeepOneLandUnit, final int retreatAfterRound, final int retreatAfterXUnitsLeft,
+  public DummyDelegateBridge(
+      final PlayerId attacker,
+      final GameData data,
+      final CompositeChange allChanges,
+      final List<Unit> attackerOrderOfLosses,
+      final List<Unit> defenderOrderOfLosses,
+      final boolean attackerKeepOneLandUnit,
+      final int retreatAfterRound,
+      final int retreatAfterXUnitsLeft,
       final boolean retreatWhenOnlyAirLeft) {
-    attackingPlayer = new DummyPlayer(this, true, "battle calc dummy", attackerOrderOfLosses,
-        attackerKeepOneLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
-    defendingPlayer = new DummyPlayer(this, false, "battle calc dummy", defenderOrderOfLosses, false,
-        retreatAfterRound, -1, false);
+    attackingPlayer =
+        new DummyPlayer(
+            this,
+            true,
+            "battle calc dummy",
+            attackerOrderOfLosses,
+            attackerKeepOneLandUnit,
+            retreatAfterRound,
+            retreatAfterXUnitsLeft,
+            retreatWhenOnlyAirLeft);
+    defendingPlayer =
+        new DummyPlayer(
+            this,
+            false,
+            "battle calc dummy",
+            defenderOrderOfLosses,
+            false,
+            retreatAfterRound,
+            -1,
+            false);
     gameData = data;
     this.attacker = attacker;
     this.allChanges = allChanges;
@@ -80,7 +100,11 @@ public class DummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public int[] getRandom(final int max, final int count, final PlayerId player, final IRandomStats.DiceType diceType,
+  public int[] getRandom(
+      final int max,
+      final int count,
+      final PlayerId player,
+      final IRandomStats.DiceType diceType,
       final String annotation) {
     return randomSource.getRandom(max, count, annotation);
   }

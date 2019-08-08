@@ -1,13 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.function.Predicate;
-import java.util.logging.Level;
-
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -29,11 +21,15 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.BonusIncomeUtils;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.function.Predicate;
+import java.util.logging.Level;
 import lombok.extern.java.Log;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
-/**
- * This delegate is only supposed to be run once, per game, at the start of the game.
- */
+/** This delegate is only supposed to be run once, per game, at the start of the game. */
 @Log
 public class InitializationDelegate extends BaseTripleADelegate {
   private boolean needToInitialize = true;
@@ -90,7 +86,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   /**
-   * The initTransportedLandUnits has some side effects, and we need to reset unit state to get rid of them.
+   * The initTransportedLandUnits has some side effects, and we need to reset unit state to get rid
+   * of them.
    */
   private void resetUnitState() {
     final Change change = MoveDelegate.getResetUnitStateChange(getData());
@@ -101,8 +98,9 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   /**
-   * Want to make sure that all units in the sea that can be transported are marked as being transported by something.
-   * We assume that all transportable units in the sea are in a transport, no exceptions.
+   * Want to make sure that all units in the sea that can be transported are marked as being
+   * transported by something. We assume that all transportable units in the sea are in a transport,
+   * no exceptions.
    */
   private static void initTransportedLandUnits(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
@@ -118,7 +116,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
         continue;
       }
       // map transports, try to fill
-      final Collection<Unit> transports = CollectionUtils.getMatches(units, Matches.unitIsTransport());
+      final Collection<Unit> transports =
+          CollectionUtils.getMatches(units, Matches.unitIsTransport());
       final Collection<Unit> land = CollectionUtils.getMatches(units, Matches.unitIsLand());
       for (final Unit toLoad : land) {
         final UnitAttachment ua = UnitAttachment.get(toLoad.getType());
@@ -136,7 +135,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
               historyItemCreated = true;
             }
             try {
-              bridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) transport, toLoad));
+              bridge.addChange(
+                  TransportTracker.loadTransportChange((TripleAUnit) transport, toLoad));
             } catch (final IllegalStateException e) {
               log.log(
                   Level.SEVERE,
@@ -151,7 +151,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
         }
         if (!found) {
           throw new IllegalStateException(
-              "Cannot load all land units in sea transports. " + "Please make sure you have enough transports. "
+              "Cannot load all land units in sea transports. "
+                  + "Please make sure you have enough transports. "
                   + "You may need to re-order the xml's placement of transports and land units, "
                   + "as the engine will try to fill them in the order they are given.");
         }
@@ -160,8 +161,14 @@ public class InitializationDelegate extends BaseTripleADelegate {
   }
 
   private static void initAiStartingBonusIncome(final IDelegateBridge bridge) {
-    bridge.getData().getPlayerList().getPlayers().forEach(
-        player -> BonusIncomeUtils.addBonusIncome(player.getResources().getResourcesCopy(), bridge, player));
+    bridge
+        .getData()
+        .getPlayerList()
+        .getPlayers()
+        .forEach(
+            player ->
+                BonusIncomeUtils.addBonusIncome(
+                    player.getResources().getResourcesCopy(), bridge, player));
   }
 
   private static void initDeleteAssetsOfDisabledPlayers(final IDelegateBridge bridge) {
@@ -193,7 +200,9 @@ public class InitializationDelegate extends BaseTripleADelegate {
         }
       }
       if (!change.isEmpty()) {
-        bridge.getHistoryWriter().startEvent("Remove all resources and units from: " + player.getName());
+        bridge
+            .getHistoryWriter()
+            .startEvent("Remove all resources and units from: " + player.getName());
         bridge.addChange(change);
       }
     }
@@ -205,7 +214,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
     // must be notified (and have its ui) updated for each step,
     // so remove the bid steps that arent used
     for (final GameStep step : data.getSequence()) {
-      if (step.getDelegate() instanceof BidPlaceDelegate || step.getDelegate() instanceof BidPurchaseDelegate) {
+      if (step.getDelegate() instanceof BidPlaceDelegate
+          || step.getDelegate() instanceof BidPurchaseDelegate) {
         if (!BidPurchaseDelegate.doesPlayerHaveBid(data, step.getPlayerId())) {
           step.setMaxRunCount(0);
         }
@@ -218,7 +228,9 @@ public class InitializationDelegate extends BaseTripleADelegate {
     for (final PlayerId player : data.getPlayerList().getPlayers()) {
       final Collection<TechAdvance> advances = TechTracker.getCurrentTechAdvances(player, data);
       if (!advances.isEmpty()) {
-        bridge.getHistoryWriter().startEvent("Initializing " + player.getName() + " with tech advances");
+        bridge
+            .getHistoryWriter()
+            .startEvent("Initializing " + player.getName() + " with tech advances");
         for (final TechAdvance advance : advances) {
           advance.perform(player, bridge);
         }
@@ -231,9 +243,12 @@ public class InitializationDelegate extends BaseTripleADelegate {
     final boolean addArtilleryAndDestroyers = Properties.getUseDestroyersAndArtillery(data);
     if (!isWW2V2(data) && addArtilleryAndDestroyers) {
       final CompositeChange change = new CompositeChange();
-      final ProductionRule artillery = data.getProductionRuleList().getProductionRule("buyArtillery");
-      final ProductionRule destroyer = data.getProductionRuleList().getProductionRule("buyDestroyer");
-      final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier("production");
+      final ProductionRule artillery =
+          data.getProductionRuleList().getProductionRule("buyArtillery");
+      final ProductionRule destroyer =
+          data.getProductionRuleList().getProductionRule("buyDestroyer");
+      final ProductionFrontier frontier =
+          data.getProductionFrontierList().getProductionFrontier("production");
       if (artillery != null && !frontier.getRules().contains(artillery)) {
         change.add(ChangeFactory.addProductionRule(artillery, frontier));
       }
@@ -248,11 +263,15 @@ public class InitializationDelegate extends BaseTripleADelegate {
           data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
       if (artilleryIndustrialTechnology != null
           && !frontierIndustrialTechnology.getRules().contains(artilleryIndustrialTechnology)) {
-        change.add(ChangeFactory.addProductionRule(artilleryIndustrialTechnology, frontierIndustrialTechnology));
+        change.add(
+            ChangeFactory.addProductionRule(
+                artilleryIndustrialTechnology, frontierIndustrialTechnology));
       }
       if (destroyerIndustrialTechnology != null
           && !frontierIndustrialTechnology.getRules().contains(destroyerIndustrialTechnology)) {
-        change.add(ChangeFactory.addProductionRule(destroyerIndustrialTechnology, frontierIndustrialTechnology));
+        change.add(
+            ChangeFactory.addProductionRule(
+                destroyerIndustrialTechnology, frontierIndustrialTechnology));
       }
       if (!change.isEmpty()) {
         bridge.getHistoryWriter().startEvent("Adding destroyers and artillery production rules");
@@ -300,7 +319,8 @@ public class InitializationDelegate extends BaseTripleADelegate {
   private static void initTwoHitBattleship(final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     final boolean userEnabled = Properties.getTwoHitBattleships(data);
-    final UnitType battleShipUnit = data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_BATTLESHIP);
+    final UnitType battleShipUnit =
+        data.getUnitTypeList().getUnitType(Constants.UNIT_TYPE_BATTLESHIP);
     if (battleShipUnit == null) {
       return;
     }
@@ -308,7 +328,9 @@ public class InitializationDelegate extends BaseTripleADelegate {
     final boolean defaultEnabled = battleShipAttachment.getHitPoints() > 1;
     if (userEnabled != defaultEnabled) {
       bridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);
-      bridge.addChange(ChangeFactory.attachmentPropertyChange(battleShipAttachment, userEnabled ? 2 : 1, "hitPoints"));
+      bridge.addChange(
+          ChangeFactory.attachmentPropertyChange(
+              battleShipAttachment, userEnabled ? 2 : 1, "hitPoints"));
     }
   }
 
@@ -326,7 +348,9 @@ public class InitializationDelegate extends BaseTripleADelegate {
         }
         final Collection<Unit> factoryAndInfrastructure =
             current.getUnitCollection().getMatches(Matches.unitIsInfrastructure());
-        changes.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, current.getOwner()));
+        changes.add(
+            OriginalOwnerTracker.addOriginalOwnerChange(
+                factoryAndInfrastructure, current.getOwner()));
       } else if (!current.isWater()) {
         final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
         if (territoryAttachment == null) {

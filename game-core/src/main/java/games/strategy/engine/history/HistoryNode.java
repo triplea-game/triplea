@@ -2,9 +2,7 @@ package games.strategy.engine.history;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-/**
- * Superclass for all nodes in the History tree view.
- */
+/** Superclass for all nodes in the History tree view. */
 public abstract class HistoryNode extends DefaultMutableTreeNode {
   private static final long serialVersionUID = 628623470654123887L;
 

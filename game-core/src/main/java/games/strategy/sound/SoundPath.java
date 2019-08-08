@@ -6,11 +6,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Contains the sound file names and the directory of all sound files.
- */
+/** Contains the sound file names and the directory of all sound files. */
 public final class SoundPath {
-  // MAKE SURE TO ADD NEW SOUNDS TO THE getAllSoundOptions() METHOD! (or else the user's preference will not be saved)
+  // MAKE SURE TO ADD NEW SOUNDS TO THE getAllSoundOptions() METHOD! (or else the user's preference
+  // will not be saved)
 
   // standard sounds (files can be found in corresponding data/... folder to this package)
   public static final String CLIP_CHAT_MESSAGE = "chat_message";

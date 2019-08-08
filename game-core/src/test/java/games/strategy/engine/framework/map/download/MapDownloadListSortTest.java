@@ -3,12 +3,10 @@ package games.strategy.engine.framework.map.download;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import com.google.common.collect.Lists;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.triplea.util.Version;
-
-import com.google.common.collect.Lists;
 
 class MapDownloadListSortTest {
 
@@ -20,7 +18,12 @@ class MapDownloadListSortTest {
   private static DownloadFileDescription newDownload(final String mapName, final String url) {
     final String description = "fake";
     final Version version = new Version("1");
-    return new DownloadFileDescription(url, description, mapName, version, DownloadFileDescription.DownloadType.MAP,
+    return new DownloadFileDescription(
+        url,
+        description,
+        mapName,
+        version,
+        DownloadFileDescription.DownloadType.MAP,
         DownloadFileDescription.MapCategory.EXPERIMENTAL);
   }
 
@@ -44,5 +47,4 @@ class MapDownloadListSortTest {
     final List<DownloadFileDescription> sorted = MapDownloadListSort.sortByMapName(downloads);
     assertSorted(sorted);
   }
-
 }

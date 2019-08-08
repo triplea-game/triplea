@@ -1,17 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Predicate;
-
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
-import org.triplea.util.Triple;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
@@ -26,10 +14,18 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Triple;
 
-/**
- * Edit game state.
- */
+/** Edit game state. */
 public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
 
   @Override
@@ -52,8 +48,14 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     }
     for (final PlayerId p : owners) {
       final List<Unit> unitsOwned = CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(p));
-      logEvent("Removing units owned by " + p.getName() + " from " + territory.getName() + ": "
-          + MyFormatter.unitsToTextNoOwner(unitsOwned), unitsOwned);
+      logEvent(
+          "Removing units owned by "
+              + p.getName()
+              + " from "
+              + territory.getName()
+              + ": "
+              + MyFormatter.unitsToTextNoOwner(unitsOwned),
+          unitsOwned);
       bridge.addChange(ChangeFactory.removeUnits(territory, unitsOwned));
     }
     return null;
@@ -84,12 +86,16 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
           if (units.isEmpty() || !units.stream().allMatch(Matches.alliedUnit(player, data))) {
             return "Can't add mixed nationality units to water";
           }
-          final Predicate<Unit> friendlySeaTransports = Matches.unitIsTransport()
-              .and(Matches.unitIsSea())
-              .and(Matches.alliedUnit(player, data));
-          final Collection<Unit> seaTransports = CollectionUtils.getMatches(units, friendlySeaTransports);
-          final Collection<Unit> landUnitsToAdd = CollectionUtils.getMatches(units, Matches.unitIsLand());
-          if (landUnitsToAdd.isEmpty() || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
+          final Predicate<Unit> friendlySeaTransports =
+              Matches.unitIsTransport()
+                  .and(Matches.unitIsSea())
+                  .and(Matches.alliedUnit(player, data));
+          final Collection<Unit> seaTransports =
+              CollectionUtils.getMatches(units, friendlySeaTransports);
+          final Collection<Unit> landUnitsToAdd =
+              CollectionUtils.getMatches(units, Matches.unitIsLand());
+          if (landUnitsToAdd.isEmpty()
+              || !landUnitsToAdd.stream().allMatch(Matches.unitCanBeTransported())) {
             return "Can't add land units that can't be transported, to water";
           }
           seaTransports.addAll(territory.getUnitCollection().getMatches(friendlySeaTransports));
@@ -104,15 +110,23 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       }
     }
     // now perform the changes
-    logEvent("Adding units owned by " + units.iterator().next().getOwner().getName() + " to " + territory.getName()
-        + ": " + MyFormatter.unitsToTextNoOwner(units), units);
+    logEvent(
+        "Adding units owned by "
+            + units.iterator().next().getOwner().getName()
+            + " to "
+            + territory.getName()
+            + ": "
+            + MyFormatter.unitsToTextNoOwner(units),
+        units);
     bridge.addChange(ChangeFactory.addUnits(territory, units));
-    if (Properties.getUnitsMayGiveBonusMovement(getData()) && GameStepPropertiesHelper.isGiveBonusMovement(data)) {
+    if (Properties.getUnitsMayGiveBonusMovement(getData())
+        && GameStepPropertiesHelper.isGiveBonusMovement(data)) {
       bridge.addChange(MoveDelegate.giveBonusMovementToUnits(player, data, territory));
     }
     if (mapLoading != null && !mapLoading.isEmpty()) {
       for (final Entry<Unit, Unit> entry : mapLoading.entrySet()) {
-        bridge.addChange(TransportTracker.loadTransportChange((TripleAUnit) entry.getValue(), entry.getKey()));
+        bridge.addChange(
+            TransportTracker.loadTransportChange((TripleAUnit) entry.getValue(), entry.getKey()));
       }
     }
     return null;
@@ -130,16 +144,24 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (result != null) {
       return result;
     }
-    logEvent("Changing ownership of " + territory.getName() + " from " + territory.getOwner().getName() + " to "
-        + player.getName(), territory);
+    logEvent(
+        "Changing ownership of "
+            + territory.getName()
+            + " from "
+            + territory.getOwner().getName()
+            + " to "
+            + player.getName(),
+        territory);
     if (!data.getRelationshipTracker().isAtWar(territory.getOwner(), player)) {
       // change ownership of friendly factories
-      final Collection<Unit> units = territory.getUnitCollection().getMatches(Matches.unitIsInfrastructure());
+      final Collection<Unit> units =
+          territory.getUnitCollection().getMatches(Matches.unitIsInfrastructure());
       for (final Unit unit : units) {
         bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
       }
     } else {
-      final Predicate<Unit> enemyNonCom = Matches.unitIsInfrastructure().and(Matches.enemyUnit(player, data));
+      final Predicate<Unit> enemyNonCom =
+          Matches.unitIsInfrastructure().and(Matches.enemyUnit(player, data));
       final Collection<Unit> units = territory.getUnitCollection().getMatches(enemyNonCom);
       // mark no movement for enemy units
       bridge.addChange(ChangeFactory.markNoMovementChange(units));
@@ -167,7 +189,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (newTotal < 0) {
       return "New PUs total is invalid";
     }
-    logEvent("Changing PUs for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
+    logEvent(
+        "Changing PUs for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
     bridge.addChange(ChangeFactory.changeResourcesChange(player, pus, (newTotal - oldTotal)));
     return null;
   }
@@ -186,8 +209,11 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     if (newTotal < 0) {
       return "New token total is invalid";
     }
-    logEvent("Changing tech tokens for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
-    bridge.addChange(ChangeFactory.changeResourcesChange(player, techTokens, (newTotal - oldTotal)));
+    logEvent(
+        "Changing tech tokens for " + player.getName() + " from " + oldTotal + " to " + newTotal,
+        null);
+    bridge.addChange(
+        ChangeFactory.changeResourcesChange(player, techTokens, (newTotal - oldTotal)));
     return null;
   }
 
@@ -224,7 +250,8 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
   }
 
   @Override
-  public String changeUnitHitDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory) {
+  public String changeUnitHitDamage(
+      final IntegerMap<Unit> unitDamageMap, final Territory territory) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -245,15 +272,20 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return null;
     }
     final Collection<Unit> unitsFinal = new ArrayList<>(unitDamageMap.keySet());
-    logEvent("Changing unit hit damage for these " + unitsFinal.iterator().next().getOwner().getName()
-        + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
+    logEvent(
+        "Changing unit hit damage for these "
+            + unitsFinal.iterator().next().getOwner().getName()
+            + " owned units to: "
+            + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false),
+        unitsFinal);
     bridge.addChange(ChangeFactory.unitsHit(unitDamageMap));
     // territory.notifyChanged();
     return null;
   }
 
   @Override
-  public String changeUnitBombingDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory) {
+  public String changeUnitBombingDamage(
+      final IntegerMap<Unit> unitDamageMap, final Territory territory) {
     String result = checkEditMode();
     if (result != null) {
       return result;
@@ -276,8 +308,12 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
     }
     // we do damage to the unit
     final Collection<Unit> unitsFinal = new ArrayList<>(unitDamageMap.keySet());
-    logEvent("Changing unit bombing damage for these " + unitsFinal.iterator().next().getOwner().getName()
-        + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false), unitsFinal);
+    logEvent(
+        "Changing unit bombing damage for these "
+            + unitsFinal.iterator().next().getOwner().getName()
+            + " owned units to: "
+            + MyFormatter.integerUnitMapToString(unitDamageMap, ", ", " = ", false),
+        unitsFinal);
     bridge.addChange(ChangeFactory.bombingUnitDamage(unitDamageMap));
     // territory.notifyChanged();
     return null;
@@ -298,17 +334,34 @@ public class EditDelegate extends BaseEditDelegate implements IEditDelegate {
       return result;
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(getData());
-    for (final Triple<PlayerId, PlayerId, RelationshipType> relationshipChange : relationshipChanges) {
-      final RelationshipType currentRelation = getData().getRelationshipTracker()
-          .getRelationshipType(relationshipChange.getFirst(), relationshipChange.getSecond());
+    for (final Triple<PlayerId, PlayerId, RelationshipType> relationshipChange :
+        relationshipChanges) {
+      final RelationshipType currentRelation =
+          getData()
+              .getRelationshipTracker()
+              .getRelationshipType(relationshipChange.getFirst(), relationshipChange.getSecond());
       if (!currentRelation.equals(relationshipChange.getThird())) {
-        logEvent("Editing Political Relationship for " + relationshipChange.getFirst().getName() + " and "
-            + relationshipChange.getSecond().getName() + " from " + currentRelation.getName() + " to "
-            + relationshipChange.getThird().getName(), null);
-        bridge.addChange(ChangeFactory.relationshipChange(relationshipChange.getFirst(),
-            relationshipChange.getSecond(), currentRelation, relationshipChange.getThird()));
-        battleTracker.addRelationshipChangesThisTurn(relationshipChange.getFirst(), relationshipChange.getSecond(),
-            currentRelation, relationshipChange.getThird());
+        logEvent(
+            "Editing Political Relationship for "
+                + relationshipChange.getFirst().getName()
+                + " and "
+                + relationshipChange.getSecond().getName()
+                + " from "
+                + currentRelation.getName()
+                + " to "
+                + relationshipChange.getThird().getName(),
+            null);
+        bridge.addChange(
+            ChangeFactory.relationshipChange(
+                relationshipChange.getFirst(),
+                relationshipChange.getSecond(),
+                currentRelation,
+                relationshipChange.getThird()));
+        battleTracker.addRelationshipChangesThisTurn(
+            relationshipChange.getFirst(),
+            relationshipChange.getSecond(),
+            currentRelation,
+            relationshipChange.getThird());
       }
     }
     return null;

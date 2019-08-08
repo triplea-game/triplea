@@ -1,18 +1,15 @@
 package games.strategy.net;
 
+import games.strategy.engine.framework.system.SystemProperties;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-
-import games.strategy.engine.framework.system.SystemProperties;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-/**
- * Class to hold information about a packet destination or source.
- */
+/** Class to hold information about a packet destination or source. */
 @ToString
 @Getter(onMethod_ = {@Override})
 @AllArgsConstructor
@@ -42,7 +39,9 @@ public class Node implements INode {
     // On Mac, InetAddress.getLocalHost() can be extremely slow (30 seconds)
     // due to a bug in macOS Sierra and higher. Use a work around to avoid
     // this. See: https://thoeni.io/post/macos-sierra-java/
-    return SystemProperties.isMac() ? InetAddress.getByName("localhost") : InetAddress.getLocalHost();
+    return SystemProperties.isMac()
+        ? InetAddress.getByName("localhost")
+        : InetAddress.getLocalHost();
   }
 
   @Override

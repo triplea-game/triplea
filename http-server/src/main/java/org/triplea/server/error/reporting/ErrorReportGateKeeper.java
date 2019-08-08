@@ -7,11 +7,9 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Predicate;
-
-import org.triplea.lobby.server.db.dao.ErrorReportingDao;
-
 import lombok.Builder;
 import lombok.NonNull;
+import org.triplea.lobby.server.db.dao.ErrorReportingDao;
 
 /**
  * An object to check if we should accept an error report request from our users and use that
@@ -20,16 +18,13 @@ import lombok.NonNull;
 @Builder
 public class ErrorReportGateKeeper implements Predicate<String> {
 
-  @NonNull
-  private final ErrorReportingDao dao;
-  @NonNull
-  private final Clock clock;
-  @NonNull
-  private final Integer maxReportsPerDay;
+  @NonNull private final ErrorReportingDao dao;
+  @NonNull private final Clock clock;
+  @NonNull private final Integer maxReportsPerDay;
 
   /**
-   * True if we should allow the error request. False indicates
-   * the user has submitted too many error reports.
+   * True if we should allow the error request. False indicates the user has submitted too many
+   * error reports.
    */
   @Override
   public boolean test(final String clientIp) {

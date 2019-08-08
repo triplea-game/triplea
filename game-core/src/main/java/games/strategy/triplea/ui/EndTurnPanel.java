@@ -1,24 +1,29 @@
 package games.strategy.triplea.ui;
 
-import javax.swing.Action;
-import javax.swing.JOptionPane;
-
-import org.triplea.swing.SwingAction;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.pbem.ForumPosterComponent;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import javax.swing.Action;
+import javax.swing.JOptionPane;
+import org.triplea.swing.SwingAction;
 
 class EndTurnPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -6282316384529504341L;
-  protected final Action doneAction = SwingAction.of("Done", e -> {
-    if (forumPosterComponent.getHasPostedTurnSummary()
-        || JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(EndTurnPanel.this),
-            "Are you sure you don't want to post?", "Bypass post", JOptionPane.YES_NO_OPTION)) {
-      release();
-    }
-  });
+  protected final Action doneAction =
+      SwingAction.of(
+          "Done",
+          e -> {
+            if (forumPosterComponent.getHasPostedTurnSummary()
+                || JOptionPane.YES_OPTION
+                    == JOptionPane.showConfirmDialog(
+                        JOptionPane.getFrameForComponent(EndTurnPanel.this),
+                        "Are you sure you don't want to post?",
+                        "Bypass post",
+                        JOptionPane.YES_NO_OPTION)) {
+              release();
+            }
+          });
 
   EndTurnPanel(final GameData data, final MapPanel map) {
     super(data, map);
@@ -62,7 +67,8 @@ class EndTurnPanel extends AbstractForumPosterPanel {
 
   @Override
   protected boolean getHasPostedTurnSummary() {
-    final IAbstractForumPosterDelegate delegate = (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
+    final IAbstractForumPosterDelegate delegate =
+        (IAbstractForumPosterDelegate) playerBridge.getRemoteDelegate();
     return delegate.getHasPostedTurnSummary();
   }
 

@@ -7,7 +7,6 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -16,13 +15,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
 
-/**
- * UI for choosing server options.
- */
+/** UI for choosing server options. */
 public class ServerOptions extends JDialog {
   private static final long serialVersionUID = -9074816386666798281L;
   private JTextField nameField;
@@ -33,7 +29,10 @@ public class ServerOptions extends JDialog {
   private JTextField comment;
   private final boolean showComment;
 
-  public ServerOptions(final Component owner, final String defaultName, final int defaultPort,
+  public ServerOptions(
+      final Component owner,
+      final String defaultName,
+      final int defaultPort,
       final boolean showComment) {
     super(owner == null ? null : JOptionPane.getFrameForComponent(owner), "Server options", true);
     this.showComment = showComment;
@@ -138,10 +137,14 @@ public class ServerOptions extends JDialog {
     }
     content.add(fields, BorderLayout.CENTER);
     final JPanel buttons = new JPanel();
-    buttons.add(new JButton(SwingAction.of("OK", e -> {
-      setVisible(false);
-      okPressed = true;
-    })));
+    buttons.add(
+        new JButton(
+            SwingAction.of(
+                "OK",
+                e -> {
+                  setVisible(false);
+                  okPressed = true;
+                })));
     buttons.add(new JButton(SwingAction.of("Cancel", e -> setVisible(false))));
     content.add(buttons, BorderLayout.SOUTH);
   }
@@ -152,7 +155,8 @@ public class ServerOptions extends JDialog {
 
   private void setWidgetActivation() {
     passwordField.setEnabled(requirePasswordCheckBox.isSelected());
-    final Color backGround = passwordField.isEnabled() ? portField.getBackground() : getBackground();
+    final Color backGround =
+        passwordField.isEnabled() ? portField.getBackground() : getBackground();
     passwordField.setBackground(backGround);
   }
 

@@ -8,14 +8,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
-
 import javax.swing.DefaultListModel;
-
+import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingComponents;
 import org.triplea.util.Version;
-
-import lombok.extern.java.Log;
 
 @Log
 class FileSystemAccessStrategy {
@@ -33,15 +30,20 @@ class FileSystemAccessStrategy {
     return (props.getVersion() == null) ? Optional.empty() : Optional.of(props.getVersion());
   }
 
-  static void remove(final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
-    SwingComponents.promptUser("Remove Maps?",
-        "<html>Will remove " + toRemove.size() + " maps, are you sure? <br/>"
-            + formatMapList(toRemove, DownloadFileDescription::getMapName) + "</html>",
+  static void remove(
+      final List<DownloadFileDescription> toRemove, final DefaultListModel<String> listModel) {
+    SwingComponents.promptUser(
+        "Remove Maps?",
+        "<html>Will remove "
+            + toRemove.size()
+            + " maps, are you sure? <br/>"
+            + formatMapList(toRemove, DownloadFileDescription::getMapName)
+            + "</html>",
         newRemoveMapAction(toRemove, listModel));
   }
 
-  private static Runnable newRemoveMapAction(final List<DownloadFileDescription> maps,
-      final DefaultListModel<String> listModel) {
+  private static Runnable newRemoveMapAction(
+      final List<DownloadFileDescription> maps, final DefaultListModel<String> listModel) {
     return () -> {
 
       // delete the map files
@@ -49,7 +51,10 @@ class FileSystemAccessStrategy {
         try {
           Files.delete(map.getInstallLocation().toPath());
         } catch (final IOException e) {
-          log.log(Level.SEVERE, "Failed to delete map: " + map.getInstallLocation().getAbsolutePath(), e);
+          log.log(
+              Level.SEVERE,
+              "Failed to delete map: " + map.getInstallLocation().getAbsolutePath(),
+              e);
         }
         map.getInstallLocation().delete();
       }
@@ -67,7 +72,6 @@ class FileSystemAccessStrategy {
           deletes.add(map);
         }
       }
-
 
       if (!deletes.isEmpty()) {
         showRemoveSuccessDialog(deletes);
@@ -89,8 +93,10 @@ class FileSystemAccessStrategy {
   }
 
   private static void showRemoveFailDialog(final List<DownloadFileDescription> mapList) {
-    final String message = newDialogMessage(
-        "Unable to delete some of the maps files.<br />Manual removal of the files may be necessary:", mapList);
+    final String message =
+        newDialogMessage(
+            "Unable to delete some of the maps files.<br />Manual removal of the files may be necessary:",
+            mapList);
     showDialog(message, mapList, (map) -> map.getInstallLocation().getAbsolutePath());
   }
 
@@ -99,19 +105,23 @@ class FileSystemAccessStrategy {
     showDialog(message, mapList, DownloadFileDescription::getMapName);
   }
 
-  private static void showDialog(final String message, final List<DownloadFileDescription> mapList,
+  private static void showDialog(
+      final String message,
+      final List<DownloadFileDescription> mapList,
       final Function<DownloadFileDescription, String> outputFunction) {
 
     SwingComponents.newMessageDialog(
         "<html>" + message + "<br /> " + formatMapList(mapList, outputFunction) + "</html>");
   }
 
-  private static String newDialogMessage(final String message, final List<DownloadFileDescription> mapList) {
+  private static String newDialogMessage(
+      final String message, final List<DownloadFileDescription> mapList) {
     final String plural = mapList.size() != 1 ? "s" : "";
     return message + " " + mapList.size() + " map" + plural;
   }
 
-  private static String formatMapList(final List<DownloadFileDescription> mapList,
+  private static String formatMapList(
+      final List<DownloadFileDescription> mapList,
       final Function<DownloadFileDescription, String> outputFunction) {
     final int maxMapsToList = 6;
     final StringBuilder sb = new StringBuilder("<ul>");

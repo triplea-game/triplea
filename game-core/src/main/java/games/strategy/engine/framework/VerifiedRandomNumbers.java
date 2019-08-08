@@ -4,7 +4,8 @@ import games.strategy.triplea.formatter.MyFormatter;
 import lombok.Getter;
 
 /**
- * A collection of generated random numbers that have been verified as being untampered from a remote random source.
+ * A collection of generated random numbers that have been verified as being untampered from a
+ * remote random source.
  */
 @Getter
 public class VerifiedRandomNumbers {

@@ -2,7 +2,6 @@ package games.strategy.engine.data.properties;
 
 import java.io.Serializable;
 import java.util.Objects;
-
 import javax.swing.JComponent;
 
 /**
@@ -51,7 +50,8 @@ public abstract class AbstractEditableProperty<T>
 
   @Override
   public boolean equals(final Object other) {
-    return other instanceof AbstractEditableProperty && ((AbstractEditableProperty<?>) other).name.equals(name);
+    return other instanceof AbstractEditableProperty
+        && ((AbstractEditableProperty<?>) other).name.equals(name);
   }
 
   @Override

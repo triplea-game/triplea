@@ -1,20 +1,16 @@
 package games.strategy.triplea.image;
 
+import games.strategy.engine.data.NamedAttachable;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.ui.Util;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.ImageIcon;
 
-import games.strategy.engine.data.NamedAttachable;
-import games.strategy.triplea.ResourceLoader;
-import games.strategy.ui.Util;
-
-/**
- * Contains common methods for image factories.
- */
+/** Contains common methods for image factories. */
 public abstract class AbstractImageFactory {
 
   private final Map<String, ImageIcon> icons = new HashMap<>();
@@ -58,5 +54,4 @@ public abstract class AbstractImageFactory {
     icons.put(fullName, icon);
     return icon;
   }
-
 }

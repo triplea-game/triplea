@@ -1,13 +1,10 @@
 package games.strategy.triplea.ui.screen.drawable;
 
-import java.awt.Image;
-
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.UiContext;
+import java.awt.Image;
 
-/**
- * Draws a relief map tile.
- */
+/** Draws a relief map tile. */
 public class ReliefMapDrawable extends MapTileDrawable {
   public ReliefMapDrawable(final int x, final int y, final UiContext uiContext) {
     super(x, y, uiContext);

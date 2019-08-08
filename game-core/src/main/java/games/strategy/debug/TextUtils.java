@@ -7,8 +7,7 @@ final class TextUtils {
 
   static String textToHtml(final String text) {
     return "<html>"
-        + HtmlEscapers.htmlEscaper().escape(text)
-            .replaceAll(System.lineSeparator(), "<br/>")
+        + HtmlEscapers.htmlEscaper().escape(text).replaceAll(System.lineSeparator(), "<br/>")
         + "</html>";
   }
 }

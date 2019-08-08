@@ -1,9 +1,8 @@
 package org.triplea.server.moderator.toolbox.api.key.registration;
 
-import java.util.function.Predicate;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
+import java.util.function.Predicate;
 
 /**
  * A list of hardcoded values deemed to be too easy to guess and should not be used for a password.
@@ -33,7 +32,6 @@ public class ApiKeyPasswordBlacklist implements Predicate<String> {
           "1111",
           "11111",
           "!@#$");
-
 
   @Override
   public boolean test(final String testPassword) {

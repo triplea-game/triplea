@@ -5,33 +5,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_HOST;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 
-import java.awt.Component;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.swing.Action;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import org.triplea.java.Interruptibles;
-import org.triplea.swing.EventThreadJOptionPane;
-import org.triplea.swing.SwingAction;
-
 import com.google.common.base.Preconditions;
-
 import games.strategy.engine.chat.Chat;
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.GameData;
@@ -64,18 +38,40 @@ import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.ClientSetting;
+import java.awt.Component;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import javax.swing.Action;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
+import org.triplea.java.Interruptibles;
+import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.swing.SwingAction;
 
-/**
- * Represents a network aware game client connecting to another game that is acting as a server.
- */
+/** Represents a network aware game client connecting to another game that is acting as a server. */
 @Log
 public class ClientModel implements IMessengerErrorListener {
 
   public static final RemoteName CLIENT_READY_CHANNEL =
-      new RemoteName("games.strategy.engine.framework.startup.mc.ClientModel.CLIENT_READY_CHANNEL", IServerReady.class);
+      new RemoteName(
+          "games.strategy.engine.framework.startup.mc.ClientModel.CLIENT_READY_CHANNEL",
+          IServerReady.class);
   private final GameObjectStreamFactory objectStreamFactory = new GameObjectStreamFactory(null);
   private final GameSelectorModel gameSelectorModel;
   private final SetupPanelModel typePanelModel;
@@ -88,70 +84,79 @@ public class ClientModel implements IMessengerErrorListener {
   private ChatPanel chatPanel;
   private ClientGame game;
   private boolean hostIsHeadlessBot = false;
-  // we set the game data to be null, since we are a client game, and the game data lives on the server
+  // we set the game data to be null, since we are a client game, and the game data lives on the
+  // server
   // however, if we cancel, we want to restore the old game data.
   private GameData gameDataOnStartup;
   private Map<String, String> playersToNodes = new HashMap<>();
-  private final IObserverWaitingToJoin observerWaitingToJoin = new IObserverWaitingToJoin() {
-    @Override
-    public void joinGame(final byte[] gameData, final Map<String, INode> players) {
-      messengers.unregisterRemote(ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
-      final CountDownLatch latch = new CountDownLatch(1);
-      startGame(gameData, players, latch, true);
-      try {
-        latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
+  private final IObserverWaitingToJoin observerWaitingToJoin =
+      new IObserverWaitingToJoin() {
+        @Override
+        public void joinGame(final byte[] gameData, final Map<String, INode> players) {
+          messengers.unregisterRemote(
+              ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
+          final CountDownLatch latch = new CountDownLatch(1);
+          startGame(gameData, players, latch, true);
+          try {
+            latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
+          } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+          }
+        }
 
-    @Override
-    public void cannotJoinGame(final String reason) {
-      SwingUtilities.invokeLater(() -> {
-        typePanelModel.showSelectType();
-        EventThreadJOptionPane.showMessageDialog(ui, "Could not join game: " + reason);
-      });
-    }
-  };
+        @Override
+        public void cannotJoinGame(final String reason) {
+          SwingUtilities.invokeLater(
+              () -> {
+                typePanelModel.showSelectType();
+                EventThreadJOptionPane.showMessageDialog(ui, "Could not join game: " + reason);
+              });
+        }
+      };
   private Map<String, Boolean> playersEnabledListing = new HashMap<>();
   private Collection<String> playersAllowedToBeDisabled = new HashSet<>();
-  private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<>();
-  private final IClientChannel channelListener = new IClientChannel() {
-    @Override
-    public void playerListingChanged(final PlayerListing listing) {
-      internalPlayerListingChanged(listing);
-    }
+  private Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
+      new LinkedHashMap<>();
+  private final IClientChannel channelListener =
+      new IClientChannel() {
+        @Override
+        public void playerListingChanged(final PlayerListing listing) {
+          internalPlayerListingChanged(listing);
+        }
 
-    @Override
-    public void gameReset() {
-      objectStreamFactory.setData(null);
-      GameRunner.showMainFrame();
-    }
+        @Override
+        public void gameReset() {
+          objectStreamFactory.setData(null);
+          GameRunner.showMainFrame();
+        }
 
-    @Override
-    public void doneSelectingPlayers(final byte[] gameData, final Map<String, INode> players) {
-      final CountDownLatch latch = new CountDownLatch(1);
-      startGame(gameData, players, latch, false);
-      try {
-        latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
-      } catch (final InterruptedException e) {
-        Thread.currentThread().interrupt();
-      }
-    }
-  };
+        @Override
+        public void doneSelectingPlayers(final byte[] gameData, final Map<String, INode> players) {
+          final CountDownLatch latch = new CountDownLatch(1);
+          startGame(gameData, players, latch, false);
+          try {
+            latch.await(GameRunner.MINIMUM_CLIENT_GAMEDATA_LOAD_GRACE_TIME, TimeUnit.SECONDS);
+          } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+          }
+        }
+      };
 
-  ClientModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel,
+  ClientModel(
+      final GameSelectorModel gameSelectorModel,
+      final SetupPanelModel typePanelModel,
       final LaunchAction launchAction) {
     this.launchAction = launchAction;
     this.typePanelModel = typePanelModel;
     this.gameSelectorModel = gameSelectorModel;
-    final Interruptibles.Result<WaitWindow> window = Interruptibles
-        .awaitResult(() -> SwingAction.invokeAndWaitResult(WaitWindow::new));
+    final Interruptibles.Result<WaitWindow> window =
+        Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(WaitWindow::new));
     if (!window.completed) {
       throw new IllegalStateException("Error while creating WaitWindow");
     }
-    gameLoadingWindow = window.result
-        .orElseThrow(() -> new IllegalStateException("Constructor did not return instance"));
+    gameLoadingWindow =
+        window.result.orElseThrow(
+            () -> new IllegalStateException("Constructor did not return instance"));
   }
 
   public void setRemoteModelListener(@Nonnull final IRemoteModelListener listener) {
@@ -160,8 +165,7 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private static ClientProps getProps(final Component ui) {
-    if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true")
-        && GameState.notStarted()) {
+    if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true") && GameState.notStarted()) {
       final ClientProps props = new ClientProps();
       props.setHost(System.getProperty(TRIPLEA_HOST));
       props.setName(System.getProperty(TRIPLEA_NAME));
@@ -171,21 +175,25 @@ public class ClientModel implements IMessengerErrorListener {
     }
     // load in the saved name!
     final String playername = ClientSetting.playerName.getValueOrThrow();
-    final Interruptibles.Result<ClientProps> result = Interruptibles.awaitResult(() -> SwingAction
-        .invokeAndWaitResult(() -> {
-          final ClientOptions options = new ClientOptions(ui, playername, GameRunner.PORT, "127.0.0.1");
-          options.setLocationRelativeTo(ui);
-          options.setVisible(true);
-          options.dispose();
-          if (!options.getOkPressed()) {
-            return null;
-          }
-          final ClientProps props = new ClientProps();
-          props.setHost(options.getAddress());
-          props.setName(options.getName());
-          props.setPort(options.getPort());
-          return props;
-        }));
+    final Interruptibles.Result<ClientProps> result =
+        Interruptibles.awaitResult(
+            () ->
+                SwingAction.invokeAndWaitResult(
+                    () -> {
+                      final ClientOptions options =
+                          new ClientOptions(ui, playername, GameRunner.PORT, "127.0.0.1");
+                      options.setLocationRelativeTo(ui);
+                      options.setVisible(true);
+                      options.dispose();
+                      if (!options.getOkPressed()) {
+                        return null;
+                      }
+                      final ClientProps props = new ClientProps();
+                      props.setHost(options.getAddress());
+                      props.setName(options.getName());
+                      props.setPort(options.getPort());
+                      return props;
+                    }));
     if (!result.completed) {
       throw new IllegalStateException("Error during component creation of ClientOptions.");
     }
@@ -207,13 +215,16 @@ public class ClientModel implements IMessengerErrorListener {
     ClientSetting.flush();
     final int port = props.getPort();
     if (port >= 65536 || port <= 0) {
-      EventThreadJOptionPane.showMessageDialog(this.ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
+      EventThreadJOptionPane.showMessageDialog(
+          this.ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
       return false;
     }
     final String address = props.getHost();
     try {
       final String mac = MacFinder.getHashedMacAddress();
-      messenger = new ClientMessenger(address, port, name, mac, objectStreamFactory, new ClientLogin(this.ui));
+      messenger =
+          new ClientMessenger(
+              address, port, name, mac, objectStreamFactory, new ClientLogin(this.ui));
     } catch (final CouldNotLogInException e) {
       EventThreadJOptionPane.showMessageDialog(this.ui, e.getMessage());
       return false;
@@ -226,23 +237,28 @@ public class ClientModel implements IMessengerErrorListener {
     this.messengers = new Messengers(messenger);
     messengers.registerChannelSubscriber(channelListener, IClientChannel.CHANNEL_NAME);
 
-    chatPanel = ChatPanel.newChatPanel(messengers, ServerModel.CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
+    chatPanel =
+        ChatPanel.newChatPanel(
+            messengers, ServerModel.CHAT_NAME, Chat.ChatSoundProfile.GAME_CHATROOM);
     if (getIsServerHeadlessTest()) {
       gameSelectorModel.setClientModelForHostBots(this);
-      chatPanel.getChatMessagePanel()
-          .addServerMessage("Welcome to an automated dedicated host service (a host bot). "
-              + "\nIf anyone disconnects, the autosave will be reloaded (a save might be loaded right now). "
-              + "\nYou can get the current save, or you can load a save (only saves that it has the map for).");
+      chatPanel
+          .getChatMessagePanel()
+          .addServerMessage(
+              "Welcome to an automated dedicated host service (a host bot). "
+                  + "\nIf anyone disconnects, the autosave will be reloaded (a save might be loaded right now). "
+                  + "\nYou can get the current save, or you can load a save (only saves that it has the map for).");
     }
-    messengers.registerRemote(observerWaitingToJoin,
-        ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
+    messengers.registerRemote(
+        observerWaitingToJoin, ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
     // save this, it will be cleared later
     gameDataOnStartup = gameSelectorModel.getGameData();
     final IServerStartupRemote serverStartup = getServerStartup();
     final PlayerListing players = serverStartup.getPlayerListing();
     internalPlayerListingChanged(players);
     if (!serverStartup.isGameStarted(messenger.getLocalNode())) {
-      messengers.unregisterRemote(ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
+      messengers.unregisterRemote(
+          ServerModel.getObserverWaitingToStartName(messenger.getLocalNode()));
     }
     gameSelectorModel.setIsHostHeadlessBot(hostIsHeadlessBot);
     return true;
@@ -260,9 +276,7 @@ public class ClientModel implements IMessengerErrorListener {
     return new ArrayList<>(games);
   }
 
-  /**
-   * Resets stats and nulls out references, keeps chat alive.
-   */
+  /** Resets stats and nulls out references, keeps chat alive. */
   public void cancel() {
     gameSelectorModel.setGameData(gameDataOnStartup);
     gameSelectorModel.setCanSelect(true);
@@ -277,13 +291,17 @@ public class ClientModel implements IMessengerErrorListener {
     }
   }
 
-  private void startGame(final byte[] gameData, final Map<String, INode> players, final CountDownLatch onDone,
+  private void startGame(
+      final byte[] gameData,
+      final Map<String, INode> players,
+      final CountDownLatch onDone,
       final boolean gameRunning) {
-    SwingUtilities.invokeLater(() -> {
-      gameLoadingWindow.setVisible(true);
-      gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(ui));
-      gameLoadingWindow.showWait();
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          gameLoadingWindow.setVisible(true);
+          gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(ui));
+          gameLoadingWindow.showWait();
+        });
     try {
       startGameInNewThread(gameData, players, gameRunning);
     } catch (final RuntimeException e) {
@@ -296,47 +314,53 @@ public class ClientModel implements IMessengerErrorListener {
     }
   }
 
-  private void startGameInNewThread(final byte[] gameData, final Map<String, INode> players,
-      final boolean gameRunning) {
+  private void startGameInNewThread(
+      final byte[] gameData, final Map<String, INode> players, final boolean gameRunning) {
     final GameData data;
     try {
-      // this normally takes a couple seconds, but can take up to 60 seconds for a freaking huge game
+      // this normally takes a couple seconds, but can take up to 60 seconds for a freaking huge
+      // game
       data = IoUtils.readFromMemory(gameData, GameDataManager::loadGame);
     } catch (final IOException ex) {
       log.log(Level.SEVERE, "Failed to load game", ex);
       return;
     }
     objectStreamFactory.setData(data);
-    final Map<String, PlayerType> playerMapping = playersToNodes.entrySet()
-        .stream()
-        .filter(e -> e.getValue() != null)
-        .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
-        .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerType.CLIENT_PLAYER));
+    final Map<String, PlayerType> playerMapping =
+        playersToNodes.entrySet().stream()
+            .filter(e -> e.getValue() != null)
+            .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerType.CLIENT_PLAYER));
     final Set<IGamePlayer> playerSet = data.getGameLoader().newPlayers(playerMapping);
     game = new ClientGame(data, playerSet, players, messengers);
-    new Thread(() -> {
-      SwingUtilities.invokeLater(() -> JOptionPane.getFrameForComponent(ui).setVisible(false));
-      try {
-        // game will be null if we loose the connection
-        if (game != null) {
-          try {
-            data.getGameLoader().startGame(game, playerSet, launchAction, getChatPanel().getChat());
-          } catch (final Exception e) {
-            log.log(Level.SEVERE, "Failed to start Game", e);
-            game.shutDown();
-            messenger.shutDown();
-            gameLoadingWindow.doneWait();
-            // an ugly hack, we need a better way to get the main frame
-            GameRunner.clientLeftGame();
-          }
-        }
-        if (!gameRunning) {
-          ((IServerReady) messengers.getRemote(CLIENT_READY_CHANNEL)).clientReady();
-        }
-      } finally {
-        gameLoadingWindow.doneWait();
-      }
-    }, "Client Game Launcher").start();
+    new Thread(
+            () -> {
+              SwingUtilities.invokeLater(
+                  () -> JOptionPane.getFrameForComponent(ui).setVisible(false));
+              try {
+                // game will be null if we loose the connection
+                if (game != null) {
+                  try {
+                    data.getGameLoader()
+                        .startGame(game, playerSet, launchAction, getChatPanel().getChat());
+                  } catch (final Exception e) {
+                    log.log(Level.SEVERE, "Failed to start Game", e);
+                    game.shutDown();
+                    messenger.shutDown();
+                    gameLoadingWindow.doneWait();
+                    // an ugly hack, we need a better way to get the main frame
+                    GameRunner.clientLeftGame();
+                  }
+                }
+                if (!gameRunning) {
+                  ((IServerReady) messengers.getRemote(CLIENT_READY_CHANNEL)).clientReady();
+                }
+              } finally {
+                gameLoadingWindow.doneWait();
+              }
+            },
+            "Client Game Launcher")
+        .start();
   }
 
   public void takePlayer(final String playerName) {
@@ -356,39 +380,35 @@ public class ClientModel implements IMessengerErrorListener {
   }
 
   private void internalPlayerListingChanged(final PlayerListing listing) {
-    gameSelectorModel.clearDataButKeepGameInfo(listing.getGameName(), listing.getGameRound(),
-        listing.getGameVersion().toString());
+    gameSelectorModel.clearDataButKeepGameInfo(
+        listing.getGameName(), listing.getGameRound(), listing.getGameVersion().toString());
     synchronized (this) {
       playersToNodes = listing.getPlayerToNodeListing();
       playersEnabledListing = listing.getPlayersEnabledListing();
       playersAllowedToBeDisabled = listing.getPlayersAllowedToBeDisabled();
-      playerNamesAndAlliancesInTurnOrder = listing.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
+      playerNamesAndAlliancesInTurnOrder =
+          listing.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
     }
     listener.playerListChanged();
   }
 
-  /**
-   * Local player name, eg: US, to remote node (player physical name, eg: "bob) mapping.
-   */
+  /** Local player name, eg: US, to remote node (player physical name, eg: "bob) mapping. */
   public synchronized Map<String, String> getPlayerToNodesMapping() {
     return new HashMap<>(playersToNodes);
   }
 
-  /**
-   * Returns a map of player node name -> enabled.
-   */
+  /** Returns a map of player node name -> enabled. */
   public synchronized Map<String, Boolean> getPlayersEnabledListing() {
     return new HashMap<>(playersEnabledListing);
   }
 
-  /**
-   * Returns the set of players that can be disabled.
-   */
+  /** Returns the set of players that can be disabled. */
   public synchronized Collection<String> getPlayersAllowedToBeDisabled() {
     return new HashSet<>(playersAllowedToBeDisabled);
   }
 
-  public synchronized Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
+  public synchronized Map<String, Collection<String>>
+      getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
     return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
   }
 
@@ -398,14 +418,19 @@ public class ClientModel implements IMessengerErrorListener {
 
   @Override
   public void messengerInvalid(final Throwable reason) {
-    // The self chat disconnect notification is simply so we have an on-screen notification of the disconnect.
-    // In case for example there are many game windows open, it may not be clear which game disconnected.
+    // The self chat disconnect notification is simply so we have an on-screen notification of the
+    // disconnect.
+    // In case for example there are many game windows open, it may not be clear which game
+    // disconnected.
     if (chatPanel != null) {
       Optional.ofNullable(chatPanel.getChat())
           .ifPresent(chat -> chat.sendMessage("*** Was Disconnected ***", false));
     }
-    EventThreadJOptionPane.showMessageDialog(ui, "Connection to game host lost.\nPlease save and restart.",
-        "Connection Lost!", JOptionPane.ERROR_MESSAGE);
+    EventThreadJOptionPane.showMessageDialog(
+        ui,
+        "Connection to game host lost.\nPlease save and restart.",
+        "Connection Lost!",
+        JOptionPane.ERROR_MESSAGE);
   }
 
   public ChatPanel getChatPanel() {
@@ -434,8 +459,8 @@ public class ClientModel implements IMessengerErrorListener {
     return new ChangeGameToSaveGameClientAction(getClientMessenger());
   }
 
-  public Action getHostBotChangeToAutosaveClientAction(final Component parent,
-      final HeadlessAutoSaveType autosaveType) {
+  public Action getHostBotChangeToAutosaveClientAction(
+      final Component parent, final HeadlessAutoSaveType autosaveType) {
     return new ChangeToAutosaveClientAction(parent, getClientMessenger(), autosaveType);
   }
 

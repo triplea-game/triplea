@@ -1,5 +1,10 @@
 package org.triplea.lobby.server.login;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
+import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.net.ILoginValidator;
+import games.strategy.net.MacFinder;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.sql.SQLException;
@@ -11,9 +16,9 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-
 import javax.annotation.Nullable;
-
+import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
@@ -25,23 +30,12 @@ import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.util.Md5Crypt;
 import org.triplea.util.Version;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
-
-import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.net.ILoginValidator;
-import games.strategy.net.MacFinder;
-import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
-
 /**
  * The server side of the lobby authentication protocol.
  *
- * <p>
- * In the lobby authentication protocol, the server sends a challenge to the client based on the username of the client.
- * Upon receiving the client's response, the server determines if the client has provided a valid password and gives
- * them access to the lobby if authentication is successful.
- * </p>
+ * <p>In the lobby authentication protocol, the server sends a challenge to the client based on the
+ * username of the client. Upon receiving the client's response, the server determines if the client
+ * has provided a valid password and gives them access to the lobby if authentication is successful.
  */
 @Log
 @AllArgsConstructor
@@ -59,7 +53,6 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private final DatabaseDao database;
   private final RsaAuthenticator rsaAuthenticator;
   private final Supplier<String> bcryptSaltGenerator;
-
 
   @Override
   public Map<String, String> getChallengeProperties(final String userName) {
@@ -86,11 +79,12 @@ public final class LobbyLoginValidator implements ILoginValidator {
       final String clientName,
       final String clientMac,
       final SocketAddress remoteAddress) {
-    final User user = User.builder()
-        .username(clientName)
-        .inetAddress(((InetSocketAddress) remoteAddress).getAddress())
-        .hashedMacAddress(clientMac)
-        .build();
+    final User user =
+        User.builder()
+            .username(clientName)
+            .inetAddress(((InetSocketAddress) remoteAddress).getAddress())
+            .hashedMacAddress(clientMac)
+            .build();
     final @Nullable String errorMessage = authenticateUser(response, user);
     logAuthenticationResult(user, getUserTypeFor(response), errorMessage);
     return errorMessage;
@@ -106,7 +100,9 @@ public final class LobbyLoginValidator implements ILoginValidator {
     }
     final Version clientVersion = new Version(clientVersionString);
     if (!clientVersion.equals(LobbyConstants.LOBBY_VERSION)) {
-      return "Wrong version, we require " + LobbyConstants.LOBBY_VERSION.toString() + " but trying to log in with "
+      return "Wrong version, we require "
+          + LobbyConstants.LOBBY_VERSION.toString()
+          + " but trying to log in with "
           + clientVersionString;
     }
     if (database.getBadWordDao().containsBadWord(user.getUsername())) {
@@ -116,15 +112,17 @@ public final class LobbyLoginValidator implements ILoginValidator {
       // Must have been tampered with
       return ErrorMessages.INVALID_MAC;
     }
-    final Optional<Timestamp> banExpiry = database.getBannedMacDao().isMacBanned(
-        user.getInetAddress(), user.getHashedMacAddress());
+    final Optional<Timestamp> banExpiry =
+        database.getBannedMacDao().isMacBanned(user.getInetAddress(), user.getHashedMacAddress());
 
     if (banExpiry.isPresent() && banExpiry.get().toInstant().isAfter(Instant.now())) {
       return ErrorMessages.YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(banExpiry.get());
     }
-    // test for username ban after testing normal bans, because if it is only a username ban then the user should know
+    // test for username ban after testing normal bans, because if it is only a username ban then
+    // the user should know
     // they can change their name
-    final boolean usernameBanned = database.getUsernameBlacklistDao().isUsernameBanned(user.getUsername());
+    final boolean usernameBanned =
+        database.getUsernameBlacklistDao().isUsernameBanned(user.getUsername());
     if (usernameBanned) {
       return ErrorMessages.USERNAME_HAS_BEEN_BANNED;
     }
@@ -144,10 +142,13 @@ public final class LobbyLoginValidator implements ILoginValidator {
   }
 
   private static UserType getUserTypeFor(final Map<String, String> response) {
-    return response.containsKey(LobbyLoginResponseKeys.ANONYMOUS_LOGIN) ? UserType.ANONYMOUS : UserType.REGISTERED;
+    return response.containsKey(LobbyLoginResponseKeys.ANONYMOUS_LOGIN)
+        ? UserType.ANONYMOUS
+        : UserType.REGISTERED;
   }
 
-  private void logAuthenticationResult(final User user, final UserType userType, final @Nullable String errorMessage) {
+  private void logAuthenticationResult(
+      final User user, final UserType userType, final @Nullable String errorMessage) {
     if (errorMessage == null) {
       try {
         database.getAccessLogDao().insert(user, userType);
@@ -184,7 +185,8 @@ public final class LobbyLoginValidator implements ILoginValidator {
     return sb.toString();
   }
 
-  private @Nullable String authenticateRegisteredUser(final Map<String, String> response, final User user) {
+  private @Nullable String authenticateRegisteredUser(
+      final Map<String, String> response, final User user) {
     final String username = user.getUsername();
     final String errorMessage = ErrorMessages.AUTHENTICATION_FAILED;
     final HashedPassword hashedPassword = database.getUserDao().getPassword(username);
@@ -192,44 +194,59 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return errorMessage;
     }
     if (RsaAuthenticator.canProcessResponse(response)) {
-      return rsaAuthenticator.decryptPasswordForAction(response, pass -> {
-        final String legacyHashedPassword = response.get(LobbyLoginResponseKeys.HASHED_PASSWORD);
-        if (hashedPassword.isBcrypted()) {
-          if (database.getUserDao().login(username, new HashedPassword(pass))) {
-            if (legacyHashedPassword != null && database.getUserDao().getLegacyPassword(username).value.isEmpty()) {
+      return rsaAuthenticator.decryptPasswordForAction(
+          response,
+          pass -> {
+            final String legacyHashedPassword =
+                response.get(LobbyLoginResponseKeys.HASHED_PASSWORD);
+            if (hashedPassword.isBcrypted()) {
+              if (database.getUserDao().login(username, new HashedPassword(pass))) {
+                if (legacyHashedPassword != null
+                    && database.getUserDao().getLegacyPassword(username).value.isEmpty()) {
+                  final DBUser dbUser = database.getUserDao().getUserByName(username);
+                  database
+                      .getUserDao()
+                      .updateUser(
+                          dbUser.getName(),
+                          dbUser.getEmail(),
+                          new HashedPassword(legacyHashedPassword));
+                  database
+                      .getUserDao()
+                      .updateUser(
+                          dbUser.getName(),
+                          dbUser.getEmail(),
+                          new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get())));
+                }
+                return null;
+              }
+              return errorMessage;
+            } else if (database
+                .getUserDao()
+                .login(username, new HashedPassword(legacyHashedPassword))) {
               final DBUser dbUser = database.getUserDao().getUserByName(username);
-              database.getUserDao().updateUser(
-                  dbUser.getName(),
-                  dbUser.getEmail(),
-                  new HashedPassword(legacyHashedPassword));
-              database.getUserDao().updateUser(
-                  dbUser.getName(),
-                  dbUser.getEmail(),
-                  new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get())));
+              database
+                  .getUserDao()
+                  .updateUser(
+                      dbUser.getName(),
+                      dbUser.getEmail(),
+                      new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get())));
+              return null;
+            } else {
+              return errorMessage;
             }
-            return null;
-          }
-          return errorMessage;
-        } else if (database.getUserDao().login(username, new HashedPassword(legacyHashedPassword))) {
-          final DBUser dbUser = database.getUserDao().getUserByName(username);
-          database.getUserDao().updateUser(
-              dbUser.getName(),
-              dbUser.getEmail(),
-              new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get())));
-          return null;
-        } else {
-          return errorMessage;
-        }
-      });
+          });
     }
-    if (!database.getUserDao().login(username,
-        new HashedPassword(response.get(LobbyLoginResponseKeys.HASHED_PASSWORD)))) {
+    if (!database
+        .getUserDao()
+        .login(
+            username, new HashedPassword(response.get(LobbyLoginResponseKeys.HASHED_PASSWORD)))) {
       return errorMessage;
     }
     return null;
   }
 
-  private @Nullable String authenticateAnonymousUser(final Map<String, String> response, final User user) {
+  private @Nullable String authenticateAnonymousUser(
+      final Map<String, String> response, final User user) {
     final String username = user.getUsername();
     if (database.getUserDao().doesUserExist(username)) {
       return ErrorMessages.ANONYMOUS_AUTHENTICATION_FAILED;
@@ -239,21 +256,25 @@ public final class LobbyLoginValidator implements ILoginValidator {
       if (!username.endsWith(LobbyConstants.LOBBY_WATCHER_NAME)) {
         return "Lobby watcher usernames must end with 'lobby_watcher'";
       }
-      final String hostName = username.substring(0, username.indexOf(LobbyConstants.LOBBY_WATCHER_NAME));
+      final String hostName =
+          username.substring(0, username.indexOf(LobbyConstants.LOBBY_WATCHER_NAME));
 
       if (!DBUser.isValidUserName(hostName)) {
         return DBUser.getUserNameValidationErrorMessage(hostName);
       }
     } else {
-      return DBUser.isValidUserName(username) ? null : DBUser.getUserNameValidationErrorMessage(username);
+      return DBUser.isValidUserName(username)
+          ? null
+          : DBUser.getUserNameValidationErrorMessage(username);
     }
     return null;
   }
 
   private @Nullable String createUser(final Map<String, String> response, final User user) {
-    final DBUser dbUser = new DBUser(
-        new DBUser.UserName(user.getUsername()),
-        new DBUser.UserEmail(response.get(LobbyLoginResponseKeys.EMAIL)));
+    final DBUser dbUser =
+        new DBUser(
+            new DBUser.UserName(user.getUsername()),
+            new DBUser.UserEmail(response.get(LobbyLoginResponseKeys.EMAIL)));
 
     if (!dbUser.isValid()) {
       return dbUser.getValidationErrorMessage();
@@ -263,18 +284,22 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return "That user name has already been taken";
     }
 
-    final HashedPassword password = new HashedPassword(response.get(LobbyLoginResponseKeys.HASHED_PASSWORD));
+    final HashedPassword password =
+        new HashedPassword(response.get(LobbyLoginResponseKeys.HASHED_PASSWORD));
     if (RsaAuthenticator.canProcessResponse(response)) {
-      return rsaAuthenticator.decryptPasswordForAction(response, pass -> {
-        final HashedPassword newPass = new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get()));
-        if (password.isHashedWithSalt()) {
-          database.getUserDao().createUser(dbUser.getName(), dbUser.getEmail(), password);
-          database.getUserDao().updateUser(dbUser.getName(), dbUser.getEmail(), newPass);
-        } else {
-          database.getUserDao().createUser(dbUser.getName(), dbUser.getEmail(), newPass);
-        }
-        return null;
-      });
+      return rsaAuthenticator.decryptPasswordForAction(
+          response,
+          pass -> {
+            final HashedPassword newPass =
+                new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get()));
+            if (password.isHashedWithSalt()) {
+              database.getUserDao().createUser(dbUser.getName(), dbUser.getEmail(), password);
+              database.getUserDao().updateUser(dbUser.getName(), dbUser.getEmail(), newPass);
+            } else {
+              database.getUserDao().createUser(dbUser.getName(), dbUser.getEmail(), newPass);
+            }
+            return null;
+          });
     }
     if (!password.isHashedWithSalt()) {
       return "Password is not hashed correctly";

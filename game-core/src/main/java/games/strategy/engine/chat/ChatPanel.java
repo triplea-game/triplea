@@ -1,32 +1,25 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.chat.Chat.ChatSoundProfile;
+import games.strategy.net.Messengers;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.util.Optional;
-
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-
 import org.triplea.game.chat.ChatModel;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.SwingAction;
 
-import games.strategy.engine.chat.Chat.ChatSoundProfile;
-import games.strategy.net.Messengers;
-
 /**
  * A Chat window.
  *
- * <p>
- * Multiple chat panels can be connected to the same Chat.
- * </p>
+ * <p>Multiple chat panels can be connected to the same Chat.
  *
- * <p>
- * We can change the chat we are connected to using the setChat(...) method.
- * </p>
+ * <p>We can change the chat we are connected to using the setChat(...) method.
  */
 public class ChatPanel extends JPanel implements ChatModel {
   private static final long serialVersionUID = -6177517517279779486L;
@@ -40,18 +33,17 @@ public class ChatPanel extends JPanel implements ChatModel {
   }
 
   /**
-   * Creates a Chat object instance on the current thread based on the provided arguments
-   * and calls the ChatPanel constructor with it on the EDT.
-   * This is to allow for easy off-EDT initialisation of this ChatPanel.
-   * Note that if this method is being called on the EDT It will still work,
-   * but the UI might freeze for a long time.
+   * Creates a Chat object instance on the current thread based on the provided arguments and calls
+   * the ChatPanel constructor with it on the EDT. This is to allow for easy off-EDT initialisation
+   * of this ChatPanel. Note that if this method is being called on the EDT It will still work, but
+   * the UI might freeze for a long time.
    */
   public static ChatPanel newChatPanel(
-      final Messengers messengers,
-      final String chatName,
-      final ChatSoundProfile chatSoundProfile) {
+      final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
     final Chat chat = new Chat(messengers, chatName, chatSoundProfile);
-    return Interruptibles.awaitResult(() -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat))).result
+    return Interruptibles.awaitResult(
+            () -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat)))
+        .result
         .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
   }
 
@@ -97,7 +89,8 @@ public class ChatPanel extends JPanel implements ChatModel {
   public void setPlayerRenderer(final DefaultListCellRenderer renderer) {
     chatPlayerPanel.setPlayerRenderer(renderer);
     // gets remaining width from parent component, so setting the width is not really necessary
-    chatMessagePanel.setPreferredSize(new Dimension(30, chatMessagePanel.getPreferredSize().height));
+    chatMessagePanel.setPreferredSize(
+        new Dimension(30, chatMessagePanel.getPreferredSize().height));
   }
 
   @Override

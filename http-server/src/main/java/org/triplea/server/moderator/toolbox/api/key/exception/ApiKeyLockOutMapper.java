@@ -3,9 +3,7 @@ package org.triplea.server.moderator.toolbox.api.key.exception;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
-/**
- * Maps any uncaught {@code ApiKeyVerificationLockOutException} instances to a 403 (forbidden).
- */
+/** Maps any uncaught {@code ApiKeyVerificationLockOutException} instances to a 403 (forbidden). */
 public class ApiKeyLockOutMapper implements ExceptionMapper<ApiKeyLockOutException> {
 
   @Override

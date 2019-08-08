@@ -1,14 +1,14 @@
 package games.strategy.triplea.settings;
 
 import javax.annotation.Nullable;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.sonatype.goodies.prefs.memory.MemoryPreferences;
 
 final class ClientSettingAsGameSettingTest extends AbstractGameSettingTestCase {
   @Override
-  protected GameSetting<Integer> newGameSetting(final @Nullable Integer value, final @Nullable Integer defaultValue) {
+  protected GameSetting<Integer> newGameSetting(
+      final @Nullable Integer value, final @Nullable Integer defaultValue) {
     final TestClientSetting clientSetting = new TestClientSetting(defaultValue);
     if (value != null) {
       clientSetting.setValue(value);

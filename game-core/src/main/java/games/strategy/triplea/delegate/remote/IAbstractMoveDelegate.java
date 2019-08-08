@@ -1,9 +1,8 @@
 package games.strategy.triplea.delegate.remote;
 
-import java.util.List;
-
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
+import java.util.List;
 
 /**
  * Remote interface for MoveDelegate and PlaceDelegate.

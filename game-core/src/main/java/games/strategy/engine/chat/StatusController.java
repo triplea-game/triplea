@@ -1,12 +1,11 @@
 package games.strategy.engine.chat;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import java.util.HashMap;
+import java.util.Map;
 
 class StatusController implements IStatusController {
   private final Object mutex = new Object();
@@ -15,15 +14,16 @@ class StatusController implements IStatusController {
 
   StatusController(final Messengers messengers) {
     this.messengers = messengers;
-    messengers.addConnectionChangeListener(new IConnectionChangeListener() {
-      @Override
-      public void connectionRemoved(final INode to) {
-        StatusController.this.connectionRemoved(to);
-      }
+    messengers.addConnectionChangeListener(
+        new IConnectionChangeListener() {
+          @Override
+          public void connectionRemoved(final INode to) {
+            StatusController.this.connectionRemoved(to);
+          }
 
-      @Override
-      public void connectionAdded(final INode to) {}
-    });
+          @Override
+          public void connectionAdded(final INode to) {}
+        });
   }
 
   private void connectionRemoved(final INode to) {

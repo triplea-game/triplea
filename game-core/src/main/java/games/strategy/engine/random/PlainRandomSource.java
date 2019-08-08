@@ -4,13 +4,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
-
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
 
-/**
- * A source of random numbers that uses a pseudorandom number generator.
- */
+/** A source of random numbers that uses a pseudorandom number generator. */
 @ThreadSafe
 public final class PlainRandomSource implements IRandomSource {
   private final Object lock = new Object();

@@ -4,11 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import org.junit.jupiter.api.Test;
 
 class AbstractConditionsAttachmentTest {
 
@@ -64,7 +63,8 @@ class AbstractConditionsAttachmentTest {
     assertThrows(GameParseException.class, () -> instance.setConditionType("-9"));
     assertThrows(GameParseException.class, () -> instance.setConditionType("-0"));
     assertThrows(GameParseException.class, () -> instance.setConditionType("0-0"));
-    assertThrows(GameParseException.class, () -> instance.setConditionType("1234567890-0987654321"));
+    assertThrows(
+        GameParseException.class, () -> instance.setConditionType("1234567890-0987654321"));
     assertThrows(GameParseException.class, () -> instance.setConditionType("-1-0"));
     assertThrows(GameParseException.class, () -> instance.setConditionType("1--0"));
   }

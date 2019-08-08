@@ -1,20 +1,19 @@
 package games.strategy.engine.framework.startup.ui;
 
-import java.util.Arrays;
-
 import games.strategy.engine.player.IGamePlayer;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.ai.fast.FastAi;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ai.weak.DoesNothingAi;
 import games.strategy.triplea.ai.weak.WeakAi;
+import java.util.Arrays;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * PlayerType indicates what kind of entity is controlling a player, whether an AI, human,
- * or a remote (network) player.
+ * PlayerType indicates what kind of entity is controlling a player, whether an AI, human, or a
+ * remote (network) player.
  */
 @AllArgsConstructor
 public enum PlayerType {
@@ -58,9 +57,7 @@ public enum PlayerType {
     }
   },
 
-  /**
-   * A hidden player type to represent network connected players.
-   */
+  /** A hidden player type to represent network connected players. */
   CLIENT_PLAYER("Client", false) {
     @Override
     public IGamePlayer newPlayerWithName(final String name) {
@@ -73,9 +70,7 @@ public enum PlayerType {
     }
   },
 
-  /**
-   * A 'dummy' player type used for battle calc.
-   */
+  /** A 'dummy' player type used for battle calc. */
   BATTLE_CALC_DUMMY("None (AI)", false) {
     @Override
     public IGamePlayer newPlayerWithName(final String name) {
@@ -84,8 +79,8 @@ public enum PlayerType {
     }
   };
 
-  @Getter
-  private final String label;
+  @Getter private final String label;
+
   @Getter(AccessLevel.PRIVATE)
   private final boolean visible;
 

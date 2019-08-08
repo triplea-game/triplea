@@ -1,5 +1,9 @@
 package games.strategy.engine.chat;
 
+import com.google.common.base.Ascii;
+import games.strategy.net.INode;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
@@ -9,7 +13,6 @@ import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
-
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.InputMap;
@@ -26,28 +29,17 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-
+import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.TimeManager;
 import org.triplea.swing.SwingAction;
 
-import com.google.common.base.Ascii;
-
-import games.strategy.net.INode;
-import games.strategy.sound.ClipPlayer;
-import games.strategy.sound.SoundPath;
-import lombok.extern.java.Log;
-
 /**
  * A Chat window.
  *
- * <p>
- * Mutiple chat panels can be connected to the same Chat.
- * </p>
+ * <p>Mutiple chat panels can be connected to the same Chat.
  *
- * <p>
- * We can change the chat we are connected to using the setChat(...) method.
- * </p>
+ * <p>We can change the chat we are connected to using the setChat(...) method.
  */
 @Log
 public class ChatMessagePanel extends JPanel implements IChatListener {
@@ -66,16 +58,22 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
-  private final Action setStatusAction = SwingAction.of("Status...", e -> {
-    String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this),
-        "Enter Status Text (leave blank for no status)", "");
-    if (status != null) {
-      if (status.trim().length() == 0) {
-        status = null;
-      }
-      chat.getStatusManager().setStatus(status);
-    }
-  });
+  private final Action setStatusAction =
+      SwingAction.of(
+          "Status...",
+          e -> {
+            String status =
+                JOptionPane.showInputDialog(
+                    JOptionPane.getFrameForComponent(ChatMessagePanel.this),
+                    "Enter Status Text (leave blank for no status)",
+                    "");
+            if (status != null) {
+              if (status.trim().length() == 0) {
+                status = null;
+              }
+              chat.getStatusManager().setStatus(status);
+            }
+          });
 
   public ChatMessagePanel(final Chat chat) {
     init();
@@ -99,29 +97,33 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   void setChat(final Chat chat) {
-    Interruptibles.await(() -> SwingAction.invokeAndWait(() -> {
-      if (chat != null) {
-        chat.removeChatListener(this);
-        cleanupKeyMap();
-      }
-      this.chat = chat;
-      if (chat != null) {
-        setupKeyMap();
-        chat.addChatListener(this);
-        send.setEnabled(true);
-        text.setEnabled(true);
-        synchronized (chat.getMutex()) {
-          text.setText("");
-          for (final ChatMessage message : chat.getChatHistory()) {
-            addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
-          }
-        }
-      } else {
-        send.setEnabled(false);
-        text.setEnabled(false);
-        updatePlayerList(Collections.emptyList());
-      }
-    }));
+    Interruptibles.await(
+        () ->
+            SwingAction.invokeAndWait(
+                () -> {
+                  if (chat != null) {
+                    chat.removeChatListener(this);
+                    cleanupKeyMap();
+                  }
+                  this.chat = chat;
+                  if (chat != null) {
+                    setupKeyMap();
+                    chat.addChatListener(this);
+                    send.setEnabled(true);
+                    text.setEnabled(true);
+                    synchronized (chat.getMutex()) {
+                      text.setText("");
+                      for (final ChatMessage message : chat.getChatHistory()) {
+                        addChatMessage(
+                            message.getMessage(), message.getFrom(), message.isMyMessage());
+                      }
+                    }
+                  } else {
+                    send.setEnabled(false);
+                    text.setEnabled(false);
+                    updatePlayerList(Collections.emptyList());
+                  }
+                }));
   }
 
   public Chat getChat() {
@@ -153,27 +155,28 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   private void createComponents() {
     text = new JTextPane();
     text.setEditable(false);
-    text.addMouseListener(new MouseListener() {
-      @Override
-      public void mouseReleased(final MouseEvent e) {
-        final String markedText = text.getSelectedText();
-        if (markedText == null || markedText.length() == 0) {
-          nextMessage.requestFocusInWindow();
-        }
-      }
+    text.addMouseListener(
+        new MouseListener() {
+          @Override
+          public void mouseReleased(final MouseEvent e) {
+            final String markedText = text.getSelectedText();
+            if (markedText == null || markedText.length() == 0) {
+              nextMessage.requestFocusInWindow();
+            }
+          }
 
-      @Override
-      public void mousePressed(final MouseEvent e) {}
+          @Override
+          public void mousePressed(final MouseEvent e) {}
 
-      @Override
-      public void mouseExited(final MouseEvent e) {}
+          @Override
+          public void mouseExited(final MouseEvent e) {}
 
-      @Override
-      public void mouseEntered(final MouseEvent e) {}
+          @Override
+          public void mouseEntered(final MouseEvent e) {}
 
-      @Override
-      public void mouseClicked(final MouseEvent e) {}
-    });
+          @Override
+          public void mouseClicked(final MouseEvent e) {}
+        });
     nextMessage = new JTextField(10);
     // when enter is pressed, send the message
     setStatus = new JButton(setStatusAction);
@@ -186,12 +189,17 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   private void setupKeyMap() {
     registerKeyPressAction(nextMessage, KeyEvent.VK_ENTER, this::sendMessage);
-    registerKeyPressAction(nextMessage, KeyEvent.VK_UP, () -> loadMessageFromHistory(MessageOffset.PREVIOUS));
-    registerKeyPressAction(nextMessage, KeyEvent.VK_DOWN, () -> loadMessageFromHistory(MessageOffset.NEXT));
+    registerKeyPressAction(
+        nextMessage, KeyEvent.VK_UP, () -> loadMessageFromHistory(MessageOffset.PREVIOUS));
+    registerKeyPressAction(
+        nextMessage, KeyEvent.VK_DOWN, () -> loadMessageFromHistory(MessageOffset.NEXT));
   }
 
-  private static void registerKeyPressAction(final JComponent component, final int keyCode, final Runnable action) {
-    component.getInputMap().put(KeyStroke.getKeyStroke(keyCode, 0, false), SwingAction.of("", e -> action.run()));
+  private static void registerKeyPressAction(
+      final JComponent component, final int keyCode, final Runnable action) {
+    component
+        .getInputMap()
+        .put(KeyStroke.getKeyStroke(keyCode, 0, false), SwingAction.of("", e -> action.run()));
   }
 
   private void loadMessageFromHistory(final MessageOffset messageOffset) {
@@ -215,7 +223,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   private enum MessageOffset {
-    PREVIOUS, NEXT
+    PREVIOUS,
+    NEXT
   }
 
   private void cleanupKeyMap() {
@@ -233,47 +242,65 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   /** thread safe. */
   @Override
-  public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
-      final String sound) {
-    SwingAction.invokeNowOrLater(() -> {
-      if (from == null || chat == null || chat.getServerNode() == null || chat.getServerNode().getName() == null) {
-        // someone likely disconnected from the game.
-        return;
-      }
-      if (!floodControl.allow(from, System.currentTimeMillis())) {
-        if (from.equals(chat.getLocalNode().getName())) {
-          addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
-        }
-        return;
-      }
-      addChatMessage(message, from, thirdperson);
-      SwingUtilities.invokeLater(() -> {
-        final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
-        scrollModel.setValue(scrollModel.getMaximum());
-      });
-      ClipPlayer.play(sound);
-    });
+  public void addMessageWithSound(
+      final String message, final String from, final boolean thirdperson, final String sound) {
+    SwingAction.invokeNowOrLater(
+        () -> {
+          if (from == null
+              || chat == null
+              || chat.getServerNode() == null
+              || chat.getServerNode().getName() == null) {
+            // someone likely disconnected from the game.
+            return;
+          }
+          if (!floodControl.allow(from, System.currentTimeMillis())) {
+            if (from.equals(chat.getLocalNode().getName())) {
+              addChatMessage(
+                  "MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
+            }
+            return;
+          }
+          addChatMessage(message, from, thirdperson);
+          SwingUtilities.invokeLater(
+              () -> {
+                final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
+                scrollModel.setValue(scrollModel.getMaximum());
+              });
+          ClipPlayer.play(sound);
+        });
   }
 
-  private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
-    // we don't want to truncate messages from the server as those may be logs with accompanying stack traces
-    final String message = from.equals(chat.getServerNode().getName())
-        ? originalMessage
-        : Ascii.truncate(originalMessage, 200, "...");
+  private void addChatMessage(
+      final String originalMessage, final String from, final boolean thirdperson) {
+    // we don't want to truncate messages from the server as those may be logs with accompanying
+    // stack traces
+    final String message =
+        from.equals(chat.getServerNode().getName())
+            ? originalMessage
+            : Ascii.truncate(originalMessage, 200, "...");
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final Document doc = text.getDocument();
     try {
       if (thirdperson) {
-        doc.insertString(doc.getLength(), (showTime ? "* " + time + " " + from : "* " + from), bold);
+        doc.insertString(
+            doc.getLength(), (showTime ? "* " + time + " " + from : "* " + from), bold);
       } else {
-        doc.insertString(doc.getLength(), (showTime ? time + " " + from + ": " : from + ": "), bold);
+        doc.insertString(
+            doc.getLength(), (showTime ? time + " " + from + ": " : from + ": "), bold);
       }
       doc.insertString(doc.getLength(), " " + message + "\n", normal);
       // don't let the chat get too big
       trimLines(doc, MAX_LINES);
     } catch (final BadLocationException e) {
-      log.log(Level.SEVERE, "There was an Error whilst trying to add the Chat Message \"" + message + "\" sent by "
-          + from + " at " + time, e);
+      log.log(
+          Level.SEVERE,
+          "There was an Error whilst trying to add the Chat Message \""
+              + message
+              + "\" sent by "
+              + from
+              + " at "
+              + time,
+          e);
     }
   }
 
@@ -282,27 +309,32 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
       final Document doc = text.getDocument();
       doc.insertString(doc.getLength(), message + "\n", normal);
     } catch (final BadLocationException e) {
-      log.log(Level.SEVERE, "There was an Error whilst trying to add the Server Message \"" + message + "\"", e);
+      log.log(
+          Level.SEVERE,
+          "There was an Error whilst trying to add the Server Message \"" + message + "\"",
+          e);
     }
   }
 
   @Override
   public void addStatusMessage(final String message) {
-    SwingUtilities.invokeLater(() -> {
-      try {
-        final Document doc = text.getDocument();
-        doc.insertString(doc.getLength(), message + "\n", italic);
-        // don't let the chat get too big
-        trimLines(doc, MAX_LINES);
-      } catch (final BadLocationException e) {
-        log.log(Level.SEVERE, "There was an Error whilst trying to add the Status Message \"" + message + "\"", e);
-      }
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          try {
+            final Document doc = text.getDocument();
+            doc.insertString(doc.getLength(), message + "\n", italic);
+            // don't let the chat get too big
+            trimLines(doc, MAX_LINES);
+          } catch (final BadLocationException e) {
+            log.log(
+                Level.SEVERE,
+                "There was an Error whilst trying to add the Status Message \"" + message + "\"",
+                e);
+          }
+        });
   }
 
-  /**
-   * Show only the first n lines.
-   */
+  /** Show only the first n lines. */
   public static void trimLines(final Document doc, final int lineCount) {
     if (doc.getLength() < lineCount) {
       return;

@@ -1,16 +1,13 @@
 package games.strategy.triplea.ui.screen.drawable;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.mapdata.MapData;
-
-/**
- * Draws the victory city image for the associated territory.
- */
+/** Draws the victory city image for the associated territory. */
 public class VcDrawable extends AbstractDrawable {
   private final Territory location;
 
@@ -19,7 +16,11 @@ public class VcDrawable extends AbstractDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData) {
 
     final Point point = mapData.getVcPlacementPoint(location);
     drawImage(graphics, mapData.getVcImage(), point, bounds);

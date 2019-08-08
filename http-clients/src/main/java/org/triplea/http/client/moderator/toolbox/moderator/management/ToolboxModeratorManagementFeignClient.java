@@ -1,14 +1,12 @@
 package org.triplea.http.client.moderator.toolbox.moderator.management;
 
-import java.util.List;
-import java.util.Map;
-
-import org.triplea.http.client.HttpConstants;
-import org.triplea.http.client.moderator.toolbox.NewApiKey;
-
 import feign.HeaderMap;
 import feign.Headers;
 import feign.RequestLine;
+import java.util.List;
+import java.util.Map;
+import org.triplea.http.client.HttpConstants;
+import org.triplea.http.client.moderator.toolbox.NewApiKey;
 
 interface ToolboxModeratorManagementFeignClient {
   @RequestLine("GET " + ToolboxModeratorManagementClient.FETCH_MODERATORS_PATH)

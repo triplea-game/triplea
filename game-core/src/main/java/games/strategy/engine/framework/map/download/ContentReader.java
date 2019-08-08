@@ -3,6 +3,8 @@ package games.strategy.engine.framework.map.download;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.framework.system.HttpProxy;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,7 +14,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-
+import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,28 +23,21 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.triplea.java.function.ThrowingFunction;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.engine.framework.system.HttpProxy;
-import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
-
-/**
- * Provides methods to download files via HTTP.
- */
+/** Provides methods to download files via HTTP. */
 @Log
 @AllArgsConstructor
 public final class ContentReader {
   private final Supplier<CloseableHttpClient> httpClientFactory;
 
   /**
-   * Downloads the resource at the specified URI, applies the given
-   * Function to it and returns the result.
+   * Downloads the resource at the specified URI, applies the given Function to it and returns the
+   * result.
    *
    * @param uri The resource URI; must not be {@code null}.
    * @param action The action to perform using the give InputStream; must not be {@code null}.
    */
-  public <T> Optional<T> download(final String uri, final ThrowingFunction<InputStream, T, IOException> action) {
+  public <T> Optional<T> download(
+      final String uri, final ThrowingFunction<InputStream, T, IOException> action) {
     checkNotNull(uri);
     checkNotNull(action);
 
@@ -55,7 +51,9 @@ public final class ContentReader {
 
   @VisibleForTesting
   static <T> T download(
-      final String uri, final ThrowingFunction<InputStream, T, IOException> action, final CloseableHttpClient client)
+      final String uri,
+      final ThrowingFunction<InputStream, T, IOException> action,
+      final CloseableHttpClient client)
       throws IOException {
     final HttpGet request = new HttpGet(uri);
     HttpProxy.addProxy(request);
@@ -66,8 +64,9 @@ public final class ContentReader {
         throw new IOException(String.format("Unexpected status code (%d)", statusCode));
       }
 
-      final HttpEntity entity = Optional.ofNullable(response.getEntity())
-          .orElseThrow(() -> new IOException("Entity is missing"));
+      final HttpEntity entity =
+          Optional.ofNullable(response.getEntity())
+              .orElseThrow(() -> new IOException("Entity is missing"));
 
       try (InputStream stream = entity.getContent()) {
         return action.apply(stream);
@@ -87,10 +86,10 @@ public final class ContentReader {
     checkNotNull(file);
 
     try (FileOutputStream os = new FileOutputStream(file)) {
-      downloadInternal(uri, is -> os.getChannel().transferFrom(Channels.newChannel(is), 0L, Long.MAX_VALUE));
+      downloadInternal(
+          uri, is -> os.getChannel().transferFrom(Channels.newChannel(is), 0L, Long.MAX_VALUE));
     }
   }
-
 
   /**
    * Downloads the resource at the specified URI using the configured httpClientFactory.
@@ -100,7 +99,8 @@ public final class ContentReader {
    * @param action The action to perform using the give InputStream; must not be {@code null}.
    * @throws IOException If an error occurs during the download.
    */
-  private <T> T downloadInternal(final String uri, final ThrowingFunction<InputStream, T, IOException> action)
+  private <T> T downloadInternal(
+      final String uri, final ThrowingFunction<InputStream, T, IOException> action)
       throws IOException {
     try (CloseableHttpClient client = httpClientFactory.get()) {
       return download(uri, action, client);

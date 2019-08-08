@@ -7,13 +7,9 @@ import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.BattleListing;
 
-/**
- * Logic for querying and fighting pending battles.
- */
+/** Logic for querying and fighting pending battles. */
 public interface IBattleDelegate extends IRemote, IDelegate {
-  /**
-   * Returns the battles currently waiting to be fought.
-   */
+  /** Returns the battles currently waiting to be fought. */
   BattleListing getBattles();
 
   /**

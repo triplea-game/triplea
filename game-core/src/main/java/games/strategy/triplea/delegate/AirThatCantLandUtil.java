@@ -1,9 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.function.Predicate;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
@@ -15,10 +11,11 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.Predicate;
 
-/**
- * Utility for detecting and removing units that can't land at the end of a phase.
- */
+/** Utility for detecting and removing units that can't land at the end of a phase. */
 public class AirThatCantLandUtil {
   private final IDelegateBridge bridge;
 
@@ -47,23 +44,28 @@ public class AirThatCantLandUtil {
     return cantLand;
   }
 
-  void removeAirThatCantLand(final PlayerId player, final boolean spareAirInSeaZonesBesideFactories) {
+  void removeAirThatCantLand(
+      final PlayerId player, final boolean spareAirInSeaZonesBesideFactories) {
     final GameData data = bridge.getData();
     final GameMap map = data.getMap();
     for (final Territory current : getTerritoriesWhereAirCantLand(player)) {
       final Predicate<Unit> ownedAir = Matches.unitIsAir().and(Matches.alliedUnit(player, data));
       final Collection<Unit> air = current.getUnitCollection().getMatches(ownedAir);
       final boolean hasNeighboringFriendlyFactory =
-          map.getNeighbors(current, Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(data, player)).size() > 0;
-      final boolean skip = spareAirInSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory;
+          map.getNeighbors(
+                      current, Matches.territoryHasAlliedIsFactoryOrCanProduceUnits(data, player))
+                  .size()
+              > 0;
+      final boolean skip =
+          spareAirInSeaZonesBesideFactories && current.isWater() && hasNeighboringFriendlyFactory;
       if (!skip) {
         removeAirThatCantLand(player, current, air);
       }
     }
   }
 
-  private void removeAirThatCantLand(final PlayerId player, final Territory territory,
-      final Collection<Unit> airUnits) {
+  private void removeAirThatCantLand(
+      final PlayerId player, final Territory territory, final Collection<Unit> airUnits) {
     final Collection<Unit> toRemove = new ArrayList<>(airUnits.size());
     // if we cant land on land then none can
     if (!territory.isWater()) {
@@ -84,8 +86,13 @@ public class AirThatCantLandUtil {
       }
     }
     final Change remove = ChangeFactory.removeUnits(territory, toRemove);
-    final String transcriptText = MyFormatter.unitsToTextNoOwner(toRemove) + " could not land in " + territory.getName()
-        + " and " + (toRemove.size() > 1 ? "were" : "was") + " removed";
+    final String transcriptText =
+        MyFormatter.unitsToTextNoOwner(toRemove)
+            + " could not land in "
+            + territory.getName()
+            + " and "
+            + (toRemove.size() > 1 ? "were" : "was")
+            + " removed";
     bridge.getHistoryWriter().startEvent(transcriptText);
     bridge.addChange(remove);
   }

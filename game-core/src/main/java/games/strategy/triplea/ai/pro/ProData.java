@@ -1,13 +1,5 @@
 package games.strategy.triplea.ai.pro;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -20,10 +12,14 @@ import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.util.TuvUtils;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
-/**
- * Pro AI data.
- */
+/** Pro AI data. */
 public final class ProData {
   // Default values
   public static boolean isSimulation = false;
@@ -46,12 +42,13 @@ public final class ProData {
     hiddenInitialize(proAi, proAi.getGameData(), proAi.getPlayerId(), false);
   }
 
-  public static void initializeSimulation(final ProAi proAi, final GameData data, final PlayerId player) {
+  public static void initializeSimulation(
+      final ProAi proAi, final GameData data, final PlayerId player) {
     hiddenInitialize(proAi, data, player, true);
   }
 
-  private static void hiddenInitialize(final ProAi proAi, final GameData data, final PlayerId player,
-      final boolean isSimulation) {
+  private static void hiddenInitialize(
+      final ProAi proAi, final GameData data, final PlayerId player, final boolean isSimulation) {
     ProData.proAi = proAi;
     ProData.data = data;
     ProData.player = player;
@@ -63,7 +60,8 @@ public final class ProData {
     }
     myCapital = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
     myUnitTerritories =
-        CollectionUtils.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
+        CollectionUtils.getMatches(
+            data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
     unitTerritoryMap = ProUtils.newUnitTerritoryMap();
     unitValueMap = TuvUtils.getCostsForTuv(player, data);
     purchaseOptions = new ProPurchaseOptionMap(player, data);
@@ -91,5 +89,4 @@ public final class ProData {
     }
     return minCostPerHitPoint;
   }
-
 }

@@ -12,14 +12,13 @@ import org.triplea.server.http.AbstractDropwizardTest;
 
 class ErrorReportControllerIntegrationTest extends AbstractDropwizardTest {
 
-  private static final ErrorUploadClient client = AbstractDropwizardTest.newClient(ErrorUploadClient::newClient);
+  private static final ErrorUploadClient client =
+      AbstractDropwizardTest.newClient(ErrorUploadClient::newClient);
 
   @Test
   void uploadErrorReport() {
-    final ErrorUploadResponse response = client.uploadErrorReport(ErrorUploadRequest.builder()
-        .body("bodY")
-        .title("title")
-        .build());
+    final ErrorUploadResponse response =
+        client.uploadErrorReport(ErrorUploadRequest.builder().body("bodY").title("title").build());
 
     assertThat(response.getGithubIssueLink(), notNullValue());
   }

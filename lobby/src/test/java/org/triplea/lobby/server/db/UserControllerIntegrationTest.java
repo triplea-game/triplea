@@ -5,13 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.UUID;
 import java.util.function.Function;
-
 import javax.annotation.Nullable;
-
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.login.RsaAuthenticator;
@@ -19,8 +18,6 @@ import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
 import org.triplea.util.Md5Crypt;
-
-import games.strategy.engine.lobby.server.userDB.DBUser;
 
 @Integration
 final class UserControllerIntegrationTest {
@@ -53,11 +50,13 @@ final class UserControllerIntegrationTest {
   @Test
   void testCreateDupe() {
     final DBUser user = newUserWithMd5CryptHash();
-    assertThrows(Exception.class,
-        () -> controller.createUser(
-            user.getName(),
-            user.getEmail(),
-            new HashedPassword(md5Crypt(TestUserUtils.newUniqueTimestamp()))),
+    assertThrows(
+        Exception.class,
+        () ->
+            controller.createUser(
+                user.getName(),
+                user.getEmail(),
+                new HashedPassword(md5Crypt(TestUserUtils.newUniqueTimestamp()))),
         "Should not be allowed to create a dupe user");
   }
 
@@ -65,7 +64,8 @@ final class UserControllerIntegrationTest {
   void testLogin() {
     final String password = md5Crypt(TestUserUtils.newUniqueTimestamp());
     final DBUser user = newUserWithHash(password, Function.identity());
-    controller.updateUser(user.getName(), user.getEmail(), new HashedPassword(bcrypt(obfuscate(password))));
+    controller.updateUser(
+        user.getName(), user.getEmail(), new HashedPassword(bcrypt(obfuscate(password))));
     assertTrue(controller.login(user.getName(), new HashedPassword(password)));
     assertTrue(controller.login(user.getName(), new HashedPassword(obfuscate(password))));
   }
@@ -80,10 +80,7 @@ final class UserControllerIntegrationTest {
         user.getName(),
         email2,
         new HashedPassword(bcrypt(obfuscate(TestUserUtils.newUniqueTimestamp()))));
-    controller.updateUser(
-        user.getName(),
-        email2,
-        new HashedPassword(password2));
+    controller.updateUser(user.getName(), email2, new HashedPassword(password2));
     try (Connection con = TestDatabase.newConnection()) {
       final String sql = " select * from lobby_user where username = '" + user.getName() + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
@@ -95,19 +92,22 @@ final class UserControllerIntegrationTest {
   }
 
   private DBUser newUserWithMd5CryptHash() {
-    return newUserWithHash(TestUserUtils.newUniqueTimestamp(), UserControllerIntegrationTest::md5Crypt);
+    return newUserWithHash(
+        TestUserUtils.newUniqueTimestamp(), UserControllerIntegrationTest::md5Crypt);
   }
 
   private DBUser newUserWithBCryptHash() {
-    return newUserWithHash(TestUserUtils.newUniqueTimestamp(), UserControllerIntegrationTest::bcrypt);
+    return newUserWithHash(
+        TestUserUtils.newUniqueTimestamp(), UserControllerIntegrationTest::bcrypt);
   }
 
-  private DBUser newUserWithHash(final @Nullable String password, final Function<String, String> hashingMethod) {
+  private DBUser newUserWithHash(
+      final @Nullable String password, final Function<String, String> hashingMethod) {
     final String name = UUID.randomUUID().toString().substring(0, 20);
-    final DBUser user = new DBUser(
-        new DBUser.UserName(name),
-        new DBUser.UserEmail(name + "@none.none"));
-    controller.createUser(user.getName(), user.getEmail(), new HashedPassword(hashingMethod.apply(password)));
+    final DBUser user =
+        new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(name + "@none.none"));
+    controller.createUser(
+        user.getName(), user.getEmail(), new HashedPassword(hashingMethod.apply(password)));
     return user;
   }
 
@@ -124,7 +124,8 @@ final class UserControllerIntegrationTest {
     return BCrypt.hashpw(string, BCrypt.gensalt());
   }
 
-  @SuppressWarnings("deprecation") // required for testing; remove upon next lobby-incompatible release
+  @SuppressWarnings(
+      "deprecation") // required for testing; remove upon next lobby-incompatible release
   private static String md5Crypt(final String value) {
     return Md5Crypt.hashPassword(value, Md5Crypt.newSalt());
   }

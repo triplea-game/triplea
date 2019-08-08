@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +17,7 @@ final class FileUtilsTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class ListFilesTest {
-    @Mock
-    private File directory;
+    @Mock private File directory;
 
     @Test
     void shouldReturnFileCollectionWhenTargetIsDirectory() {

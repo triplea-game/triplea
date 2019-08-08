@@ -1,8 +1,8 @@
 package games.strategy.engine.history;
 
 /**
- * A history node that contains the details of an {@link Event} (e.g. for a battle event, the dice rolled during each
- * stage of the battle, the units lost during the battle, etc.).
+ * A history node that contains the details of an {@link Event} (e.g. for a battle event, the dice
+ * rolled during each stage of the battle, the units lost during the battle, etc.).
  */
 public class EventChild extends HistoryNode implements Renderable {
   private static final long serialVersionUID = 2436212909638449323L;

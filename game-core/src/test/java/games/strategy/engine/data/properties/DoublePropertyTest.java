@@ -19,25 +19,39 @@ final class DoublePropertyTest {
 
     @Test
     void shouldThrowExceptionWhenMaxValueLessThanMinValue() {
-      final Exception e = assertThrows(
-          IllegalArgumentException.class,
-          () -> new DoubleProperty(NAME, DESCRIPTION, MIN_VALUE - 1.0, MIN_VALUE, DEFAULT_VALUE, NUMBER_OF_PLACES));
+      final Exception e =
+          assertThrows(
+              IllegalArgumentException.class,
+              () ->
+                  new DoubleProperty(
+                      NAME,
+                      DESCRIPTION,
+                      MIN_VALUE - 1.0,
+                      MIN_VALUE,
+                      DEFAULT_VALUE,
+                      NUMBER_OF_PLACES));
       assertThat(e.getMessage(), is("Max must be greater than min"));
     }
 
     @Test
     void shouldThrowExceptionWhenDefaultValueGreaterThanMaxValue() {
-      final Exception e = assertThrows(
-          IllegalArgumentException.class,
-          () -> new DoubleProperty(NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MAX_VALUE + 1.0, NUMBER_OF_PLACES));
+      final Exception e =
+          assertThrows(
+              IllegalArgumentException.class,
+              () ->
+                  new DoubleProperty(
+                      NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MAX_VALUE + 1.0, NUMBER_OF_PLACES));
       assertThat(e.getMessage(), is("Default value out of range"));
     }
 
     @Test
     void shouldThrowExceptionWhenDefaultValueLessThanMinValue() {
-      final Exception e = assertThrows(
-          IllegalArgumentException.class,
-          () -> new DoubleProperty(NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MIN_VALUE - 1.0, NUMBER_OF_PLACES));
+      final Exception e =
+          assertThrows(
+              IllegalArgumentException.class,
+              () ->
+                  new DoubleProperty(
+                      NAME, DESCRIPTION, MAX_VALUE, MIN_VALUE, MIN_VALUE - 1.0, NUMBER_OF_PLACES));
       assertThat(e.getMessage(), is("Default value out of range"));
     }
   }

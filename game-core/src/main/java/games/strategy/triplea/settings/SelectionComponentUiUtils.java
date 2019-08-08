@@ -11,9 +11,7 @@ import java.util.Optional;
 public final class SelectionComponentUiUtils {
   private SelectionComponentUiUtils() {}
 
-  /**
-   * Converts {@code path} into a string suitable for display in the UI.
-   */
+  /** Converts {@code path} into a string suitable for display in the UI. */
   public static String toString(final Optional<Path> path) {
     checkNotNull(path);
 

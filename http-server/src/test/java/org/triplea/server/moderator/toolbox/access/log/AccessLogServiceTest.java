@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,10 +21,7 @@ import org.triplea.lobby.server.db.data.AccessLogDaoData;
 @ExtendWith(MockitoExtension.class)
 class AccessLogServiceTest {
   private static final PagingParams PAGING_PARAMS =
-      PagingParams.builder()
-          .pageSize(100)
-          .rowNumber(0)
-          .build();
+      PagingParams.builder().pageSize(100).rowNumber(0).build();
 
   private static final AccessLogDaoData ACCESS_LOG_DAO_DATA =
       AccessLogDaoData.builder()
@@ -36,17 +32,15 @@ class AccessLogServiceTest {
           .registered(true)
           .build();
 
-  @Mock
-  private AccessLogDao accessLogDao;
+  @Mock private AccessLogDao accessLogDao;
 
-  @InjectMocks
-  private AccessLogService accessLogService;
+  @InjectMocks private AccessLogService accessLogService;
 
   @Test
   void fetchAccessLog() {
     when(accessLogDao.lookupAccessLogData(
-        PAGING_PARAMS.getRowNumber(), PAGING_PARAMS.getPageSize()))
-            .thenReturn(Collections.singletonList(ACCESS_LOG_DAO_DATA));
+            PAGING_PARAMS.getRowNumber(), PAGING_PARAMS.getPageSize()))
+        .thenReturn(Collections.singletonList(ACCESS_LOG_DAO_DATA));
 
     final List<AccessLogData> results = accessLogService.fetchAccessLog(PAGING_PARAMS);
 

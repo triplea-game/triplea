@@ -2,14 +2,12 @@ package games.strategy.engine.lobby.moderator.toolbox.tabs.banned.names;
 
 import java.awt.Component;
 import java.util.function.Supplier;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-
 import org.triplea.http.client.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.DocumentListenerBuilder;
@@ -20,8 +18,9 @@ import org.triplea.swing.JTextFieldBuilder;
 import org.triplea.swing.SwingComponents;
 
 /**
- * Show a scrollable list of 'banned usernames'. These are exact match usernames not allowed in the lobby.
- * This tab shows a table with the banned usernames and a button with text field for adding a custom username.
+ * Show a scrollable list of 'banned usernames'. These are exact match usernames not allowed in the
+ * lobby. This tab shows a table with the banned usernames and a button with text field for adding a
+ * custom username.
  *
  * <pre>
  * +----------------------------------------------------+
@@ -53,51 +52,55 @@ public final class BannedUsernamesTab implements Supplier<Component> {
 
     return JPanelBuilder.builder()
         .border(10)
-        .addNorth(JButtonBuilder.builder()
-            .title("Refresh")
-            .actionListener(() -> bannedUsernamesTabActions.refreshTableData(table))
-            .build())
+        .addNorth(
+            JButtonBuilder.builder()
+                .title("Refresh")
+                .actionListener(() -> bannedUsernamesTabActions.refreshTableData(table))
+                .build())
         .addCenter(SwingComponents.newJScrollPane(table))
         .addSouth(buildAddUsernameBanPanel(table))
         .build();
   }
 
   private JTable buildTable() {
-    final JTable table = JTableBuilder.builder()
-        .columnNames(BannedUsernamesTabModel.fetchTableHeaders())
-        .tableData(bannedUsernamesTabModel.fetchTableData())
-        .build();
+    final JTable table =
+        JTableBuilder.builder()
+            .columnNames(BannedUsernamesTabModel.fetchTableHeaders())
+            .tableData(bannedUsernamesTabModel.fetchTableData())
+            .build();
 
     ButtonColumn.attachButtonColumn(table, 2, bannedUsernamesTabActions.removeButtonListener());
     return table;
   }
 
-
   private JPanel buildAddUsernameBanPanel(final JTable table) {
-    final JTextField addField = JTextFieldBuilder.builder()
-        .columns(10)
-        .maxLength(20)
-        .toolTip("Username to ban, must be at least " + MIN_LENGTH + " characters long")
-        .build();
+    final JTextField addField =
+        JTextFieldBuilder.builder()
+            .columns(10)
+            .maxLength(20)
+            .toolTip("Username to ban, must be at least " + MIN_LENGTH + " characters long")
+            .build();
 
-    final JButton addButton = JButtonBuilder.builder()
-        .enabled(false)
-        .title("Ban Username")
-        .actionListener(button -> bannedUsernamesTabActions.addUserNameBan(addField, button, table))
-        .toolTip("Adds a new banned username, this name will not be allowed to join the lobby.")
-        .build();
+    final JButton addButton =
+        JButtonBuilder.builder()
+            .enabled(false)
+            .title("Ban Username")
+            .actionListener(
+                button -> bannedUsernamesTabActions.addUserNameBan(addField, button, table))
+            .toolTip("Adds a new banned username, this name will not be allowed to join the lobby.")
+            .build();
 
     DocumentListenerBuilder.attachDocumentListener(
-        addField,
-        () -> addButton.setEnabled(addField.getText().trim().length() >= MIN_LENGTH));
+        addField, () -> addButton.setEnabled(addField.getText().trim().length() >= MIN_LENGTH));
 
     return JPanelBuilder.builder()
-        .add(JPanelBuilder.builder()
-            .flowLayout()
-            .add(addField)
-            .add(Box.createHorizontalStrut(10))
-            .add(addButton)
-            .build())
+        .add(
+            JPanelBuilder.builder()
+                .flowLayout()
+                .add(addField)
+                .add(Box.createHorizontalStrut(10))
+                .add(addButton)
+                .build())
         .build();
   }
 }

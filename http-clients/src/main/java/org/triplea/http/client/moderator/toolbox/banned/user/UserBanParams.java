@@ -5,10 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 /**
- * Data object to be encoded to and from JSON. Contains the parameters
- * the backend would need to add a new user ban entry.
+ * Data object to be encoded to and from JSON. Contains the parameters the backend would need to add
+ * a new user ban entry.
  */
 @Builder
 @Data

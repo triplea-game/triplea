@@ -1,10 +1,5 @@
 package games.strategy.triplea.odds.calculator;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -17,6 +12,10 @@ import games.strategy.triplea.delegate.BattleResults;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.GameDelegateBridge;
 import games.strategy.triplea.delegate.MustFightBattle;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   private GameData gameData;
@@ -45,7 +44,10 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   }
 
   OddsCalculator(final GameData data, final boolean dataHasAlreadyBeenCloned) {
-    gameData = data == null ? null : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
+    gameData =
+        data == null
+            ? null
+            : (dataHasAlreadyBeenCloned ? data : GameDataUtils.cloneGameData(data, false));
     if (data != null) {
       isDataSet = true;
     }
@@ -71,13 +73,18 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     isDataSet = data != null;
   }
 
-  /**
-   * Calculates odds using the stored game data.
-   */
+  /** Calculates odds using the stored game data. */
   @Override
-  public void setCalculateData(final PlayerId attacker, final PlayerId defender, final Territory location,
-      final Collection<Unit> attacking, final Collection<Unit> defending, final Collection<Unit> bombarding,
-      final Collection<TerritoryEffect> territoryEffects, final int runCount) throws IllegalStateException {
+  public void setCalculateData(
+      final PlayerId attacker,
+      final PlayerId defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> territoryEffects,
+      final int runCount)
+      throws IllegalStateException {
     if (isRunning) {
       return;
     }
@@ -86,9 +93,13 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
       throw new IllegalStateException("Called set calculation before setting game data!");
     }
     this.attacker =
-        gameData.getPlayerList().getPlayerId(attacker == null ? PlayerId.NULL_PLAYERID.getName() : attacker.getName());
+        gameData
+            .getPlayerList()
+            .getPlayerId(attacker == null ? PlayerId.NULL_PLAYERID.getName() : attacker.getName());
     this.defender =
-        gameData.getPlayerList().getPlayerId(defender == null ? PlayerId.NULL_PLAYERID.getName() : defender.getName());
+        gameData
+            .getPlayerList()
+            .getPlayerId(defender == null ? PlayerId.NULL_PLAYERID.getName() : defender.getName());
     this.location = gameData.getMap().getTerritory(location.getName());
     attackingUnits = GameDataUtils.translateIntoOtherGameData(attacking, gameData);
     defendingUnits = GameDataUtils.translateIntoOtherGameData(defending, gameData);
@@ -102,10 +113,17 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
   }
 
   @Override
-  public AggregateResults setCalculateDataAndCalculate(final PlayerId attacker, final PlayerId defender,
-      final Territory location, final Collection<Unit> attacking, final Collection<Unit> defending,
-      final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount) {
-    setCalculateData(attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
+  public AggregateResults setCalculateDataAndCalculate(
+      final PlayerId attacker,
+      final PlayerId defender,
+      final Territory location,
+      final Collection<Unit> attacking,
+      final Collection<Unit> defending,
+      final Collection<Unit> bombarding,
+      final Collection<TerritoryEffect> territoryEffects,
+      final int runCount) {
+    setCalculateData(
+        attacker, defender, location, attacking, defending, bombarding, territoryEffects, runCount);
     return calculate();
   }
 
@@ -122,24 +140,42 @@ class OddsCalculator implements IOddsCalculator, Callable<AggregateResults> {
     final long start = System.currentTimeMillis();
     final AggregateResults aggregateResults = new AggregateResults(count);
     final BattleTracker battleTracker = new BattleTracker();
-    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at the same time (like if
+    // CasualtySortingCaching can cause issues if there is more than 1 one battle being calced at
+    // the same time (like if
     // the AI and a human are both using the calc)
-    // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference then convert it to a
+    // TODO: first, see how much it actually speeds stuff up by, and if it does make a difference
+    // then convert it to a
     // per-thread, per-calc caching
     final List<Unit> attackerOrderOfLosses =
-        OrderOfLossesInputPanel.getUnitListByOrderOfLoss(this.attackerOrderOfLosses, attackingUnits, gameData);
+        OrderOfLossesInputPanel.getUnitListByOrderOfLoss(
+            this.attackerOrderOfLosses, attackingUnits, gameData);
     final List<Unit> defenderOrderOfLosses =
-        OrderOfLossesInputPanel.getUnitListByOrderOfLoss(this.defenderOrderOfLosses, defendingUnits, gameData);
+        OrderOfLossesInputPanel.getUnitListByOrderOfLoss(
+            this.defenderOrderOfLosses, defendingUnits, gameData);
     for (int i = 0; i < count && !cancelled; i++) {
       final CompositeChange allChanges = new CompositeChange();
       final DummyDelegateBridge bridge1 =
-          new DummyDelegateBridge(attacker, gameData, allChanges, attackerOrderOfLosses, defenderOrderOfLosses,
-              keepOneAttackingLandUnit, retreatAfterRound, retreatAfterXUnitsLeft, retreatWhenOnlyAirLeft);
+          new DummyDelegateBridge(
+              attacker,
+              gameData,
+              allChanges,
+              attackerOrderOfLosses,
+              defenderOrderOfLosses,
+              keepOneAttackingLandUnit,
+              retreatAfterRound,
+              retreatAfterXUnitsLeft,
+              retreatWhenOnlyAirLeft);
       final GameDelegateBridge bridge = new GameDelegateBridge(bridge1);
-      final MustFightBattle battle = new MustFightBattle(location, attacker, gameData, battleTracker);
+      final MustFightBattle battle =
+          new MustFightBattle(location, attacker, gameData, battleTracker);
       battle.setHeadless(true);
-      battle.setUnits(defendingUnits, attackingUnits, bombardingUnits,
-          (amphibious ? attackingUnits : new ArrayList<>()), defender, territoryEffects);
+      battle.setUnits(
+          defendingUnits,
+          attackingUnits,
+          bombardingUnits,
+          (amphibious ? attackingUnits : new ArrayList<>()),
+          defender,
+          territoryEffects);
       bridge1.setBattle(battle);
       battle.fight(bridge);
       aggregateResults.addResult(new BattleResults(battle, gameData));

@@ -8,38 +8,33 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
+import games.strategy.triplea.settings.ClientSetting;
 import java.util.function.Consumer;
 import java.util.logging.Level;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-import games.strategy.triplea.settings.ClientSetting;
-
 @ExtendWith(MockitoExtension.class)
 class ConsoleModelTest extends AbstractClientSettingTestCase {
 
   private static final String SAMPLE_DATA = "Mensa, brodium, et epos.";
 
-  @Mock
-  private ConsoleWindow defaultConsole;
+  @Mock private ConsoleWindow defaultConsole;
 
-  @InjectMocks
-  private ConsoleModel consoleModel;
+  @InjectMocks private ConsoleModel consoleModel;
 
-  @Mock
-  private Consumer<String> mockClipboard;
-
+  @Mock private Consumer<String> mockClipboard;
 
   @Test
   void getCurrentLogLevel() {
     assertThat(
         "By default we should have a 'normal' log level",
-        ConsoleModel.getCurrentLogLevel(), is(ConsoleModel.LogLevelItem.NORMAL.getLabel()));
+        ConsoleModel.getCurrentLogLevel(),
+        is(ConsoleModel.LogLevelItem.NORMAL.getLabel()));
 
     ClientSetting.loggingVerbosity.setValue(ConsoleModel.LogLevelItem.DEBUG.getLevel().getName());
     assertThat(ConsoleModel.getCurrentLogLevel(), is(ConsoleModel.LogLevelItem.DEBUG.getLabel()));
@@ -51,8 +46,10 @@ class ConsoleModelTest extends AbstractClientSettingTestCase {
   @Test
   void getLogLevelOptions() {
     assertThat(ConsoleModel.getLogLevelOptions(), hasSize(2));
-    assertThat(ConsoleModel.getLogLevelOptions(), hasItem(ConsoleModel.LogLevelItem.NORMAL.getLabel()));
-    assertThat(ConsoleModel.getLogLevelOptions(), hasItem(ConsoleModel.LogLevelItem.DEBUG.getLabel()));
+    assertThat(
+        ConsoleModel.getLogLevelOptions(), hasItem(ConsoleModel.LogLevelItem.NORMAL.getLabel()));
+    assertThat(
+        ConsoleModel.getLogLevelOptions(), hasItem(ConsoleModel.LogLevelItem.DEBUG.getLabel()));
   }
 
   @Test

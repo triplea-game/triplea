@@ -1,12 +1,9 @@
 package games.strategy.engine.chat;
 
+import games.strategy.net.INode;
 import java.util.Collection;
 
-import games.strategy.net.INode;
-
-/**
- * An interface to allow for testing.
- */
+/** An interface to allow for testing. */
 public interface IChatListener {
   void updatePlayerList(Collection<INode> players);
 

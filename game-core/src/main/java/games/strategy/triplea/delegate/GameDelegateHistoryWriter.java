@@ -4,15 +4,15 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 
 /**
- * Has a subset of the historyWriters functionality.
- * Delegates should only have access to these functions.
- * The rest of the history writers functions should only be used by the GameData.
+ * Has a subset of the historyWriters functionality. Delegates should only have access to these
+ * functions. The rest of the history writers functions should only be used by the GameData.
  */
 public class GameDelegateHistoryWriter implements IDelegateHistoryWriter {
   private final IDelegateHistoryWriter delegateHistoryWriter;
   private final GameData gameData;
 
-  GameDelegateHistoryWriter(final IDelegateHistoryWriter delegateHistoryWriter, final GameData data) {
+  GameDelegateHistoryWriter(
+      final IDelegateHistoryWriter delegateHistoryWriter, final GameData data) {
     this.delegateHistoryWriter = delegateHistoryWriter;
     gameData = data;
   }

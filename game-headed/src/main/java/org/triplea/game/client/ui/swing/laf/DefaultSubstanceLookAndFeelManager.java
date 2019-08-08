@@ -2,16 +2,12 @@ package org.triplea.game.client.ui.swing.laf;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
-
 import javax.swing.UIManager;
-
 import org.pushingpixels.substance.api.SubstanceCortex;
 import org.pushingpixels.substance.api.skin.SkinInfo;
 import org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel;
 
-/**
- * Default implementation of the {@link SubstanceLookAndFeelManager} service.
- */
+/** Default implementation of the {@link SubstanceLookAndFeelManager} service. */
 public final class DefaultSubstanceLookAndFeelManager implements SubstanceLookAndFeelManager {
   @Override
   public String getDefaultLookAndFeelClassName() {
@@ -33,7 +29,8 @@ public final class DefaultSubstanceLookAndFeelManager implements SubstanceLookAn
 
   @Override
   public void initialize() {
-    // workaround for https://github.com/kirill-grouchnikov/radiance/issues/102; remove when upgrading to Substance 1.5+
+    // workaround for https://github.com/kirill-grouchnikov/radiance/issues/102; remove when
+    // upgrading to Substance 1.5+
     SubstanceCortex.GlobalScope.setUseDefaultColorChooser();
   }
 }

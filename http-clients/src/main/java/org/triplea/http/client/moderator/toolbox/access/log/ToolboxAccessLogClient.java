@@ -4,19 +4,17 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.net.URI;
 import java.util.List;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.http.client.moderator.toolbox.PagingParams;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-
 /**
- * Http client class for fetching rows of the access log table. That is a table noting
- * users that have accessed the lobby. The data is useful for informative reasons and provides
- * the key parameters for adding user name or user bans.
+ * Http client class for fetching rows of the access log table. That is a table noting users that
+ * have accessed the lobby. The data is useful for informative reasons and provides the key
+ * parameters for adding user name or user bans.
  */
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ToolboxAccessLogClient {
@@ -25,7 +23,8 @@ public class ToolboxAccessLogClient {
   private final ToolboxHttpHeaders toolboxHttpHeaders;
   private final ToolboxAccessLogFeignClient client;
 
-  public static ToolboxAccessLogClient newClient(final URI serverUri, final ApiKeyPassword apiKeyPassword) {
+  public static ToolboxAccessLogClient newClient(
+      final URI serverUri, final ApiKeyPassword apiKeyPassword) {
     return new ToolboxAccessLogClient(
         new ToolboxHttpHeaders(apiKeyPassword),
         new HttpClient<>(ToolboxAccessLogFeignClient.class, serverUri).get());

@@ -1,5 +1,18 @@
 package games.strategy.triplea.ui.menubar;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.properties.ColorProperty;
+import games.strategy.engine.data.properties.IEditableProperty;
+import games.strategy.engine.data.properties.NumberProperty;
+import games.strategy.engine.data.properties.PropertiesUi;
+import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.ui.AbstractUiContext;
+import games.strategy.triplea.ui.FindTerritoryAction;
+import games.strategy.triplea.ui.PurchasePanel;
+import games.strategy.triplea.ui.TripleAFrame;
+import games.strategy.triplea.ui.UiContext;
+import games.strategy.triplea.ui.screen.UnitsDrawer;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -14,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.prefs.Preferences;
-
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -30,23 +42,8 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
-
-import org.triplea.swing.SwingAction;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.properties.ColorProperty;
-import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.data.properties.NumberProperty;
-import games.strategy.engine.data.properties.PropertiesUi;
-import games.strategy.triplea.image.MapImage;
-import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.ui.AbstractUiContext;
-import games.strategy.triplea.ui.FindTerritoryAction;
-import games.strategy.triplea.ui.PurchasePanel;
-import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.UiContext;
-import games.strategy.triplea.ui.screen.UnitsDrawer;
 import lombok.extern.java.Log;
+import org.triplea.swing.SwingAction;
 
 @Log
 final class ViewMenu extends JMenu {
@@ -99,55 +96,68 @@ final class ViewMenu extends JMenu {
     final JCheckBoxMenuItem tabbedProduction = new JCheckBoxMenuItem("Show Production Tabs");
     tabbedProduction.setMnemonic(KeyEvent.VK_P);
     tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
-    tabbedProduction.addActionListener(e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected()));
+    tabbedProduction.addActionListener(
+        e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected()));
     add(tabbedProduction);
   }
 
   private void addZoomMenu() {
-    final Action mapZoom = SwingAction.of("Map Zoom", e -> {
-      final SpinnerNumberModel model = new SpinnerNumberModel();
-      model.setMaximum(100);
-      model.setMinimum((int) Math.ceil(frame.getMapPanel().getMinScale() * 100));
-      model.setStepSize(1);
-      model.setValue((int) Math.round(frame.getMapPanel().getScale() * 100));
-      final JSpinner spinner = new JSpinner(model);
-      final JPanel panel = new JPanel();
-      panel.setLayout(new BorderLayout());
-      panel.add(new JLabel("Choose Map Scale Percentage"), BorderLayout.NORTH);
-      panel.add(spinner, BorderLayout.CENTER);
-      final JPanel buttons = new JPanel();
-      final JButton fitWidth = new JButton("Fit Width");
-      buttons.add(fitWidth);
-      final JButton fitHeight = new JButton("Fit Height");
-      buttons.add(fitHeight);
-      final JButton reset = new JButton("Reset");
-      buttons.add(reset);
-      panel.add(buttons, BorderLayout.SOUTH);
-      fitWidth.addActionListener(event -> {
-        final double screenWidth = frame.getMapPanel().getWidth();
-        final double mapWidth = frame.getMapPanel().getImageWidth();
-        double ratio = screenWidth / mapWidth;
-        ratio = Math.max(frame.getMapPanel().getMinScale(), ratio);
-        ratio = Math.min(1, ratio);
-        model.setValue((int) Math.round(ratio * 100));
-      });
-      fitHeight.addActionListener(event -> {
-        final double screenHeight = frame.getMapPanel().getHeight();
-        final double mapHeight = frame.getMapPanel().getImageHeight();
-        double ratio = screenHeight / mapHeight;
-        ratio = Math.max(frame.getMapPanel().getMinScale(), ratio);
-        model.setValue((int) Math.round(ratio * 100));
-      });
-      reset.addActionListener(event -> model.setValue(100));
-      final int result = JOptionPane.showOptionDialog(frame, panel, "Choose Map Scale", JOptionPane.OK_CANCEL_OPTION,
-          JOptionPane.PLAIN_MESSAGE, null, new String[] {"OK", "Cancel"}, 0);
-      if (result != 0) {
-        return;
-      }
-      final Number value = (Number) model.getValue();
-      frame.getMapPanel().setScale(value.doubleValue() / 100);
-
-    });
+    final Action mapZoom =
+        SwingAction.of(
+            "Map Zoom",
+            e -> {
+              final SpinnerNumberModel model = new SpinnerNumberModel();
+              model.setMaximum(100);
+              model.setMinimum((int) Math.ceil(frame.getMapPanel().getMinScale() * 100));
+              model.setStepSize(1);
+              model.setValue((int) Math.round(frame.getMapPanel().getScale() * 100));
+              final JSpinner spinner = new JSpinner(model);
+              final JPanel panel = new JPanel();
+              panel.setLayout(new BorderLayout());
+              panel.add(new JLabel("Choose Map Scale Percentage"), BorderLayout.NORTH);
+              panel.add(spinner, BorderLayout.CENTER);
+              final JPanel buttons = new JPanel();
+              final JButton fitWidth = new JButton("Fit Width");
+              buttons.add(fitWidth);
+              final JButton fitHeight = new JButton("Fit Height");
+              buttons.add(fitHeight);
+              final JButton reset = new JButton("Reset");
+              buttons.add(reset);
+              panel.add(buttons, BorderLayout.SOUTH);
+              fitWidth.addActionListener(
+                  event -> {
+                    final double screenWidth = frame.getMapPanel().getWidth();
+                    final double mapWidth = frame.getMapPanel().getImageWidth();
+                    double ratio = screenWidth / mapWidth;
+                    ratio = Math.max(frame.getMapPanel().getMinScale(), ratio);
+                    ratio = Math.min(1, ratio);
+                    model.setValue((int) Math.round(ratio * 100));
+                  });
+              fitHeight.addActionListener(
+                  event -> {
+                    final double screenHeight = frame.getMapPanel().getHeight();
+                    final double mapHeight = frame.getMapPanel().getImageHeight();
+                    double ratio = screenHeight / mapHeight;
+                    ratio = Math.max(frame.getMapPanel().getMinScale(), ratio);
+                    model.setValue((int) Math.round(ratio * 100));
+                  });
+              reset.addActionListener(event -> model.setValue(100));
+              final int result =
+                  JOptionPane.showOptionDialog(
+                      frame,
+                      panel,
+                      "Choose Map Scale",
+                      JOptionPane.OK_CANCEL_OPTION,
+                      JOptionPane.PLAIN_MESSAGE,
+                      null,
+                      new String[] {"OK", "Cancel"},
+                      0);
+              if (result != 0) {
+                return;
+              }
+              final Number value = (Number) model.getValue();
+              frame.getMapPanel().setScale(value.doubleValue() / 100);
+            });
     add(mapZoom).setMnemonic(KeyEvent.VK_Z);
   }
 
@@ -236,17 +246,18 @@ final class ViewMenu extends JMenu {
       if (skins.get(key).equals(AbstractUiContext.getMapDir())) {
         mapMenuItem.setSelected(true);
       }
-      mapMenuItem.addActionListener(e -> {
-        try {
-          frame.updateMap(skins.get(key));
-          if (uiContext.getMapData().getHasRelief()) {
-            showMapDetails.setSelected(true);
-          }
-          showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
-        } catch (final Exception exception) {
-          log.log(Level.SEVERE, "Error Changing Map Skin2", exception);
-        }
-      });
+      mapMenuItem.addActionListener(
+          e -> {
+            try {
+              frame.updateMap(skins.get(key));
+              if (uiContext.getMapData().getHasRelief()) {
+                showMapDetails.setSelected(true);
+              }
+              showMapDetails.setEnabled(uiContext.getMapData().getHasRelief());
+            } catch (final Exception exception) {
+              log.log(Level.SEVERE, "Error Changing Map Skin2", exception);
+            }
+          });
     }
   }
 
@@ -254,37 +265,45 @@ final class ViewMenu extends JMenu {
     showMapDetails = new JCheckBoxMenuItem("Show Map Details");
     showMapDetails.setMnemonic(KeyEvent.VK_D);
     showMapDetails.setSelected(TileImageFactory.getShowReliefImages());
-    showMapDetails.addActionListener(e -> {
-      if (TileImageFactory.getShowReliefImages() == showMapDetails.isSelected()) {
-        return;
-      }
-      TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
-      new Thread(() -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()),
-          "Show map details thread").start();
-    });
+    showMapDetails.addActionListener(
+        e -> {
+          if (TileImageFactory.getShowReliefImages() == showMapDetails.isSelected()) {
+            return;
+          }
+          TileImageFactory.setShowReliefImages(showMapDetails.isSelected());
+          new Thread(
+                  () -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()),
+                  "Show map details thread")
+              .start();
+        });
     add(showMapDetails);
   }
 
   private void addShowMapBlends() {
     showMapBlends = new JCheckBoxMenuItem("Show Map Blends");
     showMapBlends.setMnemonic(KeyEvent.VK_B);
-    if (uiContext.getMapData().getHasRelief() && showMapDetails.isEnabled() && showMapDetails.isSelected()) {
+    if (uiContext.getMapData().getHasRelief()
+        && showMapDetails.isEnabled()
+        && showMapDetails.isSelected()) {
       showMapBlends.setEnabled(true);
       showMapBlends.setSelected(TileImageFactory.getShowMapBlends());
     } else {
       showMapBlends.setSelected(false);
       showMapBlends.setEnabled(false);
     }
-    showMapBlends.addActionListener(e -> {
-      if (TileImageFactory.getShowMapBlends() == showMapBlends.isSelected()) {
-        return;
-      }
-      TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
-      TileImageFactory.setShowMapBlendMode(uiContext.getMapData().getMapBlendMode());
-      TileImageFactory.setShowMapBlendAlpha(uiContext.getMapData().getMapBlendAlpha());
-      new Thread(() -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()),
-          "Show map Blends thread").start();
-    });
+    showMapBlends.addActionListener(
+        e -> {
+          if (TileImageFactory.getShowMapBlends() == showMapBlends.isSelected()) {
+            return;
+          }
+          TileImageFactory.setShowMapBlends(showMapBlends.isSelected());
+          TileImageFactory.setShowMapBlendMode(uiContext.getMapData().getMapBlendMode());
+          TileImageFactory.setShowMapBlendAlpha(uiContext.getMapData().getMapBlendAlpha());
+          new Thread(
+                  () -> frame.getMapPanel().updateCountries(gameData.getMap().getTerritories()),
+                  "Show map Blends thread")
+              .start();
+        });
     add(showMapBlends);
   }
 
@@ -292,88 +311,114 @@ final class ViewMenu extends JMenu {
     final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
     showUnitsBox.setMnemonic(KeyEvent.VK_U);
     showUnitsBox.setSelected(true);
-    showUnitsBox.addActionListener(e -> {
-      final boolean tfselected = showUnitsBox.isSelected();
-      uiContext.setShowUnits(tfselected);
-      frame.getMapPanel().resetMap();
-    });
+    showUnitsBox.addActionListener(
+        e -> {
+          final boolean tfselected = showUnitsBox.isSelected();
+          uiContext.setShowUnits(tfselected);
+          frame.getMapPanel().resetMap();
+        });
     add(showUnitsBox);
   }
 
   private void addMapFontAndColorEditorMenu() {
-    final Action mapFontOptions = SwingAction.of("Edit Map Font and Color", e -> {
-      final List<IEditableProperty<?>> properties = new ArrayList<>();
-      final NumberProperty fontsize =
-          new NumberProperty("Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
-      final ColorProperty territoryNameColor = new ColorProperty("Territory Name and PU Color", null,
-          MapImage.getPropertyTerritoryNameAndPuAndCommentColor());
-      final ColorProperty unitCountColor =
-          new ColorProperty("Unit Count Color", null, MapImage.getPropertyUnitCountColor());
-      final ColorProperty unitCountOutline =
-          new ColorProperty("Unit Count Outline", null, MapImage.getPropertyUnitCountOutline());
-      final ColorProperty factoryDamageColor =
-          new ColorProperty("Factory Damage Color", null, MapImage.getPropertyUnitFactoryDamageColor());
-      final ColorProperty factoryDamageOutline =
-          new ColorProperty("Factory Damage Outline", null, MapImage.getPropertyUnitFactoryDamageOutline());
-      final ColorProperty hitDamageColor =
-          new ColorProperty("Hit Damage Color", null, MapImage.getPropertyUnitHitDamageColor());
-      final ColorProperty hitDamageOutline =
-          new ColorProperty("Hit Damage Outline", null, MapImage.getPropertyUnitHitDamageOutline());
-      properties.add(fontsize);
-      properties.add(territoryNameColor);
-      properties.add(unitCountColor);
-      properties.add(unitCountOutline);
-      properties.add(factoryDamageColor);
-      properties.add(factoryDamageOutline);
-      properties.add(hitDamageColor);
-      properties.add(hitDamageOutline);
-      final PropertiesUi pui = new PropertiesUi(properties, true);
-      final JPanel ui = new JPanel();
-      ui.setLayout(new BorderLayout());
-      ui.add(pui, BorderLayout.CENTER);
-      ui.add(
-          new JLabel("<html>Change the font and color of 'text' (not pictures) on the map. "
-              + "<br /><em>(Some people encounter problems with the color picker, and this "
-              + "<br />is a bug outside of triplea, located in the 'look and feel' that "
-              + "<br />you are using. If you have an error come up, try switching to the "
-              + "<br />basic 'look and feel', then setting the color, then switching back.)</em></html>"),
-          BorderLayout.NORTH);
-      final Object[] options = {"Set Properties", "Reset To Default", "Cancel"};
-      final int result = JOptionPane.showOptionDialog(frame, ui, "Edit Map Font and Color",
-          JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, 2);
-      if (result == 1) {
-        MapImage.resetPropertyMapFont();
-        MapImage.resetPropertyTerritoryNameAndPuAndCommentColor();
-        MapImage.resetPropertyUnitCountColor();
-        MapImage.resetPropertyUnitCountOutline();
-        MapImage.resetPropertyUnitFactoryDamageColor();
-        MapImage.resetPropertyUnitFactoryDamageOutline();
-        MapImage.resetPropertyUnitHitDamageColor();
-        MapImage.resetPropertyUnitHitDamageOutline();
-        frame.getMapPanel().resetMap();
-      } else if (result == 0) {
-        MapImage.setPropertyMapFont(new Font("Arial", Font.BOLD, fontsize.getValue()));
-        MapImage.setPropertyTerritoryNameAndPuAndCommentColor(territoryNameColor.getValue());
-        MapImage.setPropertyUnitCountColor(unitCountColor.getValue());
-        MapImage.setPropertyUnitCountOutline(unitCountOutline.getValue());
-        MapImage.setPropertyUnitFactoryDamageColor(factoryDamageColor.getValue());
-        MapImage.setPropertyUnitFactoryDamageOutline(factoryDamageOutline.getValue());
-        MapImage.setPropertyUnitHitDamageColor(hitDamageColor.getValue());
-        MapImage.setPropertyUnitHitDamageOutline(hitDamageOutline.getValue());
-        frame.getMapPanel().resetMap();
-      }
-    });
+    final Action mapFontOptions =
+        SwingAction.of(
+            "Edit Map Font and Color",
+            e -> {
+              final List<IEditableProperty<?>> properties = new ArrayList<>();
+              final NumberProperty fontsize =
+                  new NumberProperty(
+                      "Font Size", null, 60, 0, MapImage.getPropertyMapFont().getSize());
+              final ColorProperty territoryNameColor =
+                  new ColorProperty(
+                      "Territory Name and PU Color",
+                      null,
+                      MapImage.getPropertyTerritoryNameAndPuAndCommentColor());
+              final ColorProperty unitCountColor =
+                  new ColorProperty("Unit Count Color", null, MapImage.getPropertyUnitCountColor());
+              final ColorProperty unitCountOutline =
+                  new ColorProperty(
+                      "Unit Count Outline", null, MapImage.getPropertyUnitCountOutline());
+              final ColorProperty factoryDamageColor =
+                  new ColorProperty(
+                      "Factory Damage Color", null, MapImage.getPropertyUnitFactoryDamageColor());
+              final ColorProperty factoryDamageOutline =
+                  new ColorProperty(
+                      "Factory Damage Outline",
+                      null,
+                      MapImage.getPropertyUnitFactoryDamageOutline());
+              final ColorProperty hitDamageColor =
+                  new ColorProperty(
+                      "Hit Damage Color", null, MapImage.getPropertyUnitHitDamageColor());
+              final ColorProperty hitDamageOutline =
+                  new ColorProperty(
+                      "Hit Damage Outline", null, MapImage.getPropertyUnitHitDamageOutline());
+              properties.add(fontsize);
+              properties.add(territoryNameColor);
+              properties.add(unitCountColor);
+              properties.add(unitCountOutline);
+              properties.add(factoryDamageColor);
+              properties.add(factoryDamageOutline);
+              properties.add(hitDamageColor);
+              properties.add(hitDamageOutline);
+              final PropertiesUi pui = new PropertiesUi(properties, true);
+              final JPanel ui = new JPanel();
+              ui.setLayout(new BorderLayout());
+              ui.add(pui, BorderLayout.CENTER);
+              ui.add(
+                  new JLabel(
+                      "<html>Change the font and color of 'text' (not pictures) on the map. "
+                          + "<br /><em>(Some people encounter problems with the color picker, and this "
+                          + "<br />is a bug outside of triplea, located in the 'look and feel' that "
+                          + "<br />you are using. If you have an error come up, try switching to the "
+                          + "<br />basic 'look and feel', then setting the color, then switching back.)</em></html>"),
+                  BorderLayout.NORTH);
+              final Object[] options = {"Set Properties", "Reset To Default", "Cancel"};
+              final int result =
+                  JOptionPane.showOptionDialog(
+                      frame,
+                      ui,
+                      "Edit Map Font and Color",
+                      JOptionPane.YES_NO_CANCEL_OPTION,
+                      JOptionPane.PLAIN_MESSAGE,
+                      null,
+                      options,
+                      2);
+              if (result == 1) {
+                MapImage.resetPropertyMapFont();
+                MapImage.resetPropertyTerritoryNameAndPuAndCommentColor();
+                MapImage.resetPropertyUnitCountColor();
+                MapImage.resetPropertyUnitCountOutline();
+                MapImage.resetPropertyUnitFactoryDamageColor();
+                MapImage.resetPropertyUnitFactoryDamageOutline();
+                MapImage.resetPropertyUnitHitDamageColor();
+                MapImage.resetPropertyUnitHitDamageOutline();
+                frame.getMapPanel().resetMap();
+              } else if (result == 0) {
+                MapImage.setPropertyMapFont(new Font("Arial", Font.BOLD, fontsize.getValue()));
+                MapImage.setPropertyTerritoryNameAndPuAndCommentColor(
+                    territoryNameColor.getValue());
+                MapImage.setPropertyUnitCountColor(unitCountColor.getValue());
+                MapImage.setPropertyUnitCountOutline(unitCountOutline.getValue());
+                MapImage.setPropertyUnitFactoryDamageColor(factoryDamageColor.getValue());
+                MapImage.setPropertyUnitFactoryDamageOutline(factoryDamageOutline.getValue());
+                MapImage.setPropertyUnitHitDamageColor(hitDamageColor.getValue());
+                MapImage.setPropertyUnitHitDamageOutline(hitDamageOutline.getValue());
+                frame.getMapPanel().resetMap();
+              }
+            });
     add(mapFontOptions).setMnemonic(KeyEvent.VK_C);
   }
 
   private void addShowTerritoryEffects() {
     final JCheckBoxMenuItem territoryEffectsBox = new JCheckBoxMenuItem("Show TerritoryEffects");
     territoryEffectsBox.setMnemonic(KeyEvent.VK_T);
-    territoryEffectsBox.addActionListener(e -> {
-      final boolean tfselected = territoryEffectsBox.isSelected();
-      uiContext.setShowTerritoryEffects(tfselected);
-      frame.getMapPanel().resetMap();
-    });
+    territoryEffectsBox.addActionListener(
+        e -> {
+          final boolean tfselected = territoryEffectsBox.isSelected();
+          uiContext.setShowTerritoryEffects(tfselected);
+          frame.getMapPanel().resetMap();
+        });
     add(territoryEffectsBox);
     territoryEffectsBox.setSelected(true);
   }
@@ -392,40 +437,59 @@ final class ViewMenu extends JMenu {
     unitSizeMenu.setText("Flag Display Mode");
 
     final Preferences prefs = Preferences.userNodeForPackage(getClass());
-    final UnitsDrawer.UnitFlagDrawMode setting = Enum.valueOf(UnitsDrawer.UnitFlagDrawMode.class,
-        prefs.get(UnitsDrawer.PreferenceKeys.DRAW_MODE.name(), UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString()));
+    final UnitsDrawer.UnitFlagDrawMode setting =
+        Enum.valueOf(
+            UnitsDrawer.UnitFlagDrawMode.class,
+            prefs.get(
+                UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
+                UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString()));
     UnitsDrawer.setUnitFlagDrawMode(setting, prefs);
     UnitsDrawer.enabledFlags =
-        prefs.getBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
+        prefs.getBoolean(
+            UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
 
     final JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show Unit Flags");
     toggleFlags.setSelected(UnitsDrawer.enabledFlags);
-    toggleFlags.addActionListener(e -> {
-      UnitsDrawer.enabledFlags = toggleFlags.isSelected();
-      prefs.putBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), toggleFlags.isSelected());
-      frame.getMapPanel().resetMap();
-    });
+    toggleFlags.addActionListener(
+        e -> {
+          UnitsDrawer.enabledFlags = toggleFlags.isSelected();
+          prefs.putBoolean(
+              UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), toggleFlags.isSelected());
+          frame.getMapPanel().resetMap();
+        });
     unitSizeMenu.add(toggleFlags);
 
     final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
-    unitSizeMenu.add(newFlagDrawModeRadioButtonItem("Small", unitFlagSettingGroup,
-        UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
-    unitSizeMenu.add(newFlagDrawModeRadioButtonItem("Large", unitFlagSettingGroup,
-        UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
+    unitSizeMenu.add(
+        newFlagDrawModeRadioButtonItem(
+            "Small", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
+    unitSizeMenu.add(
+        newFlagDrawModeRadioButtonItem(
+            "Large", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
     add(unitSizeMenu);
   }
 
-  private JRadioButtonMenuItem newFlagDrawModeRadioButtonItem(final String text, final ButtonGroup group,
-      final UnitsDrawer.UnitFlagDrawMode drawMode, final UnitsDrawer.UnitFlagDrawMode setting,
+  private JRadioButtonMenuItem newFlagDrawModeRadioButtonItem(
+      final String text,
+      final ButtonGroup group,
+      final UnitsDrawer.UnitFlagDrawMode drawMode,
+      final UnitsDrawer.UnitFlagDrawMode setting,
       final Preferences prefs) {
-    return newRadioButtonItem(text, group, e -> {
-      UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
-      frame.getMapPanel().resetMap();
-    }, setting == drawMode);
+    return newRadioButtonItem(
+        text,
+        group,
+        e -> {
+          UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
+          frame.getMapPanel().resetMap();
+        },
+        setting == drawMode);
   }
 
-  private static JRadioButtonMenuItem newRadioButtonItem(final String text, final ButtonGroup group,
-      final ActionListener action, final boolean selected) {
+  private static JRadioButtonMenuItem newRadioButtonItem(
+      final String text,
+      final ButtonGroup group,
+      final ActionListener action,
+      final boolean selected) {
     final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
     buttonItem.addActionListener(action);
     buttonItem.setSelected(selected);
@@ -444,8 +508,9 @@ final class ViewMenu extends JMenu {
 
   private void addFindTerritory() {
     final JMenuItem menuItem = add(new FindTerritoryAction(frame));
-    menuItem
-        .setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+    menuItem.setAccelerator(
+        KeyStroke.getKeyStroke(
+            KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
     menuItem.setMnemonic(KeyEvent.VK_F);
   }
 }

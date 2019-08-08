@@ -3,9 +3,7 @@ package games.strategy.triplea;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-/**
- * Grouping of hardcoded URL constants.
- */
+/** Grouping of hardcoded URL constants. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UrlConstants {
   public static final String GITHUB_ISSUES = "https://github.com/triplea-game/triplea/issues/new";
@@ -24,7 +22,8 @@ public final class UrlConstants {
       "https://raw.githubusercontent.com/triplea-game/triplea/master/triplea_maps.yaml";
   public static final String MAP_MAKER_HELP =
       "https://github.com/triplea-game/triplea/blob/master/docs/map_making/map_and_map_skin_making_overview.md";
-  public static final String LICENSE_NOTICE = "https://github.com/triplea-game/triplea/blob/master/README.md#license";
+  public static final String LICENSE_NOTICE =
+      "https://github.com/triplea-game/triplea/blob/master/README.md#license";
 
   public static final String USER_GUIDE = "https://triplea-game.org/user-guide/";
 }

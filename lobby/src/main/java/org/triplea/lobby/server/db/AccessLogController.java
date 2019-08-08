@@ -6,15 +6,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.function.Supplier;
-
+import lombok.AllArgsConstructor;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.login.UserType;
 
-import lombok.AllArgsConstructor;
-
-/**
- * Implementation of {@link AccessLogDao} for a Postgres database.
- */
+/** Implementation of {@link AccessLogDao} for a Postgres database. */
 @AllArgsConstructor
 final class AccessLogController implements AccessLogDao {
   private final Supplier<Connection> connection;
@@ -24,7 +20,8 @@ final class AccessLogController implements AccessLogDao {
     checkNotNull(user);
     checkNotNull(userType);
 
-    final String sql = "insert into access_log (username, ip, mac, registered) values (?, ?::inet, ?, ?)";
+    final String sql =
+        "insert into access_log (username, ip, mac, registered) values (?, ?::inet, ?, ?)";
     try (Connection conn = connection.get();
         PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setString(1, user.getUsername());

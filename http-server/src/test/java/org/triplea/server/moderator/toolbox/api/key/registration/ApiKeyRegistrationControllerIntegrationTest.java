@@ -22,10 +22,8 @@ class ApiKeyRegistrationControllerIntegrationTest extends AbstractDropwizardTest
   @Test
   void registerApiKeySuccess() {
     apiKeyClient.clearLockouts();
-    final RegisterApiKeyResult newApiKey = client.registerNewKey(ApiKeyPassword.builder()
-        .apiKey("test")
-        .password("test")
-        .build());
+    final RegisterApiKeyResult newApiKey =
+        client.registerNewKey(ApiKeyPassword.builder().apiKey("test").password("test").build());
 
     assertThat(newApiKey.getNewApiKey(), notNullValue());
     assertThat(newApiKey.getErrorMessage(), nullValue());
@@ -34,10 +32,13 @@ class ApiKeyRegistrationControllerIntegrationTest extends AbstractDropwizardTest
   @Test
   void registerApiKeySuccessFailure() {
     apiKeyClient.clearLockouts();
-    final RegisterApiKeyResult newApiKey = client.registerNewKey(ApiKeyPassword.builder()
-        .apiKey("invalid single use key")
-        .password("this password is used to salt a new key, does not matter if single-use key is invalid")
-        .build());
+    final RegisterApiKeyResult newApiKey =
+        client.registerNewKey(
+            ApiKeyPassword.builder()
+                .apiKey("invalid single use key")
+                .password(
+                    "this password is used to salt a new key, does not matter if single-use key is invalid")
+                .build());
 
     assertThat(newApiKey.getNewApiKey(), nullValue());
     assertThat(newApiKey.getErrorMessage(), notNullValue());

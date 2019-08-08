@@ -5,10 +5,10 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,27 +17,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.moderator.management.ModeratorInfo;
 import org.triplea.http.client.moderator.toolbox.moderator.management.ToolboxModeratorManagementClient;
 
-import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
-
 @ExtendWith(MockitoExtension.class)
 class ModeratorsTabModelTest {
   private static final String USERNAME = "Gar, yer not fearing me without a treasure!";
   private static final String SAMPLE_KEY = "Pestilence, strength, and adventure.";
-  private static final ModeratorInfo MODERATOR_INFO = ModeratorInfo.builder()
-      .name("Ahoy, heavy-hearted faith!")
-      .lastLogin(Instant.now())
-      .build();
+  private static final ModeratorInfo MODERATOR_INFO =
+      ModeratorInfo.builder().name("Ahoy, heavy-hearted faith!").lastLogin(Instant.now()).build();
 
-  private static final ModeratorInfo MODERATOR_INFO_WITH_NULL = ModeratorInfo.builder()
-      .name("Ahoy, heavy-hearted faith!")
-      .build();
+  private static final ModeratorInfo MODERATOR_INFO_WITH_NULL =
+      ModeratorInfo.builder().name("Ahoy, heavy-hearted faith!").build();
 
-
-  @Mock
-  private ToolboxModeratorManagementClient toolboxModeratorManagementClient;
+  @Mock private ToolboxModeratorManagementClient toolboxModeratorManagementClient;
 
   private ModeratorsTabModel moderatorsTabModel;
-
 
   @Nested
   final class FetchTableHeadersTest {
@@ -47,9 +39,7 @@ class ModeratorsTabModelTest {
 
       moderatorsTabModel = new ModeratorsTabModel(toolboxModeratorManagementClient);
 
-      assertThat(
-          moderatorsTabModel.fetchTableHeaders(),
-          is(ModeratorsTabModel.SUPER_MOD_HEADERS));
+      assertThat(moderatorsTabModel.fetchTableHeaders(), is(ModeratorsTabModel.SUPER_MOD_HEADERS));
     }
 
     @Test
@@ -58,12 +48,9 @@ class ModeratorsTabModelTest {
 
       moderatorsTabModel = new ModeratorsTabModel(toolboxModeratorManagementClient);
 
-      assertThat(
-          moderatorsTabModel.fetchTableHeaders(),
-          is(ModeratorsTabModel.HEADERS));
+      assertThat(moderatorsTabModel.fetchTableHeaders(), is(ModeratorsTabModel.HEADERS));
     }
   }
-
 
   @Nested
   final class FetchTableData {
@@ -77,14 +64,19 @@ class ModeratorsTabModelTest {
 
       final List<List<String>> tableData = moderatorsTabModel.fetchTableData();
 
-      ToolboxTabModelTestUtil.verifyTableDimensions(tableData, ModeratorsTabModel.SUPER_MOD_HEADERS);
-      ToolboxTabModelTestUtil.verifyTableDataAtRow(tableData, 0,
+      ToolboxTabModelTestUtil.verifyTableDimensions(
+          tableData, ModeratorsTabModel.SUPER_MOD_HEADERS);
+      ToolboxTabModelTestUtil.verifyTableDataAtRow(
+          tableData,
+          0,
           MODERATOR_INFO.getName(),
           MODERATOR_INFO.getLastLogin().toString(),
           ModeratorsTabModel.GENERATE_API_KEY_BUTTON_TEXT,
           ModeratorsTabModel.REMOVE_MOD_BUTTON_TEXT,
           ModeratorsTabModel.ADD_SUPER_MOD_BUTTON);
-      ToolboxTabModelTestUtil.verifyTableDataAtRow(tableData, 1,
+      ToolboxTabModelTestUtil.verifyTableDataAtRow(
+          tableData,
+          1,
           MODERATOR_INFO.getName(),
           "",
           ModeratorsTabModel.GENERATE_API_KEY_BUTTON_TEXT,
@@ -103,38 +95,31 @@ class ModeratorsTabModelTest {
       final List<List<String>> tableData = moderatorsTabModel.fetchTableData();
 
       ToolboxTabModelTestUtil.verifyTableDimensions(tableData, ModeratorsTabModel.HEADERS);
-      ToolboxTabModelTestUtil.verifyTableDataAtRow(tableData, 0,
-          MODERATOR_INFO.getName(),
-          MODERATOR_INFO.getLastLogin().toString());
-      ToolboxTabModelTestUtil.verifyTableDataAtRow(tableData, 1,
-          MODERATOR_INFO.getName(),
-          "");
+      ToolboxTabModelTestUtil.verifyTableDataAtRow(
+          tableData, 0, MODERATOR_INFO.getName(), MODERATOR_INFO.getLastLogin().toString());
+      ToolboxTabModelTestUtil.verifyTableDataAtRow(tableData, 1, MODERATOR_INFO.getName(), "");
     }
   }
 
   @Test
   void generateApiKey() {
-    when(toolboxModeratorManagementClient.generateSingleUseKey(USERNAME))
-        .thenReturn(SAMPLE_KEY);
+    when(toolboxModeratorManagementClient.generateSingleUseKey(USERNAME)).thenReturn(SAMPLE_KEY);
 
     assertThat(
-        new ModeratorsTabModel(toolboxModeratorManagementClient)
-            .generateApiKey(USERNAME),
+        new ModeratorsTabModel(toolboxModeratorManagementClient).generateApiKey(USERNAME),
         is(SAMPLE_KEY));
   }
 
   @Test
   void removeMod() {
-    new ModeratorsTabModel(toolboxModeratorManagementClient)
-        .removeMod(USERNAME);
+    new ModeratorsTabModel(toolboxModeratorManagementClient).removeMod(USERNAME);
 
     verify(toolboxModeratorManagementClient).removeMod(USERNAME);
   }
 
   @Test
   void addSuperMod() {
-    new ModeratorsTabModel(toolboxModeratorManagementClient)
-        .addSuperMod(USERNAME);
+    new ModeratorsTabModel(toolboxModeratorManagementClient).addSuperMod(USERNAME);
 
     verify(toolboxModeratorManagementClient).addSuperMod(USERNAME);
   }
@@ -146,8 +131,7 @@ class ModeratorsTabModelTest {
       when(toolboxModeratorManagementClient.checkUserExists(USERNAME)).thenReturn(false);
 
       assertThat(
-          new ModeratorsTabModel(toolboxModeratorManagementClient)
-              .checkUserExists(USERNAME),
+          new ModeratorsTabModel(toolboxModeratorManagementClient).checkUserExists(USERNAME),
           is(false));
     }
 
@@ -156,8 +140,7 @@ class ModeratorsTabModelTest {
       when(toolboxModeratorManagementClient.checkUserExists(USERNAME)).thenReturn(false);
 
       assertThat(
-          new ModeratorsTabModel(toolboxModeratorManagementClient)
-              .checkUserExists(USERNAME),
+          new ModeratorsTabModel(toolboxModeratorManagementClient).checkUserExists(USERNAME),
           is(false));
     }
   }

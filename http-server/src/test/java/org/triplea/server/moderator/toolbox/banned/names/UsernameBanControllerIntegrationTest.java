@@ -36,7 +36,8 @@ class UsernameBanControllerIntegrationTest extends AbstractDropwizardTest {
 
   @Test
   void addBannedUsernameNotAuthorized() {
-    assertThrows(HttpInteractionException.class, () -> clientWithBadKey.addUsernameBan("name to ban"));
+    assertThrows(
+        HttpInteractionException.class, () -> clientWithBadKey.addUsernameBan("name to ban"));
   }
 
   @Test

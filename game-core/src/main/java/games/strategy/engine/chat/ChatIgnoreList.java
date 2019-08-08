@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 import lombok.extern.java.Log;
 
 @Log

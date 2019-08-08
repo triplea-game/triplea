@@ -1,5 +1,10 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.data.PlayerList;
+import games.strategy.engine.data.PlayerManager;
+import games.strategy.engine.framework.IGame;
+import games.strategy.net.INode;
+import games.strategy.triplea.ui.UiContext;
 import java.awt.Component;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,25 +13,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.SwingConstants;
 
-import games.strategy.engine.data.PlayerList;
-import games.strategy.engine.data.PlayerManager;
-import games.strategy.engine.framework.IGame;
-import games.strategy.net.INode;
-import games.strategy.triplea.ui.UiContext;
-
 /**
  * Renders a chat participant in a {@link JList}.
  *
- * <p>
- * This implementation optimizes rendering by caching the status icons and player-to-node mappings.
- * </p>
+ * <p>This implementation optimizes rendering by caching the status icons and player-to-node
+ * mappings.
  */
 public class PlayerChatRenderer extends DefaultListCellRenderer {
   private static final long serialVersionUID = -8195565028281374498L;
@@ -43,8 +40,12 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   }
 
   @Override
-  public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
-      final boolean isSelected, final boolean cellHasFocus) {
+  public Component getListCellRendererComponent(
+      final JList<?> list,
+      final Object value,
+      final int index,
+      final boolean isSelected,
+      final boolean cellHasFocus) {
     final INode node = (INode) value;
     final List<Icon> icons = iconMap.get(node.toString());
     if (icons != null) {
@@ -52,7 +53,8 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
       setHorizontalTextPosition(SwingConstants.LEFT);
       setIcon(new CompositeIcon(icons));
     } else {
-      super.getListCellRendererComponent(list, getNodeLabelWithPlayers(node), index, isSelected, cellHasFocus);
+      super.getListCellRendererComponent(
+          list, getNodeLabelWithPlayers(node), index, isSelected, cellHasFocus);
     }
     return this;
   }
@@ -60,7 +62,9 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
   private String getNodeLabelWithPlayers(final INode node) {
     final Set<String> playerNames = playerMap.getOrDefault(node.toString(), Collections.emptySet());
     return node.getName()
-        + (playerNames.isEmpty() ? "" : playerNames.stream().collect(Collectors.joining(", ", " (", ")")));
+        + (playerNames.isEmpty()
+            ? ""
+            : playerNames.stream().collect(Collectors.joining(", ", " (", ")")));
   }
 
   private void setIconMap() {
@@ -76,10 +80,16 @@ public class PlayerChatRenderer extends DefaultListCellRenderer {
     for (final INode playerNode : new HashSet<>(playerManager.getPlayerMapping().values())) {
       final Set<String> players = playerManager.getPlayedBy(playerNode);
       if (players.size() > 0) {
-        final List<Icon> icons = players.stream()
-            .filter(player -> uiContext != null && uiContext.getFlagImageFactory() != null)
-            .map(player -> new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(playerList.getPlayerId(player))))
-            .collect(Collectors.toList());
+        final List<Icon> icons =
+            players.stream()
+                .filter(player -> uiContext != null && uiContext.getFlagImageFactory() != null)
+                .map(
+                    player ->
+                        new ImageIcon(
+                            uiContext
+                                .getFlagImageFactory()
+                                .getSmallFlag(playerList.getPlayerId(player))))
+                .collect(Collectors.toList());
         maxIconCounter = Math.max(maxIconCounter, icons.size());
         playerMap.put(playerNode.toString(), players);
         if (uiContext == null) {

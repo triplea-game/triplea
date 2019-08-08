@@ -1,14 +1,13 @@
 package games.strategy.engine.data;
 
+import games.strategy.triplea.delegate.Matches;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import games.strategy.triplea.delegate.Matches;
-
 /**
- * Provides methods that determine whether various types of relationships (e.g. allied, at war, etc.) exist between two
- * or more players.
+ * Provides methods that determine whether various types of relationships (e.g. allied, at war,
+ * etc.) exist between two or more players.
  */
 public class RelationshipInterpreter extends GameDataComponent {
   private static final long serialVersionUID = -643454441052535241L;
@@ -33,9 +32,11 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   public Set<PlayerId> getAllies(final PlayerId p1, final boolean includeSelf) {
-    final Set<PlayerId> allies = getData().getPlayerList().getPlayers().stream()
-        .filter(player -> Matches.relationshipTypeIsAllied().test(getRelationshipType(p1, player)))
-        .collect(Collectors.toSet());
+    final Set<PlayerId> allies =
+        getData().getPlayerList().getPlayers().stream()
+            .filter(
+                player -> Matches.relationshipTypeIsAllied().test(getRelationshipType(p1, player)))
+            .collect(Collectors.toSet());
     if (includeSelf) {
       allies.add(p1);
     } else {
@@ -44,9 +45,7 @@ public class RelationshipInterpreter extends GameDataComponent {
     return allies;
   }
 
-  /**
-   * returns true if p1 is at war with p2.
-   */
+  /** returns true if p1 is at war with p2. */
   public boolean isAtWar(final PlayerId p1, final PlayerId p2) {
     return Matches.relationshipTypeIsAtWar().test(getRelationshipType(p1, p2));
   }
@@ -57,15 +56,18 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   public Set<PlayerId> getEnemies(final PlayerId p1) {
-    final Set<PlayerId> enemies = getData().getPlayerList().getPlayers().stream()
-        .filter(player -> Matches.relationshipTypeIsAtWar().test(getRelationshipType(p1, player)))
-        .collect(Collectors.toSet());
+    final Set<PlayerId> enemies =
+        getData().getPlayerList().getPlayers().stream()
+            .filter(
+                player -> Matches.relationshipTypeIsAtWar().test(getRelationshipType(p1, player)))
+            .collect(Collectors.toSet());
     enemies.remove(p1);
     return enemies;
   }
 
   public boolean canMoveLandUnitsOverOwnedLand(final PlayerId p1, final PlayerId p2) {
-    return Matches.relationshipTypeCanMoveLandUnitsOverOwnedLand().test(getRelationshipType(p1, p2));
+    return Matches.relationshipTypeCanMoveLandUnitsOverOwnedLand()
+        .test(getRelationshipType(p1, p2));
   }
 
   public boolean canMoveAirUnitsOverOwnedLand(final PlayerId p1, final PlayerId p2) {
@@ -97,8 +99,8 @@ public class RelationshipInterpreter extends GameDataComponent {
   }
 
   /**
-   * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2
-   * players.
+   * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship
+   * between these 2 players.
    *
    * @param p1 Player1 in the relationship
    * @param p2 Player2 in the relationship

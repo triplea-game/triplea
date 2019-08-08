@@ -1,5 +1,10 @@
 package games.strategy.triplea.ui.screen;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.thread.LockUtil;
+import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.screen.drawable.IDrawable;
+import games.strategy.ui.Util;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -14,15 +19,7 @@ import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.thread.LockUtil;
-import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.drawable.IDrawable;
-import games.strategy.ui.Util;
-
-/**
- * Responsible for rendering a single map tile.
- */
+/** Responsible for rendering a single map tile. */
 public class Tile {
   private boolean isDirty = true;
 
@@ -53,17 +50,18 @@ public class Tile {
     LockUtil.INSTANCE.releaseLock(lock);
   }
 
-  /**
-   * Returns the image representing this tile, re-rendering it first if the tile is dirty.
-   */
+  /** Returns the image representing this tile, re-rendering it first if the tile is dirty. */
   public Image getImage(final GameData data, final MapData mapData) {
     acquireLock();
     try {
       if (isDirty) {
         final Graphics2D g = (Graphics2D) image.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.setRenderingHint(
+            RenderingHints.KEY_ALPHA_INTERPOLATION,
+            RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        g.setRenderingHint(
+            RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         draw(g, data, mapData);
         g.dispose();
       }
@@ -74,8 +72,7 @@ public class Tile {
   }
 
   /**
-   * This image may not reflect our current drawables.
-   * Use getImage() to get a correct image
+   * This image may not reflect our current drawables. Use getImage() to get a correct image
    *
    * @return the image we currently have.
    */

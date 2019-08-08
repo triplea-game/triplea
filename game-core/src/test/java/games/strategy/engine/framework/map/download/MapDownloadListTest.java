@@ -5,12 +5,12 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,19 +18,22 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.util.Version;
 
-import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-
 @ExtendWith(MockitoExtension.class)
 class MapDownloadListTest extends AbstractClientSettingTestCase {
   private static final String MAP_NAME = "new_test_order";
   private static final Version MAP_VERSION = new Version(10, 10);
   private static final Version lowVersion = new Version(0, 0);
 
-  private static final DownloadFileDescription TEST_MAP = new DownloadFileDescription("", "", MAP_NAME, MAP_VERSION,
-      DownloadFileDescription.DownloadType.MAP, DownloadFileDescription.MapCategory.EXPERIMENTAL);
+  private static final DownloadFileDescription TEST_MAP =
+      new DownloadFileDescription(
+          "",
+          "",
+          MAP_NAME,
+          MAP_VERSION,
+          DownloadFileDescription.DownloadType.MAP,
+          DownloadFileDescription.MapCategory.EXPERIMENTAL);
 
-  @Mock
-  private FileSystemAccessStrategy strategy;
+  @Mock private FileSystemAccessStrategy strategy;
 
   private final List<DownloadFileDescription> descriptions = new ArrayList<>();
 
@@ -60,9 +63,11 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
     final DownloadFileDescription download1 = newDownloadWithUrl("url1");
     final DownloadFileDescription download2 = newDownloadWithUrl("url2");
     final DownloadFileDescription download3 = newDownloadWithUrl("url3");
-    final MapDownloadList testObj = new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
+    final MapDownloadList testObj =
+        new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
 
-    final List<DownloadFileDescription> available = testObj.getAvailableExcluding(Arrays.asList(download1, download3));
+    final List<DownloadFileDescription> available =
+        testObj.getAvailableExcluding(Arrays.asList(download1, download3));
 
     assertThat(available, is(Collections.singletonList(download2)));
   }
@@ -113,9 +118,11 @@ class MapDownloadListTest extends AbstractClientSettingTestCase {
     final DownloadFileDescription download1 = newDownloadWithUrl("url1");
     final DownloadFileDescription download2 = newDownloadWithUrl("url2");
     final DownloadFileDescription download3 = newDownloadWithUrl("url3");
-    final MapDownloadList testObj = new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
+    final MapDownloadList testObj =
+        new MapDownloadList(Arrays.asList(download1, download2, download3), strategy);
 
-    final List<DownloadFileDescription> outOfDate = testObj.getOutOfDateExcluding(Arrays.asList(download1, download3));
+    final List<DownloadFileDescription> outOfDate =
+        testObj.getOutOfDateExcluding(Arrays.asList(download1, download3));
 
     assertThat(outOfDate, is(Collections.singletonList(download2)));
   }

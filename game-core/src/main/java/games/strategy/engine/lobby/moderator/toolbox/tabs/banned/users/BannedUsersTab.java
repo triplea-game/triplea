@@ -2,10 +2,8 @@ package games.strategy.engine.lobby.moderator.toolbox.tabs.banned.users;
 
 import java.awt.Component;
 import java.util.function.Supplier;
-
 import javax.swing.JFrame;
 import javax.swing.JTable;
-
 import org.triplea.http.client.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.JButtonBuilder;
@@ -14,8 +12,7 @@ import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
 
 /**
- * Show a scrollable list of 'banned users'.
- * Bans are recorded by IP address and Hashed Mac.
+ * Show a scrollable list of 'banned users'. Bans are recorded by IP address and Hashed Mac.
  *
  * <pre>
  * +--------------------------------------------------------------------+
@@ -31,9 +28,7 @@ public final class BannedUsersTab implements Supplier<Component> {
   private final BannedUsersTabActions bannedUsersTabActions;
   private final BannedUsersTabModel bannedUsersTabModel;
 
-  public BannedUsersTab(
-      final JFrame parentFrame,
-      final ToolboxUserBanClient toolboxUserBanClient) {
+  public BannedUsersTab(final JFrame parentFrame, final ToolboxUserBanClient toolboxUserBanClient) {
     bannedUsersTabModel = new BannedUsersTabModel(toolboxUserBanClient);
     bannedUsersTabActions = new BannedUsersTabActions(parentFrame, bannedUsersTabModel);
   }
@@ -44,19 +39,21 @@ public final class BannedUsersTab implements Supplier<Component> {
 
     return JPanelBuilder.builder()
         .border(10)
-        .addNorth(JButtonBuilder.builder()
-            .title("Refresh")
-            .actionListener(() -> bannedUsersTabActions.refreshTableData(table))
-            .build())
+        .addNorth(
+            JButtonBuilder.builder()
+                .title("Refresh")
+                .actionListener(() -> bannedUsersTabActions.refreshTableData(table))
+                .build())
         .addCenter(SwingComponents.newJScrollPane(table))
         .build();
   }
 
   private JTable buildTable() {
-    final JTable table = JTableBuilder.builder()
-        .columnNames(BannedUsersTabModel.fetchTableHeaders())
-        .tableData(bannedUsersTabModel.fetchTableData())
-        .build();
+    final JTable table =
+        JTableBuilder.builder()
+            .columnNames(BannedUsersTabModel.fetchTableHeaders())
+            .tableData(bannedUsersTabModel.fetchTableData())
+            .build();
 
     ButtonColumn.attachButtonColumn(table, 6, bannedUsersTabActions.removeButtonListener());
     return table;

@@ -1,8 +1,7 @@
 package games.strategy.triplea.ui;
 
-import javax.annotation.Nullable;
-
 import games.strategy.engine.data.Territory;
+import javax.annotation.Nullable;
 
 class DefaultMapSelectionListener implements MapSelectionListener {
   @Override

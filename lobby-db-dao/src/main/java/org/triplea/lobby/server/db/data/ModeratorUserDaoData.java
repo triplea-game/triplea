@@ -1,19 +1,14 @@
 package org.triplea.lobby.server.db.data;
 
 import java.time.Instant;
-
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.triplea.lobby.server.db.TimestampMapper;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jdbi.v3.core.mapper.RowMapper;
+import org.triplea.lobby.server.db.TimestampMapper;
 
-
-/**
- * Return data when querying the user table for moderators.
- */
+/** Return data when querying the user table for moderators. */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,13 +20,12 @@ public class ModeratorUserDaoData {
   private String username;
   private Instant lastLogin;
 
-  /**
-   * Returns a JDBI row mapper used to convert results into an instance of this bean object.
-   */
+  /** Returns a JDBI row mapper used to convert results into an instance of this bean object. */
   public static RowMapper<ModeratorUserDaoData> buildResultMapper() {
-    return (rs, ctx) -> ModeratorUserDaoData.builder()
-        .username(rs.getString(USERNAME_COLUMN))
-        .lastLogin(TimestampMapper.map(rs, LAST_LOGIN_COLUMN))
-        .build();
+    return (rs, ctx) ->
+        ModeratorUserDaoData.builder()
+            .username(rs.getString(USERNAME_COLUMN))
+            .lastLogin(TimestampMapper.map(rs, LAST_LOGIN_COLUMN))
+            .build();
   }
 }

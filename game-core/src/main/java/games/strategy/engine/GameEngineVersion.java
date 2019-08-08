@@ -4,9 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import org.triplea.util.Version;
 
-/**
- * Wraps a {@link Version} and provides operations specific to game engine versions.
- */
+/** Wraps a {@link Version} and provides operations specific to game engine versions. */
 public final class GameEngineVersion {
   private final Version version;
 
@@ -14,9 +12,7 @@ public final class GameEngineVersion {
     this.version = version;
   }
 
-  /**
-   * Creates a new {@link GameEngineVersion} from the specified {@link Version}.
-   */
+  /** Creates a new {@link GameEngineVersion} from the specified {@link Version}. */
   public static GameEngineVersion of(final Version version) {
     checkNotNull(version);
 
@@ -27,9 +23,8 @@ public final class GameEngineVersion {
    * Indicates this engine version is compatible with the specified engine version.
    *
    * @param engineVersion The engine version to check for compatibility.
-   *
-   * @return {@code true} if this engine version is compatible with the specified engine version; otherwise
-   *         {@code false}.
+   * @return {@code true} if this engine version is compatible with the specified engine version;
+   *     otherwise {@code false}.
    */
   public boolean isCompatibleWithEngineVersion(final Version engineVersion) {
     checkNotNull(engineVersion);
@@ -41,9 +36,8 @@ public final class GameEngineVersion {
    * Indicates this engine version is compatible with the specified map minimum engine version.
    *
    * @param mapMinimumEngineVersion The minimum engine version required by the map.
-   *
-   * @return {@code true} if this engine version is compatible with the specified map minimum engine version; otherwise
-   *         {@code false}.
+   * @return {@code true} if this engine version is compatible with the specified map minimum engine
+   *     version; otherwise {@code false}.
    */
   public boolean isCompatibleWithMapMinimumEngineVersion(final Version mapMinimumEngineVersion) {
     checkNotNull(mapMinimumEngineVersion);

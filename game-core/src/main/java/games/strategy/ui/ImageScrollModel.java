@@ -3,17 +3,18 @@ package games.strategy.ui;
 import java.util.Observable;
 
 /**
- * Model for an ImageScroller. Generally one large view and one small view will be connected to the same model.
+ * Model for an ImageScroller. Generally one large view and one small view will be connected to the
+ * same model.
  *
- * <p>
- * notifies its observers when changes occur.
- * </p>
+ * <p>notifies its observers when changes occur.
  */
 public class ImageScrollModel extends Observable {
   @SuppressWarnings("checkstyle:MemberName")
   private int x;
+
   @SuppressWarnings("checkstyle:MemberName")
   private int y;
+
   private int boxWidth = 5;
   private int boxHeight = 5;
   private int maxWidth;

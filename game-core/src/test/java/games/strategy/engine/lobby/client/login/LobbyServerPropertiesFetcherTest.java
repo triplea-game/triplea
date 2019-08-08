@@ -9,11 +9,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import games.strategy.triplea.settings.GameSetting;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.BiFunction;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,13 +24,14 @@ import org.triplea.java.OptionalUtils;
 import org.triplea.java.function.ThrowingFunction;
 import org.triplea.util.Version;
 
-import games.strategy.triplea.settings.GameSetting;
-
 @ExtendWith(MockitoExtension.class)
 class LobbyServerPropertiesFetcherTest {
   @Mock
-  private BiFunction<String, ThrowingFunction<InputStream, LobbyServerProperties, IOException>,
-      Optional<LobbyServerProperties>> mockFileDownloader;
+  private BiFunction<
+          String,
+          ThrowingFunction<InputStream, LobbyServerProperties, IOException>,
+          Optional<LobbyServerProperties>>
+      mockFileDownloader;
 
   private LobbyServerPropertiesFetcher testObj;
 
@@ -41,15 +42,14 @@ class LobbyServerPropertiesFetcherTest {
 
   @Nested
   final class DownloadAndParseRemoteFileTest {
-    /**
-     * Happy case test path, download file, parse it, return values parsed.
-     */
+    /** Happy case test path, download file, parse it, return values parsed. */
     @Test
     void happyCase() {
-      when(mockFileDownloader.apply(eq(TestData.url), any())).thenReturn(Optional.of(TestData.lobbyServerProperties));
+      when(mockFileDownloader.apply(eq(TestData.url), any()))
+          .thenReturn(Optional.of(TestData.lobbyServerProperties));
 
-      final Optional<LobbyServerProperties> result = testObj.downloadAndParseRemoteFile(TestData.url,
-          TestData.version, (a, b) -> null);
+      final Optional<LobbyServerProperties> result =
+          testObj.downloadAndParseRemoteFile(TestData.url, TestData.version, (a, b) -> null);
 
       assertThat(result, isPresentAndIs(TestData.lobbyServerProperties));
     }
@@ -65,17 +65,13 @@ class LobbyServerPropertiesFetcherTest {
     }
   }
 
-
   @Nested
   final class GetTestOverridePropertiesTest {
-    @Mock
-    private GameSetting<String> testLobbyHostSetting;
+    @Mock private GameSetting<String> testLobbyHostSetting;
 
-    @Mock
-    private GameSetting<Integer> testLobbyPortSetting;
+    @Mock private GameSetting<Integer> testLobbyPortSetting;
 
-    @Mock
-    private GameSetting<Integer> testLobbyHttpsPort;
+    @Mock private GameSetting<Integer> testLobbyHttpsPort;
 
     private Optional<LobbyServerProperties> result;
 
@@ -91,7 +87,6 @@ class LobbyServerPropertiesFetcherTest {
       when(testLobbyHostSetting.isSet()).thenReturn(true);
       when(testLobbyHostSetting.getValueOrThrow()).thenReturn(host);
     }
-
 
     private void givenTestLobbyPortIsSetTo(final int port) {
       when(testLobbyPortSetting.getValue()).thenReturn(Optional.of(port));
@@ -160,10 +155,6 @@ class LobbyServerPropertiesFetcherTest {
     Version version = new Version("0.0.0.0");
     String url = "someUrl";
     LobbyServerProperties lobbyServerProperties =
-        LobbyServerProperties.builder()
-            .host("host")
-            .port(123)
-            .httpsPort(333)
-            .build();
+        LobbyServerProperties.builder().host("host").port(123).httpsPort(333).build();
   }
 }

@@ -1,36 +1,28 @@
 package org.triplea.game.client.ui.javafx.screens;
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.ClientContext;
 import java.text.MessageFormat;
 import java.util.function.Supplier;
-
-import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
-import org.triplea.game.client.ui.javafx.screen.NavigationPane;
-import org.triplea.game.client.ui.javafx.util.FxmlManager;
-
-import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.engine.ClientContext;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import org.triplea.game.client.ui.javafx.screen.ControlledScreen;
+import org.triplea.game.client.ui.javafx.screen.NavigationPane;
+import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
-/**
- * Controller representing the MainMenu JavaFX implementation.
- */
+/** Controller representing the MainMenu JavaFX implementation. */
 public class MainMenuPane implements ControlledScreen<NavigationPane> {
 
-  @FXML
-  private Label version;
+  @FXML private Label version;
 
-  @FXML
-  private StackPane content;
+  @FXML private StackPane content;
 
   private NavigationPane navigationPane;
 
-  @FXML
-  private BorderPane root;
+  @FXML private BorderPane root;
 
   private final Supplier<NavigationPane> constructor;
 
@@ -40,8 +32,11 @@ public class MainMenuPane implements ControlledScreen<NavigationPane> {
   }
 
   @VisibleForTesting
-  MainMenuPane(final Supplier<NavigationPane> constructor, final BorderPane root,
-      final StackPane content, final Label version) {
+  MainMenuPane(
+      final Supplier<NavigationPane> constructor,
+      final BorderPane root,
+      final StackPane content,
+      final Label version) {
     this.constructor = constructor;
     this.root = root;
     this.content = content;
@@ -51,7 +46,8 @@ public class MainMenuPane implements ControlledScreen<NavigationPane> {
   @FXML
   @VisibleForTesting
   void initialize() {
-    version.setText(MessageFormat.format(version.getText(), ClientContext.engineVersion().getExactVersion()));
+    version.setText(
+        MessageFormat.format(version.getText(), ClientContext.engineVersion().getExactVersion()));
     navigationPane = constructor.get();
     content.getChildren().add(0, navigationPane.getNode());
 
@@ -61,7 +57,6 @@ public class MainMenuPane implements ControlledScreen<NavigationPane> {
 
     navigationPane.switchScreen(FxmlManager.MAIN_MENU_CONTROLS);
   }
-
 
   @Override
   public void connect(final NavigationPane screenController) {

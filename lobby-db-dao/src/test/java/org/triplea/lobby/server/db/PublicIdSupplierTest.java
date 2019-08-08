@@ -6,7 +6,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 
 import java.util.function.Supplier;
-
 import org.junit.jupiter.api.Test;
 
 class PublicIdSupplierTest {

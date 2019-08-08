@@ -1,16 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
-
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -28,13 +17,23 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
 /**
- * SpecialMoveDelegate is a move delegate made for special movements like the new paratrooper/airborne movement.
- * Airborne Attacks is actually Paratroopers tech for Global 1940, except that I really do not want to confuse myself by
- * naming yet another thing Paratroopers, so this is now getting a new name.
- * This is very different than "paratroopers" for AA50. We are actually launching the units from a static unit (an
- * airbase) to another territory, instead of carrying them.
+ * SpecialMoveDelegate is a move delegate made for special movements like the new
+ * paratrooper/airborne movement. Airborne Attacks is actually Paratroopers tech for Global 1940,
+ * except that I really do not want to confuse myself by naming yet another thing Paratroopers, so
+ * this is now getting a new name. This is very different than "paratroopers" for AA50. We are
+ * actually launching the units from a static unit (an airbase) to another territory, instead of
+ * carrying them.
  */
 public class SpecialMoveDelegate extends AbstractMoveDelegate {
   private boolean needToInitialize = true;
@@ -57,7 +56,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
     if (needToInitialize && onlyWhereUnderAttackAlready) {
-      // we do this to clear any 'finishedBattles' and also to create battles for units that didn't move
+      // we do this to clear any 'finishedBattles' and also to create battles for units that didn't
+      // move
       BattleDelegate.doInitialize(battleTracker, bridge);
       needToInitialize = false;
     }
@@ -90,13 +90,17 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   @Override
-  public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded,
+  public String move(
+      final Collection<Unit> units,
+      final Route route,
+      final Collection<Unit> transportsThatCanBeLoaded,
       final Map<Unit, Collection<Unit>> newDependents) {
     if (!allowAirborne(player, getData())) {
       return "No Airborne Movement Allowed Yet";
     }
     final GameData data = getData();
-    // there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current
+    // there reason we use this, is because if we are in edit mode, we may have a different unit
+    // owner than the current
     // player.
     final PlayerId player = getUnitsOwner(units);
     // here we have our own new validation method....
@@ -104,7 +108,13 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final StringBuilder errorMsg = new StringBuilder(100);
     final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
     final String numErrorsMsg =
-        numProblems > 0 ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
+        numProblems > 0
+            ? ("; "
+                + numProblems
+                + " "
+                + MyFormatter.pluralize("error", numProblems)
+                + " not shown")
+            : "";
     if (result.hasError()) {
       return errorMsg.append(result.getError()).append(numErrorsMsg).toString();
     }
@@ -117,7 +127,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     // allow user to cancel move if aa guns will fire
     final AaInMoveUtil aaInMoveUtil = new AaInMoveUtil();
     aaInMoveUtil.initialize(bridge);
-    final Collection<Territory> aaFiringTerritores = aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
+    final Collection<Territory> aaFiringTerritores =
+        aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritores.isEmpty()) {
       if (!getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
         return null;
@@ -140,24 +151,30 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     // make the bases start filling up their capacity
     final Collection<Unit> basesAtStart =
         route.getStart().getUnitCollection().getMatches(getAirborneBaseMatch(player, data));
-    final Change fillLaunchCapacity = getNewAssignmentOfNumberLaunchedChange(units.size(), basesAtStart, player, data);
+    final Change fillLaunchCapacity =
+        getNewAssignmentOfNumberLaunchedChange(units.size(), basesAtStart, player, data);
     currentMove.addChange(fillLaunchCapacity);
     // start event
-    final String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName()
-        + " to " + route.getEnd().getName();
+    final String transcriptText =
+        MyFormatter.unitsToTextNoOwner(units)
+            + " moved from "
+            + route.getStart().getName()
+            + " to "
+            + route.getEnd().getName();
     bridge.getHistoryWriter().startEvent(transcriptText, currentMove.getDescriptionObject());
     // actually do our special changes
     bridge.addChange(airborneChange);
     bridge.addChange(fillLaunchCapacity);
     tempMovePerformer = new MovePerformer();
     tempMovePerformer.initialize(this);
-    tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, newDependents, currentMove);
+    tempMovePerformer.moveUnits(
+        units, route, player, transportsThatCanBeLoaded, newDependents, currentMove);
     tempMovePerformer = null;
     return null;
   }
 
-  static MoveValidationResult validateMove(final Collection<Unit> units, final Route route,
-      final PlayerId player, final GameData data) {
+  static MoveValidationResult validateMove(
+      final Collection<Unit> units, final Route route, final PlayerId player, final GameData data) {
     final MoveValidationResult result = new MoveValidationResult();
     if (route.hasNoSteps()) {
       return result;
@@ -171,7 +188,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final boolean isEditMode = getEditMode(data);
     if (!isEditMode) {
       // make sure all units are at least friendly
-      for (final Unit unit : CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(player).negate())) {
+      for (final Unit unit :
+          CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(player).negate())) {
         result.addDisallowedUnit("Can only move owned units", unit);
       }
     }
@@ -181,8 +199,12 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     return result;
   }
 
-  private static MoveValidationResult validateAirborneMovements(final GameData data, final Collection<Unit> units,
-      final Route route, final PlayerId player, final MoveValidationResult result) {
+  private static MoveValidationResult validateAirborneMovements(
+      final GameData data,
+      final Collection<Unit> units,
+      final Route route,
+      final PlayerId player,
+      final MoveValidationResult result) {
     if (!TechAbilityAttachment.getAllowAirborneForces(player, data)) {
       return result.setErrorReturnResult("Do Not Have Airborne Tech");
     }
@@ -195,7 +217,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     if (route.numberOfSteps() > airborneDistance) {
       return result.setErrorReturnResult("Destination Is Out Of Range");
     }
-    final Collection<PlayerId> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
+    final Collection<PlayerId> alliesForBases =
+        data.getRelationshipTracker().getAllies(player, true);
     final Predicate<Unit> airborneBaseMatch = getAirborneMatch(airborneBases, alliesForBases);
     final Territory start = route.getStart();
     final Territory end = route.getEnd();
@@ -203,7 +226,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     if (basesAtStart.isEmpty()) {
       return result.setErrorReturnResult("Require Airborne Base At Originating Territory");
     }
-    final int airborneCapacity = TechAbilityAttachment.getAirborneCapacity(basesAtStart, player, data);
+    final int airborneCapacity =
+        TechAbilityAttachment.getAirborneCapacity(basesAtStart, player, data);
     if (airborneCapacity <= 0) {
       return result.setErrorReturnResult("Airborne Bases Must Have Launch Capacity");
     } else if (airborneCapacity < units.size()) {
@@ -233,14 +257,17 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return result;
     }
     final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
-    final boolean onlyWhereUnderAttackAlready = Properties.getAirborneAttacksOnlyInExistingBattles(data);
+    final boolean onlyWhereUnderAttackAlready =
+        Properties.getAirborneAttacksOnlyInExistingBattles(data);
     final boolean onlyEnemyTerritories = Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
     final List<Territory> steps = route.getSteps();
-    if (steps.isEmpty() || !steps.stream().allMatch(Matches.territoryIsPassableAndNotRestricted(player, data))) {
+    if (steps.isEmpty()
+        || !steps.stream().allMatch(Matches.territoryIsPassableAndNotRestricted(player, data))) {
       return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
     }
     if (steps.isEmpty()
-        || !steps.stream().allMatch(Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
+        || !steps.stream()
+            .allMatch(Matches.territoryAllowsCanMoveAirUnitsOverOwnedLand(player, data))) {
       return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
     }
     final boolean someLand = airborne.stream().anyMatch(Matches.unitIsLand());
@@ -262,11 +289,18 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       if (!battleTracker.getConquered().contains(end)) {
         final IBattle battle = battleTracker.getPendingBattle(end, false, BattleType.NORMAL);
         if (battle == null) {
-          return result.setErrorReturnResult("Airborne May Only Attack Territories Already Under Assault");
-        } else if (land && someLand && battle.getAttackingUnits().stream().noneMatch(Matches.unitIsLand())) {
-          return result.setErrorReturnResult("Battle Must Have Some Land Units Participating Already");
-        } else if (sea && someSea && battle.getAttackingUnits().stream().noneMatch(Matches.unitIsSea())) {
-          return result.setErrorReturnResult("Battle Must Have Some Sea Units Participating Already");
+          return result.setErrorReturnResult(
+              "Airborne May Only Attack Territories Already Under Assault");
+        } else if (land
+            && someLand
+            && battle.getAttackingUnits().stream().noneMatch(Matches.unitIsLand())) {
+          return result.setErrorReturnResult(
+              "Battle Must Have Some Land Units Participating Already");
+        } else if (sea
+            && someSea
+            && battle.getAttackingUnits().stream().noneMatch(Matches.unitIsSea())) {
+          return result.setErrorReturnResult(
+              "Battle Must Have Some Sea Units Participating Already");
         }
       }
     } else if (onlyEnemyTerritories) {
@@ -279,11 +313,13 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
   }
 
   private static Predicate<Unit> getAirborneBaseMatch(final PlayerId player, final GameData data) {
-    return getAirborneMatch(TechAbilityAttachment.getAirborneBases(player, data),
+    return getAirborneMatch(
+        TechAbilityAttachment.getAirborneBases(player, data),
         data.getRelationshipTracker().getAllies(player, true));
   }
 
-  private static Predicate<Unit> getAirborneMatch(final Set<UnitType> types, final Collection<PlayerId> unitOwners) {
+  private static Predicate<Unit> getAirborneMatch(
+      final Set<UnitType> types, final Collection<PlayerId> unitOwners) {
     return Matches.unitIsOwnedByOfAnyOfThesePlayers(unitOwners)
         .and(Matches.unitIsOfTypes(types))
         .and(Matches.unitIsNotDisabled())
@@ -301,7 +337,8 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     if (newNumberLaunched <= 0) {
       return launchedChange;
     }
-    final IntegerMap<UnitType> capacityMap = TechAbilityAttachment.getAirborneCapacity(player, data);
+    final IntegerMap<UnitType> capacityMap =
+        TechAbilityAttachment.getAirborneCapacity(player, data);
     for (final Unit u : bases) {
       if (newNumberLaunched <= 0) {
         break;
@@ -313,7 +350,9 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
         continue;
       }
       newNumberLaunched -= toAdd;
-      launchedChange.add(ChangeFactory.unitPropertyChange(u, (toAdd + numberLaunchedAlready), TripleAUnit.LAUNCHED));
+      launchedChange.add(
+          ChangeFactory.unitPropertyChange(
+              u, (toAdd + numberLaunchedAlready), TripleAUnit.LAUNCHED));
     }
     return launchedChange;
   }
@@ -329,9 +368,12 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
       return false;
     }
     final GameMap map = data.getMap();
-    final Collection<PlayerId> alliesForBases = data.getRelationshipTracker().getAllies(player, true);
-    final Collection<Territory> territoriesWeCanLaunchFrom = CollectionUtils.getMatches(map.getTerritories(),
-        Matches.territoryHasUnitsThatMatch(getAirborneMatch(airborneBases, alliesForBases)));
+    final Collection<PlayerId> alliesForBases =
+        data.getRelationshipTracker().getAllies(player, true);
+    final Collection<Territory> territoriesWeCanLaunchFrom =
+        CollectionUtils.getMatches(
+            map.getTerritories(),
+            Matches.territoryHasUnitsThatMatch(getAirborneMatch(airborneBases, alliesForBases)));
 
     return !territoriesWeCanLaunchFrom.isEmpty();
   }

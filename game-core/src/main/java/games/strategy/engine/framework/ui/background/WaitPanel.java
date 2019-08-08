@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.ui.background;
 
 import java.awt.BorderLayout;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;

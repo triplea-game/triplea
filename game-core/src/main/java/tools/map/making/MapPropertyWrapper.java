@@ -1,5 +1,17 @@
 package tools.map.making;
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.data.properties.AbstractEditableProperty;
+import games.strategy.engine.data.properties.BooleanProperty;
+import games.strategy.engine.data.properties.CollectionProperty;
+import games.strategy.engine.data.properties.ColorProperty;
+import games.strategy.engine.data.properties.DoubleProperty;
+import games.strategy.engine.data.properties.FileProperty;
+import games.strategy.engine.data.properties.IEditableProperty;
+import games.strategy.engine.data.properties.MapProperty;
+import games.strategy.engine.data.properties.NumberProperty;
+import games.strategy.engine.data.properties.PropertiesUi;
+import games.strategy.engine.data.properties.StringProperty;
 import java.awt.Color;
 import java.beans.Introspector;
 import java.io.File;
@@ -12,30 +24,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import javax.swing.JComponent;
-
+import lombok.extern.java.Log;
 import org.triplea.util.Tuple;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.engine.data.properties.AbstractEditableProperty;
-import games.strategy.engine.data.properties.BooleanProperty;
-import games.strategy.engine.data.properties.CollectionProperty;
-import games.strategy.engine.data.properties.ColorProperty;
-import games.strategy.engine.data.properties.DoubleProperty;
-import games.strategy.engine.data.properties.FileProperty;
-import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.data.properties.MapProperty;
-import games.strategy.engine.data.properties.NumberProperty;
-import games.strategy.engine.data.properties.PropertiesUi;
-import games.strategy.engine.data.properties.StringProperty;
-import lombok.extern.java.Log;
-
 /**
- * This will take ANY object, and then look at every method that begins with 'set[name]' and if there also exists a
- * method 'get[name]' and a field '[name]' which is public, then it will take these and create an editable UI component
- * for each of these based on the games.strategy.engine.data.properties classes.
+ * This will take ANY object, and then look at every method that begins with 'set[name]' and if
+ * there also exists a method 'get[name]' and a field '[name]' which is public, then it will take
+ * these and create an editable UI component for each of these based on the
+ * games.strategy.engine.data.properties classes.
  *
  * @param <T> parameters can be: Boolean, String, Integer, Double, Color, File, Collection, Map
  */
@@ -47,7 +44,8 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
   private final Method setter;
 
   @SuppressWarnings("unchecked")
-  private MapPropertyWrapper(final String name, final String description, final T defaultValue, final Method setter) {
+  private MapPropertyWrapper(
+      final String name, final String description, final T defaultValue, final Method setter) {
     super(name, description);
     this.setter = setter;
 
@@ -66,9 +64,13 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     } else if (defaultValue instanceof Map) {
       property = new MapProperty<>(name, description, ((Map<String, ?>) defaultValue));
     } else if (defaultValue instanceof Integer) {
-      property = new NumberProperty(name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
+      property =
+          new NumberProperty(
+              name, description, Integer.MAX_VALUE, Integer.MIN_VALUE, ((Integer) defaultValue));
     } else if (defaultValue instanceof Double) {
-      property = new DoubleProperty(name, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
+      property =
+          new DoubleProperty(
+              name, description, Double.MAX_VALUE, Double.MIN_VALUE, ((Double) defaultValue), 5);
     } else {
       throw new IllegalArgumentException(
           "Cannot instantiate PropertyWrapper with: " + defaultValue.getClass().getCanonicalName());
@@ -102,7 +104,9 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     try {
       log.info(setter + "   to   " + value);
       setter.invoke(object, args);
-    } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+    } catch (final IllegalArgumentException
+        | InvocationTargetException
+        | IllegalAccessException e) {
       log.log(Level.SEVERE, "Failed to invoke setter reflectively: " + setter.getName(), e);
     }
   }
@@ -138,14 +142,15 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     return properties;
   }
 
-  static void writePropertiesToObject(final Object object, final List<MapPropertyWrapper<?>> properties) {
+  static void writePropertiesToObject(
+      final Object object, final List<MapPropertyWrapper<?>> properties) {
     for (final MapPropertyWrapper<?> p : properties) {
       p.setToObject(object);
     }
   }
 
-  static Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> newPropertiesUi(final Object object,
-      final boolean editable) {
+  static Tuple<PropertiesUi, List<MapPropertyWrapper<?>>> newPropertiesUi(
+      final Object object, final boolean editable) {
     final List<MapPropertyWrapper<?>> properties = newProperties(object);
     final PropertiesUi ui = new PropertiesUi(properties, editable);
     return Tuple.of(ui, properties);
@@ -156,8 +161,8 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
     return property.validate(value);
   }
 
-  private static Field getFieldIncludingFromSuperClasses(final Class<?> c, final String name,
-      final boolean justFromSuper) {
+  private static Field getFieldIncludingFromSuperClasses(
+      final Class<?> c, final String name, final boolean justFromSuper) {
     if (!justFromSuper) {
       try {
         return c.getDeclaredField(name); // TODO: unchecked reflection
@@ -181,9 +186,7 @@ public class MapPropertyWrapper<T> extends AbstractEditableProperty<T> {
    *
    * @param propertyName The property name.
    * @param type The type that hosts the property.
-   *
    * @return The backing field for the specified property.
-   *
    * @throws IllegalStateException If no backing field for the specified property exists.
    */
   @VisibleForTesting

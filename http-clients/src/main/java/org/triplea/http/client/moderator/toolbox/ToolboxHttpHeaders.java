@@ -2,12 +2,9 @@ package org.triplea.http.client.moderator.toolbox;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import lombok.AllArgsConstructor;
 
-/**
- * Small class to encapsulate api key password (key+password) and create http headers.
- */
+/** Small class to encapsulate api key password (key+password) and create http headers. */
 @AllArgsConstructor
 public class ToolboxHttpHeaders {
   public static final String API_KEY_HEADER = "Moderator-api-key";

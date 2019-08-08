@@ -1,14 +1,11 @@
 package games.strategy.engine.message;
 
+import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
+import games.strategy.net.INode;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
-import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
-import games.strategy.net.INode;
-
-/**
- * Implementation of IChannelMessenger built on top of an IMessenger.
- */
+/** Implementation of IChannelMessenger built on top of an IMessenger. */
 public class ChannelMessenger implements IChannelMessenger {
   private final UnifiedMessenger unifiedMessenger;
 
@@ -23,9 +20,13 @@ public class ChannelMessenger implements IChannelMessenger {
   @Override
   public IChannelSubscriber getChannelBroadcaster(final RemoteName channelName) {
     final InvocationHandler ih =
-        new UnifiedInvocationHandler(unifiedMessenger, channelName.getName(), true, channelName.getClazz());
-    return (IChannelSubscriber) Proxy
-        .newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[] {channelName.getClazz()}, ih);
+        new UnifiedInvocationHandler(
+            unifiedMessenger, channelName.getName(), true, channelName.getClazz());
+    return (IChannelSubscriber)
+        Proxy.newProxyInstance(
+            Thread.currentThread().getContextClassLoader(),
+            new Class<?>[] {channelName.getClazz()},
+            ih);
   }
 
   @Override

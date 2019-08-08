@@ -9,14 +9,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.annotation.Nullable;
-
 import lombok.Builder;
 
-/**
- * Utility class to calculate a smooth route to draw on the map.
- */
+/** Utility class to calculate a smooth route to draw on the map. */
 @Builder
 public final class RouteCalculator {
   private final boolean isInfiniteX;
@@ -52,21 +48,18 @@ public final class RouteCalculator {
    */
   @Nullable
   public static Point2D getClosestPoint(final Point2D source, final List<Point2D> pool) {
-    return pool.stream()
-        .min(Comparator.comparingDouble(source::distance))
-        .orElse(null);
+    return pool.stream().min(Comparator.comparingDouble(source::distance)).orElse(null);
   }
 
   /**
-   * Method for getting Points, which are a mapHeight/Width away from the actual Point
-   * Used to display routes with higher offsets than the map width/height.
+   * Method for getting Points, which are a mapHeight/Width away from the actual Point Used to
+   * display routes with higher offsets than the map width/height.
    *
    * @param point The Point to "clone"
    * @return A List of all possible Points depending in map Properties. Size may vary.
    */
   public List<Point2D> getPossiblePoints(final Point2D point) {
-    return MapScrollUtil
-        .getPossibleTranslations(isInfiniteX, isInfiniteY, mapWidth, mapHeight)
+    return MapScrollUtil.getPossibleTranslations(isInfiniteX, isInfiniteY, mapWidth, mapHeight)
         .stream()
         .map(t -> t.transform(point, null))
         .collect(Collectors.toList());
@@ -122,8 +115,7 @@ public final class RouteCalculator {
    */
   public List<Path2D> getAllNormalizedLines(final double[] xcoords, final double[] ycoords) {
     final Path2D path = getNormalizedLines(xcoords, ycoords);
-    return MapScrollUtil
-        .getPossibleTranslations(isInfiniteX, isInfiniteY, mapWidth, mapHeight)
+    return MapScrollUtil.getPossibleTranslations(isInfiniteX, isInfiniteY, mapWidth, mapHeight)
         .stream()
         .map(t -> new Path2D.Double(path, t))
         .collect(Collectors.toList());

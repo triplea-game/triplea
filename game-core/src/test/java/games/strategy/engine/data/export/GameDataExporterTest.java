@@ -1,11 +1,10 @@
 package games.strategy.engine.data.export;
 
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 final class GameDataExporterTest {
   @Nested

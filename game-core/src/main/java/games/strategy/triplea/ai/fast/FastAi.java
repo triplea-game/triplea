@@ -5,9 +5,7 @@ import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ai.pro.util.ProOddsCalculator;
 import games.strategy.triplea.odds.calculator.IOddsCalculator;
 
-/**
- * Fast AI.
- */
+/** Fast AI. */
 public class FastAi extends ProAi {
 
   // Odds estimator

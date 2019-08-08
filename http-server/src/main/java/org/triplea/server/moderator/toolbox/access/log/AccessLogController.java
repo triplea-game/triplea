@@ -6,24 +6,18 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
+import lombok.Builder;
 import org.triplea.http.client.moderator.toolbox.PagingParams;
 import org.triplea.http.client.moderator.toolbox.access.log.ToolboxAccessLogClient;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
-import lombok.Builder;
-
-/**
- * Controller to query the access log table, for us by moderators.
- */
+/** Controller to query the access log table, for us by moderators. */
 @Builder
 @Path("")
 public class AccessLogController {
 
-  @Nonnull
-  private final ApiKeyValidationService apiKeyValidationService;
-  @Nonnull
-  private final AccessLogService accessLogService;
+  @Nonnull private final ApiKeyValidationService apiKeyValidationService;
+  @Nonnull private final AccessLogService accessLogService;
 
   @POST
   @Path(ToolboxAccessLogClient.FETCH_ACCESS_LOG_PATH)

@@ -14,13 +14,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
-
 import lombok.extern.java.Log;
 
 /**
- * A thread that reads socket data using NIO from a collection of sockets.
- * Data is read in packets, and placed in the output queue.
- * Packets are placed in the output queue in order they are read from the socket.
+ * A thread that reads socket data using NIO from a collection of sockets. Data is read in packets,
+ * and placed in the output queue. Packets are placed in the output queue in order they are read
+ * from the socket.
  */
 @Log
 class NioReader {

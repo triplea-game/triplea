@@ -1,14 +1,10 @@
 package games.strategy.engine.data;
 
 import java.util.Optional;
-
 import javax.annotation.Nullable;
-
 import lombok.Getter;
 
-/**
- * A territory on a map.
- */
+/** A territory on a map. */
 @Getter
 public class Territory extends NamedAttachable implements NamedUnitHolder, Comparable<Territory> {
   private static final long serialVersionUID = -6390555051736721082L;
@@ -37,17 +33,15 @@ public class Territory extends NamedAttachable implements NamedUnitHolder, Compa
     getData().notifyTerritoryOwnerChanged(this);
   }
 
-  /**
-   * refers to unit holder being changed.
-   */
+  /** refers to unit holder being changed. */
   @Override
   public void notifyChanged() {
     getData().notifyTerritoryUnitsChanged(this);
   }
 
   /**
-   * refers to attachment changing, and therefore needing a redraw on the map in case something like the production
-   * number is now different.
+   * refers to attachment changing, and therefore needing a redraw on the map in case something like
+   * the production number is now different.
    */
   public void notifyAttachmentChanged() {
     getData().notifyTerritoryAttachmentChanged(this);

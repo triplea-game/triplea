@@ -5,7 +5,6 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.function.Function;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,31 +16,21 @@ import org.triplea.http.client.moderator.toolbox.PagingParams;
 class PagerTest {
 
   private static final int PAGE_SIZE = 10;
-  @Mock
-  private Function<PagingParams, List<List<String>>> dataFetcher;
+  @Mock private Function<PagingParams, List<List<String>>> dataFetcher;
 
   private Pager pager;
 
   @BeforeEach
   void setup() {
-    pager = Pager.builder()
-        .dataFetcher(dataFetcher)
-        .pageSize(PAGE_SIZE)
-        .build();
+    pager = Pager.builder().dataFetcher(dataFetcher).pageSize(PAGE_SIZE).build();
   }
 
   @Test
   void getTableData() {
     pager.getTableData();
 
-    verify(dataFetcher)
-        .apply(
-            PagingParams.builder()
-                .pageSize(PAGE_SIZE)
-                .rowNumber(0)
-                .build());
+    verify(dataFetcher).apply(PagingParams.builder().pageSize(PAGE_SIZE).rowNumber(0).build());
   }
-
 
   @Test
   void getTableDataRequestsRowZero() {
@@ -52,11 +41,7 @@ class PagerTest {
 
     for (int i = 0; i < 1; i++) {
       verify(dataFetcher, times(2))
-          .apply(
-              PagingParams.builder()
-                  .pageSize(PAGE_SIZE)
-                  .rowNumber(PAGE_SIZE * i)
-                  .build());
+          .apply(PagingParams.builder().pageSize(PAGE_SIZE).rowNumber(PAGE_SIZE * i).build());
     }
   }
 
@@ -68,11 +53,7 @@ class PagerTest {
 
     for (int i = 0; i < 3; i++) {
       verify(dataFetcher, times(1))
-          .apply(
-              PagingParams.builder()
-                  .pageSize(PAGE_SIZE)
-                  .rowNumber(PAGE_SIZE * i)
-                  .build());
+          .apply(PagingParams.builder().pageSize(PAGE_SIZE).rowNumber(PAGE_SIZE * i).build());
     }
   }
 
@@ -83,11 +64,7 @@ class PagerTest {
 
     for (int i = 0; i < 1; i++) {
       verify(dataFetcher, times(1))
-          .apply(
-              PagingParams.builder()
-                  .pageSize(PAGE_SIZE)
-                  .rowNumber(PAGE_SIZE * i)
-                  .build());
+          .apply(PagingParams.builder().pageSize(PAGE_SIZE).rowNumber(PAGE_SIZE * i).build());
     }
   }
 }

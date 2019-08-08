@@ -3,8 +3,6 @@ package games.strategy.triplea.delegate;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.jupiter.api.BeforeEach;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
@@ -14,14 +12,13 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Superclass for fixtures that test delegates.
  *
- * <p>
- * Pre-loads the {@link TestMapGameData#DELEGATE_TEST} save game and provides fields for the most-commonly-accessed
- * players, territories, and unit types.
- * </p>
+ * <p>Pre-loads the {@link TestMapGameData#DELEGATE_TEST} save game and provides fields for the
+ * most-commonly-accessed players, territories, and unit types.
  */
 public abstract class AbstractDelegateTestCase {
   protected GameData gameData;

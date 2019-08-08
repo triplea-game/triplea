@@ -5,9 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
-/**
- * A technology advance that increases the range of all aircraft by two.
- */
+/** A technology advance that increases the range of all aircraft by two. */
 public final class LongRangeAircraftAdvance extends TechAdvance {
   private static final long serialVersionUID = 1986380888336238652L;
 

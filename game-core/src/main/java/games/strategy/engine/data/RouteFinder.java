@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import com.google.common.base.Preconditions;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,9 +13,8 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.function.Predicate;
 
-import com.google.common.base.Preconditions;
-
-// TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not
+// TODO this class doesn't take movementcost into account... typically the shortest route is the
+// fastest route, but not
 // always...
 class RouteFinder {
 
@@ -27,7 +27,10 @@ class RouteFinder {
     this(map, condition, new HashSet<>(), null);
   }
 
-  RouteFinder(final GameMap map, final Predicate<Territory> condition, final Collection<Unit> units,
+  RouteFinder(
+      final GameMap map,
+      final Predicate<Territory> condition,
+      final Collection<Unit> units,
       final PlayerId player) {
     this.map = map;
     this.condition = condition;
@@ -49,7 +52,8 @@ class RouteFinder {
 
     while (!toVisit.isEmpty()) {
       final Territory currentTerritory = toVisit.remove();
-      for (final Territory neighbor : map.getNeighborsValidatingCanals(currentTerritory, condition, units, player)) {
+      for (final Territory neighbor :
+          map.getNeighborsValidatingCanals(currentTerritory, condition, units, player)) {
         if (!previous.containsKey(neighbor)) {
           previous.put(neighbor, currentTerritory);
           if (neighbor.equals(end)) {
@@ -62,7 +66,9 @@ class RouteFinder {
     return Optional.empty();
   }
 
-  private static Route getRoute(final Territory start, final Territory destination,
+  private static Route getRoute(
+      final Territory start,
+      final Territory destination,
       final Map<Territory, Territory> previous) {
     final List<Territory> route = new ArrayList<>();
     Territory current = destination;

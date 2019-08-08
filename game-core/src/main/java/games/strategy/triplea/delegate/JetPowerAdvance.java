@@ -5,9 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
-/**
- * A technology advance that allows the creation of jet fighters.
- */
+/** A technology advance that allows the creation of jet fighters. */
 public final class JetPowerAdvance extends TechAdvance {
   private static final long serialVersionUID = -9124162661008361132L;
 

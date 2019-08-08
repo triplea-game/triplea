@@ -4,10 +4,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,23 +19,15 @@ import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationS
 @ExtendWith(MockitoExtension.class)
 class AccessLogControllerTest {
   private static final PagingParams PAGING_PARAMS =
-      PagingParams.builder()
-          .pageSize(100)
-          .rowNumber(0)
-          .build();
+      PagingParams.builder().pageSize(100).rowNumber(0).build();
 
-  @Mock
-  private ApiKeyValidationService apiKeyValidationService;
-  @Mock
-  private AccessLogService accessLogService;
+  @Mock private ApiKeyValidationService apiKeyValidationService;
+  @Mock private AccessLogService accessLogService;
 
-  @InjectMocks
-  private AccessLogController accessLogController;
+  @InjectMocks private AccessLogController accessLogController;
 
-  @Mock
-  private HttpServletRequest request;
-  @Mock
-  private AccessLogData accessLogData;
+  @Mock private HttpServletRequest request;
+  @Mock private AccessLogData accessLogData;
 
   @Test
   void fetchAccessLog() {

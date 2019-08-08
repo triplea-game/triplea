@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +25,8 @@ class UrlStreamsTest {
 
   private URL fakeUrl;
 
-  @Mock
-  private URLConnection mockUrlConnection;
-  @Mock
-  private InputStream mockInputStream;
-
+  @Mock private URLConnection mockUrlConnection;
+  @Mock private InputStream mockInputStream;
 
   @BeforeEach
   void setup() throws Exception {
@@ -39,21 +35,20 @@ class UrlStreamsTest {
     fakeUrl = new URL("http://well-formed-url.com");
   }
 
-  /**
-   * Check that we turned off caching on a mocked UrlConnection.
-   */
+  /** Check that we turned off caching on a mocked UrlConnection. */
   @Test
   void cacheIsOff() throws Exception {
     when(mockUrlConnection.getInputStream()).thenReturn(mockInputStream);
 
     final Optional<InputStream> connection = testObj.newStream(fakeUrl);
 
-    assertThat("expecting the same mocked http connection object back",
-        connection.get(), sameInstance(mockInputStream));
+    assertThat(
+        "expecting the same mocked http connection object back",
+        connection.get(),
+        sameInstance(mockInputStream));
     verify(mockUrlConnection).setUseCaches(false);
     verify(mockUrlConnection).setDefaultUseCaches(false);
   }
-
 
   @Test
   void testErrorSuppressionWhenThereIsNoError() throws Exception {
@@ -61,18 +56,19 @@ class UrlStreamsTest {
 
     final Optional<InputStream> stream = testObj.newStream(fakeUrl);
 
-    assertThat("No issues connecting, we should have an input stream back.",
-        stream, isPresent());
+    assertThat("No issues connecting, we should have an input stream back.", stream, isPresent());
   }
 
   @Test
   void testErrorSuppression() throws Exception {
-    when(mockUrlConnection.getInputStream()).thenThrow(new IOException("simulating an IOException being thrown"));
+    when(mockUrlConnection.getInputStream())
+        .thenThrow(new IOException("simulating an IOException being thrown"));
 
     final Optional<InputStream> stream = testObj.newStream(fakeUrl);
 
-    assertThat("No exceptions expected, but a failure to connect should return an empty object.",
-        stream, isEmpty());
+    assertThat(
+        "No exceptions expected, but a failure to connect should return an empty object.",
+        stream,
+        isEmpty());
   }
-
 }

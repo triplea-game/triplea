@@ -1,25 +1,22 @@
 package games.strategy.engine.auto.update;
 
+import games.strategy.engine.ClientContext;
+import games.strategy.triplea.UrlConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
-
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-
+import lombok.extern.java.Log;
 import org.triplea.awt.OpenFileUtility;
 import org.triplea.util.Version;
-
-import games.strategy.engine.ClientContext;
-import games.strategy.triplea.UrlConstants;
-import lombok.extern.java.Log;
 
 @Log
 class EngineVersionProperties {
@@ -55,17 +52,27 @@ class EngineVersionProperties {
   }
 
   private String getOutOfDateMessage() {
-    return "<html>" + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
-        + "<br />Your current version: " + ClientContext.engineVersion().getExactVersion()
-        + "<br />Latest version available for download: " + getLatestVersionOut()
-        + "<br /><br />Click to download: <a class=\"external\" href=\"" + link
-        + "\">" + link + "</a>"
+    return "<html>"
+        + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
+        + "<br />Your current version: "
+        + ClientContext.engineVersion().getExactVersion()
+        + "<br />Latest version available for download: "
+        + getLatestVersionOut()
+        + "<br /><br />Click to download: <a class=\"external\" href=\""
+        + link
+        + "\">"
+        + link
+        + "</a>"
         + "</html>";
   }
 
   private String getOutOfDateReleaseUpdates() {
-    return "<html><body>" + "Link to full Change Log:<br /><a class=\"external\" href=\"" + changelogLink + "\">"
-        + changelogLink + "</a><br />"
+    return "<html><body>"
+        + "Link to full Change Log:<br /><a class=\"external\" href=\""
+        + changelogLink
+        + "\">"
+        + changelogLink
+        + "</a><br />"
         + "</body></html>";
   }
 
@@ -75,11 +82,12 @@ class EngineVersionProperties {
     intro.setEditable(false);
     intro.setOpaque(false);
     intro.setBorder(BorderFactory.createEmptyBorder());
-    final HyperlinkListener hyperlinkListener = e -> {
-      if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-        OpenFileUtility.openUrl(e.getDescription());
-      }
-    };
+    final HyperlinkListener hyperlinkListener =
+        e -> {
+          if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
+            OpenFileUtility.openUrl(e.getDescription());
+          }
+        };
     intro.addHyperlinkListener(hyperlinkListener);
     panel.add(intro, BorderLayout.NORTH);
     final JEditorPane updates = new JEditorPane("text/html", getOutOfDateReleaseUpdates());

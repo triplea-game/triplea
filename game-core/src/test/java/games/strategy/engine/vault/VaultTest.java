@@ -6,13 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.net.InetAddress;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
@@ -22,12 +15,17 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.MessengerTestUtils;
 import games.strategy.net.Node;
 import games.strategy.net.TestServerMessenger;
+import java.io.IOException;
+import java.net.InetAddress;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
- * Comment(KG): This test is broken, If you run each test individually they all work, but when running all test in the
- * class some will fail.
- * This is because the lifecycle of the UnifiedMessenger (and internal classes such as NioReader/Writer) are broken.
- * The UnifiedMessenger will create a new ThreadPool with each instantiation, and this pool is never shutdown.
+ * Comment(KG): This test is broken, If you run each test individually they all work, but when
+ * running all test in the class some will fail. This is because the lifecycle of the
+ * UnifiedMessenger (and internal classes such as NioReader/Writer) are broken. The UnifiedMessenger
+ * will create a new ThreadPool with each instantiation, and this pool is never shutdown.
  */
 class VaultTest {
   private IServerMessenger serverMessenger;
@@ -70,8 +68,8 @@ class VaultTest {
   }
 
   /**
-   * Passes when run individually.
-   * Fails when run as part of a suite that consists of multiple server/vault tests.
+   * Passes when run individually. Fails when run as part of a suite that consists of multiple
+   * server/vault tests.
    */
   void temporarilyDisabledSoPleaseRunManuallytestServerLock() throws NotUnlockedException {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
@@ -101,8 +99,8 @@ class VaultTest {
   }
 
   /**
-   * Passes when run individually.
-   * Fails when run as part of a suite that consists of multiple server/vault tests.
+   * Passes when run individually. Fails when run as part of a suite that consists of multiple
+   * server/vault tests.
    */
   void temporarilyDisabledSoPleaseRunManuallytestMultiple() throws NotUnlockedException {
     final byte[] data1 = new byte[] {0, 1, 2, 3, 4, 5};
@@ -129,6 +127,7 @@ class VaultTest {
   void testJoin() {
     final byte[] data = new byte[] {0, 1, 2, 3, 4, 5};
     final byte[] joined = Vault.joinDataAndKnown(data);
-    assertArrayEquals(new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE, 0, 1, 2, 3, 4, 5}, joined);
+    assertArrayEquals(
+        new byte[] {0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE, 0, 1, 2, 3, 4, 5}, joined);
   }
 }

@@ -49,8 +49,7 @@ public final class DownloadCoordinator {
   }
 
   private static boolean containsDownload(
-      final Collection<DownloadFile> downloadFiles,
-      final DownloadFileDescription download) {
+      final Collection<DownloadFile> downloadFiles, final DownloadFileDescription download) {
     return downloadFiles.stream().map(DownloadFile::getDownload).anyMatch(download::equals);
   }
 

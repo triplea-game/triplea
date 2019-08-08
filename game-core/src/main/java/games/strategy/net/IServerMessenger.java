@@ -3,12 +3,9 @@ package games.strategy.net;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Set;
-
 import javax.annotation.Nullable;
 
-/**
- * A server messenger. Additional methods for accepting new connections.
- */
+/** A server messenger. Additional methods for accepting new connections. */
 public interface IServerMessenger extends IMessenger {
   void setAcceptNewConnections(boolean accept);
 
@@ -16,15 +13,10 @@ public interface IServerMessenger extends IMessenger {
 
   ILoginValidator getLoginValidator();
 
-
-  /**
-   * Remove the node from the network.
-   */
+  /** Remove the node from the network. */
   void removeConnection(INode node);
 
-  /**
-   * Get a list of nodes.
-   */
+  /** Get a list of nodes. */
   Set<INode> getNodes();
 
   /**
@@ -46,10 +38,8 @@ public interface IServerMessenger extends IMessenger {
   /**
    * Returns the real username for the specified (possibly unique) username.
    *
-   * <p>
-   * Node usernames may contain a " (n)" suffix when the same user is logged in multiple times. This method removes such
-   * a suffix yielding the original (real) username.
-   * </p>
+   * <p>Node usernames may contain a " (n)" suffix when the same user is logged in multiple times.
+   * This method removes such a suffix yielding the original (real) username.
    */
   static String getRealName(final String name) {
     checkNotNull(name);

@@ -1,17 +1,13 @@
 package games.strategy.engine.lobby.client;
 
-import org.triplea.lobby.common.IModeratorController;
-
 import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
 import lombok.Getter;
+import org.triplea.lobby.common.IModeratorController;
 
-/**
- * Provides information about a client connection to a lobby server.
- */
+/** Provides information about a client connection to a lobby server. */
 public class LobbyClient {
-  @Getter
-  private final Messengers messengers;
+  @Getter private final Messengers messengers;
   private final boolean isAnonymousLogin;
   private Boolean isAdmin;
 

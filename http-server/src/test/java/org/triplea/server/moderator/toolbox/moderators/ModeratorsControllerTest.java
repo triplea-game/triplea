@@ -8,10 +8,8 @@ import static org.triplea.server.moderator.toolbox.ControllerTestUtil.verifyResp
 
 import java.util.Collections;
 import java.util.Optional;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +20,6 @@ import org.triplea.http.client.moderator.toolbox.moderator.management.ModeratorI
 import org.triplea.server.moderator.toolbox.api.key.GenerateSingleUseKeyService;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
-
 @SuppressWarnings("unchecked")
 @ExtendWith(MockitoExtension.class)
 class ModeratorsControllerTest {
@@ -32,39 +29,29 @@ class ModeratorsControllerTest {
   private static final String API_KEY = "Parrots grow with fight!";
   private static final int USER_ID = 1235;
 
-  @Mock
-  private ModeratorsService moderatorsService;
-  @Mock
-  private GenerateSingleUseKeyService generateSingleUseKeyService;
-  @Mock
-  private ApiKeyValidationService apiKeyValidationService;
+  @Mock private ModeratorsService moderatorsService;
+  @Mock private GenerateSingleUseKeyService generateSingleUseKeyService;
+  @Mock private ApiKeyValidationService apiKeyValidationService;
 
-  @InjectMocks
-  private ModeratorsController moderatorsController;
+  @InjectMocks private ModeratorsController moderatorsController;
 
-  @Mock
-  private HttpServletRequest request;
+  @Mock private HttpServletRequest request;
 
-  @Mock
-  private ModeratorInfo moderatorInfo;
+  @Mock private ModeratorInfo moderatorInfo;
 
   @Test
   void checkUserExists() {
     when(moderatorsService.userExistsByName(USERNAME)).thenReturn(true);
 
-    final Response response =
-        moderatorsController.checkUserExists(request, USERNAME);
+    final Response response = moderatorsController.checkUserExists(request, USERNAME);
 
     verifyResponse(response, true);
     verify(apiKeyValidationService).verifyApiKey(request);
   }
 
-
-
   @Test
   void getModerators() {
-    when(moderatorsService.fetchModerators())
-        .thenReturn(Collections.singletonList(moderatorInfo));
+    when(moderatorsService.fetchModerators()).thenReturn(Collections.singletonList(moderatorInfo));
 
     final Response response = moderatorsController.getModerators(request);
 
@@ -74,8 +61,7 @@ class ModeratorsControllerTest {
 
   @Test
   void isSuperModPositiveCase() {
-    when(apiKeyValidationService.lookupSuperModByApiKey(request))
-        .thenReturn(Optional.of(USER_ID));
+    when(apiKeyValidationService.lookupSuperModByApiKey(request)).thenReturn(Optional.of(USER_ID));
 
     final Response response = moderatorsController.isSuperMod(request);
 
@@ -85,8 +71,7 @@ class ModeratorsControllerTest {
 
   @Test
   void isSuperModNegativeCase() {
-    when(apiKeyValidationService.lookupSuperModByApiKey(request))
-        .thenReturn(Optional.empty());
+    when(apiKeyValidationService.lookupSuperModByApiKey(request)).thenReturn(Optional.empty());
 
     final Response response = moderatorsController.isSuperMod(request);
 
@@ -96,12 +81,9 @@ class ModeratorsControllerTest {
 
   @Test
   void generateSingleUseKey() {
-    when(generateSingleUseKeyService.generateSingleUseKey(MODERATOR_NAME))
-        .thenReturn(API_KEY);
+    when(generateSingleUseKeyService.generateSingleUseKey(MODERATOR_NAME)).thenReturn(API_KEY);
 
-
-    final Response response =
-        moderatorsController.generateSingleUseKey(request, MODERATOR_NAME);
+    final Response response = moderatorsController.generateSingleUseKey(request, MODERATOR_NAME);
 
     verifyResponse(response, new NewApiKey(API_KEY));
     verify(apiKeyValidationService).verifySuperMod(request);
@@ -135,6 +117,5 @@ class ModeratorsControllerTest {
 
     assertThat(response.getStatus(), is(200));
     verify(moderatorsService).addModerator(USER_ID, MODERATOR_NAME);
-
   }
 }

@@ -1,30 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Predicate;
-
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -42,6 +17,28 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.util.TuvUtils;
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Predicate;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import org.triplea.java.collections.IntegerMap;
 
 class StatPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 4340684166664492498L;
@@ -130,16 +127,18 @@ class StatPanel extends AbstractStatPanel {
 
   static class JComponentTableCellRenderer implements TableCellRenderer {
     @Override
-    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-        final boolean hasFocus, final int row, final int column) {
+    public Component getTableCellRendererComponent(
+        final JTable table,
+        final Object value,
+        final boolean isSelected,
+        final boolean hasFocus,
+        final int row,
+        final int column) {
       return (JComponent) value;
     }
   }
 
-  /**
-   * Custom table model.
-   * This model is thread safe.
-   */
+  /** Custom table model. This model is thread safe. */
   class StatTableModel extends AbstractTableModel implements GameDataChangeListener {
     private static final long serialVersionUID = -6156153062049822444L;
     /* Flag to indicate whether data needs to be recalculated */
@@ -178,14 +177,16 @@ class StatPanel extends AbstractStatPanel {
         for (final PlayerId player : players) {
           collectedData[row][0] = player.getName();
           for (int i = 0; i < stats.length; i++) {
-            collectedData[row][i + 1] = stats[i].getFormatter().format(stats[i].getValue(player, gameData));
+            collectedData[row][i + 1] =
+                stats[i].getFormatter().format(stats[i].getValue(player, gameData));
           }
           row++;
         }
         for (final String alliance : alliances) {
           collectedData[row][0] = alliance;
           for (int i = 0; i < stats.length; i++) {
-            collectedData[row][i + 1] = stats[i].getFormatter().format(stats[i].getValue(alliance, gameData));
+            collectedData[row][i + 1] =
+                stats[i].getFormatter().format(stats[i].getValue(alliance, gameData));
           }
           row++;
         }
@@ -235,7 +236,8 @@ class StatPanel extends AbstractStatPanel {
       }
 
       // no need to recalculate all the stats just to get the row count
-      // getting the row count is a fairly frequent operation, and will happen even if we are not displayed!
+      // getting the row count is a fairly frequent operation, and will happen even if we are not
+      // displayed!
       gameData.acquireReadLock();
       try {
         return gameData.getPlayerList().size() + getAlliances().size();
@@ -333,15 +335,18 @@ class StatPanel extends AbstractStatPanel {
       try {
         for (final PlayerId pid : gameData.getPlayerList().getPlayers()) {
           if (colMap.get(pid.getName()) == null) {
-            throw new IllegalStateException("Unexpected player in GameData.getPlayerList()" + pid.getName());
+            throw new IllegalStateException(
+                "Unexpected player in GameData.getPlayerList()" + pid.getName());
           }
           final int col = colMap.get(pid.getName());
           int row = 0;
-          if (StatPanel.this.gameData.getResourceList().getResource(Constants.TECH_TOKENS) != null) {
+          if (StatPanel.this.gameData.getResourceList().getResource(Constants.TECH_TOKENS)
+              != null) {
             final int tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
             data[row][col] = Integer.toString(tokens);
           }
-          final List<TechAdvance> advancesAll = TechAdvance.getTechAdvances(StatPanel.this.gameData);
+          final List<TechAdvance> advancesAll =
+              TechAdvance.getTechAdvances(StatPanel.this.gameData);
           final List<TechAdvance> has = TechAdvance.getTechAdvances(StatPanel.this.gameData, pid);
           for (final TechAdvance advance : advancesAll) {
             if (!has.contains(advance)) {
@@ -349,7 +354,8 @@ class StatPanel extends AbstractStatPanel {
               data[row][col] = "-";
             }
           }
-          for (final TechAdvance advance : TechTracker.getCurrentTechAdvances(pid, StatPanel.this.gameData)) {
+          for (final TechAdvance advance :
+              TechTracker.getCurrentTechAdvances(pid, StatPanel.this.gameData)) {
             row = rowMap.get(advance.getName());
             data[row][col] = "X";
           }
@@ -412,11 +418,12 @@ class StatPanel extends AbstractStatPanel {
 
     @Override
     public double getValue(final PlayerId player, final GameData data) {
-      final int production = data.getMap().getTerritories().stream()
-          .filter(place -> place.getOwner().equals(player))
-          .filter(Matches.territoryCanCollectIncomeFrom(player, data))
-          .mapToInt(TerritoryAttachment::getProduction)
-          .sum();
+      final int production =
+          data.getMap().getTerritories().stream()
+              .filter(place -> place.getOwner().equals(player))
+              .filter(Matches.territoryCanCollectIncomeFrom(player, data))
+              .mapToInt(TerritoryAttachment::getProduction)
+              .sum();
       /*
        * Match will Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone, or if contested
        */

@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Calendar;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -22,11 +21,11 @@ class AccessLogDaoDataTest {
   private static final Timestamp timestamp = Timestamp.from(NOW);
 
   private static final String USERNAME = "The dark skiff greedily drinks the anchor.";
-  private static final String MAC = "The woodchuck fights with grace, blow the freighter before it dies.";
+  private static final String MAC =
+      "The woodchuck fights with grace, blow the freighter before it dies.";
   private static final String IP = "Yo-ho-ho, ye rainy freebooter- set sails for faith!";
 
-  @Mock
-  private ResultSet resultSet;
+  @Mock private ResultSet resultSet;
 
   @Test
   void buildResultMapper() throws Exception {

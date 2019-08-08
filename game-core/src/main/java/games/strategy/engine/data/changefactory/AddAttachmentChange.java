@@ -14,7 +14,8 @@ class AddAttachmentChange extends Change {
   private final Attachable attachable;
   private final String name;
 
-  AddAttachmentChange(final IAttachment attachment, final Attachable attachable, final String name) {
+  AddAttachmentChange(
+      final IAttachment attachment, final Attachable attachable, final String name) {
     this.attachment = attachment;
     originalAttachmentName = attachment.getName();
     originalAttachable = attachment.getAttachedTo();

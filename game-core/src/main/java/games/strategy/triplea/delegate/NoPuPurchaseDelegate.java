@@ -1,10 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -15,10 +10,11 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.RulesAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import java.util.ArrayList;
+import java.util.Collection;
+import org.triplea.java.collections.IntegerMap;
 
-/**
- * At the end of the turn collect units, not income.
- */
+/** At the end of the turn collect units, not income. */
 public class NoPuPurchaseDelegate extends PurchaseDelegate {
   private boolean isPacific;
 
@@ -40,18 +36,24 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
     bridge.addChange(productionChange);
   }
 
-  private Collection<Unit> getProductionUnits(final Collection<Territory> territories, final PlayerId player) {
+  private Collection<Unit> getProductionUnits(
+      final Collection<Territory> territories, final PlayerId player) {
     final Collection<Unit> productionUnits = new ArrayList<>();
     if (!(isProductionPerXTerritoriesRestricted() || isProductionPerValuedTerritoryRestricted())) {
       return productionUnits;
     }
     IntegerMap<UnitType> productionPerXTerritories = new IntegerMap<>();
-    final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+    final RulesAttachment ra =
+        (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
     // if they have no rules attachments, but are calling NoPU purchase, and have the game property
-    // isProductionPerValuedTerritoryRestricted, then they want 1 infantry for each territory with PU value > 0
+    // isProductionPerValuedTerritoryRestricted, then they want 1 infantry for each territory with
+    // PU value > 0
     if (isProductionPerValuedTerritoryRestricted()
-        && (ra == null || ra.getProductionPerXTerritories() == null || ra.getProductionPerXTerritories().size() == 0)) {
-      productionPerXTerritories.put(getData().getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY), 1);
+        && (ra == null
+            || ra.getProductionPerXTerritories() == null
+            || ra.getProductionPerXTerritories().size() == 0)) {
+      productionPerXTerritories.put(
+          getData().getUnitTypeList().getUnitType(Constants.UNIT_TYPE_INFANTRY), 1);
     } else if (isProductionPerXTerritoriesRestricted() && ra != null) {
       productionPerXTerritories = ra.getProductionPerXTerritories();
     } else {
@@ -75,7 +77,8 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
         }
       }
       unitCount += terrCount / prodPerXTerrs;
-      productionUnits.addAll(getData().getUnitTypeList().getUnitType(ut.getName()).create(unitCount, player));
+      productionUnits.addAll(
+          getData().getUnitTypeList().getUnitType(ut.getName()).create(unitCount, player));
     }
     return productionUnits;
   }
@@ -85,8 +88,11 @@ public class NoPuPurchaseDelegate extends PurchaseDelegate {
     int burmaRoadCount = 0;
     for (final Territory current : getData().getMap().getTerritories()) {
       final String terrName = current.getName();
-      if ((terrName.equals("Burma") || terrName.equals("India") || terrName.equals("Yunnan")
-          || terrName.equals("Szechwan")) && getData().getRelationshipTracker().isAllied(current.getOwner(), player)) {
+      if ((terrName.equals("Burma")
+              || terrName.equals("India")
+              || terrName.equals("Yunnan")
+              || terrName.equals("Szechwan"))
+          && getData().getRelationshipTracker().isAllied(current.getOwner(), player)) {
         ++burmaRoadCount;
       }
     }

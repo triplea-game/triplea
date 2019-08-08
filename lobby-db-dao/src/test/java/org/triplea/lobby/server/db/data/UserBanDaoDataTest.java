@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -30,8 +29,7 @@ class UserBanDaoDataTest {
   private static final String PUBLIC_ID = "Punishment is a black sun.";
   private static final String USERNAME = "Malaria is a small anchor.";
 
-  @Mock
-  private ResultSet resultSet;
+  @Mock private ResultSet resultSet;
 
   @Test
   void buildResultMapper() throws Exception {

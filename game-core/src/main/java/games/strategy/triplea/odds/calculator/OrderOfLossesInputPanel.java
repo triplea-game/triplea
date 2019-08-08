@@ -1,5 +1,16 @@
 package games.strategy.triplea.odds.calculator;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.UnitTypeList;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.ui.TooltipProperties;
+import games.strategy.triplea.ui.UiContext;
+import games.strategy.triplea.util.UnitCategory;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
@@ -10,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -18,26 +28,13 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.util.Tuple;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.UnitTypeList;
-import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.ui.TooltipProperties;
-import games.strategy.triplea.ui.UiContext;
-import games.strategy.triplea.util.UnitCategory;
-
 /**
- * Order of loss panel, helps user create an order of loss string that is used to choose casualty order.
+ * Order of loss panel, helps user create an order of loss string that is used to choose casualty
+ * order.
  */
 class OrderOfLossesInputPanel extends JPanel {
   private static final long serialVersionUID = 8815617685388156219L;
@@ -56,42 +53,41 @@ class OrderOfLossesInputPanel extends JPanel {
   private final JButton clear;
   private final boolean land;
 
-
-
-  OrderOfLossesInputPanel(final String attackerOrder, final String defenderOrder,
-      final List<UnitCategory> attackerCategories, final List<UnitCategory> defenderCategories, final boolean land,
-      final UiContext uiContext, final GameData data) {
+  OrderOfLossesInputPanel(
+      final String attackerOrder,
+      final String defenderOrder,
+      final List<UnitCategory> attackerCategories,
+      final List<UnitCategory> defenderCategories,
+      final boolean land,
+      final UiContext uiContext,
+      final GameData data) {
     this.data = data;
     this.uiContext = uiContext;
     this.land = land;
     this.attackerCategories = attackerCategories;
     this.defenderCategories = defenderCategories;
     attackerTextField = new JTextField(attackerOrder == null ? "" : attackerOrder);
-    DocumentListenerBuilder.attachDocumentListener(attackerTextField,
-        () -> turnToRedIfNotValidOrderOfLoss(attackerTextField));
+    DocumentListenerBuilder.attachDocumentListener(
+        attackerTextField, () -> turnToRedIfNotValidOrderOfLoss(attackerTextField));
 
     defenderTextField = new JTextField(defenderOrder == null ? "" : defenderOrder);
-    DocumentListenerBuilder.attachDocumentListener(defenderTextField,
-        () -> turnToRedIfNotValidOrderOfLoss(defenderTextField));
+    DocumentListenerBuilder.attachDocumentListener(
+        defenderTextField, () -> turnToRedIfNotValidOrderOfLoss(defenderTextField));
 
     clear = new JButton("Clear");
-    clear.addActionListener(e -> {
-      attackerTextField.setText("");
-      defenderTextField.setText("");
-    });
+    clear.addActionListener(
+        e -> {
+          attackerTextField.setText("");
+          defenderTextField.setText("");
+        });
     layoutComponents();
   }
 
   private void turnToRedIfNotValidOrderOfLoss(final JTextField textField) {
-    textField.setForeground(
-        isValidOrderOfLoss(textField.getText(), data)
-            ? null
-            : Color.red);
+    textField.setForeground(isValidOrderOfLoss(textField.getText(), data) ? null : Color.red);
   }
 
-  /**
-   * Validates if a given string can be parsed for order of losses.
-   */
+  /** Validates if a given string can be parsed for order of losses. */
   static boolean isValidOrderOfLoss(final String orderOfLoss, final GameData data) {
     if (orderOfLoss == null || orderOfLoss.trim().length() == 0) {
       return true;
@@ -136,14 +132,13 @@ class OrderOfLossesInputPanel extends JPanel {
 
   @VisibleForTesting
   static String[] splitOrderOfLossSection(final String orderOfLossSection) {
-    return Iterables.toArray(Splitter.on(OOL_AMOUNT_DESCRIPTOR).split(orderOfLossSection), String.class);
+    return Iterables.toArray(
+        Splitter.on(OOL_AMOUNT_DESCRIPTOR).split(orderOfLossSection), String.class);
   }
 
-  /**
-   * Returns units in the same ordering as the 'order of loss' string passed in.
-   */
-  static List<Unit> getUnitListByOrderOfLoss(final String ool, final Collection<Unit> units,
-      final GameData data) {
+  /** Returns units in the same ordering as the 'order of loss' string passed in. */
+  static List<Unit> getUnitListByOrderOfLoss(
+      final String ool, final Collection<Unit> units, final GameData data) {
     if (ool == null || ool.trim().length() == 0) {
       return null;
     }
@@ -153,7 +148,10 @@ class OrderOfLossesInputPanel extends JPanel {
         continue;
       }
       final String[] amountThenType = splitOrderOfLossSection(section);
-      final int amount = amountThenType[0].equals(OOL_ALL) ? Integer.MAX_VALUE : Integer.parseInt(amountThenType[0]);
+      final int amount =
+          amountThenType[0].equals(OOL_ALL)
+              ? Integer.MAX_VALUE
+              : Integer.parseInt(amountThenType[0]);
       final UnitType type = data.getUnitTypeList().getUnitType(amountThenType[1]);
       map.add(Tuple.of(amount, type));
     }
@@ -162,7 +160,8 @@ class OrderOfLossesInputPanel extends JPanel {
     final List<Unit> order = new ArrayList<>();
     for (final Tuple<Integer, UnitType> section : map) {
       final List<Unit> unitsOfType =
-          CollectionUtils.getNMatches(unitsLeft, section.getFirst(), Matches.unitIsOfType(section.getSecond()));
+          CollectionUtils.getNMatches(
+              unitsLeft, section.getFirst(), Matches.unitIsOfType(section.getSecond()));
       order.addAll(unitsOfType);
       unitsLeft.removeAll(unitsOfType);
     }
@@ -170,31 +169,65 @@ class OrderOfLossesInputPanel extends JPanel {
     return order;
   }
 
-
   private void layoutComponents() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    final JLabel instructions = new JLabel("<html>Here you can specify the 'Order of Losses' (OOL) for each side."
-        + "<br />Damageable units will be damanged first always. If the player label is red, your OOL is invalid."
-        + "<br />The engine will take your input and add all units to a list starting on the RIGHT side of your text "
-        + "line."
-        + "<br />Then, during combat, casualties will be chosen starting on the LEFT side of your OOL." + "<br />"
-        + OOL_SEPARATOR + " separates unit types." + "<br />" + OOL_AMOUNT_DESCRIPTOR
-        + " is in front of the unit type and describes the number of units." + "<br />" + OOL_ALL
-        + " means all units of that type." + "<br />Examples:" + "<br />" + OOL_ALL
-        + OOL_AMOUNT_DESCRIPTOR + "infantry" + OOL_SEPARATOR + OOL_ALL
-        + OOL_AMOUNT_DESCRIPTOR + "artillery" + OOL_SEPARATOR + OOL_ALL
-        + OOL_AMOUNT_DESCRIPTOR + "fighter"
-        + "<br />The above will take all infantry, then all artillery, then all fighters, then all other units as "
-        + "casualty."
-        + "<br /><br />1" + OOL_AMOUNT_DESCRIPTOR + "infantry" + OOL_SEPARATOR + "2"
-        + OOL_AMOUNT_DESCRIPTOR + "artillery" + OOL_SEPARATOR + "6"
-        + OOL_AMOUNT_DESCRIPTOR + "fighter"
-        + "<br />The above will take 1 infantry, then 2 artillery, then 6 fighters, then all other units as casualty."
-        + "<br /><br />" + OOL_ALL + OOL_AMOUNT_DESCRIPTOR + "infantry"
-        + OOL_SEPARATOR + OOL_ALL + OOL_AMOUNT_DESCRIPTOR + "fighter"
-        + OOL_SEPARATOR + "1" + OOL_AMOUNT_DESCRIPTOR + "infantry"
-        + "<br />The above will take all except 1 infantry casualty, then all fighters, then the last infantry, then "
-        + "all other units casualty.</html>");
+    final JLabel instructions =
+        new JLabel(
+            "<html>Here you can specify the 'Order of Losses' (OOL) for each side."
+                + "<br />Damageable units will be damanged first always. If the player label is red, your OOL is invalid."
+                + "<br />The engine will take your input and add all units to a list starting on the RIGHT side of your text "
+                + "line."
+                + "<br />Then, during combat, casualties will be chosen starting on the LEFT side of your OOL."
+                + "<br />"
+                + OOL_SEPARATOR
+                + " separates unit types."
+                + "<br />"
+                + OOL_AMOUNT_DESCRIPTOR
+                + " is in front of the unit type and describes the number of units."
+                + "<br />"
+                + OOL_ALL
+                + " means all units of that type."
+                + "<br />Examples:"
+                + "<br />"
+                + OOL_ALL
+                + OOL_AMOUNT_DESCRIPTOR
+                + "infantry"
+                + OOL_SEPARATOR
+                + OOL_ALL
+                + OOL_AMOUNT_DESCRIPTOR
+                + "artillery"
+                + OOL_SEPARATOR
+                + OOL_ALL
+                + OOL_AMOUNT_DESCRIPTOR
+                + "fighter"
+                + "<br />The above will take all infantry, then all artillery, then all fighters, then all other units as "
+                + "casualty."
+                + "<br /><br />1"
+                + OOL_AMOUNT_DESCRIPTOR
+                + "infantry"
+                + OOL_SEPARATOR
+                + "2"
+                + OOL_AMOUNT_DESCRIPTOR
+                + "artillery"
+                + OOL_SEPARATOR
+                + "6"
+                + OOL_AMOUNT_DESCRIPTOR
+                + "fighter"
+                + "<br />The above will take 1 infantry, then 2 artillery, then 6 fighters, then all other units as casualty."
+                + "<br /><br />"
+                + OOL_ALL
+                + OOL_AMOUNT_DESCRIPTOR
+                + "infantry"
+                + OOL_SEPARATOR
+                + OOL_ALL
+                + OOL_AMOUNT_DESCRIPTOR
+                + "fighter"
+                + OOL_SEPARATOR
+                + "1"
+                + OOL_AMOUNT_DESCRIPTOR
+                + "infantry"
+                + "<br />The above will take all except 1 infantry casualty, then all fighters, then the last infantry, then "
+                + "all other units casualty.</html>");
     instructions.setAlignmentX(Component.CENTER_ALIGNMENT);
     add(instructions);
     add(Box.createVerticalStrut(30));
@@ -218,31 +251,46 @@ class OrderOfLossesInputPanel extends JPanel {
     add(clear);
   }
 
-  private JPanel getUnitButtonPanel(final List<UnitCategory> categories, final JTextField textField) {
+  private JPanel getUnitButtonPanel(
+      final List<UnitCategory> categories, final JTextField textField) {
     final JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
     if (categories != null) {
       final Set<UnitType> typesUsed = new HashSet<>();
       for (final UnitCategory category : categories) {
         // no duplicates or infrastructure allowed. no sea if land, no land if sea.
-        if (typesUsed.contains(category.getType()) || Matches.unitTypeIsInfrastructure().test(category.getType())
+        if (typesUsed.contains(category.getType())
+            || Matches.unitTypeIsInfrastructure().test(category.getType())
             || (land && Matches.unitTypeIsSea().test(category.getType()))
             || (!land && Matches.unitTypeIsLand().test(category.getType()))) {
           continue;
         }
-        final String unitName =
-            OOL_ALL + OOL_AMOUNT_DESCRIPTOR + category.getType().getName();
-        final String toolTipText = "<html>" + category.getType().getName() + ":  "
-            + TooltipProperties.getInstance().getTooltip(category.getType(), category.getOwner()) + "</html>";
+        final String unitName = OOL_ALL + OOL_AMOUNT_DESCRIPTOR + category.getType().getName();
+        final String toolTipText =
+            "<html>"
+                + category.getType().getName()
+                + ":  "
+                + TooltipProperties.getInstance()
+                    .getTooltip(category.getType(), category.getOwner())
+                + "</html>";
         final Optional<Image> img =
-            uiContext.getUnitImageFactory().getImage(category.getType(), category.getOwner(),
-                category.hasDamageOrBombingUnitDamage(), category.getDisabled());
+            uiContext
+                .getUnitImageFactory()
+                .getImage(
+                    category.getType(),
+                    category.getOwner(),
+                    category.hasDamageOrBombingUnitDamage(),
+                    category.getDisabled());
         if (img.isPresent()) {
           final JButton button = new JButton(new ImageIcon(img.get()));
           button.setToolTipText(toolTipText);
-          button.addActionListener(e -> textField
-              .setText((textField.getText().length() > 0 ? (textField.getText() + OOL_SEPARATOR) : "")
-                  + unitName));
+          button.addActionListener(
+              e ->
+                  textField.setText(
+                      (textField.getText().length() > 0
+                              ? (textField.getText() + OOL_SEPARATOR)
+                              : "")
+                          + unitName));
           panel.add(button);
         }
         typesUsed.add(category.getType());

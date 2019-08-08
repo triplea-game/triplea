@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.is;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +17,9 @@ final class SelectionComponentUiUtilsTest {
     void shouldReturnAbsolutePathWhenPresent() {
       final Path path = Paths.get(".");
 
-      assertThat(SelectionComponentUiUtils.toString(Optional.of(path)), is(path.toAbsolutePath().toString()));
+      assertThat(
+          SelectionComponentUiUtils.toString(Optional.of(path)),
+          is(path.toAbsolutePath().toString()));
     }
 
     @Test

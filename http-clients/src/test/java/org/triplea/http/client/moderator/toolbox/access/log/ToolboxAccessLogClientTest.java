@@ -6,35 +6,30 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.triplea.http.client.HttpClientTesting.API_KEY_PASSWORD;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import java.net.URI;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
-
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
-@ExtendWith({
-    WiremockResolver.class,
-    WiremockUriResolver.class
-})
+@ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
 class ToolboxAccessLogClientTest {
-  private static final AccessLogData ACCESS_LOG_DATA = AccessLogData.builder()
-      .accessDate(Instant.now())
-      .hashedMac("Dubloon of an old life, fight the yellow fever!")
-      .ip("Haul me pants, ye jolly woodchuck!")
-      .registered(true)
-      .username("Plunders grow with fortune at the cloudy norman island!")
-      .build();
+  private static final AccessLogData ACCESS_LOG_DATA =
+      AccessLogData.builder()
+          .accessDate(Instant.now())
+          .hashedMac("Dubloon of an old life, fight the yellow fever!")
+          .ip("Haul me pants, ye jolly woodchuck!")
+          .registered(true)
+          .username("Plunders grow with fortune at the cloudy norman island!")
+          .build();
 
   private static ToolboxAccessLogClient newClient(final WireMockServer wireMockServer) {
     final URI hostUri = URI.create(wireMockServer.url(""));
@@ -46,7 +41,8 @@ class ToolboxAccessLogClientTest {
     server.stubFor(
         WireMock.post(ToolboxAccessLogClient.FETCH_ACCESS_LOG_PATH)
             .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY_PASSWORD.getApiKey()))
-            .withHeader(ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER, equalTo(API_KEY_PASSWORD.getPassword()))
+            .withHeader(
+                ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER, equalTo(API_KEY_PASSWORD.getPassword()))
             .withRequestBody(equalToJson(HttpClientTesting.toJson(HttpClientTesting.PAGING_PARAMS)))
             .willReturn(
                 WireMock.aResponse()
@@ -54,7 +50,8 @@ class ToolboxAccessLogClientTest {
                     .withBody(
                         HttpClientTesting.toJson(Collections.singletonList(ACCESS_LOG_DATA)))));
 
-    final List<AccessLogData> results = newClient(server).getAccessLog(HttpClientTesting.PAGING_PARAMS);
+    final List<AccessLogData> results =
+        newClient(server).getAccessLog(HttpClientTesting.PAGING_PARAMS);
 
     assertThat(results, IsCollectionWithSize.hasSize(1));
     assertThat(results.get(0), is(ACCESS_LOG_DATA));

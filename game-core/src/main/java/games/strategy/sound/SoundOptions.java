@@ -1,18 +1,14 @@
 package games.strategy.sound;
 
+import games.strategy.engine.framework.ui.PropertiesSelector;
 import java.awt.event.KeyEvent;
 import java.util.List;
-
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import games.strategy.engine.framework.ui.PropertiesSelector;
-
-/**
- * Sound option window framework.
- */
+/** Sound option window framework. */
 public final class SoundOptions {
   private SoundOptions(final JComponent parent) {
     final ClipPlayer clipPlayer = ClipPlayer.getInstance();
@@ -22,8 +18,9 @@ public final class SoundOptions {
     final String selectNone = "None";
 
     final List<SoundOptionCheckBox> properties = SoundPath.getSoundOptions();
-    final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties,
-        ok, selectAll, selectNone, cancel);
+    final Object pressedButton =
+        PropertiesSelector.getButton(
+            parent, "Sound Options", properties, ok, selectAll, selectNone, cancel);
     if (pressedButton == null || pressedButton.equals(cancel)) {
       return;
     }

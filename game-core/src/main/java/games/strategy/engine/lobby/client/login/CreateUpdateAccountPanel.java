@@ -2,6 +2,8 @@ package games.strategy.engine.lobby.client.login;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -9,7 +11,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.util.Arrays;
-
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -21,24 +22,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
 import org.triplea.java.StringUtils;
 import org.triplea.swing.SwingComponents;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.ui.Util;
-
-/**
- * The panel used to create a new lobby account or update an existing lobby account.
- */
+/** The panel used to create a new lobby account or update an existing lobby account. */
 public final class CreateUpdateAccountPanel extends JPanel {
   private static final long serialVersionUID = 2285956517232671122L;
 
-  /**
-   * Indicates how the user dismissed the dialog displaying the panel.
-   */
+  /** Indicates how the user dismissed the dialog displaying the panel. */
   public enum ReturnValue {
-    CANCEL, OK
+    CANCEL,
+    OK
   }
 
   private final String title;
@@ -60,17 +54,15 @@ public final class CreateUpdateAccountPanel extends JPanel {
   }
 
   /**
-   * Creates a new instance of the {@code CreateUpdateAccountPanel} class that is used to update the specified lobby
-   * account.
+   * Creates a new instance of the {@code CreateUpdateAccountPanel} class that is used to update the
+   * specified lobby account.
    *
    * @param user The lobby account to update.
    * @param lobbyLoginPreferences The user's lobby login preferences.
-   *
    * @return A new {@code CreateUpdateAccountPanel}.
    */
   public static CreateUpdateAccountPanel newUpdatePanel(
-      final DBUser user,
-      final LobbyLoginPreferences lobbyLoginPreferences) {
+      final DBUser user, final LobbyLoginPreferences lobbyLoginPreferences) {
     checkNotNull(user);
     checkNotNull(lobbyLoginPreferences);
 
@@ -83,7 +75,8 @@ public final class CreateUpdateAccountPanel extends JPanel {
   }
 
   /**
-   * Creates a new instance of the {@code CreateUpdateAccountPanel} class that is used to create a new lobby account.
+   * Creates a new instance of the {@code CreateUpdateAccountPanel} class that is used to create a
+   * new lobby account.
    *
    * @return A new {@code CreateUpdateAccountPanel}.
    */
@@ -100,26 +93,146 @@ public final class CreateUpdateAccountPanel extends JPanel {
     add(main, BorderLayout.CENTER);
     main.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     main.setLayout(new GridBagLayout());
-    main.add(new JLabel("Username:"), new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    main.add(userNameField, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, new Insets(0, 5, 0, 0), 0, 0));
-    main.add(new JLabel("Password:"), new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 0, 0, 0), 0, 0));
-    main.add(passwordField, new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, new Insets(5, 5, 0, 0), 0, 0));
-    main.add(new JLabel("Confirm Password:"), new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 0, 0, 0), 0, 0));
-    main.add(passwordConfirmField, new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, new Insets(5, 5, 0, 0), 0, 0));
-    main.add(new JLabel("Email:"), new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 0, 0, 0), 0, 0));
-    main.add(emailField, new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL, new Insets(5, 5, 0, 0), 0, 0));
-    main.add(new JLabel(), new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 0, 0, 0), 0, 0));
-    main.add(credentialsSavedCheckBox, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-        GridBagConstraints.NONE, new Insets(5, 5, 0, 0), 0, 0));
+    main.add(
+        new JLabel("Username:"),
+        new GridBagConstraints(
+            0,
+            0,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    main.add(
+        userNameField,
+        new GridBagConstraints(
+            1,
+            0,
+            1,
+            1,
+            1.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 5, 0, 0),
+            0,
+            0));
+    main.add(
+        new JLabel("Password:"),
+        new GridBagConstraints(
+            0,
+            1,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 0, 0, 0),
+            0,
+            0));
+    main.add(
+        passwordField,
+        new GridBagConstraints(
+            1,
+            1,
+            1,
+            1,
+            1.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(5, 5, 0, 0),
+            0,
+            0));
+    main.add(
+        new JLabel("Confirm Password:"),
+        new GridBagConstraints(
+            0,
+            2,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 0, 0, 0),
+            0,
+            0));
+    main.add(
+        passwordConfirmField,
+        new GridBagConstraints(
+            1,
+            2,
+            1,
+            1,
+            1.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(5, 5, 0, 0),
+            0,
+            0));
+    main.add(
+        new JLabel("Email:"),
+        new GridBagConstraints(
+            0,
+            3,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 0, 0, 0),
+            0,
+            0));
+    main.add(
+        emailField,
+        new GridBagConstraints(
+            1,
+            3,
+            1,
+            1,
+            1.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(5, 5, 0, 0),
+            0,
+            0));
+    main.add(
+        new JLabel(),
+        new GridBagConstraints(
+            0,
+            4,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 0, 0, 0),
+            0,
+            0));
+    main.add(
+        credentialsSavedCheckBox,
+        new GridBagConstraints(
+            1,
+            4,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 5, 0, 0),
+            0,
+            0));
 
     final JPanel buttons = new JPanel();
     add(buttons, BorderLayout.SOUTH);
@@ -144,13 +257,14 @@ public final class CreateUpdateAccountPanel extends JPanel {
 
   private void okPressed() {
     if (!Arrays.equals(passwordField.getPassword(), passwordConfirmField.getPassword())) {
-      JOptionPane.showMessageDialog(this, "The passwords do not match", "Passwords Do Not Match",
-          JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(
+          this, "The passwords do not match", "Passwords Do Not Match", JOptionPane.ERROR_MESSAGE);
       passwordField.setText("");
       passwordConfirmField.setText("");
       return;
     } else if (!StringUtils.isMailValid(emailField.getText())) {
-      JOptionPane.showMessageDialog(this, "You must enter a valid email", "No Email", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(
+          this, "You must enter a valid email", "No Email", JOptionPane.ERROR_MESSAGE);
       return;
     } else if (!DBUser.isValidUserName(userNameField.getText())) {
       JOptionPane.showMessageDialog(
@@ -160,10 +274,14 @@ public final class CreateUpdateAccountPanel extends JPanel {
           JOptionPane.ERROR_MESSAGE);
       return;
     } else if (passwordField.getPassword().length == 0) {
-      JOptionPane.showMessageDialog(this, "You must enter a password", "No Password", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(
+          this, "You must enter a password", "No Password", JOptionPane.ERROR_MESSAGE);
       return;
     } else if (passwordField.getPassword().length < 3) {
-      JOptionPane.showMessageDialog(this, "Passwords must be at least three characters long", "Invalid Password",
+      JOptionPane.showMessageDialog(
+          this,
+          "Passwords must be at least three characters long",
+          "Invalid Password",
           JOptionPane.ERROR_MESSAGE);
       return;
     }
@@ -176,9 +294,8 @@ public final class CreateUpdateAccountPanel extends JPanel {
    * Shows this panel in a modal dialog.
    *
    * @param parent The dialog parent window.
-   *
-   * @return {@link ReturnValue#OK} if the user confirmed that the lobby account should be created/updated; otherwise
-   *         {@link ReturnValue#CANCEL}.
+   * @return {@link ReturnValue#OK} if the user confirmed that the lobby account should be
+   *     created/updated; otherwise {@link ReturnValue#CANCEL}.
    */
   public ReturnValue show(final Window parent) {
     dialog = new JDialog(JOptionPane.getFrameForComponent(parent), title, true);
@@ -205,6 +322,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
   }
 
   public LobbyLoginPreferences getLobbyLoginPreferences() {
-    return new LobbyLoginPreferences(getUserName(), getPassword(), credentialsSavedCheckBox.isSelected(), false);
+    return new LobbyLoginPreferences(
+        getUserName(), getPassword(), credentialsSavedCheckBox.isSelected(), false);
   }
 }

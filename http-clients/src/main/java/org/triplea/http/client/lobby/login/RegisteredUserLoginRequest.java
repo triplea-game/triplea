@@ -1,7 +1,6 @@
 package org.triplea.http.client.lobby.login;
 
 import javax.annotation.Nonnull;
-
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,8 +10,6 @@ import lombok.Getter;
 @Builder
 @EqualsAndHashCode
 public class RegisteredUserLoginRequest {
-  @Nonnull
-  private final String name;
-  @Nonnull
-  private final String password;
+  @Nonnull private final String name;
+  @Nonnull private final String password;
 }

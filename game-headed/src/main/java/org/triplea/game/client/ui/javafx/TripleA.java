@@ -1,15 +1,7 @@
 package org.triplea.game.client.ui.javafx;
 
-import java.awt.GraphicsEnvironment;
-
-import javax.swing.SwingUtilities;
-
-import org.triplea.game.client.ui.javafx.screen.NavigationPane;
-import org.triplea.game.client.ui.javafx.screen.RootActionPane;
-import org.triplea.game.client.ui.javafx.util.FxmlManager;
-import org.triplea.game.client.ui.javafx.util.FxmlManager.LoadedNode;
-
 import games.strategy.engine.framework.GameRunner;
+import java.awt.GraphicsEnvironment;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -17,14 +9,17 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javax.swing.SwingUtilities;
+import org.triplea.game.client.ui.javafx.screen.NavigationPane;
+import org.triplea.game.client.ui.javafx.screen.RootActionPane;
+import org.triplea.game.client.ui.javafx.util.FxmlManager;
+import org.triplea.game.client.ui.javafx.util.FxmlManager.LoadedNode;
 
-/**
- * The Main-UI-Class for the JavaFX-UI.
- * It sets up the Stage accordingly.
- */
+/** The Main-UI-Class for the JavaFX-UI. It sets up the Stage accordingly. */
 public class TripleA extends Application {
   private static final String STYLESHEET_MAIN = "/org/triplea/game/client/ui/javafx/css/main.css";
-  private static final String FONT_PATH = "/org/triplea/game/client/ui/javafx/css/fonts/1942-report.ttf";
+  private static final String FONT_PATH =
+      "/org/triplea/game/client/ui/javafx/css/fonts/1942-report.ttf";
   private static final String ICON_LOCATION = "/org/triplea/swing/ta_icon.png";
 
   @Override
@@ -51,7 +46,8 @@ public class TripleA extends Application {
     }
   }
 
-  private void setupStage(final Stage stage, final Scene scene, final RootActionPane rootActionPane) {
+  private void setupStage(
+      final Stage stage, final Scene scene, final RootActionPane rootActionPane) {
     stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
     stage.setFullScreen(true);
 
@@ -60,9 +56,10 @@ public class TripleA extends Application {
     stage.getIcons().add(new Image(getClass().getResourceAsStream(ICON_LOCATION)));
     stage.setTitle("TripleA");
     stage.show();
-    stage.setOnCloseRequest(e -> {
-      e.consume();
-      rootActionPane.promptExit();
-    });
+    stage.setOnCloseRequest(
+        e -> {
+          e.consume();
+          rootActionPane.promptExit();
+        });
   }
 }

@@ -1,22 +1,18 @@
 package games.strategy.engine.framework.map.download;
 
+import com.google.common.base.MoreObjects;
+import games.strategy.engine.ClientFileSystemHelper;
 import java.io.File;
-
+import lombok.EqualsAndHashCode;
 import org.triplea.util.Version;
 
-import com.google.common.base.MoreObjects;
-
-import games.strategy.engine.ClientFileSystemHelper;
-import lombok.EqualsAndHashCode;
-
 /**
- * This class represents the essential data for downloading a TripleA map. Where to get it, where to install it,
- * version, etc..
+ * This class represents the essential data for downloading a TripleA map. Where to get it, where to
+ * install it, version, etc..
  */
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class DownloadFileDescription {
-  @EqualsAndHashCode.Include
-  private final String url;
+  @EqualsAndHashCode.Include private final String url;
   private final String description;
   private final String mapName;
   private final Version version;
@@ -25,7 +21,9 @@ public final class DownloadFileDescription {
   private final String img;
 
   enum DownloadType {
-    MAP, MAP_SKIN, MAP_TOOL
+    MAP,
+    MAP_SKIN,
+    MAP_TOOL
   }
 
   enum MapCategory {
@@ -49,13 +47,24 @@ public final class DownloadFileDescription {
     }
   }
 
-  DownloadFileDescription(final String url, final String description, final String mapName,
-      final Version version, final DownloadType downloadType, final MapCategory mapCategory) {
+  DownloadFileDescription(
+      final String url,
+      final String description,
+      final String mapName,
+      final Version version,
+      final DownloadType downloadType,
+      final MapCategory mapCategory) {
     this(url, description, mapName, version, downloadType, mapCategory, "");
   }
 
-  DownloadFileDescription(final String url, final String description, final String mapName,
-      final Version version, final DownloadType downloadType, final MapCategory mapCategory, final String img) {
+  DownloadFileDescription(
+      final String url,
+      final String description,
+      final String mapName,
+      final Version version,
+      final DownloadType downloadType,
+      final MapCategory mapCategory,
+      final String img) {
     this.url = url;
     this.description = description;
     this.mapName = mapName;
@@ -97,23 +106,28 @@ public final class DownloadFileDescription {
     return downloadType == DownloadType.MAP_TOOL;
   }
 
-  /**
-   * Returns the name of the zip file.
-   */
+  /** Returns the name of the zip file. */
   String getMapZipFileName() {
     return (url != null && url.contains("/")) ? url.substring(url.lastIndexOf('/') + 1) : "";
   }
 
   /** File reference for where to install the file. */
   File getInstallLocation() {
-    final String masterSuffix = getMapZipFileName().toLowerCase().endsWith("master.zip") ? "-master" : "";
-    final String normalizedMapName = getMapName().toLowerCase().replace(' ', '_') + masterSuffix + ".zip";
-    return new File(ClientFileSystemHelper.getUserMapsFolder() + File.separator + normalizedMapName);
+    final String masterSuffix =
+        getMapZipFileName().toLowerCase().endsWith("master.zip") ? "-master" : "";
+    final String normalizedMapName =
+        getMapName().toLowerCase().replace(' ', '_') + masterSuffix + ".zip";
+    return new File(
+        ClientFileSystemHelper.getUserMapsFolder() + File.separator + normalizedMapName);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).addValue(url).addValue(mapName).addValue(version).toString();
+    return MoreObjects.toStringHelper(this)
+        .addValue(url)
+        .addValue(mapName)
+        .addValue(version)
+        .toString();
   }
 
   String toHtmlString() {

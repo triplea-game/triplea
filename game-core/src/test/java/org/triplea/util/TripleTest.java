@@ -1,9 +1,8 @@
 package org.triplea.util;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import nl.jqno.equalsverifier.EqualsVerifier;
 
 final class TripleTest {
   @Nested
