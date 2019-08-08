@@ -303,7 +303,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       objectStreamFactory.setData(data);
       localPlayerTypes.clear();
     }
-    notifyChanellPlayersChanged();
+    notifyChannelPlayersChanged();
     remoteModelListener.playerListChanged();
   }
 
@@ -409,7 +409,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
       }
       playersToNodeListing.put(playerName, take ? from.getName() : null);
     }
-    notifyChanellPlayersChanged();
+    notifyChannelPlayersChanged();
     remoteModelListener.playersTakenChanged();
   }
 
@@ -430,7 +430,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
         }
       }
     }
-    notifyChanellPlayersChanged();
+    notifyChannelPlayersChanged();
     remoteModelListener.playersTakenChanged();
   }
 
@@ -440,7 +440,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     }
   }
 
-  private void notifyChanellPlayersChanged() {
+  private void notifyChannelPlayersChanged() {
     Optional.ofNullable(messengers)
         .ifPresent(messenger -> {
           final IClientChannel channel =
@@ -590,7 +590,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
     serverMessenger.setAcceptNewConnections(true);
     final IClientChannel channel =
         (IClientChannel) messengers.getChannelBroadcaster(IClientChannel.CHANNEL_NAME);
-    notifyChanellPlayersChanged();
+    notifyChannelPlayersChanged();
     channel.gameReset();
   }
 
