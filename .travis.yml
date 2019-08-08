@@ -13,7 +13,9 @@ addons:
       - python3
       - python3-yaml
 install:
- - echo "create database lobby" | psql -h localhost -U lobby_user -d postgres
+ - echo "create database lobby_db" | psql -h localhost -U postgres -d postgres
+ - echo "create user lobby_user with password 'postgres'" | psql -h localhost -U postgres -d postgres
+ - echo "alter database lobby_db owner to lobby_user" | psql -h localhost -U postgres -d postgres
  - ./.travis/setup_gradle
  - ./gradlew flywayMigrate
  - ./gradlew shadowJar
