@@ -2241,7 +2241,7 @@ public final class Matches {
   }
 
   static Predicate<Territory> //
-  terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(
+      terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(
       final PlayerId attacker) {
     return t -> {
       if (t.getOwner().equals(attacker)) {

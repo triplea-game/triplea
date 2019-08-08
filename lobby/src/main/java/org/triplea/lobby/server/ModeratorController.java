@@ -240,7 +240,13 @@ final class ModeratorController implements IModeratorController {
             (response == null ? "Successful" : "Failed (" + response + ")")
                 + " Remote Boot of "
                 + playerNameToBeBooted
-                + " In Headless HostBot. Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
+                + " In Headless HostBot. "
+                + "Host: %s, "
+                + "IP: %s, "
+                + "Mac: %s, "
+                + "Mod Username: %s, "
+                + "Mod IP: %s, "
+                + "Mod Mac: %s",
             node.getName(),
             node.getAddress().getHostAddress(),
             mac,
@@ -328,7 +334,13 @@ final class ModeratorController implements IModeratorController {
     log.info(
         String.format(
             (response == null ? "Successful" : "Failed (" + response + ")")
-                + " Remote Stopgame of Headless HostBot. Host: %s IP: %s Mac: %s Mod Username: %s Mod IP: %s Mod Mac: %s",
+                + " Remote Stop game of Headless HostBot. "
+                + "Host: %s, "
+                + "IP: %s, "
+                + "Mac: %s, "
+                + "Mod Username: %s, "
+                + "Mod IP: %s, "
+                + "Mod Mac: %s",
             node.getName(),
             node.getAddress().getHostAddress(),
             mac,

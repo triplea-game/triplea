@@ -425,8 +425,7 @@ public class BattleTracker implements Serializable {
         presentFromStartTilEnd.stream().anyMatch(Matches.unitIsNotAir());
     final boolean scramblingEnabled = Properties.getScrambleRulesInEffect(data);
     final var passableLandAndNotRestricted =
-        Matches.terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(
-                id)
+        Matches.terrIsOwnedByPlayerRelationshipCanTakeOwnedTerrAndPassableAndNotWater(id)
             .or(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(id, data));
     final Predicate<Territory> conquerable =
         Matches.territoryIsEmptyOfCombatUnits(data, id).and(passableLandAndNotRestricted);
