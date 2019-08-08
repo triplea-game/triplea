@@ -47,9 +47,6 @@ public final class PlayerNameAssigner {
     if (currentName.length() > 50) {
       currentName = currentName.substring(0, 50);
     }
-    if (currentName.length() < 2) {
-      currentName = "aa" + currentName;
-    }
     final String originalName = currentName;
     for (int i = 1; isNameTaken(currentName, loggedInNodes); i++) {
       currentName = originalName + " (" + i + ")";
