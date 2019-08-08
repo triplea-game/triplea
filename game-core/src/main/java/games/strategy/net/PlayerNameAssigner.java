@@ -49,16 +49,9 @@ public final class PlayerNameAssigner {
     if (currentName.length() < 2) {
       currentName = "aa" + currentName;
     }
-    if (isNameTaken(currentName, loggedInNodes)) {
-      int i = 1;
-      while (true) {
-        final String newName = currentName + " (" + i + ")";
-        if (!isNameTaken(newName, loggedInNodes)) {
-          currentName = newName;
-          break;
-        }
-        i++;
-      }
+    final String originalName = currentName;
+    for (int i = 1; isNameTaken(currentName, loggedInNodes); i++) {
+      currentName = originalName + " (" + i + ")";
     }
     return currentName;
   }
