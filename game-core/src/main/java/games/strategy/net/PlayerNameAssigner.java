@@ -69,7 +69,6 @@ public final class PlayerNameAssigner {
   private static boolean isNameTaken(final String nodeName, final Collection<INode> nodes) {
     return nodes
         .stream()
-        .sorted()
         .map(INode::getName)
         .anyMatch(nodeName::equalsIgnoreCase);
   }
