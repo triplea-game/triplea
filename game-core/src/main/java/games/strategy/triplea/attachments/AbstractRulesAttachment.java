@@ -256,27 +256,26 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
     switch (name) {
       case "original":
       case "enemy":
-        { // get all originally owned territories
-          final Set<Territory> originalTerrs = new HashSet<>();
-          for (final PlayerId player : players) {
-            originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
-          }
-          setTerritoryCount(String.valueOf(originalTerrs.size()));
-          return originalTerrs;
+        // get all originally owned territories
+        final Set<Territory> originalTerrs = new HashSet<>();
+        for (final PlayerId player : players) {
+          originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
         }
+        setTerritoryCount(String.valueOf(originalTerrs.size()));
+        return originalTerrs;
       case "originalNoWater":
-        { // get all originally owned territories, but no water or impassables
-          final Set<Territory> originalTerrs = new HashSet<>();
-          for (final PlayerId player : players) {
-            originalTerrs.addAll(
-                CollectionUtils.getMatches(
-                    OriginalOwnerTracker.getOriginallyOwned(data, player),
-                    // TODO: does this account for occupiedTerrOf???
-                    Matches.territoryIsNotImpassableToLandUnits(player, data)));
-          }
-          setTerritoryCount(String.valueOf(originalTerrs.size()));
-          return originalTerrs;
+        // get all originally owned territories, but no water or impassables
+        final Set<Territory> originalTerritories = new HashSet<>();
+        for (final PlayerId player : players) {
+          originalTerritories.addAll(
+              CollectionUtils.getMatches(
+                  OriginalOwnerTracker.getOriginallyOwned(data, player),
+                  // TODO: does this account for occupiedTerrOf???
+                  Matches.territoryIsNotImpassableToLandUnits(player, data)));
         }
+        setTerritoryCount(String.valueOf(originalTerritories.size()));
+        return originalTerritories;
+
       case "controlled":
         final Set<Territory> ownedTerrs = new HashSet<>();
         for (final PlayerId player : players) {
@@ -295,21 +294,17 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
         setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
         return ownedTerrsNoWater;
       case "all":
-        {
-          final Set<Territory> allTerrs = new HashSet<>();
-          for (final PlayerId player : players) {
-            allTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
-            allTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
-          }
-          setTerritoryCount(String.valueOf(allTerrs.size()));
-          return allTerrs;
+        final Set<Territory> allTerrs = new HashSet<>();
+        for (final PlayerId player : players) {
+          allTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
+          allTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
         }
+        setTerritoryCount(String.valueOf(allTerrs.size()));
+        return allTerrs;
       case "map":
-        {
-          final Set<Territory> allTerrs = new HashSet<>(gameMap.getTerritories());
-          setTerritoryCount(String.valueOf(allTerrs.size()));
-          return allTerrs;
-        }
+        final Set<Territory> allTerritories = new HashSet<>(gameMap.getTerritories());
+        setTerritoryCount(String.valueOf(allTerritories.size()));
+        return allTerritories;
       default: // The list just contained 1 territory
         final Territory t = data.getMap().getTerritory(name);
         if (t == null) {

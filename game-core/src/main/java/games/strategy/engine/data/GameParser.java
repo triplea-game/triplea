@@ -940,20 +940,16 @@ public final class GameParser {
         editableProperty = new ComboProperty<>(name, null, defaultValue, values);
         break;
       case "number":
-        {
-          final int max = Integer.valueOf(child.getAttribute("max"));
-          final int min = Integer.valueOf(child.getAttribute("min"));
-          final int def = Integer.valueOf(defaultValue);
-          editableProperty = new NumberProperty(name, null, max, min, def);
-          break;
-        }
+        final int max = Integer.valueOf(child.getAttribute("max"));
+        final int min = Integer.valueOf(child.getAttribute("min"));
+        final int def = Integer.valueOf(defaultValue);
+        editableProperty = new NumberProperty(name, null, max, min, def);
+        break;
       case "color":
-        {
-          // Parse the value as a hexadecimal number
-          final int def = Integer.valueOf(defaultValue, 16);
-          editableProperty = new ColorProperty(name, null, def);
-          break;
-        }
+        // Parse the value as a hexadecimal number
+        final int defaultColor = Integer.valueOf(defaultValue, 16);
+        editableProperty = new ColorProperty(name, null, defaultColor);
+        break;
       case "string":
         editableProperty = new StringProperty(name, null, defaultValue);
         break;
