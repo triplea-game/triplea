@@ -8,6 +8,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
 import org.triplea.java.Interruptibles;
+import org.triplea.swing.DialogBuilder;
 
 import games.strategy.net.IConnectionLogin;
 import games.strategy.net.MessageHeader;
@@ -114,6 +115,21 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           return Action.NONE;
         case READ_NAMES:
           final String[] strings = ((String[]) serializable);
+          final String assignedName = strings[0];
+          // If the assigned name does not start with the desired local name,
+          // it means we are already connected and have been given our existing logged in name.
+          // We warn the user here to let them know explicitly so it does not look like
+          // a silent error.
+          if (!assignedName.startsWith(localName)) {
+            new Thread(() -> DialogBuilder.builder()
+                .parent(null)
+                .title("Already Logged In")
+                .infoMessage(
+                    "<html>Already logged in with another name, cannot use a different name.<br/>"
+                        + "Logging in as: " + assignedName)
+                .showDialog())
+                    .start();
+          }
           localName = strings[0];
           serverName = strings[1];
           step = Step.READ_ADDRESS;

@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
+import games.strategy.net.PlayerNameAssigner;
 import games.strategy.net.ServerMessenger;
 import lombok.extern.java.Log;
 
@@ -83,9 +84,11 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           } else {
             send(null);
           }
-          // get a unique name
-          remoteName = serverMessenger.getUniqueName(remoteName);
-          // send the node its name and our name
+          synchronized (serverMessenger.newNodeLock) {
+            remoteName = PlayerNameAssigner.assignName(
+                remoteName, channel.socket().getInetAddress(), serverMessenger.getNodes());
+          }
+          // send the node its assigned name and our name
           send(new String[] {remoteName, serverMessenger.getLocalNode().getName()});
           // send the node its and our address as we see it
           send(new InetSocketAddress[] {(InetSocketAddress) channel.socket().getRemoteSocketAddress(),

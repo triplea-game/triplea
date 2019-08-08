@@ -4,6 +4,7 @@ import java.awt.Component;
 
 import javax.swing.JOptionPane;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 import lombok.AccessLevel;
@@ -15,7 +16,17 @@ import lombok.RequiredArgsConstructor;
  * yes/no confirmation dialog will be shown to the user, if yes is clicked the confirm action will be executed.
  */
 public final class DialogBuilder {
+  private static boolean uiEnabled = true;
+
   private DialogBuilder() {}
+
+  /**
+   * Method to turn off UI notifications for cases when we are running tests.
+   */
+  @VisibleForTesting
+  public static void disableUi() {
+    uiEnabled = false;
+  }
 
   public static WithParentBuilder builder() {
     return new WithParentBuilder();
@@ -84,7 +95,9 @@ public final class DialogBuilder {
     private final WithMessageBuilder withMessageBuilder;
 
     public void showDialog() {
-      showMessage(withMessageBuilder, JOptionPane.INFORMATION_MESSAGE);
+      if (uiEnabled) {
+        showMessage(withMessageBuilder, JOptionPane.INFORMATION_MESSAGE);
+      }
     }
   }
 
@@ -109,7 +122,9 @@ public final class DialogBuilder {
     private final WithMessageBuilder withMessageBuilder;
 
     public void showDialog() {
-      showMessage(withMessageBuilder, JOptionPane.ERROR_MESSAGE);
+      if (uiEnabled) {
+        showMessage(withMessageBuilder, JOptionPane.ERROR_MESSAGE);
+      }
     }
   }
 
@@ -140,20 +155,22 @@ public final class DialogBuilder {
      * 'no' simply closes the dialog.
      */
     public void showDialog() {
-      SwingAction.invokeNowOrLater(
-          () -> {
-            final int result =
-                JOptionPane.showConfirmDialog(
-                    withConfirmActionBuilder.withMessageBuilder.withTitleBuilder.withParentBuilder.parent,
-                    withConfirmActionBuilder.withMessageBuilder.message,
-                    withConfirmActionBuilder.withMessageBuilder.withTitleBuilder.title,
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+      if (uiEnabled) {
+        SwingAction.invokeNowOrLater(
+            () -> {
+              final int result =
+                  JOptionPane.showConfirmDialog(
+                      withConfirmActionBuilder.withMessageBuilder.withTitleBuilder.withParentBuilder.parent,
+                      withConfirmActionBuilder.withMessageBuilder.message,
+                      withConfirmActionBuilder.withMessageBuilder.withTitleBuilder.title,
+                      JOptionPane.YES_NO_OPTION,
+                      JOptionPane.QUESTION_MESSAGE);
 
-            if (result == JOptionPane.YES_OPTION) {
-              withConfirmActionBuilder.confirmAction.run();
-            }
-          });
+              if (result == JOptionPane.YES_OPTION) {
+                withConfirmActionBuilder.confirmAction.run();
+              }
+            });
+      }
     }
   }
 }
