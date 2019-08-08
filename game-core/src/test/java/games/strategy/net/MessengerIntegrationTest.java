@@ -17,6 +17,7 @@ import javax.annotation.concurrent.GuardedBy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.triplea.swing.DialogBuilder;
 import org.triplea.test.common.Integration;
 
 @Integration
@@ -30,6 +31,7 @@ class MessengerIntegrationTest {
 
   @BeforeEach
   void setUp() throws Exception {
+    DialogBuilder.disableUi();
     serverMessenger = new TestServerMessenger();
     serverMessenger.setAcceptNewConnections(true);
     serverMessenger.addMessageListener(serverMessageListener);
