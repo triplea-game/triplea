@@ -32,8 +32,8 @@ import games.strategy.engine.chat.Chat;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.ArgParser;
-import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
@@ -259,7 +259,7 @@ public class HeadlessGameServer {
         new Thread(() -> {
           log.info("Remote Stop Game Initiated.");
           try {
-            serverGame.saveGame(AutoSaveFileUtils.getHeadlessAutoSaveFile());
+            serverGame.saveGame(new HeadlessAutoSaveFileUtils().getHeadlessAutoSaveFile());
           } catch (final Exception e) {
             log.log(Level.SEVERE, "Failed to save game", e);
           }
@@ -439,7 +439,7 @@ public class HeadlessGameServer {
 
         final boolean launched = setupPanelModel.getPanel().getLauncher()
             .map(launcher -> {
-              new Thread(() -> launcher.launch(null)).start();
+              new Thread(launcher::launch).start();
               return true;
             }).orElse(false);
         setupPanelModel.getPanel().postStartGame();

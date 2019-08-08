@@ -58,7 +58,7 @@ public class SetupPanelModel implements ServerSetupModel {
    * Starts the game server and displays the game start screen afterwards, awaiting remote game clients.
    */
   public void showServer() {
-    new ServerModel(gameSelectorModel, this, ui).createServerMessenger();
+    new ServerModel(gameSelectorModel, this, ui, new HeadedLaunchAction(ui)).createServerMessenger();
   }
 
   @Override
@@ -67,8 +67,8 @@ public class SetupPanelModel implements ServerSetupModel {
       setGameTypePanel(new ServerSetupPanel(serverModel, gameSelectorModel));
       // for whatever reason, the server window is showing very very small, causing the nation info to be cut and
       // requiring scroll bars
-      final int x = (ui.getPreferredSize().width > 800 ? ui.getPreferredSize().width : 800);
-      final int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
+      final int x = Math.max(ui.getPreferredSize().width, 800);
+      final int y = Math.max(ui.getPreferredSize().height, 660);
       ui.setPreferredSize(new Dimension(x, y));
       ui.setSize(new Dimension(x, y));
     });
@@ -80,7 +80,7 @@ public class SetupPanelModel implements ServerSetupModel {
    */
   public void showClient() {
     Preconditions.checkState(!SwingUtilities.isEventDispatchThread());
-    final ClientModel model = new ClientModel(gameSelectorModel, this);
+    final ClientModel model = new ClientModel(gameSelectorModel, this, new HeadedLaunchAction(ui));
     if (model.createClientMessenger(ui)) {
       SwingUtilities.invokeLater(() -> setGameTypePanel(new ClientSetupPanel(model)));
     } else {

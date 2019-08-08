@@ -39,7 +39,7 @@ public class MainPanelBuilder {
                 JOptionPane.getFrameForComponent(uiPanel).setVisible(false);
                 new Thread(() -> {
                   try {
-                    launcher.launch(uiPanel);
+                    launcher.launch();
                   } finally {
                     gameLoadingWindow.doneWait();
                   }

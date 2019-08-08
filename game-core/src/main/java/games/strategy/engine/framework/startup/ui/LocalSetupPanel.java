@@ -10,8 +10,9 @@ import org.triplea.game.startup.SetupModel;
 import org.triplea.swing.SwingAction;
 
 import games.strategy.engine.framework.startup.launcher.ILauncher;
-import games.strategy.engine.framework.startup.launcher.LauncherFactory;
+import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
 
 /** Setup panel when hosting a local game. */
 public class LocalSetupPanel extends SetupPanel implements Observer {
@@ -61,6 +62,6 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public Optional<ILauncher> getLauncher() {
-    return Optional.of(LauncherFactory.getLocalLaunchers(gameSelectorModel, playerTypes));
+    return Optional.of(LocalLauncher.create(gameSelectorModel, playerTypes, this, new HeadedLaunchAction(this)));
   }
 }

@@ -11,6 +11,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.IRemote;
@@ -33,7 +34,7 @@ public interface IGameLoader extends Serializable {
   /**
    * The game is about to start.
    */
-  void startGame(IGame game, Set<IGamePlayer> players, boolean headless, @Nullable Chat chat);
+  void startGame(IGame game, Set<IGamePlayer> players, LaunchAction launchAction, @Nullable Chat chat);
 
   /**
    * Get the type of the display.

@@ -31,6 +31,7 @@ import games.strategy.engine.delegate.DelegateExecutionManager;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
+import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.history.DelegateHistoryWriter;
@@ -71,7 +72,7 @@ public class ServerGame extends AbstractGame {
   private final DelegateExecutionManager delegateExecutionManager = new DelegateExecutionManager();
   private InGameLobbyWatcherWrapper inGameLobbyWatcher;
   private boolean needToInitialize = true;
-  private final boolean headless;
+  private final LaunchAction launchAction;
   /**
    * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from
    * returning.
@@ -87,9 +88,9 @@ public class ServerGame extends AbstractGame {
       final Set<IGamePlayer> localPlayers,
       final Map<String, INode> remotePlayerMapping,
       final Messengers messengers,
-      final boolean headless) {
+      final LaunchAction launchAction) {
     super(data, localPlayers, remotePlayerMapping, messengers);
-    this.headless = headless;
+    this.launchAction = launchAction;
     gameModifiedChannel = new IGameModifiedChannel() {
       @Override
       public void gameDataChanged(final Change change) {
@@ -352,7 +353,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void autoSaveBefore(final IDelegate delegate) {
-    saveGame(AutoSaveFileUtils.getBeforeStepAutoSaveFile(delegate.getName(), headless));
+    saveGame(launchAction.getAutoSaveFileUtils().getBeforeStepAutoSaveFile(delegate.getName()));
   }
 
   @Override
@@ -432,8 +433,7 @@ public class ServerGame extends AbstractGame {
       final String stepName = currentStep.getName();
       // If we are headless we don't want to include the nation in the save game because that would make it too
       // difficult to load later.
-      autoSaveAfter(
-          headless ? (stepName.endsWith("NonCombatMove") ? "NonCombatMove" : "CombatMove") : stepName, headless);
+      autoSaveAfter(stepName);
     }
     endStep();
     if (isGameOver) {
@@ -442,22 +442,23 @@ public class ServerGame extends AbstractGame {
     if (gameData.getSequence().next()) {
       gameData.getHistory().getHistoryWriter().startNextRound(gameData.getSequence().getRound());
       saveGame(gameData.getSequence().getRound() % 2 == 0
-          ? AutoSaveFileUtils.getEvenRoundAutoSaveFile(headless)
-          : AutoSaveFileUtils.getOddRoundAutoSaveFile(headless));
+          ? launchAction.getAutoSaveFileUtils().getEvenRoundAutoSaveFile()
+          : launchAction.getAutoSaveFileUtils().getOddRoundAutoSaveFile());
     }
     if (autoSaveThisDelegate && !currentStep.getName().endsWith("Move")) {
-      autoSaveAfter(currentDelegate, headless);
+      autoSaveAfter(currentDelegate);
     }
   }
 
-  private void autoSaveAfter(final String stepName, final boolean headless) {
-    saveGame(AutoSaveFileUtils.getAfterStepAutoSaveFile(stepName, headless));
+  private void autoSaveAfter(final String stepName) {
+    final var saveUtils = launchAction.getAutoSaveFileUtils();
+    saveGame(saveUtils.getAfterStepAutoSaveFile(saveUtils.getAutoSaveStepName(stepName)));
   }
 
-  private void autoSaveAfter(final IDelegate delegate, final boolean headless) {
+  private void autoSaveAfter(final IDelegate delegate) {
     final String typeName = delegate.getClass().getTypeName();
     final String stepName = typeName.substring(typeName.lastIndexOf('.') + 1).replaceFirst("Delegate$", "");
-    saveGame(AutoSaveFileUtils.getAfterStepAutoSaveFile(stepName, headless));
+    saveGame(launchAction.getAutoSaveFileUtils().getAfterStepAutoSaveFile(stepName));
   }
 
   private void endStep() {
