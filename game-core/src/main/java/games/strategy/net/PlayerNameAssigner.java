@@ -2,6 +2,7 @@ package games.strategy.net;
 
 import java.net.InetAddress;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -60,9 +61,8 @@ public final class PlayerNameAssigner {
       final InetAddress socketAddress, final Collection<INode> nodes) {
     return nodes
         .stream()
-        .sorted()
         .filter(node -> node.getAddress().equals(socketAddress))
-        .findFirst()
+        .min(Comparator.naturalOrder())
         .map(INode::getName);
   }
 
