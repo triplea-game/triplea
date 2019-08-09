@@ -499,11 +499,12 @@ public class TileManager {
       final Rectangle bounds,
       final Graphics2D graphics,
       final boolean drawOutline) {
-    final List<IDrawable> drawables = getTiles(bounds).stream()
-        .map(Tile::getDrawables)
-        .flatMap(Collection::stream)
-        .sorted()
-        .collect(Collectors.toList());
+    final List<IDrawable> drawables =
+        getTiles(bounds).stream()
+            .map(Tile::getDrawables)
+            .flatMap(Collection::stream)
+            .sorted()
+            .collect(Collectors.toList());
     for (final IDrawable drawer : drawables) {
       if (drawer.getLevel().ordinal() >= IDrawable.DrawLevel.UNITS_LEVEL.ordinal()) {
         break;
