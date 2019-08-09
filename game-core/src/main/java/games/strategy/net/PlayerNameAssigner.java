@@ -1,7 +1,7 @@
 package games.strategy.net;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import games.strategy.engine.lobby.PlayerNameValidation;
 import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Comparator;
@@ -10,13 +10,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.triplea.lobby.common.LobbyConstants;
 
 /** Utility class that will assign a name to a newly logging in player. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PlayerNameAssigner {
-
-  /** Name string returned in the case of a hacked client sending us an invalid/unexpected name. */
-  @VisibleForTesting static final String DUMMY_NAME = "aa";
 
   /**
    * Returns a node name, based on the specified node name, that is unique across all nodes. The
@@ -34,11 +32,9 @@ public final class PlayerNameAssigner {
       final Collection<INode> loggedInNodes) {
     Preconditions.checkNotNull(ipAddress);
     Preconditions.checkNotNull(loggedInNodes);
+    Preconditions.checkArgument(PlayerNameValidation.serverSideValidate(desiredName) == null);
 
-    String currentName =
-        (desiredName == null || desiredName.length() < 3)
-            ? DUMMY_NAME
-            : findLoggedInName(ipAddress, loggedInNodes).orElse(desiredName);
+    String currentName = findLoggedInName(ipAddress, loggedInNodes).orElse(desiredName);
     if (currentName.length() > 50) {
       currentName = currentName.substring(0, 50);
     }
@@ -54,8 +50,12 @@ public final class PlayerNameAssigner {
   private static Optional<String> findLoggedInName(
       final InetAddress socketAddress, final Collection<INode> nodes) {
     return nodes.stream()
-        .filter(node -> node.getAddress().equals(socketAddress))
+        .filter(node -> node.getAddress().equals(socketAddress) && !isBotName(node.getName()))
         .min(Comparator.naturalOrder())
         .map(INode::getName);
+  }
+
+  private static boolean isBotName(final String desiredName) {
+    return desiredName.startsWith("Bot") && desiredName.endsWith(LobbyConstants.LOBBY_WATCHER_NAME);
   }
 }

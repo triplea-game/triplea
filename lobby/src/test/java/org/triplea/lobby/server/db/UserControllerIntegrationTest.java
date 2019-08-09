@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.UUID;
@@ -37,25 +36,25 @@ final class UserControllerIntegrationTest {
 
   @Test
   void testGet() {
-    final DBUser user = newUserWithMd5CryptHash();
-    assertEquals(user, controller.getUserByName(user.getName()));
+    final String user = newUserWithMd5CryptHash();
+    assertEquals(generateEmailAddress(user), controller.getUserEmailByName(user));
   }
 
   @Test
   void testDoesUserExist() {
-    assertTrue(controller.doesUserExist(newUserWithMd5CryptHash().getName()));
-    assertTrue(controller.doesUserExist(newUserWithBCryptHash().getName()));
+    assertTrue(controller.doesUserExist(newUserWithMd5CryptHash()));
+    assertTrue(controller.doesUserExist(newUserWithBCryptHash()));
   }
 
   @Test
   void testCreateDupe() {
-    final DBUser user = newUserWithMd5CryptHash();
+    final String user = newUserWithMd5CryptHash();
     assertThrows(
         Exception.class,
         () ->
             controller.createUser(
-                user.getName(),
-                user.getEmail(),
+                user,
+                generateEmailAddress(user),
                 new HashedPassword(md5Crypt(TestUserUtils.newUniqueTimestamp()))),
         "Should not be allowed to create a dupe user");
   }
@@ -63,26 +62,24 @@ final class UserControllerIntegrationTest {
   @Test
   void testLogin() {
     final String password = md5Crypt(TestUserUtils.newUniqueTimestamp());
-    final DBUser user = newUserWithHash(password, Function.identity());
+    final String user = newUserWithHash(password, Function.identity());
     controller.updateUser(
-        user.getName(), user.getEmail(), new HashedPassword(bcrypt(obfuscate(password))));
-    assertTrue(controller.login(user.getName(), new HashedPassword(password)));
-    assertTrue(controller.login(user.getName(), new HashedPassword(obfuscate(password))));
+        user, generateEmailAddress(user), new HashedPassword(bcrypt(obfuscate(password))));
+    assertTrue(controller.login(user, new HashedPassword(password)));
+    assertTrue(controller.login(user, new HashedPassword(obfuscate(password))));
   }
 
   @Test
   void testUpdate() throws Exception {
-    final DBUser user = newUserWithMd5CryptHash();
-    assertTrue(controller.doesUserExist(user.getName()));
+    final String user = newUserWithMd5CryptHash();
+    assertTrue(controller.doesUserExist(user));
     final String password2 = md5Crypt("foo");
     final String email2 = "foo@foo.foo";
     controller.updateUser(
-        user.getName(),
-        email2,
-        new HashedPassword(bcrypt(obfuscate(TestUserUtils.newUniqueTimestamp()))));
-    controller.updateUser(user.getName(), email2, new HashedPassword(password2));
+        user, email2, new HashedPassword(bcrypt(obfuscate(TestUserUtils.newUniqueTimestamp()))));
+    controller.updateUser(user, email2, new HashedPassword(password2));
     try (Connection con = TestDatabase.newConnection()) {
-      final String sql = " select * from lobby_user where username = '" + user.getName() + "'";
+      final String sql = " select * from lobby_user where username = '" + user + "'";
       final ResultSet rs = con.createStatement().executeQuery(sql);
       assertTrue(rs.next());
       assertEquals(email2, rs.getString("email"));
@@ -91,24 +88,26 @@ final class UserControllerIntegrationTest {
     }
   }
 
-  private DBUser newUserWithMd5CryptHash() {
+  private String newUserWithMd5CryptHash() {
     return newUserWithHash(
         TestUserUtils.newUniqueTimestamp(), UserControllerIntegrationTest::md5Crypt);
   }
 
-  private DBUser newUserWithBCryptHash() {
+  private String newUserWithBCryptHash() {
     return newUserWithHash(
         TestUserUtils.newUniqueTimestamp(), UserControllerIntegrationTest::bcrypt);
   }
 
-  private DBUser newUserWithHash(
+  private String newUserWithHash(
       final @Nullable String password, final Function<String, String> hashingMethod) {
     final String name = UUID.randomUUID().toString().substring(0, 20);
-    final DBUser user =
-        new DBUser(new DBUser.UserName(name), new DBUser.UserEmail(name + "@none.none"));
     controller.createUser(
-        user.getName(), user.getEmail(), new HashedPassword(hashingMethod.apply(password)));
-    return user;
+        name, generateEmailAddress(name), new HashedPassword(hashingMethod.apply(password)));
+    return name;
+  }
+
+  private String generateEmailAddress(final String name) {
+    return name + "@none.none";
   }
 
   private int getUserCount() throws Exception {

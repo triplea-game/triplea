@@ -1,9 +1,11 @@
 package org.triplea.lobby.server;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.engine.lobby.PlayerEmailValidation;
+import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.INode;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.mindrot.jbcrypt.BCrypt;
@@ -33,10 +35,12 @@ final class UserManager implements IUserManager {
       return "Sorry, but I can't let you do that";
     }
 
-    final DBUser user =
-        new DBUser(new DBUser.UserName(userName), new DBUser.UserEmail(emailAddress));
-    if (!user.isValid()) {
-      return user.getValidationErrorMessage();
+    final String validationError =
+        Optional.ofNullable(PlayerNameValidation.validate(userName))
+            .orElseGet(() -> PlayerEmailValidation.validate(emailAddress));
+
+    if (validationError != null) {
+      return validationError;
     }
     final HashedPassword password = new HashedPassword(hashedPassword);
 
@@ -44,8 +48,8 @@ final class UserManager implements IUserManager {
       database
           .getUserDao()
           .updateUser(
-              user.getName(),
-              user.getEmail(),
+              userName,
+              emailAddress,
               password.isHashedWithSalt()
                   ? password
                   : new HashedPassword(BCrypt.hashpw(hashedPassword, BCrypt.gensalt())));
@@ -56,13 +60,13 @@ final class UserManager implements IUserManager {
   }
 
   @Override
-  public DBUser getUserInfo(final String userName) {
+  public String getUserEmail(final String userName) {
     final INode remote = MessageContext.getSender();
     if (!userName.equals(remote.getName())) {
       log.severe(
           "Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);
       throw new IllegalStateException("Sorry, but I can't let you do that");
     }
-    return database.getUserDao().getUserByName(userName);
+    return database.getUserDao().getUserEmailByName(userName);
   }
 }

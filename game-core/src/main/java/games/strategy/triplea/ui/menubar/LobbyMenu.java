@@ -2,12 +2,12 @@ package games.strategy.triplea.ui.menubar;
 
 import com.google.common.base.Strings;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.client.ui.TimespanDialog;
 import games.strategy.engine.lobby.moderator.toolbox.ShowToolboxController;
-import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.net.INode;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
@@ -177,7 +177,7 @@ public final class LobbyMenu extends JMenuBar {
   }
 
   private boolean validateUsername(final @Nullable String username) {
-    if (!DBUser.isValidUserName(username)) {
+    if (!PlayerNameValidation.isValid(username)) {
       showErrorDialog("The username you entered is invalid.", "Invalid Username");
       return false;
     }
@@ -303,24 +303,22 @@ public final class LobbyMenu extends JMenuBar {
     final IUserManager manager =
         (IUserManager)
             lobbyFrame.getLobbyClient().getMessengers().getRemote(IUserManager.REMOTE_NAME);
-    final DBUser user =
-        manager.getUserInfo(lobbyFrame.getLobbyClient().getMessengers().getLocalNode().getName());
-    if (user == null) {
+    final String userName = lobbyFrame.getLobbyClient().getMessengers().getLocalNode().getName();
+    final String email = manager.getUserEmail(userName);
+    if (email == null) {
       showErrorDialog("No user info found", "Error");
       return;
     }
 
     final CreateUpdateAccountPanel panel =
-        CreateUpdateAccountPanel.newUpdatePanel(user, LobbyLoginPreferences.load());
+        CreateUpdateAccountPanel.newUpdatePanel(userName, email, LobbyLoginPreferences.load());
     final CreateUpdateAccountPanel.ReturnValue returnValue = panel.show(lobbyFrame);
     if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
     final String error =
         manager.updateUser(
-            panel.getUserName(),
-            panel.getEmail(),
-            RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()));
+            userName, email, RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()));
     if (error != null) {
       showErrorDialog(error, "Error");
       return;

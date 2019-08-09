@@ -6,17 +6,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.login.UserType;
 
 /** Implementation of {@link AccessLogDao} for a Postgres database. */
 @AllArgsConstructor
+@Log
 final class AccessLogController implements AccessLogDao {
   private final Supplier<Connection> connection;
 
   @Override
-  public void insert(final User user, final UserType userType) throws SQLException {
+  public void insert(final User user, final UserType userType) {
     checkNotNull(user);
     checkNotNull(userType);
 
@@ -30,6 +33,8 @@ final class AccessLogController implements AccessLogDao {
       ps.setBoolean(4, userType == UserType.REGISTERED);
       ps.execute();
       conn.commit();
+    } catch (final SQLException e) {
+      log.log(Level.SEVERE, "failed to record successful authentication in database", e);
     }
   }
 }

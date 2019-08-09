@@ -1,5 +1,6 @@
 package games.strategy.net.nio;
 
+import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
@@ -9,6 +10,7 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
 
@@ -77,12 +79,14 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           final Map<String, String> response = (Map<String, String>) serializable;
           if (validator != null) {
             final String error =
-                validator.verifyConnection(
-                    challenge,
-                    response,
-                    remoteName,
-                    remoteMac,
-                    channel.socket().getRemoteSocketAddress());
+                Optional.ofNullable(
+                        validator.verifyConnection(
+                            challenge,
+                            response,
+                            remoteName,
+                            remoteMac,
+                            channel.socket().getRemoteSocketAddress()))
+                    .orElseGet(() -> PlayerNameValidation.serverSideValidate(remoteName));
             send(error);
             if (error != null) {
               step = Step.ACK_ERROR;

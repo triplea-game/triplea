@@ -1,7 +1,5 @@
 package org.triplea.lobby.server.db;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
-
 /** Data access object for the users table. */
 public interface UserDao {
 
@@ -19,5 +17,7 @@ public interface UserDao {
 
   boolean login(String username, HashedPassword password);
 
-  DBUser getUserByName(String username);
+  String getUserEmailByName(String username);
+
+  boolean isAdmin(String username);
 }

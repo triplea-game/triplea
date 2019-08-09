@@ -1,7 +1,6 @@
 package org.triplea.lobby.server.db;
 
 import com.google.common.base.Preconditions;
-import games.strategy.engine.lobby.server.userDB.DBUser;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -164,8 +163,8 @@ final class UserController implements UserDao {
   }
 
   @Override
-  public DBUser getUserByName(final String username) {
-    final String sql = "select * from lobby_user where username = ?";
+  public String getUserEmailByName(final String username) {
+    final String sql = "select email from lobby_user where username = ?";
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
@@ -173,13 +172,27 @@ final class UserController implements UserDao {
         if (!rs.next()) {
           return null;
         }
-        return new DBUser(
-            new DBUser.UserName(rs.getString("username")),
-            new DBUser.UserEmail(rs.getString("email")),
-            rs.getBoolean("admin") ? DBUser.Role.ADMIN : DBUser.Role.NOT_ADMIN);
+        return rs.getString("email");
       }
     } catch (final SQLException e) {
-      throw new DatabaseException("Error getting user: " + username, e);
+      throw new DatabaseException("Error getting user email for user: " + username, e);
+    }
+  }
+
+  @Override
+  public boolean isAdmin(final String username) {
+    final String sql = "select admin from lobby_user where username = ?";
+    try (Connection con = connection.get();
+        PreparedStatement ps = con.prepareStatement(sql)) {
+      ps.setString(1, username);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (!rs.next()) {
+          return false;
+        }
+        return rs.getBoolean("admin");
+      }
+    } catch (final SQLException e) {
+      throw new DatabaseException("Error getting admin flag for user: " + username, e);
     }
   }
 }
