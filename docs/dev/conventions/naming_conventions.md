@@ -1,15 +1,11 @@
 ## Java
-
 - Follow the naming in: [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html#s5-naming)
 - Use a `new` prefix for factory methods (e.g. `newFoo()` instead of `createFoo()`)
 
 ## URLs
-
 - [kebab-case](https://en.wikipedia.org/wiki/Kebab_case)
 
-
 ## Database
-
 - [snake_case](https://en.wikipedia.org/wiki/Snake_case) 
 - Use singular names, eg: `user` instead of `users`
 - Spaces, no tabs
@@ -32,7 +28,6 @@
    ```
 
 ### Example
-
 ```
 select * from user_ban ub
 join users u on u.id = ub.user_id
