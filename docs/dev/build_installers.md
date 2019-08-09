@@ -2,7 +2,7 @@
 - install4j license key (can get from maintainers or an open-source one from install4j)
 
 ## Building installers
- - Install [Install4j7](https://www.ej-technologies.com/download/install4j/files)
+ - Install [Install4j 7](https://www.ej-technologies.com/download/install4j/files)
 - Create a `triplea/gradle.properties` file with:
 ```bash
 install4jHomeDir = /path/to/install4j7/
