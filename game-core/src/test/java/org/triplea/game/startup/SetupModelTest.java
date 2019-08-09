@@ -3,12 +3,11 @@ package org.triplea.game.startup;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
+import org.junit.jupiter.api.Test;
 
 class SetupModelTest {
   @Test

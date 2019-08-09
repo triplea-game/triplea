@@ -3,9 +3,7 @@ package org.triplea.lobby.server.db;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.UserLookupDao;
 
-/**
- * Instances of this interface can be used to get an instance of any DB DAO.
- */
+/** Instances of this interface can be used to get an instance of any DB DAO. */
 public interface DatabaseDao {
   UsernameBlacklistDao getUsernameBlacklistDao();
 

@@ -1,32 +1,34 @@
 package games.strategy.triplea.ui.screen.drawable;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
 
-/**
- * Draws the convoy flag image for the associated territory.
- */
+/** Draws the convoy flag image for the associated territory. */
 public class ConvoyZoneDrawable extends AbstractDrawable {
   private final String player;
   private final String location;
   private final UiContext uiContext;
 
-  public ConvoyZoneDrawable(final PlayerId player, final Territory location, final UiContext uiContext) {
+  public ConvoyZoneDrawable(
+      final PlayerId player, final Territory location, final UiContext uiContext) {
     this.player = player.getName();
     this.location = location.getName();
     this.uiContext = uiContext;
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData) {
     final Image img;
     if (mapData.useNation_convoyFlags()) {
       img = uiContext.getFlagImageFactory().getConvoyFlag(data.getPlayerList().getPlayerId(player));

@@ -4,15 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import games.strategy.engine.lobby.client.ui.TimespanDialog.TimeUnit;
+import games.strategy.engine.lobby.client.ui.TimespanDialog.Timespan;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
-
-import games.strategy.engine.lobby.client.ui.TimespanDialog.TimeUnit;
-import games.strategy.engine.lobby.client.ui.TimespanDialog.Timespan;
 
 class TimespanDialogTest {
 
@@ -54,17 +52,18 @@ class TimespanDialogTest {
     // We can't use Integer#MAX_VALUE for years, because this will result in a long-overflow
     // So we just limit the amount for every time unit
     Arrays.asList(
-        TimeUnit.MINUTES,
-        TimeUnit.HOURS,
-        TimeUnit.DAYS,
-        TimeUnit.WEEKS,
-        TimeUnit.MONTHS,
-        TimeUnit.YEARS)
-        .forEach(timeUnit -> {
-          TimespanDialog.runAction(
-              d -> assertTrue(d.after(new Date())),
-              Optional.of(new Timespan(TimespanDialog.MAX_DURATION, timeUnit)));
-        });
+            TimeUnit.MINUTES,
+            TimeUnit.HOURS,
+            TimeUnit.DAYS,
+            TimeUnit.WEEKS,
+            TimeUnit.MONTHS,
+            TimeUnit.YEARS)
+        .forEach(
+            timeUnit -> {
+              TimespanDialog.runAction(
+                  d -> assertTrue(d.after(new Date())),
+                  Optional.of(new Timespan(TimespanDialog.MAX_DURATION, timeUnit)));
+            });
   }
 
   @Test

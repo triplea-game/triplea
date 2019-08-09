@@ -13,9 +13,7 @@ public interface ThrowingFunction<T, R, E extends Throwable> {
    * Applies the function to the given argument.
    *
    * @param value The function argument.
-   *
    * @return The function result.
-   *
    * @throws E If an error occurs while applying the function.
    */
   R apply(T value) throws E;

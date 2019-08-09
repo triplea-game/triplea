@@ -10,9 +10,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAttachment;
 import lombok.extern.java.Log;
 
-/**
- * A technology advance that lowers the cost of building ships.
- */
+/** A technology advance that lowers the cost of building ships. */
 @Log
 public final class ImprovedShipyardsAdvance extends TechAdvance {
   private static final long serialVersionUID = 7613381831727736711L;
@@ -38,7 +36,8 @@ public final class ImprovedShipyardsAdvance extends TechAdvance {
       return;
     }
     final String industrialTechName = current.getName() + "Shipyards";
-    final ProductionFrontier advancedTech = data.getProductionFrontierList().getProductionFrontier(industrialTechName);
+    final ProductionFrontier advancedTech =
+        data.getProductionFrontierList().getProductionFrontier(industrialTechName);
     // it doesnt exist, dont crash
     if (advancedTech == null) {
       log.warning("No tech named:" + industrialTechName + " not adding tech");

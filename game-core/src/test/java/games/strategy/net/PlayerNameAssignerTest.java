@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.InetAddress;
 import java.util.Arrays;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,17 +21,15 @@ class PlayerNameAssignerTest {
   private static final String name1 = "Never endure a plunder.";
   private static final String name2 = "C'mon, never vandalize a gull";
 
-  @Mock
-  private InetAddress address1;
+  @Mock private InetAddress address1;
 
-  @Mock
-  private InetAddress address2;
+  @Mock private InetAddress address2;
 
   @Nested
   final class ErrorCases {
     /**
-     * Null for IP address or node list means we have something wrong on the server side
-     * and should see an exception.
+     * Null for IP address or node list means we have something wrong on the server side and should
+     * see an exception.
      */
     @Test
     void nullArguments() {
@@ -41,23 +38,20 @@ class PlayerNameAssignerTest {
           () -> PlayerNameAssigner.assignName(name1, null, emptyList()));
 
       assertThrows(
-          NullPointerException.class,
-          () -> PlayerNameAssigner.assignName(name1, address1, null));
+          NullPointerException.class, () -> PlayerNameAssigner.assignName(name1, address1, null));
     }
 
-    /**
-     * Short or bad name could be a custom (hacked) client.
-     */
+    /** Short or bad name could be a custom (hacked) client. */
     @Test
     void nameTooShort() {
-      Arrays.asList(null, "", "a", "_").forEach(nameTooShort -> assertThat(
-          "With a name too short, we could have a hacked client, should use a default "
-              + "dummy name and not error out on the server side.",
-          PlayerNameAssigner.assignName(
-              nameTooShort,
-              address1,
-              emptyList()),
-          is(PlayerNameAssigner.DUMMY_NAME)));
+      Arrays.asList(null, "", "a", "_")
+          .forEach(
+              nameTooShort ->
+                  assertThat(
+                      "With a name too short, we could have a hacked client, should use a default "
+                          + "dummy name and not error out on the server side.",
+                      PlayerNameAssigner.assignName(nameTooShort, address1, emptyList()),
+                      is(PlayerNameAssigner.DUMMY_NAME)));
     }
 
     @Test
@@ -65,9 +59,7 @@ class PlayerNameAssignerTest {
       assertThat(
           "We already have a dummy name, so we should see an increment to the name.",
           PlayerNameAssigner.assignName(
-              null,
-              address1,
-              singleton(createNode(PlayerNameAssigner.DUMMY_NAME, address2))),
+              null, address1, singleton(createNode(PlayerNameAssigner.DUMMY_NAME, address2))),
           is(PlayerNameAssigner.DUMMY_NAME + " (1)"));
 
       assertThat(
@@ -82,7 +74,6 @@ class PlayerNameAssignerTest {
     }
   }
 
-
   @Test
   void assignNameShouldGetAssignedNameWhenNotTaken() {
     assertThat(
@@ -92,8 +83,7 @@ class PlayerNameAssignerTest {
 
     assertThat(
         "name and address do not match, should get the desired name",
-        PlayerNameAssigner.assignName(
-            name1, address1, singleton(createNode(name2, address2))),
+        PlayerNameAssigner.assignName(name1, address1, singleton(createNode(name2, address2))),
         is(name1));
   }
 
@@ -101,8 +91,7 @@ class PlayerNameAssignerTest {
   void assignNameWithMatchingNames() {
     assertThat(
         "name match, should be assigned a numeral name",
-        PlayerNameAssigner.assignName(
-            name1, address1, singleton(createNode(name1, address2))),
+        PlayerNameAssigner.assignName(name1, address1, singleton(createNode(name1, address2))),
         is(name1 + " (1)"));
 
     assertThat(
@@ -121,24 +110,23 @@ class PlayerNameAssignerTest {
     assertThat(
         "name match, should get next sequential numeral appended",
         PlayerNameAssigner.assignName(
-            name1, address1, asList(
-                createNode(name1, address2),
-                createNode(name1 + " (1)", address2))),
+            name1,
+            address1,
+            asList(createNode(name1, address2), createNode(name1 + " (1)", address2))),
         is(name1 + " (2)"));
 
     assertThat(
-        "name match, should get next sequential numeral appended, "
-            + "ordering should not matter",
+        "name match, should get next sequential numeral appended, " + "ordering should not matter",
         PlayerNameAssigner.assignName(
-            name1, address1, asList(
-                createNode(name1 + " (1)", address2),
-                createNode(name1, address2))),
+            name1,
+            address1,
+            asList(createNode(name1 + " (1)", address2), createNode(name1, address2))),
         is(name1 + " (2)"));
   }
 
   /**
-   * If we have "name", and "name (2)", the next value should be "name (1)" before
-   * we get "name (3)".
+   * If we have "name", and "name (2)", the next value should be "name (1)" before we get "name
+   * (3)".
    */
   @Test
   void assignNameShouldFillInMissingNumerals() {
@@ -151,15 +139,17 @@ class PlayerNameAssignerTest {
     assertThat(
         "name matches and there is gap in numbering",
         PlayerNameAssigner.assignName(
-            name1, address1, asList(
-                createNode(name1, address2),
-                createNode(name1 + " (2)", address2))),
+            name1,
+            address1,
+            asList(createNode(name1, address2), createNode(name1 + " (2)", address2))),
         is(name1 + " (1)"));
 
     assertThat(
         "name matches and there is gap in numbering, ordering should not matter",
         PlayerNameAssigner.assignName(
-            name1, address1, asList(
+            name1,
+            address1,
+            asList(
                 createNode(name1 + " (3)", address2),
                 createNode(name1 + " (1)", address2),
                 createNode(name1, address2))),
@@ -168,7 +158,9 @@ class PlayerNameAssignerTest {
     assertThat(
         "should get next ascending numeral",
         PlayerNameAssigner.assignName(
-            name1, address1, asList(
+            name1,
+            address1,
+            asList(
                 createNode(name1 + " (2)", address2),
                 createNode(name1 + " (1)", address2),
                 createNode(name1, address2))),
@@ -176,17 +168,15 @@ class PlayerNameAssignerTest {
   }
 
   /**
-   * If a user choose a name like "name (1)", then the numeral append should still
-   * work and append to that name, eg: "name (1) (1)".
+   * If a user choose a name like "name (1)", then the numeral append should still work and append
+   * to that name, eg: "name (1) (1)".
    */
   @Test
   void doubleAppendCase() {
     assertThat(
         "if requesting a name ending in (1), and we have that already, then append again",
         PlayerNameAssigner.assignName(
-            name1 + " (1)",
-            address1,
-            singleton(createNode(name1 + " (1)", address2))),
+            name1 + " (1)", address1, singleton(createNode(name1 + " (1)", address2))),
         is(name1 + " (1) (1)"));
 
     assertThat(
@@ -201,7 +191,6 @@ class PlayerNameAssignerTest {
                 createNode(name1 + " (1) (1)", address2))),
         is(name1 + " (1) (3)"));
 
-
     assertThat(
         "oddball case where there is a matching substring, we need a full match",
         PlayerNameAssigner.assignName(
@@ -210,17 +199,14 @@ class PlayerNameAssignerTest {
   }
 
   /**
-   * Not only will matching names cause a numeral increment, but if we see the same address
-   * then we'll ignore the requested name and append a numeral increment.
+   * Not only will matching names cause a numeral increment, but if we see the same address then
+   * we'll ignore the requested name and append a numeral increment.
    */
   @Test
   void matchingAddressWillIncrementOriginalName() {
     assertThat(
         "addresses match",
-        PlayerNameAssigner.assignName(
-            name1,
-            address1,
-            singleton(createNode(name2, address1))),
+        PlayerNameAssigner.assignName(name1, address1, singleton(createNode(name2, address1))),
         is(name2 + " (1)"));
 
     assertThat(
@@ -228,20 +214,15 @@ class PlayerNameAssignerTest {
         PlayerNameAssigner.assignName(
             name1,
             address1,
-            asList(
-                createNode(name2 + " (1)", address1),
-                createNode(name2, address1))),
+            asList(createNode(name2 + " (1)", address1), createNode(name2, address1))),
         is(name2 + " (2)"));
-
 
     assertThat(
         "addresses match, should fill in gaps in the numerals",
         PlayerNameAssigner.assignName(
             name1,
             address1,
-            asList(
-                createNode(name2 + " (2)", address1),
-                createNode(name2, address1))),
+            asList(createNode(name2 + " (2)", address1), createNode(name2, address1))),
         is(name2 + " (1)"));
   }
 

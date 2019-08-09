@@ -1,18 +1,16 @@
 package org.triplea.lobby.common;
 
-import java.util.Map;
-
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.GUID;
+import java.util.Map;
 
-/**
- * A service that provides management operations for lobby games.
- */
+/** A service that provides management operations for lobby games. */
 public interface ILobbyGameController extends IRemote {
-  RemoteName REMOTE_NAME = new RemoteName(
-      "games.strategy.engine.lobby.server.IGameController.GAME_CONTROLLER_REMOTE",
-      ILobbyGameController.class);
+  RemoteName REMOTE_NAME =
+      new RemoteName(
+          "games.strategy.engine.lobby.server.IGameController.GAME_CONTROLLER_REMOTE",
+          ILobbyGameController.class);
 
   void postGame(GUID gameId, GameDescription description);
 
@@ -21,12 +19,11 @@ public interface ILobbyGameController extends IRemote {
   Map<GUID, GameDescription> listGames();
 
   /**
-   * Test if the server can connect to the game at this address. This is used to see if the client address is network
-   * accessible (this will not be true if the client is behind a nat or firewall that is not properly configured).
+   * Test if the server can connect to the game at this address. This is used to see if the client
+   * address is network accessible (this will not be true if the client is behind a nat or firewall
+   * that is not properly configured).
    *
-   * <p>
-   * This method may only be called by the node that is hosting this game.
-   * </p>
+   * <p>This method may only be called by the node that is hosting this game.
    */
   String testGame(GUID gameId);
 }

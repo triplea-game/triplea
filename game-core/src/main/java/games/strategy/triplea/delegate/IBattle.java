@@ -1,11 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
@@ -14,23 +8,28 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-/**
- * Represents a battle.
- */
+/** Represents a battle. */
 public interface IBattle extends Serializable {
-  /**
-   * Identifies the winner of a battle.
-   */
+  /** Identifies the winner of a battle. */
   enum WhoWon {
-    NOTFINISHED, DRAW, ATTACKER, DEFENDER
+    NOTFINISHED,
+    DRAW,
+    ATTACKER,
+    DEFENDER
   }
 
-  /**
-   * The type of a battle.
-   */
+  /** The type of a battle. */
   enum BattleType {
-    NORMAL("Battle"), AIR_BATTLE("Air Battle"), AIR_RAID("Air Raid"), BOMBING_RAID("Bombing Raid");
+    NORMAL("Battle"),
+    AIR_BATTLE("Air Battle"),
+    AIR_RAID("Air Raid"),
+    BOMBING_RAID("Bombing Raid");
 
     private final String type;
 
@@ -59,47 +58,40 @@ public interface IBattle extends Serializable {
    *
    * @param route - attack route
    * @param units - attacking units
-   * @param targets Can be NULL if this does not apply. A list of defending units with the collection of attacking units
-   *        targeting them mapped to each defending unit.
+   * @param targets Can be NULL if this does not apply. A list of defending units with the
+   *     collection of attacking units targeting them mapped to each defending unit.
    * @return attack change object
    */
   Change addAttackChange(Route route, Collection<Unit> units, Map<Unit, Set<Unit>> targets);
 
   /**
-   * There are two distinct super-types of battles: Bombing battles, and Fighting battles.
-   * There may be sub-types of each of these.
+   * There are two distinct super-types of battles: Bombing battles, and Fighting battles. There may
+   * be sub-types of each of these.
    *
    * @return whether this battle is a bombing run
    */
   boolean isBombingRun();
 
-  /**
-   * The type of battle occurring, example: MustFightBattle, StrategicBombingRaidBattle, etc.
-   */
+  /** The type of battle occurring, example: MustFightBattle, StrategicBombingRaidBattle, etc. */
   BattleType getBattleType();
 
-  /**
-   * Returns the territory this battle is occurring in.
-   */
+  /** Returns the territory this battle is occurring in. */
   Territory getTerritory();
 
-  /**
-   * Fight this battle.
-   */
+  /** Fight this battle. */
   void fight(IDelegateBridge bridge);
 
-  /**
-   * Indicates whether this battle is over or not.
-   */
+  /** Indicates whether this battle is over or not. */
   boolean isOver();
 
   /**
-   * Call this method when units are lost in another battle.
-   * This is needed to remove dependent units who have been lost in another battle.
+   * Call this method when units are lost in another battle. This is needed to remove dependent
+   * units who have been lost in another battle.
    *
    * @param units - referring units
    */
-  void unitsLostInPrecedingBattle(Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
+  void unitsLostInPrecedingBattle(
+      Collection<Unit> units, IDelegateBridge bridge, boolean withdrawn);
 
   /**
    * Add a bombardment unit.
@@ -108,9 +100,7 @@ public interface IBattle extends Serializable {
    */
   void addBombardingUnit(Unit u);
 
-  /**
-   * Indicates whether battle is amphibious.
-   */
+  /** Indicates whether battle is amphibious. */
   boolean isAmphibious();
 
   /**
@@ -121,9 +111,7 @@ public interface IBattle extends Serializable {
    */
   void removeAttack(Route route, Collection<Unit> units);
 
-  /**
-   * If we need to cancel the battle, we may need to perform some cleanup.
-   */
+  /** If we need to cancel the battle, we may need to perform some cleanup. */
   void cancelBattle(IDelegateBridge bridge);
 
   /**
@@ -133,34 +121,22 @@ public interface IBattle extends Serializable {
    */
   boolean isEmpty();
 
-  /**
-   * Returns units which are dependent on the given units.
-   */
+  /** Returns units which are dependent on the given units. */
   Collection<Unit> getDependentUnits(Collection<Unit> units);
 
-  /**
-   * Returns units which are actually assaulting amphibiously.
-   */
+  /** Returns units which are actually assaulting amphibiously. */
   Collection<Unit> getAmphibiousLandAttackers();
 
-  /**
-   * Returns units which are actually bombarding.
-   */
+  /** Returns units which are actually bombarding. */
   Collection<Unit> getBombardingUnits();
 
-  /**
-   * Returns what round this battle is in.
-   */
+  /** Returns what round this battle is in. */
   int getBattleRound();
 
-  /**
-   * Returns units which are attacking.
-   */
+  /** Returns units which are attacking. */
   Collection<Unit> getAttackingUnits();
 
-  /**
-   * Returns units which are defending.
-   */
+  /** Returns units which are defending. */
   Collection<Unit> getDefendingUnits();
 
   List<Unit> getRemainingAttackingUnits();

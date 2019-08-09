@@ -12,23 +12,24 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.net.URL;
-
-import org.junit.jupiter.api.Test;
-
 import games.strategy.triplea.ResourceLoader;
+import java.net.URL;
+import org.junit.jupiter.api.Test;
 
 class LocalizeHtmlTest {
   private final ResourceLoader loader = mock(ResourceLoader.class);
-  private final String testHtml = "<audio src='test-audio'> &lt;img src=&quot;test&quot;&gt;"
-      + "<img useless fill src=\"dir/actual-link\" alt='Alternative Text' > <p>  Placeholder </P> <img\n"
-      + " src='another-link.png' />";
+  private final String testHtml =
+      "<audio src='test-audio'> &lt;img src=&quot;test&quot;&gt;"
+          + "<img useless fill src=\"dir/actual-link\" alt='Alternative Text' > "
+          + "<p>  Placeholder </P> <img\n"
+          + " src='another-link.png' />";
 
   @Test
   void testLocalizeHtml() throws Exception {
 
     when(loader.getResource("doc/images/actual-link")).thenReturn(new URL("http://local-link-1"));
-    when(loader.getResource("doc/images/another-link.png")).thenReturn(new URL("http://local-link-2"));
+    when(loader.getResource("doc/images/another-link.png"))
+        .thenReturn(new URL("http://local-link-2"));
 
     final String result = LocalizeHtml.localizeImgLinksInHtml(testHtml, loader);
 
@@ -47,7 +48,8 @@ class LocalizeHtmlTest {
   void testFallbackLink() throws Exception {
     when(loader.getResource("doc/images/actual-link")).thenReturn(null);
     when(loader.getResource("doc/images/another-link.png")).thenReturn(null);
-    when(loader.getResource("doc/images/notFound.png")).thenReturn(null, new URL("http://notFound.png"));
+    when(loader.getResource("doc/images/notFound.png"))
+        .thenReturn(null, new URL("http://notFound.png"));
     final String result = LocalizeHtml.localizeImgLinksInHtml(testHtml, loader);
     assertThat(result, containsString("dir/actual-link"));
     assertThat(result, containsString("http://notFound.png"));

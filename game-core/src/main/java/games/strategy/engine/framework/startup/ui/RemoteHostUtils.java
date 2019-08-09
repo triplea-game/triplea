@@ -1,13 +1,11 @@
 package games.strategy.engine.framework.startup.ui;
 
-import java.util.Set;
-
-import org.triplea.game.server.HeadlessGameServer;
-import org.triplea.lobby.common.IRemoteHostUtils;
-
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
+import java.util.Set;
+import org.triplea.game.server.HeadlessGameServer;
+import org.triplea.lobby.common.IRemoteHostUtils;
 
 final class RemoteHostUtils implements IRemoteHostUtils {
   private final INode serverNode;
@@ -24,7 +22,8 @@ final class RemoteHostUtils implements IRemoteHostUtils {
       return "Not accepted!";
     }
     if (serverMessenger != null) {
-      final StringBuilder sb = new StringBuilder("Connected: " + serverMessenger.isConnected() + "\n" + "Nodes: \n");
+      final StringBuilder sb =
+          new StringBuilder("Connected: " + serverMessenger.isConnected() + "\n" + "Nodes: \n");
       final Set<INode> nodes = serverMessenger.getNodes();
       if (nodes == null) {
         sb.append("  null\n");
@@ -51,8 +50,8 @@ final class RemoteHostUtils implements IRemoteHostUtils {
   }
 
   @Override
-  public String bootPlayerHeadlessHostBot(final String playerNameToBeBooted, final String hashedPassword,
-      final String salt) {
+  public String bootPlayerHeadlessHostBot(
+      final String playerNameToBeBooted, final String hashedPassword, final String salt) {
     if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }
@@ -65,9 +64,7 @@ final class RemoteHostUtils implements IRemoteHostUtils {
 
   @Override
   public String banPlayerHeadlessHostBot(
-      final String playerNameToBeBanned,
-      final String hashedPassword,
-      final String salt) {
+      final String playerNameToBeBanned, final String hashedPassword, final String salt) {
     if (!MessageContext.getSender().equals(serverNode)) {
       return "Not accepted!";
     }

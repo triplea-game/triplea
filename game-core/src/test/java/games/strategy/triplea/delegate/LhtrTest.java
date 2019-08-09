@@ -12,12 +12,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -31,11 +25,16 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class LhtrTest {
   private GameData gameData;
 
-  private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(final IDelegateBridge delegateBridge) {
+  private static void thenRemotePlayerShouldNeverBeAskedToConfirmMove(
+      final IDelegateBridge delegateBridge) {
     verify(withRemotePlayer(delegateBridge), never()).confirmMoveHariKari();
     verify(withRemotePlayer(delegateBridge), never()).confirmMoveInFaceOfAa(any());
     verify(withRemotePlayer(delegateBridge), never()).confirmMoveKamikaze();
@@ -67,7 +66,8 @@ class LhtrTest {
     route.setStart(easternEurope);
     route.add(baltic);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
-    delegate.move(easternEurope.getUnitCollection().getMatches(Matches.unitIsOfType(fighterType)), route);
+    delegate.move(
+        easternEurope.getUnitCollection().getMatches(Matches.unitIsOfType(fighterType)), route);
     // add a carrier to be produced in germany
     final TripleAUnit carrier = new TripleAUnit(carrirType, germans, gameData);
     gameData.performChange(ChangeFactory.addUnits(germans, Collections.singleton(carrier)));
@@ -94,7 +94,8 @@ class LhtrTest {
     route.setStart(easternEurope);
     route.add(baltic);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
-    delegate.move(easternEurope.getUnitCollection().getMatches(Matches.unitIsOfType(fighterType)), route);
+    delegate.move(
+        easternEurope.getUnitCollection().getMatches(Matches.unitIsOfType(fighterType)), route);
     // end the move phase
     delegate.end();
     // there is no pending carrier to be placed
@@ -131,7 +132,9 @@ class LhtrTest {
     assertEquals(2, attachment.getDefense(japanese));
     assertEquals(2, attachment.getAttack(japanese));
     final IDelegateBridge bridge = newDelegateBridge(japanese);
-    TechTracker.addAdvance(japanese, bridge,
+    TechTracker.addAdvance(
+        japanese,
+        bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, gameData, japanese));
     // after tech advance, this is now 3
     assertEquals(3, attachment.getDefense(japanese));
@@ -149,21 +152,28 @@ class LhtrTest {
     final PlayerId germans = GameDataTestUtil.germans(gameData);
     final PlayerId british = GameDataTestUtil.british(gameData);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
-    battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
-        uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()), null);
+    final StrategicBombingRaidBattle battle =
+        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    battle.addAttackChange(
+        gameData.getMap().getRoute(uk, germany),
+        uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
+        null);
     addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
-    tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
+    tracker
+        .getBattleRecords()
+        .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
     final IDelegateBridge bridge = newDelegateBridge(british);
-    TechTracker.addAdvance(british, bridge,
+    TechTracker.addAdvance(
+        british,
+        bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
-    whenGetRandom(bridge)
-        .thenAnswer(withValues(2))
-        .thenAnswer(withValues(2, 3));
-    final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    whenGetRandom(bridge).thenAnswer(withValues(2)).thenAnswer(withValues(2, 3));
+    final int pusBeforeRaid =
+        germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
-    final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    final int pusAfterRaid =
+        germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     // targets dice is 4, so damage is 1 + 4 = 5
     // Changed to match StrategicBombingRaidBattle changes
     assertEquals(pusBeforeRaid - 5, pusAfterRaid);
@@ -180,21 +190,28 @@ class LhtrTest {
     final Change change = ChangeFactory.addUnits(uk, Collections.singleton(bomber));
     gameData.performChange(change);
     final BattleTracker tracker = new BattleTracker();
-    final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, gameData, british, tracker);
-    battle.addAttackChange(gameData.getMap().getRoute(uk, germany),
-        uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()), null);
+    final StrategicBombingRaidBattle battle =
+        new StrategicBombingRaidBattle(germany, gameData, british, tracker);
+    battle.addAttackChange(
+        gameData.getMap().getRoute(uk, germany),
+        uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
+        null);
     addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
-    tracker.getBattleRecords().addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
+    tracker
+        .getBattleRecords()
+        .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
     final IDelegateBridge bridge = newDelegateBridge(british);
-    TechTracker.addAdvance(british, bridge,
+    TechTracker.addAdvance(
+        british,
+        bridge,
         TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, gameData, british));
     // aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2
-    whenGetRandom(bridge)
-        .thenAnswer(withValues(3, 3))
-        .thenAnswer(withValues(2, 3, 0, 1));
-    final int pusBeforeRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    whenGetRandom(bridge).thenAnswer(withValues(3, 3)).thenAnswer(withValues(2, 3, 0, 1));
+    final int pusBeforeRaid =
+        germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     battle.fight(bridge);
-    final int pusAfterRaid = germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
+    final int pusAfterRaid =
+        germans.getResources().getQuantity(gameData.getResourceList().getResource(Constants.PUS));
     // targets dice is 4, so damage is 1 + 4 = 5
     // bomber 2 hits at 2, so damage is 3, for a total of 8
     // Changed to match StrategicBombingRaidBattle changes

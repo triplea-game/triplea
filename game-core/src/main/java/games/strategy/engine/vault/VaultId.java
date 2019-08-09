@@ -1,13 +1,10 @@
 package games.strategy.engine.vault;
 
+import games.strategy.net.INode;
 import java.io.Serializable;
 import java.util.Objects;
 
-import games.strategy.net.INode;
-
-/**
- * Uniquely identifies a cryptographic vault used to store random numbers on a particular node.
- */
+/** Uniquely identifies a cryptographic vault used to store random numbers on a particular node. */
 public class VaultId implements Serializable {
   private static final long serialVersionUID = 8863728184933393296L;
   private static long currentId;

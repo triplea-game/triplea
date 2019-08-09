@@ -1,5 +1,11 @@
 package games.strategy.triplea.ui.screen;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
+import games.strategy.ui.ImageScrollerSmallView;
+import games.strategy.ui.Util;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -10,23 +16,18 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.triplea.ui.screen.drawable.LandTerritoryDrawable;
-import games.strategy.ui.ImageScrollerSmallView;
-import games.strategy.ui.Util;
-
 /**
- * Manages rendering the small map image. The small map image provides a high-level overview of the entire map,
- * including those areas that may not be currently displayed within the large map view.
+ * Manages rendering the small map image. The small map image provides a high-level overview of the
+ * entire map, including those areas that may not be currently displayed within the large map view.
  */
 public class SmallMapImageManager {
   private final ImageScrollerSmallView view;
   private Image offscreen;
   private final TileManager tileManager;
 
-  public SmallMapImageManager(final ImageScrollerSmallView view, final BufferedImage offscreen,
+  public SmallMapImageManager(
+      final ImageScrollerSmallView view,
+      final BufferedImage offscreen,
       final TileManager tileManager) {
     this.view = view;
     this.offscreen = Util.copyImage(offscreen);
@@ -50,9 +51,7 @@ public class SmallMapImageManager {
     onScreenGraphics.dispose();
   }
 
-  /**
-   * Redraws the specified territory to reflect any change in ownership.
-   */
+  /** Redraws the specified territory to reflect any change in ownership. */
   public void updateTerritoryOwner(final Territory t, final GameData data, final MapData mapData) {
     if (t.isWater()) {
       return;
@@ -73,8 +72,10 @@ public class SmallMapImageManager {
     {
       final Graphics2D g = (Graphics2D) largeImage.getGraphics();
       g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-      g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-      g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+      g.setRenderingHint(
+          RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+      g.setRenderingHint(
+          RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
       final LandTerritoryDrawable drawable = new LandTerritoryDrawable(t.getName());
       drawable.draw(bounds, data, g, mapData, mapData.getSmallMapTerritorySaturation());
       g.dispose();
@@ -83,7 +84,8 @@ public class SmallMapImageManager {
     int thumbWidth = (int) (bounds.width * view.getRatioX());
     int thumbHeight = (int) (bounds.height * view.getRatioY());
     // make the image a little bigger
-    // the images wont overlap perfectly after being scaled, make them a little bigger to rebalance that
+    // the images wont overlap perfectly after being scaled, make them a little bigger to rebalance
+    // that
     thumbWidth += 3;
     thumbHeight += 3;
     final int thumbsX = (int) (bounds.x * view.getRatioX()) - 1;
@@ -98,7 +100,13 @@ public class SmallMapImageManager {
     {
       final Graphics g = offscreen.getGraphics();
       // draw it on our offscreen
-      g.drawImage(thumbImage, thumbsX, thumbsY, thumbImage.getWidth(null), thumbImage.getHeight(null), null);
+      g.drawImage(
+          thumbImage,
+          thumbsX,
+          thumbsY,
+          thumbImage.getWidth(null),
+          thumbImage.getHeight(null),
+          null);
       g.dispose();
     }
   }

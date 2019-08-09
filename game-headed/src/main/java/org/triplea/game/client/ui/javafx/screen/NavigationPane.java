@@ -1,22 +1,18 @@
 package org.triplea.game.client.ui.javafx.screen;
 
-import java.util.EnumMap;
-import java.util.Map;
-
-import org.triplea.game.client.ui.javafx.util.FxmlManager;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-
+import java.util.EnumMap;
+import java.util.Map;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import org.triplea.game.client.ui.javafx.util.FxmlManager;
 
 /**
- * The default implementation of {@link ScreenController}.
- * Using this class enables to swap screens with a rather flat
- * call tree by using the class name as the identifier.
- * Make sure to register Screens before using them.
+ * The default implementation of {@link ScreenController}. Using this class enables to swap screens
+ * with a rather flat call tree by using the class name as the identifier. Make sure to register
+ * Screens before using them.
  */
 public class NavigationPane implements ScreenController<FxmlManager> {
   private final Pane root;
@@ -41,7 +37,8 @@ public class NavigationPane implements ScreenController<FxmlManager> {
 
   public void registerScreen(final FxmlManager manager) {
     Preconditions.checkNotNull(manager);
-    registerScreen(manager, manager.<ControlledScreen<NavigationPane>, Object>load().getController());
+    registerScreen(
+        manager, manager.<ControlledScreen<NavigationPane>, Object>load().getController());
   }
 
   @Override

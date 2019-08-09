@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,8 +23,7 @@ final class OptionalUtilsTest {
     private static final String FIRST_VALUE = "value";
     private static final int SECOND_VALUE = 42;
 
-    @Mock
-    private BiConsumer<String, Integer> action;
+    @Mock private BiConsumer<String, Integer> action;
 
     @Test
     void shouldInvokeActionWhenOptional1PresentAndOptional2Present() {
@@ -59,8 +57,7 @@ final class OptionalUtilsTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class IfEmptyTest {
-    @Mock
-    private Runnable action;
+    @Mock private Runnable action;
 
     @Test
     void shouldNotInvokeActionWhenValuePresent() {

@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Calendar;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -24,8 +23,7 @@ class ApiKeyDaoDataTest {
   private static final String PUBLIC_ID = "Plunders are the scallywags of the scrawny grace.";
   private static final String HOST = "Where is the misty bilge rat?";
 
-  @Mock
-  private ResultSet resultSet;
+  @Mock private ResultSet resultSet;
 
   @Test
   void buildResultMapper() throws Exception {

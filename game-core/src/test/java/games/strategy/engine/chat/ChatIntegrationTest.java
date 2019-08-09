@@ -4,17 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
-import java.time.Duration;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.IntStream;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.triplea.test.common.Integration;
-
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
@@ -26,6 +15,15 @@ import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import games.strategy.net.TestServerMessenger;
 import games.strategy.sound.SoundPath;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.triplea.test.common.Integration;
 
 @Integration
 final class ChatIntegrationTest {
@@ -80,44 +78,48 @@ final class ChatIntegrationTest {
 
   @Test
   void shouldBeAbleToChatAcrossMultipleNodes() {
-    runChatTest((server, client1, client2) -> {
-      sendMessagesFrom(client2);
-      sendMessagesFrom(server);
-      sendMessagesFrom(client1);
-      waitFor(this::allMessagesToArrive);
-    });
+    runChatTest(
+        (server, client1, client2) -> {
+          sendMessagesFrom(client2);
+          sendMessagesFrom(server);
+          sendMessagesFrom(client1);
+          waitFor(this::allMessagesToArrive);
+        });
   }
 
   private void runChatTest(final ChatTest chatTest) {
-    assertTimeoutPreemptively(Duration.ofSeconds(15), () -> {
-      final ChatController controller = newChatController();
-      final Chat server = newChat(new Messengers(messenger, remoteMessenger, channelMessenger));
-      server.addChatListener(serverChatListener);
-      final Chat client1 = newChat(new Messengers(client1Messenger, client1RemoteMessenger, client1ChannelMessenger));
-      client1.addChatListener(client1ChatListener);
-      final Chat client2 = newChat(new Messengers(client2Messenger, client2RemoteMessenger, client2ChannelMessenger));
-      client2.addChatListener(client2ChatListener);
-      waitFor(this::allNodesToConnect);
+    assertTimeoutPreemptively(
+        Duration.ofSeconds(15),
+        () -> {
+          final ChatController controller = newChatController();
+          final Chat server = newChat(new Messengers(messenger, remoteMessenger, channelMessenger));
+          server.addChatListener(serverChatListener);
+          final Chat client1 =
+              newChat(
+                  new Messengers(
+                      client1Messenger, client1RemoteMessenger, client1ChannelMessenger));
+          client1.addChatListener(client1ChatListener);
+          final Chat client2 =
+              newChat(
+                  new Messengers(
+                      client2Messenger, client2RemoteMessenger, client2ChannelMessenger));
+          client2.addChatListener(client2ChatListener);
+          waitFor(this::allNodesToConnect);
 
-      chatTest.run(server, client1, client2);
+          chatTest.run(server, client1, client2);
 
-      client1.shutdown();
-      client2.shutdown();
-      waitFor(this::clientNodesToDisconnect);
+          client1.shutdown();
+          client2.shutdown();
+          waitFor(this::clientNodesToDisconnect);
 
-      controller.deactivate();
-      waitFor(this::serverNodeToDisconnect);
-    });
+          controller.deactivate();
+          waitFor(this::serverNodeToDisconnect);
+        });
   }
 
   private ChatController newChatController() {
     return new ChatController(
-        CHAT_NAME,
-        new Messengers(
-            messenger,
-            remoteMessenger,
-            channelMessenger),
-        node -> false);
+        CHAT_NAME, new Messengers(messenger, remoteMessenger, channelMessenger), node -> false);
   }
 
   private static Chat newChat(final Messengers messengers) {
@@ -160,7 +162,9 @@ final class ChatIntegrationTest {
   }
 
   private static void sendMessagesFrom(final Chat node) {
-    new Thread(() -> IntStream.range(0, MESSAGE_COUNT).forEach(i -> node.sendMessage("Test", false))).start();
+    new Thread(
+            () -> IntStream.range(0, MESSAGE_COUNT).forEach(i -> node.sendMessage("Test", false)))
+        .start();
   }
 
   @FunctionalInterface
@@ -179,8 +183,8 @@ final class ChatIntegrationTest {
     }
 
     @Override
-    public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
-        final String sound) {
+    public void addMessageWithSound(
+        final String message, final String from, final boolean thirdperson, final String sound) {
       lastMessageReceived.set(message);
       messageCount.incrementAndGet();
     }

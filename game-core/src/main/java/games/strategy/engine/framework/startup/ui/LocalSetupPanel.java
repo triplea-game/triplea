@@ -1,18 +1,16 @@
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.launcher.LocalLauncher;
+import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
-
 import org.triplea.game.startup.SetupModel;
 import org.triplea.swing.SwingAction;
-
-import games.strategy.engine.framework.startup.launcher.ILauncher;
-import games.strategy.engine.framework.startup.launcher.LocalLauncher;
-import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.framework.startup.mc.HeadedLaunchAction;
 
 /** Setup panel when hosting a local game. */
 public class LocalSetupPanel extends SetupPanel implements Observer {
@@ -41,8 +39,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
       return false;
     }
     // make sure at least 1 player is enabled
-    return playerTypes.stream()
-        .anyMatch(PlayerSelectorRow::isPlayerEnabled);
+    return playerTypes.stream().anyMatch(PlayerSelectorRow::isPlayerEnabled);
   }
 
   @Override
@@ -57,11 +54,13 @@ public class LocalSetupPanel extends SetupPanel implements Observer {
 
   @Override
   public void update(final Observable o, final Object arg) {
-    SwingAction.invokeNowOrLater(() -> layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData()));
+    SwingAction.invokeNowOrLater(
+        () -> layoutPlayerComponents(this, playerTypes, gameSelectorModel.getGameData()));
   }
 
   @Override
   public Optional<ILauncher> getLauncher() {
-    return Optional.of(LocalLauncher.create(gameSelectorModel, playerTypes, this, new HeadedLaunchAction(this)));
+    return Optional.of(
+        LocalLauncher.create(gameSelectorModel, playerTypes, this, new HeadedLaunchAction(this)));
   }
 }

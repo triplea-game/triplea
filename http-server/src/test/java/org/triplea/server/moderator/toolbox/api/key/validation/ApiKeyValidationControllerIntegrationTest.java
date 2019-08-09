@@ -12,22 +12,18 @@ class ApiKeyValidationControllerIntegrationTest extends AbstractDropwizardTest {
 
   @Test
   void validateKeySuccess() {
-    final ToolboxApiKeyClient client = AbstractDropwizardTest.newClient(ToolboxApiKeyClient::newClient);
+    final ToolboxApiKeyClient client =
+        AbstractDropwizardTest.newClient(ToolboxApiKeyClient::newClient);
 
     client.clearLockouts();
-    assertThat(
-        "Expecting no error message on success case",
-        client.validateApiKey(),
-        isEmpty());
+    assertThat("Expecting no error message on success case", client.validateApiKey(), isEmpty());
   }
 
   @Test
   void validKeyBadKeyFailure() {
-    final ToolboxApiKeyClient client = AbstractDropwizardTest.newClientWithInvalidCreds(ToolboxApiKeyClient::newClient);
+    final ToolboxApiKeyClient client =
+        AbstractDropwizardTest.newClientWithInvalidCreds(ToolboxApiKeyClient::newClient);
 
-    assertThat(
-        "Expecting an error message on failure case",
-        client.validateApiKey(),
-        isPresent());
+    assertThat("Expecting an error message on failure case", client.validateApiKey(), isPresent());
   }
 }

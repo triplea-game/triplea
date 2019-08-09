@@ -6,19 +6,17 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Collections;
-import java.util.Comparator;
-
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.Collections;
+import java.util.Comparator;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.IntegerMap;
 
 final class AbstractEndTurnDelegateTest {
   @Nested
@@ -27,7 +25,8 @@ final class AbstractEndTurnDelegateTest {
     void testFindEstimatedIncome() throws Exception {
       final GameData global40Data = TestMapGameData.GLOBAL1940.getGameData();
       final PlayerId germans = GameDataTestUtil.germans(global40Data);
-      final IntegerMap<Resource> results = AbstractEndTurnDelegate.findEstimatedIncome(germans, global40Data);
+      final IntegerMap<Resource> results =
+          AbstractEndTurnDelegate.findEstimatedIncome(germans, global40Data);
       final int pus = results.getInt(new Resource(Constants.PUS, global40Data));
       assertEquals(40, pus);
     }
@@ -36,8 +35,9 @@ final class AbstractEndTurnDelegateTest {
   @Nested
   final class GetSingleNeighborBlockadesThenHighestToLowestProductionTest {
     private final GameData gameData = new GameData();
-    private final Comparator<Territory> comparator = AbstractEndTurnDelegate
-        .getSingleNeighborBlockadesThenHighestToLowestProduction(Collections.emptyList(), gameData.getMap());
+    private final Comparator<Territory> comparator =
+        AbstractEndTurnDelegate.getSingleNeighborBlockadesThenHighestToLowestProduction(
+            Collections.emptyList(), gameData.getMap());
     private final Territory territory = new Territory("territoryName", gameData);
 
     @Test
@@ -52,7 +52,8 @@ final class AbstractEndTurnDelegateTest {
 
     @Test
     void shouldReturnZeroWhenBothTerritoriesAreEqual() {
-      assertThat(comparator.compare(territory, new Territory(territory.getName(), gameData)), is(0));
+      assertThat(
+          comparator.compare(territory, new Territory(territory.getName(), gameData)), is(0));
     }
 
     @Test
@@ -69,8 +70,9 @@ final class AbstractEndTurnDelegateTest {
   @Nested
   final class GetSingleBlockadeThenHighestToLowestBlockadeDamageTest {
     private final GameData gameData = new GameData();
-    private final Comparator<Territory> comparator = AbstractEndTurnDelegate
-        .getSingleBlockadeThenHighestToLowestBlockadeDamage(Collections.emptyMap());
+    private final Comparator<Territory> comparator =
+        AbstractEndTurnDelegate.getSingleBlockadeThenHighestToLowestBlockadeDamage(
+            Collections.emptyMap());
     private final Territory territory = new Territory("territoryName", gameData);
 
     @Test
@@ -85,7 +87,8 @@ final class AbstractEndTurnDelegateTest {
 
     @Test
     void shouldReturnZeroWhenBothTerritoriesAreEqual() {
-      assertThat(comparator.compare(territory, new Territory(territory.getName(), gameData)), is(0));
+      assertThat(
+          comparator.compare(territory, new Territory(territory.getName(), gameData)), is(0));
     }
 
     @Test

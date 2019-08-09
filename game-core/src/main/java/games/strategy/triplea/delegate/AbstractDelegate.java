@@ -1,7 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegate;
@@ -9,10 +7,11 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.sound.ISound;
+import java.io.Serializable;
 
 /**
- * Base class designed to make writing custom delegates simpler.
- * Code common to all delegates is implemented here.
+ * Base class designed to make writing custom delegates simpler. Code common to all delegates is
+ * implemented here.
  */
 public abstract class AbstractDelegate implements IDelegate {
   protected String name;
@@ -33,8 +32,7 @@ public abstract class AbstractDelegate implements IDelegate {
   }
 
   /**
-   * Called before the delegate will run.
-   * All classes should call super.start if they override this.
+   * Called before the delegate will run. All classes should call super.start if they override this.
    */
   @Override
   public void start() {
@@ -42,8 +40,8 @@ public abstract class AbstractDelegate implements IDelegate {
   }
 
   /**
-   * Called before the delegate will stop running.
-   * All classes should call super.end if they override this.
+   * Called before the delegate will stop running. All classes should call super.end if they
+   * override this.
    */
   @Override
   public void end() {
@@ -61,8 +59,7 @@ public abstract class AbstractDelegate implements IDelegate {
   }
 
   /**
-   * Returns the state of the Delegate.
-   * All classes should super.saveState if they override this.
+   * Returns the state of the Delegate. All classes should super.saveState if they override this.
    */
   @Override
   public Serializable saveState() {

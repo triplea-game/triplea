@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,26 +33,19 @@ class BannedUsernamesServiceTest {
           .username("Golden, big mainlands quietly trade a stormy, warm skull.")
           .build();
 
-  @Mock
-  private UsernameBanDao bannedUsernamesDao;
-  @Mock
-  private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+  @Mock private UsernameBanDao bannedUsernamesDao;
+  @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
-  @InjectMocks
-  private UsernameBanService bannedUsernamesService;
-
+  @InjectMocks private UsernameBanService bannedUsernamesService;
 
   @Nested
   final class RemoveNameBanTest {
-
 
     @Test
     void removeFailureCase() {
       when(bannedUsernamesDao.removeBannedUserName(USERNAME)).thenReturn(0);
 
-      assertThat(
-          bannedUsernamesService.removeUsernameBan(MODERATOR_ID, USERNAME),
-          is(false));
+      assertThat(bannedUsernamesService.removeUsernameBan(MODERATOR_ID, USERNAME), is(false));
 
       verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
     }
@@ -62,16 +54,15 @@ class BannedUsernamesServiceTest {
     void removeSuccessCase() {
       when(bannedUsernamesDao.removeBannedUserName(USERNAME)).thenReturn(1);
 
-      assertThat(
-          bannedUsernamesService.removeUsernameBan(MODERATOR_ID, USERNAME),
-          is(true));
+      assertThat(bannedUsernamesService.removeUsernameBan(MODERATOR_ID, USERNAME), is(true));
 
-      verify(moderatorAuditHistoryDao).addAuditRecord(
-          ModeratorAuditHistoryDao.AuditArgs.builder()
-              .moderatorUserId(MODERATOR_ID)
-              .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_USERNAME_BAN)
-              .actionTarget(USERNAME)
-              .build());
+      verify(moderatorAuditHistoryDao)
+          .addAuditRecord(
+              ModeratorAuditHistoryDao.AuditArgs.builder()
+                  .moderatorUserId(MODERATOR_ID)
+                  .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_USERNAME_BAN)
+                  .actionTarget(USERNAME)
+                  .build());
     }
   }
 
@@ -81,9 +72,7 @@ class BannedUsernamesServiceTest {
     void addFailureCase() {
       when(bannedUsernamesDao.addBannedUserName(USERNAME)).thenReturn(0);
 
-      assertThat(
-          bannedUsernamesService.addBannedUserName(MODERATOR_ID, USERNAME),
-          is(false));
+      assertThat(bannedUsernamesService.addBannedUserName(MODERATOR_ID, USERNAME), is(false));
 
       verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
     }
@@ -92,16 +81,15 @@ class BannedUsernamesServiceTest {
     void addSuccessCase() {
       when(bannedUsernamesDao.addBannedUserName(USERNAME)).thenReturn(1);
 
-      assertThat(
-          bannedUsernamesService.addBannedUserName(MODERATOR_ID, USERNAME),
-          is(true));
+      assertThat(bannedUsernamesService.addBannedUserName(MODERATOR_ID, USERNAME), is(true));
 
-      verify(moderatorAuditHistoryDao).addAuditRecord(
-          ModeratorAuditHistoryDao.AuditArgs.builder()
-              .moderatorUserId(MODERATOR_ID)
-              .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USERNAME)
-              .actionTarget(USERNAME)
-              .build());
+      verify(moderatorAuditHistoryDao)
+          .addAuditRecord(
+              ModeratorAuditHistoryDao.AuditArgs.builder()
+                  .moderatorUserId(MODERATOR_ID)
+                  .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USERNAME)
+                  .actionTarget(USERNAME)
+                  .build());
     }
   }
 

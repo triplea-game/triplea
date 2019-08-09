@@ -1,19 +1,6 @@
 package games.strategy.triplea.attachments;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.util.Tuple;
-
 import com.google.common.collect.ImmutableMap;
-
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -23,17 +10,28 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.util.Tuple;
 
 /**
- * A class of attachments that can be "activated" during a user action delegate.
- * For now they will just be conditions that can then fire triggers.
+ * A class of attachments that can be "activated" during a user action delegate. For now they will
+ * just be conditions that can then fire triggers.
  */
 public class UserActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 5268397563276055355L;
 
   private List<Tuple<String, String>> activateTrigger = new ArrayList<>();
 
-  public UserActionAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  public UserActionAttachment(
+      final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
@@ -54,7 +52,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     final String[] s = splitOnColon(value);
     if (s.length != 6) {
       throw new GameParseException(
-          "activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:testUses:testConditions:testChance"
+          "activateTrigger must have 6 parts: "
+              + "triggerName:numberOfTimes:useUses:testUses:testConditions:testChance"
               + thisErrorMsg());
     }
     TriggerAttachment trigger = null;
@@ -77,7 +76,9 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     final int numberOfTimes = getInt(s[1]);
     if (numberOfTimes < 0) {
       throw new GameParseException(
-          "activateTrigger must be positive for the number of times to fire: " + s[1] + thisErrorMsg());
+          "activateTrigger must be positive for the number of times to fire: "
+              + s[1]
+              + thisErrorMsg());
     }
     getBool(s[2]);
     getBool(s[3]);
@@ -99,19 +100,22 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   }
 
   /**
-   * Fires all trigger attachments associated with the specified user action attachment that satisfy the specified
-   * conditions.
+   * Fires all trigger attachments associated with the specified user action attachment that satisfy
+   * the specified conditions.
    */
-  public static void fireTriggers(final UserActionAttachment actionAttachment,
-      final Map<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge bridge) {
+  public static void fireTriggers(
+      final UserActionAttachment actionAttachment,
+      final Map<ICondition, Boolean> testedConditionsSoFar,
+      final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
     for (final Tuple<String, String> tuple : actionAttachment.getActivateTrigger()) {
       // numberOfTimes:useUses:testUses:testConditions:testChance
-      final Optional<TriggerAttachment> optionalTrigger = data.getPlayerList().getPlayers().stream()
-          .map(player -> TriggerAttachment.getTriggers(player, null))
-          .flatMap(Collection::stream)
-          .filter(ta -> ta.getName().equals(tuple.getFirst()))
-          .findAny();
+      final Optional<TriggerAttachment> optionalTrigger =
+          data.getPlayerList().getPlayers().stream()
+              .map(player -> TriggerAttachment.getTriggers(player, null))
+              .flatMap(Collection::stream)
+              .filter(ta -> ta.getName().equals(tuple.getFirst()))
+              .findAny();
       if (!optionalTrigger.isPresent()) {
         continue;
       }
@@ -127,19 +131,25 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
       if (testConditionsToFire) {
         if (!testedConditionsSoFar.containsKey(toFire)) {
           // this should directly add the new tests to testConditionsToFire...
-          TriggerAttachment.collectTestsForAllTriggers(toFireSet, bridge,
-              new HashSet<>(testedConditionsSoFar.keySet()), testedConditionsSoFar);
+          TriggerAttachment.collectTestsForAllTriggers(
+              toFireSet,
+              bridge,
+              new HashSet<>(testedConditionsSoFar.keySet()),
+              testedConditionsSoFar);
         }
         if (!AbstractTriggerAttachment.isSatisfiedMatch(testedConditionsSoFar).test(toFire)) {
           continue;
         }
       }
-      final FireTriggerParams fireTriggerParams = new FireTriggerParams(
-          null, null, useUsesToFire,
-          testUsesToFire, testChanceToFire, false);
+      final FireTriggerParams fireTriggerParams =
+          new FireTriggerParams(null, null, useUsesToFire, testUsesToFire, testChanceToFire, false);
       for (int i = 0; i < numberOfTimesToFire; ++i) {
-        bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(actionAttachment.getName())
-            + " activates a trigger called: " + MyFormatter.attachmentNameToText(toFire.getName()));
+        bridge
+            .getHistoryWriter()
+            .startEvent(
+                MyFormatter.attachmentNameToText(actionAttachment.getName())
+                    + " activates a trigger called: "
+                    + MyFormatter.attachmentNameToText(toFire.getName()));
         TriggerAttachment.fireTriggers(toFireSet, testedConditionsSoFar, bridge, fireTriggerParams);
       }
     }
@@ -152,12 +162,11 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
     return otherPlayers;
   }
 
-  /**
-   * Returns the valid actions for this player.
-   */
-  public static Collection<UserActionAttachment> getValidActions(final PlayerId player,
-      final Map<ICondition, Boolean> testedConditions) {
-    return CollectionUtils.getMatches(getUserActionAttachments(player),
+  /** Returns the valid actions for this player. */
+  public static Collection<UserActionAttachment> getValidActions(
+      final PlayerId player, final Map<ICondition, Boolean> testedConditions) {
+    return CollectionUtils.getMatches(
+        getUserActionAttachments(player),
         Matches.abstractUserActionAttachmentCanBeAttempted(testedConditions));
   }
 
@@ -165,7 +174,8 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
         .putAll(super.getPropertyMap())
-        .put("activateTrigger",
+        .put(
+            "activateTrigger",
             MutableProperty.of(
                 this::setActivateTrigger,
                 this::setActivateTrigger,

@@ -5,15 +5,13 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresentAndIs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.test.common.Integration;
-
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
-
 
 @Integration
 @ExtendWith(DBUnitExtension.class)
@@ -42,15 +40,9 @@ class ModeratorSingleUseKeyDaoTest {
     assertThat(
         moderatorSingleUseKeyDao.lookupModeratorBySingleUseKey(SECRET_KEY),
         isPresentAndIs(MODERATOR_ID));
-    assertThat(
-        moderatorSingleUseKeyDao.lookupModeratorBySingleUseKey("DNE"),
-        isEmpty());
-    assertThat(
-        moderatorSingleUseKeyDao.lookupModeratorBySingleUseKey(USED_KEY),
-        isEmpty());
-    assertThat(
-        moderatorSingleUseKeyDao.lookupModeratorBySingleUseKey(EXPIRED_KEY),
-        isEmpty());
+    assertThat(moderatorSingleUseKeyDao.lookupModeratorBySingleUseKey("DNE"), isEmpty());
+    assertThat(moderatorSingleUseKeyDao.lookupModeratorBySingleUseKey(USED_KEY), isEmpty());
+    assertThat(moderatorSingleUseKeyDao.lookupModeratorBySingleUseKey(EXPIRED_KEY), isEmpty());
   }
 
   @Test

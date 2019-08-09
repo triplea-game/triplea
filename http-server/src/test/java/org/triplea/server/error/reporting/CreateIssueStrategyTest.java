@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.function.Function;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -24,43 +23,35 @@ import org.triplea.lobby.server.db.dao.ErrorReportingDao;
 @ExtendWith(MockitoExtension.class)
 class CreateIssueStrategyTest {
 
-  private static final ErrorReportRequest ERROR_REPORT_REQUEST = ErrorReportRequest.builder()
-      .errorReport(ErrorUploadRequest.builder()
-          .body("body")
-          .title("title")
-          .build())
-      .clientIp("ip")
-      .build();
+  private static final ErrorReportRequest ERROR_REPORT_REQUEST =
+      ErrorReportRequest.builder()
+          .errorReport(ErrorUploadRequest.builder().body("body").title("title").build())
+          .clientIp("ip")
+          .build();
 
   private CreateIssueStrategy createIssueStrategy;
 
-  @Mock
-  private GithubIssueClient githubIssueClient;
-  @Mock
-  private ErrorUploadResponse errorUploadResponse;
-  @Mock
-  private CreateIssueResponse createIssueResponse;
-  @Mock
-  private Function<CreateIssueResponse, ErrorUploadResponse> responseAdapter;
-  @Mock
-  private ErrorReportingDao errorReportingDao;
+  @Mock private GithubIssueClient githubIssueClient;
+  @Mock private ErrorUploadResponse errorUploadResponse;
+  @Mock private CreateIssueResponse createIssueResponse;
+  @Mock private Function<CreateIssueResponse, ErrorUploadResponse> responseAdapter;
+  @Mock private ErrorReportingDao errorReportingDao;
 
   @Test
   void whenGithubServiceClientIsTestWillReturnStub() {
-    createIssueStrategy = CreateIssueStrategy.builder()
-        .githubIssueClient(githubIssueClient)
-        .allowErrorReport(value -> true)
-        .isProduction(false)
-        .responseAdapter(value -> null)
-        .errorReportingDao(errorReportingDao)
-        .build();
+    createIssueStrategy =
+        CreateIssueStrategy.builder()
+            .githubIssueClient(githubIssueClient)
+            .allowErrorReport(value -> true)
+            .isProduction(false)
+            .responseAdapter(value -> null)
+            .errorReportingDao(errorReportingDao)
+            .build();
     when(githubIssueClient.isTest()).thenReturn(true);
 
     final ErrorUploadResponse response = createIssueStrategy.apply(ERROR_REPORT_REQUEST);
 
-    assertThat(
-        response.getGithubIssueLink(),
-        is(CreateIssueStrategy.STUBBED_RETURN_VALUE));
+    assertThat(response.getGithubIssueLink(), is(CreateIssueStrategy.STUBBED_RETURN_VALUE));
 
     verify(errorReportingDao).insertHistoryRecord(ERROR_REPORT_REQUEST.getClientIp());
     verify(errorReportingDao).purgeOld(any());
@@ -68,16 +59,18 @@ class CreateIssueStrategyTest {
 
   @Test
   void willThrowIfReportingLimitIsReached() {
-    createIssueStrategy = CreateIssueStrategy.builder()
-        .githubIssueClient(githubIssueClient)
-        // key setting here is that allow error report is false
-        .allowErrorReport(value -> false)
-        .isProduction(false)
-        .responseAdapter(value -> null)
-        .errorReportingDao(errorReportingDao)
-        .build();
+    createIssueStrategy =
+        CreateIssueStrategy.builder()
+            .githubIssueClient(githubIssueClient)
+            // key setting here is that allow error report is false
+            .allowErrorReport(value -> false)
+            .isProduction(false)
+            .responseAdapter(value -> null)
+            .errorReportingDao(errorReportingDao)
+            .build();
 
-    assertThrows(CreateErrorReportException.class, () -> createIssueStrategy.apply(ERROR_REPORT_REQUEST));
+    assertThrows(
+        CreateErrorReportException.class, () -> createIssueStrategy.apply(ERROR_REPORT_REQUEST));
 
     verify(errorReportingDao, never()).insertHistoryRecord(any());
     verify(errorReportingDao, never()).purgeOld(any());
@@ -85,13 +78,14 @@ class CreateIssueStrategyTest {
 
   @Test
   void verifyHappyCaseFlow() {
-    createIssueStrategy = CreateIssueStrategy.builder()
-        .githubIssueClient(githubIssueClient)
-        .allowErrorReport(value -> true)
-        .isProduction(true)
-        .responseAdapter(responseAdapter)
-        .errorReportingDao(errorReportingDao)
-        .build();
+    createIssueStrategy =
+        CreateIssueStrategy.builder()
+            .githubIssueClient(githubIssueClient)
+            .allowErrorReport(value -> true)
+            .isProduction(true)
+            .responseAdapter(responseAdapter)
+            .errorReportingDao(errorReportingDao)
+            .build();
 
     when(githubIssueClient.isTest()).thenReturn(false);
     when(githubIssueClient.newIssue(ERROR_REPORT_REQUEST.getErrorReport()))

@@ -1,27 +1,23 @@
 package org.triplea.game.server;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Observer;
-import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.triplea.game.chat.ChatModel;
-import org.triplea.game.startup.SetupModel;
-import org.triplea.java.Interruptibles;
-import org.triplea.util.ExitStatus;
-
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import java.util.List;
+import java.util.Map;
+import java.util.Observer;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.extern.java.Log;
+import org.triplea.game.chat.ChatModel;
+import org.triplea.game.startup.SetupModel;
+import org.triplea.java.Interruptibles;
+import org.triplea.util.ExitStatus;
 
-/**
- * Server setup model.
- */
+/** Server setup model. */
 @Log
 class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
   private final List<Observer> listeners = new CopyOnWriteArrayList<>();
@@ -38,20 +34,22 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
   }
 
   private void createLobbyWatcher() {
-    final InGameLobbyWatcher.LobbyWatcherHandler handler = new InGameLobbyWatcher.LobbyWatcherHandler() {
-      @Override
-      public void reportError(final String message) {
-        log.severe(message);
-        ExitStatus.FAILURE.exit();
-      }
+    final InGameLobbyWatcher.LobbyWatcherHandler handler =
+        new InGameLobbyWatcher.LobbyWatcherHandler() {
+          @Override
+          public void reportError(final String message) {
+            log.severe(message);
+            ExitStatus.FAILURE.exit();
+          }
 
-      @Override
-      public boolean isPlayer() {
-        return false;
-      }
-    };
-    lobbyWatcher.setInGameLobbyWatcher(InGameLobbyWatcher.newInGameLobbyWatcher(model.getMessenger(), handler,
-        lobbyWatcher.getInGameLobbyWatcher()));
+          @Override
+          public boolean isPlayer() {
+            return false;
+          }
+        };
+    lobbyWatcher.setInGameLobbyWatcher(
+        InGameLobbyWatcher.newInGameLobbyWatcher(
+            model.getMessenger(), handler, lobbyWatcher.getInGameLobbyWatcher()));
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
   }
 
@@ -110,11 +108,13 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
 
   @Override
   public synchronized Optional<ILauncher> getLauncher() {
-    return model.getLauncher()
-        .map(launcher -> {
-          launcher.setInGameLobbyWatcher(lobbyWatcher);
-          return launcher;
-        });
+    return model
+        .getLauncher()
+        .map(
+            launcher -> {
+              launcher.setInGameLobbyWatcher(lobbyWatcher);
+              return launcher;
+            });
   }
 
   @Override

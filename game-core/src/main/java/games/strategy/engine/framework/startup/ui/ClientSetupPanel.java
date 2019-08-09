@@ -1,5 +1,10 @@
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.framework.HeadlessAutoSaveType;
+import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.mc.ClientModel;
+import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -12,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -21,18 +25,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
 import org.triplea.swing.SwingAction;
 
-import games.strategy.engine.chat.ChatPanel;
-import games.strategy.engine.framework.HeadlessAutoSaveType;
-import games.strategy.engine.framework.startup.launcher.ILauncher;
-import games.strategy.engine.framework.startup.mc.ClientModel;
-import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
-
-/**
- * Network client game staging panel, can be used to select sides and chat.
- */
+/** Network client game staging panel, can be used to select sides and chat. */
 public class ClientSetupPanel extends SetupPanel {
   private static final long serialVersionUID = 6942605803526295372L;
   private final Insets buttonInsets = new Insets(0, 0, 0, 0);
@@ -42,15 +37,16 @@ public class ClientSetupPanel extends SetupPanel {
   public ClientSetupPanel(final ClientModel model) {
     clientModel = model;
     layoutComponents();
-    clientModel.setRemoteModelListener(new IRemoteModelListener() {
-      @Override
-      public void playersTakenChanged() {}
+    clientModel.setRemoteModelListener(
+        new IRemoteModelListener() {
+          @Override
+          public void playersTakenChanged() {}
 
-      @Override
-      public void playerListChanged() {
-        SwingUtilities.invokeLater(ClientSetupPanel.this::internalPlayersChanged);
-      }
-    });
+          @Override
+          public void playerListChanged() {
+            SwingUtilities.invokeLater(ClientSetupPanel.this::internalPlayersChanged);
+          }
+        });
   }
 
   private void internalPlayersChanged() {
@@ -66,10 +62,12 @@ public class ClientSetupPanel extends SetupPanel {
     playerRows.clear();
     final Set<String> playerNames = playerNamesAndAlliancesInTurnOrder.keySet();
     for (final String name : playerNames) {
-      final PlayerRow playerRow = new PlayerRow(name, playerNamesAndAlliancesInTurnOrder.get(name),
-          enabledPlayers.get(name));
+      final PlayerRow playerRow =
+          new PlayerRow(
+              name, playerNamesAndAlliancesInTurnOrder.get(name), enabledPlayers.get(name));
       playerRows.add(playerRow);
-      SwingUtilities.invokeLater(() -> playerRow.update(players.get(name), disableable.contains(name)));
+      SwingUtilities.invokeLater(
+          () -> playerRow.update(players.get(name), disableable.contains(name)));
     }
     SwingUtilities.invokeLater(this::layoutComponents);
   }
@@ -171,16 +169,18 @@ public class ClientSetupPanel extends SetupPanel {
         SwingAction.of("Play", e -> clientModel.takePlayer(playerNameLabel.getText()));
     private final Action dontTakeAction =
         SwingAction.of("Don't Play", e -> clientModel.releasePlayer(playerNameLabel.getText()));
-    private final ActionListener disablePlayerActionListener = e -> {
-      if (enabledCheckBox.isSelected()) {
-        clientModel.enablePlayer(playerNameLabel.getText());
-      } else {
-        clientModel.disablePlayer(playerNameLabel.getText());
-      }
-      setWidgetActivation(true);
-    };
+    private final ActionListener disablePlayerActionListener =
+        e -> {
+          if (enabledCheckBox.isSelected()) {
+            clientModel.enablePlayer(playerNameLabel.getText());
+          } else {
+            clientModel.disablePlayer(playerNameLabel.getText());
+          }
+          setWidgetActivation(true);
+        };
 
-    PlayerRow(final String playerName, final Collection<String> playerAlliances, final boolean enabled) {
+    PlayerRow(
+        final String playerName, final Collection<String> playerAlliances, final boolean enabled) {
       playerNameLabel.setText(playerName);
       enabledCheckBox.addActionListener(disablePlayerActionListener);
       enabledCheckBox.setSelected(enabled);
@@ -253,14 +253,26 @@ public class ClientSetupPanel extends SetupPanel {
     actions.add(clientModel.getHostBotSetMapClientAction(this));
     actions.add(clientModel.getHostBotChangeGameOptionsClientAction(this));
     actions.add(clientModel.getHostBotChangeGameToSaveGameClientAction());
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.DEFAULT));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.ODD_ROUND));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.EVEN_ROUND));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.END_TURN));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.BEFORE_BATTLE));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.AFTER_BATTLE));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.AFTER_COMBAT_MOVE));
-    actions.add(clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.AFTER_NON_COMBAT_MOVE));
+    actions.add(
+        clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.DEFAULT));
+    actions.add(
+        clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.ODD_ROUND));
+    actions.add(
+        clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.EVEN_ROUND));
+    actions.add(
+        clientModel.getHostBotChangeToAutosaveClientAction(this, HeadlessAutoSaveType.END_TURN));
+    actions.add(
+        clientModel.getHostBotChangeToAutosaveClientAction(
+            this, HeadlessAutoSaveType.BEFORE_BATTLE));
+    actions.add(
+        clientModel.getHostBotChangeToAutosaveClientAction(
+            this, HeadlessAutoSaveType.AFTER_BATTLE));
+    actions.add(
+        clientModel.getHostBotChangeToAutosaveClientAction(
+            this, HeadlessAutoSaveType.AFTER_COMBAT_MOVE));
+    actions.add(
+        clientModel.getHostBotChangeToAutosaveClientAction(
+            this, HeadlessAutoSaveType.AFTER_NON_COMBAT_MOVE));
     actions.add(clientModel.getHostBotGetGameSaveClientAction(this));
     return actions;
   }
@@ -269,7 +281,6 @@ public class ClientSetupPanel extends SetupPanel {
   public boolean isCancelButtonVisible() {
     return true;
   }
-
 
   @Override
   public Optional<ILauncher> getLauncher() {

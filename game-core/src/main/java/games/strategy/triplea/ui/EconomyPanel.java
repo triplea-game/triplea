@@ -1,23 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.GridLayout;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingUtilities;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
-
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -25,6 +7,21 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
+import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import org.triplea.java.collections.IntegerMap;
 
 class EconomyPanel extends AbstractStatPanel {
   private static final long serialVersionUID = -7713792841831042952L;
@@ -97,7 +94,8 @@ class EconomyPanel extends AbstractStatPanel {
         final Map<PlayerId, IntegerMap<Resource>> resourceIncomeMap = new HashMap<>();
         for (final PlayerId player : players) {
           collectedData[row][0] = player.getName();
-          final IntegerMap<Resource> resourceIncomes = AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
+          final IntegerMap<Resource> resourceIncomes =
+              AbstractEndTurnDelegate.findEstimatedIncome(player, gameData);
           resourceIncomeMap.put(player, resourceIncomes);
           for (int i = 0; i < resourceStats.size(); i++) {
             final ResourceStat resourceStat = resourceStats.get(i);
@@ -112,8 +110,10 @@ class EconomyPanel extends AbstractStatPanel {
           for (int i = 0; i < resourceStats.size(); i++) {
             final ResourceStat resourceStat = resourceStats.get(i);
             final double amount = resourceStat.getValue(alliance.getKey(), gameData);
-            final int income = alliance.getValue().stream()
-                .mapToInt(p -> resourceIncomeMap.get(p).getInt(resourceStat.resource)).sum();
+            final int income =
+                alliance.getValue().stream()
+                    .mapToInt(p -> resourceIncomeMap.get(p).getInt(resourceStat.resource))
+                    .sum();
             collectedData[row][i + 1] = getResourceAmountAndIncome(resourceStat, amount, income);
           }
           row++;
@@ -123,10 +123,11 @@ class EconomyPanel extends AbstractStatPanel {
       }
     }
 
-    private String getResourceAmountAndIncome(final ResourceStat resourceStat, final double amount,
-        final int income) {
+    private String getResourceAmountAndIncome(
+        final ResourceStat resourceStat, final double amount, final int income) {
       final StringBuilder resourceAmountAndIncome =
-          new StringBuilder("<html><b>" + resourceStat.getFormatter().format(amount) + "</b>&nbsp;(");
+          new StringBuilder(
+              "<html><b>" + resourceStat.getFormatter().format(amount) + "</b>&nbsp;(");
       if (income >= 0) {
         resourceAmountAndIncome.append("+");
       }

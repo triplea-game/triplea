@@ -9,9 +9,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 import lombok.extern.java.Log;
 
-/**
- * A technology advance that lowers all unit costs by one.
- */
+/** A technology advance that lowers all unit costs by one. */
 @Log
 public final class IndustrialTechnologyAdvance extends TechAdvance {
   private static final long serialVersionUID = -21252592806022090L;

@@ -1,13 +1,12 @@
 package games.strategy.triplea.delegate.data;
 
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.TechnologyFrontier;
+import org.triplea.java.collections.IntegerMap;
 
 /**
- * Used to describe a tech roll.
- * advance may be null if the game does not support rolling for specific techs
+ * Used to describe a tech roll. advance may be null if the game does not support rolling for
+ * specific techs
  */
 public class TechRoll {
   private final TechnologyFrontier tech;
@@ -23,7 +22,10 @@ public class TechRoll {
     this(advance, rolls, newTokens, null);
   }
 
-  public TechRoll(final TechnologyFrontier advance, final int rolls, final int newTokens,
+  public TechRoll(
+      final TechnologyFrontier advance,
+      final int rolls,
+      final int newTokens,
       final IntegerMap<PlayerId> whoPaysHowMuch) {
     this.rolls = rolls;
     tech = advance;

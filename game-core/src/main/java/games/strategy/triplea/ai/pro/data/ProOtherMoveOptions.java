@@ -1,12 +1,5 @@
 package games.strategy.triplea.ai.pro.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -14,10 +7,14 @@ import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
 import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.delegate.Matches;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-/**
- * The result of an AI movement analysis for another player's possible moves.
- */
+/** The result of an AI movement analysis for another player's possible moves. */
 public class ProOtherMoveOptions {
 
   private final Map<Territory, ProTerritory> maxMoveMap;
@@ -28,7 +25,9 @@ public class ProOtherMoveOptions {
     moveMaps = new HashMap<>();
   }
 
-  public ProOtherMoveOptions(final List<Map<Territory, ProTerritory>> moveMapList, final PlayerId player,
+  public ProOtherMoveOptions(
+      final List<Map<Territory, ProTerritory>> moveMapList,
+      final PlayerId player,
       final boolean isAttacker) {
     maxMoveMap = newMaxMoveMap(moveMapList, player, isAttacker);
     moveMaps = newMoveMaps(moveMapList);
@@ -51,9 +50,10 @@ public class ProOtherMoveOptions {
     return maxMoveMap.toString();
   }
 
-  private static Map<Territory, ProTerritory> newMaxMoveMap(final List<Map<Territory, ProTerritory>> moveMaps,
-      final PlayerId player, final boolean isAttacker) {
-
+  private static Map<Territory, ProTerritory> newMaxMoveMap(
+      final List<Map<Territory, ProTerritory>> moveMaps,
+      final PlayerId player,
+      final boolean isAttacker) {
 
     final Map<Territory, ProTerritory> result = new HashMap<>();
     final List<PlayerId> players = ProUtils.getOtherPlayersInTurnOrder(player);
@@ -84,13 +84,17 @@ public class ProOtherMoveOptions {
           maxUnits.addAll(result.get(t).getMaxAmphibUnits());
           double maxStrength = 0;
           if (!maxUnits.isEmpty()) {
-            maxStrength = ProBattleUtils.estimateStrength(t, new ArrayList<>(maxUnits), new ArrayList<>(), isAttacker);
+            maxStrength =
+                ProBattleUtils.estimateStrength(
+                    t, new ArrayList<>(maxUnits), new ArrayList<>(), isAttacker);
           }
           final double currentStrength =
-              ProBattleUtils.estimateStrength(t, new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);
+              ProBattleUtils.estimateStrength(
+                  t, new ArrayList<>(currentUnits), new ArrayList<>(), isAttacker);
           final boolean currentHasLandUnits = currentUnits.stream().anyMatch(Matches.unitIsLand());
           final boolean maxHasLandUnits = maxUnits.stream().anyMatch(Matches.unitIsLand());
-          if ((currentHasLandUnits && ((!maxHasLandUnits && !t.isWater()) || currentStrength > maxStrength))
+          if ((currentHasLandUnits
+                  && ((!maxHasLandUnits && !t.isWater()) || currentStrength > maxStrength))
               || ((!maxHasLandUnits || t.isWater()) && currentStrength > maxStrength)) {
             result.put(t, moveMap.get(t));
           }
@@ -117,5 +121,4 @@ public class ProOtherMoveOptions {
     }
     return result;
   }
-
 }

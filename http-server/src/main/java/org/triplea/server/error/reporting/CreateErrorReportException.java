@@ -1,8 +1,8 @@
 package org.triplea.server.error.reporting;
 
 /**
- * An exception type thrown when http server is unable to create an error report,
- * generally this will be an error interacting with github API.
+ * An exception type thrown when http server is unable to create an error report, generally this
+ * will be an error interacting with github API.
  */
 public class CreateErrorReportException extends RuntimeException {
 

@@ -10,14 +10,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import games.strategy.engine.delegate.IDelegateBridge;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import games.strategy.engine.delegate.IDelegateBridge;
 
 class ExecutionStackTest {
   private final ExecutionStack executionStack = new ExecutionStack();
@@ -25,18 +23,18 @@ class ExecutionStackTest {
   @Test
   void testStackIsProcessedInRightOrder() {
     final List<Integer> orderCheck = new ArrayList<>();
-    executionStack.push(Arrays.asList(
-        (stack, bridge) -> orderCheck.add(4),
-        (stack, bridge) -> orderCheck.add(3)));
-    executionStack.push((stack, bridge) -> {
-      // Prevent infinite loop
-      if (orderCheck.contains(1)) {
-        fail("Executable was executed more than once");
-      }
+    executionStack.push(
+        Arrays.asList((stack, bridge) -> orderCheck.add(4), (stack, bridge) -> orderCheck.add(3)));
+    executionStack.push(
+        (stack, bridge) -> {
+          // Prevent infinite loop
+          if (orderCheck.contains(1)) {
+            fail("Executable was executed more than once");
+          }
 
-      orderCheck.add(1);
-      executionStack.push((s, b) -> orderCheck.add(2));
-    });
+          orderCheck.add(1);
+          executionStack.push((s, b) -> orderCheck.add(2));
+        });
     executionStack.push((stack, bridge) -> orderCheck.add(0));
 
     executionStack.execute(null);

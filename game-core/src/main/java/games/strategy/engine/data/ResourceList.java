@@ -1,15 +1,12 @@
 package games.strategy.engine.data;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.annotations.VisibleForTesting;
-
-/**
- * A collection of {@link Resource}s keyed on the resource name.
- */
+/** A collection of {@link Resource}s keyed on the resource name. */
 public class ResourceList extends GameDataComponent {
   private static final long serialVersionUID = -8812702449627698253L;
 

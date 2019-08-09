@@ -1,18 +1,13 @@
 package org.triplea.game.client.ui.javafx.util;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.util.Optional;
-import java.util.function.BiFunction;
-
-import javax.annotation.Nullable;
-
-import org.triplea.java.OptionalUtils;
-
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.settings.SelectionComponent;
 import games.strategy.triplea.settings.SelectionComponentUiUtils;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Optional;
+import java.util.function.BiFunction;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -27,15 +22,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import javax.annotation.Nullable;
+import org.triplea.java.OptionalUtils;
 
 final class JavaFxSelectionComponentFactory {
 
   private JavaFxSelectionComponentFactory() {}
 
   static SelectionComponent<Region> intValueRange(
-      final ClientSetting<Integer> clientSetting,
-      final int minValue,
-      final int maxValue) {
+      final ClientSetting<Integer> clientSetting, final int minValue, final int maxValue) {
     return intValueRange(clientSetting, minValue, maxValue, false);
   }
 
@@ -48,16 +43,20 @@ final class JavaFxSelectionComponentFactory {
       private final Spinner<Integer> spinner = newSpinner();
 
       private Spinner<Integer> newSpinner() {
-        final Spinner<Integer> spinner = new Spinner<>(
-            minValue - (allowUnset ? 1 : 0),
-            maxValue,
-            getIntegerFromOptional(clientSetting.getValue()));
+        final Spinner<Integer> spinner =
+            new Spinner<>(
+                minValue - (allowUnset ? 1 : 0),
+                maxValue,
+                getIntegerFromOptional(clientSetting.getValue()));
         spinner.setEditable(true);
-        spinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
-          if (!newValue) {
-            spinner.increment(0); // hack to force editor to commit value when losing focus
-          }
-        });
+        spinner
+            .focusedProperty()
+            .addListener(
+                (observable, oldValue, newValue) -> {
+                  if (!newValue) {
+                    spinner.increment(0); // hack to force editor to commit value when losing focus
+                  }
+                });
         return spinner;
       }
 
@@ -77,7 +76,8 @@ final class JavaFxSelectionComponentFactory {
       @Override
       public void save(final SaveContext context) {
         final Integer spinnerValue = spinner.getValue();
-        final @Nullable Integer value = (allowUnset && spinnerValue.equals(unsetValue())) ? null : spinnerValue;
+        final @Nullable Integer value =
+            (allowUnset && spinnerValue.equals(unsetValue())) ? null : spinnerValue;
         context.setValue(clientSetting, value);
       }
 
@@ -159,30 +159,37 @@ final class JavaFxSelectionComponentFactory {
   }
 
   static SelectionComponent<Region> folderPath(final ClientSetting<Path> clientSetting) {
-    return new FileSelector(clientSetting, (window, selectedPath) -> {
-      final DirectoryChooser fileChooser = new DirectoryChooser();
-      if (selectedPath != null) {
-        fileChooser.setInitialDirectory(selectedPath.toFile());
-      }
-      return Optional.ofNullable(fileChooser.showDialog(window)).map(File::toPath).orElse(null);
-    });
+    return new FileSelector(
+        clientSetting,
+        (window, selectedPath) -> {
+          final DirectoryChooser fileChooser = new DirectoryChooser();
+          if (selectedPath != null) {
+            fileChooser.setInitialDirectory(selectedPath.toFile());
+          }
+          return Optional.ofNullable(fileChooser.showDialog(window)).map(File::toPath).orElse(null);
+        });
   }
 
   static SelectionComponent<Region> filePath(final ClientSetting<Path> clientSetting) {
-    return new FileSelector(clientSetting, (window, selectedPath) -> {
-      final FileChooser fileChooser = new FileChooser();
-      if (selectedPath != null) {
-        fileChooser.setInitialDirectory(selectedPath.getParent().toFile());
-      }
-      return Optional.ofNullable(fileChooser.showOpenDialog(window)).map(File::toPath).orElse(null);
-    });
+    return new FileSelector(
+        clientSetting,
+        (window, selectedPath) -> {
+          final FileChooser fileChooser = new FileChooser();
+          if (selectedPath != null) {
+            fileChooser.setInitialDirectory(selectedPath.getParent().toFile());
+          }
+          return Optional.ofNullable(fileChooser.showOpenDialog(window))
+              .map(File::toPath)
+              .orElse(null);
+        });
   }
 
   static SelectionComponent<Region> proxySettings(
       final ClientSetting<HttpProxy.ProxyChoice> proxyChoiceClientSetting,
       final ClientSetting<String> proxyHostClientSetting,
       final ClientSetting<Integer> proxyPortClientSetting) {
-    return new ProxySetting(proxyChoiceClientSetting, proxyHostClientSetting, proxyPortClientSetting);
+    return new ProxySetting(
+        proxyChoiceClientSetting, proxyHostClientSetting, proxyPortClientSetting);
   }
 
   private static final class FileSelector extends Region implements SelectionComponent<Region> {
@@ -197,19 +204,23 @@ final class JavaFxSelectionComponentFactory {
       final @Nullable Path initialValue = clientSetting.getValue().orElse(null);
       final HBox wrapper = new HBox();
       textField = new TextField(SelectionComponentUiUtils.toString(clientSetting.getValue()));
-      textField.prefColumnCountProperty().bind(Bindings.add(1, Bindings.length(textField.textProperty())));
+      textField
+          .prefColumnCountProperty()
+          .bind(Bindings.add(1, Bindings.length(textField.textProperty())));
       textField.setMaxWidth(Double.MAX_VALUE);
       textField.setMinWidth(100);
       textField.setDisable(true);
       final Button chooseFileButton = new Button("...");
       selectedPath = initialValue;
-      chooseFileButton.setOnAction(e -> {
-        final @Nullable Path path = chooseFile.apply(chooseFileButton.getScene().getWindow(), selectedPath);
-        if (path != null) {
-          selectedPath = path;
-          textField.setText(path.toString());
-        }
-      });
+      chooseFileButton.setOnAction(
+          e -> {
+            final @Nullable Path path =
+                chooseFile.apply(chooseFileButton.getScene().getWindow(), selectedPath);
+            if (path != null) {
+              selectedPath = path;
+              textField.setText(path.toString());
+            }
+          });
       wrapper.getChildren().addAll(textField, chooseFileButton);
       getChildren().add(wrapper);
     }
@@ -268,14 +279,16 @@ final class JavaFxSelectionComponentFactory {
       hostText = new TextField(proxyHostClientSetting.getValue().orElse(""));
       portText = new TextField(proxyPortClientSetting.getValue().map(Object::toString).orElse(""));
       final VBox radioPanel = new VBox();
-      radioPanel.getChildren().addAll(
-          noneButton,
-          systemButton,
-          userButton,
-          new Label("Proxy Host: "),
-          hostText,
-          new Label("Proxy Port: "),
-          portText);
+      radioPanel
+          .getChildren()
+          .addAll(
+              noneButton,
+              systemButton,
+              userButton,
+              new Label("Proxy Host: "),
+              hostText,
+              new Label("Proxy Port: "),
+              portText);
       hostText.disableProperty().bind(Bindings.not(userButton.selectedProperty()));
       portText.disableProperty().bind(Bindings.not(userButton.selectedProperty()));
 
@@ -283,12 +296,15 @@ final class JavaFxSelectionComponentFactory {
       noneButton.setToggleGroup(toggleGroup);
       systemButton.setToggleGroup(toggleGroup);
       userButton.setToggleGroup(toggleGroup);
-      toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-        if (!userButton.isSelected()) {
-          hostText.clear();
-          portText.clear();
-        }
-      });
+      toggleGroup
+          .selectedToggleProperty()
+          .addListener(
+              (observable, oldValue, newValue) -> {
+                if (!userButton.isSelected()) {
+                  hostText.clear();
+                  portText.clear();
+                }
+              });
 
       getChildren().add(radioPanel);
     }
@@ -307,23 +323,33 @@ final class JavaFxSelectionComponentFactory {
       } else {
         final String encodedHost = hostText.getText().trim();
         final Optional<String> optionalHost = parseHost(encodedHost);
-        OptionalUtils.ifEmpty(optionalHost, () -> context.reportError(
-            proxyHostClientSetting,
-            "must be a network name or an IP address",
-            encodedHost));
+        OptionalUtils.ifEmpty(
+            optionalHost,
+            () ->
+                context.reportError(
+                    proxyHostClientSetting,
+                    "must be a network name or an IP address",
+                    encodedHost));
 
         final String encodedPort = portText.getText().trim();
         final Optional<Integer> optionalPort = parsePort(encodedPort);
-        OptionalUtils.ifEmpty(optionalPort, () -> context.reportError(
-            proxyPortClientSetting,
-            "must be a positive integer, usually 4 to 5 digits",
-            encodedPort));
+        OptionalUtils.ifEmpty(
+            optionalPort,
+            () ->
+                context.reportError(
+                    proxyPortClientSetting,
+                    "must be a positive integer, usually 4 to 5 digits",
+                    encodedPort));
 
-        OptionalUtils.ifAllPresent(optionalHost, optionalPort, (host, port) -> {
-          context.setValue(proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
-          context.setValue(proxyHostClientSetting, host);
-          context.setValue(proxyPortClientSetting, port);
-        });
+        OptionalUtils.ifAllPresent(
+            optionalHost,
+            optionalPort,
+            (host, port) -> {
+              context.setValue(
+                  proxyChoiceClientSetting, HttpProxy.ProxyChoice.USE_USER_PREFERENCES);
+              context.setValue(proxyHostClientSetting, host);
+              context.setValue(proxyPortClientSetting, port);
+            });
       }
     }
 

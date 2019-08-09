@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.mockito.Mockito.verify;
 
+import com.google.common.util.concurrent.Runnables;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,8 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.function.ThrowingRunnable;
-
-import com.google.common.util.concurrent.Runnables;
 
 @ExtendWith(MockitoExtension.class)
 final class InterruptiblesTest {
@@ -30,12 +28,10 @@ final class InterruptiblesTest {
 
   @Nested
   final class AwaitTest {
-    @Mock
-    private ThrowingRunnable<InterruptedException> runnable;
+    @Mock private ThrowingRunnable<InterruptedException> runnable;
 
     @Test
-    void shouldReturnTrueWhenCompleted()
-        throws Exception {
+    void shouldReturnTrueWhenCompleted() throws Exception {
       final boolean completed = Interruptibles.await(runnable);
 
       verify(runnable).run();
@@ -44,9 +40,11 @@ final class InterruptiblesTest {
 
     @Test
     void shouldReturnFalseWhenInterrupted() {
-      final boolean completed = Interruptibles.await(() -> {
-        throw new InterruptedException();
-      });
+      final boolean completed =
+          Interruptibles.await(
+              () -> {
+                throw new InterruptedException();
+              });
 
       assertThat(completed, is(false));
       assertThat(Thread.currentThread().isInterrupted(), is(true));
@@ -54,9 +52,13 @@ final class InterruptiblesTest {
 
     @Test
     void shouldRethrowRunnableUncheckedException() {
-      assertThrows(IllegalStateException.class, () -> Interruptibles.await(() -> {
-        throw new IllegalStateException();
-      }));
+      assertThrows(
+          IllegalStateException.class,
+          () ->
+              Interruptibles.await(
+                  () -> {
+                    throw new IllegalStateException();
+                  }));
     }
   }
 
@@ -82,9 +84,11 @@ final class InterruptiblesTest {
 
     @Test
     void shouldReturnInterruptedEmptyResultWhenInterrupted() {
-      final Interruptibles.Result<Object> result = Interruptibles.awaitResult(() -> {
-        throw new InterruptedException();
-      });
+      final Interruptibles.Result<Object> result =
+          Interruptibles.awaitResult(
+              () -> {
+                throw new InterruptedException();
+              });
 
       assertThat(result.completed, is(false));
       assertThat(result.result, is(Optional.empty()));
@@ -93,9 +97,13 @@ final class InterruptiblesTest {
 
     @Test
     void shouldRethrowSupplierUncheckedException() {
-      assertThrows(IllegalStateException.class, () -> Interruptibles.awaitResult(() -> {
-        throw new IllegalStateException();
-      }));
+      assertThrows(
+          IllegalStateException.class,
+          () ->
+              Interruptibles.awaitResult(
+                  () -> {
+                    throw new IllegalStateException();
+                  }));
     }
   }
 
@@ -105,9 +113,11 @@ final class InterruptiblesTest {
     void shouldWaitUntilLatchCountIsZero() {
       final CountDownLatch latch = new CountDownLatch(0);
 
-      assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> {
-        assertThat(Interruptibles.await(latch), is(true));
-      });
+      assertTimeoutPreemptively(
+          Duration.ofSeconds(5L),
+          () -> {
+            assertThat(Interruptibles.await(latch), is(true));
+          });
     }
   }
 
@@ -118,9 +128,11 @@ final class InterruptiblesTest {
       final Thread thread = new Thread(Runnables.doNothing());
       thread.start();
 
-      assertTimeoutPreemptively(Duration.ofSeconds(5L), () -> {
-        assertThat(Interruptibles.join(thread), is(true));
-      });
+      assertTimeoutPreemptively(
+          Duration.ofSeconds(5L),
+          () -> {
+            assertThat(Interruptibles.join(thread), is(true));
+          });
     }
   }
 

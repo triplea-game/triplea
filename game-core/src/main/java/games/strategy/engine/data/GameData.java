@@ -1,5 +1,18 @@
 package games.strategy.engine.data;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
+import games.strategy.engine.data.events.GameDataChangeListener;
+import games.strategy.engine.data.events.TerritoryListener;
+import games.strategy.engine.data.properties.GameProperties;
+import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.framework.IGameLoader;
+import games.strategy.engine.framework.message.PlayerListing;
+import games.strategy.engine.history.History;
+import games.strategy.io.IoUtils;
+import games.strategy.thread.LockUtil;
+import games.strategy.triplea.TripleA;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -14,41 +27,20 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import javax.swing.SwingUtilities;
-
 import org.triplea.util.Tuple;
 import org.triplea.util.Version;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.MoreObjects;
-
-import games.strategy.engine.data.events.GameDataChangeListener;
-import games.strategy.engine.data.events.TerritoryListener;
-import games.strategy.engine.data.properties.GameProperties;
-import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.framework.GameDataManager;
-import games.strategy.engine.framework.IGameLoader;
-import games.strategy.engine.framework.message.PlayerListing;
-import games.strategy.engine.history.History;
-import games.strategy.io.IoUtils;
-import games.strategy.thread.LockUtil;
-import games.strategy.triplea.TripleA;
 
 /**
  * Central place to find all the information for a running game.
  *
- * <p>
- * Using this object you can find the territories, connections, production rules, unit types...
- * </p>
+ * <p>Using this object you can find the territories, connections, production rules, unit types...
  *
- * <p>
- * Threading. The game data, and all parts of the game data (such as Territories, Players, Units...) are protected by a
- * read/write lock. If you are reading the game data, you should read while you have the read lock as below.
- * </p>
+ * <p>Threading. The game data, and all parts of the game data (such as Territories, Players,
+ * Units...) are protected by a read/write lock. If you are reading the game data, you should read
+ * while you have the read lock as below.
  *
- * <p>
- * <code>
+ * <p><code>
  * data.acquireReadLock();
  * try
  * {
@@ -58,15 +50,12 @@ import games.strategy.triplea.TripleA;
  * {
  *   data.releaseReadLock();
  * }
- * </code>
- * The exception is delegates within a start(), end() or any method called from an IGamePlayer through the delegates
- * remote interface. The delegate will have a read lock for the duration of those methods.
- * </p>
+ * </code> The exception is delegates within a start(), end() or any method called from an
+ * IGamePlayer through the delegates remote interface. The delegate will have a read lock for the
+ * duration of those methods.
  *
- * <p>
- * Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made through a
- * DelegateBridge or through a History object.
- * </p>
+ * <p>Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made
+ * through a DelegateBridge or through a History object.
  */
 public class GameData implements Serializable {
   private static final long serialVersionUID = -2612710634080125728L;
@@ -91,15 +80,18 @@ public class GameData implements Serializable {
   private final ResourceList resourceList = new ResourceList(this);
   private final GameSequence sequence = new GameSequence(this);
   private final UnitTypeList unitTypeList = new UnitTypeList(this);
-  // Tracks all relationshipTypes that are in the current game, default there will be the SelfRelation and the
+  // Tracks all relationshipTypes that are in the current game, default there will be the
+  // SelfRelation and the
   // NullRelation any other relations are map designer created.
   private final RelationshipTypeList relationshipTypeList = new RelationshipTypeList(this);
   private final GameProperties properties = new GameProperties(this);
   private final UnitsList unitsList = new UnitsList();
-  private final TechnologyFrontier technologyFrontier = new TechnologyFrontier("allTechsForGame", this);
+  private final TechnologyFrontier technologyFrontier =
+      new TechnologyFrontier("allTechsForGame", this);
   private final IGameLoader loader = new TripleA();
   private History gameHistory = new History(this);
-  private final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues = new ArrayList<>();
+  private final List<Tuple<IAttachment, List<Tuple<String, String>>>> attachmentOrderAndValues =
+      new ArrayList<>();
   private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
 
@@ -109,7 +101,8 @@ public class GameData implements Serializable {
   }
 
   /**
-   * Converts the current GameData object to a byte array, useful for serialization or for copying the game data.
+   * Converts the current GameData object to a byte array, useful for serialization or for copying
+   * the game data.
    */
   public byte[] toBytes() {
     try {
@@ -120,8 +113,8 @@ public class GameData implements Serializable {
   }
 
   /**
-   * Return the GameMap. The game map allows you to list the territories in the game, and
-   * to see which territory is connected to which.
+   * Return the GameMap. The game map allows you to list the territories in the game, and to see
+   * which territory is connected to which.
    *
    * @return the map for this game.
    */
@@ -129,78 +122,62 @@ public class GameData implements Serializable {
     return map;
   }
 
-  /**
-   * Returns a collection of all units in the game.
-   */
+  /** Returns a collection of all units in the game. */
   public UnitsList getUnits() {
     return unitsList;
   }
 
-  /**
-   * Returns list of Players in the game.
-   */
+  /** Returns list of Players in the game. */
   public PlayerList getPlayerList() {
     return playerList;
   }
 
-  /**
-   * Returns list of resources available in the game.
-   */
+  /** Returns list of resources available in the game. */
   public ResourceList getResourceList() {
     return resourceList;
   }
 
-  /**
-   * Returns list of production Frontiers for this game.
-   */
+  /** Returns list of production Frontiers for this game. */
   public ProductionFrontierList getProductionFrontierList() {
     return productionFrontierList;
   }
 
-  /**
-   * Returns list of Production Rules for the game.
-   */
+  /** Returns list of Production Rules for the game. */
   public ProductionRuleList getProductionRuleList() {
     return productionRuleList;
   }
 
-  /**
-   * Returns the Technology Frontier for this game.
-   */
+  /** Returns the Technology Frontier for this game. */
   public TechnologyFrontier getTechnologyFrontier() {
     return technologyFrontier;
   }
 
-  /**
-   * Returns the list of production Frontiers for this game.
-   */
+  /** Returns the list of production Frontiers for this game. */
   public RepairFrontierList getRepairFrontierList() {
     return repairFrontierList;
   }
 
-  /**
-   * Returns the list of Production Rules for the game.
-   */
+  /** Returns the list of Production Rules for the game. */
   public RepairRules getRepairRules() {
     return repairRules;
   }
 
-  /**
-   * Returns the Alliance Tracker for the game.
-   */
+  /** Returns the Alliance Tracker for the game. */
   public AllianceTracker getAllianceTracker() {
     return alliances;
   }
 
   /**
-   * Returns whether we should throw an error if changes to this game data are made outside of the swing event thread.
+   * Returns whether we should throw an error if changes to this game data are made outside of the
+   * swing event thread.
    */
   public boolean areChangesOnlyInSwingEventThread() {
     return forceInSwingEventThread;
   }
 
   /**
-   * If set to true, then we will throw an error when the game data is changed outside the swing event thread.
+   * If set to true, then we will throw an error when the game data is changed outside the swing
+   * event thread.
    */
   public void forceChangesOnlyInSwingEventThread() {
     forceInSwingEventThread = true;
@@ -308,7 +285,8 @@ public class GameData implements Serializable {
 
   public History getHistory() {
     // don't ensure the lock is held when getting the history
-    // history operations often acquire the write lock and we can't acquire the write lock if we have the read lock
+    // history operations often acquire the write lock and we can't acquire the write lock if we
+    // have the read lock
     return gameHistory;
   }
 
@@ -320,9 +298,7 @@ public class GameData implements Serializable {
     gameHistory = new History(this);
   }
 
-  /**
-   * Not to be called by mere mortals.
-   */
+  /** Not to be called by mere mortals. */
   public void postDeSerialize() {
     territoryListeners = new CopyOnWriteArrayList<>();
     dataChangeListeners = new CopyOnWriteArrayList<>();
@@ -330,8 +306,8 @@ public class GameData implements Serializable {
   }
 
   /**
-   * No changes to the game data should be made unless this lock is held.
-   * calls to acquire lock will block if the lock is held, and will be held until the release method is called
+   * No changes to the game data should be made unless this lock is held. calls to acquire lock will
+   * block if the lock is held, and will be held until the release method is called
    */
   public void acquireReadLock() {
     if (readWriteLockMissing()) {
@@ -348,8 +324,8 @@ public class GameData implements Serializable {
   }
 
   /**
-   * No changes to the game data should be made unless this lock is held.
-   * calls to acquire lock will block if the lock is held, and will be held until the release method is called
+   * No changes to the game data should be made unless this lock is held. calls to acquire lock will
+   * block if the lock is held, and will be held until the release method is called
    */
   public void acquireWriteLock() {
     if (readWriteLockMissing()) {
@@ -366,7 +342,8 @@ public class GameData implements Serializable {
   }
 
   /**
-   * Indicates whether readWriteLock is missing. This can happen in very odd circumstances while deserializing.
+   * Indicates whether readWriteLock is missing. This can happen in very odd circumstances while
+   * deserializing.
    */
   private boolean readWriteLockMissing() {
     return readWriteLock == null;
@@ -382,16 +359,15 @@ public class GameData implements Serializable {
   }
 
   /**
-   * Returns all relationshipTypes that are valid in this game, default there is the NullRelation (relation with the
-   * Null player / Neutral) and the SelfRelation (Relation with yourself) all other relations are map designer defined.
+   * Returns all relationshipTypes that are valid in this game, default there is the NullRelation
+   * (relation with the Null player / Neutral) and the SelfRelation (Relation with yourself) all
+   * other relations are map designer defined.
    */
   public RelationshipTypeList getRelationshipTypeList() {
     return relationshipTypeList;
   }
 
-  /**
-   * Returns a tracker which tracks all current relationships that exist between all players.
-   */
+  /** Returns a tracker which tracks all current relationships that exist between all players. */
   public RelationshipTracker getRelationshipTracker() {
     return relationships;
   }
@@ -405,19 +381,20 @@ public class GameData implements Serializable {
   }
 
   /**
-   * Call this before starting the game and before the game data has been sent to the clients in order to make any
-   * final modifications to the game data.
-   * For example, this method will remove player delegates for players who have been disabled.
+   * Call this before starting the game and before the game data has been sent to the clients in
+   * order to make any final modifications to the game data. For example, this method will remove
+   * player delegates for players who have been disabled.
    */
   public void doPreGameStartDataModifications(final PlayerListing playerListing) {
     final Set<PlayerId> playersWhoShouldBeRemoved = new HashSet<>();
     final Map<String, Boolean> playersEnabledListing = playerListing.getPlayersEnabledListing();
     playerList.getPlayers().stream()
         .filter(p -> (p.getCanBeDisabled() && !playersEnabledListing.get(p.getName())))
-        .forEach(p -> {
-          p.setIsDisabled(true);
-          playersWhoShouldBeRemoved.add(p);
-        });
+        .forEach(
+            p -> {
+              p.setIsDisabled(true);
+              playersWhoShouldBeRemoved.add(p);
+            });
     if (!playersWhoShouldBeRemoved.isEmpty()) {
       removePlayerStepsFromSequence(playersWhoShouldBeRemoved);
     }
@@ -466,9 +443,9 @@ public class GameData implements Serializable {
   }
 
   /**
-   * Returns the current game round (with locking).
-   * TODO: the locking here is probably not necessary! If the current round is updated immediately
-   * after we return from this method, then the lock will have been to no effect anyways!
+   * Returns the current game round (with locking). TODO: the locking here is probably not
+   * necessary! If the current round is updated immediately after we return from this method, then
+   * the lock will have been to no effect anyways!
    */
   public int getCurrentRound() {
     try {

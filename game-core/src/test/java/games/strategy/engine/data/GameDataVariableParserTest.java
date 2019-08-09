@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
@@ -45,10 +44,7 @@ class GameDataVariableParserTest {
 
     final InputStream inputStream = new DataInputStream(new FileInputStream(file));
 
-    return XmlReader.parseDom(
-        fileName,
-        inputStream,
-        new ArrayList<>());
+    return XmlReader.parseDom(fileName, inputStream, new ArrayList<>());
   }
 
   @Test

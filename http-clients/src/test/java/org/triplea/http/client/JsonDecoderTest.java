@@ -8,10 +8,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneOffset;
-
-import org.junit.jupiter.api.Test;
-
 import lombok.AllArgsConstructor;
+import org.junit.jupiter.api.Test;
 
 class JsonDecoderTest {
   // Thu Jun 06 2019 04:20:06Z
@@ -23,13 +21,12 @@ class JsonDecoderTest {
   }
 
   /**
-   * Test that verifies we can decode an 'Instant' represented as
-   * floating point number, in epoch seconds.
+   * Test that verifies we can decode an 'Instant' represented as floating point number, in epoch
+   * seconds.
    */
   @Test
   void decoder() {
-    final InstantExample event = JsonDecoder.decoder()
-        .fromJson(JSON_STRING, InstantExample.class);
+    final InstantExample event = JsonDecoder.decoder().fromJson(JSON_STRING, InstantExample.class);
 
     assertThat(event.instant, notNullValue());
 
@@ -39,13 +36,11 @@ class JsonDecoderTest {
     assertThat(dateTime.getYear(), is(2019));
     assertThat(dateTime.getHour(), is(4));
     assertThat(dateTime.getMinute(), is(20));
-
   }
 
   @Test
   void verifyEpochSecondAndNanoDecoding() {
-    final InstantExample event = JsonDecoder.decoder()
-        .fromJson(JSON_STRING, InstantExample.class);
+    final InstantExample event = JsonDecoder.decoder().fromJson(JSON_STRING, InstantExample.class);
 
     assertThat(event.instant, is(Instant.ofEpochSecond(1559794806, 329342000)));
   }

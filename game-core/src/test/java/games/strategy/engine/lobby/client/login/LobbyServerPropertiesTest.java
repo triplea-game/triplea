@@ -1,9 +1,8 @@
 package games.strategy.engine.lobby.client.login;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import nl.jqno.equalsverifier.EqualsVerifier;
 
 final class LobbyServerPropertiesTest {
   @Nested

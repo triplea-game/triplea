@@ -1,13 +1,11 @@
 package org.triplea.http.client.moderator.toolbox.bad.words;
 
-import java.util.List;
-import java.util.Map;
-
-import org.triplea.http.client.HttpConstants;
-
 import feign.HeaderMap;
 import feign.Headers;
 import feign.RequestLine;
+import java.util.List;
+import java.util.Map;
+import org.triplea.http.client.HttpConstants;
 
 interface ToolboxBadWordsFeignClient {
   @RequestLine("POST " + ToolboxBadWordsClient.BAD_WORD_REMOVE_PATH)

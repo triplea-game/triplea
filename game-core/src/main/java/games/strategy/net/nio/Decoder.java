@@ -1,21 +1,18 @@
 package games.strategy.net.nio;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.nio.channels.SocketChannel;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-
 import games.strategy.io.IoUtils;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IObjectStreamFactory;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.nio.QuarantineConversation.Action;
+import java.io.IOException;
+import java.net.Socket;
+import java.nio.channels.SocketChannel;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import lombok.extern.java.Log;
 
-/**
- * A thread to Decode messages from a reader.
- */
+/** A thread to Decode messages from a reader. */
 @Log
 class Decoder {
   private final NioReader reader;
@@ -24,14 +21,18 @@ class Decoder {
   private final IObjectStreamFactory objectStreamFactory;
   private final NioSocket nioSocket;
   /**
-   * These sockets are quarantined. They have not logged in, and messages
-   * read from them are not passed outside of the quarantine conversation.
+   * These sockets are quarantined. They have not logged in, and messages read from them are not
+   * passed outside of the quarantine conversation.
    */
   private final ConcurrentHashMap<SocketChannel, QuarantineConversation> quarantine =
       new ConcurrentHashMap<>();
+
   private final Thread thread;
 
-  Decoder(final NioSocket nioSocket, final NioReader reader, final ErrorReporter reporter,
+  Decoder(
+      final NioSocket nioSocket,
+      final NioReader reader,
+      final ErrorReporter reporter,
       final IObjectStreamFactory objectStreamFactory) {
     this.reader = reader;
     errorReporter = reporter;
@@ -55,13 +56,16 @@ class Decoder {
         }
 
         try {
-          final MessageHeader header = IoUtils.readFromMemory(data.getData(), is -> {
-            try {
-              return (MessageHeader) objectStreamFactory.create(is).readObject();
-            } catch (final ClassNotFoundException e) {
-              throw new IOException(e);
-            }
-          });
+          final MessageHeader header =
+              IoUtils.readFromMemory(
+                  data.getData(),
+                  is -> {
+                    try {
+                      return (MessageHeader) objectStreamFactory.create(is).readObject();
+                    } catch (final ClassNotFoundException e) {
+                      throw new IOException(e);
+                    }
+                  });
           // make sure we are still open
           final Socket s = data.getChannel().socket();
           if (!running || s == null || s.isInputShutdown()) {
@@ -86,7 +90,8 @@ class Decoder {
           errorReporter.error(data.getChannel(), e);
         }
       } catch (final InterruptedException e) {
-        // Do nothing if we were interrupted due to an explicit shutdown because the thread will terminate normally;
+        // Do nothing if we were interrupted due to an explicit shutdown because the thread will
+        // terminate normally;
         // otherwise re-interrupt this thread and keep running
         if (running) {
           Thread.currentThread().interrupt();
@@ -95,7 +100,9 @@ class Decoder {
     }
   }
 
-  private void sendQuarantine(final SocketChannel channel, final QuarantineConversation conversation,
+  private void sendQuarantine(
+      final SocketChannel channel,
+      final QuarantineConversation conversation,
       final MessageHeader header) {
     final Action a = conversation.message(header.getMessage());
     if (a == Action.TERMINATE) {

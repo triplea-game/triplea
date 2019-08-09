@@ -1,31 +1,30 @@
 // CHECKSTYLE-OFF: PackageName
-// move this class to lobby.common upon next lobby-incompatible release; it is shared between client and server
+// move this class to lobby.common upon next lobby-incompatible release; it is shared between client
+// and server
 
 package games.strategy.engine.lobby.server.userDB;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.io.Serializable;
-
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.triplea.java.StringUtils;
 import org.triplea.lobby.common.LobbyConstants;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
-/**
- * A lobby user.
- */
+/** A lobby user. */
 @EqualsAndHashCode
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName") // rename upon next lobby-incompatible release
+@SuppressWarnings(
+    "checkstyle:AbbreviationAsWordInName") // rename upon next lobby-incompatible release
 @ToString
 public final class DBUser implements Serializable {
   private static final long serialVersionUID = -5289923058375302916L;
 
   @SuppressWarnings("checkstyle:MemberName") // rename upon next lobby-incompatible release
   private final String m_name;
+
   @SuppressWarnings("checkstyle:MemberName") // rename upon next lobby-incompatible release
   private final String m_email;
+
   private final Role userRole;
 
   public DBUser(final UserName name, final UserEmail email, final Role role) {
@@ -34,17 +33,15 @@ public final class DBUser implements Serializable {
     this.userRole = role;
   }
 
-  /**
-   * The user's role within the lobby.
-   */
+  /** The user's role within the lobby. */
   public enum Role {
-    NOT_ADMIN, ADMIN
+    NOT_ADMIN,
+    ADMIN
   }
 
   /** User name value object with validation methods. */
   public static class UserName {
-    @VisibleForTesting
-    public static final int MAX_LENGTH = 40;
+    @VisibleForTesting public static final int MAX_LENGTH = 40;
     private static final int MIN_LENGTH = 3;
 
     public final String userName;
@@ -69,9 +66,7 @@ public final class DBUser implements Serializable {
     }
   }
 
-  /**
-   * User email value object with validation methods.
-   */
+  /** User email value object with validation methods. */
   public static class UserEmail {
     public final String userEmail;
 
@@ -87,13 +82,10 @@ public final class DBUser implements Serializable {
     }
   }
 
-  /**
-   * Convenience constructor for non-admin users.
-   */
+  /** Convenience constructor for non-admin users. */
   public DBUser(final UserName name, final UserEmail email) {
     this(name, email, Role.NOT_ADMIN);
   }
-
 
   public String getName() {
     return m_name;
@@ -115,9 +107,7 @@ public final class DBUser implements Serializable {
     return new UserName(userName).validate() == null;
   }
 
-  /**
-   * Returns an error message String if there are validation errors, otherwise null.
-   */
+  /** Returns an error message String if there are validation errors, otherwise null. */
   public String getValidationErrorMessage() {
     if (new UserName(m_name).validate() == null && new UserEmail(m_email).validate() == null) {
       return null;
@@ -126,20 +116,23 @@ public final class DBUser implements Serializable {
   }
 
   /**
-   * Returns an error message String if {@code userName} is not valid; otherwise {@code null}. Example usage:
+   * Returns an error message String if {@code userName} is not valid; otherwise {@code null}.
+   * Example usage:
    *
    * <pre>
    * <code>
    *   String proposedUserName = getUserInput();
    *   if(!DBUser.isValidUserName(proposedUserName)) {
-   *     String validationErrorMessage =  DBUser.getUserNameValidationErrorMessage(proposedUserName();
+   *     String validationErrorMessage =
+   *         DBUser.getUserNameValidationErrorMessage(proposedUserName();
    *     showMessageToUser("User name is invalid: " + validationErrorMessage);
    *   }
    * </code>
    * </pre>
    *
    * @return Assuming an invalid user name - returns an error message String.
-   * @throws IllegalStateException if the username is valid. Only call this method if 'isValidUserName()' return false
+   * @throws IllegalStateException if the username is valid. Only call this method if
+   *     'isValidUserName()' return false
    */
   public static String getUserNameValidationErrorMessage(final String userName) {
     return new UserName(userName).validate();

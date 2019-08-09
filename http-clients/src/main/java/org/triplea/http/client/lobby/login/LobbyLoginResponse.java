@@ -1,7 +1,6 @@
 package org.triplea.http.client.lobby.login;
 
 import java.util.Optional;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -33,9 +32,7 @@ public class LobbyLoginResponse {
     return new LobbyLoginResponse(token, null);
   }
 
-  /**
-   * If present, indicates login was success.
-   */
+  /** If present, indicates login was success. */
   public Optional<String> getLoginToken() {
     return Optional.ofNullable(loginToken);
   }

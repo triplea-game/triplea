@@ -6,9 +6,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 
-/**
- * Adds/removes resource from a player.
- */
+/** Adds/removes resource from a player. */
 class ChangeResourceChange extends Change {
   private static final long serialVersionUID = -2304294240555842126L;
 
@@ -22,7 +20,8 @@ class ChangeResourceChange extends Change {
     this.quantity = quantity;
   }
 
-  private ChangeResourceChange(final String playerName, final String resourceName, final int quantity) {
+  private ChangeResourceChange(
+      final String playerName, final String resourceName, final int quantity) {
     this.playerName = playerName;
     this.resourceName = resourceName;
     this.quantity = quantity;
@@ -36,7 +35,8 @@ class ChangeResourceChange extends Change {
   @Override
   protected void perform(final GameData data) {
     final Resource resource = data.getResourceList().getResource(resourceName);
-    final ResourceCollection resources = data.getPlayerList().getPlayerId(playerName).getResources();
+    final ResourceCollection resources =
+        data.getPlayerList().getPlayerId(playerName).getResources();
     if (quantity > 0) {
       resources.addResource(resource, quantity);
     } else if (quantity < 0) {
@@ -46,6 +46,11 @@ class ChangeResourceChange extends Change {
 
   @Override
   public String toString() {
-    return "Change resource.  Resource:" + resourceName + " quantity:" + quantity + " Player:" + playerName;
+    return "Change resource.  Resource:"
+        + resourceName
+        + " quantity:"
+        + quantity
+        + " Player:"
+        + playerName;
   }
 }

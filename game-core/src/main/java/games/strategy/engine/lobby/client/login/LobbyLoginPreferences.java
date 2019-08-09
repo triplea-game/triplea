@@ -1,23 +1,17 @@
 package games.strategy.engine.lobby.client.login;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
+import games.strategy.security.CredentialManager;
+import games.strategy.security.CredentialManagerException;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.prefs.Preferences;
-
 import javax.annotation.concurrent.Immutable;
-
+import lombok.extern.java.Log;
 import org.triplea.java.function.ThrowingSupplier;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.MoreObjects;
-
-import games.strategy.security.CredentialManager;
-import games.strategy.security.CredentialManagerException;
-import lombok.extern.java.Log;
-
-/**
- * The login preferences for a lobby user.
- */
+/** The login preferences for a lobby user. */
 @Immutable
 @Log
 public final class LobbyLoginPreferences {
@@ -49,18 +43,24 @@ public final class LobbyLoginPreferences {
   @VisibleForTesting
   static LobbyLoginPreferences load(
       final Preferences preferences,
-      final ThrowingSupplier<CredentialManager, CredentialManagerException> credentialManagerFactory) {
+      final ThrowingSupplier<CredentialManager, CredentialManagerException>
+          credentialManagerFactory) {
     final String legacyUserName = preferences.get(PreferenceKeys.LEGACY_USER_NAME, "");
-    final Credentials credentials = unprotectCredentials(
-        new Credentials(
-            preferences.get(PreferenceKeys.USER_NAME, legacyUserName),
-            preferences.get(PreferenceKeys.PASSWORD, ""),
-            preferences.getBoolean(PreferenceKeys.CREDENTIALS_PROTECTED, false)),
-        credentialManagerFactory);
-    final boolean credentialsSaved = preferences.getBoolean(PreferenceKeys.CREDENTIALS_SAVED, false);
-    final boolean legacyAnonymousLogin = preferences.getBoolean(PreferenceKeys.LEGACY_ANONYMOUS_LOGIN, false);
-    final boolean anonymousLogin = preferences.getBoolean(PreferenceKeys.ANONYMOUS_LOGIN, legacyAnonymousLogin);
-    return new LobbyLoginPreferences(credentials.userName, credentials.password, credentialsSaved, anonymousLogin);
+    final Credentials credentials =
+        unprotectCredentials(
+            new Credentials(
+                preferences.get(PreferenceKeys.USER_NAME, legacyUserName),
+                preferences.get(PreferenceKeys.PASSWORD, ""),
+                preferences.getBoolean(PreferenceKeys.CREDENTIALS_PROTECTED, false)),
+            credentialManagerFactory);
+    final boolean credentialsSaved =
+        preferences.getBoolean(PreferenceKeys.CREDENTIALS_SAVED, false);
+    final boolean legacyAnonymousLogin =
+        preferences.getBoolean(PreferenceKeys.LEGACY_ANONYMOUS_LOGIN, false);
+    final boolean anonymousLogin =
+        preferences.getBoolean(PreferenceKeys.ANONYMOUS_LOGIN, legacyAnonymousLogin);
+    return new LobbyLoginPreferences(
+        credentials.userName, credentials.password, credentialsSaved, anonymousLogin);
   }
 
   private static Preferences getPreferenceNode() {
@@ -69,15 +69,20 @@ public final class LobbyLoginPreferences {
 
   private static Credentials unprotectCredentials(
       final Credentials credentials,
-      final ThrowingSupplier<CredentialManager, CredentialManagerException> credentialManagerFactory) {
+      final ThrowingSupplier<CredentialManager, CredentialManagerException>
+          credentialManagerFactory) {
     if (!credentials.isProtected) {
       return credentials;
     }
 
     try (CredentialManager credentialManager = credentialManagerFactory.get()) {
       return new Credentials(
-          credentials.userName.isEmpty() ? "" : credentialManager.unprotectToString(credentials.userName),
-          credentials.password.isEmpty() ? "" : credentialManager.unprotectToString(credentials.password),
+          credentials.userName.isEmpty()
+              ? ""
+              : credentialManager.unprotectToString(credentials.userName),
+          credentials.password.isEmpty()
+              ? ""
+              : credentialManager.unprotectToString(credentials.password),
           false);
     } catch (final CredentialManagerException e) {
       log.log(Level.SEVERE, "failed to unprotect lobby login credentials", e);
@@ -85,9 +90,7 @@ public final class LobbyLoginPreferences {
     }
   }
 
-  /**
-   * Saves this instance as the user's current lobby login preferences.
-   */
+  /** Saves this instance as the user's current lobby login preferences. */
   public void save() {
     save(getPreferenceNode(), CredentialManager::newInstance);
   }
@@ -95,10 +98,10 @@ public final class LobbyLoginPreferences {
   @VisibleForTesting
   void save(
       final Preferences preferences,
-      final ThrowingSupplier<CredentialManager, CredentialManagerException> credentialManagerFactory) {
-    final Credentials credentials = protectCredentials(
-        new Credentials(userName, password, false),
-        credentialManagerFactory);
+      final ThrowingSupplier<CredentialManager, CredentialManagerException>
+          credentialManagerFactory) {
+    final Credentials credentials =
+        protectCredentials(new Credentials(userName, password, false), credentialManagerFactory);
     if (credentialsSaved) {
       preferences.put(PreferenceKeys.USER_NAME, credentials.userName);
       preferences.putBoolean(PreferenceKeys.CREDENTIALS_PROTECTED, credentials.isProtected);
@@ -121,7 +124,8 @@ public final class LobbyLoginPreferences {
 
   private static Credentials protectCredentials(
       final Credentials credentials,
-      final ThrowingSupplier<CredentialManager, CredentialManagerException> credentialManagerFactory) {
+      final ThrowingSupplier<CredentialManager, CredentialManagerException>
+          credentialManagerFactory) {
     assert !credentials.isProtected;
 
     try (CredentialManager credentialManager = credentialManagerFactory.get()) {

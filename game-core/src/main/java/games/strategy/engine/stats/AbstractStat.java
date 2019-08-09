@@ -1,15 +1,14 @@
 package games.strategy.engine.stats;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 /**
- * Returns an intelligent formatter, and returns value for alliances
- * by summing our value for all players in the alliance.
+ * Returns an intelligent formatter, and returns value for alliances by summing our value for all
+ * players in the alliance.
  */
 public abstract class AbstractStat implements IStat {
   protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##0.##");

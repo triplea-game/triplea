@@ -5,9 +5,7 @@ import games.strategy.triplea.UrlConstants;
 /**
  * Posts turn summaries to www.axisandallies.org/forums.
  *
- * <p>
- * URL format is {@code https://www.axisandallies.org/forums/api/v2/topics/<topicID>}.
- * </p>
+ * <p>URL format is {@code https://www.axisandallies.org/forums/api/v2/topics/<topicID>}.
  */
 class AxisAndAlliesForumPoster extends NodeBbForumPoster {
   static final String DISPLAY_NAME = "www.axisandallies.org/forums/";

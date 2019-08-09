@@ -1,29 +1,23 @@
 package org.triplea.server.moderator.toolbox.api.key;
 
+import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
-
-import com.google.common.base.Preconditions;
-
 import lombok.Builder;
 import lombok.extern.java.Log;
 
 /**
  * Class to determine if API key validation is in a 'lock-out' mode where we will refuse to validate
- * API keys and will refuse the request. This is intended to prevent brute-force attacks from attempting
- * to guess an API key.
+ * API keys and will refuse the request. This is intended to prevent brute-force attacks from
+ * attempting to guess an API key.
  */
 @Log
 public class InvalidKeyLockOut {
 
-  @Nonnull
-  private final InvalidKeyCache invalidKeyCache;
-  @Nonnull
-  private final Integer maxTotalFails;
-  @Nonnull
-  private final Integer maxFailsByIpAddress;
-  @Nonnull
-  private final Boolean production;
+  @Nonnull private final InvalidKeyCache invalidKeyCache;
+  @Nonnull private final Integer maxTotalFails;
+  @Nonnull private final Integer maxFailsByIpAddress;
+  @Nonnull private final Boolean production;
 
   @Builder
   public InvalidKeyLockOut(
@@ -41,16 +35,17 @@ public class InvalidKeyLockOut {
   }
 
   /**
-   * Returns true if no attempts should be made to validate the API key in a given request.
-   * Returns false to indicate there is no lockout and if we can continue further
-   * with a database lookup to validate an API key.
+   * Returns true if no attempts should be made to validate the API key in a given request. Returns
+   * false to indicate there is no lockout and if we can continue further with a database lookup to
+   * validate an API key.
    *
    * @param request Request containing moderator api key as a header.
    */
   public boolean isLockedOut(final HttpServletRequest request) {
     if (invalidKeyCache.getCount(request) >= maxFailsByIpAddress
         || invalidKeyCache.totalSum() >= maxTotalFails) {
-      log.warning("Request for API key validation by: " + request.getRemoteHost() + " is locked out");
+      log.warning(
+          "Request for API key validation by: " + request.getRemoteHost() + " is locked out");
       return true;
     }
     return false;

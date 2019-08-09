@@ -2,12 +2,9 @@ package games.strategy.engine.data;
 
 import java.util.Collections;
 import java.util.Set;
-
 import org.triplea.java.collections.IntegerMap;
 
-/**
- * A game data change that captures the damage done to a collection of units.
- */
+/** A game data change that captures the damage done to a collection of units. */
 public class UnitHitsChange extends Change {
   private static final long serialVersionUID = 2862726651812142713L;
 

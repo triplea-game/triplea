@@ -1,5 +1,6 @@
 package games.strategy.engine.data;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,14 +9,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.google.common.annotations.VisibleForTesting;
-
 import lombok.ToString;
 
-/**
- * Wrapper around the set of players in a game to provide utility functions and methods.
- */
+/** Wrapper around the set of players in a game to provide utility functions and methods. */
 @ToString
 public class PlayerList extends GameDataComponent implements Iterable<PlayerId> {
   private static final long serialVersionUID = -3895068111754745446L;
@@ -47,9 +43,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerId> 
     return new ArrayList<>(players.values());
   }
 
-  /**
-   * an iterator of a new arraylist copy of the players.
-   */
+  /** an iterator of a new arraylist copy of the players. */
   @Override
   public Iterator<PlayerId> iterator() {
     return getPlayers().iterator();

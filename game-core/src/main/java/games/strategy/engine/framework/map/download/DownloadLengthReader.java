@@ -1,13 +1,16 @@
 package games.strategy.engine.framework.map.download;
 // TODO: move to package games.strategy.engine.framework.map.download.client
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.framework.system.HttpProxy;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-
+import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
@@ -16,26 +19,19 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.engine.framework.system.HttpProxy;
-import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
-
 /** Can execute an http head request to determine the size of a file download from URI. */
 @Log
 @AllArgsConstructor
 final class DownloadLengthReader {
   @VisibleForTesting
   final ConcurrentMap<String, Long> downloadLengthsByUri = new ConcurrentHashMap<>();
+
   private final Supplier<CloseableHttpClient> httpClientFactory;
 
   /**
    * Gets the download length for the resource at the specified URI.
    *
-   * <p>
-   * This method is thread safe.
-   * </p>
+   * <p>This method is thread safe.
    *
    * @param uri The resource URI; must not be {@code null}.
    * @return The download length (in bytes) or empty if unknown; never {@code null}.

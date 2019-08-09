@@ -9,10 +9,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.mockito.stubbing.Answer;
-import org.mockito.stubbing.OngoingStubbing;
-import org.mockito.verification.VerificationMode;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -21,6 +17,9 @@ import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.display.ITripleADisplay;
+import org.mockito.stubbing.Answer;
+import org.mockito.stubbing.OngoingStubbing;
+import org.mockito.verification.VerificationMode;
 
 final class MockDelegateBridge {
   private MockDelegateBridge() {}
@@ -32,11 +31,14 @@ final class MockDelegateBridge {
    */
   static IDelegateBridge newInstance(final GameData gameData, final PlayerId playerId) {
     final IDelegateBridge delegateBridge = mock(IDelegateBridge.class);
-    doAnswer(invocation -> {
-      final Change change = invocation.getArgument(0);
-      gameData.performChange(change);
-      return null;
-    }).when(delegateBridge).addChange(any());
+    doAnswer(
+            invocation -> {
+              final Change change = invocation.getArgument(0);
+              gameData.performChange(change);
+              return null;
+            })
+        .when(delegateBridge)
+        .addChange(any());
     when(delegateBridge.getData()).thenReturn(gameData);
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(ITripleADisplay.class));
     when(delegateBridge.getHistoryWriter()).thenReturn(DelegateHistoryWriter.NO_OP_INSTANCE);
@@ -61,9 +63,9 @@ final class MockDelegateBridge {
   }
 
   static void thenGetRandomShouldHaveBeenCalled(
-      final IDelegateBridge delegateBridge,
-      final VerificationMode verificationMode) {
-    verify(delegateBridge, verificationMode).getRandom(anyInt(), anyInt(), any(), any(), anyString());
+      final IDelegateBridge delegateBridge, final VerificationMode verificationMode) {
+    verify(delegateBridge, verificationMode)
+        .getRandom(anyInt(), anyInt(), any(), any(), anyString());
   }
 
   static ITripleAPlayer withRemotePlayer(final IDelegateBridge delegateBridge) {

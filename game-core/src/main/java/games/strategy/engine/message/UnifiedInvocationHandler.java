@@ -1,17 +1,14 @@
 package games.strategy.engine.message;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.triplea.util.WrappedInvocationHandler;
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
  * Invocation handler for the UnifiedMessenger.
  *
- * <p>
- * Handles the invocation for a channel
- * </p>
+ * <p>Handles the invocation for a channel
  */
 class UnifiedInvocationHandler extends WrappedInvocationHandler {
   private final UnifiedMessenger messenger;
@@ -19,8 +16,11 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
   private final boolean ignoreResults;
   private final Class<?> remoteType;
 
-  UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName,
-      final boolean ignoreResults, final Class<?> remoteType) {
+  UnifiedInvocationHandler(
+      final UnifiedMessenger messenger,
+      final String endPointName,
+      final boolean ignoreResults,
+      final Class<?> remoteType) {
     // equality and hash code are based on end point name
     super(endPointName);
     this.messenger = messenger;
@@ -38,12 +38,15 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
       for (final Object o : args) {
         if (o != null && !(o instanceof Serializable)) {
           throw new IllegalArgumentException(
-              o + " is not serializable, all remote method args must be serializable.  method:" + method);
+              o
+                  + " is not serializable, all remote method args must be serializable.  method:"
+                  + method);
         }
       }
     }
     final RemoteMethodCall remoteMethodMsg =
-        new RemoteMethodCall(endPointName, method.getName(), args, method.getParameterTypes(), remoteType);
+        new RemoteMethodCall(
+            endPointName, method.getName(), args, method.getParameterTypes(), remoteType);
     if (ignoreResults) {
       messenger.invoke(endPointName, remoteMethodMsg);
       return null;

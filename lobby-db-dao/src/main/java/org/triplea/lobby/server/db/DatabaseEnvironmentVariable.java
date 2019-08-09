@@ -1,7 +1,6 @@
 package org.triplea.lobby.server.db;
 
 import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 
 /** Class that represent OS environment variable keys with default values. */

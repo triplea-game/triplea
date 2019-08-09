@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.prefs.Preferences;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,8 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 final class DefaultCredentialManagerTest {
   private static final char[] MASTER_PASSWORD = "MASTER←PASSWORD↑WITH→UNICODE↓CHARS".toCharArray();
 
-  @Mock
-  private Preferences preferences;
+  @Mock private Preferences preferences;
 
   private DefaultCredentialManager credentialManager;
 
@@ -49,7 +47,8 @@ final class DefaultCredentialManagerTest {
   }
 
   @Test
-  void getMasterPassword_ShouldCreateAndSaveMasterPasswordWhenMasterPasswordDoesNotExist() throws Exception {
+  void getMasterPassword_ShouldCreateAndSaveMasterPasswordWhenMasterPasswordDoesNotExist()
+      throws Exception {
     givenMasterPasswordDoesNotExist();
 
     final char[] masterPassword = DefaultCredentialManager.getMasterPassword(preferences);
@@ -58,13 +57,16 @@ final class DefaultCredentialManagerTest {
   }
 
   private void givenMasterPasswordDoesNotExist() {
-    when(preferences.getByteArray(eq(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
+    when(preferences.getByteArray(
+            eq(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
         .then(returnsSecondArg());
   }
 
   private void thenMasterPasswordExistsAndIs(final char[] masterPassword) {
-    verify(preferences).putByteArray(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD,
-        DefaultCredentialManager.encodeCharsToBytes(masterPassword));
+    verify(preferences)
+        .putByteArray(
+            DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD,
+            DefaultCredentialManager.encodeCharsToBytes(masterPassword));
   }
 
   @Test
@@ -77,13 +79,16 @@ final class DefaultCredentialManagerTest {
   }
 
   private void givenMasterPasswordExists(final char[] masterPassword) {
-    when(preferences.getByteArray(eq(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
+    when(preferences.getByteArray(
+            eq(DefaultCredentialManager.PREFERENCE_KEY_MASTER_PASSWORD), any()))
         .thenReturn(DefaultCredentialManager.encodeCharsToBytes(masterPassword));
   }
 
   @Test
   void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsLessThanOnePeriod() {
-    final Exception e = assertThrows(CredentialManagerException.class, () -> credentialManager.unprotect("AAAABBBB"));
+    final Exception e =
+        assertThrows(
+            CredentialManagerException.class, () -> credentialManager.unprotect("AAAABBBB"));
 
     assertThat(e.getMessage(), containsString("malformed protected credential"));
   }
@@ -91,7 +96,8 @@ final class DefaultCredentialManagerTest {
   @Test
   void unprotect_ShouldThrowExceptionWhenProtectedCredentialContainsMoreThanOnePeriod() {
     final Exception e =
-        assertThrows(CredentialManagerException.class, () -> credentialManager.unprotect("AAAA.BBBB.CCCC"));
+        assertThrows(
+            CredentialManagerException.class, () -> credentialManager.unprotect("AAAA.BBBB.CCCC"));
 
     assertThat(e.getMessage(), containsString("malformed protected credential"));
   }

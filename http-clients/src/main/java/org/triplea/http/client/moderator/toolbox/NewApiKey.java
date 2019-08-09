@@ -5,9 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-/**
- * Simple object to support JSON encoding of an API key sent to client from server.
- */
+/** Simple object to support JSON encoding of an API key sent to client from server. */
 @Getter
 @AllArgsConstructor
 @ToString

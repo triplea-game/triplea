@@ -3,12 +3,9 @@ package games.strategy.engine.data;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import lombok.extern.java.Log;
 
-/**
- * A contiguous sequence of {@link GameStep}s within a single game round.
- */
+/** A contiguous sequence of {@link GameStep}s within a single game round. */
 @Log
 public class GameSequence extends GameDataComponent implements Iterable<GameStep> {
   private static final long serialVersionUID = 6354618406598578287L;
@@ -23,18 +20,19 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   }
 
   /**
-   * Only used when we are trying to export the data to a savegame,
-   * and we need to change the round and step to something other than the current round and step
-   * (because we are creating a savegame at a certain point in history, for example).
+   * Only used when we are trying to export the data to a savegame, and we need to change the round
+   * and step to something other than the current round and step (because we are creating a savegame
+   * at a certain point in history, for example).
    */
-  public synchronized void setRoundAndStep(final int currentRound, final String stepDisplayName,
-      final PlayerId player) {
+  public synchronized void setRoundAndStep(
+      final int currentRound, final String stepDisplayName, final PlayerId player) {
     round = currentRound;
     boolean found = false;
     for (int i = 0; i < steps.size(); i++) {
       final GameStep step = steps.get(i);
       if (step != null && step.getDisplayName().equalsIgnoreCase(stepDisplayName)) {
-        if ((player == null && step.getPlayerId() == null) || (player != null && player.equals(step.getPlayerId()))) {
+        if ((player == null && step.getPlayerId() == null)
+            || (player != null && player.equals(step.getPlayerId()))) {
           currentIndex = i;
           found = true;
           break;
@@ -43,8 +41,13 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
     }
     if (!found) {
       currentIndex = 0;
-      log.severe(() -> String.format("Step Not Found (%s:%s), will instead use: %s",
-          stepDisplayName, (player != null) ? player.getName() : "null", steps.get(currentIndex)));
+      log.severe(
+          () ->
+              String.format(
+                  "Step Not Found (%s:%s), will instead use: %s",
+                  stepDisplayName,
+                  (player != null) ? player.getName() : "null",
+                  steps.get(currentIndex)));
     }
   }
 
@@ -91,16 +94,16 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
   }
 
   /**
-   * Only tests to see if we are on the last step.
-   * Used for finding if we need to make a new round or not.
-   * Does not change any data or fields.
+   * Only tests to see if we are on the last step. Used for finding if we need to make a new round
+   * or not. Does not change any data or fields.
    */
   public synchronized boolean testWeAreOnLastStep() {
     return currentIndex + 1 >= steps.size();
   }
 
   public synchronized GameStep getStep() {
-    // since we can now delete game steps mid game, it is a good idea to test if our index is out of range
+    // since we can now delete game steps mid game, it is a good idea to test if our index is out of
+    // range
     if (currentIndex < 0) {
       currentIndex = 0;
     }
@@ -112,7 +115,8 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 
   public GameStep getStep(final int index) {
     if ((index < 0) || (index >= steps.size())) {
-      throw new IllegalArgumentException("Attempt to access invalid state: " + index + ", steps = " + steps);
+      throw new IllegalArgumentException(
+          "Attempt to access invalid state: " + index + ", steps = " + steps);
     }
     return steps.get(index);
   }

@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.function.Function;
 import java.util.logging.LogRecord;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -19,13 +18,12 @@ class ErrorMessageFormatterTest {
   private static final String EXCEPTION_MESSAGE = "Jolly, yer not trading me without a life!";
 
   private static final Exception EXCEPTION_WITHOUT_MESSAGE = new NullPointerException();
-  private static final Exception EXCEPTION_WITH_MESSAGE = new NullPointerException(EXCEPTION_MESSAGE);
+  private static final Exception EXCEPTION_WITH_MESSAGE =
+      new NullPointerException(EXCEPTION_MESSAGE);
 
-  @Mock
-  private LogRecord logRecord;
+  @Mock private LogRecord logRecord;
 
   private final Function<LogRecord, String> errorMessageFormatter = new ErrorMessageFormatter();
-
 
   @Test
   void logMessageOnly() {
@@ -34,12 +32,7 @@ class ErrorMessageFormatterTest {
 
     final String result = errorMessageFormatter.apply(logRecord);
 
-    assertThat(
-        result,
-        is(
-            "<html>"
-                + LOG_MESSAGE
-                + "</html>"));
+    assertThat(result, is("<html>" + LOG_MESSAGE + "</html>"));
   }
 
   @Test
@@ -52,12 +45,14 @@ class ErrorMessageFormatterTest {
         result,
         is(
             "<html>"
-                + EXCEPTION_WITH_MESSAGE.getClass().getSimpleName() + " - "
+                + EXCEPTION_WITH_MESSAGE.getClass().getSimpleName()
+                + " - "
                 + EXCEPTION_WITH_MESSAGE.getMessage()
                 + "</html>"));
   }
 
-  private static void givenLogRecordWithNoMessageOnlyAnException(final LogRecord logRecord, final Exception exception) {
+  private static void givenLogRecordWithNoMessageOnlyAnException(
+      final LogRecord logRecord, final Exception exception) {
     when(logRecord.getMessage()).thenReturn(exception.getMessage());
     when(logRecord.getThrown()).thenReturn(exception);
   }
@@ -69,11 +64,7 @@ class ErrorMessageFormatterTest {
     final String result = errorMessageFormatter.apply(logRecord);
 
     assertThat(
-        result,
-        is(
-            "<html>"
-                + EXCEPTION_WITHOUT_MESSAGE.getClass().getSimpleName()
-                + "</html>"));
+        result, is("<html>" + EXCEPTION_WITHOUT_MESSAGE.getClass().getSimpleName() + "</html>"));
   }
 
   @Test
@@ -87,8 +78,10 @@ class ErrorMessageFormatterTest {
         result,
         is(
             "<html>"
-                + LOG_MESSAGE + "<br/><br/>"
-                + EXCEPTION_WITH_MESSAGE.getClass().getSimpleName() + ": "
+                + LOG_MESSAGE
+                + "<br/><br/>"
+                + EXCEPTION_WITH_MESSAGE.getClass().getSimpleName()
+                + ": "
                 + EXCEPTION_WITH_MESSAGE.getMessage()
                 + "</html>"));
   }
@@ -104,7 +97,8 @@ class ErrorMessageFormatterTest {
         result,
         is(
             "<html>"
-                + LOG_MESSAGE + "<br/><br/>"
+                + LOG_MESSAGE
+                + "<br/><br/>"
                 + EXCEPTION_WITHOUT_MESSAGE.getClass().getSimpleName()
                 + "</html>"));
   }

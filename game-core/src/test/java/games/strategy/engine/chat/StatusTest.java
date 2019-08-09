@@ -7,14 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.net.InetAddress;
-
-import org.junit.jupiter.api.Test;
-
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
+import java.net.InetAddress;
+import org.junit.jupiter.api.Test;
 
 class StatusTest {
 

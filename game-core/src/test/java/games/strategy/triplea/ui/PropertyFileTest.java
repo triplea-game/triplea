@@ -5,18 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import games.strategy.triplea.ResourceLoader;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 import org.junitpioneer.jupiter.TempDirectory.TempDir;
-
-import games.strategy.triplea.ResourceLoader;
 
 @ExtendWith(TempDirectory.class)
 class PropertyFileTest {
@@ -43,8 +41,10 @@ class PropertyFileTest {
   void testCaching() {
     final DummyPropertyFile dummy = new DummyPropertyFile(file.getAbsolutePath(), mock);
     assertSame(dummy, PropertyFile.getInstance(DummyPropertyFile.class, () -> dummy));
-    assertSame(dummy, PropertyFile.getInstance(DummyPropertyFile.class,
-        () -> new DummyPropertyFile(file.getAbsolutePath(), mock)));
+    assertSame(
+        dummy,
+        PropertyFile.getInstance(
+            DummyPropertyFile.class, () -> new DummyPropertyFile(file.getAbsolutePath(), mock)));
     DummyPropertyFile.cache.invalidateAll();
     final DummyPropertyFile dummy2 = new DummyPropertyFile(file.getAbsolutePath(), mock);
     assertSame(dummy2, PropertyFile.getInstance(DummyPropertyFile.class, () -> dummy2));

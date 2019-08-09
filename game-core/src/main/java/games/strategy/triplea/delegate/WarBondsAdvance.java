@@ -5,9 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
-/**
- * A technology advance that increases income by d6 per turn.
- */
+/** A technology advance that increases income by d6 per turn. */
 public final class WarBondsAdvance extends TechAdvance {
   private static final long serialVersionUID = -9048146216351059811L;
 

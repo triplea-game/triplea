@@ -4,19 +4,15 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import lombok.extern.java.Log;
 
 /**
  * A packet of data to be written over the network.
  *
- * <p>
- * Packets do not correspond to ip packets. A packet is just the data for one serialized object.
- * </p>
+ * <p>Packets do not correspond to ip packets. A packet is just the data for one serialized object.
  *
- * <p>
- * The packet is written over the network as 32 bits indicating the size in bytes, then the data itself.
- * </p>
+ * <p>The packet is written over the network as 32 bits indicating the size in bytes, then the data
+ * itself.
  */
 @Log
 class SocketWriteData {

@@ -4,18 +4,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import java.time.Instant;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.data.UsernameBanDaoData;
 import org.triplea.test.common.Integration;
-
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
 
 @ExtendWith(DBUnitExtension.class)
 @Integration
@@ -37,7 +35,6 @@ class BannedUserNamesDaoTest {
 
     assertThat(data.get(1).getUsername(), is("zzz"));
     assertThat(data.get(1).getDateCreated(), is(Instant.parse("2010-01-01T23:59:20.0Z")));
-
   }
 
   @DataSet("banned_names/one_row.yml")

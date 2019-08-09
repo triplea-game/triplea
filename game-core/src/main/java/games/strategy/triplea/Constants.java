@@ -2,9 +2,7 @@ package games.strategy.triplea;
 
 import games.strategy.engine.data.PlayerId;
 
-/**
- * Constants used throughout the game.
- */
+/** Constants used throughout the game. */
 public interface Constants {
   // Player names
   String PLAYER_NAME_AMERICANS = "Americans";
@@ -257,5 +255,4 @@ public interface Constants {
   static String getPuIncomeBonus(final PlayerId playerId) {
     return playerId.getName() + "PU Income Bonus";
   }
-
 }

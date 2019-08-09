@@ -3,12 +3,12 @@ package org.triplea.java.concurrency;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
- * A handler for CountDownLatch's with methods to release latches being waited on from outside of their threads.
+ * A handler for CountDownLatch's with methods to release latches being waited on from outside of
+ * their threads.
  */
 @ThreadSafe
 public class CountDownLatchHandler {
@@ -29,8 +29,8 @@ public class CountDownLatchHandler {
   }
 
   /**
-   * If {@code releaseLatchOnInterrupt} was set to true upon construction of this handler, then this method will release
-   * and remove the latch; otherwise it does nothing.
+   * If {@code releaseLatchOnInterrupt} was set to true upon construction of this handler, then this
+   * method will release and remove the latch; otherwise it does nothing.
    */
   public void interruptLatch(final CountDownLatch latch) {
     if (releaseLatchOnInterrupt) {
@@ -39,7 +39,8 @@ public class CountDownLatchHandler {
   }
 
   /**
-   * Shuts down this handler by releasing all latches and clearing the list of latches being handled.
+   * Shuts down this handler by releasing all latches and clearing the list of latches being
+   * handled.
    */
   public void shutDown() {
     synchronized (this) {
@@ -55,9 +56,7 @@ public class CountDownLatchHandler {
     }
   }
 
-  /**
-   * Utility method to fully release any CountDownLatch.
-   */
+  /** Utility method to fully release any CountDownLatch. */
   private static void releaseLatch(final CountDownLatch latch) {
     if (latch == null) {
       return;
@@ -68,8 +67,8 @@ public class CountDownLatchHandler {
   }
 
   /**
-   * Add a latch that will be released when this handler shuts down. If this handler is already shutdown, then we will
-   * release the latch immediately.
+   * Add a latch that will be released when this handler shuts down. If this handler is already
+   * shutdown, then we will release the latch immediately.
    */
   public void addShutdownLatch(final CountDownLatch latch) {
     synchronized (this) {
@@ -81,9 +80,7 @@ public class CountDownLatchHandler {
     }
   }
 
-  /**
-   * Releases the latch and removes it from the latches being handled by this handler.
-   */
+  /** Releases the latch and removes it from the latches being handled by this handler. */
   public void removeShutdownLatch(final CountDownLatch latch) {
     synchronized (this) {
       releaseLatch(latch);

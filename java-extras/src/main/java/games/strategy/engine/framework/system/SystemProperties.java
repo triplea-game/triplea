@@ -5,10 +5,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Properties;
 
 /**
- * Wrapper class around System.getProperties(), use this class to set/get System properties.
- * Prefer to use system props only for command line usage. TripleA code base has made pretty extensive use
- * of System props to pass values, which is not a best practice. Converting those usages to this wrapper interface
- * will make different parts of the code that use system properties much easier to manage.
+ * Wrapper class around System.getProperties(), use this class to set/get System properties. Prefer
+ * to use system props only for command line usage. TripleA code base has made pretty extensive use
+ * of System props to pass values, which is not a best practice. Converting those usages to this
+ * wrapper interface will make different parts of the code that use system properties much easier to
+ * manage.
  */
 public final class SystemProperties {
   private SystemProperties() {}
@@ -25,16 +26,12 @@ public final class SystemProperties {
     return checkNotNull(System.getProperty("java.home"));
   }
 
-  /**
-   * Returns current java version with build number. EG: {@code "1.8.0_181-b13"}
-   */
+  /** Returns current java version with build number. EG: {@code "1.8.0_181-b13"} */
   public static String getJavaVersion() {
     return checkNotNull(System.getProperty("java.version"));
   }
 
-  /**
-   * Returns 'short' java version. EG: {@code "1.8"}
-   */
+  /** Returns 'short' java version. EG: {@code "1.8"} */
   public static String getJavaSpecificationVersion() {
     return checkNotNull(System.getProperty("java.specification.version"));
   }

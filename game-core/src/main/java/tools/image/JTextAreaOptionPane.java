@@ -5,19 +5,15 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Window;
 import java.util.concurrent.CountDownLatch;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
-
 import lombok.extern.java.Log;
 
-/**
- * A text area that can show updates scrolling by.
- */
+/** A text area that can show updates scrolling by. */
 @Log
 class JTextAreaOptionPane {
   private final JTextArea editor = new JTextArea();
@@ -27,9 +23,17 @@ class JTextAreaOptionPane {
   private final Window parentComponent;
   private int counter;
 
-  JTextAreaOptionPane(final JFrame parentComponent, final String initialEditorText, final String labelText,
-      final String title, final Image icon, final int editorSizeX, final int editorSizeY, final boolean logToSystemOut,
-      final int latchCount, final CountDownLatch countDownLatch) {
+  JTextAreaOptionPane(
+      final JFrame parentComponent,
+      final String initialEditorText,
+      final String labelText,
+      final String title,
+      final Image icon,
+      final int editorSizeX,
+      final int editorSizeY,
+      final boolean logToSystemOut,
+      final int latchCount,
+      final CountDownLatch countDownLatch) {
     this.logToSystemOut = logToSystemOut;
     counter = latchCount;
     this.parentComponent = parentComponent;
@@ -59,12 +63,13 @@ class JTextAreaOptionPane {
     windowFrame.getContentPane().add(label, BorderLayout.NORTH);
     windowFrame.getContentPane().add(new JScrollPane(editor), BorderLayout.CENTER);
     windowFrame.getContentPane().add(okButton, BorderLayout.SOUTH);
-    okButton.addActionListener(e -> {
-      if (countDownLatch != null) {
-        countDownLatch.countDown();
-      }
-      dispose();
-    });
+    okButton.addActionListener(
+        e -> {
+          if (countDownLatch != null) {
+            countDownLatch.countDown();
+          }
+          dispose();
+        });
   }
 
   private void setWidgetActivation() {

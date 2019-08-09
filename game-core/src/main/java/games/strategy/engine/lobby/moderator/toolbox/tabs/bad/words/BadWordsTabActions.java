@@ -1,20 +1,17 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.bad.words;
 
+import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
 import java.util.function.BiConsumer;
-
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
+import lombok.AllArgsConstructor;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.JTableBuilder;
 
-import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
-import lombok.AllArgsConstructor;
-
 /**
- * A model-like object that defines actions to be taken from the UI. This object is still aware of UI components
- * and interacts with the model to get and update backend data.
+ * A model-like object that defines actions to be taken from the UI. This object is still aware of
+ * UI components and interacts with the model to get and update backend data.
  */
 @AllArgsConstructor
 class BadWordsTabActions {
@@ -36,9 +33,9 @@ class BadWordsTabActions {
     };
   }
 
-
   /**
-   * Adds a new bad word value, sends the value to the backend and updates the local UI table with the new bad word.
+   * Adds a new bad word value, sends the value to the backend and updates the local UI table with
+   * the new bad word.
    */
   void addBadWord(final JTable table, final String newBadWord) {
     MessagePopup.showMessage(parentFrame, "Added: " + newBadWord);

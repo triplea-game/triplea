@@ -1,22 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.function.Predicate;
-
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
-
 import com.google.common.collect.ImmutableList;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -38,10 +22,23 @@ import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleAPlayer;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.Predicate;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
 
 /**
- * Logic for dealing with player tech rolls. This class requires the
- * TechActivationDelegate which actually activates the tech.
+ * Logic for dealing with player tech rolls. This class requires the TechActivationDelegate which
+ * actually activates the tech.
  */
 public class TechnologyDelegate extends BaseTripleADelegate implements ITechDelegate {
   private int techCost;
@@ -70,26 +67,32 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       return;
     }
     if (Properties.getTriggers(getData())) {
-      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
+      // First set up a match for what we want to have fire as a default in this delegate. List out
+      // as a composite match
       // OR.
-      // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Predicate<TriggerAttachment> technologyDelegateTriggerMatch = AbstractTriggerAttachment.availableUses
-          .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
-          .and(TriggerAttachment.techAvailableMatch());
+      // use 'null, null' because this is the Default firing location for any trigger that does NOT
+      // have 'when' set.
+      final Predicate<TriggerAttachment> technologyDelegateTriggerMatch =
+          AbstractTriggerAttachment.availableUses
+              .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
+              .and(TriggerAttachment.techAvailableMatch());
       // get all possible triggers based on this match.
-      final Set<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<>(Collections.singleton(player)), technologyDelegateTriggerMatch);
+      final Set<TriggerAttachment> toFirePossible =
+          TriggerAttachment.collectForAllTriggersMatching(
+              new HashSet<>(Collections.singleton(player)), technologyDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final Map<ICondition, Boolean> testedConditions =
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
         // get all triggers that are satisfied based on the tested conditions.
         final List<TriggerAttachment> toFireTestedAndSatisfied =
-            CollectionUtils.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions));
+            CollectionUtils.getMatches(
+                toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions));
         // now list out individual types to fire, once for each of the matches above.
-        TriggerAttachment.triggerAvailableTechChange(new HashSet<>(toFireTestedAndSatisfied), bridge,
-            new FireTriggerParams(
-                null, null, true, true, true, true));
+        TriggerAttachment.triggerAvailableTechChange(
+            new HashSet<>(toFireTestedAndSatisfied),
+            bridge,
+            new FireTriggerParams(null, null, true, true, true, true));
       }
     }
     needToInitialize = false;
@@ -175,7 +178,10 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   @Override
-  public TechResults rollTech(final int techRolls, final TechnologyFrontier techToRollFor, final int newTokens,
+  public TechResults rollTech(
+      final int techRolls,
+      final TechnologyFrontier techToRollFor,
+      final int newTokens,
       final IntegerMap<PlayerId> whoPaysHowMuch) {
     int rollCount = techRolls;
     if (isWW2V3TechModel()) {
@@ -229,20 +235,32 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     }
     final boolean isRevisedModel = isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel());
     final String directedTechInfo = isRevisedModel ? " for " + techToRollFor.getTechs().get(0) : "";
-    final DiceRoll renderDice = (isLowLuckTechOnly() ? new DiceRoll(random, techHits, remainder, false)
-        : new DiceRoll(random, techHits, diceSides - 1, true));
-    bridge.getHistoryWriter()
+    final DiceRoll renderDice =
+        (isLowLuckTechOnly()
+            ? new DiceRoll(random, techHits, remainder, false)
+            : new DiceRoll(random, techHits, diceSides - 1, true));
+    bridge
+        .getHistoryWriter()
         .startEvent(
-            player.getName() + (random.length > 1 ? " roll " : " rolls : ") + MyFormatter.asDice(random)
-                + directedTechInfo + " and gets " + techHits + " " + MyFormatter.pluralize("hit", techHits),
+            player.getName()
+                + (random.length > 1 ? " roll " : " rolls : ")
+                + MyFormatter.asDice(random)
+                + directedTechInfo
+                + " and gets "
+                + techHits
+                + " "
+                + MyFormatter.pluralize("hit", techHits),
             renderDice);
     if (isWW2V3TechModel()
         && (techHits > 0 || Properties.getRemoveAllTechTokensAtEndOfTurn(data))) {
       techCategory = techToRollFor;
       // remove all the tokens
       final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
-      final String transcriptText = player.getName() + " removing all Technology Tokens after "
-          + (techHits > 0 ? "successful" : "unsuccessful") + " research.";
+      final String transcriptText =
+          player.getName()
+              + " removing all Technology Tokens after "
+              + (techHits > 0 ? "successful" : "unsuccessful")
+              + " research.";
       bridge.getHistoryWriter().startEvent(transcriptText);
       final Change removeTokens =
           ChangeFactory.changeResourcesChange(bridge.getPlayerId(), techTokens, -currTokens);
@@ -309,7 +327,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final Resource pus = getData().getResourceList().getResource(Constants.PUS);
     int cost = rolls * getTechCost();
     if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty()) {
-      final String transcriptText = bridge.getPlayerId().getName() + " spend " + cost + " on tech rolls";
+      final String transcriptText =
+          bridge.getPlayerId().getName() + " spend " + cost + " on tech rolls";
       bridge.getHistoryWriter().startEvent(transcriptText);
       final Change charge = ChangeFactory.changeResourcesChange(bridge.getPlayerId(), pus, -cost);
       bridge.addChange(charge);
@@ -329,7 +348,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     }
     if (isWW2V3TechModel()) {
       final Resource tokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
-      final Change newTokens = ChangeFactory.changeResourcesChange(bridge.getPlayerId(), tokens, rolls);
+      final Change newTokens =
+          ChangeFactory.changeResourcesChange(bridge.getPlayerId(), tokens, rolls);
       bridge.addChange(newTokens);
     }
   }
@@ -392,7 +412,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
         rolled.add(element);
       }
     }
-    bridge.getHistoryWriter().startEvent("Rolls to resolve tech hits:" + MyFormatter.asDice(random));
+    bridge
+        .getHistoryWriter()
+        .startEvent("Rolls to resolve tech hits:" + MyFormatter.asDice(random));
     return ImmutableList.copyOf(newAdvances);
   }
 
@@ -401,7 +423,8 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
   }
 
   public static List<TechAdvance> getAvailableTechs(final PlayerId player, final GameData data) {
-    final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(player, data);
+    final Collection<TechAdvance> currentAdvances =
+        TechTracker.getCurrentTechAdvances(player, data);
     final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, player);
     return CollectionUtils.difference(allAdvances, currentAdvances);
   }

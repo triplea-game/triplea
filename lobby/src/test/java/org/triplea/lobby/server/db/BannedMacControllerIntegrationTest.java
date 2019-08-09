@@ -3,14 +3,12 @@ package org.triplea.lobby.server.db;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.github.npathai.hamcrestopt.OptionalMatchers;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
-
-import com.github.npathai.hamcrestopt.OptionalMatchers;
 
 final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
 

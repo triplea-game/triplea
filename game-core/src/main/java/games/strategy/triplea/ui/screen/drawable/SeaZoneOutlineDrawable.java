@@ -1,18 +1,18 @@
 package games.strategy.triplea.ui.screen.drawable;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.ui.Util;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.List;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.ui.Util;
-
 /**
- * Draws a black outline around the associated territory. Intended only for use with water territories (sea zones).
+ * Draws a black outline around the associated territory. Intended only for use with water
+ * territories (sea zones).
  */
 public class SeaZoneOutlineDrawable extends AbstractDrawable {
   private final String territoryName;
@@ -22,7 +22,11 @@ public class SeaZoneOutlineDrawable extends AbstractDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData) {
     final Territory territory = data.getMap().getTerritory(territoryName);
     final List<Polygon> polys = mapData.getPolygons(territory);
     graphics.setColor(Color.BLACK);

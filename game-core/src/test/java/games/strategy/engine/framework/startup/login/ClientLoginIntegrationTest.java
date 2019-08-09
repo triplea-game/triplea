@@ -3,12 +3,6 @@ package games.strategy.engine.framework.startup.login;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.triplea.test.common.Integration;
-
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.DefaultObjectStreamFactory;
@@ -18,6 +12,11 @@ import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.TestServerMessenger;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.triplea.test.common.Integration;
 
 @Integration
 final class ClientLoginIntegrationTest {
@@ -70,7 +69,8 @@ final class ClientLoginIntegrationTest {
     }
   }
 
-  private IClientMessenger newClientMessenger(final IConnectionLogin connectionLogin) throws Exception {
+  private IClientMessenger newClientMessenger(final IConnectionLogin connectionLogin)
+      throws Exception {
     return new ClientMessenger(
         "localhost",
         serverPort,
@@ -93,7 +93,8 @@ final class ClientLoginIntegrationTest {
     void shouldFailWhenPasswordDoesNotMatch() {
       final IConnectionLogin connectionLogin = new TestConnectionLogin(OTHER_PASSWORD);
 
-      assertThrows(CouldNotLogInException.class, () -> newClientMessenger(connectionLogin).shutDown());
+      assertThrows(
+          CouldNotLogInException.class, () -> newClientMessenger(connectionLogin).shutDown());
     }
   }
 }

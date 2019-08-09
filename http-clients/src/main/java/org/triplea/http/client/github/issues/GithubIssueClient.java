@@ -3,17 +3,14 @@ package org.triplea.http.client.github.issues;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.Nonnull;
-
+import lombok.Builder;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
-import lombok.Builder;
-
 /**
- * Accumulates required args for making requests to create github issues, and then
- * presents an API to accept user upload data.
+ * Accumulates required args for making requests to create github issues, and then presents an API
+ * to accept user upload data.
  */
 public class GithubIssueClient {
   private final String githubOrg;
@@ -34,8 +31,8 @@ public class GithubIssueClient {
   }
 
   /**
-   * For local or integration testing, we may want to have a fake that does not actually
-   * call github. This method returns true if we are doing a fake call to github.
+   * For local or integration testing, we may want to have a fake that does not actually call
+   * github. This method returns true if we are doing a fake call to github.
    */
   public boolean isTest() {
     return authToken.equalsIgnoreCase("test");

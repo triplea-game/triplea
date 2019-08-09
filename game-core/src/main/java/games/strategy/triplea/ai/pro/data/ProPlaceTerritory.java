@@ -1,17 +1,14 @@
 package games.strategy.triplea.ai.pro.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * The result of an AI placement analysis for a single territory.
- */
+/** The result of an AI placement analysis for a single territory. */
 @EqualsAndHashCode(of = "territory")
 @Getter
 @Setter

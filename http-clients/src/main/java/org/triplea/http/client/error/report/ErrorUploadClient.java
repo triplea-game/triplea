@@ -1,17 +1,13 @@
 package org.triplea.http.client.error.report;
 
-import java.net.URI;
-
-import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.HttpConstants;
-
 import feign.FeignException;
 import feign.Headers;
 import feign.RequestLine;
+import java.net.URI;
+import org.triplea.http.client.HttpClient;
+import org.triplea.http.client.HttpConstants;
 
-/**
- * Http client to upload error reports to the http lobby server.
- */
+/** Http client to upload error reports to the http lobby server. */
 @SuppressWarnings("InterfaceNeverImplemented")
 public interface ErrorUploadClient {
 
@@ -30,9 +26,7 @@ public interface ErrorUploadClient {
   @RequestLine("GET " + CAN_REPORT_PATH)
   boolean canSubmitErrorReport();
 
-  /**
-   * Creates an error report uploader clients, sends error reports and gets a response back.
-   */
+  /** Creates an error report uploader clients, sends error reports and gets a response back. */
   static ErrorUploadClient newClient(final URI uri) {
     return new HttpClient<>(ErrorUploadClient.class, uri).get();
   }

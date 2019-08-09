@@ -7,15 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Supplier;
-
+import lombok.AllArgsConstructor;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.UserLookupDao;
 
-import lombok.AllArgsConstructor;
-
-/**
- * Utility class to create/read/delete banned usernames (there is no update).
- */
+/** Utility class to create/read/delete banned usernames (there is no update). */
 @AllArgsConstructor
 class UsernameBlacklistController implements UsernameBlacklistDao {
   private final Supplier<Connection> connection;
@@ -27,10 +23,11 @@ class UsernameBlacklistController implements UsernameBlacklistDao {
     checkNotNull(usernameToBan);
     checkNotNull(moderatorName);
 
-    final String sql = ""
-        + "insert into banned_usernames "
-        + "  (username) values (?) "
-        + "on conflict (username) do nothing";
+    final String sql =
+        ""
+            + "insert into banned_usernames "
+            + "  (username) values (?) "
+            + "on conflict (username) do nothing";
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, usernameToBan);
@@ -42,16 +39,17 @@ class UsernameBlacklistController implements UsernameBlacklistDao {
 
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
-            .moderatorUserId(userLookupDao.lookupUserIdByName(moderatorName)
-                .orElseThrow(() -> new IllegalStateException("Failed to find user: " + moderatorName)))
+            .moderatorUserId(
+                userLookupDao
+                    .lookupUserIdByName(moderatorName)
+                    .orElseThrow(
+                        () -> new IllegalStateException("Failed to find user: " + moderatorName)))
             .actionName(ModeratorAuditHistoryDao.AuditAction.BAN_USERNAME)
             .actionTarget(usernameToBan)
             .build());
   }
 
-  /**
-   * This implementation has the side effect of removing any usernames whose ban has expired.
-   */
+  /** This implementation has the side effect of removing any usernames whose ban has expired. */
   @Override
   public boolean isUsernameBanned(final String username) {
     final String sql = "select 1 from banned_usernames where lower(username) = lower(?)";

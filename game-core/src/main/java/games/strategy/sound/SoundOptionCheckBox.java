@@ -2,9 +2,7 @@ package games.strategy.sound;
 
 import games.strategy.engine.data.properties.BooleanProperty;
 
-/**
- * Checkbox wrapper for a sound option.
- */
+/** Checkbox wrapper for a sound option. */
 class SoundOptionCheckBox extends BooleanProperty {
   private static final long serialVersionUID = 5774074488487286103L;
   private final String clipName;

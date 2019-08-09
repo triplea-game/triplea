@@ -1,15 +1,12 @@
 package games.strategy.triplea.delegate.remote;
 
-import java.util.Collection;
-
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.UndoablePlacement;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
+import java.util.Collection;
 
-/**
- * Logic for placing units within a territory.
- */
+/** Logic for placing units within a territory. */
 public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePlacement> {
   /**
    * Places the specified units in the specified territory.
@@ -24,16 +21,15 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
     return placeUnits(units, at, BidMode.NOT_BID);
   }
 
-  /**
-   * Indicates whether or not bidding is enabled during placement.
-   */
+  /** Indicates whether or not bidding is enabled during placement. */
   enum BidMode {
-    BID, NOT_BID
+    BID,
+    NOT_BID
   }
 
   /**
-   * Query what units can be produced in a given territory.
-   * ProductionResponse may indicate an error string that there can be no units placed in a given territory
+   * Query what units can be produced in a given territory. ProductionResponse may indicate an error
+   * string that there can be no units placed in a given territory
    *
    * @param units place-able units
    * @param at referring territory
@@ -42,8 +38,8 @@ public interface IAbstractPlaceDelegate extends IAbstractMoveDelegate<UndoablePl
   PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory at);
 
   /**
-   * Returns the number of placements made so far.
-   * this is not the number of units placed, but the number of times we have made successful placements.
+   * Returns the number of placements made so far. this is not the number of units placed, but the
+   * number of times we have made successful placements.
    */
   int getPlacementsMade();
 

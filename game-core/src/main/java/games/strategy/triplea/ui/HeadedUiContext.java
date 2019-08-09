@@ -1,19 +1,5 @@
 package games.strategy.triplea.ui;
 
-import java.awt.Cursor;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.net.URL;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.UnitType;
@@ -29,18 +15,29 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitIconImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.mapdata.MapData;
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.net.URL;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import lombok.extern.java.Log;
 
-/**
- * A place to find images and map data for a ui.
- */
+/** A place to find images and map data for a ui. */
 @Log
 public class HeadedUiContext extends AbstractUiContext {
   protected MapData mapData;
   private final TileImageFactory tileImageFactory = new TileImageFactory();
   private final UnitImageFactory unitImageFactory = new UnitImageFactory();
   private final ResourceImageFactory resourceImageFactory = new ResourceImageFactory();
-  private final TerritoryEffectImageFactory territoryEffectImageFactory = new TerritoryEffectImageFactory();
+  private final TerritoryEffectImageFactory territoryEffectImageFactory =
+      new TerritoryEffectImageFactory();
   private final MapImage mapImage;
   private final UnitIconImageFactory unitIconImageFactory = new UnitIconImageFactory();
   private final FlagIconImageFactory flagIconImageFactory = new FlagIconImageFactory();
@@ -74,10 +71,15 @@ public class HeadedUiContext extends AbstractUiContext {
     mapData = new MapData(resourceLoader);
     // DiceImageFactory needs loader and game data
     diceImageFactory = new DiceImageFactory(resourceLoader, data.getDiceSides());
-    final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
+    final double unitScale =
+        getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, mapData.getDefaultUnitScale());
     scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
-    unitImageFactory.setResourceLoader(resourceLoader, unitScale, mapData.getDefaultUnitWidth(),
-        mapData.getDefaultUnitHeight(), mapData.getDefaultUnitCounterOffsetWidth(),
+    unitImageFactory.setResourceLoader(
+        resourceLoader,
+        unitScale,
+        mapData.getDefaultUnitWidth(),
+        mapData.getDefaultUnitHeight(),
+        mapData.getDefaultUnitCounterOffsetWidth(),
         mapData.getDefaultUnitCounterOffsetHeight());
     // TODO: separate scale for resources
     resourceImageFactory.setResourceLoader(resourceLoader);
@@ -92,7 +94,8 @@ public class HeadedUiContext extends AbstractUiContext {
     drawTerritoryEffects = mapData.useTerritoryEffectMarkers();
     // load the sounds in a background thread,
     // avoids the pause where sounds dont load right away
-    // change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
+    // change the resource loader (this allows us to play sounds the map folder, rather than just
+    // default sounds)
     new Thread(() -> ClipPlayer.getInstance(resourceLoader), "TripleA sound loader").start();
     // load a new cursor
     cursor = Cursor.getDefaultCursor();
@@ -103,7 +106,8 @@ public class HeadedUiContext extends AbstractUiContext {
       try {
         final Image image = ImageIO.read(cursorUrl);
         if (image != null) {
-          final Point hotSpot = new Point(mapData.getMapCursorHotspotX(), mapData.getMapCursorHotspotY());
+          final Point hotSpot =
+              new Point(mapData.getMapCursorHotspotX(), mapData.getMapCursorHotspotY());
           cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");
         }
       } catch (final Exception e) {
@@ -128,10 +132,14 @@ public class HeadedUiContext extends AbstractUiContext {
   }
 
   @Override
-  public JLabel newUnitImageLabel(final UnitType type, final PlayerId player,
-      final UnitDamage damaged, final UnitEnable disabled) {
-    final Optional<ImageIcon> image = getUnitImageFactory().getIcon(type, player, damaged == UnitDamage.DAMAGED,
-        disabled == UnitEnable.DISABLED);
+  public JLabel newUnitImageLabel(
+      final UnitType type,
+      final PlayerId player,
+      final UnitDamage damaged,
+      final UnitEnable disabled) {
+    final Optional<ImageIcon> image =
+        getUnitImageFactory()
+            .getIcon(type, player, damaged == UnitDamage.DAMAGED, disabled == UnitEnable.DISABLED);
     final JLabel label = image.map(JLabel::new).orElseGet(JLabel::new);
     MapUnitTooltipManager.setUnitTooltip(label, type, player, 1);
     return label;

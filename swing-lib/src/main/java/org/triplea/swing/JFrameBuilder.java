@@ -13,20 +13,19 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
-
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-
 import lombok.extern.java.Log;
 
 /**
- * Provides a builder API for creating a JFrame that will include project specific defaults when constructed.
- * Defaults provided:
+ * Provides a builder API for creating a JFrame that will include project specific defaults when
+ * constructed. Defaults provided:
+ *
  * <ul>
- * <li>min size (can be changed)</li>
- * <li>system-menu triplea application icon (default is otherwise a generic java icon)</li>
- * <li>JFrame dispose on close</li>
+ *   <li>min size (can be changed)
+ *   <li>system-menu triplea application icon (default is otherwise a generic java icon)
+ *   <li>JFrame dispose on close
  * </ul>
  */
 @Log
@@ -38,42 +37,40 @@ public class JFrameBuilder {
   private boolean visible;
 
   private String title;
-  @Nullable
-  private Component parent;
+  @Nullable private Component parent;
 
   private int minWidth = 50;
   private int minHeight = 50;
   private int width;
   private int height;
-  @Nullable
-  private LayoutManager layoutManager;
-  @Nullable
-  private Runnable windowClosedAction;
-  @Nullable
-  private Runnable windowActivatedAction;
+  @Nullable private LayoutManager layoutManager;
+  @Nullable private Runnable windowClosedAction;
+  @Nullable private Runnable windowActivatedAction;
 
   public static JFrameBuilder builder() {
     return new JFrameBuilder();
   }
 
   /**
-   * Constructs the JFrame instance. It will not be visible.
-   * on the other we do not set the JFrame to visible explicitly for testing.
+   * Constructs the JFrame instance. It will not be visible. on the other we do not set the JFrame
+   * to visible explicitly for testing.
    */
   public JFrame build() {
-    // note: we use the two arg JFrame constructor to avoid the headless check that is in the single arg constructor.
+    // note: we use the two arg JFrame constructor to avoid the headless check that is in the single
+    // arg constructor.
     final JFrame frame = new JFrame(title, null);
-    frame.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowActivated(final WindowEvent e) {
-        Optional.ofNullable(windowActivatedAction).ifPresent(Runnable::run);
-      }
+    frame.addWindowListener(
+        new WindowAdapter() {
+          @Override
+          public void windowActivated(final WindowEvent e) {
+            Optional.ofNullable(windowActivatedAction).ifPresent(Runnable::run);
+          }
 
-      @Override
-      public void windowClosed(final WindowEvent e) {
-        Optional.ofNullable(windowClosedAction).ifPresent(Runnable::run);
-      }
-    });
+          @Override
+          public void windowClosed(final WindowEvent e) {
+            Optional.ofNullable(windowClosedAction).ifPresent(Runnable::run);
+          }
+        });
 
     frame.setMinimumSize(new Dimension(minWidth, minHeight));
     frame.setIconImage(getGameIcon());
@@ -103,9 +100,7 @@ public class JFrameBuilder {
     return frame;
   }
 
-  /**
-   * Returns the standard application icon typically displayed in a window's title bar.
-   */
+  /** Returns the standard application icon typically displayed in a window's title bar. */
   public static Image getGameIcon() {
     try {
       return ImageIO.read(JFrameBuilder.class.getResource("ta_icon.png"));
@@ -153,7 +148,8 @@ public class JFrameBuilder {
   }
 
   /**
-   * Adds a component to the frame, can be called multiple times and will keep appending to the current frame.
+   * Adds a component to the frame, can be called multiple times and will keep appending to the
+   * current frame.
    */
   public JFrameBuilder add(final Component componentToAdd) {
     add(frame -> componentToAdd);
@@ -161,25 +157,22 @@ public class JFrameBuilder {
   }
 
   /**
-   * Adds a component to the frame. The function parameter provides a reference to the frame that will be
-   * created for the cases when for example the new component needs a 'parent-frame' reference.
+   * Adds a component to the frame. The function parameter provides a reference to the frame that
+   * will be created for the cases when for example the new component needs a 'parent-frame'
+   * reference.
    */
   public JFrameBuilder add(final Function<JFrame, Component> componentToAdd) {
     children.add(componentToAdd);
     return this;
   }
 
-  /**
-   * Adds an action that will be executed when the frame is closed.
-   */
+  /** Adds an action that will be executed when the frame is closed. */
   public JFrameBuilder windowClosedAction(final Runnable windowClosedAction) {
     this.windowClosedAction = windowClosedAction;
     return this;
   }
 
-  /**
-   * Adds an action that will be executed when the frame is activated.
-   */
+  /** Adds an action that will be executed when the frame is activated. */
   public JFrameBuilder windowActivatedAction(final Runnable windowActivatedAction) {
     this.windowActivatedAction = windowActivatedAction;
     return this;

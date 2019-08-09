@@ -1,5 +1,12 @@
 package org.triplea.lobby.server;
 
+import com.google.common.base.Preconditions;
+import games.strategy.engine.message.IRemoteMessenger;
+import games.strategy.engine.message.MessageContext;
+import games.strategy.net.GUID;
+import games.strategy.net.IConnectionChangeListener;
+import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -9,20 +16,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
+import lombok.extern.java.Log;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.ILobbyGameController;
-
-import com.google.common.base.Preconditions;
-
-import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.engine.message.MessageContext;
-import games.strategy.net.GUID;
-import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.INode;
-import games.strategy.net.IServerMessenger;
-import lombok.extern.java.Log;
 
 @Log
 final class LobbyGameController implements ILobbyGameController {
@@ -31,17 +28,19 @@ final class LobbyGameController implements ILobbyGameController {
   private final ILobbyGameBroadcaster broadcaster;
   private final Map<INode, Set<GUID>> hostToGame = new HashMap<>();
 
-  LobbyGameController(final ILobbyGameBroadcaster broadcaster, final IServerMessenger serverMessenger) {
+  LobbyGameController(
+      final ILobbyGameBroadcaster broadcaster, final IServerMessenger serverMessenger) {
     this.broadcaster = broadcaster;
-    serverMessenger.addConnectionChangeListener(new IConnectionChangeListener() {
-      @Override
-      public void connectionRemoved(final INode to) {
-        connectionLost(to);
-      }
+    serverMessenger.addConnectionChangeListener(
+        new IConnectionChangeListener() {
+          @Override
+          public void connectionRemoved(final INode to) {
+            connectionLost(to);
+          }
 
-      @Override
-      public void connectionAdded(final INode to) {}
-    });
+          @Override
+          public void connectionAdded(final INode to) {}
+        });
   }
 
   private void connectionLost(final INode to) {
@@ -111,7 +110,8 @@ final class LobbyGameController implements ILobbyGameController {
     synchronized (mutex) {
       final Optional<Set<GUID>> allowedGames = Optional.ofNullable(hostToGame.get(sender));
       if (!allowedGames.orElseGet(Collections::emptySet).contains(gameId)) {
-        throw new IllegalStateException(String.format("Invalid Node %s tried accessing other game", sender));
+        throw new IllegalStateException(
+            String.format("Invalid Node %s tried accessing other game", sender));
       }
     }
   }

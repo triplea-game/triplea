@@ -2,21 +2,18 @@ package games.strategy.engine.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.collect.ImmutableMap;
+import games.strategy.net.GUID;
+import games.strategy.triplea.attachments.UnitAttachment;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-
 import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableMap;
-
-import games.strategy.net.GUID;
-import games.strategy.triplea.attachments.UnitAttachment;
 import lombok.extern.java.Log;
 
 /**
- * Remember to always use a {@code ChangeFactory} change over an {@code IDelegateBridge} for any changes to game data,
- * or any change that should go over the network.
+ * Remember to always use a {@code ChangeFactory} change over an {@code IDelegateBridge} for any
+ * changes to game data, or any change that should go over the network.
  */
 @Log
 public class Unit extends GameDataComponent implements DynamicallyModifiable {
@@ -27,9 +24,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private int hits = 0;
   private final UnitType type;
 
-  /**
-   * Creates new Unit. Owner can be null.
-   */
+  /** Creates new Unit. Owner can be null. */
   public Unit(final UnitType type, final PlayerId owner, final GameData data) {
     this(type, owner, data, new GUID());
   }
@@ -84,8 +79,10 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   public boolean isEquivalent(final Unit unit) {
-    return type != null && type.equals(unit.getType())
-        && owner != null && owner.equals(unit.getOwner())
+    return type != null
+        && type.equals(unit.getType())
+        && owner != null
+        && owner.equals(unit.getOwner())
         && hits == unit.getHits();
   }
 
@@ -94,10 +91,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     if (type == null || owner == null || id == null || this.getData() == null) {
       final String text =
           "Unit.toString() -> Possible java de-serialization error: "
-              + (type == null ? "Unit of UNKNOWN TYPE" : type.getName()) + " owned by " + (owner == null
-                  ? "UNKNOWN OWNER"
-                  : owner.getName())
-              + " with id: " + getId();
+              + (type == null ? "Unit of UNKNOWN TYPE" : type.getName())
+              + " owned by "
+              + (owner == null ? "UNKNOWN OWNER" : owner.getName())
+              + " with id: "
+              + getId();
       UnitDeserializationErrorLazyMessage.printError(text);
       return 0;
     }
@@ -110,10 +108,11 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     if (type == null || owner == null || id == null || this.getData() == null) {
       final String text =
           "Unit.toString() -> Possible java de-serialization error: "
-              + (type == null ? "Unit of UNKNOWN TYPE" : type.getName()) + " owned by " + (owner == null
-                  ? "UNKNOWN OWNER"
-                  : owner.getName())
-              + " with id: " + getId();
+              + (type == null ? "Unit of UNKNOWN TYPE" : type.getName())
+              + " owned by "
+              + (owner == null ? "UNKNOWN OWNER" : owner.getName())
+              + " with id: "
+              + getId();
       UnitDeserializationErrorLazyMessage.printError(text);
       return text;
     }
@@ -125,9 +124,9 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   }
 
   /**
-   * Until this error gets fixed, lets not scare the crap out of our users, as the problem doesn't seem to be causing
-   * any serious issues.
-   * TODO: fix the root cause of this deserialization issue (probably a circular dependency somewhere)
+   * Until this error gets fixed, lets not scare the crap out of our users, as the problem doesn't
+   * seem to be causing any serious issues. TODO: fix the root cause of this deserialization issue
+   * (probably a circular dependency somewhere)
    */
   public static final class UnitDeserializationErrorLazyMessage {
     private static boolean shownError = false;
@@ -145,15 +144,9 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("owner",
-            MutableProperty.ofSimple(
-                this::setOwner,
-                this::getOwner))
+        .put("owner", MutableProperty.ofSimple(this::setOwner, this::getOwner))
         .put("uid", MutableProperty.ofReadOnlySimple(this::getId))
-        .put("hits",
-            MutableProperty.ofSimple(
-                this::setHits,
-                this::getHits))
+        .put("hits", MutableProperty.ofSimple(this::setHits, this::getHits))
         .put("type", MutableProperty.ofReadOnlySimple(this::getType))
         .build();
   }

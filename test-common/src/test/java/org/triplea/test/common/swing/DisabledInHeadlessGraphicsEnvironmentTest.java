@@ -18,7 +18,8 @@ final class DisabledInHeadlessGraphicsEnvironmentTest {
       final ConditionEvaluationResult result = evaluateExecutionCondition(true);
 
       assertThat(result.isDisabled(), is(true));
-      assertThat(result.getReason(), isPresentAndIs("Test disabled in headless graphics environment"));
+      assertThat(
+          result.getReason(), isPresentAndIs("Test disabled in headless graphics environment"));
     }
 
     @Test

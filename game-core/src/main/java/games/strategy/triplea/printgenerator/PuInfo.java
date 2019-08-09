@@ -1,5 +1,8 @@
 package games.strategy.triplea.printgenerator;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
@@ -11,10 +14,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.Resource;
 import lombok.extern.java.Log;
 
 @Log
@@ -24,18 +23,21 @@ class PuInfo {
   void saveToFile(final PrintGenerationData printData) {
     final GameData gameData = printData.getData();
     for (final PlayerId currentPlayer : gameData.getPlayerList()) {
-      infoMap.put(currentPlayer,
+      infoMap.put(
+          currentPlayer,
           gameData.getResourceList().getResources().stream()
-              .collect(Collectors.toMap(
-                  Function.identity(),
-                  currentPlayer.getResources()::getQuantity)));
+              .collect(
+                  Collectors.toMap(
+                      Function.identity(), currentPlayer.getResources()::getQuantity)));
     }
     try {
       final File outFile = new File(printData.getOutDir(), "General Information.csv");
-      try (Writer resourceWriter = Files.newBufferedWriter(
-          outFile.toPath(),
-          StandardCharsets.UTF_8,
-          StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+      try (Writer resourceWriter =
+          Files.newBufferedWriter(
+              outFile.toPath(),
+              StandardCharsets.UTF_8,
+              StandardOpenOption.CREATE,
+              StandardOpenOption.APPEND)) {
         // Print Title
         final int numResources = gameData.getResourceList().size();
         for (int i = 0; i < numResources / 2 - 1 + numResources % 2; i++) {

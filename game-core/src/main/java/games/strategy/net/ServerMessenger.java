@@ -2,6 +2,10 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.net.nio.NioSocket;
+import games.strategy.net.nio.NioSocketListener;
+import games.strategy.net.nio.QuarantineConversation;
+import games.strategy.net.nio.ServerQuarantineConversation;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetAddress;
@@ -23,18 +27,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import javax.annotation.Nullable;
-
-import games.strategy.net.nio.NioSocket;
-import games.strategy.net.nio.NioSocketListener;
-import games.strategy.net.nio.QuarantineConversation;
-import games.strategy.net.nio.ServerQuarantineConversation;
 import lombok.extern.java.Log;
 
-/**
- * A Messenger that can have many clients connected to it.
- */
+/** A Messenger that can have many clients connected to it. */
 @Log
 public class ServerMessenger implements IServerMessenger, NioSocketListener {
   public final Object newNodeLock = new Object();
@@ -57,7 +53,8 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   // The following code is used in hosted lobby games by the host for player mini-banning
   private final Map<String, String> playersThatLeftMacsLast10 = new ConcurrentHashMap<>();
 
-  public ServerMessenger(final String name, final int port, final IObjectStreamFactory objectStreamFactory)
+  public ServerMessenger(
+      final String name, final int port, final IObjectStreamFactory objectStreamFactory)
       throws IOException {
     socketChannel = ServerSocketChannel.open();
     socketChannel.configureBlocking(false);
@@ -134,8 +131,9 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   /**
-   * Invoked when the node with the specified unique name has successfully logged in. Note that {@code uniquePlayerName}
-   * is the node name and may not be identical to the name of the player associated with the node
+   * Invoked when the node with the specified unique name has successfully logged in. Note that
+   * {@code uniquePlayerName} is the node name and may not be identical to the name of the player
+   * associated with the node
    *
    * @see PlayerNameAssigner#assignName(String, InetAddress, Collection)
    */
@@ -146,7 +144,8 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private void notifyPlayerRemoval(final INode node) {
     playersThatLeftMacsLast10.put(node.getName(), cachedMacAddresses.get(node.getName()));
     if (playersThatLeftMacsLast10.size() > 10) {
-      playersThatLeftMacsLast10.remove(playersThatLeftMacsLast10.entrySet().iterator().next().toString());
+      playersThatLeftMacsLast10.remove(
+          playersThatLeftMacsLast10.entrySet().iterator().next().toString());
     }
     cachedMacAddresses.remove(node.getName());
   }
@@ -300,11 +299,9 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
               }
               continue;
             }
-            final ServerQuarantineConversation conversation = new ServerQuarantineConversation(
-                loginValidator,
-                socketChannel,
-                nioSocket,
-                ServerMessenger.this);
+            final ServerQuarantineConversation conversation =
+                new ServerQuarantineConversation(
+                    loginValidator, socketChannel, nioSocket, ServerMessenger.this);
             nioSocket.add(socketChannel, conversation);
           } else if (!key.isValid()) {
             key.cancel();
@@ -353,9 +350,12 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   @Override
-  public void socketUnqaurantined(final SocketChannel channel, final QuarantineConversation conversation) {
+  public void socketUnqaurantined(
+      final SocketChannel channel, final QuarantineConversation conversation) {
     final ServerQuarantineConversation con = (ServerQuarantineConversation) conversation;
-    final INode remote = new Node(con.getRemoteName(), (InetSocketAddress) channel.socket().getRemoteSocketAddress());
+    final INode remote =
+        new Node(
+            con.getRemoteName(), (InetSocketAddress) channel.socket().getRemoteSocketAddress());
     synchronized (newNodeLock) {
       nodeToChannel.put(remote, channel);
     }
@@ -376,6 +376,10 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   @Override
   public String toString() {
-    return getClass().getSimpleName() + " LocalNode:" + node + " ClientNodes:" + nodeToChannel.keySet();
+    return getClass().getSimpleName()
+        + " LocalNode:"
+        + node
+        + " ClientNodes:"
+        + nodeToChannel.keySet();
   }
 }

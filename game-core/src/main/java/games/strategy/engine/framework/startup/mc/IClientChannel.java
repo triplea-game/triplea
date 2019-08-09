@@ -1,18 +1,19 @@
 package games.strategy.engine.framework.startup.mc;
 
-import java.util.Map;
-
 import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
+import java.util.Map;
 
 /**
- * A channel representing a remote client of a network game. Used by the server to notify clients of various events.
+ * A channel representing a remote client of a network game. Used by the server to notify clients of
+ * various events.
  */
 public interface IClientChannel extends IChannelSubscriber {
   RemoteName CHANNEL_NAME =
-      new RemoteName("games.strategy.engine.framework.ui.IClientChannel.CHANNEL", IClientChannel.class);
+      new RemoteName(
+          "games.strategy.engine.framework.ui.IClientChannel.CHANNEL", IClientChannel.class);
 
   void playerListingChanged(PlayerListing listing);
 

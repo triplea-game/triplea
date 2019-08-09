@@ -12,18 +12,15 @@ import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.google.common.collect.ImmutableMap;
+import games.strategy.engine.framework.startup.login.HmacSha512Authenticator.ChallengePropertyNames;
+import games.strategy.engine.framework.startup.login.HmacSha512Authenticator.ResponsePropertyNames;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableMap;
-
-import games.strategy.engine.framework.startup.login.HmacSha512Authenticator.ChallengePropertyNames;
-import games.strategy.engine.framework.startup.login.HmacSha512Authenticator.ResponsePropertyNames;
 
 final class HmacSha512AuthenticatorTest {
   private static final String PASSWORD = "←PASSWORD↑WITH→UNICODE↓CHARS";
@@ -49,9 +46,10 @@ final class HmacSha512AuthenticatorTest {
   final class NewResponseTest {
     @Test
     void shouldIncludeResponseWhenChallengeContainsNonceAndSalt() throws Exception {
-      final Map<String, String> challenge = ImmutableMap.of(
-          ChallengePropertyNames.NONCE, newBase64String(),
-          ChallengePropertyNames.SALT, newBase64String());
+      final Map<String, String> challenge =
+          ImmutableMap.of(
+              ChallengePropertyNames.NONCE, newBase64String(),
+              ChallengePropertyNames.SALT, newBase64String());
 
       final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
 
@@ -60,7 +58,8 @@ final class HmacSha512AuthenticatorTest {
 
     @Test
     void shouldNotIncludeResponseWhenChallengeDoesNotContainNonce() throws Exception {
-      final Map<String, String> challenge = ImmutableMap.of(ChallengePropertyNames.SALT, newBase64String());
+      final Map<String, String> challenge =
+          ImmutableMap.of(ChallengePropertyNames.SALT, newBase64String());
 
       final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
 
@@ -69,7 +68,8 @@ final class HmacSha512AuthenticatorTest {
 
     @Test
     void shouldNotIncludeResponseWhenChallengeDoesNotContainSalt() throws Exception {
-      final Map<String, String> challenge = ImmutableMap.of(ChallengePropertyNames.NONCE, newBase64String());
+      final Map<String, String> challenge =
+          ImmutableMap.of(ChallengePropertyNames.NONCE, newBase64String());
 
       final Map<String, String> response = HmacSha512Authenticator.newResponse(PASSWORD, challenge);
 
@@ -104,11 +104,11 @@ final class HmacSha512AuthenticatorTest {
       final String name = "name";
       final Map<String, String> properties = ImmutableMap.of(name, "NOT_A_BASE64_VALUE");
 
-      final Exception e = assertThrows(AuthenticationException.class,
-          () -> HmacSha512Authenticator.decodeOptionalProperty(properties, name));
-      assertThat(e.getMessage(), allOf(
-          containsString("malformed"),
-          containsString(name)));
+      final Exception e =
+          assertThrows(
+              AuthenticationException.class,
+              () -> HmacSha512Authenticator.decodeOptionalProperty(properties, name));
+      assertThat(e.getMessage(), allOf(containsString("malformed"), containsString(name)));
     }
   }
 
@@ -125,10 +125,13 @@ final class HmacSha512AuthenticatorTest {
     @Test
     void shouldThrowExceptionWhenAuthenticationFails() throws Exception {
       final Map<String, String> challenge = HmacSha512Authenticator.newChallenge();
-      final Map<String, String> response = HmacSha512Authenticator.newResponse("otherPassword", challenge);
+      final Map<String, String> response =
+          HmacSha512Authenticator.newResponse("otherPassword", challenge);
 
-      final Exception e = assertThrows(AuthenticationException.class,
-          () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
+      final Exception e =
+          assertThrows(
+              AuthenticationException.class,
+              () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
 
       assertThat(e.getMessage(), containsString("authentication failed"));
     }
@@ -140,12 +143,14 @@ final class HmacSha512AuthenticatorTest {
 
       challenge.remove(ChallengePropertyNames.NONCE);
 
-      final Exception e = assertThrows(AuthenticationException.class,
-          () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
+      final Exception e =
+          assertThrows(
+              AuthenticationException.class,
+              () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
 
-      assertThat(e.getMessage(), allOf(
-          containsString("missing"),
-          containsString(ChallengePropertyNames.NONCE)));
+      assertThat(
+          e.getMessage(),
+          allOf(containsString("missing"), containsString(ChallengePropertyNames.NONCE)));
     }
 
     @Test
@@ -155,27 +160,32 @@ final class HmacSha512AuthenticatorTest {
 
       challenge.remove(ChallengePropertyNames.SALT);
 
-      final Exception e = assertThrows(AuthenticationException.class,
-          () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
+      final Exception e =
+          assertThrows(
+              AuthenticationException.class,
+              () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
 
-      assertThat(e.getMessage(), allOf(
-          containsString("missing"),
-          containsString(ChallengePropertyNames.SALT)));
+      assertThat(
+          e.getMessage(),
+          allOf(containsString("missing"), containsString(ChallengePropertyNames.SALT)));
     }
 
     @Test
     void shouldThrowExceptionWhenResponseDoesNotContainDigest() throws Exception {
       final Map<String, String> challenge = HmacSha512Authenticator.newChallenge();
-      final Map<String, String> response = new HashMap<>(HmacSha512Authenticator.newResponse(PASSWORD, challenge));
+      final Map<String, String> response =
+          new HashMap<>(HmacSha512Authenticator.newResponse(PASSWORD, challenge));
 
       response.remove(ResponsePropertyNames.DIGEST);
 
-      final Exception e = assertThrows(AuthenticationException.class,
-          () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
+      final Exception e =
+          assertThrows(
+              AuthenticationException.class,
+              () -> HmacSha512Authenticator.authenticate(PASSWORD, challenge, response));
 
-      assertThat(e.getMessage(), allOf(
-          containsString("missing"),
-          containsString(ResponsePropertyNames.DIGEST)));
+      assertThat(
+          e.getMessage(),
+          allOf(containsString("missing"), containsString(ResponsePropertyNames.DIGEST)));
     }
   }
 
@@ -186,11 +196,11 @@ final class HmacSha512AuthenticatorTest {
       final String name = "name";
       final Map<String, String> properties = ImmutableMap.of("other name", newBase64String());
 
-      final Exception e = assertThrows(AuthenticationException.class,
-          () -> HmacSha512Authenticator.decodeRequiredProperty(properties, name));
-      assertThat(e.getMessage(), allOf(
-          containsString("missing"),
-          containsString(name)));
+      final Exception e =
+          assertThrows(
+              AuthenticationException.class,
+              () -> HmacSha512Authenticator.decodeRequiredProperty(properties, name));
+      assertThat(e.getMessage(), allOf(containsString("missing"), containsString(name)));
     }
   }
 }

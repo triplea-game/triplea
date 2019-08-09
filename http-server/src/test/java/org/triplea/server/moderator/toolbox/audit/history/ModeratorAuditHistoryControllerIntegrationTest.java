@@ -12,10 +12,8 @@ import org.triplea.http.client.moderator.toolbox.event.log.ToolboxEventLogClient
 import org.triplea.server.http.AbstractDropwizardTest;
 
 class ModeratorAuditHistoryControllerIntegrationTest extends AbstractDropwizardTest {
-  private static final PagingParams PAGING_PARAMS = PagingParams.builder()
-      .pageSize(1)
-      .rowNumber(0)
-      .build();
+  private static final PagingParams PAGING_PARAMS =
+      PagingParams.builder().pageSize(1).rowNumber(0).build();
 
   @Test
   void fetchHistory() {
@@ -29,7 +27,8 @@ class ModeratorAuditHistoryControllerIntegrationTest extends AbstractDropwizardT
   void fetchHistoryNotAuthorized() {
     assertThrows(
         HttpInteractionException.class,
-        () -> AbstractDropwizardTest.newClientWithInvalidCreds(ToolboxEventLogClient::newClient)
-            .lookupModeratorEvents(PAGING_PARAMS));
+        () ->
+            AbstractDropwizardTest.newClientWithInvalidCreds(ToolboxEventLogClient::newClient)
+                .lookupModeratorEvents(PAGING_PARAMS));
   }
 }

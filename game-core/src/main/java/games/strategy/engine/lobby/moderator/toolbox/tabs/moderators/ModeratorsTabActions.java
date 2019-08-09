@@ -1,35 +1,27 @@
 package games.strategy.engine.lobby.moderator.toolbox.tabs.moderators;
 
+import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
+import games.strategy.engine.lobby.moderator.toolbox.tabs.ShowApiKeyDialog;
 import java.awt.Component;
 import java.util.function.BiConsumer;
-
 import javax.annotation.Nonnull;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-
+import lombok.Builder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
 
-import games.strategy.engine.lobby.moderator.toolbox.MessagePopup;
-import games.strategy.engine.lobby.moderator.toolbox.tabs.ShowApiKeyDialog;
-import lombok.Builder;
-
-
-/**
- * Tab with a table showing list of moderators.
- */
+/** Tab with a table showing list of moderators. */
 @Builder
 final class ModeratorsTabActions {
   private static final String GENERATE_KEY_LABEL =
       "<html>Copy/Paste the key below and provide it to the moderator. "
           + "This is the only time the key will be shown.";
 
-  @Nonnull
-  private final JFrame parentFrame;
-  @Nonnull
-  private final ModeratorsTabModel moderatorsTabModel;
+  @Nonnull private final JFrame parentFrame;
+  @Nonnull private final ModeratorsTabModel moderatorsTabModel;
 
   // TODO: test?
   BiConsumer<Integer, DefaultTableModel> generateApiKeyAction() {
@@ -76,7 +68,6 @@ final class ModeratorsTabActions {
             moderatorsTabModel.addSuperMod(user);
             MessagePopup.showMessage(parentFrame, user + " is now a super-moderator.");
           });
-
     };
   }
 

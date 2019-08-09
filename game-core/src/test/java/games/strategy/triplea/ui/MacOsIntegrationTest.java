@@ -10,7 +10,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +23,9 @@ final class MacOsIntegrationTest {
     @Test
     void shouldReturnTrueWhenJavaVersionIs9OrLater() {
       Arrays.asList("9", "10", "11", "12")
-          .forEach(specificationVersion -> assertThat(isJavaVersionAtLeast9(specificationVersion), is(true)));
+          .forEach(
+              specificationVersion ->
+                  assertThat(isJavaVersionAtLeast9(specificationVersion), is(true)));
     }
 
     @Test
@@ -42,20 +43,16 @@ final class MacOsIntegrationTest {
   @Nested
   final class AddHandlerTest {
     private final FakeApplication application = new FakeApplication();
-    @Mock
-    private ThrowingConsumer<Object[], Exception> handler;
+    @Mock private ThrowingConsumer<Object[], Exception> handler;
 
     private void addHandler() throws ReflectiveOperationException {
       addHandlerWithHandlerMethodName("handleRequest");
     }
 
-    private void addHandlerWithHandlerMethodName(final String handlerMethodName) throws ReflectiveOperationException {
+    private void addHandlerWithHandlerMethodName(final String handlerMethodName)
+        throws ReflectiveOperationException {
       MacOsIntegration.addHandler(
-          application,
-          FakeHandler.class.getName(),
-          handlerMethodName,
-          "setFakeHandler",
-          handler);
+          application, FakeHandler.class.getName(), handlerMethodName, "setFakeHandler", handler);
     }
 
     @Test

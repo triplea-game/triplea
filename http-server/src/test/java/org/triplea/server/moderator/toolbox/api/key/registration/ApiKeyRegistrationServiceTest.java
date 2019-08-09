@@ -11,9 +11,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,47 +24,37 @@ import org.triplea.server.moderator.toolbox.api.key.InvalidKeyLockOut;
 import org.triplea.server.moderator.toolbox.api.key.exception.ApiKeyLockOutException;
 import org.triplea.server.moderator.toolbox.api.key.exception.IncorrectApiKeyException;
 
-
 @ExtendWith(MockitoExtension.class)
 class ApiKeyRegistrationServiceTest {
 
   private static final String SINGLE_USE_KEY = "Krakens are the comrades of the dead greed.";
-  private static final String PASSWORD = "Nothing like the lively endurance screaming on the hornpipe.";
+  private static final String PASSWORD =
+      "Nothing like the lively endurance screaming on the hornpipe.";
   private static final String HASHED_KEY = "Belay, treasure!";
   private static final int MODERATOR_ID = 1007;
   private static final String NEW_API_KEY = "All winds burn addled, clear cannons.";
   private static final String NEW_HASHED_KEY = "Ah, loot me shipmate, ye sunny fish!";
-  private static final String MACHINE_IP = "Aww there's nothing like the scrawny fortune waving on the sea.";
+  private static final String MACHINE_IP =
+      "Aww there's nothing like the scrawny fortune waving on the sea.";
 
-  @Mock
-  private Function<String, String> singleKeyHasher;
-  @Mock
-  private BiFunction<String, String, String> keyHasher;
+  @Mock private Function<String, String> singleKeyHasher;
+  @Mock private BiFunction<String, String, String> keyHasher;
 
-  @Mock
-  private Supplier<String> newApiKeySupplier;
+  @Mock private Supplier<String> newApiKeySupplier;
 
-  @Mock
-  private InvalidKeyLockOut invalidKeyLockOut;
+  @Mock private InvalidKeyLockOut invalidKeyLockOut;
 
-  @Mock
-  private ModeratorApiKeyDao moderatorApiKeyDao;
+  @Mock private ModeratorApiKeyDao moderatorApiKeyDao;
 
-  @Mock
-  private ModeratorSingleUseKeyDao moderatorSingleUseKeyDao;
+  @Mock private ModeratorSingleUseKeyDao moderatorSingleUseKeyDao;
 
-  @Mock
-  private Predicate<String> passwordBlackList;
+  @Mock private Predicate<String> passwordBlackList;
 
-  @Mock
-  private ModeratorKeyRegistrationDao moderatorKeyRegistrationDao;
+  @Mock private ModeratorKeyRegistrationDao moderatorKeyRegistrationDao;
 
-  @InjectMocks
-  private ApiKeyRegistrationService apiKeyRegistrationService;
+  @InjectMocks private ApiKeyRegistrationService apiKeyRegistrationService;
 
-
-  @Mock
-  private HttpServletRequest httpServletRequest;
+  @Mock private HttpServletRequest httpServletRequest;
 
   @Test
   void registerKeyThrowsIfLockedOut() {
@@ -83,7 +71,6 @@ class ApiKeyRegistrationServiceTest {
     assertThrows(
         PasswordTooEasyException.class,
         () -> apiKeyRegistrationService.registerKey(httpServletRequest, SINGLE_USE_KEY, PASSWORD));
-
   }
 
   @Test
@@ -114,14 +101,15 @@ class ApiKeyRegistrationServiceTest {
         apiKeyRegistrationService.registerKey(httpServletRequest, SINGLE_USE_KEY, PASSWORD),
         is(NEW_API_KEY));
 
-    verify(moderatorKeyRegistrationDao).invalidateSingleUseKeyAndGenerateNew(
-        ModeratorKeyRegistrationDao.Params.builder()
-            .singleUseKeyDao(moderatorSingleUseKeyDao)
-            .singleUseKey(HASHED_KEY)
-            .apiKeyDao(moderatorApiKeyDao)
-            .newKey(NEW_HASHED_KEY)
-            .registeringMachineIp(MACHINE_IP)
-            .userId(MODERATOR_ID)
-            .build());
+    verify(moderatorKeyRegistrationDao)
+        .invalidateSingleUseKeyAndGenerateNew(
+            ModeratorKeyRegistrationDao.Params.builder()
+                .singleUseKeyDao(moderatorSingleUseKeyDao)
+                .singleUseKey(HASHED_KEY)
+                .apiKeyDao(moderatorApiKeyDao)
+                .newKey(NEW_HASHED_KEY)
+                .registeringMachineIp(MACHINE_IP)
+                .userId(MODERATOR_ID)
+                .build());
   }
 }

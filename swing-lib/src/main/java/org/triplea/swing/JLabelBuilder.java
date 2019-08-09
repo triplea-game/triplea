@@ -1,8 +1,8 @@
 package org.triplea.swing;
 
+import com.google.common.base.Preconditions;
 import java.awt.Dimension;
 import java.util.Optional;
-
 import javax.annotation.Nullable;
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -11,13 +11,9 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import com.google.common.base.Preconditions;
-
 /**
- * Builds a swing JLabel.
- * <br />
- * Example usage:
- * <code><pre>
+ * Builds a swing JLabel. <br>
+ * Example usage: <code><pre>
  *   JLabel label = JLabelBuilder.builder()
  *     .text("label text")
  *     .leftAlign()
@@ -42,35 +38,30 @@ public class JLabelBuilder {
   }
 
   /**
-   * Constructs a Swing JLabel using current builder values.
-   * Values that must be set: text or icon
+   * Constructs a Swing JLabel using current builder values. Values that must be set: text or icon
    */
   public JLabel build() {
     Preconditions.checkState(text != null || icon != null);
 
     final JLabel label = new JLabel(text);
 
-    Optional.ofNullable(icon)
-        .ifPresent(label::setIcon);
+    Optional.ofNullable(icon).ifPresent(label::setIcon);
 
-    Optional.ofNullable(iconTextGap)
-        .ifPresent(label::setIconTextGap);
+    Optional.ofNullable(iconTextGap).ifPresent(label::setIconTextGap);
 
     Optional.ofNullable(alignment)
-        .ifPresent(align -> {
-          if (align == Alignment.LEFT) {
-            label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-          }
-        });
+        .ifPresent(
+            align -> {
+              if (align == Alignment.LEFT) {
+                label.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+              }
+            });
 
-    Optional.ofNullable(toolTip)
-        .ifPresent(label::setToolTipText);
+    Optional.ofNullable(toolTip).ifPresent(label::setToolTipText);
 
-    Optional.ofNullable(maxSize)
-        .ifPresent(label::setMaximumSize);
+    Optional.ofNullable(maxSize).ifPresent(label::setMaximumSize);
 
-    Optional.ofNullable(border)
-        .ifPresent(label::setBorder);
+    Optional.ofNullable(border).ifPresent(label::setBorder);
 
     Optional.ofNullable(borderSize)
         .ifPresent(size -> label.setBorder(new EmptyBorder(size, size, size, size)));
@@ -111,7 +102,6 @@ public class JLabelBuilder {
     this.borderSize = borderSize;
     return this;
   }
-
 
   public JLabelBuilder border(final Border border) {
     this.border = border;

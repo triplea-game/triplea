@@ -1,27 +1,19 @@
 package org.triplea.server.moderator.toolbox.api.key;
 
+import com.google.common.base.Preconditions;
 import java.util.function.BiFunction;
-
 import javax.annotation.Nonnull;
-
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.server.http.AppConfig;
 
-import com.google.common.base.Preconditions;
-
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-
-/**
- * Utility class to provide hashing functions for moderator API key.
- */
+/** Utility class to provide hashing functions for moderator API key. */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public final class KeyHasher {
 
-  @Nonnull
-  private final String keySalt;
-  @Nonnull
-  private final BiFunction<String, String, String> hashFunction;
+  @Nonnull private final String keySalt;
+  @Nonnull private final BiFunction<String, String, String> hashFunction;
 
   public KeyHasher(final AppConfig appConfig) {
     this(appConfig.getBcryptSalt(), BCrypt::hashpw);

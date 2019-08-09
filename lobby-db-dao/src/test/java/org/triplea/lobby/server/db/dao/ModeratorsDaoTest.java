@@ -5,30 +5,28 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.junit5.DBUnitExtension;
 import java.time.Instant;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.data.ModeratorUserDaoData;
 import org.triplea.test.common.Integration;
 
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
-
 @Integration
 @ExtendWith(DBUnitExtension.class)
 @DataSet("moderators/select.yml")
 class ModeratorsDaoTest {
 
-
   private static final int NOT_MODERATOR_ID = 100000;
   private static final int MODERATOR_ID = 900000;
   private static final int SUPER_MODERATOR_ID = 900001;
 
-  private final ModeratorsDao moderatorsDao = JdbiDatabase.newConnection().onDemand(ModeratorsDao.class);
+  private final ModeratorsDao moderatorsDao =
+      JdbiDatabase.newConnection().onDemand(ModeratorsDao.class);
 
   @Test
   void getModerators() {

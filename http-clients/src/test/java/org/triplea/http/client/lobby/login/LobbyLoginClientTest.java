@@ -4,34 +4,27 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.google.gson.Gson;
 import java.net.URI;
 import java.util.Arrays;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
 import org.triplea.http.client.error.report.ErrorUploadClient;
-
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.google.gson.Gson;
-
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
-@ExtendWith({
-    WiremockResolver.class,
-    WiremockUriResolver.class
-})
+@ExtendWith({WiremockResolver.class, WiremockUriResolver.class})
 class LobbyLoginClientTest {
-  private static final LobbyLoginResponse SUCCESS_LOGIN = LobbyLoginResponse.newSuccessResponse("success");
-  private static final LobbyLoginResponse FAILED_LOGIN = LobbyLoginResponse.newFailResponse("fail-reason");
+  private static final LobbyLoginResponse SUCCESS_LOGIN =
+      LobbyLoginResponse.newSuccessResponse("success");
+  private static final LobbyLoginResponse FAILED_LOGIN =
+      LobbyLoginResponse.newFailResponse("fail-reason");
   private static final String LOGIN_NAME = "example";
   private static final RegisteredUserLoginRequest REGISTERED_USER_LOGIN_REQUEST =
-      RegisteredUserLoginRequest.builder()
-          .name("example")
-          .password("password")
-          .build();
+      RegisteredUserLoginRequest.builder().name("example").password("password").build();
 
   @Nested
   final class LoginTestCases {
@@ -54,8 +47,7 @@ class LobbyLoginClientTest {
     }
 
     private LobbyLoginResponse doServiceCall(final URI hostUri) {
-      return LobbyLoginClient.newClient(hostUri)
-          .login(REGISTERED_USER_LOGIN_REQUEST);
+      return LobbyLoginClient.newClient(hostUri).login(REGISTERED_USER_LOGIN_REQUEST);
     }
 
     @Test
@@ -104,8 +96,7 @@ class LobbyLoginClientTest {
     }
 
     private LobbyLoginResponse doServiceCall(final URI hostUri) {
-      return LobbyLoginClient.newClient(hostUri)
-          .anonymousLogin(LOGIN_NAME);
+      return LobbyLoginClient.newClient(hostUri).anonymousLogin(LOGIN_NAME);
     }
 
     @Test

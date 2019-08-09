@@ -1,14 +1,10 @@
 package games.strategy.triplea.ai.pro.logging;
 
+import games.strategy.triplea.ui.TripleAFrame;
 import java.util.logging.Level;
-
 import javax.swing.SwingUtilities;
 
-import games.strategy.triplea.ui.TripleAFrame;
-
-/**
- * Class to manage log window display.
- */
+/** Class to manage log window display. */
 public final class ProLogUi {
   private static ProLogWindow settingsWindow = null;
   private static String currentName = "";

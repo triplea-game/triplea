@@ -7,9 +7,13 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
+import games.strategy.engine.data.ResourceList;
+import games.strategy.triplea.Constants;
 import java.util.Arrays;
 import java.util.function.Function;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,16 +21,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.collections.IntegerMap;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.ResourceCollection;
-import games.strategy.engine.data.ResourceList;
-import games.strategy.triplea.Constants;
-
 @ExtendWith(MockitoExtension.class)
 final class ResourceCollectionUtilsTest {
-  @Mock
-  private GameData data;
+  @Mock private GameData data;
 
   private Resource pus;
 
@@ -58,7 +55,8 @@ final class ResourceCollectionUtilsTest {
 
   private ResourceCollection newResourceCollection(final Resource... resources) {
     final ResourceCollection resourceCollection = new ResourceCollection(data);
-    resourceCollection.add(new IntegerMap<>(Arrays.stream(resources).collect(toMap(Function.identity(), r -> 42))));
+    resourceCollection.add(
+        new IntegerMap<>(Arrays.stream(resources).collect(toMap(Function.identity(), r -> 42))));
     return resourceCollection;
   }
 
@@ -77,7 +75,8 @@ final class ResourceCollectionUtilsTest {
     givenGameResources(pus, vps);
     final ResourceCollection unfiltered = newResourceCollection(pus, techTokens, vps);
 
-    final ResourceCollection filtered = ResourceCollectionUtils.exclude(unfiltered, pus.getName(), vps.getName());
+    final ResourceCollection filtered =
+        ResourceCollectionUtils.exclude(unfiltered, pus.getName(), vps.getName());
 
     assertThat(filtered.getQuantity(pus), is(0));
     assertThat(filtered.getQuantity(techTokens), is(unfiltered.getQuantity(techTokens)));

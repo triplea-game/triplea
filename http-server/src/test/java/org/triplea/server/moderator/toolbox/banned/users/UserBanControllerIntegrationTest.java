@@ -19,7 +19,6 @@ class UserBanControllerIntegrationTest extends AbstractDropwizardTest {
   private static final ToolboxUserBanClient clientWithBadKey =
       AbstractDropwizardTest.newClientWithInvalidCreds(ToolboxUserBanClient::newClient);
 
-
   @Test
   void getUserBans() {
     assertThat(client.getUserBans(), not(empty()));
@@ -43,22 +42,26 @@ class UserBanControllerIntegrationTest extends AbstractDropwizardTest {
 
   @Test
   void banUser() {
-    client.banUser(UserBanParams.builder()
-        .hoursToBan(10)
-        .hashedMac("$1$AA$AA7qDBliIofq8jOm4nMBB/")
-        .ip("2.2.2.2")
-        .username("name")
-        .build());
+    client.banUser(
+        UserBanParams.builder()
+            .hoursToBan(10)
+            .hashedMac("$1$AA$AA7qDBliIofq8jOm4nMBB/")
+            .ip("2.2.2.2")
+            .username("name")
+            .build());
   }
 
   @Test
   void banUserNotAuthorized() {
-    assertThrows(HttpInteractionException.class, () -> clientWithBadKey.banUser(UserBanParams.builder()
-        .hoursToBan(10)
-        .hashedMac("$1$AA$AA7qDBliIofq8jOm4nMCC/")
-        .ip("2.2.2.3")
-        .username("name")
-        .build()));
+    assertThrows(
+        HttpInteractionException.class,
+        () ->
+            clientWithBadKey.banUser(
+                UserBanParams.builder()
+                    .hoursToBan(10)
+                    .hashedMac("$1$AA$AA7qDBliIofq8jOm4nMCC/")
+                    .ip("2.2.2.3")
+                    .username("name")
+                    .build()));
   }
-
 }

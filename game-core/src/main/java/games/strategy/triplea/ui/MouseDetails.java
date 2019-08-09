@@ -2,7 +2,6 @@ package games.strategy.triplea.ui;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-
 import javax.swing.SwingUtilities;
 
 class MouseDetails {
@@ -38,9 +37,7 @@ class MouseDetails {
     return mouseEvent.isAltDown();
   }
 
-  /**
-   * Returns this point is in the map coordinates, unscaled.
-   */
+  /** Returns this point is in the map coordinates, unscaled. */
   public Point getMapPoint() {
     return new Point((int) x, (int) y);
   }

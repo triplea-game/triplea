@@ -8,14 +8,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import games.strategy.security.CredentialManager;
+import games.strategy.security.CredentialManagerException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import games.strategy.security.CredentialManager;
-import games.strategy.security.CredentialManagerException;
-
 final class ProtectedStringClientSettingTest {
-  private final ProtectedStringClientSetting clientSetting = new ProtectedStringClientSetting("name");
+  private final ProtectedStringClientSetting clientSetting =
+      new ProtectedStringClientSetting("name");
 
   @Nested
   final class EncodeValueTest {
@@ -24,7 +24,8 @@ final class ProtectedStringClientSettingTest {
       try (CredentialManager credentialManager = CredentialManager.newInstance()) {
         final char[] value = "value".toCharArray();
 
-        final String encodedValue = ProtectedStringClientSetting.encodeValue(value, credentialManager);
+        final String encodedValue =
+            ProtectedStringClientSetting.encodeValue(value, credentialManager);
 
         assertThat(credentialManager.unprotectToString(encodedValue), is("value"));
       }
@@ -33,7 +34,8 @@ final class ProtectedStringClientSettingTest {
     @Test
     void shouldThrowExceptionWhenFailToProtectValue() throws Exception {
       final CredentialManager credentialManager = mock(CredentialManager.class);
-      when(credentialManager.protect(any(char[].class))).thenThrow(CredentialManagerException.class);
+      when(credentialManager.protect(any(char[].class)))
+          .thenThrow(CredentialManagerException.class);
 
       assertThrows(
           ClientSetting.ValueEncodingException.class,
@@ -48,7 +50,8 @@ final class ProtectedStringClientSettingTest {
       try (CredentialManager credentialManager = CredentialManager.newInstance()) {
         final String encodedValue = credentialManager.protect("encodedValue");
 
-        final char[] value = ProtectedStringClientSetting.decodeValue(encodedValue, credentialManager);
+        final char[] value =
+            ProtectedStringClientSetting.decodeValue(encodedValue, credentialManager);
 
         assertThat(value, is("encodedValue".toCharArray()));
       }

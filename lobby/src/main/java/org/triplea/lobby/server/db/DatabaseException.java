@@ -2,12 +2,9 @@ package org.triplea.lobby.server.db;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
-
 import lombok.extern.java.Log;
 
-/**
- * Thrown when there is an unexpected exception interacting with database.
- */
+/** Thrown when there is an unexpected exception interacting with database. */
 @Log
 class DatabaseException extends IllegalStateException {
   private static final long serialVersionUID = -557834581550721114L;
@@ -16,5 +13,4 @@ class DatabaseException extends IllegalStateException {
     super(message, e);
     log.log(Level.SEVERE, message, e);
   }
-
 }

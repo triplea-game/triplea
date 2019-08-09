@@ -1,9 +1,7 @@
 package org.triplea.util;
 
-import java.io.Serializable;
-
 import com.google.common.base.MoreObjects;
-
+import java.io.Serializable;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -26,17 +24,13 @@ public final class Tuple<T, S> implements Serializable {
   /**
    * Static creation method to create a new instance of a tuple with the parameters provided.
    *
-   * <p>
-   * This method allows for nicer tuple creation syntax, namely:
-   * </p>
+   * <p>This method allows for nicer tuple creation syntax, namely:
    *
    * <pre>
    * Tuple&lt;String, Integer> myTuple = Tuple.of("abc", 123);
    * </pre>
    *
-   * <p>
-   * Instead of:
-   * </p>
+   * <p>Instead of:
    *
    * <pre>
    * Tuple&lt;String, Integer> myTuple = new Tuple&lt;String, Integer>("abc", 123);

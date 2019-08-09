@@ -2,18 +2,14 @@ package org.triplea.http.client.moderator.toolbox.bad.words;
 
 import java.net.URI;
 import java.util.List;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-
-/**
- * Http client class for fetching the list of bad words and adding and removing them.
- */
+/** Http client class for fetching the list of bad words and adding and removing them. */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ToolboxBadWordsClient {
   public static final String BAD_WORD_ADD_PATH = "/moderator-toolbox/bad-words/add";
@@ -23,8 +19,8 @@ public class ToolboxBadWordsClient {
   private final ToolboxHttpHeaders toolboxHttpHeaders;
   private final ToolboxBadWordsFeignClient client;
 
-
-  public static ToolboxBadWordsClient newClient(final URI serverUri, final ApiKeyPassword apiKeyPassword) {
+  public static ToolboxBadWordsClient newClient(
+      final URI serverUri, final ApiKeyPassword apiKeyPassword) {
     return new ToolboxBadWordsClient(
         new ToolboxHttpHeaders(apiKeyPassword),
         new HttpClient<>(ToolboxBadWordsFeignClient.class, serverUri).get());
@@ -46,5 +42,4 @@ public class ToolboxBadWordsClient {
   public List<String> getBadWords() {
     return client.getBadWords(toolboxHttpHeaders.createHeaders());
   }
-
 }

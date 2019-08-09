@@ -1,5 +1,11 @@
 package games.strategy.triplea.ui.screen.drawable;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
@@ -8,16 +14,9 @@ import java.awt.Rectangle;
 import java.util.HashSet;
 import java.util.Set;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.Unit;
-import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.ui.mapdata.MapData;
-
 /**
- * Draws a black outline around the associated territory and draws diagonal stripes over the territory interior if a
- * battle is pending within the territory.
+ * Draws a black outline around the associated territory and draws diagonal stripes over the
+ * territory interior if a battle is pending within the territory.
  */
 public class BattleDrawable extends TerritoryDrawable {
   private final String territoryName;
@@ -27,7 +26,11 @@ public class BattleDrawable extends TerritoryDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData) {
     final Set<PlayerId> players = new HashSet<>();
     for (final Unit u : data.getMap().getTerritory(territoryName).getUnitCollection()) {
       if (!TripleAUnit.get(u).getSubmerged()) {
@@ -69,9 +72,15 @@ public class BattleDrawable extends TerritoryDrawable {
       } else {
         stripeColor = mapData.getPlayerColor(attacker.getName());
       }
-      final Paint paint = new GradientPaint(0 - (float) bounds.getX(), 0 - (float) bounds.getY(),
-          new Color(stripeColor.getRed(), stripeColor.getGreen(), stripeColor.getBlue(), 120),
-          30 - (float) bounds.getX(), 50 - (float) bounds.getY(), new Color(0, 0, 0, 0), true);
+      final Paint paint =
+          new GradientPaint(
+              0 - (float) bounds.getX(),
+              0 - (float) bounds.getY(),
+              new Color(stripeColor.getRed(), stripeColor.getGreen(), stripeColor.getBlue(), 120),
+              30 - (float) bounds.getX(),
+              50 - (float) bounds.getY(),
+              new Color(0, 0, 0, 0),
+              true);
       draw(bounds, graphics, mapData, territory, paint);
     }
   }

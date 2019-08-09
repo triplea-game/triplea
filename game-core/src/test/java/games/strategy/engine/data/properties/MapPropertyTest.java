@@ -3,13 +3,11 @@ package games.strategy.engine.data.properties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.Map;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableMap;
 
 final class MapPropertyTest {
   @Nested

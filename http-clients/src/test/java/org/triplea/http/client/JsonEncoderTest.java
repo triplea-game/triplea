@@ -3,11 +3,10 @@ package org.triplea.http.client;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-import org.junit.jupiter.api.Test;
-
 import feign.RequestTemplate;
 import feign.gson.GsonEncoder;
 import lombok.Getter;
+import org.junit.jupiter.api.Test;
 
 class JsonEncoderTest {
 
@@ -15,24 +14,19 @@ class JsonEncoderTest {
 
   private RequestTemplate template = new RequestTemplate();
 
-  /**
-   * We verify here strings are encoded without any modification.
-   */
+  /** We verify here strings are encoded without any modification. */
   @Test
   void encodeString() {
     final String value = "value";
 
     jsonEncoder.encode(value, String.class, template);
 
-    assertThat(
-        template.requestBody().asString(),
-        is(value));
+    assertThat(template.requestBody().asString(), is(value));
   }
 
   /**
-   * Verify that a simple example object is converted to a JSON string.
-   * We rely on GSON to create a JSON form of the sample object and verify our
-   * custom encoder produces the same result.
+   * Verify that a simple example object is converted to a JSON string. We rely on GSON to create a
+   * JSON form of the sample object and verify our custom encoder produces the same result.
    */
   @Test
   void encodeObject() {

@@ -3,17 +3,15 @@ package games.strategy.triplea.delegate;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * A single roll of a die.
- */
+/** A single roll of a die. */
 public class Die implements Serializable {
   private static final long serialVersionUID = 8766753280669636980L;
 
-  /**
-   * The type of the die roll.
-   */
+  /** The type of the die roll. */
   public enum DieType {
-    MISS, HIT, IGNORED
+    MISS,
+    HIT,
+    IGNORED
   }
 
   private final DieType type;
@@ -45,7 +43,8 @@ public class Die implements Serializable {
   }
 
   // compress to an int
-  // we write a lot of dice over the network and to the saved game, so we want to make this fairly efficient
+  // we write a lot of dice over the network and to the saved game, so we want to make this fairly
+  // efficient
   int getCompressedValue() {
     if (value > 255 || rolledAt > 255) {
       throw new IllegalStateException("too big to serialize");

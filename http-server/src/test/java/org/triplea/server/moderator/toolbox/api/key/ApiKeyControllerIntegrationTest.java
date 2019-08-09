@@ -19,7 +19,6 @@ class ApiKeyControllerIntegrationTest extends AbstractDropwizardTest {
   private static final ToolboxApiKeyClient clientWithBadKey =
       AbstractDropwizardTest.newClientWithInvalidCreds(ToolboxApiKeyClient::newClient);
 
-
   @Test
   void generateSingleUseKey() {
     assertThat(client.generateSingleUseKey().getApiKey(), notNullValue());

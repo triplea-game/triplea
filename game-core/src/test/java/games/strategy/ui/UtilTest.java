@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.awt.Polygon;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

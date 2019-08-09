@@ -4,33 +4,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-/**
- * Utility class to read an XML file.
- */
+/** Utility class to read an XML file. */
 public final class XmlReader {
 
   public static final String DTD_FILE_NAME = "game.dtd";
 
-  private XmlReader() {
-
-  }
+  private XmlReader() {}
 
   static Element parseDom(
-      final String mapName,
-      final InputStream stream,
-      final Collection<SAXParseException> errorsSax) throws GameParseException {
+      final String mapName, final InputStream stream, final Collection<SAXParseException> errorsSax)
+      throws GameParseException {
     try {
       return getDocument(mapName, stream, errorsSax).getDocumentElement();
     } catch (final SAXException | IOException | ParserConfigurationException e) {
@@ -51,25 +44,27 @@ public final class XmlReader {
     final String dtdFile = "/games/strategy/engine/xml/" + DTD_FILE_NAME;
     final URL url = GameParser.class.getResource(dtdFile);
     if (url == null) {
-      throw new RuntimeException(String.format("Map: %s, Could not find in classpath %s", mapName, dtdFile));
+      throw new RuntimeException(
+          String.format("Map: %s, Could not find in classpath %s", mapName, dtdFile));
     }
     final DocumentBuilder builder = factory.newDocumentBuilder();
-    builder.setErrorHandler(new ErrorHandler() {
-      @Override
-      public void fatalError(final SAXParseException exception) {
-        errorsSax.add(exception);
-      }
+    builder.setErrorHandler(
+        new ErrorHandler() {
+          @Override
+          public void fatalError(final SAXParseException exception) {
+            errorsSax.add(exception);
+          }
 
-      @Override
-      public void error(final SAXParseException exception) {
-        errorsSax.add(exception);
-      }
+          @Override
+          public void error(final SAXParseException exception) {
+            errorsSax.add(exception);
+          }
 
-      @Override
-      public void warning(final SAXParseException exception) {
-        errorsSax.add(exception);
-      }
-    });
+          @Override
+          public void warning(final SAXParseException exception) {
+            errorsSax.add(exception);
+          }
+        });
     final String dtdSystem = url.toExternalForm();
     final String system = dtdSystem.substring(0, dtdSystem.length() - DTD_FILE_NAME.length());
     return builder.parse(input, system);

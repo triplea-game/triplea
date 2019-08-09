@@ -3,7 +3,6 @@ package org.triplea.swing;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Frame;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -11,17 +10,15 @@ import javax.swing.JWindow;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-/**
- * A window used to display indeterminate progress during an operation.
- */
+/** A window used to display indeterminate progress during an operation. */
 public class ProgressWindow extends JWindow {
   private static final long serialVersionUID = 4102671321734509406L;
 
   /**
    * Initializes a new instance of the {@code ProgressWindow} class.
    *
-   * @param owner The frame from which the window is displayed; if {@code null} the shared owner will be used and this
-   *        window will not be focusable.
+   * @param owner The frame from which the window is displayed; if {@code null} the shared owner
+   *     will be used and this window will not be focusable.
    * @param title The progress message; may be {@code null}.
    */
   public ProgressWindow(final Frame owner, final String title) {

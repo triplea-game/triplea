@@ -5,11 +5,11 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+import games.strategy.triplea.settings.GameSetting;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,20 +17,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import games.strategy.triplea.settings.GameSetting;
-
 final class ClientFileSystemHelperTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class GetFolderContainingFileWithNameTest {
-    @Mock
-    private File file;
+    @Mock private File file;
 
-    @Mock
-    private File parentFolder;
+    @Mock private File parentFolder;
 
-    @Mock
-    private File startFolder;
+    @Mock private File startFolder;
 
     private File getFolderContainingFileWithName() throws Exception {
       return ClientFileSystemHelper.getFolderContainingFileWithName(file.getName(), startFolder);
@@ -72,10 +67,8 @@ final class ClientFileSystemHelperTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class GetUserMapsFolderTest {
-    @Mock
-    private GameSetting<Path> currentSetting;
-    @Mock
-    private GameSetting<Path> overrideSetting;
+    @Mock private GameSetting<Path> currentSetting;
+    @Mock private GameSetting<Path> overrideSetting;
 
     private Path getUserMapsFolder() {
       return ClientFileSystemHelper.getUserMapsFolder(currentSetting, overrideSetting);

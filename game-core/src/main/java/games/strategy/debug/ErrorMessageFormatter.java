@@ -5,70 +5,40 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.function.Function;
 import java.util.logging.LogRecord;
 
-/**
- * Converts a 'LogRecord' to the text that we display to a user in an alert pop-up.
- */
+/** Converts a 'LogRecord' to the text that we display to a user in an alert pop-up. */
 class ErrorMessageFormatter implements Function<LogRecord, String> {
   private static final String BREAK = "\n\n";
 
   @Override
   public String apply(final LogRecord logRecord) {
-    checkArgument(logRecord.getThrown() != null || logRecord.getMessage() != null,
+    checkArgument(
+        logRecord.getThrown() != null || logRecord.getMessage() != null,
         "LogRecord should have one or both, a message or exception: " + logRecord);
 
     return TextUtils.textToHtml(format(logRecord));
   }
 
   /**
-   * Five ways we will hit our logging handler.:<br/>
-   * (1) uncaught exception with no message
-   * {@code throw new NullPointerException() =>
-   *      LogRecord.getMessage() == null && LogRecord.getThrown().getMessage() == null
-   * }
-   * Return:
-   * * {exception simple name}
-   * <br/>
-   * (2) uncaught exception with a message
-   * {@code
-   *         throw new NullPointerException("message") =>
-   *              // log record message will be populated with the exception message
-   *              LogRecord.getMessage().equals(LogRecord.getThrown().getMessage())}
-   * }
-   * <br/>
-   * Return:
-   * * {exception simple name} - {exception message}
-   * <br/>
-   * (3) logging an error message
-   * {@code
-   *         log.severe("message") =>
-   *              LogRecord.getMessage() != null && LogRecord.getThrown() == null
-   * }
-   * <br/>
-   * Return:
-   * * {log message}
-   * <br/>
-   * (4) logging an error message with exception that has no message</li>
-   * {@code
-   *        log.log(Level.SEVERE, "message", new NullPointerException()) =>
-   *              LogRecord.getMessage() != null && LogRecord.getThrown().getMessage() == null
-   * }
-   * Return:
-   * * * {log message}
-   * * *
-   * * * {exception simple name}
-   * <br/>
-   * (5) logging an error message with exception that has a message
-   * {@code
-   *        log.log(Level.SEVERE, "log-message", new NullPointerException("exception message")) =>
-   *              LogRecord.getMessage() != null
-   *                 && LogRecord.getThrown() != null
-   *                 && !LogRecord.getMessage().equals(LogRecord.getThrown().getMessage())
-   * }
-   * <br/>
-   * Return:
-   * * {log message}
-   * *
-   * * {exception simple name} - {exception message}
+   * Five ways we will hit our logging handler.:<br>
+   * (1) uncaught exception with no message {@code throw new NullPointerException() =>
+   * LogRecord.getMessage() == null && LogRecord.getThrown().getMessage() == null } Return: *
+   * {exception simple name} <br>
+   * (2) uncaught exception with a message {@code throw new NullPointerException("message") => //
+   * log record message will be populated with the exception message
+   * LogRecord.getMessage().equals(LogRecord.getThrown().getMessage())} } <br>
+   * Return: * {exception simple name} - {exception message} <br>
+   * (3) logging an error message {@code log.severe("message") => LogRecord.getMessage() != null &&
+   * LogRecord.getThrown() == null } <br>
+   * Return: * {log message} <br>
+   * (4) logging an error message with exception that has no message {@code log.log(Level.SEVERE,
+   * "message", new NullPointerException()) => LogRecord.getMessage() != null &&
+   * LogRecord.getThrown().getMessage() == null } Return: * * {log message} * * * * {exception
+   * simple name} <br>
+   * (5) logging an error message with exception that has a message {@code log.log(Level.SEVERE,
+   * "log-message", new NullPointerException("exception message")) => LogRecord.getMessage() != null
+   * && LogRecord.getThrown() != null &&
+   * !LogRecord.getMessage().equals(LogRecord.getThrown().getMessage()) } <br>
+   * Return: * {log message} * * {exception simple name} - {exception message}
    */
   private static String format(final LogRecord logRecord) {
     if (logRecord.getThrown() == null) {
@@ -101,8 +71,8 @@ class ErrorMessageFormatter implements Function<LogRecord, String> {
       return exceptionOnlyWithMessage(logRecord);
     }
 
-
-    throw new IllegalStateException("Unhandled: " + logRecord.getMessage() + ", exception: " + logRecord.getThrown());
+    throw new IllegalStateException(
+        "Unhandled: " + logRecord.getMessage() + ", exception: " + logRecord.getThrown());
   }
 
   /*
@@ -117,7 +87,6 @@ class ErrorMessageFormatter implements Function<LogRecord, String> {
     return logRecord.getMessage();
   }
 
-
   /*
    * <pre>
    * Error: {exception simple name} - {exception message}
@@ -129,7 +98,6 @@ class ErrorMessageFormatter implements Function<LogRecord, String> {
     checkArgument(logRecord.getThrown().getMessage().equals(logRecord.getMessage()));
     return simpleName(logRecord) + " - " + logRecord.getThrown().getMessage();
   }
-
 
   private static String simpleName(final LogRecord logRecord) {
     return logRecord.getThrown().getClass().getSimpleName();
@@ -159,9 +127,12 @@ class ErrorMessageFormatter implements Function<LogRecord, String> {
     checkArgument(logRecord.getMessage() != null);
     checkArgument(!logRecord.getThrown().getMessage().equals(logRecord.getMessage()));
 
-    return logRecord.getMessage() + BREAK + simpleName(logRecord) + ": " + logRecord.getThrown().getMessage();
+    return logRecord.getMessage()
+        + BREAK
+        + simpleName(logRecord)
+        + ": "
+        + logRecord.getThrown().getMessage();
   }
-
 
   /*
    * <pre>

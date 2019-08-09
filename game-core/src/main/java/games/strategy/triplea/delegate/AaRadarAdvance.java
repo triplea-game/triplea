@@ -5,9 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
-/**
- * A technology advance that provides anti-aircraft radar.
- */
+/** A technology advance that provides anti-aircraft radar. */
 final class AaRadarAdvance extends TechAdvance {
   private static final long serialVersionUID = 6464021231625252901L;
 

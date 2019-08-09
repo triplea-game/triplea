@@ -1,10 +1,5 @@
 package games.strategy.triplea.delegate.remote;
 
-import java.util.Collection;
-
-import org.triplea.java.collections.IntegerMap;
-import org.triplea.util.Triple;
-
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
@@ -12,10 +7,11 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.TechAdvance;
+import java.util.Collection;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Triple;
 
-/**
- * Remote interface for EditDelegate.
- */
+/** Remote interface for EditDelegate. */
 public interface IEditDelegate extends IRemote, IPersistentDelegate {
   boolean getEditMode();
 

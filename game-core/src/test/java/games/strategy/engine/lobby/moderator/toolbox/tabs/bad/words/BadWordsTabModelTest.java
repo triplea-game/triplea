@@ -3,9 +3,9 @@ package games.strategy.engine.lobby.moderator.toolbox.tabs.bad.words;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,22 +13,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.bad.words.ToolboxBadWordsClient;
 
-import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
-
 @ExtendWith(MockitoExtension.class)
 class BadWordsTabModelTest {
 
   private static final String BAD_WORD = "Die loudly like a rough kraken.";
-  private static final List<String> badWords = Arrays.asList(
-      "O, gar.",
-      "How dead. You rob like a sail.",
-      "When the freebooter stutters for jamaica, all waves view warm, mighty swabbies.");
+  private static final List<String> badWords =
+      Arrays.asList(
+          "O, gar.",
+          "How dead. You rob like a sail.",
+          "When the freebooter stutters for jamaica, all waves view warm, mighty swabbies.");
 
-  @Mock
-  private ToolboxBadWordsClient toolboxBadWordsClient;
+  @Mock private ToolboxBadWordsClient toolboxBadWordsClient;
 
-  @InjectMocks
-  private BadWordsTabModel badWordsTabModel;
+  @InjectMocks private BadWordsTabModel badWordsTabModel;
 
   @Test
   void fetchData() {
@@ -39,8 +36,8 @@ class BadWordsTabModelTest {
     ToolboxTabModelTestUtil.verifyTableDimensions(tableData, BadWordsTabModel.fetchTableHeaders());
 
     for (int i = 0; i < badWords.size(); i++) {
-      ToolboxTabModelTestUtil.verifyTableDataAtRow(tableData, i, badWords.get(i),
-          BadWordsTabActions.REMOVE_BUTTON_TEXT);
+      ToolboxTabModelTestUtil.verifyTableDataAtRow(
+          tableData, i, badWords.get(i), BadWordsTabActions.REMOVE_BUTTON_TEXT);
     }
   }
 

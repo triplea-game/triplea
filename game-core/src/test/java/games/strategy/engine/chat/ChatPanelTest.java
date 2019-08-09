@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyledDocument;
-
 import org.junit.jupiter.api.Test;
 
 class ChatPanelTest {

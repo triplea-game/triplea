@@ -6,8 +6,8 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attachments.TechAttachment;
 
 /**
- * A technology advance that allows bombers to carry one infantry unit for combat or non-combat movement. If moved into
- * combat, the bomber does not participate, but can be shot down by AA.
+ * A technology advance that allows bombers to carry one infantry unit for combat or non-combat
+ * movement. If moved into combat, the bomber does not participate, but can be shot down by AA.
  */
 public final class ParatroopersAdvance extends TechAdvance {
   private static final long serialVersionUID = 1457384348499672184L;

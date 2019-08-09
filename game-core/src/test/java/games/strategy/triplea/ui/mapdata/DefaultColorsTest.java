@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
-
 import org.junit.jupiter.api.Test;
 
 final class DefaultColorsTest {
@@ -21,6 +20,8 @@ final class DefaultColorsTest {
   void nextColor_ShouldThrowExceptionWhenNoColorsAvailable() {
     assertThrows(
         NoSuchElementException.class,
-        () -> IntStream.range(0, DefaultColors.COLORS.size() + 1).forEach(i -> defaultColors.nextColor()));
+        () ->
+            IntStream.range(0, DefaultColors.COLORS.size() + 1)
+                .forEach(i -> defaultColors.nextColor()));
   }
 }

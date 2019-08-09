@@ -1,24 +1,19 @@
 package games.strategy.engine.chat;
 
-import java.awt.Component;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-
-import org.triplea.game.chat.ChatModel;
-import org.triplea.java.TimeManager;
-
 import com.google.common.base.Ascii;
-
 import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
+import java.awt.Component;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import org.triplea.game.chat.ChatModel;
+import org.triplea.java.TimeManager;
 
-/**
- * Headless version of ChatPanel.
- */
+/** Headless version of ChatPanel. */
 public class HeadlessChat implements IChatListener, ChatModel {
   // roughly 1000 chat messages
   private static final int MAX_LENGTH = 1000 * 200;
@@ -27,7 +22,8 @@ public class HeadlessChat implements IChatListener, ChatModel {
   private StringBuilder allText = new StringBuilder();
   private final ChatFloodControl floodControl = new ChatFloodControl();
 
-  public HeadlessChat(final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
+  public HeadlessChat(
+      final Messengers messengers, final String chatName, final ChatSoundProfile chatSoundProfile) {
     final Chat chat = new Chat(messengers, chatName, chatSoundProfile);
     setChat(chat);
   }
@@ -82,26 +78,32 @@ public class HeadlessChat implements IChatListener, ChatModel {
 
   /** thread safe. */
   @Override
-  public void addMessageWithSound(final String message, final String from, final boolean thirdperson,
-      final String sound) {
+  public void addMessageWithSound(
+      final String message, final String from, final boolean thirdperson, final String sound) {
     // TODO: I don't really think we need a new thread for this...
-    new Thread(() -> {
-      if (!floodControl.allow(from, System.currentTimeMillis())) {
-        if (from.equals(chat.getLocalNode().getName())) {
-          addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
-        }
-        return;
-      }
-      addChatMessage(message, from, thirdperson);
-      ClipPlayer.play(sound);
-    }).start();
+    new Thread(
+            () -> {
+              if (!floodControl.allow(from, System.currentTimeMillis())) {
+                if (from.equals(chat.getLocalNode().getName())) {
+                  addChatMessage(
+                      "MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
+                }
+                return;
+              }
+              addChatMessage(message, from, thirdperson);
+              ClipPlayer.play(sound);
+            })
+        .start();
   }
 
-  private void addChatMessage(final String originalMessage, final String from, final boolean thirdperson) {
+  private void addChatMessage(
+      final String originalMessage, final String from, final boolean thirdperson) {
     final String message = Ascii.truncate(originalMessage, 200, "...");
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
-    final String prefix = thirdperson ? (showTime ? "* " + time + " " + from : "* " + from)
-        : (showTime ? time + " " + from + ": " : from + ": ");
+    final String prefix =
+        thirdperson
+            ? (showTime ? "* " + time + " " + from : "* " + from)
+            : (showTime ? time + " " + from + ": " : from + ": ");
     final String fullMessage = prefix + " " + message + "\n";
     final String currentAllText = allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {

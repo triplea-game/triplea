@@ -2,6 +2,7 @@ package org.triplea.test.common.security;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.io.ByteStreams;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -12,11 +13,7 @@ import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-import com.google.common.io.ByteStreams;
-
-/**
- * A collection of useful methods for writing tests that involve security functions.
- */
+/** A collection of useful methods for writing tests that involve security functions. */
 public final class TestSecurityUtils {
   private static final String RSA_ALGORITHM = "RSA";
 
@@ -26,9 +23,9 @@ public final class TestSecurityUtils {
    * Loads the global RSA key pair.
    *
    * @return The global RSA key pair.
-   *
    * @throws IOException If an I/O error occurs while reading the RSA key pair.
-   * @throws GeneralSecurityException If the RSA key pair cannot be created from the persistent data.
+   * @throws GeneralSecurityException If the RSA key pair cannot be created from the persistent
+   *     data.
    */
   public static KeyPair loadRsaKeyPair() throws IOException, GeneralSecurityException {
     return loadRsaKeyPair(TestSecurityUtils.class);
@@ -38,13 +35,13 @@ public final class TestSecurityUtils {
    * Loads the RSA key pair for the specified type.
    *
    * @param type The type whose RSA key pair is to be loaded.
-   *
    * @return The RSA key pair for the specified type.
-   *
    * @throws IOException If an I/O error occurs while reading the RSA key pair.
-   * @throws GeneralSecurityException If the RSA key pair cannot be created from the persistent data.
+   * @throws GeneralSecurityException If the RSA key pair cannot be created from the persistent
+   *     data.
    */
-  public static KeyPair loadRsaKeyPair(final Class<?> type) throws IOException, GeneralSecurityException {
+  public static KeyPair loadRsaKeyPair(final Class<?> type)
+      throws IOException, GeneralSecurityException {
     checkNotNull(type);
 
     final KeyFactory keyFactory = KeyFactory.getInstance(RSA_ALGORITHM);

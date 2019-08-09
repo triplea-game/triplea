@@ -4,9 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Superclass for named game data components that can host attachments.
- */
+/** Superclass for named game data components that can host attachments. */
 public class NamedAttachable extends DefaultNamed implements Attachable {
   private static final long serialVersionUID = 8597712929519099255L;
 

@@ -2,6 +2,14 @@ package games.strategy.triplea.formatter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.engine.data.DefaultNamed;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Die;
+import games.strategy.triplea.util.UnitOwner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,25 +21,11 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.triplea.java.collections.IntegerMap;
 
-import games.strategy.engine.data.DefaultNamed;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.delegate.DiceRoll;
-import games.strategy.triplea.delegate.Die;
-import games.strategy.triplea.util.UnitOwner;
-
-/**
- * Provides useful methods for converting things to text.
- */
+/** Provides useful methods for converting things to text. */
 public class MyFormatter {
-  /**
-   * Some exceptions to the rules.
-   */
+  /** Some exceptions to the rules. */
   private static final Map<String, String> plural;
 
   static {
@@ -49,9 +43,9 @@ public class MyFormatter {
   }
 
   /**
-   * Returns a string containing the quantity of each type of unit in {@code units} owned by {@code owner}, but no
-   * reference to the owner will be mentioned in the string. The returned string will have the form:
-   * {@code <q1> <ut1>, <q2> <ut2>, ... and <qN> <utN>}.
+   * Returns a string containing the quantity of each type of unit in {@code units} owned by {@code
+   * owner}, but no reference to the owner will be mentioned in the string. The returned string will
+   * have the form: {@code <q1> <ut1>, <q2> <ut2>, ... and <qN> <utN>}.
    */
   public static String unitsToTextNoOwner(final Collection<Unit> units, final PlayerId owner) {
     final IntegerMap<UnitType> map = new IntegerMap<>();
@@ -82,34 +76,36 @@ public class MyFormatter {
   }
 
   /**
-   * Converts the specified unit collection to a textual representation that describes the quantity of each distinct
-   * unit type owned by each distinct player.
+   * Converts the specified unit collection to a textual representation that describes the quantity
+   * of each distinct unit type owned by each distinct player.
    *
    * @param units The collection of units.
-   *
    * @return A textual representation of the specified unit collection.
    */
   public static String unitsToText(final Collection<Unit> units) {
     checkNotNull(units);
 
-    final Map<UnitOwner, Long> quantitiesByOwner = units.stream()
-        .map(UnitOwner::new)
-        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    final Map<UnitOwner, Long> quantitiesByOwner =
+        units.stream()
+            .map(UnitOwner::new)
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     final StringBuilder buf = new StringBuilder();
     final AtomicInteger countRef = new AtomicInteger(quantitiesByOwner.size());
-    quantitiesByOwner.forEach((owner, quantity) -> {
-      buf.append(quantity);
-      buf.append(" ");
-      buf.append(quantity > 1 ? pluralize(owner.getType().getName()) : owner.getType().getName());
-      buf.append(" owned by the ");
-      buf.append(owner.getOwner().getName());
-      final int count = countRef.decrementAndGet();
-      if (count > 1) {
-        buf.append(", ");
-      } else if (count == 1) {
-        buf.append(" and ");
-      }
-    });
+    quantitiesByOwner.forEach(
+        (owner, quantity) -> {
+          buf.append(quantity);
+          buf.append(" ");
+          buf.append(
+              quantity > 1 ? pluralize(owner.getType().getName()) : owner.getType().getName());
+          buf.append(" owned by the ");
+          buf.append(owner.getOwner().getName());
+          final int count = countRef.decrementAndGet();
+          if (count > 1) {
+            buf.append(", ");
+          } else if (count == 1) {
+            buf.append(" and ");
+          }
+        });
     return buf.toString();
   }
 
@@ -131,24 +127,23 @@ public class MyFormatter {
   }
 
   /**
-   * Replaces the map XML attachment name at the beginning of the specified string with its corresponding display
-   * name followed by a space. In addition, it makes the following replacements:
+   * Replaces the map XML attachment name at the beginning of the specified string with its
+   * corresponding display name followed by a space. In addition, it makes the following
+   * replacements:
    *
    * <ul>
-   * <li>An underscore is replaced with a space.</li>
-   * <li>Two consecutive spaces are replaced with a single space.</li>
-   * <li>Trailing whitespace is removed.</li>
+   *   <li>An underscore is replaced with a space.
+   *   <li>Two consecutive spaces are replaced with a single space.
+   *   <li>Trailing whitespace is removed.
    * </ul>
-   * <p>
-   * For example:
-   * </p>
+   *
+   * <p>For example:
    *
    * <pre>
    * "canalAttachmentFOO  BAR_BAZ "
    * </pre>
-   * <p>
-   * will be converted to
-   * </p>
+   *
+   * <p>will be converted to
    *
    * <pre>
    * "Canal FOO BAR BAZ"
@@ -157,17 +152,24 @@ public class MyFormatter {
   public static String attachmentNameToText(final String attachmentGetName) {
     String toText = attachmentGetName;
     if (attachmentGetName.startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME)) {
-      toText = attachmentGetName.replaceFirst(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME, "Relationship Type ");
+      toText =
+          attachmentGetName.replaceFirst(
+              Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME, "Relationship Type ");
     } else if (attachmentGetName.startsWith(Constants.TECH_ATTACHMENT_NAME)) {
       toText = attachmentGetName.replaceFirst(Constants.TECH_ATTACHMENT_NAME, "Player Techs ");
     } else if (attachmentGetName.startsWith(Constants.UNIT_ATTACHMENT_NAME)) {
-      toText = attachmentGetName.replaceFirst(Constants.UNIT_ATTACHMENT_NAME, "Unit Type Properties ");
+      toText =
+          attachmentGetName.replaceFirst(Constants.UNIT_ATTACHMENT_NAME, "Unit Type Properties ");
     } else if (attachmentGetName.startsWith(Constants.TERRITORY_ATTACHMENT_NAME)) {
-      toText = attachmentGetName.replaceFirst(Constants.TERRITORY_ATTACHMENT_NAME, "Territory Properties ");
+      toText =
+          attachmentGetName.replaceFirst(
+              Constants.TERRITORY_ATTACHMENT_NAME, "Territory Properties ");
     } else if (attachmentGetName.startsWith(Constants.CANAL_ATTACHMENT_PREFIX)) {
       toText = attachmentGetName.replaceFirst(Constants.CANAL_ATTACHMENT_PREFIX, "Canal ");
     } else if (attachmentGetName.startsWith(Constants.TERRITORYEFFECT_ATTACHMENT_NAME)) {
-      toText = attachmentGetName.replaceFirst(Constants.TERRITORYEFFECT_ATTACHMENT_NAME, "Territory Effect ");
+      toText =
+          attachmentGetName.replaceFirst(
+              Constants.TERRITORYEFFECT_ATTACHMENT_NAME, "Territory Effect ");
     } else if (attachmentGetName.startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX)) {
       toText = attachmentGetName.replaceFirst(Constants.SUPPORT_ATTACHMENT_PREFIX, "Support ");
     } else if (attachmentGetName.startsWith(Constants.RULES_OBJECTIVE_PREFIX)) {
@@ -179,13 +181,18 @@ public class MyFormatter {
     } else if (attachmentGetName.startsWith(Constants.RULES_ATTACHMENT_NAME)) {
       toText = attachmentGetName.replaceFirst(Constants.RULES_ATTACHMENT_NAME, "Rules ");
     } else if (attachmentGetName.startsWith(Constants.PLAYER_ATTACHMENT_NAME)) {
-      toText = attachmentGetName.replaceFirst(Constants.PLAYER_ATTACHMENT_NAME, "Player Properties ");
+      toText =
+          attachmentGetName.replaceFirst(Constants.PLAYER_ATTACHMENT_NAME, "Player Properties ");
     } else if (attachmentGetName.startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX)) {
-      toText = attachmentGetName.replaceFirst(Constants.POLITICALACTION_ATTACHMENT_PREFIX, "Political Action ");
+      toText =
+          attachmentGetName.replaceFirst(
+              Constants.POLITICALACTION_ATTACHMENT_PREFIX, "Political Action ");
     } else if (attachmentGetName.startsWith(Constants.USERACTION_ATTACHMENT_PREFIX)) {
       toText = attachmentGetName.replaceFirst(Constants.USERACTION_ATTACHMENT_PREFIX, "Action ");
     } else if (attachmentGetName.startsWith(Constants.TECH_ABILITY_ATTACHMENT_NAME)) {
-      toText = attachmentGetName.replaceFirst(Constants.TECH_ABILITY_ATTACHMENT_NAME, "Tech Properties ");
+      toText =
+          attachmentGetName.replaceFirst(
+              Constants.TECH_ABILITY_ATTACHMENT_NAME, "Tech Properties ");
     }
     toText = toText.replaceAll("_", " ");
     toText = toText.replaceAll("  ", " ");
@@ -197,14 +204,12 @@ public class MyFormatter {
     if (listOfArrays == null) {
       return "null";
     }
-    return listOfArrays.stream()
-        .map(Arrays::toString)
-        .collect(Collectors.joining(",", "[", "]"));
+    return listOfArrays.stream().map(Arrays::toString).collect(Collectors.joining(",", "[", "]"));
   }
 
   /**
-   * Converts the specified dice roll to a string of the form {@code <die1>,<die2>,...,<dieN>}. If the dice roll
-   * is {@code null} or contains no dice, {@code none} will be returned.
+   * Converts the specified dice roll to a string of the form {@code <die1>,<die2>,...,<dieN>}. If
+   * the dice roll is {@code null} or contains no dice, {@code none} will be returned.
    */
   public static String asDice(final DiceRoll roll) {
     if (roll == null || roll.size() == 0) {
@@ -221,8 +226,9 @@ public class MyFormatter {
   }
 
   /**
-   * Converts the specified array of dice rolls to a string of the form {@code <die1>,<die2>,...,<dieN>}. If
-   * the array is {@code null} or empty, {@code none} will be returned.
+   * Converts the specified array of dice rolls to a string of the form {@code
+   * <die1>,<die2>,...,<dieN>}. If the array is {@code null} or empty, {@code none} will be
+   * returned.
    */
   public static String asDice(final int[] rolls) {
     if (rolls == null || rolls.length == 0) {
@@ -239,8 +245,8 @@ public class MyFormatter {
   }
 
   /**
-   * Converts the specified list of dice rolls to a string of the form {@code <die1>,<die2>,...,<dieN>}. If
-   * the list is {@code null} or empty, {@code none} will be returned.
+   * Converts the specified list of dice rolls to a string of the form {@code
+   * <die1>,<die2>,...,<dieN>}. If the list is {@code null} or empty, {@code none} will be returned.
    */
   public static String asDice(final List<Die> rolls) {
     if (rolls == null || rolls.size() == 0) {
@@ -261,12 +267,11 @@ public class MyFormatter {
   }
 
   /**
-   * Computes a histogram of the {@code DefaultNamed} objects in the specified list and converts it to a string for
-   * display.
+   * Computes a histogram of the {@code DefaultNamed} objects in the specified list and converts it
+   * to a string for display.
    *
-   * <p>
-   * If {@code showQuantity} is {@code true}, the returned string will have the form (without line breaks):
-   * </p>
+   * <p>If {@code showQuantity} is {@code true}, the returned string will have the form (without
+   * line breaks):
    *
    * <pre>
    * &lt;q1> &lt;objectName1>&lt;separator>
@@ -274,18 +279,18 @@ public class MyFormatter {
    * ...
    * and &lt;qN> &lt;objectNameN>
    * </pre>
-   * <p>
-   * If {@code showQuantity} is {@code false}, the returned string will have the form:
-   * </p>
+   *
+   * <p>If {@code showQuantity} is {@code false}, the returned string will have the form:
    *
    * <pre>
    * &lt;objectName1>&lt;separator>&lt;objectName2>&lt;separator>... and &lt;objectNameN>
    * </pre>
-   * <p>
-   * In both cases, the objects will appear in the string in order by name.
-   * </p>
+   *
+   * <p>In both cases, the objects will appear in the string in order by name.
    */
-  public static String defaultNamedToTextList(final Collection<? extends DefaultNamed> list, final String separator,
+  public static String defaultNamedToTextList(
+      final Collection<? extends DefaultNamed> list,
+      final String separator,
       final boolean showQuantity) {
     final IntegerMap<DefaultNamed> map = new IntegerMap<>();
     for (final DefaultNamed unit : list) {
@@ -322,9 +327,8 @@ public class MyFormatter {
   /**
    * Converts the specified {@code DefaultNamed} to {@code Integer} map to a string for display.
    *
-   * <p>
-   * If {@code valueBeforeKey} is {@code true}, the returned string will have the form (without line breaks):
-   * </p>
+   * <p>If {@code valueBeforeKey} is {@code true}, the returned string will have the form (without
+   * line breaks):
    *
    * <pre>
    * &lt;int1>&lt;assignment>&lt;objectName1>&lt;separator>
@@ -332,9 +336,9 @@ public class MyFormatter {
    * ...
    * &lt;intN>&lt;assignment>&lt;objectNameN>
    * </pre>
-   * <p>
-   * If {@code valueBeforeKey} is {@code false}, the returned string will have the form (without line breaks):
-   * </p>
+   *
+   * <p>If {@code valueBeforeKey} is {@code false}, the returned string will have the form (without
+   * line breaks):
    *
    * <pre>
    * &lt;objectName1>&lt;assignment>&lt;int1>&lt;separator>
@@ -343,8 +347,11 @@ public class MyFormatter {
    * &lt;objectNameN>&lt;assignment>&lt;intN>
    * </pre>
    */
-  public static String integerDefaultNamedMapToString(final IntegerMap<? extends DefaultNamed> map,
-      final String separator, final String assignment, final boolean valueBeforeKey) {
+  public static String integerDefaultNamedMapToString(
+      final IntegerMap<? extends DefaultNamed> map,
+      final String separator,
+      final String assignment,
+      final boolean valueBeforeKey) {
     final StringBuilder buf = new StringBuilder();
     for (final Entry<? extends DefaultNamed, Integer> entry : map.entrySet()) {
       buf.append(separator);
@@ -362,9 +369,8 @@ public class MyFormatter {
   /**
    * Converts the specified {@code Unit} to {@code Integer} map to a string for display.
    *
-   * <p>
-   * If {@code valueBeforeKey} is {@code true}, the returned string will have the form (without line breaks):
-   * </p>
+   * <p>If {@code valueBeforeKey} is {@code true}, the returned string will have the form (without
+   * line breaks):
    *
    * <pre>
    * &lt;int1>&lt;assignment>&lt;unitTypeName1>&lt;separator>
@@ -372,9 +378,9 @@ public class MyFormatter {
    * ...
    * &lt;intN>&lt;assignment>&lt;unitTypeNameN>
    * </pre>
-   * <p>
-   * If {@code valueBeforeKey} is {@code false}, the returned string will have the form (without line breaks):
-   * </p>
+   *
+   * <p>If {@code valueBeforeKey} is {@code false}, the returned string will have the form (without
+   * line breaks):
    *
    * <pre>
    * &lt;unitTypeName1>&lt;assignment>&lt;int1>&lt;separator>
@@ -383,8 +389,11 @@ public class MyFormatter {
    * &lt;unitTypeNameN>&lt;assignment>&lt;intN>
    * </pre>
    */
-  public static String integerUnitMapToString(final IntegerMap<? extends Unit> map, final String separator,
-      final String assignment, final boolean valueBeforeKey) {
+  public static String integerUnitMapToString(
+      final IntegerMap<? extends Unit> map,
+      final String separator,
+      final String assignment,
+      final boolean valueBeforeKey) {
     final StringBuilder buf = new StringBuilder();
     for (final Entry<? extends Unit, Integer> entry : map.entrySet()) {
       buf.append(separator);

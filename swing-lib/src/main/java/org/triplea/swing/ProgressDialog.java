@@ -6,7 +6,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
-
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,17 +13,15 @@ import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-/**
- * A modal dialog used to display indeterminate progress during an operation.
- */
+/** A modal dialog used to display indeterminate progress during an operation. */
 public final class ProgressDialog extends JDialog {
   private static final long serialVersionUID = -590470596784214914L;
 
   /**
    * Initializes a new instance of the {@code ProgressDialog} class.
    *
-   * @param owner The {@code Frame} from which the dialog is displayed or {@code null} to use a shared, hidden frame as
-   *        the owner of the dialog.
+   * @param owner The {@code Frame} from which the dialog is displayed or {@code null} to use a
+   *     shared, hidden frame as the owner of the dialog.
    * @param message The progress message.
    */
   public ProgressDialog(final Frame owner, final String message) {

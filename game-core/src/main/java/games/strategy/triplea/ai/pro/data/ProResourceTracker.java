@@ -1,15 +1,12 @@
 package games.strategy.triplea.ai.pro.data;
 
-import org.triplea.java.collections.IntegerMap;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
+import org.triplea.java.collections.IntegerMap;
 
-/**
- * Tracks available resources during an AI purchase analysis.
- */
+/** Tracks available resources during an AI purchase analysis. */
 public class ProResourceTracker {
 
   private final IntegerMap<Resource> resources;
@@ -77,5 +74,4 @@ public class ProResourceTracker {
     combinedResources.subtract(tempPurchases);
     return combinedResources;
   }
-
 }

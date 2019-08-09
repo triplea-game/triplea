@@ -6,7 +6,6 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.HttpInteractionException;
 import org.triplea.http.client.moderator.toolbox.PagingParams;
@@ -16,10 +15,8 @@ import org.triplea.server.http.AbstractDropwizardTest;
 
 class AccessLogControllerIntegrationTest extends AbstractDropwizardTest {
 
-  private static final PagingParams PAGING_PARAMS = PagingParams.builder()
-      .pageSize(1)
-      .rowNumber(0)
-      .build();
+  private static final PagingParams PAGING_PARAMS =
+      PagingParams.builder().pageSize(1).rowNumber(0).build();
 
   @Test
   void getAccessLog() {

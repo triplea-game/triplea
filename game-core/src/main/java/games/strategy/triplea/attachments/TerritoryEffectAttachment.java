@@ -1,15 +1,6 @@
 package games.strategy.triplea.attachments;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.triplea.java.collections.IntegerMap;
-
 import com.google.common.collect.ImmutableMap;
-
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
@@ -18,10 +9,14 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import org.triplea.java.collections.IntegerMap;
 
-/**
- * An attachment for instances of {@link TerritoryEffect}.
- */
+/** An attachment for instances of {@link TerritoryEffect}. */
 public class TerritoryEffectAttachment extends DefaultAttachment {
   private static final long serialVersionUID = 6379810228136325991L;
 
@@ -30,7 +25,8 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   private List<UnitType> noBlitz = new ArrayList<>();
   private List<UnitType> unitsNotAllowed = new ArrayList<>();
 
-  public TerritoryEffectAttachment(final String name, final Attachable attachable, final GameData gameData) {
+  public TerritoryEffectAttachment(
+      final String name, final Attachable attachable, final GameData gameData) {
     super(name, attachable, gameData);
   }
 
@@ -74,11 +70,13 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
     combatOffenseEffect = new IntegerMap<>();
   }
 
-  private void setCombatEffect(final String combatEffect, final boolean defending) throws GameParseException {
+  private void setCombatEffect(final String combatEffect, final boolean defending)
+      throws GameParseException {
     final String[] s = splitOnColon(combatEffect);
     if (s.length < 2) {
       throw new GameParseException(
-          "combatDefenseEffect and combatOffenseEffect must have a count and at least one unitType" + thisErrorMsg());
+          "combatDefenseEffect and combatOffenseEffect must have a count and at least one unitType"
+              + thisErrorMsg());
     }
     final Iterator<String> iter = Arrays.asList(s).iterator();
     final int effect = getInt(iter.next());
@@ -129,7 +127,8 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   private void setUnitsNotAllowed(final String unitsNotAllowedUnitTypes) throws GameParseException {
     final String[] s = splitOnColon(unitsNotAllowedUnitTypes);
     if (s.length < 1) {
-      throw new GameParseException("unitsNotAllowed must have at least one unitType" + thisErrorMsg());
+      throw new GameParseException(
+          "unitsNotAllowed must have at least one unitType" + thisErrorMsg());
     }
     for (final String unitTypeName : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeName);
@@ -158,25 +157,26 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("combatDefenseEffect",
+        .put(
+            "combatDefenseEffect",
             MutableProperty.of(
                 this::setCombatDefenseEffect,
                 this::setCombatDefenseEffect,
                 this::getCombatDefenseEffect,
                 this::resetCombatDefenseEffect))
-        .put("combatOffenseEffect",
+        .put(
+            "combatOffenseEffect",
             MutableProperty.of(
                 this::setCombatOffenseEffect,
                 this::setCombatOffenseEffect,
                 this::getCombatOffenseEffect,
                 this::resetCombatOffenseEffect))
-        .put("noBlitz",
+        .put(
+            "noBlitz",
             MutableProperty.of(
-                this::setNoBlitz,
-                this::setNoBlitz,
-                this::getNoBlitz,
-                this::resetNoBlitz))
-        .put("unitsNotAllowed",
+                this::setNoBlitz, this::setNoBlitz, this::getNoBlitz, this::resetNoBlitz))
+        .put(
+            "unitsNotAllowed",
             MutableProperty.of(
                 this::setUnitsNotAllowed,
                 this::setUnitsNotAllowed,

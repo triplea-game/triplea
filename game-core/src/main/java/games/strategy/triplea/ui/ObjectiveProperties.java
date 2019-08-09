@@ -3,9 +3,7 @@ package games.strategy.triplea.ui;
 import java.util.Map.Entry;
 import java.util.Set;
 
-/**
- * Loads objective text from objectives.properties.
- */
+/** Loads objective text from objectives.properties. */
 public class ObjectiveProperties extends PropertyFile {
   static final String GROUP_PROPERTY = "TABLEGROUP";
   private static final String PROPERTY_FILE = "objectives.properties";

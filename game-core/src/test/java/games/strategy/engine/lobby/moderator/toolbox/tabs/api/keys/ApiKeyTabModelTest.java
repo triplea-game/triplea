@@ -7,10 +7,10 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,9 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.NewApiKey;
 import org.triplea.http.client.moderator.toolbox.api.key.ApiKeyData;
 import org.triplea.http.client.moderator.toolbox.api.key.ToolboxApiKeyClient;
-
-import games.strategy.engine.lobby.moderator.toolbox.tabs.ToolboxTabModelTestUtil;
-
 
 @ExtendWith(MockitoExtension.class)
 class ApiKeyTabModelTest {
@@ -34,15 +31,11 @@ class ApiKeyTabModelTest {
           .build();
 
   private static final ApiKeyData API_KEY_DATA_WITH_NULLS =
-      ApiKeyData.builder()
-          .publicId("Jolly roger, yer not enduring me without a courage!")
-          .build();
+      ApiKeyData.builder().publicId("Jolly roger, yer not enduring me without a courage!").build();
 
-  @Mock
-  private ToolboxApiKeyClient toolboxApiKeyClient;
+  @Mock private ToolboxApiKeyClient toolboxApiKeyClient;
 
-  @InjectMocks
-  private ApiKeyTabModel apiKeyTabModel;
+  @InjectMocks private ApiKeyTabModel apiKeyTabModel;
 
   @Test
   void fetchData() {
@@ -55,13 +48,17 @@ class ApiKeyTabModelTest {
 
     verifyTableDimensions(tableData, ApiKeyTabModel.fetchTableHeaders());
 
-    ToolboxTabModelTestUtil.verifyTableDataAtRow(tableData, 0,
+    ToolboxTabModelTestUtil.verifyTableDataAtRow(
+        tableData,
+        0,
         API_KEY_DATA.getPublicId(),
         API_KEY_DATA.getLastUsed().toString(),
         API_KEY_DATA.getLastUsedIp(),
         ApiKeyTabModel.DELETE_BUTTON_TEXT);
 
-    ToolboxTabModelTestUtil.verifyTableDataAtRow(tableData, 1,
+    ToolboxTabModelTestUtil.verifyTableDataAtRow(
+        tableData,
+        1,
         API_KEY_DATA_WITH_NULLS.getPublicId(),
         "",
         "",
@@ -70,8 +67,7 @@ class ApiKeyTabModelTest {
 
   @Test
   void createSingleUseKey() {
-    when(toolboxApiKeyClient.generateSingleUseKey())
-        .thenReturn(new NewApiKey(KEY_VALUE));
+    when(toolboxApiKeyClient.generateSingleUseKey()).thenReturn(new NewApiKey(KEY_VALUE));
 
     assertThat(apiKeyTabModel.createSingleUseKey(), is(KEY_VALUE));
   }

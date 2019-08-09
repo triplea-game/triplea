@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +20,7 @@ final class CompletableFutureUtilsTest {
   final class LogExceptionWhenCompleteTest {
     private static final String ERROR_MESSAGE = "error message";
 
-    @Mock
-    private Logger logger;
+    @Mock private Logger logger;
 
     @Test
     void shouldNotWriteLogWhenFutureCompletesNormally() {

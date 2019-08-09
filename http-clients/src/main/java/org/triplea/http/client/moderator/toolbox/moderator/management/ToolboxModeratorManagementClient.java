@@ -4,13 +4,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.net.URI;
 import java.util.List;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 /**
  * Http client for moderator management. Other than the fetch to display the list of moderators,
@@ -31,8 +29,8 @@ public class ToolboxModeratorManagementClient {
   private final ToolboxHttpHeaders httpHeaders;
   private final ToolboxModeratorManagementFeignClient client;
 
-
-  public static ToolboxModeratorManagementClient newClient(final URI serverUri, final ApiKeyPassword apiKeyPassword) {
+  public static ToolboxModeratorManagementClient newClient(
+      final URI serverUri, final ApiKeyPassword apiKeyPassword) {
     return new ToolboxModeratorManagementClient(
         new ToolboxHttpHeaders(apiKeyPassword),
         new HttpClient<>(ToolboxModeratorManagementFeignClient.class, serverUri).get());
@@ -63,8 +61,7 @@ public class ToolboxModeratorManagementClient {
 
   public String generateSingleUseKey(final String moderatorName) {
     checkArgument(moderatorName != null);
-    return client.generateSingleUseKey(httpHeaders.createHeaders(), moderatorName)
-        .getApiKey();
+    return client.generateSingleUseKey(httpHeaders.createHeaders(), moderatorName).getApiKey();
   }
 
   public void addModerator(final String username) {

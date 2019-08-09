@@ -12,11 +12,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableMap;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,36 +40,25 @@ import org.triplea.lobby.server.db.UsernameBlacklistDao;
 import org.triplea.test.common.security.TestSecurityUtils;
 import org.triplea.util.Md5Crypt;
 
-import com.google.common.collect.ImmutableMap;
-
-import games.strategy.engine.lobby.server.userDB.DBUser;
-
 final class LobbyLoginValidatorTest {
 
-  private interface ResponseGenerator extends Function<Map<String, String>, Map<String, String>> {
-  }
+  private interface ResponseGenerator extends Function<Map<String, String>, Map<String, String>> {}
 
   abstract class AbstractTestCase {
     static final String EMAIL = "n@n.com";
     static final String PASSWORD = "password";
 
-    @Mock
-    BannedMacDao bannedMacDao;
+    @Mock BannedMacDao bannedMacDao;
 
-    @Mock
-    UsernameBlacklistDao bannedUsernameDao;
+    @Mock UsernameBlacklistDao bannedUsernameDao;
 
-    @Mock
-    AccessLogDao accessLog;
+    @Mock AccessLogDao accessLog;
 
-    @Mock
-    BadWordDao badWordDao;
+    @Mock BadWordDao badWordDao;
 
-    @Mock
-    UserDao userDao;
+    @Mock UserDao userDao;
 
-    @Mock
-    DatabaseDao databaseDao;
+    @Mock DatabaseDao databaseDao;
 
     private LobbyLoginValidator lobbyLoginValidator;
 
@@ -78,16 +68,18 @@ final class LobbyLoginValidatorTest {
 
     private final User user = TestUserUtils.newUser();
 
-    private final DBUser dbUser = new DBUser(new DBUser.UserName(user.getUsername()), new DBUser.UserEmail(EMAIL));
+    private final DBUser dbUser =
+        new DBUser(new DBUser.UserName(user.getUsername()), new DBUser.UserEmail(EMAIL));
 
     private final String md5CryptSalt = Md5Crypt.newSalt();
 
     @BeforeEach
     public void createLobbyLoginValidator() throws Exception {
-      lobbyLoginValidator = new LobbyLoginValidator(
-          databaseDao,
-          new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair()),
-          () -> bcryptSalt);
+      lobbyLoginValidator =
+          new LobbyLoginValidator(
+              databaseDao,
+              new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair()),
+              () -> bcryptSalt);
     }
 
     final String bcrypt(final String password) {
@@ -98,7 +90,8 @@ final class LobbyLoginValidatorTest {
       return RsaAuthenticator.hashPasswordWithSalt(password);
     }
 
-    @SuppressWarnings("deprecation") // required for testing; remove upon next lobby-incompatible release
+    @SuppressWarnings(
+        "deprecation") // required for testing; remove upon next lobby-incompatible release
     final String md5Crypt(final String password) {
       return Md5Crypt.hashPassword(password, md5CryptSalt);
     }
@@ -115,22 +108,26 @@ final class LobbyLoginValidatorTest {
 
     final void givenAuthenticationWillUseMd5CryptedPasswordAndSucceed() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.login(user.getUsername(), new HashedPassword(md5Crypt(PASSWORD)))).thenReturn(true);
+      when(userDao.login(user.getUsername(), new HashedPassword(md5Crypt(PASSWORD))))
+          .thenReturn(true);
     }
 
     final void givenAuthenticationWillUseMd5CryptedPasswordAndFail() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.login(user.getUsername(), new HashedPassword(md5Crypt(PASSWORD)))).thenReturn(false);
+      when(userDao.login(user.getUsername(), new HashedPassword(md5Crypt(PASSWORD))))
+          .thenReturn(false);
     }
 
     final void givenAuthenticationWillUseObfuscatedPasswordAndSucceed() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.login(user.getUsername(), new HashedPassword(obfuscate(PASSWORD)))).thenReturn(true);
+      when(userDao.login(user.getUsername(), new HashedPassword(obfuscate(PASSWORD))))
+          .thenReturn(true);
     }
 
     final void givenAuthenticationWillUseObfuscatedPasswordAndFail() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.login(user.getUsername(), new HashedPassword(obfuscate(PASSWORD)))).thenReturn(false);
+      when(userDao.login(user.getUsername(), new HashedPassword(obfuscate(PASSWORD))))
+          .thenReturn(false);
     }
 
     final void givenUserDoesNotExist() {
@@ -140,7 +137,8 @@ final class LobbyLoginValidatorTest {
 
     final void givenUserDoesNotHaveBcryptedPassword() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.getPassword(user.getUsername())).thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
+      when(userDao.getPassword(user.getUsername()))
+          .thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void givenUserDoesNotHaveMd5CryptedPassword() {
@@ -155,27 +153,31 @@ final class LobbyLoginValidatorTest {
 
     final void givenUserHasBcryptedPassword() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.getPassword(user.getUsername())).thenReturn(new HashedPassword(bcrypt(PASSWORD)));
+      when(userDao.getPassword(user.getUsername()))
+          .thenReturn(new HashedPassword(bcrypt(PASSWORD)));
     }
 
     final void givenUserHasMd5CryptedPassword() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.getLegacyPassword(user.getUsername())).thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
+      when(userDao.getLegacyPassword(user.getUsername()))
+          .thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void whenAuthenticating(final ResponseGenerator responseGenerator) {
       final InetSocketAddress remoteAddress = new InetSocketAddress(user.getInetAddress(), 9999);
       final Map<String, String> challenge =
           lobbyLoginValidator.getChallengeProperties(user.getUsername());
-      authenticationErrorMessage = lobbyLoginValidator.verifyConnection(
-          challenge,
-          responseGenerator.apply(challenge),
-          user.getUsername(),
-          user.getHashedMacAddress(),
-          remoteAddress);
+      authenticationErrorMessage =
+          lobbyLoginValidator.verifyConnection(
+              challenge,
+              responseGenerator.apply(challenge),
+              user.getUsername(),
+              user.getHashedMacAddress(),
+              remoteAddress);
     }
 
-    final void thenAccessLogShouldReceiveSuccessfulAuthentication(final UserType userType) throws Exception {
+    final void thenAccessLogShouldReceiveSuccessfulAuthentication(final UserType userType)
+        throws Exception {
       verify(accessLog).insert(eq(user), eq(userType));
     }
 
@@ -192,15 +194,18 @@ final class LobbyLoginValidatorTest {
     }
 
     final void thenUserShouldBeCreatedWithMd5CryptedPassword() {
-      verify(userDao).createUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(md5Crypt(PASSWORD)));
+      verify(userDao)
+          .createUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void thenUserShouldBeUpdatedWithBcryptedPassword() {
-      verify(userDao).updateUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(bcrypt(PASSWORD)));
+      verify(userDao)
+          .updateUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(bcrypt(PASSWORD)));
     }
 
     final void thenUserShouldBeUpdatedWithMd5CryptedPassword() {
-      verify(userDao).updateUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(md5Crypt(PASSWORD)));
+      verify(userDao)
+          .updateUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void thenUserShouldNotBeCreated() {
@@ -209,12 +214,14 @@ final class LobbyLoginValidatorTest {
 
     final void thenUserShouldNotBeUpdatedWithBcryptedPassword() {
       verify(userDao, never())
-          .updateUser(eq(dbUser.getName()), eq(dbUser.getEmail()), argThat(HashedPassword::isBcrypted));
+          .updateUser(
+              eq(dbUser.getName()), eq(dbUser.getEmail()), argThat(HashedPassword::isBcrypted));
     }
 
     final void thenUserShouldNotBeUpdatedWithMd5CryptedPassword() {
       verify(userDao, never())
-          .updateUser(eq(dbUser.getName()), eq(dbUser.getEmail()), argThat(HashedPassword::isMd5Crypted));
+          .updateUser(
+              eq(dbUser.getName()), eq(dbUser.getEmail()), argThat(HashedPassword::isMd5Crypted));
     }
 
     final void thenUserShouldNotBeUpdated() {
@@ -264,15 +271,17 @@ final class LobbyLoginValidatorTest {
 
         whenAuthenticating(givenAuthenticationResponse());
 
-        thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.ANONYMOUS_AUTHENTICATION_FAILED);
+        thenAuthenticationShouldFailWithMessage(
+            LobbyLoginValidator.ErrorMessages.ANONYMOUS_AUTHENTICATION_FAILED);
         thenUserShouldNotBeCreated();
         thenUserShouldNotBeUpdated();
       }
 
       private ResponseGenerator givenAuthenticationResponse() {
-        return challenge -> ImmutableMap.of(
-            LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
-            LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+        return challenge ->
+            ImmutableMap.of(
+                LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
+                LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
       }
     }
 
@@ -294,11 +303,12 @@ final class LobbyLoginValidatorTest {
         }
 
         private ResponseGenerator givenAuthenticationResponse() {
-          return challenge -> ImmutableMap.of(
-              LobbyLoginResponseKeys.EMAIL, EMAIL,
-              LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD),
-              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString(),
-              LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
+          return challenge ->
+              ImmutableMap.of(
+                  LobbyLoginResponseKeys.EMAIL, EMAIL,
+                  LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD),
+                  LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString(),
+                  LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
         }
       }
 
@@ -318,13 +328,15 @@ final class LobbyLoginValidatorTest {
         }
 
         private ResponseGenerator givenAuthenticationResponse() {
-          return challenge -> ImmutableMap.<String, String>builder()
-              .put(LobbyLoginResponseKeys.EMAIL, EMAIL)
-              .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
-              .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
-              .put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString())
-              .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
-              .build();
+          return challenge ->
+              ImmutableMap.<String, String>builder()
+                  .put(LobbyLoginResponseKeys.EMAIL, EMAIL)
+                  .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
+                  .put(
+                      LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
+                  .put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString())
+                  .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+                  .build();
         }
       }
     }
@@ -367,15 +379,17 @@ final class LobbyLoginValidatorTest {
 
           whenAuthenticating(givenAuthenticationResponse());
 
-          thenAuthenticationShouldFailWithMessage(LobbyLoginValidator.ErrorMessages.AUTHENTICATION_FAILED);
+          thenAuthenticationShouldFailWithMessage(
+              LobbyLoginValidator.ErrorMessages.AUTHENTICATION_FAILED);
           thenUserShouldNotBeCreated();
           thenUserShouldNotBeUpdated();
         }
 
         private ResponseGenerator givenAuthenticationResponse() {
-          return challenge -> ImmutableMap.of(
-              LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD),
-              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+          return challenge ->
+              ImmutableMap.of(
+                  LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD),
+                  LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
         }
       }
 
@@ -429,11 +443,13 @@ final class LobbyLoginValidatorTest {
         }
 
         private ResponseGenerator givenAuthenticationResponse() {
-          return challenge -> ImmutableMap.<String, String>builder()
-              .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
-              .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
-              .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
-              .build();
+          return challenge ->
+              ImmutableMap.<String, String>builder()
+                  .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
+                  .put(
+                      LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
+                  .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+                  .build();
         }
       }
     }
@@ -465,9 +481,10 @@ final class LobbyLoginValidatorTest {
       }
 
       private ResponseGenerator givenAuthenticationResponse() {
-        return challenge -> ImmutableMap.of(
-            LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
-            LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
+        return challenge ->
+            ImmutableMap.of(
+                LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString(),
+                LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
       }
     }
 
@@ -497,10 +514,11 @@ final class LobbyLoginValidatorTest {
       }
 
       private ResponseGenerator givenAuthenticationResponse() {
-        return challenge -> ImmutableMap.<String, String>builder()
-            .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
-            .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
-            .build();
+        return challenge ->
+            ImmutableMap.<String, String>builder()
+                .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
+                .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+                .build();
       }
     }
   }

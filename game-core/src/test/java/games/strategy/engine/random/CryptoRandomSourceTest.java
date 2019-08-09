@@ -24,9 +24,12 @@ class CryptoRandomSourceTest {
 
   @Test
   void testBytesToInts() {
-    final int[] ints = CryptoRandomSource.bytesToInts(new byte[] {
-        (byte) 0xA4, (byte) 0xB3, (byte) 0xC2, (byte) 0xD1,
-        (byte) 0x4D, (byte) 0x3C, (byte) 0x2B, (byte) 0x1A});
+    final int[] ints =
+        CryptoRandomSource.bytesToInts(
+            new byte[] {
+              (byte) 0xA4, (byte) 0xB3, (byte) 0xC2, (byte) 0xD1,
+              (byte) 0x4D, (byte) 0x3C, (byte) 0x2B, (byte) 0x1A
+            });
     assertEquals(2, ints.length);
     assertEquals(0xD1C2B3A4, ints[0]);
     assertEquals(0x1A2B3C4D, ints[1]);
@@ -45,8 +48,23 @@ class CryptoRandomSourceTest {
 
   @Test
   void testThereAndBackAgain() {
-    final int[] ints = new int[] {0, 1, 12, 123, 0xFF, 0x100, -1, 124152, 532153, 123121, 0xABCDEF12, 0xFF00DD00,
-        Integer.MAX_VALUE, Integer.MIN_VALUE};
+    final int[] ints =
+        new int[] {
+          0,
+          1,
+          12,
+          123,
+          0xFF,
+          0x100,
+          -1,
+          124152,
+          532153,
+          123121,
+          0xABCDEF12,
+          0xFF00DD00,
+          Integer.MAX_VALUE,
+          Integer.MIN_VALUE
+        };
     final int[] thereAndBack = CryptoRandomSource.bytesToInts(CryptoRandomSource.intsToBytes(ints));
     for (int i = 0; i < ints.length; i++) {
       assertEquals(ints[i], thereAndBack[i], "at " + i);

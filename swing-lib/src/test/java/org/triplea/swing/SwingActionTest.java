@@ -16,10 +16,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
@@ -30,21 +28,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class SwingActionTest {
   private static final Object VALUE = new Object();
 
-  private static final Runnable RUNNABLE_THROWING_EXCEPTION = () -> {
-    throw new IllegalStateException();
-  };
+  private static final Runnable RUNNABLE_THROWING_EXCEPTION =
+      () -> {
+        throw new IllegalStateException();
+      };
 
-  private static final Supplier<?> SUPPLIER_THROWING_EXCEPTION = () -> {
-    throw new IllegalStateException();
-  };
-  @Mock
-  private Runnable action;
-  @Mock
-  private ActionEvent event;
-  @Mock
-  private ActionListener listener;
-  @Mock
-  private Consumer<KeyEvent> consumer;
+  private static final Supplier<?> SUPPLIER_THROWING_EXCEPTION =
+      () -> {
+        throw new IllegalStateException();
+      };
+  @Mock private Runnable action;
+  @Mock private ActionEvent event;
+  @Mock private ActionListener listener;
+  @Mock private Consumer<KeyEvent> consumer;
 
   @Test
   void testActionOf() {
@@ -78,14 +74,17 @@ class SwingActionTest {
 
   @Test
   void testInvokeAndWait_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
-    assertThrows(IllegalStateException.class, () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION));
+    assertThrows(
+        IllegalStateException.class, () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION));
   }
 
   @Test
   void testInvokeAndWait_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt() throws Exception {
-    SwingUtilities.invokeAndWait(() -> assertThrows(
-        IllegalStateException.class,
-        () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION)));
+    SwingUtilities.invokeAndWait(
+        () ->
+            assertThrows(
+                IllegalStateException.class,
+                () -> SwingAction.invokeAndWait(RUNNABLE_THROWING_EXCEPTION)));
   }
 
   @Test
@@ -98,21 +97,28 @@ class SwingActionTest {
     final AtomicReference<Object> actualValueRef = new AtomicReference<>();
 
     SwingUtilities.invokeAndWait(
-        () -> assertDoesNotThrow(() -> actualValueRef.set(SwingAction.invokeAndWaitResult(() -> VALUE))));
+        () ->
+            assertDoesNotThrow(
+                () -> actualValueRef.set(SwingAction.invokeAndWaitResult(() -> VALUE))));
 
     assertEquals(VALUE, actualValueRef.get());
   }
 
   @Test
   void testInvokeAndWaitResult_ShouldRethrowActionUncheckedExceptionWhenCalledOffEdt() {
-    assertThrows(IllegalStateException.class, () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION));
+    assertThrows(
+        IllegalStateException.class,
+        () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION));
   }
 
   @Test
-  void testInvokeAndWaitResult_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt() throws Exception {
-    SwingUtilities.invokeAndWait(() -> assertThrows(
-        IllegalStateException.class,
-        () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION)));
+  void testInvokeAndWaitResult_ShouldRethrowActionUncheckedExceptionWhenCalledOnEdt()
+      throws Exception {
+    SwingUtilities.invokeAndWait(
+        () ->
+            assertThrows(
+                IllegalStateException.class,
+                () -> SwingAction.invokeAndWaitResult(SUPPLIER_THROWING_EXCEPTION)));
   }
 
   @Test

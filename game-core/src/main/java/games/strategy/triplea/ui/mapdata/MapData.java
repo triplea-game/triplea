@@ -1,5 +1,12 @@
 package games.strategy.triplea.ui.mapdata;
 
+import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.Constants;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.ui.Util;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -27,28 +34,15 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
-
+import lombok.extern.java.Log;
 import org.triplea.java.function.ThrowingFunction;
 import org.triplea.java.function.ThrowingSupplier;
 import org.triplea.util.PointFileReaderWriter;
 import org.triplea.util.Tuple;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.Constants;
-import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.ui.Util;
-import lombok.extern.java.Log;
-
-/**
- * contains data about the territories useful for drawing.
- */
+/** contains data about the territories useful for drawing. */
 @Log
 public class MapData implements Closeable {
   public static final String PROPERTY_UNITS_SCALE = "units.scale";
@@ -71,7 +65,8 @@ public class MapData implements Closeable {
   public static final String PROPERTY_MAP_CURSOR_HOTSPOT_X = "map.cursor.hotspot.x";
   public static final String PROPERTY_MAP_CURSOR_HOTSPOT_Y = "map.cursor.hotspot.y";
   public static final String PROPERTY_MAP_SHOWCAPITOLMARKERS = "map.showCapitolMarkers";
-  public static final String PROPERTY_MAP_USETERRITORYEFFECTMARKERS = "map.useTerritoryEffectMarkers";
+  public static final String PROPERTY_MAP_USETERRITORYEFFECTMARKERS =
+      "map.useTerritoryEffectMarkers";
   public static final String PROPERTY_MAP_SHOWTERRITORYNAMES = "map.showTerritoryNames";
   public static final String PROPERTY_MAP_SHOWRESOURCES = "map.showResources";
   public static final String PROPERTY_MAP_SHOWCOMMENTS = "map.showComments";
@@ -83,7 +78,8 @@ public class MapData implements Closeable {
   public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
   public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
   public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
-  public static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION = "smallMap.territory.saturation";
+  public static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION =
+      "smallMap.territory.saturation";
   public static final String PROPERTY_MAP_SMALLMAPUNITSIZE = "smallMap.unit.size";
   public static final String PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR = "smallMap.viewer.borderColor";
   public static final String PROPERTY_MAP_SMALLMAPVIEWERFILLCOLOR = "smallMap.viewer.fillColor";
@@ -136,10 +132,13 @@ public class MapData implements Closeable {
     try {
       if (loader.getResource(POLYGON_FILE) == null) {
         throw new IllegalStateException(
-            "Error in resource loading. Unable to load expected resource: " + POLYGON_FILE + ", the error"
-                + " is that either we did not find the correct path to load. Check the resource loader to make"
-                + " sure the map zip or dir was added. Failing that, the path in this error message should be available"
-                + " relative to the map folder, or relative to the root of the map zip");
+            "Error in resource loading. Unable to load expected resource: "
+                + POLYGON_FILE
+                + ", the error"
+                + " is that either we did not find the correct path to load. Check the resource "
+                + "loader to make sure the map zip or dir was added. Failing that, the path in "
+                + "this error message should be available relative to the map folder, or relative "
+                + "to the root of the map zip");
       }
 
       place.putAll(readPlacementsOneToMany(optionalResource(PLACEMENT_FILE)));
@@ -171,42 +170,41 @@ public class MapData implements Closeable {
   }
 
   private ThrowingSupplier<InputStream, IOException> optionalResource(final String path) {
-    return () -> Optional.ofNullable(resourceLoader.getResourceAsStream(path))
-        .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
+    return () ->
+        Optional.ofNullable(resourceLoader.getResourceAsStream(path))
+            .orElseGet(() -> new ByteArrayInputStream(new byte[0]));
   }
 
   private ThrowingSupplier<InputStream, IOException> requiredResource(final String path) {
-    return () -> Optional.ofNullable(resourceLoader.getResourceAsStream(path))
-        .orElseThrow(() -> new FileNotFoundException(path));
+    return () ->
+        Optional.ofNullable(resourceLoader.getResourceAsStream(path))
+            .orElseThrow(() -> new FileNotFoundException(path));
   }
 
   private static Map<String, Point> readPointsOneToOne(
-      final ThrowingSupplier<InputStream, IOException> inputStreamFactory)
-      throws IOException {
+      final ThrowingSupplier<InputStream, IOException> inputStreamFactory) throws IOException {
     return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToOne);
   }
 
   private static Map<String, List<Point>> readPointsOneToMany(
-      final ThrowingSupplier<InputStream, IOException> inputStreamFactory)
-      throws IOException {
+      final ThrowingSupplier<InputStream, IOException> inputStreamFactory) throws IOException {
     return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToMany);
   }
 
   private static Map<String, Tuple<List<Point>, Boolean>> readPlacementsOneToMany(
-      final ThrowingSupplier<InputStream, IOException> inputStreamFactory)
-      throws IOException {
+      final ThrowingSupplier<InputStream, IOException> inputStreamFactory) throws IOException {
     return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToManyPlacements);
   }
 
   private static Map<String, List<Polygon>> readPolygonsOneToMany(
-      final ThrowingSupplier<InputStream, IOException> inputStreamFactory)
-      throws IOException {
+      final ThrowingSupplier<InputStream, IOException> inputStreamFactory) throws IOException {
     return runWithInputStream(inputStreamFactory, PointFileReaderWriter::readOneToManyPolygons);
   }
 
   private static <R> R runWithInputStream(
       final ThrowingSupplier<InputStream, IOException> inputStreamFactory,
-      final ThrowingFunction<InputStream, R, IOException> reader) throws IOException {
+      final ThrowingFunction<InputStream, R, IOException> reader)
+      throws IOException {
     try (InputStream is = inputStreamFactory.get()) {
       return reader.apply(is);
     }
@@ -249,7 +247,8 @@ public class MapData implements Closeable {
       }
       return img;
     } catch (final Exception e) {
-      // TODO: this is checking for IllegalStateException - we should bubble up the Optional image load and just
+      // TODO: this is checking for IllegalStateException - we should bubble up the Optional image
+      // load and just
       // check instead if the optional is empty.
       log.log(Level.SEVERE, "Image loading failed: " + imageName, e);
       return Optional.empty();
@@ -269,17 +268,13 @@ public class MapData implements Closeable {
     return decorations;
   }
 
-  /**
-   * returns the named property, or null.
-   */
+  /** returns the named property, or null. */
   public String getProperty(final String propertiesKey) {
     return mapProperties.getProperty(propertiesKey);
   }
 
   private <T> T getProperty(
-      final String name,
-      final Supplier<T> defaultValueSupplier,
-      final Function<String, T> parser) {
+      final String name, final Supplier<T> defaultValueSupplier, final Function<String, T> parser) {
     return getProperty(mapProperties, name, defaultValueSupplier, parser);
   }
 
@@ -314,31 +309,23 @@ public class MapData implements Closeable {
     return getDoubleProperty(PROPERTY_UNITS_SCALE, () -> 1.0);
   }
 
-  /**
-   * Does not take account of any scaling.
-   */
+  /** Does not take account of any scaling. */
   public int getDefaultUnitWidth() {
     return getIntegerProperty(PROPERTY_UNITS_WIDTH, () -> UnitImageFactory.DEFAULT_UNIT_ICON_SIZE);
   }
 
-  /**
-   * Does not take account of any scaling.
-   */
+  /** Does not take account of any scaling. */
   public int getDefaultUnitHeight() {
     return getIntegerProperty(PROPERTY_UNITS_HEIGHT, () -> UnitImageFactory.DEFAULT_UNIT_ICON_SIZE);
   }
 
-  /**
-   * Does not take account of any scaling.
-   */
+  /** Does not take account of any scaling. */
   public int getDefaultUnitCounterOffsetWidth() {
     // if it is not set, divide by 4 so that it is roughly centered
     return getIntegerProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH, () -> getDefaultUnitWidth() / 4);
   }
 
-  /**
-   * Does not take account of any scaling.
-   */
+  /** Does not take account of any scaling. */
   public int getDefaultUnitCounterOffsetHeight() {
     // put at bottom of unit, if not set
     return getIntegerProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT, this::getDefaultUnitHeight);
@@ -371,13 +358,17 @@ public class MapData implements Closeable {
   }
 
   public int getMapCursorHotspotX() {
-    return Math.max(0,
-        Math.min(256, Integer.parseInt(mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_X, "0"))));
+    return Math.max(
+        0,
+        Math.min(
+            256, Integer.parseInt(mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_X, "0"))));
   }
 
   public int getMapCursorHotspotY() {
-    return Math.max(0,
-        Math.min(256, Integer.parseInt(mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_Y, "0"))));
+    return Math.max(
+        0,
+        Math.min(
+            256, Integer.parseInt(mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_Y, "0"))));
   }
 
   public String getMapBlendMode() {
@@ -409,19 +400,23 @@ public class MapData implements Closeable {
   }
 
   public boolean drawNamesFromTopLeft() {
-    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_DRAWNAMESFROMTOPLEFT, "false"));
+    return Boolean.parseBoolean(
+        mapProperties.getProperty(PROPERTY_MAP_DRAWNAMESFROMTOPLEFT, "false"));
   }
 
   public boolean useNation_convoyFlags() {
-    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_USENATION_CONVOYFLAGS, "false"));
+    return Boolean.parseBoolean(
+        mapProperties.getProperty(PROPERTY_MAP_USENATION_CONVOYFLAGS, "false"));
   }
 
   public boolean useTerritoryEffectMarkers() {
-    return Boolean.parseBoolean(mapProperties.getProperty(PROPERTY_MAP_USETERRITORYEFFECTMARKERS, "false"));
+    return Boolean.parseBoolean(
+        mapProperties.getProperty(PROPERTY_MAP_USETERRITORYEFFECTMARKERS, "false"));
   }
 
   public float getSmallMapTerritorySaturation() {
-    return Float.parseFloat(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPTERRITORYSATURATION, "1.0f"));
+    return Float.parseFloat(
+        mapProperties.getProperty(PROPERTY_MAP_SMALLMAPTERRITORYSATURATION, "1.0f"));
   }
 
   public int getSmallMapUnitSize() {
@@ -437,7 +432,8 @@ public class MapData implements Closeable {
   }
 
   public float getSmallMapViewerFillAlpha() {
-    return Float.parseFloat(mapProperties.getProperty(PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA, "0.0f"));
+    return Float.parseFloat(
+        mapProperties.getProperty(PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA, "0.0f"));
   }
 
   private void initializeContains() {
@@ -471,16 +467,18 @@ public class MapData implements Closeable {
   }
 
   /**
-   * Returns the value of the property named {@code propertiesKey} of type {@link Color}. Returns {@code defaultColor}
-   * if the property doesn't exist.
+   * Returns the value of the property named {@code propertiesKey} of type {@link Color}. Returns
+   * {@code defaultColor} if the property doesn't exist.
    *
    * @throws IllegalStateException If the property value does not represent a valid color.
    */
-  public Color getColorProperty(final String propertiesKey, final Color defaultColor) throws IllegalStateException {
+  public Color getColorProperty(final String propertiesKey, final Color defaultColor)
+      throws IllegalStateException {
     if (mapProperties.getProperty(propertiesKey) != null) {
       final String colorString = mapProperties.getProperty(propertiesKey);
       if (colorString.length() != 6) {
-        throw new IllegalStateException("Colors must be a 6 digit hex number, eg FF0011, not:" + colorString);
+        throw new IllegalStateException(
+            "Colors must be a 6 digit hex number, eg FF0011, not:" + colorString);
       }
       try {
         return new Color(Integer.decode("0x" + colorString));
@@ -491,9 +489,7 @@ public class MapData implements Closeable {
     return defaultColor;
   }
 
-  /**
-   * Returns the color associated with the player named {@code playerName}.
-   */
+  /** Returns the color associated with the player named {@code playerName}. */
   public Color getPlayerColor(final String playerName) {
     // already loaded, just return
     if (playerColors.containsKey(playerName)) {
@@ -516,31 +512,28 @@ public class MapData implements Closeable {
     return color;
   }
 
-  /**
-   * returns the color for impassable territories.
-   */
+  /** returns the color for impassable territories. */
   public Color impassableColor() {
     // just use getPlayerColor, since it parses the properties
     return getPlayerColor(Constants.PLAYER_NAME_IMPASSABLE);
   }
 
   /**
-   * Returns a Set of territory names as Strings. generally this shouldn't be
-   * used, instead you should use aGameData.getMap().getTerritories()
+   * Returns a Set of territory names as Strings. generally this shouldn't be used, instead you
+   * should use aGameData.getMap().getTerritories()
    */
   public Set<String> getTerritories() {
     return polys.keySet();
   }
 
-  /**
-   * Does this territory have any territories contained within it.
-   */
+  /** Does this territory have any territories contained within it. */
   public boolean hasContainedTerritory(final String territoryName) {
     return contains.containsKey(territoryName);
   }
 
   /**
-   * returns the name of the territory contained in the given territory. This applies to islands within sea zones.
+   * returns the name of the territory contained in the given territory. This applies to islands
+   * within sea zones.
    *
    * @return possibly null
    */
@@ -554,7 +547,8 @@ public class MapData implements Closeable {
     verifyKeys(data, place, "place");
   }
 
-  private static void verifyKeys(final GameData data, final Map<String, ?> map, final String dataTypeForErrorMessage)
+  private static void verifyKeys(
+      final GameData data, final Map<String, ?> map, final String dataTypeForErrorMessage)
       throws IllegalStateException {
     final StringBuilder errors = new StringBuilder();
     final Iterator<String> iter = map.keySet().iterator();
@@ -569,8 +563,12 @@ public class MapData implements Closeable {
     final Set<String> keySet = map.keySet();
     for (final Territory terr : data.getMap().getTerritories()) {
       if (!keySet.contains(terr.getName())) {
-        errors.append("No data of type ").append(dataTypeForErrorMessage).append(" for territory: ")
-            .append(terr.getName()).append("\n");
+        errors
+            .append("No data of type ")
+            .append(dataTypeForErrorMessage)
+            .append(" for territory: ")
+            .append(terr.getName())
+            .append("\n");
       }
     }
     if (errors.length() > 0) {
@@ -652,9 +650,7 @@ public class MapData implements Closeable {
     return Optional.ofNullable(namePlace.get(terr.getName()));
   }
 
-  /**
-   * Get the territory at the x,y co-ordinates could be null.
-   */
+  /** Get the territory at the x,y co-ordinates could be null. */
   public String getTerritoryAt(final double x, final double y) {
     String seaName = null;
     // try to find a land territory.
@@ -694,22 +690,26 @@ public class MapData implements Closeable {
   /**
    * Returns the bounding rectangle for the territory named {@code name}.
    *
-   * @throws IllegalStateException If a bounding rectangle cannot be calculated for the specified territory.
+   * @throws IllegalStateException If a bounding rectangle cannot be calculated for the specified
+   *     territory.
    */
   public Rectangle getBoundingRect(final String name) {
     final List<Polygon> polys = this.polys.get(name);
     if (polys == null) {
-      throw new IllegalStateException("No polygons found for:" + name + " All territories:" + this.polys.keySet());
+      throw new IllegalStateException(
+          "No polygons found for:" + name + " All territories:" + this.polys.keySet());
     }
     final Iterator<Polygon> polyIter = polys.iterator();
     final Rectangle bounds = polyIter.next().getBounds();
     while (polyIter.hasNext()) {
       bounds.add(polyIter.next().getBounds());
     }
-    // if we have a territory that straddles the map divide, ie: which has polygons on both the left and right sides of
+    // if we have a territory that straddles the map divide, ie: which has polygons on both the left
+    // and right sides of
     // the map,
     // then the polygon's width or height could be almost equal to the map width or height
-    // this can cause lots of problems, like when we want to get the tiles for the territory we would end up getting all
+    // this can cause lots of problems, like when we want to get the tiles for the territory we
+    // would end up getting all
     // the tiles for the map (and a java heap space error)
     final Dimension mapDimensions = getMapDimensions();
     if ((scrollWrapX() && bounds.width > 1800 && bounds.width > mapDimensions.width * 0.9)
@@ -719,7 +719,8 @@ public class MapData implements Closeable {
     return bounds;
   }
 
-  private Rectangle getBoundingRectWithTranslate(final List<Polygon> polys, final Dimension mapDimensions) {
+  private Rectangle getBoundingRectWithTranslate(
+      final List<Polygon> polys, final Dimension mapDimensions) {
     Rectangle boundingRect = null;
     final int mapWidth = mapDimensions.width;
     final int mapHeight = mapDimensions.height;
@@ -728,12 +729,16 @@ public class MapData implements Closeable {
     final boolean scrollWrapX = this.scrollWrapX();
     final boolean scrollWrapY = this.scrollWrapY();
     for (final Polygon item : polys) {
-      // if our rectangle is on the right side (mapscrollx) then we push it to be on the negative left side, so that the
+      // if our rectangle is on the right side (mapscrollx) then we push it to be on the negative
+      // left side, so that the
       // bounds.x will be negative
-      // this solves the issue of maps that have a territory where polygons were on both sides of the map divide
+      // this solves the issue of maps that have a territory where polygons were on both sides of
+      // the map divide
       // (so our bounds.x was 0, and our bounds.y would be the entire map width)
-      // (when in fact it should actually be bounds.x = -10 or something, and bounds.width = 20 or something)
-      // we use map dimensions.width * 0.9 because the polygon may not actually touch the side of the map (like if the
+      // (when in fact it should actually be bounds.x = -10 or something, and bounds.width = 20 or
+      // something)
+      // we use map dimensions.width * 0.9 because the polygon may not actually touch the side of
+      // the map (like if the
       // territory borders are thick)
       final Rectangle itemRect = item.getBounds();
       if (scrollWrapX && itemRect.getMaxX() >= closeToMapWidth) {
@@ -777,7 +782,8 @@ public class MapData implements Closeable {
   private Optional<Image> loadImage(final String imageName) {
     final URL url = resourceLoader.getResource(imageName);
     if (url == null) {
-      // this is actually pretty common that we try to read images that are not there. Let the caller
+      // this is actually pretty common that we try to read images that are not there. Let the
+      // caller
       // decide if this is an error or not.
       return Optional.empty();
     }

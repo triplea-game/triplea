@@ -1,5 +1,6 @@
 package org.triplea.game.server.debug;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Handler;
@@ -7,27 +8,22 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
-
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
-
 import org.triplea.game.server.HeadlessGameServer;
 
-import com.google.common.annotations.VisibleForTesting;
-
 /**
- * A {@link Handler} that publishes log records to the chat subsystem. This allows a headless game server to report its
- * own logs to other game clients via the chat window.
+ * A {@link Handler} that publishes log records to the chat subsystem. This allows a headless game
+ * server to report its own logs to other game clients via the chat window.
  *
- * <p>
- * <strong>Configuration:</strong> This handler does not currently support configuration through the {@link LogManager}.
- * It always uses the following default configuration:
- * </p>
+ * <p><strong>Configuration:</strong> This handler does not currently support configuration through
+ * the {@link LogManager}. It always uses the following default configuration:
+ *
  * <ul>
- * <li>Level: {@code Level.WARNING}</li>
- * <li>Filter: No {@code Filter}</li>
- * <li>Formatter: {@code java.util.logging.SimpleFormatter}</li>
- * <li>Encoding: default platform encoding</li>
+ *   <li>Level: {@code Level.WARNING}
+ *   <li>Filter: No {@code Filter}
+ *   <li>Formatter: {@code java.util.logging.SimpleFormatter}
+ *   <li>Encoding: default platform encoding
  * </ul>
  */
 @ThreadSafe
@@ -74,8 +70,6 @@ public final class ChatHandler extends Handler {
   }
 
   private String formatChatMessage(final LogRecord record) {
-    return getFormatter()
-        .format(record)
-        .trim();
+    return getFormatter().format(record).trim();
   }
 }

@@ -1,12 +1,10 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.Route;
 import java.awt.Image;
 import java.awt.Point;
 import java.util.Objects;
-
 import javax.annotation.Nullable;
-
-import games.strategy.engine.data.Route;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

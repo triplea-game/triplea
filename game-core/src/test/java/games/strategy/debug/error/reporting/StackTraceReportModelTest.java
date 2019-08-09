@@ -8,7 +8,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.logging.LogRecord;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,36 +21,30 @@ class StackTraceReportModelTest {
 
   private static final String STRING_VALUE = "Dominas studere, tanquam brevis canis.";
 
-  @Mock
-  private LogRecord logRecord;
+  @Mock private LogRecord logRecord;
 
-  @Mock
-  private StackTraceReportView stackTraceReportView;
+  @Mock private StackTraceReportView stackTraceReportView;
 
-  @Mock
-  private Predicate<ErrorUploadRequest> uploader;
+  @Mock private Predicate<ErrorUploadRequest> uploader;
 
-  @Mock
-  private Consumer<ErrorUploadRequest> preview;
+  @Mock private Consumer<ErrorUploadRequest> preview;
 
-  @Mock
-  private BiFunction<String, LogRecord, ErrorUploadRequest> formatter;
+  @Mock private BiFunction<String, LogRecord, ErrorUploadRequest> formatter;
 
-  @Mock
-  private ErrorUploadRequest errorReport;
+  @Mock private ErrorUploadRequest errorReport;
 
   private StackTraceReportModel viewModel;
 
-
   @BeforeEach
   void setup() {
-    viewModel = StackTraceReportModel.builder()
-        .view(stackTraceReportView)
-        .stackTraceRecord(logRecord)
-        .uploader(uploader)
-        .preview(preview)
-        .formatter(formatter)
-        .build();
+    viewModel =
+        StackTraceReportModel.builder()
+            .view(stackTraceReportView)
+            .stackTraceRecord(logRecord)
+            .uploader(uploader)
+            .preview(preview)
+            .formatter(formatter)
+            .build();
   }
 
   @Nested
@@ -80,7 +73,6 @@ class StackTraceReportModelTest {
       verify(stackTraceReportView, never()).close();
     }
   }
-
 
   @Test
   void preview() {

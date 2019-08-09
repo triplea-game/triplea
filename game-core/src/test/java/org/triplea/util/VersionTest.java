@@ -10,10 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
-
-import org.junit.jupiter.api.Test;
-
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Test;
 
 class VersionTest {
   @Test
@@ -29,30 +27,30 @@ class VersionTest {
   @Test
   void compareTo_ShouldReturnNegativeIntegerWhenFirstIsLessThanSecond() {
     Arrays.asList(
-        Tuple.of(new Version(1, 0, 0), new Version(2, 0, 0)),
-        Tuple.of(new Version(0, 1, 0), new Version(0, 2, 0)),
-        Tuple.of(new Version(0, 0, 1), new Version(0, 0, 2)),
-        Tuple.of(new Version(0, 0, 0), new Version("0.0.dev")))
+            Tuple.of(new Version(1, 0, 0), new Version(2, 0, 0)),
+            Tuple.of(new Version(0, 1, 0), new Version(0, 2, 0)),
+            Tuple.of(new Version(0, 0, 1), new Version(0, 0, 2)),
+            Tuple.of(new Version(0, 0, 0), new Version("0.0.dev")))
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(lessThan(0))));
   }
 
   @Test
   void compareTo_ShouldReturnZeroWhenFirstIsEqualToSecond() {
     Arrays.asList(
-        Tuple.of(new Version(1, 0, 0), new Version(1, 0, 0)),
-        Tuple.of(new Version(0, 1, 0), new Version(0, 1, 0)),
-        Tuple.of(new Version(0, 0, 1), new Version(0, 0, 1)),
-        Tuple.of(new Version("0.0.dev"), new Version("0.0.dev")))
+            Tuple.of(new Version(1, 0, 0), new Version(1, 0, 0)),
+            Tuple.of(new Version(0, 1, 0), new Version(0, 1, 0)),
+            Tuple.of(new Version(0, 0, 1), new Version(0, 0, 1)),
+            Tuple.of(new Version("0.0.dev"), new Version("0.0.dev")))
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(0)));
   }
 
   @Test
   void compareTo_ShouldReturnPositiveIntegerWhenFirstIsGreaterThanSecond() {
     Arrays.asList(
-        Tuple.of(new Version(2, 0, 0), new Version(1, 0, 0)),
-        Tuple.of(new Version(0, 2, 0), new Version(0, 1, 0)),
-        Tuple.of(new Version(0, 0, 2), new Version(0, 0, 1)),
-        Tuple.of(new Version("0.0.dev"), new Version(0, 0, 0)))
+            Tuple.of(new Version(2, 0, 0), new Version(1, 0, 0)),
+            Tuple.of(new Version(0, 2, 0), new Version(0, 1, 0)),
+            Tuple.of(new Version(0, 0, 2), new Version(0, 0, 1)),
+            Tuple.of(new Version("0.0.dev"), new Version(0, 0, 0)))
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(greaterThan(0))));
   }
 
@@ -99,7 +97,8 @@ class VersionTest {
   void testGetExactVersion() {
     assertEquals("1.2.3", new Version(1, 2, 3).getExactVersion());
     assertEquals("1.2.3.4", new Version("1.2.3.4").getExactVersion());
-    assertEquals("1.2.3.4.something weird", new Version("1.2.3.4.something weird").getExactVersion());
+    assertEquals(
+        "1.2.3.4.something weird", new Version("1.2.3.4.something weird").getExactVersion());
   }
 
   @Test

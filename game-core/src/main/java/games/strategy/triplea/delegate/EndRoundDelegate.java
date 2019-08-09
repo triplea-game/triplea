@@ -1,21 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.StreamSupport;
-
-import javax.swing.JOptionPane;
-
-import org.triplea.game.server.HeadlessGameServer;
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.swing.EventThreadJOptionPane;
-import org.triplea.util.LocalizeHtml;
-
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
@@ -33,10 +17,21 @@ import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
+import javax.swing.JOptionPane;
+import org.triplea.game.server.HeadlessGameServer;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.util.LocalizeHtml;
 
-/**
- * A delegate used to check for end of game conditions.
- */
+/** A delegate used to check for end of game conditions. */
 public class EndRoundDelegate extends BaseTripleADelegate {
   private boolean gameOver = false;
   private Collection<PlayerId> winners = new ArrayList<>();
@@ -57,8 +52,10 @@ public class EndRoundDelegate extends BaseTripleADelegate {
       if (pa != null && pa.getVps() >= 22) {
         victoryMessage = "Axis achieve VP victory";
         bridge.getHistoryWriter().startEvent(victoryMessage);
-        final Collection<PlayerId> winners = data.getAllianceTracker()
-            .getPlayersInAlliance(data.getAllianceTracker().getAlliancesPlayerIsIn(japanese).iterator().next());
+        final Collection<PlayerId> winners =
+            data.getAllianceTracker()
+                .getPlayersInAlliance(
+                    data.getAllianceTracker().getAlliancesPlayerIsIn(japanese).iterator().next());
         signalGameOver(victoryMessage, winners, bridge);
       }
     }
@@ -78,14 +75,16 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     if (isEconomicVictory()) { // Check for regular economic victory
       for (final String allianceName : data.getAllianceTracker().getAlliances()) {
         final int victoryAmount = getEconomicVictoryAmount(data, allianceName);
-        final Set<PlayerId> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
+        final Set<PlayerId> teamMembers =
+            data.getAllianceTracker().getPlayersInAlliance(allianceName);
         int teamProd = 0;
         for (final PlayerId player : teamMembers) {
           teamProd += getProduction(player);
           if (teamProd >= victoryAmount) {
             victoryMessage = allianceName + " achieve economic victory";
             bridge.getHistoryWriter().startEvent(victoryMessage);
-            final Collection<PlayerId> winners = data.getAllianceTracker().getPlayersInAlliance(allianceName);
+            final Collection<PlayerId> winners =
+                data.getAllianceTracker().getPlayersInAlliance(allianceName);
             // Added this to end the game on victory conditions
             signalGameOver(victoryMessage, winners, bridge);
           }
@@ -94,27 +93,33 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
     // now check for generic trigger based victories
     if (isTriggeredVictory()) {
-      // First set up a match for what we want to have fire as a default in this delegate. List out as a composite match
+      // First set up a match for what we want to have fire as a default in this delegate. List out
+      // as a composite match
       // OR.
-      // use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-      final Predicate<TriggerAttachment> endRoundDelegateTriggerMatch = AbstractTriggerAttachment.availableUses
-          .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
-          .and(TriggerAttachment.activateTriggerMatch().or(TriggerAttachment.victoryMatch()));
+      // use 'null, null' because this is the Default firing location for any trigger that does NOT
+      // have 'when' set.
+      final Predicate<TriggerAttachment> endRoundDelegateTriggerMatch =
+          AbstractTriggerAttachment.availableUses
+              .and(AbstractTriggerAttachment.whenOrDefaultMatch(null, null))
+              .and(TriggerAttachment.activateTriggerMatch().or(TriggerAttachment.victoryMatch()));
       // get all possible triggers based on this match.
-      final Set<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-          new HashSet<>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch);
+      final Set<TriggerAttachment> toFirePossible =
+          TriggerAttachment.collectForAllTriggersMatching(
+              new HashSet<>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch);
       if (!toFirePossible.isEmpty()) {
         // get all conditions possibly needed by these triggers, and then test them.
         final Map<ICondition, Boolean> testedConditions =
             TriggerAttachment.collectTestsForAllTriggers(toFirePossible, bridge);
         // get all triggers that are satisfied based on the tested conditions.
-        final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<>(
-            CollectionUtils.getMatches(toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
+        final Set<TriggerAttachment> toFireTestedAndSatisfied =
+            new HashSet<>(
+                CollectionUtils.getMatches(
+                    toFirePossible, AbstractTriggerAttachment.isSatisfiedMatch(testedConditions)));
         // now list out individual types to fire, once for each of the matches above.
-        final FireTriggerParams fireTriggerParams = new FireTriggerParams(
-            null, null, true, true, true, true);
-        TriggerAttachment.triggerActivateTriggerOther(testedConditions, toFireTestedAndSatisfied, bridge,
-            fireTriggerParams);
+        final FireTriggerParams fireTriggerParams =
+            new FireTriggerParams(null, null, true, true, true, true);
+        TriggerAttachment.triggerActivateTriggerOther(
+            testedConditions, toFireTestedAndSatisfied, bridge, fireTriggerParams);
         // will call
         TriggerAttachment.triggerVictory(toFireTestedAndSatisfied, bridge, fireTriggerParams);
         // signalGameOver itself
@@ -130,21 +135,35 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     final PlayerId british = playerList.getPlayerId(Constants.PLAYER_NAME_BRITISH);
     final PlayerId japanese = playerList.getPlayerId(Constants.PLAYER_NAME_JAPANESE);
     final PlayerId americans = playerList.getPlayerId(Constants.PLAYER_NAME_AMERICANS);
-    if (germans == null || russians == null || british == null || japanese == null || americans == null
+    if (germans == null
+        || russians == null
+        || british == null
+        || japanese == null
+        || americans == null
         || playerList.size() > 5) {
       return;
     }
     // Quick check to see who still owns their own capital
     final boolean russia =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(russians, data).getOwner().equals(russians);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(russians, data)
+            .getOwner()
+            .equals(russians);
     final boolean germany =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(germans, data).getOwner().equals(germans);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(germans, data)
+            .getOwner()
+            .equals(germans);
     final boolean britain =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data).getOwner().equals(british);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data)
+            .getOwner()
+            .equals(british);
     final boolean japan =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(japanese, data).getOwner().equals(japanese);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(japanese, data)
+            .getOwner()
+            .equals(japanese);
     final boolean america =
-        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(americans, data).getOwner().equals(americans);
+        TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(americans, data)
+            .getOwner()
+            .equals(americans);
     int count = 0;
     if (!russia) {
       count++;
@@ -206,14 +225,15 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     return false;
   }
 
-  private void checkVictoryCities(final IDelegateBridge bridge, final String victoryMessage,
-      final String victoryType) {
+  private void checkVictoryCities(
+      final IDelegateBridge bridge, final String victoryMessage, final String victoryType) {
     final GameData data = bridge.getData();
 
     final Collection<Territory> territories = data.getMap().getTerritories();
     for (final String allianceName : data.getAllianceTracker().getAlliances()) {
       final int vcAmount = getVcAmount(data, allianceName, victoryType);
-      final Set<PlayerId> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
+      final Set<PlayerId> teamMembers =
+          data.getAllianceTracker().getPlayersInAlliance(allianceName);
       int teamVCs = 0;
       for (final Territory t : territories) {
         if (Matches.isTerritoryOwnedBy(teamMembers).test(t)) {
@@ -224,10 +244,14 @@ public class EndRoundDelegate extends BaseTripleADelegate {
         }
       }
       if (teamVCs >= vcAmount) {
-        bridge.getHistoryWriter().startEvent(allianceName + victoryMessage + vcAmount + " Victory Cities!");
-        final Collection<PlayerId> winners = data.getAllianceTracker().getPlayersInAlliance(allianceName);
+        bridge
+            .getHistoryWriter()
+            .startEvent(allianceName + victoryMessage + vcAmount + " Victory Cities!");
+        final Collection<PlayerId> winners =
+            data.getAllianceTracker().getPlayersInAlliance(allianceName);
         // Added this to end the game on victory conditions
-        signalGameOver(allianceName + victoryMessage + vcAmount + " Victory Cities!", winners, bridge);
+        signalGameOver(
+            allianceName + victoryMessage + vcAmount + " Victory Cities!", winners, bridge);
       }
     }
   }
@@ -259,40 +283,58 @@ public class EndRoundDelegate extends BaseTripleADelegate {
    *
    * @param status the "game over" text to be displayed to each user.
    */
-  public void signalGameOver(final String status, final Collection<PlayerId> winners, final IDelegateBridge bridge) {
+  public void signalGameOver(
+      final String status, final Collection<PlayerId> winners, final IDelegateBridge bridge) {
     // TO NOT USE playerBridge, because it might be null here! use aBridge instead.
     // If the game is over, we need to be able to alert all UIs to that fact.
     // The display object can send a message to all UIs.
     if (!gameOver) {
       gameOver = true;
       this.winners = winners;
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_GAME_WON,
-          ((this.winners != null && !this.winners.isEmpty()) ? this.winners.iterator().next()
-              : PlayerId.NULL_PLAYERID));
-      // send a message to everyone's screen except the HOST (there is no 'current player' for the end round delegate)
-      final String title = "Victory Achieved"
-          + (winners.isEmpty() ? "" : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
+      bridge
+          .getSoundChannelBroadcaster()
+          .playSoundForAll(
+              SoundPath.CLIP_GAME_WON,
+              ((this.winners != null && !this.winners.isEmpty())
+                  ? this.winners.iterator().next()
+                  : PlayerId.NULL_PLAYERID));
+      // send a message to everyone's screen except the HOST (there is no 'current player' for the
+      // end round delegate)
+      final String title =
+          "Victory Achieved"
+              + (winners.isEmpty()
+                  ? ""
+                  : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
       // we send the bridge, because we can call this method from outside this delegate, which
       // means our local copy of playerBridge could be null.
-      getDisplay(bridge).reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
+      getDisplay(bridge)
+          .reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
       final boolean stopGame;
       if (HeadlessGameServer.headless()) {
-        // a terrible dirty hack, but I can't think of a better way to do it right now. If we are headless, end the
+        // a terrible dirty hack, but I can't think of a better way to do it right now. If we are
+        // headless, end the
         // game.
         stopGame = true;
       } else {
         // now tell the HOST, and see if they want to continue the game.
         String displayMessage = LocalizeHtml.localizeImgLinksInHtml(status);
         if (displayMessage.endsWith("</body>")) {
-          displayMessage = displayMessage.substring(0, displayMessage.length() - "</body>".length())
-              + "</br><p>Do you want to continue?</p></body>";
+          displayMessage =
+              displayMessage.substring(0, displayMessage.length() - "</body>".length())
+                  + "</br><p>Do you want to continue?</p></body>";
         } else {
           displayMessage = displayMessage + "</br><p>Do you want to continue?</p>";
         }
-        // this is currently the ONLY instance of JOptionPane that is allowed outside of the UI classes. maybe there is
+        // this is currently the ONLY instance of JOptionPane that is allowed outside of the UI
+        // classes. maybe there is
         // a better way?
-        stopGame = JOptionPane.OK_OPTION != EventThreadJOptionPane.showConfirmDialog(null,
-            "<html>" + displayMessage + "</html>", "Continue Game?  (" + title + ")", JOptionPane.YES_NO_OPTION);
+        stopGame =
+            JOptionPane.OK_OPTION
+                != EventThreadJOptionPane.showConfirmDialog(
+                    null,
+                    "<html>" + displayMessage + "</html>",
+                    "Continue Game?  (" + title + ")",
+                    JOptionPane.YES_NO_OPTION);
       }
       if (stopGame) {
         bridge.stopGameSequence();
@@ -300,9 +342,7 @@ public class EndRoundDelegate extends BaseTripleADelegate {
     }
   }
 
-  /**
-   * if null, the game is not over yet.
-   */
+  /** if null, the game is not over yet. */
   public Collection<PlayerId> getWinners() {
     if (!gameOver) {
       return null;

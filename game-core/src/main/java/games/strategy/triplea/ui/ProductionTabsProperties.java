@@ -1,5 +1,8 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.PlayerId;
+import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.ui.ProductionPanel.Rule;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -9,14 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Level;
-
+import lombok.extern.java.Log;
 import org.triplea.java.UrlStreams;
 import org.triplea.util.Tuple;
-
-import games.strategy.engine.data.PlayerId;
-import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ui.ProductionPanel.Rule;
-import lombok.extern.java.Log;
 
 @Log
 class ProductionTabsProperties {
@@ -34,10 +32,12 @@ class ProductionTabsProperties {
   // production_tabs.tab_units.1=Infantry:Panzer:Transport
   // production_tabs.tab_units.2=Artillery:Fighter:Bomber
   private static final String TAB_UNITS = "production_tabs.tab_units";
-  // The number of rows of units to be used in the panel if rows or columns are "0" the system will calculate based on
+  // The number of rows of units to be used in the panel if rows or columns are "0" the system will
+  // calculate based on
   // max units
   private static final String NUMBER_OF_ROWS = "production_tabs.rows";
-  // The number of columns of units to be used in the panel if rows or columns are "0" the system will calculate based
+  // The number of columns of units to be used in the panel if rows or columns are "0" the system
+  // will calculate based
   // on max units
   private static final String NUMBER_OF_COLUMNS = "production_tabs.columns";
   private final Properties properties = new Properties();
@@ -77,10 +77,12 @@ class ProductionTabsProperties {
     final int numberOfTabs = getNumberOfTabs();
     for (int i = 1; i <= numberOfTabs; i++) {
       final String tabName = properties.getProperty(TAB_NAME + "." + i);
-      final List<String> tabValues = Arrays.asList(properties.getProperty(TAB_UNITS + "." + i).split(":"));
+      final List<String> tabValues =
+          Arrays.asList(properties.getProperty(TAB_UNITS + "." + i).split(":"));
       final List<Rule> ruleList = new ArrayList<>();
       for (final Rule rule : rules) {
-        if (tabValues.contains(rule.getProductionRule().getResults().keySet().iterator().next().getName())) {
+        if (tabValues.contains(
+            rule.getProductionRule().getResults().keySet().iterator().next().getName())) {
           ruleList.add(rule);
         }
       }

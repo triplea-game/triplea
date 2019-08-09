@@ -3,9 +3,7 @@ package org.triplea.swing;
 import static org.mockito.Mockito.verify;
 
 import java.beans.PropertyChangeEvent;
-
 import javax.swing.SwingWorker;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,8 +15,7 @@ final class SwingWorkerCompletionWaiterTest {
 
   private SwingWorkerCompletionWaiter waiter;
 
-  @Mock
-  private SwingWorkerCompletionWaiter.ProgressWindow progressWindow;
+  @Mock private SwingWorkerCompletionWaiter.ProgressWindow progressWindow;
 
   @BeforeEach
   void setUp() {
@@ -41,7 +38,10 @@ final class SwingWorkerCompletionWaiterTest {
 
   private static PropertyChangeEvent newSwingWorkerStateEvent(
       final SwingWorker.StateValue stateValue) {
-    return new PropertyChangeEvent(new Object(), SwingWorkerCompletionWaiter.SWING_WORKER_STATE_PROPERTY_NAME, null,
+    return new PropertyChangeEvent(
+        new Object(),
+        SwingWorkerCompletionWaiter.SWING_WORKER_STATE_PROPERTY_NAME,
+        null,
         stateValue);
   }
 }

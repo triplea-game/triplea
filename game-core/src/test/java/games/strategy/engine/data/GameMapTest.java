@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.util.Collections;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +18,8 @@ final class GameMapTest {
       final Territory start = new Territory("territory", gameData);
       final Territory end = new Territory("territory", gameData);
 
-      assertThat(gameMap.getCompositeRoute(start, end, Collections.emptyMap()), is(new Route(start)));
+      assertThat(
+          gameMap.getCompositeRoute(start, end, Collections.emptyMap()), is(new Route(start)));
     }
   }
 

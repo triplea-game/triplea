@@ -1,7 +1,6 @@
 package org.triplea.http.client.error.report;
 
 import com.google.common.base.Ascii;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

@@ -1,28 +1,27 @@
 package games.strategy.net.nio;
 
+import games.strategy.net.IConnectionLogin;
+import games.strategy.net.MessageHeader;
+import games.strategy.net.Node;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
-
+import lombok.Getter;
+import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.DialogBuilder;
 
-import games.strategy.net.IConnectionLogin;
-import games.strategy.net.MessageHeader;
-import games.strategy.net.Node;
-import lombok.Getter;
-import lombok.extern.java.Log;
-
-/**
- * Client-side implementation of {@link QuarantineConversation}.
- */
+/** Client-side implementation of {@link QuarantineConversation}. */
 @Log
 public class ClientQuarantineConversation extends QuarantineConversation {
   private enum Step {
-    READ_CHALLENGE, READ_ERROR, READ_NAMES, READ_ADDRESS
+    READ_CHALLENGE,
+    READ_ERROR,
+    READ_NAMES,
+    READ_ADDRESS
   }
 
   private final IConnectionLogin login;
@@ -31,19 +30,14 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   private final CountDownLatch showLatch = new CountDownLatch(1);
   private final CountDownLatch doneShowLatch = new CountDownLatch(1);
   private Step step = Step.READ_CHALLENGE;
-  @Getter
-  private String localName;
-  @Getter
-  private String serverName;
-  @Getter
-  private InetSocketAddress networkVisibleAddress;
-  @Getter
-  private InetSocketAddress serverLocalAddress;
+  @Getter private String localName;
+  @Getter private String serverName;
+  @Getter private InetSocketAddress networkVisibleAddress;
+  @Getter private InetSocketAddress serverLocalAddress;
   private Map<String, String> challengeProperties;
   private Map<String, String> challengeResponse;
   private volatile boolean isClosed = false;
-  @Getter
-  private volatile String errorMessage;
+  @Getter private volatile String errorMessage;
 
   public ClientQuarantineConversation(
       final IConnectionLogin login,
@@ -61,12 +55,12 @@ public class ClientQuarantineConversation extends QuarantineConversation {
     send(mac);
   }
 
-  /**
-   * Prompts the user to enter their credentials.
-   */
+  /** Prompts the user to enter their credentials. */
   public void showCredentials() {
-    // We need to do this in the thread that created the socket, since the thread that creates the socket will often be,
-    // or will block the swing event thread, but the getting of a username/password must be done in the swing event
+    // We need to do this in the thread that created the socket, since the thread that creates the
+    // socket will often be,
+    // or will block the swing event thread, but the getting of a username/password must be done in
+    // the swing event
     // thread. So we have complex code to switch back and forth.
     Interruptibles.await(showLatch);
 
@@ -121,14 +115,18 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           // We warn the user here to let them know explicitly so it does not look like
           // a silent error.
           if (!assignedName.startsWith(localName)) {
-            new Thread(() -> DialogBuilder.builder()
-                .parent(null)
-                .title("Already Logged In")
-                .infoMessage(
-                    "<html>Already logged in with another name, cannot use a different name.<br/>"
-                        + "Logging in as: " + assignedName)
-                .showDialog())
-                    .start();
+            new Thread(
+                    () ->
+                        DialogBuilder.builder()
+                            .parent(null)
+                            .title("Already Logged In")
+                            .infoMessage(
+                                "<html>Already logged in with another name, "
+                                    + "cannot use a different name.<br/>"
+                                    + "Logging in as: "
+                                    + assignedName)
+                            .showDialog())
+                .start();
           }
           localName = strings[0];
           serverName = strings[1];

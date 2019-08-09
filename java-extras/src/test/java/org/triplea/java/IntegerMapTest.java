@@ -8,16 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-import org.triplea.java.collections.IntegerMap;
-
-import com.google.common.collect.ImmutableMap;
-
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.junit.jupiter.api.Test;
+import org.triplea.java.collections.IntegerMap;
 
 class IntegerMapTest {
   private final Object k1 = new Object();
@@ -38,11 +35,10 @@ class IntegerMapTest {
 
   @Test
   void shouldBeEquatableAndHashable() {
-    EqualsVerifier.forClass(IntegerMap.class)
-        .suppress(Warning.NULL_FIELDS)
-        .verify();
+    EqualsVerifier.forClass(IntegerMap.class).suppress(Warning.NULL_FIELDS).verify();
 
-    // We need to explicitly test this case because EqualsVerifier's internal prefab values for LinkedHashMap use the
+    // We need to explicitly test this case because EqualsVerifier's internal prefab values for
+    // LinkedHashMap use the
     // same value for all key/value pairs
     assertThat(
         "should not be equal when keys are equal but values are not equal",

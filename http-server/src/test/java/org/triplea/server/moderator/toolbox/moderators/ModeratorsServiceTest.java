@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,20 +26,13 @@ class ModeratorsServiceTest {
   private static final int MODERATOR_ID = 555;
   private static final String USERNAME = "The reef grows amnesty like a golden lass.";
 
-  @Mock
-  private ModeratorsDao moderatorsDao;
-  @Mock
-  private UserLookupDao userLookupDao;
-  @Mock
-  private ModeratorApiKeyDao moderatorApiKeyDao;
-  @Mock
-  private ModeratorSingleUseKeyDao moderatorSingleUseKeyDao;
-  @Mock
-  private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
+  @Mock private ModeratorsDao moderatorsDao;
+  @Mock private UserLookupDao userLookupDao;
+  @Mock private ModeratorApiKeyDao moderatorApiKeyDao;
+  @Mock private ModeratorSingleUseKeyDao moderatorSingleUseKeyDao;
+  @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
-  @InjectMocks
-  private ModeratorsService moderatorsService;
-
+  @InjectMocks private ModeratorsService moderatorsService;
 
   @Nested
   final class AddModeratorTest {
@@ -68,11 +60,13 @@ class ModeratorsServiceTest {
 
       moderatorsService.addModerator(MODERATOR_ID, USERNAME);
 
-      verify(moderatorAuditHistoryDao).addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
-          .moderatorUserId(MODERATOR_ID)
-          .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_MODERATOR)
-          .actionTarget(USERNAME)
-          .build());
+      verify(moderatorAuditHistoryDao)
+          .addAuditRecord(
+              ModeratorAuditHistoryDao.AuditArgs.builder()
+                  .moderatorUserId(MODERATOR_ID)
+                  .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_MODERATOR)
+                  .actionTarget(USERNAME)
+                  .build());
     }
   }
 
@@ -103,11 +97,13 @@ class ModeratorsServiceTest {
 
       verify(moderatorApiKeyDao).deleteKeysByUserId(USER_ID);
       verify(moderatorSingleUseKeyDao).deleteKeysByUserId(USER_ID);
-      verify(moderatorAuditHistoryDao).addAuditRecord(ModeratorAuditHistoryDao.AuditArgs.builder()
-          .moderatorUserId(MODERATOR_ID)
-          .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_MODERATOR)
-          .actionTarget(MODERATOR_NAME)
-          .build());
+      verify(moderatorAuditHistoryDao)
+          .addAuditRecord(
+              ModeratorAuditHistoryDao.AuditArgs.builder()
+                  .moderatorUserId(MODERATOR_ID)
+                  .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_MODERATOR)
+                  .actionTarget(MODERATOR_NAME)
+                  .build());
     }
   }
 
@@ -126,8 +122,7 @@ class ModeratorsServiceTest {
       when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
       when(moderatorsDao.addSuperMod(USER_ID)).thenReturn(0);
       assertThrows(
-          IllegalStateException.class,
-          () -> moderatorsService.addSuperMod(MODERATOR_ID, USERNAME));
+          IllegalStateException.class, () -> moderatorsService.addSuperMod(MODERATOR_ID, USERNAME));
     }
 
     @Test
@@ -136,12 +131,13 @@ class ModeratorsServiceTest {
       when(moderatorsDao.addSuperMod(USER_ID)).thenReturn(1);
       moderatorsService.addSuperMod(MODERATOR_ID, USERNAME);
 
-      verify(moderatorAuditHistoryDao).addAuditRecord(
-          ModeratorAuditHistoryDao.AuditArgs.builder()
-              .moderatorUserId(MODERATOR_ID)
-              .actionName(ModeratorAuditHistoryDao.AuditAction.ADD_SUPER_MOD)
-              .actionTarget(USERNAME)
-              .build());
+      verify(moderatorAuditHistoryDao)
+          .addAuditRecord(
+              ModeratorAuditHistoryDao.AuditArgs.builder()
+                  .moderatorUserId(MODERATOR_ID)
+                  .actionName(ModeratorAuditHistoryDao.AuditAction.ADD_SUPER_MOD)
+                  .actionTarget(USERNAME)
+                  .build());
     }
   }
 

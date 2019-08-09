@@ -1,27 +1,7 @@
 package games.strategy.triplea.attachments;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import org.triplea.java.collections.CollectionUtils;
-import org.triplea.java.collections.IntegerMap;
-import org.triplea.util.Tuple;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
-
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.DefaultNamed;
@@ -40,10 +20,25 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.formatter.MyFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.java.collections.IntegerMap;
+import org.triplea.util.Tuple;
 
-/**
- * Despite the misleading name, this attaches not to individual Units but to UnitTypes.
- */
+/** Despite the misleading name, this attaches not to individual Units but to UnitTypes. */
 public class UnitAttachment extends DefaultAttachment {
   public static final String UNITSMAYNOTLANDONCARRIER = "unitsMayNotLandOnCarrier";
   public static final String UNITSMAYNOTLEAVEALLIEDCARRIER = "unitsMayNotLeaveAlliedCarrier";
@@ -105,7 +100,8 @@ public class UnitAttachment extends DefaultAttachment {
   private boolean isLandTransportable = false;
 
   // aa related
-  // "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa related setters. Must
+  // "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa
+  // related setters. Must
   // keep.
   private boolean isAaForCombatOnly = false;
   private boolean isAaForBombingThisUnitOnly = false;
@@ -146,7 +142,8 @@ public class UnitAttachment extends DefaultAttachment {
   // production related
   // this has been split into canProduceUnits, isConstruction, canBeDamaged, and isInfrastructure
   private boolean canProduceUnits = false;
-  // -1 means either it can't produce any, or it produces at the value of the territory it is located in
+  // -1 means either it can't produce any, or it produces at the value of the territory it is
+  // located in
   private int canProduceXUnits = -1;
   private IntegerMap<UnitType> createsUnitsList = new IntegerMap<>();
   private IntegerMap<Resource> createsResourcesList = new IntegerMap<>();
@@ -154,7 +151,8 @@ public class UnitAttachment extends DefaultAttachment {
   // damage related
   private int hitPoints = 1;
   private boolean canBeDamaged = false;
-  // this is bombing damage, not hitpoints. default of 2 means that factories will take 2x the territory value
+  // this is bombing damage, not hitpoints. default of 2 means that factories will take 2x the
+  // territory value
   // they are in, of damage.
   private int maxDamage = 2;
   // -1 if can't be disabled
@@ -171,7 +169,8 @@ public class UnitAttachment extends DefaultAttachment {
   private int maxConstructionsPerTypePerTerr = -1;
   // -1 means anywhere
   private int canOnlyBePlacedInTerritoryValuedAtX = -1;
-  // multiple colon delimited lists of the unit combos required for this unit to be built somewhere. (units must be in
+  // multiple colon delimited lists of the unit combos required for this unit to be built somewhere.
+  // (units must be in
   // same territory, owned by player, not be disabled)
   private List<String[]> requiresUnits = new ArrayList<>();
   private IntegerMap<UnitType> consumesUnits = new IntegerMap<>();
@@ -203,17 +202,22 @@ public class UnitAttachment extends DefaultAttachment {
   private IntegerMap<UnitType> repairsUnits = new IntegerMap<>();
   private IntegerMap<UnitType> givesMovement = new IntegerMap<>();
   private List<Tuple<String, PlayerId>> destroyedWhenCapturedBy = new ArrayList<>();
-  // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create destroyedWhenCapturedBy with a
+  // also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create
+  // destroyedWhenCapturedBy with a
   // specific list
   private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsDamagedChangesInto = new HashMap<>();
   private Map<Integer, Tuple<Boolean, UnitType>> whenHitPointsRepairedChangesInto = new HashMap<>();
-  private Map<String, Tuple<String, IntegerMap<UnitType>>> whenCapturedChangesInto = new LinkedHashMap<>();
+  private Map<String, Tuple<String, IntegerMap<UnitType>>> whenCapturedChangesInto =
+      new LinkedHashMap<>();
   private int whenCapturedSustainsDamage = 0;
   private List<PlayerId> canBeCapturedOnEnteringBy = new ArrayList<>();
   private List<PlayerId> canBeGivenByTerritoryTo = new ArrayList<>();
-  // a set of information for dealing with special abilities or loss of abilities when a unit takes x-y amount of damage
-  private List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamaged = new ArrayList<>();
-  // a kind of support attachment for giving actual unit attachment abilities or other to a unit, when in the
+  // a set of information for dealing with special abilities or loss of abilities when a unit takes
+  // x-y amount of damage
+  private List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamaged =
+      new ArrayList<>();
+  // a kind of support attachment for giving actual unit attachment abilities or other to a unit,
+  // when in the
   // precense or on the same route with another unit
   private List<String> receivesAbilityWhenWith = new ArrayList<>();
   // currently used for: placement in original territories only
@@ -320,8 +324,13 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAirDefense(final PlayerId player) {
-    return (Math.min(getData().getDiceSides(), Math.max(0,
-        airDefense + TechAbilityAttachment.getAirDefenseBonus((UnitType) this.getAttachedTo(), player, getData()))));
+    return (Math.min(
+        getData().getDiceSides(),
+        Math.max(
+            0,
+            airDefense
+                + TechAbilityAttachment.getAirDefenseBonus(
+                    (UnitType) this.getAttachedTo(), player, getData()))));
   }
 
   private void resetAirDefense() {
@@ -341,8 +350,13 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAirAttack(final PlayerId player) {
-    return (Math.min(getData().getDiceSides(), Math.max(0,
-        airAttack + TechAbilityAttachment.getAirAttackBonus((UnitType) this.getAttachedTo(), player, getData()))));
+    return (Math.min(
+        getData().getDiceSides(),
+        Math.max(
+            0,
+            airAttack
+                + TechAbilityAttachment.getAirAttackBonus(
+                    (UnitType) this.getAttachedTo(), player, getData()))));
   }
 
   private void resetAirAttack() {
@@ -435,16 +449,19 @@ public class UnitAttachment extends DefaultAttachment {
     final String[] s = splitOnColon(value);
     if (s.length != 3) {
       throw new GameParseException(
-          "setWhenHitPointsDamagedChangesInto must have damage:translateAttributes:unitType " + thisErrorMsg());
+          "setWhenHitPointsDamagedChangesInto must have damage:translateAttributes:unitType "
+              + thisErrorMsg());
     }
     final UnitType unitType = getData().getUnitTypeList().getUnitType(s[2]);
     if (unitType == null) {
-      throw new GameParseException("setWhenHitPointsDamagedChangesInto: No unit type: " + s[2] + thisErrorMsg());
+      throw new GameParseException(
+          "setWhenHitPointsDamagedChangesInto: No unit type: " + s[2] + thisErrorMsg());
     }
     whenHitPointsDamagedChangesInto.put(getInt(s[0]), Tuple.of(getBool(s[1]), unitType));
   }
 
-  private void setWhenHitPointsDamagedChangesInto(final Map<Integer, Tuple<Boolean, UnitType>> value) {
+  private void setWhenHitPointsDamagedChangesInto(
+      final Map<Integer, Tuple<Boolean, UnitType>> value) {
     whenHitPointsDamagedChangesInto = value;
   }
 
@@ -460,16 +477,19 @@ public class UnitAttachment extends DefaultAttachment {
     final String[] s = splitOnColon(value);
     if (s.length != 3) {
       throw new GameParseException(
-          "setWhenHitPointsRepairedChangesInto must have damage:translateAttributes:unitType " + thisErrorMsg());
+          "setWhenHitPointsRepairedChangesInto must have damage:translateAttributes:unitType "
+              + thisErrorMsg());
     }
     final UnitType unitType = getData().getUnitTypeList().getUnitType(s[2]);
     if (unitType == null) {
-      throw new GameParseException("setWhenHitPointsRepairedChangesInto: No unit type: " + s[2] + thisErrorMsg());
+      throw new GameParseException(
+          "setWhenHitPointsRepairedChangesInto: No unit type: " + s[2] + thisErrorMsg());
     }
     whenHitPointsRepairedChangesInto.put(getInt(s[0]), Tuple.of(getBool(s[1]), unitType));
   }
 
-  private void setWhenHitPointsRepairedChangesInto(final Map<Integer, Tuple<Boolean, UnitType>> value) {
+  private void setWhenHitPointsRepairedChangesInto(
+      final Map<Integer, Tuple<Boolean, UnitType>> value) {
     whenHitPointsRepairedChangesInto = value;
   }
 
@@ -485,31 +505,37 @@ public class UnitAttachment extends DefaultAttachment {
   void setWhenCapturedChangesInto(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length < 5 || s.length % 2 == 0) {
-      throw new GameParseException("whenCapturedChangesInto must have 5 or more values, "
-          + "playerFrom:playerTo:keepAttributes:unitType:howMany "
-          + "(you may have additional unitType:howMany:unitType:howMany, etc" + thisErrorMsg());
+      throw new GameParseException(
+          "whenCapturedChangesInto must have 5 or more values, "
+              + "playerFrom:playerTo:keepAttributes:unitType:howMany "
+              + "(you may have additional unitType:howMany:unitType:howMany, etc"
+              + thisErrorMsg());
     }
     final PlayerId pfrom = getData().getPlayerList().getPlayerId(s[0]);
     if (pfrom == null && !s[0].equals("any")) {
-      throw new GameParseException("whenCapturedChangesInto: No player named: " + s[0] + thisErrorMsg());
+      throw new GameParseException(
+          "whenCapturedChangesInto: No player named: " + s[0] + thisErrorMsg());
     }
     final PlayerId pto = getData().getPlayerList().getPlayerId(s[1]);
     if (pto == null && !s[1].equals("any")) {
-      throw new GameParseException("whenCapturedChangesInto: No player named: " + s[1] + thisErrorMsg());
+      throw new GameParseException(
+          "whenCapturedChangesInto: No player named: " + s[1] + thisErrorMsg());
     }
     getBool(s[2]);
     final IntegerMap<UnitType> unitsToMake = new IntegerMap<>();
     for (int i = 3; i < s.length; i += 2) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
       if (ut == null) {
-        throw new GameParseException("whenCapturedChangesInto: No unit named: " + s[i] + thisErrorMsg());
+        throw new GameParseException(
+            "whenCapturedChangesInto: No unit named: " + s[i] + thisErrorMsg());
       }
       unitsToMake.put(ut, getInt(s[i + 1]));
     }
     whenCapturedChangesInto.put(s[0] + ":" + s[1], Tuple.of(s[2], unitsToMake));
   }
 
-  private void setWhenCapturedChangesInto(final Map<String, Tuple<String, IntegerMap<UnitType>>> value) {
+  private void setWhenCapturedChangesInto(
+      final Map<String, Tuple<String, IntegerMap<UnitType>>> value) {
     whenCapturedChangesInto = value;
   }
 
@@ -530,7 +556,8 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   private void setDestroyedWhenCapturedBy(final String initialValue) throws GameParseException {
-    // We can prefix this value with "BY" or "FROM" to change the setting. If no setting, default to "BY" since this
+    // We can prefix this value with "BY" or "FROM" to change the setting. If no setting, default to
+    // "BY" since this
     // this is called by destroyedWhenCapturedBy
     String value = initialValue;
     String byOrFrom = "BY";
@@ -585,8 +612,11 @@ public class UnitAttachment extends DefaultAttachment {
 
   public boolean getCanBlitz(final PlayerId player) {
     return canBlitz
-        || TechAbilityAttachment.getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BLITZ,
-            (UnitType) this.getAttachedTo(), player, getData());
+        || TechAbilityAttachment.getUnitAbilitiesGained(
+            TechAbilityAttachment.ABILITY_CAN_BLITZ,
+            (UnitType) this.getAttachedTo(),
+            player,
+            getData());
   }
 
   private void resetCanBlitz() {
@@ -660,8 +690,10 @@ public class UnitAttachment extends DefaultAttachment {
 
   public Set<UnitType> getCanNotTarget() {
     if (canNotTarget == null) {
-      canNotTarget = new HashSet<>(
-          CollectionUtils.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
+      canNotTarget =
+          new HashSet<>(
+              CollectionUtils.getMatches(
+                  getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
     }
     return canNotTarget;
   }
@@ -675,7 +707,8 @@ public class UnitAttachment extends DefaultAttachment {
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
-        throw new GameParseException("canNotBeTargetedBy: no such unit type: " + u + thisErrorMsg());
+        throw new GameParseException(
+            "canNotBeTargetedBy: no such unit type: " + u + thisErrorMsg());
       }
       canNotBeTargetedBy.add(ut);
     }
@@ -687,8 +720,10 @@ public class UnitAttachment extends DefaultAttachment {
 
   public Set<UnitType> getCanNotBeTargetedBy() {
     if (canNotBeTargetedBy == null) {
-      canNotBeTargetedBy = new HashSet<>(
-          CollectionUtils.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
+      canNotBeTargetedBy =
+          new HashSet<>(
+              CollectionUtils.getMatches(
+                  getData().getUnitTypeList().getAllUnitTypes(), Matches.unitTypeIsAir()));
     }
     return canNotBeTargetedBy;
   }
@@ -759,8 +794,11 @@ public class UnitAttachment extends DefaultAttachment {
 
   public boolean getCanBombard(final PlayerId player) {
     return canBombard
-        || TechAbilityAttachment.getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BOMBARD,
-            (UnitType) this.getAttachedTo(), player, getData());
+        || TechAbilityAttachment.getUnitAbilitiesGained(
+            TechAbilityAttachment.ABILITY_CAN_BOMBARD,
+            (UnitType) this.getAttachedTo(),
+            player,
+            getData());
   }
 
   private void resetCanBombard() {
@@ -874,9 +912,8 @@ public class UnitAttachment extends DefaultAttachment {
       return;
     }
     final Collection<Territory> restrictedTerritories = getListedTerritories(splitOnColon(value));
-    unitPlacementRestrictions = restrictedTerritories.stream()
-        .map(Territory::getName)
-        .toArray(String[]::new);
+    unitPlacementRestrictions =
+        restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
   }
 
   private void setUnitPlacementRestrictions(final String[] value) {
@@ -895,11 +932,11 @@ public class UnitAttachment extends DefaultAttachment {
   // we might as well just use unitPlacementRestrictions
   private void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException {
     final Collection<Territory> allowedTerritories = getListedTerritories(splitOnColon(value));
-    final Collection<Territory> restrictedTerritories = new HashSet<>(getData().getMap().getTerritories());
+    final Collection<Territory> restrictedTerritories =
+        new HashSet<>(getData().getMap().getTerritories());
     restrictedTerritories.removeAll(allowedTerritories);
-    unitPlacementRestrictions = restrictedTerritories.stream()
-        .map(Territory::getName)
-        .toArray(String[]::new);
+    unitPlacementRestrictions =
+        restrictedTerritories.stream().map(Territory::getName).toArray(String[]::new);
   }
 
   private void setRepairsUnits(final String value) throws GameParseException {
@@ -1014,7 +1051,8 @@ public class UnitAttachment extends DefaultAttachment {
   private void setRequiresUnitsToMove(final String value) throws GameParseException {
     final String[] array = splitOnColon(value);
     if (array.length == 0) {
-      throw new GameParseException("requiresUnitsToMove must have at least 1 unit type" + thisErrorMsg());
+      throw new GameParseException(
+          "requiresUnitsToMove must have at least 1 unit type" + thisErrorMsg());
     }
     for (final String s : array) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(s);
@@ -1041,14 +1079,17 @@ public class UnitAttachment extends DefaultAttachment {
     final String[] s = splitOnColon(value);
     if (!(s.length == 3 || s.length == 4)) {
       throw new GameParseException(
-          "whenCombatDamaged must have 3 or 4 parts: value=effect:optionalNumber, count=integer:integer"
+          "whenCombatDamaged must have 3 or 4 parts: "
+              + "value=effect:optionalNumber, count=integer:integer"
               + thisErrorMsg());
     }
     final int from = getInt(s[0]);
     final int to = getInt(s[1]);
     if (from < 0 || to < 0 || to < from) {
-      throw new GameParseException("whenCombatDamaged damaged integers must be positive, and the second integer must "
-          + "be equal to or greater than the first" + thisErrorMsg());
+      throw new GameParseException(
+          "whenCombatDamaged damaged integers must be positive, and the second integer must "
+              + "be equal to or greater than the first"
+              + thisErrorMsg());
     }
     final Tuple<Integer, Integer> fromTo = Tuple.of(from, to);
     final Tuple<String, String> effectNum;
@@ -1060,7 +1101,8 @@ public class UnitAttachment extends DefaultAttachment {
     whenCombatDamaged.add(Tuple.of(fromTo, effectNum));
   }
 
-  private void setWhenCombatDamaged(final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> value) {
+  private void setWhenCombatDamaged(
+      final List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> value) {
     whenCombatDamaged = value;
   }
 
@@ -1088,11 +1130,12 @@ public class UnitAttachment extends DefaultAttachment {
     receivesAbilityWhenWith = new ArrayList<>();
   }
 
-  private static IntegerMap<Tuple<String, String>> getReceivesAbilityWhenWithMap(final Collection<Unit> units,
-      final String filterForAbility, final GameData data) {
+  private static IntegerMap<Tuple<String, String>> getReceivesAbilityWhenWithMap(
+      final Collection<Unit> units, final String filterForAbility, final GameData data) {
     final IntegerMap<Tuple<String, String>> map = new IntegerMap<>();
     final Collection<UnitType> canReceive =
-        getUnitTypesFromUnitList(CollectionUtils.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
+        getUnitTypesFromUnitList(
+            CollectionUtils.getMatches(units, Matches.unitCanReceiveAbilityWhenWith()));
     for (final UnitType ut : canReceive) {
       final Collection<String> receives = UnitAttachment.get(ut).getReceivesAbilityWhenWith();
       for (final String receive : receives) {
@@ -1100,19 +1143,21 @@ public class UnitAttachment extends DefaultAttachment {
         if (filterForAbility != null && !filterForAbility.equals(s[0])) {
           continue;
         }
-        map.put(Tuple.of(s[0], s[1]),
-            CollectionUtils.countMatches(units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
+        map.put(
+            Tuple.of(s[0], s[1]),
+            CollectionUtils.countMatches(
+                units, Matches.unitIsOfType(data.getUnitTypeList().getUnitType(s[1]))));
       }
     }
     return map;
   }
 
   /**
-   * Returns the subset of {@code units} that will receive the ability {@code filterForAbility} when they are with,
-   * or on the same route as, another unit.
+   * Returns the subset of {@code units} that will receive the ability {@code filterForAbility} when
+   * they are with, or on the same route as, another unit.
    */
-  public static Collection<Unit> getUnitsWhichReceivesAbilityWhenWith(final Collection<Unit> units,
-      final String filterForAbility, final GameData data) {
+  public static Collection<Unit> getUnitsWhichReceivesAbilityWhenWith(
+      final Collection<Unit> units, final String filterForAbility, final GameData data) {
     if (units.stream().noneMatch(Matches.unitCanReceiveAbilityWhenWith())) {
       return new ArrayList<>();
     }
@@ -1121,8 +1166,11 @@ public class UnitAttachment extends DefaultAttachment {
     final IntegerMap<Tuple<String, String>> whichGive =
         getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
     for (final Tuple<String, String> abilityUnitType : whichGive.keySet()) {
-      final Collection<Unit> receives = CollectionUtils.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType),
-          Matches.unitCanReceiveAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
+      final Collection<Unit> receives =
+          CollectionUtils.getNMatches(
+              unitsCopy,
+              whichGive.getInt(abilityUnitType),
+              Matches.unitCanReceiveAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
       whichReceiveNoDuplicates.addAll(receives);
       unitsCopy.removeAll(receives);
     }
@@ -1347,7 +1395,8 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void resetArtillery() {
     throw new IllegalStateException(
-        "Resetting Artillery (UnitAttachment) is not allowed, please use Support Attachments instead.");
+        "Resetting Artillery (UnitAttachment) is not allowed, "
+            + "please use Support Attachments instead.");
   }
 
   private void setArtillerySupportable(final String s) throws GameParseException {
@@ -1370,7 +1419,8 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void resetArtillerySupportable() {
     throw new IllegalStateException(
-        "Resetting Artillery Supportable (UnitAttachment) is not allowed, please use Support Attachments instead.");
+        "Resetting Artillery Supportable (UnitAttachment) is not allowed, "
+            + "please use Support Attachments instead.");
   }
 
   public void setUnitSupportCount(final String s) {
@@ -1389,7 +1439,8 @@ public class UnitAttachment extends DefaultAttachment {
 
   private void resetUnitSupportCount() {
     throw new IllegalStateException(
-        "Resetting Artillery Support Count (UnitAttachment) is not allowed, please use Support Attachments instead.");
+        "Resetting Artillery Support Count (UnitAttachment) is not allowed, "
+            + "please use Support Attachments instead.");
   }
 
   @VisibleForTesting
@@ -1414,8 +1465,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getMovement(final PlayerId player) {
-    return Math.max(0,
-        movement + TechAbilityAttachment.getMovementBonus((UnitType) this.getAttachedTo(), player, getData()));
+    return Math.max(
+        0,
+        movement
+            + TechAbilityAttachment.getMovementBonus(
+                (UnitType) this.getAttachedTo(), player, getData()));
   }
 
   private void resetMovement() {
@@ -1436,7 +1490,9 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getAttack(final PlayerId player) {
     final int attackValue =
-        attack + TechAbilityAttachment.getAttackBonus((UnitType) this.getAttachedTo(), player, getData());
+        attack
+            + TechAbilityAttachment.getAttackBonus(
+                (UnitType) this.getAttachedTo(), player, getData());
     return Math.min(getData().getDiceSides(), Math.max(0, attackValue));
   }
 
@@ -1457,8 +1513,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAttackRolls(final PlayerId player) {
-    return Math.max(0,
-        attackRolls + TechAbilityAttachment.getAttackRollsBonus((UnitType) this.getAttachedTo(), player, getData()));
+    return Math.max(
+        0,
+        attackRolls
+            + TechAbilityAttachment.getAttackRollsBonus(
+                (UnitType) this.getAttachedTo(), player, getData()));
   }
 
   private void resetAttackRolls() {
@@ -1479,7 +1538,9 @@ public class UnitAttachment extends DefaultAttachment {
 
   public int getDefense(final PlayerId player) {
     int defenseValue =
-        defense + TechAbilityAttachment.getDefenseBonus((UnitType) this.getAttachedTo(), player, getData());
+        defense
+            + TechAbilityAttachment.getDefenseBonus(
+                (UnitType) this.getAttachedTo(), player, getData());
     if (defenseValue > 0 && isFirstStrike && TechTracker.hasSuperSubs(player)) {
       final int bonus = Properties.getSuperSubDefenseBonus(getData());
       defenseValue += bonus;
@@ -1504,8 +1565,11 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getDefenseRolls(final PlayerId player) {
-    return Math.max(0, defenseRolls
-        + TechAbilityAttachment.getDefenseRollsBonus((UnitType) this.getAttachedTo(), player, getData()));
+    return Math.max(
+        0,
+        defenseRolls
+            + TechAbilityAttachment.getDefenseRollsBonus(
+                (UnitType) this.getAttachedTo(), player, getData()));
   }
 
   private void resetDefenseRolls() {
@@ -1755,7 +1819,8 @@ public class UnitAttachment extends DefaultAttachment {
   private void setGivesMovement(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("givesMovement cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(
+          "givesMovement cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitTypeToProduce = s[1];
     // validate that this unit exists in the xml
@@ -1763,7 +1828,8 @@ public class UnitAttachment extends DefaultAttachment {
     if (ut == null) {
       throw new GameParseException("No unit called:" + unitTypeToProduce + thisErrorMsg());
     }
-    // we should allow positive and negative numbers, since you can give bonuses to units or take away a unit's movement
+    // we should allow positive and negative numbers, since you can give bonuses to units or take
+    // away a unit's movement
     final int n = getInt(s[0]);
     givesMovement.put(ut, n);
   }
@@ -1813,13 +1879,15 @@ public class UnitAttachment extends DefaultAttachment {
   private void setCreatesUnitsList(final String value) throws GameParseException {
     final String[] s = splitOnColon(value);
     if (s.length <= 0 || s.length > 2) {
-      throw new GameParseException("createsUnitsList cannot be empty or have more than two fields" + thisErrorMsg());
+      throw new GameParseException(
+          "createsUnitsList cannot be empty or have more than two fields" + thisErrorMsg());
     }
     final String unitTypeToProduce = s[1];
     // validate that this unit exists in the xml
     final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
     if (ut == null) {
-      throw new GameParseException("createsUnitsList: No unit called:" + unitTypeToProduce + thisErrorMsg());
+      throw new GameParseException(
+          "createsUnitsList: No unit called:" + unitTypeToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
     if (n < 1) {
@@ -1850,7 +1918,8 @@ public class UnitAttachment extends DefaultAttachment {
     // validate that this resource exists in the xml
     final Resource r = getData().getResourceList().getResource(resourceToProduce);
     if (r == null) {
-      throw new GameParseException("createsResourcesList: No resource called:" + resourceToProduce + thisErrorMsg());
+      throw new GameParseException(
+          "createsResourcesList: No resource called:" + resourceToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
     createsResourcesList.put(r, n);
@@ -1877,7 +1946,8 @@ public class UnitAttachment extends DefaultAttachment {
     // validate that this resource exists in the xml
     final Resource r = getData().getResourceList().getResource(resourceToProduce);
     if (r == null) {
-      throw new GameParseException("fuelCost: No resource called:" + resourceToProduce + thisErrorMsg());
+      throw new GameParseException(
+          "fuelCost: No resource called:" + resourceToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
     if (n < 0) {
@@ -1907,7 +1977,8 @@ public class UnitAttachment extends DefaultAttachment {
     // validate that this resource exists in the xml
     final Resource r = getData().getResourceList().getResource(resourceToProduce);
     if (r == null) {
-      throw new GameParseException("fuelFlatCost: No resource called:" + resourceToProduce + thisErrorMsg());
+      throw new GameParseException(
+          "fuelFlatCost: No resource called:" + resourceToProduce + thisErrorMsg());
     }
     final int n = getInt(s[0]);
     if (n < 0) {
@@ -1997,11 +2068,9 @@ public class UnitAttachment extends DefaultAttachment {
     bombingTargets = null;
   }
 
-  /**
-   * Finds potential unit types which all passed in bombers and rockets can target.
-   */
-  public static Set<UnitType> getAllowedBombingTargetsIntersection(final Collection<Unit> bombersOrRockets,
-      final GameData data) {
+  /** Finds potential unit types which all passed in bombers and rockets can target. */
+  public static Set<UnitType> getAllowedBombingTargetsIntersection(
+      final Collection<Unit> bombersOrRockets, final GameData data) {
     if (bombersOrRockets.isEmpty()) {
       return new HashSet<>();
     }
@@ -2042,10 +2111,16 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getAttackAa(final PlayerId player) {
-    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
+    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something
+    // other than 6, or it
     // does not divide perfectly into attackAAmaxDieSides
-    return Math.max(0, Math.min(getAttackAaMaxDieSides(),
-        attackAa + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
+    return Math.max(
+        0,
+        Math.min(
+            getAttackAaMaxDieSides(),
+            attackAa
+                + TechAbilityAttachment.getRadarBonus(
+                    (UnitType) this.getAttachedTo(), player, getData())));
   }
 
   private void resetAttackAa() {
@@ -2065,10 +2140,16 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   public int getOffensiveAttackAa(final PlayerId player) {
-    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it
+    // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something
+    // other than 6, or it
     // does not divide perfectly into attackAAmaxDieSides
-    return Math.max(0, Math.min(getOffensiveAttackAaMaxDieSides(),
-        offensiveAttackAa + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
+    return Math.max(
+        0,
+        Math.min(
+            getOffensiveAttackAaMaxDieSides(),
+            offensiveAttackAa
+                + TechAbilityAttachment.getRadarBonus(
+                    (UnitType) this.getAttachedTo(), player, getData())));
   }
 
   private void resetOffensiveAttackAa() {
@@ -2116,7 +2197,8 @@ public class UnitAttachment extends DefaultAttachment {
   private void setMaxAaAttacks(final String s) throws GameParseException {
     final int attacks = getInt(s);
     if (attacks < -1) {
-      throw new GameParseException("maxAAattacks must be positive (or -1 for attacking all) " + thisErrorMsg());
+      throw new GameParseException(
+          "maxAAattacks must be positive (or -1 for attacking all) " + thisErrorMsg());
     }
     maxAaAttacks = getInt(s);
   }
@@ -2136,7 +2218,8 @@ public class UnitAttachment extends DefaultAttachment {
   private void setMaxRoundsAa(final String s) throws GameParseException {
     final int attacks = getInt(s);
     if (attacks < -1) {
-      throw new GameParseException("maxRoundsAA must be positive (or -1 for infinite) " + thisErrorMsg());
+      throw new GameParseException(
+          "maxRoundsAA must be positive (or -1 for infinite) " + thisErrorMsg());
     }
     maxRoundsAa = getInt(s);
   }
@@ -2315,7 +2398,8 @@ public class UnitAttachment extends DefaultAttachment {
     for (final String u : s) {
       final UnitType ut = getData().getUnitTypeList().getUnitType(u);
       if (ut == null) {
-        throw new GameParseException("willNotFireIfPresent: no such unit type: " + u + thisErrorMsg());
+        throw new GameParseException(
+            "willNotFireIfPresent: no such unit type: " + u + thisErrorMsg());
       }
       willNotFireIfPresent.add(ut);
     }
@@ -2377,14 +2461,17 @@ public class UnitAttachment extends DefaultAttachment {
     }
     final String[] s = splitOnColon(value);
     if (s.length != 2) {
-      throw new GameParseException("movementLimit must have 2 fields, value and count" + thisErrorMsg());
+      throw new GameParseException(
+          "movementLimit must have 2 fields, value and count" + thisErrorMsg());
     }
     final int max = getInt(s[0]);
     if (max < 0) {
-      throw new GameParseException("movementLimit count must have a positive number" + thisErrorMsg());
+      throw new GameParseException(
+          "movementLimit count must have a positive number" + thisErrorMsg());
     }
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
-      throw new GameParseException("movementLimit value must owned, allied, or total" + thisErrorMsg());
+      throw new GameParseException(
+          "movementLimit value must owned, allied, or total" + thisErrorMsg());
     }
     movementLimit = Tuple.of(max, s[1]);
   }
@@ -2412,14 +2499,17 @@ public class UnitAttachment extends DefaultAttachment {
     }
     final String[] s = splitOnColon(value);
     if (s.length != 2) {
-      throw new GameParseException("attackingLimit must have 2 fields, value and count" + thisErrorMsg());
+      throw new GameParseException(
+          "attackingLimit must have 2 fields, value and count" + thisErrorMsg());
     }
     final int max = getInt(s[0]);
     if (max < 0) {
-      throw new GameParseException("attackingLimit count must have a positive number" + thisErrorMsg());
+      throw new GameParseException(
+          "attackingLimit count must have a positive number" + thisErrorMsg());
     }
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
-      throw new GameParseException("attackingLimit value must owned, allied, or total" + thisErrorMsg());
+      throw new GameParseException(
+          "attackingLimit value must owned, allied, or total" + thisErrorMsg());
     }
     attackingLimit = Tuple.of(max, s[1]);
   }
@@ -2447,14 +2537,17 @@ public class UnitAttachment extends DefaultAttachment {
     }
     final String[] s = splitOnColon(value);
     if (s.length != 2) {
-      throw new GameParseException("placementLimit must have 2 fields, value and count" + thisErrorMsg());
+      throw new GameParseException(
+          "placementLimit must have 2 fields, value and count" + thisErrorMsg());
     }
     final int max = getInt(s[0]);
     if (max < 0) {
-      throw new GameParseException("placementLimit count must have a positive number" + thisErrorMsg());
+      throw new GameParseException(
+          "placementLimit count must have a positive number" + thisErrorMsg());
     }
     if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total"))) {
-      throw new GameParseException("placementLimit value must owned, allied, or total" + thisErrorMsg());
+      throw new GameParseException(
+          "placementLimit value must owned, allied, or total" + thisErrorMsg());
     }
     placementLimit = Tuple.of(max, s[1]);
   }
@@ -2488,13 +2581,17 @@ public class UnitAttachment extends DefaultAttachment {
   }
 
   /**
-   * Returns the maximum number of units of the specified type that can be placed in the specified territory according
-   * to the specified stacking limit (movement, attack, or placement).
+   * Returns the maximum number of units of the specified type that can be placed in the specified
+   * territory according to the specified stacking limit (movement, attack, or placement).
    *
    * @return {@link Integer#MAX_VALUE} if there is no stacking limit for the specified conditions.
    */
-  public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(final String limitType, final UnitType ut,
-      final Territory t, final PlayerId owner, final GameData data) {
+  public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(
+      final String limitType,
+      final UnitType ut,
+      final Territory t,
+      final PlayerId owner,
+      final GameData data) {
     final UnitAttachment ua = UnitAttachment.get(ut);
     final Tuple<Integer, String> stackingLimit;
     switch (limitType) {
@@ -2509,15 +2606,18 @@ public class UnitAttachment extends DefaultAttachment {
         break;
       default:
         throw new IllegalStateException(
-            "getMaximumNumberOfThisUnitTypeToReachStackingLimit does not allow limitType: " + limitType);
+            "getMaximumNumberOfThisUnitTypeToReachStackingLimit does not allow limitType: "
+                + limitType);
     }
     if (stackingLimit == null) {
       return Integer.MAX_VALUE;
     }
     int max = stackingLimit.getFirst();
-    if (max == Integer.MAX_VALUE && (ua.getIsAaForBombingThisUnitOnly() || ua.getIsAaForCombatOnly())) {
+    if (max == Integer.MAX_VALUE
+        && (ua.getIsAaForBombingThisUnitOnly() || ua.getIsAaForCombatOnly())) {
       // under certain rules (classic rules) there can only be 1 aa gun in a territory.
-      if (!(Properties.getWW2V2(data) || Properties.getWW2V3(data)
+      if (!(Properties.getWW2V2(data)
+          || Properties.getWW2V3(data)
           || Properties.getMultipleAaPerTerritory(data))) {
         max = 1;
       }
@@ -2543,38 +2643,64 @@ public class UnitAttachment extends DefaultAttachment {
   @Override
   public void validate(final GameData data) throws GameParseException {
     if (isAir) {
-      if (isSea || transportCost != -1 || carrierCapacity != -1 || canBlitz
-          || canBombard || isMarine != 0 || isLandTransportable || isLandTransport
-          || isAirTransportable || isCombatTransport) {
+      if (isSea
+          || transportCost != -1
+          || carrierCapacity != -1
+          || canBlitz
+          || canBombard
+          || isMarine != 0
+          || isLandTransportable
+          || isLandTransport
+          || isAirTransportable
+          || isCombatTransport) {
         throw new GameParseException("air units cannot have certain properties, " + thisErrorMsg());
       }
     } else if (isSea) {
-      if (canBlitz || isStrategicBomber || carrierCost != -1
-          || transportCost != -1 || isMarine != 0 || isLandTransportable || isLandTransport
-          || isAirTransportable || isAirTransport || isKamikaze) {
+      if (canBlitz
+          || isStrategicBomber
+          || carrierCost != -1
+          || transportCost != -1
+          || isMarine != 0
+          || isLandTransportable
+          || isLandTransport
+          || isAirTransportable
+          || isAirTransport
+          || isKamikaze) {
         throw new GameParseException("sea units cannot have certain properties, " + thisErrorMsg());
       }
     } else { // if land
-      if (canBombard || carrierCapacity != -1 || bombard != -1
-          || isAirTransport || isCombatTransport || isKamikaze) {
-        throw new GameParseException("land units cannot have certain properties, " + thisErrorMsg());
+      if (canBombard
+          || carrierCapacity != -1
+          || bombard != -1
+          || isAirTransport
+          || isCombatTransport
+          || isKamikaze) {
+        throw new GameParseException(
+            "land units cannot have certain properties, " + thisErrorMsg());
       }
     }
     if (hitPoints < 1) {
       throw new GameParseException("hitPoints cannot be zero or negative, " + thisErrorMsg());
     }
-    if (attackAa < 0 || attackAaMaxDieSides < -1 || attackAaMaxDieSides > 200 || offensiveAttackAa < 0
-        || offensiveAttackAaMaxDieSides < -1 || offensiveAttackAaMaxDieSides > 200) {
+    if (attackAa < 0
+        || attackAaMaxDieSides < -1
+        || attackAaMaxDieSides > 200
+        || offensiveAttackAa < 0
+        || offensiveAttackAaMaxDieSides < -1
+        || offensiveAttackAaMaxDieSides > 200) {
       throw new GameParseException(
-          "attackAA or attackAAmaxDieSides or offensiveAttackAA or offensiveAttackAAmaxDieSides is wrong, "
+          "attackAA or attackAAmaxDieSides or offensiveAttackAA or "
+              + "offensiveAttackAAmaxDieSides is wrong, "
               + thisErrorMsg());
     }
     if (carrierCapacity != -1 && carrierCost != -1) {
-      throw new GameParseException("carrierCost and carrierCapacity cannot be set at same time, " + thisErrorMsg());
+      throw new GameParseException(
+          "carrierCost and carrierCapacity cannot be set at same time, " + thisErrorMsg());
     }
     if (((bombingBonus != 0 || bombingMaxDieSides >= 0) && !(isStrategicBomber || isRocket))
         || (bombingMaxDieSides < -1)) {
-      throw new GameParseException("something wrong with bombingBonus or bombingMaxDieSides, " + thisErrorMsg());
+      throw new GameParseException(
+          "something wrong with bombingBonus or bombingMaxDieSides, " + thisErrorMsg());
     }
     if (maxBuiltPerPlayer < -1) {
       throw new GameParseException("maxBuiltPerPlayer cannot be negative, " + thisErrorMsg());
@@ -2583,24 +2709,38 @@ public class UnitAttachment extends DefaultAttachment {
       throw new GameParseException(
           "cannot have isCombatTransport on unit without transportCapacity, " + thisErrorMsg());
     }
-    if (isSea && transportCapacity != -1 && Properties.getTransportCasualtiesRestricted(data)
-        && (attack > 0 || defense > 0) && !isCombatTransport) {
-      throw new GameParseException("Restricted transports cannot have attack or defense, " + thisErrorMsg());
+    if (isSea
+        && transportCapacity != -1
+        && Properties.getTransportCasualtiesRestricted(data)
+        && (attack > 0 || defense > 0)
+        && !isCombatTransport) {
+      throw new GameParseException(
+          "Restricted transports cannot have attack or defense, " + thisErrorMsg());
     }
     if (isConstruction
-        && (constructionType == null || constructionType.equals("none") || constructionType.isEmpty()
-            || constructionsPerTerrPerTypePerTurn < 0 || maxConstructionsPerTypePerTerr < 0)) {
-      throw new GameParseException("Constructions must have constructionType and positive constructionsPerTerrPerType "
-          + "and maxConstructionsPerType, " + thisErrorMsg());
+        && (constructionType == null
+            || constructionType.equals("none")
+            || constructionType.isEmpty()
+            || constructionsPerTerrPerTypePerTurn < 0
+            || maxConstructionsPerTypePerTerr < 0)) {
+      throw new GameParseException(
+          "Constructions must have constructionType and positive constructionsPerTerrPerType "
+              + "and maxConstructionsPerType, "
+              + thisErrorMsg());
     }
     if (!isConstruction
-        && (!(constructionType == null || constructionType.equals("none") || constructionType.isEmpty())
-            || constructionsPerTerrPerTypePerTurn >= 0 || maxConstructionsPerTypePerTerr >= 0)) {
-      throw new GameParseException("Constructions must have isConstruction true, " + thisErrorMsg());
+        && (!(constructionType == null
+                || constructionType.equals("none")
+                || constructionType.isEmpty())
+            || constructionsPerTerrPerTypePerTurn >= 0
+            || maxConstructionsPerTypePerTerr >= 0)) {
+      throw new GameParseException(
+          "Constructions must have isConstruction true, " + thisErrorMsg());
     }
     if (constructionsPerTerrPerTypePerTurn > maxConstructionsPerTypePerTerr) {
       throw new GameParseException(
-          "Constructions must have constructionsPerTerrPerTypePerTurn Less than maxConstructionsPerTypePerTerr, "
+          "Constructions must have constructionsPerTerrPerTypePerTurn "
+              + "Less than maxConstructionsPerTypePerTerr, "
               + thisErrorMsg());
     }
     if (requiresUnits != null) {
@@ -2608,13 +2748,16 @@ public class UnitAttachment extends DefaultAttachment {
         getListedUnits(combo);
       }
     }
-    if ((canBeDamaged && maxDamage < 1) || (canDieFromReachingMaxDamage && maxDamage < 1)
+    if ((canBeDamaged && maxDamage < 1)
+        || (canDieFromReachingMaxDamage && maxDamage < 1)
         || (!canBeDamaged && canDieFromReachingMaxDamage)) {
       throw new GameParseException(
-          "something wrong with canBeDamaged or maxDamage or canDieFromReachingMaxDamage or isFactory, "
+          "something wrong with canBeDamaged or maxDamage or "
+              + "canDieFromReachingMaxDamage or isFactory, "
               + thisErrorMsg());
     }
-    if (canInvadeOnlyFrom != null && !canInvadeOnlyFrom[0].equals("all")
+    if (canInvadeOnlyFrom != null
+        && !canInvadeOnlyFrom[0].equals("all")
         && !canInvadeOnlyFrom[0].equals("none")) {
       for (final String transport : canInvadeOnlyFrom) {
         final UnitType ut = getData().getUnitTypeList().getUnitType(transport);
@@ -2622,10 +2765,16 @@ public class UnitAttachment extends DefaultAttachment {
           throw new GameParseException("No unit called:" + transport + thisErrorMsg());
         }
         if (ut.getAttachments() == null || ut.getAttachments().isEmpty()) {
-          throw new GameParseException(transport + " has no attachments, please declare " + transport
-              + " in the xml before using it as a transport" + thisErrorMsg());
-          // Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are
-          // mech infantry. The "transporter" may not be an actual transport, so we should not check for that here.
+          throw new GameParseException(
+              transport
+                  + " has no attachments, please declare "
+                  + transport
+                  + " in the xml before using it as a transport"
+                  + thisErrorMsg());
+          // Units may be considered transported if they are on a carrier, or if they are
+          // paratroopers, or if they are
+          // mech infantry. The "transporter" may not be an actual transport, so we should not check
+          // for that here.
         }
       }
     }
@@ -2634,14 +2783,17 @@ public class UnitAttachment extends DefaultAttachment {
         // first is ability, second is unit that we get it from
         final String[] s = splitOnColon(value);
         if (s.length != 2) {
-          throw new GameParseException("receivesAbilityWhenWith must have 2 parts, 'ability:unit'" + thisErrorMsg());
+          throw new GameParseException(
+              "receivesAbilityWhenWith must have 2 parts, 'ability:unit'" + thisErrorMsg());
         }
         if (getData().getUnitTypeList().getUnitType(s[1]) == null) {
-          throw new GameParseException("receivesAbilityWhenWith, unit does not exist, name:" + s[1] + thisErrorMsg());
+          throw new GameParseException(
+              "receivesAbilityWhenWith, unit does not exist, name:" + s[1] + thisErrorMsg());
         }
         // currently only supports canBlitz (canBlitz)
         if (!s[0].equals("canBlitz")) {
-          throw new GameParseException("receivesAbilityWhenWith so far only supports: canBlitz" + thisErrorMsg());
+          throw new GameParseException(
+              "receivesAbilityWhenWith so far only supports: canBlitz" + thisErrorMsg());
         }
       }
     }
@@ -2654,8 +2806,12 @@ public class UnitAttachment extends DefaultAttachment {
         if (obj.equals(UNITSMAYNOTLEAVEALLIEDCARRIER)) {
           continue;
         }
-        throw new GameParseException("whenCombatDamaged so far only supports: " + UNITSMAYNOTLANDONCARRIER + ", "
-            + UNITSMAYNOTLEAVEALLIEDCARRIER + thisErrorMsg());
+        throw new GameParseException(
+            "whenCombatDamaged so far only supports: "
+                + UNITSMAYNOTLANDONCARRIER
+                + ", "
+                + UNITSMAYNOTLEAVEALLIEDCARRIER
+                + thisErrorMsg());
       }
     }
   }
@@ -2673,7 +2829,8 @@ public class UnitAttachment extends DefaultAttachment {
     return unitTypes;
   }
 
-  private Collection<Territory> getListedTerritories(final String[] list) throws GameParseException {
+  private Collection<Territory> getListedTerritories(final String[] list)
+      throws GameParseException {
     final Set<Territory> territories = new HashSet<>();
     for (final String name : list) {
       // Validate all territories exist
@@ -2691,7 +2848,8 @@ public class UnitAttachment extends DefaultAttachment {
             }
           }
         } else {
-          throw new GameParseException("No territory or territory effect called: " + name + thisErrorMsg());
+          throw new GameParseException(
+              "No territory or territory effect called: " + name + thisErrorMsg());
         }
       }
     }
@@ -2715,104 +2873,191 @@ public class UnitAttachment extends DefaultAttachment {
 
   /**
    * Returns a list of all unit properties. Should cover ALL fields stored in UnitAttachment
-   * Remember to test for null and fix arrays. The stats exporter relies on this toString having
-   * two spaces after each entry, so do not change this please, except to add new abilities onto the end.
+   * Remember to test for null and fix arrays. The stats exporter relies on this toString having two
+   * spaces after each entry, so do not change this please, except to add new abilities onto the
+   * end.
    */
   public String allUnitStatsForExporter() {
-    return this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:"
-        + "  isAir:" + isAir
-        + "  isSea:" + isSea
-        + "  movement:" + movement
-        + "  attack:" + attack
-        + "  defense:" + defense
-        + "  hitPoints:" + hitPoints
-        + "  canBlitz:" + canBlitz
-        + "  artillerySupportable:" + artillerySupportable
-        + "  artillery:" + artillery
-        + "  unitSupportCount:" + unitSupportCount
-        + "  attackRolls:" + attackRolls
-        + "  defenseRolls:" + defenseRolls
-        + "  chooseBestRoll:" + chooseBestRoll
-        + "  isMarine:" + isMarine
-        + "  isLandTransportable:" + isLandTransportable
-        + "  isLandTransport:" + isLandTransport
-        + "  isAirTransportable:" + isAirTransportable
-        + "  isAirTransport:" + isAirTransport
-        + "  isStrategicBomber:" + isStrategicBomber
-        + "  transportCapacity:" + transportCapacity
-        + "  transportCost:" + transportCost
-        + "  carrierCapacity:" + carrierCapacity
-        + "  carrierCost:" + carrierCost
-        + "  canEvade:" + canEvade
-        + "  isFirstStrike:" + isFirstStrike
-        + "  canNotTarget:" + (canNotTarget == null || canNotTarget.isEmpty() ? "empty" : canNotTarget.toString())
-        + "  canNotBeTargetedBy:" + (canNotBeTargetedBy.isEmpty() ? "empty" : canNotBeTargetedBy.toString())
-        + "  canMoveThroughEnemies:" + canMoveThroughEnemies
-        + "  canBeMovedThroughByEnemies:" + canBeMovedThroughByEnemies
-        + "  isDestroyer:" + isDestroyer
-        + "  canBombard:" + canBombard
-        + "  bombard:" + bombard
-        + "  isAAforCombatOnly:" + isAaForCombatOnly
-        + "  isAAforBombingThisUnitOnly:" + isAaForBombingThisUnitOnly
-        + "  isAAforFlyOverOnly:" + isAaForFlyOverOnly
-        + "  attackAA:" + attackAa
-        + "  offensiveAttackAA:" + offensiveAttackAa
-        + "  attackAAmaxDieSides:" + attackAaMaxDieSides
-        + "  offensiveAttackAAmaxDieSides:" + offensiveAttackAaMaxDieSides
-        + "  maxAAattacks:" + maxAaAttacks
-        + "  maxRoundsAA:" + maxRoundsAa
-        + "  mayOverStackAA:" + mayOverStackAa
-        + "  damageableAA:" + damageableAa
-        + "  typeAA:" + typeAa
+    return this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "")
+        + " with:"
+        + "  isAir:"
+        + isAir
+        + "  isSea:"
+        + isSea
+        + "  movement:"
+        + movement
+        + "  attack:"
+        + attack
+        + "  defense:"
+        + defense
+        + "  hitPoints:"
+        + hitPoints
+        + "  canBlitz:"
+        + canBlitz
+        + "  artillerySupportable:"
+        + artillerySupportable
+        + "  artillery:"
+        + artillery
+        + "  unitSupportCount:"
+        + unitSupportCount
+        + "  attackRolls:"
+        + attackRolls
+        + "  defenseRolls:"
+        + defenseRolls
+        + "  chooseBestRoll:"
+        + chooseBestRoll
+        + "  isMarine:"
+        + isMarine
+        + "  isLandTransportable:"
+        + isLandTransportable
+        + "  isLandTransport:"
+        + isLandTransport
+        + "  isAirTransportable:"
+        + isAirTransportable
+        + "  isAirTransport:"
+        + isAirTransport
+        + "  isStrategicBomber:"
+        + isStrategicBomber
+        + "  transportCapacity:"
+        + transportCapacity
+        + "  transportCost:"
+        + transportCost
+        + "  carrierCapacity:"
+        + carrierCapacity
+        + "  carrierCost:"
+        + carrierCost
+        + "  canEvade:"
+        + canEvade
+        + "  isFirstStrike:"
+        + isFirstStrike
+        + "  canNotTarget:"
+        + (canNotTarget == null || canNotTarget.isEmpty() ? "empty" : canNotTarget.toString())
+        + "  canNotBeTargetedBy:"
+        + (canNotBeTargetedBy.isEmpty() ? "empty" : canNotBeTargetedBy.toString())
+        + "  canMoveThroughEnemies:"
+        + canMoveThroughEnemies
+        + "  canBeMovedThroughByEnemies:"
+        + canBeMovedThroughByEnemies
+        + "  isDestroyer:"
+        + isDestroyer
+        + "  canBombard:"
+        + canBombard
+        + "  bombard:"
+        + bombard
+        + "  isAAforCombatOnly:"
+        + isAaForCombatOnly
+        + "  isAAforBombingThisUnitOnly:"
+        + isAaForBombingThisUnitOnly
+        + "  isAAforFlyOverOnly:"
+        + isAaForFlyOverOnly
+        + "  attackAA:"
+        + attackAa
+        + "  offensiveAttackAA:"
+        + offensiveAttackAa
+        + "  attackAAmaxDieSides:"
+        + attackAaMaxDieSides
+        + "  offensiveAttackAAmaxDieSides:"
+        + offensiveAttackAaMaxDieSides
+        + "  maxAAattacks:"
+        + maxAaAttacks
+        + "  maxRoundsAA:"
+        + maxRoundsAa
+        + "  mayOverStackAA:"
+        + mayOverStackAa
+        + "  damageableAA:"
+        + damageableAa
+        + "  typeAA:"
+        + typeAa
         + "  targetsAA:"
-        + (targetsAa != null ? (targetsAa.size() == 0 ? "empty" : targetsAa.toString()) : "all air units")
+        + (targetsAa != null
+            ? (targetsAa.size() == 0 ? "empty" : targetsAa.toString())
+            : "all air units")
         + "  willNotFireIfPresent:"
         + (willNotFireIfPresent != null
             ? (willNotFireIfPresent.size() == 0 ? "empty" : willNotFireIfPresent.toString())
             : "null")
-        + "  isRocket:" + isRocket + "  canProduceUnits:" + canProduceUnits + "  canProduceXUnits:"
-        + canProduceXUnits + "  createsUnitsList:"
-        + (createsUnitsList != null ? (createsUnitsList.size() == 0 ? "empty" : createsUnitsList.toString())
+        + "  isRocket:"
+        + isRocket
+        + "  canProduceUnits:"
+        + canProduceUnits
+        + "  canProduceXUnits:"
+        + canProduceXUnits
+        + "  createsUnitsList:"
+        + (createsUnitsList != null
+            ? (createsUnitsList.size() == 0 ? "empty" : createsUnitsList.toString())
             : "null")
         + "  createsResourcesList:"
         + (createsResourcesList != null
             ? (createsResourcesList.size() == 0 ? "empty" : createsResourcesList.toString())
             : "null")
-        + "  fuelCost:" + (fuelCost != null ? (fuelCost.size() == 0 ? "empty" : fuelCost.toString()) : "null")
+        + "  fuelCost:"
+        + (fuelCost != null ? (fuelCost.size() == 0 ? "empty" : fuelCost.toString()) : "null")
         + "  fuelFlatCost:"
-        + (fuelFlatCost != null ? (fuelFlatCost.size() == 0 ? "empty" : fuelFlatCost.toString()) : "null")
-        + "  isInfrastructure:" + isInfrastructure + "  isConstruction:" + isConstruction + "  constructionType:"
-        + constructionType + "  constructionsPerTerrPerTypePerTurn:" + constructionsPerTerrPerTypePerTurn
-        + "  maxConstructionsPerTypePerTerr:" + maxConstructionsPerTypePerTerr + "  destroyedWhenCapturedBy:"
+        + (fuelFlatCost != null
+            ? (fuelFlatCost.size() == 0 ? "empty" : fuelFlatCost.toString())
+            : "null")
+        + "  isInfrastructure:"
+        + isInfrastructure
+        + "  isConstruction:"
+        + isConstruction
+        + "  constructionType:"
+        + constructionType
+        + "  constructionsPerTerrPerTypePerTurn:"
+        + constructionsPerTerrPerTypePerTurn
+        + "  maxConstructionsPerTypePerTerr:"
+        + maxConstructionsPerTypePerTerr
+        + "  destroyedWhenCapturedBy:"
         + (destroyedWhenCapturedBy != null
             ? (destroyedWhenCapturedBy.size() == 0 ? "empty" : destroyedWhenCapturedBy.toString())
             : "null")
         + "  canBeCapturedOnEnteringBy:"
         + (canBeCapturedOnEnteringBy != null
-            ? (canBeCapturedOnEnteringBy.size() == 0 ? "empty" : canBeCapturedOnEnteringBy.toString())
+            ? (canBeCapturedOnEnteringBy.size() == 0
+                ? "empty"
+                : canBeCapturedOnEnteringBy.toString())
             : "null")
-        + "  canBeDamaged:" + canBeDamaged + "  canDieFromReachingMaxDamage:" + canDieFromReachingMaxDamage
-        + "  maxOperationalDamage:" + maxOperationalDamage + "  maxDamage:" + maxDamage
+        + "  canBeDamaged:"
+        + canBeDamaged
+        + "  canDieFromReachingMaxDamage:"
+        + canDieFromReachingMaxDamage
+        + "  maxOperationalDamage:"
+        + maxOperationalDamage
+        + "  maxDamage:"
+        + maxDamage
         + "  unitPlacementRestrictions:"
         + (unitPlacementRestrictions != null
-            ? (unitPlacementRestrictions.length == 0 ? "empty" : Arrays.toString(unitPlacementRestrictions))
+            ? (unitPlacementRestrictions.length == 0
+                ? "empty"
+                : Arrays.toString(unitPlacementRestrictions))
             : "null")
         + "  requiresUnits:"
         + (requiresUnits != null
-            ? (requiresUnits.size() == 0 ? "empty" : MyFormatter.listOfArraysToString(requiresUnits))
+            ? (requiresUnits.size() == 0
+                ? "empty"
+                : MyFormatter.listOfArraysToString(requiresUnits))
             : "null")
         + "  consumesUnits:"
-        + (consumesUnits != null ? (consumesUnits.size() == 0 ? "empty" : consumesUnits.toString()) : "null")
+        + (consumesUnits != null
+            ? (consumesUnits.size() == 0 ? "empty" : consumesUnits.toString())
+            : "null")
         + "  requiresUnitsToMove:"
         + (requiresUnitsToMove != null
-            ? (requiresUnitsToMove.size() == 0 ? "empty" : MyFormatter.listOfArraysToString(requiresUnitsToMove))
+            ? (requiresUnitsToMove.size() == 0
+                ? "empty"
+                : MyFormatter.listOfArraysToString(requiresUnitsToMove))
             : "null")
-        + "  canOnlyBePlacedInTerritoryValuedAtX:" + canOnlyBePlacedInTerritoryValuedAtX + "  maxBuiltPerPlayer:"
-        + maxBuiltPerPlayer + "  special:"
+        + "  canOnlyBePlacedInTerritoryValuedAtX:"
+        + canOnlyBePlacedInTerritoryValuedAtX
+        + "  maxBuiltPerPlayer:"
+        + maxBuiltPerPlayer
+        + "  special:"
         + (special != null ? (special.size() == 0 ? "empty" : special.toString()) : "null")
-        + "  isSuicide:" + isSuicide
-        + "  isSuicideOnHit:" + isSuicideOnHit
-        + "  isCombatTransport:" + isCombatTransport
+        + "  isSuicide:"
+        + isSuicide
+        + "  isSuicideOnHit:"
+        + isSuicideOnHit
+        + "  isCombatTransport:"
+        + isCombatTransport
         + "  canInvadeOnlyFrom:"
         + (canInvadeOnlyFrom != null
             ? (canInvadeOnlyFrom.length == 0 ? "empty" : Arrays.toString(canInvadeOnlyFrom))
@@ -2826,48 +3071,82 @@ public class UnitAttachment extends DefaultAttachment {
             ? (receivesAbilityWhenWith.size() == 0 ? "empty" : receivesAbilityWhenWith.toString())
             : "null")
         + "  whenCombatDamaged:"
-        + (whenCombatDamaged != null ? (whenCombatDamaged.size() == 0 ? "empty" : whenCombatDamaged.toString())
+        + (whenCombatDamaged != null
+            ? (whenCombatDamaged.size() == 0 ? "empty" : whenCombatDamaged.toString())
             : "null")
-        + "  blockade:" + blockade + "  bombingMaxDieSides:" + bombingMaxDieSides + "  bombingBonus:"
-        + bombingBonus + "  bombingTargets:" + bombingTargets + "  givesMovement:"
-        + (givesMovement != null ? (givesMovement.size() == 0 ? "empty" : givesMovement.toString()) : "null")
+        + "  blockade:"
+        + blockade
+        + "  bombingMaxDieSides:"
+        + bombingMaxDieSides
+        + "  bombingBonus:"
+        + bombingBonus
+        + "  bombingTargets:"
+        + bombingTargets
+        + "  givesMovement:"
+        + (givesMovement != null
+            ? (givesMovement.size() == 0 ? "empty" : givesMovement.toString())
+            : "null")
         + "  repairsUnits:"
-        + (repairsUnits != null ? (repairsUnits.isEmpty() ? "empty" : repairsUnits.toString()) : "null")
-        + "  canScramble:" + canScramble
-        + "  maxScrambleDistance:" + maxScrambleDistance
-        + "  isAirBase:" + isAirBase
-        + "  maxScrambleCount:" + maxScrambleCount
-        + "  maxInterceptCount:" + maxInterceptCount
+        + (repairsUnits != null
+            ? (repairsUnits.isEmpty() ? "empty" : repairsUnits.toString())
+            : "null")
+        + "  canScramble:"
+        + canScramble
+        + "  maxScrambleDistance:"
+        + maxScrambleDistance
+        + "  isAirBase:"
+        + isAirBase
+        + "  maxScrambleCount:"
+        + maxScrambleCount
+        + "  maxInterceptCount:"
+        + maxInterceptCount
         + "  whenCapturedChangesInto:"
         + (whenCapturedChangesInto != null
             ? (whenCapturedChangesInto.size() == 0 ? "empty" : whenCapturedChangesInto.toString())
             : "null")
-        + " whenCapturedSustainsDamage:" + whenCapturedSustainsDamage
+        + " whenCapturedSustainsDamage:"
+        + whenCapturedSustainsDamage
         + "  whenHitPointsDamagedChangesInto:"
         + (whenHitPointsDamagedChangesInto != null
-            ? (whenHitPointsDamagedChangesInto.size() == 0 ? "empty" : whenHitPointsDamagedChangesInto.toString())
+            ? (whenHitPointsDamagedChangesInto.size() == 0
+                ? "empty"
+                : whenHitPointsDamagedChangesInto.toString())
             : "null")
         + "  whenHitPointsRepairedChangesInto:"
         + (whenHitPointsRepairedChangesInto != null
-            ? (whenHitPointsRepairedChangesInto.size() == 0 ? "empty" : whenHitPointsRepairedChangesInto.toString())
+            ? (whenHitPointsRepairedChangesInto.size() == 0
+                ? "empty"
+                : whenHitPointsRepairedChangesInto.toString())
             : "null")
-        + "  canIntercept:" + canIntercept
-        + "  requiresAirBaseToIntercept:" + requiresAirBaseToIntercept
-        + "  canEscort:" + canEscort
-        + "  canAirBattle:" + canAirBattle
-        + "  airDefense:" + airDefense
-        + "  airAttack:" + airAttack
-        + "  canNotMoveDuringCombatMove:" + canNotMoveDuringCombatMove + "  movementLimit:"
-        + (movementLimit != null ? movementLimit.toString() : "null") + "  attackingLimit:"
-        + (attackingLimit != null ? attackingLimit.toString() : "null") + "  placementLimit:"
+        + "  canIntercept:"
+        + canIntercept
+        + "  requiresAirBaseToIntercept:"
+        + requiresAirBaseToIntercept
+        + "  canEscort:"
+        + canEscort
+        + "  canAirBattle:"
+        + canAirBattle
+        + "  airDefense:"
+        + airDefense
+        + "  airAttack:"
+        + airAttack
+        + "  canNotMoveDuringCombatMove:"
+        + canNotMoveDuringCombatMove
+        + "  movementLimit:"
+        + (movementLimit != null ? movementLimit.toString() : "null")
+        + "  attackingLimit:"
+        + (attackingLimit != null ? attackingLimit.toString() : "null")
+        + "  placementLimit:"
         + (placementLimit != null ? placementLimit.toString() : "null")
-        + "  tuv:" + tuv;
+        + "  tuv:"
+        + tuv;
   }
 
   /**
    * Displays all unit options in a short description form that's user friendly rather than as XML.
-   * Shows all except for: constructionType, constructionsPerTerrPerTypePerTurn, maxConstructionsPerTypePerTerr,
-   * canBeGivenByTerritoryTo, destroyedWhenCapturedBy, canBeCapturedOnEnteringBy.
+   * Shows all except for: constructionType, constructionsPerTerrPerTypePerTurn,
+   * maxConstructionsPerTypePerTerr, canBeGivenByTerritoryTo, destroyedWhenCapturedBy,
+   * canBeCapturedOnEnteringBy.
    */
   public String toStringShortAndOnlyImportantDifferences(final PlayerId player) {
     final List<Tuple<String, String>> tuples = new ArrayList<>();
@@ -2901,7 +3180,8 @@ public class UnitAttachment extends DefaultAttachment {
     addIntegerMapDescription("Fuel Cost per Movement", getFuelCost(), tuples);
     addIntegerMapDescription("Fuel Cost each Turn if Moved", getFuelFlatCost(), tuples);
 
-    addAaDescription("Targeted Attack", getOffensiveAttackAa(player), getOffensiveAttackAaMaxDieSides(), tuples);
+    addAaDescription(
+        "Targeted Attack", getOffensiveAttackAa(player), getOffensiveAttackAaMaxDieSides(), tuples);
     addAaDescription("Targeted Defense", getAttackAa(player), getAttackAaMaxDieSides(), tuples);
 
     // TODO: Rework rocket description
@@ -2911,9 +3191,12 @@ public class UnitAttachment extends DefaultAttachment {
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != 0)
           && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
-        sb.append(bombingBonus != 0 ? bombingBonus + 1 : 1).append("-")
-            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + bombingBonus
-                : getData().getDiceSides() + bombingBonus)
+        sb.append(bombingBonus != 0 ? bombingBonus + 1 : 1)
+            .append("-")
+            .append(
+                getBombingMaxDieSides() != -1
+                    ? getBombingMaxDieSides() + bombingBonus
+                    : getData().getDiceSides() + bombingBonus)
             .append(" Rocket Damage, ");
       } else {
         sb.append("1-").append(getData().getDiceSides()).append(" Rocket Damage, ");
@@ -2937,7 +3220,8 @@ public class UnitAttachment extends DefaultAttachment {
         sb.append(getMaxOperationalDamage()).append(" Max Operational Damage, ");
       }
       if (getCanProduceUnits() && getCanProduceXUnits() < 0) {
-        sb.append("Total Damage up to ").append(getMaxDamage() > -1 ? getMaxDamage() : 2)
+        sb.append("Total Damage up to ")
+            .append(getMaxDamage() > -1 ? getMaxDamage() : 2)
             .append("x Territory Value, ");
       } else if (getMaxDamage() > -1) {
         sb.append(getMaxDamage()).append(" Max Total Damage, ");
@@ -2954,12 +3238,16 @@ public class UnitAttachment extends DefaultAttachment {
       tuples.add(Tuple.of("Allows Scrambling", ""));
     }
     if (getCanScramble() && Properties.getScrambleRulesInEffect(getData())) {
-      tuples
-          .add(Tuple.of("Scramble Range", String.valueOf(getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1)));
+      tuples.add(
+          Tuple.of(
+              "Scramble Range",
+              String.valueOf(getMaxScrambleDistance() > 0 ? getMaxScrambleDistance() : 1)));
     }
 
-    final List<UnitSupportAttachment> supports = CollectionUtils.getMatches(UnitSupportAttachment.get(unitType),
-        Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
+    final List<UnitSupportAttachment> supports =
+        CollectionUtils.getMatches(
+            UnitSupportAttachment.get(unitType),
+            Matches.unitSupportAttachmentCanBeUsedByPlayer(player));
     if (supports.size() > 3) {
       tuples.add(Tuple.of("Can Provide Support to Units", ""));
     } else if (supports.size() > 0) {
@@ -2968,24 +3256,32 @@ public class UnitAttachment extends DefaultAttachment {
         if (support.getUnitType() == null || support.getUnitType().isEmpty()) {
           continue;
         }
-        final String key = "Support on "
-            + (support.getOffence() && support.getDefence()
-                ? "Attack & Defense"
-                : (support.getOffence() ? "Attack" : "Defense"));
-        final String text = support.getBonus()
-            + (moreThanOneSupportType ? " " + support.getBonusType() : "")
-            + " "
-            + (support.getDice() == null
-                ? ""
-                : support.getDice().replace(":", " & ").replace("AAroll", "Targeted Roll")
-                    .replace("AAstrength", "Targeted Power").replace("roll", "Roll").replace("strength", "Power"))
-            + " to " + support.getNumber()
-            + (support.getAllied() && support.getEnemy()
-                ? " Allied & Enemy "
-                : (support.getAllied() ? " Allied " : " Enemy "))
-            + (support.getUnitType().size() > 4
-                ? "Units"
-                : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false));
+        final String key =
+            "Support on "
+                + (support.getOffence() && support.getDefence()
+                    ? "Attack & Defense"
+                    : (support.getOffence() ? "Attack" : "Defense"));
+        final String text =
+            support.getBonus()
+                + (moreThanOneSupportType ? " " + support.getBonusType() : "")
+                + " "
+                + (support.getDice() == null
+                    ? ""
+                    : support
+                        .getDice()
+                        .replace(":", " & ")
+                        .replace("AAroll", "Targeted Roll")
+                        .replace("AAstrength", "Targeted Power")
+                        .replace("roll", "Roll")
+                        .replace("strength", "Power"))
+                + " to "
+                + support.getNumber()
+                + (support.getAllied() && support.getEnemy()
+                    ? " Allied & Enemy "
+                    : (support.getAllied() ? " Allied " : " Enemy "))
+                + (support.getUnitType().size() > 4
+                    ? "Units"
+                    : MyFormatter.defaultNamedToTextList(support.getUnitType(), "/", false));
         tuples.add(Tuple.of(key, text));
       }
     }
@@ -3013,9 +3309,12 @@ public class UnitAttachment extends DefaultAttachment {
       final int bombingBonus = getBombingBonus();
       if ((getBombingMaxDieSides() != -1 || bombingBonus != 0)
           && Properties.getUseBombingMaxDiceSidesAndBonus(getData())) {
-        sb.append(bombingBonus != 0 ? bombingBonus + 1 : 1).append("-")
-            .append(getBombingMaxDieSides() != -1 ? getBombingMaxDieSides() + bombingBonus
-                : getData().getDiceSides() + bombingBonus);
+        sb.append(bombingBonus != 0 ? bombingBonus + 1 : 1)
+            .append("-")
+            .append(
+                getBombingMaxDieSides() != -1
+                    ? getBombingMaxDieSides() + bombingBonus
+                    : getData().getDiceSides() + bombingBonus);
       } else {
         sb.append("1-").append(getData().getDiceSides());
       }
@@ -3023,11 +3322,17 @@ public class UnitAttachment extends DefaultAttachment {
       tuples.add(Tuple.of("Can Perform Raids", sb.toString()));
     }
 
-    if (getAirAttack(player) > 0 && (getIsStrategicBomber() || getCanEscort() || getCanAirBattle())) {
-      tuples.add(Tuple.of("Air Attack", (attackRolls > 1 ? (attackRolls + "x") : "") + getAirAttack(player)));
+    if (getAirAttack(player) > 0
+        && (getIsStrategicBomber() || getCanEscort() || getCanAirBattle())) {
+      tuples.add(
+          Tuple.of(
+              "Air Attack", (attackRolls > 1 ? (attackRolls + "x") : "") + getAirAttack(player)));
     }
     if (getAirDefense(player) > 0 && (getCanIntercept() || getCanAirBattle())) {
-      tuples.add(Tuple.of("Air Defense", (defenseRolls > 1 ? (defenseRolls + "x") : "") + getAirDefense(player)));
+      tuples.add(
+          Tuple.of(
+              "Air Defense",
+              (defenseRolls > 1 ? (defenseRolls + "x") : "") + getAirDefense(player)));
     }
 
     if (getCanEvade()) {
@@ -3098,8 +3403,10 @@ public class UnitAttachment extends DefaultAttachment {
     if (getTransportCost() > -1) {
       tuples.add(Tuple.of("Transporting Cost", String.valueOf(getTransportCost())));
     }
-    if (getTransportCapacity() > 0 && (getIsSea() || (getIsAir() && playerHasParatroopers(player))
-        || (playerHasMechInf(player) && !getIsSea() && !getIsAir()))) {
+    if (getTransportCapacity() > 0
+        && (getIsSea()
+            || (getIsAir() && playerHasParatroopers(player))
+            || (playerHasMechInf(player) && !getIsSea() && !getIsAir()))) {
       tuples.add(Tuple.of("Transporting Capacity", String.valueOf(getTransportCapacity())));
     }
 
@@ -3118,40 +3425,51 @@ public class UnitAttachment extends DefaultAttachment {
       tuples.add(Tuple.of("Max Built Allowed", String.valueOf(getMaxBuiltPerPlayer())));
     }
 
-    if (getRepairsUnits() != null && !getRepairsUnits().isEmpty()
+    if (getRepairsUnits() != null
+        && !getRepairsUnits().isEmpty()
         && Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
         && (Properties.getBattleshipsRepairAtBeginningOfRound(getData())
             || Properties.getBattleshipsRepairAtEndOfRound(getData()))) {
       if (getRepairsUnits().size() <= 4) {
         tuples.add(
-            Tuple.of("Can Repair", MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false)));
+            Tuple.of(
+                "Can Repair",
+                MyFormatter.integerDefaultNamedMapToString(getRepairsUnits(), " ", "=", false)));
       } else {
         tuples.add(Tuple.of("Can Repair some Units", ""));
       }
     }
 
-    if (getGivesMovement() != null && getGivesMovement().totalValues() > 0
+    if (getGivesMovement() != null
+        && getGivesMovement().totalValues() > 0
         && Properties.getUnitsMayGiveBonusMovement(getData())) {
       if (getGivesMovement().size() <= 4) {
-        tuples.add(Tuple.of("Can Modify Unit Movement",
-            MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false)));
+        tuples.add(
+            Tuple.of(
+                "Can Modify Unit Movement",
+                MyFormatter.integerDefaultNamedMapToString(getGivesMovement(), " ", "=", false)));
       } else {
         tuples.add(Tuple.of("Can Modify Unit Movement", ""));
       }
     }
 
     if (getConsumesUnits() != null && getConsumesUnits().totalValues() == 1) {
-      tuples.add(Tuple.of("Unit is an Upgrade Of", getConsumesUnits().keySet().iterator().next().getName()));
+      tuples.add(
+          Tuple.of(
+              "Unit is an Upgrade Of", getConsumesUnits().keySet().iterator().next().getName()));
     } else if (getConsumesUnits() != null && getConsumesUnits().totalValues() > 0) {
       if (getConsumesUnits().size() <= 4) {
-        tuples.add(Tuple.of("Unit Consumes on Placement",
-            MyFormatter.integerDefaultNamedMapToString(getConsumesUnits(), " ", "x", true)));
+        tuples.add(
+            Tuple.of(
+                "Unit Consumes on Placement",
+                MyFormatter.integerDefaultNamedMapToString(getConsumesUnits(), " ", "x", true)));
       } else {
         tuples.add(Tuple.of("Unit Consumes Other Units on Placement", ""));
       }
     }
 
-    if (getRequiresUnits() != null && getRequiresUnits().size() > 0
+    if (getRequiresUnits() != null
+        && getRequiresUnits().size() > 0
         && Properties.getUnitPlacementRestrictions(getData())) {
       final List<String> totalUnitsListed = new ArrayList<>();
       for (final String[] list : getRequiresUnits()) {
@@ -3181,13 +3499,16 @@ public class UnitAttachment extends DefaultAttachment {
       if (getUnitPlacementRestrictions().length > 4) {
         tuples.add(Tuple.of("Has Placement Restrictions", ""));
       } else {
-        tuples.add(Tuple.of("Placement Restrictions", Arrays.toString(getUnitPlacementRestrictions())));
+        tuples.add(
+            Tuple.of("Placement Restrictions", Arrays.toString(getUnitPlacementRestrictions())));
       }
     }
     if (getCanOnlyBePlacedInTerritoryValuedAtX() > 0
         && Properties.getUnitPlacementRestrictions(getData())) {
-      tuples.add(Tuple.of("Must be Placed in Territory with Value of at Least",
-          String.valueOf(getCanOnlyBePlacedInTerritoryValuedAtX())));
+      tuples.add(
+          Tuple.of(
+              "Must be Placed in Territory with Value of at Least",
+              String.valueOf(getCanOnlyBePlacedInTerritoryValuedAtX())));
     }
 
     if (getCanNotMoveDuringCombatMove()) {
@@ -3200,10 +3521,13 @@ public class UnitAttachment extends DefaultAttachment {
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
-        tuples.add(Tuple.of("Max " + getMovementLimit().getSecond() + " Units Moving per Territory", "1"));
+        tuples.add(
+            Tuple.of("Max " + getMovementLimit().getSecond() + " Units Moving per Territory", "1"));
       } else if (getMovementLimit().getFirst() < 10000) {
-        tuples.add(Tuple.of("Max " + getMovementLimit().getSecond() + " Units Moving per Territory",
-            String.valueOf(getMovementLimit().getFirst())));
+        tuples.add(
+            Tuple.of(
+                "Max " + getMovementLimit().getSecond() + " Units Moving per Territory",
+                String.valueOf(getMovementLimit().getFirst())));
       }
     }
 
@@ -3213,10 +3537,14 @@ public class UnitAttachment extends DefaultAttachment {
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
-        tuples.add(Tuple.of("Max " + getAttackingLimit().getSecond() + " Units Attacking per Territory", "1"));
+        tuples.add(
+            Tuple.of(
+                "Max " + getAttackingLimit().getSecond() + " Units Attacking per Territory", "1"));
       } else if (getAttackingLimit().getFirst() < 10000) {
-        tuples.add(Tuple.of("Max " + getAttackingLimit().getSecond() + " Units Attacking per Territory",
-            String.valueOf(getAttackingLimit().getFirst())));
+        tuples.add(
+            Tuple.of(
+                "Max " + getAttackingLimit().getSecond() + " Units Attacking per Territory",
+                String.valueOf(getAttackingLimit().getFirst())));
       }
     }
 
@@ -3226,10 +3554,14 @@ public class UnitAttachment extends DefaultAttachment {
           && !(Properties.getWW2V2(getData())
               || Properties.getWW2V3(getData())
               || Properties.getMultipleAaPerTerritory(getData()))) {
-        tuples.add(Tuple.of("Max " + getPlacementLimit().getSecond() + " Units Placed per Territory", "1"));
+        tuples.add(
+            Tuple.of(
+                "Max " + getPlacementLimit().getSecond() + " Units Placed per Territory", "1"));
       } else if (getPlacementLimit().getFirst() < 10000) {
-        tuples.add(Tuple.of("Max " + getPlacementLimit().getSecond() + " Units Placed per Territory",
-            String.valueOf(getPlacementLimit().getFirst())));
+        tuples.add(
+            Tuple.of(
+                "Max " + getPlacementLimit().getSecond() + " Units Placed per Territory",
+                String.valueOf(getPlacementLimit().getFirst())));
       }
     }
 
@@ -3244,8 +3576,8 @@ public class UnitAttachment extends DefaultAttachment {
     return result.toString();
   }
 
-  private static <T extends DefaultNamed> void addIntegerMapDescription(final String key,
-      final IntegerMap<T> integerMap, final List<Tuple<String, String>> tuples) {
+  private static <T extends DefaultNamed> void addIntegerMapDescription(
+      final String key, final IntegerMap<T> integerMap, final List<Tuple<String, String>> tuples) {
     if (integerMap != null && integerMap.size() > 0) {
       final StringBuilder sb = new StringBuilder();
       if (integerMap.size() > 4) {
@@ -3259,23 +3591,35 @@ public class UnitAttachment extends DefaultAttachment {
     }
   }
 
-  private void addAaDescription(final String startOfKey, final int aa, final int aaMaxDieSides,
+  private void addAaDescription(
+      final String startOfKey,
+      final int aa,
+      final int aaMaxDieSides,
       final List<Tuple<String, String>> tuples) {
-    if ((getIsAaForCombatOnly() || getIsAaForBombingThisUnitOnly() || getIsAaForFlyOverOnly()) && (aa > 0)) {
-      final String string = aa + "/"
-          + (aaMaxDieSides != -1 ? aaMaxDieSides : getData().getDiceSides())
-          + " " + getTypeAa()
-          + " with " + (getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited")
-          + " Attacks for " + (getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited") + " Rounds";
+    if ((getIsAaForCombatOnly() || getIsAaForBombingThisUnitOnly() || getIsAaForFlyOverOnly())
+        && (aa > 0)) {
+      final String string =
+          aa
+              + "/"
+              + (aaMaxDieSides != -1 ? aaMaxDieSides : getData().getDiceSides())
+              + " "
+              + getTypeAa()
+              + " with "
+              + (getMaxAaAttacks() > -1 ? getMaxAaAttacks() : "Unlimited")
+              + " Attacks for "
+              + (getMaxRoundsAa() > -1 ? getMaxRoundsAa() : "Unlimited")
+              + " Rounds";
       tuples.add(Tuple.of(startOfKey + getAaKey(), string));
     }
   }
 
   private String getAaKey() {
-    if (getIsAaForCombatOnly() && getIsAaForFlyOverOnly()
+    if (getIsAaForCombatOnly()
+        && getIsAaForFlyOverOnly()
         && !Properties.getAaTerritoryRestricted(getData())) {
       return " for Combat & Move Through";
-    } else if (getIsAaForBombingThisUnitOnly() && getIsAaForFlyOverOnly()
+    } else if (getIsAaForBombingThisUnitOnly()
+        && getIsAaForFlyOverOnly()
         && !Properties.getAaTerritoryRestricted(getData())) {
       return " for Raids & Move Through";
     } else if (getIsAaForCombatOnly()) {
@@ -3297,674 +3641,687 @@ public class UnitAttachment extends DefaultAttachment {
   @Override
   public Map<String, MutableProperty<?>> getPropertyMap() {
     return ImmutableMap.<String, MutableProperty<?>>builder()
-        .put("isAir",
+        .put(
+            "isAir",
+            MutableProperty.of(this::setIsAir, this::setIsAir, this::getIsAir, this::resetIsAir))
+        .put(
+            "isMechanized", // kept for map compatibility; remove upon next map-incompatible release
+            MutableProperty.ofWriteOnlyString(s -> {}))
+        .put(
+            "isParatroop", // kept for map compatibility; remove upon next map-incompatible release
+            MutableProperty.ofWriteOnlyString(s -> {}))
+        .put(
+            "isSea",
+            MutableProperty.of(this::setIsSea, this::setIsSea, this::getIsSea, this::resetIsSea))
+        .put(
+            "movement",
             MutableProperty.of(
-                this::setIsAir,
-                this::setIsAir,
-                this::getIsAir,
-                this::resetIsAir))
-        .put("isMechanized", // kept for map compatibility; remove upon next map-incompatible release
-            MutableProperty.ofWriteOnlyString(
-                s -> {
-                }))
-        .put("isParatroop", // kept for map compatibility; remove upon next map-incompatible release
-            MutableProperty.ofWriteOnlyString(
-                s -> {
-                }))
-        .put("isSea",
+                this::setMovement, this::setMovement, this::getMovement, this::resetMovement))
+        .put(
+            "canBlitz",
             MutableProperty.of(
-                this::setIsSea,
-                this::setIsSea,
-                this::getIsSea,
-                this::resetIsSea))
-        .put("movement",
-            MutableProperty.of(
-                this::setMovement,
-                this::setMovement,
-                this::getMovement,
-                this::resetMovement))
-        .put("canBlitz",
-            MutableProperty.of(
-                this::setCanBlitz,
-                this::setCanBlitz,
-                this::getCanBlitz,
-                this::resetCanBlitz))
-        .put("isKamikaze",
+                this::setCanBlitz, this::setCanBlitz, this::getCanBlitz, this::resetCanBlitz))
+        .put(
+            "isKamikaze",
             MutableProperty.of(
                 this::setIsKamikaze,
                 this::setIsKamikaze,
                 this::getIsKamikaze,
                 this::resetIsKamikaze))
-        .put("canInvadeOnlyFrom",
+        .put(
+            "canInvadeOnlyFrom",
             MutableProperty.of(
                 this::setCanInvadeOnlyFrom,
                 this::setCanInvadeOnlyFrom,
                 this::getCanInvadeOnlyFrom,
                 this::resetCanInvadeOnlyFrom))
-        .put("fuelCost",
+        .put(
+            "fuelCost",
             MutableProperty.of(
-                this::setFuelCost,
-                this::setFuelCost,
-                this::getFuelCost,
-                this::resetFuelCost))
-        .put("fuelFlatCost",
+                this::setFuelCost, this::setFuelCost, this::getFuelCost, this::resetFuelCost))
+        .put(
+            "fuelFlatCost",
             MutableProperty.of(
                 this::setFuelFlatCost,
                 this::setFuelFlatCost,
                 this::getFuelFlatCost,
                 this::resetFuelFlatCost))
-        .put("canNotMoveDuringCombatMove",
+        .put(
+            "canNotMoveDuringCombatMove",
             MutableProperty.of(
                 this::setCanNotMoveDuringCombatMove,
                 this::setCanNotMoveDuringCombatMove,
                 this::getCanNotMoveDuringCombatMove,
                 this::resetCanNotMoveDuringCombatMove))
-        .put("movementLimit",
+        .put(
+            "movementLimit",
             MutableProperty.of(
                 this::setMovementLimit,
                 this::setMovementLimit,
                 this::getMovementLimit,
                 this::resetMovementLimit))
-        .put("attack",
+        .put(
+            "attack",
             MutableProperty.of(
-                this::setAttack,
-                this::setAttack,
-                this::getAttack,
-                this::resetAttack))
-        .put("defense",
+                this::setAttack, this::setAttack, this::getAttack, this::resetAttack))
+        .put(
+            "defense",
             MutableProperty.of(
-                this::setDefense,
-                this::setDefense,
-                this::getDefense,
-                this::resetDefense))
-        .put("isInfrastructure",
+                this::setDefense, this::setDefense, this::getDefense, this::resetDefense))
+        .put(
+            "isInfrastructure",
             MutableProperty.of(
                 this::setIsInfrastructure,
                 this::setIsInfrastructure,
                 this::getIsInfrastructure,
                 this::resetIsInfrastructure))
-        .put("canBombard",
+        .put(
+            "canBombard",
             MutableProperty.of(
                 this::setCanBombard,
                 this::setCanBombard,
                 this::getCanBombard,
                 this::resetCanBombard))
-        .put("bombard",
+        .put(
+            "bombard",
             MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setBombard,
-                this::getBombard,
-                () -> -1))
-        .put("isSub",
-            MutableProperty.<Boolean>ofWriteOnly(
-                this::setIsSub,
-                this::setIsSub))
-        .put("canEvade",
+                DefaultAttachment::getInt, this::setBombard, this::getBombard, () -> -1))
+        .put("isSub", MutableProperty.<Boolean>ofWriteOnly(this::setIsSub, this::setIsSub))
+        .put(
+            "canEvade",
             MutableProperty.ofMapper(
-                DefaultAttachment::getBool,
-                this::setCanEvade,
-                this::getCanEvade,
-                () -> false))
-        .put("isFirstStrike",
+                DefaultAttachment::getBool, this::setCanEvade, this::getCanEvade, () -> false))
+        .put(
+            "isFirstStrike",
             MutableProperty.ofMapper(
                 DefaultAttachment::getBool,
                 this::setIsFirstStrike,
                 this::getIsFirstStrike,
                 () -> false))
-        .put("canNotTarget",
+        .put(
+            "canNotTarget",
             MutableProperty.of(
                 this::setCanNotTarget,
                 this::setCanNotTarget,
                 this::getCanNotTarget,
                 this::resetCanNotTarget))
-        .put("canNotBeTargetedBy",
+        .put(
+            "canNotBeTargetedBy",
             MutableProperty.of(
                 this::setCanNotBeTargetedBy,
                 this::setCanNotBeTargetedBy,
                 this::getCanNotBeTargetedBy,
                 this::resetCanNotBeTargetedBy))
-        .put("canMoveThroughEnemies",
+        .put(
+            "canMoveThroughEnemies",
             MutableProperty.ofMapper(
                 DefaultAttachment::getBool,
                 this::setCanMoveThroughEnemies,
                 this::getCanMoveThroughEnemies,
                 () -> false))
-        .put("canBeMovedThroughByEnemies",
+        .put(
+            "canBeMovedThroughByEnemies",
             MutableProperty.ofMapper(
                 DefaultAttachment::getBool,
                 this::setCanBeMovedThroughByEnemies,
                 this::getCanBeMovedThroughByEnemies,
                 () -> false))
-        .put("isDestroyer",
+        .put(
+            "isDestroyer",
             MutableProperty.of(
                 this::setIsDestroyer,
                 this::setIsDestroyer,
                 this::getIsDestroyer,
                 this::resetIsDestroyer))
-        .put("artillery",
+        .put(
+            "artillery",
             MutableProperty.of(
-                this::setArtillery,
-                this::setArtillery,
-                this::getArtillery,
-                this::resetArtillery))
-        .put("artillerySupportable",
+                this::setArtillery, this::setArtillery, this::getArtillery, this::resetArtillery))
+        .put(
+            "artillerySupportable",
             MutableProperty.of(
                 this::setArtillerySupportable,
                 this::setArtillerySupportable,
                 this::getArtillerySupportable,
                 this::resetArtillerySupportable))
-        .put("unitSupportCount",
+        .put(
+            "unitSupportCount",
             MutableProperty.of(
                 this::setUnitSupportCount,
                 this::setUnitSupportCount,
                 this::getUnitSupportCount,
                 this::resetUnitSupportCount))
-        .put("isMarine",
+        .put(
+            "isMarine",
             MutableProperty.of(
-                this::setIsMarine,
-                this::setIsMarine,
-                this::getIsMarine,
-                this::resetIsMarine))
-        .put("isSuicide",
+                this::setIsMarine, this::setIsMarine, this::getIsMarine, this::resetIsMarine))
+        .put(
+            "isSuicide",
             MutableProperty.of(
-                this::setIsSuicide,
-                this::setIsSuicide,
-                this::getIsSuicide,
-                this::resetIsSuicide))
-        .put("isSuicideOnHit",
+                this::setIsSuicide, this::setIsSuicide, this::getIsSuicide, this::resetIsSuicide))
+        .put(
+            "isSuicideOnHit",
             MutableProperty.of(
                 this::setIsSuicideOnHit,
                 this::setIsSuicideOnHit,
                 this::getIsSuicideOnHit,
                 this::resetIsSuicideOnHit))
-        .put("attackingLimit",
+        .put(
+            "attackingLimit",
             MutableProperty.of(
                 this::setAttackingLimit,
                 this::setAttackingLimit,
                 this::getAttackingLimit,
                 this::resetAttackingLimit))
-        .put("attackRolls",
+        .put(
+            "attackRolls",
             MutableProperty.of(
                 this::setAttackRolls,
                 this::setAttackRolls,
                 this::getAttackRolls,
                 this::resetAttackRolls))
-        .put("defenseRolls",
+        .put(
+            "defenseRolls",
             MutableProperty.of(
                 this::setDefenseRolls,
                 this::setDefenseRolls,
                 this::getDefenseRolls,
                 this::resetDefenseRolls))
-        .put("chooseBestRoll",
+        .put(
+            "chooseBestRoll",
             MutableProperty.of(
                 this::setChooseBestRoll,
                 this::setChooseBestRoll,
                 this::getChooseBestRoll,
                 this::resetChooseBestRoll))
-        .put("isCombatTransport",
+        .put(
+            "isCombatTransport",
             MutableProperty.of(
                 this::setIsCombatTransport,
                 this::setIsCombatTransport,
                 this::getIsCombatTransport,
                 this::resetIsCombatTransport))
-        .put("transportCapacity",
+        .put(
+            "transportCapacity",
             MutableProperty.ofMapper(
                 DefaultAttachment::getInt,
                 this::setTransportCapacity,
                 this::getTransportCapacity,
                 () -> -1))
-        .put("transportCost",
+        .put(
+            "transportCost",
             MutableProperty.ofMapper(
                 DefaultAttachment::getInt,
                 this::setTransportCost,
                 this::getTransportCost,
                 () -> -1))
-        .put("carrierCapacity",
+        .put(
+            "carrierCapacity",
             MutableProperty.of(
                 this::setCarrierCapacity,
                 this::setCarrierCapacity,
                 this::getCarrierCapacity,
                 this::resetCarrierCapacity))
-        .put("carrierCost",
+        .put(
+            "carrierCost",
             MutableProperty.of(
                 this::setCarrierCost,
                 this::setCarrierCost,
                 this::getCarrierCost,
                 this::resetCarrierCost))
-        .put("isAirTransport",
+        .put(
+            "isAirTransport",
             MutableProperty.of(
                 this::setIsAirTransport,
                 this::setIsAirTransport,
                 this::getIsAirTransport,
                 this::resetIsAirTransport))
-        .put("isAirTransportable",
+        .put(
+            "isAirTransportable",
             MutableProperty.of(
                 this::setIsAirTransportable,
                 this::setIsAirTransportable,
                 this::getIsAirTransportable,
                 this::resetIsAirTransportable))
-        .put("isInfantry", // kept for map compatibility; remove upon next map-incompatible release
+        .put(
+            "isInfantry", // kept for map compatibility; remove upon next map-incompatible release
             MutableProperty.of(
                 this::setIsLandTransportable,
                 this::setIsLandTransportable,
                 this::getIsLandTransportable,
                 this::resetIsLandTransportable))
-        .put("isLandTransport",
+        .put(
+            "isLandTransport",
             MutableProperty.of(
                 this::setIsLandTransport,
                 this::setIsLandTransport,
                 this::getIsLandTransport,
                 this::resetIsLandTransport))
-        .put("isLandTransportable",
+        .put(
+            "isLandTransportable",
             MutableProperty.of(
                 this::setIsLandTransportable,
                 this::setIsLandTransportable,
                 this::getIsLandTransportable,
                 this::resetIsLandTransportable))
-        .put("isAAforCombatOnly",
+        .put(
+            "isAAforCombatOnly",
             MutableProperty.of(
                 this::setIsAaForCombatOnly,
                 this::setIsAaForCombatOnly,
                 this::getIsAaForCombatOnly,
                 this::resetIsAaForCombatOnly))
-        .put("isAAforBombingThisUnitOnly",
+        .put(
+            "isAAforBombingThisUnitOnly",
             MutableProperty.of(
                 this::setIsAaForBombingThisUnitOnly,
                 this::setIsAaForBombingThisUnitOnly,
                 this::getIsAaForBombingThisUnitOnly,
                 this::resetIsAaForBombingThisUnitOnly))
-        .put("isAAforFlyOverOnly",
+        .put(
+            "isAAforFlyOverOnly",
             MutableProperty.of(
                 this::setIsAaForFlyOverOnly,
                 this::setIsAaForFlyOverOnly,
                 this::getIsAaForFlyOverOnly,
                 this::resetIsAaForFlyOverOnly))
-        .put("isRocket",
+        .put(
+            "isRocket",
             MutableProperty.of(
-                this::setIsRocket,
-                this::setIsRocket,
-                this::getIsRocket,
-                this::resetIsRocket))
-        .put("attackAA",
+                this::setIsRocket, this::setIsRocket, this::getIsRocket, this::resetIsRocket))
+        .put(
+            "attackAA",
             MutableProperty.of(
-                this::setAttackAa,
-                this::setAttackAa,
-                this::getAttackAa,
-                this::resetAttackAa))
-        .put("offensiveAttackAA",
+                this::setAttackAa, this::setAttackAa, this::getAttackAa, this::resetAttackAa))
+        .put(
+            "offensiveAttackAA",
             MutableProperty.of(
                 this::setOffensiveAttackAa,
                 this::setOffensiveAttackAa,
                 this::getOffensiveAttackAa,
                 this::resetOffensiveAttackAa))
-        .put("attackAAmaxDieSides",
+        .put(
+            "attackAAmaxDieSides",
             MutableProperty.of(
                 this::setAttackAaMaxDieSides,
                 this::setAttackAaMaxDieSides,
                 this::getAttackAaMaxDieSides,
                 this::resetAttackAaMaxDieSides))
-        .put("offensiveAttackAAmaxDieSides",
+        .put(
+            "offensiveAttackAAmaxDieSides",
             MutableProperty.of(
                 this::setOffensiveAttackAaMaxDieSides,
                 this::setOffensiveAttackAaMaxDieSides,
                 this::getOffensiveAttackAaMaxDieSides,
                 this::resetOffensiveAttackAaMaxDieSides))
-        .put("maxAAattacks",
+        .put(
+            "maxAAattacks",
             MutableProperty.of(
                 this::setMaxAaAttacks,
                 this::setMaxAaAttacks,
                 this::getMaxAaAttacks,
                 this::resetMaxAaAttacks))
-        .put("maxRoundsAA",
+        .put(
+            "maxRoundsAA",
             MutableProperty.of(
                 this::setMaxRoundsAa,
                 this::setMaxRoundsAa,
                 this::getMaxRoundsAa,
                 this::resetMaxRoundsAa))
-        .put("typeAA",
-            MutableProperty.ofString(
-                this::setTypeAa,
-                this::getTypeAa,
-                this::resetTypeAa))
-        .put("targetsAA",
+        .put(
+            "typeAA", MutableProperty.ofString(this::setTypeAa, this::getTypeAa, this::resetTypeAa))
+        .put(
+            "targetsAA",
             MutableProperty.of(
-                this::setTargetsAa,
-                this::setTargetsAa,
-                this::getTargetsAa,
-                this::resetTargetsAa))
-        .put("mayOverStackAA",
+                this::setTargetsAa, this::setTargetsAa, this::getTargetsAa, this::resetTargetsAa))
+        .put(
+            "mayOverStackAA",
             MutableProperty.of(
                 this::setMayOverStackAa,
                 this::setMayOverStackAa,
                 this::getMayOverStackAa,
                 this::resetMayOverStackAa))
-        .put("damageableAA",
+        .put(
+            "damageableAA",
             MutableProperty.of(
                 this::setDamageableAa,
                 this::setDamageableAa,
                 this::getDamageableAa,
                 this::resetDamageableAa))
-        .put("willNotFireIfPresent",
+        .put(
+            "willNotFireIfPresent",
             MutableProperty.of(
                 this::setWillNotFireIfPresent,
                 this::setWillNotFireIfPresent,
                 this::getWillNotFireIfPresent,
                 this::resetWillNotFireIfPresent))
-        .put("isStrategicBomber",
+        .put(
+            "isStrategicBomber",
             MutableProperty.of(
                 this::setIsStrategicBomber,
                 this::setIsStrategicBomber,
                 this::getIsStrategicBomber,
                 this::resetIsStrategicBomber))
-        .put("bombingMaxDieSides",
+        .put(
+            "bombingMaxDieSides",
             MutableProperty.of(
                 this::setBombingMaxDieSides,
                 this::setBombingMaxDieSides,
                 this::getBombingMaxDieSides,
                 this::resetBombingMaxDieSides))
-        .put("bombingBonus",
+        .put(
+            "bombingBonus",
             MutableProperty.of(
                 this::setBombingBonus,
                 this::setBombingBonus,
                 this::getBombingBonus,
                 this::resetBombingBonus))
-        .put("canIntercept",
+        .put(
+            "canIntercept",
             MutableProperty.of(
                 this::setCanIntercept,
                 this::setCanIntercept,
                 this::getCanIntercept,
                 this::resetCanIntercept))
-        .put("requiresAirbaseToIntercept",
+        .put(
+            "requiresAirbaseToIntercept",
             MutableProperty.of(
                 this::setRequiresAirBaseToIntercept,
                 this::setRequiresAirBaseToIntercept,
                 this::getRequiresAirBaseToIntercept,
                 this::resetRequiresAirBaseToIntercept))
-        .put("canEscort",
+        .put(
+            "canEscort",
             MutableProperty.of(
-                this::setCanEscort,
-                this::setCanEscort,
-                this::getCanEscort,
-                this::resetCanEscort))
-        .put("canAirBattle",
+                this::setCanEscort, this::setCanEscort, this::getCanEscort, this::resetCanEscort))
+        .put(
+            "canAirBattle",
             MutableProperty.of(
                 this::setCanAirBattle,
                 this::setCanAirBattle,
                 this::getCanAirBattle,
                 this::resetCanAirBattle))
-        .put("airDefense",
+        .put(
+            "airDefense",
             MutableProperty.of(
                 this::setAirDefense,
                 this::setAirDefense,
                 this::getAirDefense,
                 this::resetAirDefense))
-        .put("airAttack",
+        .put(
+            "airAttack",
             MutableProperty.of(
-                this::setAirAttack,
-                this::setAirAttack,
-                this::getAirAttack,
-                this::resetAirAttack))
-        .put("bombingTargets",
+                this::setAirAttack, this::setAirAttack, this::getAirAttack, this::resetAirAttack))
+        .put(
+            "bombingTargets",
             MutableProperty.of(
                 this::setBombingTargets,
                 this::setBombingTargets,
                 this::getBombingTargets,
                 this::resetBombingTargets))
-        .put("canProduceUnits",
+        .put(
+            "canProduceUnits",
             MutableProperty.of(
                 this::setCanProduceUnits,
                 this::setCanProduceUnits,
                 this::getCanProduceUnits,
                 this::resetCanProduceUnits))
-        .put("canProduceXUnits",
+        .put(
+            "canProduceXUnits",
             MutableProperty.of(
                 this::setCanProduceXUnits,
                 this::setCanProduceXUnits,
                 this::getCanProduceXUnits,
                 this::resetCanProduceXUnits))
-        .put("createsUnitsList",
+        .put(
+            "createsUnitsList",
             MutableProperty.of(
                 this::setCreatesUnitsList,
                 this::setCreatesUnitsList,
                 this::getCreatesUnitsList,
                 this::resetCreatesUnitsList))
-        .put("createsResourcesList",
+        .put(
+            "createsResourcesList",
             MutableProperty.of(
                 this::setCreatesResourcesList,
                 this::setCreatesResourcesList,
                 this::getCreatesResourcesList,
                 this::resetCreatesResourcesList))
-        .put("hitPoints",
+        .put(
+            "hitPoints",
             MutableProperty.ofMapper(
-                DefaultAttachment::getInt,
-                this::setHitPoints,
-                this::getHitPoints,
-                () -> 1))
-        .put("canBeDamaged",
+                DefaultAttachment::getInt, this::setHitPoints, this::getHitPoints, () -> 1))
+        .put(
+            "canBeDamaged",
             MutableProperty.of(
                 this::setCanBeDamaged,
                 this::setCanBeDamaged,
                 this::getCanBeDamaged,
                 this::resetCanBeDamaged))
-        .put("maxDamage",
+        .put(
+            "maxDamage",
             MutableProperty.of(
-                this::setMaxDamage,
-                this::setMaxDamage,
-                this::getMaxDamage,
-                this::resetMaxDamage))
-        .put("maxOperationalDamage",
+                this::setMaxDamage, this::setMaxDamage, this::getMaxDamage, this::resetMaxDamage))
+        .put(
+            "maxOperationalDamage",
             MutableProperty.of(
                 this::setMaxOperationalDamage,
                 this::setMaxOperationalDamage,
                 this::getMaxOperationalDamage,
                 this::resetMaxOperationalDamage))
-        .put("canDieFromReachingMaxDamage",
+        .put(
+            "canDieFromReachingMaxDamage",
             MutableProperty.of(
                 this::setCanDieFromReachingMaxDamage,
                 this::setCanDieFromReachingMaxDamage,
                 this::getCanDieFromReachingMaxDamage,
                 this::resetCanDieFromReachingMaxDamage))
-        .put("isConstruction",
+        .put(
+            "isConstruction",
             MutableProperty.of(
                 this::setIsConstruction,
                 this::setIsConstruction,
                 this::getIsConstruction,
                 this::resetIsConstruction))
-        .put("constructionType",
+        .put(
+            "constructionType",
             MutableProperty.ofString(
-                this::setConstructionType,
-                this::getConstructionType,
-                this::resetConstructionType))
-        .put("constructionsPerTerrPerTypePerTurn",
+                this::setConstructionType, this::getConstructionType, this::resetConstructionType))
+        .put(
+            "constructionsPerTerrPerTypePerTurn",
             MutableProperty.of(
                 this::setConstructionsPerTerrPerTypePerTurn,
                 this::setConstructionsPerTerrPerTypePerTurn,
                 this::getConstructionsPerTerrPerTypePerTurn,
                 this::resetConstructionsPerTerrPerTypePerTurn))
-        .put("maxConstructionsPerTypePerTerr",
+        .put(
+            "maxConstructionsPerTypePerTerr",
             MutableProperty.of(
                 this::setMaxConstructionsPerTypePerTerr,
                 this::setMaxConstructionsPerTypePerTerr,
                 this::getMaxConstructionsPerTypePerTerr,
                 this::resetMaxConstructionsPerTypePerTerr))
-        .put("canOnlyBePlacedInTerritoryValuedAtX",
+        .put(
+            "canOnlyBePlacedInTerritoryValuedAtX",
             MutableProperty.of(
                 this::setCanOnlyBePlacedInTerritoryValuedAtX,
                 this::setCanOnlyBePlacedInTerritoryValuedAtX,
                 this::getCanOnlyBePlacedInTerritoryValuedAtX,
                 this::resetCanOnlyBePlacedInTerritoryValuedAtX))
-        .put("requiresUnits",
+        .put(
+            "requiresUnits",
             MutableProperty.of(
                 this::setRequiresUnits,
                 this::setRequiresUnits,
                 this::getRequiresUnits,
                 this::resetRequiresUnits))
-        .put("consumesUnits",
+        .put(
+            "consumesUnits",
             MutableProperty.of(
                 this::setConsumesUnits,
                 this::setConsumesUnits,
                 this::getConsumesUnits,
                 this::resetConsumesUnits))
-        .put("requiresUnitsToMove",
+        .put(
+            "requiresUnitsToMove",
             MutableProperty.of(
                 this::setRequiresUnitsToMove,
                 this::setRequiresUnitsToMove,
                 this::getRequiresUnitsToMove,
                 this::resetRequiresUnitsToMove))
-        .put("unitPlacementRestrictions",
+        .put(
+            "unitPlacementRestrictions",
             MutableProperty.of(
                 this::setUnitPlacementRestrictions,
                 this::setUnitPlacementRestrictions,
                 this::getUnitPlacementRestrictions,
                 this::resetUnitPlacementRestrictions))
-        .put("maxBuiltPerPlayer",
+        .put(
+            "maxBuiltPerPlayer",
             MutableProperty.of(
                 this::setMaxBuiltPerPlayer,
                 this::setMaxBuiltPerPlayer,
                 this::getMaxBuiltPerPlayer,
                 this::resetMaxBuiltPerPlayer))
-        .put("placementLimit",
+        .put(
+            "placementLimit",
             MutableProperty.of(
                 this::setPlacementLimit,
                 this::setPlacementLimit,
                 this::getPlacementLimit,
                 this::resetPlacementLimit))
-        .put("canScramble",
+        .put(
+            "canScramble",
             MutableProperty.of(
                 this::setCanScramble,
                 this::setCanScramble,
                 this::getCanScramble,
                 this::resetCanScramble))
-        .put("isAirBase",
+        .put(
+            "isAirBase",
             MutableProperty.of(
-                this::setIsAirBase,
-                this::setIsAirBase,
-                this::getIsAirBase,
-                this::resetIsAirBase))
-        .put("maxScrambleDistance",
+                this::setIsAirBase, this::setIsAirBase, this::getIsAirBase, this::resetIsAirBase))
+        .put(
+            "maxScrambleDistance",
             MutableProperty.of(
                 this::setMaxScrambleDistance,
                 this::setMaxScrambleDistance,
                 this::getMaxScrambleDistance,
                 this::resetMaxScrambleDistance))
-        .put("maxScrambleCount",
+        .put(
+            "maxScrambleCount",
             MutableProperty.of(
                 this::setMaxScrambleCount,
                 this::setMaxScrambleCount,
                 this::getMaxScrambleCount,
                 this::resetMaxScrambleCount))
-        .put("maxInterceptCount",
+        .put(
+            "maxInterceptCount",
             MutableProperty.of(
                 this::setMaxInterceptCount,
                 this::setMaxInterceptCount,
                 this::getMaxInterceptCount,
                 this::resetMaxInterceptCount))
-        .put("blockade",
+        .put(
+            "blockade",
             MutableProperty.of(
-                this::setBlockade,
-                this::setBlockade,
-                this::getBlockade,
-                this::resetBlockade))
-        .put("repairsUnits",
+                this::setBlockade, this::setBlockade, this::getBlockade, this::resetBlockade))
+        .put(
+            "repairsUnits",
             MutableProperty.of(
                 this::setRepairsUnits,
                 this::setRepairsUnits,
                 this::getRepairsUnits,
                 this::resetRepairsUnits))
-        .put("givesMovement",
+        .put(
+            "givesMovement",
             MutableProperty.of(
                 this::setGivesMovement,
                 this::setGivesMovement,
                 this::getGivesMovement,
                 this::resetGivesMovement))
-        .put("destroyedWhenCapturedBy",
+        .put(
+            "destroyedWhenCapturedBy",
             MutableProperty.of(
                 this::setDestroyedWhenCapturedBy,
                 this::setDestroyedWhenCapturedBy,
                 this::getDestroyedWhenCapturedBy,
                 this::resetDestroyedWhenCapturedBy))
-        .put("whenHitPointsDamagedChangesInto",
+        .put(
+            "whenHitPointsDamagedChangesInto",
             MutableProperty.of(
                 this::setWhenHitPointsDamagedChangesInto,
                 this::setWhenHitPointsDamagedChangesInto,
                 this::getWhenHitPointsDamagedChangesInto,
                 this::resetWhenHitPointsDamagedChangesInto))
-        .put("whenHitPointsRepairedChangesInto",
+        .put(
+            "whenHitPointsRepairedChangesInto",
             MutableProperty.of(
                 this::setWhenHitPointsRepairedChangesInto,
                 this::setWhenHitPointsRepairedChangesInto,
                 this::getWhenHitPointsRepairedChangesInto,
                 this::resetWhenHitPointsRepairedChangesInto))
-        .put("whenCapturedChangesInto",
+        .put(
+            "whenCapturedChangesInto",
             MutableProperty.of(
                 this::setWhenCapturedChangesInto,
                 this::setWhenCapturedChangesInto,
                 this::getWhenCapturedChangesInto,
                 this::resetWhenCapturedChangesInto))
-        .put("whenCapturedSustainsDamage",
+        .put(
+            "whenCapturedSustainsDamage",
             MutableProperty.ofMapper(
                 DefaultAttachment::getInt,
                 this::setWhenCapturedSustainsDamage,
                 this::getWhenCapturedSustainsDamage,
                 () -> 0))
-        .put("canBeCapturedOnEnteringBy",
+        .put(
+            "canBeCapturedOnEnteringBy",
             MutableProperty.of(
                 this::setCanBeCapturedOnEnteringBy,
                 this::setCanBeCapturedOnEnteringBy,
                 this::getCanBeCapturedOnEnteringBy,
                 this::resetCanBeCapturedOnEnteringBy))
-        .put("canBeGivenByTerritoryTo",
+        .put(
+            "canBeGivenByTerritoryTo",
             MutableProperty.of(
                 this::setCanBeGivenByTerritoryTo,
                 this::setCanBeGivenByTerritoryTo,
                 this::getCanBeGivenByTerritoryTo,
                 this::resetCanBeGivenByTerritoryTo))
-        .put("whenCombatDamaged",
+        .put(
+            "whenCombatDamaged",
             MutableProperty.of(
                 this::setWhenCombatDamaged,
                 this::setWhenCombatDamaged,
                 this::getWhenCombatDamaged,
                 this::resetWhenCombatDamaged))
-        .put("receivesAbilityWhenWith",
+        .put(
+            "receivesAbilityWhenWith",
             MutableProperty.of(
                 this::setReceivesAbilityWhenWith,
                 this::setReceivesAbilityWhenWith,
                 this::getReceivesAbilityWhenWith,
                 this::resetReceivesAbilityWhenWith))
-        .put("special",
+        .put(
+            "special",
             MutableProperty.of(
-                this::setSpecial,
-                this::setSpecial,
-                this::getSpecial,
-                this::resetSpecial))
-        .put("tuv",
-            MutableProperty.of(
-                this::setTuv,
-                this::setTuv,
-                this::getTuv,
-                this::resetTuv))
-        .put("isFactory",
-            MutableProperty.<Boolean>ofWriteOnly(
-                this::setIsFactory,
-                this::setIsFactory))
-        .put("isAA",
-            MutableProperty.<Boolean>ofWriteOnly(
-                this::setIsAa,
-                this::setIsAa))
-        .put("destroyedWhenCapturedFrom",
-            MutableProperty.ofWriteOnlyString(
-                this::setDestroyedWhenCapturedFrom))
-        .put("unitPlacementOnlyAllowedIn",
-            MutableProperty.ofWriteOnlyString(
-                this::setUnitPlacementOnlyAllowedIn))
-        .put("isAAmovement",
-            MutableProperty.<Boolean>ofWriteOnly(
-                this::setIsAaMovement,
-                this::setIsAaMovement))
-        .put("isTwoHit",
-            MutableProperty.<Boolean>ofWriteOnly(
-                this::setIsTwoHit,
-                this::setIsTwoHit))
+                this::setSpecial, this::setSpecial, this::getSpecial, this::resetSpecial))
+        .put("tuv", MutableProperty.of(this::setTuv, this::setTuv, this::getTuv, this::resetTuv))
+        .put(
+            "isFactory",
+            MutableProperty.<Boolean>ofWriteOnly(this::setIsFactory, this::setIsFactory))
+        .put("isAA", MutableProperty.<Boolean>ofWriteOnly(this::setIsAa, this::setIsAa))
+        .put(
+            "destroyedWhenCapturedFrom",
+            MutableProperty.ofWriteOnlyString(this::setDestroyedWhenCapturedFrom))
+        .put(
+            "unitPlacementOnlyAllowedIn",
+            MutableProperty.ofWriteOnlyString(this::setUnitPlacementOnlyAllowedIn))
+        .put(
+            "isAAmovement",
+            MutableProperty.<Boolean>ofWriteOnly(this::setIsAaMovement, this::setIsAaMovement))
+        .put("isTwoHit", MutableProperty.<Boolean>ofWriteOnly(this::setIsTwoHit, this::setIsTwoHit))
         .build();
   }
 }

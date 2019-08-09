@@ -3,9 +3,7 @@ package org.triplea.awt;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 
-/**
- * A utility for interacting with the system clipboard, humble object pattern.
- */
+/** A utility for interacting with the system clipboard, humble object pattern. */
 public final class SystemClipboard {
   private SystemClipboard() {}
 

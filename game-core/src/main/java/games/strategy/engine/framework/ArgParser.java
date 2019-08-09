@@ -1,22 +1,17 @@
 package games.strategy.engine.framework;
 
+import games.strategy.triplea.settings.ClientSetting;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
-import games.strategy.triplea.settings.ClientSetting;
-
-/**
- * Command line argument parser, parses args formatted as: "-Pkey=value".
- */
+/** Command line argument parser, parses args formatted as: "-Pkey=value". */
 public final class ArgParser {
   public static final String TRIPLEA_PROTOCOL = "triplea:";
 
   private ArgParser() {}
 
-  /**
-   * Move command line arguments to system properties or client settings.
-   */
+  /** Move command line arguments to system properties or client settings. */
   public static void handleCommandLineArgs(final String... args) {
     ClientSetting.mapFolderOverride.resetValue();
 
@@ -31,7 +26,8 @@ public final class ArgParser {
   }
 
   private static void handleMapDownloadArg(final String arg) {
-    setSystemPropertyOrClientSetting(CliProperties.TRIPLEA_MAP_DOWNLOAD,
+    setSystemPropertyOrClientSetting(
+        CliProperties.TRIPLEA_MAP_DOWNLOAD,
         URLDecoder.decode(arg.substring(TRIPLEA_PROTOCOL.length()), StandardCharsets.UTF_8));
   }
 

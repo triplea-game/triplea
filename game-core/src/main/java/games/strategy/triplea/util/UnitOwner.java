@@ -2,15 +2,12 @@ package games.strategy.triplea.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.Objects;
-
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import java.util.Objects;
 
-/**
- * The combination of a unit type and its owner.
- */
+/** The combination of a unit type and its owner. */
 public final class UnitOwner {
   private final UnitType type;
   private final PlayerId owner;

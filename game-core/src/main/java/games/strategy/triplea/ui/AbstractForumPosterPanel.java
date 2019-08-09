@@ -1,8 +1,5 @@
 package games.strategy.triplea.ui;
 
-import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.history.HistoryNode;
@@ -12,6 +9,8 @@ import games.strategy.engine.pbem.PbemMessagePoster;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 abstract class AbstractForumPosterPanel extends ActionPanel {
   private static final long serialVersionUID = -5084680807785728744L;
@@ -41,10 +40,11 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
   @Override
   public void display(final PlayerId id) {
     super.display(id);
-    SwingUtilities.invokeLater(() -> {
-      actionLabel.setText(id.getName() + " " + getTitle());
-      // defer component layout until waitForEndTurn()
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          actionLabel.setText(id.getName() + " " + getTitle());
+          // defer component layout until waitForEndTurn()
+        });
   }
 
   protected abstract boolean allowIncludeTerritorySummary();
@@ -70,7 +70,8 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
     tripleAFrame = frame;
     playerBridge = bridge;
     // Nothing to do if there are no PBEM messengers
-    pbemMessagePoster = new PbemMessagePoster(getData(), getCurrentPlayer(), getRound(), getTitle());
+    pbemMessagePoster =
+        new PbemMessagePoster(getData(), getCurrentPlayer(), getRound(), getTitle());
     if (!pbemMessagePoster.hasMessengers()) {
       return;
     }
@@ -78,15 +79,22 @@ abstract class AbstractForumPosterPanel extends ActionPanel {
       return;
     }
     final boolean hasPosted = getHasPostedTurnSummary();
-    SwingUtilities.invokeLater(() -> {
-      removeAll();
-      add(actionLabel);
-      add(forumPosterComponent.layoutComponents(pbemMessagePoster, getForumPosterDelegate(),
-          tripleAFrame, hasPosted,
-          allowIncludeTerritorySummary(), allowIncludeProductionSummary(),
-          allowDiceBattleDetails(), allowDiceStatistics()));
-      validate();
-    });
+    SwingUtilities.invokeLater(
+        () -> {
+          removeAll();
+          add(actionLabel);
+          add(
+              forumPosterComponent.layoutComponents(
+                  pbemMessagePoster,
+                  getForumPosterDelegate(),
+                  tripleAFrame,
+                  hasPosted,
+                  allowIncludeTerritorySummary(),
+                  allowIncludeProductionSummary(),
+                  allowDiceBattleDetails(),
+                  allowDiceStatistics()));
+          validate();
+        });
     waitForRelease();
   }
 }

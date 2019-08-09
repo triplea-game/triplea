@@ -1,31 +1,22 @@
 package games.strategy.engine.history;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Optional;
-
-import javax.swing.SwingUtilities;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.triplea.ui.history.HistoryPanel;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Optional;
+import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
- * A history of the game.
- * Stored as a tree, the data is organized as
- * Root
- * - Round
- * - Step
- * - Event
- * - Child
- * Round - the current round in the game, eg 1, 2, 3
- * Step - the current step, eg Britian Combat Move
- * Event - an event that happened in the game, eg Russia buys 8 inf.
+ * A history of the game. Stored as a tree, the data is organized as Root - Round - Step - Event -
+ * Child Round - the current round in the game, eg 1, 2, 3 Step - the current step, eg Britian
+ * Combat Move Event - an event that happened in the game, eg Russia buys 8 inf.
  */
 public class History extends DefaultTreeModel {
   private static final long serialVersionUID = -1769876896869L;
@@ -112,9 +103,7 @@ public class History extends DefaultTreeModel {
     return (lastChange >= firstChange) ? compositeChange : compositeChange.invert();
   }
 
-  /**
-   * Changes the game state to reflect the historical state at {@code node}.
-   */
+  /** Changes the game state to reflect the historical state at {@code node}. */
   public synchronized void gotoNode(final HistoryNode node) {
     assertCorrectThread();
     getGameData().acquireWriteLock();
@@ -133,8 +122,8 @@ public class History extends DefaultTreeModel {
   }
 
   /**
-   * Changes the game state to reflect the historical state at {@code removeAfterNode}, and then removes all changes
-   * that occurred after this node.
+   * Changes the game state to reflect the historical state at {@code removeAfterNode}, and then
+   * removes all changes that occurred after this node.
    */
   public synchronized void removeAllHistoryAfterNode(final HistoryNode removeAfterNode) {
     gotoNode(removeAfterNode);
@@ -145,7 +134,8 @@ public class History extends DefaultTreeModel {
       while (changes.size() > lastChange) {
         changes.remove(lastChange);
       }
-      final Enumeration<?> enumeration = ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
+      final Enumeration<?> enumeration =
+          ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
       enumeration.nextElement();
       boolean startRemoving = false;
       final List<HistoryNode> nodesToRemove = new ArrayList<>();

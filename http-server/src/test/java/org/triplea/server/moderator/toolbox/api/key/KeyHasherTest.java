@@ -5,7 +5,6 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
 import java.util.function.BiFunction;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,8 +24,7 @@ class KeyHasherTest {
     private static final String SALT = "Ahoy, never drink a corsair.";
     private static final String HASHED_PASSWORD = "All skulls desire black, mighty pirates.";
 
-    @Mock
-    private BiFunction<String, String, String> mockHasher;
+    @Mock private BiFunction<String, String, String> mockHasher;
 
     private KeyHasher keyHasher;
 

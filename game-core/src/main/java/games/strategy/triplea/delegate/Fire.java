@@ -1,15 +1,5 @@
 package games.strategy.triplea.delegate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-
-import org.triplea.java.Interruptibles;
-import org.triplea.java.collections.CollectionUtils;
-
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -18,10 +8,16 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import org.triplea.java.Interruptibles;
+import org.triplea.java.collections.CollectionUtils;
 
-/**
- * Maintains the state of a group of units firing during a {@link MustFightBattle}.
- */
+/** Maintains the state of a group of units firing during a {@link MustFightBattle}. */
 public class Fire implements IExecutable {
 
   private static final long serialVersionUID = -3687054738070722403L;
@@ -52,12 +48,23 @@ public class Fire implements IExecutable {
   private Collection<Unit> damaged;
   private boolean confirmOwnCasualties = true;
 
-  Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire,
-      final PlayerId firingPlayer, final PlayerId hitPlayer, final Collection<Unit> firingUnits, final String stepName,
-      final String text, final MustFightBattle battle, final boolean defending,
-      final Map<Unit, Collection<Unit>> dependentUnits, final boolean headless, final Territory battleSite,
-      final Collection<TerritoryEffect> territoryEffects, final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
-    this.attackableUnits = CollectionUtils.getMatches(attackableUnits, Matches.unitIsNotInfrastructure());
+  Fire(
+      final Collection<Unit> attackableUnits,
+      final MustFightBattle.ReturnFire canReturnFire,
+      final PlayerId firingPlayer,
+      final PlayerId hitPlayer,
+      final Collection<Unit> firingUnits,
+      final String stepName,
+      final String text,
+      final MustFightBattle battle,
+      final boolean defending,
+      final Map<Unit, Collection<Unit>> dependentUnits,
+      final boolean headless,
+      final Territory battleSite,
+      final Collection<TerritoryEffect> territoryEffects,
+      final List<Unit> allEnemyUnitsAliveOrWaitingToDie) {
+    this.attackableUnits =
+        CollectionUtils.getMatches(attackableUnits, Matches.unitIsNotInfrastructure());
     this.canReturnFire = canReturnFire;
     this.firingUnits = firingUnits;
     this.stepName = stepName;
@@ -80,42 +87,44 @@ public class Fire implements IExecutable {
     amphibiousLandAttackers = this.battle.getAmphibiousLandAttackers();
   }
 
-  /**
-   * We must execute in atomic steps, push these steps onto the stack, and let them execute.
-   */
+  /** We must execute in atomic steps, push these steps onto the stack, and let them execute. */
   @Override
   public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-    // add to the stack so we will execute, we want to roll dice, select casualties, then notify in that order, so push
+    // add to the stack so we will execute, we want to roll dice, select casualties, then notify in
+    // that order, so push
     // onto the stack in reverse order
-    final IExecutable rollDice = new IExecutable() {
-      private static final long serialVersionUID = 7578210876028725797L;
+    final IExecutable rollDice =
+        new IExecutable() {
+          private static final long serialVersionUID = 7578210876028725797L;
 
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        rollDice(bridge);
-      }
-    };
-    final IExecutable selectCasualties = new IExecutable() {
-      private static final long serialVersionUID = -7687053541570519623L;
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            rollDice(bridge);
+          }
+        };
+    final IExecutable selectCasualties =
+        new IExecutable() {
+          private static final long serialVersionUID = -7687053541570519623L;
 
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        selectCasualties(bridge);
-      }
-    };
-    final IExecutable notifyCasualties = new IExecutable() {
-      private static final long serialVersionUID = -9173385989239225660L;
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            selectCasualties(bridge);
+          }
+        };
+    final IExecutable notifyCasualties =
+        new IExecutable() {
+          private static final long serialVersionUID = -9173385989239225660L;
 
-      @Override
-      public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-        notifyCasualties(bridge);
-        if (damaged != null) {
-          battle.markDamaged(damaged, bridge);
-        }
-        battle.removeCasualties(killed, canReturnFire, !defending, bridge);
-        battle.removeSuicideOnHitCasualties(firingUnits, dice.getHits(), defending, bridge);
-      }
-    };
+          @Override
+          public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
+            notifyCasualties(bridge);
+            if (damaged != null) {
+              battle.markDamaged(damaged, bridge);
+            }
+            battle.removeCasualties(killed, canReturnFire, !defending, bridge);
+            battle.removeSuicideOnHitCasualties(firingUnits, dice.getHits(), defending, bridge);
+          }
+        };
     stack.push(notifyCasualties);
     stack.push(selectCasualties);
     stack.push(rollDice);
@@ -132,21 +141,34 @@ public class Fire implements IExecutable {
     } else {
       annotation = DiceRoll.getAnnotation(units, firingPlayer, battle);
     }
-    dice = DiceRoll.rollDice(units, defending, firingPlayer, bridge, battle, annotation, territoryEffects,
-        allEnemyUnitsAliveOrWaitingToDie);
+    dice =
+        DiceRoll.rollDice(
+            units,
+            defending,
+            firingPlayer,
+            bridge,
+            battle,
+            annotation,
+            territoryEffects,
+            allEnemyUnitsAliveOrWaitingToDie);
   }
 
   private void selectCasualties(final IDelegateBridge bridge) {
     final int hitCount = dice.getHits();
     AbstractBattle.getDisplay(bridge).notifyDice(dice, stepName);
     final int countTransports =
-        CollectionUtils.countMatches(attackableUnits, Matches.unitIsTransport().and(Matches.unitIsSea()));
+        CollectionUtils.countMatches(
+            attackableUnits, Matches.unitIsTransport().and(Matches.unitIsSea()));
     if (countTransports > 0 && Properties.getTransportCasualtiesRestricted(bridge.getData())) {
       final CasualtyDetails message;
-      final Collection<Unit> nonTransports = CollectionUtils.getMatches(attackableUnits,
-          Matches.unitIsNotTransportButCouldBeCombatTransport().or(Matches.unitIsNotSea()));
-      final Collection<Unit> transportsOnly = CollectionUtils.getMatches(attackableUnits,
-          Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea()));
+      final Collection<Unit> nonTransports =
+          CollectionUtils.getMatches(
+              attackableUnits,
+              Matches.unitIsNotTransportButCouldBeCombatTransport().or(Matches.unitIsNotSea()));
+      final Collection<Unit> transportsOnly =
+          CollectionUtils.getMatches(
+              attackableUnits,
+              Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsSea()));
       final int numPossibleHits = AbstractBattle.getMaxHits(nonTransports);
       // more hits than combat units
       if (hitCount > numPossibleHits) {
@@ -158,14 +180,18 @@ public class Fire implements IExecutable {
             alliedHitPlayer.add(unit.getOwner());
           }
         }
-        // Leave enough transports for each defender for overflows so they can select who loses them.
+        // Leave enough transports for each defender for overflows so they can select who loses
+        // them.
         for (final PlayerId player : alliedHitPlayer) {
-          final Predicate<Unit> match = Matches.unitIsTransportButNotCombatTransport()
-              .and(Matches.unitIsOwnedBy(player));
-          final Collection<Unit> playerTransports = CollectionUtils.getMatches(transportsOnly, match);
+          final Predicate<Unit> match =
+              Matches.unitIsTransportButNotCombatTransport().and(Matches.unitIsOwnedBy(player));
+          final Collection<Unit> playerTransports =
+              CollectionUtils.getMatches(transportsOnly, match);
           final int transportsToRemove = Math.max(0, playerTransports.size() - extraHits);
           transportsOnly.removeAll(
-              CollectionUtils.getNMatches(playerTransports, transportsToRemove,
+              CollectionUtils.getNMatches(
+                  playerTransports,
+                  transportsToRemove,
                   Matches.unitIsTransportButNotCombatTransport()));
         }
         killed = nonTransports;
@@ -173,10 +199,24 @@ public class Fire implements IExecutable {
         if (extraHits > transportsOnly.size()) {
           extraHits = transportsOnly.size();
         }
-        message = BattleCalculator.selectCasualties(hitPlayer, transportsOnly,
-            allEnemyUnitsNotIncludingWaitingToDie, allFriendlyUnitsNotIncludingWaitingToDie,
-            isAmphibious, amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, dice,
-            !defending, battleId, headless, extraHits, true);
+        message =
+            BattleCalculator.selectCasualties(
+                hitPlayer,
+                transportsOnly,
+                allEnemyUnitsNotIncludingWaitingToDie,
+                allFriendlyUnitsNotIncludingWaitingToDie,
+                isAmphibious,
+                amphibiousLandAttackers,
+                battleSite,
+                territoryEffects,
+                bridge,
+                text,
+                dice,
+                !defending,
+                battleId,
+                headless,
+                extraHits,
+                true);
         killed.addAll(message.getKilled());
         confirmOwnCasualties = true;
       } else if (hitCount == numPossibleHits) { // exact number of combat units
@@ -184,10 +224,24 @@ public class Fire implements IExecutable {
         damaged = Collections.emptyList();
         confirmOwnCasualties = true;
       } else { // less than possible number
-        message = BattleCalculator.selectCasualties(hitPlayer, nonTransports,
-            allEnemyUnitsNotIncludingWaitingToDie, allFriendlyUnitsNotIncludingWaitingToDie,
-            isAmphibious, amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, dice,
-            !defending, battleId, headless, dice.getHits(), true);
+        message =
+            BattleCalculator.selectCasualties(
+                hitPlayer,
+                nonTransports,
+                allEnemyUnitsNotIncludingWaitingToDie,
+                allFriendlyUnitsNotIncludingWaitingToDie,
+                isAmphibious,
+                amphibiousLandAttackers,
+                battleSite,
+                territoryEffects,
+                bridge,
+                text,
+                dice,
+                !defending,
+                battleId,
+                headless,
+                dice.getHits(),
+                true);
         killed = message.getKilled();
         damaged = message.getDamaged();
         confirmOwnCasualties = message.getAutoCalculated();
@@ -201,10 +255,24 @@ public class Fire implements IExecutable {
         confirmOwnCasualties = true;
       } else { // Choose casualties
         final CasualtyDetails message;
-        message = BattleCalculator.selectCasualties(hitPlayer, attackableUnits,
-            allEnemyUnitsNotIncludingWaitingToDie, allFriendlyUnitsNotIncludingWaitingToDie,
-            isAmphibious, amphibiousLandAttackers, battleSite, territoryEffects, bridge, text, dice,
-            !defending, battleId, headless, dice.getHits(), true);
+        message =
+            BattleCalculator.selectCasualties(
+                hitPlayer,
+                attackableUnits,
+                allEnemyUnitsNotIncludingWaitingToDie,
+                allFriendlyUnitsNotIncludingWaitingToDie,
+                isAmphibious,
+                amphibiousLandAttackers,
+                battleSite,
+                territoryEffects,
+                bridge,
+                text,
+                dice,
+                !defending,
+                battleId,
+                headless,
+                dice.getHits(),
+                true);
         killed = message.getKilled();
         damaged = message.getDamaged();
         confirmOwnCasualties = message.getAutoCalculated();
@@ -216,24 +284,34 @@ public class Fire implements IExecutable {
     if (headless) {
       return;
     }
-    AbstractBattle.getDisplay(bridge).casualtyNotification(battleId, stepName, dice, hitPlayer,
-        new ArrayList<>(killed), new ArrayList<>(damaged), dependentUnits);
+    AbstractBattle.getDisplay(bridge)
+        .casualtyNotification(
+            battleId,
+            stepName,
+            dice,
+            hitPlayer,
+            new ArrayList<>(killed),
+            new ArrayList<>(damaged),
+            dependentUnits);
     // execute in a separate thread to allow either player to click continue first.
-    final Thread t = new Thread(() -> {
-      try {
-        AbstractBattle.getRemote(firingPlayer, bridge).confirmEnemyCasualties(battleId, "Press space to continue",
-            hitPlayer);
-      } catch (final Exception e) {
-        // someone else will deal with this, ignore
-      }
-    }, "Click to continue waiter");
+    final Thread t =
+        new Thread(
+            () -> {
+              try {
+                AbstractBattle.getRemote(firingPlayer, bridge)
+                    .confirmEnemyCasualties(battleId, "Press space to continue", hitPlayer);
+              } catch (final Exception e) {
+                // someone else will deal with this, ignore
+              }
+            },
+            "Click to continue waiter");
     t.start();
     if (confirmOwnCasualties) {
-      AbstractBattle.getRemote(hitPlayer, bridge).confirmOwnCasualties(battleId, "Press space to continue");
+      AbstractBattle.getRemote(hitPlayer, bridge)
+          .confirmOwnCasualties(battleId, "Press space to continue");
     }
     bridge.leaveDelegateExecution();
     Interruptibles.join(t);
     bridge.enterDelegateExecution();
   }
-
 }

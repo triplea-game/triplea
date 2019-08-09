@@ -12,23 +12,19 @@ class ApiKeyPasswordBlacklistTest {
 
   @Test
   void testBlacklisted() {
-    ApiKeyPasswordBlacklist.PASSWORD_BLACKLIST
-        .forEach(blackListed -> assertThat(apiKeyPasswordBlacklist.test(blackListed), is(true)));
+    ApiKeyPasswordBlacklist.PASSWORD_BLACKLIST.forEach(
+        blackListed -> assertThat(apiKeyPasswordBlacklist.test(blackListed), is(true)));
   }
 
   /**
-   * In this test we'll get an element we know is on blacklist and verify that it is detected whether
-   * upper case or lower case.
+   * In this test we'll get an element we know is on blacklist and verify that it is detected
+   * whether upper case or lower case.
    */
   @Test
   void testBlacklistedCasingDoesNotMatter() {
     final String value = ApiKeyPasswordBlacklist.PASSWORD_BLACKLIST.iterator().next();
-    assertThat(
-        apiKeyPasswordBlacklist.test(value.toLowerCase()),
-        is(true));
-    assertThat(
-        apiKeyPasswordBlacklist.test(value.toUpperCase()),
-        is(true));
+    assertThat(apiKeyPasswordBlacklist.test(value.toLowerCase()), is(true));
+    assertThat(apiKeyPasswordBlacklist.test(value.toUpperCase()), is(true));
   }
 
   @Test

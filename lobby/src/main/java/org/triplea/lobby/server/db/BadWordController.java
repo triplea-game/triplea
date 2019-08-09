@@ -5,12 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Supplier;
-
 import lombok.AllArgsConstructor;
 
-/**
- * Utility class to create/read/delete bad words (there is no update).
- */
+/** Utility class to create/read/delete bad words (there is no update). */
 @AllArgsConstructor
 final class BadWordController implements BadWordDao {
   private final Supplier<Connection> connection;

@@ -1,10 +1,5 @@
 package games.strategy.triplea.ui.screen.drawable;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -12,10 +7,14 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 /**
- * Draws the faded flag image of the original owner for the associated territory. Intended only for use with kamikaze
- * zones.
+ * Draws the faded flag image of the original owner for the associated territory. Intended only for
+ * use with kamikaze zones.
  */
 public class KamikazeZoneDrawable extends AbstractDrawable {
   private final String location;
@@ -27,7 +26,11 @@ public class KamikazeZoneDrawable extends AbstractDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData) {
     // Change so only original owner gets the kamikaze zone marker
     final Territory terr = data.getMap().getTerritory(location);
     final TerritoryAttachment ta = TerritoryAttachment.get(terr);

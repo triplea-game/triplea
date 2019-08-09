@@ -1,14 +1,8 @@
 package org.triplea.game.client.ui.javafx.screen;
 
-import java.awt.GraphicsEnvironment;
-
-import javax.swing.SwingUtilities;
-
-import org.triplea.game.client.ui.javafx.screen.RootActionPane.Screens;
-
 import com.google.common.base.Preconditions;
-
 import games.strategy.engine.framework.GameRunner;
+import java.awt.GraphicsEnvironment;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -18,10 +12,12 @@ import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import javax.swing.SwingUtilities;
+import org.triplea.game.client.ui.javafx.screen.RootActionPane.Screens;
 
 /**
- * Root JavaFX Panel Controller that supports a variety of options
- * such as prompting the user to exit the Application.
+ * Root JavaFX Panel Controller that supports a variety of options such as prompting the user to
+ * exit the Application.
  */
 public class RootActionPane implements ScreenController<Screens> {
 
@@ -33,17 +29,13 @@ public class RootActionPane implements ScreenController<Screens> {
     CONTENT
   }
 
-  @FXML
-  private StackPane root;
+  @FXML private StackPane root;
 
-  @FXML
-  private VBox loadingOverlay;
+  @FXML private VBox loadingOverlay;
 
-  @FXML
-  private VBox exitOverlay;
+  @FXML private VBox exitOverlay;
 
-  @FXML
-  private VBox exitFrame;
+  @FXML private VBox exitFrame;
 
   public void setContent(final Node node) {
     Preconditions.checkNotNull(node);
@@ -82,7 +74,6 @@ public class RootActionPane implements ScreenController<Screens> {
   public void switchScreen(final Screens identifier) {
     Preconditions.checkNotNull(identifier);
 
-
     switch (identifier) {
       case EXIT:
         final Timeline fadeIn = getAnimation(exitFrame);
@@ -106,12 +97,14 @@ public class RootActionPane implements ScreenController<Screens> {
 
   private static Timeline getAnimation(final Node node) {
     return new Timeline(
-        new KeyFrame(Duration.ZERO,
+        new KeyFrame(
+            Duration.ZERO,
             new KeyValue(node.scaleXProperty(), 0.0),
             new KeyValue(node.scaleYProperty(), 0.0)),
         new KeyFrame(new Duration(100), new KeyValue(node.scaleYProperty(), 1.1)),
         new KeyFrame(new Duration(200), new KeyValue(node.scaleXProperty(), 0.4)),
-        new KeyFrame(new Duration(300),
+        new KeyFrame(
+            new Duration(300),
             new KeyValue(node.scaleXProperty(), 1.0),
             new KeyValue(node.scaleYProperty(), 1.0)));
   }

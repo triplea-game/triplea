@@ -1,16 +1,13 @@
 package games.strategy.triplea.ui.screen.drawable;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.mapdata.MapData;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.mapdata.MapData;
-
-/**
- * Draws the blockade image for the associated territory.
- */
+/** Draws the blockade image for the associated territory. */
 public class BlockadeZoneDrawable extends AbstractDrawable {
   private final String location;
 
@@ -19,7 +16,11 @@ public class BlockadeZoneDrawable extends AbstractDrawable {
   }
 
   @Override
-  public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData) {
+  public void draw(
+      final Rectangle bounds,
+      final GameData data,
+      final Graphics2D graphics,
+      final MapData mapData) {
     // Find blockade.png from misc folder
     final Point point = mapData.getBlockadePlacementPoint(data.getMap().getTerritory(location));
     drawImage(graphics, mapData.getBlockadeImage(), point, bounds);

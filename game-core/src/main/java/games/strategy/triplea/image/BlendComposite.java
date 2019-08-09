@@ -7,16 +7,17 @@ import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-
 import lombok.Getter;
 
-/**
- * This class handles the various types of blends for base/relief tiles.
- */
+/** This class handles the various types of blends for base/relief tiles. */
 @Getter
 class BlendComposite implements Composite {
   public enum BlendingMode {
-    NORMAL, OVERLAY, MULTIPLY, DIFFERENCE, LINEAR_LIGHT
+    NORMAL,
+    OVERLAY,
+    MULTIPLY,
+    DIFFERENCE,
+    LINEAR_LIGHT
   }
 
   private float alpha;
@@ -47,8 +48,8 @@ class BlendComposite implements Composite {
   }
 
   @Override
-  public CompositeContext createContext(final ColorModel srcColorModel, final ColorModel dstColorModel,
-      final RenderingHints hints) {
+  public CompositeContext createContext(
+      final ColorModel srcColorModel, final ColorModel dstColorModel, final RenderingHints hints) {
     return new BlendingContext(this);
   }
 
@@ -96,10 +97,11 @@ class BlendComposite implements Composite {
           dstPixel[3] = (pixel >> 24) & 0xFF;
           final int[] result = blender.blend(srcPixel, dstPixel);
           // mixes the result with the opacity
-          dstPixels[x] = ((int) (dstPixel[3] + (result[3] - dstPixel[3]) * alpha) & 0xFF) << 24
-              | ((int) (dstPixel[0] + (result[0] - dstPixel[0]) * alpha) & 0xFF) << 16
-              | ((int) (dstPixel[1] + (result[1] - dstPixel[1]) * alpha) & 0xFF) << 8
-              | ((int) (dstPixel[2] + (result[2] - dstPixel[2]) * alpha) & 0xFF);
+          dstPixels[x] =
+              ((int) (dstPixel[3] + (result[3] - dstPixel[3]) * alpha) & 0xFF) << 24
+                  | ((int) (dstPixel[0] + (result[0] - dstPixel[0]) * alpha) & 0xFF) << 16
+                  | ((int) (dstPixel[1] + (result[1] - dstPixel[1]) * alpha) & 0xFF) << 8
+                  | ((int) (dstPixel[2] + (result[2] - dstPixel[2]) * alpha) & 0xFF);
         }
         dstOut.setDataElements(0, y, width, 1, dstPixels);
       }
@@ -122,36 +124,54 @@ class BlendComposite implements Composite {
           return new Blender() {
             @Override
             public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {dst[0] < 128 ? (dst[0] * src[0]) >> 7 : 255 - (((255 - dst[0]) * (255 - src[0])) >> 7),
-                  dst[1] < 128 ? (dst[1] * src[1]) >> 7 : 255 - (((255 - dst[1]) * (255 - src[1])) >> 7),
-                  dst[2] < 128 ? (dst[2] * src[2]) >> 7 : 255 - (((255 - dst[2]) * (255 - src[2])) >> 7),
-                  Math.min(255, src[3] + dst[3])};
+              return new int[] {
+                dst[0] < 128
+                    ? (dst[0] * src[0]) >> 7
+                    : 255 - (((255 - dst[0]) * (255 - src[0])) >> 7),
+                dst[1] < 128
+                    ? (dst[1] * src[1]) >> 7
+                    : 255 - (((255 - dst[1]) * (255 - src[1])) >> 7),
+                dst[2] < 128
+                    ? (dst[2] * src[2]) >> 7
+                    : 255 - (((255 - dst[2]) * (255 - src[2])) >> 7),
+                Math.min(255, src[3] + dst[3])
+              };
             }
           };
         case LINEAR_LIGHT:
           return new Blender() {
             @Override
             public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {dst[0] < 128 ? (dst[0] + src[0]) >> 8 : (dst[0] + (src[0] - 128)) >> 7,
-                  dst[1] < 128 ? (dst[1] + src[1]) >> 8 : (dst[1] + (src[1] - 128)) >> 7,
-                  dst[2] < 128 ? (dst[2] + src[2]) >> 8 : (dst[2] + (src[2] - 128)) >> 7,
-                  Math.min(255, src[3] + dst[3])};
+              return new int[] {
+                dst[0] < 128 ? (dst[0] + src[0]) >> 8 : (dst[0] + (src[0] - 128)) >> 7,
+                dst[1] < 128 ? (dst[1] + src[1]) >> 8 : (dst[1] + (src[1] - 128)) >> 7,
+                dst[2] < 128 ? (dst[2] + src[2]) >> 8 : (dst[2] + (src[2] - 128)) >> 7,
+                Math.min(255, src[3] + dst[3])
+              };
             }
           };
         case MULTIPLY:
           return new Blender() {
             @Override
             public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {(src[0] * dst[0]) >> 8, (src[1] * dst[1]) >> 8, (src[2] * dst[2]) >> 8,
-                  Math.min(255, src[3] + dst[3])};
+              return new int[] {
+                (src[0] * dst[0]) >> 8,
+                (src[1] * dst[1]) >> 8,
+                (src[2] * dst[2]) >> 8,
+                Math.min(255, src[3] + dst[3])
+              };
             }
           };
         case DIFFERENCE:
           return new Blender() {
             @Override
             public int[] blend(final int[] src, final int[] dst) {
-              return new int[] {Math.abs(dst[0] - src[0]), Math.abs(dst[1] - src[1]), Math.abs(dst[2] - src[2]),
-                  Math.min(255, src[3] + dst[3])};
+              return new int[] {
+                Math.abs(dst[0] - src[0]),
+                Math.abs(dst[1] - src[1]),
+                Math.abs(dst[2] - src[2]),
+                Math.min(255, src[3] + dst[3])
+              };
             }
           };
         default:

@@ -13,9 +13,7 @@ import games.strategy.triplea.Constants;
 /**
  * Superclass for all logic that runs in edit mode.
  *
- * <p>
- * TODO: Merge this class with EditDelegate, as it has no other subclasses.
- * </p>
+ * <p>TODO: Merge this class with EditDelegate, as it has no other subclasses.
  */
 public abstract class BaseEditDelegate extends BasePersistentDelegate {
   private static final String EDITMODE_ON = "Turning on Edit Mode";

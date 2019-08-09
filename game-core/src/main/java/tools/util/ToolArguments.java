@@ -1,8 +1,6 @@
 package tools.util;
 
-/**
- * A collection of argument names common to all support tools.
- */
+/** A collection of argument names common to all support tools. */
 public final class ToolArguments {
   public static final String MAP_FOLDER = "triplea.map.folder";
   public static final String UNIT_HEIGHT = "triplea.unit.height";

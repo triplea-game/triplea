@@ -20,11 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Route;
@@ -32,6 +27,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class WW2V3Year42Test {
   private GameData gameData;
@@ -78,11 +76,16 @@ class WW2V3Year42Test {
     moveDelegate.start();
     when(withRemotePlayer(bridge).shouldBomberBomb(any())).thenReturn(true);
     // remove the russian units
-    removeFrom(karrelia, karrelia.getUnitCollection().getMatches(Matches.unitCanBeDamaged().negate()));
+    removeFrom(
+        karrelia, karrelia.getUnitCollection().getMatches(Matches.unitCanBeDamaged().negate()));
     // move the bomber to attack
-    move(germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()), new Route(germany, sz5, karrelia));
+    move(
+        germany.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
+        new Route(germany, sz5, karrelia));
     // move an infantry to invade
-    move(baltic.getUnitCollection().getMatches(Matches.unitIsLandTransportable()), new Route(baltic, karrelia));
+    move(
+        baltic.getUnitCollection().getMatches(Matches.unitIsLandTransportable()),
+        new Route(baltic, karrelia));
     final BattleTracker battleTracker = MoveDelegate.getBattleTracker(gameData);
     // we should have a pending land battle, and a pending bombing raid
     assertNotNull(battleTracker.getPendingBattle(karrelia));

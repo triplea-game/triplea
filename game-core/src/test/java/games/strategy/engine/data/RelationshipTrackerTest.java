@@ -3,12 +3,11 @@ package games.strategy.engine.data;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import games.strategy.engine.data.RelationshipTracker.RelatedPlayers;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 final class RelationshipTrackerTest {
   @Nested

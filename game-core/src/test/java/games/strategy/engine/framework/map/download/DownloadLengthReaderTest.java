@@ -11,11 +11,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import games.strategy.triplea.settings.AbstractClientSettingTestCase;
 import java.io.IOException;
 import java.util.Optional;
-
 import javax.annotation.Nullable;
-
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
@@ -30,16 +29,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import games.strategy.triplea.settings.AbstractClientSettingTestCase;
-
 final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
   private static final String URI = "some://uri";
 
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class GetDownloadLengthFromCacheTest {
-    @Mock
-    private DownloadLengthReader.DownloadLengthSupplier downloadLengthSupplier;
+    @Mock private DownloadLengthReader.DownloadLengthSupplier downloadLengthSupplier;
 
     @BeforeEach
     void setUp() {
@@ -62,7 +58,8 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
     }
 
     private Optional<Long> getDownloadLengthFromCache() {
-      return DownloadConfiguration.downloadLengthReader().getDownloadLengthFromCache(URI, downloadLengthSupplier);
+      return DownloadConfiguration.downloadLengthReader()
+          .getDownloadLengthFromCache(URI, downloadLengthSupplier);
     }
 
     @Test
@@ -82,24 +79,21 @@ final class DownloadLengthReaderTest extends AbstractClientSettingTestCase {
       final Optional<Long> downloadLength = getDownloadLengthFromCache();
 
       assertThat(downloadLength, is(Optional.empty()));
-      assertThat(DownloadConfiguration.downloadLengthReader().downloadLengthsByUri, is(anEmptyMap()));
+      assertThat(
+          DownloadConfiguration.downloadLengthReader().downloadLengthsByUri, is(anEmptyMap()));
     }
   }
 
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class GetDownloadLengthFromHostTest {
-    @Mock
-    private CloseableHttpClient client;
+    @Mock private CloseableHttpClient client;
 
-    @Mock
-    private Header contentLengthHeader;
+    @Mock private Header contentLengthHeader;
 
-    @Mock
-    private CloseableHttpResponse response;
+    @Mock private CloseableHttpResponse response;
 
-    @Mock
-    private StatusLine statusLine;
+    @Mock private StatusLine statusLine;
 
     @BeforeEach
     void setUp() throws Exception {

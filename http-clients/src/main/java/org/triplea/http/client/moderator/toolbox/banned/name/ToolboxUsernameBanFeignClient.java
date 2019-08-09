@@ -1,13 +1,11 @@
 package org.triplea.http.client.moderator.toolbox.banned.name;
 
-import java.util.List;
-import java.util.Map;
-
-import org.triplea.http.client.HttpConstants;
-
 import feign.HeaderMap;
 import feign.Headers;
 import feign.RequestLine;
+import java.util.List;
+import java.util.Map;
+import org.triplea.http.client.HttpConstants;
 
 interface ToolboxUsernameBanFeignClient {
 

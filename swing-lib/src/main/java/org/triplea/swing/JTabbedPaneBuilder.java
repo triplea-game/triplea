@@ -4,17 +4,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
-
 import lombok.Value;
 
-
 /**
- * Builder for a JTabbedPane. Provides a convenient API for adding components to a JTabbedPane and starts off with
- * reasonable defaults that can be configured further as needed.
- * <br />
+ * Builder for a JTabbedPane. Provides a convenient API for adding components to a JTabbedPane and
+ * starts off with reasonable defaults that can be configured further as needed. <br>
  * Example usage:
  *
  * <pre>
@@ -40,23 +36,21 @@ public class JTabbedPaneBuilder {
   private final List<Tab> components = new ArrayList<>();
   private int tabIndex = 0;
 
-  private JTabbedPaneBuilder() {
+  private JTabbedPaneBuilder() {}
 
-  }
-
-  /**
-   * Builds the swing component.
-   */
+  /** Builds the swing component. */
   public JTabbedPane build() {
     final JTabbedPane tabbedPane = new JTabbedPane();
 
-    components.forEach(component -> {
-      final JLabel sizedLabel = new JLabel(component.getTabName());
-      sizedLabel.setPreferredSize(new Dimension(DEFAULT_TAB_WIDTH, DEFAULT_TAB_HEIGHT));
-      tabbedPane.addTab(component.getTabName(), SwingComponents.newJScrollPane(component.getContents()));
-      tabbedPane.setTabComponentAt(tabIndex, sizedLabel);
-      tabIndex++;
-    });
+    components.forEach(
+        component -> {
+          final JLabel sizedLabel = new JLabel(component.getTabName());
+          sizedLabel.setPreferredSize(new Dimension(DEFAULT_TAB_WIDTH, DEFAULT_TAB_HEIGHT));
+          tabbedPane.addTab(
+              component.getTabName(), SwingComponents.newJScrollPane(component.getContents()));
+          tabbedPane.setTabComponentAt(tabIndex, sizedLabel);
+          tabIndex++;
+        });
 
     return tabbedPane;
   }
@@ -65,7 +59,6 @@ public class JTabbedPaneBuilder {
     components.add(new Tab(tabTitle, tabContents));
     return this;
   }
-
 
   public static JTabbedPaneBuilder builder() {
     return new JTabbedPaneBuilder();

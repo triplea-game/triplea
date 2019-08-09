@@ -1,8 +1,6 @@
 package games.strategy.triplea.ui;
 
-/**
- * Returns a bunch of messages from politicstext.properties
- */
+/** Returns a bunch of messages from politicstext.properties */
 public class PoliticsText extends PropertyFile {
 
   private static final String PROPERTY_FILE = "politicstext.properties";
@@ -57,5 +55,4 @@ public class PoliticsText extends PropertyFile {
   private String getString(final String value) {
     return properties.getProperty(value, "NO: " + value + " set.");
   }
-
 }

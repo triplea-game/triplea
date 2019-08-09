@@ -1,5 +1,12 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.history.Event;
+import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.Round;
+import games.strategy.engine.history.Step;
+import games.strategy.triplea.delegate.remote.IEditDelegate;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
@@ -10,7 +17,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.Icon;
@@ -30,17 +36,8 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.tree.TreeNode;
-
-import org.triplea.swing.SwingAction;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.history.Event;
-import games.strategy.engine.history.HistoryNode;
-import games.strategy.engine.history.Round;
-import games.strategy.engine.history.Step;
-import games.strategy.triplea.delegate.remote.IEditDelegate;
 import lombok.extern.java.Log;
+import org.triplea.swing.SwingAction;
 
 @Log
 class CommentPanel extends JPanel {
@@ -55,13 +52,16 @@ class CommentPanel extends JPanel {
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
-  private final Action saveAction = SwingAction.of("Add Comment", e -> {
-    if (nextMessage.getText().trim().length() == 0) {
-      return;
-    }
-    addMessage(nextMessage.getText());
-    nextMessage.setText("");
-  });
+  private final Action saveAction =
+      SwingAction.of(
+          "Add Comment",
+          e -> {
+            if (nextMessage.getText().trim().length() == 0) {
+              return;
+            }
+            addMessage(nextMessage.getText());
+            nextMessage.setText("");
+          });
 
   CommentPanel(final TripleAFrame frame, final GameData data) {
     this.frame = frame;
@@ -110,56 +110,61 @@ class CommentPanel extends JPanel {
   }
 
   private void setupListeners() {
-    data.getHistory().addTreeModelListener(new TreeModelListener() {
-      @Override
-      public void treeNodesChanged(final TreeModelEvent e) {}
+    data.getHistory()
+        .addTreeModelListener(
+            new TreeModelListener() {
+              @Override
+              public void treeNodesChanged(final TreeModelEvent e) {}
 
-      @Override
-      public void treeNodesInserted(final TreeModelEvent e) {
-        readHistoryTreeEvent(e);
-      }
+              @Override
+              public void treeNodesInserted(final TreeModelEvent e) {
+                readHistoryTreeEvent(e);
+              }
 
-      @Override
-      public void treeNodesRemoved(final TreeModelEvent e) {}
+              @Override
+              public void treeNodesRemoved(final TreeModelEvent e) {}
 
-      @Override
-      public void treeStructureChanged(final TreeModelEvent e) {
-        readHistoryTreeEvent(e);
-      }
-    });
+              @Override
+              public void treeStructureChanged(final TreeModelEvent e) {
+                readHistoryTreeEvent(e);
+              }
+            });
   }
 
   private void readHistoryTreeEvent(final TreeModelEvent e) {
-    SwingAction.invokeNowOrLater(() -> {
-      data.acquireReadLock();
-      try {
-        final Document doc = text.getDocument();
-        final HistoryNode node = (HistoryNode) e.getTreePath().getLastPathComponent();
-        final TreeNode child = node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
-        final String title =
-            child != null ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
-                : (node != null ? node.getTitle() : "");
-        final Pattern p = Pattern.compile("^COMMENT: (.*)");
-        final Matcher m = p.matcher(title);
-        if (m.matches()) {
-          final PlayerId playerId = data.getSequence().getStep().getPlayerId();
-          final int round = data.getSequence().getRound();
-          final String player = playerId.getName();
-          final Icon icon = iconMap.get(playerId);
+    SwingAction.invokeNowOrLater(
+        () -> {
+          data.acquireReadLock();
           try {
-            // insert into ui document
-            final String prefix = " " + player + "(" + round + ") : ";
-            text.insertIcon(icon);
-            doc.insertString(doc.getLength(), prefix, bold);
-            doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
-          } catch (final BadLocationException e1) {
-            log.log(Level.SEVERE, "Failed to add history node", e1);
+            final Document doc = text.getDocument();
+            final HistoryNode node = (HistoryNode) e.getTreePath().getLastPathComponent();
+            final TreeNode child =
+                node == null ? null : (node.getChildCount() > 0 ? node.getLastChild() : null);
+            final String title =
+                child != null
+                    ? (child instanceof Event ? ((Event) child).getDescription() : child.toString())
+                    : (node != null ? node.getTitle() : "");
+            final Pattern p = Pattern.compile("^COMMENT: (.*)");
+            final Matcher m = p.matcher(title);
+            if (m.matches()) {
+              final PlayerId playerId = data.getSequence().getStep().getPlayerId();
+              final int round = data.getSequence().getRound();
+              final String player = playerId.getName();
+              final Icon icon = iconMap.get(playerId);
+              try {
+                // insert into ui document
+                final String prefix = " " + player + "(" + round + ") : ";
+                text.insertIcon(icon);
+                doc.insertString(doc.getLength(), prefix, bold);
+                doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
+              } catch (final BadLocationException e1) {
+                log.log(Level.SEVERE, "Failed to add history node", e1);
+              }
+            }
+          } finally {
+            data.releaseReadLock();
           }
-        }
-      } finally {
-        data.releaseReadLock();
-      }
-    });
+        });
   }
 
   private void setupKeyMap() {
@@ -169,67 +174,71 @@ class CommentPanel extends JPanel {
 
   private void loadHistory() {
     final Document doc = text.getDocument();
-    new Thread(() -> {
-      final HistoryNode rootNode = (HistoryNode) data.getHistory().getRoot();
-      @SuppressWarnings("unchecked")
-      final Enumeration<TreeNode> nodeEnum = rootNode.preorderEnumeration();
-      final Pattern p = Pattern.compile("^COMMENT: (.*)");
-      String player = "";
-      int round = 0;
-      Icon icon = null;
-      while (nodeEnum.hasMoreElements()) {
-        final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
-        if (node instanceof Round) {
-          round++;
-        } else if (node instanceof Step) {
-          final PlayerId playerId = ((Step) node).getPlayerId();
-          if (playerId != null) {
-            player = playerId.getName();
-            icon = iconMap.get(playerId);
-          }
-        } else {
-          final String title = node.getTitle();
-          final Matcher m = p.matcher(title);
-          if (m.matches()) {
-            final String prefix = " " + player + "(" + round + ") : ";
-            final Icon lastIcon = icon;
-            SwingUtilities.invokeLater(() -> {
-              try {
-                // insert into ui document
-                text.insertIcon(lastIcon);
-                doc.insertString(doc.getLength(), prefix, bold);
-                doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
-              } catch (final BadLocationException e) {
-                log.log(Level.SEVERE, "Failed to add history", e);
+    new Thread(
+            () -> {
+              final HistoryNode rootNode = (HistoryNode) data.getHistory().getRoot();
+              @SuppressWarnings("unchecked")
+              final Enumeration<TreeNode> nodeEnum = rootNode.preorderEnumeration();
+              final Pattern p = Pattern.compile("^COMMENT: (.*)");
+              String player = "";
+              int round = 0;
+              Icon icon = null;
+              while (nodeEnum.hasMoreElements()) {
+                final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
+                if (node instanceof Round) {
+                  round++;
+                } else if (node instanceof Step) {
+                  final PlayerId playerId = ((Step) node).getPlayerId();
+                  if (playerId != null) {
+                    player = playerId.getName();
+                    icon = iconMap.get(playerId);
+                  }
+                } else {
+                  final String title = node.getTitle();
+                  final Matcher m = p.matcher(title);
+                  if (m.matches()) {
+                    final String prefix = " " + player + "(" + round + ") : ";
+                    final Icon lastIcon = icon;
+                    SwingUtilities.invokeLater(
+                        () -> {
+                          try {
+                            // insert into ui document
+                            text.insertIcon(lastIcon);
+                            doc.insertString(doc.getLength(), prefix, bold);
+                            doc.insertString(doc.getLength(), m.group(1) + "\n", normal);
+                          } catch (final BadLocationException e) {
+                            log.log(Level.SEVERE, "Failed to add history", e);
+                          }
+                        });
+                  }
+                }
               }
-            });
-          }
-        }
-      }
-    }).start();
+            })
+        .start();
   }
 
   /** thread safe. */
   void addMessage(final String message) {
-    SwingAction.invokeNowOrLater(() -> {
-      try {
-        final Document doc = text.getDocument();
-        // save history entry
-        final IEditDelegate delegate = frame.getEditDelegate();
-        final String error;
-        if (delegate == null) {
-          error = "You can only add comments during your turn";
-        } else {
-          error = delegate.addComment(message);
-        }
-        if (error != null) {
-          doc.insertString(doc.getLength(), error + "\n", italic);
-        }
-      } catch (final BadLocationException e) {
-        log.log(Level.SEVERE, "Failed to add comment", e);
-      }
-      final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
-      scrollModel.setValue(scrollModel.getMaximum());
-    });
+    SwingAction.invokeNowOrLater(
+        () -> {
+          try {
+            final Document doc = text.getDocument();
+            // save history entry
+            final IEditDelegate delegate = frame.getEditDelegate();
+            final String error;
+            if (delegate == null) {
+              error = "You can only add comments during your turn";
+            } else {
+              error = delegate.addComment(message);
+            }
+            if (error != null) {
+              doc.insertString(doc.getLength(), error + "\n", italic);
+            }
+          } catch (final BadLocationException e) {
+            log.log(Level.SEVERE, "Failed to add comment", e);
+          }
+          final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
+          scrollModel.setValue(scrollModel.getMaximum());
+        });
   }
 }

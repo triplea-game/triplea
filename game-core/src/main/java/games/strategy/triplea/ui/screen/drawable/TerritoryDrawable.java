@@ -1,5 +1,8 @@
 package games.strategy.triplea.ui.screen.drawable;
 
+import games.strategy.engine.data.Territory;
+import games.strategy.triplea.ui.mapdata.MapData;
+import games.strategy.ui.Util;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
@@ -7,19 +10,19 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.List;
 
-import games.strategy.engine.data.Territory;
-import games.strategy.triplea.ui.mapdata.MapData;
-import games.strategy.ui.Util;
-
 /**
- * Superclass for {@link IDrawable} implementations that draws a black outline around a territory and uses an instance
- * of {@link Paint} provided by the subclass to fill the territory interior.
+ * Superclass for {@link IDrawable} implementations that draws a black outline around a territory
+ * and uses an instance of {@link Paint} provided by the subclass to fill the territory interior.
  */
 public abstract class TerritoryDrawable extends AbstractDrawable {
   protected TerritoryDrawable() {}
 
-  protected static void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
-      final Territory territory, final Paint territoryPaint) {
+  protected static void draw(
+      final Rectangle bounds,
+      final Graphics2D graphics,
+      final MapData mapData,
+      final Territory territory,
+      final Paint territoryPaint) {
     final List<Polygon> polys = mapData.getPolygons(territory);
     for (final Polygon polygon : polys) {
       if (!polygon.intersects(bounds) && !polygon.contains(bounds)) {

@@ -1,7 +1,5 @@
 package games.strategy.engine.framework;
 
-import java.io.File;
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerManager;
@@ -12,17 +10,17 @@ import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ISound;
+import java.io.File;
 
 /**
  * Represents a running game.
  *
- * <p>
- * Allows access to the games communication interfaces, and to listen to the current game step.
- * </p>
+ * <p>Allows access to the games communication interfaces, and to listen to the current game step.
  */
 public interface IGame {
   RemoteName GAME_MODIFICATION_CHANNEL =
-      new RemoteName(IGame.class.getName() + ".GAME_MODIFICATION_CHANNEL", IGameModifiedChannel.class);
+      new RemoteName(
+          IGame.class.getName() + ".GAME_MODIFICATION_CHANNEL", IGameModifiedChannel.class);
 
   GameData getData();
 
@@ -34,21 +32,15 @@ public interface IGame {
 
   Vault getVault();
 
-  /**
-   * Should not be called outside of engine code.
-   */
+  /** Should not be called outside of engine code. */
   void addChange(Change change);
 
   IRandomSource getRandomSource();
 
-  /**
-   * Add a display that will receive broadcasts from the IDelegateBridge.getDisplayBroadcaster.
-   */
+  /** Add a display that will receive broadcasts from the IDelegateBridge.getDisplayBroadcaster. */
   void addDisplay(IDisplay display);
 
-  /**
-   * remove a display.
-   */
+  /** remove a display. */
   void removeDisplay(IDisplay display);
 
   void addSoundChannel(ISound display);
@@ -61,14 +53,9 @@ public interface IGame {
    */
   boolean isGameOver();
 
-  /**
-   * Returns a listing of who is playing who.
-   */
+  /** Returns a listing of who is playing who. */
   PlayerManager getPlayerManager();
 
-  /**
-   * Save the game to the given directory.
-   * The file should exist and be writeable.
-   */
+  /** Save the game to the given directory. The file should exist and be writeable. */
   void saveGame(File f);
 }

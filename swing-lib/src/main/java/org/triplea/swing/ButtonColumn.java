@@ -1,5 +1,6 @@
 package org.triplea.swing;
 
+import com.google.common.base.Preconditions;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -7,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.function.BiConsumer;
-
 import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
@@ -22,24 +22,17 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
-import com.google.common.base.Preconditions;
-
-
 /**
  * Based on code from: http://www.camick.com/java/source/ButtonColumn.java
- * <p>
- * The ButtonColumn class provides a renderer and an editor that looks like a
- * JButton. The renderer and editor will then be used for a specified column
- * in the table. The TableModel will contain the String to be displayed on
- * the button.
- * </p>
- * <p>
- * The button can be invoked by a mouse click or by pressing the space bar
- * when the cell has focus. Optionally a mnemonic can be set to invoke the
- * button. When the button is invoked the provided Action is invoked. The
- * source of the Action will be the table. The action command will contain
- * the model row number of the button that was clicked.
- * </p>
+ *
+ * <p>The ButtonColumn class provides a renderer and an editor that looks like a JButton. The
+ * renderer and editor will then be used for a specified column in the table. The TableModel will
+ * contain the String to be displayed on the button.
+ *
+ * <p>The button can be invoked by a mouse click or by pressing the space bar when the cell has
+ * focus. Optionally a mnemonic can be set to invoke the button. When the button is invoked the
+ * provided Action is invoked. The source of the Action will be the table. The action command will
+ * contain the model row number of the button that was clicked.
  */
 public class ButtonColumn extends AbstractCellEditor
     implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
@@ -55,11 +48,9 @@ public class ButtonColumn extends AbstractCellEditor
   private Object cellEditorValue;
   private boolean isButtonColumnEditor;
 
-
   /**
-   * Create the ButtonColumn to be used as a renderer and editor. The
-   * renderer and editor will automatically be installed on the TableColumn
-   * of the specified column.
+   * Create the ButtonColumn to be used as a renderer and editor. The renderer and editor will
+   * automatically be installed on the TableColumn of the specified column.
    *
    * @param table the table containing the button renderer/editor
    * @param action the Action to be invoked when the button is invoked
@@ -83,8 +74,8 @@ public class ButtonColumn extends AbstractCellEditor
   }
 
   /**
-   * Converts a given column to buttons. The existing column data text will become the text
-   * of the new buttons.
+   * Converts a given column to buttons. The existing column data text will become the text of the
+   * new buttons.
    *
    * @param table The table to be updated.
    * @param column Zero-based column number of the table.
@@ -96,16 +87,19 @@ public class ButtonColumn extends AbstractCellEditor
       final BiConsumer<Integer, DefaultTableModel> buttonListener) {
     Preconditions.checkState(table.getModel().getColumnCount() > column);
 
-    new ButtonColumn(table, column, new AbstractAction() {
-      private static final long serialVersionUID = 786926815237533866L;
+    new ButtonColumn(
+        table,
+        column,
+        new AbstractAction() {
+          private static final long serialVersionUID = 786926815237533866L;
 
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final int rowNumber = Integer.valueOf(e.getActionCommand());
-        final DefaultTableModel defaultTableModel = (DefaultTableModel) table.getModel();
-        buttonListener.accept(rowNumber, defaultTableModel);
-      }
-    });
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            final int rowNumber = Integer.valueOf(e.getActionCommand());
+            final DefaultTableModel defaultTableModel = (DefaultTableModel) table.getModel();
+            buttonListener.accept(rowNumber, defaultTableModel);
+          }
+        });
   }
 
   /**
@@ -144,7 +138,11 @@ public class ButtonColumn extends AbstractCellEditor
 
   @Override
   public Component getTableCellEditorComponent(
-      final JTable table, final Object value, final boolean isSelected, final int row, final int column) {
+      final JTable table,
+      final Object value,
+      final boolean isSelected,
+      final int row,
+      final int column) {
     if (value == null) {
       editButton.setText("");
       editButton.setIcon(null);
@@ -167,7 +165,11 @@ public class ButtonColumn extends AbstractCellEditor
 
   @Override
   public Component getTableCellRendererComponent(
-      final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row,
+      final JTable table,
+      final Object value,
+      final boolean isSelected,
+      final boolean hasFocus,
+      final int row,
       final int column) {
     if (isSelected) {
       renderButton.setForeground(table.getSelectionForeground());
@@ -197,9 +199,7 @@ public class ButtonColumn extends AbstractCellEditor
     return renderButton;
   }
 
-  /**
-   * The button has been pressed. Stop editing and invoke the custom Action
-   */
+  /** The button has been pressed. Stop editing and invoke the custom Action */
   @Override
   public void actionPerformed(final ActionEvent e) {
     final int row = table.convertRowIndexToModel(table.getEditingRow());
@@ -207,17 +207,15 @@ public class ButtonColumn extends AbstractCellEditor
 
     // Invoke the Action
 
-    final ActionEvent event = new ActionEvent(
-        table,
-        ActionEvent.ACTION_PERFORMED,
-        String.valueOf(row));
+    final ActionEvent event =
+        new ActionEvent(table, ActionEvent.ACTION_PERFORMED, String.valueOf(row));
     action.actionPerformed(event);
   }
 
   /**
-   * When the mouse is pressed the editor is invoked. If you then then drag
-   * the mouse to another cell before releasing it, the editor is still
-   * active. Make sure editing is stopped when the mouse is released.
+   * When the mouse is pressed the editor is invoked. If you then then drag the mouse to another
+   * cell before releasing it, the editor is still active. Make sure editing is stopped when the
+   * mouse is released.
    */
   @Override
   public void mousePressed(final MouseEvent e) {

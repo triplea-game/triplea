@@ -4,8 +4,8 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.engine.vault.VaultId;
 
 /**
- * A service that generates random numbers. All generated numbers are stored in a cryptographic vault to prevent
- * tampering.
+ * A service that generates random numbers. All generated numbers are stored in a cryptographic
+ * vault to prevent tampering.
  */
 public interface IRemoteRandom extends IRemote {
   /**
@@ -16,8 +16,6 @@ public interface IRemoteRandom extends IRemote {
    */
   int[] generate(int max, int count, String annotation, VaultId serverVaultId);
 
-  /**
-   * unlock the random number last generated.
-   */
+  /** unlock the random number last generated. */
   void verifyNumbers();
 }

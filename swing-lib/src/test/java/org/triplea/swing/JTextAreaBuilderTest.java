@@ -5,15 +5,13 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.swing.JTextArea;
-
 import org.junit.jupiter.api.Test;
 
 class JTextAreaBuilderTest {
 
   @Test
   void defaultValues() {
-    final JTextArea area = JTextAreaBuilder.builder()
-        .build();
+    final JTextArea area = JTextAreaBuilder.builder().build();
 
     assertThat(area.getWrapStyleWord(), is(true));
     assertThat(area.isEditable(), is(true));
@@ -21,18 +19,14 @@ class JTextAreaBuilderTest {
 
   @Test
   void text() {
-    final JTextArea area = JTextAreaBuilder.builder()
-        .text("value")
-        .build();
+    final JTextArea area = JTextAreaBuilder.builder().text("value").build();
 
     assertThat(area.getText(), is("value"));
   }
 
   @Test
   void rows() {
-    final JTextArea area = JTextAreaBuilder.builder()
-        .rows(5)
-        .build();
+    final JTextArea area = JTextAreaBuilder.builder().rows(5).build();
 
     assertThat(area.getRows(), is(5));
   }
@@ -44,9 +38,7 @@ class JTextAreaBuilderTest {
 
   @Test
   void columns() {
-    final JTextArea area = JTextAreaBuilder.builder()
-        .columns(20)
-        .build();
+    final JTextArea area = JTextAreaBuilder.builder().columns(20).build();
 
     assertThat(area.getColumns(), is(20));
   }
@@ -58,9 +50,7 @@ class JTextAreaBuilderTest {
 
   @Test
   void readOnly() {
-    final JTextArea area = JTextAreaBuilder.builder()
-        .readOnly()
-        .build();
+    final JTextArea area = JTextAreaBuilder.builder().readOnly().build();
     assertThat(area.isEditable(), is(false));
   }
 }

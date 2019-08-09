@@ -1,5 +1,8 @@
 package games.strategy.engine.data;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,16 +11,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-
 /**
- * Tracks alliances between players.
- * An alliance is a named entity, players are added to an alliance.
- * Currently only used for tracking stats (like TUV, total production, etc), and for tracking total victory cities for
- * alliance based victory conditions.
- * Not used for determining in-game alliances (instead, see the Relationship tracker for that).
+ * Tracks alliances between players. An alliance is a named entity, players are added to an
+ * alliance. Currently only used for tracking stats (like TUV, total production, etc), and for
+ * tracking total victory cities for alliance based victory conditions. Not used for determining
+ * in-game alliances (instead, see the Relationship tracker for that).
  */
 public class AllianceTracker implements Serializable {
   private static final long serialVersionUID = 2815023984535209353L;
@@ -50,7 +48,6 @@ public class AllianceTracker implements Serializable {
     }
   }
 
-
   /**
    * Adds PlayerId player to the alliance specified by allianceName.
    *
@@ -62,7 +59,8 @@ public class AllianceTracker implements Serializable {
   }
 
   /**
-   * Returns a set of all the games alliances, this will return an empty set if you aren't using alliances.
+   * Returns a set of all the games alliances, this will return an empty set if you aren't using
+   * alliances.
    */
   public Set<String> getAlliances() {
     return new HashSet<>(alliances.values());
@@ -83,7 +81,9 @@ public class AllianceTracker implements Serializable {
 
   public Collection<String> getAlliancesPlayerIsIn(final PlayerId player) {
     final Collection<String> alliancesPlayerIsIn = alliances.get(player);
-    return !alliancesPlayerIsIn.isEmpty() ? alliancesPlayerIsIn : Collections.singleton(player.getName());
+    return !alliancesPlayerIsIn.isEmpty()
+        ? alliancesPlayerIsIn
+        : Collections.singleton(player.getName());
   }
 
   Set<PlayerId> getAllies(final PlayerId currentPlayer) {

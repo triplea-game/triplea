@@ -1,5 +1,7 @@
 package org.triplea.lobby.server.db;
 
+import com.google.common.base.Preconditions;
+import games.strategy.engine.lobby.server.userDB.DBUser;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,17 +9,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.function.Supplier;
-
+import lombok.AllArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 
-import com.google.common.base.Preconditions;
-
-import games.strategy.engine.lobby.server.userDB.DBUser;
-import lombok.AllArgsConstructor;
-
-/**
- * Implementation of {@link UserDao} for a Postgres database.
- */
+/** Implementation of {@link UserDao} for a Postgres database. */
 @AllArgsConstructor
 final class UserController implements UserDao {
   private final Supplier<Connection> connection;
@@ -34,9 +29,11 @@ final class UserController implements UserDao {
 
   private HashedPassword getPassword(final String username, final boolean legacy) {
     try (Connection con = connection.get();
-        PreparedStatement ps = con
-            .prepareStatement(
-                "select password, coalesce(bcrypt_password, password) from lobby_user where username = ?")) {
+        PreparedStatement ps =
+            con.prepareStatement(
+                "select password, coalesce(bcrypt_password, password) "
+                    + "from lobby_user "
+                    + "where username = ?")) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
@@ -64,10 +61,14 @@ final class UserController implements UserDao {
   }
 
   @Override
-  public void updateUser(final String name, final String email, final HashedPassword hashedPassword) {
+  public void updateUser(
+      final String name, final String email, final HashedPassword hashedPassword) {
     try (Connection con = connection.get();
-        PreparedStatement ps = con.prepareStatement(
-            String.format("update lobby_user set %s=?, email=? where username=?", getPasswordColumn(hashedPassword)))) {
+        PreparedStatement ps =
+            con.prepareStatement(
+                String.format(
+                    "update lobby_user set %s=?, email=? where username=?",
+                    getPasswordColumn(hashedPassword)))) {
       ps.setString(1, hashedPassword.value);
       ps.setString(2, email);
       ps.setString(3, name);
@@ -81,27 +82,29 @@ final class UserController implements UserDao {
       }
       con.commit();
     } catch (final SQLException e) {
-      throw new DatabaseException(String.format("Error updating name: %s, email: %s, (masked) pwd: %s",
-          name, email, hashedPassword.mask()), e);
+      throw new DatabaseException(
+          String.format(
+              "Error updating name: %s, email: %s, (masked) pwd: %s",
+              name, email, hashedPassword.mask()),
+          e);
     }
   }
 
-  /**
-   * Workaround utility method.
-   * Should be removed in the next lobby-incompatible release.
-   */
+  /** Workaround utility method. Should be removed in the next lobby-incompatible release. */
   private static String getPasswordColumn(final HashedPassword hashedPassword) {
     return hashedPassword.isBcrypted() ? "bcrypt_password" : "password";
   }
 
-
   @Override
-  public void createUser(final String name, final String email, final HashedPassword hashedPassword) {
+  public void createUser(
+      final String name, final String email, final HashedPassword hashedPassword) {
     Preconditions.checkState(hashedPassword.isHashedWithSalt());
 
     try (Connection con = connection.get();
-        PreparedStatement ps = con.prepareStatement(
-            "insert into lobby_user (username, password, bcrypt_password, email) values (?, ?, ?, ?)")) {
+        PreparedStatement ps =
+            con.prepareStatement(
+                "insert into lobby_user (username, password, bcrypt_password, email) "
+                    + "values (?, ?, ?, ?)")) {
       ps.setString(1, name);
       ps.setString(2, hashedPassword.isBcrypted() ? null : hashedPassword.value);
       ps.setString(3, hashedPassword.isBcrypted() ? hashedPassword.value : null);
@@ -109,8 +112,11 @@ final class UserController implements UserDao {
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
-      throw new DatabaseException(String.format("Error inserting name: %s, email: %s, (masked) pwd: %s",
-          name, email, hashedPassword.mask()), e);
+      throw new DatabaseException(
+          String.format(
+              "Error inserting name: %s, email: %s, (masked) pwd: %s",
+              name, email, hashedPassword.mask()),
+          e);
     }
   }
 
@@ -119,7 +125,8 @@ final class UserController implements UserDao {
     try (Connection con = connection.get()) {
       if (hashedPassword.isHashedWithSalt()) {
         try (PreparedStatement ps =
-            con.prepareStatement("select username from  lobby_user where username = ? and password = ?")) {
+            con.prepareStatement(
+                "select username from  lobby_user where username = ? and password = ?")) {
           ps.setString(1, username);
           ps.setString(2, hashedPassword.value);
           try (ResultSet rs = ps.executeQuery()) {
@@ -139,7 +146,8 @@ final class UserController implements UserDao {
         }
       }
       // update last login time
-      try (PreparedStatement ps = con.prepareStatement("update lobby_user set last_login = ? where username = ?")) {
+      try (PreparedStatement ps =
+          con.prepareStatement("update lobby_user set last_login = ? where username = ?")) {
         ps.setTimestamp(1, Timestamp.from(Instant.now()));
         ps.setString(2, username);
         ps.execute();
@@ -148,7 +156,10 @@ final class UserController implements UserDao {
       }
     } catch (final SQLException e) {
       throw new DatabaseException(
-          String.format("Error validating password name: %s, (masked) pwd: %s", username, hashedPassword.mask()), e);
+          String.format(
+              "Error validating password name: %s, (masked) pwd: %s",
+              username, hashedPassword.mask()),
+          e);
     }
   }
 

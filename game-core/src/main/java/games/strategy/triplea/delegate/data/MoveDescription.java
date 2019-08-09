@@ -1,5 +1,7 @@
 package games.strategy.triplea.delegate.data;
 
+import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Unit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,20 +9,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import games.strategy.engine.data.Route;
-import games.strategy.engine.data.Unit;
-
-/**
- * Describes an action that moves one or more units along a specific route.
- */
+/** Describes an action that moves one or more units along a specific route. */
 public class MoveDescription extends AbstractMoveDescription {
   private static final long serialVersionUID = 2199608152808948043L;
   private final Route route;
   private final Collection<Unit> transportsThatCanBeLoaded;
   private final Map<Unit, Collection<Unit>> dependentUnits;
 
-  public MoveDescription(final Collection<Unit> units, final Route route,
-      final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> dependentUnits) {
+  public MoveDescription(
+      final Collection<Unit> units,
+      final Route route,
+      final Collection<Unit> transportsThatCanBeLoaded,
+      final Map<Unit, Collection<Unit>> dependentUnits) {
     super(units);
     this.route = route;
     this.transportsThatCanBeLoaded = transportsThatCanBeLoaded;

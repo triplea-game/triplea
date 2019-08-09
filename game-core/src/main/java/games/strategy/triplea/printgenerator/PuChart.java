@@ -1,5 +1,8 @@
 package games.strategy.triplea.printgenerator;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerId;
+import games.strategy.triplea.Constants;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
@@ -12,14 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.imageio.ImageIO;
-
 import org.triplea.java.collections.IntegerMap;
-
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerId;
-import games.strategy.triplea.Constants;
 
 class PuChart {
   private final Iterable<PlayerId> players;
@@ -93,15 +90,18 @@ class PuChart {
         if (avoidMap.containsKey(z) && moneyArray[z] / 42 == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 63 + 87 * valFloorXDim);
+          g2d.drawString(
+              playerArray[z].getName(), 42 + 87 * valModXDim - width, 63 + 87 * valFloorXDim);
         } else if (avoidMap.containsValue(z) && moneyArray[z] / 42 == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 30 + 87 * valFloorXDim);
+          g2d.drawString(
+              playerArray[z].getName(), 42 + 87 * valModXDim - width, 30 + 87 * valFloorXDim);
         } else if (moneyArray[z] / 42 == i) {
           final FontMetrics metrics = g2d.getFontMetrics();
           final int width = metrics.stringWidth(playerArray[z].getName()) / 2;
-          g2d.drawString(playerArray[z].getName(), 42 + 87 * valModXDim - width, 60 + 87 * valFloorXDim);
+          g2d.drawString(
+              playerArray[z].getName(), 42 + 87 * valModXDim - width, 60 + 87 * valFloorXDim);
         }
       }
       // Draw Ellipses and Numbers
