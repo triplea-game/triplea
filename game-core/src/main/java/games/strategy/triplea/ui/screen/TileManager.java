@@ -47,10 +47,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 import org.triplea.util.Tuple;
 
 /** Orchestrates the rendering of all map tiles. */
@@ -500,12 +499,12 @@ public class TileManager {
       final Rectangle bounds,
       final Graphics2D graphics,
       final boolean drawOutline) {
-    final SortedSet<IDrawable> drawablesSet = new TreeSet<>();
-    final List<Tile> intersectingTiles = getTiles(bounds);
-    for (final Tile tile : intersectingTiles) {
-      drawablesSet.addAll(tile.getDrawables());
-    }
-    for (final IDrawable drawer : drawablesSet) {
+    final List<IDrawable> drawables = getTiles(bounds).stream()
+        .map(Tile::getDrawables)
+        .flatMap(Collection::stream)
+        .sorted()
+        .collect(Collectors.toList());
+    for (final IDrawable drawer : drawables) {
       if (drawer.getLevel().ordinal() >= IDrawable.DrawLevel.UNITS_LEVEL.ordinal()) {
         break;
       }
