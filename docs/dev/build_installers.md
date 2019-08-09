@@ -1,5 +1,5 @@
 ### Pre-Requisite
-- install47 license key (can get from maintainers or an open-source one from install4j)
+- install4j license key (can get from maintainers or an open-source one from install4j)
 
 ## Building installers
  - Install [Install4j7](https://www.ej-technologies.com/download/install4j/files)
