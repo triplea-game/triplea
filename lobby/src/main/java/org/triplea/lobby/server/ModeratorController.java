@@ -1,6 +1,5 @@
 package org.triplea.lobby.server;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
@@ -59,8 +58,7 @@ final class ModeratorController implements IModeratorController {
   @Override
   public boolean isPlayerAdmin(final INode node) {
     final User user = getUserForNode(node);
-    final DBUser dbUser = database.getUserDao().getUserByName(user.getUsername());
-    return dbUser != null && dbUser.isAdmin();
+    return database.getUserDao().isAdmin(user.getUsername());
   }
 
   private User getUserForNode(final INode node) {

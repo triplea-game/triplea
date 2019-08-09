@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
-import games.strategy.engine.lobby.server.userDB.DBUser;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.Optional;
@@ -67,9 +66,6 @@ final class LobbyLoginValidatorTest {
     private final String bcryptSalt = BCrypt.gensalt();
 
     private final User user = TestUserUtils.newUser();
-
-    private final DBUser dbUser =
-        new DBUser(new DBUser.UserName(user.getUsername()), new DBUser.UserEmail(EMAIL));
 
     private final String md5CryptSalt = Md5Crypt.newSalt();
 
@@ -148,7 +144,7 @@ final class LobbyLoginValidatorTest {
 
     final void givenUserExists() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.getUserByName(user.getUsername())).thenReturn(dbUser);
+      when(userDao.getUserEmailByName(user.getUsername())).thenReturn(EMAIL);
     }
 
     final void givenUserHasBcryptedPassword() {
@@ -176,8 +172,7 @@ final class LobbyLoginValidatorTest {
               remoteAddress);
     }
 
-    final void thenAccessLogShouldReceiveSuccessfulAuthentication(final UserType userType)
-        throws Exception {
+    final void thenAccessLogShouldReceiveSuccessfulAuthentication(final UserType userType) {
       verify(accessLog).insert(eq(user), eq(userType));
     }
 
@@ -194,18 +189,15 @@ final class LobbyLoginValidatorTest {
     }
 
     final void thenUserShouldBeCreatedWithMd5CryptedPassword() {
-      verify(userDao)
-          .createUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(md5Crypt(PASSWORD)));
+      verify(userDao).createUser(user.getUsername(), EMAIL, new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void thenUserShouldBeUpdatedWithBcryptedPassword() {
-      verify(userDao)
-          .updateUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(bcrypt(PASSWORD)));
+      verify(userDao).updateUser(user.getUsername(), EMAIL, new HashedPassword(bcrypt(PASSWORD)));
     }
 
     final void thenUserShouldBeUpdatedWithMd5CryptedPassword() {
-      verify(userDao)
-          .updateUser(dbUser.getName(), dbUser.getEmail(), new HashedPassword(md5Crypt(PASSWORD)));
+      verify(userDao).updateUser(user.getUsername(), EMAIL, new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void thenUserShouldNotBeCreated() {
@@ -214,14 +206,12 @@ final class LobbyLoginValidatorTest {
 
     final void thenUserShouldNotBeUpdatedWithBcryptedPassword() {
       verify(userDao, never())
-          .updateUser(
-              eq(dbUser.getName()), eq(dbUser.getEmail()), argThat(HashedPassword::isBcrypted));
+          .updateUser(eq(user.getUsername()), eq(EMAIL), argThat(HashedPassword::isBcrypted));
     }
 
     final void thenUserShouldNotBeUpdatedWithMd5CryptedPassword() {
       verify(userDao, never())
-          .updateUser(
-              eq(dbUser.getName()), eq(dbUser.getEmail()), argThat(HashedPassword::isMd5Crypted));
+          .updateUser(eq(user.getUsername()), eq(EMAIL), argThat(HashedPassword::isMd5Crypted));
     }
 
     final void thenUserShouldNotBeUpdated() {

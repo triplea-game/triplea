@@ -18,8 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class PlayerNameAssignerTest {
 
-  private static final String name1 = "Never endure a plunder.";
-  private static final String name2 = "C'mon, never vandalize a gull";
+  private static final String name1 = "Never_endure_a_plunder";
+  private static final String name2 = "Cmon_never_vandalize_a_gull";
 
   @Mock private InetAddress address1;
 
@@ -39,38 +39,13 @@ class PlayerNameAssignerTest {
 
       assertThrows(
           NullPointerException.class, () -> PlayerNameAssigner.assignName(name1, address1, null));
-    }
 
-    /** Short or bad name could be a custom (hacked) client. */
-    @Test
-    void nameTooShort() {
       Arrays.asList(null, "", "a", "_")
           .forEach(
               nameTooShort ->
-                  assertThat(
-                      "With a name too short, we could have a hacked client, should use a default "
-                          + "dummy name and not error out on the server side.",
-                      PlayerNameAssigner.assignName(nameTooShort, address1, emptyList()),
-                      is(PlayerNameAssigner.DUMMY_NAME)));
-    }
-
-    @Test
-    void badNamesPassedFromClientWithDuplicate() {
-      assertThat(
-          "We already have a dummy name, so we should see an increment to the name.",
-          PlayerNameAssigner.assignName(
-              null, address1, singleton(createNode(PlayerNameAssigner.DUMMY_NAME, address2))),
-          is(PlayerNameAssigner.DUMMY_NAME + " (1)"));
-
-      assertThat(
-          "We already have a couple dummy names, should see an increment to the name.",
-          PlayerNameAssigner.assignName(
-              null,
-              address1,
-              asList(
-                  createNode(PlayerNameAssigner.DUMMY_NAME, address2),
-                  createNode(PlayerNameAssigner.DUMMY_NAME + " (1)", address2))),
-          is(PlayerNameAssigner.DUMMY_NAME + " (2)"));
+                  assertThrows(
+                      IllegalArgumentException.class,
+                      () -> PlayerNameAssigner.assignName(nameTooShort, address1, emptyList())));
     }
   }
 
@@ -165,37 +140,6 @@ class PlayerNameAssignerTest {
                 createNode(name1 + " (1)", address2),
                 createNode(name1, address2))),
         is(name1 + " (3)"));
-  }
-
-  /**
-   * If a user choose a name like "name (1)", then the numeral append should still work and append
-   * to that name, eg: "name (1) (1)".
-   */
-  @Test
-  void doubleAppendCase() {
-    assertThat(
-        "if requesting a name ending in (1), and we have that already, then append again",
-        PlayerNameAssigner.assignName(
-            name1 + " (1)", address1, singleton(createNode(name1 + " (1)", address2))),
-        is(name1 + " (1) (1)"));
-
-    assertThat(
-        "if requesting a name ending in (1), and we have that already, then append again,"
-            + "and verify incrementing numerals",
-        PlayerNameAssigner.assignName(
-            name1 + " (1)",
-            address1,
-            asList(
-                createNode(name1 + " (1) (2)", address2),
-                createNode(name1 + " (1)", address2),
-                createNode(name1 + " (1) (1)", address2))),
-        is(name1 + " (1) (3)"));
-
-    assertThat(
-        "oddball case where there is a matching substring, we need a full match",
-        PlayerNameAssigner.assignName(
-            name1 + " (1)", address1, singleton(createNode(name1, address2))),
-        is(name1 + " (1)"));
   }
 
   /**

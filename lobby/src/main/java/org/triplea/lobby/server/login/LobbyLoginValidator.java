@@ -2,12 +2,12 @@ package org.triplea.lobby.server.login;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.engine.lobby.PlayerEmailValidation;
+import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashMap;
@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -86,14 +85,13 @@ public final class LobbyLoginValidator implements ILoginValidator {
             .hashedMacAddress(clientMac)
             .build();
     final @Nullable String errorMessage = authenticateUser(response, user);
-    logAuthenticationResult(user, getUserTypeFor(response), errorMessage);
+    if (errorMessage == null) {
+      database.getAccessLogDao().insert(user, getUserTypeFor(response));
+    }
     return errorMessage;
   }
 
   private @Nullable String authenticateUser(final Map<String, String> response, final User user) {
-    if (response == null) {
-      return "No Client Properties";
-    }
     final String clientVersionString = response.get(LobbyLoginResponseKeys.LOBBY_VERSION);
     if (clientVersionString == null) {
       return "No Client Version";
@@ -147,17 +145,6 @@ public final class LobbyLoginValidator implements ILoginValidator {
         : UserType.REGISTERED;
   }
 
-  private void logAuthenticationResult(
-      final User user, final UserType userType, final @Nullable String errorMessage) {
-    if (errorMessage == null) {
-      try {
-        database.getAccessLogDao().insert(user, userType);
-      } catch (final SQLException e) {
-        log.log(Level.SEVERE, "failed to record successful authentication in database", e);
-      }
-    }
-  }
-
   private static String getBanDurationBreakdown(final Timestamp stamp) {
     final long millis = stamp.getTime() - System.currentTimeMillis();
     if (millis < 0) {
@@ -203,18 +190,16 @@ public final class LobbyLoginValidator implements ILoginValidator {
               if (database.getUserDao().login(username, new HashedPassword(pass))) {
                 if (legacyHashedPassword != null
                     && database.getUserDao().getLegacyPassword(username).value.isEmpty()) {
-                  final DBUser dbUser = database.getUserDao().getUserByName(username);
+
+                  final String email = database.getUserDao().getUserEmailByName(username);
+                  database
+                      .getUserDao()
+                      .updateUser(username, email, new HashedPassword(legacyHashedPassword));
                   database
                       .getUserDao()
                       .updateUser(
-                          dbUser.getName(),
-                          dbUser.getEmail(),
-                          new HashedPassword(legacyHashedPassword));
-                  database
-                      .getUserDao()
-                      .updateUser(
-                          dbUser.getName(),
-                          dbUser.getEmail(),
+                          username,
+                          email,
                           new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get())));
                 }
                 return null;
@@ -223,12 +208,12 @@ public final class LobbyLoginValidator implements ILoginValidator {
             } else if (database
                 .getUserDao()
                 .login(username, new HashedPassword(legacyHashedPassword))) {
-              final DBUser dbUser = database.getUserDao().getUserByName(username);
+              final String email = database.getUserDao().getUserEmailByName(username);
               database
                   .getUserDao()
                   .updateUser(
-                      dbUser.getName(),
-                      dbUser.getEmail(),
+                      username,
+                      email,
                       new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get())));
               return null;
             } else {
@@ -258,29 +243,24 @@ public final class LobbyLoginValidator implements ILoginValidator {
       }
       final String hostName =
           username.substring(0, username.indexOf(LobbyConstants.LOBBY_WATCHER_NAME));
-
-      if (!DBUser.isValidUserName(hostName)) {
-        return DBUser.getUserNameValidationErrorMessage(hostName);
-      }
+      return PlayerNameValidation.serverSideValidate(hostName);
     } else {
-      return DBUser.isValidUserName(username)
-          ? null
-          : DBUser.getUserNameValidationErrorMessage(username);
+      return PlayerNameValidation.serverSideValidate(username);
     }
-    return null;
   }
 
   private @Nullable String createUser(final Map<String, String> response, final User user) {
-    final DBUser dbUser =
-        new DBUser(
-            new DBUser.UserName(user.getUsername()),
-            new DBUser.UserEmail(response.get(LobbyLoginResponseKeys.EMAIL)));
+    final String username = user.getUsername();
+    final String email = response.get(LobbyLoginResponseKeys.EMAIL);
 
-    if (!dbUser.isValid()) {
-      return dbUser.getValidationErrorMessage();
+    final String validationMessage =
+        Optional.ofNullable(PlayerNameValidation.validate(username))
+            .orElseGet(() -> PlayerEmailValidation.validate(email));
+    if (validationMessage != null) {
+      return validationMessage;
     }
 
-    if (database.getUserDao().doesUserExist(dbUser.getName())) {
+    if (database.getUserDao().doesUserExist(username)) {
       return "That user name has already been taken";
     }
 
@@ -293,10 +273,10 @@ public final class LobbyLoginValidator implements ILoginValidator {
             final HashedPassword newPass =
                 new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get()));
             if (password.isHashedWithSalt()) {
-              database.getUserDao().createUser(dbUser.getName(), dbUser.getEmail(), password);
-              database.getUserDao().updateUser(dbUser.getName(), dbUser.getEmail(), newPass);
+              database.getUserDao().createUser(username, email, password);
+              database.getUserDao().updateUser(username, email, newPass);
             } else {
-              database.getUserDao().createUser(dbUser.getName(), dbUser.getEmail(), newPass);
+              database.getUserDao().createUser(username, email, newPass);
             }
             return null;
           });
@@ -306,7 +286,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     }
 
     try {
-      database.getUserDao().createUser(dbUser.getName(), dbUser.getEmail(), password);
+      database.getUserDao().createUser(username, email, password);
       return null;
     } catch (final Exception e) {
       return e.getMessage();

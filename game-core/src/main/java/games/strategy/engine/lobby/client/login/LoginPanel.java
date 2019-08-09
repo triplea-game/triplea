@@ -1,6 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -206,12 +206,11 @@ final class LoginPanel extends JPanel {
   }
 
   private void logonPressed() {
-    if (!DBUser.isValidUserName(userName.getText())) {
+    final String validationMessage = PlayerNameValidation.validate(userName.getText());
+
+    if (validationMessage != null) {
       JOptionPane.showMessageDialog(
-          this,
-          DBUser.getUserNameValidationErrorMessage(userName.getText()),
-          "Invalid Username",
-          JOptionPane.ERROR_MESSAGE);
+          this, validationMessage, "Invalid Username", JOptionPane.ERROR_MESSAGE);
       return;
     } else if (password.getPassword().length == 0 && !anonymousLogin.isSelected()) {
       JOptionPane.showMessageDialog(

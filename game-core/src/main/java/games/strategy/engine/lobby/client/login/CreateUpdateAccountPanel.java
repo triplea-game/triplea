@@ -2,7 +2,8 @@ package games.strategy.engine.lobby.client.login;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.engine.lobby.PlayerEmailValidation;
+import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -22,7 +23,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import org.triplea.java.StringUtils;
 import org.triplea.swing.SwingComponents;
 
 /** The panel used to create a new lobby account or update an existing lobby account. */
@@ -57,19 +57,23 @@ public final class CreateUpdateAccountPanel extends JPanel {
    * Creates a new instance of the {@code CreateUpdateAccountPanel} class that is used to update the
    * specified lobby account.
    *
-   * @param user The lobby account to update.
+   * @param userName The lobby account userName to update.
+   * @param email The lobby account email to update.
    * @param lobbyLoginPreferences The user's lobby login preferences.
    * @return A new {@code CreateUpdateAccountPanel}.
    */
   public static CreateUpdateAccountPanel newUpdatePanel(
-      final DBUser user, final LobbyLoginPreferences lobbyLoginPreferences) {
-    checkNotNull(user);
+      final String userName,
+      final String email,
+      final LobbyLoginPreferences lobbyLoginPreferences) {
+    checkNotNull(userName);
+    checkNotNull(email);
     checkNotNull(lobbyLoginPreferences);
 
     final CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(false);
-    panel.userNameField.setText(user.getName());
+    panel.userNameField.setText(userName);
     panel.userNameField.setEnabled(false);
-    panel.emailField.setText(user.getEmail());
+    panel.emailField.setText(email);
     panel.credentialsSavedCheckBox.setSelected(lobbyLoginPreferences.credentialsSaved);
     return panel;
   }
@@ -262,14 +266,14 @@ public final class CreateUpdateAccountPanel extends JPanel {
       passwordField.setText("");
       passwordConfirmField.setText("");
       return;
-    } else if (!StringUtils.isMailValid(emailField.getText())) {
+    } else if (!PlayerEmailValidation.isValid(emailField.getText())) {
       JOptionPane.showMessageDialog(
           this, "You must enter a valid email", "No Email", JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (!DBUser.isValidUserName(userNameField.getText())) {
+    } else if (!PlayerNameValidation.isValid(userNameField.getText())) {
       JOptionPane.showMessageDialog(
           this,
-          DBUser.getUserNameValidationErrorMessage(userNameField.getText()),
+          PlayerNameValidation.validate(userNameField.getText()),
           "Invalid name",
           JOptionPane.ERROR_MESSAGE);
       return;

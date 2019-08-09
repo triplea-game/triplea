@@ -4,6 +4,7 @@ import com.google.common.base.Ascii;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.lobby.PlayerEmailValidation;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.GridBagConstraints;
@@ -21,7 +22,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
-import org.triplea.java.StringUtils;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.ProgressWindow;
 
@@ -192,7 +192,8 @@ public class EmailSenderEditor extends EditorPanel {
 
     final String toAddressText = toAddress.getText();
     final boolean addressValid =
-        setLabelValid(!toAddressText.isEmpty() && StringUtils.isMailValid(toAddressText), toLabel);
+        setLabelValid(
+            !toAddressText.isEmpty() && PlayerEmailValidation.isValid(toAddressText), toLabel);
     final boolean allValid = setupValid && addressValid;
     testEmail.setEnabled(allValid);
     return allValid;
