@@ -111,7 +111,7 @@ public final class ProUtils {
     return alliedPlayers;
   }
 
-  /** Given a player, finds all non-allied (enemy) playerse. */
+  /** Given a player, finds all non-allied (enemy) players. */
   public static List<PlayerId> getPotentialEnemyPlayers(final PlayerId player) {
     final GameData data = ProData.getData();
     final List<PlayerId> otherPlayers = data.getPlayerList().getPlayers();
