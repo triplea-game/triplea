@@ -6,9 +6,11 @@ import com.google.common.collect.ImmutableMap;
 import games.strategy.net.GUID;
 import games.strategy.triplea.attachments.UnitAttachment;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.java.Log;
 
 /**
@@ -16,11 +18,14 @@ import lombok.extern.java.Log;
  * changes to game data, or any change that should go over the network.
  */
 @Log
+@Getter
+@EqualsAndHashCode(of = "id")
 public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private static final long serialVersionUID = -7906193079642776282L;
 
   private PlayerId owner;
   private final GUID id;
+  @Setter
   private int hits = 0;
   private final UnitType type;
 
@@ -41,41 +46,12 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
     setOwner(owner);
   }
 
-  public GUID getId() {
-    return id;
-  }
-
-  public UnitType getType() {
-    return type;
-  }
-
-  public PlayerId getOwner() {
-    return owner;
-  }
-
   public UnitAttachment getUnitAttachment() {
     return (UnitAttachment) type.getAttachment("unitAttachment");
   }
 
-  public int getHits() {
-    return hits;
-  }
-
-  public void setHits(final int hits) {
-    this.hits = hits;
-  }
-
   public void setOwner(final @Nullable PlayerId player) {
     owner = Optional.ofNullable(player).orElse(PlayerId.NULL_PLAYERID);
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (!(o instanceof Unit)) {
-      return false;
-    }
-    final Unit other = (Unit) o;
-    return this.id.equals(other.id);
   }
 
   public boolean isEquivalent(final Unit unit) {
@@ -84,22 +60,6 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
         && owner != null
         && owner.equals(unit.getOwner())
         && hits == unit.getHits();
-  }
-
-  @Override
-  public int hashCode() {
-    if (type == null || owner == null || id == null || this.getData() == null) {
-      final String text =
-          "Unit.toString() -> Possible java de-serialization error: "
-              + (type == null ? "Unit of UNKNOWN TYPE" : type.getName())
-              + " owned by "
-              + (owner == null ? "UNKNOWN OWNER" : owner.getName())
-              + " with id: "
-              + getId();
-      UnitDeserializationErrorLazyMessage.printError(text);
-      return 0;
-    }
-    return Objects.hashCode(id);
   }
 
   @Override
