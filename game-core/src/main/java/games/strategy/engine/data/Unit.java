@@ -25,8 +25,7 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
 
   private PlayerId owner;
   private final GUID id;
-  @Setter
-  private int hits = 0;
+  @Setter private int hits = 0;
   private final UnitType type;
 
   /** Creates new Unit. Owner can be null. */
