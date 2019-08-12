@@ -51,7 +51,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -95,7 +94,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final UiContext uiContext;
   private final ExecutorService executor =
       Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-  private Map<Territory, List<Unit>> highlightedUnits;
+  @Getter private Collection<List<Unit>> highlightedUnits = Collections.emptyList();
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
 
@@ -363,22 +362,22 @@ public class MapPanel extends ImageScrollerLargeView {
    * the units must all be in the same stack on the map, and exist in the given territory. call with
    * an null args
    */
-  void setUnitHighlight(final Map<Territory, List<Unit>> units) {
-    highlightedUnits = units;
+  public void setUnitHighlight(final Collection<List<Unit>> units) {
+    highlightedUnits = units == null ? Collections.emptyList() : units;
     SwingUtilities.invokeLater(this::repaint);
   }
 
-  Map<Territory, List<Unit>> getHighlightedUnits() {
-    return highlightedUnits;
+  public void centerOnTerritoryIgnoringMapLock(final @Nullable Territory territory) {
+    final Point p = uiContext.getMapData().getCenter(territory);
+    // when centering don't want the map to wrap around, eg if centering on hawaii
+    super.setTopLeft((int) (p.x - (getScaledWidth() / 2)), (int) (p.y - (getScaledHeight() / 2)));
   }
 
   public void centerOn(final @Nullable Territory territory) {
     if (territory == null || uiContext.getLockMap()) {
       return;
     }
-    final Point p = uiContext.getMapData().getCenter(territory);
-    // when centering don't want the map to wrap around, eg if centering on hawaii
-    super.setTopLeft((int) (p.x - (getScaledWidth() / 2)), (int) (p.y - (getScaledHeight() / 2)));
+    centerOnTerritoryIgnoringMapLock(territory);
   }
 
   void highlightTerritory(final Territory territory) {
@@ -672,32 +671,30 @@ public class MapPanel extends ImageScrollerLargeView {
           movementFuelCost,
           uiContext.getResourceImageFactory());
     }
-    if (highlightedUnits != null) {
-      for (final List<Unit> value : highlightedUnits.values()) {
-        for (final UnitCategory category : UnitSeparator.categorize(value)) {
-          final List<Unit> territoryUnitsOfSameCategory = category.getUnits();
-          if (territoryUnitsOfSameCategory.isEmpty()) {
-            continue;
-          }
-          final Rectangle r = tileManager.getUnitRect(territoryUnitsOfSameCategory, gameData);
-          if (r == null) {
-            continue;
-          }
+    for (final List<Unit> value : highlightedUnits) {
+      for (final UnitCategory category : UnitSeparator.categorize(value)) {
+        final List<Unit> territoryUnitsOfSameCategory = category.getUnits();
+        if (territoryUnitsOfSameCategory.isEmpty()) {
+          continue;
+        }
+        final Rectangle r = tileManager.getUnitRect(territoryUnitsOfSameCategory, gameData);
+        if (r == null) {
+          continue;
+        }
 
-          final Optional<Image> image =
-              uiContext
-                  .getUnitImageFactory()
-                  .getHighlightImage(
-                      category.getType(),
-                      category.getOwner(),
-                      category.hasDamageOrBombingUnitDamage(),
-                      category.getDisabled());
-          if (image.isPresent()) {
-            final AffineTransform transform =
-                AffineTransform.getTranslateInstance(
-                    normalizeX(r.getX() - getXOffset()), normalizeY(r.getY() - getYOffset()));
-            g2d.drawImage(image.get(), transform, this);
-          }
+        final Optional<Image> image =
+            uiContext
+                .getUnitImageFactory()
+                .getHighlightImage(
+                    category.getType(),
+                    category.getOwner(),
+                    category.hasDamageOrBombingUnitDamage(),
+                    category.getDisabled());
+        if (image.isPresent()) {
+          final AffineTransform transform =
+              AffineTransform.getTranslateInstance(
+                  normalizeX(r.getX() - getXOffset()), normalizeY(r.getY() - getYOffset()));
+          g2d.drawImage(image.get(), transform, this);
         }
       }
     }

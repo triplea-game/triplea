@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /** Add units. */
-class AddUnits extends Change {
+public class AddUnits extends Change {
   private static final long serialVersionUID = 2694342784633196289L;
 
   private final String name;

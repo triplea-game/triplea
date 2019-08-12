@@ -227,8 +227,8 @@ class EditPanel extends ActionPanel {
           return;
         }
         if (!units.isEmpty()) {
-          final Map<Territory, List<Unit>> highlight = new HashMap<>();
-          highlight.put(territory, units);
+          final Collection<List<Unit>> highlight = new HashSet<>();
+          highlight.add(units);
           getMap().setUnitHighlight(highlight);
         } else {
           getMap().setUnitHighlight(null);

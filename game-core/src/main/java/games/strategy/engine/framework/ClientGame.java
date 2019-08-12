@@ -2,6 +2,7 @@ package games.strategy.engine.framework;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.message.RemoteName;
@@ -121,7 +122,7 @@ public class ClientGame extends AbstractGame {
                   .startNextStep(stepName, delegateName, player, displayName);
             }
             BattleCalculator.clearOolCache();
-            notifyGameStepListeners(stepName, delegateName, player, round, displayName);
+            gameData.fireGameDataEvent(GameDataEvent.GAME_STEP_CHANGED);
           }
 
           @Override

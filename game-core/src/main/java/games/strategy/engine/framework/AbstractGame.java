@@ -4,7 +4,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.PlayerManager;
-import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.player.DefaultPlayerBridge;
@@ -15,10 +14,8 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ISound;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This abstract class keeps common variables and methods from a game (ClientGame or ServerGame).
@@ -36,7 +33,6 @@ public abstract class AbstractGame implements IGame {
   protected IGameModifiedChannel gameModifiedChannel;
   protected final PlayerManager playerManager;
   protected boolean firstRun = true;
-  protected final List<GameStepListener> gameStepListeners = new CopyOnWriteArrayList<>();
 
   protected AbstractGame(
       final GameData data,
@@ -67,18 +63,6 @@ public abstract class AbstractGame implements IGame {
     }
   }
 
-  /** Notifies game step listeners that a game step has changed. */
-  protected void notifyGameStepListeners(
-      final String stepName,
-      final String delegateName,
-      final PlayerId player,
-      final int round,
-      final String displayName) {
-    for (final GameStepListener listener : gameStepListeners) {
-      listener.gameStepChanged(stepName, delegateName, player, round, displayName);
-    }
-  }
-
   @Override
   public GameData getData() {
     return gameData;
@@ -102,16 +86,6 @@ public abstract class AbstractGame implements IGame {
   @Override
   public PlayerManager getPlayerManager() {
     return playerManager;
-  }
-
-  @Override
-  public void addGameStepListener(final GameStepListener listener) {
-    gameStepListeners.add(listener);
-  }
-
-  @Override
-  public void removeGameStepListener(final GameStepListener listener) {
-    gameStepListeners.remove(listener);
   }
 
   public static RemoteName getDisplayChannel(final GameData data) {

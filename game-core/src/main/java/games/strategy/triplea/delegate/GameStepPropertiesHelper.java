@@ -131,14 +131,7 @@ public final class GameStepPropertiesHelper {
       final GameData data, final boolean doNotThrowErrorIfNotMoveDelegate) {
     data.acquireReadLock();
     try {
-      final String prop =
-          data.getSequence()
-              .getStep()
-              .getProperties()
-              .getProperty(GameStep.PropertyKeys.NON_COMBAT_MOVE);
-      if (prop != null) {
-        return Boolean.parseBoolean(prop);
-      } else if (isNonCombatDelegate(data)) {
+      if (data.getSequence().getStep().isNonCombat()) {
         return true;
       } else if (isCombatDelegate(data) || doNotThrowErrorIfNotMoveDelegate) {
         return false;
@@ -319,7 +312,6 @@ public final class GameStepPropertiesHelper {
     }
   }
 
-  // private static members for testing default situation based on name of delegate
   private static boolean isNonCombatDelegate(final GameData data) {
     return data.getSequence().getStep().getName().endsWith("NonCombatMove");
   }

@@ -9,7 +9,7 @@ import static games.strategy.engine.framework.CliProperties.TRIPLEA_PORT;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import games.strategy.engine.data.events.GameStepListener;
+import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.message.IRemoteMessenger;
@@ -55,9 +55,6 @@ public class InGameLobbyWatcher {
   private GameSelectorModel gameSelectorModel;
   private final Observer gameSelectorModelObserver = (o, arg) -> gameSelectorModelUpdated();
   private IGame game;
-  private final GameStepListener gameStepListener =
-      (stepName, delegateName, player, round, displayName) ->
-          InGameLobbyWatcher.this.gameStepChanged(round);
   // we create this messenger, and use it to connect to the game lobby
   private final IMessenger messenger;
   private final IRemoteMessenger remoteMessenger;
@@ -243,13 +240,12 @@ public class InGameLobbyWatcher {
   }
 
   void setGame(final IGame game) {
-    if (this.game != null) {
-      this.game.removeGameStepListener(gameStepListener);
-    }
     this.game = game;
     if (game != null) {
-      game.addGameStepListener(gameStepListener);
-      gameStepChanged(game.getData().getSequence().getRound());
+      game.getData()
+          .addGameDataEventListener(
+              GameDataEvent.GAME_STEP_CHANGED,
+              () -> gameStepChanged(game.getData().getSequence().getRound()));
     }
   }
 
@@ -307,9 +303,6 @@ public class InGameLobbyWatcher {
     messenger.shutDown();
     serverMessenger.removeConnectionChangeListener(connectionChangeListener);
     cleanUpGameModelListener();
-    if (game != null) {
-      game.removeGameStepListener(gameStepListener);
-    }
   }
 
   public boolean isActive() {

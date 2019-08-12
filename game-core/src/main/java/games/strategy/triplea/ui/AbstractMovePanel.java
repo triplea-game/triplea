@@ -7,6 +7,7 @@ import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.remote.IAbstractMoveDelegate;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -15,9 +16,9 @@ import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
@@ -43,6 +44,8 @@ abstract class AbstractMovePanel extends ActionPanel {
     disableCancelButton();
     undoableMoves = Collections.emptyList();
   }
+
+  abstract Component getUnitScrollerPanel();
 
   /*
    * sub-classes method for done handling
@@ -225,39 +228,43 @@ abstract class AbstractMovePanel extends ActionPanel {
     SwingUtilities.invokeLater(
         () -> {
           removeAll();
-          this.actionLabel.setText(id.getName() + actionLabel);
-          add(leftBox(this.actionLabel));
-          if (setCancelButton()) {
-            add(leftBox(cancelMoveButton));
-          }
-          add(
-              leftBox(
-                  new JButton(
-                      SwingAction.of(
-                          "Done",
-                          e -> {
-                            if (doneMoveAction()) {
-                              moveMessage = null;
-                              release();
-                            }
-                          }))));
-          addAdditionalButtons();
-          add(Box.createVerticalStrut(entryPadding));
-          add(undoableMovesPanel);
-          add(Box.createGlue());
+          add(movedUnitsPanel(id, actionLabel));
+          add(getUnitScrollerPanel());
           SwingUtilities.invokeLater(refresh);
         });
   }
 
-  protected void addAdditionalButtons() {}
+  protected List<Component> getAdditionalButtons() {
+    return Collections.emptyList();
+  }
 
   protected abstract boolean setCancelButton();
 
-  static JComponent leftBox(final JComponent c) {
-    final Box b = new Box(BoxLayout.X_AXIS);
-    b.add(c);
-    b.add(Box.createHorizontalGlue());
-    return b;
+  private JPanel movedUnitsPanel(final PlayerId id, final String actionLabel) {
+    final JPanel movedUnitsPanel = new JPanel();
+    movedUnitsPanel.setLayout(new BoxLayout(movedUnitsPanel, BoxLayout.Y_AXIS));
+
+    this.actionLabel.setText(id.getName() + actionLabel);
+    movedUnitsPanel.add(SwingComponents.leftBox(this.actionLabel));
+    if (setCancelButton()) {
+      movedUnitsPanel.add(SwingComponents.leftBox(cancelMoveButton));
+    }
+    movedUnitsPanel.add(
+        SwingComponents.leftBox(
+            new JButton(
+                SwingAction.of(
+                    "Done",
+                    e -> {
+                      if (doneMoveAction()) {
+                        moveMessage = null;
+                        release();
+                      }
+                    }))));
+    getAdditionalButtons().forEach(movedUnitsPanel::add);
+    movedUnitsPanel.add(Box.createVerticalStrut(entryPadding));
+    movedUnitsPanel.add(undoableMovesPanel);
+    movedUnitsPanel.add(Box.createGlue());
+    return movedUnitsPanel;
   }
 
   protected final void setUp(final IPlayerBridge bridge) {

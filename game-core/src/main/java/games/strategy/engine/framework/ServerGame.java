@@ -6,6 +6,7 @@ import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.PlayerManager;
@@ -588,7 +589,7 @@ public class ServerGame extends AbstractGame {
     final String displayName = currentStep.getDisplayName();
     final int round = gameData.getSequence().getRound();
     final PlayerId id = currentStep.getPlayerId();
-    notifyGameStepListeners(stepName, delegateName, id, round, displayName);
+    gameData.fireGameDataEvent(GameDataEvent.GAME_STEP_CHANGED);
     getGameModifiedBroadcaster()
         .stepChanged(stepName, delegateName, id, round, displayName, loadedFromSavedGame);
   }
