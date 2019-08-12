@@ -29,10 +29,7 @@ public enum GameDataEvent {
       final boolean hasMoveChange =
           ((CompositeChange) change)
               .getChanges().stream()
-                  .map(GameDataEvent::hasMoveChange)
-                  .filter(b -> b)
-                  .findAny()
-                  .orElse(false);
+                  .anyMatch(GameDataEvent::hasMoveChange);
       if (hasMoveChange) {
         return true;
       }
