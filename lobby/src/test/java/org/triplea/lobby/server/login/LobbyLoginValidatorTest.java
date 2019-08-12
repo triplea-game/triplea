@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -59,13 +60,15 @@ final class LobbyLoginValidatorTest {
 
     @Mock DatabaseDao databaseDao;
 
-    private LobbyLoginValidator lobbyLoginValidator;
+    @Mock FailedLoginThrottle failedLoginThrottle;
+
+    LobbyLoginValidator lobbyLoginValidator;
+
+    final User user = TestUserUtils.newUser();
 
     private String authenticationErrorMessage;
 
     private final String bcryptSalt = BCrypt.gensalt();
-
-    private final User user = TestUserUtils.newUser();
 
     private final String md5CryptSalt = Md5Crypt.newSalt();
 
@@ -75,7 +78,8 @@ final class LobbyLoginValidatorTest {
           new LobbyLoginValidator(
               databaseDao,
               new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair()),
-              () -> bcryptSalt);
+              () -> bcryptSalt,
+              failedLoginThrottle);
     }
 
     final String bcrypt(final String password) {
@@ -509,6 +513,25 @@ final class LobbyLoginValidatorTest {
                 .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
                 .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
                 .build();
+      }
+    }
+
+    @ExtendWith(MockitoExtension.class)
+    @Nested
+    final class LoginThrottleTest extends AbstractTestCase {
+      @Test
+      void loginThrottleDeniesLogin() {
+        when(failedLoginThrottle.tooManyFailedLoginAttempts(any())).thenReturn(true);
+
+        final String result =
+            lobbyLoginValidator.verifyConnection(
+                new HashMap<>(),
+                new HashMap<>(),
+                "",
+                "",
+                new InetSocketAddress(user.getInetAddress(), 9999));
+
+        assertThat(result, is(LobbyLoginValidator.ErrorMessages.TOO_MANY_FAILED_LOGIN_ATTEMPTS));
       }
     }
   }

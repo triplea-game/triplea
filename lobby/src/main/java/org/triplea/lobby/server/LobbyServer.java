@@ -13,6 +13,7 @@ import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.config.LobbyConfiguration;
+import org.triplea.lobby.server.login.FailedLoginThrottle;
 import org.triplea.lobby.server.login.LobbyLoginValidator;
 
 /**
@@ -45,7 +46,10 @@ final class LobbyServer {
     final Messengers messengers = new Messengers(server);
     server.setLoginValidator(
         new LobbyLoginValidator(
-            lobbyConfiguration.getDatabaseDao(), new RsaAuthenticator(), BCrypt::gensalt));
+            lobbyConfiguration.getDatabaseDao(),
+            new RsaAuthenticator(),
+            BCrypt::gensalt,
+            new FailedLoginThrottle()));
 
     new UserManager(lobbyConfiguration.getDatabaseDao()).register(messengers);
 

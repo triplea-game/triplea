@@ -47,11 +47,14 @@ public final class LobbyLoginValidator implements ILoginValidator {
     String THATS_NOT_A_NICE_NAME = "That's not a nice name";
     String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
     String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
+    String TOO_MANY_FAILED_LOGIN_ATTEMPTS =
+        "Too many failed login attempts, wait a few minutes before attempting again.";
   }
 
   private final DatabaseDao database;
   private final RsaAuthenticator rsaAuthenticator;
   private final Supplier<String> bcryptSaltGenerator;
+  private final FailedLoginThrottle failedLoginThrottle;
 
   @Override
   public Map<String, String> getChallengeProperties(final String userName) {
@@ -78,6 +81,12 @@ public final class LobbyLoginValidator implements ILoginValidator {
       final String clientName,
       final String clientMac,
       final SocketAddress remoteAddress) {
+
+    final var address = ((InetSocketAddress) remoteAddress).getAddress();
+    if (failedLoginThrottle.tooManyFailedLoginAttempts(address)) {
+      return ErrorMessages.TOO_MANY_FAILED_LOGIN_ATTEMPTS;
+    }
+
     final User user =
         User.builder()
             .username(clientName)
@@ -87,7 +96,9 @@ public final class LobbyLoginValidator implements ILoginValidator {
     final @Nullable String errorMessage = authenticateUser(response, user);
     if (errorMessage == null) {
       database.getAccessLogDao().insert(user, getUserTypeFor(response));
+      return null;
     }
+    failedLoginThrottle.increment(address);
     return errorMessage;
   }
 
