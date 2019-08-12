@@ -368,16 +368,13 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   public void centerOnTerritoryIgnoringMapLock(final @Nullable Territory territory) {
-    if (territory == null || uiContext.getLockMap()) {
-      return;
-    }
     final Point p = uiContext.getMapData().getCenter(territory);
     // when centering don't want the map to wrap around, eg if centering on hawaii
     super.setTopLeft((int) (p.x - (getScaledWidth() / 2)), (int) (p.y - (getScaledHeight() / 2)));
   }
 
   public void centerOn(final @Nullable Territory territory) {
-    if (uiContext.getLockMap()) {
+    if (territory == null || uiContext.getLockMap()) {
       return;
     }
     centerOnTerritoryIgnoringMapLock(territory);
