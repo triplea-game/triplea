@@ -1,6 +1,7 @@
 package games.strategy.triplea.ui.unit.scroller;
 
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.image.ImageLoader;
 import java.io.File;
 import java.util.function.Supplier;
 import javax.swing.Icon;
@@ -17,13 +18,12 @@ class UnitScrollerIcon implements Supplier<Icon> {
   static final UnitScrollerIcon CENTER_ON_UNIT = new UnitScrollerIcon("unit_center.png");
   static final UnitScrollerIcon UNIT_SKIP = new UnitScrollerIcon("unit_skip.png");
 
-  private static final File IMAGE_PATH = new File("assets", "unit_scroller");
+  private static final File IMAGE_PATH = new File(ResourceLoader.RESOURCE_FOLDER, "unit_scroller");
 
   private final String imageFile;
 
   @Override
   public Icon get() {
-    return new ImageIcon(
-        ResourceLoader.getGameEngineAssetLoader().getImage(new File(IMAGE_PATH, imageFile)));
+    return new ImageIcon(ImageLoader.getImage(new File(IMAGE_PATH, imageFile)));
   }
 }

@@ -1,6 +1,5 @@
 package games.strategy.triplea;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -8,7 +7,6 @@ import com.google.common.base.Splitter;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
 import games.strategy.engine.framework.startup.launcher.MapNotFoundException;
-import java.awt.Image;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +23,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.java.UrlStreams;
@@ -259,20 +256,5 @@ public class ResourceLoader implements Closeable {
 
     return UrlStreams.openStream(url)
         .orElseThrow(() -> new IllegalStateException("Failed to open an input stream to: " + path));
-  }
-
-  /**
-   * Reads the given file as an image. Path is relative to the 'project root'.
-   *
-   * @param path Location of the file to be read as an image.
-   */
-  public Image getImage(final File path) {
-    checkArgument(path.exists(), "File must exist at path: " + path.getAbsolutePath());
-    checkArgument(path.isFile(), "Must be a file: " + path.getAbsolutePath());
-    try {
-      return ImageIO.read(path);
-    } catch (final IOException e) {
-      throw new RuntimeException("Unable to load image at path: " + path.getAbsolutePath(), e);
-    }
   }
 }
