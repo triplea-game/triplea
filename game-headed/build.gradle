@@ -41,7 +41,6 @@ jar {
     }
 }
 
-// todo: have this run automatically on 'run' and or downloadPlatformInstallerAssets
 task downloadImages {
     doLast {
         [
@@ -59,7 +58,7 @@ task downloadImages {
     }
 }
 
-run{
+run {
     dependsOn downloadImages
 }
 
