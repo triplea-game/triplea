@@ -34,7 +34,8 @@ class LobbyLoginValidatorIntegrationTest {
       new LobbyLoginValidator(
           TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao(),
           new RsaAuthenticator(),
-          BCrypt::gensalt);
+          BCrypt::gensalt,
+          new FailedLoginThrottle());
 
   @Test
   void testLegacyCreateNewUser() {
