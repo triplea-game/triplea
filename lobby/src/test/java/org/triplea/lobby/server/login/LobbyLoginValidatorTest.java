@@ -64,11 +64,11 @@ final class LobbyLoginValidatorTest {
 
     LobbyLoginValidator lobbyLoginValidator;
 
+    final User user = TestUserUtils.newUser();
+
     private String authenticationErrorMessage;
 
     private final String bcryptSalt = BCrypt.gensalt();
-
-    final User user = TestUserUtils.newUser();
 
     private final String md5CryptSalt = Md5Crypt.newSalt();
 
