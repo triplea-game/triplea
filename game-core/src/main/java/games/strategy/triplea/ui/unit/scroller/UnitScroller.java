@@ -224,15 +224,7 @@ public class UnitScroller {
   }
 
   private void centerOnMovableUnit(final boolean selectNext) {
-    final List<Territory> allTerritories;
-    gameData.acquireReadLock();
-    try {
-      allTerritories = new ArrayList<>(gameData.getMap().getTerritories());
-    } finally {
-      gameData.releaseReadLock();
-    }
-
-    final int size = allTerritories.size();
+    final List<Territory> allTerritories = gameData.getMap().getTerritories();
 
     if (!selectNext) {
       Collections.reverse(allTerritories);
@@ -240,13 +232,13 @@ public class UnitScroller {
     // new focused index is 1 greater
     int newFocusedIndex =
         lastFocusedTerritory == null ? 0 : allTerritories.indexOf(lastFocusedTerritory) + 1;
-    if (newFocusedIndex >= size) {
+    if (newFocusedIndex >= allTerritories.size()) {
       // if we are larger than the number of territories, we must start back at zero
       newFocusedIndex = 0;
     }
     Territory newFocusedTerritory = null;
     // make sure we go through every single territory on the board
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < allTerritories.size(); i++) {
       final Territory t = allTerritories.get(newFocusedIndex);
       final List<Unit> matchedUnits =
           UnitScrollerModel.getMoveableUnits(
@@ -261,7 +253,7 @@ public class UnitScroller {
         break;
       }
       // make sure to cycle through the front half of territories
-      if ((newFocusedIndex + 1) >= size) {
+      if ((newFocusedIndex + 1) >= allTerritories.size()) {
         newFocusedIndex = 0;
       } else {
         newFocusedIndex++;
