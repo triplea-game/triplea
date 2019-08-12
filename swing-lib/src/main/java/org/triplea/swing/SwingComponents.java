@@ -20,6 +20,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -428,5 +430,12 @@ public final class SwingComponents {
     worker.addPropertyChangeListener(new SwingWorkerCompletionWaiter(progressDialog));
     worker.execute();
     return promise;
+  }
+
+  public static JComponent leftBox(final JComponent c) {
+    final Box b = new Box(BoxLayout.X_AXIS);
+    b.add(c);
+    b.add(Box.createHorizontalGlue());
+    return b;
   }
 }

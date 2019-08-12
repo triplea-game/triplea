@@ -6,13 +6,14 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.Unit;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import lombok.Getter;
 
 /** A game data change that captures a change to an object property value. */
 public class ObjectPropertyChange extends Change {
   private static final long serialVersionUID = 4218093376094170940L;
 
   private final Unit object;
-  private String property;
+  @Getter private String property;
   private final Object newValue;
   private final Object oldValue;
 

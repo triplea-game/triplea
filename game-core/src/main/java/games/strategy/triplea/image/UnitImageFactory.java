@@ -7,9 +7,11 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.util.UnitCategory;
 import games.strategy.ui.Util;
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -98,6 +100,11 @@ public class UnitImageFactory {
   private void clearImageCache() {
     images.clear();
     icons.clear();
+  }
+
+  public Image getImage(final UnitCategory unit) {
+    return getImage(unit.getType(), unit.getOwner(), (unit.getDamaged() > 0), unit.getDisabled())
+        .orElseThrow(() -> new RuntimeException("No unit image for: " + unit));
   }
 
   /** Return the appropriate unit image. */
@@ -259,5 +266,18 @@ public class UnitImageFactory {
       name.append("_hit");
     }
     return name.toString();
+  }
+
+  public Dimension getImageDimensions(final UnitType type, final PlayerId player) {
+    final String baseName = getBaseImageName(type, player, false, false);
+    final Image baseImage =
+        getBaseImage(baseName, player)
+            .orElseThrow(
+                () ->
+                    new RuntimeException(
+                        "No image for unit type: " + type + ", player: " + player));
+    final int width = (int) (baseImage.getWidth(null) * scaleFactor);
+    final int height = (int) (baseImage.getHeight(null) * scaleFactor);
+    return new Dimension(width, height);
   }
 }

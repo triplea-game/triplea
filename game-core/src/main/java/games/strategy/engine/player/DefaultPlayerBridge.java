@@ -1,11 +1,9 @@
 package games.strategy.engine.player;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.base.Preconditions;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.events.GameStepListener;
+import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.framework.IGame;
@@ -35,15 +33,13 @@ public class DefaultPlayerBridge implements IPlayerBridge {
   /** Creates new DefaultPlayerBridge. */
   public DefaultPlayerBridge(final IGame game) {
     this.game = game;
-    final GameStepListener gameStepListener =
-        (stepName, delegateName, player, round, displayName) -> {
-          checkNotNull(stepName);
-          checkNotNull(delegateName);
-
-          this.stepName = stepName;
-          currentDelegate = delegateName;
-        };
-    this.game.addGameStepListener(gameStepListener);
+    game.getData()
+        .addGameDataEventListener(
+            GameDataEvent.GAME_STEP_CHANGED,
+            () -> {
+              this.stepName = game.getData().getSequence().getStep().getName();
+              this.currentDelegate = game.getData().getSequence().getStep().getDelegate().getName();
+            });
   }
 
   @Override

@@ -7,6 +7,7 @@ import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
@@ -745,8 +746,7 @@ public final class TripleAFrame extends JFrame {
     // force a data change event to update the UI for edit mode
     dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     data.addDataChangeListener(dataChangeListener);
-    game.addGameStepListener(
-        (stepName, delegateName, player1, round1, stepDisplayName) -> updateStep());
+    game.getData().addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
     uiContext.addShutdownWindow(this);
   }
 
@@ -1962,6 +1962,14 @@ public final class TripleAFrame extends JFrame {
   }
 
   private void updateStep() {
+    if (SwingUtilities.isEventDispatchThread()) {
+      new Thread(this::updateStepFromEdt).start();
+    } else {
+      updateStepFromEdt();
+    }
+  }
+
+  private void updateStepFromEdt() {
     Preconditions.checkState(
         !SwingUtilities.isEventDispatchThread(), "This method must not be invoked on the EDT!");
     if (uiContext == null || uiContext.isShutDown()) {

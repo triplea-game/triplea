@@ -593,6 +593,10 @@ public final class Matches {
     return obj -> unitTypeCanNotMoveDuringCombatMove().test(obj.getType());
   }
 
+  public static Predicate<Unit> unitCanMoveDuringCombatMove() {
+    return unitCanNotMoveDuringCombatMove().negate();
+  }
+
   private static Predicate<Unit> unitIsAaThatCanHitTheseUnits(
       final Collection<Unit> targets,
       final Predicate<Unit> typeOfAa,

@@ -1,7 +1,6 @@
 package games.strategy.triplea.ui;
 
 import com.google.common.collect.Sets;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.AbstractUndoableMove;
 import games.strategy.triplea.util.UnitCategory;
@@ -16,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javax.swing.AbstractAction;
@@ -52,9 +50,9 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     SwingUtilities.invokeLater(this::initLayout);
   }
 
-  void undoMoves(final Map<Territory, List<Unit>> highlightUnitByTerritory) {
+  void undoMoves(final Collection<List<Unit>> highlightUnitByTerritory) {
     final Set<Unit> units = Sets.newHashSet();
-    for (final List<Unit> highlightedUnits : highlightUnitByTerritory.values()) {
+    for (final List<Unit> highlightedUnits : highlightUnitByTerritory) {
       units.addAll(highlightedUnits);
     }
     movePanel.undoMoves(units);

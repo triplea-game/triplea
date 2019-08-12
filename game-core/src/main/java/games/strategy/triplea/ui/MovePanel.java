@@ -22,9 +22,11 @@ import games.strategy.triplea.delegate.UnitComparator;
 import games.strategy.triplea.delegate.data.MoveDescription;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.delegate.data.MustMoveWithDetails;
+import games.strategy.triplea.ui.unit.scroller.UnitScroller;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
+import java.awt.Component;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -46,6 +48,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
+import lombok.Setter;
 import lombok.extern.java.Log;
 import org.triplea.java.ObjectUtils;
 import org.triplea.java.PredicateBuilder;
@@ -69,9 +72,8 @@ public class MovePanel extends AbstractMovePanel {
   private Territory firstSelectedTerritory;
   private Territory selectedEndpointTerritory;
   private Territory mouseCurrentTerritory;
-  private Territory lastFocusedTerritory;
   private List<Territory> forced;
-  private boolean nonCombat;
+  @Setter private boolean nonCombat;
   private Point mouseSelectedPoint;
   private Point mouseCurrentPoint;
   private Point mouseLastUpdatePoint;
@@ -87,6 +89,7 @@ public class MovePanel extends AbstractMovePanel {
   private Route routeCached = null;
   private String displayText = "Combat Move";
   private MoveType moveType = MoveType.DEFAULT;
+  private final UnitScroller unitScroller;
 
   private final UnitSelectionListener unitSelectionListener =
       new UnitSelectionListener() {
@@ -615,8 +618,8 @@ public class MovePanel extends AbstractMovePanel {
           final boolean isCorrectTerritory =
               (firstSelectedTerritory == null) || firstSelectedTerritory.equals(territory);
           if (someOwned && isCorrectTerritory) {
-            final Map<Territory, List<Unit>> highlight = new HashMap<>();
-            highlight.put(territory, units);
+            final Collection<List<Unit>> highlight = new ArrayList<>();
+            highlight.add(units);
             getMap().setUnitHighlight(highlight);
           } else {
             getMap().setUnitHighlight(null);
@@ -672,6 +675,8 @@ public class MovePanel extends AbstractMovePanel {
     mouseCurrentTerritory = null;
     unitsThatCanMoveOnRoute = Collections.emptyList();
     currentCursorImage = null;
+
+    unitScroller = new UnitScroller(getData(), getMap());
   }
 
   // Same as above! Delete this crap after refactoring.
@@ -1573,10 +1578,6 @@ public class MovePanel extends AbstractMovePanel {
     getMap().setRoute(null);
   }
 
-  public final void setNonCombat(final boolean nonCombat) {
-    this.nonCombat = nonCombat;
-  }
-
   public final void setDisplayText(final String displayText) {
     this.displayText = displayText;
   }
@@ -1603,15 +1604,23 @@ public class MovePanel extends AbstractMovePanel {
       @Override
       public void keyPressed(final KeyEvent e) {
         switch (e.getKeyCode()) {
+          case KeyEvent.VK_SPACE:
+            unitScroller.skipCurrentUnits();
+            break;
+          case KeyEvent.VK_C:
+            unitScroller.centerOnCurrentMovableUnit();
+            break;
           case KeyEvent.VK_N:
-            centerOnNextMoveableUnit();
+            unitScroller.centerOnNextMovableUnit();
+            break;
+          case KeyEvent.VK_M:
+            unitScroller.centerOnPreviousMovableUnit();
             break;
           case KeyEvent.VK_F:
-            highlightMoveableUnits();
+            highlightMovableUnits();
             break;
           case KeyEvent.VK_U:
-            if (getMap().getHighlightedUnits() != null
-                && !getMap().getHighlightedUnits().isEmpty()) {
+            if (!getMap().getHighlightedUnits().isEmpty()) {
               undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
             }
             break;
@@ -1632,7 +1641,7 @@ public class MovePanel extends AbstractMovePanel {
       final int selectedOption =
           JOptionPane.showConfirmDialog(
               JOptionPane.getFrameForComponent(MovePanel.this),
-              "Are you sure you dont want to move?",
+              "Are you sure you do not want to move?",
               "End Move",
               JOptionPane.YES_NO_OPTION);
       return selectedOption == JOptionPane.YES_OPTION;
@@ -1645,7 +1654,7 @@ public class MovePanel extends AbstractMovePanel {
     return true;
   }
 
-  private void centerOnNextMoveableUnit() {
+  private void highlightMovableUnits() {
     final List<Territory> allTerritories;
     getData().acquireReadLock();
     try {
@@ -1659,64 +1668,21 @@ public class MovePanel extends AbstractMovePanel {
             // if not non combat, cannot move aa units
             .andIf(!nonCombat, Matches.unitCanNotMoveDuringCombatMove().negate())
             .build();
-    final int size = allTerritories.size();
-    // new focused index is 1 greater
-    int newFocusedIndex =
-        lastFocusedTerritory == null ? 0 : allTerritories.indexOf(lastFocusedTerritory) + 1;
-    if (newFocusedIndex >= size) {
-      // if we are larger than the number of territories, we must start back at zero
-      newFocusedIndex = 0;
-    }
-    Territory newFocusedTerritory = null;
-    // make sure we go through every single territory on the board
-    int i = 0;
-    while (i < size) {
-      final Territory t = allTerritories.get(newFocusedIndex);
-      final List<Unit> matchedUnits = t.getUnitCollection().getMatches(moveableUnitOwnedByMe);
-      if (matchedUnits.size() > 0) {
-        newFocusedTerritory = t;
-        final Map<Territory, List<Unit>> highlight = new HashMap<>();
-        highlight.put(t, matchedUnits);
-        getMap().setUnitHighlight(highlight);
-        break;
-      }
-      // make sure to cycle through the front half of territories
-      if ((newFocusedIndex + 1) >= size) {
-        newFocusedIndex = 0;
-      } else {
-        newFocusedIndex++;
-      }
-      i++;
-    }
-    if (newFocusedTerritory != null) {
-      lastFocusedTerritory = newFocusedTerritory;
-      getMap().centerOn(newFocusedTerritory);
-    }
-  }
-
-  private void highlightMoveableUnits() {
-    final List<Territory> allTerritories;
-    getData().acquireReadLock();
-    try {
-      allTerritories = new ArrayList<>(getData().getMap().getTerritories());
-    } finally {
-      getData().releaseReadLock();
-    }
-    final Predicate<Unit> moveableUnitOwnedByMe =
-        PredicateBuilder.of(Matches.unitIsOwnedBy(getCurrentPlayer()))
-            .and(Matches.unitHasMovementLeft())
-            // if not non combat, cannot move aa units
-            .andIf(!nonCombat, Matches.unitCanNotMoveDuringCombatMove().negate())
-            .build();
-    final Map<Territory, List<Unit>> highlight = new HashMap<>();
+    final Collection<List<Unit>> highlight = new ArrayList<>();
     for (final Territory t : allTerritories) {
       final List<Unit> moveableUnits = t.getUnitCollection().getMatches(moveableUnitOwnedByMe);
+      moveableUnits.removeAll(unitScroller.getSkippedUnits());
       if (!moveableUnits.isEmpty()) {
-        highlight.put(t, moveableUnits);
+        highlight.add(moveableUnits);
       }
     }
     if (!highlight.isEmpty()) {
       getMap().setUnitHighlight(highlight);
     }
+  }
+
+  @Override
+  Component getUnitScrollerPanel() {
+    return unitScroller.build();
   }
 }

@@ -41,7 +41,29 @@ jar {
     }
 }
 
-task downloadPlatformInstallerAssets(group: 'release') {
+// todo: have this run automatically on 'run' and or downloadPlatformInstallerAssets
+task downloadImages {
+    doLast {
+        [
+                'unit_scroller/left_arrow.png',
+                'unit_scroller/right_arrow.png',
+                'unit_scroller/unit_center.png',
+                'unit_scroller/unit_skip.png',
+        ].each { path ->
+            download {
+                src "https://raw.githubusercontent.com/triplea-game/assets/master/images/$path"
+                dest "$projectDir/assets/$path"
+                overwrite false
+            }
+        }
+    }
+}
+
+run{
+    dependsOn downloadImages
+}
+
+task downloadPlatformInstallerAssets(group: 'release', dependsOn: downloadImages) {
     doLast {
         [
             'icons/triplea_icon_16_16.png',

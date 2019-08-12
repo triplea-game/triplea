@@ -3,7 +3,6 @@ package games.strategy.engine.framework;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerManager;
-import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.random.IRandomSource;
@@ -23,10 +22,6 @@ public interface IGame {
           IGame.class.getName() + ".GAME_MODIFICATION_CHANNEL", IGameModifiedChannel.class);
 
   GameData getData();
-
-  void addGameStepListener(GameStepListener listener);
-
-  void removeGameStepListener(GameStepListener listener);
 
   Messengers getMessengers();
 

@@ -8,7 +8,8 @@ import games.strategy.engine.data.UnitHolder;
 import java.util.ArrayList;
 import java.util.Collection;
 
-class RemoveUnits extends Change {
+/** Change type that indicates units have been removed from the map. */
+public class RemoveUnits extends Change {
   private static final long serialVersionUID = -6410444472951010568L;
 
   private final String name;

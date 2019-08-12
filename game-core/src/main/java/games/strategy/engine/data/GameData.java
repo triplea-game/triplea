@@ -94,10 +94,12 @@ public class GameData implements Serializable {
       new ArrayList<>();
   private final Map<String, TerritoryEffect> territoryEffectList = new HashMap<>();
   private final BattleRecordsList battleRecordsList = new BattleRecordsList(this);
+  private transient GameDataEventListeners gameDataEventListeners = new GameDataEventListeners();
 
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     in.defaultReadObject();
     lockUtil = LockUtil.INSTANCE;
+    gameDataEventListeners = new GameDataEventListeners();
   }
 
   /**
@@ -226,6 +228,12 @@ public class GameData implements Serializable {
     territoryListeners.remove(listener);
   }
 
+  /**
+   * Adds a data change listener that will be invoked whenever GameData is updated.
+   *
+   * @deprecated Use {@link #addGameDataEventListener(GameDataEvent, Runnable)} instead.
+   */
+  @Deprecated
   public void addDataChangeListener(final GameDataChangeListener listener) {
     dataChangeListeners.add(listener);
   }
@@ -246,8 +254,20 @@ public class GameData implements Serializable {
     territoryListeners.forEach(territoryListener -> territoryListener.ownerChanged(t));
   }
 
-  void notifyGameDataChanged(final Change change) {
-    dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(change));
+  public void fireGameDataEvent(final GameDataEvent event) {
+    gameDataEventListeners.accept(event);
+  }
+
+  /**
+   * Registers a game data event listener that is invoked when a given event occurs. There is no
+   * ordering guarantee of when listeners will be called beyond that they will be called when the
+   * given event occurs.
+   *
+   * @param event The event to listen for.
+   * @param listener Action that will be executed when the event occurs.
+   */
+  public void addGameDataEventListener(final GameDataEvent event, final Runnable listener) {
+    gameDataEventListeners.addListener(event, listener);
   }
 
   public IGameLoader getGameLoader() {
@@ -418,6 +438,7 @@ public class GameData implements Serializable {
     sequence.setStepIndex(Math.max(0, Math.min(sequence.size() - 1, currentIndex - toSubtract)));
   }
 
+  /** Executes a change and notifies listeners. */
   public void performChange(final Change change) {
     if (areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Wrong thread");
@@ -428,7 +449,8 @@ public class GameData implements Serializable {
     } finally {
       releaseWriteLock();
     }
-    notifyGameDataChanged(change);
+    dataChangeListeners.forEach(dataChangelistener -> dataChangelistener.gameDataChanged(change));
+    GameDataEvent.lookupEvent(change).ifPresent(this::fireGameDataEvent);
   }
 
   @Override

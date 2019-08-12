@@ -2,6 +2,7 @@ package games.strategy.engine.data;
 
 import games.strategy.engine.delegate.IDelegate;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -154,5 +155,13 @@ public class GameStep extends GameDataComponent {
         + player
         + " displayName:"
         + displayName;
+  }
+
+  /** Utility method to determine if the current game step is a 'nonCombat' move phase. */
+  public boolean isNonCombat() {
+    return Optional.ofNullable(properties.getProperty(GameStep.PropertyKeys.NON_COMBAT_MOVE))
+            .map(Boolean::parseBoolean)
+            .orElse(false)
+        || name.endsWith("NonCombatMove");
   }
 }
