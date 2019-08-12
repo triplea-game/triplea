@@ -246,7 +246,7 @@ public class UnitScroller {
     }
     Territory newFocusedTerritory = null;
     // make sure we go through every single territory on the board
-    for (int i = 0; i < size; i ++) {
+    for (int i = 0; i < size; i++) {
       final Territory t = allTerritories.get(newFocusedIndex);
       final List<Unit> matchedUnits =
           UnitScrollerModel.getMoveableUnits(
