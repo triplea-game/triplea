@@ -27,7 +27,7 @@ final class UserControllerIntegrationTest {
   void testCreate() throws Exception {
     final int startCount = getUserCount();
 
-    newUserWithMd5CryptHash();
+    newUserWithBCryptHash();
     assertEquals(getUserCount(), startCount + 1);
 
     newUserWithBCryptHash();
@@ -36,19 +36,19 @@ final class UserControllerIntegrationTest {
 
   @Test
   void testGet() {
-    final String user = newUserWithMd5CryptHash();
+    final String user = newUserWithBCryptHash();
     assertEquals(generateEmailAddress(user), controller.getUserEmailByName(user));
   }
 
   @Test
   void testDoesUserExist() {
-    assertTrue(controller.doesUserExist(newUserWithMd5CryptHash()));
+    assertTrue(controller.doesUserExist(newUserWithBCryptHash()));
     assertTrue(controller.doesUserExist(newUserWithBCryptHash()));
   }
 
   @Test
   void testCreateDupe() {
-    final String user = newUserWithMd5CryptHash();
+    final String user = newUserWithBCryptHash();
     assertThrows(
         Exception.class,
         () ->
@@ -61,17 +61,16 @@ final class UserControllerIntegrationTest {
 
   @Test
   void testLogin() {
-    final String password = md5Crypt(TestUserUtils.newUniqueTimestamp());
+    final String password = bcrypt(TestUserUtils.newUniqueTimestamp());
     final String user = newUserWithHash(password, Function.identity());
     controller.updateUser(
         user, generateEmailAddress(user), new HashedPassword(bcrypt(obfuscate(password))));
-    assertTrue(controller.login(user, new HashedPassword(password)));
     assertTrue(controller.login(user, new HashedPassword(obfuscate(password))));
   }
 
   @Test
   void testUpdate() throws Exception {
-    final String user = newUserWithMd5CryptHash();
+    final String user = newUserWithBCryptHash();
     assertTrue(controller.doesUserExist(user));
     final String password2 = md5Crypt("foo");
     final String email2 = "foo@foo.foo";
@@ -86,11 +85,6 @@ final class UserControllerIntegrationTest {
       assertEquals(password2, rs.getString("password"));
       assertNull(rs.getString("bcrypt_password"));
     }
-  }
-
-  private String newUserWithMd5CryptHash() {
-    return newUserWithHash(
-        TestUserUtils.newUniqueTimestamp(), UserControllerIntegrationTest::md5Crypt);
   }
 
   private String newUserWithBCryptHash() {

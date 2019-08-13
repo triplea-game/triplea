@@ -97,17 +97,14 @@ final class UserController implements UserDao {
   @Override
   public void createUser(
       final String name, final String email, final HashedPassword hashedPassword) {
-    Preconditions.checkState(hashedPassword.isHashedWithSalt());
-
     try (Connection con = connection.get();
         PreparedStatement ps =
             con.prepareStatement(
-                "insert into lobby_user (username, password, bcrypt_password, email) "
-                    + "values (?, ?, ?, ?)")) {
+                "insert into lobby_user (username, bcrypt_password, email) "
+                    + "values (?, ?, ?)")) {
       ps.setString(1, name);
-      ps.setString(2, hashedPassword.isBcrypted() ? null : hashedPassword.value);
-      ps.setString(3, hashedPassword.isBcrypted() ? hashedPassword.value : null);
-      ps.setString(4, email);
+      ps.setString(2, hashedPassword.value);
+      ps.setString(3, email);
       ps.execute();
       con.commit();
     } catch (final SQLException e) {
@@ -122,27 +119,13 @@ final class UserController implements UserDao {
   @Override
   public boolean login(final String username, final HashedPassword hashedPassword) {
     try (Connection con = connection.get()) {
-      if (hashedPassword.isHashedWithSalt()) {
-        try (PreparedStatement ps =
-            con.prepareStatement(
-                "select username from  lobby_user where username = ? and password = ?")) {
-          ps.setString(1, username);
-          ps.setString(2, hashedPassword.value);
-          try (ResultSet rs = ps.executeQuery()) {
-            if (!rs.next()) {
-              return false;
-            }
-          }
-        }
-      } else {
-        final HashedPassword actualPassword = getPassword(username);
-        if (actualPassword == null) {
-          return false;
-        }
-        Preconditions.checkState(actualPassword.isBcrypted());
-        if (!BCrypt.checkpw(hashedPassword.value, actualPassword.value)) {
-          return false;
-        }
+      final HashedPassword actualPassword = getPassword(username);
+      if (actualPassword == null) {
+        return false;
+      }
+      Preconditions.checkState(actualPassword.isBcrypted());
+      if (!BCrypt.checkpw(hashedPassword.value, actualPassword.value)) {
+        return false;
       }
       // update last login time
       try (PreparedStatement ps =

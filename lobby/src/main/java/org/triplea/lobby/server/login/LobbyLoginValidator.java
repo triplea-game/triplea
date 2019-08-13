@@ -186,59 +186,26 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private @Nullable String authenticateRegisteredUser(
       final Map<String, String> response, final User user) {
     final String username = user.getUsername();
-    final String errorMessage = ErrorMessages.AUTHENTICATION_FAILED;
     final HashedPassword hashedPassword = database.getUserDao().getPassword(username);
     if (hashedPassword == null) {
-      return errorMessage;
+      return ErrorMessages.AUTHENTICATION_FAILED;
     }
+
     if (RsaAuthenticator.canProcessResponse(response)) {
       return rsaAuthenticator.decryptPasswordForAction(
           response,
           pass -> {
-            final String legacyHashedPassword =
-                response.get(LobbyLoginResponseKeys.HASHED_PASSWORD);
             if (hashedPassword.isBcrypted()) {
-              if (database.getUserDao().login(username, new HashedPassword(pass))) {
-                if (legacyHashedPassword != null
-                    && database.getUserDao().getLegacyPassword(username).value.isEmpty()) {
-
-                  final String email = database.getUserDao().getUserEmailByName(username);
-                  database
-                      .getUserDao()
-                      .updateUser(username, email, new HashedPassword(legacyHashedPassword));
-                  database
-                      .getUserDao()
-                      .updateUser(
-                          username,
-                          email,
-                          new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get())));
-                }
-                return null;
-              }
-              return errorMessage;
-            } else if (database
-                .getUserDao()
-                .login(username, new HashedPassword(legacyHashedPassword))) {
-              final String email = database.getUserDao().getUserEmailByName(username);
-              database
-                  .getUserDao()
-                  .updateUser(
-                      username,
-                      email,
-                      new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get())));
-              return null;
+              return database.getUserDao().login(username, new HashedPassword(pass))
+                  ? null
+                  : ErrorMessages.AUTHENTICATION_FAILED;
             } else {
-              return errorMessage;
+              return "Badly hashed password in client request";
             }
           });
+    } else {
+      return "Badly formatted client request";
     }
-    if (!database
-        .getUserDao()
-        .login(
-            username, new HashedPassword(response.get(LobbyLoginResponseKeys.HASHED_PASSWORD)))) {
-      return errorMessage;
-    }
-    return null;
   }
 
   private @Nullable String authenticateAnonymousUser(
@@ -275,32 +242,17 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return "That user name has already been taken";
     }
 
-    final HashedPassword password =
-        new HashedPassword(response.get(LobbyLoginResponseKeys.HASHED_PASSWORD));
     if (RsaAuthenticator.canProcessResponse(response)) {
       return rsaAuthenticator.decryptPasswordForAction(
           response,
           pass -> {
             final HashedPassword newPass =
                 new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get()));
-            if (password.isHashedWithSalt()) {
-              database.getUserDao().createUser(username, email, password);
-              database.getUserDao().updateUser(username, email, newPass);
-            } else {
-              database.getUserDao().createUser(username, email, newPass);
-            }
+            database.getUserDao().createUser(username, email, newPass);
             return null;
           });
-    }
-    if (!password.isHashedWithSalt()) {
-      return "Password is not hashed correctly";
-    }
-
-    try {
-      database.getUserDao().createUser(username, email, password);
-      return null;
-    } catch (final Exception e) {
-      return e.getMessage();
+    } else {
+      return "Invalid client request";
     }
   }
 }
