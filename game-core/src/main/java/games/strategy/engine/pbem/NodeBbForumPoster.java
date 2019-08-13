@@ -82,7 +82,8 @@ abstract class NodeBbForumPoster implements IForumPoster {
     try (CloseableHttpResponse response = client.execute(post)) {
       final int code = response.getStatusLine().getStatusCode();
       if (code != HttpURLConnection.HTTP_OK) {
-        throw new IllegalStateException("Forum responded with code " + code);
+        throw new IllegalStateException(String.format("Forum responded with code %s and message '%s'",
+            code, EntityUtils.toString(response.getEntity())));
       }
     }
   }
