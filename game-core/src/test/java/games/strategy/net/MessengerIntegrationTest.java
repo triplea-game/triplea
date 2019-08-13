@@ -21,7 +21,7 @@ import org.triplea.test.common.Integration;
 @Integration
 class MessengerIntegrationTest {
   private IServerMessenger serverMessenger;
-  private IMessenger client1Messenger;
+  private IClientMessenger client1Messenger;
   private IMessenger client2Messenger;
   private final MessageListener serverMessageListener = new MessageListener();
   private final MessageListener client1MessageListener = new MessageListener();
