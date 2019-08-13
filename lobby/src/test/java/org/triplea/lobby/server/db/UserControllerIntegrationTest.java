@@ -43,7 +43,6 @@ final class UserControllerIntegrationTest {
   @Test
   void testDoesUserExist() {
     assertTrue(controller.doesUserExist(newUserWithBCryptHash()));
-    assertTrue(controller.doesUserExist(newUserWithBCryptHash()));
   }
 
   @Test
