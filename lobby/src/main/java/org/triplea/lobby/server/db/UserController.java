@@ -17,26 +17,17 @@ final class UserController implements UserDao {
   private final Supplier<Connection> connection;
 
   @Override
-  public HashedPassword getLegacyPassword(final String username) {
-    return getPassword(username, true);
-  }
-
-  @Override
   public HashedPassword getPassword(final String username) {
-    return getPassword(username, false);
-  }
-
-  private HashedPassword getPassword(final String username, final boolean legacy) {
     try (Connection con = connection.get();
         PreparedStatement ps =
             con.prepareStatement(
-                "select password, coalesce(bcrypt_password, password) "
+                "select coalesce(bcrypt_password, password) "
                     + "from lobby_user "
                     + "where username = ?")) {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          return new HashedPassword(rs.getString(legacy ? 1 : 2));
+          return new HashedPassword(rs.getString(1));
         }
         return null;
       }

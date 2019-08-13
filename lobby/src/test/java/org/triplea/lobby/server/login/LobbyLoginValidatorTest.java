@@ -143,7 +143,6 @@ final class LobbyLoginValidatorTest {
 
     final void givenUserDoesNotHaveMd5CryptedPassword() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.getLegacyPassword(user.getUsername())).thenReturn(new HashedPassword(""));
     }
 
     final void givenUserExists() {
@@ -159,8 +158,6 @@ final class LobbyLoginValidatorTest {
 
     final void givenUserHasMd5CryptedPassword() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.getLegacyPassword(user.getUsername()))
-          .thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void whenAuthenticating(final ResponseGenerator responseGenerator) {

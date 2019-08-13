@@ -1,7 +1,6 @@
 package org.triplea.lobby.server.login;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 import games.strategy.engine.lobby.PlayerEmailValidation;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
@@ -20,13 +19,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.LobbyConstants;
-import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.db.DatabaseDao;
 import org.triplea.lobby.server.db.HashedPassword;
-import org.triplea.util.Md5Crypt;
 import org.triplea.util.Version;
 
 /**
@@ -58,19 +55,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
 
   @Override
   public Map<String, String> getChallengeProperties(final String userName) {
-    final Map<String, String> challenge = new HashMap<>();
-    challenge.putAll(newMd5CryptAuthenticatorChallenge(userName));
-    challenge.putAll(rsaAuthenticator.newChallenge());
-    return challenge;
-  }
-
-  private Map<String, String> newMd5CryptAuthenticatorChallenge(final String userName) {
-    final Map<String, String> challenge = new HashMap<>();
-    final HashedPassword password = database.getUserDao().getLegacyPassword(userName);
-    if (password != null && Strings.emptyToNull(password.value) != null) {
-      challenge.put(LobbyLoginChallengeKeys.SALT, Md5Crypt.getSalt(password.value));
-    }
-    return challenge;
+    return new HashMap<>(rsaAuthenticator.newChallenge());
   }
 
   @Nullable
