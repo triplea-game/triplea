@@ -209,12 +209,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   @Override
-  public void addErrorListener(final IMessengerErrorListener listener) {}
-
-  @Override
-  public void removeErrorListener(final IMessengerErrorListener listener) {}
-
-  @Override
   public void addConnectionChangeListener(final IConnectionChangeListener listener) {
     connectionListeners.add(listener);
   }

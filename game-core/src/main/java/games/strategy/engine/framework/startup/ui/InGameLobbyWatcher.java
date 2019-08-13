@@ -17,6 +17,7 @@ import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessenger;
 import games.strategy.net.GUID;
+import games.strategy.net.IClientMessenger;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.IConnectionLogin;
 import games.strategy.net.IMessenger;
@@ -116,7 +117,9 @@ public class InGameLobbyWatcher {
     synchronized (postMutex) {
       controller.postGame(gameId, gameDescription);
     }
-    this.messenger.addErrorListener(messengerErrorListener);
+    if (this.messenger instanceof IClientMessenger) {
+      ((IClientMessenger) this.messenger).addErrorListener(messengerErrorListener);
+    }
     connectionChangeListener =
         new IConnectionChangeListener() {
           @Override
@@ -299,7 +302,9 @@ public class InGameLobbyWatcher {
 
   void shutDown() {
     isShutdown = true;
-    messenger.removeErrorListener(messengerErrorListener);
+    if (messenger instanceof IClientMessenger) {
+      ((IClientMessenger) this.messenger).removeErrorListener(messengerErrorListener);
+    }
     messenger.shutDown();
     serverMessenger.removeConnectionChangeListener(connectionChangeListener);
     cleanUpGameModelListener();

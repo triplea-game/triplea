@@ -1,5 +1,6 @@
 package games.strategy.net;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.chat.ChatController;
 import games.strategy.engine.chat.IChatChannel;
 import games.strategy.engine.chat.IChatController;
@@ -29,6 +30,7 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     remoteMessenger = new RemoteMessenger(unifiedMessenger);
   }
 
+  @VisibleForTesting
   public Messengers(
       final IMessenger messenger,
       final IRemoteMessenger remoteMessenger,
@@ -110,15 +112,16 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
     messenger.addMessageListener(listener);
   }
 
-  @Override
   public void addErrorListener(final IMessengerErrorListener listener) {
-    messenger.addErrorListener(listener);
+    if (messenger instanceof ClientMessenger) {
+      ((ClientMessenger) messenger).addErrorListener(listener);
+    }
   }
 
-  @Override
   public void removeErrorListener(final IMessengerErrorListener listener) {
-
-    messenger.removeErrorListener(listener);
+    if (messenger instanceof ClientMessenger) {
+      ((ClientMessenger) messenger).removeErrorListener(listener);
+    }
   }
 
   @Override

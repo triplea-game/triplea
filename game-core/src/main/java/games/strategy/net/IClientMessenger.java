@@ -12,4 +12,10 @@ public interface IClientMessenger extends IMessenger {
   void changeToGameSave(byte[] bytes, String fileName);
 
   void changeToGameSave(File saveGame, String fileName);
+
+  /** Listen for errors. */
+  void addErrorListener(IMessengerErrorListener listener);
+
+  /** Stop listening for errors. */
+  void removeErrorListener(IMessengerErrorListener listener);
 }

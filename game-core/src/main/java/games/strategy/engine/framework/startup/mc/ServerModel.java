@@ -29,7 +29,6 @@ import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.io.IoUtils;
 import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
@@ -68,8 +67,7 @@ import org.triplea.util.Version;
 
 /** Represents a network-aware game server to which multiple clients may connect. */
 @Log
-public class ServerModel extends Observable
-    implements IMessengerErrorListener, IConnectionChangeListener {
+public class ServerModel extends Observable implements IConnectionChangeListener {
   public static final RemoteName SERVER_REMOTE_NAME =
       new RemoteName(
           "games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE",
@@ -273,7 +271,6 @@ public class ServerModel extends Observable
     if (messengers != null) {
       chatController.deactivate();
       messengers.shutDown();
-      messengers.removeErrorListener(this);
       chatModel.setChat(null);
     }
   }
@@ -389,7 +386,6 @@ public class ServerModel extends Observable
       final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(serverMessenger);
       clientLoginValidator.setGamePassword(props.getPassword());
       serverMessenger.setLoginValidator(clientLoginValidator);
-      serverMessenger.addErrorListener(this);
       serverMessenger.addConnectionChangeListener(this);
 
       messengers = new Messengers(serverMessenger);
@@ -521,14 +517,6 @@ public class ServerModel extends Observable
 
   public synchronized Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrder() {
     return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
-  }
-
-  @Override
-  public void messengerInvalid(final Throwable reason) {
-    if (ui != null) {
-      JOptionPane.showMessageDialog(ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
-    }
-    serverSetupModel.showSelectType();
   }
 
   @Override

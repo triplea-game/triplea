@@ -26,12 +26,6 @@ public class LocalNoOpMessenger implements IServerMessenger {
   public void addMessageListener(final IMessageListener listener) {}
 
   @Override
-  public void addErrorListener(final IMessengerErrorListener listener) {}
-
-  @Override
-  public void removeErrorListener(final IMessengerErrorListener listener) {}
-
-  @Override
   public INode getLocalNode() {
     return node;
   }

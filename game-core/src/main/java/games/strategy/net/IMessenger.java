@@ -19,12 +19,6 @@ public interface IMessenger {
   /** Listen for messages. */
   void addMessageListener(IMessageListener listener);
 
-  /** Listen for errors. */
-  void addErrorListener(IMessengerErrorListener listener);
-
-  /** Stop listening for errors. */
-  void removeErrorListener(IMessengerErrorListener listener);
-
   /** Get the local node. */
   INode getLocalNode();
 

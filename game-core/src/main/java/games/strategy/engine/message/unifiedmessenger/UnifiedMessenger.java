@@ -14,6 +14,7 @@ import games.strategy.engine.message.SpokeInvocationResults;
 import games.strategy.engine.message.SpokeInvoke;
 import games.strategy.engine.message.UnifiedMessengerHub;
 import games.strategy.net.GUID;
+import games.strategy.net.IClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import java.io.Serializable;
@@ -53,7 +54,9 @@ public class UnifiedMessenger {
   public UnifiedMessenger(final IMessenger messenger) {
     this.messenger = messenger;
     this.messenger.addMessageListener(this::messageReceived);
-    this.messenger.addErrorListener(this::messengerInvalid);
+    if (messenger instanceof IClientMessenger) {
+      ((IClientMessenger) this.messenger).addErrorListener(this::messengerInvalid);
+    }
     if (this.messenger.isServer()) {
       hub = new UnifiedMessengerHub(this.messenger, this);
     }
