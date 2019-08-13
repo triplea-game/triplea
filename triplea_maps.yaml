@@ -2016,3 +2016,12 @@
     <br>
     <br> This is Oztea's 1939 setup for the "Global 40" game.
     <br>
+- mapName: Oztea 1942
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/oztea_1942/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/oztea_1942/master/description/TripleA_oztea_1942_mini.png
+  description:
+    <br>
+    <br> This is Oztea's 1942 setup for the "Global 40" game.
+    <br>
