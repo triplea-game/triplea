@@ -9,12 +9,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.java.function.ThrowingConsumer;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.test.common.Integration;
-import org.triplea.util.Md5Crypt;
 
 /** Superclass for fixtures that test a moderator service controller. */
 @Integration
@@ -31,7 +31,7 @@ public abstract class AbstractModeratorServiceControllerTestCase {
         .createUser(
             user.getUsername(),
             "email@email.com",
-            new HashedPassword(Md5Crypt.hash("pass", "salt")));
+            new HashedPassword(BCrypt.hashpw("pass", BCrypt.gensalt())));
     return user;
   }
 

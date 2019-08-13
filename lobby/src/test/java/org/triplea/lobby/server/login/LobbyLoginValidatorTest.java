@@ -143,7 +143,6 @@ final class LobbyLoginValidatorTest {
 
     final void givenUserDoesNotHaveMd5CryptedPassword() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.getLegacyPassword(user.getUsername())).thenReturn(new HashedPassword(""));
     }
 
     final void givenUserExists() {
@@ -159,8 +158,6 @@ final class LobbyLoginValidatorTest {
 
     final void givenUserHasMd5CryptedPassword() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.getLegacyPassword(user.getUsername()))
-          .thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
     }
 
     final void whenAuthenticating(final ResponseGenerator responseGenerator) {
@@ -280,115 +277,9 @@ final class LobbyLoginValidatorTest {
     }
 
     @Nested
-    final class WhenUserDoesNotExistTest {
-      @ExtendWith(MockitoExtension.class)
-      @Nested
-      final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
-        @Test
-        void shouldCreateNewUserWithOnlyMd5CryptedPassword() {
-          givenUserDoesNotExist();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
-
-          whenAuthenticating(givenAuthenticationResponse());
-
-          thenAuthenticationShouldSucceed();
-          thenUserShouldBeCreatedWithMd5CryptedPassword();
-          thenUserShouldNotBeUpdatedWithBcryptedPassword();
-        }
-
-        private ResponseGenerator givenAuthenticationResponse() {
-          return challenge ->
-              ImmutableMap.of(
-                  LobbyLoginResponseKeys.EMAIL, EMAIL,
-                  LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD),
-                  LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString(),
-                  LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
-        }
-      }
-
-      @ExtendWith(MockitoExtension.class)
-      @Nested
-      final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
-        @Test
-        void shouldCreateNewUserWithBothPasswords() {
-          givenUserDoesNotExist();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
-
-          whenAuthenticating(givenAuthenticationResponse());
-
-          thenAuthenticationShouldSucceed();
-          thenUserShouldBeCreatedWithMd5CryptedPassword();
-          thenUserShouldBeUpdatedWithBcryptedPassword();
-        }
-
-        private ResponseGenerator givenAuthenticationResponse() {
-          return challenge ->
-              ImmutableMap.<String, String>builder()
-                  .put(LobbyLoginResponseKeys.EMAIL, EMAIL)
-                  .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
-                  .put(
-                      LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
-                  .put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString())
-                  .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
-                  .build();
-        }
-      }
-    }
-
-    @Nested
     final class WhenUserExistsTest {
       @ExtendWith(MockitoExtension.class)
       @Nested
-      final class WhenUsingLegacyClientTest extends AbstractNoBansTestCase {
-        @Test
-        void shouldNotUpdatePasswordsWhenUserHasOnlyMd5CryptedPassword() {
-          givenUserDoesNotHaveBcryptedPassword();
-          givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
-
-          whenAuthenticating(givenAuthenticationResponse());
-
-          thenAuthenticationShouldSucceed();
-          thenUserShouldNotBeCreated();
-          thenUserShouldNotBeUpdated();
-        }
-
-        @Test
-        void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
-          givenUserHasBcryptedPassword();
-          givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
-
-          whenAuthenticating(givenAuthenticationResponse());
-
-          thenAuthenticationShouldSucceed();
-          thenUserShouldNotBeCreated();
-          thenUserShouldNotBeUpdated();
-        }
-
-        @Test
-        void shouldNotUpdatePasswordsWhenUserHasOnlyBcryptedPassword() {
-          givenUserHasBcryptedPassword();
-          givenAuthenticationWillUseMd5CryptedPasswordAndFail();
-
-          whenAuthenticating(givenAuthenticationResponse());
-
-          thenAuthenticationShouldFailWithMessage(
-              LobbyLoginValidator.ErrorMessages.AUTHENTICATION_FAILED);
-          thenUserShouldNotBeCreated();
-          thenUserShouldNotBeUpdated();
-        }
-
-        private ResponseGenerator givenAuthenticationResponse() {
-          return challenge ->
-              ImmutableMap.of(
-                  LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD),
-                  LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
-        }
-      }
-
-      @ExtendWith(MockitoExtension.class)
-      @Nested
       final class WhenUsingCurrentClientTest extends AbstractNoBansTestCase {
         @Test
         void shouldNotUpdatePasswordsWhenUserHasBothPasswords() {
@@ -402,38 +293,6 @@ final class LobbyLoginValidatorTest {
           thenAuthenticationShouldSucceed();
           thenUserShouldNotBeCreated();
           thenUserShouldNotBeUpdated();
-        }
-
-        @Test
-        void shouldUpdateBcryptedPasswordWhenUserHasOnlyMd5CryptedPassword() {
-          givenUserExists();
-          givenUserHasMd5CryptedPassword();
-          givenUserDoesNotHaveBcryptedPassword();
-          givenAuthenticationWillUseMd5CryptedPasswordAndSucceed();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
-
-          whenAuthenticating(givenAuthenticationResponse());
-
-          thenAuthenticationShouldSucceed();
-          thenUserShouldNotBeCreated();
-          thenUserShouldNotBeUpdatedWithMd5CryptedPassword();
-          thenUserShouldBeUpdatedWithBcryptedPassword();
-        }
-
-        @Test
-        void shouldUpdateBothPasswordsWhenUserHasOnlyBcryptedPassword() {
-          givenUserExists();
-          givenUserDoesNotHaveMd5CryptedPassword();
-          givenUserHasBcryptedPassword();
-          givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
-          when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
-
-          whenAuthenticating(givenAuthenticationResponse());
-
-          thenAuthenticationShouldSucceed();
-          thenUserShouldNotBeCreated();
-          thenUserShouldBeUpdatedWithMd5CryptedPassword();
-          thenUserShouldBeUpdatedWithBcryptedPassword();
         }
 
         private ResponseGenerator givenAuthenticationResponse() {
@@ -455,7 +314,7 @@ final class LobbyLoginValidatorTest {
     @Nested
     final class WhenUserIsAnonymous extends AbstractNoBansTestCase {
       @Test
-      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
+      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
         givenAnonymousAuthenticationWillSucceed();
         when(databaseDao.getAccessLogDao()).thenReturn(accessLog);
 
@@ -486,7 +345,7 @@ final class LobbyLoginValidatorTest {
     @Nested
     final class WhenUserIsRegistered extends AbstractNoBansTestCase {
       @Test
-      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() throws Exception {
+      void shouldLogSuccessfulAuthenticationWhenAuthenticationSucceeds() {
         givenUserHasBcryptedPassword();
         givenAuthenticationWillUseObfuscatedPasswordAndSucceed();
         when(databaseDao.getAccessLogDao()).thenReturn(accessLog);

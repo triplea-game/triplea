@@ -25,7 +25,6 @@ import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.test.common.Integration;
-import org.triplea.util.Md5Crypt;
 
 @Integration
 class LobbyLoginValidatorIntegrationTest {
@@ -36,17 +35,6 @@ class LobbyLoginValidatorIntegrationTest {
           new RsaAuthenticator(),
           BCrypt::gensalt,
           new FailedLoginThrottle());
-
-  @Test
-  void testLegacyCreateNewUser() {
-    final ChallengeResultFunction challengeFunction = generateChallenge(null);
-    final Map<String, String> response = new HashMap<>();
-    response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
-    response.put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt("123"));
-    assertNull(challengeFunction.apply(challenge -> response));
-    // try to create a duplicate user, should not work
-    assertNotNull(challengeFunction.apply(challenge -> response));
-  }
 
   private ChallengeResultFunction generateChallenge(final HashedPassword password) {
     return generateChallenge(TestUserUtils.newUniqueTimestamp(), password);
@@ -74,12 +62,6 @@ class LobbyLoginValidatorIntegrationTest {
         .getDatabaseDao()
         .getUserDao()
         .createUser(name, EMAIL, password);
-  }
-
-  @SuppressWarnings(
-      "deprecation") // required for testing; remove upon next lobby-incompatible release
-  private static String md5Crypt(final String value) {
-    return Md5Crypt.hashPassword(value, Md5Crypt.newSalt());
   }
 
   @Test
@@ -136,7 +118,9 @@ class LobbyLoginValidatorIntegrationTest {
     // create a user, verify we can't login with a username that already exists
     // we should not be able to login now
     assertNotNull(
-        generateChallenge(new HashedPassword(md5Crypt("foo"))).apply(challenge -> response));
+        generateChallenge(
+                new HashedPassword(BCrypt.hashpw(hashPasswordWithSalt("foo"), BCrypt.gensalt())))
+            .apply(challenge -> response));
   }
 
   @Test
