@@ -619,7 +619,7 @@ public class MovePanel extends AbstractMovePanel {
               (firstSelectedTerritory == null) || firstSelectedTerritory.equals(territory);
           if (someOwned && isCorrectTerritory) {
             getMap()
-                .setUnitHighlight(Collections.unmodifiableList(Collections.singletonList(units)));
+                .setUnitHighlight(Collections.singletonList(Collections.unmodifiableList(units)));
           } else {
             getMap().setUnitHighlight(Collections.emptySet());
           }
