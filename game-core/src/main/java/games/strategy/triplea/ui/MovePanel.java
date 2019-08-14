@@ -618,11 +618,10 @@ public class MovePanel extends AbstractMovePanel {
           final boolean isCorrectTerritory =
               (firstSelectedTerritory == null) || firstSelectedTerritory.equals(territory);
           if (someOwned && isCorrectTerritory) {
-            final Collection<List<Unit>> highlight = new ArrayList<>();
-            highlight.add(units);
-            getMap().setUnitHighlight(highlight);
+            getMap()
+                .setUnitHighlight(Collections.unmodifiableList(Collections.singletonList(units)));
           } else {
-            getMap().setUnitHighlight(null);
+            getMap().setUnitHighlight(Collections.emptySet());
           }
         }
       };
@@ -1553,7 +1552,7 @@ public class MovePanel extends AbstractMovePanel {
     getMap().removeMapSelectionListener(mapSelectionListener);
     getMap().removeUnitSelectionListener(unitSelectionListener);
     getMap().removeMouseOverUnitListener(mouseOverUnitListener);
-    getMap().setUnitHighlight(null);
+    getMap().setUnitHighlight(Collections.emptySet());
     selectedUnits.clear();
     updateRouteAndMouseShadowUnits(null);
     forced = null;
@@ -1668,7 +1667,7 @@ public class MovePanel extends AbstractMovePanel {
             // if not non combat, cannot move aa units
             .andIf(!nonCombat, Matches.unitCanNotMoveDuringCombatMove().negate())
             .build();
-    final Collection<List<Unit>> highlight = new ArrayList<>();
+    final Collection<Collection<Unit>> highlight = new ArrayList<>();
     for (final Territory t : allTerritories) {
       final List<Unit> moveableUnits = t.getUnitCollection().getMatches(moveableUnitOwnedByMe);
       moveableUnits.removeAll(unitScroller.getSkippedUnits());

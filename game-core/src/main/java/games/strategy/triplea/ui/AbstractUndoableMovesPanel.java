@@ -49,7 +49,7 @@ abstract class AbstractUndoableMovesPanel extends JPanel {
     SwingUtilities.invokeLater(this::initLayout);
   }
 
-  void undoMoves(final Collection<List<Unit>> highlightUnitByTerritory) {
+  void undoMoves(final Collection<Collection<Unit>> highlightUnitByTerritory) {
     final var units =
         highlightUnitByTerritory.stream().flatMap(Collection::stream).collect(Collectors.toSet());
     movePanel.undoMoves(units);

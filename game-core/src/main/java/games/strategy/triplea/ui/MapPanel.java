@@ -2,6 +2,7 @@ package games.strategy.triplea.ui;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeAttachmentChange;
 import games.strategy.engine.data.CompositeChange;
@@ -59,6 +60,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -94,7 +96,7 @@ public class MapPanel extends ImageScrollerLargeView {
   private final UiContext uiContext;
   private final ExecutorService executor =
       Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-  @Getter private Collection<List<Unit>> highlightedUnits = Collections.emptyList();
+  @Getter private Collection<Collection<Unit>> highlightedUnits = Collections.emptyList();
   private Cursor hiddenCursor = null;
   private final MapRouteDrawer routeDrawer;
 
@@ -362,8 +364,8 @@ public class MapPanel extends ImageScrollerLargeView {
    * the units must all be in the same stack on the map, and exist in the given territory. call with
    * an null args
    */
-  public void setUnitHighlight(final Collection<List<Unit>> units) {
-    highlightedUnits = units == null ? Collections.emptyList() : units;
+  public void setUnitHighlight(@Nonnull final Collection<Collection<Unit>> units) {
+    highlightedUnits = Preconditions.checkNotNull(units);
     SwingUtilities.invokeLater(this::repaint);
   }
 
@@ -671,7 +673,7 @@ public class MapPanel extends ImageScrollerLargeView {
           movementFuelCost,
           uiContext.getResourceImageFactory());
     }
-    for (final List<Unit> value : highlightedUnits) {
+    for (final Collection<Unit> value : highlightedUnits) {
       for (final UnitCategory category : UnitSeparator.categorize(value)) {
         final List<Unit> territoryUnitsOfSameCategory = category.getUnits();
         if (territoryUnitsOfSameCategory.isEmpty()) {

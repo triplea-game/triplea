@@ -220,19 +220,10 @@ class EditPanel extends ActionPanel {
 
   private final MouseOverUnitListener mouseOverUnitListener =
       (units, territory) -> {
-        if (!getActive()) {
+        if (!getActive() || currentAction != null) {
           return;
         }
-        if (currentAction != null) {
-          return;
-        }
-        if (!units.isEmpty()) {
-          final Collection<List<Unit>> highlight = new HashSet<>();
-          highlight.add(units);
-          getMap().setUnitHighlight(highlight);
-        } else {
-          getMap().setUnitHighlight(null);
-        }
+        getMap().setUnitHighlight(Collections.singleton(Collections.unmodifiableList(units)));
       };
 
   private final MapSelectionListener mapSelectionListener =
