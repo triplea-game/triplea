@@ -59,6 +59,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -367,7 +368,7 @@ public class MapPanel extends ImageScrollerLargeView {
     SwingUtilities.invokeLater(this::repaint);
   }
 
-  public void centerOnTerritoryIgnoringMapLock(final @Nullable Territory territory) {
+  public void centerOnTerritoryIgnoringMapLock(final @Nonnull Territory territory) {
     final Point p = uiContext.getMapData().getCenter(territory);
     // when centering don't want the map to wrap around, eg if centering on hawaii
     super.setTopLeft((int) (p.x - (getScaledWidth() / 2)), (int) (p.y - (getScaledHeight() / 2)));
