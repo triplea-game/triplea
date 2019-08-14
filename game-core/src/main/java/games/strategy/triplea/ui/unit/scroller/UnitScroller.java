@@ -9,7 +9,6 @@ import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.ui.MapPanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -247,9 +246,7 @@ public class UnitScroller {
       if (!matchedUnits.isEmpty()) {
         drawUnitAvatarPane(t);
         newFocusedTerritory = t;
-        final Collection<List<Unit>> highlight = new ArrayList<>();
-        highlight.add(matchedUnits);
-        mapPanel.setUnitHighlight(highlight);
+        mapPanel.setUnitHighlight(Collections.singleton(matchedUnits));
         break;
       }
       // make sure to cycle through the front half of territories
