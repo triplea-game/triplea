@@ -273,8 +273,7 @@ class EditPanel extends ActionPanel {
             }
             SwingUtilities.invokeLater(() -> cancelEditAction.actionPerformed(null));
           } else if (currentAction == addUnitsAction) {
-            final boolean allowNeutral =
-                doesPlayerHaveUnitsOnMap(PlayerId.NULL_PLAYERID, getData());
+            final boolean allowNeutral = doesNeutralHaveUnitsOnMap(getData());
             final PlayerChooser playerChooser =
                 new PlayerChooser(
                     getData().getPlayerList(),
@@ -884,12 +883,8 @@ class EditPanel extends ActionPanel {
             final int availWidth = screenResolution.width - 40;
             scroll.setPreferredSize(
                 new Dimension(
-                    (scroll.getPreferredSize().width > availWidth
-                        ? availWidth
-                        : scroll.getPreferredSize().width),
-                    (scroll.getPreferredSize().height > availHeight
-                        ? availHeight
-                        : scroll.getPreferredSize().height)));
+                    Math.min(scroll.getPreferredSize().width, availWidth),
+                    Math.min(scroll.getPreferredSize().height, availHeight)));
             final int option =
                 JOptionPane.showConfirmDialog(
                     EditPanel.this.frame,
@@ -1044,7 +1039,8 @@ class EditPanel extends ActionPanel {
     return active;
   }
 
-  private static boolean doesPlayerHaveUnitsOnMap(final PlayerId player, final GameData data) {
+  private static boolean doesNeutralHaveUnitsOnMap(final GameData data) {
+    final PlayerId player = PlayerId.NULL_PLAYERID;
     for (final Territory t : data.getMap()) {
       for (final Unit u : t.getUnitCollection()) {
         if (u.getOwner().equals(player)) {
