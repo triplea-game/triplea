@@ -806,7 +806,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       if (defender == null || scramblers.isEmpty()) {
         continue;
       }
-      scramblersByTerritoryPlayer.computeIfAbsent(Tuple.of(to, defender), k -> new ArrayList<>()).add(scramblers);
+      scramblersByTerritoryPlayer
+          .computeIfAbsent(Tuple.of(to, defender), k -> new ArrayList<>())
+          .add(scramblers);
     }
     // now scramble them
     for (final Tuple<Territory, PlayerId> terrPlayer : scramblersByTerritoryPlayer.keySet()) {
@@ -829,7 +831,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (scramblers.isEmpty()) {
           continue;
         }
-        final Map<Territory, Collection<Unit>> toScramble = getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
+        final Map<Territory, Collection<Unit>> toScramble =
+            getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
         if (toScramble == null) {
           continue;
         }
