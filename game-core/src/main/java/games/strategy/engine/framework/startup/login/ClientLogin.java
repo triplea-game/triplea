@@ -19,7 +19,7 @@ import org.triplea.swing.SwingAction;
  * to send a response to the server's challenge proving that the client knows the game password.
  */
 public class ClientLogin implements IConnectionLogin {
-  public static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
+  static final String ENGINE_VERSION_PROPERTY = "Engine.Version";
 
   private final Component parentComponent;
 
@@ -42,8 +42,7 @@ public class ClientLogin implements IConnectionLogin {
     return response;
   }
 
-  @VisibleForTesting
-  static void addAuthenticationResponseProperties(
+  private static void addAuthenticationResponseProperties(
       final String password,
       final Map<String, String> challenge,
       final Map<String, String> response) {
