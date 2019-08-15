@@ -78,8 +78,7 @@ final class SaveFunctionTest {
         final Consumer<SelectionComponent.SaveContext> action) {
       doAnswer(
               invocation -> {
-                final SelectionComponent.SaveContext context =
-                    (SelectionComponent.SaveContext) invocation.getArgument(0);
+                final SelectionComponent.SaveContext context = invocation.getArgument(0);
                 action.accept(context);
                 return null;
               })
@@ -121,7 +120,8 @@ final class SaveFunctionTest {
       whenSelectionComponentSave(
           mockSelectionComponent, context -> context.setValue(mockSetting, TestData.fakeValue));
 
-      SaveFunction.saveSettings(Arrays.asList(mockSelectionComponent), flushSettingsAction);
+      SaveFunction.saveSettings(
+          Collections.singletonList(mockSelectionComponent), flushSettingsAction);
 
       verify(flushSettingsAction).run();
       verify(mockSetting).setValue(TestData.fakeValue);

@@ -116,10 +116,8 @@ public class GameDataExporter {
           for (final TechAdvance tech : frontier.getTechs()) {
             String name = tech.getName();
             final String cat = tech.getProperty();
-            for (final String definedName : TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES) {
-              if (definedName.equals(name)) {
-                name = cat;
-              }
+            if (TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES.contains(name)) {
+              name = cat;
             }
             returnValue.append("                <tech name=\"").append(name).append("\"/>\n");
           }
@@ -144,6 +142,7 @@ public class GameDataExporter {
         for (final String definedName : TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES) {
           if (definedName.equals(name)) {
             name = cat;
+            break;
           }
         }
         returnValue.append("            <techname name=\"").append(name).append("\"");

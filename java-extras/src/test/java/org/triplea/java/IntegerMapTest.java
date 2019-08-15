@@ -70,7 +70,7 @@ class IntegerMapTest {
     map.add(k1, 5);
     map.add(k2, -3);
     map.add(k3, 1);
-    assertTrue(!map.isPositive());
+    assertFalse(map.isPositive());
   }
 
   @Test

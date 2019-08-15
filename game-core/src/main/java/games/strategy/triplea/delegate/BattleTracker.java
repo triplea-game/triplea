@@ -156,9 +156,8 @@ public class BattleTracker implements Serializable {
   private boolean didThesePlayersJustGoToWarThisTurn(final PlayerId p1, final PlayerId p2) {
     // check all relationship changes that are p1 and p2, to make sure that oldRelation is not war,
     // and newRelation is war
-    for (final Tuple<Tuple<PlayerId, PlayerId>, Tuple<RelationshipType, RelationshipType>> t :
-        relationshipChangesThisTurn) {
-      final Tuple<PlayerId, PlayerId> players = t.getFirst();
+    for (final var tuple : relationshipChangesThisTurn) {
+      final Tuple<PlayerId, PlayerId> players = tuple.getFirst();
       if (players.getFirst().equals(p1)) {
         if (!players.getSecond().equals(p2)) {
           continue;
@@ -170,7 +169,7 @@ public class BattleTracker implements Serializable {
       } else {
         continue;
       }
-      final Tuple<RelationshipType, RelationshipType> relations = t.getSecond();
+      final Tuple<RelationshipType, RelationshipType> relations = tuple.getSecond();
       if (!Matches.relationshipTypeIsAtWar().test(relations.getFirst())) {
         if (Matches.relationshipTypeIsAtWar().test(relations.getSecond())) {
           return true;
@@ -753,13 +752,12 @@ public class BattleTracker implements Serializable {
         }
       }
     }
-    // is this an allied territory, revert to original owner if it is, unless they dont own there
-    // captital
+    // is this an allied territory? Revert to original owner if it is,
+    // unless they don't own their capital
     final @Nullable PlayerId terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(territory);
     PlayerId newOwner = id;
     // if the original owner is the current owner, and the current owner is our enemy or
-    // canTakeOver,
-    // then we do not worry about this.
+    // canTakeOver, then we do not worry about this.
     if (isTerritoryOwnerAnEnemy
         && terrOrigOwner != null
         && relationshipTracker.isAllied(terrOrigOwner, id)
@@ -776,6 +774,7 @@ public class BattleTracker implements Serializable {
           if (territory.equals(current) || current.getOwner().equals(PlayerId.NULL_PLAYERID)) {
             // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
             newOwner = terrOrigOwner;
+            break;
           }
         }
       }

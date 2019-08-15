@@ -803,36 +803,24 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final String[] terrs = getDirectOwnershipTerritories();
       final Set<Territory> listedTerritories;
       if (terrs.length == 1) {
-        switch (terrs[0]) {
-          case "original":
-            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
-            break;
-          case "enemy":
-            final Collection<PlayerId> enemies =
-                CollectionUtils.getMatches(
-                    data.getPlayerList().getPlayers(),
-                    Matches.isAtWarWithAnyOfThesePlayers(players, data));
-            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
-            break;
-          default:
-            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
-            break;
+        if ("enemy".equals(terrs[0])) {
+          final Collection<PlayerId> enemies =
+              CollectionUtils.getMatches(
+                  data.getPlayerList().getPlayers(),
+                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
+        } else {
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
         }
       } else if (terrs.length == 2) {
-        switch (terrs[1]) {
-          case "original":
-            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
-            break;
-          case "enemy":
-            final Collection<PlayerId> enemies =
-                CollectionUtils.getMatches(
-                    data.getPlayerList().getPlayers(),
-                    Matches.isAtWarWithAnyOfThesePlayers(players, data));
-            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
-            break;
-          default:
-            listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
-            break;
+        if ("enemy".equals(terrs[1])) {
+          final Collection<PlayerId> enemies =
+              CollectionUtils.getMatches(
+                  data.getPlayerList().getPlayers(),
+                  Matches.isAtWarWithAnyOfThesePlayers(players, data));
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, enemies, data);
+        } else {
+          listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);
         }
       } else {
         listedTerritories = getTerritoryListBasedOnInputFromXml(terrs, players, data);

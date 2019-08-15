@@ -383,13 +383,7 @@ public class MovePanel extends AbstractMovePanel {
                     CollectionUtils.getMatches(units, Matches.unitIsAirTransportable());
                 final Map<Unit, Unit> unitMap =
                     TransportUtils.mapTransportsToLoad(unitsToLoad, airTransportsToLoad);
-                boolean ableToLoad = true;
-                for (final Unit unit : unitsToLoad) {
-                  if (!unitMap.keySet().contains(unit)) {
-                    ableToLoad = false;
-                  }
-                }
-                return ableToLoad;
+                return unitMap.keySet().containsAll(unitsToLoad);
               };
           List<Unit> loadedUnits = new ArrayList<>(capableUnitsToLoad);
           if (!airTransportsToLoad.isEmpty()) {

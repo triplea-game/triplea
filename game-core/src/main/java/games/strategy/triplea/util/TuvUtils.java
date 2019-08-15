@@ -221,7 +221,7 @@ public class TuvUtils {
       // units,
       // we will add any unit types not in our list, based on the list for everyone
       for (final UnitType ut : average.keySet()) {
-        if (!current.keySet().contains(ut)) {
+        if (!current.containsKey(ut)) {
           current.put(ut, average.get(ut));
         }
       }

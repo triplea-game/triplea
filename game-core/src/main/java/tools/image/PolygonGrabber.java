@@ -461,7 +461,7 @@ public final class PolygonGrabber {
       // no = 1
       // yes = 0
       if (option == 0) {
-        if (!centers.keySet().contains(text.getText())) {
+        if (!centers.containsKey(text.getText())) {
           // not a valid name
           JOptionPane.showMessageDialog(this, "not a valid name");
           current = null;

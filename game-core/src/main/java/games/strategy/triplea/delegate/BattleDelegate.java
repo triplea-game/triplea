@@ -806,11 +806,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       if (defender == null || scramblers.isEmpty()) {
         continue;
       }
-      final Tuple<Territory, PlayerId> terrPlayer = Tuple.of(to, defender);
-      final Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>> tempScrambleList =
-          scramblersByTerritoryPlayer.getOrDefault(terrPlayer, new ArrayList<>());
-      tempScrambleList.add(scramblers);
-      scramblersByTerritoryPlayer.put(terrPlayer, tempScrambleList);
+      scramblersByTerritoryPlayer
+          .computeIfAbsent(Tuple.of(to, defender), k -> new ArrayList<>())
+          .add(scramblers);
     }
     // now scramble them
     for (final Tuple<Territory, PlayerId> terrPlayer : scramblersByTerritoryPlayer.keySet()) {
@@ -820,8 +818,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         continue;
       }
       boolean scrambledHere = false;
-      for (final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers :
-          scramblersByTerritoryPlayer.get(terrPlayer)) {
+      for (final var scramblers : scramblersByTerritoryPlayer.get(terrPlayer)) {
         // verify that we didn't already scramble any of these units
         final Iterator<Territory> territoryIter = scramblers.keySet().iterator();
         while (territoryIter.hasNext()) {
@@ -863,11 +860,11 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         for (final Entry<Territory, Collection<Unit>> entry : toScramble.entrySet()) {
           final Map<PlayerId, ResourceCollection> map =
               Route.getScrambleFuelCostCharge(entry.getValue(), entry.getKey(), to, data);
-          for (final Entry<PlayerId, ResourceCollection> playerAndCost : map.entrySet()) {
-            if (playerFuelCost.containsKey(playerAndCost.getKey())) {
-              playerFuelCost.get(playerAndCost.getKey()).add(playerAndCost.getValue());
+          for (final var playerAndCostEntry : map.entrySet()) {
+            if (playerFuelCost.containsKey(playerAndCostEntry.getKey())) {
+              playerFuelCost.get(playerAndCostEntry.getKey()).add(playerAndCostEntry.getValue());
             } else {
-              playerFuelCost.put(playerAndCost.getKey(), playerAndCost.getValue());
+              playerFuelCost.put(playerAndCostEntry.getKey(), playerAndCostEntry.getValue());
             }
           }
         }

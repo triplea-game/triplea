@@ -2470,6 +2470,7 @@ public final class TripleAFrame extends JFrame {
           for (final IGamePlayer gamePlayer : localPlayers.getLocalPlayers()) {
             if (gamePlayer instanceof TripleAPlayer) {
               foundHuman = true;
+              break;
             }
           }
           if (!foundHuman) {

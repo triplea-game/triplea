@@ -44,6 +44,6 @@ final class EnumClientSettingTest {
   private enum FakeEnum {
     ONE,
     TWO,
-    THREE;
+    THREE
   }
 }

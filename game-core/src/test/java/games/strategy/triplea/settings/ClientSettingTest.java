@@ -105,9 +105,7 @@ final class ClientSettingTest {
     void listenerShouldBeCalled() {
       doAnswer(
               invocation -> {
-                @SuppressWarnings("unchecked")
-                final GameSetting<String> gameSetting =
-                    (GameSetting<String>) invocation.getArgument(0);
+                final GameSetting<String> gameSetting = invocation.getArgument(0);
                 assertThat(gameSetting.getValue(), isPresentAndIs(TEST_VALUE));
                 return null;
               })
