@@ -5,6 +5,7 @@ import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
 import static games.strategy.triplea.delegate.MockDelegateBridge.whenGetRandom;
 import static games.strategy.triplea.delegate.MockDelegateBridge.withValues;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -736,7 +737,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     assertTrue(DelegateFinder.battleDelegate(gameData).getBattleTracker().wasConquered(westAfrica));
-    assertTrue(!DelegateFinder.battleDelegate(gameData).getBattleTracker().wasBlitzed(westAfrica));
+    assertFalse(DelegateFinder.battleDelegate(gameData).getBattleTracker().wasBlitzed(westAfrica));
   }
 
   @Test
@@ -1358,7 +1359,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertValid(results);
     final BattleTracker tracker = DelegateFinder.battleDelegate(gameData).getBattleTracker();
-    assertTrue(!tracker.wasBlitzed(westAfrica));
+    assertFalse(tracker.wasBlitzed(westAfrica));
     assertTrue(tracker.wasConquered(westAfrica));
     map.clear();
     map.put(armour, 1);

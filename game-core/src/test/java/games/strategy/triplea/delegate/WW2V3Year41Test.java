@@ -988,8 +988,7 @@ class WW2V3Year41Test {
     // undo it
     move.undoMove(0);
     // verify both blitz battles were cleared
-    assertEquals(
-        true, AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites().isEmpty());
+    assertTrue(AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites().isEmpty());
   }
 
   @Test
