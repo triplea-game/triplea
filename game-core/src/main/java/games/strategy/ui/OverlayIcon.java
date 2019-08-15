@@ -27,12 +27,12 @@ public class OverlayIcon implements Icon {
 
   @Override
   public int getIconHeight() {
-    return Math.max(back.getIconHeight(), (front.getIconHeight() + offsetY));
+    return Math.max(back.getIconHeight(), front.getIconHeight() + offsetY);
   }
 
   @Override
   public int getIconWidth() {
-    return Math.max(back.getIconWidth(), (front.getIconWidth() + offsetX));
+    return Math.max(back.getIconWidth(), front.getIconWidth() + offsetX);
   }
 
   @Override
