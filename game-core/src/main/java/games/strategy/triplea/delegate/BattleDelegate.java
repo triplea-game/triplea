@@ -806,11 +806,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       if (defender == null || scramblers.isEmpty()) {
         continue;
       }
-      final var terrPlayer = Tuple.of(to, defender);
-      final var tempScrambleList =
-          scramblersByTerritoryPlayer.getOrDefault(terrPlayer, new ArrayList<>());
-      tempScrambleList.add(scramblers);
-      scramblersByTerritoryPlayer.put(terrPlayer, tempScrambleList);
+      scramblersByTerritoryPlayer.computeIfAbsent(Tuple.of(to, defender), k -> new ArrayList<>()).add(scramblers);
     }
     // now scramble them
     for (final Tuple<Territory, PlayerId> terrPlayer : scramblersByTerritoryPlayer.keySet()) {
@@ -833,7 +829,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (scramblers.isEmpty()) {
           continue;
         }
-        final var toScramble = getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
+        final Map<Territory, Collection<Unit>> toScramble = getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
         if (toScramble == null) {
           continue;
         }
@@ -859,13 +855,13 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // Validate players have enough fuel to move there and back
         final Map<PlayerId, ResourceCollection> playerFuelCost = new HashMap<>();
         for (final Entry<Territory, Collection<Unit>> entry : toScramble.entrySet()) {
-          final var map =
+          final Map<PlayerId, ResourceCollection> map =
               Route.getScrambleFuelCostCharge(entry.getValue(), entry.getKey(), to, data);
-          for (final var playerAndCost : map.entrySet()) {
-            if (playerFuelCost.containsKey(playerAndCost.getKey())) {
-              playerFuelCost.get(playerAndCost.getKey()).add(playerAndCost.getValue());
+          for (final var playerAndCostEntry : map.entrySet()) {
+            if (playerFuelCost.containsKey(playerAndCostEntry.getKey())) {
+              playerFuelCost.get(playerAndCostEntry.getKey()).add(playerAndCostEntry.getValue());
             } else {
-              playerFuelCost.put(playerAndCost.getKey(), playerAndCost.getValue());
+              playerFuelCost.put(playerAndCostEntry.getKey(), playerAndCostEntry.getValue());
             }
           }
         }
