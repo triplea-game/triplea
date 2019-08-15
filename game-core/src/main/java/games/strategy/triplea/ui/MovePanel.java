@@ -385,7 +385,7 @@ public class MovePanel extends AbstractMovePanel {
                     TransportUtils.mapTransportsToLoad(unitsToLoad, airTransportsToLoad);
                 boolean ableToLoad = true;
                 for (final Unit unit : unitsToLoad) {
-                  if (!unitMap.keySet().contains(unit)) {
+                  if (!unitMap.containsKey(unit)) {
                     ableToLoad = false;
                   }
                 }

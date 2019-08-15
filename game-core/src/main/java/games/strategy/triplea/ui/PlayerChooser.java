@@ -68,7 +68,7 @@ class PlayerChooser extends JOptionPane {
 
     final int maxSize = 700;
     final int suggestedSize = this.players.size() * 40;
-    final int actualSize = suggestedSize > maxSize ? maxSize : suggestedSize;
+    final int actualSize = Math.min(suggestedSize, maxSize);
     setPreferredSize(new Dimension(300, actualSize));
   }
 

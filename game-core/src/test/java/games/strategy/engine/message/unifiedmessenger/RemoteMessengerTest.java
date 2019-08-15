@@ -98,7 +98,7 @@ class RemoteMessengerTest {
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
     remoteMessenger.unregisterRemote("test");
     final Exception e = assertThrows(RuntimeException.class, () -> remote.increment(1));
-    assertTrue(RemoteNotFoundException.class.isInstance(e.getCause()));
+    assertTrue(e.getCause() instanceof RemoteNotFoundException);
   }
 
   @Test
@@ -107,7 +107,7 @@ class RemoteMessengerTest {
     remoteMessenger.getRemote(test);
     final ITestRemote remote = (ITestRemote) remoteMessenger.getRemote(test);
     final Exception e = assertThrows(RuntimeException.class, remote::testVoid);
-    assertTrue(RemoteNotFoundException.class.isInstance(e.getCause()));
+    assertTrue(e.getCause() instanceof RemoteNotFoundException);
   }
 
   @Test
@@ -263,7 +263,7 @@ class RemoteMessengerTest {
       client.shutDown();
       testCompleteSignal.countDown();
       final Exception e = assertThrows(ExecutionException.class, future::get);
-      assertTrue(ConnectionLostException.class.isInstance(e.getCause().getCause()));
+      assertTrue(e.getCause().getCause() instanceof ConnectionLostException);
     } finally {
       shutdownServerAndClient(server, client);
     }

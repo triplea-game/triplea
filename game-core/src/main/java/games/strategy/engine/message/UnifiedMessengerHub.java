@@ -32,7 +32,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     this.messenger = messenger;
     this.localUnified = localUnified;
     this.messenger.addMessageListener(this);
-    ((IServerMessenger) this.messenger).addConnectionChangeListener(this);
+    this.messenger.addConnectionChangeListener(this);
   }
 
   private void send(final Serializable msg, final INode to) {

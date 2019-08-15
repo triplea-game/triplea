@@ -36,7 +36,7 @@ public class ChatController implements IChatController {
         @Override
         public void connectionRemoved(final INode to) {
           synchronized (mutex) {
-            if (chatters.keySet().contains(to)) {
+            if (chatters.containsKey(to)) {
               leaveChatInternal(to);
             }
           }

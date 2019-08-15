@@ -78,8 +78,7 @@ final class SaveFunctionTest {
         final Consumer<SelectionComponent.SaveContext> action) {
       doAnswer(
               invocation -> {
-                final SelectionComponent.SaveContext context =
-                    (SelectionComponent.SaveContext) invocation.getArgument(0);
+                final SelectionComponent.SaveContext context = invocation.getArgument(0);
                 action.accept(context);
                 return null;
               })

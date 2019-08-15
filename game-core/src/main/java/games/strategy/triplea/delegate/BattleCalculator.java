@@ -719,14 +719,14 @@ public class BattleCalculator {
     // check right number
     if (!isEditMode
         && !(numhits + damaged.size()
-            == (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining))) {
+            == (Math.min(hitsRemaining, totalHitpoints)))) {
       tripleaPlayer.reportError("Wrong number of casualties selected");
       if (headLess) {
         log.severe(
             "Possible Infinite Loop: Wrong number of casualties selected: number of hits on units "
                 + (numhits + damaged.size())
                 + " != number of hits to take "
-                + (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining)
+                + (Math.min(hitsRemaining, totalHitpoints))
                 + ", for "
                 + casualtySelection.toString());
       }
