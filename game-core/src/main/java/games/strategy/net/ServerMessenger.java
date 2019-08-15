@@ -28,6 +28,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.java.Log;
 
 /** A Messenger that can have many clients connected to it. */
@@ -43,6 +45,9 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private final List<IMessageListener> listeners = new CopyOnWriteArrayList<>();
   private final List<IConnectionChangeListener> connectionListeners = new CopyOnWriteArrayList<>();
   private boolean acceptNewConnection = false;
+
+  @Getter(onMethod_ = {@Override})
+  @Setter(onMethod_ = {@Override})
   private ILoginValidator loginValidator;
   // all our nodes
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
@@ -65,16 +70,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
     acceptorSelector = Selector.open();
     node = new Node(name, IpFinder.findInetAddress(), boundPort);
     new Thread(new ConnectionHandler(), "Server Messenger Connection Handler").start();
-  }
-
-  @Override
-  public void setLoginValidator(final ILoginValidator loginValidator) {
-    this.loginValidator = loginValidator;
-  }
-
-  @Override
-  public ILoginValidator getLoginValidator() {
-    return loginValidator;
   }
 
   @Override
