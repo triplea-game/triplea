@@ -47,10 +47,12 @@ final class LobbyGameController implements ILobbyGameController {
     final Set<GUID> games;
     synchronized (mutex) {
       games = hostToGame.remove(to);
-      allGames.keySet().removeAll(games);
-    }
-    for (final GUID guid : games) {
-      broadcaster.gameRemoved(guid);
+      Optional.ofNullable(games)
+          .ifPresent(
+              g -> {
+                allGames.keySet().removeAll(g);
+                g.forEach(broadcaster::gameRemoved);
+              });
     }
   }
 
