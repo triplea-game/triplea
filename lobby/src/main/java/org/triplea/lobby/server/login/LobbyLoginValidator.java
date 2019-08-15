@@ -54,7 +54,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private final FailedLoginThrottle failedLoginThrottle;
 
   @Override
-  public Map<String, String> getChallengeProperties(final String userName) {
+  public Map<String, String> getChallengeProperties(final String username) {
     return new HashMap<>(rsaAuthenticator.newChallenge());
   }
 

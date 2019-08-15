@@ -54,9 +54,9 @@ public class ToolboxModeratorManagementClient {
     client.addSuperMod(httpHeaders.createHeaders(), moderatorName);
   }
 
-  public boolean checkUserExists(final String userNameRequested) {
-    checkArgument(userNameRequested.length() > 3);
-    return client.checkUserExists(httpHeaders.createHeaders(), userNameRequested);
+  public boolean checkUserExists(final String usernameRequested) {
+    checkArgument(usernameRequested.length() > 3);
+    return client.checkUserExists(httpHeaders.createHeaders(), usernameRequested);
   }
 
   public String generateSingleUseKey(final String moderatorName) {

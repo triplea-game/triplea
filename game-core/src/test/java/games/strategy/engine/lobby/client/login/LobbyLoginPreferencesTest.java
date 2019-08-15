@@ -29,7 +29,7 @@ import org.mockito.stubbing.Stubber;
 final class LobbyLoginPreferencesTest {
   private static final String PASSWORD = "password";
   private static final String PROTECTED_PASSWORD = String.format("PROTECTED(%s)", PASSWORD);
-  private static final String USER_NAME = "userName";
+  private static final String USER_NAME = "username";
   private static final String PROTECTED_USER_NAME = String.format("PROTECTED(%s)", USER_NAME);
 
   @Mock private CredentialManager credentialManager;
@@ -225,7 +225,7 @@ final class LobbyLoginPreferencesTest {
     private Optional<String> password = Optional.empty();
     private Optional<String> legacyUserName = Optional.empty();
     private Optional<Boolean> legacyAnonymousLogin = Optional.empty();
-    private Optional<String> userName = Optional.empty();
+    private Optional<String> username = Optional.empty();
 
     GivenPreferenceNode withAnonymousLogin(final boolean anonymousLogin) {
       this.anonymousLogin = Optional.of(anonymousLogin);
@@ -257,8 +257,8 @@ final class LobbyLoginPreferencesTest {
       return this;
     }
 
-    GivenPreferenceNode withUserName(final String userName) {
-      this.userName = Optional.of(userName);
+    GivenPreferenceNode withUserName(final String username) {
+      this.username = Optional.of(username);
       return this;
     }
 
@@ -281,7 +281,7 @@ final class LobbyLoginPreferencesTest {
       doReturnValueOrSecondArg(password)
           .when(preferences)
           .get(eq(PreferenceKeys.PASSWORD), anyString());
-      doReturnValueOrSecondArg(userName)
+      doReturnValueOrSecondArg(username)
           .when(preferences)
           .get(eq(PreferenceKeys.USER_NAME), anyString());
     }

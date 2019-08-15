@@ -10,15 +10,15 @@ public final class PlayerNameValidation {
   @VisibleForTesting static final int MAX_LENGTH = 40;
   private static final int MIN_LENGTH = 3;
 
-  public static boolean isValid(final String userName) {
-    return validate(userName) == null;
+  public static boolean isValid(final String username) {
+    return validate(username) == null;
   }
 
   /** Performs username validations intended to be done on client side. */
-  public static String clientSideValidate(final String userName) {
-    return userName.toLowerCase().contains(LobbyConstants.LOBBY_WATCHER_NAME.toLowerCase())
+  public static String clientSideValidate(final String username) {
+    return username.toLowerCase().contains(LobbyConstants.LOBBY_WATCHER_NAME.toLowerCase())
         ? LobbyConstants.LOBBY_WATCHER_NAME + " cannot be part of a name"
-        : validate(userName);
+        : validate(username);
   }
 
   /**
@@ -26,22 +26,22 @@ public final class PlayerNameValidation {
    *
    * @return Error message if username is not valid, otherwise returns an error message.
    */
-  public static String validate(final String userName) {
-    return userName != null
-            && userName.toLowerCase().contains(LobbyConstants.LOBBY_WATCHER_NAME.toLowerCase())
+  public static String validate(final String username) {
+    return username != null
+            && username.toLowerCase().contains(LobbyConstants.LOBBY_WATCHER_NAME.toLowerCase())
         ? LobbyConstants.LOBBY_WATCHER_NAME + " cannot be part of a name"
-        : serverSideValidate(userName);
+        : serverSideValidate(username);
   }
 
   /** Less restrictive validation intended to be done on server side. */
-  public static String serverSideValidate(final String userName) {
-    if ((userName == null) || (userName.length() < MIN_LENGTH)) {
+  public static String serverSideValidate(final String username) {
+    if ((username == null) || (username.length() < MIN_LENGTH)) {
       return "Name is too short (minimum " + MIN_LENGTH + " characters)";
-    } else if (userName.length() > MAX_LENGTH) {
+    } else if (username.length() > MAX_LENGTH) {
       return "Name is too long (maximum " + MAX_LENGTH + " characters)";
-    } else if (!userName.matches("[0-9a-zA-Z_-]+")) {
+    } else if (!username.matches("[0-9a-zA-Z_-]+")) {
       return "Name can only contain alphanumeric characters, hyphens (-), and underscores (_)";
-    } else if (userName.toLowerCase().contains(LobbyConstants.ADMIN_USERNAME.toLowerCase())) {
+    } else if (username.toLowerCase().contains(LobbyConstants.ADMIN_USERNAME.toLowerCase())) {
       return "Name can't contain the word " + LobbyConstants.ADMIN_USERNAME;
     }
     return null;

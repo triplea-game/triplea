@@ -99,12 +99,12 @@ public final class ModeratorsTab implements Supplier<Component> {
                       if (!checkUserNameIsInFlight) {
                         checkUserNameIsInFlight = true;
                         Interruptibles.sleep(200);
-                        final String userNameRequested = addField.getText().trim();
+                        final String usernameRequested = addField.getText().trim();
                         SwingUtilities.invokeLater(
                             () ->
                                 addButton.setEnabled(
-                                    userNameRequested.length() >= USERNAME_MIN_LENGTH
-                                        && moderatorsTabModel.checkUserExists(userNameRequested)));
+                                    usernameRequested.length() >= USERNAME_MIN_LENGTH
+                                        && moderatorsTabModel.checkUserExists(usernameRequested)));
                         checkUserNameIsInFlight = false;
                       }
                     })

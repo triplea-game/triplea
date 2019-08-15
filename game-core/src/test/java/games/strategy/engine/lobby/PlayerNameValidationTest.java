@@ -13,7 +13,7 @@ import org.triplea.lobby.common.LobbyConstants;
 
 class PlayerNameValidationTest {
   @Test
-  void userNameValidationWithInvalidNames() {
+  void usernameValidationWithInvalidNames() {
     Arrays.asList(
             null,
             "",
@@ -64,7 +64,7 @@ class PlayerNameValidationTest {
   }
 
   @Test
-  void userNameValidationWithValidNames() {
+  void usernameValidationWithValidNames() {
     Arrays.asList("abc", Strings.repeat("a", PlayerNameValidation.MAX_LENGTH), "123", "---")
         .forEach(
             validName -> {
