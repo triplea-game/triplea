@@ -15,17 +15,17 @@ import org.triplea.java.function.ThrowingSupplier;
 @Immutable
 @Log
 public final class LobbyLoginPreferences {
-  final String userName;
+  final String username;
   final String password;
   final boolean credentialsSaved;
   final boolean anonymousLogin;
 
   LobbyLoginPreferences(
-      final String userName,
+      final String username,
       final String password,
       final boolean credentialsSaved,
       final boolean anonymousLogin) {
-    this.userName = userName;
+    this.username = username;
     this.password = password;
     this.credentialsSaved = credentialsSaved;
     this.anonymousLogin = anonymousLogin;
@@ -60,7 +60,7 @@ public final class LobbyLoginPreferences {
     final boolean anonymousLogin =
         preferences.getBoolean(PreferenceKeys.ANONYMOUS_LOGIN, legacyAnonymousLogin);
     return new LobbyLoginPreferences(
-        credentials.userName, credentials.password, credentialsSaved, anonymousLogin);
+        credentials.username, credentials.password, credentialsSaved, anonymousLogin);
   }
 
   private static Preferences getPreferenceNode() {
@@ -77,9 +77,9 @@ public final class LobbyLoginPreferences {
 
     try (CredentialManager credentialManager = credentialManagerFactory.get()) {
       return new Credentials(
-          credentials.userName.isEmpty()
+          credentials.username.isEmpty()
               ? ""
-              : credentialManager.unprotectToString(credentials.userName),
+              : credentialManager.unprotectToString(credentials.username),
           credentials.password.isEmpty()
               ? ""
               : credentialManager.unprotectToString(credentials.password),
@@ -101,9 +101,9 @@ public final class LobbyLoginPreferences {
       final ThrowingSupplier<CredentialManager, CredentialManagerException>
           credentialManagerFactory) {
     final Credentials credentials =
-        protectCredentials(new Credentials(userName, password, false), credentialManagerFactory);
+        protectCredentials(new Credentials(username, password, false), credentialManagerFactory);
     if (credentialsSaved) {
-      preferences.put(PreferenceKeys.USER_NAME, credentials.userName);
+      preferences.put(PreferenceKeys.USER_NAME, credentials.username);
       preferences.putBoolean(PreferenceKeys.CREDENTIALS_PROTECTED, credentials.isProtected);
     } else {
       preferences.remove(PreferenceKeys.USER_NAME);
@@ -130,7 +130,7 @@ public final class LobbyLoginPreferences {
 
     try (CredentialManager credentialManager = credentialManagerFactory.get()) {
       return new Credentials(
-          credentialManager.protect(credentials.userName),
+          credentialManager.protect(credentials.username),
           credentialManager.protect(credentials.password),
           true);
     } catch (final CredentialManagerException e) {
@@ -151,12 +151,12 @@ public final class LobbyLoginPreferences {
     return (anonymousLogin == other.anonymousLogin)
         && (credentialsSaved == other.credentialsSaved)
         && Objects.equals(password, other.password)
-        && Objects.equals(userName, other.userName);
+        && Objects.equals(username, other.username);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(anonymousLogin, credentialsSaved, password, userName);
+    return Objects.hash(anonymousLogin, credentialsSaved, password, username);
   }
 
   @Override
@@ -165,7 +165,7 @@ public final class LobbyLoginPreferences {
         .add("anonymousLogin", anonymousLogin)
         .add("credentialsSaved", credentialsSaved)
         .add("password", password)
-        .add("userName", userName)
+        .add("username", username)
         .toString();
   }
 
@@ -184,12 +184,12 @@ public final class LobbyLoginPreferences {
 
   @Immutable
   private static final class Credentials {
-    final String userName;
+    final String username;
     final String password;
     final boolean isProtected;
 
-    Credentials(final String userName, final String password, final boolean isProtected) {
-      this.userName = userName;
+    Credentials(final String username, final String password, final boolean isProtected) {
+      this.username = username;
       this.password = password;
       this.isProtected = isProtected;
     }

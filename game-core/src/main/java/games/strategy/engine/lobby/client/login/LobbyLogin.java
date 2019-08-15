@@ -68,12 +68,12 @@ public class LobbyLogin {
   }
 
   private IMessenger login(
-      final String userName, final String password, final boolean anonymousLogin)
+      final String username, final String password, final boolean anonymousLogin)
       throws IOException {
     return new ClientMessenger(
         lobbyServerProperties.getHost(),
         lobbyServerProperties.getPort(),
-        userName,
+        username,
         MacFinder.getHashedMacAddress(),
         challenge -> {
           final Map<String, String> response = new HashMap<>();
@@ -147,12 +147,12 @@ public class LobbyLogin {
     }
   }
 
-  private IMessenger createAccount(final String userName, final String password, final String email)
+  private IMessenger createAccount(final String username, final String password, final String email)
       throws IOException {
     return new ClientMessenger(
         lobbyServerProperties.getHost(),
         lobbyServerProperties.getPort(),
-        userName,
+        username,
         MacFinder.getHashedMacAddress(),
         challenge -> {
           final Map<String, String> response = new HashMap<>();

@@ -24,19 +24,19 @@ final class UserManager implements IUserManager {
 
   @Override
   public String updateUser(
-      final String userName, final String emailAddress, final String hashedPassword) {
+      final String username, final String emailAddress, final String hashedPassword) {
     final INode remote = MessageContext.getSender();
-    if (!userName.equals(remote.getName())) {
+    if (!username.equals(remote.getName())) {
       log.severe(
-          "Tried to update user permission, but not correct user, userName:"
-              + userName
+          "Tried to update user permission, but not correct user, username:"
+              + username
               + " node:"
               + remote);
       return "Sorry, but I can't let you do that";
     }
 
     final String validationError =
-        Optional.ofNullable(PlayerNameValidation.validate(userName))
+        Optional.ofNullable(PlayerNameValidation.validate(username))
             .orElseGet(() -> PlayerEmailValidation.validate(emailAddress));
 
     if (validationError != null) {
@@ -48,7 +48,7 @@ final class UserManager implements IUserManager {
       database
           .getUserDao()
           .updateUser(
-              userName,
+              username,
               emailAddress,
               password.isHashedWithSalt()
                   ? password
@@ -60,13 +60,13 @@ final class UserManager implements IUserManager {
   }
 
   @Override
-  public String getUserEmail(final String userName) {
+  public String getUserEmail(final String username) {
     final INode remote = MessageContext.getSender();
-    if (!userName.equals(remote.getName())) {
+    if (!username.equals(remote.getName())) {
       log.severe(
-          "Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);
+          "Tried to get user info, but not correct user, username:" + username + " node:" + remote);
       throw new IllegalStateException("Sorry, but I can't let you do that");
     }
-    return database.getUserDao().getUserEmailByName(userName);
+    return database.getUserDao().getUserEmailByName(username);
   }
 }

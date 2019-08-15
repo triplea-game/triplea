@@ -32,7 +32,7 @@ final class LoginPanel extends JPanel {
 
   private @Nullable JDialog dialog;
   private final JPasswordField password = new JPasswordField();
-  private final JTextField userName = new JTextField();
+  private final JTextField username = new JTextField();
   private final JCheckBox credentialsSaved = new JCheckBox("Remember me");
   private final JCheckBox anonymousLogin = new JCheckBox("Login anonymously");
   private final JButton createAccount = new JButton("Create Account...");
@@ -48,7 +48,7 @@ final class LoginPanel extends JPanel {
   }
 
   private void initializeComponents(final LobbyLoginPreferences lobbyLoginPreferences) {
-    userName.setText(lobbyLoginPreferences.userName);
+    username.setText(lobbyLoginPreferences.username);
     password.setText(lobbyLoginPreferences.password);
     credentialsSaved.setSelected(lobbyLoginPreferences.credentialsSaved);
     anonymousLogin.setSelected(lobbyLoginPreferences.anonymousLogin);
@@ -79,7 +79,7 @@ final class LoginPanel extends JPanel {
             0,
             0));
     main.add(
-        userName,
+        username,
         new GridBagConstraints(
             1,
             0,
@@ -206,7 +206,7 @@ final class LoginPanel extends JPanel {
   }
 
   private void logonPressed() {
-    final String validationMessage = PlayerNameValidation.validate(userName.getText());
+    final String validationMessage = PlayerNameValidation.validate(username.getText());
 
     if (validationMessage != null) {
       JOptionPane.showMessageDialog(
@@ -238,7 +238,7 @@ final class LoginPanel extends JPanel {
   }
 
   String getUserName() {
-    return userName.getText();
+    return username.getText();
   }
 
   String getPassword() {

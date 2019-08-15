@@ -27,7 +27,7 @@ interface ToolboxModeratorManagementFeignClient {
 
   @RequestLine("POST " + ToolboxModeratorManagementClient.CHECK_USER_EXISTS_PATH)
   @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
-  boolean checkUserExists(@HeaderMap Map<String, Object> headers, String userName);
+  boolean checkUserExists(@HeaderMap Map<String, Object> headers, String username);
 
   @RequestLine("POST " + ToolboxModeratorManagementClient.SUPER_MOD_GENERATE_SINGLE_USE_KEY_PATH)
   @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})

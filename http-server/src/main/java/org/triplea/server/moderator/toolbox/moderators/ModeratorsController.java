@@ -34,9 +34,9 @@ public class ModeratorsController {
   @POST
   @Path(ToolboxModeratorManagementClient.CHECK_USER_EXISTS_PATH)
   public Response checkUserExists(
-      @Context final HttpServletRequest request, final String userName) {
+      @Context final HttpServletRequest request, final String username) {
     apiKeyValidationService.verifyApiKey(request);
-    return Response.ok().entity(moderatorsService.userExistsByName(userName)).build();
+    return Response.ok().entity(moderatorsService.userExistsByName(username)).build();
   }
 
   @GET

@@ -37,7 +37,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
 
   private final String title;
   private @Nullable JDialog dialog;
-  private final JTextField userNameField = new JTextField();
+  private final JTextField usernameField = new JTextField();
   private final JTextField emailField = new JTextField();
   private final JPasswordField passwordField = new JPasswordField();
   private final JPasswordField passwordConfirmField = new JPasswordField();
@@ -57,22 +57,22 @@ public final class CreateUpdateAccountPanel extends JPanel {
    * Creates a new instance of the {@code CreateUpdateAccountPanel} class that is used to update the
    * specified lobby account.
    *
-   * @param userName The lobby account userName to update.
+   * @param username The lobby account username to update.
    * @param email The lobby account email to update.
    * @param lobbyLoginPreferences The user's lobby login preferences.
    * @return A new {@code CreateUpdateAccountPanel}.
    */
   public static CreateUpdateAccountPanel newUpdatePanel(
-      final String userName,
+      final String username,
       final String email,
       final LobbyLoginPreferences lobbyLoginPreferences) {
-    checkNotNull(userName);
+    checkNotNull(username);
     checkNotNull(email);
     checkNotNull(lobbyLoginPreferences);
 
     final CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(false);
-    panel.userNameField.setText(userName);
-    panel.userNameField.setEnabled(false);
+    panel.usernameField.setText(username);
+    panel.usernameField.setEnabled(false);
     panel.emailField.setText(email);
     panel.credentialsSavedCheckBox.setSelected(lobbyLoginPreferences.credentialsSaved);
     return panel;
@@ -112,7 +112,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
             0,
             0));
     main.add(
-        userNameField,
+        usernameField,
         new GridBagConstraints(
             1,
             0,
@@ -270,10 +270,10 @@ public final class CreateUpdateAccountPanel extends JPanel {
       JOptionPane.showMessageDialog(
           this, "You must enter a valid email", "No Email", JOptionPane.ERROR_MESSAGE);
       return;
-    } else if (!PlayerNameValidation.isValid(userNameField.getText())) {
+    } else if (!PlayerNameValidation.isValid(usernameField.getText())) {
       JOptionPane.showMessageDialog(
           this,
-          PlayerNameValidation.validate(userNameField.getText()),
+          PlayerNameValidation.validate(usernameField.getText()),
           "Invalid name",
           JOptionPane.ERROR_MESSAGE);
       return;
@@ -322,7 +322,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
   }
 
   public String getUserName() {
-    return userNameField.getText();
+    return usernameField.getText();
   }
 
   public LobbyLoginPreferences getLobbyLoginPreferences() {

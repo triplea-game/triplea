@@ -303,22 +303,22 @@ public final class LobbyMenu extends JMenuBar {
     final IUserManager manager =
         (IUserManager)
             lobbyFrame.getLobbyClient().getMessengers().getRemote(IUserManager.REMOTE_NAME);
-    final String userName = lobbyFrame.getLobbyClient().getMessengers().getLocalNode().getName();
-    final String email = manager.getUserEmail(userName);
+    final String username = lobbyFrame.getLobbyClient().getMessengers().getLocalNode().getName();
+    final String email = manager.getUserEmail(username);
     if (email == null) {
       showErrorDialog("No user info found", "Error");
       return;
     }
 
     final CreateUpdateAccountPanel panel =
-        CreateUpdateAccountPanel.newUpdatePanel(userName, email, LobbyLoginPreferences.load());
+        CreateUpdateAccountPanel.newUpdatePanel(username, email, LobbyLoginPreferences.load());
     final CreateUpdateAccountPanel.ReturnValue returnValue = panel.show(lobbyFrame);
     if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
     }
     final String error =
         manager.updateUser(
-            userName, email, RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()));
+            username, email, RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()));
     if (error != null) {
       showErrorDialog(error, "Error");
       return;
