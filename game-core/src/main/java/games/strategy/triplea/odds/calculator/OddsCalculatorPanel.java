@@ -1075,9 +1075,7 @@ class OddsCalculatorPanel extends JPanel {
 
         // Default attacker to current player
         final Optional<PlayerId> currentPlayer = getCurrentPlayer(history);
-        if (currentPlayer.isPresent()) {
-          attackerCombo.setSelectedItem(currentPlayer.get());
-        }
+        currentPlayer.ifPresent(attackerCombo::setSelectedItem);
 
         // Get players with units sorted
         final List<PlayerId> players = location.getUnitCollection().getPlayersByUnitCount();
