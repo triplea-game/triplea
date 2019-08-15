@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 
@@ -80,7 +81,10 @@ public class LobbyLogin {
           if (anonymousLogin) {
             response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
           } else {
-            response.putAll(RsaAuthenticator.newResponse(challenge, password));
+            response.put(
+                LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+                RsaAuthenticator.encrpytPassword(
+                    challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), password));
           }
           response.put(
               LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
@@ -158,7 +162,10 @@ public class LobbyLogin {
           final Map<String, String> response = new HashMap<>();
           response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
           response.put(LobbyLoginResponseKeys.EMAIL, email);
-          response.putAll(RsaAuthenticator.newResponse(challenge, password));
+          response.put(
+              LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+              RsaAuthenticator.encrpytPassword(
+                  challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), password));
           response.put(
               LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
           return response;

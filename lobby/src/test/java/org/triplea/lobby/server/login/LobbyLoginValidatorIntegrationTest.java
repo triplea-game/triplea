@@ -11,6 +11,7 @@ import games.strategy.net.MacFinder;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -19,6 +20,7 @@ import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.TestUserUtils;
@@ -74,7 +76,10 @@ class LobbyLoginValidatorIntegrationTest {
         generateChallenge(name, null)
             .apply(
                 challenge -> {
-                  response.putAll(RsaAuthenticator.newResponse(challenge, password));
+                  response.put(
+                      LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+                      RsaAuthenticator.encrpytPassword(
+                          challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), password));
                   return response;
                 }));
 
@@ -83,7 +88,10 @@ class LobbyLoginValidatorIntegrationTest {
         generateChallenge(name, null)
             .apply(
                 challenge -> {
-                  response.putAll(RsaAuthenticator.newResponse(challenge, "wrong"));
+                  response.put(
+                      LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+                      RsaAuthenticator.encrpytPassword(
+                          challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), "wrong"));
                   return response;
                 }));
     assertTrue(
@@ -134,13 +142,19 @@ class LobbyLoginValidatorIntegrationTest {
                 new HashedPassword(BCrypt.hashpw(hashPasswordWithSalt(password), BCrypt.gensalt())))
             .apply(
                 challenge -> {
-                  response.putAll(RsaAuthenticator.newResponse(challenge, password));
+                  response.put(
+                      LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+                      RsaAuthenticator.encrpytPassword(
+                          challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), password));
                   return response;
                 }));
     // with a bad password
     assertError(
         generateChallenge(user, null)
-            .apply(challenge -> new HashMap<>(RsaAuthenticator.newResponse(challenge, "wrong"))),
+            .apply(
+                challenge ->
+                    Collections.singletonMap(
+                        LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD, "wrong")),
         "password");
     // with a non existent user
     assertError(generateChallenge(null).apply(challenge -> response), "user");

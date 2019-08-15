@@ -26,6 +26,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.TestUserUtils;
@@ -301,7 +302,10 @@ final class LobbyLoginValidatorTest {
                   .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
                   .put(
                       LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
-                  .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+                  .put(
+                      LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+                      RsaAuthenticator.encrpytPassword(
+                          challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), PASSWORD))
                   .build();
         }
       }
@@ -370,7 +374,10 @@ final class LobbyLoginValidatorTest {
         return challenge ->
             ImmutableMap.<String, String>builder()
                 .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
-                .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+                .put(
+                    LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+                    RsaAuthenticator.encrpytPassword(
+                        challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), PASSWORD))
                 .build();
       }
     }
