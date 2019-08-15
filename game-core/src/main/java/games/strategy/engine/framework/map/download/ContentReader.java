@@ -94,7 +94,7 @@ public final class ContentReader {
   /**
    * Downloads the resource at the specified URI using the configured httpClientFactory.
    *
-   * @see #download(String, Function)
+   * @see #download(String, ThrowingFunction)
    * @param uri The resource URI; must not be {@code null}.
    * @param action The action to perform using the give InputStream; must not be {@code null}.
    * @throws IOException If an error occurs during the download.
