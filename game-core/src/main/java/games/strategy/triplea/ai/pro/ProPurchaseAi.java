@@ -809,7 +809,7 @@ class ProPurchaseAi {
           ProBattleUtils.territoryHasLocalLandSuperiority(
               t, ProBattleUtils.SHORT_RANGE, player, purchaseTerritories);
       if (!finalResult.isHasLandUnitRemaining()
-          || (finalResult.getTuvSwing() - resourceTracker.getTempPUs(data) / 2)
+          || (finalResult.getTuvSwing() - resourceTracker.getTempPUs(data) / 2f)
               < placeTerritory.getMinBattleResult().getTuvSwing()
           || t.equals(ProData.myCapital)
           || (!t.isWater() && hasLocalSuperiority)) {
