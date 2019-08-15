@@ -10,6 +10,7 @@ import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
+import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import java.awt.Dimension;
 import java.util.Optional;
@@ -101,20 +102,27 @@ public class SetupPanelModel implements ServerSetupModel {
    * user is presented with another try or they can abort. In the abort case this method is a no-op.
    */
   public void login() {
-    LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
-        .fetchLobbyServerProperties()
-        .ifPresent(
-            lobbyServerProperties -> {
-              final LobbyLogin login = new LobbyLogin(ui, lobbyServerProperties);
+    final LobbyServerProperties lobbyServerProperties =
+        LobbyPropertyFetcherConfiguration.lobbyServerPropertiesFetcher()
+            .fetchLobbyServerProperties()
+            .orElseThrow(LobbyAddressFetchException::new);
 
-              Optional.ofNullable(login.login())
-                  .ifPresent(
-                      lobbyClient -> {
-                        final LobbyFrame lobbyFrame =
-                            new LobbyFrame(lobbyClient, lobbyServerProperties);
-                        GameRunner.hideMainFrame();
-                        lobbyFrame.setVisible(true);
-                      });
+    final LobbyLogin login = new LobbyLogin(ui, lobbyServerProperties);
+
+    Optional.ofNullable(login.login())
+        .ifPresent(
+            lobbyClient -> {
+              final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyServerProperties);
+              GameRunner.hideMainFrame();
+              lobbyFrame.setVisible(true);
             });
+  }
+
+  private static final class LobbyAddressFetchException extends RuntimeException {
+    private static final long serialVersionUID = -301010780022774627L;
+
+    LobbyAddressFetchException() {
+      super("Failed to fetch lobby address, check network connection.");
+    }
   }
 }
