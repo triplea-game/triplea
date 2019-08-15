@@ -57,6 +57,7 @@ public class NioSocket implements ErrorReporter {
   public void send(final SocketChannel to, final MessageHeader header) {
     checkNotNull(to);
     checkNotNull(header);
+    checkNotNull(header.getFrom());
 
     encoder.write(to, header);
   }
