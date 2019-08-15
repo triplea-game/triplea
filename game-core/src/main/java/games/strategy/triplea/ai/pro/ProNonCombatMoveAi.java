@@ -700,6 +700,7 @@ class ProNonCombatMoveAi {
         for (final ProTerritory patd : prioritizedTerritories) {
           if (patd.getTerritory().equals(maxTerritory)) {
             alreadyAdded = true;
+            break;
           }
         }
         if (!alreadyAdded) {

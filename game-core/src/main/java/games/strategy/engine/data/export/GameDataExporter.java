@@ -119,6 +119,7 @@ public class GameDataExporter {
             for (final String definedName : TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES) {
               if (definedName.equals(name)) {
                 name = cat;
+                break;
               }
             }
             returnValue.append("                <tech name=\"").append(name).append("\"/>\n");
@@ -144,6 +145,7 @@ public class GameDataExporter {
         for (final String definedName : TechAdvance.ALL_PREDEFINED_TECHNOLOGY_NAMES) {
           if (definedName.equals(name)) {
             name = cat;
+            break;
           }
         }
         returnValue.append("            <techname name=\"").append(name).append("\"");

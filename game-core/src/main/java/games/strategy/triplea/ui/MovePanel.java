@@ -387,6 +387,7 @@ public class MovePanel extends AbstractMovePanel {
                 for (final Unit unit : unitsToLoad) {
                   if (!unitMap.containsKey(unit)) {
                     ableToLoad = false;
+                    break;
                   }
                 }
                 return ableToLoad;

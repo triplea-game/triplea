@@ -752,13 +752,12 @@ public class BattleTracker implements Serializable {
         }
       }
     }
-    // is this an allied territory, revert to original owner if it is, unless they dont own there
-    // captital
+    // is this an allied territory? Revert to original owner if it is,
+    // unless they don't own their capital
     final @Nullable PlayerId terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(territory);
     PlayerId newOwner = id;
     // if the original owner is the current owner, and the current owner is our enemy or
-    // canTakeOver,
-    // then we do not worry about this.
+    // canTakeOver, then we do not worry about this.
     if (isTerritoryOwnerAnEnemy
         && terrOrigOwner != null
         && relationshipTracker.isAllied(terrOrigOwner, id)
@@ -775,6 +774,7 @@ public class BattleTracker implements Serializable {
           if (territory.equals(current) || current.getOwner().equals(PlayerId.NULL_PLAYERID)) {
             // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
             newOwner = terrOrigOwner;
+            break;
           }
         }
       }
