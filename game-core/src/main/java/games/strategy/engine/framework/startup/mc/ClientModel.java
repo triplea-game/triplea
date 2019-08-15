@@ -57,8 +57,8 @@ import javax.annotation.Nonnull;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.EventThreadJOptionPane;
@@ -166,10 +166,12 @@ public class ClientModel implements IMessengerErrorListener {
 
   private static ClientProps getProps(final Component ui) {
     if (System.getProperty(TRIPLEA_CLIENT, "false").equals("true") && GameState.notStarted()) {
-      final ClientProps props = new ClientProps();
-      props.setHost(System.getProperty(TRIPLEA_HOST));
-      props.setName(System.getProperty(TRIPLEA_NAME));
-      props.setPort(Integer.parseInt(System.getProperty(TRIPLEA_PORT)));
+      final ClientProps props =
+          ClientProps.builder()
+              .host(System.getProperty(TRIPLEA_HOST))
+              .name(System.getProperty(TRIPLEA_NAME))
+              .port(Integer.parseInt(System.getProperty(TRIPLEA_PORT)))
+              .build();
       GameState.setStarted();
       return props;
     }
@@ -188,11 +190,11 @@ public class ClientModel implements IMessengerErrorListener {
                       if (!options.getOkPressed()) {
                         return null;
                       }
-                      final ClientProps props = new ClientProps();
-                      props.setHost(options.getAddress());
-                      props.setName(options.getName());
-                      props.setPort(options.getPort());
-                      return props;
+                      return ClientProps.builder()
+                          .host(options.getAddress())
+                          .name(options.getName())
+                          .port(options.getPort())
+                          .build();
                     }));
     if (!result.completed) {
       throw new IllegalStateException("Error during component creation of ClientOptions.");
@@ -209,10 +211,7 @@ public class ClientModel implements IMessengerErrorListener {
     if (props == null) {
       return false;
     }
-    final String name = props.getName();
-    log.fine("Client playing as:" + name);
-    ClientSetting.playerName.setValue(name);
-    ClientSetting.flush();
+    ClientSetting.playerName.setValueAndFlush(props.getName());
     final int port = props.getPort();
     if (port >= 65536 || port <= 0) {
       EventThreadJOptionPane.showMessageDialog(
@@ -224,7 +223,7 @@ public class ClientModel implements IMessengerErrorListener {
       final String mac = MacFinder.getHashedMacAddress();
       messenger =
           new ClientMessenger(
-              address, port, name, mac, objectStreamFactory, new ClientLogin(this.ui));
+              address, port, props.getName(), mac, objectStreamFactory, new ClientLogin(this.ui));
     } catch (final CouldNotLogInException e) {
       EventThreadJOptionPane.showMessageDialog(this.ui, e.getMessage());
       return false;
@@ -470,11 +469,12 @@ public class ClientModel implements IMessengerErrorListener {
     return new GetGameSaveClientAction(parent, getServerStartup());
   }
 
+  /** Simple data object for which host we are connecting to and with which name. */
   @Getter
-  @Setter
+  @Builder
   private static class ClientProps {
-    private int port;
-    private String name;
-    private String host;
+    @Nonnull private Integer port;
+    @Nonnull private String name;
+    @Nonnull private String host;
   }
 }
