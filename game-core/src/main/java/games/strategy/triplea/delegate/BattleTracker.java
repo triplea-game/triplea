@@ -156,9 +156,8 @@ public class BattleTracker implements Serializable {
   private boolean didThesePlayersJustGoToWarThisTurn(final PlayerId p1, final PlayerId p2) {
     // check all relationship changes that are p1 and p2, to make sure that oldRelation is not war,
     // and newRelation is war
-    for (final Tuple<Tuple<PlayerId, PlayerId>, Tuple<RelationshipType, RelationshipType>> t :
-        relationshipChangesThisTurn) {
-      final Tuple<PlayerId, PlayerId> players = t.getFirst();
+    for (final var tuple : relationshipChangesThisTurn) {
+      final Tuple<PlayerId, PlayerId> players = tuple.getFirst();
       if (players.getFirst().equals(p1)) {
         if (!players.getSecond().equals(p2)) {
           continue;
@@ -170,7 +169,7 @@ public class BattleTracker implements Serializable {
       } else {
         continue;
       }
-      final Tuple<RelationshipType, RelationshipType> relations = t.getSecond();
+      final Tuple<RelationshipType, RelationshipType> relations = tuple.getSecond();
       if (!Matches.relationshipTypeIsAtWar().test(relations.getFirst())) {
         if (Matches.relationshipTypeIsAtWar().test(relations.getSecond())) {
           return true;

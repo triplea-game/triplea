@@ -806,8 +806,8 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       if (defender == null || scramblers.isEmpty()) {
         continue;
       }
-      final Tuple<Territory, PlayerId> terrPlayer = Tuple.of(to, defender);
-      final Collection<Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>>> tempScrambleList =
+      final var terrPlayer = Tuple.of(to, defender);
+      final var tempScrambleList =
           scramblersByTerritoryPlayer.getOrDefault(terrPlayer, new ArrayList<>());
       tempScrambleList.add(scramblers);
       scramblersByTerritoryPlayer.put(terrPlayer, tempScrambleList);
@@ -820,8 +820,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         continue;
       }
       boolean scrambledHere = false;
-      for (final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers :
-          scramblersByTerritoryPlayer.get(terrPlayer)) {
+      for (final var scramblers : scramblersByTerritoryPlayer.get(terrPlayer)) {
         // verify that we didn't already scramble any of these units
         final Iterator<Territory> territoryIter = scramblers.keySet().iterator();
         while (territoryIter.hasNext()) {
@@ -834,8 +833,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (scramblers.isEmpty()) {
           continue;
         }
-        final Map<Territory, Collection<Unit>> toScramble =
-            getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
+        final var toScramble = getRemotePlayer(defender).scrambleUnitsQuery(to, scramblers);
         if (toScramble == null) {
           continue;
         }
@@ -861,9 +859,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // Validate players have enough fuel to move there and back
         final Map<PlayerId, ResourceCollection> playerFuelCost = new HashMap<>();
         for (final Entry<Territory, Collection<Unit>> entry : toScramble.entrySet()) {
-          final Map<PlayerId, ResourceCollection> map =
+          final var map =
               Route.getScrambleFuelCostCharge(entry.getValue(), entry.getKey(), to, data);
-          for (final Entry<PlayerId, ResourceCollection> playerAndCost : map.entrySet()) {
+          for (final var playerAndCost : map.entrySet()) {
             if (playerFuelCost.containsKey(playerAndCost.getKey())) {
               playerFuelCost.get(playerAndCost.getKey()).add(playerAndCost.getValue());
             } else {
