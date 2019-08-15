@@ -57,11 +57,15 @@ final class UserController implements UserDao {
         PreparedStatement ps =
             con.prepareStatement(
                 String.format(
-                    "update lobby_user set %s=?, email=? where username=?",
-                    getPasswordColumn(hashedPassword)))) {
+                    "update lobby_user set %s=?%s where username=?",
+                    getPasswordColumn(hashedPassword), email == null ? "" : ", email=?"))) {
       ps.setString(1, hashedPassword.value);
-      ps.setString(2, email);
-      ps.setString(3, name);
+      int index = 2;
+      if (email != null) {
+        ps.setString(index, email);
+        index++;
+      }
+      ps.setString(index, name);
       ps.execute();
       if (!hashedPassword.isBcrypted()) {
         try (PreparedStatement ps2 =
@@ -109,24 +113,23 @@ final class UserController implements UserDao {
 
   @Override
   public boolean login(final String username, final HashedPassword hashedPassword) {
-    try (Connection con = connection.get()) {
-      final HashedPassword actualPassword = getPassword(username);
-      if (actualPassword == null) {
-        return false;
-      }
-      Preconditions.checkState(actualPassword.isBcrypted());
-      if (!BCrypt.checkpw(hashedPassword.value, actualPassword.value)) {
-        return false;
-      }
-      // update last login time
-      try (PreparedStatement ps =
-          con.prepareStatement("update lobby_user set last_login = ? where username = ?")) {
-        ps.setTimestamp(1, Timestamp.from(Instant.now()));
-        ps.setString(2, username);
-        ps.execute();
-        con.commit();
-        return true;
-      }
+    final HashedPassword actualPassword = getPassword(username);
+    if (actualPassword == null) {
+      return false;
+    }
+    Preconditions.checkState(actualPassword.isBcrypted());
+    if (!BCrypt.checkpw(hashedPassword.value, actualPassword.value)) {
+      return false;
+    }
+    // update last login time
+    try (Connection con = connection.get();
+        PreparedStatement ps =
+            con.prepareStatement("update lobby_user set last_login = ? where username = ?")) {
+      ps.setTimestamp(1, Timestamp.from(Instant.now()));
+      ps.setString(2, username);
+      ps.execute();
+      con.commit();
+      return true;
     } catch (final SQLException e) {
       throw new DatabaseException(
           String.format(
