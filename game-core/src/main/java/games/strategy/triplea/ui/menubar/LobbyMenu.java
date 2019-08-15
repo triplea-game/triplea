@@ -300,9 +300,7 @@ public final class LobbyMenu extends JMenuBar {
   }
 
   private void updateAccountDetails() {
-    final IUserManager manager =
-        (IUserManager)
-            lobbyFrame.getLobbyClient().getMessengers().getRemote(IUserManager.REMOTE_NAME);
+    final IUserManager manager = lobbyFrame.getLobbyClient().getUserManager();
     final String username = lobbyFrame.getLobbyClient().getMessengers().getLocalNode().getName();
     final String email = manager.getUserEmail(username);
     if (email == null) {
