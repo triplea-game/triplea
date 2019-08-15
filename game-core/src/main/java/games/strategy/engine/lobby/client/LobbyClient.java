@@ -4,6 +4,7 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
 import lombok.Getter;
 import org.triplea.lobby.common.IModeratorController;
+import org.triplea.lobby.common.IUserManager;
 
 /** Provides information about a client connection to a lobby server. */
 public class LobbyClient {
@@ -27,5 +28,9 @@ public class LobbyClient {
 
   public boolean isAnonymousLogin() {
     return isAnonymousLogin;
+  }
+
+  public IUserManager getUserManager() {
+    return (IUserManager) messengers.getRemote(IUserManager.REMOTE_NAME);
   }
 }
