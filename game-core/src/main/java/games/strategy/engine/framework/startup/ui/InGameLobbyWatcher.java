@@ -57,7 +57,7 @@ public class InGameLobbyWatcher {
   private final Observer gameSelectorModelObserver = (o, arg) -> gameSelectorModelUpdated();
   private IGame game;
   // we create this messenger, and use it to connect to the game lobby
-  private final IMessenger messenger;
+  private final IMessenger lobbyMessenger;
   private final IRemoteMessenger remoteMessenger;
   private final Object postMutex = new Object();
   private GameDescription gameDescription;
@@ -66,12 +66,12 @@ public class InGameLobbyWatcher {
   private final boolean isHandlerPlayer;
 
   private InGameLobbyWatcher(
-      final IMessenger messenger,
+      final IMessenger lobbyMessenger,
       final IRemoteMessenger remoteMessenger,
       final IServerMessenger serverMessenger,
       final LobbyWatcherHandler handler,
       final InGameLobbyWatcher oldWatcher) {
-    this.messenger = messenger;
+    this.lobbyMessenger = lobbyMessenger;
     this.remoteMessenger = remoteMessenger;
     this.serverMessenger = serverMessenger;
     this.isHandlerPlayer = handler.isPlayer();
@@ -96,9 +96,9 @@ public class InGameLobbyWatcher {
             .map(s -> new InetSocketAddress(s, customPort.orElse(3300)))
             .orElse(
                 new InetSocketAddress(
-                    messenger.getLocalNode().getSocketAddress().getHostName(),
+                    lobbyMessenger.getLocalNode().getSocketAddress().getHostName(),
                     serverMessenger.getLocalNode().getPort()));
-    final INode publicNode = new Node(messenger.getLocalNode().getName(), publicView);
+    final INode publicNode = new Node(lobbyMessenger.getLocalNode().getName(), publicView);
     gameDescription =
         GameDescription.builder()
             .hostedBy(publicNode)
@@ -117,8 +117,8 @@ public class InGameLobbyWatcher {
     synchronized (postMutex) {
       controller.postGame(gameId, gameDescription);
     }
-    if (this.messenger instanceof IClientMessenger) {
-      ((IClientMessenger) this.messenger).addErrorListener(messengerErrorListener);
+    if (this.lobbyMessenger instanceof IClientMessenger) {
+      ((IClientMessenger) this.lobbyMessenger).addErrorListener(messengerErrorListener);
     }
     connectionChangeListener =
         new IConnectionChangeListener() {
@@ -218,11 +218,13 @@ public class InGameLobbyWatcher {
               IServerMessenger.getRealName(hostedBy) + "_" + LobbyConstants.LOBBY_WATCHER_NAME,
               mac,
               login);
-      final UnifiedMessenger um = new UnifiedMessenger(messenger);
-      final RemoteMessenger rm = new RemoteMessenger(um);
-      final RemoteHostUtils rhu = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);
-      rm.registerRemote(rhu, IRemoteHostUtils.Companion.newRemoteNameForNode(um.getLocalNode()));
-      return new InGameLobbyWatcher(messenger, rm, gameMessenger, handler, oldWatcher);
+      final var unifiedMessenger = new UnifiedMessenger(messenger);
+      final var remoteMessenger = new RemoteMessenger(unifiedMessenger);
+      final var remoteHostUtils = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);
+      remoteMessenger.registerRemote(
+          remoteHostUtils,
+          IRemoteHostUtils.Companion.newRemoteNameForNode(unifiedMessenger.getLocalNode()));
+      return new InGameLobbyWatcher(messenger, remoteMessenger, gameMessenger, handler, oldWatcher);
     } catch (final Exception e) {
       log.log(Level.SEVERE, "Failed to create in-game lobby watcher", e);
       return null;
@@ -242,7 +244,7 @@ public class InGameLobbyWatcher {
     return System.getProperty(backupKey);
   }
 
-  void setGame(final IGame game) {
+  private void setGame(final IGame game) {
     this.game = game;
     if (game != null) {
       game.getData()
@@ -302,10 +304,10 @@ public class InGameLobbyWatcher {
 
   void shutDown() {
     isShutdown = true;
-    if (messenger instanceof IClientMessenger) {
-      ((IClientMessenger) this.messenger).removeErrorListener(messengerErrorListener);
+    if (lobbyMessenger instanceof IClientMessenger) {
+      ((IClientMessenger) this.lobbyMessenger).removeErrorListener(messengerErrorListener);
     }
-    messenger.shutDown();
+    lobbyMessenger.shutDown();
     serverMessenger.removeConnectionChangeListener(connectionChangeListener);
     cleanUpGameModelListener();
   }
