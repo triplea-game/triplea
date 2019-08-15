@@ -120,7 +120,8 @@ final class SaveFunctionTest {
       whenSelectionComponentSave(
           mockSelectionComponent, context -> context.setValue(mockSetting, TestData.fakeValue));
 
-      SaveFunction.saveSettings(Collections.singletonList(mockSelectionComponent), flushSettingsAction);
+      SaveFunction.saveSettings(
+          Collections.singletonList(mockSelectionComponent), flushSettingsAction);
 
       verify(flushSettingsAction).run();
       verify(mockSetting).setValue(TestData.fakeValue);

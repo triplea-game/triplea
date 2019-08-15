@@ -632,8 +632,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             territoryEffects,
             isAmphibious,
             amphibiousLandAttackers);
-    final int totalExpectingHits =
-        Math.min(dice.getHits(), validAttackingUnitsForThisRoll.size());
+    final int totalExpectingHits = Math.min(dice.getHits(), validAttackingUnitsForThisRoll.size());
     if (casualties.size() != totalExpectingHits) {
       throw new IllegalStateException(
           "Wrong number of casualties, expecting:"

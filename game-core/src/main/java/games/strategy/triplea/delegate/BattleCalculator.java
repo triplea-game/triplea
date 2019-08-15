@@ -717,9 +717,7 @@ public class BattleCalculator {
       }
     }
     // check right number
-    if (!isEditMode
-        && !(numhits + damaged.size()
-            == (Math.min(hitsRemaining, totalHitpoints)))) {
+    if (!isEditMode && !(numhits + damaged.size() == (Math.min(hitsRemaining, totalHitpoints)))) {
       tripleaPlayer.reportError("Wrong number of casualties selected");
       if (headLess) {
         log.severe(
