@@ -2,13 +2,14 @@ package org.triplea.lobby.server.db;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
 import org.triplea.util.Md5Crypt;
 
 /**
  * A Wrapper class for salted password hashes. If the given String is not matching the format of
  * Md5Crypt or BCrypt hashes isValidSyntax returns false.
  */
+@EqualsAndHashCode
 public final class HashedPassword {
   public final String value;
 
@@ -34,23 +35,6 @@ public final class HashedPassword {
    */
   public String mask() {
     return Strings.repeat("*", value.length());
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    if (obj == this) {
-      return true;
-    } else if (!(obj instanceof HashedPassword)) {
-      return false;
-    }
-
-    final HashedPassword other = (HashedPassword) obj;
-    return Objects.equals(value, other.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(value);
   }
 
   @Override
