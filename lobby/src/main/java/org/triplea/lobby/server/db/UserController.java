@@ -60,12 +60,10 @@ final class UserController implements UserDao {
                     "update lobby_user set %s=?%s where username=?",
                     getPasswordColumn(hashedPassword), email == null ? "" : ", email=?"))) {
       ps.setString(1, hashedPassword.value);
-      int index = 2;
       if (email != null) {
-        ps.setString(index, email);
-        index++;
+        ps.setString(2, email);
       }
-      ps.setString(index, name);
+      ps.setString(email != null ? 3 : 2, name);
       ps.execute();
       if (!hashedPassword.isBcrypted()) {
         try (PreparedStatement ps2 =
