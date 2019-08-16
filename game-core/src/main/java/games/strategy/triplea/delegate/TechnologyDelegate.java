@@ -132,8 +132,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (Properties.getWW2V3TechModel(getData())) {
       final Resource techTokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
       if (techTokens != null) {
-        final int techTokens = player.getResources().getQuantity(techTokens);
-        if (techTokens > 0) {
+        if (player.getResources().getQuantity(techTokens) > 0) {
           return true;
         }
       }
