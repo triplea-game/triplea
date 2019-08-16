@@ -105,7 +105,7 @@ class RepairPanel extends ActionPanel {
           unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), id, getData());
           add(unitsPanel);
           add(Box.createVerticalGlue());
-          SwingUtilities.invokeLater(refresh);
+          refresh.run();
         });
   }
 

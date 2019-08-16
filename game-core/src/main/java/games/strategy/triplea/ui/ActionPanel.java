@@ -6,6 +6,7 @@ import games.strategy.triplea.Properties;
 import java.util.concurrent.CountDownLatch;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,12 +18,14 @@ public abstract class ActionPanel extends JPanel {
 
   @Getter(AccessLevel.PROTECTED)
   protected final MapPanel map;
-  /** Refreshes the action panel. Should be run within the swing event queue. */
+  /** Refreshes the action panel. */
   protected final Runnable refresh =
-      () -> {
-        revalidate();
-        repaint();
-      };
+      () ->
+          SwingUtilities.invokeLater(
+              () -> {
+                revalidate();
+                repaint();
+              });
 
   @Getter(AccessLevel.PROTECTED)
   private final GameData data;

@@ -91,7 +91,7 @@ public final class BattlePanel extends ActionPanel {
             }
           }
           add(panel, BorderLayout.NORTH);
-          SwingUtilities.invokeLater(refresh);
+          refresh.run();
         });
   }
 
