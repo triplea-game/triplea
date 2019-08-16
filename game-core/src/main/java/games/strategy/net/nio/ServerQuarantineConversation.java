@@ -89,7 +89,8 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           final Map<String, String> response = (Map<String, String>) serializable;
           String error = null;
           if (validator != null) {
-            if (response.containsKey(LobbyLoginResponseKeys.FORGOT_PASSWORD)) {
+            if (forgotPasswordConversation != null
+                && response.containsKey(LobbyLoginResponseKeys.FORGOT_PASSWORD)) {
               send(
                   forgotPasswordConversation.handle(channel.socket().getInetAddress(), remoteName));
               step = Step.ACK_ERROR;
