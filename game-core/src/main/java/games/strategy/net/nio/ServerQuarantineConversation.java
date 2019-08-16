@@ -1,5 +1,6 @@
 package games.strategy.net.nio;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MessageHeader;
@@ -89,8 +90,11 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           final Map<String, String> response = (Map<String, String>) serializable;
           String error = null;
           if (validator != null) {
-            if (forgotPasswordConversation != null
-                && response.containsKey(LobbyLoginResponseKeys.FORGOT_PASSWORD)) {
+            if (response.containsKey(LobbyLoginResponseKeys.FORGOT_PASSWORD)) {
+              Preconditions.checkState(
+                  forgotPasswordConversation != null,
+                  "Coding error, forgot password module must be set to support "
+                      + "the 'forgot password' feature.");
               send(
                   forgotPasswordConversation.handle(channel.socket().getInetAddress(), remoteName));
               step = Step.ACK_ERROR;
