@@ -133,7 +133,7 @@ public class BattleRecordsList extends GameDataComponent {
       brs.add(brl.getCurrentRoundCopy());
     } else {
       final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMapCopy();
-      for (int i = beginningRound; i < endRound; i++) {
+      for (int i = beginningRound; i <= endRound; i++) {
         final BattleRecords currentRecords = currentList.get(i);
         if (currentRecords != null) {
           brs.add(currentRecords);
