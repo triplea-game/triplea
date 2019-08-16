@@ -5,6 +5,7 @@ import games.strategy.engine.lobby.PlayerEmailValidation;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MacFinder;
+import games.strategy.net.nio.ServerQuarantineConversation;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.sql.Timestamp;
@@ -24,6 +25,8 @@ import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.db.DatabaseDao;
 import org.triplea.lobby.server.db.HashedPassword;
+import org.triplea.lobby.server.db.dao.TempPasswordDao;
+import org.triplea.lobby.server.login.forgot.password.verify.TempPasswordVerification;
 import org.triplea.util.Version;
 
 /**
@@ -52,6 +55,8 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private final RsaAuthenticator rsaAuthenticator;
   private final Supplier<String> bcryptSaltGenerator;
   private final FailedLoginThrottle failedLoginThrottle;
+  private final TempPasswordVerification tempPasswordVerification;
+  private final TempPasswordDao tempPasswordDao;
 
   @Override
   public Map<String, String> getChallengeProperties(final String username) {
@@ -82,6 +87,10 @@ public final class LobbyLoginValidator implements ILoginValidator {
     if (errorMessage == null) {
       database.getAccessLogDao().insert(user, getUserTypeFor(response));
       return null;
+    }
+    if (errorMessage.equals(ServerQuarantineConversation.CHANGE_PASSWORD)) {
+      database.getAccessLogDao().insert(user, getUserTypeFor(response));
+      return errorMessage;
     }
     failedLoginThrottle.increment(address);
     return errorMessage;
@@ -181,6 +190,11 @@ public final class LobbyLoginValidator implements ILoginValidator {
           response,
           pass -> {
             if (hashedPassword.isBcrypted()) {
+              // TODO: update tests to verify tempPasswordVerification branch.
+              if (tempPasswordVerification.checkTempPassword(username, pass)) {
+                return ServerQuarantineConversation.CHANGE_PASSWORD;
+              }
+
               return database.getUserDao().login(username, new HashedPassword(pass))
                   ? null
                   : ErrorMessages.AUTHENTICATION_FAILED;

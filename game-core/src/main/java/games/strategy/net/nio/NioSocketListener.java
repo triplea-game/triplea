@@ -10,7 +10,7 @@ public interface NioSocketListener {
    * This connection will leave quarantine. Messages on this channel will not be read until after
    * this method returns, allowing for setup of the channel.
    */
-  void socketUnqaurantined(SocketChannel channel, QuarantineConversation conversation);
+  void socketUnquarantined(SocketChannel channel, QuarantineConversation conversation);
 
   /** An error occurred on the channel and it was shut down. */
   void socketError(SocketChannel channel, Exception error);

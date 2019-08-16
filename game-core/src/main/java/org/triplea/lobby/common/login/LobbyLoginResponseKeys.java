@@ -9,6 +9,7 @@ public final class LobbyLoginResponseKeys {
   public static final String LOBBY_WATCHER_LOGIN = "LOBBY_WATCHER_LOGIN";
   public static final String REGISTER_NEW_USER = "REGISTER_USER";
   public static final String RSA_ENCRYPTED_PASSWORD = "RSAPWD";
+  public static final String FORGOT_PASSWORD = "FORGOT_PASSWORD";
 
   private LobbyLoginResponseKeys() {}
 }

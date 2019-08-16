@@ -8,6 +8,7 @@ import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.nio.ClientQuarantineConversation;
+import games.strategy.net.nio.ForgotPasswordConversation;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
+import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 
@@ -41,11 +43,14 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   private INode serverNode;
   private volatile boolean shutDown = false;
 
+  @Getter(onMethod_ = {@Override})
+  private boolean passwordChangeRequired;
+
   /**
    * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
    * has been constructed.
    */
-  public ClientMessenger(
+  ClientMessenger(
       final String host,
       final int port,
       final String name,
@@ -69,6 +74,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
    * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
    * has been constructed.
    */
+  @VisibleForTesting
   public ClientMessenger(
       final String host,
       final int port,
@@ -113,6 +119,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
     nioSocket = new NioSocket(streamFact, this);
     final ClientQuarantineConversation conversation =
         new ClientQuarantineConversation(login, socketChannel, nioSocket, name, mac);
+
     nioSocket.add(socketChannel, conversation);
     // allow the credentials to be shown in this thread
     conversation.showCredentials();
@@ -128,6 +135,15 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
         // ignore
       }
     }
+    passwordChangeRequired = conversation.isPasswordChangeRequired();
+
+    if (conversation.getErrorMessage() != null
+        && conversation
+            .getErrorMessage()
+            .equals(ForgotPasswordConversation.TEMP_PASSWORD_GENERATED_RESPONSE)) {
+      return;
+    }
+
     if (conversation.getErrorMessage() != null || connectionRefusedError != null) {
       // our socket channel should already be closed
       nioSocket.shutDown();
@@ -211,9 +227,9 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public void socketUnqaurantined(
-      final SocketChannel channel, final QuarantineConversation converstaion2) {
-    final ClientQuarantineConversation conversation = (ClientQuarantineConversation) converstaion2;
+  public void socketUnquarantined(
+      final SocketChannel channel, final QuarantineConversation quarantineConversation) {
+    final var conversation = (ClientQuarantineConversation) quarantineConversation;
     // all ids are based on the socket address of nodes in the network
     // but the address of a node changes depending on who is looking at it
     // ie, sometimes it is the loopback address if connecting locally,

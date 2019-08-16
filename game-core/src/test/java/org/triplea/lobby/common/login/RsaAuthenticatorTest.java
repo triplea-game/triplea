@@ -42,8 +42,11 @@ final class RsaAuthenticatorTest {
       final Function<String, String> action = mock(Function.class);
 
       final Map<String, String> challenge = new HashMap<>(rsaAuthenticator.newChallenge());
-      final Map<String, String> response =
-          new HashMap<>(RsaAuthenticator.newResponse(challenge, password));
+      final Map<String, String> response = new HashMap<>();
+      response.put(
+          LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+          RsaAuthenticator.encrpytPassword(
+              challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), password));
       rsaAuthenticator.decryptPasswordForAction(response, action);
 
       verify(action).apply(RsaAuthenticator.hashPasswordWithSalt(password));

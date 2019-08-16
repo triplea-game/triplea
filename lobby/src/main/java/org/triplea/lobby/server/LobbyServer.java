@@ -6,15 +6,23 @@ import games.strategy.net.DefaultObjectStreamFactory;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
+import games.strategy.net.TempPasswordHistory;
+import games.strategy.net.nio.ForgotPasswordConversation;
 import games.strategy.sound.ClipPlayer;
 import java.io.IOException;
+import java.net.InetAddress;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.LobbyConstants;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.config.LobbyConfiguration;
+import org.triplea.lobby.server.db.JdbiDatabase;
+import org.triplea.lobby.server.db.dao.TempPasswordDao;
+import org.triplea.lobby.server.db.dao.TempPasswordHistoryDao;
 import org.triplea.lobby.server.login.FailedLoginThrottle;
 import org.triplea.lobby.server.login.LobbyLoginValidator;
+import org.triplea.lobby.server.login.forgot.password.create.ForgotPasswordModuleFactory;
+import org.triplea.lobby.server.login.forgot.password.verify.TempPasswordVerification;
 
 /**
  * A lobby server.
@@ -44,12 +52,38 @@ final class LobbyServer {
             lobbyConfiguration.getPort(),
             new DefaultObjectStreamFactory());
     final Messengers messengers = new Messengers(server);
+
+    final var tempPasswordDao = JdbiDatabase.newConnection().onDemand(TempPasswordDao.class);
+
     server.setLoginValidator(
         new LobbyLoginValidator(
             lobbyConfiguration.getDatabaseDao(),
             new RsaAuthenticator(),
             BCrypt::gensalt,
-            new FailedLoginThrottle()));
+            new FailedLoginThrottle(),
+            new TempPasswordVerification(tempPasswordDao),
+            tempPasswordDao));
+
+    final TempPasswordHistoryDao tempPasswordHistoryDao =
+        JdbiDatabase.newConnection().onDemand(TempPasswordHistoryDao.class);
+
+    server.setForgotPasswordConversation(
+        ForgotPasswordConversation.builder()
+            .forgotPasswordModule(ForgotPasswordModuleFactory.buildForgotPasswordModule())
+            .tempPasswordHistory(
+                new TempPasswordHistory() {
+                  @Override
+                  public int countRequestsFromAddress(final InetAddress address) {
+                    return tempPasswordHistoryDao.countRequestsFromAddress(address);
+                  }
+
+                  @Override
+                  public void recordTempPasswordRequest(
+                      final InetAddress address, final String username) {
+                    tempPasswordHistoryDao.recordTempPasswordRequest(address, username);
+                  }
+                })
+            .build());
 
     new UserManager(lobbyConfiguration.getDatabaseDao()).register(messengers);
 

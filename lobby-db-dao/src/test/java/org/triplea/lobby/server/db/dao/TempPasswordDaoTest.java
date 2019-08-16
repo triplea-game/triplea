@@ -29,8 +29,10 @@ class TempPasswordDaoTest {
 
   @Test
   void fetchTempPassword() {
-    assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
+    assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isEmpty());
     assertThat(tempPasswordDao.fetchTempPassword("DNE"), isEmpty());
+    tempPasswordDao.insertTempPassword(USERNAME, PASSWORD);
+    assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
   }
 
   @Test
@@ -52,6 +54,7 @@ class TempPasswordDaoTest {
 
   @Test
   void invalidateTempPasswordsForMissingNameDoesNothing() {
+    tempPasswordDao.insertTempPassword(USERNAME, PASSWORD);
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
     tempPasswordDao.invalidateTempPasswords("DNE");
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));

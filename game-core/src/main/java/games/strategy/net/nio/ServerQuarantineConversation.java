@@ -1,5 +1,6 @@
 package games.strategy.net.nio;
 
+import com.google.common.base.Preconditions;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.MessageHeader;
@@ -13,10 +14,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
+import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 
 /** Server-side implementation of {@link QuarantineConversation}. */
 @Log
 public class ServerQuarantineConversation extends QuarantineConversation {
+  /**
+   * Magic authentication error string to indicate temporary password was used to authenticate and
+   * password should be reset.
+   */
+  public static final String CHANGE_PASSWORD = "change_password";
+
   /*
    * Communication sequence
    * 1) server reads client name
@@ -42,16 +50,19 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   private String remoteMac;
   private Map<String, String> challenge;
   private final ServerMessenger serverMessenger;
+  private final ForgotPasswordConversation forgotPasswordConversation;
 
   public ServerQuarantineConversation(
       final ILoginValidator validator,
       final SocketChannel channel,
       final NioSocket socket,
-      final ServerMessenger serverMessenger) {
+      final ServerMessenger serverMessenger,
+      final ForgotPasswordConversation forgotPasswordConversation) {
     this.validator = validator;
     this.socket = socket;
     this.channel = channel;
     this.serverMessenger = serverMessenger;
+    this.forgotPasswordConversation = forgotPasswordConversation;
   }
 
   public String getRemoteName() {
@@ -77,20 +88,34 @@ public class ServerQuarantineConversation extends QuarantineConversation {
         case CHALLENGE:
           @SuppressWarnings("unchecked")
           final Map<String, String> response = (Map<String, String>) serializable;
+          String error = null;
           if (validator != null) {
-            final String error =
-                Optional.ofNullable(
-                        validator.verifyConnection(
-                            challenge,
-                            response,
-                            remoteName,
-                            remoteMac,
-                            channel.socket().getRemoteSocketAddress()))
-                    .orElseGet(() -> PlayerNameValidation.serverSideValidate(remoteName));
-            send(error);
-            if (error != null) {
+            if (response.containsKey(LobbyLoginResponseKeys.FORGOT_PASSWORD)) {
+              Preconditions.checkState(
+                  forgotPasswordConversation != null,
+                  "Coding error, forgot password module must be set to support "
+                      + "the 'forgot password' feature.");
+              send(
+                  forgotPasswordConversation.handle(channel.socket().getInetAddress(), remoteName));
               step = Step.ACK_ERROR;
               return Action.NONE;
+            } else {
+              error =
+                  Optional.ofNullable(
+                          validator.verifyConnection(
+                              challenge,
+                              response,
+                              remoteName,
+                              remoteMac,
+                              channel.socket().getRemoteSocketAddress()))
+                      .orElseGet(() -> PlayerNameValidation.serverSideValidate(remoteName));
+              if (error != null && !error.equals(CHANGE_PASSWORD)) {
+                step = Step.ACK_ERROR;
+                send(error);
+                return Action.NONE;
+              } else {
+                send(null);
+              }
             }
           } else {
             send(null);
@@ -101,7 +126,7 @@ public class ServerQuarantineConversation extends QuarantineConversation {
                     remoteName, channel.socket().getInetAddress(), serverMessenger.getNodes());
           }
           // send the node its assigned name and our name
-          send(new String[] {remoteName, serverMessenger.getLocalNode().getName()});
+          send(new String[] {remoteName, serverMessenger.getLocalNode().getName(), error});
           // send the node its and our address as we see it
           send(
               new InetSocketAddress[] {

@@ -18,4 +18,6 @@ public interface IClientMessenger extends IMessenger {
 
   /** Stop listening for errors. */
   void removeErrorListener(IMessengerErrorListener listener);
+
+  boolean isPasswordChangeRequired();
 }

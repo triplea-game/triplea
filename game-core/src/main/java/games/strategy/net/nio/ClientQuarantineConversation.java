@@ -39,6 +39,8 @@ public class ClientQuarantineConversation extends QuarantineConversation {
   private volatile boolean isClosed = false;
   @Getter private volatile String errorMessage;
 
+  @Getter private boolean passwordChangeRequired = false;
+
   public ClientQuarantineConversation(
       final IConnectionLogin login,
       final SocketChannel channel,
@@ -130,6 +132,12 @@ public class ClientQuarantineConversation extends QuarantineConversation {
           }
           localName = strings[0];
           serverName = strings[1];
+          if (strings.length > 2) {
+            passwordChangeRequired =
+                strings[2] != null
+                    && strings[2].equals(ServerQuarantineConversation.CHANGE_PASSWORD);
+          }
+
           step = Step.READ_ADDRESS;
           return Action.NONE;
         case READ_ADDRESS:

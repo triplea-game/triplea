@@ -10,11 +10,16 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
  * them with the 'forgot password' feature.
  */
 public interface TempPasswordDao {
+  String TEMP_PASSWORD_EXPIRATION = "1 day";
+
   @SqlQuery(
       "select temp_password"
-          + " from user_temp_password t"
+          + " from temp_password_request t"
           + " join lobby_user lu on lu.id = t.lobby_user_id"
           + " where lu.username = :username"
+          + "   and t.date_created >  (now() - '"
+          + TEMP_PASSWORD_EXPIRATION
+          + "'::interval)"
           + "   and t.date_invalidated is null")
   Optional<String> fetchTempPassword(@Bind("username") String username);
 
@@ -22,13 +27,13 @@ public interface TempPasswordDao {
   Optional<Integer> lookupUserIdByUsername(@Bind("username") String username);
 
   @SqlUpdate(
-      "insert into user_temp_password"
+      "insert into temp_password_request"
           + " (lobby_user_id, temp_password)"
           + " values (:userId, :password)")
   void insertPassword(@Bind("userId") int userId, @Bind("password") String password);
 
   @SqlUpdate(
-      "update user_temp_password"
+      "update temp_password_request"
           + " set date_invalidated = now()"
           + " where lobby_user_id = (select id from lobby_user where username = :username)"
           + "   and date_invalidated is null")

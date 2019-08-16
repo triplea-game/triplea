@@ -1,7 +1,7 @@
 moderator_api_key:
 moderator_single_use_key:
 moderator_action_history:
-user_temp_password:
+temp_password_request:
 
 lobby_user:
   - id: 900000
