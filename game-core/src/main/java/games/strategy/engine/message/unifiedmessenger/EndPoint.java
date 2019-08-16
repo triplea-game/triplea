@@ -71,9 +71,8 @@ class EndPoint {
   /**
    * Adds the specified implementation of this end point's remote interface.
    *
-   * @return is this the first implementor.
    */
-  public boolean addImplementor(final Object implementor) {
+  public void addImplementor(final Object implementor) {
     if (!remoteClass.isAssignableFrom(implementor.getClass())) {
       throw new IllegalArgumentException(
           remoteClass + " is not assignable from " + implementor.getClass());
@@ -81,7 +80,6 @@ class EndPoint {
     synchronized (implementorsMutex) {
       final boolean isFirstImplementor = implementors.isEmpty();
       implementors.add(implementor);
-      return isFirstImplementor;
     }
   }
 

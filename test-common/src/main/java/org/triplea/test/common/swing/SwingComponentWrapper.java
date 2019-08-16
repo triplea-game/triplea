@@ -18,16 +18,15 @@ public class SwingComponentWrapper {
    * parameter, any such component found is then returned and casted to the type specified by the
    * second parameter.
    *
+   * @param <T> The expected type of the component that we are trying to find.
    * @param childName Component name to find, searching current component or any of its children.
    * @param classType The component type to return.
-   * @param <T> The expected type of the component that we are trying to find.
-   * @return A matching component casted to the specified type or an assertion error.
    * @throws ClassCastException Thrown if the matched component has a type that is different from
    *     the expected type.
    * @throws AssertionError Thrown when failing to match any components by name.
    */
-  public <T> T findChildByName(final String childName, final Class<T> classType) {
-    return findChildByNameRecursive(childName, classType)
+  public <T> void findChildByName(final String childName, final Class<T> classType) {
+    findChildByNameRecursive(childName, classType)
         .orElseThrow(
             () -> new AssertionError("Expected to find a component with name: " + childName));
   }

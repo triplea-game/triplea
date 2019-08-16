@@ -103,8 +103,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public boolean confirmMoveHariKari() {
-    return false;
+  public void confirmMoveHariKari() {
   }
 
   @Override

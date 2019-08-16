@@ -711,10 +711,10 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITrip
   }
 
   @Override
-  public boolean confirmMoveHariKari() {
+  public void confirmMoveHariKari() {
     final String question =
         "All units in destination territory will automatically die, do you still want to move?";
-    return ui.getOk(question);
+    ui.getOk(question);
   }
 
   @Override
