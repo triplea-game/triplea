@@ -13,7 +13,7 @@ import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 
-/** Default implementation of {@link IClientMessenger}. */
+/** Factory class for implementations of {@link IClientMessenger}. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ClientMessengerFactory {
 
