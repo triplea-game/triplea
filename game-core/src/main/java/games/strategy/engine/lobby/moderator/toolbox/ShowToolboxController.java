@@ -34,7 +34,7 @@ public class ShowToolboxController {
   public static void showToolbox(final JFrame parent) {
     // get the http server URI, if we fail then show an error dialog and abort.
     final Optional<URI> httpServerUri = getHttpServerUri();
-    if (!httpServerUri.isPresent()) {
+    if (httpServerUri.isEmpty()) {
       SwingComponents.showDialog(
           "Error fetching http server URI",
           "Unable to get URI of the http server, please try again or contact TripleA support");

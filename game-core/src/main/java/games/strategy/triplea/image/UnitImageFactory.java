@@ -116,7 +116,7 @@ public class UnitImageFactory {
       return Optional.of(images.get(fullName));
     }
     final Optional<Image> image = getBaseImage(baseName, player);
-    if (!image.isPresent()) {
+    if (image.isEmpty()) {
       return Optional.empty();
     }
     final Image baseImage = image.get();
@@ -189,7 +189,7 @@ public class UnitImageFactory {
       return Optional.of(icons.get(fullName));
     }
     final Optional<Image> image = getBaseImage(baseName, player);
-    if (!image.isPresent()) {
+    if (image.isEmpty()) {
       return Optional.empty();
     }
 

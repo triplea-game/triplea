@@ -26,7 +26,7 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     url = uri;
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(uri);
-    if (!inputStream.isPresent()) {
+    if (inputStream.isEmpty()) {
       gameNameAndMapNameProperty = "";
       // this means the map was deleted out from under us.
       return;
@@ -46,7 +46,7 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     gameData = null;
 
     final Optional<InputStream> inputStream = UrlStreams.openStream(url);
-    if (!inputStream.isPresent()) {
+    if (inputStream.isEmpty()) {
       return;
     }
 

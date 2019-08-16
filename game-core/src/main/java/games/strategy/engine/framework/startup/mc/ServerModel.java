@@ -363,7 +363,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
     if (!optionsResult.completed) {
       throw new IllegalArgumentException("Error while gathering connection details");
     }
-    if (!optionsResult.result.isPresent()) {
+    if (optionsResult.result.isEmpty()) {
       cancel();
     }
     return optionsResult.result.map(
