@@ -10,6 +10,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.triplea.lobby.server.EnvironmentVariable;
+import org.triplea.lobby.server.db.dao.TempPasswordDao;
 
 /** Sends a temporary password to a target user. */
 class PasswordEmailSender implements BiConsumer<String, String> {
@@ -43,7 +44,8 @@ class PasswordEmailSender implements BiConsumer<String, String> {
     return "Your TripleA temporary password is: "
         + generatedPassword
         + "\nUse this password to login to the TripleA lobby."
-        + "\nThis password may only be used once."
+        + "\nThis password may only be used once and will expire in "
+        + TempPasswordDao.TEMP_PASSWORD_EXPIRATION
         + "\nAfter login you will be prompted to create a new password";
   }
 
