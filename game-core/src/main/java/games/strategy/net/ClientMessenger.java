@@ -229,8 +229,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   @Override
   public void socketUnquarantined(
       final SocketChannel channel, final QuarantineConversation quarantineConversation) {
-    final ClientQuarantineConversation conversation =
-        (ClientQuarantineConversation) quarantineConversation;
+    final var conversation = (ClientQuarantineConversation) quarantineConversation;
     // all ids are based on the socket address of nodes in the network
     // but the address of a node changes depending on who is looking at it
     // ie, sometimes it is the loopback address if connecting locally,
