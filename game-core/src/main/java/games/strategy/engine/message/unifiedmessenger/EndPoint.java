@@ -75,7 +75,6 @@ class EndPoint {
           remoteClass + " is not assignable from " + implementor.getClass());
     }
     synchronized (implementorsMutex) {
-      final boolean isFirstImplementor = implementors.isEmpty();
       implementors.add(implementor);
     }
   }
