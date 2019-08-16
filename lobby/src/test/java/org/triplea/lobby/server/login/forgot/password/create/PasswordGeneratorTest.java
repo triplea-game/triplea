@@ -26,7 +26,11 @@ class PasswordGeneratorTest {
     final Set<String> strings = new HashSet<>();
     for (int i = 0; i < 1000; i++) {
       final String generated = passwordGenerator.generatePassword();
-      assertThat(strings.contains(generated), is(false));
+      assertThat(
+          "If this test fails, DO NOT IGNORE IT! Instead increase the length of the generated "
+              + "temporary password",
+          strings.contains(generated),
+          is(false));
       strings.add(generated);
     }
   }
