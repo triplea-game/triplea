@@ -130,8 +130,8 @@ public final class ChangePasswordPanel extends JPanel {
   }
 
   private void close() {
-    if (validatePasswords() && dialog != null) {
-      dialog.dispose();
+    if (dialog != null) {
+      dialog.setVisible(false);
     }
   }
 
