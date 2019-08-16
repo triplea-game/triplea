@@ -10,7 +10,7 @@ class ValidKeyCacheTest {
   private static final String KEY = "Where is the evil sea-dog?";
   private static final int MODERATOR_ID = 22;
 
-  private ValidKeyCache validKeyCache = new ValidKeyCache();
+  private final ValidKeyCache validKeyCache = new ValidKeyCache();
 
   @Test
   void keyNotFound() {

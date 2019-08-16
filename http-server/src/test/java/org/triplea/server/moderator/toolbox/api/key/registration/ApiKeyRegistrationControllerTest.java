@@ -27,7 +27,7 @@ class ApiKeyRegistrationControllerTest {
 
   @Mock private HttpServletRequest httpServletRequest;
 
-  private RegisterApiKeyParam registerApiKeyParam =
+  private final RegisterApiKeyParam registerApiKeyParam =
       RegisterApiKeyParam.builder()
           .singleUseKey("Parrot of a misty fortune, trade the riddle!")
           .newPassword("Seashell of a real life, fire the yellow fever!")

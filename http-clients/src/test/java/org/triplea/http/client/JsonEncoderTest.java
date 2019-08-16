@@ -12,7 +12,7 @@ class JsonEncoderTest {
 
   private static final JsonEncoder jsonEncoder = new JsonEncoder();
 
-  private RequestTemplate template = new RequestTemplate();
+  private final RequestTemplate template = new RequestTemplate();
 
   /** We verify here strings are encoded without any modification. */
   @Test
