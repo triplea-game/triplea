@@ -55,7 +55,7 @@ class BattleStepsPanel extends JPanel implements Active {
   }
 
   /** Set the steps given, setting the selected step to the first step. */
-  public void listBattle(final List<String> steps) {
+  void listBattle(final List<String> steps) {
     if (!SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("Not in dispatch thread");
     }
@@ -144,7 +144,7 @@ class BattleStepsPanel extends JPanel implements Active {
    * This method blocks until the last step is reached, unless this method is called from the swing
    * event thread.
    */
-  public void walkToLastStep() {
+  void walkToLastStep() {
     synchronized (mutex) {
       targetStep = LAST_STEP;
     }

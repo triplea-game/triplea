@@ -7,11 +7,15 @@ import java.util.concurrent.CountDownLatch;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 /** Abstract superclass for all action panels. */
 public abstract class ActionPanel extends JPanel {
   private static final long serialVersionUID = -5954576036704958641L;
 
+  @Getter(AccessLevel.PROTECTED)
   protected final MapPanel map;
   /** Refreshes the action panel. Should be run within the swing event queue. */
   protected final Runnable refresh =
@@ -20,9 +24,15 @@ public abstract class ActionPanel extends JPanel {
         repaint();
       };
 
+  @Getter(AccessLevel.PROTECTED)
   private final GameData data;
+
+  @Getter(AccessLevel.PROTECTED)
   private PlayerId currentPlayer;
-  private boolean active;
+
+  /** Called when the history panel shows used to disable the panel temporarily. */
+  @Setter @Getter private boolean active;
+
   private CountDownLatch latch;
   private final Object latchLock = new Object();
 
@@ -98,29 +108,8 @@ public abstract class ActionPanel extends JPanel {
     }
   }
 
-  protected GameData getData() {
-    return data;
-  }
-
   public void display(final PlayerId player) {
     currentPlayer = player;
     setActive(true);
-  }
-
-  protected PlayerId getCurrentPlayer() {
-    return currentPlayer;
-  }
-
-  protected MapPanel getMap() {
-    return map;
-  }
-
-  /** Called when the history panel shows used to disable the panel temporarily. */
-  public void setActive(final boolean active) {
-    this.active = active;
-  }
-
-  public boolean getActive() {
-    return active;
   }
 }

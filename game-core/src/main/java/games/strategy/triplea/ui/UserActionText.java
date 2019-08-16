@@ -30,7 +30,7 @@ public class UserActionText {
 
   private final Properties properties = new Properties();
 
-  protected UserActionText() {
+  private UserActionText() {
     final ResourceLoader loader = AbstractUiContext.getResourceLoader();
     final URL url = loader.getResource(PROPERTY_FILE);
     if (url != null) {
@@ -66,7 +66,7 @@ public class UserActionText {
     return properties.containsKey(actionKey + "." + messageKey);
   }
 
-  public String getButtonText(final String actionKey) {
+  String getButtonText(final String actionKey) {
     return getMessage(actionKey, BUTTON);
   }
 

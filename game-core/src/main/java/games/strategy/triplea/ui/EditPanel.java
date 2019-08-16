@@ -93,7 +93,7 @@ class EditPanel extends ActionPanel {
         public void unitsSelected(
             final List<Unit> units, final Territory t, final MouseDetails md) {
           // check if we can handle this event, are we active?
-          if (!getActive()) {
+          if (!isActive()) {
             return;
           }
           if (t == null) {
@@ -220,7 +220,7 @@ class EditPanel extends ActionPanel {
 
   private final MouseOverUnitListener mouseOverUnitListener =
       (units, territory) -> {
-        if (!getActive() || currentAction != null) {
+        if (!isActive() || currentAction != null) {
           return;
         }
         getMap().setUnitHighlight(Collections.singleton(Collections.unmodifiableList(units)));
@@ -306,7 +306,7 @@ class EditPanel extends ActionPanel {
 
         @Override
         public void mouseMoved(final @Nullable Territory territory, final MouseDetails md) {
-          if (!getActive()) {
+          if (!isActive()) {
             return;
           }
           if (territory != null) {
@@ -1026,7 +1026,7 @@ class EditPanel extends ActionPanel {
   }
 
   @Override
-  public boolean getActive() {
+  public boolean isActive() {
     return active;
   }
 

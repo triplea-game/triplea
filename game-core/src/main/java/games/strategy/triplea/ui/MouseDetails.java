@@ -21,24 +21,24 @@ class MouseDetails {
     this.y = y;
   }
 
-  public boolean isRightButton() {
+  boolean isRightButton() {
     return SwingUtilities.isRightMouseButton(mouseEvent);
   }
 
-  public boolean isControlDown() {
+  boolean isControlDown() {
     return mouseEvent.isControlDown();
   }
 
-  public boolean isShiftDown() {
+  boolean isShiftDown() {
     return mouseEvent.isShiftDown();
   }
 
-  public boolean isAltDown() {
+  boolean isAltDown() {
     return mouseEvent.isAltDown();
   }
 
   /** Returns this point is in the map coordinates, unscaled. */
-  public Point getMapPoint() {
+  Point getMapPoint() {
     return new Point((int) x, (int) y);
   }
 

@@ -20,6 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
@@ -34,7 +36,10 @@ abstract class AbstractMovePanel extends ActionPanel {
   private final JLabel actionLabel = new JLabel();
   private MoveDescription moveMessage;
   private List<UndoableMove> undoableMoves;
-  private IPlayerBridge bridge;
+
+  @Getter(AccessLevel.PACKAGE)
+  private IPlayerBridge playerBridge;
+
   private final JButton cancelMoveButton =
       JButtonBuilder.builder().title("Cancel").actionListener(this::cancelMove).build();
 
@@ -56,10 +61,6 @@ abstract class AbstractMovePanel extends ActionPanel {
    * sub-classes method for cancel handling
    */
   protected abstract void cancelMoveAction();
-
-  IPlayerBridge getPlayerBridge() {
-    return bridge;
-  }
 
   // frame methods
 
@@ -96,12 +97,12 @@ abstract class AbstractMovePanel extends ActionPanel {
   }
 
   protected final GameData getGameData() {
-    return bridge.getGameData();
+    return playerBridge.getGameData();
   }
 
   @SuppressWarnings("unchecked")
   private IAbstractMoveDelegate<UndoableMove> getMoveDelegate() {
-    return (IAbstractMoveDelegate<UndoableMove>) bridge.getRemoteDelegate();
+    return (IAbstractMoveDelegate<UndoableMove>) playerBridge.getRemoteDelegate();
   }
 
   private void updateMoves() {
@@ -205,7 +206,7 @@ abstract class AbstractMovePanel extends ActionPanel {
           }
           listening = false;
           cleanUpSpecific();
-          bridge = null;
+          playerBridge = null;
           disableCancelButton();
           removeAll();
           refresh.run();
@@ -271,7 +272,7 @@ abstract class AbstractMovePanel extends ActionPanel {
     SwingUtilities.invokeLater(
         () -> {
           setUpSpecific();
-          this.bridge = bridge;
+          this.playerBridge = bridge;
           updateMoves();
           if (listening) {
             throw new IllegalStateException("Not listening");
