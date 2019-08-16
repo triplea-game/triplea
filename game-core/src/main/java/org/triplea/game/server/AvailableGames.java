@@ -153,7 +153,7 @@ final class AvailableGames {
   /** Can return null. */
   GameData getGameData(final String gameName) {
     return Optional.ofNullable(availableGames.get(gameName))
-        .map(uri -> parse(uri).orElse(null))
+        .flatMap(AvailableGames::parse)
         .orElse(null);
   }
 
