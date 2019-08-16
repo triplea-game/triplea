@@ -11,7 +11,6 @@ import games.strategy.net.MacFinder;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -158,11 +157,14 @@ class LobbyLoginValidatorIntegrationTest {
     assertError(
         generateChallenge(user, null)
             .apply(
-                challenge ->
-                    Collections.singletonMap(
-                        LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
-                        RsaAuthenticator.encrpytPassword(
-                            challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), "wrong"))),
+                challenge -> {
+                  final Map<String, String> map = new HashMap<>();
+                  map.put(
+                      LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+                      RsaAuthenticator.encrpytPassword(
+                          challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), "wrong"));
+                  return map;
+                }),
         "password");
     // with a non existent user
     assertError(generateChallenge(null).apply(challenge -> response), "user");
