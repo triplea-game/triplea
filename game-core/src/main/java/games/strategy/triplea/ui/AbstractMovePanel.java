@@ -231,7 +231,7 @@ abstract class AbstractMovePanel extends ActionPanel {
           removeAll();
           add(movedUnitsPanel(id, actionLabel));
           add(getUnitScrollerPanel());
-          SwingUtilities.invokeLater(refresh);
+          refresh.run();
         });
   }
 

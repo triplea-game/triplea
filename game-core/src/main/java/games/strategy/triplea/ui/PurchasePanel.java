@@ -203,7 +203,7 @@ public class PurchasePanel extends ActionPanel {
             getData().releaseReadLock();
           }
           add(Box.createVerticalGlue());
-          SwingUtilities.invokeLater(refresh);
+          refresh.run();
         });
   }
 
