@@ -348,7 +348,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   @Override
-  public void socketUnqaurantined(
+  public void socketUnquarantined(
       final SocketChannel channel, final QuarantineConversation conversation) {
     final ServerQuarantineConversation con = (ServerQuarantineConversation) conversation;
     final INode remote =

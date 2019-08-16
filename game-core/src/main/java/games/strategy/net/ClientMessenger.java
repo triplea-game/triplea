@@ -227,7 +227,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public void socketUnqaurantined(
+  public void socketUnquarantined(
       final SocketChannel channel, final QuarantineConversation quarantineConversation) {
     final ClientQuarantineConversation conversation =
         (ClientQuarantineConversation) quarantineConversation;

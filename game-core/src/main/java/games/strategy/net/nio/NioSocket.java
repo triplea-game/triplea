@@ -73,7 +73,7 @@ public class NioSocket implements ErrorReporter {
   }
 
   void unquarantine(final SocketChannel channel, final QuarantineConversation conversation) {
-    listener.socketUnqaurantined(channel, conversation);
+    listener.socketUnquarantined(channel, conversation);
   }
 
   @Override
