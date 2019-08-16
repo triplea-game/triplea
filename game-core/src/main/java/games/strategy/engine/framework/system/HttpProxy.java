@@ -39,7 +39,7 @@ public final class HttpProxy {
     final Optional<InetSocketAddress> address = getSystemProxy();
     final @Nullable String host;
     final @Nullable Integer port;
-    if (!address.isPresent()) {
+    if (address.isEmpty()) {
       host = null;
       port = null;
     } else {

@@ -752,7 +752,7 @@ class ProPurchaseAi {
           }
           final Optional<ProPurchaseOption> optionalSelectedOption =
               ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Defense");
-          if (!optionalSelectedOption.isPresent()) {
+          if (optionalSelectedOption.isEmpty()) {
             break;
           }
           final ProPurchaseOption selectedOption = optionalSelectedOption.get();
@@ -1124,7 +1124,7 @@ class ProPurchaseAi {
             addedFodderUnits += optionalSelectedOption.get().getQuantity();
           }
         }
-        if (!optionalSelectedOption.isPresent()) {
+        if (optionalSelectedOption.isEmpty()) {
           break;
         }
         final ProPurchaseOption selectedOption = optionalSelectedOption.get();
@@ -1569,7 +1569,7 @@ class ProPurchaseAi {
             }
             final Optional<ProPurchaseOption> optionalSelectedOption =
                 ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Sea Defense");
-            if (!optionalSelectedOption.isPresent()) {
+            if (optionalSelectedOption.isEmpty()) {
               break;
             }
             final ProPurchaseOption selectedOption = optionalSelectedOption.get();
@@ -1789,7 +1789,7 @@ class ProPurchaseAi {
           }
           final Optional<ProPurchaseOption> optionalSelectedOption =
               ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Sea Defense");
-          if (!optionalSelectedOption.isPresent()) {
+          if (optionalSelectedOption.isEmpty()) {
             break;
           }
           final ProPurchaseOption selectedOption = optionalSelectedOption.get();
@@ -1968,7 +1968,7 @@ class ProPurchaseAi {
               }
               final Optional<ProPurchaseOption> optionalSelectedOption =
                   ProPurchaseUtils.randomizePurchaseOption(amphibEfficiencies, "Amphib");
-              if (!optionalSelectedOption.isPresent()) {
+              if (optionalSelectedOption.isEmpty()) {
                 break;
               }
               final ProPurchaseOption ppo = optionalSelectedOption.get();
@@ -2000,7 +2000,7 @@ class ProPurchaseAi {
             }
             final Optional<ProPurchaseOption> optionalSelectedOption =
                 ProPurchaseUtils.randomizePurchaseOption(transportEfficiencies, "Sea Transport");
-            if (!optionalSelectedOption.isPresent()) {
+            if (optionalSelectedOption.isEmpty()) {
               break;
             }
             final ProPurchaseOption ppo = optionalSelectedOption.get();
@@ -2178,7 +2178,7 @@ class ProPurchaseAi {
         }
         final Optional<ProPurchaseOption> optionalSelectedOption =
             ProPurchaseUtils.randomizePurchaseOption(defenseEfficiencies, "Defense");
-        if (!optionalSelectedOption.isPresent()) {
+        if (optionalSelectedOption.isEmpty()) {
           break;
         }
         final ProPurchaseOption selectedOption = optionalSelectedOption.get();

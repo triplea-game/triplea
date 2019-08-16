@@ -299,7 +299,7 @@ public class MoveValidator {
             continue; // Only check canals that are on the route
           }
           failureMessage = canPassThroughCanal(canalAttachment, unit, player, data);
-          final boolean canPass = !failureMessage.isPresent();
+          final boolean canPass = failureMessage.isEmpty();
           if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
               || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
             break; // If need to control any canal and can pass OR need to control all canals and
@@ -357,8 +357,7 @@ public class MoveValidator {
       final Collection<Unit> unitsWithoutDependents =
           findNonDependentUnits(units, route, new HashMap<>());
       canPass =
-          !canAnyPassThroughCanal(canalAttachment, unitsWithoutDependents, player, data)
-              .isPresent();
+          canAnyPassThroughCanal(canalAttachment, unitsWithoutDependents, player, data).isEmpty();
       if ((!Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && canPass)
           || (Properties.getControlAllCanalsBetweenTerritoriesToPass(data) && !canPass)) {
         break; // If need to control any canal and can pass OR need to control all canals and can't

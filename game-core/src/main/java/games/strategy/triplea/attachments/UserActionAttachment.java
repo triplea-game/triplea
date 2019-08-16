@@ -116,7 +116,7 @@ public class UserActionAttachment extends AbstractUserActionAttachment {
               .flatMap(Collection::stream)
               .filter(ta -> ta.getName().equals(tuple.getFirst()))
               .findAny();
-      if (!optionalTrigger.isPresent()) {
+      if (optionalTrigger.isEmpty()) {
         continue;
       }
       final TriggerAttachment toFire = optionalTrigger.get();
