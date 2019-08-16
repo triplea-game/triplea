@@ -490,8 +490,7 @@ public class ObjectivePanel extends AbstractStatPanel {
     private void addSize(final JTable table, final int row, final int column, final int height) {
       final Map<Integer, Map<Integer, Integer>> rows =
           cellSizes.computeIfAbsent(table, k -> new HashMap<>());
-      final var rowHeights =
-          rows.computeIfAbsent(row, k -> new HashMap<>());
+      final var rowHeights = rows.computeIfAbsent(row, k -> new HashMap<>());
       rowHeights.put(column, height);
     }
 

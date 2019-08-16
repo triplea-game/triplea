@@ -207,8 +207,8 @@ public class RocketsFireHelper implements Serializable {
   }
 
   /**
-   * Fire rockets which have been previously targeted (if any), or for Sequentially Targeted
-   * rockets target them too.
+   * Fire rockets which have been previously targeted (if any), or for Sequentially Targeted rockets
+   * target them too.
    */
   public void fireRockets(final IDelegateBridge bridge) {
     if (needToFindRocketTargets) {

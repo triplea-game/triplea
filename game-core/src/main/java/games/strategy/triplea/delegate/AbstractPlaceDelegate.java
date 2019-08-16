@@ -43,7 +43,7 @@ import org.triplea.util.Tuple;
  * with production 2. If sea zone e neighbors a,b and sea zone f neighbors b. Then producing 2 in e
  * was making it such that you cannot produce in f. The reason was that the production in e could be
  * assigned to the factory in b, leaving no capacity to produce in f. A workaround was that if
- * anyone ever accidentally run into this situation then they could undo the production, produce in f
+ * anyone ever accidentally run into this situation then they could undo the production, produce in
  * first, and then produce in e.
  */
 public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
