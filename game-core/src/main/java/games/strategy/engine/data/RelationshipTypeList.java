@@ -85,10 +85,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
     addRelationshipType(relationshipType);
   }
 
-  /**
-   * adds a new RelationshipType, this should only be called by the GameParser.
-   *
-   */
+  /** adds a new RelationshipType, this should only be called by the GameParser. */
   @VisibleForTesting
   public void addRelationshipType(final RelationshipType relationshipType) {
     relationshipTypes.put(relationshipType.getName(), relationshipType);

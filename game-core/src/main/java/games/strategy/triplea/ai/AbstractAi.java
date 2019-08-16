@@ -103,8 +103,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
   }
 
   @Override
-  public void confirmMoveHariKari() {
-  }
+  public void confirmMoveHariKari() {}
 
   @Override
   public Territory whereShouldRocketsAttack(

@@ -68,10 +68,7 @@ class EndPoint {
     }
   }
 
-  /**
-   * Adds the specified implementation of this end point's remote interface.
-   *
-   */
+  /** Adds the specified implementation of this end point's remote interface. */
   public void addImplementor(final Object implementor) {
     if (!remoteClass.isAssignableFrom(implementor.getClass())) {
       throw new IllegalArgumentException(
