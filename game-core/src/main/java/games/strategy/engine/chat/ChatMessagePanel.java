@@ -37,7 +37,7 @@ import org.triplea.swing.SwingAction;
 /**
  * A Chat window.
  *
- * <p>Mutiple chat panels can be connected to the same Chat.
+ * <p>Multiple chat panels can be connected to the same Chat.
  *
  * <p>We can change the chat we are connected to using the setChat(...) method.
  */
@@ -236,14 +236,14 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   /** thread safe. */
   @Override
-  public void addMessage(final String message, final String from, final boolean thirdperson) {
-    addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
+  public void addMessage(final String message, final String from, final boolean thirdPerson) {
+    addMessageWithSound(message, from, thirdPerson, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
   /** thread safe. */
   @Override
   public void addMessageWithSound(
-      final String message, final String from, final boolean thirdperson, final String sound) {
+      final String message, final String from, final boolean thirdPerson, final String sound) {
     SwingAction.invokeNowOrLater(
         () -> {
           if (from == null
@@ -260,7 +260,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
             }
             return;
           }
-          addChatMessage(message, from, thirdperson);
+          addChatMessage(message, from, thirdPerson);
           SwingUtilities.invokeLater(
               () -> {
                 final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
@@ -271,7 +271,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   }
 
   private void addChatMessage(
-      final String originalMessage, final String from, final boolean thirdperson) {
+      final String originalMessage, final String from, final boolean thirdPerson) {
     // we don't want to truncate messages from the server as those may be logs with accompanying
     // stack traces
     final String message =
@@ -281,7 +281,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final Document doc = text.getDocument();
     try {
-      if (thirdperson) {
+      if (thirdPerson) {
         doc.insertString(
             doc.getLength(), (showTime ? "* " + time + " " + from : "* " + from), bold);
       } else {

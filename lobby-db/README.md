@@ -9,7 +9,7 @@ is where we check-in SQL commands to update database. Any new files are run auto
  
 ## Dev Setup
 
-To launch a local dabase on Docker, run: `launch_db`
+To launch a local database on Docker, run: `launch_db`
 
 ### Prerequisites
 - Docker
@@ -47,7 +47,7 @@ Password | _&lt;any&gt;_ | The lobby database is configured with authentication 
 Host | `localhost` |
 Port | `5432` |
 
-## Docker DB configuraton
+## Docker DB configuration
 
 Docker container and Configuration flag documentation can be found at: https://hub.docker.com/_/postgres
 

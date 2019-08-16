@@ -139,7 +139,7 @@ public final class TileImageReconstructor {
     }
     if (JOptionPane.showConfirmDialog(
             null,
-            "Do not draw polgyons.txt file onto your image?\r\n(Default = 'yes' = do not draw)",
+            "Do not draw polygons.txt file onto your image?\r\n(Default = 'yes' = do not draw)",
             "Do Not Also Draw Polygons?",
             JOptionPane.YES_NO_OPTION)
         == JOptionPane.NO_OPTION) {

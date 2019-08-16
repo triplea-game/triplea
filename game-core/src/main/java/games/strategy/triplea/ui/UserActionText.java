@@ -74,7 +74,7 @@ public class UserActionText {
     return getMessage(actionKey, DESCRIPTION);
   }
 
-  public String getNotificationSucccess(final String actionKey) {
+  public String getNotificationSuccess(final String actionKey) {
     return getMessage(actionKey, NOTIFICATION_SUCCESS);
   }
 

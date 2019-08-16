@@ -49,12 +49,12 @@ public class ChatController implements IChatController {
     this.messengers = messengers;
     this.isModerator = isModerator;
     chatChannel = getChatChannelName(name);
-    messengers.registerRemote(this, getChatControlerRemoteName(name));
+    messengers.registerRemote(this, getChatControllerRemoteName(name));
     messengers.addConnectionChangeListener(connectionChangeListener);
     startPinger();
   }
 
-  public static RemoteName getChatControlerRemoteName(final String chatName) {
+  public static RemoteName getChatControllerRemoteName(final String chatName) {
     return new RemoteName(CHAT_REMOTE + chatName, IChatController.class);
   }
 
@@ -87,7 +87,7 @@ public class ChatController implements IChatController {
         version++;
         chatter.speakerRemoved(node, version);
       }
-      messengers.unregisterRemote(getChatControlerRemoteName(chatName));
+      messengers.unregisterRemote(getChatControllerRemoteName(chatName));
     }
     messengers.removeConnectionChangeListener(connectionChangeListener);
   }

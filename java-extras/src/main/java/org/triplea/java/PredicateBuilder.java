@@ -36,7 +36,7 @@ public class PredicateBuilder<T> {
     return this;
   }
 
-  /** Like and if condition is true, otherwhise this has no effect. */
+  /** Like and if condition is true, otherwise this has no effect. */
   public PredicateBuilder<T> andIf(final boolean condition, final Predicate<T> predicate) {
     return condition ? and(predicate) : this;
   }
@@ -50,7 +50,7 @@ public class PredicateBuilder<T> {
     return this;
   }
 
-  /** Like or if condition is true, otherwhise this has no effect. */
+  /** Like or if condition is true, otherwise this has no effect. */
   public PredicateBuilder<T> orIf(final boolean condition, final Predicate<T> predicate) {
     return condition ? or(predicate) : this;
   }

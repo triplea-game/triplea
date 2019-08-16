@@ -236,7 +236,7 @@ public class PlayerSelectorRow implements PlayerCountrySelection {
             0));
   }
 
-  void setResourceModifiersVisble(final boolean isVisible) {
+  void setResourceModifiersVisible(final boolean isVisible) {
     incomePercentage.setVisible(isVisible);
     incomePercentageLabel.setVisible(isVisible);
     puIncomeBonus.setVisible(isVisible);

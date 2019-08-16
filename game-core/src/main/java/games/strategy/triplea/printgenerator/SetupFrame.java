@@ -76,7 +76,7 @@ public class SetupFrame extends JPanel {
                     .build())
             .add(
                 JLabelBuilder.builder()
-                    .text("beginning state exactly like the boardgame, so you ")
+                    .text("beginning state exactly like the board game, so you ")
                     .build())
             .add(
                 JLabelBuilder.builder()

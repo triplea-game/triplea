@@ -445,7 +445,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         final Set<UnitType> targetUnitTypesForThisTypeAa =
             UnitAttachment.get(currentPossibleAa.iterator().next().getType())
                 .getTargetsAa(gameData);
-        final Set<UnitType> airborneTypesTargettedToo =
+        final Set<UnitType> airborneTypesTargetedToo =
             TechAbilityAttachment.getAirborneTargettedByAa(attacker, gameData).get(currentTypeAa);
         if (determineAttackers) {
           validAttackingUnitsForThisRoll =
@@ -454,7 +454,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                   Matches.unitIsOfTypes(targetUnitTypesForThisTypeAa)
                       .or(
                           Matches.unitIsAirborne()
-                              .and(Matches.unitIsOfTypes(airborneTypesTargettedToo))));
+                              .and(Matches.unitIsOfTypes(airborneTypesTargetedToo))));
         }
 
         final IExecutable roll =
@@ -781,9 +781,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
               }
               // now we roll, or don't if there is nothing to roll.
               if (maxDice > 0) {
-                final int[] dicerolls =
+                final int[] diceRolls =
                     bridge.getRandom(maxDice, rolls, attacker, DiceType.BOMBING, annotation);
-                for (final int die : dicerolls) {
+                for (final int die : diceRolls) {
                   // min value is -1 as we add 1 when setting damage since dice are 0 instead of 1
                   // based
                   dice[i] = Math.max(-1, die + bonus);

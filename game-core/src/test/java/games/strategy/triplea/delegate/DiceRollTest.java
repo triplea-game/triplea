@@ -246,7 +246,7 @@ class DiceRollTest {
   }
 
   @Test
-  void testMarineAttacNormalIfNotAmphibious() throws Exception {
+  void testMarineAttackNormalIfNotAmphibious() throws Exception {
     gameData = TestMapGameData.IRON_BLITZ.getGameData();
     final Territory algeria = gameData.getMap().getTerritory("Algeria");
     final PlayerId americans = GameDataTestUtil.americans(gameData);

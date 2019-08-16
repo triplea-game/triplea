@@ -1081,7 +1081,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // the air unit may have come from a conquered or enemy territory, don't allow retreating
     final Predicate<Territory> conqueuredOrEnemy =
         Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassableOrRestricted(attacker, gameData)
-            .or(Matches.territoryIsWater().and(Matches.territoryWasFoughOver(battleTracker)));
+            .or(Matches.territoryIsWater().and(Matches.territoryWasFoughtOver(battleTracker)));
     possible.removeAll(CollectionUtils.getMatches(possible, conqueuredOrEnemy));
 
     // the battle site is in the attacking from if sea units are fighting a submerged sub

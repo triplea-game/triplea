@@ -34,7 +34,7 @@ class SocketReadData {
   /**
    * Read data from the channel, returning true if this packet is done.
    *
-   * <p>If we detect the socket is closed, we will throw an IOExcpetion
+   * <p>If we detect the socket is closed, we will throw an IOException
    */
   public boolean read(final SocketChannel channel) throws IOException {
     readCalls++;
@@ -65,7 +65,7 @@ class SocketReadData {
         contentBuffer = ByteBuffer.allocate(targetSize);
         sizeBuffer = null;
       } else {
-        // we ddnt read all 4 bytes, return
+        // we didn't read all 4 bytes, return
         return false;
       }
     }

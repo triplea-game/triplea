@@ -555,7 +555,7 @@ public final class AutoPlacementFinder {
         }
       }
       if (!found) {
-        log.info("Unrecogized:" + arg2);
+        log.info("Unrecognized:" + arg2);
         if (!usagePrinted) {
           usagePrinted = true;
           log.info(

@@ -222,8 +222,8 @@ public class ServerModel extends Observable implements IConnectionChangeListener
             IoUtils.consumeFromMemory(
                 bytes,
                 is -> {
-                  try (InputStream oinput = new BufferedInputStream(is)) {
-                    headless.loadGameSave(oinput, fileName);
+                  try (InputStream inputStream = new BufferedInputStream(is)) {
+                    headless.loadGameSave(inputStream, fileName);
                   }
                 });
           } catch (final Exception e) {
@@ -331,14 +331,14 @@ public class ServerModel extends Observable implements IConnectionChangeListener
               .password(System.getProperty(SERVER_PASSWORD))
               .build());
     }
-    final String playername = ClientSetting.playerName.getValueOrThrow();
+    final String playerName = ClientSetting.playerName.getValueOrThrow();
     final Interruptibles.Result<ServerOptions> optionsResult =
         Interruptibles.awaitResult(
             () ->
                 SwingAction.invokeAndWaitResult(
                     () -> {
                       final ServerOptions options =
-                          new ServerOptions(ui, playername, GameRunner.PORT, false);
+                          new ServerOptions(ui, playerName, GameRunner.PORT, false);
                       options.setLocationRelativeTo(ui);
                       options.setVisible(true);
                       options.dispose();

@@ -22,7 +22,7 @@ import java.util.Set;
 class PlayerOrder {
   private final List<PlayerId> playerSet = new ArrayList<>();
 
-  private static <E> Set<E> removeDups(final Collection<E> c) {
+  private static <E> Set<E> removeDupes(final Collection<E> c) {
     return new LinkedHashSet<>(c);
   }
 
@@ -57,7 +57,7 @@ class PlayerOrder {
             StandardOpenOption.APPEND)) {
       turnWriter.write("Turn Order\r\n");
       int count = 1;
-      for (final PlayerId currentPlayerId : removeDups(playerSet)) {
+      for (final PlayerId currentPlayerId : removeDupes(playerSet)) {
         turnWriter.write(count + ". " + currentPlayerId.getName() + "\r\n");
         count++;
       }

@@ -161,7 +161,7 @@ public class RocketsFireHelper implements Serializable {
               new ArrayList<>(
                   CollectionUtils.getMatches(attackFrom.getUnits(), rocketMatch(player)));
           final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<>();
-          // a hack for now, we let the rockets fire at anyone who could be targetted by any rocket
+          // a hack for now, we let the rockets fire at anyone who could be targeted by any rocket
           // Not sure if that comment is still current
           for (final Unit r : rocketTargets) {
             legalTargetsForTheseRockets.addAll(
@@ -207,7 +207,7 @@ public class RocketsFireHelper implements Serializable {
   }
 
   /**
-   * Fire rockets which have been previously targetted (if any), or for Sequentially Targeted
+   * Fire rockets which have been previously targeted (if any), or for Sequentially Targeted
    * rockets target them too.
    */
   public void fireRockets(final IDelegateBridge bridge) {

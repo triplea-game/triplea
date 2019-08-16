@@ -30,7 +30,7 @@ import org.triplea.swing.SwingAction;
 /** The action panel displayed during the purchase action. */
 public class PurchasePanel extends ActionPanel {
   private static final long serialVersionUID = -6121756876868623355L;
-  // if this is set Purchase will use the tabbedProductionPanel - this is modifyable through the
+  // if this is set Purchase will use the tabbedProductionPanel - this is modifiable through the
   // View Menu
   private static boolean tabbedProduction = true;
   private static final String BUY = "Buy...";
@@ -41,7 +41,7 @@ public class PurchasePanel extends ActionPanel {
   private boolean bid;
   private final SimpleUnitPanel purchasedPreviousRoundsUnits;
   private final JLabel purchasedPreviousRoundsLabel;
-  private final SimpleUnitPanel purhcasedUnits;
+  private final SimpleUnitPanel purchasedUnits;
   private final JLabel purchasedLabel = new JLabel();
   private final JButton buyButton;
 
@@ -72,7 +72,7 @@ public class PurchasePanel extends ActionPanel {
                     purchase,
                     getMap().getUiContext());
           }
-          purhcasedUnits.setUnitsFromProductionRuleMap(purchase, player);
+          purchasedUnits.setUnitsFromProductionRuleMap(purchase, player);
           if (purchase.totalValues() == 0) {
             purchasedLabel.setText("");
             buyButton.setText(BUY);
@@ -159,7 +159,7 @@ public class PurchasePanel extends ActionPanel {
   public PurchasePanel(final GameData data, final MapPanel map) {
     super(data, map);
     purchasedPreviousRoundsUnits = new SimpleUnitPanel(map.getUiContext());
-    purhcasedUnits = new SimpleUnitPanel(map.getUiContext());
+    purchasedUnits = new SimpleUnitPanel(map.getUiContext());
     buyButton = new JButton(BUY);
     buyButton.addActionListener(purchaseAction);
     purchasedPreviousRoundsLabel = new JLabel("Unplaced from previous rounds");
@@ -187,8 +187,8 @@ public class PurchasePanel extends ActionPanel {
 
           add(Box.createVerticalStrut(4));
 
-          purhcasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), id);
-          add(purhcasedUnits);
+          purchasedUnits.setUnitsFromProductionRuleMap(new IntegerMap<>(), id);
+          add(purchasedUnits);
 
           getData().acquireReadLock();
           try {

@@ -28,7 +28,7 @@ public class PoliticsText extends PropertyFile {
     return getMessage(politicsKey, DESCRIPTION);
   }
 
-  public String getNotificationSucccess(final String politicsKey) {
+  public String getNotificationSuccess(final String politicsKey) {
     return getMessage(politicsKey, NOTIFICATION_SUCCESS);
   }
 

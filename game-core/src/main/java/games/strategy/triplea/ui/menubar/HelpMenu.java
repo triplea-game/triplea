@@ -83,7 +83,7 @@ final class HelpMenu extends JMenu {
                       + "stack.<br>"
                       + "Shift-Left click on a unit to select all units in the territory.<br>"
                       + "Left click on a territory but not on a unit to bring up a selection "
-                      + "window for inputing the desired selection.<br>"
+                      + "window for inputting the desired selection.<br>"
                       + "<br><b> Deselecting Units</b><br>"
                       + "Right click somewhere not on a unit stack to unselect the last "
                       + "selected unit.<br>"

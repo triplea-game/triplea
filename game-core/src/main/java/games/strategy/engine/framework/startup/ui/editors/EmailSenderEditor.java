@@ -152,8 +152,8 @@ public class EmailSenderEditor extends EditorPanel {
                 final File dummy =
                     new File(ClientFileSystemHelper.getUserRootFolder(), "dummySave.txt");
                 dummy.deleteOnExit();
-                try (OutputStream fout = new FileOutputStream(dummy)) {
-                  fout.write(
+                try (var fileOutputStream = new FileOutputStream(dummy)) {
+                  fileOutputStream.write(
                       "This file would normally be a save game".getBytes(StandardCharsets.UTF_8));
                 }
                 final String html =

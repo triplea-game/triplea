@@ -76,7 +76,7 @@ class AirThatCantLandUtilTest {
     assertEquals(1, cantLand.size());
     assertEquals(balkans, cantLand.iterator().next());
     airThatCantLandUtil.removeAirThatCantLand(player, false);
-    // jsut the original german fighter
+    // just the original german fighter
     assertEquals(1, balkans.getUnitCollection().getMatches(Matches.unitIsAir()).size());
   }
 

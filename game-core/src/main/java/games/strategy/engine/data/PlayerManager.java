@@ -70,7 +70,7 @@ public class PlayerManager {
             .map(data.getPlayerList()::getPlayerId)
             .findAny()
             .orElse(null);
-    // we arent playing anyone, return any
+    // we aren't playing anyone, return any
     if (local == null) {
       final String remote = playerMapping.keySet().iterator().next();
       return data.getPlayerList().getPlayerId(remote);

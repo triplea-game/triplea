@@ -16,7 +16,7 @@ import org.triplea.http.client.moderator.toolbox.event.log.ModeratorEvent;
 import org.triplea.http.client.moderator.toolbox.event.log.ToolboxEventLogClient;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
-/** Http server endpionts for accessing and returning moderator audit history rows. */
+/** Http server endpoints for accessing and returning moderator audit history rows. */
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
 @Builder

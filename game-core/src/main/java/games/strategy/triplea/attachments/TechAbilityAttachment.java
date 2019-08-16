@@ -69,7 +69,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   private Set<UnitType> airborneTypes = new HashSet<>();
   private int airborneDistance = 0;
   private Set<UnitType> airborneBases = new HashSet<>();
-  private Map<String, Set<UnitType>> airborneTargettedByAa = new HashMap<>();
+  private Map<String, Set<UnitType>> airborneTargetedByAa = new HashMap<>();
   private IntegerMap<UnitType> attackRollsBonus = new IntegerMap<>();
   private IntegerMap<UnitType> defenseRollsBonus = new IntegerMap<>();
   private IntegerMap<UnitType> bombingBonus = new IntegerMap<>();
@@ -684,15 +684,15 @@ public class TechAbilityAttachment extends DefaultAttachment {
     for (int i = 1; i < s.length; i++) {
       unitTypes.add(getUnitType(s[i]));
     }
-    airborneTargettedByAa.put(s[0], unitTypes);
+    airborneTargetedByAa.put(s[0], unitTypes);
   }
 
   private void setAirborneTargettedByAa(final Map<String, Set<UnitType>> value) {
-    airborneTargettedByAa = value;
+    airborneTargetedByAa = value;
   }
 
   private Map<String, Set<UnitType>> getAirborneTargettedByAa() {
-    return airborneTargettedByAa;
+    return airborneTargetedByAa;
   }
 
   /**
@@ -721,7 +721,7 @@ public class TechAbilityAttachment extends DefaultAttachment {
   }
 
   private void resetAirborneTargettedByAa() {
-    airborneTargettedByAa = new HashMap<>();
+    airborneTargetedByAa = new HashMap<>();
   }
 
   private void setAttackRollsBonus(final String value) throws GameParseException {

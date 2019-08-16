@@ -2314,7 +2314,7 @@ public final class TripleAFrame extends JFrame {
                   try {
                     final File f = TripleAMenuBar.getSaveGameLocation(TripleAFrame.this);
                     if (f != null) {
-                      try (FileOutputStream fout = new FileOutputStream(f)) {
+                      try (FileOutputStream fileOutputStream = new FileOutputStream(f)) {
                         final GameData datacopy = GameDataUtils.cloneGameData(data, true);
                         datacopy.getHistory().gotoNode(historyPanel.getCurrentPopupNode());
                         datacopy
@@ -2352,7 +2352,7 @@ public final class TripleAFrame extends JFrame {
                         datacopy
                             .getSequence()
                             .setRoundAndStep(round, stepDisplayName, currentPlayer);
-                        GameDataManager.saveGame(fout, datacopy);
+                        GameDataManager.saveGame(fileOutputStream, datacopy);
                         JOptionPane.showMessageDialog(
                             TripleAFrame.this,
                             "Game Saved",
@@ -2607,7 +2607,7 @@ public final class TripleAFrame extends JFrame {
       TileImageFactory.setShowReliefImages(true);
     }
     mapPanel.setGameData(data);
-    // update mappanels to use new image
+    // update map panels to use new image
     mapPanel.changeImage(uiContext.getMapData().getMapDimensions());
     final Image small = uiContext.getMapImage().getSmallMapImage();
     smallView.changeImage(small);

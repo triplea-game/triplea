@@ -349,11 +349,11 @@ class ProLogWindow extends JDialog {
               + "Log Depth: This setting lets you choose how deep you want the AI logging to be. "
               + "Fine only displays the high-level events, like the start of a phase, etc.\r\n"
               + "Finer displays medium-level events, such as attacks, reinforcements, etc.\r\n"
-              + "Finest displays all the AI logging available. Can be used for detailed ananlysis, "
+              + "Finest displays all the AI logging available. Can be used for detailed analysis, "
               + "but is a lot harder to read through it.\r\n"
               + "\r\n"
               + "Pause AI's: This checkbox pauses all the AI's while it's checked, so you can look "
-              + "at the logs without the AI's outputing floods of information.\r\n"
+              + "at the logs without the AI's outputting floods of information.\r\n"
               + "\r\n"
               + "Limit Log History To X Rounds: If this is checked, the AI log information will "
               + "be limited to X rounds of information.\r\n";

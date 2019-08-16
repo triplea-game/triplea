@@ -62,7 +62,7 @@ class FileSystemAccessStrategy {
       // now sleep a short while before we check our work
       Interruptibles.sleep(10);
 
-      // check our work, see if we actuall deleted stuff
+      // check our work, see if we actually deleted stuff
       final List<DownloadFileDescription> deletes = new ArrayList<>();
       final List<DownloadFileDescription> fails = new ArrayList<>();
       for (final DownloadFileDescription map : maps) {

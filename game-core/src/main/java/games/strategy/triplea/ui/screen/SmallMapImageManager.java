@@ -84,7 +84,7 @@ public class SmallMapImageManager {
     int thumbWidth = (int) (bounds.width * view.getRatioX());
     int thumbHeight = (int) (bounds.height * view.getRatioY());
     // make the image a little bigger
-    // the images wont overlap perfectly after being scaled, make them a little bigger to rebalance
+    // the images wont overlap perfectly after being scaled, make them a little bigger to re-balance
     // that
     thumbWidth += 3;
     thumbHeight += 3;

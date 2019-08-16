@@ -89,7 +89,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "faild to save value: " + showMapBlends, ex);
+      log.log(Level.SEVERE, "failed to save value: " + showMapBlends, ex);
     }
   }
 
@@ -101,7 +101,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "faild to save value: " + showMapBlendMode, ex);
+      log.log(Level.SEVERE, "failed to save value: " + showMapBlendMode, ex);
     }
   }
 
@@ -113,7 +113,7 @@ public final class TileImageFactory {
     try {
       prefs.flush();
     } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "faild to save value: " + showMapBlendAlpha, ex);
+      log.log(Level.SEVERE, "failed to save value: " + showMapBlendAlpha, ex);
     }
   }
 
@@ -194,7 +194,7 @@ public final class TileImageFactory {
     BufferedImage baseFile = null;
     // The relief tile
     final String reliefFileName = fileName.replace("baseTiles", "reliefTiles");
-    final URL urlrelief = resourceLoader.getResource(reliefFileName);
+    final URL urlRelief = resourceLoader.getResource(reliefFileName);
     // The base tile
     final String baseFileName = fileName.replace("reliefTiles", "baseTiles");
     final URL urlBase = resourceLoader.getResource(baseFileName);
@@ -204,14 +204,14 @@ public final class TileImageFactory {
 
     // Get buffered images
     try {
-      if (urlrelief != null) {
-        reliefFile = loadCompatibleImage(urlrelief);
+      if (urlRelief != null) {
+        reliefFile = loadCompatibleImage(urlRelief);
       }
       if (urlBase != null) {
         baseFile = loadCompatibleImage(urlBase);
       }
     } catch (final IOException e) {
-      log.log(Level.SEVERE, "Failed to load one or more images: " + urlrelief + ", " + urlBase, e);
+      log.log(Level.SEVERE, "Failed to load one or more images: " + urlRelief + ", " + urlBase, e);
     }
 
     // This does the blend

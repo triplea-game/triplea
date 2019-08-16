@@ -50,7 +50,7 @@ import lombok.extern.java.Log;
  * This class creates objects referred to by game XMLs via the 'javaClass' property. For example:
  *
  * <pre>
- * &lt;attachment name="territoryAttachment" attachTo="Rason"
+ * &lt;attachment name="territoryAttachment" attachTo="Reason"
  * javaClass="games.strategy.triplea.attachments.TerritoryAttachment" type="territory">
  * </pre>
  *

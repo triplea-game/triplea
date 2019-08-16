@@ -107,16 +107,16 @@ class PuChart {
       // Draw Ellipses and Numbers
       for (int j = 0; j < rows; j++) {
         for (int k = 0; k < cols; k++) {
-          final int numberincircle = cols * rows * i + cols * j + k;
-          final String string = "" + numberincircle;
+          final int numberInCircle = cols * rows * i + cols * j + k;
+          final String string = "" + numberInCircle;
           drawEllipseAndString(k, j, string);
         }
       }
       // Write to file
-      final int firstnum = cols * rows * i;
-      final int secondnum = cols * rows * (i + 1) - 1;
-      final File outputfile = new File(outDir, "PUchart" + firstnum + "-" + secondnum + ".png");
-      ImageIO.write(puImage, "png", outputfile);
+      final int firstNum = cols * rows * i;
+      final int secondNum = cols * rows * (i + 1) - 1;
+      final File outputFile = new File(outDir, "PUchart" + firstNum + "-" + secondNum + ".png");
+      ImageIO.write(puImage, "png", outputFile);
       final Color transparent = new Color(0, 0, 0, 0);
       g2d.setColor(transparent);
       g2d.setComposite(AlphaComposite.Src);

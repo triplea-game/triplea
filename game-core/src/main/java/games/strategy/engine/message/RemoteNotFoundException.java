@@ -10,7 +10,7 @@ package games.strategy.engine.message;
  *   <li>invoking a method on the object returned by someRemoteMessenger.getRemote(...)
  * </ol>
  *
- * <p>There are two possibel causes. Either the remote never existed, or a remote was once bound to
+ * <p>There are two possible causes. Either the remote never existed, or a remote was once bound to
  * that name, but is no longer bound.
  */
 public class RemoteNotFoundException extends MessengerException {

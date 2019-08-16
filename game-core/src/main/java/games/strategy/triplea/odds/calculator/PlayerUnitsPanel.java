@@ -137,10 +137,10 @@ public class PlayerUnitsPanel extends JPanel {
           add(panel);
           previousPlayer = category.getOwner();
         }
-        final UnitPanel upanel = new UnitPanel(uiContext, category, costs);
-        upanel.addChangeListener(this::notifyListeners);
-        panel.add(upanel);
-        unitPanels.add(upanel);
+        final var unitPanel = new UnitPanel(uiContext, category, costs);
+        unitPanel.addChangeListener(this::notifyListeners);
+        panel.add(unitPanel);
+        unitPanels.add(unitPanel);
       }
     }
 

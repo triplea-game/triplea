@@ -147,7 +147,7 @@ public final class MutableProperty<T> {
   }
 
   /**
-   * A special convinience method trying to keep everything slightly more functional. Instead of
+   * A special convenience method trying to keep everything slightly more functional. Instead of
    * specifying 2 setters, one getter and a resetter with this method only one setter, one getter, a
    * function mapping a String to the setters type and a Supplier supplying the default value that's
    * getting fed in again using the setter are required. This keeps stuff more readable and more

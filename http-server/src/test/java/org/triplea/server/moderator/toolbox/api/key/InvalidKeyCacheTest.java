@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class InvalidKeyCacheTest {
 
-  private static final String IP_ADDRESS_1 = "Grogs are the cannibals of the big urchin.";
+  private static final String IP_ADDRESS_1 = "Grog are the cannibals of the big urchin.";
   private static final String IP_ADDRESS_2 = "Damn yer parrot, feed the sea-dog.";
   private static final String IP_ADDRESS_3 = "Jolly roger, yer not blowing me without a fortune!";
 

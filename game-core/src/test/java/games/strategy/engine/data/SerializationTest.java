@@ -70,7 +70,7 @@ class SerializationTest {
   }
 
   @Test
-  void testWriteProductionRulte() throws Exception {
+  void testWriteProductionRule() throws Exception {
     final Object orig = gameDataSource.getProductionRuleList().getProductionRule("infForSilver");
     final Object read = serialize(orig);
     final Object local = gameDataSink.getProductionRuleList().getProductionRule("infForSilver");

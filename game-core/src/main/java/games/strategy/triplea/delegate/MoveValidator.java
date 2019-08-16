@@ -468,7 +468,7 @@ public class MoveValidator {
         final Predicate<Territory> notEndOrFriendlyTerrs =
             nonFriendlyTerritories.and(territoryIsNotEnd);
         final Predicate<Territory> foughtOver =
-            Matches.territoryWasFoughOver(AbstractMoveDelegate.getBattleTracker(data));
+            Matches.territoryWasFoughtOver(AbstractMoveDelegate.getBattleTracker(data));
         final Predicate<Territory> notEndWasFought = territoryIsNotEnd.and(foughtOver);
         final boolean wasStartFoughtOver =
             AbstractMoveDelegate.getBattleTracker(data).wasConquered(route.getStart())
@@ -1835,7 +1835,7 @@ public class MoveValidator {
         Matches.isTerritoryEnemy(player, data)
             .negate()
             .and(
-                Matches.territoryWasFoughOver(AbstractMoveDelegate.getBattleTracker(data))
+                Matches.territoryWasFoughtOver(AbstractMoveDelegate.getBattleTracker(data))
                     .negate());
     final Predicate<Territory> noEnemyUnits = Matches.territoryHasNoEnemyUnits(player, data);
     final Predicate<Territory> noAa = Matches.territoryHasEnemyAaForFlyOver(player, data).negate();

@@ -57,7 +57,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment {
    * This sets a ArcheType for this relationshipType, there are 3 different archeTypes: War, Allied
    * and Neutral These archeTypes can be accessed by using the constants: WAR_ARCHETYPE,
    * ALLIED_ARCHETYPE, NEUTRAL_ARCHETYPE These archeTypes determine the behavior of isAllied, isWar
-   * and isNeutral These archeTyps determine the default behavior of the engine unless you override
+   * and isNeutral These archeTypes determine the default behavior of the engine unless you override
    * some option in this attachment; for example the RelationshipType ColdWar could be based on the
    * WAR_ARCHETYPE but overrides options like "canInvade" "canAttackHomeTerritory" to not allow
    * all-out invasion to mimic a not-all-out-war. Or you could base it on NEUTRAL_ARCHETYPE but

@@ -175,7 +175,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(fighter, 5);
     final Route route = new Route();
     route.setStart(egypt);
-    // exast movement to force landing
+    // exact movement to force landing
     route.add(eastAfrica);
     route.add(kenya);
     route.add(mozambiqueSeaZone);
@@ -194,7 +194,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(armour, 2);
     final Route route = new Route();
     route.setStart(egypt);
-    // exast movement to force landing
+    // exact movement to force landing
     route.add(eastMediteranean);
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(0, eastMediteranean.getUnitCollection().size());
@@ -210,7 +210,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(carrier, 2);
     final Route route = new Route();
     route.setStart(redSea);
-    // exast movement to force landing
+    // exact movement to force landing
     route.add(mozambiqueSeaZone);
     assertEquals(4, redSea.getUnitCollection().size());
     assertEquals(0, mozambiqueSeaZone.getUnitCollection().size());
@@ -226,7 +226,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(carrier, 2);
     final Route route = new Route();
     route.setStart(redSea);
-    // exast movement to force landing
+    // exact movement to force landing
     route.add(egypt);
     assertEquals(4, redSea.getUnitCollection().size());
     assertEquals(18, egypt.getUnitCollection().size());
@@ -243,7 +243,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(infantry, 2);
     final Route route = new Route();
     route.setStart(equatorialAfrica);
-    // exast movement to force landing
+    // exact movement to force landing
     route.add(congoSeaZone);
     assertEquals(4, equatorialAfrica.getUnitCollection().size());
     assertEquals(11, congoSeaZone.getUnitCollection().size());
@@ -259,7 +259,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(bomber, 2);
     final Route route = new Route();
     route.setStart(egypt);
-    // exast movement to force landing
+    // exact movement to force landing
     route.add(redSea);
     route.add(syria);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
@@ -272,7 +272,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     map.put(armour, 2);
     final Route route = new Route();
     route.setStart(egypt);
-    // exast movement to force landing
+    // exact movement to force landing
     route.add(redSea);
     assertEquals(18, egypt.getUnitCollection().size());
     assertEquals(4, redSea.getUnitCollection().size());
@@ -393,7 +393,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
   }
 
   @Test
-  void testmultipleMovesExceedingMovementLimit() {
+  void testMultipleMovesExceedingMovementLimit() {
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 2);
     Route route = new Route();
@@ -502,9 +502,9 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     advanceToStep(bridge, "russianCombatMove");
     westEurope.setOwner(russians);
     // Attacking force
-    final List<Unit> attackTrns = transport.create(1, russians);
+    final List<Unit> attackTransports = transport.create(1, russians);
     final List<Unit> attackList = bomber.create(2, russians);
-    attackList.addAll(attackTrns);
+    attackList.addAll(attackTransports);
     whenGetRandom(bridge).thenAnswer(withValues(1, 1));
     final IBattle battle = mock(IBattle.class);
     when(battle.getTerritory()).thenReturn(westEurope);
@@ -526,7 +526,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     route.setStart(karelia);
     route.add(balticSeaZone);
     route.add(westEurope);
-    // Once loaded, shouldnt be able to unload
+    // Once loaded, shouldn't be able to unload
     final String results = delegate.move(moveInf, route);
     assertError(results);
   }
@@ -576,11 +576,11 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     final Route route3 = new Route();
     route3.setStart(japanSeaZone);
     route3.add(sfeSeaZone);
-    final Collection<Unit> remainingTrns =
+    final Collection<Unit> remainingTransports =
         CollectionUtils.getMatches(
             japanSeaZone.getUnits(),
             Matches.unitHasNotMoved().and(Matches.unitWasNotLoadedThisTurn()));
-    results = delegate.move(remainingTrns, route3);
+    results = delegate.move(remainingTransports, route3);
     assertNull(results);
   }
 
@@ -599,7 +599,7 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
     route = new Route();
     route.setStart(equatorialAfrica);
     route.add(egypt);
-    // units were unloaded, shouldnt be able to move any more
+    // units were unloaded, shouldn't be able to move any more
     results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
     assertError(results);
   }
@@ -909,8 +909,6 @@ class MoveDelegateTest extends AbstractDelegateTestCase {
 
   @Test
   void testBattleAdded() {
-    // TODO if air make sure otnot alwasys battle
-    // this was causing an exception
     final Route route = new Route();
     route.setStart(egypt);
     route.add(libya);

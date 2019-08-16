@@ -167,7 +167,7 @@ public class Vault {
     final VaultId id = new VaultId(channelMessenger.getLocalNode());
     final SecretKey key = keyGen.generateKey();
     if (secretKeys.putIfAbsent(id, key) != null) {
-      throw new IllegalStateException("dupliagte id:" + id);
+      throw new IllegalStateException("duplicate id:" + id);
     }
     // we already know it, so might as well keep it
     verifiedValues.put(id, data);
@@ -212,7 +212,7 @@ public class Vault {
    */
   public void unlock(final VaultId id) {
     if (!id.getGeneratedOn().equals(channelMessenger.getLocalNode())) {
-      throw new IllegalArgumentException("Cant unlock data that wasnt locked on this node");
+      throw new IllegalArgumentException("Can't unlock data that wasn't locked on this node");
     }
     final SecretKey key = secretKeys.remove(id);
     // let everyone unlock it
@@ -265,7 +265,7 @@ public class Vault {
   /** Waits until we know about a given vault id. waits for at most timeout milliseconds */
   public void waitForId(final VaultId id, final long timeoutMs) {
     if (timeoutMs <= 0) {
-      throw new IllegalArgumentException("Must suppply positive timeout argument");
+      throw new IllegalArgumentException("Must supply positive timeout argument");
     }
     final long endTime = timeoutMs + System.currentTimeMillis();
     while (System.currentTimeMillis() < endTime && !knowsAbout(id)) {
@@ -288,7 +288,7 @@ public class Vault {
   /** Wait until the given id is unlocked. */
   public void waitForIdToUnlock(final VaultId id, final long timeout) {
     if (timeout <= 0) {
-      throw new IllegalArgumentException("Must suppply positive timeout argument");
+      throw new IllegalArgumentException("Must supply positive timeout argument");
     }
     final long startTime = System.currentTimeMillis();
     long leftToWait = timeout;

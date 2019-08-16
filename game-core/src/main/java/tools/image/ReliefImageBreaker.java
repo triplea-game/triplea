@@ -99,7 +99,7 @@ public final class ReliefImageBreaker {
       log.info("Shutting down");
       return;
     }
-    // ask user wether it is sea zone only or not
+    // ask user whether it is sea zone only or not
     seaZoneOnly = doSeaZone();
 
     // ask user where the map is

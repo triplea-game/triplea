@@ -28,7 +28,7 @@ class AccessLogTabModelTest {
       UserBanParams.builder()
           .username("Never sail a captain.")
           .ip("Aye, fine beauty!")
-          .hashedMac("Cockroachs stutter from endurances like jolly scallywags.")
+          .hashedMac("Cockroaches stutter from endurance like jolly scallywags.")
           .hoursToBan(10)
           .build();
   private static final String USERNAME = "Ahoy there's nothing like the stormy death.";

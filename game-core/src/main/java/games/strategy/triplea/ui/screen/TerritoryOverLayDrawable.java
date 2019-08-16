@@ -41,9 +41,9 @@ class TerritoryOverLayDrawable extends AbstractDrawable {
       final Graphics2D graphics,
       final MapData mapData) {
     final Territory territory = data.getMap().getTerritory(territoryName);
-    final List<Polygon> polys = mapData.getPolygons(territory);
+    final List<Polygon> polygons = mapData.getPolygons(territory);
     graphics.setColor(color);
-    for (final Polygon polygon : polys) {
+    for (final Polygon polygon : polygons) {
       if (!polygon.intersects(bounds) && !polygon.contains(bounds)) {
         continue;
       }

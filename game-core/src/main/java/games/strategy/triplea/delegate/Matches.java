@@ -1511,7 +1511,7 @@ public final class Matches {
     return unit -> types != null && !types.isEmpty() && types.contains(unit.getType());
   }
 
-  static Predicate<Territory> territoryWasFoughOver(final BattleTracker tracker) {
+  static Predicate<Territory> territoryWasFoughtOver(final BattleTracker tracker) {
     return t -> tracker.wasBattleFought(t) || tracker.wasBlitzed(t);
   }
 

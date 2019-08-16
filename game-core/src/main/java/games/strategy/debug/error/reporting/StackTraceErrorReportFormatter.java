@@ -71,7 +71,7 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
    */
   private String buildBody(@Nullable final String userDescription, final LogRecord logRecord) {
     return Optional.ofNullable(Strings.emptyToNull(userDescription))
-            .map(descripton -> "## User Description\n" + descripton + "\n\n")
+            .map(description -> "## User Description\n" + description + "\n\n")
             .orElse("")
         + Optional.ofNullable(logRecord.getMessage())
             .map(msg -> "## Log Message\n" + msg + "\n\n")

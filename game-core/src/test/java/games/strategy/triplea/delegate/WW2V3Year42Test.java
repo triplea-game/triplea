@@ -99,7 +99,7 @@ class WW2V3Year42Test {
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory sz6 = territory("6 Sea Zone", gameData);
     final Territory sz7 = territory("7 Sea Zone", gameData);
-    // add a russian battlship
+    // add a russian battleship
     addTo(sz5, battleship(gameData).create(1, russians(gameData)));
     final IDelegateBridge bridge = newDelegateBridge(germans(gameData));
     advanceToStep(bridge, "CombatMove");
@@ -118,11 +118,11 @@ class WW2V3Year42Test {
   }
 
   @Test
-  void testLingeringFightersAndALliedUnitsJoinBattle() {
+  void testLingeringFightersAndAlliedUnitsJoinBattle() {
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory sz6 = territory("6 Sea Zone", gameData);
     final Territory sz7 = territory("7 Sea Zone", gameData);
-    // add a russian battlship
+    // add a russian battleship
     addTo(sz5, battleship(gameData).create(1, russians(gameData)));
     // add an allied carrier and a fighter
     addTo(sz5, carrier(gameData).create(1, italians(gameData)));
@@ -148,7 +148,7 @@ class WW2V3Year42Test {
     final Territory sz5 = territory("5 Sea Zone", gameData);
     final Territory sz6 = territory("6 Sea Zone", gameData);
     final Territory sz7 = territory("7 Sea Zone", gameData);
-    // add a russian battlship
+    // add a russian battleship
     addTo(sz5, battleship(gameData).create(1, russians(gameData)));
     final IDelegateBridge bridge = newDelegateBridge(germans(gameData));
     advanceToStep(bridge, "CombatMove");

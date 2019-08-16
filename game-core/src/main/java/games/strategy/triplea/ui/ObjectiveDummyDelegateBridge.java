@@ -176,7 +176,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
 
     @Override
     protected void purchase(
-        final boolean purcahseForBid,
+        final boolean purchaseForBid,
         final int pusToSpend,
         final IPurchaseDelegate purchaseDelegate,
         final GameData data,
@@ -238,7 +238,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
         final Collection<Unit> amphibiousLandAttackers,
         final CasualtyList defaultCasualties,
         final GUID battleId,
-        final Territory battlesite,
+        final Territory battleSite,
         final boolean allowMultipleHitsPerUnit) {
       throw new UnsupportedOperationException();
     }

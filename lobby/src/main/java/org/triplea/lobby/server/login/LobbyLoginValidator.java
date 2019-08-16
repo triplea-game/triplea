@@ -44,7 +44,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
     String ANONYMOUS_AUTHENTICATION_FAILED = "Can't login anonymously, username already exists";
     String AUTHENTICATION_FAILED = "Incorrect username or password";
     String INVALID_MAC = "Invalid mac address";
-    String THATS_NOT_A_NICE_NAME = "That's not a nice name";
+    String THAT_IS_NOT_A_NICE_NAME = "That's not a nice name";
     String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
     String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
     String TOO_MANY_FAILED_LOGIN_ATTEMPTS =
@@ -109,7 +109,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
           + clientVersionString;
     }
     if (database.getBadWordDao().containsBadWord(user.getUsername())) {
-      return ErrorMessages.THATS_NOT_A_NICE_NAME;
+      return ErrorMessages.THAT_IS_NOT_A_NICE_NAME;
     }
     if (!MacFinder.isValidHashedMacAddress(user.getHashedMacAddress())) {
       // Must have been tampered with

@@ -26,7 +26,7 @@ without valid values.
 Application configuration is obtained from `AppConfig.java` which is wired
 from a YML file that is specified at startup. The prerelease and production
 YML files may differ in the values of configuration properties, but otherwise
-should have the same number of configuration properites, the same keys
+should have the same number of configuration properties, the same keys
 and the same environment variables.
 
 Of note, a reference to `AppConfig` is passed to the main server application
@@ -48,7 +48,7 @@ Wires up all dependencies and creates the controller class.
 Controller classes need to be registered in `ServerApplicaton.java`
 to be enabled.
 
-This class contains endpoint markups and recieves HTTP requests.
+This class contains endpoint markups and receives HTTP requests.
 The controller methods should do quick/basic validation and then
 delegate as much as possible to a 'service' class. 
 

@@ -55,8 +55,8 @@ final class ProTechAi {
     final boolean capDanger = myStrength < (enemyStrength * 1.25F + 3.0F);
     final Resource pus = data.getResourceList().getResource(Constants.PUS);
     final int pusRemaining = player.getResources().getQuantity(pus);
-    final Resource techtokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
-    final int techTokensQuantity = player.getResources().getQuantity(techtokens);
+    final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
+    final int techTokensQuantity = player.getResources().getQuantity(techTokens);
     int tokensToBuy = 0;
     if (!capDanger && techTokensQuantity < 3 && pusRemaining > Math.random() * 160) {
       tokensToBuy = 1;
@@ -542,13 +542,13 @@ final class ProTechAi {
    * Determine the strength of a collection of airUnits Caller should guarantee units are all air.
    */
   private static float allAirStrength(final Collection<Unit> units) {
-    float airstrength = 0.0F;
+    float airStrength = 0.0F;
     for (final Unit u : units) {
       final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
-      airstrength += 1.00F;
-      airstrength += unitAttachment.getAttack(u.getOwner());
+      airStrength += 1.00F;
+      airStrength += unitAttachment.getAttack(u.getOwner());
     }
-    return airstrength;
+    return airStrength;
   }
 
   private static Route getMaxSeaRoute(
@@ -625,7 +625,7 @@ final class ProTechAi {
   /** Gets the neighbors which are one territory away. */
   private static List<Territory> getExactNeighbors(final Territory territory, final GameData data) {
     // old functionality retained, i.e. no route condition is imposed.
-    // feel free to change, if you are confortable all calls to this function conform.
+    // feel free to change, if you are comfortable all calls to this function conform.
     final Predicate<Territory> endCond =
         PredicateBuilder.of(Matches.territoryIsImpassable().negate())
             .andIf(

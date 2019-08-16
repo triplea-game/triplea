@@ -947,11 +947,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
       final String[] relationCheck = splitOnColon(encodedRelationCheck);
       final PlayerId p1 = getData().getPlayerList().getPlayerId(relationCheck[0]);
       final PlayerId p2 = getData().getPlayerList().getPlayerId(relationCheck[1]);
-      final int relationshipsExistance = Integer.parseInt(relationCheck[3]);
+      final int relationshipsExistence = Integer.parseInt(relationCheck[3]);
       final Relationship currentRelationship =
           getData().getRelationshipTracker().getRelationship(p1, p2);
       final RelationshipType currentRelationshipType = currentRelationship.getRelationshipType();
-      if (!relationShipExistsLongEnnough(currentRelationship, relationshipsExistance)) {
+      if (!relationShipExistsLongEnough(currentRelationship, relationshipsExistence)) {
         return false;
       }
       if (!((relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
@@ -968,12 +968,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
     return true;
   }
 
-  private boolean relationShipExistsLongEnnough(
-      final Relationship r, final int relationshipsExistance) {
+  private boolean relationShipExistsLongEnough(
+      final Relationship r, final int relationshipsExistence) {
     int roundCurrentRelationshipWasCreated = r.getRoundCreated();
     roundCurrentRelationshipWasCreated += Properties.getRelationshipsLastExtraRounds(getData());
     return getData().getSequence().getRound() - roundCurrentRelationshipWasCreated
-        >= relationshipsExistance;
+        >= relationshipsExistence;
   }
 
   /**

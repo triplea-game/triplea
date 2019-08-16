@@ -24,7 +24,7 @@ public class Toast {
   private final int windowHeight = 75;
   private final int windowWidth = 400;
 
-  public void showtoast() {
+  public void showToast() {
     SwingUtilities.invokeLater(this::showInBackground);
   }
 

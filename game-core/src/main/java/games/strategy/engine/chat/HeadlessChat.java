@@ -72,14 +72,14 @@ public class HeadlessChat implements IChatListener, ChatModel {
 
   /** thread safe. */
   @Override
-  public void addMessage(final String message, final String from, final boolean thirdperson) {
-    addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
+  public void addMessage(final String message, final String from, final boolean thirdPerson) {
+    addMessageWithSound(message, from, thirdPerson, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
   /** thread safe. */
   @Override
   public void addMessageWithSound(
-      final String message, final String from, final boolean thirdperson, final String sound) {
+      final String message, final String from, final boolean thirdPerson, final String sound) {
     // TODO: I don't really think we need a new thread for this...
     new Thread(
             () -> {
@@ -90,18 +90,18 @@ public class HeadlessChat implements IChatListener, ChatModel {
                 }
                 return;
               }
-              addChatMessage(message, from, thirdperson);
+              addChatMessage(message, from, thirdPerson);
               ClipPlayer.play(sound);
             })
         .start();
   }
 
   private void addChatMessage(
-      final String originalMessage, final String from, final boolean thirdperson) {
+      final String originalMessage, final String from, final boolean thirdPerson) {
     final String message = Ascii.truncate(originalMessage, 200, "...");
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final String prefix =
-        thirdperson
+        thirdPerson
             ? (showTime ? "* " + time + " " + from : "* " + from)
             : (showTime ? time + " " + from + ": " : from + ": ");
     final String fullMessage = prefix + " " + message + "\n";

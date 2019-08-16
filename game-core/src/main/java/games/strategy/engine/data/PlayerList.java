@@ -43,7 +43,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerId> 
     return new ArrayList<>(players.values());
   }
 
-  /** an iterator of a new arraylist copy of the players. */
+  /** an iterator of a new ArrayList copy of the players. */
   @Override
   public Iterator<PlayerId> iterator() {
     return getPlayers().iterator();

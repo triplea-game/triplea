@@ -43,7 +43,7 @@ import org.triplea.util.Tuple;
  * with production 2. If sea zone e neighbors a,b and sea zone f neighbors b. Then producing 2 in e
  * was making it such that you cannot produce in f. The reason was that the production in e could be
  * assigned to the factory in b, leaving no capacity to produce in f. A workaround was that if
- * anyone ever accidently run into this situation then they could undo the production, produce in f
+ * anyone ever accidentally run into this situation then they could undo the production, produce in f
  * first, and then produce in e.
  */
 public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
@@ -1197,8 +1197,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
         factoryUnits.size() > 0 && this.player.equals(getOriginalFactoryOwner(producer));
     final RulesAttachment ra =
         (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-    final Collection<Unit> alreadProducedUnits = getAlreadyProduced(producer);
-    final int unitCountAlreadyProduced = alreadProducedUnits.size();
+    final Collection<Unit> alreadyProducedUnits = getAlreadyProduced(producer);
+    final int unitCountAlreadyProduced = alreadyProducedUnits.size();
     if (originalFactory && playerIsOriginalOwner) {
       if (ra != null && ra.getMaxPlacePerTerritory() != -1) {
         return Math.max(0, ra.getMaxPlacePerTerritory() - unitCountAlreadyProduced);
@@ -1250,7 +1250,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     if (production < 0) {
       return 0;
     }
-    production += CollectionUtils.countMatches(alreadProducedUnits, Matches.unitIsConstruction());
+    production += CollectionUtils.countMatches(alreadyProducedUnits, Matches.unitIsConstruction());
     // Now we check if units we have already produced here could be produced by a different producer
     int unitCountHaveToAndHaveBeenBeProducedHere = unitCountAlreadyProduced;
     if (countSwitchedProductionToNeighbors && unitCountAlreadyProduced > 0) {

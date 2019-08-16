@@ -86,14 +86,14 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
     final Collection<Unit> units = fighter.create(4, british);
     // 2 carriers in red sea
     assertTrue(AirMovementValidator.canLand(units, redSea, british, gameData));
-    // britian owns egypt
+    // britain owns egypt
     assertTrue(AirMovementValidator.canLand(units, egypt, british, gameData));
     // only 2 carriers
     final Collection<Unit> tooMany = fighter.create(6, british);
     assertFalse(AirMovementValidator.canLand(tooMany, redSea, british, gameData));
     // nowhere to land
     assertFalse(AirMovementValidator.canLand(units, japanSeaZone, british, gameData));
-    // nuetral
+    // neutral
     assertFalse(AirMovementValidator.canLand(units, westAfrica, british, gameData));
   }
 

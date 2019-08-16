@@ -18,7 +18,7 @@ import java.util.Set;
 public interface IBattle extends Serializable {
   /** Identifies the winner of a battle. */
   enum WhoWon {
-    NOTFINISHED,
+    NOT_FINISHED,
     DRAW,
     ATTACKER,
     DEFENDER

@@ -15,7 +15,7 @@ import java.util.Comparator;
 /**
  * nekromancer@users.sourceforge.net Utility class for finding the local ip address of a machine
  * with multiple network interfaces. This class will discard any InetAddress whose
- * isLoobackAddresS() returns true. It will also discard any InetAddress whose isLinkLocalAddress()
+ * isLoopbackAddresS() returns true. It will also discard any InetAddress whose isLinkLocalAddress()
  * returns true. On most systems the IP address it uses for internet communication will NOT be a
  * LinkLocalAddress. Even if your system goes through a gateway, the standard 192.168.0.1 address
  * will be valid (not link local and not loopback). It is up to the user to tell his/her opponents

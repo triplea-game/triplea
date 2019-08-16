@@ -105,11 +105,10 @@ class ProPurchaseAi {
         }
       }
       ProLogger.debug("Factories that need repaired: " + unitsThatCanProduceNeedingRepair);
-      final List<RepairRule> rrules = player.getRepairFrontier().getRules();
-      for (final RepairRule rrule : rrules) {
+      for (final var repairRule : player.getRepairFrontier().getRules()) {
         for (final Unit fixUnit : unitsThatCanProduceNeedingRepair.keySet()) {
           if (fixUnit == null
-              || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next())) {
+              || !fixUnit.getType().equals(repairRule.getResults().keySet().iterator().next())) {
             continue;
           }
           if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(
@@ -121,12 +120,12 @@ class ProPurchaseAi {
           final int diff = taUnit.getUnitDamage();
           if (diff > 0) {
             final IntegerMap<RepairRule> repairMap = new IntegerMap<>();
-            repairMap.add(rrule, diff);
+            repairMap.add(repairRule, diff);
             final Map<Unit, IntegerMap<RepairRule>> repair = new HashMap<>();
             repair.put(fixUnit, repairMap);
             pusRemaining -= diff;
             ProLogger.debug(
-                "Repairing factory=" + fixUnit + ", damage=" + diff + ", repairRule=" + rrule);
+                "Repairing factory=" + fixUnit + ", damage=" + diff + ", repairRule=" + repairRule);
             purchaseDelegate.purchaseRepair(repair);
           }
         }

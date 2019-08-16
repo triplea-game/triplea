@@ -257,7 +257,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
     getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
     final UserActionText uat = UserActionText.getInstance();
     final String text = uaa.getText();
-    sendNotification(uat.getNotificationSucccess(text));
+    sendNotification(uat.getNotificationSuccess(text));
     notifyOtherPlayers(
         uaa, uat.getNotificationSuccessOthers(text), uat.getNotificationSuccessTarget(text));
   }

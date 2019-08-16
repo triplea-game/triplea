@@ -28,7 +28,7 @@ public class BattleResults extends GameDataComponent {
     remainingAttackingUnits = battle.getRemainingAttackingUnits();
     remainingDefendingUnits = battle.getRemainingDefendingUnits();
     whoWon = battle.getWhoWon();
-    if (whoWon == WhoWon.NOTFINISHED) {
+    if (whoWon == WhoWon.NOT_FINISHED) {
       throw new IllegalStateException("Battle not finished yet: " + battle);
     }
   }
