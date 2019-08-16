@@ -4,7 +4,7 @@
       <env name="LOCAL_DEV" value="true" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="org.triplea.lobby.server.LobbyRunner" />
-    <module name="triplea.lobby" />
+    <module name="triplea.lobby.main" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/lobby" />
     <extension name="coverage">
       <pattern>
