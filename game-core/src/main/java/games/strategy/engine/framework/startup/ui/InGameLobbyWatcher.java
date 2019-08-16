@@ -15,21 +15,17 @@ import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
-import games.strategy.net.ClientMessenger;
+import games.strategy.net.ClientMessengerFactory;
 import games.strategy.net.GUID;
 import games.strategy.net.IClientMessenger;
 import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IConnectionLogin;
 import games.strategy.net.IMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.MacFinder;
 import games.strategy.net.Node;
 import java.net.InetSocketAddress;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Observer;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -38,8 +34,6 @@ import lombok.extern.java.Log;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.lobby.common.IRemoteHostUtils;
-import org.triplea.lobby.common.LobbyConstants;
-import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 
 /**
  * Watches a game in progress, and updates the Lobby with the state of the game.
@@ -200,24 +194,9 @@ public class InGameLobbyWatcher {
       return null;
     }
 
-    final IConnectionLogin login =
-        challenge -> {
-          final Map<String, String> response = new HashMap<>();
-          response.put(LobbyLoginResponseKeys.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-          response.put(
-              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
-          response.put(LobbyLoginResponseKeys.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
-          return response;
-        };
     try {
-      final String mac = MacFinder.getHashedMacAddress();
-      final ClientMessenger messenger =
-          new ClientMessenger(
-              host,
-              Integer.parseInt(port),
-              IServerMessenger.getRealName(hostedBy) + "_" + LobbyConstants.LOBBY_WATCHER_NAME,
-              mac,
-              login);
+      final IClientMessenger messenger =
+          ClientMessengerFactory.newLobbyWatcherMessenger(host, Integer.parseInt(port), hostedBy);
       final var unifiedMessenger = new UnifiedMessenger(messenger);
       final var remoteMessenger = new RemoteMessenger(unifiedMessenger);
       final var remoteHostUtils = new RemoteHostUtils(messenger.getServerNode(), gameMessenger);

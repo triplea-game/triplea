@@ -30,12 +30,11 @@ import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.player.IGamePlayer;
 import games.strategy.io.IoUtils;
-import games.strategy.net.ClientMessenger;
+import games.strategy.net.ClientMessengerFactory;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IClientMessenger;
 import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
-import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.Component;
@@ -218,12 +217,10 @@ public class ClientModel implements IMessengerErrorListener {
           this.ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
       return false;
     }
-    final String address = props.getHost();
     try {
-      final String mac = MacFinder.getHashedMacAddress();
       messenger =
-          new ClientMessenger(
-              address, port, props.getName(), mac, objectStreamFactory, new ClientLogin(this.ui));
+          ClientMessengerFactory.newClientMessenger(
+              props, objectStreamFactory, new ClientLogin(this.ui));
     } catch (final CouldNotLogInException e) {
       EventThreadJOptionPane.showMessageDialog(this.ui, e.getMessage());
       return false;
@@ -472,7 +469,7 @@ public class ClientModel implements IMessengerErrorListener {
   /** Simple data object for which host we are connecting to and with which name. */
   @Getter
   @Builder
-  private static class ClientProps {
+  public static class ClientProps {
     @Nonnull private Integer port;
     @Nonnull private String name;
     @Nonnull private String host;

@@ -8,6 +8,7 @@ import games.strategy.engine.framework.startup.ui.MetaSetupPanel;
 import games.strategy.engine.framework.startup.ui.PbemSetupPanel;
 import games.strategy.engine.framework.startup.ui.ServerSetupPanel;
 import games.strategy.engine.framework.startup.ui.SetupPanel;
+import games.strategy.engine.lobby.client.login.ChangePasswordPanel;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyPropertyFetcherConfiguration;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
@@ -22,6 +23,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.triplea.game.startup.ServerSetupModel;
+import org.triplea.lobby.common.login.RsaAuthenticator;
+import org.triplea.swing.DialogBuilder;
 
 /** This class provides a way to switch between different ISetupPanel displays. */
 @RequiredArgsConstructor
@@ -115,6 +118,36 @@ public class SetupPanelModel implements ServerSetupModel {
               final LobbyFrame lobbyFrame = new LobbyFrame(lobbyClient, lobbyServerProperties);
               GameRunner.hideMainFrame();
               lobbyFrame.setVisible(true);
+
+              if (lobbyClient.isPasswordChangeRequired()) {
+                Optional.ofNullable(ChangePasswordPanel.newChangePasswordPanel().show(lobbyFrame))
+                    .map(RsaAuthenticator::hashPasswordWithSalt)
+                    .ifPresentOrElse(
+                        pass -> {
+                          final String error = lobbyClient.updatePassword(pass);
+                          if (error == null) {
+                            DialogBuilder.builder()
+                                .parent(lobbyFrame)
+                                .title("Success")
+                                .infoMessage("Password successfully updated!")
+                                .showDialog();
+                          } else {
+                            DialogBuilder.builder()
+                                .parent(lobbyFrame)
+                                .title("Error")
+                                .errorMessage("Error updating password.\nError:" + error)
+                                .showDialog();
+                          }
+                        },
+                        () ->
+                            DialogBuilder.builder()
+                                .parent(lobbyFrame)
+                                .title("Password Not Updated")
+                                .errorMessage(
+                                    "Password not updated, you will need to request a new "
+                                        + "temporary password to log in again.")
+                                .showDialog());
+              }
             });
   }
 

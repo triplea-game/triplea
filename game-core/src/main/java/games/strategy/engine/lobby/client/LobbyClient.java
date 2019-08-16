@@ -2,6 +2,7 @@ package games.strategy.engine.lobby.client;
 
 import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IUserManager;
@@ -15,6 +16,11 @@ public class LobbyClient {
   public LobbyClient(final IMessenger messenger, final boolean anonymousLogin) {
     messengers = new Messengers(messenger);
     isAnonymousLogin = anonymousLogin;
+  }
+
+  @Nullable
+  public String updatePassword(final String newPassword) {
+    return getUserManager().updateUser(messengers.getLocalNode().getName(), null, newPassword);
   }
 
   public boolean isAdmin() {
@@ -32,5 +38,9 @@ public class LobbyClient {
 
   public IUserManager getUserManager() {
     return (IUserManager) messengers.getRemote(IUserManager.REMOTE_NAME);
+  }
+
+  public boolean isPasswordChangeRequired() {
+    return messengers.isPasswordChangeRequired();
   }
 }

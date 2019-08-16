@@ -12,6 +12,8 @@ dependencies {
     implementation project(':java-extras')
     implementation project(':game-core')
     implementation project(':lobby-db-dao')
+
+    implementation 'javax.mail:mail:1.5.0-b01'
     implementation "org.mindrot:jbcrypt:$jbcryptVersion"
     implementation 'org.jdbi:jdbi3-core:3.8.2'
     implementation 'org.jdbi:jdbi3-sqlobject:3.8.2'

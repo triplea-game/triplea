@@ -37,7 +37,8 @@ final class UserManager implements IUserManager {
 
     final String validationError =
         Optional.ofNullable(PlayerNameValidation.validate(username))
-            .orElseGet(() -> PlayerEmailValidation.validate(emailAddress));
+            .orElseGet(
+                () -> emailAddress == null ? null : PlayerEmailValidation.validate(emailAddress));
 
     if (validationError != null) {
       return validationError;

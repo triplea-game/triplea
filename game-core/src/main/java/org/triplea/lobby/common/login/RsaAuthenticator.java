@@ -97,19 +97,6 @@ public final class RsaAuthenticator {
     }
   }
 
-  private static String encryptPassword(final String publicKeyString, final String password) {
-    try {
-      final PublicKey publicKey =
-          KeyFactory.getInstance(RSA)
-              .generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString)));
-      final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
-      cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-      return Base64.getEncoder().encodeToString(cipher.doFinal(getHashedBytes(password)));
-    } catch (final GeneralSecurityException e) {
-      throw new IllegalStateException(e);
-    }
-  }
-
   /**
    * Returns UTF-8 encoded bytes of a "salted" SHA-512 hash of the given input string. See {@link
    * #hashPasswordWithSalt(String)} for more information.
@@ -149,15 +136,20 @@ public final class RsaAuthenticator {
   /**
    * Creates a response to the specified challenge for the lobby client to send to the lobby server.
    *
-   * @param challenge The challenge as a collection of properties.
+   * @param rsaPublicKey Public key string sent from server.
    * @param password The lobby client's password.
-   * @return The response as a collection of properties to be added to the message the lobby client
-   *     sends back to the lobby server.
+   * @return Encrypted password using provided rsa public key.
    */
-  public static Map<String, String> newResponse(
-      final Map<String, String> challenge, final String password) {
-    return Collections.singletonMap(
-        LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
-        encryptPassword(challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), password));
+  public static String encrpytPassword(final String rsaPublicKey, final String password) {
+    try {
+      final PublicKey publicKey =
+          KeyFactory.getInstance(RSA)
+              .generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(rsaPublicKey)));
+      final Cipher cipher = Cipher.getInstance(RSA_ECB_OAEPP);
+      cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+      return Base64.getEncoder().encodeToString(cipher.doFinal(getHashedBytes(password)));
+    } catch (final GeneralSecurityException e) {
+      throw new IllegalStateException(e);
+    }
   }
 }

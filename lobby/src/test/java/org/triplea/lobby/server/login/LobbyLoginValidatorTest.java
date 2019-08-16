@@ -26,6 +26,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.lobby.common.login.LobbyLoginChallengeKeys;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.TestUserUtils;
@@ -37,6 +38,8 @@ import org.triplea.lobby.server.db.DatabaseDao;
 import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserDao;
 import org.triplea.lobby.server.db.UsernameBlacklistDao;
+import org.triplea.lobby.server.db.dao.TempPasswordDao;
+import org.triplea.lobby.server.login.forgot.password.verify.TempPasswordVerification;
 import org.triplea.test.common.security.TestSecurityUtils;
 import org.triplea.util.Md5Crypt;
 
@@ -62,6 +65,10 @@ final class LobbyLoginValidatorTest {
 
     @Mock FailedLoginThrottle failedLoginThrottle;
 
+    @Mock TempPasswordVerification tempPasswordVerification;
+
+    @Mock TempPasswordDao tempPasswordDao;
+
     LobbyLoginValidator lobbyLoginValidator;
 
     final User user = TestUserUtils.newUser();
@@ -79,7 +86,9 @@ final class LobbyLoginValidatorTest {
               databaseDao,
               new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair()),
               () -> bcryptSalt,
-              failedLoginThrottle);
+              failedLoginThrottle,
+              tempPasswordVerification,
+              tempPasswordDao);
     }
 
     final String bcrypt(final String password) {
@@ -301,7 +310,10 @@ final class LobbyLoginValidatorTest {
                   .put(LobbyLoginResponseKeys.HASHED_PASSWORD, md5Crypt(PASSWORD))
                   .put(
                       LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
-                  .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+                  .put(
+                      LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+                      RsaAuthenticator.encrpytPassword(
+                          challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), PASSWORD))
                   .build();
         }
       }
@@ -370,7 +382,10 @@ final class LobbyLoginValidatorTest {
         return challenge ->
             ImmutableMap.<String, String>builder()
                 .put(LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString())
-                .putAll(RsaAuthenticator.newResponse(challenge, PASSWORD))
+                .put(
+                    LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD,
+                    RsaAuthenticator.encrpytPassword(
+                        challenge.get(LobbyLoginChallengeKeys.RSA_PUBLIC_KEY), PASSWORD))
                 .build();
       }
     }

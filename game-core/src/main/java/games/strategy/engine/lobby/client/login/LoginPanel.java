@@ -27,7 +27,8 @@ final class LoginPanel extends JPanel {
   enum ReturnValue {
     CANCEL,
     LOGON,
-    CREATE_ACCOUNT
+    CREATE_ACCOUNT,
+    FORGOT_PASSWORD
   }
 
   private @Nullable JDialog dialog;
@@ -35,7 +36,8 @@ final class LoginPanel extends JPanel {
   private final JTextField username = new JTextField();
   private final JCheckBox credentialsSaved = new JCheckBox("Remember me");
   private final JCheckBox anonymousLogin = new JCheckBox("Login anonymously");
-  private final JButton createAccount = new JButton("Create Account...");
+  private final JButton createAccount = new JButton("Create Account");
+  private final JButton forgotPassword = new JButton("Forgot Password");
   private ReturnValue returnValue = ReturnValue.CANCEL;
   private final JButton logon = new JButton("Login");
   private final JButton cancel = new JButton("Cancel");
@@ -183,6 +185,7 @@ final class LoginPanel extends JPanel {
     buttons.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
     buttons.add(logon);
     buttons.add(createAccount);
+    buttons.add(forgotPassword);
     buttons.add(cancel);
   }
 
@@ -195,7 +198,11 @@ final class LoginPanel extends JPanel {
         });
     cancel.addActionListener(e -> close());
     anonymousLogin.addActionListener(e -> updateComponents());
-
+    forgotPassword.addActionListener(
+        e -> {
+          returnValue = ReturnValue.FORGOT_PASSWORD;
+          close();
+        });
     SwingComponents.addEnterKeyListener(this, this::logonPressed);
   }
 

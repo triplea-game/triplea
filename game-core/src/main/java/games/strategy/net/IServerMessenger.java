@@ -2,6 +2,7 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.net.nio.ForgotPasswordConversation;
 import java.util.Set;
 import javax.annotation.Nullable;
 
@@ -12,6 +13,8 @@ public interface IServerMessenger extends IMessenger {
   void setLoginValidator(ILoginValidator loginValidator);
 
   ILoginValidator getLoginValidator();
+
+  void setForgotPasswordConversation(ForgotPasswordConversation forgotPasswordConversation);
 
   /** Remove the node from the network. */
   void removeConnection(INode node);
