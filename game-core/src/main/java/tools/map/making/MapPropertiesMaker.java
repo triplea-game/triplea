@@ -561,11 +561,11 @@ public final class MapPropertiesMaker {
       final int indexOf = arg.indexOf('=');
       if (indexOf > 0) {
         arg = arg.substring(0, indexOf);
-        for (final String properties : properties) {
-          if (arg.equals(properties)) {
+        for (final String props : properties) {
+          if (arg.equals(props)) {
             final String value = getValue(arg2);
-            System.setProperty(properties, value);
-            log.info(properties + ":" + value);
+            System.setProperty(props, value);
+            log.info(props + ":" + value);
             found = true;
             break;
           }
