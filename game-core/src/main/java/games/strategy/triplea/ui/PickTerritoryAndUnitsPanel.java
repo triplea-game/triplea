@@ -176,7 +176,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
 
         @Override
         public void mouseMoved(final @Nullable Territory territory, final MouseDetails md) {
-          if (!getActive()) {
+          if (!isActive()) {
             log.severe("Should not be able to select a territory when inactive: " + territory);
             return;
           }
@@ -266,7 +266,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
   private void setWidgetActivation() {
     SwingUtilities.invokeLater(
         () -> {
-          if (!getActive()) {
+          if (!isActive()) {
             // current turn belongs to remote player or AI player
             doneAction.setEnabled(false);
             selectUnitsAction.setEnabled(false);

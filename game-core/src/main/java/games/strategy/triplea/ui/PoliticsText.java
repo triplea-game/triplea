@@ -12,7 +12,7 @@ public class PoliticsText extends PropertyFile {
   private static final String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
   private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
 
-  protected PoliticsText() {
+  private PoliticsText() {
     super(PROPERTY_FILE);
   }
 
@@ -20,7 +20,7 @@ public class PoliticsText extends PropertyFile {
     return PropertyFile.getInstance(PoliticsText.class, PoliticsText::new);
   }
 
-  public String getButtonText(final String politicsKey) {
+  String getButtonText(final String politicsKey) {
     return getMessage(politicsKey, BUTTON);
   }
 

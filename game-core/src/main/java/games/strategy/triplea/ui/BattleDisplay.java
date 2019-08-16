@@ -66,6 +66,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.SwingAction;
@@ -83,7 +85,10 @@ public class BattleDisplay extends JPanel {
 
   private final PlayerId defender;
   private final PlayerId attacker;
-  private final Territory location;
+
+  @Getter(AccessLevel.PACKAGE)
+  private final Territory battleLocation;
+
   private final GameData gameData;
   private final JButton actionButton = new JButton();
   private final BattleModel defenderModel;
@@ -119,7 +124,7 @@ public class BattleDisplay extends JPanel {
       final Collection<Unit> amphibiousLandAttackers) {
     this.defender = defender;
     this.attacker = attacker;
-    location = territory;
+    battleLocation = territory;
     this.mapPanel = mapPanel;
     gameData = data;
     final Collection<TerritoryEffect> territoryEffects =
@@ -130,7 +135,7 @@ public class BattleDisplay extends JPanel {
             false,
             battleType,
             gameData,
-            location,
+            battleLocation,
             territoryEffects,
             isAmphibious,
             Collections.emptySet(),
@@ -141,7 +146,7 @@ public class BattleDisplay extends JPanel {
             true,
             battleType,
             gameData,
-            location,
+            battleLocation,
             territoryEffects,
             isAmphibious,
             amphibiousLandAttackers,
@@ -183,11 +188,7 @@ public class BattleDisplay extends JPanel {
     actionButton.requestFocus();
   }
 
-  public Territory getBattleLocation() {
-    return location;
-  }
-
-  public void bombingResults(final List<Die> dice, final int cost) {
+  void bombingResults(final List<Die> dice, final int cost) {
     dicePanel.setDiceRollForBombing(dice, cost);
     actionLayout.show(actionPanel, DICE_KEY);
   }
@@ -287,7 +288,7 @@ public class BattleDisplay extends JPanel {
     }
   }
 
-  protected void waitForConfirmation(final String message) {
+  void waitForConfirmation(final String message) {
     if (SwingUtilities.isEventDispatchThread()) {
       throw new IllegalStateException("This cannot be in dispatch thread");
     }
@@ -328,7 +329,7 @@ public class BattleDisplay extends JPanel {
     SwingUtilities.invokeLater(() -> actionButton.setAction(close));
   }
 
-  public void notifyRetreat(final Collection<Unit> retreating) {
+  void notifyRetreat(final Collection<Unit> retreating) {
     defenderModel.notifyRetreat(retreating);
     attackerModel.notifyRetreat(retreating);
   }
@@ -378,7 +379,7 @@ public class BattleDisplay extends JPanel {
                 return;
               }
               // submerge
-              retreatTo[0] = location;
+              retreatTo[0] = battleLocation;
               latch.countDown();
             });
     SwingUtilities.invokeLater(() -> actionButton.setAction(action));
@@ -493,7 +494,7 @@ public class BattleDisplay extends JPanel {
     private void updateImage() {
       final int width = 250;
       final int height = 250;
-      final Image img = mapPanel.getTerritoryImage(list.getSelectedValue(), location);
+      final Image img = mapPanel.getTerritoryImage(list.getSelectedValue(), battleLocation);
       final Image finalImage = Util.newImage(width, height, true);
       final Graphics g = finalImage.getGraphics();
       g.drawImage(img, 0, 0, width, height, this);
@@ -754,7 +755,7 @@ public class BattleDisplay extends JPanel {
     actionLayout.show(actionPanel, MESSAGE_KEY);
   }
 
-  public void listBattle(final List<String> steps) {
+  void listBattle(final List<String> steps) {
     this.steps.listBattle(steps);
   }
 
@@ -767,7 +768,7 @@ public class BattleDisplay extends JPanel {
 
   private JComponent getTerritoryComponent() {
     final Image finalImage = Util.newImage(MY_WIDTH, MY_HEIGHT, true);
-    final Image territory = mapPanel.getTerritoryImage(location);
+    final Image territory = mapPanel.getTerritoryImage(battleLocation);
     final Graphics g = finalImage.getGraphics();
     g.drawImage(territory, 0, 0, MY_WIDTH, MY_HEIGHT, this);
     g.dispose();

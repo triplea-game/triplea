@@ -120,7 +120,7 @@ public class UserActionPanel extends ActionPanel {
             }
           });
 
-  public UserActionPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
+  UserActionPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
     this.parent = parent;
   }
@@ -154,7 +154,7 @@ public class UserActionPanel extends ActionPanel {
    *
    * @return the choice of action
    */
-  public UserActionAttachment waitForUserActionAction(
+  UserActionAttachment waitForUserActionAction(
       final boolean firstRun, final IUserActionDelegate userActionsDelegate) {
     this.firstRun = firstRun;
 
