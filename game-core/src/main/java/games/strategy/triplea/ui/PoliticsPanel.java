@@ -61,7 +61,7 @@ public class PoliticsPanel extends ActionPanel {
             }
           });
 
-  public PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
+  PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
     selectPoliticalActionAction =
         SwingAction.of(
@@ -190,7 +190,7 @@ public class PoliticsPanel extends ActionPanel {
    *
    * @return the choice of political action
    */
-  public PoliticalActionAttachment waitForPoliticalAction(
+  PoliticalActionAttachment waitForPoliticalAction(
       final boolean firstRun, final IPoliticsDelegate politicsDelegate) {
     this.firstRun = firstRun;
 

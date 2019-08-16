@@ -386,7 +386,7 @@ public class DownloadMapsWindow extends JFrame {
 
     // finally make sure we are always showing the 'available' tab, this condition will be
     // true if the first 'mapName.isPresent()' is false
-    if (!selectedMapName.isPresent()) {
+    if (selectedMapName.isEmpty()) {
       tabbedPane.addTab("Available", available);
     }
 

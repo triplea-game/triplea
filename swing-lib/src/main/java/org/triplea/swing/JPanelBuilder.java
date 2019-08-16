@@ -352,7 +352,7 @@ public class JPanelBuilder {
   @ToString
   private static final class PanelProperties {
     BorderLayoutPosition borderLayoutPosition = BorderLayoutPosition.DEFAULT;
-    GridBagHelper.ColumnSpan columnSpan = GridBagHelper.ColumnSpan.of(1);
+    final GridBagHelper.ColumnSpan columnSpan = GridBagHelper.ColumnSpan.of(1);
     GridBagHelper.Fill fill = Fill.NONE;
     GridBagHelper.Anchor anchor = Anchor.WEST;
 

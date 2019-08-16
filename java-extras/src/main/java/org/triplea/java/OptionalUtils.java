@@ -30,7 +30,7 @@ public final class OptionalUtils {
     checkNotNull(optional);
     checkNotNull(action);
 
-    if (!optional.isPresent()) {
+    if (optional.isEmpty()) {
       action.run();
     }
   }

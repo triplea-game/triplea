@@ -144,11 +144,12 @@ class WW2V3Year41Test {
     return MockDelegateBridge.newInstance(gameData, player);
   }
 
-  private static String fight(final BattleDelegate battle, final Territory territory) {
+  private static void fight(final BattleDelegate battle, final Territory territory) {
     for (final Entry<BattleType, Collection<Territory>> entry :
         battle.getBattles().getBattles().entrySet()) {
       if (!entry.getKey().isBombingRun() && entry.getValue().contains(territory)) {
-        return battle.fightBattle(territory, false, entry.getKey());
+        battle.fightBattle(territory, false, entry.getKey());
+        return;
       }
     }
     throw new IllegalStateException("Could not find battle in: " + territory.getName());

@@ -100,7 +100,7 @@ public class MovePanel extends AbstractMovePanel {
             return;
           }
           // check if we can handle this event, are we active?
-          if (!getActive()) {
+          if (!isActive()) {
             return;
           }
           if (t == null) {

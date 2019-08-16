@@ -83,7 +83,7 @@ public final class TransportUtils {
       final int capacity = TransportTracker.getAvailableCapacity(currentTransport);
       final int remainingCost = getTransportCost(canBeTransported);
       if (remainingCost <= capacity) {
-        if (!finalTransport.isPresent()
+        if (finalTransport.isEmpty()
             || capacity < TransportTracker.getAvailableCapacity(finalTransport.get())) {
           finalTransport = Optional.of(currentTransport);
         }

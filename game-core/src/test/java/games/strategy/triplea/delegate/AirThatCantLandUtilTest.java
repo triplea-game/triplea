@@ -36,13 +36,14 @@ class AirThatCantLandUtilTest {
     return MockDelegateBridge.newInstance(gameData, player);
   }
 
-  private static String fight(
+  private static void fight(
       final BattleDelegate battle, final Territory territory, final boolean bombing) {
     for (final Entry<BattleType, Collection<Territory>> entry :
         battle.getBattles().getBattles().entrySet()) {
       if (entry.getKey().isBombingRun() == bombing) {
         if (entry.getValue().contains(territory)) {
-          return battle.fightBattle(territory, bombing, entry.getKey());
+          battle.fightBattle(territory, bombing, entry.getKey());
+          return;
         }
       }
     }

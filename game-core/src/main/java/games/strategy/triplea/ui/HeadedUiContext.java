@@ -27,6 +27,7 @@ import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import lombok.Getter;
 import lombok.extern.java.Log;
 
 /** A place to find images and map data for a ui. */
@@ -46,15 +47,12 @@ public class HeadedUiContext extends AbstractUiContext {
   private boolean drawUnits = true;
   private boolean drawTerritoryEffects = false;
   private boolean drawMapOnly = false;
+
+  @Getter(onMethod_ = {@Override})
   private Cursor cursor = Cursor.getDefaultCursor();
 
   HeadedUiContext() {
     mapImage = new MapImage();
-  }
-
-  @Override
-  public Cursor getCursor() {
-    return cursor;
   }
 
   @Override

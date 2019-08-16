@@ -120,7 +120,7 @@ public class UnitsDrawer extends AbstractDrawable {
             .getUnitImageFactory()
             .getImage(type, owner, damaged > 0 || bombingUnitDamage > 0, disabled);
 
-    if (!img.isPresent() && !uiContext.isShutDown()) {
+    if (img.isEmpty() && !uiContext.isShutDown()) {
       log.severe(
           "MISSING UNIT IMAGE (won't be displayed): "
               + type.getName()

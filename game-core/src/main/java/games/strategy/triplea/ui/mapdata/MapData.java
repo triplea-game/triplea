@@ -242,7 +242,7 @@ public class MapData implements Closeable {
       // try first file names that have underscores instead of spaces
       final String normalizedName = imageName.replace(' ', '_');
       Optional<Image> img = loadImage(constructTerritoryNameImagePath(normalizedName));
-      if (!img.isPresent()) {
+      if (img.isEmpty()) {
         img = loadImage(constructTerritoryNameImagePath(imageName));
       }
       return img;
@@ -815,7 +815,7 @@ public class MapData implements Closeable {
       return Optional.of(effectImages.get(effectName));
     }
     Optional<Image> effectImage = loadImage("territoryEffects/" + effectName + "_large.png");
-    if (!effectImage.isPresent()) {
+    if (effectImage.isEmpty()) {
       effectImage = loadImage("territoryEffects/" + effectName + ".png");
     }
     effectImages.put(effectName, effectImage.orElse(null));

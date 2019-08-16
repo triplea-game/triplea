@@ -44,8 +44,8 @@ class StatPanel extends AbstractStatPanel {
   private static final long serialVersionUID = 4340684166664492498L;
 
   IStat[] stats;
-  final Map<PlayerId, ImageIcon> mapPlayerImage = new HashMap<>();
-  final UiContext uiContext;
+  private final Map<PlayerId, ImageIcon> mapPlayerImage = new HashMap<>();
+  private final UiContext uiContext;
   private final StatTableModel dataModel;
   private final TechTableModel techModel;
 
@@ -119,7 +119,7 @@ class StatPanel extends AbstractStatPanel {
     return getIcon(player);
   }
 
-  protected void fillPlayerIcons() {
+  private void fillPlayerIcons() {
     for (final PlayerId p : gameData.getPlayerList().getPlayers()) {
       getIcon(p);
     }

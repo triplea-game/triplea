@@ -82,7 +82,7 @@ public class AppConfig extends Configuration {
   private String bcryptSalt;
 
   @Valid @NotNull @JsonProperty @Getter
-  private DataSourceFactory database = new DataSourceFactory();
+  private final DataSourceFactory database = new DataSourceFactory();
 
   /**
    * Ensures that we have defined all values needed for running in production. To allow environment

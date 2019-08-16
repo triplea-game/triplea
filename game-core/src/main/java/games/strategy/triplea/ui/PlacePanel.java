@@ -42,7 +42,7 @@ class PlacePanel extends AbstractMovePanel {
       new DefaultMapSelectionListener() {
         @Override
         public void territorySelected(final Territory territory, final MouseDetails e) {
-          if (!getActive() || (e.getButton() != MouseEvent.BUTTON1)) {
+          if (!isActive() || (e.getButton() != MouseEvent.BUTTON1)) {
             return;
           }
           final int[] maxUnits = new int[1];
