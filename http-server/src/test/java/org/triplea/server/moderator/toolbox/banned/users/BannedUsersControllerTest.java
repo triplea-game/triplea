@@ -34,7 +34,7 @@ class BannedUsersControllerTest {
 
   @Mock private UserBanData bannedUserData;
 
-  private UserBanParams banUserParams =
+  private final UserBanParams banUserParams =
       UserBanParams.builder()
           .hashedMac("Mainlands scream with urchin at the dead jamaica!")
           .hoursToBan(50)

@@ -40,7 +40,7 @@ final class LobbyGameTableModelTest {
     @Mock private ILobbyGameController mockLobbyController;
     private Map<GUID, GameDescription> fakeGameMap;
     private Tuple<GUID, GameDescription> fakeGame;
-    private GameDescription mockGameDescription = GameDescription.builder().build();
+    private final GameDescription mockGameDescription = GameDescription.builder().build();
     @Mock private INode serverNode;
 
     @BeforeEach

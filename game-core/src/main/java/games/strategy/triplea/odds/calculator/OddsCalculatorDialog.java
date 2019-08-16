@@ -25,7 +25,7 @@ import org.triplea.swing.SwingComponents;
 public class OddsCalculatorDialog extends JDialog {
   private static final long serialVersionUID = -7625420355087851930L;
   private static Point lastPosition;
-  private static List<OddsCalculatorDialog> instances = new ArrayList<>();
+  private static final List<OddsCalculatorDialog> instances = new ArrayList<>();
   private final OddsCalculatorPanel panel;
 
   OddsCalculatorDialog(final OddsCalculatorPanel panel, final JFrame parent) {

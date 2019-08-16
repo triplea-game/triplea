@@ -40,7 +40,7 @@ final class DownloadFileParser {
     }
   }
 
-  private static List<DownloadFileDescription> parseImpl(final InputStream is) throws IOException {
+  private static List<DownloadFileDescription> parseImpl(final InputStream is) {
     final Load load = new Load(new LoadSettingsBuilder().build());
     final List<?> yamlData = (List<?>) load.loadFromInputStream(is);
 

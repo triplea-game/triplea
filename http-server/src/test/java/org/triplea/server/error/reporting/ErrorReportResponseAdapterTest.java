@@ -13,7 +13,7 @@ class ErrorReportResponseAdapterTest {
       new CreateIssueResponse("http://html_url");
   private static final CreateIssueResponse ERROR_RESPONSE = new CreateIssueResponse(null);
 
-  private ErrorReportResponseConverter errorReportResponseAdapter =
+  private final ErrorReportResponseConverter errorReportResponseAdapter =
       new ErrorReportResponseConverter();
 
   @Test

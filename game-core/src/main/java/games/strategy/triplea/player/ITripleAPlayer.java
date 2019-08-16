@@ -171,7 +171,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
   boolean confirmMoveKamikaze();
 
   /** The attempted move will kill some units. */
-  boolean confirmMoveHariKari();
+  void confirmMoveHariKari();
 
   /**
    * Ask the player if he wishes to retreat.
