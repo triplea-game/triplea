@@ -5,12 +5,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.MoreObjects;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /** Default implementation of {@link Named} for game data components. */
+@EqualsAndHashCode(callSuper = false)
 public class DefaultNamed extends GameDataComponent implements Named {
   private static final long serialVersionUID = -5737716450699952621L;
 
+  @Getter(onMethod_ = {@Override})
   private final String name;
 
   public DefaultNamed(final String name, final GameData data) {
@@ -22,24 +25,6 @@ public class DefaultNamed extends GameDataComponent implements Named {
     }
 
     this.name = name;
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public boolean equals(final Object other) {
-    if (other instanceof Named) {
-      return Objects.equals(name, ((Named) other).getName());
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(name);
   }
 
   @Override
