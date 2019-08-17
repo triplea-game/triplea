@@ -184,9 +184,9 @@ public class ResourceLoader implements Closeable {
     paths.add(match.get().getAbsolutePath());
     // find dependencies
     try (URLClassLoader url = new URLClassLoader(new URL[] {match.get().toURI().toURL()})) {
-      final URL dependencesUrl = url.getResource("dependencies.txt");
-      if (dependencesUrl != null) {
-        final Optional<InputStream> inputStream = UrlStreams.openStream(dependencesUrl);
+      final URL dependenciesUrl = url.getResource("dependencies.txt");
+      if (dependenciesUrl != null) {
+        final Optional<InputStream> inputStream = UrlStreams.openStream(dependenciesUrl);
         if (inputStream.isPresent()) {
           try (InputStream stream = inputStream.get()) {
             final java.util.Properties dependenciesFile = new java.util.Properties();

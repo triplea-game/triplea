@@ -12,7 +12,6 @@ import java.awt.Insets;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import javax.swing.JButton;
@@ -152,8 +151,8 @@ public class EmailSenderEditor extends EditorPanel {
                 final File dummy =
                     new File(ClientFileSystemHelper.getUserRootFolder(), "dummySave.txt");
                 dummy.deleteOnExit();
-                try (OutputStream fout = new FileOutputStream(dummy)) {
-                  fout.write(
+                try (var fileOutputStream = new FileOutputStream(dummy)) {
+                  fileOutputStream.write(
                       "This file would normally be a save game".getBytes(StandardCharsets.UTF_8));
                 }
                 final String html =

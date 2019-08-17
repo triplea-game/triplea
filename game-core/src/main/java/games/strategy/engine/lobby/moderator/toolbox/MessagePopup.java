@@ -19,7 +19,7 @@ public final class MessagePopup {
         .message(message)
         .sleepTime(Duration.ofMillis(350))
         .build()
-        .showtoast();
+        .showToast();
   }
 
   public static void showServerError(final RuntimeException e) {

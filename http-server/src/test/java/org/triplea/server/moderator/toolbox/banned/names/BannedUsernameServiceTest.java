@@ -23,7 +23,7 @@ import org.triplea.lobby.server.db.dao.UsernameBanDao;
 import org.triplea.lobby.server.db.data.UsernameBanDaoData;
 
 @ExtendWith(MockitoExtension.class)
-class BannedUsernamesServiceTest {
+class BannedUsernameServiceTest {
 
   private static final String USERNAME = "You haul like an ale.";
   private static final int MODERATOR_ID = 42352;
@@ -36,7 +36,7 @@ class BannedUsernamesServiceTest {
   @Mock private UsernameBanDao bannedUsernamesDao;
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
-  @InjectMocks private UsernameBanService bannedUsernamesService;
+  @InjectMocks private UsernameBanService usernameBanService;
 
   @Nested
   final class RemoveNameBanTest {
@@ -45,7 +45,7 @@ class BannedUsernamesServiceTest {
     void removeFailureCase() {
       when(bannedUsernamesDao.removeBannedUserName(USERNAME)).thenReturn(0);
 
-      assertThat(bannedUsernamesService.removeUsernameBan(MODERATOR_ID, USERNAME), is(false));
+      assertThat(usernameBanService.removeUsernameBan(MODERATOR_ID, USERNAME), is(false));
 
       verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
     }
@@ -54,7 +54,7 @@ class BannedUsernamesServiceTest {
     void removeSuccessCase() {
       when(bannedUsernamesDao.removeBannedUserName(USERNAME)).thenReturn(1);
 
-      assertThat(bannedUsernamesService.removeUsernameBan(MODERATOR_ID, USERNAME), is(true));
+      assertThat(usernameBanService.removeUsernameBan(MODERATOR_ID, USERNAME), is(true));
 
       verify(moderatorAuditHistoryDao)
           .addAuditRecord(
@@ -72,7 +72,7 @@ class BannedUsernamesServiceTest {
     void addFailureCase() {
       when(bannedUsernamesDao.addBannedUserName(USERNAME)).thenReturn(0);
 
-      assertThat(bannedUsernamesService.addBannedUserName(MODERATOR_ID, USERNAME), is(false));
+      assertThat(usernameBanService.addBannedUserName(MODERATOR_ID, USERNAME), is(false));
 
       verify(moderatorAuditHistoryDao, never()).addAuditRecord(any());
     }
@@ -81,7 +81,7 @@ class BannedUsernamesServiceTest {
     void addSuccessCase() {
       when(bannedUsernamesDao.addBannedUserName(USERNAME)).thenReturn(1);
 
-      assertThat(bannedUsernamesService.addBannedUserName(MODERATOR_ID, USERNAME), is(true));
+      assertThat(usernameBanService.addBannedUserName(MODERATOR_ID, USERNAME), is(true));
 
       verify(moderatorAuditHistoryDao)
           .addAuditRecord(
@@ -98,7 +98,7 @@ class BannedUsernamesServiceTest {
     when(bannedUsernamesDao.getBannedUserNames())
         .thenReturn(Collections.singletonList(bannedUserNameDaoData));
 
-    final List<UsernameBanData> results = bannedUsernamesService.getBannedUserNames();
+    final List<UsernameBanData> results = usernameBanService.getBannedUserNames();
     assertThat(results, hasSize(1));
     assertThat(results.get(0).getBanDate(), is(bannedUserNameDaoData.getDateCreated()));
     assertThat(results.get(0).getBannedName(), is(bannedUserNameDaoData.getUsername()));

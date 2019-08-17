@@ -23,8 +23,8 @@ public abstract class TerritoryDrawable extends AbstractDrawable {
       final MapData mapData,
       final Territory territory,
       final Paint territoryPaint) {
-    final List<Polygon> polys = mapData.getPolygons(territory);
-    for (final Polygon polygon : polys) {
+    final List<Polygon> polygons = mapData.getPolygons(territory);
+    for (final Polygon polygon : polygons) {
       if (!polygon.intersects(bounds) && !polygon.contains(bounds)) {
         continue;
       }

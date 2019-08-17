@@ -212,7 +212,7 @@ public class InitializationDelegate extends BaseTripleADelegate {
     // we have a lot of bid steps, 12 for pact of steel
     // in multi player this can be time consuming, since each vm
     // must be notified (and have its ui) updated for each step,
-    // so remove the bid steps that arent used
+    // so remove the bid steps that aren't used
     for (final GameStep step : data.getSequence()) {
       if (step.getDelegate() instanceof BidPlaceDelegate
           || step.getDelegate() instanceof BidPurchaseDelegate) {

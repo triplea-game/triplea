@@ -12,11 +12,11 @@ import games.strategy.net.INode;
  */
 public interface IChatChannel extends IChannelSubscriber {
   // we get the sender from MessageContext
-  void chatOccured(String message);
+  void chatOccurred(String message);
 
-  void meMessageOccured(String message);
+  void meMessageOccurred(String message);
 
-  void slapOccured(String playerName);
+  void slapOccurred(String playerName);
 
   void speakerAdded(INode node, Tag tag, long version);
 

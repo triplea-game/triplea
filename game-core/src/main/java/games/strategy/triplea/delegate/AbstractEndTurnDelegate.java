@@ -501,7 +501,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
         if (numberOfDice > 0) {
           // there is an issue with maps that have lots of rolls without any pause between them:
           // they are causing the
-          // cypted random source (ie: live and pbem games) to lock up or error out
+          // crypted random source (ie: live and pbem games) to lock up or error out
           // so we need to slow them down a bit, until we come up with a better solution (like
           // aggregating all the
           // chances together, then getting a ton of random numbers at once instead of one at a

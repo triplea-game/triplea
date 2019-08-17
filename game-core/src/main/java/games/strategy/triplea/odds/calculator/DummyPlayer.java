@@ -95,7 +95,7 @@ class DummyPlayer extends AbstractAi {
 
   @Override
   protected void purchase(
-      final boolean purcahseForBid,
+      final boolean purchaseForBid,
       final int pusToSpend,
       final IPurchaseDelegate purchaseDelegate,
       final GameData data,
@@ -200,7 +200,7 @@ class DummyPlayer extends AbstractAi {
       final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties,
       final GUID battleId,
-      final Territory battlesite,
+      final Territory battleSite,
       final boolean allowMultipleHitsPerUnit) {
     final List<Unit> damagedUnits = new ArrayList<>(defaultCasualties.getDamaged());
     final List<Unit> killedUnits = new ArrayList<>(defaultCasualties.getKilled());

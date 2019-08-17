@@ -181,10 +181,10 @@ class RouteCalculatorTest {
             Arrays.stream(testData)
                 .forEach(
                     d -> {
-                      final int currentsegmentType = iterator.currentSegment(new double[] {d, d});
+                      final int currentSegmentType = iterator.currentSegment(new double[] {d, d});
                       assertTrue(
-                          currentsegmentType == PathIterator.SEG_LINETO
-                              || currentsegmentType == PathIterator.SEG_MOVETO,
+                          currentSegmentType == PathIterator.SEG_LINETO
+                              || currentSegmentType == PathIterator.SEG_MOVETO,
                           "(" + d + ", " + d + ") not contained");
                       if (!iterator.isDone()) {
                         iterator.next();

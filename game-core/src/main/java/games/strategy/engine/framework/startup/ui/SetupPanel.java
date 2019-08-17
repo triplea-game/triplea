@@ -226,7 +226,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
       playerRows.add(selector);
       if (!player.isHidden()) {
         selector.layout(++gridy, panel);
-        selector.setResourceModifiersVisble(false);
+        selector.setResourceModifiersVisible(false);
       }
     }
 
@@ -237,7 +237,7 @@ public abstract class SetupPanel extends JPanel implements SetupModel {
               final boolean isVisible = incomeLabel.isVisible();
               incomeLabel.setVisible(!isVisible);
               puIncomeBonusLabel.setVisible(!isVisible);
-              playerRows.forEach(row -> row.setResourceModifiersVisble(!isVisible));
+              playerRows.forEach(row -> row.setResourceModifiersVisible(!isVisible));
             }));
 
     setAllTypes.addActionListener(

@@ -15,13 +15,13 @@ class UsernameBanService {
   @Nonnull private final UsernameBanDao bannedUserNamesDao;
   @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
-  boolean removeUsernameBan(final int moderatorUserId, final String namneToUnBan) {
-    if (bannedUserNamesDao.removeBannedUserName(namneToUnBan) > 0) {
+  boolean removeUsernameBan(final int moderatorUserId, final String nameToUnBan) {
+    if (bannedUserNamesDao.removeBannedUserName(nameToUnBan) > 0) {
       moderatorAuditHistoryDao.addAuditRecord(
           ModeratorAuditHistoryDao.AuditArgs.builder()
               .moderatorUserId(moderatorUserId)
               .actionName(ModeratorAuditHistoryDao.AuditAction.REMOVE_USERNAME_BAN)
-              .actionTarget(namneToUnBan)
+              .actionTarget(nameToUnBan)
               .build());
       return true;
     }

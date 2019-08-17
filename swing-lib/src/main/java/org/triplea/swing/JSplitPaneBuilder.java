@@ -6,7 +6,7 @@ import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 
 /**
- * Relatively simple type-safe builder API for constructring a JTabbedPane. <br>
+ * Relatively simple type-safe builder API for constructing a JTabbedPane. <br>
  * Example usage:
  *
  * <pre>

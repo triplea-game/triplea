@@ -403,9 +403,9 @@ public final class ConnectionFinder {
 
   private static Shape scale(final Shape currentShape, final int pixels) {
     final Dimension d = currentShape.getBounds().getSize();
-    final double scalefactorX = 1.0 + (1 / ((double) d.width)) * pixels;
-    final double scalefactorY = 1.0 + (1 / ((double) d.height)) * pixels;
-    return scale(currentShape, scalefactorX, scalefactorY);
+    final double scaleFactorX = 1.0 + (1 / ((double) d.width)) * pixels;
+    final double scaleFactorY = 1.0 + (1 / ((double) d.height)) * pixels;
+    return scale(currentShape, scaleFactorX, scaleFactorY);
   }
 
   /**

@@ -30,7 +30,7 @@ import org.triplea.java.collections.CollectionUtils;
 public class PoliticalActionAttachment extends AbstractUserActionAttachment {
   private static final long serialVersionUID = 4392770599777282477L;
 
-  // list of relationship changes to be performed if this action is performed sucessfully
+  // list of relationship changes to be performed if this action is performed successfully
   private List<String> relationshipChange = new ArrayList<>();
 
   public PoliticalActionAttachment(

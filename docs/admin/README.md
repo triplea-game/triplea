@@ -3,7 +3,7 @@
 ## How to Release
 
 Before a release has started, we need to be really confident it has been well tested. Check that the QA group has
-given the greenlight for the release.
+given the green-light for the release.
 
 ### Game Engine Release
 - Verify the release notes: https://github.com/triplea-game/triplea-game.github.io/blob/master/release_notes.md
@@ -28,7 +28,7 @@ given the greenlight for the release.
 ## [Bot Account](https://github.com/tripleabuilderbot)
 
 This is a github account that the project uses to do automated pushes to our github repository. The travis build kicks
-in after code merges and we use SSH keys attached to this account to grant autoamted access. This account has
+in after code merges and we use SSH keys attached to this account to grant automated access. This account has
 write access to the repository. We use this account so it that these keys are not tied to any one individual. 
 
 ### Personal Access Keys

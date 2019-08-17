@@ -34,12 +34,12 @@ class BannedUsernamesTabModelTest {
     when(toolboxUsernameBanClient.getUsernameBans())
         .thenReturn(Collections.singletonList(BANNED_USERNAME_DATA));
 
-    final List<List<String>> tabledata = bannedUsernamesTabModel.fetchTableData();
+    final List<List<String>> tableData = bannedUsernamesTabModel.fetchTableData();
 
     ToolboxTabModelTestUtil.verifyTableDimensions(
-        tabledata, BannedUsernamesTabModel.fetchTableHeaders());
+        tableData, BannedUsernamesTabModel.fetchTableHeaders());
     ToolboxTabModelTestUtil.verifyTableDataAtRow(
-        tabledata,
+        tableData,
         0,
         BANNED_USERNAME_DATA.getBannedName(),
         BANNED_USERNAME_DATA.getBanDate().toString(),

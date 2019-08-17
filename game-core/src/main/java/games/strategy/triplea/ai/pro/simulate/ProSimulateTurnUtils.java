@@ -83,10 +83,10 @@ public final class ProSimulateTurnUtils {
         ProLogger.debug("attackersToRemove=" + attackersToRemove);
         ProLogger.debug("defendersToRemove=" + defendersToRemove);
         ProLogger.debug("infrastructureToChangeOwner=" + infrastructureToChangeOwner);
-        final Change attackerskilledChange = ChangeFactory.removeUnits(t, attackersToRemove);
-        delegateBridge.addChange(attackerskilledChange);
-        final Change defenderskilledChange = ChangeFactory.removeUnits(t, defendersToRemove);
-        delegateBridge.addChange(defenderskilledChange);
+        final Change attackersKilledChange = ChangeFactory.removeUnits(t, attackersToRemove);
+        delegateBridge.addChange(attackersKilledChange);
+        final Change defendersKilledChange = ChangeFactory.removeUnits(t, defendersToRemove);
+        delegateBridge.addChange(defendersKilledChange);
         BattleTracker.captureOrDestroyUnits(t, player, player, delegateBridge, null);
         if (!checkIfCapturedTerritoryIsAlliedCapital(t, data, player, delegateBridge)) {
           delegateBridge.addChange(ChangeFactory.changeOwner(t, player));
@@ -193,7 +193,7 @@ public final class ProSimulateTurnUtils {
                 + u
                 + ", bombardFromTerritory="
                 + bombardMap.get(u)
-                + " to bomard="
+                + " to bombard="
                 + toUnit
                 + ", bombardFromTerritory="
                 + patd.getBombardTerritoryMap().get(toUnit));

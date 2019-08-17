@@ -7,9 +7,9 @@ import java.util.Collection;
 public interface IChatListener {
   void updatePlayerList(Collection<INode> players);
 
-  void addMessage(String message, String from, boolean thirdperson);
+  void addMessage(String message, String from, boolean thirdPerson);
 
-  void addMessageWithSound(String message, String from, boolean thirdperson, String sound);
+  void addMessageWithSound(String message, String from, boolean thirdPerson, String sound);
 
   void addStatusMessage(String message);
 }

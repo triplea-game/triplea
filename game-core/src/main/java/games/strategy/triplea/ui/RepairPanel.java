@@ -29,7 +29,7 @@ class RepairPanel extends ActionPanel {
   private boolean bid;
   private Collection<PlayerId> allowedPlayersToRepair;
   private final SimpleUnitPanel unitsPanel;
-  private final JLabel repairdSoFar = new JLabel();
+  private final JLabel repairedSoFar = new JLabel();
   private final JButton buyButton;
 
   private final ActionListener purchaseAction =
@@ -50,11 +50,11 @@ class RepairPanel extends ActionPanel {
           unitsPanel.setUnitsFromRepairRuleMap(repair, player, data);
           final int totalValues = getTotalValues(repair);
           if (totalValues == 0) {
-            repairdSoFar.setText("");
+            repairedSoFar.setText("");
             buyButton.setText(BUY);
           } else {
             buyButton.setText(CHANGE);
-            repairdSoFar.setText(
+            repairedSoFar.setText(
                 totalValues + MyFormatter.pluralize(" unit", totalValues) + " to be repaired:");
           }
         }
@@ -98,9 +98,9 @@ class RepairPanel extends ActionPanel {
           add(actionLabel);
           add(buyButton);
           add(new JButton(doneAction));
-          repairdSoFar.setText("");
+          repairedSoFar.setText("");
           add(Box.createVerticalStrut(9));
-          add(repairdSoFar);
+          add(repairedSoFar);
           add(Box.createVerticalStrut(4));
           unitsPanel.setUnitsFromRepairRuleMap(new HashMap<>(), id, getData());
           add(unitsPanel);

@@ -137,7 +137,7 @@ public class MovePanel extends AbstractMovePanel {
 
         private void selectUnitsToMove(
             final List<Unit> units, final Territory t, final MouseDetails me) {
-          // are any of the units ours, note - if no units selected thats still ok
+          // are any of the units ours, note - if no units selected that's still ok
           if (!BaseEditDelegate.getEditMode(getData()) || !selectedUnits.isEmpty()) {
             for (final Unit unit : units) {
               if (!unit.getOwner().equals(getUnitOwner(selectedUnits))) {
@@ -1655,7 +1655,7 @@ public class MovePanel extends AbstractMovePanel {
     } finally {
       getData().releaseReadLock();
     }
-    final Predicate<Unit> moveableUnitOwnedByMe =
+    final Predicate<Unit> movableUnitOwnedByMe =
         PredicateBuilder.of(Matches.unitIsOwnedBy(getCurrentPlayer()))
             .and(Matches.unitHasMovementLeft())
             // if not non combat, cannot move aa units
@@ -1663,10 +1663,10 @@ public class MovePanel extends AbstractMovePanel {
             .build();
     final Collection<Collection<Unit>> highlight = new ArrayList<>();
     for (final Territory t : allTerritories) {
-      final List<Unit> moveableUnits = t.getUnitCollection().getMatches(moveableUnitOwnedByMe);
-      moveableUnits.removeAll(unitScroller.getSkippedUnits());
-      if (!moveableUnits.isEmpty()) {
-        highlight.add(moveableUnits);
+      final List<Unit> movableUnits = t.getUnitCollection().getMatches(movableUnitOwnedByMe);
+      movableUnits.removeAll(unitScroller.getSkippedUnits());
+      if (!movableUnits.isEmpty()) {
+        highlight.add(movableUnits);
       }
     }
     if (!highlight.isEmpty()) {

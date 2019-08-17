@@ -330,7 +330,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private void notifySuccess(final PoliticalActionAttachment paa) {
     getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, player);
-    sendNotification(PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
+    sendNotification(PoliticsText.getInstance().getNotificationSuccess(paa.getText()));
     notifyOtherPlayers(PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
   }
 

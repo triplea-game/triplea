@@ -461,7 +461,9 @@ public class GameDataExporter {
     } catch (final Exception e) {
       log.log(
           Level.SEVERE,
-          "An Error occured whilst trying to print the Attachment \"" + attachment.getName() + "\"",
+          "An Error occurred whilst trying to print the Attachment \""
+              + attachment.getName()
+              + "\"",
           e);
     }
   }

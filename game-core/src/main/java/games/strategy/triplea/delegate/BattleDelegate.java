@@ -510,7 +510,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         final ITripleAPlayer remotePlayer = getRemotePlayer(bridge);
         if (territory.isWater() && Properties.getSeaBattlesMayBeIgnored(data)) {
           if (!remotePlayer.selectAttackUnits(territory)) {
-            final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
+            final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
             battleTracker
                 .getBattleRecords()
                 .addResultToBattle(
@@ -532,7 +532,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             && !enemyUnits.isEmpty()
             && enemyUnits.stream().allMatch(seaTransports)) {
           if (!remotePlayer.selectAttackTransports(territory)) {
-            final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
+            final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
             battleTracker
                 .getBattleRecords()
                 .addResultToBattle(
@@ -552,7 +552,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (!enemyUnits.isEmpty()
             && enemyUnits.stream().allMatch(Matches.unitCanBeMovedThroughByEnemies())) {
           if (!remotePlayer.selectAttackSubs(territory)) {
-            final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
+            final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
             battleTracker
                 .getBattleRecords()
                 .addResultToBattle(
@@ -573,7 +573,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
             && !enemyUnits.isEmpty()
             && enemyUnits.stream().allMatch(seaTranportsOrSubs)) {
           if (!remotePlayer.selectAttackUnits(territory)) {
-            final BattleResults results = new BattleResults(battle, WhoWon.NOTFINISHED, data);
+            final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
             battleTracker
                 .getBattleRecords()
                 .addResultToBattle(

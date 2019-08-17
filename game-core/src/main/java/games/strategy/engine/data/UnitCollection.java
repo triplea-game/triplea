@@ -83,7 +83,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
       return new ArrayList<>();
     }
     if (maxUnits < 0) {
-      throw new IllegalArgumentException("value must be positiive.  Instead its:" + maxUnits);
+      throw new IllegalArgumentException("value must be positive.  Instead its:" + maxUnits);
     }
     final Collection<Unit> units = new ArrayList<>();
     for (final Unit current : this.units) {
@@ -199,7 +199,7 @@ public class UnitCollection extends GameDataComponent implements Collection<Unit
   @Override
   public String toString() {
     final StringBuilder buf = new StringBuilder();
-    buf.append("Unit collecion held by ").append(holder.getName());
+    buf.append("Unit collection held by ").append(holder.getName());
     buf.append(" units:");
     final IntegerMap<UnitType> units = getUnitsByType();
     for (final UnitType unit : units.keySet()) {

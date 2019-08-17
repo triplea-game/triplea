@@ -243,7 +243,7 @@ public class PbemDiceRoller implements IRandomSource {
         appendText("Text from dice server:\n" + text + "\n");
         notifyError();
       } catch (final IOException ex) {
-        appendText("An error has occured!\n");
+        appendText("An error has occurred!\n");
         appendText("Possible reasons the error could have happened:\n");
         appendText("  1: An invalid e-mail address\n");
         appendText("  2: Firewall could be blocking TripleA from connecting to the Dice Server\n");

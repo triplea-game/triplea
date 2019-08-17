@@ -165,7 +165,7 @@ public final class BattlePanel extends ActionPanel {
     while (!battleId.equals(displayed)) {
       count++;
       Interruptibles.sleep(count);
-      // something is wrong, we shouldnt have to wait this long
+      // something is wrong, we shouldn't have to wait this long
       if (count > 200) {
         log.severe(
             "battle not displayed, looking for:" + battleId + " showing:" + currentBattleDisplayed);

@@ -26,7 +26,7 @@ public class FailedLoginThrottle {
 
   /**
    * Cache that maps inet address to failed login attempts. This is to keep track of failed login
-   * attempts and eventaully lock a user out (and prevent a brute-force password cracking attempt).
+   * attempts and eventually lock a user out (and prevent a brute-force password cracking attempt).
    */
   private final Cache<InetAddress, Integer> failedLoginCache =
       CacheBuilder.newBuilder().expireAfterWrite(FAILED_LOGIN_COOLOFF, TimeUnit.MINUTES).build();

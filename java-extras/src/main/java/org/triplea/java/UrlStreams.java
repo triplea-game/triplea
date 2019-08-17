@@ -35,7 +35,7 @@ public final class UrlStreams {
    * Opens an input stream to a given url. Returns Optional.empty() in case there is a failure. The
    * failure message is logged to the user.
    *
-   * @return Optional.empty() if there was a failure opening the strema, otherwise an optional
+   * @return Optional.empty() if there was a failure opening the stream, otherwise an optional
    *     containing an input stream to the parameter uri.
    */
   public static Optional<InputStream> openStream(final URL url) {
@@ -45,7 +45,7 @@ public final class UrlStreams {
   /**
    * Opens an input stream to a given uri.
    *
-   * @return Optional.empty() if there was a failure opening the strema, otherwise an optional
+   * @return Optional.empty() if there was a failure opening the stream, otherwise an optional
    *     containing an input stream to the parameter uri.
    * @throws IllegalStateException if the given uri is malformed
    */

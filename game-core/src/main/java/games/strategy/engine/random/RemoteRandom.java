@@ -40,7 +40,7 @@ public class RemoteRandom implements IRemoteRandom {
       throws IllegalStateException {
     if (waitingForUnlock) {
       throw new IllegalStateException(
-          "Being asked to generate random numbers, but we havent finished last generation. "
+          "Being asked to generate random numbers, but we haven't finished last generation. "
               // TODO: maybe we should wait instead of crashing the game?
               + "Asked for: "
               + count

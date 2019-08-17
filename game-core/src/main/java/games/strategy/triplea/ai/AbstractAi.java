@@ -125,7 +125,7 @@ public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAP
       final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties,
       final GUID battleId,
-      final Territory battlesite,
+      final Territory battleSite,
       final boolean allowMultipleHitsPerUnit) {
     if (defaultCasualties.size() != count) {
       throw new IllegalStateException(

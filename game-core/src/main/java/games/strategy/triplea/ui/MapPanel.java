@@ -234,7 +234,7 @@ public class MapPanel extends ImageScrollerLargeView {
               new Thread(
                       () -> {
                         // Mouse Events are different than key events
-                        // Thats why we're "simulating" multiple clicks while the mouse button is
+                        // That's why we're "simulating" multiple clicks while the mouse button is
                         // held down
                         // so the map keeps scrolling
                         while (lastActive != -1) {

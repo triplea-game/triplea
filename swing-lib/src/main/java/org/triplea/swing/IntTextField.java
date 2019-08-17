@@ -154,7 +154,7 @@ public class IntTextField extends JTextField {
     @Override
     public void remove(final int offs, final int len) throws BadLocationException {
       super.remove(offs, len);
-      // if its a valid number weve changed
+      // if its a valid number we've changed
       try {
         Integer.parseInt(IntTextField.this.getText());
         notifyListeners();

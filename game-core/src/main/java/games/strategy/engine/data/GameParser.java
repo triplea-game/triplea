@@ -216,7 +216,7 @@ public final class GameParser {
     // sets the relationship between all players and the NullPlayer to NullRelation (with archeType
     // War)
     data.getRelationshipTracker().setNullPlayerRelations();
-    // sets the relationship for all players with themselfs to the SelfRelation (with archeType
+    // sets the relationship for all players with themselves to the SelfRelation (with archeType
     // Allied)
     data.getRelationshipTracker().setSelfRelations();
     // set default tech attachments (comes after we parse all technologies, parse all attachments,
@@ -534,37 +534,37 @@ public final class GameParser {
       final String diagonalConnections)
       throws GameParseException {
     final GameMap map = data.getMap();
-    final boolean horizontalConnectionsImplict;
+    final boolean horizontalConnectionsImplicit;
     switch (horizontalConnections) {
       case "implicit":
-        horizontalConnectionsImplict = true;
+        horizontalConnectionsImplicit = true;
         break;
       case "explicit":
-        horizontalConnectionsImplict = false;
+        horizontalConnectionsImplicit = false;
         break;
       default:
         throw newGameParseException(
             "horizontal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
-    final boolean verticalConnectionsImplict;
+    final boolean verticalConnectionsImplicit;
     switch (verticalConnections) {
       case "implicit":
-        verticalConnectionsImplict = true;
+        verticalConnectionsImplicit = true;
         break;
       case "explicit":
-        verticalConnectionsImplict = false;
+        verticalConnectionsImplicit = false;
         break;
       default:
         throw newGameParseException(
             "vertical-connections attribute must be either \"explicit\" or \"implicit\"");
     }
-    final boolean diagonalConnectionsImplict;
+    final boolean diagonalConnectionsImplicit;
     switch (diagonalConnections) {
       case "implicit":
-        diagonalConnectionsImplict = true;
+        diagonalConnectionsImplicit = true;
         break;
       case "explicit":
-        diagonalConnectionsImplict = false;
+        diagonalConnectionsImplicit = false;
         break;
       default:
         throw newGameParseException(
@@ -582,7 +582,7 @@ public final class GameParser {
         }
       }
       // Add any implicit horizontal connections
-      if (horizontalConnectionsImplict) {
+      if (horizontalConnectionsImplicit) {
         for (int y = 0; y < sizeY; y++) {
           for (int x = 0; x < sizeX - 1; x++) {
             map.addConnection(
@@ -591,7 +591,7 @@ public final class GameParser {
         }
       }
       // Add any implicit vertical connections
-      if (verticalConnectionsImplict) {
+      if (verticalConnectionsImplicit) {
         for (int x = 0; x < sizeX; x++) {
           for (int y = 0; y < sizeY - 1; y++) {
             map.addConnection(
@@ -600,7 +600,7 @@ public final class GameParser {
         }
       }
       // Add any implicit acute diagonal connections
-      if (diagonalConnectionsImplict) {
+      if (diagonalConnectionsImplicit) {
         for (int y = 0; y < sizeY - 1; y++) {
           for (int x = 0; x < sizeX - 1; x++) {
             map.addConnection(
@@ -610,7 +610,7 @@ public final class GameParser {
         }
       }
       // Add any implicit obtuse diagonal connections
-      if (diagonalConnectionsImplict) {
+      if (diagonalConnectionsImplicit) {
         for (int y = 0; y < sizeY - 1; y++) {
           for (int x = 1; x < sizeX; x++) {
             map.addConnection(
@@ -631,7 +631,7 @@ public final class GameParser {
         }
       }
       // Add any implicit horizontal connections
-      if (horizontalConnectionsImplict) {
+      if (horizontalConnectionsImplicit) {
         for (int y = 0; y < sizeY; y++) {
           for (int x = 0; x < sizeX - 1; x++) {
             final Territory from = map.getTerritoryFromCoordinates(x, y);
@@ -643,7 +643,7 @@ public final class GameParser {
         }
       }
       // Add any implicit acute diagonal connections
-      if (diagonalConnectionsImplict) {
+      if (diagonalConnectionsImplicit) {
         for (int y = 1; y < sizeY; y++) {
           for (int x = 0; x < sizeX - 1; x++) {
             if (y % 4 == 0 || (y + 1) % 4 == 0) {
@@ -663,7 +663,7 @@ public final class GameParser {
         }
       }
       // Add any implicit obtuse diagonal connections
-      if (diagonalConnectionsImplict) {
+      if (diagonalConnectionsImplicit) {
         for (int y = 1; y < sizeY; y++) {
           for (int x = 0; x < sizeX - 1; x++) {
             if (y % 4 == 0 || (y + 1) % 4 == 0) {
@@ -802,9 +802,9 @@ public final class GameParser {
         final Set<PlayerId> enemies = new HashSet<>(players);
         enemies.removeAll(allies);
 
-        // remove self from enemieslist (in case of free-for-all)
+        // remove self from enemies list (in case of free-for-all)
         enemies.remove(currentPlayer);
-        // remove self from allieslist (in case you are a member of an alliance)
+        // remove self from allies list (in case you are a member of an alliance)
         allies.remove(currentPlayer);
         // At this point enemies and allies should be set for this player.
         for (final PlayerId alliedPLayer : allies) {
@@ -1501,7 +1501,7 @@ public final class GameParser {
         hits = Integer.parseInt(hitsTakenString);
         if (hits < 0 || hits > UnitAttachment.get(type).getHitPoints() - 1) {
           throw newGameParseException(
-              "hitsTaken cannot be less than zero or greater than one less than total hitpPoints");
+              "hitsTaken cannot be less than zero or greater than one less than total hitPoints");
         }
       } else {
         hits = 0;

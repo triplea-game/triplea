@@ -47,9 +47,9 @@ Ensure compatibility between network nodes running different versions.
 
 ## Manual Regression Testing
 
-- Various maps can be opened, no delegates brokens
+- Various maps can be opened, no delegates broken
 - Launch an AI only game and let some AI players go at for a dozen rounds, verify no errors.
-- Join a lobby bot of live lobby, play through a combat (compatability check). 
+- Join a lobby bot of live lobby, play through a combat (compatibility check). 
 - Verify important combat rules are working (can be combined with above step)
 - More Compatibility checks
   - save games

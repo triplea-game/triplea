@@ -77,7 +77,7 @@ public final class MacFinder {
         }
       }
     } catch (final SocketException | UnknownHostException e) {
-      log.log(Level.SEVERE, "Error while trying to get a valid MAC adress", e);
+      log.log(Level.SEVERE, "Error while trying to get a valid MAC address", e);
     }
     // Next, try to get the mac address of the first network interfaces that has an accessible mac
     // address
@@ -92,7 +92,7 @@ public final class MacFinder {
         }
       }
     } catch (final SocketException e) {
-      log.log(Level.SEVERE, "Error while trying to get a valid MAC adress", e);
+      log.log(Level.SEVERE, "Error while trying to get a valid MAC address", e);
     }
     // Next, try to get the mac address by calling the 'getmac' app that exists in Windows,
     // Mac, and possibly others.

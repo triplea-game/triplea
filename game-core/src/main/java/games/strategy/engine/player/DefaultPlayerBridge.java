@@ -61,9 +61,8 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       game.getData().acquireReadLock();
       try {
         final IDelegate delegate = game.getData().getDelegate(currentDelegate);
-        // TODO: before converting this Precondtions check to checkNotNull, make sure we do not
-        // depend on the
-        // illegal state exception type in a catch block.
+        // TODO: before converting this Preconditions check to checkNotNull, make sure we do not
+        // depend on the illegal state exception type in a catch block.
         Preconditions.checkState(
             delegate != null,
             "IDelegate in DefaultPlayerBridge.getRemote() cannot be null. CurrentStep: "
@@ -90,7 +89,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
     } catch (final MessengerException me) {
       // TODO: this kind of conversion does not seem appropriate. Maybe MessengerException should
       // extend
-      // GameOverException? the root cause of the MessenderException is being lost, that is
+      // GameOverException? the root cause of the MessengerException is being lost, that is
       // something to fix
       // as well as a potential control-flow-by-exception-handling code smell.
       throw new GameOverException("Game Over!");

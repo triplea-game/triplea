@@ -62,7 +62,7 @@ public class Chat {
         }
 
         @Override
-        public void chatOccured(final String message) {
+        public void chatOccurred(final String message) {
           final INode from = MessageContext.getSender();
           if (isIgnored(from)) {
             return;
@@ -80,7 +80,7 @@ public class Chat {
         }
 
         @Override
-        public void meMessageOccured(final String message) {
+        public void meMessageOccurred(final String message) {
           final INode from = MessageContext.getSender();
           if (isIgnored(from)) {
             return;
@@ -146,7 +146,7 @@ public class Chat {
         }
 
         @Override
-        public void slapOccured(final String to) {
+        public void slapOccurred(final String to) {
           final INode from = MessageContext.getSender();
           if (isIgnored(from)) {
             return;
@@ -295,7 +295,7 @@ public class Chat {
     messengers.unregisterChannelSubscriber(
         chatChannelSubscriber, new RemoteName(chatChannelName, IChatChannel.class));
     if (messengers.isConnected()) {
-      final RemoteName chatControllerName = ChatController.getChatControlerRemoteName(chatName);
+      final RemoteName chatControllerName = ChatController.getChatControllerRemoteName(chatName);
       final IChatController controller = (IChatController) messengers.getRemote(chatControllerName);
       controller.leaveChat();
     }
@@ -305,7 +305,7 @@ public class Chat {
     final IChatChannel remote =
         (IChatChannel)
             messengers.getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
-    remote.slapOccured(playerName);
+    remote.slapOccurred(playerName);
   }
 
   public void sendMessage(final String message, final boolean meMessage) {
@@ -313,9 +313,9 @@ public class Chat {
         (IChatChannel)
             messengers.getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
     if (meMessage) {
-      remote.meMessageOccured(message);
+      remote.meMessageOccurred(message);
     } else {
-      remote.chatOccured(message);
+      remote.chatOccurred(message);
     }
     sentMessages.append(message);
   }

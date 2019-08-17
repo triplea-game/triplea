@@ -148,11 +148,11 @@ class StatPanel extends AbstractStatPanel {
     private String[][] collectedData;
 
     StatTableModel() {
-      setStatCollums();
+      setStatColumns();
       gameData.addDataChangeListener(this);
     }
 
-    void setStatCollums() {
+    void setStatColumns() {
       stats = new IStat[] {new PuStat(), new ProductionStat(), new UnitsStat(), new TuvStat()};
       if (gameData.getMap().getTerritories().stream().anyMatch(Matches.territoryIsVictoryCity())) {
         final List<IStat> stats = new ArrayList<>(Arrays.asList(StatPanel.this.stats));
@@ -330,7 +330,7 @@ class StatPanel extends AbstractStatPanel {
 
     void update() {
       clearAdvances();
-      // copy so aquire/release read lock are on the same object!
+      // copy so acquire/release read lock are on the same object!
       final GameData gameData = StatPanel.this.gameData;
       gameData.acquireReadLock();
       try {

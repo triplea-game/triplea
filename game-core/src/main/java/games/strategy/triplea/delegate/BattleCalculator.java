@@ -302,7 +302,7 @@ public class BattleCalculator {
 
     // if we have a group of 6 fighters and 2 bombers, and dicesides is 6, and attack was 1, then we
     // would want 1
-    // fighter to die for sure. this is what groupsize is for.
+    // fighter to die for sure. this is what group size is for.
     // if the attack is greater than 1 though, and all use the same attack power, then the group
     // size can be smaller
     // (ie: attack is 2, and we have 3 fighters and 2 bombers, we would want 1 fighter to die for
@@ -420,7 +420,7 @@ public class BattleCalculator {
     // double check
     if (finalCasualtyDetails.size() != dice.getHits()) {
       throw new IllegalStateException(
-          "wrong number of casulaties, expected:" + dice + " but got: " + finalCasualtyDetails);
+          "wrong number of casualties, expected:" + dice + " but got: " + finalCasualtyDetails);
     }
     return finalCasualtyDetails;
   }

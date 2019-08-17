@@ -44,7 +44,7 @@ class LobbyPropertyFileParserTest {
   }
 
   /**
-   * Just one set of values in a config file with no verson. The props we return should be a pretty
+   * Just one set of values in a config file with no version. The props we return should be a pretty
    * straight forward 1:1
    */
   @Test

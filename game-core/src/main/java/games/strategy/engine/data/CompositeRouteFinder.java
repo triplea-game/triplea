@@ -36,7 +36,7 @@ public class CompositeRouteFinder {
   }
 
   Route findRoute(final Territory start, final Territory end) {
-    final Set<Territory> allMatchingTers =
+    final Set<Territory> allMatchingTerritories =
         new HashSet<>(
             CollectionUtils.getMatches(
                 map.getTerritories(), t -> matches.keySet().stream().anyMatch(p -> p.test(t))));
@@ -45,7 +45,7 @@ public class CompositeRouteFinder {
     final Map<Territory, Territory> previous = new HashMap<>();
     List<Territory> routeLeadersToProcess = new ArrayList<>();
     for (final Territory ter :
-        map.getNeighbors(start, Matches.territoryIsInList(allMatchingTers))) {
+        map.getNeighbors(start, Matches.territoryIsInList(allMatchingTerritories))) {
       final int routeScore = terScoreMap.get(start) + terScoreMap.get(ter);
       routeScoreMap.put(ter, routeScore);
       routeLeadersToProcess.add(ter);
@@ -56,7 +56,7 @@ public class CompositeRouteFinder {
       final List<Territory> newLeaders = new ArrayList<>();
       for (final Territory oldLeader : routeLeadersToProcess) {
         for (final Territory ter :
-            map.getNeighbors(oldLeader, Matches.territoryIsInList(allMatchingTers))) {
+            map.getNeighbors(oldLeader, Matches.territoryIsInList(allMatchingTerritories))) {
           final int routeScore = routeScoreMap.get(oldLeader) + terScoreMap.get(ter);
           if (routeLeadersToProcess.contains(ter) || ter.equals(start)) {
             continue;

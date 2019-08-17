@@ -217,8 +217,7 @@ public class UnitAttachment extends DefaultAttachment {
   private List<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamaged =
       new ArrayList<>();
   // a kind of support attachment for giving actual unit attachment abilities or other to a unit,
-  // when in the
-  // precense or on the same route with another unit
+  // when in the presence or on the same route with another unit
   private List<String> receivesAbilityWhenWith = new ArrayList<>();
   // currently used for: placement in original territories only
   private Set<String> special = new HashSet<>();

@@ -174,7 +174,7 @@ class OrderOfLossesInputPanel extends JPanel {
     final JLabel instructions =
         new JLabel(
             "<html>Here you can specify the 'Order of Losses' (OOL) for each side."
-                + "<br />Damageable units will be damanged first always. If the player label is "
+                + "<br />Damageable units will be damaged first always. If the player label is "
                 + "red, your OOL is invalid."
                 + "<br />The engine will take your input and add all units to a list starting "
                 + "on the RIGHT side of your text line."

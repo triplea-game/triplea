@@ -299,9 +299,9 @@ public final class AirMovementValidator {
       // make sure to remove any units we have already moved, or units that are excluded
       unitsInLandingSpot.removeAll(airNotToConsider);
       // because they are in our mouse selection
-      for (final Collection<Unit> ftrs : movedCarriersAndTheirFighters.values()) {
+      for (final Collection<Unit> fighters : movedCarriersAndTheirFighters.values()) {
         // also remove any fighters that are being moved with carriers that we have already moved
-        unitsInLandingSpot.removeAll(ftrs);
+        unitsInLandingSpot.removeAll(fighters);
       }
       final Collection<Unit> ownedCarriersInLandingSpot =
           CollectionUtils.getMatches(unitsInLandingSpot, ownedCarrierMatch);
@@ -617,7 +617,7 @@ public final class AirMovementValidator {
       ownedAir.removeIf(Matches.unitIsSuicide());
     }
 
-    // Sort the list by shortest range first so those birds will get first pick of landingspots
+    // Sort the list by shortest range first so those birds will get first pick of landing spots
     ownedAir.sort(getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(route));
     return ownedAir;
   }
@@ -647,7 +647,7 @@ public final class AirMovementValidator {
   }
 
   /**
-   * Indicates this airunit reach safe land at this point in the route.
+   * Indicates this air unit reached a safe landing at this point in the route.
    *
    * @param unit the airunit in question
    * @param route the current spot from which he needs to reach safe land.

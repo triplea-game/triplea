@@ -130,10 +130,9 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       return false;
     }
     if (Properties.getWW2V3TechModel(getData())) {
-      final Resource techtokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
-      if (techtokens != null) {
-        final int techTokens = player.getResources().getQuantity(techtokens);
-        if (techTokens > 0) {
+      final Resource techTokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
+      if (techTokens != null) {
+        if (player.getResources().getQuantity(techTokens) > 0) {
           return true;
         }
       }
@@ -383,7 +382,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
       return Collections.emptyList();
     }
     final Collection<TechAdvance> newAdvances = new ArrayList<>(hits);
-    final String annotation = player.getName() + " rolling to see what tech advances are aquired";
+    final String annotation = player.getName() + " rolling to see what tech advances are acquired";
     final int[] random;
     if (isSelectableTechRoll() || BaseEditDelegate.getEditMode(getData())) {
       final ITripleAPlayer tripleaPlayer = getRemotePlayer();

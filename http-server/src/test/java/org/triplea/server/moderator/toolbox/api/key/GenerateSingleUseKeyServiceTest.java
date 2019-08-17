@@ -33,7 +33,7 @@ class GenerateSingleUseKeyServiceTest {
   @InjectMocks private GenerateSingleUseKeyService generateSingleUseKeyService;
 
   @Test
-  void generateSingleUseKeyThrowsIfModeratoNameNotFound() {
+  void generateSingleUseKeyThrowsIfModeratorNameNotFound() {
     when(userLookupDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.empty());
 
     assertThrows(

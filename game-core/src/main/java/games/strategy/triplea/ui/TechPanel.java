@@ -116,7 +116,7 @@ class TechPanel extends ActionPanel {
           e -> {
             final PlayerId currentPlayer = getCurrentPlayer();
             currTokens = currentPlayer.getResources().getQuantity(Constants.TECH_TOKENS);
-            // Notify user if there are no more techs to acheive
+            // Notify user if there are no more techs to achieve
             final List<TechnologyFrontier> techCategories = getAvailableCategories();
 
             if (techCategories.isEmpty()) {

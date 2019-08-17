@@ -32,8 +32,8 @@ public class GetGameSaveClientAction extends AbstractAction {
     final File f = TripleAMenuBar.getSaveGameLocation(frame);
     if (f != null) {
       final byte[] bytes = serverRemote.getSaveGame();
-      try (FileOutputStream fout = new FileOutputStream(f)) {
-        fout.write(bytes);
+      try (var fileOutputStream = new FileOutputStream(f)) {
+        fileOutputStream.write(bytes);
       } catch (final IOException exception) {
         log.log(Level.SEVERE, "Failed to download save game from server", exception);
       }

@@ -361,7 +361,7 @@ public class ProAi extends AbstractAi {
       final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties,
       final GUID battleId,
-      final Territory battlesite,
+      final Territory battleSite,
       final boolean allowMultipleHitsPerUnit) {
     initializeData();
 
@@ -396,7 +396,7 @@ public class ProAi extends AbstractAi {
         final List<Unit> defenders = (List<Unit>) battle.getDefendingUnits();
         defenders.removeAll(defaultCasualties.getKilled());
         final double strengthDifference =
-            ProBattleUtils.estimateStrengthDifference(battlesite, attackers, defenders);
+            ProBattleUtils.estimateStrengthDifference(battleSite, attackers, defenders);
         int minStrengthDifference = 60;
         if (!Properties.getLowLuck(data)) {
           minStrengthDifference = 55;

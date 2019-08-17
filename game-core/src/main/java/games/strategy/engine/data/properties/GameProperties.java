@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -143,9 +142,9 @@ public class GameProperties extends GameDataComponent {
       final List<? extends IEditableProperty<?>> editableProperties) throws IOException {
     return IoUtils.writeToMemory(
         os -> {
-          try (OutputStream gzipos = new GZIPOutputStream(os);
-              ObjectOutputStream oos = new ObjectOutputStream(gzipos)) {
-            oos.writeObject(editableProperties);
+          try (var gzipOutputStream = new GZIPOutputStream(os);
+              var objectOutputStream = new ObjectOutputStream(gzipOutputStream)) {
+            objectOutputStream.writeObject(editableProperties);
           }
         });
   }
@@ -184,7 +183,7 @@ public class GameProperties extends GameDataComponent {
     } catch (final ClassCastException | IOException e) {
       log.log(
           Level.SEVERE,
-          "An Error occured whilst trying to apply a Byte Map to Property. Bytes: "
+          "An Error occurred whilst trying to apply a Byte Map to Property. Bytes: "
               + Arrays.toString(byteArray),
           e);
     }
