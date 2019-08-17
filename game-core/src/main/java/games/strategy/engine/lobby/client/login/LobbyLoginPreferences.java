@@ -1,19 +1,22 @@
 package games.strategy.engine.lobby.client.login;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.MoreObjects;
 import games.strategy.security.CredentialManager;
 import games.strategy.security.CredentialManagerException;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.prefs.Preferences;
 import javax.annotation.concurrent.Immutable;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.extern.java.Log;
 import org.triplea.java.function.ThrowingSupplier;
 
 /** The login preferences for a lobby user. */
 @Immutable
 @Log
+@EqualsAndHashCode
+@ToString
 public final class LobbyLoginPreferences {
   final String username;
   final String password;
@@ -139,36 +142,6 @@ public final class LobbyLoginPreferences {
     }
   }
 
-  @Override
-  public boolean equals(final Object obj) {
-    if (obj == this) {
-      return true;
-    } else if (!(obj instanceof LobbyLoginPreferences)) {
-      return false;
-    }
-
-    final LobbyLoginPreferences other = (LobbyLoginPreferences) obj;
-    return (anonymousLogin == other.anonymousLogin)
-        && (credentialsSaved == other.credentialsSaved)
-        && Objects.equals(password, other.password)
-        && Objects.equals(username, other.username);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(anonymousLogin, credentialsSaved, password, username);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("anonymousLogin", anonymousLogin)
-        .add("credentialsSaved", credentialsSaved)
-        .add("password", password)
-        .add("username", username)
-        .toString();
-  }
-
   @VisibleForTesting
   interface PreferenceKeys {
     // TODO: "LEGACY_*" keys can be removed in the second release after 1.9.0.0.3635
@@ -183,15 +156,10 @@ public final class LobbyLoginPreferences {
   }
 
   @Immutable
+  @AllArgsConstructor
   private static final class Credentials {
     final String username;
     final String password;
     final boolean isProtected;
-
-    Credentials(final String username, final String password, final boolean isProtected) {
-      this.username = username;
-      this.password = password;
-      this.isProtected = isProtected;
-    }
   }
 }
