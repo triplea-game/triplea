@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.rmi.dgc.VMID;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.EqualsAndHashCode;
 
 /**
  * A globally unique id. Backed by a java.rmi.dgc.VMID. Written across the network often, so this
@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @SuppressWarnings(
     "checkstyle:AbbreviationAsWordInName") // rename upon next lobby-incompatible release
+@EqualsAndHashCode
 public final class GUID implements Externalizable {
   private static final long serialVersionUID = 8426441559602874190L;
   // this prefix is unique across vms
@@ -32,23 +33,6 @@ public final class GUID implements Externalizable {
       vmPrefix = new VMID();
       lastId = new AtomicInteger();
     }
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (!(o instanceof GUID)) {
-      return false;
-    }
-    final GUID other = (GUID) o;
-    return this.id == other.id && Objects.equals(this.prefix, other.prefix);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, prefix);
   }
 
   @Override
