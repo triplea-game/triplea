@@ -31,7 +31,6 @@ final class AutoCompletion<E> extends PlainDocument {
   // flag to indicate if setSelectedItem has been called
   // subsequent calls to remove/insertString should be ignored
   private boolean selecting = false;
-  private final boolean hidePopupOnFocusLoss;
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
   private final KeyListener editorKeyListener;
@@ -80,8 +79,6 @@ final class AutoCompletion<E> extends PlainDocument {
             }
           }
         };
-    // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out
-    hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
     // Highlight whole text when gaining focus
     editorFocusListener =
         new FocusAdapter() {
@@ -91,12 +88,7 @@ final class AutoCompletion<E> extends PlainDocument {
           }
 
           @Override
-          public void focusLost(final FocusEvent e) {
-            // Workaround for Bug 5100422 - Hide Popup on focus loss
-            if (hidePopupOnFocusLoss) {
-              comboBox.setPopupVisible(false);
-            }
-          }
+          public void focusLost(final FocusEvent e) {}
         };
     configureEditor(comboBox.getEditor());
     // Handle initially selected object
