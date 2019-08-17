@@ -3,7 +3,6 @@ package games.strategy.triplea.ui;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.framework.system.SystemProperties;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URI;
@@ -27,32 +26,7 @@ public final class MacOsIntegration {
     checkNotNull(handler);
 
     addHandler(
-        getHandlerClassName("java.awt.desktop.AboutHandler", "com.apple.eawt.AboutHandler"),
-        "handleAbout",
-        "setAboutHandler",
-        args -> handler.run());
-  }
-
-  private static String getHandlerClassName(
-      final String java9OrLaterClassName, final String java8ClassName) {
-    return isJavaVersionAtLeast9() ? java9OrLaterClassName : java8ClassName;
-  }
-
-  private static boolean isJavaVersionAtLeast9() {
-    return isJavaVersionAtLeast9(SystemProperties.getJavaSpecificationVersion());
-  }
-
-  @VisibleForTesting
-  static boolean isJavaVersionAtLeast9(final String encodedJavaSpecificationVersion) {
-    try {
-      return Float.parseFloat(encodedJavaSpecificationVersion) >= 9.0F;
-    } catch (final NumberFormatException e) {
-      log.log(
-          Level.SEVERE,
-          "Malformed Java specification version: '" + encodedJavaSpecificationVersion + "'",
-          e);
-      return false;
-    }
+        "java.awt.desktop.AboutHandler", "handleAbout", "setAboutHandler", args -> handler.run());
   }
 
   private static void addHandler(
@@ -102,7 +76,7 @@ public final class MacOsIntegration {
     checkNotNull(handler);
 
     addHandler(
-        getHandlerClassName("java.awt.desktop.OpenURIHandler", "com.apple.eawt.OpenURIHandler"),
+        "java.awt.desktop.OpenURIHandler",
         "openURI",
         "setOpenURIHandler",
         args -> {
@@ -118,7 +92,7 @@ public final class MacOsIntegration {
     checkNotNull(handler);
 
     addHandler(
-        getHandlerClassName("java.awt.desktop.QuitHandler", "com.apple.eawt.QuitHandler"),
+        "java.awt.desktop.QuitHandler",
         "handleQuitRequestWith",
         "setQuitHandler",
         args -> handler.run());
