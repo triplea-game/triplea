@@ -1,6 +1,5 @@
 package games.strategy.engine.framework.startup.mc;
 
-import com.google.common.base.Preconditions;
 import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -67,8 +66,9 @@ public class GameSelectorModel extends Observable {
    *     returns false and internal {@code GameData} is null.
    */
   public boolean load(final File file) {
-    Preconditions.checkArgument(
-        file.exists() && file.isFile(), "File should exist at: " + file.getAbsolutePath());
+    if (!file.isFile()) {
+      return false;
+    }
 
     final GameData newData;
     try {

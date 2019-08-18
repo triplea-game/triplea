@@ -30,6 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 
@@ -311,14 +312,28 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   private void selectSavedGameFile() {
     GameFileSelector.selectGameFile()
         .ifPresent(
-            file ->
-                GameRunner.newBackgroundTaskRunner()
-                    .awaitRunInBackground(
+            file -> {
+              try {
+                if (!GameRunner.newBackgroundTaskRunner()
+                    .runInBackgroundAndReturn(
                         "Loading savegame...",
                         () -> {
-                          model.load(file);
-                          setOriginalPropertiesMap(model.getGameData());
-                        }));
+                          if (model.load(file)) {
+                            setOriginalPropertiesMap(model.getGameData());
+                            return true;
+                          }
+                          return false;
+                        })) {
+                  DialogBuilder.builder()
+                      .parent(this)
+                      .title("Save Game File Not Found")
+                      .errorMessage("File does not exist: " + file.getAbsolutePath())
+                      .showDialog();
+                }
+              } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+              }
+            });
   }
 
   private void selectGameFile() {
