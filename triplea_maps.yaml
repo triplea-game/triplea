@@ -1813,6 +1813,18 @@
     <br>and simply unpack those into your new Elemental_Forces folder from above. Delete
     <br>Elemental_Forces.zip when ready.
     <br>
+- mapName: A Song of Ice and Fire
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/a_song_of_ice_and_fire/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/a_song_of_ice_and_fire/master/description/TripleA_a_song_of_ice_and_fire_mini.png
+  description: |
+    <br>
+    <br>An FFA map with the background of George R. R. Martins novel: A Song of Ice and Fire. Includes technologies, diplomacy, and many unique units.
+    <br>
+    <br>Created by: Kor438
+    <br>Updated by: Redrum
+    <br>
 - mapName: Game of Thrones
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/game_of_thrones/archive/master.zip
@@ -1820,9 +1832,10 @@
   img: https://raw.githubusercontent.com/triplea-maps/game_of_thrones/master/description/TripleA_game_of_thrones_mini.png
   description: |
     <br>
-    <br>An FFA map with the background of George R. R. Martins novel: A Song of Ice and Fire.
+    <br>An FFA map with the background of George R. R. Martins novel: A Song of Ice and Fire. Simple all war FFA.
     <br>
-    <br>Updated redrum
+    <br>Created by: Al
+    <br>Updated by: Redrum
     <br>
 - mapName: New World Order 1915Lebowski
   mapCategory: EXPERIMENTAL
