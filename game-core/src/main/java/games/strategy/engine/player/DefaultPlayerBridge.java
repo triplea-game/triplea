@@ -124,7 +124,7 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       }
     } catch (final RuntimeException e) {
       if (e.getCause() instanceof MessengerException) {
-        throw new GameOverException("Game Over!");
+        throw new GameOverException("Game Over!", e);
       }
       throw e;
     }
