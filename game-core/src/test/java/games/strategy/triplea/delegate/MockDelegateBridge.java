@@ -78,11 +78,11 @@ final class MockDelegateBridge {
     try {
       final int length = gameData.getSequence().size();
       int i = 0;
-      while ((i < length) && (!gameData.getSequence().getStep().getName().contains(stepName))) {
+      while ((i < length) && !gameData.getSequence().getStep().getName().contains(stepName)) {
         gameData.getSequence().next();
         i++;
       }
-      if ((i > length) && (!gameData.getSequence().getStep().getName().contains(stepName))) {
+      if ((i > length) && !gameData.getSequence().getStep().getName().contains(stepName)) {
         throw new IllegalArgumentException("Step not found: " + stepName);
       }
     } finally {
