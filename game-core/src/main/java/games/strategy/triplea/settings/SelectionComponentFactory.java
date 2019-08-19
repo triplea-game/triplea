@@ -234,8 +234,7 @@ final class SelectionComponentFactory {
         context.setValue(clientSetting, getComponentValue());
       }
 
-      private @Nullable
-      Integer getComponentValue() {
+      private @Nullable Integer getComponentValue() {
         final int value = (int) component.getValue();
         return (allowUnset && (value == unsetValue())) ? null : value;
       }
@@ -540,10 +539,10 @@ final class SelectionComponentFactory {
                                     .items(knownProviders)
                                     .build();
                             if (JOptionPane.showConfirmDialog(
-                                this.panel.getParent(),
-                                JPanelBuilder.builder().add(comboBox).build(),
-                                "Select a Preset",
-                                JOptionPane.OK_CANCEL_OPTION)
+                                    this.panel.getParent(),
+                                    JPanelBuilder.builder().add(comboBox).build(),
+                                    "Select a Preset",
+                                    JOptionPane.OK_CANCEL_OPTION)
                                 == JOptionPane.OK_OPTION) {
                               final IEmailSender.EmailProviderSetting config =
                                   (IEmailSender.EmailProviderSetting) comboBox.getSelectedItem();

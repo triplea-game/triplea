@@ -108,15 +108,16 @@ public class LobbyFrame extends JFrame {
     actions.add(
         SwingAction.of(
             "Ban Player",
-            e -> TimespanDialog.prompt(
-                this,
-                "Select Timespan",
-                "Please consult other admins before banning longer than 1 day. \n"
-                    + "And please remember to report this ban.",
-                date -> {
-                  controller.banMac(clickedOn, date);
-                  controller.boot(clickedOn);
-                })));
+            e ->
+                TimespanDialog.prompt(
+                    this,
+                    "Select Timespan",
+                    "Please consult other admins before banning longer than 1 day. \n"
+                        + "And please remember to report this ban.",
+                    date -> {
+                      controller.banMac(clickedOn, date);
+                      controller.boot(clickedOn);
+                    })));
 
     actions.add(
         SwingAction.of(

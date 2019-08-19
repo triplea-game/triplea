@@ -13,9 +13,7 @@ final class AbstractInputStreamPropertyReaderAsPropertyReaderTest
       throws Exception {
     final Properties props = new Properties();
     props.putAll(properties);
-    final byte[] bytes =
-        IoUtils.writeToMemory(
-            os -> props.store(os, null));
+    final byte[] bytes = IoUtils.writeToMemory(os -> props.store(os, null));
 
     return new AbstractInputStreamPropertyReader("propertySourceName") {
       @Override
