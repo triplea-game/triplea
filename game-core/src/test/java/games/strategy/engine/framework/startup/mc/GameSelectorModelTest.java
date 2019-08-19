@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -162,10 +163,14 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   @Test
   void saveGameNameGetsResetWhenLoadingOtherMap() throws Exception {
     final String testFileName = "someFileName";
-    testObj.load(null, testFileName);
+    when(mockGameData.getSequence()).thenReturn(mock(GameSequence.class));
+    when(mockGameData.getGameVersion()).thenReturn(new Version(0, 0));
+    when(mockGameData.getGameName()).thenReturn("Dummy name");
+    testObj.load(mockGameData, testFileName);
     assertThat(testObj.getFileName(), is(testFileName));
 
     when(mockEntry.getUri()).thenReturn(new URI("abc"));
+    when(mockEntry.getGameData()).thenReturn(mockGameData);
     testObj.load(mockEntry);
     assertThat(testObj.getFileName(), is(not(testFileName)));
   }
