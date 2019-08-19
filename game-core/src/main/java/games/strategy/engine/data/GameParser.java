@@ -3,6 +3,7 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import games.strategy.engine.ClientContext;
 import games.strategy.engine.GameEngineVersion;
@@ -39,6 +40,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.extern.java.Log;
 import org.triplea.util.Tuple;
@@ -53,7 +55,7 @@ import org.xml.sax.SAXParseException;
 public final class GameParser {
   private static final String RESOURCE_IS_DISPLAY_FOR_NONE = "NONE";
 
-  private final GameData data;
+  @Nonnull private final GameData data;
   private final Collection<SAXParseException> errorsSax = new ArrayList<>();
   private final String mapName;
   private final XmlGameElementMapper xmlGameElementMapper;
@@ -70,7 +72,7 @@ public final class GameParser {
       final GameData gameData,
       final String mapName,
       final XmlGameElementMapper xmlGameElementMapper) {
-    data = gameData;
+    data = Preconditions.checkNotNull(gameData);
     this.mapName = mapName;
     this.xmlGameElementMapper = xmlGameElementMapper;
   }
@@ -80,11 +82,13 @@ public final class GameParser {
    *
    * @return A complete {@link GameData} instance that can be used to play the game.
    */
+  @Nonnull
   public static GameData parse(final String mapName, final InputStream stream)
       throws GameParseException, EngineVersionException {
     return parse(mapName, stream, new XmlGameElementMapper());
   }
 
+  @Nonnull
   @VisibleForTesting
   public static GameData parse(
       final String mapName,
@@ -98,6 +102,7 @@ public final class GameParser {
     return new GameParser(new GameData(), mapName, xmlGameElementMapper).parse(stream);
   }
 
+  @Nonnull
   private GameData parse(final InputStream stream)
       throws GameParseException, EngineVersionException {
     final Element root = XmlReader.parseDom(mapName, stream, errorsSax);
@@ -123,6 +128,7 @@ public final class GameParser {
    * @return A partial {@link GameData} instance that can be used to display metadata about the game
    *     (e.g. when displaying all available maps); it cannot be used to play the game.
    */
+  @Nonnull
   public static GameData parseShallow(final String mapName, final InputStream stream)
       throws GameParseException, EngineVersionException {
     checkNotNull(mapName);
@@ -131,6 +137,7 @@ public final class GameParser {
     return new GameParser(new GameData(), mapName).parseShallow(stream);
   }
 
+  @Nonnull
   private GameData parseShallow(final InputStream stream)
       throws GameParseException, EngineVersionException {
     final Element root = XmlReader.parseDom(mapName, stream, errorsSax);
