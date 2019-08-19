@@ -30,7 +30,8 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler {
   }
 
   @Override
-  public Object invoke(final Object proxy, final Method method, final Object[] args) {
+  public Object invoke(final Object proxy, final Method method, final Object[] args)
+      throws RemoteNotFoundException {
     if (super.shouldHandle(method, args)) {
       return super.handle(method, args);
     }

@@ -170,28 +170,31 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       } else {
         stopGame();
       }
-    } catch (final MessengerException me) {
-      // we lost a connection
-      // wait for the connection handler to notice, and shut us down
-      Interruptibles.await(
-          () -> {
-            if (!abortLaunch
-                && !errorLatch.await(
-                    ClientSetting.serverObserverJoinWaitTime.getValueOrThrow(), TimeUnit.SECONDS)) {
-              log.warning("Waiting on error latch timed out!");
-            }
-          });
-      stopGame();
     } catch (final RuntimeException e) {
       // no-op, this is a simple player disconnect, no need to scare the user with some giant stack
       // trace
-      if (!(e.getCause() != null && e.getCause() instanceof ConnectionLostException)) {
-        final String errorMessage =
-            "Unrecognized error occurred. If this is a repeatable error, "
-                + "please make a copy of this savegame and report to:\n"
-                + UrlConstants.GITHUB_ISSUES;
-        log.log(Level.SEVERE, errorMessage, e);
-        stopGame();
+      final var cause = e.getCause();
+      if (!(cause instanceof ConnectionLostException)) {
+        if (cause instanceof MessengerException) {
+          // we lost a connection
+          // wait for the connection handler to notice, and shut us down
+          Interruptibles.await(
+              () -> {
+                if (!abortLaunch
+                    && !errorLatch.await(
+                    ClientSetting.serverObserverJoinWaitTime.getValueOrThrow(), TimeUnit.SECONDS)) {
+                  log.warning("Waiting on error latch timed out!");
+                }
+              });
+          stopGame();
+        } else {
+          final String errorMessage =
+              "Unrecognized error occurred. If this is a repeatable error, "
+                  + "please make a copy of this savegame and report to:\n"
+                  + UrlConstants.GITHUB_ISSUES;
+          log.log(Level.SEVERE, errorMessage, e);
+          stopGame();
+        }
       }
     }
     // having an oddball issue with the zip stream being closed while parsing to load default game.

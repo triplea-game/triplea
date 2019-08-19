@@ -79,7 +79,8 @@ public class UnifiedMessenger {
 
   /** Invoke and wait for all implementors on all vms to finish executing. */
   public RemoteMethodCallResults invokeAndWait(
-      final String endPointName, final RemoteMethodCall remoteCall) {
+      final String endPointName, final RemoteMethodCall remoteCall)
+      throws RemoteNotFoundException {
     final EndPoint local;
     synchronized (endPointMutex) {
       local = localEndPoints.get(endPointName);

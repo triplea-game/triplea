@@ -77,11 +77,12 @@ public class DelegateExecutionManager {
           }
           try {
             return method.invoke(implementor, args);
-          } catch (final MessengerException me) {
-            throw new GameOverException("Game Over!");
-          } catch (final InvocationTargetException ite) {
+          } catch (final InvocationTargetException e) {
+            if (e.getCause() instanceof MessengerException) {
+              throw new GameOverException("Game Over!");
+            }
             assertGameNotOver();
-            throw ite;
+            throw e;
           } finally {
             if (threadLocks) {
               enterDelegateExecution();
