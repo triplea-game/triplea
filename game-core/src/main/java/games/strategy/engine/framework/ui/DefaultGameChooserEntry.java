@@ -43,8 +43,6 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     // TODO: We should be setting this in the the constructor. At this point, you have to call
     // methods in the
     // correct order for things to work, and that is bads.
-    gameData = null;
-
     final Optional<InputStream> inputStream = UrlStreams.openStream(url);
     if (inputStream.isEmpty()) {
       return;
