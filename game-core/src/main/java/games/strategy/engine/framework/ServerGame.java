@@ -215,8 +215,10 @@ public class ServerGame extends AbstractGame {
                   waitOnObserver.countDown();
                 } catch (final Exception e) {
                   if (e.getCause() instanceof ConnectionLostException) {
-                    log.log(Level.SEVERE,
-                        "Connection lost to observer while joining: " + newNode.getName(), e);
+                    log.log(
+                        Level.SEVERE,
+                        "Connection lost to observer while joining: " + newNode.getName(),
+                        e);
                   } else {
                     log.log(Level.SEVERE, "Failed to join game", e);
                   }

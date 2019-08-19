@@ -182,7 +182,8 @@ public class ServerLauncher extends AbstractLauncher<Void> {
               () -> {
                 if (!abortLaunch
                     && !errorLatch.await(
-                    ClientSetting.serverObserverJoinWaitTime.getValueOrThrow(), TimeUnit.SECONDS)) {
+                        ClientSetting.serverObserverJoinWaitTime.getValueOrThrow(),
+                        TimeUnit.SECONDS)) {
                   log.warning("Waiting on error latch timed out!");
                 }
               });
