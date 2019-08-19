@@ -10,6 +10,8 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class TimespanDialogTest {
@@ -59,15 +61,13 @@ class TimespanDialogTest {
             TimeUnit.MONTHS,
             TimeUnit.YEARS)
         .forEach(
-            timeUnit -> {
-              TimespanDialog.runAction(
-                  d -> assertTrue(d.after(new Date())),
-                  Optional.of(new Timespan(TimespanDialog.MAX_DURATION, timeUnit)));
-            });
+            timeUnit -> TimespanDialog.runAction(
+                d -> assertTrue(d.after(new Date())),
+                Optional.of(new Timespan(TimespanDialog.MAX_DURATION, timeUnit))));
   }
 
   @Test
   void testForeverPassesNull() {
-    TimespanDialog.runAction(d -> assertNull(d), Optional.of(new Timespan(0, TimeUnit.FOREVER)));
+    TimespanDialog.runAction(Assertions::assertNull, Optional.of(new Timespan(0, TimeUnit.FOREVER)));
   }
 }

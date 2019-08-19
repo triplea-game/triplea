@@ -211,10 +211,7 @@ public class HistoryLog extends JFrame {
       while (nodeEnum.hasMoreElements()) {
         final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
         final String title = node.getTitle();
-        final StringBuilder indent = new StringBuilder();
-        for (int i = 0; i < node.getLevel(); i++) {
-          indent.append(moreIndent);
-        }
+        final String indent = moreIndent.repeat(Math.max(0, node.getLevel()));
         // flush move list
         if (moving && !(node instanceof Renderable)) {
           final Iterator<String> moveIter = moveList.iterator();
@@ -262,7 +259,7 @@ public class HistoryLog extends JFrame {
             final Pattern p = Pattern.compile("\\w+ undo move (\\d+).");
             final Matcher m = p.matcher(title);
             if (m.matches()) {
-              moveList.remove(Integer.valueOf(m.group(1)) - 1);
+              moveList.remove(Integer.parseInt(m.group(1)) - 1);
             } else {
               moveList.add(indent + title);
               moving = true;

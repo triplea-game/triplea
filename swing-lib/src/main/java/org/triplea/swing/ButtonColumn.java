@@ -95,7 +95,7 @@ public class ButtonColumn extends AbstractCellEditor
 
           @Override
           public void actionPerformed(final ActionEvent e) {
-            final int rowNumber = Integer.valueOf(e.getActionCommand());
+            final int rowNumber = Integer.parseInt(e.getActionCommand());
             final DefaultTableModel defaultTableModel = (DefaultTableModel) table.getModel();
             buttonListener.accept(rowNumber, defaultTableModel);
           }

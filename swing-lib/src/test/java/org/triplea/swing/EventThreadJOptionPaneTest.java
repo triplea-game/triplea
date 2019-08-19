@@ -11,6 +11,8 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
+
 import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -93,7 +95,7 @@ final class EventThreadJOptionPaneTest {
     assertTimeoutPreemptively(
         timeout,
         () -> {
-          EventThreadJOptionPane.invokeAndWait(latchHandler, () -> Optional.empty());
+          EventThreadJOptionPane.invokeAndWait(latchHandler, (Supplier<Optional<Object>>) Optional::empty);
 
           verify(latchHandler, times(1)).addShutdownLatch(any(CountDownLatch.class));
           verify(latchHandler, times(1)).removeShutdownLatch(any(CountDownLatch.class));

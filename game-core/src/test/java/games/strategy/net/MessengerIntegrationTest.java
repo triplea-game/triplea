@@ -93,11 +93,7 @@ class MessengerIntegrationTest {
   @Test
   void testClientSendToClientLargeMessage() {
     final int count = 1_000_000;
-    final StringBuilder builder = new StringBuilder(count);
-    for (int i = 0; i < count; i++) {
-      builder.append('a');
-    }
-    final String message = builder.toString();
+    final String message = "a".repeat(count);
     client1Messenger.send(message, client2Messenger.getLocalNode());
     assertEquals(client2MessageListener.getLastMessage(), message);
     assertEquals(client2MessageListener.getLastSender(), client1Messenger.getLocalNode());

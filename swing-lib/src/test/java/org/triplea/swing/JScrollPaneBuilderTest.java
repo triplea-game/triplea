@@ -18,7 +18,7 @@ final class JScrollPaneBuilderTest {
 
   @Test
   void build_ShouldThrowExceptionWhenViewUnspecified() {
-    final Exception e = assertThrows(IllegalStateException.class, () -> builder.build());
+    final Exception e = assertThrows(IllegalStateException.class, builder::build);
     assertThat(e.getMessage(), containsString("view"));
   }
 

@@ -64,7 +64,7 @@ class PlayerTypeTest {
     assertThat(
         "All player type labels should be unique, count of unique labels should match total",
         stream(PlayerType.values()).map(PlayerType::getLabel).distinct().count(),
-        is(Long.valueOf(PlayerType.values().length)));
+        is((long) PlayerType.values().length));
 
     assertThat(
         "No label should be empty ",

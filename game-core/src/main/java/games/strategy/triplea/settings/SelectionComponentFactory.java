@@ -53,7 +53,7 @@ final class SelectionComponentFactory {
       final ClientSetting<HttpProxy.ProxyChoice> proxyChoiceClientSetting,
       final ClientSetting<String> proxyHostClientSetting,
       final ClientSetting<Integer> proxyPortClientSetting) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
       final HttpProxy.ProxyChoice proxyChoice = proxyChoiceClientSetting.getValueOrThrow();
       final JRadioButton noneButton =
           new JRadioButton("None", proxyChoice == HttpProxy.ProxyChoice.NONE);
@@ -210,7 +210,7 @@ final class SelectionComponentFactory {
       final int lo,
       final int hi,
       final boolean allowUnset) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
       private final JSpinner component =
           new JSpinner(
               new SpinnerNumberModel(
@@ -234,7 +234,8 @@ final class SelectionComponentFactory {
         context.setValue(clientSetting, getComponentValue());
       }
 
-      private @Nullable Integer getComponentValue() {
+      private @Nullable
+      Integer getComponentValue() {
         final int value = (int) component.getValue();
         return (allowUnset && (value == unsetValue())) ? null : value;
       }
@@ -254,7 +255,7 @@ final class SelectionComponentFactory {
   /** yes/no radio buttons. */
   static SelectionComponent<JComponent> booleanRadioButtons(
       final ClientSetting<Boolean> clientSetting) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
       final boolean initialSelection = clientSetting.getValueOrThrow();
       final JRadioButton yesButton = new JRadioButton("True");
       final JRadioButton noButton = new JRadioButton("False");
@@ -298,7 +299,7 @@ final class SelectionComponentFactory {
   private static SelectionComponent<JComponent> selectFile(
       final ClientSetting<Path> clientSetting,
       final SwingComponents.FolderSelectionMode folderSelectionMode) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
       final JTextField field =
           new JTextField(SelectionComponentUiUtils.toString(clientSetting.getValue()), 20);
       final JButton button =
@@ -352,7 +353,7 @@ final class SelectionComponentFactory {
       final Function<T, Optional<E>> convertSettingValueToComboBoxItem,
       final Function<E, T> convertComboBoxItemToSettingValue,
       final Function<E, ?> convertComboBoxItemToDisplayValue) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
       private final JComboBox<E> comboBox = newComboBox();
 
       private JComboBox<E> newComboBox() {
@@ -426,7 +427,7 @@ final class SelectionComponentFactory {
       final ThrowingFunction<T, String, ValueEncodingException> encodeValue,
       final ThrowingFunction<String, T, ValueEncodingException> decodeValue,
       final String invalidValueMessage) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
       private final JTextField textField = new JTextField(encode(clientSetting::getValue), 20);
 
       private String encode(final Supplier<Optional<T>> valueSupplier) {
@@ -494,7 +495,7 @@ final class SelectionComponentFactory {
       final ClientSetting<Boolean> tlsSetting,
       final ClientSetting<char[]> usernameSetting,
       final ClientSetting<char[]> passwordSetting) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
 
       private final List<IEmailSender.EmailProviderSetting> knownProviders =
           Arrays.asList(
@@ -539,10 +540,10 @@ final class SelectionComponentFactory {
                                     .items(knownProviders)
                                     .build();
                             if (JOptionPane.showConfirmDialog(
-                                    this.panel.getParent(),
-                                    JPanelBuilder.builder().add(comboBox).build(),
-                                    "Select a Preset",
-                                    JOptionPane.OK_CANCEL_OPTION)
+                                this.panel.getParent(),
+                                JPanelBuilder.builder().add(comboBox).build(),
+                                "Select a Preset",
+                                JOptionPane.OK_CANCEL_OPTION)
                                 == JOptionPane.OK_OPTION) {
                               final IEmailSender.EmailProviderSetting config =
                                   (IEmailSender.EmailProviderSetting) comboBox.getSelectedItem();
@@ -601,7 +602,7 @@ final class SelectionComponentFactory {
 
   static SelectionComponent<JComponent> forumPosterSettings(
       final ClientSetting<char[]> usernameSetting, final ClientSetting<char[]> passwordSetting) {
-    return new SelectionComponent<JComponent>() {
+    return new SelectionComponent<>() {
 
       private final JTextField usernameField =
           new JTextField(credentialToString(usernameSetting::getValue), 20);

@@ -15,9 +15,7 @@ final class AbstractInputStreamPropertyReaderAsPropertyReaderTest
     props.putAll(properties);
     final byte[] bytes =
         IoUtils.writeToMemory(
-            os -> {
-              props.store(os, null);
-            });
+            os -> props.store(os, null));
 
     return new AbstractInputStreamPropertyReader("propertySourceName") {
       @Override

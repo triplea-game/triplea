@@ -1272,9 +1272,7 @@ class WW2V3Year41Test {
     // Set the bombard strength for the DDs
     final Collection<Unit> dds =
         CollectionUtils.getMatches(sz15.getUnits(), Matches.unitIsDestroyer());
-    final Iterator<Unit> ddIter = dds.iterator();
-    while (ddIter.hasNext()) {
-      final Unit unit = ddIter.next();
+    for (Unit unit : dds) {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       ua.setBombard(3);
     }

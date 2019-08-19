@@ -110,7 +110,7 @@ public final class BackgroundTaskRunner {
     final AtomicReference<Throwable> exceptionRef = new AtomicReference<>();
     final WaitDialog waitDialog = new WaitDialog(frame, message);
     final SwingWorker<T, Void> worker =
-        new SwingWorker<T, Void>() {
+        new SwingWorker<>() {
           @Override
           protected T doInBackground() throws Exception {
             return backgroundAction.get();

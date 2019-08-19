@@ -54,6 +54,6 @@ final class JsonDecoder {
             + json.getAsJsonPrimitive().getAsString()
             + ", and was split into: "
             + Arrays.asList(split));
-    return new long[] {Long.valueOf(split[0]), Long.valueOf(split[1])};
+    return new long[] {Long.parseLong(split[0]), Long.parseLong(split[1])};
   }
 }

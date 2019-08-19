@@ -14,7 +14,7 @@ public final class LobbyConfiguration {
   private final DatabaseDao databaseDao;
 
   public LobbyConfiguration() {
-    port = Integer.valueOf(EnvironmentVariable.PORT.getValue());
+    port = Integer.parseInt(EnvironmentVariable.PORT.getValue());
     databaseDao =
         Database.builder()
             .postgresDatabase(DatabaseEnvironmentVariable.POSTGRES_DATABASE.getValue())

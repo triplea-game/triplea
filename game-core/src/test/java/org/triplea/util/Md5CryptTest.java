@@ -114,12 +114,10 @@ final class Md5CryptTest {
               "$1$ABCDEFG$mN7iGIbBXdAAjJtrJG2ia1",
               "$1$ABCDEFGH$hGGndps75hhROKqu/zh9q1")
           .forEach(
-              value -> {
-                assertThat(
-                    String.format("expected legal hashed value '%s'", value),
-                    isLegalHashedValue(value),
-                    is(true));
-              });
+              value -> assertThat(
+                  String.format("expected legal hashed value '%s'", value),
+                  isLegalHashedValue(value),
+                  is(true)));
     }
 
     @Test
@@ -134,12 +132,10 @@ final class Md5CryptTest {
               "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw",
               "$1$ABCDEFGH$ACfvKmv8y/KjlzX1R.tBw..")
           .forEach(
-              value -> {
-                assertThat(
-                    String.format("expected illegal hashed value '%s'", value),
-                    isLegalHashedValue(value),
-                    is(false));
-              });
+              value -> assertThat(
+                  String.format("expected illegal hashed value '%s'", value),
+                  isLegalHashedValue(value),
+                  is(false)));
     }
   }
 

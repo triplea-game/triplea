@@ -18,9 +18,7 @@ final class EnumClientSettingTest {
     void shouldReturnEnumConstantName() {
       Arrays.stream(FakeEnum.values())
           .forEach(
-              value -> {
-                assertThat(clientSetting.encodeValue(value), is(value.toString()));
-              });
+              value -> assertThat(clientSetting.encodeValue(value), is(value.toString())));
     }
   }
 

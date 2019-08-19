@@ -63,11 +63,8 @@ public final class ProLogger {
    */
   private static String formatMessage(
       final String message, final @Nullable Throwable t, final Level level) {
-    final StringBuilder builder = new StringBuilder();
     final int compensateLength = (level.toString().length() - 4) * 2;
-    for (int i = 0; i < compensateLength; i++) {
-      builder.append(" ");
-    }
+    final StringBuilder builder = new StringBuilder(" ".repeat(Math.max(0, compensateLength)));
     builder.append(message);
     if (t != null) {
       builder.append(" (error: ").append(t.getMessage()).append(")");

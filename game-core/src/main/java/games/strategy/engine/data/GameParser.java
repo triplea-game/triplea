@@ -570,8 +570,8 @@ public final class GameParser {
         throw newGameParseException(
             "diagonal-connections attribute must be either \"explicit\" or \"implicit\"");
     }
-    final int sizeY = (ys != null) ? Integer.valueOf(ys) : 0;
-    final int sizeX = Integer.valueOf(xs);
+    final int sizeY = (ys != null) ? Integer.parseInt(ys) : 0;
+    final int sizeX = Integer.parseInt(xs);
     map.setGridDimensions(sizeX, sizeY);
     if (gridType.equals("square")) {
       // Add territories
@@ -688,8 +688,8 @@ public final class GameParser {
   private static Set<String> parseGridWater(final List<Element> waterNodes) {
     final Set<String> set = new HashSet<>();
     for (final Element current : waterNodes) {
-      final int x = Integer.valueOf(current.getAttribute("x"));
-      final int y = Integer.valueOf(current.getAttribute("y"));
+      final int x = Integer.parseInt(current.getAttribute("x"));
+      final int y = Integer.parseInt(current.getAttribute("y"));
       set.add(x + "-" + y);
     }
     return set;
@@ -826,7 +826,7 @@ public final class GameParser {
         final PlayerId p1 = getPlayerId(current, "player1", true);
         final PlayerId p2 = getPlayerId(current, "player2", true);
         final RelationshipType r = getRelationshipType(current, "type");
-        final int roundValue = Integer.valueOf(current.getAttribute("roundValue"));
+        final int roundValue = Integer.parseInt(current.getAttribute("roundValue"));
         tracker.setRelationship(p1, p2, r, roundValue);
       }
     }
@@ -929,7 +929,7 @@ public final class GameParser {
     final IEditableProperty<?> editableProperty;
     switch (childName) {
       case "boolean":
-        editableProperty = new BooleanProperty(name, null, Boolean.valueOf(defaultValue));
+        editableProperty = new BooleanProperty(name, null, Boolean.parseBoolean(defaultValue));
         break;
       case "file":
         editableProperty = new FileProperty(name, null, defaultValue);
@@ -941,9 +941,9 @@ public final class GameParser {
         editableProperty = new ComboProperty<>(name, null, defaultValue, values);
         break;
       case "number":
-        final int max = Integer.valueOf(child.getAttribute("max"));
-        final int min = Integer.valueOf(child.getAttribute("min"));
-        final int def = Integer.valueOf(defaultValue);
+        final int max = Integer.parseInt(child.getAttribute("max"));
+        final int min = Integer.parseInt(child.getAttribute("min"));
+        final int def = Integer.parseInt(defaultValue);
         editableProperty = new NumberProperty(name, null, max, min, def);
         break;
       case "color":

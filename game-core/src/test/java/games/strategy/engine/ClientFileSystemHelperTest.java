@@ -60,7 +60,7 @@ final class ClientFileSystemHelperTest {
       when(startFolder.listFiles()).thenReturn(new File[0]);
       when(parentFolder.listFiles()).thenReturn(new File[0]);
 
-      assertThrows(IOException.class, () -> getFolderContainingFileWithName());
+      assertThrows(IOException.class, this::getFolderContainingFileWithName);
     }
   }
 
