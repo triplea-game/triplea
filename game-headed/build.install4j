@@ -725,15 +725,12 @@ return Math.min(is32BitJavaRuntime ? 1024L : 2048L, halfMemoryMiB);</string>
                         <string>33</string>
                       </void>
                       <void property="vmOptions">
-                        <array class="java.lang.String" length="3">
+                        <array class="java.lang.String" length="2">
                           <void index="0">
                             <string>-Xmx${installer:heapSizeMiB}M</string>
                           </void>
                           <void index="1">
                             <string>-Xms${installer:heapSizeMiB}M</string>
-                          </void>
-                          <void index="2">
-                            <string>-Dsun.java2d.opengl=true</string>
                           </void>
                         </array>
                       </void>
