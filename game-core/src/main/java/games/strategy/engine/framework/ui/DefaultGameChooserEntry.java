@@ -11,13 +11,14 @@ import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
+import javax.annotation.Nonnull;
 import lombok.extern.java.Log;
 import org.triplea.java.UrlStreams;
 
 @Log
 final class DefaultGameChooserEntry implements GameChooserEntry {
   private final URI url;
-  private GameData gameData;
+  @Nonnull private GameData gameData;
   private boolean gameDataFullyLoaded = false;
   private final String gameNameAndMapNameProperty;
 
@@ -43,8 +44,6 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     // TODO: We should be setting this in the the constructor. At this point, you have to call
     // methods in the
     // correct order for things to work, and that is bads.
-    gameData = null;
-
     final Optional<InputStream> inputStream = UrlStreams.openStream(url);
     if (inputStream.isEmpty()) {
       return;
@@ -91,6 +90,7 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     return getGameName();
   }
 
+  @Nonnull
   @Override
   public GameData getGameData() {
     return gameData;
@@ -120,11 +120,7 @@ final class DefaultGameChooserEntry implements GameChooserEntry {
     }
 
     final DefaultGameChooserEntry other = (DefaultGameChooserEntry) obj;
-    if (gameData == null && other.gameData != null) {
-      return false;
-    }
-    return other.gameData != null
-        && this.gameNameAndMapNameProperty.equals(other.gameNameAndMapNameProperty);
+    return this.gameNameAndMapNameProperty.equals(other.gameNameAndMapNameProperty);
   }
 
   @Override

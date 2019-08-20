@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import java.io.IOException;
 import java.net.URI;
+import javax.annotation.Nonnull;
 
 /** An installed game (map) that is selectable by the user from the Game Chooser dialog. */
 public interface GameChooserEntry extends Comparable<GameChooserEntry> {
@@ -15,6 +16,7 @@ public interface GameChooserEntry extends Comparable<GameChooserEntry> {
 
   String getGameName();
 
+  @Nonnull
   GameData getGameData();
 
   URI getUri();
