@@ -87,9 +87,7 @@ final class OptionalUtilsTest {
             presentActionInvoked.set(true);
             assertThat(it, is(value));
           },
-          () -> {
-            fail("empty action should not have been invoked");
-          });
+          () -> fail("empty action should not have been invoked"));
 
       assertThat(presentActionInvoked.get(), is(true));
     }
@@ -100,12 +98,8 @@ final class OptionalUtilsTest {
 
       OptionalUtils.ifPresentOrElse(
           Optional.empty(),
-          it -> {
-            fail("present action should not have been invoked");
-          },
-          () -> {
-            emptyActionInvoked.set(true);
-          });
+          it -> fail("present action should not have been invoked"),
+          () -> emptyActionInvoked.set(true));
 
       assertThat(emptyActionInvoked.get(), is(true));
     }

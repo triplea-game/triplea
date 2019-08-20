@@ -98,7 +98,7 @@ public final class PropertiesDiceRoller implements IRemoteDiceServer {
       throws IOException {
     final String normalizedGameId = gameId.trim().isEmpty() ? "TripleA" : gameId;
     String message = normalizedGameId + ":" + subjectMessage;
-    final int maxLength = Integer.valueOf(props.getProperty("message.maxlength"));
+    final int maxLength = Integer.parseInt(props.getProperty("message.maxlength"));
     if (message.length() > maxLength) {
       message = message.substring(0, maxLength - 1);
     }

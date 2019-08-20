@@ -27,7 +27,7 @@ final class MatchesTest {
   private static final Object VALUE = new Object();
 
   private static <T> Matcher<Predicate<T>> matches(final @Nullable T value) {
-    return new TypeSafeDiagnosingMatcher<Predicate<T>>() {
+    return new TypeSafeDiagnosingMatcher<>() {
       @Override
       public void describeTo(final Description description) {
         description.appendText("matcher matches using ").appendValue(value);
@@ -45,7 +45,7 @@ final class MatchesTest {
   }
 
   private static <T> Matcher<Predicate<T>> notMatches(final @Nullable T value) {
-    return new TypeSafeDiagnosingMatcher<Predicate<T>>() {
+    return new TypeSafeDiagnosingMatcher<>() {
       @Override
       public void describeTo(final Description description) {
         description.appendText("matcher does not match using ").appendValue(value);

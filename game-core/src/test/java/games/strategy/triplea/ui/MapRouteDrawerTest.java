@@ -71,10 +71,8 @@ final class MapRouteDrawerTest {
   void testPointSplitting() {
     final double[] expectedXCoords = new double[] {0, 100, 0};
     final double[] expectedYCoords = new double[] {0, 0, 100};
-    assertArrayEquals(
-        expectedXCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getX()));
-    assertArrayEquals(
-        expectedYCoords, spyRouteDrawer.getValues(dummyPoints, point -> point.getY()));
+    assertArrayEquals(expectedXCoords, spyRouteDrawer.getValues(dummyPoints, Point2D::getX));
+    assertArrayEquals(expectedYCoords, spyRouteDrawer.getValues(dummyPoints, Point2D::getY));
   }
 
   @Test

@@ -87,7 +87,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import org.junit.jupiter.api.BeforeEach;
@@ -1272,9 +1271,7 @@ class WW2V3Year41Test {
     // Set the bombard strength for the DDs
     final Collection<Unit> dds =
         CollectionUtils.getMatches(sz15.getUnits(), Matches.unitIsDestroyer());
-    final Iterator<Unit> ddIter = dds.iterator();
-    while (ddIter.hasNext()) {
-      final Unit unit = ddIter.next();
+    for (final Unit unit : dds) {
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       ua.setBombard(3);
     }

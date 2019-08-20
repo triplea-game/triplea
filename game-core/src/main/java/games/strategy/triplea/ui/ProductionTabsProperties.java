@@ -92,18 +92,18 @@ class ProductionTabsProperties {
   }
 
   private int getNumberOfTabs() {
-    return Integer.valueOf(properties.getProperty(NUMBER_OF_TABS, "0"));
+    return Integer.parseInt(properties.getProperty(NUMBER_OF_TABS, "0"));
   }
 
   boolean useDefaultTabs() {
-    return Boolean.valueOf(properties.getProperty(USE_DEFAULT_TABS, "true"));
+    return Boolean.parseBoolean(properties.getProperty(USE_DEFAULT_TABS, "true"));
   }
 
   int getRows() {
-    return Integer.valueOf(properties.getProperty(NUMBER_OF_ROWS, "0"));
+    return Integer.parseInt(properties.getProperty(NUMBER_OF_ROWS, "0"));
   }
 
   int getColumns() {
-    return Integer.valueOf(properties.getProperty(NUMBER_OF_COLUMNS, "0"));
+    return Integer.parseInt(properties.getProperty(NUMBER_OF_COLUMNS, "0"));
   }
 }

@@ -39,7 +39,7 @@ final class JavaFxSelectionComponentFactory {
       final int minValue,
       final int maxValue,
       final boolean allowUnset) {
-    return new SelectionComponent<Region>() {
+    return new SelectionComponent<>() {
       private final Spinner<Integer> spinner = newSpinner();
 
       private Spinner<Integer> newSpinner() {
@@ -94,7 +94,7 @@ final class JavaFxSelectionComponentFactory {
   }
 
   static SelectionComponent<Region> toggleButton(final ClientSetting<Boolean> clientSetting) {
-    return new SelectionComponent<Region>() {
+    return new SelectionComponent<>() {
       final CheckBox checkBox = getCheckBox();
 
       private CheckBox getCheckBox() {
@@ -126,7 +126,7 @@ final class JavaFxSelectionComponentFactory {
   }
 
   static SelectionComponent<Region> textField(final ClientSetting<String> clientSetting) {
-    return new SelectionComponent<Region>() {
+    return new SelectionComponent<>() {
       final TextField textField = newTextField();
 
       private TextField newTextField() {

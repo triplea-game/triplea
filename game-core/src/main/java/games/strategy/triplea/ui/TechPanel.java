@@ -124,7 +124,7 @@ class TechPanel extends ActionPanel {
               return;
             }
             final JList<TechnologyFrontier> list =
-                new JList<TechnologyFrontier>(SwingComponents.newListModel(techCategories)) {
+                new JList<>(SwingComponents.newListModel(techCategories)) {
                   private static final long serialVersionUID = 35094445315520702L;
 
                   @Override
@@ -191,7 +191,7 @@ class TechPanel extends ActionPanel {
                 return;
               }
               final JList<TechnologyFrontier> list =
-                  new JList<TechnologyFrontier>(SwingComponents.newListModel(techCategories)) {
+                  new JList<>(SwingComponents.newListModel(techCategories)) {
                     private static final long serialVersionUID = -8415987764855418565L;
 
                     @Override

@@ -30,7 +30,7 @@ public class SimpleUnitPanel extends JPanel {
   private final UiContext uiContext;
 
   private final Comparator<ProductionRule> productionRuleComparator =
-      new Comparator<ProductionRule>() {
+      new Comparator<>() {
         final UnitTypeComparator utc = new UnitTypeComparator();
 
         @Override
@@ -72,7 +72,7 @@ public class SimpleUnitPanel extends JPanel {
       };
 
   private final Comparator<RepairRule> repairRuleComparator =
-      new Comparator<RepairRule>() {
+      new Comparator<>() {
         final UnitTypeComparator utc = new UnitTypeComparator();
 
         @Override

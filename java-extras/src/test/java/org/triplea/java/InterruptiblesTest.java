@@ -114,10 +114,7 @@ final class InterruptiblesTest {
       final CountDownLatch latch = new CountDownLatch(0);
 
       assertTimeoutPreemptively(
-          Duration.ofSeconds(5L),
-          () -> {
-            assertThat(Interruptibles.await(latch), is(true));
-          });
+          Duration.ofSeconds(5L), () -> assertThat(Interruptibles.await(latch), is(true)));
     }
   }
 
@@ -129,10 +126,7 @@ final class InterruptiblesTest {
       thread.start();
 
       assertTimeoutPreemptively(
-          Duration.ofSeconds(5L),
-          () -> {
-            assertThat(Interruptibles.join(thread), is(true));
-          });
+          Duration.ofSeconds(5L), () -> assertThat(Interruptibles.join(thread), is(true)));
     }
   }
 

@@ -11,7 +11,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GameDataTestUtil;
 import games.strategy.triplea.xml.TestMapGameData;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +34,7 @@ class AiUtilsTest {
   void testSortByCost() {
     final Territory germany = gameData.getMap().getTerritory("Germany");
     final List<Unit> sorted = new ArrayList<>(germany.getUnits());
-    Collections.sort(sorted, AiUtils.getCostComparator());
+    sorted.sort(AiUtils.getCostComparator());
     assertEquals(Constants.UNIT_TYPE_INFANTRY, sorted.get(0).getType().getName());
   }
 }
