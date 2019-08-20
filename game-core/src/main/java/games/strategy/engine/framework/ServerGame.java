@@ -213,13 +213,15 @@ public class ServerGame extends AbstractGame {
                 try {
                   blockingObserver.joinGame(bytes, playerManager.getPlayerMapping());
                   waitOnObserver.countDown();
-                } catch (final ConnectionLostException cle) {
-                  log.log(
-                      Level.SEVERE,
-                      "Connection lost to observer while joining: " + newNode.getName(),
-                      cle);
                 } catch (final Exception e) {
-                  log.log(Level.SEVERE, "Failed to join game", e);
+                  if (e.getCause() instanceof ConnectionLostException) {
+                    log.log(
+                        Level.SEVERE,
+                        "Connection lost to observer while joining: " + newNode.getName(),
+                        e);
+                  } else {
+                    log.log(Level.SEVERE, "Failed to join game", e);
+                  }
                 }
               },
               "Waiting on observer to finish joining: " + newNode.getName())
@@ -305,9 +307,13 @@ public class ServerGame extends AbstractGame {
           runStep(false);
         }
       }
-    } catch (final GameOverException e) {
-      if (!isGameOver) {
-        log.log(Level.SEVERE, "GameOverException raised, but game is not over", e);
+    } catch (final RuntimeException e) {
+      if (e.getCause() instanceof GameOverException) {
+        if (!isGameOver) {
+          log.log(Level.SEVERE, "GameOverException raised, but game is not over", e);
+        }
+      } else {
+        throw e;
       }
     }
   }

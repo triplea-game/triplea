@@ -86,13 +86,15 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       } finally {
         game.getData().releaseReadLock();
       }
-    } catch (final MessengerException me) {
-      // TODO: this kind of conversion does not seem appropriate. Maybe MessengerException should
-      // extend
-      // GameOverException? the root cause of the MessengerException is being lost, that is
-      // something to fix
-      // as well as a potential control-flow-by-exception-handling code smell.
-      throw new GameOverException("Game Over!");
+    } catch (final RuntimeException e) {
+      if (e.getCause() instanceof MessengerException) {
+        // TODO: this kind of conversion does not seem appropriate. Maybe MessengerException should
+        // extend GameOverException? the root cause
+        // of the MessengerException is being lost, that is something to fix
+        // as well as a potential control-flow-by-exception-handling code smell.
+        throw new GameOverException("Game Over!");
+      }
+      throw e;
     }
   }
 
@@ -120,8 +122,11 @@ public class DefaultPlayerBridge implements IPlayerBridge {
       } finally {
         game.getData().releaseReadLock();
       }
-    } catch (final MessengerException me) {
-      throw new GameOverException("Game Over!");
+    } catch (final RuntimeException e) {
+      if (e.getCause() instanceof MessengerException) {
+        throw new GameOverException("Game Over!", e);
+      }
+      throw e;
     }
   }
 
@@ -145,13 +150,14 @@ public class DefaultPlayerBridge implements IPlayerBridge {
         throws Throwable {
       try {
         return method.invoke(delegate, args);
-      } catch (final InvocationTargetException ite) {
+      } catch (final InvocationTargetException e) {
+        if (e.getCause() instanceof RemoteNotFoundException) {
+          throw new GameOverException("Game Over!");
+        }
         if (!game.isGameOver()) {
-          throw ite.getCause();
+          throw e.getCause();
         }
         throw new GameOverException("Game Over Exception!");
-      } catch (final RemoteNotFoundException rnfe) {
-        throw new GameOverException("Game Over!");
       }
     }
   }

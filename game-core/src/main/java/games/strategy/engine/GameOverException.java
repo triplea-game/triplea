@@ -14,4 +14,8 @@ public class GameOverException extends RuntimeException {
   public GameOverException(final String string) {
     super(string);
   }
+
+  public GameOverException(final String message, final Throwable throwable) {
+    super(message, throwable);
+  }
 }

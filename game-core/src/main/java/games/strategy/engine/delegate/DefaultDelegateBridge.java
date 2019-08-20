@@ -120,8 +120,11 @@ public class DefaultDelegateBridge implements IDelegateBridge {
       final Object implementor =
           game.getMessengers().getRemote(ServerGame.getRemoteName(id, gameData));
       return (IRemotePlayer) getOutbound(implementor);
-    } catch (final MessengerException me) {
-      throw new GameOverException("Game Over!");
+    } catch (final RuntimeException e) {
+      if (e.getCause() instanceof MessengerException) {
+        throw new GameOverException("Game Over!");
+      }
+      throw e;
     }
   }
 
