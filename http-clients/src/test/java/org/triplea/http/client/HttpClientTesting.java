@@ -157,12 +157,6 @@ public final class HttpClientTesting {
     return response;
   }
 
-  @Builder
-  private static final class ErrorHandlingArg<T> {
-    @Nonnull private final String path;
-    @Nonnull private final Function<URI, T> serviceCall;
-  }
-
   /** Verifies http client behavior on error cases, eg: communication error, server 500. */
   public static <T> void verifyErrorHandling(
       final WireMockServer wireMockServer,
