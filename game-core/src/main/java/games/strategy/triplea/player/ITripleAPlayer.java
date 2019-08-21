@@ -57,7 +57,7 @@ public interface ITripleAPlayer extends IRemotePlayer {
       boolean allowMultipleHitsPerUnit);
 
   /**
-   * Select a fixed dice roll
+   * Select a fixed dice roll.
    *
    * @param numDice - the number of dice rolls
    * @param hitAt - the roll value that constitutes a hit
