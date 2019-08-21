@@ -6,10 +6,10 @@
 [ ] New map or map update
 [ ] New Feature
 [ ] Feature update or enhancement
-[ ] Code Cleanup or refactor
 [ ] Code Removal
+[ ] Code Cleanup or refactor
+[ ] Configuration Change
 [ ] Bug fix
-
 <!-- Uncomment the below and list any changes that users would notice --> 
 <!--
 ### User facing changes
