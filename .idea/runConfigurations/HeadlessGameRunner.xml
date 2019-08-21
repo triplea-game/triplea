@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="HeadlessGameRunner" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="org.triplea.game.server.HeadlessGameRunner" />
-    <module name="triplea.game-headless.main" />
+    <module name="triplea.game-headless" />
     <option name="PROGRAM_PARAMETERS" value="-Ptriplea.name=Bot01-testbot -Ptriplea.port=4000 -Ptriplea.lobby.port=3304 -Ptriplea.lobby.host=localhost" />
     <extension name="coverage">
       <pattern>
