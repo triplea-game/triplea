@@ -254,6 +254,7 @@ public final class BattlePanel extends ActionPanel {
                     }
                     if (ClientSetting.showBattlesWhenObserving.getValueOrThrow()
                         || foundHumanInBattle) {
+                      battleFrame.setAlwaysOnTop(true);
                       battleFrame.setVisible(true);
                       battleFrame.validate();
                       battleFrame.invalidate();
