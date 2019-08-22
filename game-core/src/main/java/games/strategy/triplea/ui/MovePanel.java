@@ -262,7 +262,8 @@ public class MovePanel extends AbstractMovePanel {
             // Load Bombers with paratroops
             if ((!nonCombat || isParatroopersCanMoveDuringNonCombat(getData()))
                 && TechAttachment.isAirTransportable(getCurrentPlayer())
-                && selectedUnits.stream()
+                && selectedUnits
+                    .stream()
                     .anyMatch(Matches.unitIsAirTransport().and(Matches.unitHasNotMoved()))) {
               final PlayerId player = getCurrentPlayer();
               // TODO Transporting allied units
@@ -555,7 +556,8 @@ public class MovePanel extends AbstractMovePanel {
             units.addAll(
                 getUnitsToUnload(
                     route, CollectionUtils.getMatches(selectedUnits, getUnloadableMatch())));
-            units.addAll(CollectionUtils.getMatches(selectedUnits, getUnloadableMatch().negate()));
+            units.addAll(
+                CollectionUtils.getMatches(unitsThatCanMoveOnRoute, getUnloadableMatch().negate()));
             if (units.isEmpty()) {
               cancelMove();
               return;
@@ -984,7 +986,8 @@ public class MovePanel extends AbstractMovePanel {
   private static Predicate<Unit> areOwnedUnitsOfType(
       final Collection<Unit> units, final PlayerId owner) {
     return mainUnit ->
-        units.stream()
+        units
+            .stream()
             .filter(unit -> unit.getOwner().equals(owner))
             .anyMatch(Matches.unitIsOfType(mainUnit.getType()));
   }
