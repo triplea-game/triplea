@@ -1600,6 +1600,9 @@ public class MovePanel extends AbstractMovePanel {
           case KeyEvent.VK_SPACE:
             unitScroller.skipCurrentUnits();
             break;
+          case KeyEvent.VK_S:
+            unitScroller.sleepCurrentUnits();
+            break;
           case KeyEvent.VK_C:
             unitScroller.centerOnCurrentMovableUnit();
             break;
@@ -1664,7 +1667,7 @@ public class MovePanel extends AbstractMovePanel {
     final Collection<Collection<Unit>> highlight = new ArrayList<>();
     for (final Territory t : allTerritories) {
       final List<Unit> movableUnits = t.getUnitCollection().getMatches(movableUnitOwnedByMe);
-      movableUnits.removeAll(unitScroller.getSkippedUnits());
+      movableUnits.removeAll(unitScroller.getAllSkippedUnits());
       if (!movableUnits.isEmpty()) {
         highlight.add(movableUnits);
       }

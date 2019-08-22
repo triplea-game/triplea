@@ -48,6 +48,7 @@ task downloadImages {
                 'unit_scroller/right_arrow.png',
                 'unit_scroller/unit_center.png',
                 'unit_scroller/unit_skip.png',
+                'unit_scroller/unit_sleep.png',
         ].each { path ->
             download {
                 src "https://raw.githubusercontent.com/triplea-game/assets/master/images/$path"

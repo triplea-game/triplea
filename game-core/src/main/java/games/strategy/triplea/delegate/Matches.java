@@ -191,7 +191,7 @@ public final class Matches {
     return unitIsStrategicBomber().negate();
   }
 
-  static Predicate<Unit> unitHasMoved() {
+  public static Predicate<Unit> unitHasMoved() {
     return unit -> TripleAUnit.get(unit).getAlreadyMoved() > 0;
   }
 

@@ -17,6 +17,7 @@ class UnitScrollerIcon implements Supplier<Icon> {
   static final UnitScrollerIcon RIGHT_ARROW = new UnitScrollerIcon("right_arrow.png");
   static final UnitScrollerIcon CENTER_ON_UNIT = new UnitScrollerIcon("unit_center.png");
   static final UnitScrollerIcon UNIT_SKIP = new UnitScrollerIcon("unit_skip.png");
+  static final UnitScrollerIcon UNIT_SLEEP = new UnitScrollerIcon("unit_sleep.png");
 
   private static final File IMAGE_PATH = new File(ResourceLoader.RESOURCE_FOLDER, "unit_scroller");
 
