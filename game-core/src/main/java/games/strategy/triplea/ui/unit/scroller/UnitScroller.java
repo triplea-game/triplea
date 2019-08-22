@@ -6,6 +6,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.MapPanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -22,7 +23,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import lombok.Getter;
+import org.triplea.java.PredicateBuilder;
+import org.triplea.java.collections.CollectionUtils;
+import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
 
 /**
@@ -48,11 +51,15 @@ public class UnitScroller {
       "Press 'n' or click this button to center the screen on the 'next' units with movement left";
   private static final String CENTER_UNITS_TOOLTIP =
       "Press 'c' or click this button to center the screen on current units.";
+  private static final String SLEEP_UNITS_TOOLTIP =
+      "Press 's' or click this button to sleep the current units, they will be automatically "
+          + "skipped until you move them.";
   private static final String SKIP_UNITS_TOOLTIP =
       "Press 'space' or click this button to skip the current units and not move them during the "
           + "current move phase";
 
-  @Getter private Collection<Unit> skippedUnits = new HashSet<>();
+  private Collection<Unit> skippedUnits = new HashSet<>();
+  private Collection<Unit> sleepingUnits = new HashSet<>();
   private Territory lastFocusedTerritory;
 
   private final GameData gameData;
@@ -84,6 +91,15 @@ public class UnitScroller {
   private void unitMoved() {
     updateMovesLeftLabel();
     drawUnitAvatarPane(lastFocusedTerritory);
+
+    // remove any moved units from the sleeping units
+    sleepingUnits.removeAll(
+        CollectionUtils.getMatches(
+            gameData.getUnits().getUnits(),
+            PredicateBuilder.of(
+                    Matches.unitIsOwnedBy(gameData.getSequence().getStep().getPlayerId()))
+                .and(Matches.unitHasMoved())
+                .build()));
   }
 
   private void updateMovesLeftLabel() {
@@ -93,7 +109,15 @@ public class UnitScroller {
                 gameData.getMap().getTerritories(),
                 movePhaseSupplier.get(),
                 currentPlayerSupplier.get(),
-                skippedUnits));
+                getAllSkippedUnits()));
+  }
+
+  /** Returns both skipped and sleeping units. */
+  public Collection<Unit> getAllSkippedUnits() {
+    final Collection<Unit> skipped = new HashSet<>();
+    skipped.addAll(skippedUnits);
+    skipped.addAll(sleepingUnits);
+    return skipped;
   }
 
   private void gamePhaseChanged() {
@@ -122,7 +146,7 @@ public class UnitScroller {
   private void drawUnitAvatarPane(final Territory t) {
     final List<Unit> matchedUnits =
         UnitScrollerModel.getMoveableUnits(
-            t, movePhaseSupplier.get(), currentPlayerSupplier.get(), skippedUnits);
+            t, movePhaseSupplier.get(), currentPlayerSupplier.get(), getAllSkippedUnits());
 
     SwingUtilities.invokeLater(
         () -> {
@@ -171,13 +195,28 @@ public class UnitScroller {
     centerPanel.add(Box.createHorizontalStrut(10));
 
     panel.add(centerPanel);
+    panel.add(Box.createVerticalStrut(5));
 
     final JButton skipButton = new JButton(UnitScrollerIcon.UNIT_SKIP.get());
     skipButton.setToolTipText(SKIP_UNITS_TOOLTIP);
     skipButton.setFocusable(false);
-    skipButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     skipButton.addActionListener(e -> skipCurrentUnits());
-    panel.add(skipButton, BorderLayout.SOUTH);
+
+    final JButton sleepButton = new JButton(UnitScrollerIcon.UNIT_SLEEP.get());
+    sleepButton.setToolTipText(SLEEP_UNITS_TOOLTIP);
+    sleepButton.setFocusable(false);
+    sleepButton.addActionListener(e -> sleepCurrentUnits());
+
+    final JPanel skipAndSleepPanel =
+        JPanelBuilder.builder()
+            .horizontalBoxLayout()
+            .add(skipButton)
+            .addHorizontalStrut(30)
+            .add(sleepButton)
+            .build();
+    skipAndSleepPanel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+
+    panel.add(skipAndSleepPanel, BorderLayout.SOUTH);
     panel.add(Box.createVerticalStrut(3));
 
     panel.add(SwingComponents.leftBox(movesLeftLabel));
@@ -195,7 +234,7 @@ public class UnitScroller {
                   lastFocusedTerritory,
                   movePhaseSupplier.get(),
                   currentPlayerSupplier.get(),
-                  skippedUnits)));
+                  getAllSkippedUnits())));
       mapPanel.centerOnTerritoryIgnoringMapLock(lastFocusedTerritory);
     } else {
       centerOnNextMovableUnit();
@@ -209,6 +248,14 @@ public class UnitScroller {
   public void skipCurrentUnits() {
     if (lastFocusedTerritory != null) {
       skippedUnits.addAll(lastFocusedTerritory.getUnits());
+      updateMovesLeftLabel();
+    }
+    centerOnNextMovableUnit();
+  }
+
+  public void sleepCurrentUnits() {
+    if (lastFocusedTerritory != null) {
+      sleepingUnits.addAll(lastFocusedTerritory.getUnits());
       updateMovesLeftLabel();
     }
     centerOnNextMovableUnit();
@@ -241,7 +288,7 @@ public class UnitScroller {
       final Territory t = allTerritories.get(newFocusedIndex);
       final List<Unit> matchedUnits =
           UnitScrollerModel.getMoveableUnits(
-              t, movePhaseSupplier.get(), currentPlayerSupplier.get(), skippedUnits);
+              t, movePhaseSupplier.get(), currentPlayerSupplier.get(), getAllSkippedUnits());
 
       if (!matchedUnits.isEmpty()) {
         drawUnitAvatarPane(t);
