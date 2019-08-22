@@ -2038,3 +2038,12 @@
     <br>
     <br> This is Oztea's 1942 setup for the "Global 40" game.
     <br>
+- mapName: Charles de Gaulle 1939
+  mapCategory: EXPERIMENTAL
+  url: https://github.com/triplea-maps/charles_de_gaulle_1939/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/charles_de_gaulle_1939/master/description/TripleA_charles_de_gaulle_1939_global_mini.png
+  description:
+    <br>
+    <br> This is the Charles de Gaulle 1939 Mod for the "Global 40" game.
+    <br>
