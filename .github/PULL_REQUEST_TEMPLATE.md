@@ -55,8 +55,11 @@
 -->
 
 
+<!-- Uncomment the next section and add here any extra notes that would be helpful to reviewers -->
+
+<!--
 ## Additional Review Notes
-<!-- Add here any extra notes that would be helpful to reviewers or leave blank -->
+-->
 
 <!--
 Code standards and PR guidelines can be found at:
