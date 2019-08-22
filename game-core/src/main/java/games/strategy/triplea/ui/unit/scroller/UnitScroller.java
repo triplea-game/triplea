@@ -10,6 +10,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.MapPanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -270,10 +271,12 @@ public class UnitScroller {
   }
 
   private void centerOnMovableUnit(final boolean selectNext) {
-    final List<Territory> allTerritories = gameData.getMap().getTerritories();
+    List<Territory> allTerritories = gameData.getMap().getTerritories();
 
     if (!selectNext) {
-      Collections.reverse(allTerritories);
+      final List<Territory> territories = new ArrayList<>(allTerritories);
+      Collections.reverse(territories);
+      allTerritories = territories;
     }
     // new focused index is 1 greater
     int newFocusedIndex =
