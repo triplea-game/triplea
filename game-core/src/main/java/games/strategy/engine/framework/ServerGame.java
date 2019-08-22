@@ -307,6 +307,10 @@ public class ServerGame extends AbstractGame {
           runStep(false);
         }
       }
+    } catch (final GameOverException e) {
+      if (!isGameOver) {
+        log.log(Level.SEVERE, "GameOverException raised, but game is not over", e);
+      }
     } catch (final RuntimeException e) {
       if (e.getCause() instanceof GameOverException) {
         if (!isGameOver) {
