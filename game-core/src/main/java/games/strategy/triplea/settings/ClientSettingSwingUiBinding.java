@@ -152,6 +152,16 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
     }
   },
 
+  NOTIFY_ALL_UNITS_MOVED(
+      "Notify When All Units Moved",
+      SettingType.GAME,
+      "Game will show a pop-up notification message when all units have been moved") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return booleanRadioButtons(ClientSetting.notifyAllUnitsMoved);
+    }
+  },
+
   SERVER_START_GAME_SYNC_WAIT_TIME_BINDING(
       "Start game timeout",
       SettingType.NETWORK_TIMEOUTS,
