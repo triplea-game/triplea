@@ -555,7 +555,7 @@ public class MovePanel extends AbstractMovePanel {
             units.addAll(
                 getUnitsToUnload(
                     route, CollectionUtils.getMatches(selectedUnits, getUnloadableMatch())));
-            units.addAll(CollectionUtils.getMatches(selectedUnits, getUnloadableMatch().negate()));
+
             if (units.isEmpty()) {
               cancelMove();
               return;
