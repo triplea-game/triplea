@@ -526,7 +526,13 @@ public class MovePanel extends AbstractMovePanel {
         private Predicate<Unit> getUnloadableMatch() {
           // are we unloading everything? if we are then we dont need to select the transports
           return PredicateBuilder.of(Matches.unitIsOwnedBy(getCurrentPlayer()))
-              .and(Matches.unitIsLand())
+              .and(
+                  PredicateBuilder.of(Matches.unitIsLand())
+                      .or(
+                          PredicateBuilder.of(Matches.unitIsAir())
+                              .and(Matches.unitHasMovementLeft())
+                              .build())
+                      .build())
               .andIf(nonCombat, Matches.unitCanNotMoveDuringCombatMove().negate())
               .build();
         }
