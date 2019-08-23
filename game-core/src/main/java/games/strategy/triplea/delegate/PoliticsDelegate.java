@@ -346,7 +346,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       currentPlayer.add(player);
       final Collection<PlayerId> otherPlayers = getData().getPlayerList().getPlayers();
       otherPlayers.removeAll(currentPlayer);
-      this.getDisplay()
+      bridge
+          .getDisplayChannelBroadcaster()
           .reportMessageToPlayers(otherPlayers, currentPlayer, notification, notification);
     }
   }

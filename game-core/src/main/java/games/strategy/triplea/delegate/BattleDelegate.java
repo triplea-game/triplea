@@ -1651,7 +1651,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Collection<PlayerId> playersInvolved = new ArrayList<>();
     playersInvolved.add(player);
     playersInvolved.add(firingEnemy);
-    this.getDisplay().reportMessageToPlayers(playersInvolved, null, title + dice, title);
+    bridge
+        .getDisplayChannelBroadcaster()
+        .reportMessageToPlayers(playersInvolved, null, title + dice, title);
   }
 
   static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {

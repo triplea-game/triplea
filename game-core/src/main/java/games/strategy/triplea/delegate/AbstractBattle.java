@@ -9,7 +9,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.weak.WeakAi;
@@ -345,10 +344,6 @@ abstract class AbstractBattle implements IBattle {
 
   void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {
     BattleDelegate.markDamaged(damaged, bridge);
-  }
-
-  protected static IDisplay getDisplay(final IDelegateBridge bridge) {
-    return bridge.getDisplayChannelBroadcaster();
   }
 
   protected static ITripleAPlayer getRemote(final IDelegateBridge bridge) {

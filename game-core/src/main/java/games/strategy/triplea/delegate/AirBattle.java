@@ -279,7 +279,7 @@ public class AirBattle extends AbstractBattle {
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!isOver) {
               AirBattle.this.steps = determineStepStrings(false);
-              final IDisplay display = getDisplay(bridge);
+              final IDisplay display = bridge.getDisplayChannelBroadcaster();
               display.listBattleSteps(battleId, AirBattle.this.steps);
               round++;
               // continue fighting
@@ -458,7 +458,7 @@ public class AirBattle extends AbstractBattle {
             defenderLostTuv,
             battleResultDescription,
             new BattleResults(this, gameData));
-    getDisplay(bridge).battleEnd(battleId, "Air Battle over");
+    bridge.getDisplayChannelBroadcaster().battleEnd(battleId, "Air Battle over");
     isOver = true;
     battleTracker.removeBattle(AirBattle.this, bridge.getData());
   }
@@ -505,7 +505,7 @@ public class AirBattle extends AbstractBattle {
     final PlayerId retreatingPlayer = defender ? this.defender : attacker;
     final String text = retreatingPlayer.getName() + " retreat?";
     final String step = defender ? DEFENDERS_WITHDRAW : ATTACKERS_WITHDRAW;
-    getDisplay(bridge).gotoBattleStep(battleId, step);
+    bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, step);
     final Territory retreatTo =
         getRemote(retreatingPlayer, bridge)
             .retreatQuery(battleId, false, battleSite, availableTerritories, text);
@@ -527,7 +527,9 @@ public class AirBattle extends AbstractBattle {
       final String messageShort = retreatingPlayer.getName() + " retreats";
       final String messageLong =
           retreatingPlayer.getName() + " retreats all units to " + retreatTo.getName();
-      getDisplay(bridge).notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
+      bridge
+          .getDisplayChannelBroadcaster()
+          .notifyRetreat(messageShort, messageLong, step, retreatingPlayer);
     }
   }
 
@@ -550,7 +552,8 @@ public class AirBattle extends AbstractBattle {
 
   private void showBattle(final IDelegateBridge bridge) {
     final String title = "Air Battle in " + battleSite.getName();
-    getDisplay(bridge)
+    bridge
+        .getDisplayChannelBroadcaster()
         .showBattle(
             battleId,
             battleSite,
@@ -566,7 +569,7 @@ public class AirBattle extends AbstractBattle {
             isAmphibious(),
             getBattleType(),
             Collections.emptySet());
-    getDisplay(bridge).listBattleSteps(battleId, steps);
+    bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
   }
 
   /**
@@ -640,7 +643,9 @@ public class AirBattle extends AbstractBattle {
         beingRemoved.removeAll(interceptors);
         defendingUnits.addAll(interceptors);
       }
-      getDisplay(bridge).changedUnitsNotification(battleId, defender, beingRemoved, null, null);
+      bridge
+          .getDisplayChannelBroadcaster()
+          .changedUnitsNotification(battleId, defender, beingRemoved, null, null);
       if (groundedPlanesRetreated) {
         // this removes them from the subsequent normal battle. (do not use this for bombing
         // battles)
@@ -922,7 +927,8 @@ public class AirBattle extends AbstractBattle {
       final PlayerId hitPlayer,
       final PlayerId firingPlayer,
       final CasualtyDetails details) {
-    getDisplay(bridge)
+    bridge
+        .getDisplayChannelBroadcaster()
         .casualtyNotification(
             battleId,
             stepName,

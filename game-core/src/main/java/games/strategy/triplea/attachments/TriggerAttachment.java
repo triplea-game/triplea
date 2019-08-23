@@ -24,7 +24,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -1642,7 +1641,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                       + MyFormatter.defaultNamedToTextList(t.getPlayers())
                       + ": "
                       + messageForRecord);
-          bridge.getDisplayChannelBroadcaster()
+          bridge
+              .getDisplayChannelBroadcaster()
               .reportMessageToPlayers(
                   t.getPlayers(), null, ("<html>" + message.trim() + "</html>"), NOTIFICATION);
         }

@@ -4,7 +4,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.sound.ISound;
 import java.io.Serializable;
@@ -78,10 +77,6 @@ public abstract class AbstractDelegate implements IDelegate {
 
   protected GameData getData() {
     return bridge.getData();
-  }
-
-  protected static IDisplay getDisplay(final IDelegateBridge bridge) {
-    return bridge.getDisplayChannelBroadcaster();
   }
 
   protected ISound getSoundChannel() {

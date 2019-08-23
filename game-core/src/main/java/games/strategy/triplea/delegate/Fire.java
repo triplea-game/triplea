@@ -155,7 +155,7 @@ public class Fire implements IExecutable {
 
   private void selectCasualties(final IDelegateBridge bridge) {
     final int hitCount = dice.getHits();
-    AbstractBattle.getDisplay(bridge).notifyDice(dice, stepName);
+    bridge.getDisplayChannelBroadcaster().notifyDice(dice, stepName);
     final int countTransports =
         CollectionUtils.countMatches(
             attackableUnits, Matches.unitIsTransport().and(Matches.unitIsSea()));
@@ -284,7 +284,8 @@ public class Fire implements IExecutable {
     if (headless) {
       return;
     }
-    AbstractBattle.getDisplay(bridge)
+    bridge
+        .getDisplayChannelBroadcaster()
         .casualtyNotification(
             battleId,
             stepName,

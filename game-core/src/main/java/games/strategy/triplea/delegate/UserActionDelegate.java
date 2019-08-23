@@ -225,7 +225,9 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
       final Collection<PlayerId> dontSendTo,
       final String text) {
     if (!"NONE".equals(text)) {
-      this.getDisplay().reportMessageToPlayers(toPlayers, dontSendTo, text, text);
+      bridge
+          .getDisplayChannelBroadcaster()
+          .reportMessageToPlayers(toPlayers, dontSendTo, text, text);
     }
   }
 

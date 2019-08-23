@@ -240,7 +240,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            getDisplay(bridge).gotoBattleStep(battleId, RAID);
+            bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, RAID);
             if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
               bridge
                   .getHistoryWriter()
@@ -336,7 +336,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private void endBeforeRolling(final IDelegateBridge bridge) {
-    getDisplay(bridge).battleEnd(battleId, "Bombing raid does no damage");
+    bridge.getDisplayChannelBroadcaster().battleEnd(battleId, "Bombing raid does no damage");
     whoWon = WhoWon.DRAW;
     battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
     battleTracker
@@ -355,7 +355,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void end(final IDelegateBridge bridge) {
     if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
-      getDisplay(bridge)
+      bridge
+          .getDisplayChannelBroadcaster()
           .battleEnd(
               battleId,
               "Raid causes "
@@ -367,7 +368,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                               bombingRaidDamage, ", ", " = ", false))
                       : ""));
     } else {
-      getDisplay(bridge)
+      bridge
+          .getDisplayChannelBroadcaster()
           .battleEnd(
               battleId,
               "Bombing raid cost "
@@ -398,7 +400,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void showBattle(final IDelegateBridge bridge) {
     final String title = "Bombing raid in " + battleSite.getName();
-    getDisplay(bridge)
+    bridge
+        .getDisplayChannelBroadcaster()
         .showBattle(
             battleId,
             battleSite,
@@ -414,7 +417,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             isAmphibious(),
             getBattleType(),
             Collections.emptySet());
-    getDisplay(bridge).listBattleSteps(battleId, steps);
+    bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
   }
 
   class FireAa implements IExecutable {
@@ -591,7 +594,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final IDelegateBridge bridge,
       final DiceRoll dice,
       final String currentTypeAa) {
-    getDisplay(bridge).notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
+    bridge
+        .getDisplayChannelBroadcaster()
+        .notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
     final boolean isEditMode = BaseEditDelegate.getEditMode(gameData);
     final boolean allowMultipleHitsPerUnit =
         !defendingAa.isEmpty()
@@ -648,7 +653,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final DiceRoll dice,
       final CasualtyDetails casualties,
       final String currentTypeAa) {
-    getDisplay(bridge)
+    bridge
+        .getDisplayChannelBroadcaster()
         .casualtyNotification(
             battleId,
             REMOVE_PREFIX + currentTypeAa + CASUALTIES_SUFFIX,
@@ -961,7 +967,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
           final int totalDamage = taUnit.getUnitDamage() + currentUnitCost;
           // display the results
-          getDisplay(bridge).bombingResults(battleId, dice, currentUnitCost);
+          bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, currentUnitCost);
           if (currentUnitCost > 0) {
             bridge
                 .getSoundChannelBroadcaster()
@@ -1003,7 +1009,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // Record PUs lost
         DelegateFinder.moveDelegate(gameData).pusLost(battleSite, cost);
         cost *= Properties.getPuMultiplier(gameData);
-        getDisplay(bridge).bombingResults(battleId, dice, cost);
+        bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, cost);
         if (cost > 0) {
           bridge
               .getSoundChannelBroadcaster()

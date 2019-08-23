@@ -172,7 +172,8 @@ public class FireAa implements IExecutable {
       final String currentTypeAa) {
     // send defender the dice roll so he can see what the dice are while he waits for attacker to
     // select casualties
-    AbstractBattle.getDisplay(bridge)
+    bridge
+        .getDisplayChannelBroadcaster()
         .notifyDice(
             dice,
             hitPlayer.getName()
@@ -199,7 +200,8 @@ public class FireAa implements IExecutable {
     if (headless) {
       return;
     }
-    AbstractBattle.getDisplay(bridge)
+    bridge
+        .getDisplayChannelBroadcaster()
         .casualtyNotification(
             battleId,
             hitPlayer.getName()

@@ -268,7 +268,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
 
     if (!unitsLeftToPlace.isEmpty()) {
-      getDisplay()
+      bridge
+          .getDisplayChannelBroadcaster()
           .reportMessageToPlayers(
               Collections.singletonList(player),
               Collections.emptyList(),
