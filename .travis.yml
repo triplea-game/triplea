@@ -35,7 +35,7 @@ after_success:
 before_deploy:
 - INSTALL4J_HOME=~/install4j
 - ./.travis/install_install4j "$INSTALL4J_HOME"
-- ./gradlew -Pinstall4jHomeDir="$INSTALL4J_HOME" release
+- ./gradlew -Pinstall4jHomeDir="$INSTALL4J_HOME" release | egrep -v "^WARNING: Passing class file uncompressed due to unrecognized attribute|Pack200Logger warning$"
 - ./.travis/collect_artifacts
 - ./.travis/generate_artifact_checksums
 - ./.travis/push_tag
