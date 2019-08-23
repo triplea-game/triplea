@@ -30,7 +30,7 @@ public interface KeyBindings extends Supplier<Map<KeyStroke, Runnable>> {
    *
    * @param code A KeyEvent code, should be a constant from the class {@code KeyEvent}
    */
-  default KeyStroke fromKeyEventCode(int code) {
+  static KeyStroke fromKeyEventCode(int code) {
     Preconditions.checkArgument(
         !KeyEvent.getKeyText(code).toUpperCase().contains("UNKNOWN"),
         "Be sure to use a constant from 'KeyEvent', unknown key constant: " + code);

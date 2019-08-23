@@ -1598,16 +1598,17 @@ public class MovePanel extends AbstractMovePanel implements KeyBindings {
   @Override
   public Map<KeyStroke, Runnable> get() {
     final Map<KeyStroke, Runnable> bindings = new HashMap<>();
-    bindings.put(fromKeyEventCode(KeyEvent.VK_SPACE), unitScroller::skipCurrentUnits);
-    bindings.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), unitScroller::sleepCurrentUnits);
+    bindings.put(KeyBindings.fromKeyEventCode(KeyEvent.VK_SPACE), unitScroller::skipCurrentUnits);
+    bindings.put(KeyBindings.fromKeyEventCode(KeyEvent.VK_S), unitScroller::sleepCurrentUnits);
     bindings.put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_C, 0), unitScroller::centerOnCurrentMovableUnit);
-    bindings.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), unitScroller::centerOnNextMovableUnit);
+        KeyBindings.fromKeyEventCode(KeyEvent.VK_C), unitScroller::centerOnCurrentMovableUnit);
     bindings.put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_M, 0), unitScroller::centerOnPreviousMovableUnit);
-    bindings.put(KeyStroke.getKeyStroke(KeyEvent.VK_F, 0), this::highlightMovableUnits);
+        KeyBindings.fromKeyEventCode(KeyEvent.VK_N), unitScroller::centerOnNextMovableUnit);
     bindings.put(
-        KeyStroke.getKeyStroke(KeyEvent.VK_U, 0),
+        KeyBindings.fromKeyEventCode(KeyEvent.VK_M), unitScroller::centerOnPreviousMovableUnit);
+    bindings.put(KeyBindings.fromKeyEventCode(KeyEvent.VK_F), this::highlightMovableUnits);
+    bindings.put(
+        KeyBindings.fromKeyEventCode(KeyEvent.VK_U),
         () -> undoableMovesPanel.undoMoves(getMap().getHighlightedUnits()));
     return bindings;
   }
