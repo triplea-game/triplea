@@ -552,9 +552,11 @@ public class MovePanel extends AbstractMovePanel {
           } else if ((route.isUnload() && units.stream().anyMatch(Matches.unitIsLand()))
               || paratroopsLanding) {
             units.clear();
+            // Have user select which transports and land units to unload
             units.addAll(
                 getUnitsToUnload(
                     route, CollectionUtils.getMatches(selectedUnits, getUnloadableMatch())));
+            // Add in non-unloadable units (air) which can move along unloading route
             units.addAll(
                 CollectionUtils.getMatches(unitsThatCanMoveOnRoute, getUnloadableMatch().negate()));
             if (units.isEmpty()) {
