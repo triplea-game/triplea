@@ -31,9 +31,7 @@ import javax.annotation.Nullable;
 public class TripleA implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
 
-  protected transient IDisplay display;
   protected transient IGame game;
-  private transient ISound soundChannel;
 
   @Override
   public Set<IRemotePlayer> newPlayers(final Map<String, PlayerType> playerNames) {
@@ -46,19 +44,9 @@ public class TripleA implements IGameLoader {
 
   @Override
   public void shutDown() {
-    if (game != null && soundChannel != null) {
-      game.removeSoundChannel(soundChannel);
-      // set sound channel to null to handle the case of shutdown being called multiple times.
-      // If/when shutdown is called exactly once, then the null assignment should be unnecessary.
-      soundChannel = null;
-    }
-
-    if (display != null) {
-      if (game != null) {
-        game.removeDisplay(display);
-      }
-      display.shutDown();
-      display = null;
+    if (game != null) {
+      game.setSoundChannel(null);
+      game.setDisplay(null);
     }
   }
 
@@ -79,10 +67,8 @@ public class TripleA implements IGameLoader {
       }
     }
     final LocalPlayers localPlayers = new LocalPlayers(players);
-    display = launchAction.startGame(localPlayers, game, players, chat);
-    game.addDisplay(display);
-    soundChannel = launchAction.getSoundChannel(localPlayers);
-    game.addSoundChannel(soundChannel);
+    game.setDisplay(launchAction.startGame(localPlayers, game, players, chat));
+    game.setSoundChannel(launchAction.getSoundChannel(localPlayers));
   }
 
   @Override

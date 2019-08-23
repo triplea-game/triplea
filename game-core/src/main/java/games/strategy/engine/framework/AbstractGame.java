@@ -15,29 +15,31 @@ import games.strategy.net.Messengers;
 import games.strategy.sound.ISound;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 /**
  * This abstract class keeps common variables and methods from a game (ClientGame or ServerGame).
  */
 public abstract class AbstractGame implements IGame {
-  protected static final String DISPLAY_CHANNEL =
+  private static final String DISPLAY_CHANNEL =
       "games.strategy.engine.framework.AbstractGame.DISPLAY_CHANNEL";
-  protected static final String SOUND_CHANNEL =
+  private static final String SOUND_CHANNEL =
       "games.strategy.engine.framework.AbstractGame.SOUND_CHANNEL";
   protected final GameData gameData;
   protected final Messengers messengers;
-  protected final Map<PlayerId, IRemotePlayer> gamePlayers = new HashMap<>();
+  final Map<PlayerId, IRemotePlayer> gamePlayers = new HashMap<>();
   protected volatile boolean isGameOver = false;
   protected final Vault vault;
-  protected IGameModifiedChannel gameModifiedChannel;
-  protected final PlayerManager playerManager;
+  IGameModifiedChannel gameModifiedChannel;
+  final PlayerManager playerManager;
   protected boolean firstRun = true;
+  @Nullable private IDisplay display;
+  @Nullable private ISound sound;
 
-  protected AbstractGame(
-      final GameData data,
-      final Set<IRemotePlayer> gamePlayers,
-      final Map<String, INode> remotePlayerMapping,
+  AbstractGame(final GameData data, final Set<IRemotePlayer> gamePlayers, final Map<String, INode> remotePlayerMapping,
       final Messengers messengers) {
     gameData = data;
     this.messengers = messengers;
@@ -93,13 +95,20 @@ public abstract class AbstractGame implements IGame {
   }
 
   @Override
-  public void addDisplay(final IDisplay display) {
-    messengers.registerChannelSubscriber(display, getDisplayChannel(getData()));
-  }
+  public void setDisplay(final @Nullable IDisplay display) {
+    if (Objects.equals(this.display, display)) {
+      return;
+    }
 
-  @Override
-  public void removeDisplay(final IDisplay display) {
-    messengers.unregisterChannelSubscriber(display, getDisplayChannel(getData()));
+    if (this.display != null) {
+      messengers.unregisterChannelSubscriber(this.display, getDisplayChannel(getData()));
+      this.display.shutDown();
+
+    }
+    if (display != null) {
+      messengers.registerChannelSubscriber(display, getDisplayChannel(getData()));
+    }
+    this.display = display;
   }
 
   public static RemoteName getSoundChannel(final GameData data) {
@@ -107,12 +116,16 @@ public abstract class AbstractGame implements IGame {
   }
 
   @Override
-  public void addSoundChannel(final ISound soundChannel) {
-    messengers.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
-  }
-
-  @Override
-  public void removeSoundChannel(final ISound soundChannel) {
-    messengers.unregisterChannelSubscriber(soundChannel, getSoundChannel(getData()));
+  public void setSoundChannel(final @Nullable ISound soundChannel) {
+    if (Objects.equals(sound, soundChannel)) {
+      return;
+    }
+    if (sound != null) {
+      messengers.unregisterChannelSubscriber(soundChannel, getSoundChannel(getData()));
+    }
+    if (soundChannel != null) {
+      messengers.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
+    }
+    sound = soundChannel;
   }
 }
