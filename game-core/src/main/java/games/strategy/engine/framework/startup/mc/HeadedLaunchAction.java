@@ -8,7 +8,7 @@ import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.lookandfeel.LookAndFeelSwingFrameListener;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
-import games.strategy.engine.player.IGamePlayer;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.DefaultSoundChannel;
 import games.strategy.sound.ISound;
@@ -58,7 +58,7 @@ public class HeadedLaunchAction implements LaunchAction {
   public IDisplay startGame(
       final LocalPlayers localPlayers,
       final IGame game,
-      final Set<IGamePlayer> players,
+      final Set<IRemotePlayer> players,
       final Chat chat) {
     final TripleAFrame frame = TripleAFrame.create(game, localPlayers, chat);
 
@@ -72,7 +72,7 @@ public class HeadedLaunchAction implements LaunchAction {
         });
 
     ClipPlayer.play(SoundPath.CLIP_GAME_START);
-    for (final IGamePlayer player : players) {
+    for (final IRemotePlayer player : players) {
       if (player instanceof TripleAPlayer) {
         ((TripleAPlayer) player).setFrame(frame);
       }

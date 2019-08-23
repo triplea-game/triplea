@@ -8,13 +8,13 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,11 +55,11 @@ class AaInMoveUtil implements Serializable {
     return Properties.getAaTerritoryRestricted(getData());
   }
 
-  private ITripleAPlayer getRemotePlayer(final PlayerId id) {
-    return (ITripleAPlayer) bridge.getRemotePlayer(id);
+  private IRemotePlayer getRemotePlayer(final PlayerId id) {
+    return bridge.getRemotePlayer(id);
   }
 
-  private ITripleAPlayer getRemotePlayer() {
+  private IRemotePlayer getRemotePlayer() {
     return getRemotePlayer(player);
   }
 

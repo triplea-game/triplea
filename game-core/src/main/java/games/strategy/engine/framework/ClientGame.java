@@ -6,7 +6,7 @@ import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.history.EventChild;
 import games.strategy.engine.message.RemoteName;
-import games.strategy.engine.player.IGamePlayer;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.RemoteRandom;
@@ -27,7 +27,7 @@ import org.triplea.java.Interruptibles;
 public class ClientGame extends AbstractGame {
   public ClientGame(
       final GameData data,
-      final Set<IGamePlayer> gamePlayers,
+      final Set<IRemotePlayer> gamePlayers,
       final Map<String, INode> remotePlayerMapping,
       final Messengers messengers) {
     super(data, gamePlayers, remotePlayerMapping, messengers);
@@ -167,7 +167,7 @@ public class ClientGame extends AbstractGame {
           if (isGameOver) {
             return;
           }
-          final IGamePlayer gp = this.gamePlayers.get(player);
+          final IRemotePlayer gp = this.gamePlayers.get(player);
           if (gp == null) {
             throw new IllegalStateException(
                 "Game player not found. Player:" + player + " on:" + messengers.getLocalNode());
@@ -201,7 +201,7 @@ public class ClientGame extends AbstractGame {
       messengers.unregisterChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
       messengers.unregisterRemote(getRemoteStepAdvancerName(messengers.getLocalNode()));
       vault.shutDown();
-      for (final IGamePlayer gp : gamePlayers.values()) {
+      for (final IRemotePlayer gp : gamePlayers.values()) {
         final PlayerId player;
         gameData.acquireReadLock();
         try {

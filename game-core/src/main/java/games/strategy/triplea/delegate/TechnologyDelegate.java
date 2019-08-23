@@ -8,6 +8,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -21,7 +22,6 @@ import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.delegate.data.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -213,7 +213,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     int remainder = 0;
     final int diceSides = data.getDiceSides();
     if (BaseEditDelegate.getEditMode(data)) {
-      final ITripleAPlayer tripleaPlayer = getRemotePlayer();
+      final IRemotePlayer tripleaPlayer = getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(techRolls, diceSides, annotation, diceSides);
       techHits = getTechHits(random);
     } else if (isLowLuckTechOnly()) {
@@ -385,7 +385,7 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     final String annotation = player.getName() + " rolling to see what tech advances are acquired";
     final int[] random;
     if (isSelectableTechRoll() || BaseEditDelegate.getEditMode(getData())) {
-      final ITripleAPlayer tripleaPlayer = getRemotePlayer();
+      final IRemotePlayer tripleaPlayer = getRemotePlayer();
       random = tripleaPlayer.selectFixedDice(hits, 0, annotation, available.size());
     } else {
       random = new int[hits];

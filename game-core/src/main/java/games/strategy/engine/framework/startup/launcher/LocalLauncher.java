@@ -6,7 +6,7 @@ import games.strategy.engine.framework.message.PlayerListing;
 import games.strategy.engine.framework.startup.launcher.local.PlayerCountrySelection;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.player.IGamePlayer;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.LocalNoOpMessenger;
@@ -71,7 +71,7 @@ public class LocalLauncher extends AbstractLauncher<ServerGame> {
     try {
       gameData.doPreGameStartDataModifications(playerListing);
       final Messengers messengers = new Messengers(new LocalNoOpMessenger());
-      final Set<IGamePlayer> gamePlayers =
+      final Set<IRemotePlayer> gamePlayers =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
       final ServerGame game =
           new ServerGame(gameData, gamePlayers, new HashMap<>(), messengers, launchAction);

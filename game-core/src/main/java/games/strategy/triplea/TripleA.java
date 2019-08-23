@@ -14,10 +14,9 @@ import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.player.IGamePlayer;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.delegate.EditDelegate;
-import games.strategy.triplea.player.ITripleAPlayer;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,11 +36,11 @@ public class TripleA implements IGameLoader {
   private transient ISound soundChannel;
 
   @Override
-  public Set<IGamePlayer> newPlayers(final Map<String, PlayerType> playerNames) {
+  public Set<IRemotePlayer> newPlayers(final Map<String, PlayerType> playerNames) {
     return playerNames.entrySet().stream().map(TripleA::toGamePlayer).collect(Collectors.toSet());
   }
 
-  private static IGamePlayer toGamePlayer(final Map.Entry<String, PlayerType> namePlayerType) {
+  private static IRemotePlayer toGamePlayer(final Map.Entry<String, PlayerType> namePlayerType) {
     return namePlayerType.getValue().newPlayerWithName(namePlayerType.getKey());
   }
 
@@ -66,7 +65,7 @@ public class TripleA implements IGameLoader {
   @Override
   public void startGame(
       final IGame game,
-      final Set<IGamePlayer> players,
+      final Set<IRemotePlayer> players,
       final LaunchAction launchAction,
       @Nullable final Chat chat) {
     this.game = game;
@@ -98,7 +97,7 @@ public class TripleA implements IGameLoader {
 
   @Override
   public Class<? extends IRemote> getRemotePlayerType() {
-    return ITripleAPlayer.class;
+    return IRemotePlayer.class;
   }
 
   @Override

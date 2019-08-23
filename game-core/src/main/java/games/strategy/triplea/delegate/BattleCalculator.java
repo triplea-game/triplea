@@ -7,6 +7,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
@@ -16,7 +17,6 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
@@ -599,10 +599,8 @@ public class BattleCalculator {
     }
     final GameData data = bridge.getData();
     final boolean isEditMode = BaseEditDelegate.getEditMode(data);
-    final ITripleAPlayer tripleaPlayer =
-        player.isNull()
-            ? new WeakAi(player.getName())
-            : (ITripleAPlayer) bridge.getRemotePlayer(player);
+    final IRemotePlayer tripleaPlayer =
+        player.isNull() ? new WeakAi(player.getName()) : bridge.getRemotePlayer(player);
     final Map<Unit, Collection<Unit>> dependents =
         headLess ? Collections.emptyMap() : getDependents(targetsToPickFrom);
     if (isEditMode && !headLess) {

@@ -25,7 +25,6 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -930,7 +929,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment {
                 + ")";
         delegateBridge.getHistoryWriter().startEvent(notificationMessage);
         changeChanceDecrementOrIncrementOnSuccessOrFailure(delegateBridge, objectiveMet, true);
-        ((ITripleAPlayer) delegateBridge.getRemotePlayer(delegateBridge.getPlayerId()))
+        delegateBridge
+            .getRemotePlayer(delegateBridge.getPlayerId())
             .reportMessage(notificationMessage, notificationMessage);
       }
     }

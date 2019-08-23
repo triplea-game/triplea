@@ -11,6 +11,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -24,7 +25,6 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -667,8 +667,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         new Thread(
             () -> {
               try {
-                final ITripleAPlayer defender =
-                    (ITripleAPlayer) bridge.getRemotePlayer(this.defender);
+                final IRemotePlayer defender = bridge.getRemotePlayer(this.defender);
                 defender.confirmEnemyCasualties(battleId, "Press space to continue", attacker);
               } catch (final Exception e) {
                 // ignore
@@ -676,7 +675,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             },
             "click to continue waiter");
     t.start();
-    final ITripleAPlayer attacker = (ITripleAPlayer) bridge.getRemotePlayer(this.attacker);
+    final IRemotePlayer attacker = bridge.getRemotePlayer(this.attacker);
     attacker.confirmOwnCasualties(battleId, "Press space to continue");
     bridge.leaveDelegateExecution();
     Interruptibles.join(t);
@@ -748,8 +747,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 + defender.getName()
                 + " in "
                 + battleSite.getName();
-        final ITripleAPlayer attacker =
-            (ITripleAPlayer) bridge.getRemotePlayer(StrategicBombingRaidBattle.this.attacker);
+        final IRemotePlayer attacker =
+            bridge.getRemotePlayer(StrategicBombingRaidBattle.this.attacker);
         // does not take into account bombers with dice sides higher than getDiceSides
         dice = attacker.selectFixedDice(rollCount, 0, annotation, gameData.getDiceSides());
       } else {

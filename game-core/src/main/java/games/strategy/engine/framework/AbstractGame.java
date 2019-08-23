@@ -7,8 +7,8 @@ import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.player.DefaultPlayerBridge;
-import games.strategy.engine.player.IGamePlayer;
 import games.strategy.engine.player.IPlayerBridge;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
@@ -27,7 +27,7 @@ public abstract class AbstractGame implements IGame {
       "games.strategy.engine.framework.AbstractGame.SOUND_CHANNEL";
   protected final GameData gameData;
   protected final Messengers messengers;
-  protected final Map<PlayerId, IGamePlayer> gamePlayers = new HashMap<>();
+  protected final Map<PlayerId, IRemotePlayer> gamePlayers = new HashMap<>();
   protected volatile boolean isGameOver = false;
   protected final Vault vault;
   protected IGameModifiedChannel gameModifiedChannel;
@@ -36,14 +36,14 @@ public abstract class AbstractGame implements IGame {
 
   protected AbstractGame(
       final GameData data,
-      final Set<IGamePlayer> gamePlayers,
+      final Set<IRemotePlayer> gamePlayers,
       final Map<String, INode> remotePlayerMapping,
       final Messengers messengers) {
     gameData = data;
     this.messengers = messengers;
     vault = new Vault(messengers);
     final Map<String, INode> allPlayers = new HashMap<>(remotePlayerMapping);
-    for (final IGamePlayer player : gamePlayers) {
+    for (final IRemotePlayer player : gamePlayers) {
       // this is necessary for Server games, but not needed for client games.
       allPlayers.put(player.getName(), messengers.getLocalNode());
     }
@@ -51,9 +51,9 @@ public abstract class AbstractGame implements IGame {
     setupLocalPlayers(gamePlayers);
   }
 
-  private void setupLocalPlayers(final Set<IGamePlayer> localPlayers) {
+  private void setupLocalPlayers(final Set<IRemotePlayer> localPlayers) {
     final PlayerList playerList = gameData.getPlayerList();
-    for (final IGamePlayer gp : localPlayers) {
+    for (final IRemotePlayer gp : localPlayers) {
       final PlayerId player = playerList.getPlayerId(gp.getName());
       gamePlayers.put(player, gp);
       final IPlayerBridge bridge = new DefaultPlayerBridge(this);

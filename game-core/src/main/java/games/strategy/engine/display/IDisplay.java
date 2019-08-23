@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * A Display is a view of the game. Displays listen on the display channel for game events. A
- * Display may interact with many {@link games.strategy.engine.player.IGamePlayer}s.
+ * Display may interact with many {@link games.strategy.engine.player.IRemotePlayer}s.
  */
 public interface IDisplay extends IChannelSubscriber {
   /**

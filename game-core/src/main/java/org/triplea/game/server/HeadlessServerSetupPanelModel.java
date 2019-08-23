@@ -9,7 +9,7 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.player.IGamePlayer;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ui.HeadlessUiContext;
@@ -73,7 +73,7 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
               public IDisplay startGame(
                   final LocalPlayers localPlayers,
                   final IGame game,
-                  final Set<IGamePlayer> players,
+                  final Set<IRemotePlayer> players,
                   final Chat chat) {
                 final UiContext uiContext = new HeadlessUiContext();
                 uiContext.setDefaultMapDir(game.getData());

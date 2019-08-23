@@ -9,12 +9,12 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
-import games.strategy.triplea.player.ITripleAPlayer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -346,15 +346,15 @@ abstract class AbstractBattle implements IBattle {
     BattleDelegate.markDamaged(damaged, bridge);
   }
 
-  protected static ITripleAPlayer getRemote(final IDelegateBridge bridge) {
-    return (ITripleAPlayer) bridge.getRemotePlayer();
+  protected static IRemotePlayer getRemote(final IDelegateBridge bridge) {
+    return bridge.getRemotePlayer();
   }
 
-  protected static ITripleAPlayer getRemote(final PlayerId player, final IDelegateBridge bridge) {
+  protected static IRemotePlayer getRemote(final PlayerId player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
       return new WeakAi(player.getName());
     }
-    return (ITripleAPlayer) bridge.getRemotePlayer(player);
+    return bridge.getRemotePlayer(player);
   }
 }

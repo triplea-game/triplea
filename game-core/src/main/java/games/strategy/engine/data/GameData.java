@@ -51,7 +51,7 @@ import org.triplea.util.Version;
  *   data.releaseReadLock();
  * }
  * </code> The exception is delegates within a start(), end() or any method called from an
- * IGamePlayer through the delegates remote interface. The delegate will have a read lock for the
+ * IRemotePlayer through the delegates remote interface. The delegate will have a read lock for the
  * duration of those methods.
  *
  * <p>Non engine code must NOT acquire the games writeLock(). All changes to game Data must be made

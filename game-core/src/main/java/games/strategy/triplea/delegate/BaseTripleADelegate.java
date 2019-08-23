@@ -3,10 +3,10 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.TriggerAttachment;
-import games.strategy.triplea.player.ITripleAPlayer;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.function.Predicate;
@@ -89,24 +89,24 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
   }
 
   @Override
-  protected ITripleAPlayer getRemotePlayer() {
+  protected IRemotePlayer getRemotePlayer() {
     return getRemotePlayer(bridge);
   }
 
-  protected static ITripleAPlayer getRemotePlayer(final IDelegateBridge bridge) {
-    return (ITripleAPlayer) bridge.getRemotePlayer();
+  protected static IRemotePlayer getRemotePlayer(final IDelegateBridge bridge) {
+    return bridge.getRemotePlayer();
   }
 
-  protected ITripleAPlayer getRemotePlayer(final PlayerId player) {
+  protected IRemotePlayer getRemotePlayer(final PlayerId player) {
     return getRemotePlayer(player, bridge);
   }
 
-  protected static ITripleAPlayer getRemotePlayer(
+  protected static IRemotePlayer getRemotePlayer(
       final PlayerId player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
       return new WeakAi(player.getName());
     }
-    return (ITripleAPlayer) bridge.getRemotePlayer(player);
+    return (IRemotePlayer) bridge.getRemotePlayer(player);
   }
 }
