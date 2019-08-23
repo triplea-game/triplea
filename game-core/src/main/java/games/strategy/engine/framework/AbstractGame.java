@@ -29,12 +29,15 @@ public abstract class AbstractGame implements IGame {
       "games.strategy.engine.framework.AbstractGame.SOUND_CHANNEL";
   protected final GameData gameData;
   protected final Messengers messengers;
-  final Map<PlayerId, IRemotePlayer> gamePlayers = new HashMap<>();
   protected volatile boolean isGameOver = false;
   protected final Vault vault;
-  IGameModifiedChannel gameModifiedChannel;
-  final PlayerManager playerManager;
   protected boolean firstRun = true;
+
+  IGameModifiedChannel gameModifiedChannel;
+
+  final Map<PlayerId, IRemotePlayer> gamePlayers = new HashMap<>();
+  final PlayerManager playerManager;
+
   @Nullable private IDisplay display;
   @Nullable private ISound sound;
 
