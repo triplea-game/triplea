@@ -7,6 +7,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MapPanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -22,10 +23,12 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
+import org.triplea.swing.DialogBuilder;
 import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
 
@@ -104,13 +107,15 @@ public class UnitScroller {
   }
 
   private void updateMovesLeftLabel() {
-    movesLeftLabel.setText(
-        "Units left to move: "
-            + UnitScrollerModel.computeUnitsToMoveCount(
-                gameData.getMap().getTerritories(),
-                movePhaseSupplier.get(),
-                currentPlayerSupplier.get(),
-                getAllSkippedUnits()));
+    movesLeftLabel.setText("Units left to move: " + movesLeft());
+  }
+
+  private int movesLeft() {
+    return UnitScrollerModel.computeUnitsToMoveCount(
+        gameData.getMap().getTerritories(),
+        movePhaseSupplier.get(),
+        currentPlayerSupplier.get(),
+        getAllSkippedUnits());
   }
 
   /** Returns both skipped and sleeping units. */
@@ -228,7 +233,7 @@ public class UnitScroller {
 
   /** Centers the map on the current territory shown in the unit scroller. */
   public void centerOnCurrentMovableUnit() {
-    if (lastFocusedTerritory != null) {
+    if (lastFocusedTerritory != null && !getMovableUnits(lastFocusedTerritory).isEmpty()) {
       mapPanel.setUnitHighlight(
           Collections.singleton(
               UnitScrollerModel.getMoveableUnits(
@@ -242,13 +247,21 @@ public class UnitScroller {
     }
   }
 
+  private List<Unit> getMovableUnits(final Territory territory) {
+    if (territory == null) {
+      return Collections.emptyList();
+    }
+    return UnitScrollerModel.getMoveableUnits(
+        territory, movePhaseSupplier.get(), currentPlayerSupplier.get(), getAllSkippedUnits());
+  }
+
   /**
    * Skips the units in the current territory. Scroller will not scroll back to these units and the
    * units will not be highlighted.
    */
   public void skipCurrentUnits() {
     if (lastFocusedTerritory != null) {
-      skippedUnits.addAll(lastFocusedTerritory.getUnits());
+      skippedUnits.addAll(getMovableUnits(lastFocusedTerritory));
       updateMovesLeftLabel();
     }
     centerOnNextMovableUnit();
@@ -256,7 +269,7 @@ public class UnitScroller {
 
   public void sleepCurrentUnits() {
     if (lastFocusedTerritory != null) {
-      sleepingUnits.addAll(lastFocusedTerritory.getUnits());
+      sleepingUnits.addAll(getMovableUnits(lastFocusedTerritory));
       updateMovesLeftLabel();
     }
     centerOnNextMovableUnit();
@@ -264,10 +277,43 @@ public class UnitScroller {
 
   public void centerOnNextMovableUnit() {
     centerOnMovableUnit(true);
+
+    if (lastFocusedTerritory != null) {
+      showAllUnitsMovedIfNeeded();
+    }
+  }
+
+  private void showAllUnitsMovedIfNeeded() {
+    if (movesLeft() == 0 && ClientSetting.notifyAllUnitsMoved.getValueOrThrow()) {
+      showAllUnitsMoved();
+    }
+  }
+
+  private void showAllUnitsMoved() {
+    final int result =
+        JOptionPane.showOptionDialog(
+            mapPanel,
+            "All units have moved",
+            "All units moved",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            new String[] {"OK", "Do not show again"},
+            "OK");
+    final boolean doNotShowAgainClicked = (result == 1);
+    if (doNotShowAgainClicked) {
+      ClientSetting.notifyAllUnitsMoved.setValueAndFlush(false);
+      DialogBuilder.builder()
+          .parent(mapPanel)
+          .title("All units moved confirmation turned off")
+          .infoMessage("Will not show this message again.\nIt can be turned on from game settings.")
+          .showDialog();
+    }
   }
 
   public void centerOnPreviousMovableUnit() {
     centerOnMovableUnit(false);
+    showAllUnitsMovedIfNeeded();
   }
 
   private void centerOnMovableUnit(final boolean selectNext) {
@@ -289,9 +335,7 @@ public class UnitScroller {
     // make sure we go through every single territory on the board
     for (int i = 0; i < allTerritories.size(); i++) {
       final Territory t = allTerritories.get(newFocusedIndex);
-      final List<Unit> matchedUnits =
-          UnitScrollerModel.getMoveableUnits(
-              t, movePhaseSupplier.get(), currentPlayerSupplier.get(), getAllSkippedUnits());
+      final List<Unit> matchedUnits = getMovableUnits(t);
 
       if (!matchedUnits.isEmpty()) {
         drawUnitAvatarPane(t);

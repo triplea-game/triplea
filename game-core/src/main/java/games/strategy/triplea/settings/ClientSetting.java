@@ -83,6 +83,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new PathClientSetting("MAP_LIST_OVERRIDE");
   public static final ClientSetting<String> moderatorApiKey =
       new StringClientSetting("MODERATOR_API_KEY");
+  public static final ClientSetting<Boolean> notifyAllUnitsMoved =
+      new BooleanClientSetting("NOTIFY_ALL_UNITS_MOVED", true);
   public static final ClientSetting<HttpProxy.ProxyChoice> proxyChoice =
       new EnumClientSetting<>(
           HttpProxy.ProxyChoice.class, "PROXY_CHOICE", HttpProxy.ProxyChoice.NONE);
