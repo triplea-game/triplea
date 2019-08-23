@@ -71,15 +71,13 @@ public class HeadedLaunchAction implements LaunchAction {
           frame.toFront();
         });
 
-    final var display = new TripleADisplay(frame);
-    game.addDisplay(display);
     ClipPlayer.play(SoundPath.CLIP_GAME_START);
     for (final IGamePlayer player : players) {
       if (player instanceof TripleAPlayer) {
         ((TripleAPlayer) player).setFrame(frame);
       }
     }
-    return display;
+    return new TripleADisplay(frame);
   }
 
   @Override
