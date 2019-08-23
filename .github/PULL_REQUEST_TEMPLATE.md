@@ -3,13 +3,13 @@
 
 ## Functional Changes
 <!-- Put an X next to an item -->
-[ ] New map or map update
-[ ] New Feature
-[ ] Feature update or enhancement
-[ ] Code Removal
-[ ] Code Cleanup or refactor
-[ ] Configuration Change
-[ ] Bug fix
+- [ ] New map or map update
+- [ ] New Feature
+- [ ] Feature update or enhancement
+- [ ] Code Removal
+- [ ] Code Cleanup or refactor
+- [ ] Configuration Change
+- [ ] Bug fix
 
 <!-- If fixing a bug, uncomment the below and fill in each section -->
 <!--
@@ -27,10 +27,10 @@
 ## Testing
 <!-- Place an X next to any that apply -->
 
-[ ] Covered by existing automated tests
-[ ] Covered by newly added automated tests
-[ ] Manually tested
-[ ] No testing done
+- [ ] Covered by existing automated tests
+- [ ] Covered by newly added automated tests
+- [ ] Manually tested
+- [ ] No testing done
 
 <!-- 
   If manually tested, uncomment the section below and list the test-case scenarios manually tested.
