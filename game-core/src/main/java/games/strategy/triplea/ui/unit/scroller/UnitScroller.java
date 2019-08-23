@@ -300,7 +300,8 @@ public class UnitScroller {
             null,
             new String[] {"OK", "Do not show again"},
             "OK");
-    if (result == 1) {
+    final boolean doNotShowAgainClicked = (result == 1);
+    if (doNotShowAgainClicked) {
       ClientSetting.notifyAllUnitsMoved.setValueAndFlush(false);
       DialogBuilder.builder()
           .parent(mapPanel)
