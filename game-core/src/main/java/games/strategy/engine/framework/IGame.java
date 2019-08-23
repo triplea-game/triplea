@@ -10,7 +10,6 @@ import games.strategy.engine.vault.Vault;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ISound;
 import java.io.File;
-
 import javax.annotation.Nullable;
 
 /**

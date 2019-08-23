@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 
 /**
@@ -39,7 +38,10 @@ public abstract class AbstractGame implements IGame {
   @Nullable private IDisplay display;
   @Nullable private ISound sound;
 
-  AbstractGame(final GameData data, final Set<IRemotePlayer> gamePlayers, final Map<String, INode> remotePlayerMapping,
+  AbstractGame(
+      final GameData data,
+      final Set<IRemotePlayer> gamePlayers,
+      final Map<String, INode> remotePlayerMapping,
       final Messengers messengers) {
     gameData = data;
     this.messengers = messengers;
@@ -103,7 +105,6 @@ public abstract class AbstractGame implements IGame {
     if (this.display != null) {
       messengers.unregisterChannelSubscriber(this.display, getDisplayChannel(getData()));
       this.display.shutDown();
-
     }
     if (display != null) {
       messengers.registerChannelSubscriber(display, getDisplayChannel(getData()));
@@ -121,7 +122,7 @@ public abstract class AbstractGame implements IGame {
       return;
     }
     if (sound != null) {
-      messengers.unregisterChannelSubscriber(soundChannel, getSoundChannel(getData()));
+      messengers.unregisterChannelSubscriber(sound, getSoundChannel(getData()));
     }
     if (soundChannel != null) {
       messengers.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
