@@ -169,7 +169,7 @@ import org.triplea.util.Tuple;
 
 /** Main frame for the triple a game. */
 @Log
-public final class TripleAFrame extends JFrame implements KeyBindings {
+public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private static final long serialVersionUID = 7640069668264418976L;
   private final LocalPlayers localPlayers;
   private final GameData data;
@@ -751,7 +751,7 @@ public final class TripleAFrame extends JFrame implements KeyBindings {
     uiContext.addShutdownWindow(this);
   }
 
-  private void addKeyBindings(final KeyBindings... keyBindings) {
+  private void addKeyBindings(final KeyBindingSupplier... keyBindings) {
     Arrays.stream(keyBindings)
         .map(Supplier::get)
         .map(Map::entrySet)

@@ -23,7 +23,7 @@ import javax.swing.KeyStroke;
  *   KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
  * </pre>
  */
-public interface KeyBindings extends Supplier<Map<KeyStroke, Runnable>> {
+public interface KeyBindingSupplier extends Supplier<Map<KeyStroke, Runnable>> {
 
   /**
    * Convenience method to create a {@code KeyStroke} without modifiers.

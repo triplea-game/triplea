@@ -57,7 +57,7 @@ import org.triplea.java.collections.IntegerMap;
 
 /** The action panel displayed during the combat and non-combat move actions. */
 @Log
-public class MovePanel extends AbstractMovePanel implements KeyBindings {
+public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   private static final long serialVersionUID = 5004515340964828564L;
   private static final int defaultMinTransportCost = 5;
   /**
@@ -1598,17 +1598,17 @@ public class MovePanel extends AbstractMovePanel implements KeyBindings {
   @Override
   public Map<KeyStroke, Runnable> get() {
     final Map<KeyStroke, Runnable> bindings = new HashMap<>();
-    bindings.put(KeyBindings.fromKeyEventCode(KeyEvent.VK_SPACE), unitScroller::skipCurrentUnits);
-    bindings.put(KeyBindings.fromKeyEventCode(KeyEvent.VK_S), unitScroller::sleepCurrentUnits);
+    bindings.put(KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_SPACE), unitScroller::skipCurrentUnits);
+    bindings.put(KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_S), unitScroller::sleepCurrentUnits);
     bindings.put(
-        KeyBindings.fromKeyEventCode(KeyEvent.VK_C), unitScroller::centerOnCurrentMovableUnit);
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_C), unitScroller::centerOnCurrentMovableUnit);
     bindings.put(
-        KeyBindings.fromKeyEventCode(KeyEvent.VK_N), unitScroller::centerOnNextMovableUnit);
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_N), unitScroller::centerOnNextMovableUnit);
     bindings.put(
-        KeyBindings.fromKeyEventCode(KeyEvent.VK_M), unitScroller::centerOnPreviousMovableUnit);
-    bindings.put(KeyBindings.fromKeyEventCode(KeyEvent.VK_F), this::highlightMovableUnits);
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_M), unitScroller::centerOnPreviousMovableUnit);
+    bindings.put(KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_F), this::highlightMovableUnits);
     bindings.put(
-        KeyBindings.fromKeyEventCode(KeyEvent.VK_U),
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_U),
         () -> undoableMovesPanel.undoMoves(getMap().getHighlightedUnits()));
     return bindings;
   }
