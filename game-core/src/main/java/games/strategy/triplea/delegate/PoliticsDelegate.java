@@ -359,7 +359,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
-      this.getRemotePlayer().reportMessage(text, text);
+      bridge.getRemotePlayer().reportMessage(text, text);
     }
   }
 

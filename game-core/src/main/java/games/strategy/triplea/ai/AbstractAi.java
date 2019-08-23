@@ -63,7 +63,7 @@ import org.triplea.util.Tuple;
  * done through an IDelegate using a change).
  */
 @Log
-public abstract class AbstractAi extends AbstractBasePlayer implements IRemotePlayer {
+public abstract class AbstractAi extends AbstractBasePlayer {
   public AbstractAi(final String name) {
     super(name);
   }

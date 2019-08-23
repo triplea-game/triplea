@@ -249,7 +249,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   @VisibleForTesting
   void addBombardmentSources() {
     final PlayerId attacker = bridge.getPlayerId();
-    final IRemotePlayer remotePlayer = getRemotePlayer();
+    final IRemotePlayer remotePlayer = bridge.getRemotePlayer();
     final Predicate<Unit> ownedAndCanBombard =
         Matches.unitCanBombard(attacker).and(Matches.unitIsOwnedBy(attacker));
     final Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
@@ -345,7 +345,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       battleTerritories.put(battle.getTerritory(), battle);
     }
-    final IRemotePlayer remotePlayer = getRemotePlayer();
+    final IRemotePlayer remotePlayer = bridge.getRemotePlayer();
     Territory bombardingTerritory = null;
     if (!territories.isEmpty()) {
       bombardingTerritory =
@@ -507,7 +507,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // possibility to ignore battle altogether
       if (!attackingUnits.isEmpty()) {
-        final IRemotePlayer remotePlayer = getRemotePlayer(bridge);
+        final IRemotePlayer remotePlayer = bridge.getRemotePlayer();
         if (territory.isWater() && Properties.getSeaBattlesMayBeIgnored(data)) {
           if (!remotePlayer.selectAttackUnits(territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);

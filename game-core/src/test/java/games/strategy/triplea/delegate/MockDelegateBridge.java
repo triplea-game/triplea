@@ -68,10 +68,6 @@ final class MockDelegateBridge {
         .getRandom(anyInt(), anyInt(), any(), any(), anyString());
   }
 
-  static IRemotePlayer withRemotePlayer(final IDelegateBridge delegateBridge) {
-    return (IRemotePlayer) delegateBridge.getRemotePlayer();
-  }
-
   static void advanceToStep(final IDelegateBridge delegateBridge, final String stepName) {
     final GameData gameData = delegateBridge.getData();
     gameData.acquireWriteLock();

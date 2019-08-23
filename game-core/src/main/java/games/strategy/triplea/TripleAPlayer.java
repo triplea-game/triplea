@@ -7,7 +7,6 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.net.GUID;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
@@ -61,7 +60,7 @@ import org.triplea.util.Tuple;
  * delegate, and done through an IDelegate, which we get through getPlayerBridge().getRemote()
  */
 @Log
-public abstract class TripleAPlayer extends AbstractHumanPlayer implements IRemotePlayer {
+public abstract class TripleAPlayer extends AbstractHumanPlayer {
   private boolean soundPlayedAlreadyCombatMove = false;
   private boolean soundPlayedAlreadyNonCombatMove = false;
   private boolean soundPlayedAlreadyPurchase = false;

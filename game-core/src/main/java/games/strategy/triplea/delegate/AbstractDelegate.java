@@ -86,12 +86,4 @@ public abstract class AbstractDelegate implements IDelegate {
   protected static ISound getSoundChannel(final IDelegateBridge bridge) {
     return bridge.getSoundChannelBroadcaster();
   }
-
-  protected IRemotePlayer getRemotePlayer() {
-    return getRemotePlayer(bridge);
-  }
-
-  protected static IRemotePlayer getRemotePlayer(final IDelegateBridge bridge) {
-    return bridge.getRemotePlayer();
-  }
 }

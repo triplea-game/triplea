@@ -540,8 +540,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
       return null;
     }
     final List<Unit> fighters = producer.getUnitCollection().getMatches(ownedFighters);
-    final Collection<Unit> movedFighters =
-        getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, producer);
+      final Collection<Unit> movedFighters =
+        bridge.getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, producer);
     if (movedFighters == null || movedFighters.isEmpty()) {
       return null;
     }

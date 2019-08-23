@@ -216,7 +216,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
       // "To " + player.getName() + ": " +
-      this.getRemotePlayer().reportMessage(text, text);
+        bridge.getRemotePlayer().reportMessage(text, text);
     }
   }
 

@@ -177,8 +177,8 @@ public class RocketsFireHelper implements Serializable {
           if (enemyTargets.size() == 1) {
             unitTarget = enemyTargets.iterator().next();
           } else {
-            final IRemotePlayer iplayer = (IRemotePlayer) bridge.getRemotePlayer(player);
-            unitTarget = iplayer.whatShouldBomberBomb(targetTerritory, enemyTargets, rocketTargets);
+            final IRemotePlayer remotePlayer = bridge.getRemotePlayer(player);
+            unitTarget = remotePlayer.whatShouldBomberBomb(targetTerritory, enemyTargets, rocketTargets);
           }
           if (unitTarget == null) {
             continue;
@@ -275,7 +275,7 @@ public class RocketsFireHelper implements Serializable {
       final Collection<Territory> targets, final IDelegateBridge bridge, final Territory from) {
     // ask even if there is only once choice, that will allow the user to not attack if he doesn't
     // want to
-    return ((IRemotePlayer) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);
+    return bridge.getRemotePlayer().whereShouldRocketsAttack(targets, from);
   }
 
   private void fireRocket(

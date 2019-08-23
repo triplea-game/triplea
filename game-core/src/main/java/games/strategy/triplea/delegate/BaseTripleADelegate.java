@@ -88,15 +88,6 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     PoliticsDelegate.chainAlliancesTogether(bridge);
   }
 
-  @Override
-  protected IRemotePlayer getRemotePlayer() {
-    return getRemotePlayer(bridge);
-  }
-
-  protected static IRemotePlayer getRemotePlayer(final IDelegateBridge bridge) {
-    return bridge.getRemotePlayer();
-  }
-
   protected IRemotePlayer getRemotePlayer(final PlayerId player) {
     return getRemotePlayer(player, bridge);
   }
@@ -107,6 +98,6 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     if (player.isNull()) {
       return new WeakAi(player.getName());
     }
-    return (IRemotePlayer) bridge.getRemotePlayer(player);
+    return bridge.getRemotePlayer(player);
   }
 }
