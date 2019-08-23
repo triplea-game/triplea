@@ -8,7 +8,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
@@ -53,14 +52,6 @@ class AaInMoveUtil implements Serializable {
 
   private boolean isAaTerritoryRestricted() {
     return Properties.getAaTerritoryRestricted(getData());
-  }
-
-  private IRemotePlayer getRemotePlayer(final PlayerId id) {
-    return bridge.getRemotePlayer(id);
-  }
-
-  private IRemotePlayer getRemotePlayer() {
-    return getRemotePlayer(player);
   }
 
   /** Fire aa guns. Returns units to remove. */
@@ -163,7 +154,7 @@ class AaInMoveUtil implements Serializable {
                                 + SoundPath.CLIP_BATTLE_X_MISS,
                             findDefender(currentPossibleAa, territory));
                   }
-                  getRemotePlayer()
+                  AaInMoveUtil.this.bridge.getRemotePlayer(player)
                       .reportMessage(
                           "No " + currentTypeAa + " hits in " + territory.getName(),
                           "No " + currentTypeAa + " hits in " + territory.getName());
@@ -349,7 +340,7 @@ class AaInMoveUtil implements Serializable {
             TerritoryEffectHelper.getEffects(territory),
             false,
             new ArrayList<>());
-    getRemotePlayer()
+    bridge.getRemotePlayer(player)
         .reportMessage(
             casualties.size() + " " + currentTypeAa + " hits in " + territory.getName(),
             casualties.size() + " " + currentTypeAa + " hits in " + territory.getName());

@@ -256,7 +256,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void notifySuccess(final UserActionAttachment uaa) {
     // play a sound
-    getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
+    bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
     final UserActionText uat = UserActionText.getInstance();
     final String text = uaa.getText();
     sendNotification(uat.getNotificationSuccess(text));
@@ -271,7 +271,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void notifyFailure(final UserActionAttachment uaa) {
     // play a sound
-    getSoundChannel().playSoundForAll(SoundPath.CLIP_USER_ACTION_FAILURE, player);
+    bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_USER_ACTION_FAILURE, player);
     final String transcriptText =
         bridge.getPlayerId().getName()
             + " fails on action: "
