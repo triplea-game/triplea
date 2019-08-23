@@ -3,22 +3,17 @@
 [![Total Alerts](https://img.shields.io/lgtm/alerts/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/alerts)
 [![codecov](https://img.shields.io/codecov/c/github/triplea-game/triplea/master.svg?style=flat-square)](https://codecov.io/gh/triplea-game/triplea)
 [![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
+ 
+## [Download and install TripleA](http://triplea-game.org/download/)
+TripleA is a free to play, volunteer run, 100% open source gaming community.
 
-
-##  [TripleA Home Page](http://triplea-game.org/)
-
-TripleA is an open source gaming community, free to play, 100% open source and volunteer run.
+![screenshot from 2018-02-08 22-58-33](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
 
 - ***Contact-us***: 
   - [Forums: Questions & Help](https://forums.triplea-game.org/category/10/help-questions)
   - [Bug Tracker](https://github.com/triplea-game/triplea/issues/new)
 - ***Technical Documentation***: 
   - Map Making, Admin, and Developer Docs are on the [wiki](https://github.com/triplea-game/triplea/wiki)
-
-
- 
-## [Download and install TripleA](http://triplea-game.org/download/)
-![screenshot from 2018-02-08 22-58-33](https://user-images.githubusercontent.com/12397753/36015523-a4e28a24-0d23-11e8-84c0-c4bd0ee19ce0.png)
 
 ## License
 
