@@ -533,7 +533,7 @@ public class MovePanel extends AbstractMovePanel {
 
         private void selectEndPoint(final Territory territory) {
           final Route route = getRoute(getFirstSelectedTerritory(), territory, selectedUnits);
-          final List<Unit> units = unitsThatCanMoveOnRoute;
+          final List<Unit> units = new ArrayList<>(unitsThatCanMoveOnRoute);
           setSelectedEndpointTerritory(territory);
           if (units.isEmpty() || route == null) {
             cancelMove();
@@ -1076,6 +1076,9 @@ public class MovePanel extends AbstractMovePanel {
         && route.getEnd().isWater()
         && !route.isLoad()) {
       best = CollectionUtils.getMatches(best, Matches.unitIsLand().negate());
+    }
+    if (route.isUnload()) {
+      best = CollectionUtils.getMatches(best, Matches.unitIsNotSea());
     }
     sortUnitsToMove(best, route);
     Collections.reverse(best);
