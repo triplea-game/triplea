@@ -10,10 +10,6 @@
 [ ] Code Cleanup or refactor
 [ ] Configuration Change
 [ ] Bug fix
-<!-- Uncomment the below and list any changes that users would notice --> 
-<!--
-### User facing changes
--->
 
 <!-- If fixing a bug, uncomment the below and fill in each section -->
 <!--
