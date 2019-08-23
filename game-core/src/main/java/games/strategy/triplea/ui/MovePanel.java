@@ -1598,14 +1598,18 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   @Override
   public Map<KeyStroke, Runnable> get() {
     final Map<KeyStroke, Runnable> bindings = new HashMap<>();
-    bindings.put(KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_SPACE), unitScroller::skipCurrentUnits);
-    bindings.put(KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_S), unitScroller::sleepCurrentUnits);
     bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_C), unitScroller::centerOnCurrentMovableUnit);
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_SPACE), unitScroller::skipCurrentUnits);
+    bindings.put(
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_S), unitScroller::sleepCurrentUnits);
+    bindings.put(
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_C),
+        unitScroller::centerOnCurrentMovableUnit);
     bindings.put(
         KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_N), unitScroller::centerOnNextMovableUnit);
     bindings.put(
-        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_M), unitScroller::centerOnPreviousMovableUnit);
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_M),
+        unitScroller::centerOnPreviousMovableUnit);
     bindings.put(KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_F), this::highlightMovableUnits);
     bindings.put(
         KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_U),
