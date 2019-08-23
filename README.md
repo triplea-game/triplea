@@ -18,4 +18,26 @@ TripleA is a free to play, volunteer run, 100% open source gaming community.
 ## License
 
 This project is licensed under the terms of the 
-[GNU General Public License v3.0 with additional permissions](/license.md).
+[GNU General Public License v3.0 with additional permissions](/LICENSE).
+
+Copyright (C) 2001-2019 TripleA contributors.
+
+This program is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation; either
+version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License below for more details.
+
+
+#### Additional permission under GNU GPL version 3 section 7
+
+If you modify this Program, or any covered work, by linking or combining it with any
+of the following libraries (or a modified version of those libraries), containing 
+parts covered by the terms of the library's associated license, the licensors of 
+this Program grant you additional permission to convey the resulting work.
+
+Library | Group ID | Artifact ID | SPDX License ID
+:-- | :-- | :-- | :--
+JavaMail | com.sun.mail | javax.mail | GPL-2.0-only
