@@ -216,7 +216,7 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
       // "To " + player.getName() + ": " +
-        bridge.getRemotePlayer().reportMessage(text, text);
+      bridge.getRemotePlayer().reportMessage(text, text);
     }
   }
 
@@ -256,7 +256,9 @@ public class UserActionDelegate extends BaseTripleADelegate implements IUserActi
    */
   private void notifySuccess(final UserActionAttachment uaa) {
     // play a sound
-    bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
+    bridge
+        .getSoundChannelBroadcaster()
+        .playSoundForAll(SoundPath.CLIP_USER_ACTION_SUCCESSFUL, player);
     final UserActionText uat = UserActionText.getInstance();
     final String text = uaa.getText();
     sendNotification(uat.getNotificationSuccess(text));

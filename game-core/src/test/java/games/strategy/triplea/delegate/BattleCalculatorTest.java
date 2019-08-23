@@ -35,7 +35,8 @@ class BattleCalculatorTest {
   private IDelegateBridge bridge;
 
   private void givenRemotePlayerWillSelectStrategicBombersForCasualties() {
-      when(bridge.getRemotePlayer()
+    when(bridge
+            .getRemotePlayer()
             .selectCasualties(
                 any(),
                 any(),

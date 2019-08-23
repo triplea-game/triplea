@@ -178,7 +178,8 @@ public class RocketsFireHelper implements Serializable {
             unitTarget = enemyTargets.iterator().next();
           } else {
             final IRemotePlayer remotePlayer = bridge.getRemotePlayer(player);
-            unitTarget = remotePlayer.whatShouldBomberBomb(targetTerritory, enemyTargets, rocketTargets);
+            unitTarget =
+                remotePlayer.whatShouldBomberBomb(targetTerritory, enemyTargets, rocketTargets);
           }
           if (unitTarget == null) {
             continue;

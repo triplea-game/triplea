@@ -4,7 +4,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.sound.ISound;
 import java.io.Serializable;
 
 /**

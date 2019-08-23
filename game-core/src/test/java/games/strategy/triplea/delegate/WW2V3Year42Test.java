@@ -73,7 +73,7 @@ class WW2V3Year42Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-      when(bridge.getRemotePlayer().shouldBomberBomb(any())).thenReturn(true);
+    when(bridge.getRemotePlayer().shouldBomberBomb(any())).thenReturn(true);
     // remove the russian units
     removeFrom(
         karrelia, karrelia.getUnitCollection().getMatches(Matches.unitCanBeDamaged().negate()));

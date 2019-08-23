@@ -5,7 +5,6 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.player.IRemotePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;

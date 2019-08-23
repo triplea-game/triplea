@@ -98,12 +98,13 @@ class WW2V3Year41Test {
   private GameData gameData;
 
   private static void givenRemotePlayerWillSelectAttackSubs(final IDelegateBridge delegateBridge) {
-      when(delegateBridge.getRemotePlayer().selectAttackSubs(any())).thenReturn(true);
+    when(delegateBridge.getRemotePlayer().selectAttackSubs(any())).thenReturn(true);
   }
 
   private static void givenRemotePlayerWillSelectCasualtiesPer(
       final IDelegateBridge delegateBridge, final Answer<?> answer) {
-      when(delegateBridge.getRemotePlayer()
+    when(delegateBridge
+            .getRemotePlayer()
             .selectCasualties(
                 any(),
                 any(),
@@ -124,12 +125,12 @@ class WW2V3Year41Test {
 
   private static void givenRemotePlayerWillSelectShoreBombard(
       final IDelegateBridge delegateBridge) {
-      when(delegateBridge.getRemotePlayer().selectShoreBombard(any())).thenReturn(true);
+    when(delegateBridge.getRemotePlayer().selectShoreBombard(any())).thenReturn(true);
   }
 
   private static void thenRemotePlayerShouldNotBeAskedToRetreat(
       final IDelegateBridge delegateBridge) {
-      verify(delegateBridge.getRemotePlayer(), never())
+    verify(delegateBridge.getRemotePlayer(), never())
         .retreatQuery(any(), anyBoolean(), any(), any(), any());
   }
 

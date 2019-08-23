@@ -656,7 +656,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     // confirm kamikaze moves, and remove them from unresolved units
     if (getKamikazeAir || units.stream().anyMatch(Matches.unitIsKamikaze())) {
       kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
-        if (kamikazeUnits.size() > 0 && bridge.getRemotePlayer().confirmMoveKamikaze()) {
+      if (kamikazeUnits.size() > 0 && bridge.getRemotePlayer().confirmMoveKamikaze()) {
         for (final Unit unit : kamikazeUnits) {
           if (getKamikazeAir || Matches.unitIsKamikaze().test(unit)) {
             result.removeUnresolvedUnit(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND, unit);
@@ -675,7 +675,7 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final Collection<Territory> aaFiringTerritores =
         aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritores.isEmpty()) {
-        if (!bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
+      if (!bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritores)) {
         return null;
       }
     }

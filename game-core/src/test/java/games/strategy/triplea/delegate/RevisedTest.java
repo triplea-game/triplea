@@ -95,7 +95,8 @@ class RevisedTest {
 
   private static void givenRemotePlayerWillSelectCasualtiesPer(
       final IDelegateBridge delegateBridge, final Answer<?> answer) {
-      when(delegateBridge.getRemotePlayer()
+    when(delegateBridge
+            .getRemotePlayer()
             .selectCasualties(
                 any(),
                 any(),
@@ -116,7 +117,7 @@ class RevisedTest {
 
   private static void givenRemotePlayerWillConfirmMoveInFaceOfAa(
       final IDelegateBridge delegateBridge) {
-      when(delegateBridge.getRemotePlayer().confirmMoveInFaceOfAa(any())).thenReturn(true);
+    when(delegateBridge.getRemotePlayer().confirmMoveInFaceOfAa(any())).thenReturn(true);
   }
 
   @BeforeEach

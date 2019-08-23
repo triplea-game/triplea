@@ -295,9 +295,13 @@ public class TechnologyDelegate extends BaseTripleADelegate implements ITechDele
     if (advances.size() > 0) {
       bridge.getHistoryWriter().startEvent(transcriptText);
       // play a sound
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TECHNOLOGY_SUCCESSFUL, player);
+      bridge
+          .getSoundChannelBroadcaster()
+          .playSoundForAll(SoundPath.CLIP_TECHNOLOGY_SUCCESSFUL, player);
     } else {
-      bridge.getSoundChannelBroadcaster().playSoundForAll(SoundPath.CLIP_TECHNOLOGY_FAILURE, player);
+      bridge
+          .getSoundChannelBroadcaster()
+          .playSoundForAll(SoundPath.CLIP_TECHNOLOGY_FAILURE, player);
     }
     return new TechResults(random, remainder, techHits, advancesAsString);
   }

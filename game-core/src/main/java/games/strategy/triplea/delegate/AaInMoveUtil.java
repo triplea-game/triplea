@@ -154,7 +154,9 @@ class AaInMoveUtil implements Serializable {
                                 + SoundPath.CLIP_BATTLE_X_MISS,
                             findDefender(currentPossibleAa, territory));
                   }
-                  AaInMoveUtil.this.bridge.getRemotePlayer(player)
+                  AaInMoveUtil.this
+                      .bridge
+                      .getRemotePlayer(player)
                       .reportMessage(
                           "No " + currentTypeAa + " hits in " + territory.getName(),
                           "No " + currentTypeAa + " hits in " + territory.getName());
@@ -340,7 +342,8 @@ class AaInMoveUtil implements Serializable {
             TerritoryEffectHelper.getEffects(territory),
             false,
             new ArrayList<>());
-    bridge.getRemotePlayer(player)
+    bridge
+        .getRemotePlayer(player)
         .reportMessage(
             casualties.size() + " " + currentTypeAa + " hits in " + territory.getName(),
             casualties.size() + " " + currentTypeAa + " hits in " + territory.getName());
