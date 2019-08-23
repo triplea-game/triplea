@@ -12,6 +12,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.sound.SoundPath;
 import games.strategy.sound.SoundUtils;
 import games.strategy.triplea.Properties;
@@ -21,7 +22,6 @@ import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -557,7 +557,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
   public void fight(final IDelegateBridge bridge) {
     removeUnitsThatNoLongerExist();
     if (stack.isExecuting()) {
-      final ITripleADisplay display = getDisplay(bridge);
+      final IDisplay display = getDisplay(bridge);
       display.showBattle(
           battleId,
           battleSite,
@@ -595,7 +595,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     updateOffensiveAaUnits();
     updateDefendingAaUnits();
     stepStrings = determineStepStrings(true);
-    final ITripleADisplay display = getDisplay(bridge);
+    final IDisplay display = getDisplay(bridge);
     display.showBattle(
         battleId,
         battleSite,
@@ -2278,7 +2278,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
               updateOffensiveAaUnits();
               updateDefendingAaUnits();
               stepStrings = determineStepStrings(false);
-              final ITripleADisplay display = getDisplay(bridge);
+              final IDisplay display = getDisplay(bridge);
               display.listBattleSteps(battleId, stepStrings);
               // continue fighting the recursive steps
               // this should always be the base of the stack

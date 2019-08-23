@@ -25,7 +25,6 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
@@ -33,7 +32,7 @@ import org.triplea.util.Tuple;
 
 /** Class used to avoid making actual data changes when checking objectives. */
 public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
-  private final ITripleADisplay display = new HeadlessDisplay();
+  private final IDisplay display = new HeadlessDisplay();
   private final ISound soundChannel = new HeadlessSoundChannel();
   private final DelegateHistoryWriter writer =
       new DelegateHistoryWriter(new DummyGameModifiedChannel());

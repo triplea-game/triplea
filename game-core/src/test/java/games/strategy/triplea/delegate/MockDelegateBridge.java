@@ -13,10 +13,10 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
 import org.mockito.verification.VerificationMode;
@@ -40,7 +40,7 @@ final class MockDelegateBridge {
         .when(delegateBridge)
         .addChange(any());
     when(delegateBridge.getData()).thenReturn(gameData);
-    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(ITripleADisplay.class));
+    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
     when(delegateBridge.getHistoryWriter()).thenReturn(DelegateHistoryWriter.NO_OP_INSTANCE);
     when(delegateBridge.getPlayerId()).thenReturn(playerId);
     final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);

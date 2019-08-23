@@ -3,6 +3,7 @@ package games.strategy.triplea.ui.display;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -12,10 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Implementation of {@link ITripleADisplay} appropriate for a headless environment. All methods are
- * stubs that do nothing.
+ * Implementation of {@link IDisplay} appropriate for a headless environment. All methods are stubs
+ * that do nothing.
  */
-public class HeadlessDisplay implements ITripleADisplay {
+public class HeadlessDisplay implements IDisplay {
 
   public HeadlessDisplay() {}
 

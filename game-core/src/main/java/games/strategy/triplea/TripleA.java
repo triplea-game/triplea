@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
@@ -17,7 +18,6 @@ import games.strategy.engine.player.IGamePlayer;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 public class TripleA implements IGameLoader {
   private static final long serialVersionUID = -8374315848374732436L;
 
-  protected transient ITripleADisplay display;
+  protected transient IDisplay display;
   protected transient IGame game;
   private transient ISound soundChannel;
 
@@ -88,7 +88,7 @@ public class TripleA implements IGameLoader {
 
   @Override
   public Class<? extends IChannelSubscriber> getDisplayType() {
-    return ITripleADisplay.class;
+    return IDisplay.class;
   }
 
   @Override

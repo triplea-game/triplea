@@ -3,6 +3,7 @@ package games.strategy.triplea.ui.display;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.player.IGamePlayer;
 import games.strategy.net.GUID;
@@ -15,8 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/** Implementation of {@link ITripleADisplay} appropriate for a headed environment. */
-public class TripleADisplay implements ITripleADisplay {
+/** Implementation of {@link IDisplay} appropriate for a headed environment. */
+public class TripleADisplay implements IDisplay {
   private final TripleAFrame ui;
 
   public TripleADisplay(final TripleAFrame ui) {

@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.chat.Chat;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.AutoSaveFileUtils;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
@@ -14,7 +15,6 @@ import games.strategy.sound.ISound;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.ui.TripleAFrame;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.ui.display.TripleADisplay;
 import java.awt.Component;
 import java.awt.Frame;
@@ -55,7 +55,7 @@ public class HeadedLaunchAction implements LaunchAction {
   }
 
   @Override
-  public ITripleADisplay startGame(
+  public IDisplay startGame(
       final LocalPlayers localPlayers,
       final IGame game,
       final Set<IGamePlayer> players,

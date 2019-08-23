@@ -11,6 +11,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.net.GUID;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Properties;
@@ -19,7 +20,6 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -279,7 +279,7 @@ public class AirBattle extends AbstractBattle {
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
             if (!isOver) {
               AirBattle.this.steps = determineStepStrings(false);
-              final ITripleADisplay display = getDisplay(bridge);
+              final IDisplay display = getDisplay(bridge);
               display.listBattleSteps(battleId, AirBattle.this.steps);
               round++;
               // continue fighting

@@ -17,14 +17,13 @@ import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import java.util.List;
 import java.util.Properties;
 
 /** Delegate bridge implementation with minimum valid behavior. */
 public class DummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource randomSource = new PlainRandomSource();
-  private final ITripleADisplay display = new HeadlessDisplay();
+  private final IDisplay display = new HeadlessDisplay();
   private final ISound soundChannel = new HeadlessSoundChannel();
   private final DummyPlayer attackingPlayer;
   private final DummyPlayer defendingPlayer;

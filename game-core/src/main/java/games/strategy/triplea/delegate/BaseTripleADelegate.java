@@ -3,11 +3,11 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.TriggerAttachment;
 import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.function.Predicate;
@@ -89,12 +89,12 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     PoliticsDelegate.chainAlliancesTogether(bridge);
   }
 
-  protected ITripleADisplay getDisplay() {
+  protected IDisplay getDisplay() {
     return getDisplay(bridge);
   }
 
-  protected static ITripleADisplay getDisplay(final IDelegateBridge bridge) {
-    return (ITripleADisplay) bridge.getDisplayChannelBroadcaster();
+  protected static IDisplay getDisplay(final IDelegateBridge bridge) {
+    return (IDisplay) bridge.getDisplayChannelBroadcaster();
   }
 
   @Override

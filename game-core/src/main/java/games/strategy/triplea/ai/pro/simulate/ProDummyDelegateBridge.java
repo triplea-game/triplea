@@ -15,7 +15,6 @@ import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import java.util.Properties;
 
 /**
@@ -24,7 +23,7 @@ import java.util.Properties;
  */
 public class ProDummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource randomSource = new PlainRandomSource();
-  private final ITripleADisplay display = new HeadlessDisplay();
+  private final IDisplay display = new HeadlessDisplay();
   private final ISound soundChannel = new HeadlessSoundChannel();
   private final PlayerId player;
   private final ProAi proAi;
