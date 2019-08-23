@@ -348,7 +348,7 @@ abstract class AbstractBattle implements IBattle {
   }
 
   protected static IDisplay getDisplay(final IDelegateBridge bridge) {
-    return (IDisplay) bridge.getDisplayChannelBroadcaster();
+    return bridge.getDisplayChannelBroadcaster();
   }
 
   protected static ITripleAPlayer getRemote(final IDelegateBridge bridge) {

@@ -1642,7 +1642,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                       + MyFormatter.defaultNamedToTextList(t.getPlayers())
                       + ": "
                       + messageForRecord);
-          ((IDisplay) bridge.getDisplayChannelBroadcaster())
+          bridge.getDisplayChannelBroadcaster()
               .reportMessageToPlayers(
                   t.getPlayers(), null, ("<html>" + message.trim() + "</html>"), NOTIFICATION);
         }

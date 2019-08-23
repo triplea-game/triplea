@@ -94,7 +94,7 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
   }
 
   protected static IDisplay getDisplay(final IDelegateBridge bridge) {
-    return (IDisplay) bridge.getDisplayChannelBroadcaster();
+    return bridge.getDisplayChannelBroadcaster();
   }
 
   @Override
