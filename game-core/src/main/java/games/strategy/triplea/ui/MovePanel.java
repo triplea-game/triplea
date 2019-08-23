@@ -30,7 +30,6 @@ import java.awt.Component;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +47,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import lombok.Setter;
 import lombok.extern.java.Log;
 import org.triplea.java.ObjectUtils;
@@ -57,7 +57,7 @@ import org.triplea.java.collections.IntegerMap;
 
 /** The action panel displayed during the combat and non-combat move actions. */
 @Log
-public class MovePanel extends AbstractMovePanel {
+public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   private static final long serialVersionUID = 5004515340964828564L;
   private static final int defaultMinTransportCost = 5;
   /**
@@ -1595,46 +1595,26 @@ public class MovePanel extends AbstractMovePanel {
     getMap().addMouseOverUnitListener(mouseOverUnitListener);
   }
 
-  KeyListener getCustomKeyListeners() {
-    return new KeyListener() {
-      @Override
-      public void keyTyped(final KeyEvent e) {}
-
-      @Override
-      public void keyPressed(final KeyEvent e) {
-        switch (e.getKeyCode()) {
-          case KeyEvent.VK_SPACE:
-            unitScroller.skipCurrentUnits();
-            break;
-          case KeyEvent.VK_S:
-            unitScroller.sleepCurrentUnits();
-            break;
-          case KeyEvent.VK_C:
-            unitScroller.centerOnCurrentMovableUnit();
-            break;
-          case KeyEvent.VK_N:
-            unitScroller.centerOnNextMovableUnit();
-            break;
-          case KeyEvent.VK_M:
-            unitScroller.centerOnPreviousMovableUnit();
-            break;
-          case KeyEvent.VK_F:
-            highlightMovableUnits();
-            break;
-          case KeyEvent.VK_U:
-            if (!getMap().getHighlightedUnits().isEmpty()) {
-              undoableMovesPanel.undoMoves(getMap().getHighlightedUnits());
-            }
-            break;
-          default:
-            // ignore key
-            break;
-        }
-      }
-
-      @Override
-      public void keyReleased(final KeyEvent e) {}
-    };
+  @Override
+  public Map<KeyStroke, Runnable> get() {
+    final Map<KeyStroke, Runnable> bindings = new HashMap<>();
+    bindings.put(
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_SPACE), unitScroller::skipCurrentUnits);
+    bindings.put(
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_S), unitScroller::sleepCurrentUnits);
+    bindings.put(
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_C),
+        unitScroller::centerOnCurrentMovableUnit);
+    bindings.put(
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_N), unitScroller::centerOnNextMovableUnit);
+    bindings.put(
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_M),
+        unitScroller::centerOnPreviousMovableUnit);
+    bindings.put(KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_F), this::highlightMovableUnits);
+    bindings.put(
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_U),
+        () -> undoableMovesPanel.undoMoves(getMap().getHighlightedUnits()));
+    return bindings;
   }
 
   @Override

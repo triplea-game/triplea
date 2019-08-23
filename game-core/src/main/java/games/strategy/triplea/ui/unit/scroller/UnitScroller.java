@@ -172,8 +172,6 @@ public class UnitScroller {
 
     final JButton centerOnUnit = new JButton(UnitScrollerIcon.CENTER_ON_UNIT.get());
     centerOnUnit.setToolTipText(CENTER_UNITS_TOOLTIP);
-    // disallow focus so that key listeners from MovePanel will continue to function
-    centerOnUnit.setFocusable(false);
     centerOnUnit.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     centerOnUnit.addActionListener(e -> centerOnCurrentMovableUnit());
     panel.add(centerOnUnit, BorderLayout.NORTH);
@@ -187,7 +185,6 @@ public class UnitScroller {
 
     final JButton prevUnit = new JButton(UnitScrollerIcon.LEFT_ARROW.get());
     prevUnit.setToolTipText(PREVIOUS_UNITS_TOOLTIP);
-    prevUnit.setFocusable(false);
     prevUnit.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     prevUnit.addActionListener(e -> centerOnPreviousMovableUnit());
     centerPanel.add(prevUnit);
@@ -195,7 +192,6 @@ public class UnitScroller {
 
     final JButton nextUnit = new JButton(UnitScrollerIcon.RIGHT_ARROW.get());
     nextUnit.setToolTipText(NEXT_UNITS_TOOLTIP);
-    nextUnit.setFocusable(false);
     nextUnit.addActionListener(e -> centerOnNextMovableUnit());
     centerPanel.add(nextUnit, BorderLayout.EAST);
     centerPanel.add(Box.createHorizontalStrut(10));
@@ -205,12 +201,10 @@ public class UnitScroller {
 
     final JButton skipButton = new JButton(UnitScrollerIcon.UNIT_SKIP.get());
     skipButton.setToolTipText(SKIP_UNITS_TOOLTIP);
-    skipButton.setFocusable(false);
     skipButton.addActionListener(e -> skipCurrentUnits());
 
     final JButton sleepButton = new JButton(UnitScrollerIcon.UNIT_SLEEP.get());
     sleepButton.setToolTipText(SLEEP_UNITS_TOOLTIP);
-    sleepButton.setFocusable(false);
     sleepButton.addActionListener(e -> sleepCurrentUnits());
 
     final JPanel skipAndSleepPanel =

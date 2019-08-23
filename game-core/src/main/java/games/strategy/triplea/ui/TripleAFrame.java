@@ -94,7 +94,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -114,6 +114,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -143,6 +144,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolTip;
+import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
@@ -167,7 +169,7 @@ import org.triplea.util.Tuple;
 
 /** Main frame for the triple a game. */
 @Log
-public final class TripleAFrame extends JFrame {
+public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private static final long serialVersionUID = 7640069668264418976L;
   private final LocalPlayers localPlayers;
   private final GameData data;
@@ -669,9 +671,8 @@ public final class TripleAFrame extends JFrame {
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
-    SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getFullScreenListener()));
+    addKeyBindings(movePanel, this);
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
-    SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(movePanel.getCustomKeyListeners()));
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getFlagToggleKeyListener(this)));
 
     addTab("Actions", actionButtons, 'C');
@@ -748,6 +749,37 @@ public final class TripleAFrame extends JFrame {
     data.addDataChangeListener(dataChangeListener);
     game.getData().addGameDataEventListener(GameDataEvent.GAME_STEP_CHANGED, this::updateStep);
     uiContext.addShutdownWindow(this);
+  }
+
+  private void addKeyBindings(final KeyBindingSupplier... keyBindings) {
+    Arrays.stream(keyBindings)
+        .map(Supplier::get)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .forEach(
+            binding -> {
+              final JPanel contentPane = (JPanel) getContentPane();
+              final String keyBindingIdentifier = UUID.randomUUID().toString();
+
+              contentPane
+                  .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                  .put(binding.getKey(), keyBindingIdentifier);
+              contentPane
+                  .getActionMap()
+                  .put(keyBindingIdentifier, SwingAction.of(e -> binding.getValue().run()));
+            });
+  }
+
+  @Override
+  public Map<KeyStroke, Runnable> get() {
+    return Collections.singletonMap(
+        KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK),
+        () ->
+            gameCenterPanel.setDividerLocation(
+                (gameCenterPanel.getDividerLocation()
+                        <= gameCenterPanel.getMaximumDividerLocation())
+                    ? 1.0
+                    : gameCenterPanel.getLastDividerLocation()));
   }
 
   /**
@@ -2061,21 +2093,6 @@ public final class TripleAFrame extends JFrame {
                     }
                   }
                 }));
-  }
-
-  private KeyListener getFullScreenListener() {
-    return new KeyAdapter() {
-      @Override
-      public void keyPressed(final KeyEvent e) {
-        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z) {
-          if (gameCenterPanel.getDividerLocation() <= gameCenterPanel.getMaximumDividerLocation()) {
-            gameCenterPanel.setDividerLocation(1.0);
-          } else {
-            gameCenterPanel.setDividerLocation(gameCenterPanel.getLastDividerLocation());
-          }
-        }
-      }
-    };
   }
 
   private String getUnitInfo() {
