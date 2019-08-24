@@ -1,6 +1,7 @@
 package games.strategy.engine.lobby;
 
 import com.google.common.annotations.VisibleForTesting;
+import java.util.Collection;
 import lombok.NoArgsConstructor;
 import org.triplea.lobby.common.LobbyConstants;
 
@@ -45,5 +46,15 @@ public final class PlayerNameValidation {
       return "Name can't contain the word " + LobbyConstants.ADMIN_USERNAME;
     }
     return null;
+  }
+
+  public static String verifyNameIsNotLoggedInAlready(
+      final String remoteName, final Collection<String> alreadyLoggedInNames) {
+
+    return alreadyLoggedInNames.stream()
+            .map(String::toLowerCase)
+            .anyMatch(remoteName::equalsIgnoreCase)
+        ? "Name is already logged in, please choose another"
+        : null;
   }
 }
