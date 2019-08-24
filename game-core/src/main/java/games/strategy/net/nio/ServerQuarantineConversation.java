@@ -3,6 +3,7 @@ package games.strategy.net.nio;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
+import games.strategy.net.INode;
 import games.strategy.net.MessageHeader;
 import games.strategy.net.Node;
 import games.strategy.net.PlayerNameAssigner;
@@ -13,6 +14,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import lombok.extern.java.Log;
 import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 
@@ -109,6 +111,18 @@ public class ServerQuarantineConversation extends QuarantineConversation {
                               remoteMac,
                               channel.socket().getRemoteSocketAddress()))
                       .orElseGet(() -> PlayerNameValidation.serverSideValidate(remoteName));
+              if (error == null) {
+                error =
+                    PlayerNameValidation.verifyNameIsNotLoggedInAlready(
+                        remoteName,
+                        // filter out nodes that are connected from the same computer.
+                        // This way we match against nodes from other computers only.
+                        serverMessenger.getNodes().stream()
+                            .filter(n -> !n.getAddress().equals(channel.socket().getInetAddress()))
+                            .map(INode::getName)
+                            .collect(Collectors.toSet()));
+              }
+
               if (error != null && !error.equals(CHANGE_PASSWORD)) {
                 step = Step.ACK_ERROR;
                 send(error);
