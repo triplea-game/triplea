@@ -294,7 +294,7 @@ final class HelpMenu extends JMenu {
             + gameData.getGameName()
             + "</h2>"
             + "<b>Engine Version:</b> "
-            + ClientContext.engineVersion().getExactVersion()
+            + ClientContext.engineVersion()
             + "<br>"
             + "<b>Game Version:</b> "
             + gameData.getGameVersion()

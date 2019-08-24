@@ -36,9 +36,9 @@ final class MapDownloadControllerTest {
 
     private final File mapZipFile2 = new File("file2.zip");
 
-    private final Version version1 = new Version(1, 0);
+    private final Version version1 = new Version(1, 0, 0);
 
-    private final Version version2 = new Version(2, 0);
+    private final Version version2 = new Version(2, 0, 0);
 
     private final Version versionUnknown = null;
 

@@ -47,7 +47,7 @@ class MainMenuPaneTest {
 
     aboutInformation.initialize();
 
-    assertEquals("Test String " + ClientContext.engineVersion().getExactVersion(), mock3.getText());
+    assertEquals("Test String " + ClientContext.engineVersion().toString(), mock3.getText());
     assertEquals(1, children.size());
     assertEquals(mock4, children.get(0));
 

@@ -11,5 +11,5 @@ ext.getProductVersion = {
         throw new GradleException('"version" property missing from the "product.properties" resource')
     }
 
-    return productVersion.replace('@buildId@', getBuildId())
+    return productVersion;
 }

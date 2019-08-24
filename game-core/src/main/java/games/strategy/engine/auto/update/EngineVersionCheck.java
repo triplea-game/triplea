@@ -26,7 +26,7 @@ final class EngineVersionCheck {
 
       final EngineVersionProperties latestEngineOut = new EngineVersionProperties();
 
-      if (ClientContext.engineVersion().isLessThan(latestEngineOut.getLatestVersionOut())) {
+      if (latestEngineOut.getLatestVersionOut().isGreaterThan(ClientContext.engineVersion())) {
         SwingUtilities.invokeLater(
             () ->
                 EventThreadJOptionPane.showMessageDialog(

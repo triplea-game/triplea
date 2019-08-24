@@ -16,7 +16,7 @@ class FileDownloadTest {
             "url",
             "description",
             "mapName",
-            new Version(0, 0),
+            new Version(0, 0, 0),
             DownloadFileDescription.DownloadType.MAP,
             DownloadFileDescription.MapCategory.BEST);
     final DownloadFile testObj =

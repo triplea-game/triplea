@@ -415,7 +415,7 @@ public class ServerModel extends Observable implements IConnectionChangeListener
             new HashMap<>(),
             new HashMap<>(playersEnabledListing),
             getLocalPlayerTypes(),
-            new Version(0, 0),
+            new Version(0, 0, 0),
             gameSelectorModel.getGameName(),
             gameSelectorModel.getGameRound(),
             new HashSet<>(playersAllowedToBeDisabled),

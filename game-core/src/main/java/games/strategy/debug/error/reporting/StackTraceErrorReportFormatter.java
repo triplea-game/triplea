@@ -77,7 +77,7 @@ class StackTraceErrorReportFormatter implements BiFunction<String, LogRecord, Er
             .map(msg -> "## Log Message\n" + msg + "\n\n")
             .orElse("")
         + "## TripleA Version\n"
-        + ClientContext.engineVersion().toStringFull()
+        + ClientContext.engineVersion()
         + "\n\n"
         + "## Java Version\n"
         + SystemProperties.getJavaVersion()

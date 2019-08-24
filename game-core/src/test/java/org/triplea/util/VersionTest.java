@@ -11,17 +11,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class VersionTest {
   @Test
   void shouldBeEquatableAndHashable() {
-    EqualsVerifier.forClass(Version.class).withIgnoredFields("exactVersion").verify();
+    EqualsVerifier.forClass(Version.class).verify();
   }
 
   @Test
   void compareTo_ShouldThrowExceptionWhenOtherIsNull() {
-    assertThrows(NullPointerException.class, () -> new Version(1, 0).compareTo(null));
+    assertThrows(NullPointerException.class, () -> new Version(1, 0, 0).compareTo(null));
   }
 
   @Test
@@ -29,8 +30,7 @@ class VersionTest {
     Arrays.asList(
             Tuple.of(new Version(1, 0, 0), new Version(2, 0, 0)),
             Tuple.of(new Version(0, 1, 0), new Version(0, 2, 0)),
-            Tuple.of(new Version(0, 0, 1), new Version(0, 0, 2)),
-            Tuple.of(new Version(0, 0, 0), new Version("0.0.dev")))
+            Tuple.of(new Version(0, 0, 1), new Version(0, 0, 2)))
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(lessThan(0))));
   }
 
@@ -39,8 +39,7 @@ class VersionTest {
     Arrays.asList(
             Tuple.of(new Version(1, 0, 0), new Version(1, 0, 0)),
             Tuple.of(new Version(0, 1, 0), new Version(0, 1, 0)),
-            Tuple.of(new Version(0, 0, 1), new Version(0, 0, 1)),
-            Tuple.of(new Version("0.0.dev"), new Version("0.0.dev")))
+            Tuple.of(new Version(0, 0, 1), new Version(0, 0, 1)))
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(0)));
   }
 
@@ -49,56 +48,24 @@ class VersionTest {
     Arrays.asList(
             Tuple.of(new Version(2, 0, 0), new Version(1, 0, 0)),
             Tuple.of(new Version(0, 2, 0), new Version(0, 1, 0)),
-            Tuple.of(new Version(0, 0, 2), new Version(0, 0, 1)),
-            Tuple.of(new Version("0.0.dev"), new Version(0, 0, 0)))
+            Tuple.of(new Version(0, 0, 2), new Version(0, 0, 1)))
         .forEach(t -> assertThat(t.getFirst().compareTo(t.getSecond()), is(greaterThan(0))));
   }
 
   @Test
-  void testWithPoint() {
-    assertEquals(new Version(1, 2, 999), new Version(1, 2, 3).withPoint(999));
-  }
-
-  @Test
   void testIsGreaterThan() {
-    assertFalse(new Version(1, 0).isGreaterThan(new Version(2, 0)));
-    assertFalse(new Version(1, 0).isGreaterThan(new Version(1, 0)));
-    assertTrue(new Version(2, 0).isGreaterThan(new Version(1, 0)));
-  }
-
-  @Test
-  void testIsGreaterThanOrEqualTo() {
-    assertFalse(new Version(1, 0).isGreaterThanOrEqualTo(new Version(2, 0)));
-    assertTrue(new Version(1, 0).isGreaterThanOrEqualTo(new Version(1, 0)));
-    assertTrue(new Version(2, 0).isGreaterThanOrEqualTo(new Version(1, 0)));
-  }
-
-  @Test
-  void testIsLessThan() {
-    assertTrue(new Version(1, 0).isLessThan(new Version(2, 0)));
-    assertFalse(new Version(1, 0).isLessThan(new Version(1, 0)));
-    assertFalse(new Version(2, 0).isLessThan(new Version(1, 0)));
+    assertFalse(new Version(1, 0, 0).isGreaterThan(new Version(2, 0, 0)));
+    assertFalse(new Version(1, 0, 0).isGreaterThan(new Version(1, 0, 0)));
+    assertTrue(new Version(2, 0, 0).isGreaterThan(new Version(1, 0, 0)));
   }
 
   @Test
   void testToString() {
     assertEquals("1.2.3", new Version("1.2.3").toString());
-    assertEquals("1.2", new Version("1.2").toString());
-    assertEquals("1.2", new Version("1.2.0").toString());
-    assertEquals("1.2.dev", new Version("1.2.dev").toString());
-  }
-
-  @Test
-  void testToStringFull() {
-    assertEquals("1.2.dev", new Version("1.2.dev").toStringFull());
-  }
-
-  @Test
-  void testGetExactVersion() {
-    assertEquals("1.2.3", new Version(1, 2, 3).getExactVersion());
-    assertEquals("1.2.3.4", new Version("1.2.3.4").getExactVersion());
-    assertEquals(
-        "1.2.3.4.something weird", new Version("1.2.3.4.something weird").getExactVersion());
+    assertEquals("1.2.0", new Version("1.2.0").toString());
+    assertEquals("1.2.3", new Version(1, 2, 3).toString());
+    assertEquals("1.2.3", new Version("1.2.3.4").toString());
+    assertEquals("1.2.3", new Version("1.2.3.4.something weird").toString());
   }
 
   @Test
@@ -112,5 +79,65 @@ class VersionTest {
     assertThrows(IllegalArgumentException.class, () -> new Version("a:b:c.12.34.56"));
     assertThrows(IllegalArgumentException.class, () -> new Version("a;b;c.12.34.56.78"));
     assertThrows(IllegalArgumentException.class, () -> new Version("1.2.3 wrong syntax"));
+  }
+
+  @Nested
+  final class IsCompatibleWithEngineVersionTest {
+    @Test
+    void shouldReturnTrueWhenOtherVersionIsCompatible() {
+      Arrays.asList(
+              Tuple.of(new Version(1, 2, 3), "equal versions should be compatible"),
+              Tuple.of(new Version(1, 2, 0), "smaller point version should be compatible"),
+              Tuple.of(new Version(1, 2, 9), "larger point version should be compatible"))
+          .forEach(
+              t ->
+                  assertTrue(
+                      new Version(1, 2, 3).isCompatibleWithEngineVersion(t.getFirst()),
+                      t.getSecond()));
+    }
+
+    @Test
+    void shouldReturnFalseWhenOtherVersionIsNotCompatible() {
+      Arrays.asList(
+              Tuple.of(new Version(1, 0, 3), "smaller minor version should not be compatible"),
+              Tuple.of(new Version(1, 9, 3), "larger minor version should not be compatible"),
+              Tuple.of(new Version(0, 2, 3), "smaller major version should not be compatible"),
+              Tuple.of(new Version(9, 2, 3), "larger major version should not be compatible"))
+          .forEach(
+              t ->
+                  assertFalse(
+                      new Version(1, 2, 3).isCompatibleWithEngineVersion(t.getFirst()),
+                      t.getSecond()));
+    }
+  }
+
+  @Nested
+  final class IsCompatibleWithMapMinimumEngineVersionTest {
+    @Test
+    void shouldReturnTrueWhenOtherVersionIsCompatible() {
+      Arrays.asList(
+              Tuple.of(new Version(1, 2, 3), "equal versions should be compatible"),
+              Tuple.of(new Version(1, 2, 0), "smaller point version should be compatible"),
+              Tuple.of(new Version(1, 2, 9), "larger point version should be compatible"),
+              Tuple.of(new Version(1, 0, 3), "smaller minor version should be compatible"),
+              Tuple.of(new Version(0, 2, 3), "smaller major version should be compatible"))
+          .forEach(
+              t ->
+                  assertTrue(
+                      new Version(1, 2, 3).isCompatibleWithMapMinimumEngineVersion(t.getFirst()),
+                      t.getSecond()));
+    }
+
+    @Test
+    void shouldReturnFalseWhenOtherVersionIsNotCompatible() {
+      Arrays.asList(
+              Tuple.of(new Version(1, 9, 3), "larger minor version should not be compatible"),
+              Tuple.of(new Version(9, 2, 3), "larger major version should not be compatible"))
+          .forEach(
+              t ->
+                  assertFalse(
+                      new Version(1, 2, 3).isCompatibleWithMapMinimumEngineVersion(t.getFirst()),
+                      t.getSecond()));
+    }
   }
 }

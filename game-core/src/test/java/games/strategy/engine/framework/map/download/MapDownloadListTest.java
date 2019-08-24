@@ -21,8 +21,8 @@ import org.triplea.util.Version;
 @ExtendWith(MockitoExtension.class)
 class MapDownloadListTest extends AbstractClientSettingTestCase {
   private static final String MAP_NAME = "new_test_order";
-  private static final Version MAP_VERSION = new Version(10, 10);
-  private static final Version lowVersion = new Version(0, 0);
+  private static final Version MAP_VERSION = new Version(10, 10, 0);
+  private static final Version lowVersion = new Version(0, 0, 0);
 
   private static final DownloadFileDescription TEST_MAP =
       new DownloadFileDescription(

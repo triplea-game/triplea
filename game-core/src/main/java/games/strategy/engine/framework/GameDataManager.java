@@ -3,7 +3,6 @@ package games.strategy.engine.framework;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.UrlConstants;
@@ -66,8 +65,7 @@ public final class GameDataManager {
     try {
       final Version readVersion = (Version) input.readObject();
       final boolean headless = HeadlessGameServer.headless();
-      if (!GameEngineVersion.of(ClientContext.engineVersion())
-          .isCompatibleWithEngineVersion(readVersion)) {
+      if (!ClientContext.engineVersion().isCompatibleWithEngineVersion(readVersion)) {
         final String error =
             "Incompatible engine versions. We are: "
                 + ClientContext.engineVersion()
@@ -105,10 +103,10 @@ public final class GameDataManager {
                                   + "However, because the first 3 version numbers are the same "
                                   + "as your current version, we can still open the save.\n\n"
                                   + "This TripleA engine is version "
-                                  + ClientContext.engineVersion().toStringFull()
+                                  + ClientContext.engineVersion()
                                   + " and you are trying "
                                   + "to open a save made with version "
-                                  + saveGameVersion.toStringFull()
+                                  + saveGameVersion
                                   + "\n\n"
                                   + "To download the latest version of TripleA, please visit "
                                   + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE

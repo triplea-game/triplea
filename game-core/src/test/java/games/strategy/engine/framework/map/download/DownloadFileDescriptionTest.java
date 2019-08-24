@@ -19,7 +19,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             "",
             "",
             "",
-            new Version(0, 0),
+            new Version(0, 0, 0),
             DownloadFileDescription.DownloadType.MAP,
             DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.isMap(), is(true));
@@ -32,7 +32,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             "",
             "",
             "",
-            new Version(0, 0),
+            new Version(0, 0, 0),
             DownloadFileDescription.DownloadType.MAP_SKIN,
             DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.isMapSkin(), is(true));
@@ -45,7 +45,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             "",
             "",
             "",
-            new Version(0, 0),
+            new Version(0, 0, 0),
             DownloadFileDescription.DownloadType.MAP_TOOL,
             DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.isMapTool(), is(true));
@@ -59,7 +59,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             "",
             "",
             mapName,
-            new Version(0, 0),
+            new Version(0, 0, 0),
             DownloadFileDescription.DownloadType.MAP,
             DownloadFileDescription.MapCategory.EXPERIMENTAL);
     assertThat(testObj.getMapName(), is(mapName));
@@ -72,7 +72,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             "",
             "",
             "",
-            new Version(0, 0),
+            new Version(0, 0, 0),
             DownloadFileDescription.DownloadType.MAP,
             DownloadFileDescription.MapCategory.BEST);
     assertThat(testObj.getMapCategory(), is(DownloadFileDescription.MapCategory.BEST));
@@ -105,7 +105,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
         inputUrl,
         "",
         "",
-        new Version(0, 0),
+        new Version(0, 0, 0),
         DownloadFileDescription.DownloadType.MAP,
         DownloadFileDescription.MapCategory.EXPERIMENTAL);
   }
@@ -134,7 +134,7 @@ class DownloadFileDescriptionTest extends AbstractClientSettingTestCase {
             inputUrl,
             "",
             mapName,
-            new Version(0, 0),
+            new Version(0, 0, 0),
             DownloadFileDescription.DownloadType.MAP,
             DownloadFileDescription.MapCategory.EXPERIMENTAL);
 

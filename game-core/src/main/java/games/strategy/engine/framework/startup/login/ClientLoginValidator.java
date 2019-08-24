@@ -3,7 +3,6 @@ package games.strategy.engine.framework.startup.login;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.GameEngineVersion;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
@@ -80,8 +79,7 @@ public final class ClientLoginValidator implements ILoginValidator {
 
     // check for version
     final Version clientVersion = new Version(versionString);
-    if (!GameEngineVersion.of(ClientContext.engineVersion())
-        .isCompatibleWithEngineVersion(clientVersion)) {
+    if (!ClientContext.engineVersion().isCompatibleWithEngineVersion(clientVersion)) {
       return String.format(
           "Client is using %s but the server requires a version compatible with version %s",
           clientVersion, ClientContext.engineVersion());
