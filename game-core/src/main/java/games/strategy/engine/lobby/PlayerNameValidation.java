@@ -39,7 +39,7 @@ public final class PlayerNameValidation {
       return "Name is too short (minimum " + MIN_LENGTH + " characters)";
     } else if (username.length() > MAX_LENGTH) {
       return "Name is too long (maximum " + MAX_LENGTH + " characters)";
-    } else if (!username.matches("[0-9a-zA-Z_-]+")) {
+    } else if (!username.matches("[a-zA-Z][0-9a-zA-Z_-]+")) {
       return "Name can only contain alphanumeric characters, hyphens (-), and underscores (_)";
     } else if (username.toLowerCase().contains(LobbyConstants.ADMIN_USERNAME.toLowerCase())) {
       return "Name can't contain the word " + LobbyConstants.ADMIN_USERNAME;

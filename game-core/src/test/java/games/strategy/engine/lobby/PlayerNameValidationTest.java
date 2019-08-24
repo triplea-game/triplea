@@ -26,6 +26,12 @@ class PlayerNameValidationTest {
             "a,b",
             "ab?",
             "   ", // no spaces
+            "---", // must start with a character
+            "___",
+            "_ab",
+            "01a",
+            "123",
+            "-ab",
             "a b")
         .forEach(
             invalidName -> {
@@ -65,7 +71,7 @@ class PlayerNameValidationTest {
 
   @Test
   void usernameValidationWithValidNames() {
-    Arrays.asList("abc", Strings.repeat("a", PlayerNameValidation.MAX_LENGTH), "123", "---")
+    Arrays.asList("abc", Strings.repeat("a", PlayerNameValidation.MAX_LENGTH), "a12", "a--")
         .forEach(
             validName -> {
               assertThat(
