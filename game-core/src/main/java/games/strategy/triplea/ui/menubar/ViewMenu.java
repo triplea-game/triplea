@@ -12,10 +12,12 @@ import games.strategy.triplea.ui.FindTerritoryAction;
 import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
+import games.strategy.triplea.ui.screen.UnitsDrawer;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -24,6 +26,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -66,6 +69,7 @@ final class ViewMenu extends JMenu {
     addUnitSizeMenu();
     addLockMap();
     addShowUnits();
+    addUnitNationDrawMenu();
     if (uiContext.getMapData().useTerritoryEffectMarkers()) {
       addShowTerritoryEffects();
     }
@@ -429,6 +433,86 @@ final class ViewMenu extends JMenu {
     lockMapBox.setSelected(uiContext.getLockMap());
     lockMapBox.addActionListener(e -> uiContext.setLockMap(lockMapBox.isSelected()));
     add(lockMapBox);
+  }
+
+  private void addUnitNationDrawMenu() {
+    final JMenu unitSizeMenu = new JMenu();
+    unitSizeMenu.setMnemonic(KeyEvent.VK_N);
+    unitSizeMenu.setText("Flag Display Mode");
+
+    final Preferences prefs = Preferences.userNodeForPackage(getClass());
+
+    final String prefValue =
+        (prefs.get(
+            UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
+            UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name()));
+
+    // use conditional instead of 'Enum.valueOf()' in case prefValue is from legacy game clients.
+    final UnitsDrawer.UnitFlagDrawMode setting =
+        prefValue.equals(UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name())
+            ? UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG
+            : UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG;
+
+    UnitsDrawer.setUnitFlagDrawMode(setting, prefs);
+    UnitsDrawer.enabledFlags =
+        prefs.getBoolean(
+            UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
+
+    final JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show Unit Flags");
+    toggleFlags.setSelected(UnitsDrawer.enabledFlags);
+    toggleFlags.addActionListener(
+        e -> {
+          UnitsDrawer.enabledFlags = toggleFlags.isSelected();
+          prefs.putBoolean(
+              UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), toggleFlags.isSelected());
+          frame.getMapPanel().resetMap();
+        });
+    unitSizeMenu.add(toggleFlags);
+
+    final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
+    unitSizeMenu.add(
+        newFlagDrawModeRadioButtonItem(
+            "Small",
+            unitFlagSettingGroup,
+            UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG,
+            setting,
+            prefs));
+    unitSizeMenu.add(
+        newFlagDrawModeRadioButtonItem(
+            "Large",
+            unitFlagSettingGroup,
+            UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG,
+            setting,
+            prefs));
+    add(unitSizeMenu);
+  }
+
+  private JRadioButtonMenuItem newFlagDrawModeRadioButtonItem(
+      final String text,
+      final ButtonGroup group,
+      final UnitsDrawer.UnitFlagDrawMode drawMode,
+      final UnitsDrawer.UnitFlagDrawMode setting,
+      final Preferences prefs) {
+    return newRadioButtonItem(
+        text,
+        group,
+        e -> {
+          UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
+          frame.getMapPanel().resetMap();
+        },
+        setting == drawMode);
+  }
+
+  private static JRadioButtonMenuItem newRadioButtonItem(
+      final String text,
+      final ButtonGroup group,
+      final ActionListener action,
+      final boolean selected) {
+    final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
+    buttonItem.addActionListener(action);
+    buttonItem.setSelected(selected);
+    group.add(buttonItem);
+    return buttonItem;
   }
 
   private void addChatTimeMenu() {
