@@ -229,6 +229,13 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private @Nullable String createUser(final Map<String, String> response, final User user) {
     final String username = user.getUsername();
     final String email = response.get(LobbyLoginResponseKeys.EMAIL);
+    if (email == null || email.trim().isEmpty()) {
+      return "Must provide an email address";
+    }
+
+    if (email.trim().contains(" ")) {
+      return "Email address may not contain spaces";
+    }
 
     final String validationMessage =
         Optional.ofNullable(PlayerNameValidation.validate(username))
