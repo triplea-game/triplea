@@ -41,7 +41,7 @@ class FlagDrawMode {
         .equals(
             prefs.get(
                 UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-                UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.toString()))) {
+                UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name()))) {
       UnitsDrawer.enabledFlags = true;
       prefs.putBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), true);
       prefs.put(
