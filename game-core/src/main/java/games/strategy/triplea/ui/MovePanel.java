@@ -1645,7 +1645,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       getData().releaseReadLock();
     }
     final Predicate<Unit> movableUnitOwnedByMe =
-        PredicateBuilder.of(Matches.unitIsOwnedBy(getCurrentPlayer()))
+        PredicateBuilder.of(Matches.unitIsOwnedBy(getData().getSequence().getStep().getPlayerId()))
             .and(Matches.unitHasMovementLeft())
             // if not non combat, cannot move aa units
             .andIf(!nonCombat, Matches.unitCanNotMoveDuringCombatMove().negate())
