@@ -37,7 +37,7 @@ import org.triplea.util.Tuple;
 @Log
 public class UnitsDrawer extends AbstractDrawable {
   public static boolean enabledFlags = false;
-  private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.NEXT_TO;
+  private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.SMALL_FLAG;
 
   private final int count;
   private final String unitType;
@@ -58,8 +58,8 @@ public class UnitsDrawer extends AbstractDrawable {
 
   /** Identifies the location where a nation flag is drawn relative to a unit. */
   public enum UnitFlagDrawMode {
-    BELOW,
-    NEXT_TO
+    LARGE_FLAG,
+    SMALL_FLAG
   }
 
   public UnitsDrawer(
@@ -133,7 +133,7 @@ public class UnitsDrawer extends AbstractDrawable {
     if (img.isPresent() && enabledFlags) {
       final int maxRange = new TripleAUnit(type, owner, data).getMaxMovementAllowed();
       switch (drawUnitNationMode) {
-        case BELOW:
+        case LARGE_FLAG:
           // If unit is not in the "excluded list" it will get drawn
           if (maxRange != 0) {
             final Image flag = uiContext.getFlagImageFactory().getFlag(owner);
@@ -147,7 +147,7 @@ public class UnitsDrawer extends AbstractDrawable {
           }
           drawUnit(graphics, img.get(), bounds, data);
           break;
-        case NEXT_TO:
+        case SMALL_FLAG:
           drawUnit(graphics, img.get(), bounds, data);
           // If unit is not in the "excluded list" it will get drawn
           if (maxRange != 0) {

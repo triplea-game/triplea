@@ -44,6 +44,8 @@ jar {
 task downloadImages {
     doLast {
         [
+            'button_icons/flag.png',
+            'button_icons/lantern.png',
             'icons/triplea_icon_16_16.png',
             'icons/triplea_icon_32_32.png',
             'icons/triplea_icon_48_48.png',

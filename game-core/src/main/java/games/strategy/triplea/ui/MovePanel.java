@@ -1636,7 +1636,8 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     return true;
   }
 
-  private void highlightMovableUnits() {
+  /** Highlights movable units on the map for the current player. */
+  public void highlightMovableUnits() {
     final List<Territory> allTerritories;
     getData().acquireReadLock();
     try {
