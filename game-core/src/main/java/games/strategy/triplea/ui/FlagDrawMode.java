@@ -18,8 +18,7 @@ class FlagDrawMode {
 
     final Preferences prefs = Preferences.userNodeForPackage(FlagDrawMode.class);
     final UnitsDrawer.UnitFlagDrawMode setting =
-        Enum.valueOf(
-            UnitsDrawer.UnitFlagDrawMode.class,
+        UnitsDrawer.UnitFlagDrawMode.valueOf(
             prefs.get(
                 UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
                 UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name()));
