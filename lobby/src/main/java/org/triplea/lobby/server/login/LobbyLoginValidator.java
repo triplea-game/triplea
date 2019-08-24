@@ -237,12 +237,12 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return validationMessage;
     }
 
-    if (email.trim().equals("")) {
-      return "Empty email address";
+    if (email.trim().isEmpty()) {
+      return "Must provide an email address";
     }
 
     if (email.trim().contains(" ")) {
-      return "Email address contains spaces";
+      return "Email address may not contain spaces";
     }
 
     if (database.getUserDao().doesUserExist(username)) {
