@@ -7,6 +7,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
@@ -1637,7 +1638,7 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   }
 
   /** Highlights movable units on the map for the current player. */
-  public void highlightMovableUnits() {
+  private void highlightMovableUnits() {
     final List<Territory> allTerritories;
     getData().acquireReadLock();
     try {
@@ -1665,7 +1666,8 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
   }
 
   @Override
-  Component getUnitScrollerPanel() {
-    return unitScroller.build();
+  Component getUnitScrollerPanel(
+      final LocalPlayers localPlayers, final Runnable toggleFlagsAction) {
+    return unitScroller.build(localPlayers, this::highlightMovableUnits, toggleFlagsAction);
   }
 }

@@ -22,7 +22,7 @@ class FlagDrawMode {
             UnitsDrawer.UnitFlagDrawMode.class,
             prefs.get(
                 UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-                UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.toString()));
+                UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name()));
     UnitsDrawer.setUnitFlagDrawMode(setting, prefs);
     UnitsDrawer.enabledFlags =
         prefs.getBoolean(
@@ -34,7 +34,7 @@ class FlagDrawMode {
       prefs.putBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), true);
       prefs.put(
           UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-          UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.toString());
+          UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name());
       UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, prefs);
       // check if small flags, if so then draw large flags
     } else if (UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG
@@ -47,7 +47,7 @@ class FlagDrawMode {
       prefs.putBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), true);
       prefs.put(
           UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-          UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG.toString());
+          UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG.name());
       UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG, prefs);
       // otherwise we had large flags, turn drawing flags off
     } else {
@@ -55,7 +55,7 @@ class FlagDrawMode {
       prefs.putBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), false);
       prefs.put(
           UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-          UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG.toString());
+          UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG.name());
       UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, prefs);
     }
     mapPanel.resetMap();
