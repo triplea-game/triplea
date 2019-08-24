@@ -44,7 +44,7 @@ class LobbyLoginValidatorIntegrationTest {
           JdbiDatabase.newConnection().onDemand(TempPasswordDao.class));
 
   private ChallengeResultFunction generateChallenge(final HashedPassword password) {
-    return generateChallenge(TestUserUtils.newUniqueTimestamp(), password);
+    return generateChallenge("a" + TestUserUtils.newUniqueTimestamp(), password);
   }
 
   private ChallengeResultFunction generateChallenge(
@@ -73,7 +73,7 @@ class LobbyLoginValidatorIntegrationTest {
 
   @Test
   void testCreateNewUser() {
-    final String name = TestUserUtils.newUniqueTimestamp();
+    final String name = "a" + TestUserUtils.newUniqueTimestamp();
     final String password = "password";
     final Map<String, String> response = new HashMap<>();
     response.put(LobbyLoginResponseKeys.REGISTER_NEW_USER, Boolean.TRUE.toString());
