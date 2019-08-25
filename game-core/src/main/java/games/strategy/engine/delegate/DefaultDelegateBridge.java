@@ -11,7 +11,7 @@ import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.MessengerException;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
@@ -110,16 +110,16 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer() {
+  public Player getRemotePlayer() {
     return getRemotePlayer(getPlayerId());
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer(final PlayerId id) {
+  public Player getRemotePlayer(final PlayerId id) {
     try {
       final Object implementor =
           game.getMessengers().getRemote(ServerGame.getRemoteName(id, gameData));
-      return (IRemotePlayer) getOutbound(implementor);
+      return (Player) getOutbound(implementor);
     } catch (final RuntimeException e) {
       if (e.getCause() instanceof MessengerException) {
         throw new GameOverException("Game Over!");

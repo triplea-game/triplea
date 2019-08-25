@@ -10,7 +10,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.sound.HeadlessSoundChannel;
@@ -88,12 +88,12 @@ public class DummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer(final PlayerId id) {
+  public Player getRemotePlayer(final PlayerId id) {
     return id.equals(attacker) ? attackingPlayer : defendingPlayer;
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer() {
+  public Player getRemotePlayer() {
     // the current player is attacker
     return attackingPlayer;
   }

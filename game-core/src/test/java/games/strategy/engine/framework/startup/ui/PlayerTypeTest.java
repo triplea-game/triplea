@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class PlayerTypeTest {
         .filter(playerType -> playerType != PlayerType.BATTLE_CALC_DUMMY)
         .forEach(
             playerType -> {
-              final IRemotePlayer result = playerType.newPlayerWithName(testName);
+              final Player result = playerType.newPlayerWithName(testName);
               assertThat(
                   "The player type should match after construction, input type: " + playerType,
                   result.getPlayerType(),

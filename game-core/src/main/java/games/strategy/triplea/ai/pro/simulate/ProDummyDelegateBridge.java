@@ -8,7 +8,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.sound.HeadlessSoundChannel;
@@ -56,12 +56,12 @@ public class ProDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer(final PlayerId id) {
+  public Player getRemotePlayer(final PlayerId id) {
     return proAi;
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer() {
+  public Player getRemotePlayer() {
     return proAi;
   }
 

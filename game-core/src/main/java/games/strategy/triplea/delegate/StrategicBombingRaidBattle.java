@@ -11,7 +11,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -667,7 +667,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         new Thread(
             () -> {
               try {
-                final IRemotePlayer defender = bridge.getRemotePlayer(this.defender);
+                final Player defender = bridge.getRemotePlayer(this.defender);
                 defender.confirmEnemyCasualties(battleId, "Press space to continue", attacker);
               } catch (final Exception e) {
                 // ignore
@@ -675,7 +675,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             },
             "click to continue waiter");
     t.start();
-    final IRemotePlayer attacker = bridge.getRemotePlayer(this.attacker);
+    final Player attacker = bridge.getRemotePlayer(this.attacker);
     attacker.confirmOwnCasualties(battleId, "Press space to continue");
     bridge.leaveDelegateExecution();
     Interruptibles.join(t);
@@ -747,7 +747,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 + defender.getName()
                 + " in "
                 + battleSite.getName();
-        final IRemotePlayer attacker =
+        final Player attacker =
             bridge.getRemotePlayer(StrategicBombingRaidBattle.this.attacker);
         // does not take into account bombers with dice sides higher than getDiceSides
         dice = attacker.selectFixedDice(rollCount, 0, annotation, gameData.getDiceSides());

@@ -5,7 +5,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -151,7 +151,7 @@ public class TripleADisplay implements IDisplay {
       boolean isHost = false;
       boolean isClient = false;
       boolean isObserver = true;
-      for (final IRemotePlayer player : ui.getLocalPlayers().getLocalPlayers()) {
+      for (final Player player : ui.getLocalPlayers().getLocalPlayers()) {
         // if we have any local players, we are not an observer
         isObserver = false;
         if (player instanceof TripleAPlayer) {

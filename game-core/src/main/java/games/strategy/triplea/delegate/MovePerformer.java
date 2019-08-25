@@ -10,7 +10,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
@@ -60,11 +60,11 @@ public class MovePerformer implements Serializable {
     }
   }
 
-  private IRemotePlayer getRemotePlayer(final PlayerId id) {
+  private Player getRemotePlayer(final PlayerId id) {
     return bridge.getRemotePlayer(id);
   }
 
-  private IRemotePlayer getRemotePlayer() {
+  private Player getRemotePlayer() {
     return getRemotePlayer(player);
   }
 

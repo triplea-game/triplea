@@ -11,7 +11,7 @@ import games.strategy.engine.framework.IGameModifiedChannel;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
 import games.strategy.sound.HeadlessSoundChannel;
@@ -63,12 +63,12 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer(final PlayerId id) {
+  public Player getRemotePlayer(final PlayerId id) {
     return dummyAi;
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer() {
+  public Player getRemotePlayer() {
     return dummyAi;
   }
 

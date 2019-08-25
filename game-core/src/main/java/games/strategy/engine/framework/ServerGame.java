@@ -29,7 +29,7 @@ import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.PlainRandomSource;
@@ -81,7 +81,7 @@ public class ServerGame extends AbstractGame {
 
   public ServerGame(
       final GameData data,
-      final Set<IRemotePlayer> localPlayers,
+      final Set<Player> localPlayers,
       final Map<String, INode> remotePlayerMapping,
       final Messengers messengers,
       final LaunchAction launchAction) {
@@ -331,7 +331,7 @@ public class ServerGame extends AbstractGame {
     isGameOver = true;
     delegateExecutionStoppedLatch.countDown();
     // tell the players (especially the AI's) that the game is stopping, so stop doing stuff.
-    for (final IRemotePlayer player : gamePlayers.values()) {
+    for (final Player player : gamePlayers.values()) {
       // not sure whether to put this before or after we delegate execution block, but definitely
       // before the game loader
       // shutdown
@@ -358,7 +358,7 @@ public class ServerGame extends AbstractGame {
       messengers.unregisterChannelSubscriber(gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
       messengers.unregisterRemote(SERVER_REMOTE);
       vault.shutDown();
-      for (final IRemotePlayer gp : gamePlayers.values()) {
+      for (final Player gp : gamePlayers.values()) {
         messengers.unregisterRemote(getRemoteName(gp.getPlayerId(), gameData));
       }
       for (final IDelegate delegate : gameData.getDelegates()) {
@@ -574,7 +574,7 @@ public class ServerGame extends AbstractGame {
     if (!getCurrentStep().getDelegate().delegateCurrentlyRequiresUserInput()) {
       return;
     }
-    final IRemotePlayer player = gamePlayers.get(playerId);
+    final Player player = gamePlayers.get(playerId);
     if (player != null) {
       // a local player
       player.start(getCurrentStep().getName());
@@ -601,7 +601,7 @@ public class ServerGame extends AbstractGame {
   }
 
   private void addPlayerTypesToGameData(
-      final Collection<IRemotePlayer> localPlayers,
+      final Collection<Player> localPlayers,
       final PlayerManager allPlayers,
       final IDelegateBridge bridge) {
     final GameData data = bridge.getData();
@@ -622,7 +622,7 @@ public class ServerGame extends AbstractGame {
     final CompositeChange change = new CompositeChange();
     final Set<String> allPlayersString = allPlayers.getPlayers();
     bridge.getHistoryWriter().startEvent("Game Loaded");
-    for (final IRemotePlayer player : localPlayers) {
+    for (final Player player : localPlayers) {
       allPlayersString.remove(player.getName());
       final boolean isHuman = player instanceof TripleAPlayer;
       bridge

@@ -15,7 +15,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.sound.ISound;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
@@ -43,7 +43,7 @@ final class MockDelegateBridge {
     when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
     when(delegateBridge.getHistoryWriter()).thenReturn(DelegateHistoryWriter.NO_OP_INSTANCE);
     when(delegateBridge.getPlayerId()).thenReturn(playerId);
-    final IRemotePlayer remotePlayer = mock(IRemotePlayer.class);
+    final Player remotePlayer = mock(Player.class);
     when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);
     when(delegateBridge.getRemotePlayer(any())).thenReturn(remotePlayer);
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));

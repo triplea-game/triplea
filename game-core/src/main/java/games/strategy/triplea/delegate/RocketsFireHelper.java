@@ -10,7 +10,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -177,7 +177,7 @@ public class RocketsFireHelper implements Serializable {
           if (enemyTargets.size() == 1) {
             unitTarget = enemyTargets.iterator().next();
           } else {
-            final IRemotePlayer remotePlayer = bridge.getRemotePlayer(player);
+            final Player remotePlayer = bridge.getRemotePlayer(player);
             unitTarget =
                 remotePlayer.whatShouldBomberBomb(targetTerritory, enemyTargets, rocketTargets);
           }
@@ -570,7 +570,7 @@ public class RocketsFireHelper implements Serializable {
     }
   }
 
-  private static IRemotePlayer getRemote(final IDelegateBridge bridge) {
+  private static Player getRemote(final IDelegateBridge bridge) {
     return bridge.getRemotePlayer();
   }
 }

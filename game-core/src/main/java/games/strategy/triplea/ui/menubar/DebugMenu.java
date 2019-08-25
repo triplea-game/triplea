@@ -1,6 +1,6 @@
 package games.strategy.triplea.ui.menubar;
 
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.triplea.ai.pro.ProAi;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -17,7 +17,7 @@ final class DebugMenu extends JMenu {
 
     setMnemonic(KeyEvent.VK_D);
 
-    final Set<IRemotePlayer> players = frame.getLocalPlayers().getLocalPlayers();
+    final Set<Player> players = frame.getLocalPlayers().getLocalPlayers();
     final boolean areThereProAIs = players.stream().anyMatch(ProAi.class::isInstance);
     if (areThereProAIs) {
       ProAi.initialize(frame);

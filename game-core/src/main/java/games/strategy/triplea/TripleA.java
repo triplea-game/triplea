@@ -14,7 +14,7 @@ import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.delegate.EditDelegate;
 import java.util.Map;
@@ -34,11 +34,11 @@ public class TripleA implements IGameLoader {
   protected transient IGame game;
 
   @Override
-  public Set<IRemotePlayer> newPlayers(final Map<String, PlayerType> playerNames) {
+  public Set<Player> newPlayers(final Map<String, PlayerType> playerNames) {
     return playerNames.entrySet().stream().map(TripleA::toGamePlayer).collect(Collectors.toSet());
   }
 
-  private static IRemotePlayer toGamePlayer(final Map.Entry<String, PlayerType> namePlayerType) {
+  private static Player toGamePlayer(final Map.Entry<String, PlayerType> namePlayerType) {
     return namePlayerType.getValue().newPlayerWithName(namePlayerType.getKey());
   }
 
@@ -53,7 +53,7 @@ public class TripleA implements IGameLoader {
   @Override
   public void startGame(
       final IGame game,
-      final Set<IRemotePlayer> players,
+      final Set<Player> players,
       final LaunchAction launchAction,
       @Nullable final Chat chat) {
     this.game = game;
@@ -83,7 +83,7 @@ public class TripleA implements IGameLoader {
 
   @Override
   public Class<? extends IRemote> getRemotePlayerType() {
-    return IRemotePlayer.class;
+    return Player.class;
   }
 
   @Override

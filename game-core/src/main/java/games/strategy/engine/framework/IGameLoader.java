@@ -9,7 +9,7 @@ import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
@@ -28,11 +28,11 @@ public interface IGameLoader extends Serializable {
    *
    * @return a Set of GamePlayers
    */
-  Set<IRemotePlayer> newPlayers(Map<String, PlayerType> players);
+  Set<Player> newPlayers(Map<String, PlayerType> players);
 
   /** The game is about to start. */
   void startGame(
-      IGame game, Set<IRemotePlayer> players, LaunchAction launchAction, @Nullable Chat chat);
+      IGame game, Set<Player> players, LaunchAction launchAction, @Nullable Chat chat);
 
   /**
    * Get the type of the display.

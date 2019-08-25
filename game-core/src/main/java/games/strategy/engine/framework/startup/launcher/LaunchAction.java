@@ -8,7 +8,7 @@ import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.sound.ISound;
 import java.io.File;
 import java.util.Set;
@@ -24,7 +24,7 @@ public interface LaunchAction {
 
   void onEnd(String message);
 
-  IDisplay startGame(LocalPlayers localPlayers, IGame game, Set<IRemotePlayer> players, Chat chat);
+  IDisplay startGame(LocalPlayers localPlayers, IGame game, Set<Player> players, Chat chat);
 
   ISound getSoundChannel(LocalPlayers localPlayers);
 

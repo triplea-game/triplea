@@ -8,7 +8,7 @@ import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.player.DefaultPlayerBridge;
 import games.strategy.engine.player.IPlayerBridge;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
@@ -35,7 +35,7 @@ public abstract class AbstractGame implements IGame {
 
   IGameModifiedChannel gameModifiedChannel;
 
-  final Map<PlayerId, IRemotePlayer> gamePlayers = new HashMap<>();
+  final Map<PlayerId, Player> gamePlayers = new HashMap<>();
   final PlayerManager playerManager;
 
   @Nullable private IDisplay display;
@@ -43,14 +43,14 @@ public abstract class AbstractGame implements IGame {
 
   AbstractGame(
       final GameData data,
-      final Set<IRemotePlayer> gamePlayers,
+      final Set<Player> gamePlayers,
       final Map<String, INode> remotePlayerMapping,
       final Messengers messengers) {
     gameData = data;
     this.messengers = messengers;
     vault = new Vault(messengers);
     final Map<String, INode> allPlayers = new HashMap<>(remotePlayerMapping);
-    for (final IRemotePlayer player : gamePlayers) {
+    for (final Player player : gamePlayers) {
       // this is necessary for Server games, but not needed for client games.
       allPlayers.put(player.getName(), messengers.getLocalNode());
     }
@@ -58,9 +58,9 @@ public abstract class AbstractGame implements IGame {
     setupLocalPlayers(gamePlayers);
   }
 
-  private void setupLocalPlayers(final Set<IRemotePlayer> localPlayers) {
+  private void setupLocalPlayers(final Set<Player> localPlayers) {
     final PlayerList playerList = gameData.getPlayerList();
-    for (final IRemotePlayer gp : localPlayers) {
+    for (final Player gp : localPlayers) {
       final PlayerId player = playerList.getPlayerId(gp.getName());
       gamePlayers.put(player, gp);
       final IPlayerBridge bridge = new DefaultPlayerBridge(this);

@@ -12,7 +12,7 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.engine.message.MessengerException;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.CryptoRandomSource;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
@@ -108,7 +108,7 @@ public class ServerLauncher extends AbstractLauncher<Void> {
       gameData.doPreGameStartDataModifications(playerListing);
       abortLaunch = testShouldWeAbort();
       final byte[] gameDataAsBytes = gameData.toBytes();
-      final Set<IRemotePlayer> localPlayerSet =
+      final Set<Player> localPlayerSet =
           gameData.getGameLoader().newPlayers(playerListing.getLocalPlayerTypeMap());
       serverGame =
           new ServerGame(gameData, localPlayerSet, remotePlayers, messengers, launchAction);

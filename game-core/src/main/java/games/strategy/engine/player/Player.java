@@ -21,7 +21,7 @@ import org.triplea.util.Tuple;
  * Used for both IRemotePlayer (used by the server, etc.) and specific game players such as
  * IRemotePlayer and IGridGamePlayer (used by delegates for communication, etc.).
  */
-public interface IRemotePlayer extends IRemote {
+public interface Player extends IRemote {
   /**
    * Returns the id of this player. This id is initialized by the initialize method in
    * IRemotePlayer.

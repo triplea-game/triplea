@@ -15,7 +15,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.PbemMessagePoster;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -240,7 +240,7 @@ public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate
 
   protected void showEndTurnReport(final String endTurnReport) {
     if (endTurnReport != null && endTurnReport.trim().length() > 6 && !player.isAi()) {
-      final IRemotePlayer currentPlayer = getRemotePlayer(player);
+      final Player currentPlayer = getRemotePlayer(player);
       final String playerName = player.getName();
       currentPlayer.reportMessage(
           "<html><b style=\"font-size:120%\" >"

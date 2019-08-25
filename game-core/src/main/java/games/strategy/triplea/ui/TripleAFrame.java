@@ -33,7 +33,7 @@ import games.strategy.engine.history.Renderable;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.player.IPlayerBridge;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
@@ -2467,7 +2467,7 @@ public final class TripleAFrame extends JFrame {
           showGameAction.setEnabled(!inGame.get());
           // We need to check and make sure there are no local human players
           boolean foundHuman = false;
-          for (final IRemotePlayer gamePlayer : localPlayers.getLocalPlayers()) {
+          for (final Player gamePlayer : localPlayers.getLocalPlayers()) {
             if (gamePlayer instanceof TripleAPlayer) {
               foundHuman = true;
               break;
