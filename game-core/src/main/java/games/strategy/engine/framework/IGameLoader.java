@@ -33,23 +33,6 @@ public interface IGameLoader extends Serializable {
   /** The game is about to start. */
   void startGame(IGame game, Set<Player> players, LaunchAction launchAction, @Nullable Chat chat);
 
-  /**
-   * Get the type of the display.
-   *
-   * @return an interface that extends IChannelSubscriber
-   */
-  Class<? extends IChannelSubscriber> getDisplayType();
-
-  Class<? extends IChannelSubscriber> getSoundType();
-
-  /**
-   * Get the type of the GamePlayer.
-   *
-   * <p>The type must extend IRemote, and is to be used by an IRemoteManager to allow a player to be
-   * contacted remotely
-   */
-  Class<? extends IRemote> getRemotePlayerType();
-
   void shutDown();
 
   Unit newUnit(UnitType type, PlayerId owner, GameData data);

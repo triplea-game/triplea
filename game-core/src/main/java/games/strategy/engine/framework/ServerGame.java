@@ -271,7 +271,7 @@ public class ServerGame extends AbstractGame {
   public static RemoteName getRemoteName(final PlayerId id, final GameData data) {
     return new RemoteName(
         "games.strategy.engine.framework.ServerGame.PLAYER_REMOTE." + id.getName(),
-        data.getGameLoader().getRemotePlayerType());
+        Player.class);
   }
 
   public static RemoteName getRemoteRandomName(final PlayerId id) {

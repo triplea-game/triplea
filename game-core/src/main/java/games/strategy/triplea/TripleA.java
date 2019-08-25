@@ -72,21 +72,6 @@ public class TripleA implements IGameLoader {
   }
 
   @Override
-  public Class<? extends IChannelSubscriber> getDisplayType() {
-    return IDisplay.class;
-  }
-
-  @Override
-  public Class<? extends IChannelSubscriber> getSoundType() {
-    return ISound.class;
-  }
-
-  @Override
-  public Class<? extends IRemote> getRemotePlayerType() {
-    return Player.class;
-  }
-
-  @Override
   public Unit newUnit(final UnitType type, final PlayerId owner, final GameData data) {
     return new TripleAUnit(type, owner, data);
   }

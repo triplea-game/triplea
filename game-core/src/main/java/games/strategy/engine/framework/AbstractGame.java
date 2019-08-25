@@ -96,7 +96,7 @@ public abstract class AbstractGame implements IGame {
   }
 
   public static RemoteName getDisplayChannel(final GameData data) {
-    return new RemoteName(DISPLAY_CHANNEL, data.getGameLoader().getDisplayType());
+    return new RemoteName(DISPLAY_CHANNEL, IDisplay.class);
   }
 
   @Override
@@ -116,7 +116,7 @@ public abstract class AbstractGame implements IGame {
   }
 
   public static RemoteName getSoundChannel(final GameData data) {
-    return new RemoteName(SOUND_CHANNEL, data.getGameLoader().getSoundType());
+    return new RemoteName(SOUND_CHANNEL, ISound.class);
   }
 
   @Override
