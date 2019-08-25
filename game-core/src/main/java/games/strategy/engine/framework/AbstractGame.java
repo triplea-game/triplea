@@ -65,7 +65,7 @@ public abstract class AbstractGame implements IGame {
       gamePlayers.put(player, gp);
       final IPlayerBridge bridge = new DefaultPlayerBridge(this);
       gp.initialize(bridge, player);
-      final RemoteName descriptor = ServerGame.getRemoteName(gp.getPlayerId(), gameData);
+      final RemoteName descriptor = ServerGame.getRemoteName(gp.getPlayerId());
       messengers.registerRemote(gp, descriptor);
     }
   }
@@ -95,7 +95,7 @@ public abstract class AbstractGame implements IGame {
     return playerManager;
   }
 
-  public static RemoteName getDisplayChannel(final GameData data) {
+  public static RemoteName getDisplayChannel() {
     return new RemoteName(DISPLAY_CHANNEL, IDisplay.class);
   }
 
@@ -106,16 +106,16 @@ public abstract class AbstractGame implements IGame {
     }
 
     if (this.display != null) {
-      messengers.unregisterChannelSubscriber(this.display, getDisplayChannel(getData()));
+      messengers.unregisterChannelSubscriber(this.display, getDisplayChannel());
       this.display.shutDown();
     }
     if (display != null) {
-      messengers.registerChannelSubscriber(display, getDisplayChannel(getData()));
+      messengers.registerChannelSubscriber(display, getDisplayChannel());
     }
     this.display = display;
   }
 
-  public static RemoteName getSoundChannel(final GameData data) {
+  public static RemoteName getSoundChannel() {
     return new RemoteName(SOUND_CHANNEL, ISound.class);
   }
 
@@ -125,10 +125,10 @@ public abstract class AbstractGame implements IGame {
       return;
     }
     if (sound != null) {
-      messengers.unregisterChannelSubscriber(sound, getSoundChannel(getData()));
+      messengers.unregisterChannelSubscriber(sound, getSoundChannel());
     }
     if (soundChannel != null) {
-      messengers.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
+      messengers.registerChannelSubscriber(soundChannel, getSoundChannel());
     }
     sound = soundChannel;
   }
