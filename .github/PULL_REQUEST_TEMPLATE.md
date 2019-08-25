@@ -6,7 +6,7 @@
 [ ] New map or map update
 [ ] New Feature
 [ ] Feature update or enhancement
-[ ] Code Removal
+[ ] Feature Removal
 [ ] Code Cleanup or refactor
 [ ] Configuration Change
 [ ] Bug fix
