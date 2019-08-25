@@ -13,7 +13,6 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.removeFrom;
 import static games.strategy.triplea.delegate.GameDataTestUtil.russians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
 import static games.strategy.triplea.delegate.MockDelegateBridge.advanceToStep;
-import static games.strategy.triplea.delegate.MockDelegateBridge.withRemotePlayer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -74,7 +73,7 @@ class WW2V3Year42Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    when(withRemotePlayer(bridge).shouldBomberBomb(any())).thenReturn(true);
+    when(bridge.getRemotePlayer().shouldBomberBomb(any())).thenReturn(true);
     // remove the russian units
     removeFrom(
         karrelia, karrelia.getUnitCollection().getMatches(Matches.unitCanBeDamaged().negate()));

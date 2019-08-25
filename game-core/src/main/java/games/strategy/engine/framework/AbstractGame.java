@@ -7,43 +7,50 @@ import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.player.DefaultPlayerBridge;
-import games.strategy.engine.player.IGamePlayer;
 import games.strategy.engine.player.IPlayerBridge;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.vault.Vault;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ISound;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 /**
  * This abstract class keeps common variables and methods from a game (ClientGame or ServerGame).
  */
 public abstract class AbstractGame implements IGame {
-  protected static final String DISPLAY_CHANNEL =
+  private static final String DISPLAY_CHANNEL =
       "games.strategy.engine.framework.AbstractGame.DISPLAY_CHANNEL";
-  protected static final String SOUND_CHANNEL =
+  private static final String SOUND_CHANNEL =
       "games.strategy.engine.framework.AbstractGame.SOUND_CHANNEL";
   protected final GameData gameData;
   protected final Messengers messengers;
-  protected final Map<PlayerId, IGamePlayer> gamePlayers = new HashMap<>();
   protected volatile boolean isGameOver = false;
   protected final Vault vault;
-  protected IGameModifiedChannel gameModifiedChannel;
-  protected final PlayerManager playerManager;
   protected boolean firstRun = true;
 
-  protected AbstractGame(
+  IGameModifiedChannel gameModifiedChannel;
+
+  final Map<PlayerId, Player> gamePlayers = new HashMap<>();
+  final PlayerManager playerManager;
+
+  @Nullable private IDisplay display;
+  @Nullable private ISound sound;
+
+  AbstractGame(
       final GameData data,
-      final Set<IGamePlayer> gamePlayers,
+      final Set<Player> gamePlayers,
       final Map<String, INode> remotePlayerMapping,
       final Messengers messengers) {
     gameData = data;
     this.messengers = messengers;
     vault = new Vault(messengers);
     final Map<String, INode> allPlayers = new HashMap<>(remotePlayerMapping);
-    for (final IGamePlayer player : gamePlayers) {
+    for (final Player player : gamePlayers) {
       // this is necessary for Server games, but not needed for client games.
       allPlayers.put(player.getName(), messengers.getLocalNode());
     }
@@ -51,9 +58,9 @@ public abstract class AbstractGame implements IGame {
     setupLocalPlayers(gamePlayers);
   }
 
-  private void setupLocalPlayers(final Set<IGamePlayer> localPlayers) {
+  private void setupLocalPlayers(final Set<Player> localPlayers) {
     final PlayerList playerList = gameData.getPlayerList();
-    for (final IGamePlayer gp : localPlayers) {
+    for (final Player gp : localPlayers) {
       final PlayerId player = playerList.getPlayerId(gp.getName());
       gamePlayers.put(player, gp);
       final IPlayerBridge bridge = new DefaultPlayerBridge(this);
@@ -93,13 +100,19 @@ public abstract class AbstractGame implements IGame {
   }
 
   @Override
-  public void addDisplay(final IDisplay display) {
-    messengers.registerChannelSubscriber(display, getDisplayChannel(getData()));
-  }
+  public void setDisplay(final @Nullable IDisplay display) {
+    if (Objects.equals(this.display, display)) {
+      return;
+    }
 
-  @Override
-  public void removeDisplay(final IDisplay display) {
-    messengers.unregisterChannelSubscriber(display, getDisplayChannel(getData()));
+    if (this.display != null) {
+      messengers.unregisterChannelSubscriber(this.display, getDisplayChannel(getData()));
+      this.display.shutDown();
+    }
+    if (display != null) {
+      messengers.registerChannelSubscriber(display, getDisplayChannel(getData()));
+    }
+    this.display = display;
   }
 
   public static RemoteName getSoundChannel(final GameData data) {
@@ -107,12 +120,16 @@ public abstract class AbstractGame implements IGame {
   }
 
   @Override
-  public void addSoundChannel(final ISound soundChannel) {
-    messengers.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
-  }
-
-  @Override
-  public void removeSoundChannel(final ISound soundChannel) {
-    messengers.unregisterChannelSubscriber(soundChannel, getSoundChannel(getData()));
+  public void setSoundChannel(final @Nullable ISound soundChannel) {
+    if (Objects.equals(sound, soundChannel)) {
+      return;
+    }
+    if (sound != null) {
+      messengers.unregisterChannelSubscriber(sound, getSoundChannel(getData()));
+    }
+    if (soundChannel != null) {
+      messengers.registerChannelSubscriber(soundChannel, getSoundChannel(getData()));
+    }
+    sound = soundChannel;
   }
 }

@@ -130,7 +130,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate {
     final Collection<Territory> aaFiringTerritories =
         aaInMoveUtil.getTerritoriesWhereAaWillFire(route, units);
     if (!aaFiringTerritories.isEmpty()) {
-      if (!getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritories)) {
+      if (!bridge.getRemotePlayer().confirmMoveInFaceOfAa(aaFiringTerritories)) {
         return null;
       }
     }

@@ -19,6 +19,7 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -31,7 +32,6 @@ import games.strategy.triplea.delegate.data.BattleListing;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -249,7 +249,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   @VisibleForTesting
   void addBombardmentSources() {
     final PlayerId attacker = bridge.getPlayerId();
-    final ITripleAPlayer remotePlayer = getRemotePlayer();
+    final Player remotePlayer = bridge.getRemotePlayer();
     final Predicate<Unit> ownedAndCanBombard =
         Matches.unitCanBombard(attacker).and(Matches.unitIsOwnedBy(attacker));
     final Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
@@ -345,7 +345,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       battleTerritories.put(battle.getTerritory(), battle);
     }
-    final ITripleAPlayer remotePlayer = getRemotePlayer();
+    final Player remotePlayer = bridge.getRemotePlayer();
     Territory bombardingTerritory = null;
     if (!territories.isEmpty()) {
       bombardingTerritory =
@@ -507,7 +507,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
       }
       // possibility to ignore battle altogether
       if (!attackingUnits.isEmpty()) {
-        final ITripleAPlayer remotePlayer = getRemotePlayer(bridge);
+        final Player remotePlayer = bridge.getRemotePlayer();
         if (territory.isWater() && Properties.getSeaBattlesMayBeIgnored(data)) {
           if (!remotePlayer.selectAttackUnits(territory)) {
             final BattleResults results = new BattleResults(battle, WhoWon.NOT_FINISHED, data);
@@ -1651,7 +1651,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     final Collection<PlayerId> playersInvolved = new ArrayList<>();
     playersInvolved.add(player);
     playersInvolved.add(firingEnemy);
-    this.getDisplay().reportMessageToPlayers(playersInvolved, null, title + dice, title);
+    bridge
+        .getDisplayChannelBroadcaster()
+        .reportMessageToPlayers(playersInvolved, null, title + dice, title);
   }
 
   static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge) {

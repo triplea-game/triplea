@@ -32,6 +32,7 @@ import games.strategy.engine.data.TestAttachment;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.BattleDelegate;
@@ -39,7 +40,6 @@ import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.ui.NotificationMessages;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -123,7 +123,7 @@ class TriggerAttachmentTest {
           "<body><h2>The Land of Black Ice</h2>Whether out of duty, ..."
               + "<br>never heard from again.</body>";
 
-      final ITripleADisplay display = mock(ITripleADisplay.class);
+      final IDisplay display = mock(IDisplay.class);
       when(bridge.getDisplayChannelBroadcaster()).thenReturn(display);
 
       final NotificationMessages notificationMessages = mock(NotificationMessages.class);

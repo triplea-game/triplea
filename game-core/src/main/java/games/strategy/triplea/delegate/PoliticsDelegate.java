@@ -313,7 +313,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * @param paa the political action attachment that just failed.
    */
   private void notifyFailure(final PoliticalActionAttachment paa) {
-    getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, player);
+    bridge
+        .getSoundChannelBroadcaster()
+        .playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, player);
     final String transcriptText =
         bridge.getPlayerId().getName()
             + " fails on action: "
@@ -329,7 +331,9 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    * @param paa the political action attachment that just succeeded.
    */
   private void notifySuccess(final PoliticalActionAttachment paa) {
-    getSoundChannel().playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, player);
+    bridge
+        .getSoundChannelBroadcaster()
+        .playSoundForAll(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, player);
     sendNotification(PoliticsText.getInstance().getNotificationSuccess(paa.getText()));
     notifyOtherPlayers(PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
   }
@@ -346,7 +350,8 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
       currentPlayer.add(player);
       final Collection<PlayerId> otherPlayers = getData().getPlayerList().getPlayers();
       otherPlayers.removeAll(currentPlayer);
-      this.getDisplay()
+      bridge
+          .getDisplayChannelBroadcaster()
           .reportMessageToPlayers(otherPlayers, currentPlayer, notification, notification);
     }
   }
@@ -358,7 +363,7 @@ public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDe
    */
   private void sendNotification(final String text) {
     if (!"NONE".equals(text)) {
-      this.getRemotePlayer().reportMessage(text, text);
+      bridge.getRemotePlayer().reportMessage(text, text);
     }
   }
 

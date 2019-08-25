@@ -28,7 +28,7 @@ import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.message.RemoteName;
-import games.strategy.engine.player.IGamePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.io.IoUtils;
 import games.strategy.net.ClientMessengerFactory;
 import games.strategy.net.CouldNotLogInException;
@@ -329,7 +329,7 @@ public class ClientModel implements IMessengerErrorListener {
             .filter(e -> e.getValue() != null)
             .filter(e -> e.getValue().equals(messenger.getLocalNode().getName()))
             .collect(Collectors.toMap(Map.Entry::getKey, e -> PlayerType.CLIENT_PLAYER));
-    final Set<IGamePlayer> playerSet = data.getGameLoader().newPlayers(playerMapping);
+    final Set<Player> playerSet = data.getGameLoader().newPlayers(playerMapping);
     game = new ClientGame(data, playerSet, players, messengers);
     new Thread(
             () -> {

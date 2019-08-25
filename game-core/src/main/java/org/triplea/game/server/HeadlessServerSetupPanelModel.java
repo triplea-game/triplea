@@ -1,6 +1,7 @@
 package org.triplea.game.server;
 
 import games.strategy.engine.chat.Chat;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.HeadlessAutoSaveFileUtils;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.LocalPlayers;
@@ -8,13 +9,12 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
-import games.strategy.engine.player.IGamePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ui.HeadlessUiContext;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import java.io.File;
 import java.util.Optional;
 import java.util.Set;
@@ -70,10 +70,10 @@ public class HeadlessServerSetupPanelModel implements ServerSetupModel {
               }
 
               @Override
-              public ITripleADisplay startGame(
+              public IDisplay startGame(
                   final LocalPlayers localPlayers,
                   final IGame game,
-                  final Set<IGamePlayer> players,
+                  final Set<Player> players,
                   final Chat chat) {
                 final UiContext uiContext = new HeadlessUiContext();
                 uiContext.setDefaultMapDir(game.getData());

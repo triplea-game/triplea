@@ -268,7 +268,8 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
 
     if (!unitsLeftToPlace.isEmpty()) {
-      getDisplay()
+      bridge
+          .getDisplayChannelBroadcaster()
           .reportMessageToPlayers(
               Collections.singletonList(player),
               Collections.emptyList(),
@@ -540,7 +541,7 @@ public abstract class AbstractPlaceDelegate extends BaseTripleADelegate
     }
     final List<Unit> fighters = producer.getUnitCollection().getMatches(ownedFighters);
     final Collection<Unit> movedFighters =
-        getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, producer);
+        bridge.getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, producer);
     if (movedFighters == null || movedFighters.isEmpty()) {
       return null;
     }

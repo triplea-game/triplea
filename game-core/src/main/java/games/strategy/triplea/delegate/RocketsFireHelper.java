@@ -10,6 +10,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -19,7 +20,6 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -177,8 +177,9 @@ public class RocketsFireHelper implements Serializable {
           if (enemyTargets.size() == 1) {
             unitTarget = enemyTargets.iterator().next();
           } else {
-            final ITripleAPlayer iplayer = (ITripleAPlayer) bridge.getRemotePlayer(player);
-            unitTarget = iplayer.whatShouldBomberBomb(targetTerritory, enemyTargets, rocketTargets);
+            final Player remotePlayer = bridge.getRemotePlayer(player);
+            unitTarget =
+                remotePlayer.whatShouldBomberBomb(targetTerritory, enemyTargets, rocketTargets);
           }
           if (unitTarget == null) {
             continue;
@@ -275,7 +276,7 @@ public class RocketsFireHelper implements Serializable {
       final Collection<Territory> targets, final IDelegateBridge bridge, final Territory from) {
     // ask even if there is only once choice, that will allow the user to not attack if he doesn't
     // want to
-    return ((ITripleAPlayer) bridge.getRemotePlayer()).whereShouldRocketsAttack(targets, from);
+    return bridge.getRemotePlayer().whereShouldRocketsAttack(targets, from);
   }
 
   private void fireRocket(
@@ -569,7 +570,7 @@ public class RocketsFireHelper implements Serializable {
     }
   }
 
-  private static ITripleAPlayer getRemote(final IDelegateBridge bridge) {
-    return (ITripleAPlayer) bridge.getRemotePlayer();
+  private static Player getRemote(final IDelegateBridge bridge) {
+    return bridge.getRemotePlayer();
   }
 }

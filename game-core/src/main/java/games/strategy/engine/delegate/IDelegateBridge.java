@@ -5,7 +5,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.ISound;
 import java.util.Properties;
@@ -22,10 +22,10 @@ public interface IDelegateBridge {
    *
    * @return remote for the current player.
    */
-  IRemotePlayer getRemotePlayer();
+  Player getRemotePlayer();
 
   /** Get a remote reference to the given player. */
-  IRemotePlayer getRemotePlayer(PlayerId id);
+  Player getRemotePlayer(PlayerId id);
 
   PlayerId getPlayerId();
 

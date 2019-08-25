@@ -13,10 +13,10 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.player.Player;
 import games.strategy.sound.ISound;
-import games.strategy.triplea.player.ITripleAPlayer;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
 import org.mockito.verification.VerificationMode;
@@ -40,10 +40,10 @@ final class MockDelegateBridge {
         .when(delegateBridge)
         .addChange(any());
     when(delegateBridge.getData()).thenReturn(gameData);
-    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(ITripleADisplay.class));
+    when(delegateBridge.getDisplayChannelBroadcaster()).thenReturn(mock(IDisplay.class));
     when(delegateBridge.getHistoryWriter()).thenReturn(DelegateHistoryWriter.NO_OP_INSTANCE);
     when(delegateBridge.getPlayerId()).thenReturn(playerId);
-    final ITripleAPlayer remotePlayer = mock(ITripleAPlayer.class);
+    final Player remotePlayer = mock(Player.class);
     when(delegateBridge.getRemotePlayer()).thenReturn(remotePlayer);
     when(delegateBridge.getRemotePlayer(any())).thenReturn(remotePlayer);
     when(delegateBridge.getSoundChannelBroadcaster()).thenReturn(mock(ISound.class));
@@ -66,10 +66,6 @@ final class MockDelegateBridge {
       final IDelegateBridge delegateBridge, final VerificationMode verificationMode) {
     verify(delegateBridge, verificationMode)
         .getRandom(anyInt(), anyInt(), any(), any(), anyString());
-  }
-
-  static ITripleAPlayer withRemotePlayer(final IDelegateBridge delegateBridge) {
-    return (ITripleAPlayer) delegateBridge.getRemotePlayer();
   }
 
   static void advanceToStep(final IDelegateBridge delegateBridge, final String stepName) {

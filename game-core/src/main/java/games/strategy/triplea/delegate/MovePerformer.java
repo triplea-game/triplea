@@ -10,13 +10,13 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.Player;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
 import java.io.Serializable;
@@ -60,11 +60,11 @@ public class MovePerformer implements Serializable {
     }
   }
 
-  private ITripleAPlayer getRemotePlayer(final PlayerId id) {
-    return (ITripleAPlayer) bridge.getRemotePlayer(id);
+  private Player getRemotePlayer(final PlayerId id) {
+    return bridge.getRemotePlayer(id);
   }
 
-  private ITripleAPlayer getRemotePlayer() {
+  private Player getRemotePlayer() {
     return getRemotePlayer(player);
   }
 

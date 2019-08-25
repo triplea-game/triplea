@@ -1,10 +1,11 @@
-package games.strategy.triplea.player;
+package games.strategy.engine.player;
 
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.framework.startup.ui.PlayerType;
+import games.strategy.engine.message.IRemote;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
@@ -16,8 +17,33 @@ import java.util.Set;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
-/** Interface the TriplePlayer presents to Delegates through IRemoteMessenger. */
-public interface ITripleAPlayer extends IRemotePlayer {
+/**
+ * Used for both IRemotePlayer (used by the server, etc.) and specific game players such as
+ * IRemotePlayer and IGridGamePlayer (used by delegates for communication, etc.).
+ */
+public interface Player extends IRemote {
+  /**
+   * Returns the id of this player. This id is initialized by the initialize method in
+   * IRemotePlayer.
+   */
+  PlayerId getPlayerId();
+
+  /** Called before the game starts. */
+  void initialize(IPlayerBridge bridge, PlayerId id);
+
+  /** Returns the nation name. */
+  String getName();
+
+  PlayerType getPlayerType();
+
+  /**
+   * Start the given step. stepName appears as it does in the game xml file. The game step will
+   * finish executing when this method returns.
+   */
+  void start(String stepName);
+
+  /** Called when the game is stopped (like if we are closing the window or leaving the game). */
+  void stopGame();
 
   /**
    * Select casualties.

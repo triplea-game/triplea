@@ -307,7 +307,8 @@ public class EndRoundDelegate extends BaseTripleADelegate {
                   : " by " + MyFormatter.defaultNamedToTextList(winners, ", ", false));
       // we send the bridge, because we can call this method from outside this delegate, which
       // means our local copy of playerBridge could be null.
-      getDisplay(bridge)
+      bridge
+          .getDisplayChannelBroadcaster()
           .reportMessageToAll(("<html>" + status + "</html>"), title, true, false, true);
       final boolean stopGame;
       if (HeadlessGameServer.headless()) {

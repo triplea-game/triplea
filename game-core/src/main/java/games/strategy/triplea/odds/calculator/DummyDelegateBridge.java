@@ -10,21 +10,20 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
-import games.strategy.engine.player.IRemotePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.ui.display.HeadlessDisplay;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import java.util.List;
 import java.util.Properties;
 
 /** Delegate bridge implementation with minimum valid behavior. */
 public class DummyDelegateBridge implements IDelegateBridge {
   private final PlainRandomSource randomSource = new PlainRandomSource();
-  private final ITripleADisplay display = new HeadlessDisplay();
+  private final IDisplay display = new HeadlessDisplay();
   private final ISound soundChannel = new HeadlessSoundChannel();
   private final DummyPlayer attackingPlayer;
   private final DummyPlayer defendingPlayer;
@@ -89,12 +88,12 @@ public class DummyDelegateBridge implements IDelegateBridge {
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer(final PlayerId id) {
+  public Player getRemotePlayer(final PlayerId id) {
     return id.equals(attacker) ? attackingPlayer : defendingPlayer;
   }
 
   @Override
-  public IRemotePlayer getRemotePlayer() {
+  public Player getRemotePlayer() {
     // the current player is attacker
     return attackingPlayer;
   }

@@ -14,7 +14,6 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,14 +52,6 @@ class AaInMoveUtil implements Serializable {
 
   private boolean isAaTerritoryRestricted() {
     return Properties.getAaTerritoryRestricted(getData());
-  }
-
-  private ITripleAPlayer getRemotePlayer(final PlayerId id) {
-    return (ITripleAPlayer) bridge.getRemotePlayer(id);
-  }
-
-  private ITripleAPlayer getRemotePlayer() {
-    return getRemotePlayer(player);
   }
 
   /** Fire aa guns. Returns units to remove. */
@@ -163,7 +154,9 @@ class AaInMoveUtil implements Serializable {
                                 + SoundPath.CLIP_BATTLE_X_MISS,
                             findDefender(currentPossibleAa, territory));
                   }
-                  getRemotePlayer()
+                  AaInMoveUtil.this
+                      .bridge
+                      .getRemotePlayer(player)
                       .reportMessage(
                           "No " + currentTypeAa + " hits in " + territory.getName(),
                           "No " + currentTypeAa + " hits in " + territory.getName());
@@ -349,7 +342,8 @@ class AaInMoveUtil implements Serializable {
             TerritoryEffectHelper.getEffects(territory),
             false,
             new ArrayList<>());
-    getRemotePlayer()
+    bridge
+        .getRemotePlayer(player)
         .reportMessage(
             casualties.size() + " " + currentTypeAa + " hits in " + territory.getName(),
             casualties.size() + " " + currentTypeAa + " hits in " + territory.getName());

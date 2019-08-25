@@ -11,7 +11,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.MoveDescription;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import java.util.Collection;
 import java.util.Collections;
@@ -138,7 +137,8 @@ public class UndoableMove extends AbstractUndoableMove {
                 && !Properties.getRaidsMayBePreceededByAirBattles(data)) {
               while (target == null) {
                 target =
-                    ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerId()))
+                    bridge
+                        .getRemotePlayer(bridge.getPlayerId())
                         .whatShouldBomberBomb(end, enemyTargets, Collections.singletonList(unit));
               }
             } else if (!enemyTargets.isEmpty()) {

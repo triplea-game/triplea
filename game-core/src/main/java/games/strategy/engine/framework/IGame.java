@@ -10,6 +10,7 @@ import games.strategy.engine.vault.Vault;
 import games.strategy.net.Messengers;
 import games.strategy.sound.ISound;
 import java.io.File;
+import javax.annotation.Nullable;
 
 /**
  * Represents a running game.
@@ -32,15 +33,10 @@ public interface IGame {
 
   IRandomSource getRandomSource();
 
-  /** Add a display that will receive broadcasts from the IDelegateBridge.getDisplayBroadcaster. */
-  void addDisplay(IDisplay display);
+  /** Set a display that will receive broadcasts from the IDelegateBridge.getDisplayBroadcaster. */
+  void setDisplay(@Nullable IDisplay display);
 
-  /** remove a display. */
-  void removeDisplay(IDisplay display);
-
-  void addSoundChannel(ISound display);
-
-  void removeSoundChannel(ISound display);
+  void setSoundChannel(@Nullable ISound display);
 
   /**
    * Is the game over. Game over does not relate to the state of the game (eg check-mate in chess)

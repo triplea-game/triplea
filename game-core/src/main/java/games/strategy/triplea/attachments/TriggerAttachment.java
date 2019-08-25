@@ -37,7 +37,6 @@ import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.NotificationMessages;
-import games.strategy.triplea.ui.display.ITripleADisplay;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1642,7 +1641,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment {
                       + MyFormatter.defaultNamedToTextList(t.getPlayers())
                       + ": "
                       + messageForRecord);
-          ((ITripleADisplay) bridge.getDisplayChannelBroadcaster())
+          bridge
+              .getDisplayChannelBroadcaster()
               .reportMessageToPlayers(
                   t.getPlayers(), null, ("<html>" + message.trim() + "</html>"), NOTIFICATION);
         }

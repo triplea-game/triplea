@@ -12,7 +12,6 @@ import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -214,7 +213,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
             + ")";
     bridge.getHistoryWriter().startEvent(notificationMessage);
     changeChanceDecrementOrIncrementOnSuccessOrFailure(bridge, testChance, true);
-    ((ITripleAPlayer) bridge.getRemotePlayer(bridge.getPlayerId()))
+    bridge
+        .getRemotePlayer(bridge.getPlayerId())
         .reportMessage(notificationMessage, notificationMessage);
     return testChance;
   }

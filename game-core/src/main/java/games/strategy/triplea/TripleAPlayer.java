@@ -35,7 +35,6 @@ import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.AbstractHumanPlayer;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.PlaceData;
 import java.awt.event.ActionListener;
@@ -61,7 +60,7 @@ import org.triplea.util.Tuple;
  * delegate, and done through an IDelegate, which we get through getPlayerBridge().getRemote()
  */
 @Log
-public abstract class TripleAPlayer extends AbstractHumanPlayer implements ITripleAPlayer {
+public abstract class TripleAPlayer extends AbstractHumanPlayer {
   private boolean soundPlayedAlreadyCombatMove = false;
   private boolean soundPlayedAlreadyNonCombatMove = false;
   private boolean soundPlayedAlreadyPurchase = false;

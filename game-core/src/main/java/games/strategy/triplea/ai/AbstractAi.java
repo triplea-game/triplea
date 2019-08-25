@@ -27,7 +27,6 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.AbstractBasePlayer;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.settings.ClientSetting;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +62,7 @@ import org.triplea.util.Tuple;
  * done through an IDelegate using a change).
  */
 @Log
-public abstract class AbstractAi extends AbstractBasePlayer implements ITripleAPlayer {
+public abstract class AbstractAi extends AbstractBasePlayer {
   public AbstractAi(final String name) {
     super(name);
   }

@@ -11,6 +11,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -24,7 +25,6 @@ import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleAPlayer;
 import games.strategy.triplea.util.TuvUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -240,7 +240,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
           @Override
           public void execute(final ExecutionStack stack, final IDelegateBridge bridge) {
-            getDisplay(bridge).gotoBattleStep(battleId, RAID);
+            bridge.getDisplayChannelBroadcaster().gotoBattleStep(battleId, RAID);
             if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
               bridge
                   .getHistoryWriter()
@@ -336,7 +336,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
   }
 
   private void endBeforeRolling(final IDelegateBridge bridge) {
-    getDisplay(bridge).battleEnd(battleId, "Bombing raid does no damage");
+    bridge.getDisplayChannelBroadcaster().battleEnd(battleId, "Bombing raid does no damage");
     whoWon = WhoWon.DRAW;
     battleResultDescription = BattleRecord.BattleResultDescription.NO_BATTLE;
     battleTracker
@@ -355,7 +355,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void end(final IDelegateBridge bridge) {
     if (isDamageFromBombingDoneToUnitsInsteadOfTerritories()) {
-      getDisplay(bridge)
+      bridge
+          .getDisplayChannelBroadcaster()
           .battleEnd(
               battleId,
               "Raid causes "
@@ -367,7 +368,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                               bombingRaidDamage, ", ", " = ", false))
                       : ""));
     } else {
-      getDisplay(bridge)
+      bridge
+          .getDisplayChannelBroadcaster()
           .battleEnd(
               battleId,
               "Bombing raid cost "
@@ -398,7 +400,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
 
   private void showBattle(final IDelegateBridge bridge) {
     final String title = "Bombing raid in " + battleSite.getName();
-    getDisplay(bridge)
+    bridge
+        .getDisplayChannelBroadcaster()
         .showBattle(
             battleId,
             battleSite,
@@ -414,7 +417,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             isAmphibious(),
             getBattleType(),
             Collections.emptySet());
-    getDisplay(bridge).listBattleSteps(battleId, steps);
+    bridge.getDisplayChannelBroadcaster().listBattleSteps(battleId, steps);
   }
 
   class FireAa implements IExecutable {
@@ -591,7 +594,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final IDelegateBridge bridge,
       final DiceRoll dice,
       final String currentTypeAa) {
-    getDisplay(bridge).notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
+    bridge
+        .getDisplayChannelBroadcaster()
+        .notifyDice(dice, SELECT_PREFIX + currentTypeAa + CASUALTIES_SUFFIX);
     final boolean isEditMode = BaseEditDelegate.getEditMode(gameData);
     final boolean allowMultipleHitsPerUnit =
         !defendingAa.isEmpty()
@@ -648,7 +653,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
       final DiceRoll dice,
       final CasualtyDetails casualties,
       final String currentTypeAa) {
-    getDisplay(bridge)
+    bridge
+        .getDisplayChannelBroadcaster()
         .casualtyNotification(
             battleId,
             REMOVE_PREFIX + currentTypeAa + CASUALTIES_SUFFIX,
@@ -661,8 +667,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         new Thread(
             () -> {
               try {
-                final ITripleAPlayer defender =
-                    (ITripleAPlayer) bridge.getRemotePlayer(this.defender);
+                final Player defender = bridge.getRemotePlayer(this.defender);
                 defender.confirmEnemyCasualties(battleId, "Press space to continue", attacker);
               } catch (final Exception e) {
                 // ignore
@@ -670,7 +675,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
             },
             "click to continue waiter");
     t.start();
-    final ITripleAPlayer attacker = (ITripleAPlayer) bridge.getRemotePlayer(this.attacker);
+    final Player attacker = bridge.getRemotePlayer(this.attacker);
     attacker.confirmOwnCasualties(battleId, "Press space to continue");
     bridge.leaveDelegateExecution();
     Interruptibles.join(t);
@@ -742,8 +747,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 + defender.getName()
                 + " in "
                 + battleSite.getName();
-        final ITripleAPlayer attacker =
-            (ITripleAPlayer) bridge.getRemotePlayer(StrategicBombingRaidBattle.this.attacker);
+        final Player attacker = bridge.getRemotePlayer(StrategicBombingRaidBattle.this.attacker);
         // does not take into account bombers with dice sides higher than getDiceSides
         dice = attacker.selectFixedDice(rollCount, 0, annotation, gameData.getDiceSides());
       } else {
@@ -961,7 +965,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
           }
           final int totalDamage = taUnit.getUnitDamage() + currentUnitCost;
           // display the results
-          getDisplay(bridge).bombingResults(battleId, dice, currentUnitCost);
+          bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, currentUnitCost);
           if (currentUnitCost > 0) {
             bridge
                 .getSoundChannelBroadcaster()
@@ -1003,7 +1007,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
         // Record PUs lost
         DelegateFinder.moveDelegate(gameData).pusLost(battleSite, cost);
         cost *= Properties.getPuMultiplier(gameData);
-        getDisplay(bridge).bombingResults(battleId, dice, cost);
+        bridge.getDisplayChannelBroadcaster().bombingResults(battleId, dice, cost);
         if (cost > 0) {
           bridge
               .getSoundChannelBroadcaster()

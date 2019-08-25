@@ -1,6 +1,6 @@
 package games.strategy.engine.framework.startup.ui;
 
-import games.strategy.engine.player.IGamePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.ai.fast.FastAi;
 import games.strategy.triplea.ai.pro.ProAi;
@@ -19,7 +19,7 @@ import lombok.Getter;
 public enum PlayerType {
   HUMAN_PLAYER("Human") {
     @Override
-    public IGamePlayer newPlayerWithName(final String name) {
+    public Player newPlayerWithName(final String name) {
       return new TripleAPlayer(name) {
         @Override
         public PlayerType getPlayerType() {
@@ -31,28 +31,28 @@ public enum PlayerType {
 
   WEAK_AI("Easy (AI)") {
     @Override
-    public IGamePlayer newPlayerWithName(final String name) {
+    public Player newPlayerWithName(final String name) {
       return new WeakAi(name);
     }
   },
 
   FAST_AI("Fast (AI)") {
     @Override
-    public IGamePlayer newPlayerWithName(final String name) {
+    public Player newPlayerWithName(final String name) {
       return new FastAi(name);
     }
   },
 
   PRO_AI("Hard (AI)") {
     @Override
-    public IGamePlayer newPlayerWithName(final String name) {
+    public Player newPlayerWithName(final String name) {
       return new ProAi(name);
     }
   },
 
   DOES_NOTHING_AI("Does Nothing (AI)") {
     @Override
-    public IGamePlayer newPlayerWithName(final String name) {
+    public Player newPlayerWithName(final String name) {
       return new DoesNothingAi(name);
     }
   },
@@ -60,7 +60,7 @@ public enum PlayerType {
   /** A hidden player type to represent network connected players. */
   CLIENT_PLAYER("Client", false) {
     @Override
-    public IGamePlayer newPlayerWithName(final String name) {
+    public Player newPlayerWithName(final String name) {
       return new TripleAPlayer(name) {
         @Override
         public PlayerType getPlayerType() {
@@ -73,7 +73,7 @@ public enum PlayerType {
   /** A 'dummy' player type used for battle calc. */
   BATTLE_CALC_DUMMY("None (AI)", false) {
     @Override
-    public IGamePlayer newPlayerWithName(final String name) {
+    public Player newPlayerWithName(final String name) {
       throw new UnsupportedOperationException(
           "Fail fast - bad configuration, should instantiate dummy player "
               + "type only for battle calc");
@@ -102,10 +102,10 @@ public enum PlayerType {
   }
 
   /**
-   * Each PlayerType is backed by an {@code IGamePlayer} instance. Given a player name this method
-   * will create the corresponding {@code IGamePlayer} instance.
+   * Each PlayerType is backed by an {@code IRemotePlayer} instance. Given a player name this method
+   * will create the corresponding {@code IRemotePlayer} instance.
    */
-  public abstract IGamePlayer newPlayerWithName(String name);
+  public abstract Player newPlayerWithName(String name);
 
   /**
    * Converter function, each player type has a label, this method will convert from a given label

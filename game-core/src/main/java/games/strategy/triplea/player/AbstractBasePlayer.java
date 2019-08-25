@@ -2,8 +2,8 @@ package games.strategy.triplea.player;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
-import games.strategy.engine.player.IGamePlayer;
 import games.strategy.engine.player.IPlayerBridge;
+import games.strategy.engine.player.Player;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.java.Log;
@@ -15,7 +15,7 @@ import org.triplea.java.Interruptibles;
  */
 @Log
 @ToString(exclude = "playerBridge")
-public abstract class AbstractBasePlayer implements IGamePlayer {
+public abstract class AbstractBasePlayer implements Player {
 
   @Getter(onMethod_ = {@Override})
   private final String name; // what nation are we playing? ex: "Americans"

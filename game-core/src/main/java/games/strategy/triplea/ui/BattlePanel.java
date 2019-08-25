@@ -4,7 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.player.IGamePlayer;
+import games.strategy.engine.player.Player;
 import games.strategy.engine.random.PbemDiceRoller;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
@@ -242,7 +242,7 @@ public final class BattlePanel extends ActionPanel {
                         JOptionPane.getFrameForComponent(BattlePanel.this));
                     PbemDiceRoller.setFocusWindow(battleFrame);
                     boolean foundHumanInBattle = false;
-                    for (final IGamePlayer gamePlayer :
+                    for (final Player gamePlayer :
                         getMap().getUiContext().getLocalPlayers().getLocalPlayers()) {
                       if ((gamePlayer.getPlayerId().equals(attacker)
                               && gamePlayer instanceof TripleAPlayer)
