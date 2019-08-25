@@ -6,7 +6,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import games.strategy.engine.ClientContext;
-import games.strategy.engine.GameEngineVersion;
 import games.strategy.engine.data.gameparser.XmlGameElementMapper;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
@@ -254,7 +253,7 @@ public final class GameParser {
     }
     final Version mapMinimumEngineVersion =
         new Version(((Element) minimumVersion).getAttribute("minimumVersion"));
-    if (!GameEngineVersion.of(ClientContext.engineVersion())
+    if (!ClientContext.engineVersion()
         .isCompatibleWithMapMinimumEngineVersion(mapMinimumEngineVersion)) {
       throw new EngineVersionException(
           String.format(

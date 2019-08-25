@@ -46,8 +46,7 @@ public class MainMenuPane implements ControlledScreen<NavigationPane> {
   @FXML
   @VisibleForTesting
   void initialize() {
-    version.setText(
-        MessageFormat.format(version.getText(), ClientContext.engineVersion().getExactVersion()));
+    version.setText(MessageFormat.format(version.getText(), ClientContext.engineVersion()));
     navigationPane = constructor.get();
     content.getChildren().add(0, navigationPane.getNode());
 

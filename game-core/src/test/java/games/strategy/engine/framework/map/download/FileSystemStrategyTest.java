@@ -44,6 +44,6 @@ class FileSystemStrategyTest {
   @Test
   void testMapFileFound() {
     assertThat(
-        testObj.getMapVersion(mapFile.getAbsolutePath()), is(Optional.of(new Version(1, 2))));
+        testObj.getMapVersion(mapFile.getAbsolutePath()), is(Optional.of(new Version(1, 2, 0))));
   }
 }

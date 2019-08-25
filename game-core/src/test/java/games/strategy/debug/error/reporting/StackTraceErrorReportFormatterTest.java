@@ -129,8 +129,7 @@ class StackTraceErrorReportFormatterTest {
           errorReportResult.getBody(), containsString(SystemProperties.getOperatingSystem()));
       assertThat(errorReportResult.getBody(), containsString(SystemProperties.getJavaVersion()));
       assertThat(
-          errorReportResult.getBody(),
-          containsString(ClientContext.engineVersion().toStringFull()));
+          errorReportResult.getBody(), containsString(ClientContext.engineVersion().toString()));
     }
 
     @Test

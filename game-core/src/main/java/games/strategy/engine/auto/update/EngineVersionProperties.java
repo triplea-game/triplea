@@ -32,7 +32,7 @@ class EngineVersionProperties {
 
   private EngineVersionProperties(final Properties props) {
     latestVersionOut =
-        new Version(props.getProperty("LATEST", ClientContext.engineVersion().toStringFull()));
+        new Version(props.getProperty("LATEST", ClientContext.engineVersion().toString()));
     link = props.getProperty("LINK", UrlConstants.DOWNLOAD_WEBSITE);
     changelogLink = props.getProperty("CHANGELOG", UrlConstants.RELEASE_NOTES);
   }
@@ -55,7 +55,7 @@ class EngineVersionProperties {
     return "<html>"
         + "<h2>A new version of TripleA is out.  Please Update TripleA!</h2>"
         + "<br />Your current version: "
-        + ClientContext.engineVersion().getExactVersion()
+        + ClientContext.engineVersion()
         + "<br />Latest version available for download: "
         + getLatestVersionOut()
         + "<br /><br />Click to download: <a class=\"external\" href=\""

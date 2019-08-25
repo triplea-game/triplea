@@ -57,7 +57,9 @@ final class DownloadFileParser {
 
               final Version version =
                   new Version(
-                      Preconditions.checkNotNull((Integer) yaml.get(Tags.version.toString())), 0);
+                      Preconditions.checkNotNull((Integer) yaml.get(Tags.version.toString())),
+                      0,
+                      0);
               final DownloadFileDescription.DownloadType downloadType =
                   optEnum(
                       yaml,

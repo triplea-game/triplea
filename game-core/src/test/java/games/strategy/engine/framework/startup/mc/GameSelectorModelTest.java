@@ -164,7 +164,7 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
   void saveGameNameGetsResetWhenLoadingOtherMap() throws Exception {
     final String testFileName = "someFileName";
     when(mockGameData.getSequence()).thenReturn(mock(GameSequence.class));
-    when(mockGameData.getGameVersion()).thenReturn(new Version(0, 0));
+    when(mockGameData.getGameVersion()).thenReturn(new Version(0, 0, 0));
     when(mockGameData.getGameName()).thenReturn("Dummy name");
     testObj.load(mockGameData, testFileName);
     assertThat(testObj.getFileName(), is(testFileName));

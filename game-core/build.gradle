@@ -25,9 +25,3 @@ dependencies {
     testImplementation 'org.awaitility:awaitility:3.1.6'
     testImplementation "org.sonatype.goodies:goodies-prefs:$sonatypeGoodiesPrefsVersion"
 }
-
-processResources {
-    filesMatching('**/product.properties') {
-        filter ReplaceTokens, tokens: [buildId: getBuildId()]
-    }
-}
