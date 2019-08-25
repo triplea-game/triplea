@@ -9,7 +9,6 @@ import games.strategy.net.nio.QuarantineConversation;
 import games.strategy.net.nio.ServerQuarantineConversation;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
@@ -17,7 +16,6 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -134,8 +132,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
    * Invoked when the node with the specified unique name has successfully logged in. Note that
    * {@code uniquePlayerName} is the node name and may not be identical to the name of the player
    * associated with the node
-   *
-   * @see PlayerNameAssigner#assignName(String, InetAddress, Collection)
    */
   public void notifyPlayerLogin(final String uniquePlayerName, final String mac) {
     cachedMacAddresses.put(uniquePlayerName, mac);
