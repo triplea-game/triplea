@@ -7,8 +7,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.message.IChannelSubscriber;
-import games.strategy.engine.message.IRemote;
 import games.strategy.engine.player.Player;
 import java.io.Serializable;
 import java.util.Map;

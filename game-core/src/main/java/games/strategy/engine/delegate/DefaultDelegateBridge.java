@@ -117,8 +117,7 @@ public class DefaultDelegateBridge implements IDelegateBridge {
   @Override
   public Player getRemotePlayer(final PlayerId id) {
     try {
-      final Object implementor =
-          game.getMessengers().getRemote(ServerGame.getRemoteName(id));
+      final Object implementor = game.getMessengers().getRemote(ServerGame.getRemoteName(id));
       return (Player) getOutbound(implementor);
     } catch (final RuntimeException e) {
       if (e.getCause() instanceof MessengerException) {
