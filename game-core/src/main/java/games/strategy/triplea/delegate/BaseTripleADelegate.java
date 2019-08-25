@@ -92,8 +92,7 @@ public abstract class BaseTripleADelegate extends AbstractDelegate {
     return getRemotePlayer(player, bridge);
   }
 
-  protected static Player getRemotePlayer(
-      final PlayerId player, final IDelegateBridge bridge) {
+  protected static Player getRemotePlayer(final PlayerId player, final IDelegateBridge bridge) {
     // if its the null player, return a do nothing proxy
     if (player.isNull()) {
       return new WeakAi(player.getName());

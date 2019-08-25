@@ -31,8 +31,7 @@ public interface IGameLoader extends Serializable {
   Set<Player> newPlayers(Map<String, PlayerType> players);
 
   /** The game is about to start. */
-  void startGame(
-      IGame game, Set<Player> players, LaunchAction launchAction, @Nullable Chat chat);
+  void startGame(IGame game, Set<Player> players, LaunchAction launchAction, @Nullable Chat chat);
 
   /**
    * Get the type of the display.

@@ -747,8 +747,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle implements Battle
                 + defender.getName()
                 + " in "
                 + battleSite.getName();
-        final Player attacker =
-            bridge.getRemotePlayer(StrategicBombingRaidBattle.this.attacker);
+        final Player attacker = bridge.getRemotePlayer(StrategicBombingRaidBattle.this.attacker);
         // does not take into account bombers with dice sides higher than getDiceSides
         dice = attacker.selectFixedDice(rollCount, 0, annotation, gameData.getDiceSides());
       } else {
