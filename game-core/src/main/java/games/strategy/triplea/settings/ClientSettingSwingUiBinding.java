@@ -357,6 +357,17 @@ enum ClientSettingSwingUiBinding implements GameSettingUiBinding<JComponent> {
       return SelectionComponentFactory.forumPosterSettings(
           ClientSetting.aaForumUsername, ClientSetting.aaForumPassword);
     }
+  },
+
+  UNIT_SCROLLER_HIGHLIGHT_TERRITORY(
+      "Highlight Territory on Unit Scroll",
+      SettingType.GAME,
+      "When scrolling through units, whether to also highlight territory") {
+    @Override
+    public SelectionComponent<JComponent> newSelectionComponent() {
+      return SelectionComponentFactory.booleanRadioButtons(
+          ClientSetting.unitScrollerHighlightTerritory);
+    }
   };
 
   @Getter(onMethod_ = {@Override})

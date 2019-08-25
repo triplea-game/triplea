@@ -386,12 +386,23 @@ public class MapPanel extends ImageScrollerLargeView {
     highlightTerritory(territory, Integer.MAX_VALUE);
   }
 
-  void highlightTerritory(final Territory territory, final int totalFrames) {
+  /**
+   * Adds a highlight to a territory. The highlight is a white outline that will flash.
+   *
+   * @param territory The territory to highlight
+   * @param totalFrames The number of times to flash on and off the territory highlight.
+   */
+  public void highlightTerritory(final Territory territory, final int totalFrames) {
+    highlightTerritory(territory, totalFrames, 500);
+  }
+
+  public void highlightTerritory(
+      final Territory territory, final int totalFrames, final int delay) {
     withMapUnlocked(
         () -> {
           centerOn(territory);
           highlightedTerritory = territory;
-          territoryHighlighter.highlight(territory, totalFrames);
+          territoryHighlighter.highlight(territory, totalFrames, delay);
         });
   }
 
@@ -938,9 +949,9 @@ public class MapPanel extends ImageScrollerLargeView {
     private @Nullable Territory territory;
     private final Timer timer = new Timer(500, e -> animateNextFrame());
 
-    void highlight(final Territory territory, final int totalFrames) {
+    void highlight(final Territory territory, final int totalFrames, final int delay) {
       stopAnimation();
-      startAnimation(territory, totalFrames);
+      startAnimation(territory, totalFrames, delay);
     }
 
     private void stopAnimation() {
@@ -953,11 +964,12 @@ public class MapPanel extends ImageScrollerLargeView {
       territory = null;
     }
 
-    private void startAnimation(final Territory territory, final int totalFrames) {
+    private void startAnimation(final Territory territory, final int totalFrames, final int delay) {
       this.territory = territory;
       this.totalFrames = totalFrames;
       frame = 0;
 
+      timer.setDelay(delay);
       timer.start();
     }
 
