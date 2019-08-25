@@ -619,7 +619,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     final MovePanel movePanel = new MovePanel(data, mapPanel, this);
     actionButtons = new ActionButtons(data, mapPanel, movePanel, this);
 
-    addKeyBindings(movePanel, this);
+    addKeyBindings(movePanel, actionButtons, this);
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
 
     addTab("Actions", actionButtons, 'C');

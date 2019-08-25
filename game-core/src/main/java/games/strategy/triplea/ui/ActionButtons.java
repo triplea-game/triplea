@@ -17,7 +17,10 @@ import games.strategy.triplea.delegate.data.TechRoll;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IUserActionDelegate;
 import java.awt.CardLayout;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,12 +28,15 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
 /** Root panel for all action buttons in a triplea game. */
-public class ActionButtons extends JPanel {
+public class ActionButtons extends JPanel implements KeyBindingSupplier {
+  public static final String DONE_BUTTON_TOOLTIP =
+      "Press shift+D or click this button to end the current turn phase";
   private static final long serialVersionUID = 2175685892863042399L;
   private final CardLayout layout = new CardLayout();
   private BattlePanel battlePanel;
@@ -268,5 +274,16 @@ public class ActionButtons extends JPanel {
 
   public BattlePanel getBattlePanel() {
     return battlePanel;
+  }
+
+  /**
+   * Adds a hotkey listener to 'click the done button'. If the current phase has no done button (eg:
+   * combat phase), then the hotkey will be a no-op.
+   */
+  @Override
+  public Map<KeyStroke, Runnable> get() {
+    return Collections.singletonMap(
+        KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.SHIFT_DOWN_MASK),
+        () -> Optional.ofNullable(actionPanel).ifPresent(ActionPanel::performDone));
   }
 }

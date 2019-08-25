@@ -115,4 +115,12 @@ public abstract class ActionPanel extends JPanel {
     currentPlayer = player;
     setActive(true);
   }
+
+  /**
+   * Executes the appropriate action when a user clicks the 'done' button. Typically this will be to
+   * end the current turn phase. If the turn phase ends in some other way than a button click, then
+   * this should be a no-op. For example battle phase ends when all battles have been fought and not
+   * when when the user clicks done (there is no done button during the battle phase).
+   */
+  abstract void performDone();
 }

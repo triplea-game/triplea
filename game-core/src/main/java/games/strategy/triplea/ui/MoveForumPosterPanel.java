@@ -4,16 +4,18 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.pbem.ForumPosterComponent;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.remote.IAbstractForumPosterDelegate;
-import javax.swing.Action;
-import org.triplea.swing.SwingAction;
 
 class MoveForumPosterPanel extends AbstractForumPosterPanel {
   private static final long serialVersionUID = -533962696697230277L;
 
   MoveForumPosterPanel(final GameData data, final MapPanel map) {
     super(data, map);
-    final Action doneAction = SwingAction.of("Done", e -> release());
-    forumPosterComponent = new ForumPosterComponent(getData(), doneAction, getTitle());
+    forumPosterComponent = new ForumPosterComponent(getData(), this::performDone, getTitle());
+  }
+
+  @Override
+  void performDone() {
+    release();
   }
 
   @Override

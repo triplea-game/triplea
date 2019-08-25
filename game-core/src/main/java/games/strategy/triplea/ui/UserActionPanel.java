@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 
 /** Similar to PoliticsPanel, but for UserActionAttachment/Delegate. */
@@ -103,23 +104,6 @@ public class UserActionPanel extends ActionPanel {
         }
       };
 
-  /** This will stop the user action Phase. */
-  private final Action dontBotherAction =
-      SwingAction.of(
-          "Done",
-          e -> {
-            if (!firstRun
-                || JOptionPane.showConfirmDialog(
-                        JOptionPane.getFrameForComponent(UserActionPanel.this),
-                        "Are you sure you dont want to do anything?",
-                        "End Actions",
-                        JOptionPane.YES_NO_OPTION)
-                    == JOptionPane.YES_OPTION) {
-              choice = null;
-              release();
-            }
-          });
-
   UserActionPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
     this.parent = parent;
@@ -142,11 +126,31 @@ public class UserActionPanel extends ActionPanel {
           selectUserActionButton = new JButton(selectUserActionAction);
           selectUserActionButton.setEnabled(false);
           add(selectUserActionButton);
-          doneButton = new JButton(dontBotherAction);
+          doneButton =
+              JButtonBuilder.builder()
+                  .title("Done")
+                  .actionListener(this::performDone)
+                  .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
+                  .enabled(false)
+                  .build();
           doneButton.setEnabled(false);
           SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
           add(doneButton);
         });
+  }
+
+  @Override
+  void performDone() {
+    if (!firstRun
+        || JOptionPane.showConfirmDialog(
+                JOptionPane.getFrameForComponent(UserActionPanel.this),
+                "Are you sure you dont want to do anything?",
+                "End Actions",
+                JOptionPane.YES_NO_OPTION)
+            == JOptionPane.YES_OPTION) {
+      choice = null;
+      release();
+    }
   }
 
   /**

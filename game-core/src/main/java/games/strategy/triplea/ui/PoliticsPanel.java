@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 
 /**
@@ -49,17 +50,6 @@ public class PoliticsPanel extends ActionPanel {
    * release this model and trigger waitForRelease().
    */
   private final Action selectPoliticalActionAction;
-
-  /** This will stop the politicsPhase. */
-  private final Action dontBotherAction =
-      SwingAction.of(
-          "Done",
-          e -> {
-            if (!firstRun || youSureDoNothing()) {
-              choice = null;
-              release();
-            }
-          });
 
   PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent) {
     super(data, map);
@@ -178,11 +168,24 @@ public class PoliticsPanel extends ActionPanel {
           selectPoliticalActionButton = new JButton(selectPoliticalActionAction);
           selectPoliticalActionButton.setEnabled(false);
           add(selectPoliticalActionButton);
-          doneButton = new JButton(dontBotherAction);
-          doneButton.setEnabled(false);
+          doneButton =
+              JButtonBuilder.builder()
+                  .title("Done")
+                  .actionListener(this::performDone)
+                  .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
+                  .enabled(false)
+                  .build();
           SwingUtilities.invokeLater(() -> doneButton.requestFocusInWindow());
           add(doneButton);
         });
+  }
+
+  @Override
+  void performDone() {
+    if (!firstRun || youSureDoNothing()) {
+      choice = null;
+      release();
+    }
   }
 
   /**

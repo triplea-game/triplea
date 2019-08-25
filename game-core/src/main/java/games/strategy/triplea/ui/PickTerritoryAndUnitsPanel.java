@@ -22,6 +22,7 @@ import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.swing.SwingAction;
 import org.triplea.util.Tuple;
 
 /** For choosing territories and units for them, during RandomStartDelegate. */
@@ -41,75 +42,7 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
   private Action currentAction = null;
   private @Nullable Territory currentHighlightedTerritory;
 
-  private final Action doneAction =
-      new AbstractAction("Done") {
-        private static final long serialVersionUID = -2376988913511268803L;
-
-        @Override
-        public void actionPerformed(final ActionEvent event) {
-          currentAction = doneAction;
-          setWidgetActivation();
-          if (pickedTerritory == null || !territoryChoices.contains(pickedTerritory)) {
-            EventThreadJOptionPane.showMessageDialog(
-                parent,
-                "Must Pick An Unowned Territory",
-                "Must Pick An Unowned Territory",
-                JOptionPane.WARNING_MESSAGE);
-            currentAction = null;
-            if (currentHighlightedTerritory != null) {
-              getMap().clearTerritoryOverlay(currentHighlightedTerritory);
-            }
-            currentHighlightedTerritory = null;
-            pickedTerritory = null;
-            setWidgetActivation();
-            return;
-          }
-          if (!pickedUnits.isEmpty() && !unitChoices.containsAll(pickedUnits)) {
-            EventThreadJOptionPane.showMessageDialog(
-                parent, "Invalid Units?!?", "Invalid Units?!?", JOptionPane.WARNING_MESSAGE);
-            currentAction = null;
-            pickedUnits.clear();
-            setWidgetActivation();
-            return;
-          }
-          if (pickedUnits.size() > Math.max(0, unitsPerPick)) {
-            EventThreadJOptionPane.showMessageDialog(
-                parent, "Too Many Units?!?", "Too Many Units?!?", JOptionPane.WARNING_MESSAGE);
-            currentAction = null;
-            pickedUnits.clear();
-            setWidgetActivation();
-            return;
-          }
-          if (pickedUnits.size() < unitsPerPick) {
-            if (unitChoices.size() < unitsPerPick) {
-              // if we have fewer units than the number we are supposed to pick, set it to all
-              pickedUnits.addAll(unitChoices);
-            } else if (unitChoices.stream()
-                .allMatch(Matches.unitIsOfType(unitChoices.get(0).getType()))) {
-              // if we have only 1 unit type, set it to that
-              pickedUnits.clear();
-              pickedUnits.addAll(
-                  CollectionUtils.getNMatches(unitChoices, unitsPerPick, Matches.always()));
-            } else {
-              EventThreadJOptionPane.showMessageDialog(
-                  parent,
-                  "Must Choose Units For This Territory",
-                  "Must Choose Units For This Territory",
-                  JOptionPane.WARNING_MESSAGE);
-              currentAction = null;
-              setWidgetActivation();
-              return;
-            }
-          }
-          currentAction = null;
-          if (currentHighlightedTerritory != null) {
-            getMap().clearTerritoryOverlay(currentHighlightedTerritory);
-          }
-          currentHighlightedTerritory = null;
-          setWidgetActivation();
-          release();
-        }
-      };
+  private final Action doneAction = SwingAction.of("Done", this::performDone);
 
   private final Action selectUnitsAction =
       new AbstractAction("Select Units") {
@@ -229,9 +162,75 @@ public class PickTerritoryAndUnitsPanel extends ActionPanel {
           selectUnitsButton = new JButton(selectUnitsAction);
           add(selectUnitsButton);
           doneButton = new JButton(doneAction);
+          doneButton.setToolTipText(ActionButtons.DONE_BUTTON_TOOLTIP);
           add(doneButton);
           SwingUtilities.invokeLater(() -> selectTerritoryButton.requestFocusInWindow());
         });
+  }
+
+  @Override
+  void performDone() {
+    currentAction = doneAction;
+    setWidgetActivation();
+    if (pickedTerritory == null || !territoryChoices.contains(pickedTerritory)) {
+      EventThreadJOptionPane.showMessageDialog(
+          parent,
+          "Must Pick An Unowned Territory",
+          "Must Pick An Unowned Territory",
+          JOptionPane.WARNING_MESSAGE);
+      currentAction = null;
+      if (currentHighlightedTerritory != null) {
+        getMap().clearTerritoryOverlay(currentHighlightedTerritory);
+      }
+      currentHighlightedTerritory = null;
+      pickedTerritory = null;
+      setWidgetActivation();
+      return;
+    }
+    if (!pickedUnits.isEmpty() && !unitChoices.containsAll(pickedUnits)) {
+      EventThreadJOptionPane.showMessageDialog(
+          parent, "Invalid Units?!?", "Invalid Units?!?", JOptionPane.WARNING_MESSAGE);
+      currentAction = null;
+      pickedUnits.clear();
+      setWidgetActivation();
+      return;
+    }
+    if (pickedUnits.size() > Math.max(0, unitsPerPick)) {
+      EventThreadJOptionPane.showMessageDialog(
+          parent, "Too Many Units?!?", "Too Many Units?!?", JOptionPane.WARNING_MESSAGE);
+      currentAction = null;
+      pickedUnits.clear();
+      setWidgetActivation();
+      return;
+    }
+    if (pickedUnits.size() < unitsPerPick) {
+      if (unitChoices.size() < unitsPerPick) {
+        // if we have fewer units than the number we are supposed to pick, set it to all
+        pickedUnits.addAll(unitChoices);
+      } else if (unitChoices.stream()
+          .allMatch(Matches.unitIsOfType(unitChoices.get(0).getType()))) {
+        // if we have only 1 unit type, set it to that
+        pickedUnits.clear();
+        pickedUnits.addAll(
+            CollectionUtils.getNMatches(unitChoices, unitsPerPick, Matches.always()));
+      } else {
+        EventThreadJOptionPane.showMessageDialog(
+            parent,
+            "Must Choose Units For This Territory",
+            "Must Choose Units For This Territory",
+            JOptionPane.WARNING_MESSAGE);
+        currentAction = null;
+        setWidgetActivation();
+        return;
+      }
+    }
+    currentAction = null;
+    if (currentHighlightedTerritory != null) {
+      getMap().clearTerritoryOverlay(currentHighlightedTerritory);
+    }
+    currentHighlightedTerritory = null;
+    setWidgetActivation();
+    release();
   }
 
   Tuple<Territory, Set<Unit>> waitForPickTerritoryAndUnits(

@@ -95,6 +95,11 @@ public final class BattlePanel extends ActionPanel {
         });
   }
 
+  @Override
+  void performDone() {
+    // no-op; battles are done when they all have been fought, there is no done button.
+  }
+
   private void addBattleActions(
       final JPanel panel,
       final Territory territory,
