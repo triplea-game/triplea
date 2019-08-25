@@ -4,6 +4,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -98,6 +99,12 @@ class PlacePanel extends AbstractMovePanel {
     undoableMovesPanel = new UndoablePlacementsPanel(this);
     unitsToPlace = new SimpleUnitPanel(map.getUiContext());
     leftToPlaceLabel.setText("Units left to place:");
+  }
+
+  @Override
+  Component getUnitScrollerPanel(
+      final LocalPlayers localPlayers, final Runnable toggleFlagsAction) {
+    return new JPanel();
   }
 
   @Override
@@ -249,10 +256,5 @@ class PlacePanel extends AbstractMovePanel {
   protected final List<Component> getAdditionalButtons() {
     updateUnits();
     return Arrays.asList(SwingComponents.leftBox(leftToPlaceLabel), add(unitsToPlace));
-  }
-
-  @Override
-  Component getUnitScrollerPanel() {
-    return new JPanel();
   }
 }

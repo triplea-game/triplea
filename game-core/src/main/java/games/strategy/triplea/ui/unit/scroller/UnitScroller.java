@@ -5,6 +5,7 @@ import games.strategy.engine.data.GameDataEvent;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.settings.ClientSetting;
@@ -61,6 +62,11 @@ public class UnitScroller {
   private static final String SKIP_UNITS_TOOLTIP =
       "Press 'space' or click this button to skip the current units and not move them during the "
           + "current move phase";
+
+  private static final String HIGHLIGHT_MOVABLE_TOOLTIP =
+      "Press 'F' key or click this button to highlight movable units";
+  private static final String FLAG_TOGGLE_BUTTON_TOOLTIP =
+      "Press 'L' key or click this button to toggle flags";
 
   private Collection<Unit> skippedUnits = new HashSet<>();
   private Collection<Unit> sleepingUnits = new HashSet<>();
@@ -165,16 +171,40 @@ public class UnitScroller {
   }
 
   /** Constructs a UI component for the UnitScroller. */
-  public Component build() {
+  public Component build(
+      final LocalPlayers localPlayers,
+      final Runnable highlightUnitsAction,
+      final Runnable toggleFlags) {
     final JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     updateMovesLeftLabel();
+
+    final JPanel topPanel = new JPanel();
+    topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 
     final JButton centerOnUnit = new JButton(UnitScrollerIcon.CENTER_ON_UNIT.get());
     centerOnUnit.setToolTipText(CENTER_UNITS_TOOLTIP);
     centerOnUnit.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     centerOnUnit.addActionListener(e -> centerOnCurrentMovableUnit());
-    panel.add(centerOnUnit, BorderLayout.NORTH);
+    topPanel.add(centerOnUnit);
+
+    topPanel.add(Box.createHorizontalStrut(30));
+
+    final JButton highlightMovableToggle = new JButton(UnitScrollerIcon.UNIT_HIGHLIGHT.get());
+    highlightMovableToggle.setVisible(
+        localPlayers.playing(gameData.getSequence().getStep().getPlayerId()));
+    highlightMovableToggle.addActionListener(e -> highlightUnitsAction.run());
+    highlightMovableToggle.setToolTipText(HIGHLIGHT_MOVABLE_TOOLTIP);
+
+    topPanel.add(highlightMovableToggle);
+    topPanel.add(Box.createHorizontalStrut(30));
+
+    final JButton flagToggle = new JButton(UnitScrollerIcon.UNIT_FLAGS.get());
+    flagToggle.addActionListener(e -> toggleFlags.run());
+    flagToggle.setToolTipText(FLAG_TOGGLE_BUTTON_TOOLTIP);
+    topPanel.add(flagToggle);
+
+    panel.add(topPanel, BorderLayout.NORTH);
     panel.add(Box.createVerticalStrut(2));
 
     territoryNameLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);

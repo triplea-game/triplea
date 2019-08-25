@@ -300,7 +300,7 @@ final class HelpMenu extends JMenu {
             + gameData.getGameVersion()
             + "<br>"
             + "<br>"
-            + "For more information, please visit: <b>"
+            + "TripleA Website: <b>"
             + UrlConstants.TRIPLEA_WEBSITE
             + "</b><br>"
             + "<br>"
@@ -322,6 +322,16 @@ final class HelpMenu extends JMenu {
             + "<b>"
             + UrlConstants.LICENSE_NOTICE
             + "</b><br>"
+            + "<br>"
+            + "<b>TripleA Is Accredited To:</b><br>"
+            + "<ul>"
+            + "<li>TripleA Players and Community</li>"
+            + "<li>TripleA Game Testers</li>"
+            + "<li>TripleA Development Team</li>"
+            + "<li>Installer by Install4j</li>"
+            + "<li>Lantern button icon created by Made x Made from the Noun Project</li>"
+            + "<li>Flag button icon created by AFY Studio from the Noun Project</li>"
+            + "</ul>"
             + "</html>";
     final JLabel label =
         JLabelBuilder.builder()

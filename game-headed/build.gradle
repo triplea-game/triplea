@@ -50,6 +50,8 @@ task downloadImages {
             'icons/triplea_icon_64_64.png',
             'icons/triplea_icon_128_128.png',
             'icons/triplea_icon_256_256.png',
+            'unit_scroller/flag.png',
+            'unit_scroller/lantern.png',
             'unit_scroller/left_arrow.png',
             'unit_scroller/right_arrow.png',
             'unit_scroller/unit_center.png',

@@ -441,12 +441,18 @@ final class ViewMenu extends JMenu {
     unitSizeMenu.setText("Flag Display Mode");
 
     final Preferences prefs = Preferences.userNodeForPackage(getClass());
+
+    final String prefValue =
+        (prefs.get(
+            UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
+            UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name()));
+
+    // use conditional instead of 'Enum.valueOf()' in case prefValue is from legacy game clients.
     final UnitsDrawer.UnitFlagDrawMode setting =
-        Enum.valueOf(
-            UnitsDrawer.UnitFlagDrawMode.class,
-            prefs.get(
-                UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-                UnitsDrawer.UnitFlagDrawMode.NEXT_TO.toString()));
+        prefValue.equals(UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name())
+            ? UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG
+            : UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG;
+
     UnitsDrawer.setUnitFlagDrawMode(setting, prefs);
     UnitsDrawer.enabledFlags =
         prefs.getBoolean(
@@ -466,10 +472,18 @@ final class ViewMenu extends JMenu {
     final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
     unitSizeMenu.add(
         newFlagDrawModeRadioButtonItem(
-            "Small", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.NEXT_TO, setting, prefs));
+            "Small",
+            unitFlagSettingGroup,
+            UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG,
+            setting,
+            prefs));
     unitSizeMenu.add(
         newFlagDrawModeRadioButtonItem(
-            "Large", unitFlagSettingGroup, UnitsDrawer.UnitFlagDrawMode.BELOW, setting, prefs));
+            "Large",
+            unitFlagSettingGroup,
+            UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG,
+            setting,
+            prefs));
     add(unitSizeMenu);
   }
 

@@ -73,7 +73,6 @@ import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
 import games.strategy.triplea.ui.menubar.TripleAMenuBar;
-import games.strategy.triplea.ui.screen.UnitsDrawer;
 import games.strategy.triplea.util.TuvUtils;
 import games.strategy.ui.ImageScrollModel;
 import java.awt.BorderLayout;
@@ -171,6 +170,7 @@ import org.triplea.util.Tuple;
 @Log
 public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private static final long serialVersionUID = 7640069668264418976L;
+
   private final LocalPlayers localPlayers;
   private final GameData data;
   private final IGame game;
@@ -586,65 +586,13 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     status.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     final JPanel stepPanel = new JPanel();
     stepPanel.setLayout(new GridBagLayout());
-    stepPanel.add(
-        player,
-        new GridBagConstraints(
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    stepPanel.add(
-        step,
-        new GridBagConstraints(
-            1,
-            0,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    stepPanel.add(
-        round,
-        new GridBagConstraints(
-            2,
-            0,
-            1,
-            1,
-            0,
-            0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
+    stepPanel.add(player, gridBagConstraint(0));
+    stepPanel.add(step, gridBagConstraint(1));
+    stepPanel.add(round, gridBagConstraint(2));
     if (game.getRandomSource() instanceof PbemDiceRoller) {
       final JLabel diceServerLabel = new JLabel("Dice Server On");
       diceServerLabel.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-      stepPanel.add(
-          diceServerLabel,
-          new GridBagConstraints(
-              3,
-              0,
-              1,
-              1,
-              0,
-              0,
-              GridBagConstraints.EAST,
-              GridBagConstraints.BOTH,
-              new Insets(0, 0, 0, 0),
-              0,
-              0));
+      stepPanel.add(diceServerLabel, gridBagConstraint(3));
     }
     step.setBorder(new EtchedBorder(EtchedBorder.RAISED));
     round.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -673,7 +621,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
 
     addKeyBindings(movePanel, this);
     SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getArrowKeyListener()));
-    SwingUtilities.invokeLater(() -> mapPanel.addKeyListener(getFlagToggleKeyListener(this)));
 
     addTab("Actions", actionButtons, 'C');
     actionButtons.setBorder(null);
@@ -751,6 +698,21 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     uiContext.addShutdownWindow(this);
   }
 
+  private static GridBagConstraints gridBagConstraint(final int columnNumber) {
+    return new GridBagConstraints(
+        columnNumber,
+        0,
+        1,
+        1,
+        0,
+        0,
+        GridBagConstraints.EAST,
+        GridBagConstraints.BOTH,
+        new Insets(0, 0, 0, 0),
+        0,
+        0);
+  }
+
   private void addKeyBindings(final KeyBindingSupplier... keyBindings) {
     Arrays.stream(keyBindings)
         .map(Supplier::get)
@@ -772,7 +734,8 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
 
   @Override
   public Map<KeyStroke, Runnable> get() {
-    return Collections.singletonMap(
+    final Map<KeyStroke, Runnable> bindings = new HashMap<>();
+    bindings.put(
         KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK),
         () ->
             gameCenterPanel.setDividerLocation(
@@ -780,6 +743,10 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
                         <= gameCenterPanel.getMaximumDividerLocation())
                     ? 1.0
                     : gameCenterPanel.getLastDividerLocation()));
+    bindings.put(
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_L),
+        () -> FlagDrawMode.toggleNextDrawMode(mapPanel));
+    return bindings;
   }
 
   /**
@@ -832,60 +799,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
       mapAndChatPanel.add(chatSplit, BorderLayout.CENTER);
       mapAndChatPanel.validate();
     }
-  }
-
-  private static KeyListener getFlagToggleKeyListener(final TripleAFrame frame) {
-    return new KeyListener() {
-      private boolean blockInputs = false;
-      private long timeSinceLastPressEvent = 0;
-      private boolean running = true;
-
-      @Override
-      public void keyTyped(final KeyEvent e) {
-        /* Do nothing */
-      }
-
-      @Override
-      public void keyPressed(final KeyEvent e) {
-        timeSinceLastPressEvent = 0;
-        if (!blockInputs) {
-          resetFlagsOnTimeOut(e.getKeyCode());
-          toggleFlags(e.getKeyCode());
-          blockInputs = true;
-        }
-      }
-
-      private void resetFlagsOnTimeOut(final int keyCode) {
-        new Thread(
-                () -> {
-                  running = true;
-                  while (running) {
-                    timeSinceLastPressEvent++;
-                    if (timeSinceLastPressEvent > 5) {
-                      running = false;
-                      toggleFlags(keyCode);
-                      blockInputs = false;
-                    }
-                    Interruptibles.sleep(100);
-                  }
-                })
-            .start();
-      }
-
-      @Override
-      public void keyReleased(final KeyEvent e) {
-        toggleFlags(e.getKeyCode());
-        blockInputs = false;
-        running = false;
-      }
-
-      private void toggleFlags(final int keyCode) {
-        if (keyCode == KeyEvent.VK_L) {
-          UnitsDrawer.enabledFlags = !UnitsDrawer.enabledFlags;
-          frame.getMapPanel().resetMap();
-        }
-      }
-    };
   }
 
   private void addZoomKeyboardShortcuts() {

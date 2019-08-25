@@ -3,6 +3,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.player.IPlayerBridge;
 import games.strategy.triplea.delegate.UndoableMove;
 import games.strategy.triplea.delegate.data.MoveDescription;
@@ -50,7 +51,7 @@ abstract class AbstractMovePanel extends ActionPanel {
     undoableMoves = Collections.emptyList();
   }
 
-  abstract Component getUnitScrollerPanel();
+  abstract Component getUnitScrollerPanel(LocalPlayers localPlayers, Runnable toggleFlagsAction);
 
   /*
    * sub-classes method for done handling
@@ -230,7 +231,10 @@ abstract class AbstractMovePanel extends ActionPanel {
         () -> {
           removeAll();
           add(movedUnitsPanel(id, actionLabel));
-          add(getUnitScrollerPanel());
+          add(
+              getUnitScrollerPanel(
+                  frame.getLocalPlayers(),
+                  () -> FlagDrawMode.toggleNextDrawMode(frame.getMapPanel())));
           refresh.run();
         });
   }
