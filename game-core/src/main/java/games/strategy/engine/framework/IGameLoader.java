@@ -7,8 +7,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.message.IChannelSubscriber;
-import games.strategy.engine.message.IRemote;
 import games.strategy.engine.player.Player;
 import java.io.Serializable;
 import java.util.Map;
@@ -32,23 +30,6 @@ public interface IGameLoader extends Serializable {
 
   /** The game is about to start. */
   void startGame(IGame game, Set<Player> players, LaunchAction launchAction, @Nullable Chat chat);
-
-  /**
-   * Get the type of the display.
-   *
-   * @return an interface that extends IChannelSubscriber
-   */
-  Class<? extends IChannelSubscriber> getDisplayType();
-
-  Class<? extends IChannelSubscriber> getSoundType();
-
-  /**
-   * Get the type of the GamePlayer.
-   *
-   * <p>The type must extend IRemote, and is to be used by an IRemoteManager to allow a player to be
-   * contacted remotely
-   */
-  Class<? extends IRemote> getRemotePlayerType();
 
   void shutDown();
 

@@ -268,10 +268,9 @@ public class ServerGame extends AbstractGame {
         delegate.getRemoteType());
   }
 
-  public static RemoteName getRemoteName(final PlayerId id, final GameData data) {
+  public static RemoteName getRemoteName(final PlayerId id) {
     return new RemoteName(
-        "games.strategy.engine.framework.ServerGame.PLAYER_REMOTE." + id.getName(),
-        data.getGameLoader().getRemotePlayerType());
+        "games.strategy.engine.framework.ServerGame.PLAYER_REMOTE." + id.getName(), Player.class);
   }
 
   public static RemoteName getRemoteRandomName(final PlayerId id) {
@@ -355,7 +354,7 @@ public class ServerGame extends AbstractGame {
       messengers.unregisterRemote(SERVER_REMOTE);
       vault.shutDown();
       for (final Player gp : gamePlayers.values()) {
-        messengers.unregisterRemote(getRemoteName(gp.getPlayerId(), gameData));
+        messengers.unregisterRemote(getRemoteName(gp.getPlayerId()));
       }
       for (final IDelegate delegate : gameData.getDelegates()) {
         final Class<? extends IRemote> remoteType = delegate.getRemoteType();

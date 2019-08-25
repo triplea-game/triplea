@@ -5,17 +5,13 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.LocalPlayers;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.launcher.LaunchAction;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.engine.message.IChannelSubscriber;
-import games.strategy.engine.message.IRemote;
 import games.strategy.engine.player.Player;
-import games.strategy.sound.ISound;
 import games.strategy.triplea.delegate.EditDelegate;
 import java.util.Map;
 import java.util.Set;
@@ -69,21 +65,6 @@ public class TripleA implements IGameLoader {
     final LocalPlayers localPlayers = new LocalPlayers(players);
     game.setDisplay(launchAction.startGame(localPlayers, game, players, chat));
     game.setSoundChannel(launchAction.getSoundChannel(localPlayers));
-  }
-
-  @Override
-  public Class<? extends IChannelSubscriber> getDisplayType() {
-    return IDisplay.class;
-  }
-
-  @Override
-  public Class<? extends IChannelSubscriber> getSoundType() {
-    return ISound.class;
-  }
-
-  @Override
-  public Class<? extends IRemote> getRemotePlayerType() {
-    return Player.class;
   }
 
   @Override

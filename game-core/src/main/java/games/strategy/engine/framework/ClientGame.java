@@ -210,7 +210,7 @@ public class ClientGame extends AbstractGame {
           gameData.releaseReadLock();
         }
         gamePlayers.put(player, gp);
-        messengers.unregisterRemote(ServerGame.getRemoteName(gp.getPlayerId(), gameData));
+        messengers.unregisterRemote(ServerGame.getRemoteName(gp.getPlayerId()));
         messengers.unregisterRemote(ServerGame.getRemoteRandomName(player));
       }
     } catch (final RuntimeException e) {
