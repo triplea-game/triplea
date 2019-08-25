@@ -266,8 +266,15 @@ public class UnitScroller {
                   currentPlayerSupplier.get(),
                   getAllSkippedUnits())));
       mapPanel.centerOnTerritoryIgnoringMapLock(lastFocusedTerritory);
+      highlightTerritory(lastFocusedTerritory);
     } else {
       centerOnNextMovableUnit();
+    }
+  }
+
+  private void highlightTerritory(final Territory territory) {
+    if (ClientSetting.unitScrollerHighlightTerritory.getValueOrThrow()) {
+      mapPanel.highlightTerritory(territory, 4, 200);
     }
   }
 
@@ -378,6 +385,7 @@ public class UnitScroller {
       lastFocusedTerritory = newFocusedTerritory;
       territoryNameLabel.setText(lastFocusedTerritory.getName());
       mapPanel.centerOn(newFocusedTerritory);
+      highlightTerritory(newFocusedTerritory);
     }
   }
 }

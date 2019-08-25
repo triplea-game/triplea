@@ -151,6 +151,9 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<char[]> aaForumPassword =
       new ProtectedStringClientSetting("A&A_FORUM_PASSWORD");
 
+  public static final ClientSetting<Boolean> unitScrollerHighlightTerritory =
+      new BooleanClientSetting("UNIT_SCROLLER_HIGHLIGHT_TERRITORY", true);
+
   private static final AtomicReference<Preferences> preferencesRef = new AtomicReference<>();
 
   @Getter(value = AccessLevel.PROTECTED)
