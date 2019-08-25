@@ -1,7 +1,3 @@
-ext.getBuildId = {
-    return project.findProperty('buildId') ?: 'dev'
-}
-
 ext.getProductVersion = {
     def props = new Properties()
     def productPropertiesFile = project(':game-core').file('src/main/resources/META-INF/triplea/product.properties')
