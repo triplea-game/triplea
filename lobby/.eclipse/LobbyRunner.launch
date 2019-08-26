@@ -6,9 +6,6 @@
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
-<mapAttribute key="org.eclipse.debug.core.environmentVariables">
-<mapEntry key="LOCAL_DEV" value="true"/>
-</mapAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.buildship.core.classpathprovider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.triplea.lobby.server.LobbyRunner"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="lobby"/>

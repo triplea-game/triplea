@@ -30,7 +30,17 @@ public class TempPasswordVerification {
     if (!BCrypt.checkpw(hashedPassword, tempPassword)) {
       return false;
     }
-    tempPasswordDao.invalidateTempPasswords(username);
+
+    final int userId =
+        tempPasswordDao
+            .lookupUserIdByUsername(username)
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        "Was able to validate temp password for user but "
+                            + "could not find them in DB: "
+                            + username));
+    tempPasswordDao.invalidateTempPasswords(userId);
     return true;
   }
 }

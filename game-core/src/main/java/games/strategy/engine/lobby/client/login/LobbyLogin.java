@@ -11,6 +11,8 @@ import java.awt.Window;
 import java.io.IOException;
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
+import org.triplea.http.client.forgot.password.ForgotPasswordClient;
+import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
 import org.triplea.swing.DialogBuilder;
 
 /**
@@ -152,19 +154,23 @@ public class LobbyLogin {
 
   private void forgotPassword(final ForgotPasswordPanel panel) {
     try {
-
-      GameRunner.newBackgroundTaskRunner()
-          .runInBackgroundAndReturn(
-              "Sending forgot password request...",
-              () ->
-                  ClientMessengerFactory.newForgotPasswordMessenger(
-                      lobbyServerProperties, panel.getUserName()),
-              IOException.class);
-
+      final String response =
+          GameRunner.newBackgroundTaskRunner()
+              .runInBackgroundAndReturn(
+                  "Sending forgot password request...",
+                  () ->
+                      ForgotPasswordClient.newClient(lobbyServerProperties.getHttpsServerUri())
+                          .sendForgotPasswordRequest(
+                              ForgotPasswordRequest.builder()
+                                  .username(panel.getUserName())
+                                  .email(panel.getEmail())
+                                  .build()),
+                  IOException.class)
+              .getResponseMessage();
       DialogBuilder.builder()
           .parent(parentWindow)
-          .title("Temporary Password Sent")
-          .infoMessage("A temporary password has been sent to your email.")
+          .title("Server Response")
+          .infoMessage(response)
           .showDialog();
     } catch (final IOException e) {
       showError("Error", "Failed to generate a temporary password: " + e.getMessage());

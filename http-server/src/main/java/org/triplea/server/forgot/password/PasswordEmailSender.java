@@ -1,4 +1,4 @@
-package org.triplea.lobby.server.login.forgot.password.create;
+package org.triplea.server.forgot.password;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
@@ -9,17 +9,27 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import org.triplea.lobby.server.EnvironmentVariable;
+import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.triplea.lobby.server.db.dao.TempPasswordDao;
+import org.triplea.server.http.AppConfig;
 
 /** Sends a temporary password to a target user. */
+@AllArgsConstructor
+@Log
 class PasswordEmailSender implements BiConsumer<String, String> {
   private static final String FROM = "no-reply@triplea-game.org";
 
+  private final AppConfig appConfig;
+
   @Override
   public void accept(final String email, final String generatedPassword) {
-    if (EnvironmentVariable.LOCAL_DEV.getBoolean()) {
-      // do not send emails from local dev.
+    if (!appConfig.isProd()) {
+      // do not send emails if not on prod
+      log.info(
+          String.format(
+              "Non-prod forgot password, email: %s, generated temp passsword: %s",
+              email, generatedPassword));
       return;
     }
 

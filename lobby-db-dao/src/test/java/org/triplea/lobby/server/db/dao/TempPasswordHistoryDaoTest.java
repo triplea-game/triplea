@@ -5,7 +5,6 @@ import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.DBUnitExtension;
-import java.net.InetAddress;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.lobby.server.db.JdbiDatabase;
@@ -22,9 +21,9 @@ class TempPasswordHistoryDaoTest {
       JdbiDatabase.newConnection().onDemand(TempPasswordHistoryDao.class);
 
   @Test
-  void verifyCountAndInsert() throws Exception {
+  void verifyCountAndInsert() {
 
-    final InetAddress localhost = InetAddress.getLocalHost();
+    final String localhost = "127.0.0.1";
     assertThat(tempPasswordDao.countRequestsFromAddress(localhost), is(0));
 
     tempPasswordDao.recordTempPasswordRequest(localhost, USERNAME);
@@ -36,7 +35,7 @@ class TempPasswordHistoryDaoTest {
     tempPasswordDao.recordTempPasswordRequest(localhost, "other-user");
     assertThat(tempPasswordDao.countRequestsFromAddress(localhost), is(3));
 
-    final InetAddress otherAddress = InetAddress.getByName("127.0.0.2");
+    final String otherAddress = "127.0.0.2";
     assertThat(tempPasswordDao.countRequestsFromAddress(otherAddress), is(0));
   }
 }

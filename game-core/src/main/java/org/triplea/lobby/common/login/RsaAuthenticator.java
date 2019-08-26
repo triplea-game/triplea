@@ -2,14 +2,12 @@ package org.triplea.lobby.common.login;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.common.io.BaseEncoding;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
@@ -21,6 +19,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import org.triplea.java.Sha512Hasher;
 
 /**
  * A class which implements the TripleA-Lobby-Login authentication system using RSA encryption for
@@ -29,8 +28,6 @@ import javax.crypto.NoSuchPaddingException;
 public final class RsaAuthenticator {
   private static final String RSA = "RSA";
   private static final String RSA_ECB_OAEPP = RSA + "/ECB/OAEPPadding";
-  private static final String PSEUDO_SALT = "TripleA";
-  private static final String SHA_512 = "SHA-512";
 
   private final KeyPair keyPair;
 
@@ -118,19 +115,7 @@ public final class RsaAuthenticator {
    */
   public static String hashPasswordWithSalt(final String password) {
     Preconditions.checkNotNull(password);
-    return sha512(PSEUDO_SALT + password);
-  }
-
-  /** Creates a SHA-512 hash of the given String. */
-  @VisibleForTesting
-  static String sha512(final String input) {
-    try {
-      return BaseEncoding.base16()
-          .encode(MessageDigest.getInstance(SHA_512).digest(input.getBytes(StandardCharsets.UTF_8)))
-          .toLowerCase();
-    } catch (final NoSuchAlgorithmException e) {
-      throw new IllegalStateException(SHA_512 + " is not supported!", e);
-    }
+    return Sha512Hasher.hashPasswordWithSalt(password);
   }
 
   /**

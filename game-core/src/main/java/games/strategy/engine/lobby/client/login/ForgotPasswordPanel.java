@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
+import games.strategy.engine.lobby.PlayerEmailValidation;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
@@ -34,6 +35,7 @@ final class ForgotPasswordPanel extends JPanel {
   private final String title = "Forgot Password";
   private @Nullable JDialog dialog;
   private final JTextField userNameField = new JTextField();
+  private final JTextField emailField = new JTextField();
   private final JButton okButton = new JButton("OK");
   private final JButton cancelButton = new JButton("Cancel");
   private ReturnValue returnValue = ReturnValue.CANCEL;
@@ -90,7 +92,34 @@ final class ForgotPasswordPanel extends JPanel {
             new Insets(0, 5, 0, 0),
             0,
             0));
-
+    main.add(
+        new JLabel("Email: "),
+        new GridBagConstraints(
+            0,
+            1,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 0, 0),
+            0,
+            0));
+    main.add(
+        emailField,
+        new GridBagConstraints(
+            1,
+            1,
+            1,
+            1,
+            1.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(0, 5, 0, 0),
+            0,
+            0));
     final JPanel buttons = new JPanel();
     add(buttons, BorderLayout.SOUTH);
     buttons.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
@@ -122,6 +151,15 @@ final class ForgotPasswordPanel extends JPanel {
       return;
     }
 
+    if (!PlayerEmailValidation.isValid(emailField.getText())) {
+      JOptionPane.showMessageDialog(
+          this,
+          PlayerEmailValidation.validate(userNameField.getText()),
+          "Invalid email",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
     returnValue = ReturnValue.OK;
     close();
   }
@@ -147,5 +185,9 @@ final class ForgotPasswordPanel extends JPanel {
 
   String getUserName() {
     return userNameField.getText();
+  }
+
+  String getEmail() {
+    return emailField.getText();
   }
 }

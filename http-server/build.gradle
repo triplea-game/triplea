@@ -24,6 +24,7 @@ dependencies {
     implementation project(':http-clients')
     implementation project(':lobby-db-dao')
 
+    implementation 'com.sun.mail:javax.mail:1.6.2'
     implementation 'io.dropwizard:dropwizard-core:1.3.12'
     implementation 'io.dropwizard:dropwizard-jdbi3:1.3.12'
     implementation 'org.jdbi:jdbi3-core:3.8.2'

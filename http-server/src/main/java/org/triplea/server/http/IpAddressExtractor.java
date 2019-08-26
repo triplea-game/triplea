@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IpAddressExtractor {
 
-  static final String XFORWARDED_HEADER = "X-Forwarded-For";
-
   /**
    * Extracts remote host IP from either X-Forwarded-For header, and if not present, extracts the IP
    * address from the request object.
@@ -17,10 +15,6 @@ public final class IpAddressExtractor {
    * @param request Request object containing remote host IP and/or X-Forwarded-For header.
    */
   public static String extractClientIp(final HttpServletRequest request) {
-    final String forwarded = request.getHeader(XFORWARDED_HEADER);
-    if (forwarded != null) {
-      return forwarded;
-    }
     return request.getRemoteAddr();
   }
 }
