@@ -1,4 +1,4 @@
-package org.triplea.lobby.server.login.forgot.password.create;
+package org.triplea.server.forgot.password;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

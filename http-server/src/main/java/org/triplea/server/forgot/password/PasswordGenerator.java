@@ -1,4 +1,4 @@
-package org.triplea.lobby.server.login.forgot.password.create;
+package org.triplea.server.forgot.password;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.UUID;

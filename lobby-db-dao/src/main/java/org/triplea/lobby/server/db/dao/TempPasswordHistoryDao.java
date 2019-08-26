@@ -1,6 +1,5 @@
 package org.triplea.lobby.server.db.dao;
 
-import java.net.InetAddress;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -21,10 +20,6 @@ public interface TempPasswordHistoryDao {
           + "   and date_created >  (now() - '1 day'::interval)")
   int countRequestsFromAddress(@Bind("inetAddress") String address);
 
-  default int countRequestsFromAddress(InetAddress address) {
-    return countRequestsFromAddress(address.getHostAddress());
-  }
-
   /**
    * Records a temp password request being made from a given IP address and for a given username.
    */
@@ -33,8 +28,4 @@ public interface TempPasswordHistoryDao {
           + " values(:inetaddress::inet, :username)")
   void recordTempPasswordRequest(
       @Bind("inetaddress") String address, @Bind("username") String username);
-
-  default void recordTempPasswordRequest(InetAddress address, String username) {
-    recordTempPasswordRequest(address.getHostAddress(), username);
-  }
 }

@@ -1,6 +1,5 @@
 package games.strategy.net.nio;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import games.strategy.engine.lobby.PlayerNameValidation;
@@ -18,7 +17,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.extern.java.Log;
-import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
 
 /** Server-side implementation of {@link QuarantineConversation}. */
 @Log
@@ -54,19 +52,16 @@ public class ServerQuarantineConversation extends QuarantineConversation {
   private String remoteMac;
   private Map<String, String> challenge;
   private final ServerMessenger serverMessenger;
-  private final ForgotPasswordConversation forgotPasswordConversation;
 
   public ServerQuarantineConversation(
       final ILoginValidator validator,
       final SocketChannel channel,
       final NioSocket socket,
-      final ServerMessenger serverMessenger,
-      final ForgotPasswordConversation forgotPasswordConversation) {
+      final ServerMessenger serverMessenger) {
     this.validator = validator;
     this.socket = socket;
     this.channel = channel;
     this.serverMessenger = serverMessenger;
-    this.forgotPasswordConversation = forgotPasswordConversation;
   }
 
   public String getRemoteName() {
@@ -94,44 +89,33 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           final Map<String, String> response = (Map<String, String>) serializable;
           String error = null;
           if (validator != null) {
-            if (response.containsKey(LobbyLoginResponseKeys.FORGOT_PASSWORD)) {
-              Preconditions.checkState(
-                  forgotPasswordConversation != null,
-                  "Coding error, forgot password module must be set to support "
-                      + "the 'forgot password' feature.");
-              send(
-                  forgotPasswordConversation.handle(channel.socket().getInetAddress(), remoteName));
+            error =
+                Optional.ofNullable(
+                        validator.verifyConnection(
+                            challenge,
+                            response,
+                            remoteName,
+                            remoteMac,
+                            channel.socket().getRemoteSocketAddress()))
+                    .orElseGet(() -> PlayerNameValidation.serverSideValidate(remoteName));
+            if (error == null) {
+              error =
+                  PlayerNameValidation.verifyNameIsNotLoggedInAlready(
+                      remoteName,
+                      // filter out nodes that are connected from the same computer.
+                      // This way we match against nodes from other computers only.
+                      serverMessenger.getNodes().stream()
+                          .filter(n -> !n.getAddress().equals(channel.socket().getInetAddress()))
+                          .map(INode::getName)
+                          .collect(Collectors.toSet()));
+            }
+
+            if (error != null && !error.equals(CHANGE_PASSWORD)) {
               step = Step.ACK_ERROR;
+              send(error);
               return Action.NONE;
             } else {
-              error =
-                  Optional.ofNullable(
-                          validator.verifyConnection(
-                              challenge,
-                              response,
-                              remoteName,
-                              remoteMac,
-                              channel.socket().getRemoteSocketAddress()))
-                      .orElseGet(() -> PlayerNameValidation.serverSideValidate(remoteName));
-              if (error == null) {
-                error =
-                    PlayerNameValidation.verifyNameIsNotLoggedInAlready(
-                        remoteName,
-                        // filter out nodes that are connected from the same computer.
-                        // This way we match against nodes from other computers only.
-                        serverMessenger.getNodes().stream()
-                            .filter(n -> !n.getAddress().equals(channel.socket().getInetAddress()))
-                            .map(INode::getName)
-                            .collect(Collectors.toSet()));
-              }
-
-              if (error != null && !error.equals(CHANGE_PASSWORD)) {
-                step = Step.ACK_ERROR;
-                send(error);
-                return Action.NONE;
-              } else {
-                send(null);
-              }
+              send(null);
             }
           } else {
             send(null);

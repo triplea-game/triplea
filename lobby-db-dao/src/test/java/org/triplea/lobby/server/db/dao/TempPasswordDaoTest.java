@@ -31,8 +31,15 @@ class TempPasswordDaoTest {
   void fetchTempPassword() {
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isEmpty());
     assertThat(tempPasswordDao.fetchTempPassword("DNE"), isEmpty());
-    tempPasswordDao.insertTempPassword(USERNAME, PASSWORD);
+    tempPasswordDao.insertTempPassword(USERNAME, EMAIL, PASSWORD);
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
+  }
+
+  @Test
+  void lookupUserIdByUsernameAndEmail() {
+    assertThat(
+        tempPasswordDao.lookupUserIdByUsernameAndEmail(USERNAME, EMAIL), isPresentAndIs(USER_ID));
+    assertThat(tempPasswordDao.lookupUserIdByUsernameAndEmail("DNE", "DNE"), isEmpty());
   }
 
   @Test
@@ -43,32 +50,26 @@ class TempPasswordDaoTest {
 
   @Test
   void insertPasswordReturnsFalseIfUserNotFound() {
-    assertThat(tempPasswordDao.insertTempPassword("DNE", PASSWORD), is(false));
+    assertThat(tempPasswordDao.insertTempPassword("DNE", "DNE", PASSWORD), is(false));
   }
 
   @Test
   void insertTempPassword() {
-    assertThat(tempPasswordDao.insertTempPassword(USERNAME, NEW_PASSWORD), is(true));
+    assertThat(tempPasswordDao.insertTempPassword(USERNAME, EMAIL, NEW_PASSWORD), is(true));
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(NEW_PASSWORD));
   }
 
   @Test
   void invalidateTempPasswordsForMissingNameDoesNothing() {
-    tempPasswordDao.insertTempPassword(USERNAME, PASSWORD);
+    tempPasswordDao.insertTempPassword(USERNAME, EMAIL, PASSWORD);
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
-    tempPasswordDao.invalidateTempPasswords("DNE");
+    tempPasswordDao.invalidateTempPasswords(-1);
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isPresentAndIs(PASSWORD));
   }
 
   @Test
   void invalidatePassword() {
-    tempPasswordDao.invalidateTempPasswords(USERNAME);
+    tempPasswordDao.invalidateTempPasswords(USER_ID);
     assertThat(tempPasswordDao.fetchTempPassword(USERNAME), isEmpty());
-  }
-
-  @Test
-  void lookupUserEmail() {
-    assertThat(tempPasswordDao.lookupUserEmail(USERNAME), isPresentAndIs(EMAIL));
-    assertThat(tempPasswordDao.lookupUserEmail("DNE"), isEmpty());
   }
 }

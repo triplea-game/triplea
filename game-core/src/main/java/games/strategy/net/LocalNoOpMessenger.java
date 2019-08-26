@@ -1,6 +1,5 @@
 package games.strategy.net;
 
-import games.strategy.net.nio.ForgotPasswordConversation;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -63,12 +62,6 @@ public class LocalNoOpMessenger implements IServerMessenger {
   @Override
   public ILoginValidator getLoginValidator() {
     return null;
-  }
-
-  @Override
-  public void setForgotPasswordConversation(
-      final ForgotPasswordConversation forgotPasswordConversation) {
-    throw new UnsupportedOperationException("Password reset not supported by local servers.");
   }
 
   @Override

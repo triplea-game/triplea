@@ -2,7 +2,6 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import games.strategy.net.nio.ForgotPasswordConversation;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
@@ -48,9 +47,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   @Getter(onMethod_ = {@Override})
   @Setter(onMethod_ = {@Override})
   private ILoginValidator loginValidator;
-
-  @Setter(onMethod_ = {@Override})
-  private ForgotPasswordConversation forgotPasswordConversation;
 
   // all our nodes
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
@@ -291,11 +287,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
             }
             final ServerQuarantineConversation conversation =
                 new ServerQuarantineConversation(
-                    loginValidator,
-                    socketChannel,
-                    nioSocket,
-                    ServerMessenger.this,
-                    forgotPasswordConversation);
+                    loginValidator, socketChannel, nioSocket, ServerMessenger.this);
             nioSocket.add(socketChannel, conversation);
           } else if (!key.isValid()) {
             key.cancel();

@@ -15,6 +15,7 @@ import org.glassfish.jersey.logging.LoggingFeature;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
+import org.triplea.server.forgot.password.ForgotPasswordControllerFactory;
 import org.triplea.server.moderator.toolbox.access.log.AccessLogControllerFactory;
 import org.triplea.server.moderator.toolbox.api.key.ApiKeyControllerFactory;
 import org.triplea.server.moderator.toolbox.api.key.exception.ApiKeyLockOutMapper;
@@ -101,6 +102,7 @@ public class ServerApplication extends Application<AppConfig> {
         ApiKeyRegistrationControllerFactory.buildController(appConfig, jdbi),
         ApiKeyValidationControllerFactory.buildController(appConfig, jdbi),
         BadWordControllerFactory.buildController(appConfig, jdbi),
+        ForgotPasswordControllerFactory.buildController(appConfig, jdbi),
         UsernameBanControllerFactory.buildController(appConfig, jdbi),
         UserBanControllerFactory.buildController(appConfig, jdbi),
         ErrorReportControllerFactory.buildController(appConfig, jdbi),

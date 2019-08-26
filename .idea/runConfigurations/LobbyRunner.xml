@@ -1,8 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="LobbyRunner" type="Application" factoryName="Application" nameIsGenerated="true">
-    <envs>
-      <env name="LOCAL_DEV" value="true" />
-    </envs>
     <option name="MAIN_CLASS_NAME" value="org.triplea.lobby.server.LobbyRunner" />
     <module name="triplea.lobby.main" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/lobby" />

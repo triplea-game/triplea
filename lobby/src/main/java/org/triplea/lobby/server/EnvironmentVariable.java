@@ -6,10 +6,7 @@ import lombok.AllArgsConstructor;
 /** Class that represent OS environment variable keys with default values. */
 @AllArgsConstructor
 public enum EnvironmentVariable {
-  PORT("3304"),
-
-  /** Flag to indicate the lobby is running locally on a developer machine. */
-  LOCAL_DEV("false");
+  PORT("3304");
 
   private final String defaultValue;
 
