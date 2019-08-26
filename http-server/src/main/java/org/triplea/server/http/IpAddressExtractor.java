@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 public final class IpAddressExtractor {
 
   /**
-   * Extracts remote host IP from parameter. This will be the IP of the client making
-   * the {@code HttpServerRequest}.
+   * Extracts remote host IP from parameter. This will be the IP of the client making the {@code
+   * HttpServerRequest}.
    */
   public static String extractClientIp(final HttpServletRequest request) {
     return request.getRemoteAddr();
