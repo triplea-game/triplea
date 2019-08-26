@@ -1,6 +1,8 @@
 package games.strategy.net.nio;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.INode;
@@ -134,10 +136,18 @@ public class ServerQuarantineConversation extends QuarantineConversation {
           } else {
             send(null);
           }
+
           synchronized (serverMessenger.newNodeLock) {
-            remoteName =
-                PlayerNameAssigner.assignName(
-                    remoteName, channel.socket().getInetAddress(), serverMessenger.getNodes());
+            final Multimap<String, String> macToName = HashMultimap.create();
+
+            // aggregate all player names by mac address (there can be multiple names per mac
+            // address)
+            serverMessenger.getNodes().stream()
+                .filter(n -> serverMessenger.getPlayerMac(n.getName()) != null)
+                .forEach(
+                    n -> macToName.put(serverMessenger.getPlayerMac(n.getName()), n.getName()));
+
+            remoteName = PlayerNameAssigner.assignName(remoteName, remoteMac, macToName);
           }
           // send the node its assigned name and our name
           send(new String[] {remoteName, serverMessenger.getLocalNode().getName(), error});
