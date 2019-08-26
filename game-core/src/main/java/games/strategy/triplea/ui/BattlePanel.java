@@ -17,7 +17,6 @@ import games.strategy.triplea.delegate.data.FightBattleDetails;
 import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,7 +25,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -40,6 +38,7 @@ import javax.swing.WindowConstants;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.EventThreadJOptionPane;
+import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingAction;
@@ -105,14 +104,33 @@ public final class BattlePanel extends ActionPanel {
       final Territory territory,
       final boolean bomb,
       final BattleType battleType) {
-    final JPanel innerPanel = new JPanel();
-    innerPanel.setLayout(new BorderLayout());
-    innerPanel.add(
-        new JButton(new FightBattleAction(territory, bomb, battleType)), BorderLayout.CENTER);
-    innerPanel.add(
-        new JButton(SwingAction.of("Center", e -> getMap().highlightTerritory(territory, 4))),
-        BorderLayout.EAST);
-    panel.add(innerPanel);
+
+    panel.add(
+        JPanelBuilder.builder()
+            .borderLayout()
+            .addCenter(
+                new JButton(
+                    SwingAction.of(
+                        battleType.toString() + " in " + territory.getName() + "...",
+                        () -> fightBattleAction(territory, bomb, battleType))))
+            .addEast(
+                JButtonBuilder.builder()
+                    .title("Center")
+                    .actionListener(() -> getMap().highlightTerritory(territory, 4))
+                    .build())
+            .build());
+  }
+
+  private void fightBattleAction(
+      final Territory territory, final boolean bomb, final BattleType battleType) {
+    getMap().clearHighlightedTerritory();
+    fightBattleMessage =
+        FightBattleDetails.builder()
+            .where(territory)
+            .bombingRaid(bomb)
+            .battleType(battleType)
+            .build();
+    release();
   }
 
   public void notifyRetreat(final String messageLong, final String step) {
@@ -523,32 +541,6 @@ public final class BattlePanel extends ActionPanel {
             battleDisplay.bombingResults(dice, cost);
           }
         });
-  }
-
-  private final class FightBattleAction extends AbstractAction {
-    private static final long serialVersionUID = 5510976406003707776L;
-    final Territory territory;
-    final boolean bomb;
-    final BattleType battleType;
-
-    FightBattleAction(final Territory battleSite, final boolean bomb, final BattleType battleType) {
-      super(battleType.toString() + " in " + battleSite.getName() + "...");
-      territory = battleSite;
-      this.bomb = bomb;
-      this.battleType = battleType;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent actionEvent) {
-      getMap().clearHighlightedTerritory();
-      fightBattleMessage =
-          FightBattleDetails.builder()
-              .where(territory)
-              .bombingRaid(bomb)
-              .battleType(battleType)
-              .build();
-      release();
-    }
   }
 
   @Override
