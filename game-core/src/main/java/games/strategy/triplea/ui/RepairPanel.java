@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.swing.SwingAction;
+import org.triplea.swing.JButtonBuilder;
 
 class RepairPanel extends ActionPanel {
   private static final long serialVersionUID = 3045997038627313714L;
@@ -60,25 +59,6 @@ class RepairPanel extends ActionPanel {
         }
       };
 
-  private final Action doneAction =
-      SwingAction.of(
-          "Done",
-          e -> {
-            final boolean hasPurchased = getTotalValues(repair) != 0;
-            if (!hasPurchased) {
-              final int selectedOption =
-                  JOptionPane.showConfirmDialog(
-                      JOptionPane.getFrameForComponent(RepairPanel.this),
-                      "Are you sure you dont want to repair anything?",
-                      "End Purchase",
-                      JOptionPane.YES_NO_OPTION);
-              if (selectedOption != JOptionPane.YES_OPTION) {
-                return;
-              }
-            }
-            release();
-          });
-
   RepairPanel(final GameData data, final MapPanel map) {
     super(data, map);
     unitsPanel = new SimpleUnitPanel(map.getUiContext());
@@ -97,7 +77,12 @@ class RepairPanel extends ActionPanel {
           buyButton.setText(BUY);
           add(actionLabel);
           add(buyButton);
-          add(new JButton(doneAction));
+          add(
+              JButtonBuilder.builder()
+                  .toolTip("Done")
+                  .actionListener(this::performDone)
+                  .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
+                  .build());
           repairedSoFar.setText("");
           add(Box.createVerticalStrut(9));
           add(repairedSoFar);
@@ -107,6 +92,23 @@ class RepairPanel extends ActionPanel {
           add(Box.createVerticalGlue());
           refresh.run();
         });
+  }
+
+  @Override
+  void performDone() {
+    final boolean hasPurchased = getTotalValues(repair) != 0;
+    if (!hasPurchased) {
+      final int selectedOption =
+          JOptionPane.showConfirmDialog(
+              JOptionPane.getFrameForComponent(RepairPanel.this),
+              "Are you sure you dont want to repair anything?",
+              "End Purchase",
+              JOptionPane.YES_NO_OPTION);
+      if (selectedOption != JOptionPane.YES_OPTION) {
+        return;
+      }
+    }
+    release();
   }
 
   private void refreshActionLabelText() {

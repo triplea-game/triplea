@@ -24,7 +24,6 @@ import javax.swing.SwingUtilities;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
 abstract class AbstractMovePanel extends ActionPanel {
@@ -49,6 +48,14 @@ abstract class AbstractMovePanel extends ActionPanel {
     this.frame = frame;
     disableCancelButton();
     undoableMoves = Collections.emptyList();
+  }
+
+  @Override
+  public void performDone() {
+    if (doneMoveAction()) {
+      moveMessage = null;
+      release();
+    }
   }
 
   abstract Component getUnitScrollerPanel(LocalPlayers localPlayers, Runnable toggleFlagsAction);
@@ -256,15 +263,11 @@ abstract class AbstractMovePanel extends ActionPanel {
     }
     movedUnitsPanel.add(
         SwingComponents.leftBox(
-            new JButton(
-                SwingAction.of(
-                    "Done",
-                    e -> {
-                      if (doneMoveAction()) {
-                        moveMessage = null;
-                        release();
-                      }
-                    }))));
+            JButtonBuilder.builder()
+                .title("Done")
+                .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
+                .actionListener(this::performDone)
+                .build()));
     getAdditionalButtons().forEach(movedUnitsPanel::add);
     movedUnitsPanel.add(Box.createVerticalStrut(entryPadding));
     movedUnitsPanel.add(undoableMovesPanel);

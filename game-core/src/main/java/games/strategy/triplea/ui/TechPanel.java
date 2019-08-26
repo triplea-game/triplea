@@ -33,6 +33,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
+import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -99,14 +100,6 @@ class TechPanel extends ActionPanel {
                 getData().releaseReadLock();
               }
             }
-            release();
-          });
-
-  private final Action dontBother =
-      SwingAction.of(
-          "Done",
-          e -> {
-            techRoll = null;
             release();
           });
 
@@ -238,9 +231,20 @@ class TechPanel extends ActionPanel {
             add(new JButton(justRollTech));
           } else {
             add(new JButton(getTechRollsAction));
-            add(new JButton(dontBother));
+            add(
+                JButtonBuilder.builder()
+                    .title("Done")
+                    .actionListener(this::performDone)
+                    .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
+                    .build());
           }
         });
+  }
+
+  @Override
+  void performDone() {
+    techRoll = null;
+    release();
   }
 
   @Override
