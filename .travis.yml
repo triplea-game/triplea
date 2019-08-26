@@ -15,15 +15,7 @@ addons:
       - python3
       - python3-yaml
 install:
- - echo "create database lobby_db" | psql -h localhost -U postgres -d postgres
- - echo "create user lobby_user with password 'postgres'" | psql -h localhost -U postgres -d postgres
- - echo "alter database lobby_db owner to lobby_user" | psql -h localhost -U postgres -d postgres
- - sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
- - RELEASE_VERSION=$(sed 's/version\s*=\s*//' game-core/src/main/resources/META-INF/triplea/product.properties)
- - ./gradlew flywayMigrate
- - ./gradlew shadowJar
- # Http server needs to be launched to supprt integ testing. Launching it here allows output from the server to go to the travis log.
- - "java -jar http-server/build/libs/triplea-http-server-${RELEASE_VERSION}.jar server ./http-server/configuration-prerelease.yml &"
+- ./.travis/install
 before_script:
 - ./.travis/setup_gpg
 script:
@@ -31,15 +23,7 @@ script:
 after_success:
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 before_deploy:
-- INSTALL4J_HOME=~/install4j
-- ./.travis/install_install4j "$INSTALL4J_HOME"
-- (./gradlew -Pinstall4jHomeDir="$INSTALL4J_HOME" release  2> errors && echo "INSTALL4J finished with $(wc -l errors)") || (echo "INSTALL4J FAILED" && tail -500 errors)
-- ./.travis/collect_artifacts
-- ./.travis/generate_artifact_checksums
-- ./.travis/push_tag
-## Live update maps list on website, read the maps in 'triplea_maps.yaml' and commit updated data files
-## to website json data directory.
-- ./.travis/push_maps
+- ./.travis/do_release
 deploy:
   provider: releases
   api_key:
