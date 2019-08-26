@@ -3,7 +3,7 @@ create table lobby_user
     id              serial primary key,
     username        character varying(40) not null unique,
     password        character varying(60),
-    email           character varying(40) not null,
+    email           character varying(40) not null, check (email <> ''),
     date_created    timestamptz           not null default current_timestamp,
     last_login      timestamptz,
     admin           boolean               not null default false,
