@@ -9,9 +9,7 @@ import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.error.report.ErrorUploadResponse;
 import org.triplea.server.http.AbstractDropwizardTest;
-import org.triplea.test.common.Integration;
 
-@Integration
 class ErrorReportControllerIntegrationTest extends AbstractDropwizardTest {
 
   private static final ErrorUploadClient client =
