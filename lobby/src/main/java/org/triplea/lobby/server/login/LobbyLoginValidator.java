@@ -116,7 +116,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return ErrorMessages.INVALID_MAC;
     }
     final Optional<Timestamp> banExpiry =
-        database.getBannedMacDao().isMacBanned(user.getInetAddress(), user.getHashedMacAddress());
+        database.getBannedMacDao().isBanned(user.getInetAddress(), user.getHashedMacAddress());
 
     if (banExpiry.isPresent() && banExpiry.get().toInstant().isAfter(Instant.now())) {
       return ErrorMessages.YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(banExpiry.get());

@@ -33,9 +33,9 @@ import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.db.AccessLogDao;
 import org.triplea.lobby.server.db.BadWordDao;
-import org.triplea.lobby.server.db.BannedMacDao;
 import org.triplea.lobby.server.db.DatabaseDao;
 import org.triplea.lobby.server.db.HashedPassword;
+import org.triplea.lobby.server.db.UserBanDao;
 import org.triplea.lobby.server.db.UserDao;
 import org.triplea.lobby.server.db.UsernameBlacklistDao;
 import org.triplea.lobby.server.db.dao.TempPasswordDao;
@@ -51,7 +51,7 @@ final class LobbyLoginValidatorTest {
     static final String EMAIL = "n@n.com";
     static final String PASSWORD = "password";
 
-    @Mock BannedMacDao bannedMacDao;
+    @Mock UserBanDao bannedMacDao;
 
     @Mock UsernameBlacklistDao bannedUsernameDao;
 
@@ -239,7 +239,7 @@ final class LobbyLoginValidatorTest {
 
     private void givenNoMacIsBanned() {
       when(databaseDao.getBannedMacDao()).thenReturn(bannedMacDao);
-      when(bannedMacDao.isMacBanned(any(), anyString())).thenReturn(Optional.empty());
+      when(bannedMacDao.isBanned(any(), anyString())).thenReturn(Optional.empty());
     }
 
     private void givenNoUsernameIsBanned() {

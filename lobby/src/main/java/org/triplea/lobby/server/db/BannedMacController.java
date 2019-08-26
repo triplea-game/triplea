@@ -20,14 +20,14 @@ import org.triplea.lobby.server.db.dao.UserLookupDao;
 
 /** Utility class to create/read/delete banned macs (there is no update). */
 @AllArgsConstructor
-class BannedMacController implements BannedMacDao {
+class BannedMacController implements UserBanDao {
 
   private final Supplier<Connection> connection;
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
   private final UserLookupDao userLookupDao;
 
   @Override
-  public void addBannedMac(
+  public void banUser(
       final User bannedUser, final @Nullable Instant banTill, final User moderator) {
     checkNotNull(bannedUser);
     checkNotNull(moderator);
@@ -71,7 +71,7 @@ class BannedMacController implements BannedMacDao {
   }
 
   @Override
-  public Optional<Timestamp> isMacBanned(final InetAddress ipAddress, final String mac) {
+  public Optional<Timestamp> isBanned(final InetAddress ipAddress, final String mac) {
     final String sql = "select ban_expiry from banned_user where hashed_mac=? or ip =?::inet";
 
     try (Connection con = connection.get();
