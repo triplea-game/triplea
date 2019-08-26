@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 public final class IpAddressExtractor {
 
   /**
-   * Extracts remote host IP from either X-Forwarded-For header, and if not present, extracts the IP
-   * address from the request object.
-   *
-   * @param request Request object containing remote host IP and/or X-Forwarded-For header.
+   * Extracts remote host IP from parameter. This will be the IP of the client making
+   * the {@code HttpServerRequest}.
    */
   public static String extractClientIp(final HttpServletRequest request) {
     return request.getRemoteAddr();
