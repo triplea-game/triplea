@@ -8,6 +8,6 @@ RELEASE_VERSION=$(sed 's/version\s*=\s*//' game-core/src/main/resources/META-INF
 ./gradlew flywayMigrate
 ./gradlew shadowJar
  # Http server needs to be launched to supprt integ testing. Launching it here allows output from the server to go to the travis log.
-java -jar http-server/build/libs/triplea-http-server-${RELEASE_VERSION}.jar server ./http-server/configuration-prerelease.yml &
+java -jar "http-server/build/libs/triplea-http-server-${RELEASE_VERSION}.jar server" ./http-server/configuration-prerelease.yml &
 
 
