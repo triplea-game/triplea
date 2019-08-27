@@ -12,7 +12,7 @@ import org.triplea.lobby.server.config.TestLobbyConfigurations;
 
 final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceControllerTestCase {
 
-  private final BannedMacDao controller =
+  private final UserBanDao controller =
       TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao().getBannedMacDao();
 
   @Test
@@ -23,10 +23,10 @@ final class BannedMacControllerIntegrationTest extends AbstractModeratorServiceC
   }
 
   private void banUser() {
-    controller.addBannedMac(user, null, moderator);
+    controller.banUser(user, null, moderator);
   }
 
   private Optional<Timestamp> isMacBanned() throws Exception {
-    return controller.isMacBanned(InetAddress.getLocalHost(), user.getHashedMacAddress());
+    return controller.isBanned(InetAddress.getLocalHost(), user.getHashedMacAddress());
   }
 }

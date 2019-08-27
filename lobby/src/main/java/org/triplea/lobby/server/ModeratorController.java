@@ -8,7 +8,6 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.Messengers;
 import java.time.Instant;
-import java.util.Date;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -30,24 +29,6 @@ final class ModeratorController implements IModeratorController {
   private final IServerMessenger serverMessenger;
   private final Messengers messengers;
   private final DatabaseDao database;
-
-  @Override
-  public void addUsernameToBlacklist(final String name) {
-    assertUserIsAdmin();
-
-    // TODO: The User object here probably is not needed, can be simplified as we just need
-    // moderator name.
-    final User moderator = getUserForNode(MessageContext.getSender());
-    database.getUsernameBlacklistDao().addName(name, moderator.getUsername());
-    log.info(
-        String.format("User name was blacklisted: %s, by: %sj", name, moderator.getUsername()));
-  }
-
-  private void assertUserIsAdmin() {
-    if (!isAdmin()) {
-      throw new IllegalStateException("Not an admin");
-    }
-  }
 
   @Override
   public boolean isAdmin() {
@@ -82,25 +63,16 @@ final class ModeratorController implements IModeratorController {
   }
 
   @Override
-  public void banMac(final INode node, final @Nullable Date banExpires) {
-    banMac(node, getNodeMacAddress(node), banExpires);
-  }
-
-  @Override
-  public void banMac(final INode node, final String hashedMac, final @Nullable Date banExpires) {
-    banMac(node, hashedMac, banExpires != null ? banExpires.toInstant() : null);
-  }
-
-  private void banMac(
-      final INode node, final String hashedMac, final @Nullable Instant banExpires) {
+  public void banUser(final INode node, final @Nullable Instant banExpires) {
     assertUserIsAdmin();
     if (isPlayerAdmin(node)) {
       throw new IllegalStateException("Can't ban an admin");
     }
+    final String hashedMac = getNodeMacAddress(node);
 
     final User bannedUser = getUserForNode(node).withHashedMacAddress(hashedMac);
     final User moderator = getUserForNode(MessageContext.getSender());
-    database.getBannedMacDao().addBannedMac(bannedUser, banExpires, moderator);
+    database.getBannedMacDao().banUser(bannedUser, banExpires, moderator);
     log.info(
         String.format(
             "User was banned from the lobby (by MAC); "
@@ -117,6 +89,12 @@ final class ModeratorController implements IModeratorController {
             moderator.getInetAddress().getHostAddress(),
             moderator.getHashedMacAddress(),
             banExpires == null ? "forever" : banExpires.toString()));
+  }
+
+  private void assertUserIsAdmin() {
+    if (!isAdmin()) {
+      throw new IllegalStateException("Not an admin");
+    }
   }
 
   @Override

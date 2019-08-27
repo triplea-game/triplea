@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import org.triplea.lobby.server.User;
 
 /** Data access object for the banned MAC table. */
-public interface BannedMacDao {
+public interface UserBanDao {
   /**
    * Adds the specified banned MAC to the table if it does not exist or updates the instant at which
    * the ban will expire if it already exists.
@@ -18,7 +18,7 @@ public interface BannedMacDao {
    * @param moderator The moderator executing the ban.
    * @throws IllegalStateException If an error occurs while adding, updating, or removing the ban.
    */
-  void addBannedMac(User bannedUser, @Nullable Instant banTill, User moderator);
+  void banUser(User bannedUser, @Nullable Instant banTill, User moderator);
 
   /**
    * Indicates if the specified MAC is banned relative to the checkTime provided.
@@ -27,5 +27,5 @@ public interface BannedMacDao {
    * @param mac The MAC to query for a ban.
    * @return If MAC or IP was banned, returns the timestamp of the ban expiration.
    */
-  Optional<Timestamp> isMacBanned(InetAddress ipAddress, String mac);
+  Optional<Timestamp> isBanned(InetAddress ipAddress, String mac);
 }

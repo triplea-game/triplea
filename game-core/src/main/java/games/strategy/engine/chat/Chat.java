@@ -43,7 +43,6 @@ public class Chat {
   private final ChatIgnoreList ignoreList = new ChatIgnoreList();
   private final Map<INode, Set<String>> notesMap = new HashMap<>();
   private final ChatSoundProfile chatSoundProfile;
-  private final List<INode> playersThatLeftLast10 = new ArrayList<>();
   private final IChatChannel chatChannelSubscriber =
       new IChatChannel() {
         private void assertMessageFromServer() {
@@ -128,10 +127,6 @@ public class Chat {
             }
             for (final IChatListener listener : listeners) {
               listener.addStatusMessage(node.getName() + " has left");
-            }
-            playersThatLeftLast10.add(node);
-            if (playersThatLeftLast10.size() > 10) {
-              playersThatLeftLast10.remove(0);
             }
           }
         }
@@ -338,10 +333,6 @@ public class Chat {
 
   public INode getServerNode() {
     return messengers.getServerNode();
-  }
-
-  public List<INode> getPlayersThatLeft_Last10() {
-    return new ArrayList<>(playersThatLeftLast10);
   }
 
   public List<INode> getOnlinePlayers() {

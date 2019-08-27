@@ -3,6 +3,7 @@ package org.triplea.lobby.common;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
+import java.time.Instant;
 import java.util.Date;
 import javax.annotation.Nullable;
 
@@ -25,9 +26,6 @@ public interface IModeratorController extends IRemote {
    */
   void boot(INode node);
 
-  /** Blacklist the given username. The exact name will no longer be allowed for future usage. */
-  void addUsernameToBlacklist(String username);
-
   /**
    * Ban the IP address of the given INode.
    *
@@ -44,14 +42,7 @@ public interface IModeratorController extends IRemote {
    *
    * @param banExpires {@code null} for a permanent ban.
    */
-  void banMac(INode node, @Nullable Date banExpires);
-
-  /**
-   * Ban the mac.
-   *
-   * @param banExpires {@code null} for a permanent ban.
-   */
-  void banMac(INode node, String hashedMac, @Nullable Date banExpires);
+  void banUser(INode node, @Nullable Instant banExpires);
 
   /** Get list of people in the game. */
   String getHostConnections(INode node);

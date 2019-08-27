@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -54,8 +53,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   private final Map<String, String> cachedMacAddresses = new ConcurrentHashMap<>();
   private final Set<String> miniBannedIpAddresses = new ConcurrentSkipListSet<>();
   private final Set<String> miniBannedMacAddresses = new ConcurrentSkipListSet<>();
-  // The following code is used in hosted lobby games by the host for player mini-banning
-  private final Map<String, String> playersThatLeftMacsLast10 = new ConcurrentHashMap<>();
 
   public ServerMessenger(
       final String name, final int port, final IObjectStreamFactory objectStreamFactory)
@@ -120,8 +117,7 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
 
   @Override
   public @Nullable String getPlayerMac(final String name) {
-    return Optional.ofNullable(cachedMacAddresses.get(name))
-        .orElseGet(() -> playersThatLeftMacsLast10.get(name));
+    return cachedMacAddresses.get(name);
   }
 
   /**
@@ -134,11 +130,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   private void notifyPlayerRemoval(final INode node) {
-    playersThatLeftMacsLast10.put(node.getName(), cachedMacAddresses.get(node.getName()));
-    if (playersThatLeftMacsLast10.size() > 10) {
-      playersThatLeftMacsLast10.remove(
-          playersThatLeftMacsLast10.entrySet().iterator().next().toString());
-    }
     cachedMacAddresses.remove(node.getName());
   }
 

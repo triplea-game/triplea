@@ -7,7 +7,7 @@ import org.triplea.lobby.server.db.dao.UserLookupDao;
 public interface DatabaseDao {
   UsernameBlacklistDao getUsernameBlacklistDao();
 
-  BannedMacDao getBannedMacDao();
+  UserBanDao getBannedMacDao();
 
   UserDao getUserDao();
 

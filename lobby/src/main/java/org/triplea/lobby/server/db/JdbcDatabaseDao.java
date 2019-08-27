@@ -14,7 +14,7 @@ class JdbcDatabaseDao implements DatabaseDao {
   private final AccessLogDao accessLogDao;
   private final BadWordDao badWordDao;
   private final UsernameBlacklistDao usernameBlacklistDao;
-  private final BannedMacDao bannedMacDao;
+  private final UserBanDao bannedMacDao;
   private final UserDao userDao;
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
   private final UserLookupDao userLookupDao;
