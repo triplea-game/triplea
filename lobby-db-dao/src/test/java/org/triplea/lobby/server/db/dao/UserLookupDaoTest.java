@@ -13,7 +13,7 @@ import org.triplea.test.common.Integration;
 
 @Integration
 @ExtendWith(DBUnitExtension.class)
-@DataSet("user_lookup/select.yml")
+@DataSet(cleanBefore = true, value = "user_lookup/select.yml")
 class UserLookupDaoTest {
 
   private final UserLookupDao userLookupDao =

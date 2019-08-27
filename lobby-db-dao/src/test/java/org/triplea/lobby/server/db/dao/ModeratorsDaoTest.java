@@ -18,7 +18,7 @@ import org.triplea.test.common.Integration;
 
 @Integration
 @ExtendWith(DBUnitExtension.class)
-@DataSet("moderators/select.yml")
+@DataSet(cleanBefore = true, value = "moderators/select.yml")
 class ModeratorsDaoTest {
 
   private static final int NOT_MODERATOR_ID = 100000;

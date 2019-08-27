@@ -20,7 +20,7 @@ import org.triplea.test.common.Integration;
 
 @ExtendWith(DBUnitExtension.class)
 @Integration
-@DataSet("moderator_api_key/select.yml")
+@DataSet(cleanBefore = true, value = "moderator_api_key/select.yml")
 class ModeratorApiKeyDaoTest {
 
   private static final String SECRET_KEY =

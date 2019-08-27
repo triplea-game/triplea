@@ -12,7 +12,7 @@ import org.triplea.test.common.Integration;
 
 @Integration
 @ExtendWith(DBUnitExtension.class)
-@DataSet("temp_password_history/sample.yml")
+@DataSet(cleanBefore = true, value = "temp_password_history/sample.yml")
 class TempPasswordHistoryDaoTest {
 
   private static final String USERNAME = "username";

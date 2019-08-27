@@ -12,6 +12,3 @@ lobby_user:
     admin: true
     super_mod: true
 
-moderator_api_key:
-moderator_action_history:
-moderator_single_use_key:

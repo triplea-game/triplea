@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.SeedStrategy;
 import com.github.database.rider.junit5.DBUnitExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +15,7 @@ import org.triplea.test.common.Integration;
 
 @Integration
 @ExtendWith(DBUnitExtension.class)
-@DataSet("temp_password/sample.yml")
+@DataSet(cleanBefore = true, value = "temp_password/sample.yml", strategy = SeedStrategy.REFRESH)
 class TempPasswordDaoTest {
 
   private static final String USERNAME = "username";

@@ -22,7 +22,7 @@ class BannedUserNamesDaoTest {
   private static final UsernameBanDao bannedUserNamesDao =
       JdbiDatabase.newConnection().onDemand(UsernameBanDao.class);
 
-  @DataSet("banned_names/two_rows.yml")
+  @DataSet(cleanBefore = true, value = "banned_names/two_rows.yml")
   @Test
   void getBannedUserNames() {
     final List<UsernameBanDaoData> data = bannedUserNamesDao.getBannedUserNames();
@@ -37,14 +37,14 @@ class BannedUserNamesDaoTest {
     assertThat(data.get(1).getDateCreated(), is(Instant.parse("2010-01-01T23:59:20.0Z")));
   }
 
-  @DataSet("banned_names/one_row.yml")
+  @DataSet(cleanBefore = true, value = "banned_names/one_row.yml")
   @ExpectedDataSet(value = "banned_names/two_rows.yml", ignoreCols = "date_created")
   @Test
   void addBannedUserName() {
     bannedUserNamesDao.addBannedUserName("aaa");
   }
 
-  @DataSet("banned_names/two_rows.yml")
+  @DataSet(cleanBefore = true, value = "banned_names/two_rows.yml")
   @ExpectedDataSet("banned_names/one_row.yml")
   @Test
   void removeBannedUserName() {

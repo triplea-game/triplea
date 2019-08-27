@@ -15,7 +15,7 @@ import org.triplea.test.common.Integration;
 
 @ExtendWith(DBUnitExtension.class)
 @Integration
-@DataSet("bad_words/select.yml")
+@DataSet(cleanBefore = true, value = "bad_words/select.yml")
 class BadWordsDaoTest {
   private static final BadWordsDao badWordsDao =
       JdbiDatabase.newConnection().onDemand(BadWordsDao.class);

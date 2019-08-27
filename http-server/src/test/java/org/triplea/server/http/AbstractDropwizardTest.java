@@ -10,7 +10,7 @@ import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.test.common.Integration;
 
 @Integration
-@DataSet("integration.yml")
+@DataSet(cleanBefore = true, value = "integration.yml")
 @ExtendWith(DBUnitExtension.class)
 @ExtendWith(DropwizardServerExtension.class)
 public class AbstractDropwizardTest {

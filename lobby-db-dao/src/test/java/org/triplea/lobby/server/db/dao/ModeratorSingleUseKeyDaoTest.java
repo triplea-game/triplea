@@ -15,7 +15,7 @@ import org.triplea.test.common.Integration;
 
 @Integration
 @ExtendWith(DBUnitExtension.class)
-@DataSet("moderator_single_use_key/select.yml")
+@DataSet(cleanBefore = true, value = "moderator_single_use_key/select.yml")
 class ModeratorSingleUseKeyDaoTest {
 
   private static final int MODERATOR_ID = 900000;
@@ -46,7 +46,7 @@ class ModeratorSingleUseKeyDaoTest {
   }
 
   @Test
-  @DataSet("moderator_single_use_key/empty.yml")
+  @DataSet(cleanBefore = true, value = "moderator_single_use_key/empty.yml")
   @ExpectedDataSet("moderator_single_use_key/empty_post_insert.yml")
   void insertSingleUseKey() {
     moderatorSingleUseKeyDao.insertSingleUseKey(MODERATOR_ID, SECRET_KEY);
