@@ -22,14 +22,14 @@ final class BadWordControllerIntegrationTest {
   final class CaseInsensitiveContainsTest {
     @ParameterizedTest
     @ValueSource(strings = {"bad", "BAD", "one bad", "Badword"})
-    @DataSet("badwords/bad.yml")
+    @DataSet(cleanBefore = true, value = "badwords/bad.yml")
     void containsCase(final String testValue) {
       assertThat(controller.containsBadWord(testValue), is(true));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"ok", "B A D", ""})
-    @DataSet("badwords/bad.yml")
+    @DataSet(cleanBefore = true, value = "badwords/bad.yml")
     void doesNotContainCase(final String doesNotContain) {
       assertThat(controller.containsBadWord(doesNotContain), is(false));
     }

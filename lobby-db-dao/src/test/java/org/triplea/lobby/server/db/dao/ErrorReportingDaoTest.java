@@ -21,7 +21,7 @@ final class ErrorReportingDaoTest {
       JdbiDatabase.newConnection().onDemand(ErrorReportingDao.class);
 
   /** Simple check that if we insert a record we'll get a new record in the expected dataset. */
-  @DataSet("error_reporting/pre-insert.yml")
+  @DataSet(cleanBefore = true, value = "error_reporting/pre-insert.yml")
   @ExpectedDataSet(value = "error_reporting/post-insert.yml")
   @Test
   void insertRow() {
@@ -32,7 +32,7 @@ final class ErrorReportingDaoTest {
    * Dates in dataset span from: 2016-01-01 23:59:20.0 to 2016-01-03 23:59:20.0. In this test we'll
    * bisect the various date and verify we select the correct number of records.
    */
-  @DataSet("error_reporting/select.yml")
+  @DataSet(cleanBefore = true, value = "error_reporting/select.yml")
   @Test
   void insertionsSince() {
 
@@ -75,7 +75,7 @@ final class ErrorReportingDaoTest {
         Is.is(3));
   }
 
-  @DataSet("error_reporting/pre-purge.yml")
+  @DataSet(cleanBefore = true, value = "error_reporting/pre-purge.yml")
   @ExpectedDataSet(value = "error_reporting/post-purge.yml")
   @Test
   void purgeOld() {

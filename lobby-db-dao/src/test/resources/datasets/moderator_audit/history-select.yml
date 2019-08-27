@@ -1,7 +1,3 @@
-moderator_api_key:
-moderator_single_use_key:
-temp_password_request:
-
 lobby_user:
   - id: 800000
     username: moderator1

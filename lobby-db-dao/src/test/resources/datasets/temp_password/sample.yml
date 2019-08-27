@@ -14,7 +14,3 @@ temp_password_request:
   - lobby_user_id: 500000
     temp_password: temp
     date_created: 2016-01-01 23:59:20.0
-
-moderator_api_key:
-moderator_action_history:
-moderator_single_use_key:

@@ -20,7 +20,3 @@ moderator_single_use_key:
     lobby_user_id: 900000
     date_created: 2016-01-03 23:59:20.0
     api_key: bbb9f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
-
-moderator_action_history:
-moderator_api_key:
-temp_password_request:

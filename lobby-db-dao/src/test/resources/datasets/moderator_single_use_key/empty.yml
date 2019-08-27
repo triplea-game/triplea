@@ -4,8 +4,3 @@ lobby_user:
     password: 12345678901234567890123456
     email: email
     admin: false
-
-moderator_single_use_key:
-moderator_action_history:
-moderator_api_key:
-temp_password_request:

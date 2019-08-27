@@ -6,7 +6,3 @@ lobby_user:
     admin: false
     super_mod: false
 
-moderator_api_key:
-moderator_action_history:
-moderator_single_use_key:
-temp_password_request:

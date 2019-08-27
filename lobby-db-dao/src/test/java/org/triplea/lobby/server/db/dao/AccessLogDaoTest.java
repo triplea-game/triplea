@@ -21,7 +21,7 @@ class AccessLogDaoTest {
       JdbiDatabase.newConnection().onDemand(AccessLogDao.class);
 
   @Test
-  @DataSet("access_log/empty_data.yml")
+  @DataSet(cleanBefore = true, value = "access_log/empty_data.yml")
   void emptyDataCase() {
     assertThat(accessLogDao.lookupAccessLogData(0, 1), hasSize(0));
   }
@@ -31,7 +31,7 @@ class AccessLogDaoTest {
    * are as expected
    */
   @Test
-  @DataSet("access_log/two_rows.yml")
+  @DataSet(cleanBefore = true, value = "access_log/two_rows.yml")
   void fetchTwoRows() {
     List<AccessLogDaoData> data = accessLogDao.lookupAccessLogData(0, 1);
     assertThat(data, hasSize(1));
@@ -54,7 +54,7 @@ class AccessLogDaoTest {
 
   /** There are only 2 rows, requesting a row offset of '2' should yield no data. */
   @Test
-  @DataSet("access_log/two_rows.yml")
+  @DataSet(cleanBefore = true, value = "access_log/two_rows.yml")
   void requestingRowsOffDataSetReturnsNothing() {
     assertThat(accessLogDao.lookupAccessLogData(2, 1), hasSize(0));
   }
