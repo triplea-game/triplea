@@ -129,7 +129,9 @@ function pushMaps() {
   ## do git stuff, check if there is a diff, if so, commit and push it
   (
     cd website
+    git status
     if ! git diff-index --quiet HEAD --; then
+      echo "Executing diff-index if"
       git add --all _maps/
       git commit -m "Bot: update map files after game engine build ${TRAVIS_BUILD_NUMBER:-}"
       git push -fq origin master
