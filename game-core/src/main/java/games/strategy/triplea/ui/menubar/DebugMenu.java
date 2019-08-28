@@ -21,11 +21,11 @@ final class DebugMenu extends JMenu {
     final boolean areThereProAIs = players.stream().anyMatch(ProAi.class::isInstance);
     if (areThereProAIs) {
       ProAi.initialize(frame);
-      add(SwingAction.of("Show Hard AI Logs", e -> ProAi.showSettingsWindow()))
+      add(SwingAction.of("Show Hard AI Logs", ProAi::showSettingsWindow))
           .setMnemonic(KeyEvent.VK_X);
     }
 
-    add(SwingAction.of("Show Console", e -> ClientSetting.showConsole.setValueAndFlush(true)))
+    add(SwingAction.of("Show Console", () -> ClientSetting.showConsole.setValueAndFlush(true)))
         .setMnemonic(KeyEvent.VK_C);
   }
 }
