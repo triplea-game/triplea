@@ -104,10 +104,10 @@ function triggerGithubReleaseWithTagPush() {
 
   local -r gitRepo="https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea"
 
-  # Sometimes assets will fail to upload but we'll still have a tag created
-  # Check if the current tag exists, if so, delete it. 
+  # Sometimes a tag will be created from a previous build and assets will fail to upload.
+  # Check if the current tag exists, if so, delete it.
   git ls-remote --tags origin | grep -q "2.0.15585$" && \
-    (  
+    (
     echo "Deleting tag $TAG_VALUE to recreate the release." && \
     git push -q "$gitRepo" --delete "refs/tags/$TAG_VALUE"
     )
