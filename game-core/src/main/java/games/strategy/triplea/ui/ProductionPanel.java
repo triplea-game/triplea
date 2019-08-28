@@ -31,18 +31,17 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.SwingComponents;
 
 class ProductionPanel extends JPanel {
   private static final long serialVersionUID = -1539053979479586609L;
@@ -57,7 +56,7 @@ class ProductionPanel extends JPanel {
 
   private JDialog dialog;
   private boolean bid;
-  final Action doneAction = SwingAction.of("Done", e -> dialog.setVisible(false));
+  final Action doneAction = SwingAction.of("Done", () -> dialog.setVisible(false));
 
   ProductionPanel(final UiContext uiContext) {
     this.uiContext = uiContext;
@@ -93,12 +92,15 @@ class ProductionPanel extends JPanel {
       final IntegerMap<ProductionRule> initialPurchase) {
     dialog = new JDialog(parent, "Produce", true);
     dialog.getContentPane().add(this);
-    final String key = "dialog.close";
-    dialog.getRootPane().getActionMap().put(key, SwingAction.of("", e -> dialog.setVisible(false)));
-    dialog
-        .getRootPane()
-        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), key);
+
+    SwingComponents.addKeyBinding(
+        dialog,
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_D, KeyBindingSupplier.ModifierKey.SHIFT),
+        () -> dialog.setVisible(false));
+    SwingComponents.addKeyBinding(
+        dialog,
+        KeyBindingSupplier.fromKeyEventCode(KeyEvent.VK_ESCAPE),
+        () -> dialog.setVisible(false));
 
     this.bid = bid;
     this.data = data;
@@ -234,6 +236,8 @@ class ProductionPanel extends JPanel {
             0,
             0));
     done = new JButton(doneAction);
+    done.setToolTipText(
+        "Click this button or press 'shift+d' to confirm purchase and close this window");
     this.add(
         done,
         new GridBagConstraints(

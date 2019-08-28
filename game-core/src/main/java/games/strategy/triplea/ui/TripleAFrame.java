@@ -113,7 +113,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -719,17 +718,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
         .map(Map::entrySet)
         .flatMap(Collection::stream)
         .forEach(
-            binding -> {
-              final JPanel contentPane = (JPanel) getContentPane();
-              final String keyBindingIdentifier = UUID.randomUUID().toString();
-
-              contentPane
-                  .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                  .put(binding.getKey(), keyBindingIdentifier);
-              contentPane
-                  .getActionMap()
-                  .put(keyBindingIdentifier, SwingAction.of(e -> binding.getValue().run()));
-            });
+            binding -> SwingComponents.addKeyBinding(this, binding.getKey(), binding.getValue()));
   }
 
   @Override

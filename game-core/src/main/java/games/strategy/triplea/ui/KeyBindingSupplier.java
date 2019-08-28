@@ -1,10 +1,13 @@
 package games.strategy.triplea.ui;
 
 import com.google.common.base.Preconditions;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Map;
 import java.util.function.Supplier;
 import javax.swing.KeyStroke;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 
 /**
  * Interface for classes that have key listeners. Key bindings are more 'global' than classic swing
@@ -25,15 +28,28 @@ import javax.swing.KeyStroke;
  */
 public interface KeyBindingSupplier extends Supplier<Map<KeyStroke, Runnable>> {
 
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  enum ModifierKey {
+    NONE(0),
+    SHIFT(InputEvent.SHIFT_DOWN_MASK),
+    CONTROL(InputEvent.CTRL_DOWN_MASK);
+
+    private final int modifierMask;
+  }
+
   /**
    * Convenience method to create a {@code KeyStroke} without modifiers.
    *
    * @param code A KeyEvent code, should be a constant from the class {@code KeyEvent}
    */
-  static KeyStroke fromKeyEventCode(int code) {
+  static KeyStroke fromKeyEventCode(final int code) {
+    return fromKeyEventCode(code, ModifierKey.NONE);
+  }
+
+  static KeyStroke fromKeyEventCode(final int code, final ModifierKey modifierKey) {
     Preconditions.checkArgument(
         !KeyEvent.getKeyText(code).toUpperCase().contains("UNKNOWN"),
         "Be sure to use a constant from 'KeyEvent', unknown key constant: " + code);
-    return KeyStroke.getKeyStroke(code, 0);
+    return KeyStroke.getKeyStroke(code, modifierKey.modifierMask);
   }
 }
