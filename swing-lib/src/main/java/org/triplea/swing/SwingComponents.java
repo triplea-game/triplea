@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -27,6 +28,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -437,5 +439,23 @@ public final class SwingComponents {
     b.add(c);
     b.add(Box.createHorizontalGlue());
     return b;
+  }
+
+  public static void addKeyBinding(
+      final JFrame frame, final KeyStroke keyStroke, final Runnable action) {
+    final JComponent component = (JComponent) frame.getContentPane();
+    addKeyBinding(component, keyStroke, action);
+  }
+
+  public static void addKeyBinding(
+      final JDialog component, final KeyStroke keyStroke, final Runnable action) {
+    addKeyBinding(component.getRootPane(), keyStroke, action);
+  }
+
+  private static void addKeyBinding(
+      final JComponent component, final KeyStroke keyStroke, final Runnable action) {
+    final String keyBindingIdentifier = UUID.randomUUID().toString();
+    component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, keyBindingIdentifier);
+    component.getActionMap().put(keyBindingIdentifier, SwingAction.of(e -> action.run()));
   }
 }
