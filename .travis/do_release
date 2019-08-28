@@ -102,14 +102,21 @@ function triggerGithubReleaseWithTagPush() {
   git config --global user.email "tripleabuilderbot@gmail.com"
   git config --global user.name "tripleabuilderbot"
 
-  echo "Attempting to delete tag $TAG_VALUE, this is so we will recreate the release if this build is being re-run. Ignore any errors from this"
-  git push -q "https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea" --delete "refs/tags/$TAG_VALUE"
-  echo "Done deleting existing tag if it existed."
+  local -r gitRepo="https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea"
 
+  # Sometimes assets will fail to upload but we'll still have a tag created
+  # Check if the current tag exists, if so, delete it. 
+  git ls-remote --tags origin | grep -q "2.0.15585$" && \
+    (  
+    echo "Deleting tag $TAG_VALUE to recreate the release." && \
+    git push -q "$gitRepo" --delete "refs/tags/$TAG_VALUE"
+    )
+
+  ## create tag locally
   git tag "$TAG_VALUE" -a -f -m "$TAG_VALUE"
 
-  echo "Pushing tag: $TAG_VALUE to github to trigger releases deployment"
-  git push -q "https://$GITHUB_PERSONAL_ACCESS_TOKEN_FOR_TRAVIS@github.com/triplea-game/triplea" --tags
+  echo "Triggering github release by pushing tag: $TAG_VALUE"
+  git push -q "$gitRepo" --tags
 }
 
 
