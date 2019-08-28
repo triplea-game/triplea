@@ -104,6 +104,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SHOW_BETA_FEATURES", false);
   public static final ClientSetting<Boolean> showConsole =
       new BooleanClientSetting("SHOW_CONSOLE", false);
+  public static final ClientSetting<Boolean> showChatTimes =
+      new BooleanClientSetting("SHOW_CHAT_TIME", true);
   public static final ClientSetting<String> testLobbyHost =
       new StringClientSetting("TEST_LOBBY_HOST");
   public static final ClientSetting<Integer> testLobbyPort =

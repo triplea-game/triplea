@@ -14,9 +14,7 @@ import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.VerifiedRandomNumbersDialog;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import javax.swing.Action;
@@ -33,6 +31,9 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import org.triplea.swing.GridBagConstraintsAnchor;
+import org.triplea.swing.GridBagConstraintsBuilder;
+import org.triplea.swing.GridBagConstraintsFill;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
 
@@ -57,8 +58,8 @@ final class GameMenu extends JMenu {
     addEditMode();
     addSeparator();
     add(SwingAction.of("Engine Settings", e -> ClientSetting.showSettingsWindow()));
-    SoundOptions.addGlobalSoundSwitchMenu(this);
-    SoundOptions.addToMenu(this);
+    add(SoundOptions.buildGlobalSoundSwitchMenuItem());
+    add(SoundOptions.buildSoundOptionsMenuItem());
     addSeparator();
     addMenuItemWithHotkey(frame.getShowGameAction(), KeyEvent.VK_G);
     addMenuItemWithHotkey(frame.getShowHistoryAction(), KeyEvent.VK_H);
@@ -228,60 +229,32 @@ final class GameMenu extends JMenu {
           panel.setLayout(new GridBagLayout());
           panel.add(
               new JLabel("Number of Dice to Roll: "),
-              new GridBagConstraints(
-                  0,
-                  0,
-                  1,
-                  1,
-                  0,
-                  0,
-                  GridBagConstraints.WEST,
-                  GridBagConstraints.BOTH,
-                  new Insets(0, 0, 0, 20),
-                  0,
-                  0));
+              new GridBagConstraintsBuilder(0, 0)
+                  .anchor(GridBagConstraintsAnchor.WEST)
+                  .fill(GridBagConstraintsFill.BOTH)
+                  .insets(0, 0, 0, 20)
+                  .build());
           panel.add(
               new JLabel("Sides on the Dice: "),
-              new GridBagConstraints(
-                  2,
-                  0,
-                  1,
-                  1,
-                  0,
-                  0,
-                  GridBagConstraints.WEST,
-                  GridBagConstraints.BOTH,
-                  new Insets(0, 20, 0, 10),
-                  0,
-                  0));
+              new GridBagConstraintsBuilder(2, 0)
+                  .anchor(GridBagConstraintsAnchor.WEST)
+                  .fill(GridBagConstraintsFill.BOTH)
+                  .insets(0, 20, 0, 10)
+                  .build());
           panel.add(
               numberOfText,
-              new GridBagConstraints(
-                  0,
-                  1,
-                  1,
-                  1,
-                  0,
-                  0,
-                  GridBagConstraints.WEST,
-                  GridBagConstraints.BOTH,
-                  new Insets(0, 0, 0, 20),
-                  0,
-                  0));
+              new GridBagConstraintsBuilder(0, 1)
+                  .anchor(GridBagConstraintsAnchor.WEST)
+                  .fill(GridBagConstraintsFill.BOTH)
+                  .insets(0, 0, 0, 20)
+                  .build());
           panel.add(
               diceSidesText,
-              new GridBagConstraints(
-                  2,
-                  1,
-                  1,
-                  1,
-                  0,
-                  0,
-                  GridBagConstraints.WEST,
-                  GridBagConstraints.BOTH,
-                  new Insets(0, 20, 0, 10),
-                  0,
-                  0));
+              new GridBagConstraintsBuilder(2, 1)
+                  .anchor(GridBagConstraintsAnchor.WEST)
+                  .fill(GridBagConstraintsFill.BOTH)
+                  .insets(0, 20, 0, 10)
+                  .build());
           JOptionPane.showOptionDialog(
               JOptionPane.getFrameForComponent(this),
               panel,

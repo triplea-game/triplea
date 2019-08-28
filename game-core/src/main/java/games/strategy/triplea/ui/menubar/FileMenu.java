@@ -17,6 +17,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import org.triplea.swing.JMenuItemBuilder;
+import org.triplea.swing.KeyCode;
 import org.triplea.swing.SwingAction;
 
 final class FileMenu extends JMenu {
@@ -44,60 +46,50 @@ final class FileMenu extends JMenu {
   }
 
   private JMenuItem newSaveMenuItem() {
-    final JMenuItem menuFileSave =
-        new JMenuItem(
-            SwingAction.of(
-                "Save",
-                e -> {
-                  final File f = TripleAMenuBar.getSaveGameLocation(frame);
-                  if (f != null) {
-                    game.saveGame(f);
-                    JOptionPane.showMessageDialog(
-                        frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
-                  }
-                }));
-    menuFileSave.setMnemonic(KeyEvent.VK_S);
-    menuFileSave.setAccelerator(
-        KeyStroke.getKeyStroke(
-            KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-    return menuFileSave;
+    return new JMenuItemBuilder("Save", KeyCode.S)
+        .accelerator(KeyCode.S)
+        .actionListener(
+            () -> {
+              final File f = TripleAMenuBar.getSaveGameLocation(frame);
+              if (f != null) {
+                game.saveGame(f);
+                JOptionPane.showMessageDialog(
+                    frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+              }
+            })
+        .build();
   }
 
   private JMenuItem addPostPbem() {
-    final JMenuItem menuPbem =
-        new JMenuItem(
-            SwingAction.of(
-                "Post PBEM/PBF Gamesave",
-                e -> {
-                  if (!PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
-                    return;
-                  }
-                  final String title = "Manual Gamesave Post";
-                  try {
-                    gameData.acquireReadLock();
-                    final GameStep step = gameData.getSequence().getStep();
-                    final PlayerId currentPlayer =
-                        (step == null
+    return new JMenuItemBuilder("Post PBEM/PBF Gamesave", KeyCode.P)
+        .accelerator(KeyCode.M)
+        .actionListener(
+            () -> {
+              if (!PbemMessagePoster.gameDataHasPlayByEmailOrForumMessengers(gameData)) {
+                return;
+              }
+              final String title = "Manual Gamesave Post";
+              try {
+                gameData.acquireReadLock();
+                final GameStep step = gameData.getSequence().getStep();
+                final PlayerId currentPlayer =
+                    (step == null
+                        ? PlayerId.NULL_PLAYERID
+                        : (step.getPlayerId() == null
                             ? PlayerId.NULL_PLAYERID
-                            : (step.getPlayerId() == null
-                                ? PlayerId.NULL_PLAYERID
-                                : step.getPlayerId()));
-                    final int round = gameData.getSequence().getRound();
-                    final HistoryLog historyLog = new HistoryLog();
-                    historyLog.printFullTurn(
-                        gameData, true, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));
-                    final PbemMessagePoster poster =
-                        new PbemMessagePoster(gameData, currentPlayer, round, title);
-                    poster.postTurn(title, historyLog, true, null, frame, null);
-                  } finally {
-                    gameData.releaseReadLock();
-                  }
-                }));
-    menuPbem.setMnemonic(KeyEvent.VK_P);
-    menuPbem.setAccelerator(
-        KeyStroke.getKeyStroke(
-            KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-    return menuPbem;
+                            : step.getPlayerId()));
+                final int round = gameData.getSequence().getRound();
+                final HistoryLog historyLog = new HistoryLog();
+                historyLog.printFullTurn(
+                    gameData, true, GameStepPropertiesHelper.getTurnSummaryPlayers(gameData));
+                final PbemMessagePoster poster =
+                    new PbemMessagePoster(gameData, currentPlayer, round, title);
+                poster.postTurn(title, historyLog, true, null, frame, null);
+              } finally {
+                gameData.releaseReadLock();
+              }
+            })
+        .build();
   }
 
   private void addExitMenu() {

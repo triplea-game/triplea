@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 /** Sound option window framework. */
@@ -44,23 +43,20 @@ public final class SoundOptions {
     }
   }
 
-  /**
-   * Adds the "Sound Options" menu item to the specified menu.
-   *
-   * @param parentMenu menu where to add the menu item "Sound Options".
-   */
-  public static void addToMenu(final JMenu parentMenu) {
+  /** Builds a "Sound Options" menu item. */
+  public static JMenuItem buildSoundOptionsMenuItem() {
     final JMenuItem soundOptions = new JMenuItem("Sound Options");
     soundOptions.setMnemonic(KeyEvent.VK_S);
-    soundOptions.addActionListener(e -> new SoundOptions(parentMenu));
-    parentMenu.add(soundOptions);
+    soundOptions.addActionListener(e -> new SoundOptions(soundOptions));
+    return soundOptions;
   }
 
-  public static void addGlobalSoundSwitchMenu(final JMenu parentMenu) {
+  /** Builds a checkbox menu item to turn sounds on or off. */
+  public static JMenuItem buildGlobalSoundSwitchMenuItem() {
     final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
     soundCheckBox.setMnemonic(KeyEvent.VK_N);
     soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
     soundCheckBox.addActionListener(e -> ClipPlayer.setBeSilent(!soundCheckBox.isSelected()));
-    parentMenu.add(soundCheckBox);
+    return soundCheckBox;
   }
 }
