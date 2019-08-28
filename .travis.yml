@@ -15,11 +15,15 @@ addons:
       - python3
       - python3-yaml
 install:
+## shellcheck all shell scripts
+-  find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
+## validate ASAP so syntax, checkstyle or unit tests fail the build early
+- ./gradlew validateYamls checkstyleMain checkstyleTest spotlessCheck test
 - ./.travis/install
 before_script:
 - ./.travis/setup_gpg
 script:
-- ./gradlew --parallel check jacocoTestReport
+- ./gradlew check jacocoTestReport
 after_success:
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 before_deploy:
