@@ -106,7 +106,7 @@ function triggerGithubReleaseWithTagPush() {
 
   # Sometimes a tag will be created from a previous build and assets will fail to upload.
   # Check if the current tag exists, if so, delete it.
-  git ls-remote --tags origin | grep -q "2.0.15585$" && \
+  git ls-remote --tags origin | grep -q "2.0.${TRAVIS_BUILD_NUMBER}$" && \
     (
     echo "Deleting tag $TAG_VALUE to recreate the release." && \
     git push -q "$gitRepo" --delete "refs/tags/$TAG_VALUE"
@@ -138,7 +138,7 @@ function pushMaps() {
     cd website
     if ! git diff-index --quiet HEAD --; then
       git add --all _maps/
-      git commit -m "Bot: update map files after game engine build ${TRAVIS_BUILD_NUMBER:-}"
+      git commit -m "Bot: update map files after game engine build ${TRAVIS_BUILD_NUMBER}"
       git push -fq origin master
     fi
   )
