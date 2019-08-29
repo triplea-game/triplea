@@ -41,7 +41,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
-import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -52,7 +51,8 @@ import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import lombok.extern.java.Log;
-import org.triplea.swing.SwingAction;
+import org.triplea.swing.JMenuItemBuilder;
+import org.triplea.swing.KeyCode;
 import org.triplea.util.FileNameUtils;
 
 @Log
@@ -73,18 +73,19 @@ final class ExportMenu extends JMenu {
 
     setMnemonic(KeyEvent.VK_E);
 
-    addExportXml();
-    addExportStats();
-    addExportStatsFull();
-    addExportSetupCharts();
-    addExportUnitStats();
-    addSaveScreenshot();
+    add(createExportXmlMenu());
+    add(createExportStatsMenu());
+    add(createExportStatsFullMenu());
+    add(createExportSetupChartsMenu());
+    add(createExportUnitStatsMenu());
+    add(createSaveScreenshotMenu());
   }
 
   // TODO: create a second menu option for parsing current attachments
-  private void addExportXml() {
-    final Action exportXml = SwingAction.of("Export game.xml File (Beta)", e -> exportXmlFile());
-    add(exportXml).setMnemonic(KeyEvent.VK_X);
+  private JMenuItem createExportXmlMenu() {
+    return new JMenuItemBuilder("Export game.xml File (Beta)", KeyCode.X)
+        .actionListener(this::exportXmlFile)
+        .build();
   }
 
   private void exportXmlFile() {
@@ -122,34 +123,34 @@ final class ExportMenu extends JMenu {
     }
   }
 
-  private void addSaveScreenshot() {
-    final Action abstractAction =
-        SwingAction.of(
-            "Export Map Snapshot",
-            e -> {
-              // get current history node. if we are in history view, get the selected node.
-              final HistoryPanel historyPanel = frame.getHistoryPanel();
-              final HistoryNode curNode;
-              if (historyPanel == null) {
-                curNode = gameData.getHistory().getLastNode();
-              } else {
-                curNode = historyPanel.getCurrentNode();
-              }
-              ScreenshotExporter.exportScreenshot(frame, gameData, curNode);
-            });
-    add(abstractAction).setMnemonic(KeyEvent.VK_E);
+  private JMenuItem createSaveScreenshotMenu() {
+    return new JMenuItemBuilder("Export Map Screenshot", KeyCode.E)
+        .actionListener(this::saveScreenshot)
+        .build();
   }
 
-  private void addExportStatsFull() {
-    final Action showDiceStats =
-        SwingAction.of("Export Full Game Stats", e -> createAndSaveStats(true));
-    add(showDiceStats).setMnemonic(KeyEvent.VK_F);
+  private void saveScreenshot() {
+    // get current history node. if we are in history view, get the selected node.
+    final HistoryPanel historyPanel = frame.getHistoryPanel();
+    final HistoryNode curNode;
+    if (historyPanel == null) {
+      curNode = gameData.getHistory().getLastNode();
+    } else {
+      curNode = historyPanel.getCurrentNode();
+    }
+    ScreenshotExporter.exportScreenshot(frame, gameData, curNode);
   }
 
-  private void addExportStats() {
-    final Action showDiceStats =
-        SwingAction.of("Export Short Game Stats", e -> createAndSaveStats(false));
-    add(showDiceStats).setMnemonic(KeyEvent.VK_S);
+  private JMenuItem createExportStatsFullMenu() {
+    return new JMenuItemBuilder("Export Full Game Stats", KeyCode.F)
+        .actionListener(() -> createAndSaveStats(true))
+        .build();
+  }
+
+  private JMenuItem createExportStatsMenu() {
+    return new JMenuItemBuilder("Export Short Game Stats", KeyCode.S)
+        .actionListener(() -> createAndSaveStats(false))
+        .build();
   }
 
   private void createAndSaveStats(final boolean showPhaseStats) {
@@ -360,67 +361,61 @@ final class ExportMenu extends JMenu {
     }
   }
 
-  private void addExportUnitStats() {
-    final JMenuItem menuFileExport =
-        new JMenuItem(
-            SwingAction.of(
-                "Export Unit Charts",
-                e -> {
-                  final JFileChooser chooser = new JFileChooser();
-                  chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                  final File rootDir = new File(SystemProperties.getUserDir());
-                  String defaultFileName = gameData.getGameName() + "_unit_stats";
-                  defaultFileName = FileNameUtils.removeIllegalCharacters(defaultFileName);
-                  defaultFileName = defaultFileName + ".html";
-                  chooser.setSelectedFile(new File(rootDir, defaultFileName));
-                  if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
-                    return;
-                  }
-                  try (Writer writer =
-                      Files.newBufferedWriter(
-                          chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
-                    writer.write(
-                        HelpMenu.getUnitStatsTable(gameData, uiContext)
-                            .replaceAll("</?p>|</tr>", "$0\r\n")
-                            .replaceAll("(?i)<img[^>]+/>", ""));
-                  } catch (final IOException e1) {
-                    log.log(
-                        Level.SEVERE,
-                        "Failed to write unit stats: "
-                            + chooser.getSelectedFile().getAbsolutePath(),
-                        e1);
-                  }
-                }));
-    menuFileExport.setMnemonic(KeyEvent.VK_U);
-    add(menuFileExport);
+  private JMenuItem createExportUnitStatsMenu() {
+    return new JMenuItemBuilder("Export Unit Charts", KeyCode.U)
+        .actionListener(this::exportUnitCharts)
+        .build();
   }
 
-  private void addExportSetupCharts() {
-    final JMenuItem menuFileExport =
-        new JMenuItem(
-            SwingAction.of(
-                "Export Setup Charts",
-                e -> {
-                  final JFrame frame = new JFrame("Export Setup Charts");
-                  frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                  final GameData clonedGameData;
-                  gameData.acquireReadLock();
-                  try {
-                    clonedGameData = GameDataUtils.cloneGameData(gameData);
-                  } finally {
-                    gameData.releaseReadLock();
-                  }
-                  final JComponent newContentPane = new SetupFrame(clonedGameData);
-                  // content panes must be opaque
-                  newContentPane.setOpaque(true);
-                  frame.setContentPane(newContentPane);
-                  // Display the window.
-                  frame.pack();
-                  frame.setLocationRelativeTo(frame);
-                  frame.setVisible(true);
-                  uiContext.addShutdownWindow(frame);
-                }));
-    menuFileExport.setMnemonic(KeyEvent.VK_C);
-    add(menuFileExport);
+  private void exportUnitCharts() {
+    final JFileChooser chooser = new JFileChooser();
+    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    final File rootDir = new File(SystemProperties.getUserDir());
+    String defaultFileName = gameData.getGameName() + "_unit_stats";
+    defaultFileName = FileNameUtils.removeIllegalCharacters(defaultFileName);
+    defaultFileName = defaultFileName + ".html";
+    chooser.setSelectedFile(new File(rootDir, defaultFileName));
+    if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
+      return;
+    }
+    try (Writer writer =
+        Files.newBufferedWriter(chooser.getSelectedFile().toPath(), StandardCharsets.UTF_8)) {
+      writer.write(
+          HelpMenu.getUnitStatsTable(gameData, uiContext)
+              .replaceAll("</?p>|</tr>", "$0\r\n")
+              .replaceAll("(?i)<img[^>]+/>", ""));
+    } catch (final IOException e1) {
+      log.log(
+          Level.SEVERE,
+          "Failed to write unit stats: " + chooser.getSelectedFile().getAbsolutePath(),
+          e1);
+    }
+  }
+
+  private JMenuItem createExportSetupChartsMenu() {
+    return new JMenuItemBuilder("Export Setup Charts", KeyCode.C)
+        .actionListener(this::exportSetupCharts)
+        .build();
+  }
+
+  private void exportSetupCharts() {
+    final JFrame frame = new JFrame("Export Setup Charts");
+    frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    final GameData clonedGameData;
+    gameData.acquireReadLock();
+    try {
+      clonedGameData = GameDataUtils.cloneGameData(gameData);
+    } finally {
+      gameData.releaseReadLock();
+    }
+    final JComponent newContentPane = new SetupFrame(clonedGameData);
+    // content panes must be opaque
+    newContentPane.setOpaque(true);
+    frame.setContentPane(newContentPane);
+    // Display the window.
+    frame.pack();
+    frame.setLocationRelativeTo(frame);
+    frame.setVisible(true);
+    uiContext.addShutdownWindow(frame);
   }
 }

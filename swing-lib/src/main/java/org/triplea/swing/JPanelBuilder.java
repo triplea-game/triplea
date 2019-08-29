@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
@@ -133,6 +134,12 @@ public class JPanelBuilder {
     return panel;
   }
 
+  /** Sets the layout to {@code GridBagLayout}. */
+  public JPanelBuilder gridBagLayout() {
+    layout = new GridBagLayout();
+    return this;
+  }
+
   /**
    * Sets the current layout manager to a GridBag. This helper method will do most of the work of
    * the gridbag for you, but the number of columns in the grid needs to be specified. After this
@@ -140,7 +147,10 @@ public class JPanelBuilder {
    *
    * @param gridBagHelperColumns The number of columns to be created before components will wrap to
    *     a new row.
+   * @deprecated Avoid using this method, uses GridBagHelper, better to use
+   *     GridBagConstraintsBuilder to build constraints.
    */
+  @Deprecated
   public JPanelBuilder gridBagLayout(final int gridBagHelperColumns) {
     this.useGridBagHelper = true;
     this.gridBagHelperColumns = gridBagHelperColumns;

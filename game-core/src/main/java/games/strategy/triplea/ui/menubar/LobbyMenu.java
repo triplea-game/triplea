@@ -65,8 +65,8 @@ public final class LobbyMenu extends JMenuBar {
   private void createSettingsMenu(final LobbyMenu menuBar) {
     final JMenu settings = new JMenu("Settings");
     menuBar.add(settings);
-    SoundOptions.addGlobalSoundSwitchMenu(settings);
-    SoundOptions.addToMenu(settings);
+    menuBar.add(SoundOptions.buildGlobalSoundSwitchMenuItem());
+    menuBar.add(SoundOptions.buildSoundOptionsMenuItem());
     addChatTimeMenu(settings);
   }
 
