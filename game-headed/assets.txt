@@ -1,6 +1,7 @@
+# This file contains a list of all paths for required assets.
 # To generate the below list, clone the assets repo, then run:
 # cd assets/images
-# find . -type f | sort | sed "s|^./|            '|" | sed "s|$|',|"
+# find . -type f | sort | sed "s|^./||"
 flags/Americans_EF_large.png
 flags/Americans_EF.png
 flags/Americans_EF_small.png
