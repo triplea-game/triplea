@@ -43,7 +43,7 @@ jar {
 
 task downloadAssets {
     doLast {
-        file('assets.txt').eachLine { path ->
+        file('.assets.txt').eachLine { path ->
             if (!path.startsWith('#')) {
                 download {
                     src "https://raw.githubusercontent.com/triplea-game/assets/master/game_headed_assets/$path"
