@@ -468,7 +468,7 @@ final class ViewMenu extends JMenu {
           // null out previous value. This is not necessary, but if anyone is using a previous
           // release then they will get an error when an unknown enum value is mapped.
           if (!toggleFlags.isSelected()) {
-            prefs.put(UnitsDrawer.PreferenceKeys.DRAW_MODE.name(), null);
+            prefs.remove(UnitsDrawer.PreferenceKeys.DRAW_MODE.name());
           }
           frame.getMapPanel().resetMap();
         });
