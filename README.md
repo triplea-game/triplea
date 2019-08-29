@@ -40,4 +40,4 @@ this Program grant you additional permission to convey the resulting work.
 
 Library | Group ID | Artifact ID | SPDX License ID
 :-- | :-- | :-- | :--
-JavaMail | com.sun.mail | javax.mail | GPL-2.0-only
+Jakarta Mail | com.sun.mail | jakarta.mail | GPL-2.0-only
