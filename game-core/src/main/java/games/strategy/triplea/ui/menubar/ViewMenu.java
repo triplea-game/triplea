@@ -465,6 +465,11 @@ final class ViewMenu extends JMenu {
           UnitsDrawer.enabledFlags = toggleFlags.isSelected();
           prefs.putBoolean(
               UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), toggleFlags.isSelected());
+          // null out previous value. This is not necessary, but if anyone is using a previous
+          // release then they will get an error when an unknown enum value is mapped.
+          if (!toggleFlags.isSelected()) {
+            prefs.put(UnitsDrawer.PreferenceKeys.DRAW_MODE.name(), null);
+          }
           frame.getMapPanel().resetMap();
         });
     unitSizeMenu.add(toggleFlags);
