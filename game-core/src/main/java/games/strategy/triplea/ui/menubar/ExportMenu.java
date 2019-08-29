@@ -371,9 +371,8 @@ final class ExportMenu extends JMenu {
     final JFileChooser chooser = new JFileChooser();
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     final File rootDir = new File(SystemProperties.getUserDir());
-    String defaultFileName = gameData.getGameName() + "_unit_stats";
-    defaultFileName = FileNameUtils.removeIllegalCharacters(defaultFileName);
-    defaultFileName = defaultFileName + ".html";
+    final String defaultFileName =
+        FileNameUtils.removeIllegalCharacters(gameData.getGameName()) + "_unit_stats.html";
     chooser.setSelectedFile(new File(rootDir, defaultFileName));
     if (chooser.showSaveDialog(frame) != JOptionPane.OK_OPTION) {
       return;
