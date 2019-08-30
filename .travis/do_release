@@ -144,6 +144,7 @@ function pushMaps() {
     set -x
     cd website
     find .
+    git diff-index --quiet HEAD --
     if ! git diff-index --quiet HEAD --; then
       git add --all _maps/
       git commit -m "Bot: update map files after game engine build ${TRAVIS_BUILD_NUMBER}"
