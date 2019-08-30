@@ -7,6 +7,7 @@ import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.AbstractUiContext;
 import games.strategy.triplea.ui.FindTerritoryAction;
 import games.strategy.triplea.ui.PurchasePanel;
@@ -43,6 +44,7 @@ import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import lombok.extern.java.Log;
+import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.SwingAction;
 
 @Log
@@ -87,9 +89,17 @@ final class ViewMenu extends JMenu {
   }
 
   private void addShowCommentLog() {
-    final JCheckBoxMenuItem showCommentLog = new JCheckBoxMenuItem("Show Comment Log");
-    showCommentLog.setModel(frame.getShowCommentLogButtonModel());
-    add(showCommentLog).setMnemonic(KeyEvent.VK_L);
+    new JMenuItemCheckBoxBuilder("Show Comment Log", 'L')
+        .bindSetting(ClientSetting.showCommentLog)
+        .actionListener(
+            value -> {
+              if (value) {
+                frame.showCommentLog();
+              } else {
+                frame.hideCommentLog();
+              }
+            })
+        .build();
   }
 
   private void addTabbedProduction() {

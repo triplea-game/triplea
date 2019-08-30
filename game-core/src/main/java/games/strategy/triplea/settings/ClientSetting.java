@@ -41,6 +41,7 @@ import lombok.extern.java.Log;
  *
  * @param <T> The type of the setting value.
  */
+@SuppressWarnings("StaticInitializerReferencesSubClass")
 @Log
 public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Integer> aiPauseDuration =
@@ -104,6 +105,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new BooleanClientSetting("SHOW_BETA_FEATURES");
   public static final BooleanClientSetting showChatSettings =
       new BooleanClientSetting("SHOW_CHAT_SETTINGS");
+  public static final BooleanClientSetting showCommentLog =
+      new BooleanClientSetting("SHOW_COMMENT_LOG");
   public static final ClientSetting<Boolean> showConsole = new BooleanClientSetting("SHOW_CONSOLE");
   public static final ClientSetting<String> testLobbyHost =
       new StringClientSetting("TEST_LOBBY_HOST");
