@@ -7,6 +7,8 @@ readonly INSTALL4J_HOME=~/install4j
 readonly ARTIFACTS_DIR=./build/artifacts
 
 
+trap "reportStatus FAILURE" ERR
+
 function main() {
 #  installInstall4j
 #  buildReleaseArtifacts
@@ -14,7 +16,13 @@ function main() {
 #  generateArtifactChecksums
   triggerGithubReleaseWithTagPush
   pushMaps
-  reportSuccessStatus
+  reportStatus SUCCESS
+}
+
+function reportStatus() {
+  local -r exitStatus="$1"
+  local -r reportScript=$(find ~ -type f -path "**/.travis/**" -name "report_build_status")
+  "$reportScript" "$exitStatus"
 }
 
 function installInstall4j() {
@@ -42,6 +50,7 @@ function collectArtifacts() {
   mkdir -p ${ARTIFACTS_DIR}
   cp -v ./**/build/artifacts/* ${ARTIFACTS_DIR}
 }
+
 
 #
 # This function generates checksums for all release artifacts.
@@ -135,7 +144,6 @@ function pushMaps() {
     set -x
     cd website
     find .
-    git config --global --list
     if ! git diff-index --quiet HEAD --; then
       git add --all _maps/
       git commit -m "Bot: update map files after game engine build ${TRAVIS_BUILD_NUMBER}"
@@ -144,10 +152,4 @@ function pushMaps() {
   )
 }
 
-function reportSuccessStatus() {
-  local -r reportScript=$(find ~ -type f -path "**/.travis/**" -name "report_build_status")
-  "$reportScript" SUCCESS
-}
-
 main
-
