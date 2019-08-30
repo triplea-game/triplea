@@ -20,7 +20,7 @@ install:
 #-  find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
 ## validate ASAP so syntax, checkstyle or unit tests fail the build early
 #- ./gradlew validateYamls checkstyleMain checkstyleTest spotlessCheck test
-#- ./.travis/install
+- ./.travis/install
 before_script:
 - echo "================ Build step 'before_script' =================" > /dev/null
 - ./.travis/setup_gpg
