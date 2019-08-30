@@ -56,8 +56,7 @@ final class LobbyServer {
             new RsaAuthenticator(),
             BCrypt::gensalt,
             new FailedLoginThrottle(),
-            new TempPasswordVerification(tempPasswordDao),
-            tempPasswordDao));
+            new TempPasswordVerification(tempPasswordDao)));
 
     new UserManager(lobbyConfiguration.getDatabaseDao()).register(messengers);
 

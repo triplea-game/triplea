@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.lobby.server.db.dao.ModeratorSingleUseKeyDao;
-import org.triplea.lobby.server.db.dao.UserLookupDao;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 @ExtendWith(MockitoExtension.class)
 class GenerateSingleUseKeyServiceTest {
@@ -27,14 +27,14 @@ class GenerateSingleUseKeyServiceTest {
 
   @Mock private Function<String, String> singleUseKeyHasher;
   @Mock private ModeratorSingleUseKeyDao singleUseKeyDao;
-  @Mock private UserLookupDao userLookupDao;
+  @Mock private UserJdbiDao userJdbiDao;
   @Mock private Supplier<String> keySupplier;
 
   @InjectMocks private GenerateSingleUseKeyService generateSingleUseKeyService;
 
   @Test
   void generateSingleUseKeyThrowsIfModeratorNameNotFound() {
-    when(userLookupDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.empty());
+    when(userJdbiDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.empty());
 
     assertThrows(
         IllegalStateException.class,
@@ -43,7 +43,7 @@ class GenerateSingleUseKeyServiceTest {
 
   @Test
   void generateSingleUseKeyByModeratorName() {
-    when(userLookupDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
+    when(userJdbiDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
     givenInsertReturnsRowCount(1);
 
     MatcherAssert.assertThat(

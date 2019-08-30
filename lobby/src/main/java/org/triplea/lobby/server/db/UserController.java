@@ -1,15 +1,13 @@
 package org.triplea.lobby.server.db;
 
-import com.google.common.base.Preconditions;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 /** Implementation of {@link UserDao} for a Postgres database. */
 @AllArgsConstructor
@@ -110,31 +108,17 @@ final class UserController implements UserDao {
   }
 
   @Override
-  public boolean login(final String username, final HashedPassword hashedPassword) {
-    final HashedPassword actualPassword = getPassword(username);
+  public boolean login(final String username, final String hashedPassword) {
+    final UserJdbiDao userJdbiDao = JdbiDatabase.newConnection().onDemand(UserJdbiDao.class);
+    final String actualPassword = userJdbiDao.getPassword(username).orElse(null);
     if (actualPassword == null) {
       return false;
     }
-    Preconditions.checkState(actualPassword.isBcrypted());
-    if (!BCrypt.checkpw(hashedPassword.value, actualPassword.value)) {
+    if (!BCrypt.checkpw(hashedPassword, actualPassword)) {
       return false;
     }
-    // update last login time
-    try (Connection con = connection.get();
-        PreparedStatement ps =
-            con.prepareStatement("update lobby_user set last_login = ? where username = ?")) {
-      ps.setTimestamp(1, Timestamp.from(Instant.now()));
-      ps.setString(2, username);
-      ps.execute();
-      con.commit();
-      return true;
-    } catch (final SQLException e) {
-      throw new DatabaseException(
-          String.format(
-              "Error validating password name: %s, (masked) pwd: %s",
-              username, hashedPassword.mask()),
-          e);
-    }
+    userJdbiDao.updateLastLoginTime(username);
+    return true;
   }
 
   @Override

@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.lobby.server.db.dao.ModeratorSingleUseKeyDao;
-import org.triplea.lobby.server.db.dao.UserLookupDao;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 /**
  * Service class that contains business logic for creating a moderators single-use key. The single
@@ -19,12 +19,12 @@ import org.triplea.lobby.server.db.dao.UserLookupDao;
 public class GenerateSingleUseKeyService {
   @Nonnull private final Function<String, String> singleUseKeyHasher;
   @Nonnull private final ModeratorSingleUseKeyDao singleUseKeyDao;
-  @Nonnull private final UserLookupDao userLookupDao;
+  @Nonnull private final UserJdbiDao userJdbiDao;
   @Nonnull private final Supplier<String> keySupplier;
 
   public String generateSingleUseKey(final String moderatorName) {
     final Integer userId =
-        userLookupDao
+        userJdbiDao
             .lookupUserIdByName(moderatorName)
             .orElseThrow(
                 () -> new IllegalStateException("No user found by name: " + moderatorName));

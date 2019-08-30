@@ -6,7 +6,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.server.db.dao.ModeratorApiKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorSingleUseKeyDao;
-import org.triplea.lobby.server.db.dao.UserLookupDao;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.server.http.AppConfig;
 import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationServiceFactory;
 
@@ -23,7 +23,7 @@ public final class ApiKeyControllerFactory {
         .generateSingleUseKeyService(
             GenerateSingleUseKeyService.builder()
                 .singleUseKeyDao(jdbi.onDemand(ModeratorSingleUseKeyDao.class))
-                .userLookupDao(jdbi.onDemand(UserLookupDao.class))
+                .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
                 .singleUseKeyHasher(keyHasher::applyHash)
                 .keySupplier(BCrypt::gensalt)
                 .build())

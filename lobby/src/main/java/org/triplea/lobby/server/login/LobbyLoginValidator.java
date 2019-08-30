@@ -25,7 +25,6 @@ import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.db.DatabaseDao;
 import org.triplea.lobby.server.db.HashedPassword;
-import org.triplea.lobby.server.db.dao.TempPasswordDao;
 import org.triplea.lobby.server.login.forgot.password.verify.TempPasswordVerification;
 import org.triplea.util.Version;
 
@@ -56,7 +55,6 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private final Supplier<String> bcryptSaltGenerator;
   private final FailedLoginThrottle failedLoginThrottle;
   private final TempPasswordVerification tempPasswordVerification;
-  private final TempPasswordDao tempPasswordDao;
 
   @Override
   public Map<String, String> getChallengeProperties(final String username) {
@@ -195,7 +193,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
                 return ServerQuarantineConversation.CHANGE_PASSWORD;
               }
 
-              return database.getUserDao().login(username, new HashedPassword(pass))
+              return database.getUserDao().login(username, pass)
                   ? null
                   : ErrorMessages.AUTHENTICATION_FAILED;
             } else {

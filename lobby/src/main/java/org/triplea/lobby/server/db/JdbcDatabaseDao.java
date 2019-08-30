@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import lombok.Getter;
 import org.jdbi.v3.core.Jdbi;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.lobby.server.db.dao.UserLookupDao;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 @Getter(onMethod_ = {@Override})
 class JdbcDatabaseDao implements DatabaseDao {
@@ -17,20 +17,20 @@ class JdbcDatabaseDao implements DatabaseDao {
   private final UserBanDao bannedMacDao;
   private final UserDao userDao;
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
-  private final UserLookupDao userLookupDao;
+  private final UserJdbiDao userJdbiDao;
 
   JdbcDatabaseDao(final Database database) {
     final Jdbi jdbi = JdbiDatabase.newConnection();
     moderatorAuditHistoryDao = jdbi.onDemand(ModeratorAuditHistoryDao.class);
-    userLookupDao = jdbi.onDemand(UserLookupDao.class);
+    userJdbiDao = jdbi.onDemand(UserJdbiDao.class);
 
     final Supplier<Connection> connection = connectionSupplier(database);
 
     accessLogDao = new AccessLogController(connection);
     badWordDao = new BadWordController(connection);
-    bannedMacDao = new BannedMacController(connection, moderatorAuditHistoryDao, userLookupDao);
+    bannedMacDao = new BannedMacController(connection, moderatorAuditHistoryDao, userJdbiDao);
     usernameBlacklistDao =
-        new UsernameBlacklistController(connection, moderatorAuditHistoryDao, userLookupDao);
+        new UsernameBlacklistController(connection, moderatorAuditHistoryDao, userJdbiDao);
     userDao = new UserController(connection);
   }
 

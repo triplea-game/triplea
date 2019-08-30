@@ -128,7 +128,7 @@ final class ModeratorController implements IModeratorController {
             ModeratorAuditHistoryDao.AuditArgs.builder()
                 .moderatorUserId(
                     database
-                        .getUserLookupDao()
+                        .getUserJdbiDao()
                         .lookupUserIdByName(modNode.getName())
                         .orElseThrow(
                             () ->
@@ -236,7 +236,7 @@ final class ModeratorController implements IModeratorController {
             ModeratorAuditHistoryDao.AuditArgs.builder()
                 .moderatorUserId(
                     database
-                        .getUserLookupDao()
+                        .getUserJdbiDao()
                         .lookupUserIdByName(modNode.getName())
                         .orElseThrow(
                             () ->
@@ -283,7 +283,7 @@ final class ModeratorController implements IModeratorController {
             ModeratorAuditHistoryDao.AuditArgs.builder()
                 .moderatorUserId(
                     database
-                        .getUserLookupDao()
+                        .getUserJdbiDao()
                         .lookupUserIdByName(modNode.getName())
                         .orElseThrow(
                             () ->

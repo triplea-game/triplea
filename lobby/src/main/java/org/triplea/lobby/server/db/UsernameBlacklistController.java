@@ -7,14 +7,14 @@ import java.sql.SQLException;
 import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.lobby.server.db.dao.UserLookupDao;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 /** Utility class to create/read/delete banned usernames (there is no update). */
 @AllArgsConstructor
 class UsernameBlacklistController implements UsernameBlacklistDao {
   private final Supplier<Connection> connection;
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
-  private final UserLookupDao userLookupDao;
+  private final UserJdbiDao userJdbiDao;
 
   /** This implementation has the side effect of removing any usernames whose ban has expired. */
   @Override
