@@ -134,25 +134,4 @@ public final class ClientMessengerFactory {
         MacFinder.getHashedMacAddress(),
         login);
   }
-
-  /**
-   * Creates a messenger that will connect to lobby and request a temporary password to be sent to
-   * the users email.
-   */
-  public static IClientMessenger newForgotPasswordMessenger(
-      final LobbyServerProperties lobbyServerProperties, final String userName) throws IOException {
-
-    return new ClientMessenger(
-        lobbyServerProperties.getHost(),
-        lobbyServerProperties.getPort(),
-        userName,
-        MacFinder.getHashedMacAddress(),
-        challenge -> {
-          final Map<String, String> response = new HashMap<>();
-          response.put(LobbyLoginResponseKeys.FORGOT_PASSWORD, Boolean.TRUE.toString());
-          response.put(
-              LobbyLoginResponseKeys.LOBBY_VERSION, LobbyConstants.LOBBY_VERSION.toString());
-          return response;
-        });
-  }
 }
