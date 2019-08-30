@@ -15,25 +15,25 @@ addons:
       - python3
       - python3-yaml
 install:
-- echo "================ Build step 'install' ================="
+- echo "================ Build step 'install' =================" > /dev/null
 ## shellcheck all shell scripts
 #-  find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
 ## validate ASAP so syntax, checkstyle or unit tests fail the build early
 #- ./gradlew validateYamls checkstyleMain checkstyleTest spotlessCheck test
 #- ./.travis/install
 before_script:
-- echo "================ Build step 'before_script' ================="
+- echo "================ Build step 'before_script' =================" > /dev/null
 - ./.travis/setup_gpg
 script:
-- echo "================ Build step 'script' ================="
+- echo "================ Build step 'script' =================" > /dev/null
 #- ./gradlew check jacocoTestReport
 after_success:
 #- bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 after_failure:
-- echo "================ Build step 'after_failure' ================="
+- echo "================ Build step 'after_failure' =================" > /dev/null
 - test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
 before_deploy:
-- echo "================ Build step 'before_deploy' ================="
+- echo "================ Build step 'before_deploy' =================" > /dev/null
 - ./.travis/do_release
 deploy:
   provider: releases
