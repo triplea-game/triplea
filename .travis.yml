@@ -26,6 +26,8 @@ script:
 - ./gradlew check jacocoTestReport
 after_success:
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
+after_failure:
+- test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
 before_deploy:
 - ./.travis/do_release
 deploy:
