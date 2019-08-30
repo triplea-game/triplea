@@ -32,7 +32,11 @@ public final class LobbyMenu extends JMenuBar {
     } else {
       MacOsIntegration.addQuitHandler(lobbyFrame::shutdown);
     }
-    createAccountMenu(this);
+
+    if (!lobbyFrame.getLobbyClient().isAnonymousLogin()) {
+      createAccountMenu(this);
+    }
+
     if (lobbyFrame.getLobbyClient().isAdmin()) {
       createAdminMenu(this);
     }
@@ -97,8 +101,6 @@ public final class LobbyMenu extends JMenuBar {
 
   private void addUpdateAccountMenu(final JMenu account) {
     final JMenuItem update = new JMenuItem("Update Account...");
-    // only if we are not anonymous login
-    update.setEnabled(!lobbyFrame.getLobbyClient().isAnonymousLogin());
     update.addActionListener(e -> updateAccountDetails());
     account.add(update);
   }
