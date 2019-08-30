@@ -205,10 +205,8 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private final JSplitPane chatSplit;
   private JSplitPane commentSplit;
   private final EditPanel editPanel;
-  @Getter
-  private final ButtonModel editModeButtonModel;
-  @Getter
-  private IEditDelegate editDelegate;
+  @Getter private final ButtonModel editModeButtonModel;
+  @Getter private IEditDelegate editDelegate;
   private final JSplitPane gameCenterPanel;
   private Territory territoryLastEntered;
   private List<Unit> unitsBeingMousedOver;

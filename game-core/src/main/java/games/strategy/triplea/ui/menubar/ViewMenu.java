@@ -10,7 +10,6 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.AbstractUiContext;
 import games.strategy.triplea.ui.FindTerritoryAction;
-import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
@@ -428,9 +427,7 @@ final class ViewMenu extends JMenu {
   }
 
   private void addLockMap() {
-    add(new JMenuItemCheckBoxBuilder("Lock Map", 'M')
-        .bindSetting(ClientSetting.lockMap)
-        .build());
+    add(new JMenuItemCheckBoxBuilder("Lock Map", 'M').bindSetting(ClientSetting.lockMap).build());
   }
 
   private void addUnitNationDrawMenu() {

@@ -399,9 +399,9 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public void highlightTerritory(
       final Territory territory, final int totalFrames, final int delay) {
-      centerOn(territory);
-      highlightedTerritory = territory;
-      territoryHighlighter.highlight(territory, totalFrames, delay);
+    centerOn(territory);
+    highlightedTerritory = territory;
+    territoryHighlighter.highlight(territory, totalFrames, delay);
   }
 
   void clearHighlightedTerritory() {
