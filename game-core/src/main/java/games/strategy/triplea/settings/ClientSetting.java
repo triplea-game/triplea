@@ -70,6 +70,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("LOBBY_LAST_USED_PORT");
   public static final ClientSetting<Integer> lobbyLastUsedHttpsPort =
       new IntegerClientSetting("LOBBY_LAST_USED_HTTPS_PORT");
+  public static final BooleanClientSetting lockMap = new BooleanClientSetting("LOCK_MAP");
   public static final ClientSetting<String> lookAndFeel =
       new StringClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
   public static final ClientSetting<Integer> mapEdgeScrollSpeed =
@@ -108,6 +109,10 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final BooleanClientSetting showCommentLog =
       new BooleanClientSetting("SHOW_COMMENT_LOG");
   public static final ClientSetting<Boolean> showConsole = new BooleanClientSetting("SHOW_CONSOLE");
+  public static final BooleanClientSetting showTerritoryEffects =
+      new BooleanClientSetting("SHOW_TERRITORY_EFFECTS", true);
+  public static final BooleanClientSetting showUnits =
+      new BooleanClientSetting("SHOW_UNITS", true);
   public static final ClientSetting<String> testLobbyHost =
       new StringClientSetting("TEST_LOBBY_HOST");
   public static final ClientSetting<Integer> testLobbyPort =

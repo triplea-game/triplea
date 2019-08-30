@@ -81,7 +81,6 @@ final class ViewMenu extends JMenu {
     addMapFontAndColorEditorMenu();
     addChatTimeMenu();
     addShowCommentLog();
-    addTabbedProduction();
     addSeparator();
     addFindTerritory();
 
@@ -100,15 +99,6 @@ final class ViewMenu extends JMenu {
               }
             })
         .build();
-  }
-
-  private void addTabbedProduction() {
-    final JCheckBoxMenuItem tabbedProduction = new JCheckBoxMenuItem("Show Production Tabs");
-    tabbedProduction.setMnemonic(KeyEvent.VK_P);
-    tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
-    tabbedProduction.addActionListener(
-        e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected()));
-    add(tabbedProduction);
   }
 
   private void addZoomMenu() {
@@ -438,11 +428,9 @@ final class ViewMenu extends JMenu {
   }
 
   private void addLockMap() {
-    final JCheckBoxMenuItem lockMapBox = new JCheckBoxMenuItem("Lock Map");
-    lockMapBox.setMnemonic(KeyEvent.VK_M);
-    lockMapBox.setSelected(uiContext.getLockMap());
-    lockMapBox.addActionListener(e -> uiContext.setLockMap(lockMapBox.isSelected()));
-    add(lockMapBox);
+    add(new JMenuItemCheckBoxBuilder("Lock Map", 'M')
+        .bindSetting(ClientSetting.lockMap)
+        .build());
   }
 
   private void addUnitNationDrawMenu() {

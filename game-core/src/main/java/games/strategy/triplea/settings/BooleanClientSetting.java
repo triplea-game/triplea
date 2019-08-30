@@ -2,7 +2,7 @@ package games.strategy.triplea.settings;
 
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
 
-final class BooleanClientSetting extends ClientSetting<Boolean>
+public final class BooleanClientSetting extends ClientSetting<Boolean>
     implements JMenuItemCheckBoxBuilder.SettingPersistence {
 
   BooleanClientSetting(final String name) {

@@ -8,6 +8,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.Operation;
@@ -281,7 +282,7 @@ public class TileManager {
     if (territoryOverlays.get(territory.getName()) != null) {
       drawing.add(territoryOverlays.get(territory.getName()));
     }
-    if (uiContext.getShowTerritoryEffects()) {
+    if (ClientSetting.showTerritoryEffects.getSetting()) {
       drawTerritoryEffects(territory, mapData, drawing);
     }
     if (uiContext.getShowUnits()) {

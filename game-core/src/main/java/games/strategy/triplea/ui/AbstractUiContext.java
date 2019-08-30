@@ -257,23 +257,6 @@ public abstract class AbstractUiContext implements UiContext {
   }
 
   @Override
-  public boolean getLockMap() {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
-    return prefs.getBoolean(LOCK_MAP, false);
-  }
-
-  @Override
-  public void setLockMap(final boolean lockMap) {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
-    prefs.putBoolean(LOCK_MAP, lockMap);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
-    }
-  }
-
-  @Override
   public boolean getShowEndOfTurnReport() {
     final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
     return prefs.getBoolean(SHOW_END_OF_TURN_REPORT, true);

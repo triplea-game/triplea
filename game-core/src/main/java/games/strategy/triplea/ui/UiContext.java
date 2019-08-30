@@ -111,10 +111,6 @@ public interface UiContext {
 
   void setShowMapOnly(boolean showMapOnly);
 
-  boolean getLockMap();
-
-  void setLockMap(boolean lockMap);
-
   boolean getShowEndOfTurnReport();
 
   void setShowEndOfTurnReport(boolean value);
