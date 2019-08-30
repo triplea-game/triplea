@@ -5,8 +5,8 @@ matrix:
   include:
   - jdk: openjdk11
     env: TRIPLEA_RELEASE=true
-  - jdk: openjdk12
-    env: TRIPLEA_RELEASE=false
+#  - jdk: openjdk12
+#    env: TRIPLEA_RELEASE=false
 addons:
   postgresql: "10"
   apt:
@@ -21,14 +21,18 @@ install:
 #- ./gradlew validateYamls checkstyleMain checkstyleTest spotlessCheck test
 #- ./.travis/install
 before_script:
+#- echo "Executing build step 'before_script'"
 #- ./.travis/setup_gpg
 script:
+- echo "Executing build step 'script'"
 #- ./gradlew check jacocoTestReport
 after_success:
 #- bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 after_failure:
+- echo "Executing build step 'after_failure'"
 - test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
 before_deploy:
+- echo "Executing build step 'before_deploy'"
 - ./.travis/do_release
 deploy:
   provider: releases
