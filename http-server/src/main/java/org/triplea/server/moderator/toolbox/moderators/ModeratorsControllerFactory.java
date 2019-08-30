@@ -8,7 +8,7 @@ import org.triplea.lobby.server.db.dao.ModeratorApiKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.ModeratorSingleUseKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorsDao;
-import org.triplea.lobby.server.db.dao.UserLookupDao;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
 import org.triplea.server.http.AppConfig;
 import org.triplea.server.moderator.toolbox.api.key.GenerateSingleUseKeyService;
 import org.triplea.server.moderator.toolbox.api.key.KeyHasher;
@@ -28,13 +28,13 @@ public final class ModeratorsControllerFactory {
             GenerateSingleUseKeyService.builder()
                 .keySupplier(BCrypt::gensalt)
                 .singleUseKeyHasher(keyHasher::applyHash)
-                .userLookupDao(jdbi.onDemand(UserLookupDao.class))
+                .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
                 .singleUseKeyDao(jdbi.onDemand(ModeratorSingleUseKeyDao.class))
                 .build())
         .moderatorsService(
             ModeratorsService.builder()
                 .moderatorsDao(jdbi.onDemand(ModeratorsDao.class))
-                .userLookupDao(jdbi.onDemand(UserLookupDao.class))
+                .userJdbiDao(jdbi.onDemand(UserJdbiDao.class))
                 .moderatorApiKeyDao(jdbi.onDemand(ModeratorApiKeyDao.class))
                 .moderatorSingleUseKeyDao(jdbi.onDemand(ModeratorSingleUseKeyDao.class))
                 .moderatorAuditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))

@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.lobby.server.db.dao.UserLookupDao;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 /** Utility class to create/read/delete banned macs (there is no update). */
 @AllArgsConstructor
@@ -24,7 +24,7 @@ class BannedMacController implements UserBanDao {
 
   private final Supplier<Connection> connection;
   private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
-  private final UserLookupDao userLookupDao;
+  private final UserJdbiDao userDao;
 
   @Override
   public void banUser(
@@ -59,7 +59,7 @@ class BannedMacController implements UserBanDao {
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .moderatorUserId(
-                userLookupDao
+                userDao
                     .lookupUserIdByName(moderator.getUsername())
                     .orElseThrow(
                         () ->

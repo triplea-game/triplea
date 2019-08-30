@@ -40,8 +40,7 @@ class LobbyLoginValidatorIntegrationTest {
           BCrypt::gensalt,
           new FailedLoginThrottle(),
           new TempPasswordVerification(
-              JdbiDatabase.newConnection().onDemand(TempPasswordDao.class)),
-          JdbiDatabase.newConnection().onDemand(TempPasswordDao.class));
+              JdbiDatabase.newConnection().onDemand(TempPasswordDao.class)));
 
   private ChallengeResultFunction generateChallenge(final HashedPassword password) {
     return generateChallenge("a" + TestUserUtils.newUniqueTimestamp(), password);

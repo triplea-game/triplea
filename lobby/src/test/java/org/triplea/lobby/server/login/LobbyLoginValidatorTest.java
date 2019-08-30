@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -38,7 +37,6 @@ import org.triplea.lobby.server.db.HashedPassword;
 import org.triplea.lobby.server.db.UserBanDao;
 import org.triplea.lobby.server.db.UserDao;
 import org.triplea.lobby.server.db.UsernameBlacklistDao;
-import org.triplea.lobby.server.db.dao.TempPasswordDao;
 import org.triplea.lobby.server.login.forgot.password.verify.TempPasswordVerification;
 import org.triplea.test.common.security.TestSecurityUtils;
 import org.triplea.util.Md5Crypt;
@@ -67,8 +65,6 @@ final class LobbyLoginValidatorTest {
 
     @Mock TempPasswordVerification tempPasswordVerification;
 
-    @Mock TempPasswordDao tempPasswordDao;
-
     LobbyLoginValidator lobbyLoginValidator;
 
     final User user = TestUserUtils.newUser();
@@ -87,8 +83,7 @@ final class LobbyLoginValidatorTest {
               new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair()),
               () -> bcryptSalt,
               failedLoginThrottle,
-              tempPasswordVerification,
-              tempPasswordDao);
+              tempPasswordVerification);
     }
 
     final String bcrypt(final String password) {
@@ -115,48 +110,14 @@ final class LobbyLoginValidatorTest {
       when(userDao.doesUserExist(user.getUsername())).thenReturn(false);
     }
 
-    final void givenAuthenticationWillUseMd5CryptedPasswordAndSucceed() {
-      when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.login(user.getUsername(), new HashedPassword(md5Crypt(PASSWORD))))
-          .thenReturn(true);
-    }
-
-    final void givenAuthenticationWillUseMd5CryptedPasswordAndFail() {
-      when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.login(user.getUsername(), new HashedPassword(md5Crypt(PASSWORD))))
-          .thenReturn(false);
-    }
-
     final void givenAuthenticationWillUseObfuscatedPasswordAndSucceed() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.login(user.getUsername(), new HashedPassword(obfuscate(PASSWORD))))
-          .thenReturn(true);
+      when(userDao.login(user.getUsername(), obfuscate(PASSWORD))).thenReturn(true);
     }
 
     final void givenAuthenticationWillUseObfuscatedPasswordAndFail() {
       when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.login(user.getUsername(), new HashedPassword(obfuscate(PASSWORD))))
-          .thenReturn(false);
-    }
-
-    final void givenUserDoesNotExist() {
-      when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.doesUserExist(user.getUsername())).thenReturn(false);
-    }
-
-    final void givenUserDoesNotHaveBcryptedPassword() {
-      when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.getPassword(user.getUsername()))
-          .thenReturn(new HashedPassword(md5Crypt(PASSWORD)));
-    }
-
-    final void givenUserDoesNotHaveMd5CryptedPassword() {
-      when(databaseDao.getUserDao()).thenReturn(userDao);
-    }
-
-    final void givenUserExists() {
-      when(databaseDao.getUserDao()).thenReturn(userDao);
-      when(userDao.getUserEmailByName(user.getUsername())).thenReturn(EMAIL);
+      when(userDao.login(user.getUsername(), obfuscate(PASSWORD))).thenReturn(false);
     }
 
     final void givenUserHasBcryptedPassword() {
@@ -198,30 +159,8 @@ final class LobbyLoginValidatorTest {
       assertThat(authenticationErrorMessage, is(nullValue()));
     }
 
-    final void thenUserShouldBeCreatedWithMd5CryptedPassword() {
-      verify(userDao).createUser(user.getUsername(), EMAIL, new HashedPassword(md5Crypt(PASSWORD)));
-    }
-
-    final void thenUserShouldBeUpdatedWithBcryptedPassword() {
-      verify(userDao).updateUser(user.getUsername(), EMAIL, new HashedPassword(bcrypt(PASSWORD)));
-    }
-
-    final void thenUserShouldBeUpdatedWithMd5CryptedPassword() {
-      verify(userDao).updateUser(user.getUsername(), EMAIL, new HashedPassword(md5Crypt(PASSWORD)));
-    }
-
     final void thenUserShouldNotBeCreated() {
       verify(userDao, never()).createUser(any(), any(), any());
-    }
-
-    final void thenUserShouldNotBeUpdatedWithBcryptedPassword() {
-      verify(userDao, never())
-          .updateUser(eq(user.getUsername()), eq(EMAIL), argThat(HashedPassword::isBcrypted));
-    }
-
-    final void thenUserShouldNotBeUpdatedWithMd5CryptedPassword() {
-      verify(userDao, never())
-          .updateUser(eq(user.getUsername()), eq(EMAIL), argThat(HashedPassword::isMd5Crypted));
     }
 
     final void thenUserShouldNotBeUpdated() {

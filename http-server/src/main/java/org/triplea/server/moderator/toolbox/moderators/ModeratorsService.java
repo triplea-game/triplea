@@ -11,13 +11,13 @@ import org.triplea.lobby.server.db.dao.ModeratorApiKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.ModeratorSingleUseKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorsDao;
-import org.triplea.lobby.server.db.dao.UserLookupDao;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 @Builder
 @Log
 class ModeratorsService {
   @Nonnull private final ModeratorsDao moderatorsDao;
-  @Nonnull private final UserLookupDao userLookupDao;
+  @Nonnull private final UserJdbiDao userJdbiDao;
   @Nonnull private final ModeratorApiKeyDao moderatorApiKeyDao;
   @Nonnull private final ModeratorSingleUseKeyDao moderatorSingleUseKeyDao;
   @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
@@ -37,7 +37,7 @@ class ModeratorsService {
   /** Promotes a user to moderator. Can only be done by super-moderators. */
   void addModerator(final int moderatorIdRequesting, final String username) {
     final int userId =
-        userLookupDao
+        userJdbiDao
             .lookupUserIdByName(username)
             .orElseThrow(
                 () -> new IllegalArgumentException("Unable to find username: " + username));
@@ -55,7 +55,7 @@ class ModeratorsService {
   /** Removes moderator status from a user. Can only be done by super moderators. */
   void removeMod(final int moderatorIdRequesting, final String moderatorNameToRemove) {
     final int userId =
-        userLookupDao
+        userJdbiDao
             .lookupUserIdByName(moderatorNameToRemove)
             .orElseThrow(
                 () ->
@@ -80,7 +80,7 @@ class ModeratorsService {
   /** Promotes a user to super-moderator. Can only be done by super moderators. */
   void addSuperMod(final int moderatorIdRequesting, final String username) {
     final int userId =
-        userLookupDao
+        userJdbiDao
             .lookupUserIdByName(username)
             .orElseThrow(
                 () -> new IllegalArgumentException("Failed to find user by name: " + username));
@@ -99,6 +99,6 @@ class ModeratorsService {
 
   /** Checks if any user exists in DB by the given name. */
   boolean userExistsByName(final String username) {
-    return userLookupDao.lookupUserIdByName(username).isPresent();
+    return userJdbiDao.lookupUserIdByName(username).isPresent();
   }
 }

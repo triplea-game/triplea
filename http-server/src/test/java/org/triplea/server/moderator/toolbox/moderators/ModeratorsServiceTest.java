@@ -17,7 +17,7 @@ import org.triplea.lobby.server.db.dao.ModeratorApiKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.ModeratorSingleUseKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorsDao;
-import org.triplea.lobby.server.db.dao.UserLookupDao;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 @ExtendWith(MockitoExtension.class)
 class ModeratorsServiceTest {
@@ -27,7 +27,7 @@ class ModeratorsServiceTest {
   private static final String USERNAME = "The reef grows amnesty like a golden lass.";
 
   @Mock private ModeratorsDao moderatorsDao;
-  @Mock private UserLookupDao userLookupDao;
+  @Mock private UserJdbiDao userJdbiDao;
   @Mock private ModeratorApiKeyDao moderatorApiKeyDao;
   @Mock private ModeratorSingleUseKeyDao moderatorSingleUseKeyDao;
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
@@ -38,7 +38,7 @@ class ModeratorsServiceTest {
   final class AddModeratorTest {
     @Test
     void throwsIfUserNotFound() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
       assertThrows(
           IllegalArgumentException.class,
           () -> moderatorsService.addModerator(MODERATOR_ID, USERNAME));
@@ -46,7 +46,7 @@ class ModeratorsServiceTest {
 
     @Test
     void throwsIfModeratorNotAdded() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
       when(moderatorsDao.addMod(USER_ID)).thenReturn(0);
       assertThrows(
           IllegalStateException.class,
@@ -55,7 +55,7 @@ class ModeratorsServiceTest {
 
     @Test
     void verifySuccessCase() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
       when(moderatorsDao.addMod(USER_ID)).thenReturn(1);
 
       moderatorsService.addModerator(MODERATOR_ID, USERNAME);
@@ -74,7 +74,7 @@ class ModeratorsServiceTest {
   final class RemoveModTest {
     @Test
     void throwsIfModNameIsNotFound() {
-      when(userLookupDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.empty());
+      when(userJdbiDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.empty());
       assertThrows(
           IllegalArgumentException.class,
           () -> moderatorsService.removeMod(MODERATOR_ID, MODERATOR_NAME));
@@ -82,7 +82,7 @@ class ModeratorsServiceTest {
 
     @Test
     void throwsIfModIsNotRemoved() {
-      when(userLookupDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
+      when(userJdbiDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
       when(moderatorsDao.removeMod(USER_ID)).thenReturn(0);
       assertThrows(
           IllegalStateException.class,
@@ -91,7 +91,7 @@ class ModeratorsServiceTest {
 
     @Test
     void verifySuccessfulRemove() {
-      when(userLookupDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
+      when(userJdbiDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
       when(moderatorsDao.removeMod(USER_ID)).thenReturn(1);
       moderatorsService.removeMod(MODERATOR_ID, MODERATOR_NAME);
 
@@ -111,7 +111,7 @@ class ModeratorsServiceTest {
   final class AddSuperModTest {
     @Test
     void throwsIfUserNotFound() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
       assertThrows(
           IllegalArgumentException.class,
           () -> moderatorsService.addSuperMod(MODERATOR_ID, USERNAME));
@@ -119,7 +119,7 @@ class ModeratorsServiceTest {
 
     @Test
     void throwsIfSuperModNotAdded() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
       when(moderatorsDao.addSuperMod(USER_ID)).thenReturn(0);
       assertThrows(
           IllegalStateException.class, () -> moderatorsService.addSuperMod(MODERATOR_ID, USERNAME));
@@ -127,7 +127,7 @@ class ModeratorsServiceTest {
 
     @Test
     void verifySuccessfulAdd() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
       when(moderatorsDao.addSuperMod(USER_ID)).thenReturn(1);
       moderatorsService.addSuperMod(MODERATOR_ID, USERNAME);
 
@@ -145,13 +145,13 @@ class ModeratorsServiceTest {
   final class UserExistsTest {
     @Test
     void userDoesNotExist() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.empty());
       assertThat(moderatorsService.userExistsByName(USERNAME), is(false));
     }
 
     @Test
     void userExists() {
-      when(userLookupDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
+      when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
       assertThat(moderatorsService.userExistsByName(USERNAME), is(true));
     }
   }

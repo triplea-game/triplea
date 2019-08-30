@@ -64,7 +64,7 @@ final class UserControllerIntegrationTest {
     final String user = newUserWithHash(password, Function.identity());
     controller.updateUser(
         user, generateEmailAddress(user), new HashedPassword(bcrypt(obfuscate(password))));
-    assertTrue(controller.login(user, new HashedPassword(obfuscate(password))));
+    assertTrue(controller.login(user, obfuscate(password)));
   }
 
   @Test
