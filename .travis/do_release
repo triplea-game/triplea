@@ -114,7 +114,7 @@ function triggerGithubReleaseWithTagPush() {
 
   # Sometimes a tag will be created from a previous build and assets will fail to upload.
   # Check if the current tag exists, if so, delete it.
-  git ls-remote --tags origin | grep -q "2.0.${TRAVIS_BUILD_NUMBER}$" && \
+  git ls-remote --tags origin | grep -q "$TAG_VALUE" && \
     (
     echo "Deleting tag $TAG_VALUE to recreate the release." && \
     git push -q "$gitRepo" --delete "refs/tags/$TAG_VALUE"
