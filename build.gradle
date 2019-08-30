@@ -71,6 +71,7 @@ subprojects {
         mockitoVersion = '2.24.5'
         postgresqlVersion = '42.2.5'
         sonatypeGoodiesPrefsVersion = '2.2.5'
+        jakartaMailVersion = '1.6.4'
     }
 
     repositories {
