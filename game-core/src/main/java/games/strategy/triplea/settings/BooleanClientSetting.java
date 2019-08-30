@@ -1,6 +1,14 @@
 package games.strategy.triplea.settings;
 
-final class BooleanClientSetting extends ClientSetting<Boolean> {
+import org.triplea.swing.JMenuItemCheckBoxBuilder;
+
+final class BooleanClientSetting extends ClientSetting<Boolean>
+    implements JMenuItemCheckBoxBuilder.SettingPersistence {
+
+  BooleanClientSetting(final String name) {
+    this(name, false);
+  }
+
   BooleanClientSetting(final String name, final boolean defaultValue) {
     super(Boolean.class, name, defaultValue);
   }
@@ -13,5 +21,15 @@ final class BooleanClientSetting extends ClientSetting<Boolean> {
   @Override
   protected Boolean decodeValue(final String encodedValue) {
     return Boolean.valueOf(encodedValue);
+  }
+
+  @Override
+  public void saveSetting(final boolean value) {
+    setValueAndFlush(value);
+  }
+
+  @Override
+  public boolean getSetting() {
+    return getDefaultValue().orElse(false);
   }
 }
