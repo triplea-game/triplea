@@ -7,8 +7,6 @@ readonly INSTALL4J_HOME=~/install4j
 readonly ARTIFACTS_DIR=./build/artifacts
 
 
-trap "reportStatus FAILURE" ERR
-
 function main() {
   installInstall4j
   buildReleaseArtifacts
@@ -16,13 +14,7 @@ function main() {
   generateArtifactChecksums
   triggerGithubReleaseWithTagPush
   pushMaps
-  reportStatus SUCCESS
-}
-
-function reportStatus() {
-  local -r exitStatus="$1"
-  local -r reportScript=$(find ~ -type f -path "**/.travis/**" -name "report_build_status")
-  "$reportScript" "$exitStatus"
+  reportSuccessStatus
 }
 
 function installInstall4j() {
@@ -50,7 +42,6 @@ function collectArtifacts() {
   mkdir -p ${ARTIFACTS_DIR}
   cp -v ./**/build/artifacts/* ${ARTIFACTS_DIR}
 }
-
 
 #
 # This function generates checksums for all release artifacts.
@@ -127,8 +118,6 @@ function triggerGithubReleaseWithTagPush() {
   git push -q "$gitRepo" --tags
 }
 
-
-
 ## Live update maps list on website, read the maps in 'triplea_maps.yaml' and 
 ## commit updated data files to website json data directory.
 function pushMaps() { 
@@ -155,4 +144,10 @@ function pushMaps() {
   )
 }
 
+function reportSuccessStatus() {
+  local -r reportScript=$(find ~ -type f -path "**/.travis/**" -name "report_build_status")
+  "$reportScript" SUCCESS
+}
+
 main
+

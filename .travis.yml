@@ -21,8 +21,8 @@ install:
 #- ./gradlew validateYamls checkstyleMain checkstyleTest spotlessCheck test
 #- ./.travis/install
 before_script:
-#- echo "Executing build step 'before_script'"
-#- ./.travis/setup_gpg
+- echo "Executing build step 'before_script'"
+- ./.travis/setup_gpg
 script:
 - echo "Executing build step 'script'"
 #- ./gradlew check jacocoTestReport
