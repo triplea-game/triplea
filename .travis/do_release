@@ -8,10 +8,10 @@ readonly ARTIFACTS_DIR=./build/artifacts
 
 
 function main() {
-  installInstall4j
-  buildReleaseArtifacts
-  collectArtifacts
-  generateArtifactChecksums
+#  installInstall4j
+#  buildReleaseArtifacts
+#  collectArtifacts
+#  generateArtifactChecksums
   triggerGithubReleaseWithTagPush
   pushMaps
   reportSuccessStatus
