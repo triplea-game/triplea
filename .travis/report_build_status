@@ -11,7 +11,7 @@ set -eu
 RESULT=${1-}
 
 readonly BROKEN_BUILD_ISSUE_TITLE="Travis Master Branch Build Failed";
-readonly LATEST_BUILD_LINK="[#$TRAVIS_JOB_ID]($TRAVIS_BUILD_WEB_URL)"
+readonly LATEST_BUILD_LINK="[#$TRAVIS_BUILD_NUMBER]($TRAVIS_BUILD_WEB_URL)"
 readonly BROKEN_BUILD_ISSUE_BODY="Latest master branch travis build $LATEST_BUILD_LINK failed.\n\
 No release artifacts will be generated until this is fixed."
 
