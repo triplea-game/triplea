@@ -7,7 +7,7 @@ readonly INSTALL4J_HOME=~/install4j
 readonly ARTIFACTS_DIR=./build/artifacts
 
 
-trapErr "./.travis/report_build_status FAILURE" ERR
+trap "./.travis/report_build_status FAILURE" ERR
 
 function main() {
   installInstall4j
