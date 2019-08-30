@@ -1,11 +1,13 @@
 #!/bin/bash
 
-set -eu
+set -eEu
 
 
 readonly INSTALL4J_HOME=~/install4j
 readonly ARTIFACTS_DIR=./build/artifacts
 
+
+trapErr "./.travis/report_build_status FAILURE" ERR
 
 function main() {
   installInstall4j
@@ -14,6 +16,7 @@ function main() {
   generateArtifactChecksums
   triggerGithubReleaseWithTagPush
   pushMaps
+  ./.travis/report_build_status SUCCESS
 }
 
 
