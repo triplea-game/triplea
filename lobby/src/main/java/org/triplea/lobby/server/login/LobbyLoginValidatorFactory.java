@@ -1,5 +1,7 @@
 package org.triplea.lobby.server.login;
 
+import games.strategy.engine.lobby.PlayerEmailValidation;
+import games.strategy.engine.lobby.PlayerNameValidation;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
@@ -26,6 +28,10 @@ public final class LobbyLoginValidatorFactory {
         new FailedLoginThrottle(),
         new TempPasswordVerification(tempPasswordDao),
         new AllowLoginRules(lobbyConfiguration.getDatabaseDao()),
-        new AllowCreateUserRules(lobbyConfiguration.getDatabaseDao()));
+        AllowCreateUserRules.builder()
+            .userDao(lobbyConfiguration.getDatabaseDao().getUserDao())
+            .nameValidator(PlayerNameValidation::validate)
+            .emailValidator(PlayerEmailValidation::validate)
+            .build());
   }
 }

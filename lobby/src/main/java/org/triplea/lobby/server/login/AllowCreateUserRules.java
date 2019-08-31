@@ -1,24 +1,21 @@
 package org.triplea.lobby.server.login;
 
-import games.strategy.engine.lobby.PlayerEmailValidation;
-import games.strategy.engine.lobby.PlayerNameValidation;
-import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.AllArgsConstructor;
-import org.triplea.lobby.common.login.LobbyLoginResponseKeys;
-import org.triplea.lobby.server.User;
-import org.triplea.lobby.server.db.DatabaseDao;
+import lombok.Builder;
+import org.triplea.lobby.server.db.UserDao;
 
 /** Validator to detect if a given request is valid for creating a user. */
-@AllArgsConstructor
+@Builder
 class AllowCreateUserRules {
-  private final DatabaseDao database;
+  @Nonnull private final UserDao userDao;
+  @Nonnull private final Function<String, String> nameValidator;
+  @Nonnull private final Function<String, String> emailValidator;
 
   @Nullable
-  String allowCreateUser(final Map<String, String> response, final User user) {
-    final String username = user.getUsername();
-    final String email = response.get(LobbyLoginResponseKeys.EMAIL);
+  String allowCreateUser(final String username, final String email) {
     if (email == null || email.trim().isEmpty()) {
       return "Must provide an email address";
     }
@@ -27,16 +24,9 @@ class AllowCreateUserRules {
       return "Email address may not contain spaces";
     }
 
-    final String validationMessage =
-        Optional.ofNullable(PlayerNameValidation.validate(username))
-            .orElseGet(() -> PlayerEmailValidation.validate(email));
-    if (validationMessage != null) {
-      return validationMessage;
-    }
-
-    if (database.getUserDao().doesUserExist(username)) {
-      return "That user name has already been taken";
-    }
-    return null;
+    return Optional.ofNullable(nameValidator.apply(username))
+        .or(() -> Optional.ofNullable(emailValidator.apply(email)))
+        .orElseGet(
+            () -> userDao.doesUserExist(username) ? "That user name has already been taken" : null);
   }
 }

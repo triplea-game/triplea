@@ -12,6 +12,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
+import games.strategy.engine.lobby.PlayerEmailValidation;
+import games.strategy.engine.lobby.PlayerNameValidation;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +85,13 @@ final class LobbyLoginValidatorTest {
               new RsaAuthenticator(TestSecurityUtils.loadRsaKeyPair()),
               () -> bcryptSalt,
               failedLoginThrottle,
-              tempPasswordVerification);
+              tempPasswordVerification,
+              new AllowLoginRules(databaseDao),
+              AllowCreateUserRules.builder()
+                  .userDao(userDao)
+                  .nameValidator(PlayerNameValidation::validate)
+                  .emailValidator(PlayerEmailValidation::validate)
+                  .build());
     }
 
     final String bcrypt(final String password) {

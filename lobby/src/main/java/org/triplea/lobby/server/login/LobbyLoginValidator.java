@@ -146,7 +146,9 @@ public final class LobbyLoginValidator implements ILoginValidator {
   }
 
   private @Nullable String createUser(final Map<String, String> response, final User user) {
-    final String errMsg = allowCreateUserRules.allowCreateUser(response, user);
+    final String errMsg =
+        allowCreateUserRules.allowCreateUser(
+            user.getUsername(), response.get(LobbyLoginResponseKeys.EMAIL));
     if (errMsg != null) {
       return errMsg;
     }
