@@ -1,6 +1,7 @@
 package org.triplea.swing;
 
 import com.google.common.base.Preconditions;
+import java.util.Optional;
 import java.util.function.Consumer;
 import javax.swing.JCheckBoxMenuItem;
 import org.triplea.java.ArgChecker;
@@ -23,6 +24,7 @@ public class JMenuItemCheckBoxBuilder {
   private Character mnemonic;
   private Consumer<Boolean> action;
   private boolean selected;
+  private SettingPersistence settingPersistence;
 
   /** Sets the title that appears next to the checkbox. */
   public JMenuItemCheckBoxBuilder(final String title, final char mnemonic) {
@@ -35,12 +37,27 @@ public class JMenuItemCheckBoxBuilder {
   public JCheckBoxMenuItem build() {
     ArgChecker.checkNotEmpty(title);
     Preconditions.checkNotNull(mnemonic);
-    Preconditions.checkNotNull(action);
+    Preconditions.checkArgument(
+        action != null || settingPersistence != null,
+        "Action was null? "
+            + (action == null)
+            + ", setting persistence null? "
+            + (settingPersistence == null));
 
     final var checkBox = new JCheckBoxMenuItem(title);
     checkBox.setMnemonic(mnemonic);
-    checkBox.setSelected(selected);
-    checkBox.addActionListener(e -> action.accept(checkBox.isSelected()));
+
+    checkBox.setSelected(
+        Optional.ofNullable(settingPersistence)
+            .map(SettingPersistence::getSetting)
+            .orElse(selected));
+
+    checkBox.addActionListener(
+        e -> {
+          Optional.ofNullable(settingPersistence)
+              .ifPresent(s -> s.saveSetting(checkBox.isSelected()));
+          Optional.ofNullable(action).ifPresent(a -> a.accept(checkBox.isSelected()));
+        });
     return checkBox;
   }
 
@@ -52,5 +69,20 @@ public class JMenuItemCheckBoxBuilder {
   public JMenuItemCheckBoxBuilder actionListener(final Consumer<Boolean> actionListener) {
     this.action = actionListener;
     return this;
+  }
+
+  /**
+   * Binds setting to a persistence object. The persistence object will be used to load the selected
+   * value and when selected will be used to save the selected value.
+   */
+  public JMenuItemCheckBoxBuilder bindSetting(final SettingPersistence settingPersistence) {
+    this.settingPersistence = settingPersistence;
+    return this;
+  }
+
+  public interface SettingPersistence {
+    void saveSetting(boolean value);
+
+    boolean getSetting();
   }
 }

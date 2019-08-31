@@ -7,14 +7,15 @@ import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.moderator.toolbox.ShowToolboxController;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import org.triplea.lobby.common.IUserManager;
 import org.triplea.lobby.common.login.RsaAuthenticator;
+import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
@@ -93,10 +94,11 @@ public final class LobbyMenu extends JMenuBar {
   }
 
   private void addChatTimeMenu(final JMenu parentMenu) {
-    final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
-    chatTimeBox.addActionListener(e -> lobbyFrame.setShowChatTime(chatTimeBox.isSelected()));
-    chatTimeBox.setSelected(true);
-    parentMenu.add(chatTimeBox);
+    parentMenu.add(
+        new JMenuItemCheckBoxBuilder("Show Chat Times", 'C')
+            .bindSetting(ClientSetting.showChatTimeSettings)
+            .actionListener(lobbyFrame::setShowChatTime)
+            .build());
   }
 
   private void addUpdateAccountMenu(final JMenu account) {

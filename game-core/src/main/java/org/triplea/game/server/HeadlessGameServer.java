@@ -22,7 +22,6 @@ import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
@@ -540,7 +539,6 @@ public class HeadlessGameServer {
 
     ArgParser.handleCommandLineArgs(args);
     handleHeadlessGameServerArgs();
-    ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
     try {
       new HeadlessGameServer();
     } catch (final Exception e) {

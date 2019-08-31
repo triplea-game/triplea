@@ -1,13 +1,14 @@
 package games.strategy.sound;
 
 import games.strategy.engine.data.properties.PropertiesUi;
+import games.strategy.triplea.settings.ClientSetting;
 import java.awt.event.KeyEvent;
 import java.util.List;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import org.triplea.swing.JMenuItemCheckBoxBuilder;
 
 /** Sound option window framework. */
 public final class SoundOptions {
@@ -54,17 +55,15 @@ public final class SoundOptions {
       }
     }
     for (final SoundOptionCheckBox property : properties) {
-      clipPlayer.setMute(property.getClipName(), !property.getValue());
+      clipPlayer.setSoundClipMute(property.getClipName(), !property.getValue());
     }
     clipPlayer.saveSoundPreferences();
   }
 
   /** Builds a checkbox menu item to turn sounds on or off. */
   public static JMenuItem buildGlobalSoundSwitchMenuItem() {
-    final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
-    soundCheckBox.setMnemonic(KeyEvent.VK_N);
-    soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
-    soundCheckBox.addActionListener(e -> ClipPlayer.setBeSilent(!soundCheckBox.isSelected()));
-    return soundCheckBox;
+    return new JMenuItemCheckBoxBuilder("Enable Sound", 'N')
+        .bindSetting(ClientSetting.soundEnabled)
+        .build();
   }
 }

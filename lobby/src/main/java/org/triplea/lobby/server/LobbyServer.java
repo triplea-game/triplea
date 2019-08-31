@@ -6,7 +6,6 @@ import games.strategy.net.DefaultObjectStreamFactory;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
-import games.strategy.sound.ClipPlayer;
 import java.io.IOException;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
@@ -39,8 +38,6 @@ final class LobbyServer {
    * the lobby server is running.
    */
   static void start(final LobbyConfiguration lobbyConfiguration) throws IOException {
-    ClipPlayer.setBeSilentInPreferencesWithoutAffectingCurrent(true);
-
     final IServerMessenger server =
         new ServerMessenger(
             LobbyConstants.ADMIN_USERNAME,
