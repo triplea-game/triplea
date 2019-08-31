@@ -10,6 +10,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.ui.screen.drawable.AbstractDrawable;
@@ -23,7 +24,6 @@ import java.awt.RenderingHints;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.prefs.Preferences;
 import lombok.extern.java.Log;
 import org.triplea.util.Tuple;
 
@@ -36,9 +36,6 @@ import org.triplea.util.Tuple;
  */
 @Log
 public class UnitsDrawer extends AbstractDrawable {
-  public static boolean enabledFlags = false;
-  private static UnitFlagDrawMode drawUnitNationMode = UnitFlagDrawMode.SMALL_FLAG;
-
   private final int count;
   private final String unitType;
   private final String playerName;
@@ -58,8 +55,9 @@ public class UnitsDrawer extends AbstractDrawable {
 
   /** Identifies the location where a nation flag is drawn relative to a unit. */
   public enum UnitFlagDrawMode {
-    LARGE_FLAG,
-    SMALL_FLAG
+    NONE,
+    SMALL_FLAG,
+    LARGE_FLAG
   }
 
   public UnitsDrawer(
@@ -130,9 +128,10 @@ public class UnitsDrawer extends AbstractDrawable {
               + territoryName);
     }
 
-    if (img.isPresent() && enabledFlags) {
+    if (img.isPresent()
+        && ClientSetting.unitFlagDrawMode.getValueOrThrow() != UnitFlagDrawMode.NONE) {
       final int maxRange = new TripleAUnit(type, owner, data).getMaxMovementAllowed();
-      switch (drawUnitNationMode) {
+      switch (ClientSetting.unitFlagDrawMode.getValueOrThrow()) {
         case LARGE_FLAG:
           // If unit is not in the "excluded list" it will get drawn
           if (maxRange != 0) {
@@ -165,7 +164,8 @@ public class UnitsDrawer extends AbstractDrawable {
           }
           break;
         default:
-          throw new AssertionError("unknown unit flag draw mode: " + drawUnitNationMode);
+          throw new AssertionError(
+              "unknown unit flag draw mode: " + ClientSetting.unitFlagDrawMode.getValueOrThrow());
       }
     } else {
       img.ifPresent(image -> drawUnit(graphics, image, bounds, data));
@@ -340,10 +340,5 @@ public class UnitsDrawer extends AbstractDrawable {
 
   private static boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data) {
     return Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
-  }
-
-  public static void setUnitFlagDrawMode(final UnitFlagDrawMode unitFlag, final Preferences prefs) {
-    drawUnitNationMode = unitFlag;
-    prefs.put(PreferenceKeys.DRAW_MODE.name(), unitFlag.toString());
   }
 }

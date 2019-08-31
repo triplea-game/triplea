@@ -1,7 +1,7 @@
 package games.strategy.triplea.ui;
 
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
-import java.util.prefs.Preferences;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -12,51 +12,28 @@ import lombok.NoArgsConstructor;
  * turn off.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-class FlagDrawMode {
+public class FlagDrawMode {
 
-  static void toggleNextDrawMode(final MapPanel mapPanel) {
-
-    final Preferences prefs = Preferences.userNodeForPackage(FlagDrawMode.class);
-    final UnitsDrawer.UnitFlagDrawMode setting =
-        UnitsDrawer.UnitFlagDrawMode.valueOf(
-            prefs.get(
-                UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-                UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name()));
-    UnitsDrawer.setUnitFlagDrawMode(setting, prefs);
-    UnitsDrawer.enabledFlags =
-        prefs.getBoolean(
-            UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
-
-    // draw mode is off, toggle small flag
-    if (!prefs.getBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), false)) {
-      UnitsDrawer.enabledFlags = true;
-      prefs.putBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), true);
-      prefs.put(
-          UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-          UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name());
-      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, prefs);
-      // check if small flags, if so then draw large flags
-    } else if (UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG
-        .toString()
-        .equals(
-            prefs.get(
-                UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-                UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name()))) {
-      UnitsDrawer.enabledFlags = true;
-      prefs.putBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), true);
-      prefs.put(
-          UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-          UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG.name());
-      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG, prefs);
-      // otherwise we had large flags, turn drawing flags off
-    } else {
-      UnitsDrawer.enabledFlags = false;
-      prefs.putBoolean(UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), false);
-      prefs.put(
-          UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-          UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG.name());
-      UnitsDrawer.setUnitFlagDrawMode(UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, prefs);
-    }
+  /**
+   * Updates the current flag draw mode and refreshes the map so that the current flag draw mode is
+   * rendered on map.
+   */
+  public static void toggleDrawMode(
+      final UnitsDrawer.UnitFlagDrawMode drawMode, final MapPanel mapPanel) {
+    ClientSetting.unitFlagDrawMode.setValueAndFlush(drawMode);
     mapPanel.resetMap();
+  }
+
+  /** Toggles to the next flag draw mode. */
+  static void toggleNextDrawMode(final MapPanel mapPanel) {
+    final UnitsDrawer.UnitFlagDrawMode currentDrawMode =
+        ClientSetting.unitFlagDrawMode.getValueOrThrow();
+    if (currentDrawMode == UnitsDrawer.UnitFlagDrawMode.NONE) {
+      toggleDrawMode(UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, mapPanel);
+    } else if (currentDrawMode == UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG) {
+      toggleDrawMode(UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG, mapPanel);
+    } else {
+      toggleDrawMode(UnitsDrawer.UnitFlagDrawMode.NONE, mapPanel);
+    }
   }
 }
