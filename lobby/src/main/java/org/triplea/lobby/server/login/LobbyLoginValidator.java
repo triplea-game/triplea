@@ -127,6 +127,12 @@ public final class LobbyLoginValidator implements ILoginValidator {
     if (usernameBanned) {
       return ErrorMessages.USERNAME_HAS_BEEN_BANNED;
     }
+
+    if (!response.containsKey(LobbyLoginResponseKeys.ANONYMOUS_LOGIN)
+        && !response.containsKey(LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD)) {
+      return "Invalid client request";
+    }
+
     if (response.containsKey(LobbyLoginResponseKeys.REGISTER_NEW_USER)) {
       return createUser(response, user);
     }
@@ -183,26 +189,22 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return ErrorMessages.AUTHENTICATION_FAILED;
     }
 
-    if (RsaAuthenticator.canProcessResponse(response)) {
-      return rsaAuthenticator.decryptPasswordForAction(
-          response,
-          pass -> {
-            if (hashedPassword.isBcrypted()) {
-              // TODO: update tests to verify tempPasswordVerification branch.
-              if (tempPasswordVerification.checkTempPassword(username, pass)) {
-                return ServerQuarantineConversation.CHANGE_PASSWORD;
-              }
-
-              return database.getUserDao().login(username, pass)
-                  ? null
-                  : ErrorMessages.AUTHENTICATION_FAILED;
-            } else {
-              return "Badly hashed password in client request";
+    return rsaAuthenticator.decryptPasswordForAction(
+        response,
+        pass -> {
+          if (hashedPassword.isBcrypted()) {
+            // TODO: update tests to verify tempPasswordVerification branch.
+            if (tempPasswordVerification.checkTempPassword(username, pass)) {
+              return ServerQuarantineConversation.CHANGE_PASSWORD;
             }
-          });
-    } else {
-      return "Badly formatted client request";
-    }
+
+            return database.getUserDao().login(username, pass)
+                ? null
+                : ErrorMessages.AUTHENTICATION_FAILED;
+          } else {
+            return "Badly hashed password in client request";
+          }
+        });
   }
 
   private @Nullable String authenticateAnonymousUser(
@@ -246,17 +248,13 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return "That user name has already been taken";
     }
 
-    if (RsaAuthenticator.canProcessResponse(response)) {
-      return rsaAuthenticator.decryptPasswordForAction(
-          response,
-          pass -> {
-            final HashedPassword newPass =
-                new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get()));
-            database.getUserDao().createUser(username, email, newPass);
-            return null;
-          });
-    } else {
-      return "Invalid client request";
-    }
+    return rsaAuthenticator.decryptPasswordForAction(
+        response,
+        pass -> {
+          final HashedPassword newPass =
+              new HashedPassword(BCrypt.hashpw(pass, bcryptSaltGenerator.get()));
+          database.getUserDao().createUser(username, email, newPass);
+          return null;
+        });
   }
 }

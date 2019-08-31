@@ -15,21 +15,6 @@ import org.triplea.test.common.security.TestSecurityUtils;
 
 final class RsaAuthenticatorTest {
   @Nested
-  final class CanProcessResponseTest {
-    @Test
-    void shouldReturnTrueWhenResponseContainsAllRequiredProperties() {
-      assertTrue(
-          RsaAuthenticator.canProcessResponse(
-              singletonMap(LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD, "")));
-    }
-
-    @Test
-    void shouldReturnFalseWhenResponseDoesNotContainAllRequiredProperties() {
-      assertFalse(RsaAuthenticator.canProcessResponse(singletonMap("someOtherResponseKey", "")));
-    }
-  }
-
-  @Nested
   final class ChallengeResponseTest {
     @Test
     void shouldBeAbleToDecryptHashedAndSaltedPassword() throws Exception {
