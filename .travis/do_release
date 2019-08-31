@@ -34,7 +34,7 @@ function installInstall4j() {
 
 function buildReleaseArtifacts() {
   (
-     ./gradlew -Pinstall4jHomeDir="$INSTALL4J_HOME" release  2> errors && \
+     ./gradlew --parallel -Pinstall4jHomeDir="$INSTALL4J_HOME" release  2> errors && \
          echo "INSTALL4J finished with $(wc -l errors)"
   ) || 
   (echo "INSTALL4J FAILED" && tail -500 errors)
@@ -48,7 +48,6 @@ function collectArtifacts() {
   mkdir -p ${ARTIFACTS_DIR}
   cp -v ./**/build/artifacts/* ${ARTIFACTS_DIR}
 }
-
 
 #
 # This function generates checksums for all release artifacts.
@@ -94,7 +93,6 @@ function generateArtifactChecksums() {
     done
   )
 }
-
 
 #
 # This function pushes a tag to github, that creates a github release and triggers a travis release build
