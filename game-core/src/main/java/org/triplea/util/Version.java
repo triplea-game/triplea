@@ -58,14 +58,6 @@ public final class Version implements Serializable, Comparable<Version> {
     return compareTo(other) > 0;
   }
 
-  /**
-   * Returns a new version with the major and minor versions from this instance and the specified
-   * point version.
-   */
-  private Version withPoint(final int point) {
-    return new Version(major, minor, point);
-  }
-
   /** Creates a complete version string with '.' as separator. */
   @Override
   public String toString() {
@@ -82,7 +74,7 @@ public final class Version implements Serializable, Comparable<Version> {
   public boolean isCompatibleWithEngineVersion(final Version engineVersion) {
     checkNotNull(engineVersion);
 
-    return withPoint(0).equals(engineVersion.withPoint(0));
+    return major == engineVersion.major;
   }
 
   /**
@@ -95,19 +87,7 @@ public final class Version implements Serializable, Comparable<Version> {
   public boolean isCompatibleWithMapMinimumEngineVersion(final Version mapMinimumEngineVersion) {
     checkNotNull(mapMinimumEngineVersion);
 
-    return withPoint(0).isGreaterThanOrEqualTo(mapMinimumEngineVersion.withPoint(0));
-  }
-
-  /**
-   * Indicates this version is greater than or equal to the specified version.
-   *
-   * @param other The version to compare.
-   * @return {@code true} if this version is greater than or equal to the specified version;
-   *     otherwise {@code false}.
-   */
-  private boolean isGreaterThanOrEqualTo(final Version other) {
-    checkNotNull(other);
-
-    return compareTo(other) >= 0;
+    return major > mapMinimumEngineVersion.major
+        || (major == mapMinimumEngineVersion.major && minor >= mapMinimumEngineVersion.minor);
   }
 }
