@@ -1,52 +1,58 @@
 dist: xenial
 sudo: false
 language: java
-matrix:
+if: tag is blank
+jobs:
   include:
-  - jdk: openjdk11
-    env: TRIPLEA_RELEASE=true
-  - jdk: openjdk12
-    env: TRIPLEA_RELEASE=false
-addons:
-  postgresql: "10"
-  apt:
-    packages:
-      # python for map file splitter
-      - python3
-      - python3-yaml
-install:
-- echo "================ Build step 'install' =================" > /dev/null
-## shellcheck all shell scripts
--  find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
-## validate ASAP so syntax, checkstyle or unit tests fail the build early
-- ./gradlew validateYamls checkstyleMain checkstyleTest spotlessCheck test
-- ./.travis/install
-before_script:
-- echo "================ Build step 'before_script' =================" > /dev/null
-- ./.travis/setup_gpg
-script:
-- echo "================ Build step 'script' =================" > /dev/null
-- ./gradlew check jacocoTestReport
-after_success:
-- echo "================ Build step 'after_success'' =================" > /dev/null
-- bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
+    - stage: verify
+      env: DESCRIPTION="static verification"
+      jdk: openjdk11
+      script:
+        ## shellcheck all shell scripts
+        - find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
+        - ./gradlew --parallel validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain
+    - stage: verify
+      env: DESCRIPTION=integTest
+      jdk: openjdk11
+      addons: {postgresql: "10"}
+      script:
+        - ./.travis/setup_database &
+        - ./.travis/launch_http_server
+        - ./gradlew integTest
+    - stage: verify
+      env: DESCRIPTION="JDK12 unitTests"
+      jdk: openjdk12
+      script:
+        - ./gradlew --parallel test
+    - stage: verify
+      jdk: openjdk11
+      env: DESCRIPTION="JDK11 unitTests and Test Coverage"
+      script:
+        - ./gradlew --parallel test jacocoTestReport
+        - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
+    - stage: deploy
+      if: (branch = master) and (repo = triplea-game/triplea) and (env(TRAVIS_PULL_REQUEST) = false)
+      script:
+        - ./.travis/setup_gpg
+        ## Update product version to include build number.
+        ## EG: replace "2.0.0" to be "2.0.15555";
+        - sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
+        - ./.travis/do_release
+      deploy:
+        jdk: openjdk11
+        provider: releases
+        addons:
+          apt:
+            packages:
+              # python for map file splitter
+              - python3
+              - python3-yaml
+        api_key:
+          secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
+        file_glob: true
+        file: build/artifacts/*
+        skip_cleanup: true        
+        prerelease: true
 after_failure:
-- echo "================ Build step 'after_failure' =================" > /dev/null
-- test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
-before_deploy:
-- echo "================ Build step 'before_deploy' =================" > /dev/null
-- ./.travis/do_release
-deploy:
-  provider: releases
-  api_key:
-    secure: nxaqYrkXLGL3W20/eCnf63DLjMrQAhEuW44jggh1/nI383goa+u6w0bBtWCxRdVzos7t4dpVfS6+kv6oIHacm9zVA+RYrqy5opzCJhq8lmXVVRijbALzUeiFif2HURMaKWj0ynRNVlAyBHzazPTLZVWywifpdSubSkuMWkl20cmuKu/Hg3c1EC9se3OYhhTHx3Hya7xSrctrDEYLsEBAUZzkKfscqRVqwwltS88CgIMtRISDpSBGrtH0t1uAH6NitTSguGgb+QEpqnELcRLymX2G1yzMA4Xr5c/L34MfbBKf8vIuG9t411xYuLoyKoUbroTWxSnPwlSy6PHz+QJ7UCXbDkATOGO3chxlKxglppvI/G3n2YP5Zf2dAaDlHblpvarh55i/4i4sKB2AbvvzkIHrQJwUgmLCbpN8/Vp9GWcGkd6i5U7F8tNInCs6ttX3oGvGOfYEXs02Ctyiea4LAqk4S7GZTuV2QXqxXglL4eRIwZ4UETiwgoAAtHma63Eq7+9t2ykMlk7zAK96FGwJrB97wa08aPuSxL94IYEBmn9Ht/vKXRiNQMvpnfp4rWQtL3cqbVyYAg5EjKb4PsBmnb91+RXtnWFOY1RpZGt8sPXYd+KZYzN1BXTFJEpaLLsIDN6r7nMcAvJDUmucaM+m7giPXz1ZBGAic3UBM1qMCgI=
-  file_glob: true
-  file: build/artifacts/*
-  ## This is set to true to not delete artifacts between the 'before-deploy' and 'deploy' steps
-  skip_cleanup: true
-  prerelease: true
-  on:
-    tags: false
-    condition: "$TRIPLEA_RELEASE = true"
-    repo: triplea-game/triplea
-    branch: master
+  - echo "================ Build step 'after_failure' =================" > /dev/null
+  - test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
