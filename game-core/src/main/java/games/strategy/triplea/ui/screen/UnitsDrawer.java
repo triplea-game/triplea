@@ -57,7 +57,12 @@ public class UnitsDrawer extends AbstractDrawable {
   public enum UnitFlagDrawMode {
     NONE,
     SMALL_FLAG,
-    LARGE_FLAG
+    LARGE_FLAG;
+
+    public UnitFlagDrawMode nextDrawMode() {
+      final var values = UnitsDrawer.UnitFlagDrawMode.values();
+      return values[(ordinal() + 1) % values.length];
+    }
   }
 
   public UnitsDrawer(

@@ -26,14 +26,7 @@ public class FlagDrawMode {
 
   /** Toggles to the next flag draw mode. */
   static void toggleNextDrawMode(final MapPanel mapPanel) {
-    final UnitsDrawer.UnitFlagDrawMode currentDrawMode =
-        ClientSetting.unitFlagDrawMode.getValueOrThrow();
-    if (currentDrawMode == UnitsDrawer.UnitFlagDrawMode.NONE) {
-      toggleDrawMode(UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, mapPanel);
-    } else if (currentDrawMode == UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG) {
-      toggleDrawMode(UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG, mapPanel);
-    } else {
-      toggleDrawMode(UnitsDrawer.UnitFlagDrawMode.NONE, mapPanel);
-    }
+    final var currentDrawMode = ClientSetting.unitFlagDrawMode.getValueOrThrow();
+    toggleDrawMode(currentDrawMode.nextDrawMode(), mapPanel);
   }
 }
