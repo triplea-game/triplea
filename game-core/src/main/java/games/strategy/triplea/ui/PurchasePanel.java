@@ -31,7 +31,6 @@ public class PurchasePanel extends ActionPanel {
   private static final long serialVersionUID = -6121756876868623355L;
   // if this is set Purchase will use the tabbedProductionPanel - this is modifiable through the
   // View Menu
-  private static boolean tabbedProduction = true;
   private static final String BUY = "Buy...";
   private static final String CHANGE = "Change...";
 
@@ -52,25 +51,14 @@ public class PurchasePanel extends ActionPanel {
         public void actionPerformed(final ActionEvent e) {
           final PlayerId player = getCurrentPlayer();
           final GameData data = getData();
-          if (isTabbedProduction()) {
-            purchase =
-                TabbedProductionPanel.getProduction(
-                    player,
-                    (JFrame) getTopLevelAncestor(),
-                    data,
-                    bid,
-                    purchase,
-                    getMap().getUiContext());
-          } else {
-            purchase =
-                ProductionPanel.getProduction(
-                    player,
-                    (JFrame) getTopLevelAncestor(),
-                    data,
-                    bid,
-                    purchase,
-                    getMap().getUiContext());
-          }
+          purchase =
+              TabbedProductionPanel.getProduction(
+                  player,
+                  (JFrame) getTopLevelAncestor(),
+                  data,
+                  bid,
+                  purchase,
+                  getMap().getUiContext());
           purchasedUnits.setUnitsFromProductionRuleMap(purchase, player);
           if (purchase.totalValues() == 0) {
             purchasedLabel.setText("");
@@ -243,13 +231,5 @@ public class PurchasePanel extends ActionPanel {
   @Override
   public String toString() {
     return "PurchasePanel";
-  }
-
-  public static void setTabbedProduction(final boolean tabbedProduction) {
-    PurchasePanel.tabbedProduction = tabbedProduction;
-  }
-
-  public static boolean isTabbedProduction() {
-    return tabbedProduction;
   }
 }

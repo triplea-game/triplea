@@ -37,7 +37,6 @@ public abstract class AbstractUiContext implements UiContext {
   static final String MAP_SCALE_PREF = "MapScale";
 
   private static final String MAP_SKIN_PREF = "MapSkin";
-  private static final String LOCK_MAP = "LockMap";
   private static final String SHOW_END_OF_TURN_REPORT = "ShowEndOfTurnReport";
   private static final String SHOW_TRIGGERED_NOTIFICATIONS = "ShowTriggeredNotifications";
   private static final String SHOW_TRIGGERED_CHANCE_SUCCESSFUL = "ShowTriggeredChanceSuccessful";
@@ -253,23 +252,6 @@ public abstract class AbstractUiContext implements UiContext {
       actor.deactivate();
     } catch (final RuntimeException e) {
       log.log(Level.SEVERE, "Failed to deactivate actor", e);
-    }
-  }
-
-  @Override
-  public boolean getLockMap() {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
-    return prefs.getBoolean(LOCK_MAP, false);
-  }
-
-  @Override
-  public void setLockMap(final boolean lockMap) {
-    final Preferences prefs = Preferences.userNodeForPackage(AbstractUiContext.class);
-    prefs.putBoolean(LOCK_MAP, lockMap);
-    try {
-      prefs.flush();
-    } catch (final BackingStoreException ex) {
-      log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), ex);
     }
   }
 

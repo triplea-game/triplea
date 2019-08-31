@@ -7,9 +7,9 @@ import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.PropertiesUi;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.AbstractUiContext;
 import games.strategy.triplea.ui.FindTerritoryAction;
-import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
@@ -43,6 +43,7 @@ import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import lombok.extern.java.Log;
+import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.SwingAction;
 
 @Log
@@ -79,7 +80,6 @@ final class ViewMenu extends JMenu {
     addMapFontAndColorEditorMenu();
     addChatTimeMenu();
     addShowCommentLog();
-    addTabbedProduction();
     addSeparator();
     addFindTerritory();
 
@@ -87,18 +87,17 @@ final class ViewMenu extends JMenu {
   }
 
   private void addShowCommentLog() {
-    final JCheckBoxMenuItem showCommentLog = new JCheckBoxMenuItem("Show Comment Log");
-    showCommentLog.setModel(frame.getShowCommentLogButtonModel());
-    add(showCommentLog).setMnemonic(KeyEvent.VK_L);
-  }
-
-  private void addTabbedProduction() {
-    final JCheckBoxMenuItem tabbedProduction = new JCheckBoxMenuItem("Show Production Tabs");
-    tabbedProduction.setMnemonic(KeyEvent.VK_P);
-    tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
-    tabbedProduction.addActionListener(
-        e -> PurchasePanel.setTabbedProduction(tabbedProduction.isSelected()));
-    add(tabbedProduction);
+    new JMenuItemCheckBoxBuilder("Show Comment Log", 'L')
+        .bindSetting(ClientSetting.showCommentLog)
+        .actionListener(
+            value -> {
+              if (value) {
+                frame.showCommentLog();
+              } else {
+                frame.hideCommentLog();
+              }
+            })
+        .build();
   }
 
   private void addZoomMenu() {
@@ -428,11 +427,7 @@ final class ViewMenu extends JMenu {
   }
 
   private void addLockMap() {
-    final JCheckBoxMenuItem lockMapBox = new JCheckBoxMenuItem("Lock Map");
-    lockMapBox.setMnemonic(KeyEvent.VK_M);
-    lockMapBox.setSelected(uiContext.getLockMap());
-    lockMapBox.addActionListener(e -> uiContext.setLockMap(lockMapBox.isSelected()));
-    add(lockMapBox);
+    add(new JMenuItemCheckBoxBuilder("Lock Map", 'M').bindSetting(ClientSetting.lockMap).build());
   }
 
   private void addUnitNationDrawMenu() {
