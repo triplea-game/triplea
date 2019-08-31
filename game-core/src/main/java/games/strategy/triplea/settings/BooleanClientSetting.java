@@ -30,6 +30,6 @@ public final class BooleanClientSetting extends ClientSetting<Boolean>
 
   @Override
   public boolean getSetting() {
-    return getDefaultValue().orElse(false);
+    return getValue().or(this::getDefaultValue).orElse(false);
   }
 }
