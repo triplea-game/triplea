@@ -4,27 +4,9 @@ language: java
 matrix:
   include:
   - jdk: openjdk11
-    env:
-      - TASKS="shadowJar downloadAssets"
-      - TRIPLEA_RELEASE=true
-  - jdk: openjdk11
-    env: 
-      - TASKS="test jacocoTestReport"
-      - PUSH_REPORTS=true
-      - TRIPLEA_RELEASE=false
-  - jdk: openjdk11
-    env: 
-      - TASKS="validateYamls spotlessCheck checkstyleMain checkstyleTest pmdMain"
-      - TRIPLEA_RELEASE=false
-  - jdk: openjdk11
-    env: 
-      - TASKS=integTest
-      - INSTALL=true
-      - TRIPLEA_RELEASE=false
+    env: TRIPLEA_RELEASE=true
   - jdk: openjdk12
-    env: 
-      - TASKS=test
-      - TRIPLEA_RELEASE=false
+    env: TRIPLEA_RELEASE=false
 addons:
   postgresql: "10"
   apt:
@@ -36,25 +18,24 @@ install:
 - echo "================ Build step 'install' =================" > /dev/null
 ## shellcheck all shell scripts
 -  find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
-## Update product version to include build number.
-## EG: replace "2.0.0" to be "2.0.15555";
-- sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
-- if [ -n "$INSTALL" ]; then ./.travis/install; fi
+## validate ASAP so syntax, checkstyle or unit tests fail the build early
+- ./gradlew validateYamls checkstyleMain checkstyleTest spotlessCheck test
+- ./.travis/install
 before_script:
 - echo "================ Build step 'before_script' =================" > /dev/null
-- if [ "$TASKS" = release ]; then ./.travis/setup_gpg; fi
+- ./.travis/setup_gpg
 script:
 - echo "================ Build step 'script' =================" > /dev/null
-- ./gradlew --parallel $TASKS
+- ./gradlew check jacocoTestReport
 after_success:
 - echo "================ Build step 'after_success'' =================" > /dev/null
-- if [ -n "$PUSH_REPORTS" ]; then bash <(curl -s https://codecov.io/bash); fi # upload coverage report - https://github.com/codecov/example-gradle
+- bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 after_failure:
 - echo "================ Build step 'after_failure' =================" > /dev/null
 - test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
 before_deploy:
 - echo "================ Build step 'before_deploy' =================" > /dev/null
-- if [ -n "$RELEASE" ]; then ./.travis/do_release; fi
+- ./.travis/do_release
 deploy:
   provider: releases
   api_key:
@@ -66,6 +47,6 @@ deploy:
   prerelease: true
   on:
     tags: false
-    condition: $TRIPLEA_RELEASE = true
+    condition: "$TRIPLEA_RELEASE = true"
     repo: triplea-game/triplea
     branch: master
