@@ -9,12 +9,12 @@ matrix:
     env: TASKS="pmdMain"
   - jdk: openjdk11
     env: TASKS="validateYamls"
-  - jdk: openjdk11
-    env: TASKS="spotlessCheck checkstyleMain checkstyleTest"
-  - jdk: openjdk11
-    env: TASKS="test integTest jacocoTestReport"
-  - jdk: openjdk12
-    env: TASKS="test integTest"
+#  - jdk: openjdk11
+#    env: TASKS="spotlessCheck checkstyleMain checkstyleTest"
+#  - jdk: openjdk11
+#    env: TASKS="test integTest jacocoTestReport"
+#  - jdk: openjdk12
+#    env: TASKS="test integTest"
 
 addons:
   postgresql: "10"
