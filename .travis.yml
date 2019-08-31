@@ -28,6 +28,7 @@ script:
 - echo "================ Build step 'script' =================" > /dev/null
 - ./gradlew check jacocoTestReport
 after_success:
+- echo "================ Build step 'after_success'' =================" > /dev/null
 - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 after_failure:
 - echo "================ Build step 'after_failure' =================" > /dev/null
