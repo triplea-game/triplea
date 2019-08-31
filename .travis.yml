@@ -1,6 +1,7 @@
 dist: xenial
 sudo: false
 language: java
+if: tag is blank
 matrix:
   include:
   - jdk: openjdk11
