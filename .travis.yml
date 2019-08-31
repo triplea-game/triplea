@@ -4,11 +4,13 @@ language: java
 matrix:
   include:
   - jdk: openjdk11
-    env: TASKS="release"
+    env: 
+     - TASKS="release"
   - jdk: openjdk11
-    env: TASKS="pmdMain"
-  - jdk: openjdk11
-    env: TASKS="validateYamls"
+    env: 
+     - TASKS="pmdMain"
+#  - jdk: openjdk11
+#    env: TASKS="validateYamls"
 #  - jdk: openjdk11
 #    env: TASKS="spotlessCheck checkstyleMain checkstyleTest"
 #  - jdk: openjdk11
