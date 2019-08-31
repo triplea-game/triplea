@@ -82,16 +82,18 @@ public final class LobbyLoginValidator implements ILoginValidator {
             .hashedMacAddress(clientMac)
             .build();
     final @Nullable String errorMessage = authenticateUser(response, user);
-    if (errorMessage == null) {
-      database.getAccessLogDao().insert(user, getUserTypeFor(response));
-      return null;
-    }
-    if (errorMessage.equals(ServerQuarantineConversation.CHANGE_PASSWORD)) {
+    if (errorMessage == null || errorMessage.equals(ServerQuarantineConversation.CHANGE_PASSWORD)) {
       database.getAccessLogDao().insert(user, getUserTypeFor(response));
       return errorMessage;
     }
     failedLoginThrottle.increment(address);
     return errorMessage;
+  }
+
+  private static UserType getUserTypeFor(final Map<String, String> response) {
+    return response.containsKey(LobbyLoginResponseKeys.ANONYMOUS_LOGIN)
+        ? UserType.ANONYMOUS
+        : UserType.REGISTERED;
   }
 
   private @Nullable String authenticateUser(final Map<String, String> response, final User user) {
@@ -133,25 +135,12 @@ public final class LobbyLoginValidator implements ILoginValidator {
       return "Invalid client request";
     }
 
-    if (response.containsKey(LobbyLoginResponseKeys.REGISTER_NEW_USER)) {
+    if (response.containsKey(LobbyLoginResponseKeys.ANONYMOUS_LOGIN)) {
+      return authenticateAnonymousUser(response, user);
+    } else if (response.containsKey(LobbyLoginResponseKeys.REGISTER_NEW_USER)) {
       return createUser(response, user);
     }
-
-    final UserType userType = getUserTypeFor(response);
-    switch (userType) {
-      case ANONYMOUS:
-        return authenticateAnonymousUser(response, user);
-      case REGISTERED:
-        return authenticateRegisteredUser(response, user);
-      default:
-        throw new AssertionError("unknown user type: " + userType);
-    }
-  }
-
-  private static UserType getUserTypeFor(final Map<String, String> response) {
-    return response.containsKey(LobbyLoginResponseKeys.ANONYMOUS_LOGIN)
-        ? UserType.ANONYMOUS
-        : UserType.REGISTERED;
+    return authenticateRegisteredUser(response, user);
   }
 
   private static String getBanDurationBreakdown(final Timestamp stamp) {
