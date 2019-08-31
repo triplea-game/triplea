@@ -11,7 +11,6 @@ import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.AbstractUiContext;
 import games.strategy.triplea.ui.FindTerritoryAction;
 import games.strategy.triplea.ui.FlagDrawMode;
-import games.strategy.triplea.ui.PurchasePanel;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
@@ -43,8 +42,8 @@ import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import lombok.extern.java.Log;
-import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.JMenuItemBuilder;
+import org.triplea.swing.JMenuItemCheckBoxBuilder;
 import org.triplea.swing.KeyCode;
 import org.triplea.swing.SwingAction;
 
