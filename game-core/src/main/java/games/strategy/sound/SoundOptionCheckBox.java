@@ -15,7 +15,7 @@ class SoundOptionCheckBox extends BooleanProperty {
    */
   SoundOptionCheckBox(final String clipName, final String title) {
     super(title, null, true);
-    if (ClipPlayer.getInstance().isMuted(clipName)) {
+    if (ClipPlayer.getInstance().isSoundClipMuted(clipName)) {
       setValue(false);
     }
     this.clipName = clipName;

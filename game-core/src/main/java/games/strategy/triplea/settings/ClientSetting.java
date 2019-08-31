@@ -42,6 +42,7 @@ import lombok.extern.java.Log;
  *
  * @param <T> The type of the setting value.
  */
+@SuppressWarnings("StaticInitializerReferencesSubClass")
 @Log
 public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Integer> aiPauseDuration =
@@ -53,9 +54,9 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Integer> battleCalcSimulationCountLowLuck =
       new IntegerClientSetting("BATTLE_CALC_SIMULATION_COUNT_LOW_LUCK", 500);
   public static final ClientSetting<Boolean> confirmDefensiveRolls =
-      new BooleanClientSetting("CONFIRM_DEFENSIVE_ROLLS", false);
+      new BooleanClientSetting("CONFIRM_DEFENSIVE_ROLLS");
   public static final ClientSetting<Boolean> confirmEnemyCasualties =
-      new BooleanClientSetting("CONFIRM_ENEMY_CASUALTIES", false);
+      new BooleanClientSetting("CONFIRM_ENEMY_CASUALTIES");
   public static final ClientSetting<String> defaultGameName =
       new StringClientSetting("DEFAULT_GAME_NAME_PREF", "Big World : 1942");
   public static final ClientSetting<String> defaultGameUri =
@@ -70,6 +71,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("LOBBY_LAST_USED_PORT");
   public static final ClientSetting<Integer> lobbyLastUsedHttpsPort =
       new IntegerClientSetting("LOBBY_LAST_USED_HTTPS_PORT");
+  public static final BooleanClientSetting lockMap = new BooleanClientSetting("LOCK_MAP");
   public static final ClientSetting<String> lookAndFeel =
       new StringClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
   public static final ClientSetting<Integer> mapEdgeScrollSpeed =
@@ -102,9 +104,14 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<Boolean> showBattlesWhenObserving =
       new BooleanClientSetting("SHOW_BATTLES_WHEN_OBSERVING", true);
   public static final ClientSetting<Boolean> showBetaFeatures =
-      new BooleanClientSetting("SHOW_BETA_FEATURES", false);
-  public static final ClientSetting<Boolean> showConsole =
-      new BooleanClientSetting("SHOW_CONSOLE", false);
+      new BooleanClientSetting("SHOW_BETA_FEATURES");
+  public static final BooleanClientSetting showChatTimeSettings =
+      new BooleanClientSetting("SHOW_CHAT_TIME");
+  public static final BooleanClientSetting showCommentLog =
+      new BooleanClientSetting("SHOW_COMMENT_LOG");
+  public static final ClientSetting<Boolean> showConsole = new BooleanClientSetting("SHOW_CONSOLE");
+  public static final BooleanClientSetting soundEnabled =
+      new BooleanClientSetting("SOUND_ENABLED", true);
   public static final ClientSetting<String> testLobbyHost =
       new StringClientSetting("TEST_LOBBY_HOST");
   public static final ClientSetting<Integer> testLobbyPort =
@@ -133,7 +140,7 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
   public static final ClientSetting<String> playerName =
       new StringClientSetting("PLAYER_NAME", SystemProperties.getUserName());
   public static final ClientSetting<Boolean> useExperimentalJavaFxUi =
-      new BooleanClientSetting("USE_EXPERIMENTAL_JAVAFX_UI", false);
+      new BooleanClientSetting("USE_EXPERIMENTAL_JAVAFX_UI");
   public static final ClientSetting<String> loggingVerbosity =
       new StringClientSetting("LOGGING_VERBOSITY", Level.WARNING.getName());
   public static final ClientSetting<String> emailServerHost =

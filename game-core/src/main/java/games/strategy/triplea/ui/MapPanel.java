@@ -17,6 +17,7 @@ import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
@@ -376,7 +377,7 @@ public class MapPanel extends ImageScrollerLargeView {
   }
 
   public void centerOn(final @Nullable Territory territory) {
-    if (territory == null || uiContext.getLockMap()) {
+    if (territory == null || ClientSetting.lockMap.getSetting()) {
       return;
     }
     centerOnTerritoryIgnoringMapLock(territory);
@@ -398,26 +399,9 @@ public class MapPanel extends ImageScrollerLargeView {
 
   public void highlightTerritory(
       final Territory territory, final int totalFrames, final int delay) {
-    withMapUnlocked(
-        () -> {
-          centerOn(territory);
-          highlightedTerritory = territory;
-          territoryHighlighter.highlight(territory, totalFrames, delay);
-        });
-  }
-
-  private void withMapUnlocked(final Runnable runnable) {
-    final boolean lockMap = uiContext.getLockMap();
-    if (lockMap) {
-      uiContext.setLockMap(false);
-    }
-    try {
-      runnable.run();
-    } finally {
-      if (lockMap) {
-        uiContext.setLockMap(true);
-      }
-    }
+    centerOn(territory);
+    highlightedTerritory = territory;
+    territoryHighlighter.highlight(territory, totalFrames, delay);
   }
 
   void clearHighlightedTerritory() {

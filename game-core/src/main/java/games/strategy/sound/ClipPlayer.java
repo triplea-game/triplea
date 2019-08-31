@@ -5,6 +5,7 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.io.FileUtils;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.settings.ClientSetting;
 import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -14,7 +15,6 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -112,24 +112,17 @@ import org.triplea.java.UrlStreams;
 @Log
 public class ClipPlayer {
   private static final String ASSETS_SOUNDS_FOLDER = "sounds";
-  private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
   private static final String SOUND_PREFERENCE_PREFIX = "sound_";
-  private static final boolean DEFAULT_SOUND_SILENCED_SWITCH_SETTING = false;
   private static final String MP3_SUFFIX = ".mp3";
   private static ClipPlayer clipPlayer;
 
   protected final Map<String, List<URL>> sounds = new HashMap<>();
   private final Set<String> mutedClips = new HashSet<>();
-  private boolean beSilent;
   private final ResourceLoader resourceLoader;
 
   private ClipPlayer(final ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
     final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
-    beSilent =
-        Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"))
-            || prefs.getBoolean(
-                SOUND_PREFERENCE_GLOBAL_SWITCH, DEFAULT_SOUND_SILENCED_SWITCH_SETTING);
     final Set<String> choices = SoundPath.getAllSoundOptions();
 
     for (final String sound : choices) {
@@ -141,10 +134,8 @@ public class ClipPlayer {
   }
 
   static synchronized ClipPlayer getInstance() {
-    if (clipPlayer == null) {
-      clipPlayer = new ClipPlayer(ResourceLoader.getGameEngineAssetLoader());
-    }
-    return clipPlayer;
+    return Optional.ofNullable(clipPlayer)
+        .orElseGet(() -> new ClipPlayer(ResourceLoader.getGameEngineAssetLoader()));
   }
 
   public static synchronized void getInstance(final ResourceLoader resourceLoader) {
@@ -155,52 +146,7 @@ public class ClipPlayer {
     }
   }
 
-  /**
-   * If set to true, no sounds will play. This property is persisted using the java.tools.prefs API,
-   * and will persist after the vm has stopped.
-   *
-   * @param beSilent new value for beSilent
-   */
-  static void setBeSilent(final boolean beSilent) {
-    final ClipPlayer clipPlayer = getInstance();
-    clipPlayer.beSilent = beSilent;
-    setBeSilentInPreferencesWithoutAffectingCurrent(beSilent);
-  }
-
-  /**
-   * Sets the {@code SOUND_PREFERENCE_GLOBAL_SWITCH} preference in the backing store without
-   * changing the current value in memory.
-   *
-   * @see #setBeSilent(boolean)
-   */
-  public static void setBeSilentInPreferencesWithoutAffectingCurrent(final boolean silentBool) {
-    final Preferences prefs = Preferences.userNodeForPackage(ClipPlayer.class);
-    final boolean current =
-        prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, DEFAULT_SOUND_SILENCED_SWITCH_SETTING);
-    boolean setPref = silentBool != current;
-    if (!setPref) {
-      try {
-        setPref = !Arrays.asList(prefs.keys()).contains(SOUND_PREFERENCE_GLOBAL_SWITCH);
-      } catch (final BackingStoreException e) {
-        log.log(Level.SEVERE, "Failed to get keys for preferences: " + prefs.absolutePath(), e);
-      }
-    }
-    if (setPref) {
-      prefs.putBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, silentBool);
-      try {
-        prefs.flush();
-      } catch (final BackingStoreException e) {
-        log.log(Level.SEVERE, "Failed to flush preferences: " + prefs.absolutePath(), e);
-      }
-    }
-  }
-
-  static boolean getBeSilent() {
-    final ClipPlayer clipPlayer = getInstance();
-    return clipPlayer.beSilent;
-  }
-
-  boolean isMuted(final String clipName) {
+  boolean isSoundClipMuted(final String clipName) {
     if (mutedClips.contains(clipName)) {
       return true;
     }
@@ -228,7 +174,7 @@ public class ClipPlayer {
     return false;
   }
 
-  void setMute(final String clipName, final boolean value) {
+  void setSoundClipMute(final String clipName, final boolean value) {
     // we want to avoid unnecessary calls to preferences
     final boolean isCurrentCorrect = mutedClips.contains(clipName) == value;
     if (isCurrentCorrect) {
@@ -272,7 +218,7 @@ public class ClipPlayer {
   }
 
   private void playClip(final String clipName, final PlayerId playerId) {
-    if (beSilent || isMuted(clipName)) {
+    if (!isSoundEnabled() || isSoundClipMuted(clipName)) {
       return;
     }
     // run in a new thread, so that we do not delay the game
@@ -304,11 +250,16 @@ public class ClipPlayer {
     }
   }
 
+  private boolean isSoundEnabled() {
+    return Boolean.parseBoolean(System.getProperty(GameRunner.TRIPLEA_HEADLESS, "false"))
+        && !"true".equals(System.getenv("java.awt.headless"))
+        && ClientSetting.soundEnabled.getSetting();
+  }
+
   private Optional<URI> loadClip(final String clipName) {
-    if (beSilent || isMuted(clipName)) {
-      return Optional.empty();
-    }
-    return Optional.ofNullable(loadClipPath(clipName));
+    return (isSoundEnabled() && !isSoundClipMuted(clipName))
+        ? Optional.ofNullable(loadClipPath(clipName))
+        : Optional.empty();
   }
 
   private URI loadClipPath(final String pathName) {

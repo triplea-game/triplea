@@ -88,7 +88,7 @@ class VersionTest {
       Arrays.asList(
               Tuple.of(new Version(1, 2, 3), "equal versions should be compatible"),
               Tuple.of(new Version(1, 2, 0), "smaller point version should be compatible"),
-              Tuple.of(new Version(1, 2, 9), "larger point version should be compatible"))
+              Tuple.of(new Version(1, 3, 5), "larger minor version should be compatible"))
           .forEach(
               t ->
                   assertTrue(
@@ -99,10 +99,8 @@ class VersionTest {
     @Test
     void shouldReturnFalseWhenOtherVersionIsNotCompatible() {
       Arrays.asList(
-              Tuple.of(new Version(1, 0, 3), "smaller minor version should not be compatible"),
-              Tuple.of(new Version(1, 9, 3), "larger minor version should not be compatible"),
-              Tuple.of(new Version(0, 2, 3), "smaller major version should not be compatible"),
-              Tuple.of(new Version(9, 2, 3), "larger major version should not be compatible"))
+              Tuple.of(new Version(0, 0, 3), "smaller major version should not be compatible"),
+              Tuple.of(new Version(2, 9, 3), "larger major version should not be compatible"))
           .forEach(
               t ->
                   assertFalse(
@@ -117,6 +115,7 @@ class VersionTest {
     void shouldReturnTrueWhenOtherVersionIsCompatible() {
       Arrays.asList(
               Tuple.of(new Version(1, 2, 3), "equal versions should be compatible"),
+              Tuple.of(new Version(0, 9, 0), "smaller major version should be compatible"),
               Tuple.of(new Version(1, 2, 0), "smaller point version should be compatible"),
               Tuple.of(new Version(1, 2, 9), "larger point version should be compatible"),
               Tuple.of(new Version(1, 0, 3), "smaller minor version should be compatible"),

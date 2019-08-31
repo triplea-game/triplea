@@ -153,6 +153,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import lombok.Getter;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.IntegerMap;
@@ -204,9 +205,8 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
   private final JSplitPane chatSplit;
   private JSplitPane commentSplit;
   private final EditPanel editPanel;
-  private final ButtonModel editModeButtonModel;
-  private final ButtonModel showCommentLogButtonModel;
-  private IEditDelegate editDelegate;
+  @Getter private final ButtonModel editModeButtonModel;
+  @Getter private IEditDelegate editDelegate;
   private final JSplitPane gameCenterPanel;
   private Territory territoryLastEntered;
   private List<Unit> unitsBeingMousedOver;
@@ -462,16 +462,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     this.setCursor(uiContext.getCursor());
     editModeButtonModel = new JToggleButton.ToggleButtonModel();
     editModeButtonModel.setEnabled(false);
-    showCommentLogButtonModel = new JToggleButton.ToggleButtonModel();
-    showCommentLogButtonModel.setSelected(false);
-    showCommentLogButtonModel.addActionListener(
-        e -> {
-          if (showCommentLogButtonModel.isSelected()) {
-            showCommentLog();
-          } else {
-            hideCommentLog();
-          }
-        });
+
     SwingUtilities.invokeLater(() -> this.setJMenuBar(new TripleAMenuBar(this)));
     final ImageScrollModel model = new ImageScrollModel();
     model.setMaxBounds(
@@ -762,7 +753,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     return frame;
   }
 
-  private void hideCommentLog() {
+  public void hideCommentLog() {
     if (chatPanel != null) {
       commentSplit.setBottomComponent(null);
       chatSplit.setBottomComponent(chatPanel);
@@ -776,7 +767,7 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     }
   }
 
-  private void showCommentLog() {
+  public void showCommentLog() {
     if (chatPanel != null) {
       commentSplit.setBottomComponent(chatPanel);
       chatSplit.setBottomComponent(commentSplit);
@@ -2413,18 +2404,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     // force a data change event to update the UI for edit mode
     dataChangeListener.gameDataChanged(ChangeFactory.EMPTY_CHANGE);
     setWidgetActivation();
-  }
-
-  public IEditDelegate getEditDelegate() {
-    return editDelegate;
-  }
-
-  public ButtonModel getEditModeButtonModel() {
-    return editModeButtonModel;
-  }
-
-  public ButtonModel getShowCommentLogButtonModel() {
-    return showCommentLogButtonModel;
   }
 
   private boolean getEditMode() {
