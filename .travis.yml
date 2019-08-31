@@ -4,11 +4,9 @@ language: java
 matrix:
   include:
   - jdk: openjdk11
-    env: 
-     - TASKS="release"
+    env: TASKS=release
   - jdk: openjdk11
-    env: 
-     - TASKS="pmdMain"
+    env: TASKS=pmdMain
 #  - jdk: openjdk11
 #    env: TASKS="validateYamls"
 #  - jdk: openjdk11
