@@ -10,6 +10,7 @@ import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.AbstractUiContext;
 import games.strategy.triplea.ui.FindTerritoryAction;
+import games.strategy.triplea.ui.FlagDrawMode;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.UiContext;
 import games.strategy.triplea.ui.screen.UnitsDrawer;
@@ -17,7 +18,6 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -26,7 +26,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -43,7 +42,9 @@ import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import lombok.extern.java.Log;
+import org.triplea.swing.JMenuItemBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
+import org.triplea.swing.KeyCode;
 import org.triplea.swing.SwingAction;
 
 @Log
@@ -435,84 +436,35 @@ final class ViewMenu extends JMenu {
     unitSizeMenu.setMnemonic(KeyEvent.VK_N);
     unitSizeMenu.setText("Flag Display Mode");
 
-    final Preferences prefs = Preferences.userNodeForPackage(getClass());
-
-    final String prefValue =
-        (prefs.get(
-            UnitsDrawer.PreferenceKeys.DRAW_MODE.name(),
-            UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name()));
-
-    // use conditional instead of 'Enum.valueOf()' in case prefValue is from legacy game clients.
-    final UnitsDrawer.UnitFlagDrawMode setting =
-        prefValue.equals(UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG.name())
-            ? UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG
-            : UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG;
-
-    UnitsDrawer.setUnitFlagDrawMode(setting, prefs);
-    UnitsDrawer.enabledFlags =
-        prefs.getBoolean(
-            UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), UnitsDrawer.enabledFlags);
-
-    final JCheckBoxMenuItem toggleFlags = new JCheckBoxMenuItem("Show Unit Flags");
-    toggleFlags.setSelected(UnitsDrawer.enabledFlags);
-    toggleFlags.addActionListener(
-        e -> {
-          UnitsDrawer.enabledFlags = toggleFlags.isSelected();
-          prefs.putBoolean(
-              UnitsDrawer.PreferenceKeys.DRAWING_ENABLED.name(), toggleFlags.isSelected());
-          // null out previous value. This is not necessary, but if anyone is using a previous
-          // release then they will get an error when an unknown enum value is mapped.
-          if (!toggleFlags.isSelected()) {
-            prefs.remove(UnitsDrawer.PreferenceKeys.DRAW_MODE.name());
-          }
-          frame.getMapPanel().resetMap();
-        });
-    unitSizeMenu.add(toggleFlags);
-
-    final ButtonGroup unitFlagSettingGroup = new ButtonGroup();
     unitSizeMenu.add(
-        newFlagDrawModeRadioButtonItem(
+        newMenuItem(
+            "Off",
+            KeyCode.O,
+            () ->
+                FlagDrawMode.toggleDrawMode(
+                    UnitsDrawer.UnitFlagDrawMode.NONE, frame.getMapPanel())));
+
+    unitSizeMenu.add(
+        newMenuItem(
             "Small",
-            unitFlagSettingGroup,
-            UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG,
-            setting,
-            prefs));
+            KeyCode.S,
+            () ->
+                FlagDrawMode.toggleDrawMode(
+                    UnitsDrawer.UnitFlagDrawMode.SMALL_FLAG, frame.getMapPanel())));
+
     unitSizeMenu.add(
-        newFlagDrawModeRadioButtonItem(
+        newMenuItem(
             "Large",
-            unitFlagSettingGroup,
-            UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG,
-            setting,
-            prefs));
+            KeyCode.L,
+            () ->
+                FlagDrawMode.toggleDrawMode(
+                    UnitsDrawer.UnitFlagDrawMode.LARGE_FLAG, frame.getMapPanel())));
     add(unitSizeMenu);
   }
 
-  private JRadioButtonMenuItem newFlagDrawModeRadioButtonItem(
-      final String text,
-      final ButtonGroup group,
-      final UnitsDrawer.UnitFlagDrawMode drawMode,
-      final UnitsDrawer.UnitFlagDrawMode setting,
-      final Preferences prefs) {
-    return newRadioButtonItem(
-        text,
-        group,
-        e -> {
-          UnitsDrawer.setUnitFlagDrawMode(drawMode, prefs);
-          frame.getMapPanel().resetMap();
-        },
-        setting == drawMode);
-  }
-
-  private static JRadioButtonMenuItem newRadioButtonItem(
-      final String text,
-      final ButtonGroup group,
-      final ActionListener action,
-      final boolean selected) {
-    final JRadioButtonMenuItem buttonItem = new JRadioButtonMenuItem(text);
-    buttonItem.addActionListener(action);
-    buttonItem.setSelected(selected);
-    group.add(buttonItem);
-    return buttonItem;
+  private static JMenuItem newMenuItem(
+      final String text, final KeyCode mnemonic, final Runnable action) {
+    return new JMenuItemBuilder(text, mnemonic).actionListener(action).build();
   }
 
   private void addChatTimeMenu() {

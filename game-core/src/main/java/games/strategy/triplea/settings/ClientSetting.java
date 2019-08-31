@@ -8,6 +8,7 @@ import games.strategy.engine.ClientFileSystemHelper;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.system.HttpProxy;
 import games.strategy.engine.framework.system.SystemProperties;
+import games.strategy.triplea.ui.screen.UnitsDrawer;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
@@ -125,6 +126,11 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new StringClientSetting("TRIPLEA_LAST_CHECK_FOR_MAP_UPDATES");
   public static final ClientSetting<Boolean> promptToDownloadTutorialMap =
       new BooleanClientSetting("TRIPLEA_PROMPT_TO_DOWNLOAD_TUTORIAL_MAP", true);
+  public static final ClientSetting<UnitsDrawer.UnitFlagDrawMode> unitFlagDrawMode =
+      new EnumClientSetting<>(
+          UnitsDrawer.UnitFlagDrawMode.class,
+          "UNIT_FLAG_DRAW_MODE",
+          UnitsDrawer.UnitFlagDrawMode.NONE);
   public static final ClientSetting<Path> userMapsFolderPath =
       new PathClientSetting(
           "USER_MAPS_FOLDER_PATH",
