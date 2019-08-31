@@ -4,9 +4,18 @@ language: java
 matrix:
   include:
   - jdk: openjdk11
-    env: TRIPLEA_RELEASE=true
+    env: TASKS="release"
+  - jdk: openjdk11
+    env: TASKS="pmdMain"
+  - jdk: openjdk11
+    env: TASKS="validateYamls"
+  - jdk: openjdk11
+    env: TASKS="spotlessCheck checkstyleMain checkstyleTest"
+  - jdk: openjdk11
+    env: TASKS="test integTest jacocoTestReport"
   - jdk: openjdk12
-    env: TRIPLEA_RELEASE=false
+    env: TASKS="test integTest"
+
 addons:
   postgresql: "10"
   apt:
@@ -18,18 +27,16 @@ install:
 - echo "================ Build step 'install' =================" > /dev/null
 ## shellcheck all shell scripts
 -  find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
-## validate ASAP so syntax, checkstyle or unit tests fail the build early
-- ./gradlew validateYamls checkstyleMain checkstyleTest spotlessCheck test
-- ./.travis/install
+- if [ $TASKS = integTest ] || [ $TASKS = release ]; then ./.travis/install; fi
 before_script:
 - echo "================ Build step 'before_script' =================" > /dev/null
-- ./.travis/setup_gpg
+- if $TASKS = release && ./.travis/setup_gpg
 script:
 - echo "================ Build step 'script' =================" > /dev/null
-- ./gradlew check jacocoTestReport
+- ./gradlew --parallel $TASKS
 after_success:
 - echo "================ Build step 'after_success'' =================" > /dev/null
-- bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
+/- if $TASKS = 'test integTest jacocoTestReport' && bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
 after_failure:
 - echo "================ Build step 'after_failure' =================" > /dev/null
 - test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
@@ -47,6 +54,6 @@ deploy:
   prerelease: true
   on:
     tags: false
-    condition: "$TRIPLEA_RELEASE = true"
+    condition: "$TASKS = release"
     repo: triplea-game/triplea
     branch: master

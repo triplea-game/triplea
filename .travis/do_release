@@ -34,7 +34,7 @@ function installInstall4j() {
 
 function buildReleaseArtifacts() {
   (
-     ./gradlew -Pinstall4jHomeDir="$INSTALL4J_HOME" release  2> errors && \
+     ./gradlew --parallel -Pinstall4jHomeDir="$INSTALL4J_HOME" release  2> errors && \
          echo "INSTALL4J finished with $(wc -l errors)"
   ) || 
   (echo "INSTALL4J FAILED" && tail -500 errors)
