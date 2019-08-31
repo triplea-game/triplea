@@ -2,18 +2,16 @@
 
 set -eEu
 
-
 readonly INSTALL4J_HOME=~/install4j
 readonly ARTIFACTS_DIR=./build/artifacts
-
 
 trap "reportStatus FAILURE" ERR
 
 function main() {
-#  installInstall4j
-#  buildReleaseArtifacts
-#  collectArtifacts
-#  generateArtifactChecksums
+  installInstall4j
+  buildReleaseArtifacts
+  collectArtifacts
+  generateArtifactChecksums
   triggerGithubReleaseWithTagPush
   pushMaps
   reportStatus SUCCESS
@@ -143,9 +141,6 @@ function pushMaps() {
   (
     set -x
     cd website
-    git --version
-    git diff-index --exit-code HEAD --
-    echo $?
     if ! git diff-index --quiet HEAD --; then
       git add --all _maps/
       git commit -m "Bot: update map files after game engine build ${TRAVIS_BUILD_NUMBER}"
