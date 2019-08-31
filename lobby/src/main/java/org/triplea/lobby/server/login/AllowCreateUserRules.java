@@ -9,6 +9,8 @@ import org.triplea.lobby.server.db.UserDao;
 
 /** Validator to detect if a given request is valid for creating a user. */
 @Builder
+// TODO: inject a mock of AllowCreateUserRules into LobbyLoginValidatorTest
+// and simplify those tests.
 class AllowCreateUserRules {
   @Nonnull private final UserDao userDao;
   @Nonnull private final Function<String, String> nameValidator;

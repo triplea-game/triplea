@@ -17,6 +17,8 @@ import org.triplea.util.Version;
 
 /** Detects if a given request should be allowed to login. */
 @AllArgsConstructor
+// TODO: unit test this class, then inject a mock of AllowLoginRules into LobbyLoginValidatorTest
+// and simplify those tests.
 class AllowLoginRules {
 
   private final DatabaseDao database;
