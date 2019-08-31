@@ -6,10 +6,6 @@ echo "create database lobby_db" | psql -h localhost -U postgres -d postgres
 echo "create user lobby_user with password 'postgres'" | psql -h localhost -U postgres -d postgres
 echo "alter database lobby_db owner to lobby_user" | psql -h localhost -U postgres -d postgres
 
-## Update product version to include build number.
-## EG: replace "2.0.0" to be "2.0.15555";
-sed -i "s/.0$/.$TRAVIS_BUILD_NUMBER/" game-core/src/main/resources/META-INF/triplea/product.properties
-
 ./gradlew flywayMigrate
 ./gradlew :http-server:shadowJar
 
