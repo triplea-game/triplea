@@ -26,12 +26,6 @@ public class UnitTypeComparator implements Comparator<UnitType>, Serializable {
   public int compare(final UnitType u1, final UnitType u2) {
     final UnitAttachment ua1 = UnitAttachment.get(u1);
     final UnitAttachment ua2 = UnitAttachment.get(u2);
-    if (ua1 == null) {
-      throw new IllegalStateException("No unit type attachment for unit type : " + u1.getName());
-    }
-    if (ua2 == null) {
-      throw new IllegalStateException("No unit type attachment for unit type : " + u2.getName());
-    }
     if (ua1.getIsInfrastructure() && !ua2.getIsInfrastructure()) {
       return 1;
     }
