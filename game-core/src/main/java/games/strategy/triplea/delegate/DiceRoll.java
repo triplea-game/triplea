@@ -437,10 +437,7 @@ public class DiceRoll implements Externalizable {
                 getMaxAaAttackAndDiceSides(
                     Collections.singleton(unit), data, defending, unitPowerAndRollsMap),
             Comparator.<Tuple<Integer, Integer>, Boolean>comparing(tuple -> tuple.getFirst() == 0)
-                .thenComparing(
-                    Comparator.<Tuple<Integer, Integer>>comparingDouble(
-                            tuple -> ((float) tuple.getFirst()) / ((float) tuple.getSecond()))
-                        .reversed())));
+                .thenComparingDouble(tuple -> -tuple.getFirst() / (float) tuple.getSecond())));
   }
 
   /**
