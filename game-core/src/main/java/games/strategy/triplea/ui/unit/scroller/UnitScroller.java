@@ -274,7 +274,8 @@ public class UnitScroller {
 
   private void highlightTerritory(final Territory territory) {
     if (ClientSetting.unitScrollerHighlightTerritory.getValueOrThrow()) {
-      mapPanel.highlightTerritory(territory, 4, 200);
+      mapPanel.highlightTerritory(
+          territory, MapPanel.AnimationDuration.STANDARD, MapPanel.HighlightDelay.SHORT_DELAY);
     }
   }
 

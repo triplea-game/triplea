@@ -66,6 +66,7 @@ import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.ObjectUtils;
@@ -383,25 +384,46 @@ public class MapPanel extends ImageScrollerLargeView {
     centerOnTerritoryIgnoringMapLock(territory);
   }
 
+  /**
+   * Centers on a territory and highlights it, the territory highlight animation does not turn off
+   * until #clearHighlight is called.
+   */
   void highlightTerritory(final Territory territory) {
-    highlightTerritory(territory, Integer.MAX_VALUE);
+    highlightTerritory(territory, AnimationDuration.INFINITE, HighlightDelay.STANDARD_DELAY);
   }
 
   /**
-   * Adds a highlight to a territory. The highlight is a white outline that will flash.
+   * Centers on and highlights a territory. The highlight is a white outline that will flash.
    *
    * @param territory The territory to highlight
-   * @param totalFrames The number of times to flash on and off the territory highlight.
+   * @param animationDuration Duration for how long the flashing territory animation would be
+   *     active.
+   * @param highlightDelay Time duration for how long before starting the flashing territory
+   *     animation.
    */
-  public void highlightTerritory(final Territory territory, final int totalFrames) {
-    highlightTerritory(territory, totalFrames, 500);
+  public void highlightTerritory(
+      final Territory territory,
+      final AnimationDuration animationDuration,
+      final HighlightDelay highlightDelay) {
+    centerOnTerritoryIgnoringMapLock(territory);
+    highlightedTerritory = territory;
+    territoryHighlighter.highlight(territory, animationDuration.frameCount, highlightDelay.delayMs);
   }
 
-  public void highlightTerritory(
-      final Territory territory, final int totalFrames, final int delay) {
-    centerOn(territory);
-    highlightedTerritory = territory;
-    territoryHighlighter.highlight(territory, totalFrames, delay);
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  public enum AnimationDuration {
+    STANDARD(4),
+    INFINITE(Integer.MAX_VALUE);
+
+    private final int frameCount;
+  }
+
+  @AllArgsConstructor(access = AccessLevel.PRIVATE)
+  public enum HighlightDelay {
+    SHORT_DELAY(200),
+    STANDARD_DELAY(500);
+
+    private final int delayMs;
   }
 
   void clearHighlightedTerritory() {
