@@ -7,6 +7,7 @@ jobs:
     - stage: verify
       env: DESCRIPTION="static verification"
       jdk: openjdk11
+      install: skip
       script:
         ## shellcheck all shell scripts
         - find .travis/ -type f | xargs grep -lE "^#\!/bin/bash$" | xargs shellcheck
@@ -15,6 +16,7 @@ jobs:
       env: DESCRIPTION=integTest
       jdk: openjdk11
       addons: {postgresql: "10"}
+      install: skip
       script:
         - ./.travis/setup_database &
         - ./.travis/launch_http_server
@@ -22,16 +24,19 @@ jobs:
     - stage: verify
       env: DESCRIPTION="JDK12 unitTests"
       jdk: openjdk12
+      install: skip
       script:
         - ./gradlew --parallel test
     - stage: verify
       jdk: openjdk11
       env: DESCRIPTION="JDK11 unitTests and Test Coverage"
+      install: skip
       script:
         - ./gradlew --parallel test jacocoTestReport
         - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
     - stage: deploy
-      if: (branch = master) and (repo = triplea-game/triplea) and (env(TRAVIS_PULL_REQUEST) = false)
+      if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
+      install: skip
       script:
         - ./.travis/setup_gpg
         ## Update product version to include build number.
