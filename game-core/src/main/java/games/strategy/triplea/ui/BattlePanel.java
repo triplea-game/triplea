@@ -116,7 +116,13 @@ public final class BattlePanel extends ActionPanel {
             .addEast(
                 JButtonBuilder.builder()
                     .title("Center")
-                    .actionListener(() -> getMap().highlightTerritory(territory, 4))
+                    .actionListener(
+                        () ->
+                            getMap()
+                                .highlightTerritory(
+                                    territory,
+                                    MapPanel.AnimationDuration.STANDARD,
+                                    MapPanel.HighlightDelay.STANDARD_DELAY))
                     .build())
             .build());
   }
