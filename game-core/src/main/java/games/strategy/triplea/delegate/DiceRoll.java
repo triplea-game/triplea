@@ -37,6 +37,8 @@ import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
  * Used to store information about a dice roll.
  *
@@ -424,7 +426,8 @@ public class DiceRoll implements Externalizable {
     sortAaHighToLow(units, data, defending, new HashMap<>());
   }
 
-  private static void sortAaHighToLow(
+  @VisibleForTesting
+  static void sortAaHighToLow(
       final List<Unit> units,
       final GameData data,
       final boolean defending,
