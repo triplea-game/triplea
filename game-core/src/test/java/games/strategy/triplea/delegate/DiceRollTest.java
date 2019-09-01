@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,7 +38,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.collections.CollectionUtils;
-import org.triplea.util.Tuple;
 
 class DiceRollTest {
   private GameData gameData;
@@ -761,29 +759,32 @@ class DiceRollTest {
     @Mock private Unit unit4;
     @Mock private Unit unit5;
 
-    private final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap = new HashMap<>();
     private final List<Unit> units = new ArrayList<>();
+
+    private UnitAttachment setupUnitAttachment(final Unit unit) {
+      final UnitType unitTypeMock = mock(UnitType.class);
+      final UnitAttachment unitAttachment = mock(UnitAttachment.class);
+      when(unitTypeMock.getAttachment(any())).thenReturn(unitAttachment);
+      when(unit.getType()).thenReturn(unitTypeMock);
+      return unitAttachment;
+    }
 
     @BeforeEach
     void setUp() {
       units.addAll(List.of(unit1, unit2, unit3, unit4, unit5));
-      for (final var unit : units) {
-        final UnitType unitTypeMock = mock(UnitType.class);
-        final UnitAttachment unitAttachment = mock(UnitAttachment.class);
-        when(unitTypeMock.getAttachment(any())).thenReturn(unitAttachment);
-        when(unit.getType()).thenReturn(unitTypeMock);
-      }
     }
 
     @Test
     void testAttacking() {
       int index = 4;
       for (final var unit : units) {
-        when(((UnitAttachment) unit.getType().getAttachment("")).getOffensiveAttackAa(any()))
-            .thenReturn(index / 2);
+        final var unitAttachment = setupUnitAttachment(unit);
+        // We're integer dividing the index at this point to get duplicate sorting keys
+        // in order to reach some edge cases
+        when(unitAttachment.getOffensiveAttackAa(any())).thenReturn(index / 2);
         index--;
       }
-      DiceRoll.sortAaHighToLow(units, gameData, false, unitPowerAndRollsMap);
+      DiceRoll.sortAaHighToLow(units, gameData, false, new HashMap<>());
       assertThat(units.get(0), is(unit1));
       assertThat(units.get(1), is(unit2));
       assertThat(units.get(2), is(unit3));
@@ -795,11 +796,13 @@ class DiceRollTest {
     void testDefending() {
       int index = 0;
       for (final var unit : units) {
-        when(((UnitAttachment) unit.getType().getAttachment("")).getAttackAa(any()))
-            .thenReturn(index / 2);
+        final var unitAttachment = setupUnitAttachment(unit);
+        // We're integer dividing the index at this point to get duplicate sorting keys
+        // in order to reach some edge cases
+        when(unitAttachment.getAttackAa(any())).thenReturn(index / 2);
         index++;
       }
-      DiceRoll.sortAaHighToLow(units, gameData, true, unitPowerAndRollsMap);
+      DiceRoll.sortAaHighToLow(units, gameData, true, new HashMap<>());
       assertThat(units.get(0), is(unit5));
       assertThat(units.get(1), is(unit3));
       assertThat(units.get(2), is(unit4));
