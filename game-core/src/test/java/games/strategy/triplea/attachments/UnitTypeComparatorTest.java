@@ -1,6 +1,7 @@
 package games.strategy.triplea.attachments;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -71,25 +72,25 @@ class UnitTypeComparatorTest {
         IllegalStateException.class, () -> unitTypeComparator.compare(noneType1, nullType));
     assertThrows(IllegalStateException.class, () -> unitTypeComparator.compare(nullType, nullType));
 
-    assertEquals(0, unitTypeComparator.compare(infrastructure, infrastructure));
-    assertEquals(0, unitTypeComparator.compare(antiAircraft, antiAircraft));
-    assertEquals(0, unitTypeComparator.compare(air, air));
-    assertEquals(0, unitTypeComparator.compare(sea, sea));
-    assertEquals(0, unitTypeComparator.compare(attacker, attacker));
-    assertEquals(0, unitTypeComparator.compare(noneType1, noneType1));
+    assertThat(unitTypeComparator.compare(infrastructure, infrastructure), is(0));
+    assertThat(unitTypeComparator.compare(antiAircraft, antiAircraft), is(0));
+    assertThat(unitTypeComparator.compare(air, air), is(0));
+    assertThat(unitTypeComparator.compare(sea, sea), is(0));
+    assertThat(unitTypeComparator.compare(attacker, attacker), is(0));
+    assertThat(unitTypeComparator.compare(noneType1, noneType1), is(0));
 
-    assertEquals(1, unitTypeComparator.compare(infrastructure, antiAircraft));
-    assertEquals(1, unitTypeComparator.compare(antiAircraft, air));
-    assertEquals(1, unitTypeComparator.compare(air, sea));
-    assertEquals(1, unitTypeComparator.compare(sea, attacker));
-    assertEquals(1, unitTypeComparator.compare(attacker, noneType1));
-    assertEquals(1, unitTypeComparator.compare(noneType1, noneType2));
+    assertThat(unitTypeComparator.compare(infrastructure, antiAircraft), is(1));
+    assertThat(unitTypeComparator.compare(antiAircraft, air), is(1));
+    assertThat(unitTypeComparator.compare(air, sea), is(1));
+    assertThat(unitTypeComparator.compare(sea, attacker), is(1));
+    assertThat(unitTypeComparator.compare(attacker, noneType1), is(1));
+    assertThat(unitTypeComparator.compare(noneType1, noneType2), is(1));
 
-    assertEquals(-1, unitTypeComparator.compare(antiAircraft, infrastructure));
-    assertEquals(-1, unitTypeComparator.compare(air, antiAircraft));
-    assertEquals(-1, unitTypeComparator.compare(sea, air));
-    assertEquals(-1, unitTypeComparator.compare(attacker, sea));
-    assertEquals(-1, unitTypeComparator.compare(noneType1, attacker));
-    assertEquals(-1, unitTypeComparator.compare(noneType2, noneType1));
+    assertThat(unitTypeComparator.compare(antiAircraft, infrastructure), is(-1));
+    assertThat(unitTypeComparator.compare(air, antiAircraft), is(-1));
+    assertThat(unitTypeComparator.compare(sea, air), is(-1));
+    assertThat(unitTypeComparator.compare(attacker, sea), is(-1));
+    assertThat(unitTypeComparator.compare(noneType1, attacker), is(-1));
+    assertThat(unitTypeComparator.compare(noneType2, noneType1), is(-1));
   }
 }
