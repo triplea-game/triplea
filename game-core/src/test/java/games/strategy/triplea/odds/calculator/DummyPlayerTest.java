@@ -17,6 +17,7 @@ import games.strategy.triplea.delegate.data.CasualtyList;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class DummyPlayerTest {
@@ -39,41 +40,75 @@ class DummyPlayerTest {
     when(defaultCasualties.getKilled()).thenReturn(killed);
   }
 
-  @Test
-  void testSelectCasualties_oneLand_noLossOrder() {
-    for (final var unit : unitPool) {
-      final var unitType = mock(UnitType.class);
-      when(unit.getType()).thenReturn(unitType);
-      final var unitAttachment = mock(UnitAttachment.class);
-      when(unitType.getAttachment(any())).thenReturn(unitAttachment);
-      when(unitAttachment.getIsAir()).thenReturn(!unit.equals(unitPool.get(0)));
-      final var gameData = mock(GameData.class);
-      when(unit.getData()).thenReturn(gameData);
-      when(gameData.getResourceList()).thenReturn(mock(ResourceList.class));
-      final var playerId = mock(PlayerId.class);
-      when(unit.getOwner()).thenReturn(playerId);
+  private void assertCommonCasualtyDetails(final CasualtyDetails details) {
+    assertThat(details.getDamaged(), is(damaged));
+    assertThat(details.getAutoCalculated(), is(false));
+  }
+
+  @Nested
+  class OneLand {
+    @BeforeEach
+    void setUp() {
+      for (final var unit : unitPool) {
+        final var unitType = mock(UnitType.class);
+        when(unit.getType()).thenReturn(unitType);
+        final var unitAttachment = mock(UnitAttachment.class);
+        when(unitType.getAttachment(any())).thenReturn(unitAttachment);
+        when(unitAttachment.getIsAir()).thenReturn(!unit.equals(unitPool.get(0)));
+        final var gameData = mock(GameData.class);
+        when(unit.getData()).thenReturn(gameData);
+        when(gameData.getResourceList()).thenReturn(mock(ResourceList.class));
+        final var playerId = mock(PlayerId.class);
+        when(unit.getOwner()).thenReturn(playerId);
+      }
     }
 
-    final DummyPlayer player = new DummyPlayer(null, false, "", null, true, 0, 0, false);
-    final CasualtyDetails details =
-        player.selectCasualties(
-            unitPool,
-            null,
-            0,
-            null,
-            null,
-            null,
-            null,
-            null,
-            false,
-            null,
-            defaultCasualties,
-            null,
-            null,
-            false);
-    assertThat(details.getDamaged(), is(damaged));
-    assertThat(details.getKilled(), is(List.of(unitPool.get(1), unitPool.get(2))));
-    assertThat(details.getAutoCalculated(), is(false));
+    @Test
+    void testSelectCasualties_noLossOrder() {
+      final DummyPlayer player = new DummyPlayer(null, false, "", null, true, 0, 0, false);
+      final CasualtyDetails details =
+          player.selectCasualties(
+              unitPool,
+              null,
+              0,
+              null,
+              null,
+              null,
+              null,
+              null,
+              false,
+              null,
+              defaultCasualties,
+              null,
+              null,
+              false);
+      assertThat(details.getDamaged(), is(damaged));
+      assertThat(details.getKilled(), is(List.of(unitPool.get(1), unitPool.get(2))));
+      assertThat(details.getAutoCalculated(), is(false));
+    }
+
+    @Test
+    void testSelectCasualties() {
+      final DummyPlayer player = new DummyPlayer(null, false, "", orderOfLosses, true, 0, 0, false);
+      final CasualtyDetails details =
+          player.selectCasualties(
+              unitPool,
+              null,
+              0,
+              null,
+              null,
+              null,
+              null,
+              null,
+              false,
+              null,
+              defaultCasualties,
+              null,
+              null,
+              false);
+      assertCommonCasualtyDetails(details);
+      assertThat(details.getKilled(), is(List.of(unitPool.get(2), unitPool.get(0))));
+    }
   }
 
   @Test
@@ -95,46 +130,8 @@ class DummyPlayerTest {
             null,
             null,
             false);
-    assertThat(details.getDamaged(), is(damaged));
+    assertCommonCasualtyDetails(details);
     assertThat(details.getKilled(), is(killed));
-    assertThat(details.getAutoCalculated(), is(false));
-  }
-
-  @Test
-  void testSelectCasualties_oneLand() {
-    for (final var unit : unitPool) {
-      final var unitType = mock(UnitType.class);
-      when(unit.getType()).thenReturn(unitType);
-      final var unitAttachment = mock(UnitAttachment.class);
-      when(unitType.getAttachment(any())).thenReturn(unitAttachment);
-      when(unitAttachment.getIsAir()).thenReturn(!unit.equals(unitPool.get(0)));
-      final var gameData = mock(GameData.class);
-      when(unit.getData()).thenReturn(gameData);
-      when(gameData.getResourceList()).thenReturn(mock(ResourceList.class));
-      final var playerId = mock(PlayerId.class);
-      when(unit.getOwner()).thenReturn(playerId);
-    }
-
-    final DummyPlayer player = new DummyPlayer(null, false, "", orderOfLosses, true, 0, 0, false);
-    final CasualtyDetails details =
-        player.selectCasualties(
-            unitPool,
-            null,
-            0,
-            null,
-            null,
-            null,
-            null,
-            null,
-            false,
-            null,
-            defaultCasualties,
-            null,
-            null,
-            false);
-    assertThat(details.getDamaged(), is(damaged));
-    assertThat(details.getKilled(), is(List.of(unitPool.get(2), unitPool.get(0))));
-    assertThat(details.getAutoCalculated(), is(false));
   }
 
   @Test
@@ -156,9 +153,8 @@ class DummyPlayerTest {
             null,
             null,
             false);
-    assertThat(details.getDamaged(), is(damaged));
+    assertCommonCasualtyDetails(details);
     assertThat(details.getKilled(), is(List.of(unitPool.get(2), unitPool.get(0))));
-    assertThat(details.getAutoCalculated(), is(false));
   }
 
   @Test
@@ -182,8 +178,7 @@ class DummyPlayerTest {
             null,
             null,
             false);
-    assertThat(details.getDamaged(), is(damaged));
+    assertCommonCasualtyDetails(details);
     assertThat(details.getKilled(), is(List.of(unitPool.get(0), unitPool.get(1))));
-    assertThat(details.getAutoCalculated(), is(false));
   }
 }
