@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -36,8 +37,6 @@ import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Triple;
 import org.triplea.util.Tuple;
-
-import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Used to store information about a dice roll.

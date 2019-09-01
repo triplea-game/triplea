@@ -26,19 +26,16 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.java.collections.CollectionUtils;
@@ -782,7 +779,8 @@ class DiceRollTest {
     void testAttacking() {
       int index = 4;
       for (final var unit : units) {
-        when(((UnitAttachment) unit.getType().getAttachment("")).getOffensiveAttackAa(any())).thenReturn(index / 2);
+        when(((UnitAttachment) unit.getType().getAttachment("")).getOffensiveAttackAa(any()))
+            .thenReturn(index / 2);
         index--;
       }
       DiceRoll.sortAaHighToLow(units, gameData, false, unitPowerAndRollsMap);
@@ -797,7 +795,8 @@ class DiceRollTest {
     void testDefending() {
       int index = 0;
       for (final var unit : units) {
-        when(((UnitAttachment) unit.getType().getAttachment("")).getAttackAa(any())).thenReturn(index / 2);
+        when(((UnitAttachment) unit.getType().getAttachment("")).getAttackAa(any()))
+            .thenReturn(index / 2);
         index++;
       }
       DiceRoll.sortAaHighToLow(units, gameData, true, unitPowerAndRollsMap);
