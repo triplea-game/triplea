@@ -58,6 +58,10 @@ jobs:
         file: build/artifacts/*
         skip_cleanup: true        
         prerelease: true
+        on:
+          tags: false
+          repo: triplea-game/triplea
+          branch: master
 after_failure:
   - echo "================ Build step 'after_failure' =================" > /dev/null
   - test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
