@@ -25,22 +25,13 @@ import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.TestUserUtils;
 import org.triplea.lobby.server.config.TestLobbyConfigurations;
 import org.triplea.lobby.server.db.HashedPassword;
-import org.triplea.lobby.server.db.JdbiDatabase;
-import org.triplea.lobby.server.db.dao.TempPasswordDao;
-import org.triplea.lobby.server.login.forgot.password.verify.TempPasswordVerification;
 import org.triplea.test.common.Integration;
 
 @Integration
 class LobbyLoginValidatorIntegrationTest {
   private static final String EMAIL = "Chremisa@mori.com";
   private final ILoginValidator loginValidator =
-      new LobbyLoginValidator(
-          TestLobbyConfigurations.INTEGRATION_TEST.getDatabaseDao(),
-          new RsaAuthenticator(),
-          BCrypt::gensalt,
-          new FailedLoginThrottle(),
-          new TempPasswordVerification(
-              JdbiDatabase.newConnection().onDemand(TempPasswordDao.class)));
+      LobbyLoginValidatorFactory.newLobbyLoginValidator(TestLobbyConfigurations.INTEGRATION_TEST);
 
   private ChallengeResultFunction generateChallenge(final HashedPassword password) {
     return generateChallenge("a" + TestUserUtils.newUniqueTimestamp(), password);

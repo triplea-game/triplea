@@ -40,11 +40,6 @@ public final class RsaAuthenticator {
     this.keyPair = keyPair;
   }
 
-  /** Returns true if the specified map contains the required values. */
-  public static boolean canProcessResponse(final Map<String, String> response) {
-    return response.containsKey(LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD);
-  }
-
   /**
    * Creates a new challenge for the lobby server to send to the lobby client.
    *

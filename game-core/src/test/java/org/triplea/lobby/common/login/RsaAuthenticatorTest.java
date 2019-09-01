@@ -1,8 +1,5 @@
 package org.triplea.lobby.common.login;
 
-import static java.util.Collections.singletonMap;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -14,21 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.triplea.test.common.security.TestSecurityUtils;
 
 final class RsaAuthenticatorTest {
-  @Nested
-  final class CanProcessResponseTest {
-    @Test
-    void shouldReturnTrueWhenResponseContainsAllRequiredProperties() {
-      assertTrue(
-          RsaAuthenticator.canProcessResponse(
-              singletonMap(LobbyLoginResponseKeys.RSA_ENCRYPTED_PASSWORD, "")));
-    }
-
-    @Test
-    void shouldReturnFalseWhenResponseDoesNotContainAllRequiredProperties() {
-      assertFalse(RsaAuthenticator.canProcessResponse(singletonMap("someOtherResponseKey", "")));
-    }
-  }
-
   @Nested
   final class ChallengeResponseTest {
     @Test

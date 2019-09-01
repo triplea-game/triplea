@@ -7,16 +7,10 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.net.ServerMessenger;
 import java.io.IOException;
-import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.LobbyConstants;
-import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.config.LobbyConfiguration;
-import org.triplea.lobby.server.db.JdbiDatabase;
-import org.triplea.lobby.server.db.dao.TempPasswordDao;
-import org.triplea.lobby.server.login.FailedLoginThrottle;
-import org.triplea.lobby.server.login.LobbyLoginValidator;
-import org.triplea.lobby.server.login.forgot.password.verify.TempPasswordVerification;
+import org.triplea.lobby.server.login.LobbyLoginValidatorFactory;
 
 /**
  * A lobby server.
@@ -45,15 +39,7 @@ final class LobbyServer {
             new DefaultObjectStreamFactory());
     final Messengers messengers = new Messengers(server);
 
-    final var tempPasswordDao = JdbiDatabase.newConnection().onDemand(TempPasswordDao.class);
-
-    server.setLoginValidator(
-        new LobbyLoginValidator(
-            lobbyConfiguration.getDatabaseDao(),
-            new RsaAuthenticator(),
-            BCrypt::gensalt,
-            new FailedLoginThrottle(),
-            new TempPasswordVerification(tempPasswordDao)));
+    server.setLoginValidator(LobbyLoginValidatorFactory.newLobbyLoginValidator(lobbyConfiguration));
 
     new UserManager(lobbyConfiguration.getDatabaseDao()).register(messengers);
 
