@@ -1,5 +1,6 @@
 package games.strategy.triplea.delegate;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
@@ -424,37 +425,19 @@ public class DiceRoll implements Externalizable {
     sortAaHighToLow(units, data, defending, new HashMap<>());
   }
 
-  private static void sortAaHighToLow(
+  @VisibleForTesting
+  static void sortAaHighToLow(
       final List<Unit> units,
       final GameData data,
       final boolean defending,
       final Map<Unit, Tuple<Integer, Integer>> unitPowerAndRollsMap) {
-    final Comparator<Unit> comparator =
-        (u1, u2) -> {
-          final Tuple<Integer, Integer> tuple1 =
-              getMaxAaAttackAndDiceSides(
-                  Collections.singleton(u1), data, defending, unitPowerAndRollsMap);
-          final Tuple<Integer, Integer> tuple2 =
-              getMaxAaAttackAndDiceSides(
-                  Collections.singleton(u2), data, defending, unitPowerAndRollsMap);
-          if (tuple1.getFirst() == 0) {
-            if (tuple2.getFirst() == 0) {
-              return 0;
-            }
-            return 1;
-          } else if (tuple2.getFirst() == 0) {
-            return -1;
-          }
-          final float value1 = ((float) tuple1.getFirst()) / ((float) tuple1.getSecond());
-          final float value2 = ((float) tuple2.getFirst()) / ((float) tuple2.getSecond());
-          if (value1 < value2) {
-            return 1;
-          } else if (value1 > value2) {
-            return -1;
-          }
-          return 0;
-        };
-    units.sort(comparator);
+    units.sort(
+        Comparator.comparing(
+            unit ->
+                getMaxAaAttackAndDiceSides(
+                    Collections.singleton(unit), data, defending, unitPowerAndRollsMap),
+            Comparator.<Tuple<Integer, Integer>, Boolean>comparing(tuple -> tuple.getFirst() == 0)
+                .thenComparingDouble(tuple -> -tuple.getFirst() / (float) tuple.getSecond())));
   }
 
   /**
@@ -465,7 +448,7 @@ public class DiceRoll implements Externalizable {
    * @param aaUnits should be sorted from weakest to strongest, before the method is called, for the
    *     actual battle.
    */
-  public static Map<Unit, Tuple<Integer, Integer>> getAaUnitPowerAndRollsForNormalBattles(
+  static Map<Unit, Tuple<Integer, Integer>> getAaUnitPowerAndRollsForNormalBattles(
       final Collection<Unit> aaUnits,
       final Collection<Unit> allEnemyUnitsAliveOrWaitingToDie,
       final Collection<Unit> allFriendlyUnitsAliveOrWaitingToDie,
