@@ -63,6 +63,12 @@ class DummyPlayerTest {
       }
     }
 
+    /**
+     * This test checks if units are correctly selected keeping in mind that some units might not be
+     * able to capture the target territory on their own. (Like air units for example.) This only
+     * works if no orderOfLosses is present, otherwise the orderOfLosses overrules this
+     * consideration.
+     */
     @Test
     void testSelectCasualties_noLossOrder() {
       final DummyPlayer player = new DummyPlayer(null, false, "", null, true, 0, 0, false);
@@ -87,6 +93,11 @@ class DummyPlayerTest {
       assertThat(details.getAutoCalculated(), is(false));
     }
 
+    /**
+     * This test checks if a present non-empty orderOfLosses argument correctly overrules any
+     * "keepAtLeastOneLand" considerations. The result should be the same as in {@link
+     * #testSelectCasualties_noLand}.
+     */
     @Test
     void testSelectCasualties() {
       final DummyPlayer player = new DummyPlayer(null, false, "", orderOfLosses, true, 0, 0, false);
@@ -111,6 +122,10 @@ class DummyPlayerTest {
     }
   }
 
+  /**
+   * This test checks if the arguments will be returned unaltered, when orderOfLosses is not present
+   * and keepAtLeastOneLand is false.
+   */
   @Test
   void testSelectCasualties_noLand_noLossOrder() {
     final DummyPlayer player = new DummyPlayer(null, false, "", null, false, 0, 0, false);
@@ -134,6 +149,11 @@ class DummyPlayerTest {
     assertThat(details.getKilled(), is(killed));
   }
 
+  /**
+   * This test checks if units are correctly selected based on the loss order, ignoring that some
+   * units might not be able to capture the target territory on their own. (Like air units for
+   * example.)
+   */
   @Test
   void testSelectCasualties_noLand() {
     final DummyPlayer player = new DummyPlayer(null, false, "", orderOfLosses, false, 0, 0, false);
@@ -157,6 +177,11 @@ class DummyPlayerTest {
     assertThat(details.getKilled(), is(List.of(unitPool.get(2), unitPool.get(0))));
   }
 
+  /**
+   * This test checks if the case is handled correctly, where there are fewer entries in
+   * orderOfLosses than there are Units in the selectFrom parameter of {@link
+   * DummyPlayer#selectCasualties}.
+   */
   @Test
   void testSelectCasualties_noLand_fewEntriesInLossOrder() {
     final DummyPlayer player =
