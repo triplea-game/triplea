@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.triplea.lobby.common.LobbyConstants;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerNameAssignerTest {
@@ -19,10 +20,6 @@ class PlayerNameAssignerTest {
 
   private static final String MAC = "mac 1";
   private static final String MAC_2 = "mac 2";
-
-  //  @Mock private InetAddress address1;
-
-  //  @Mock private InetAddress address2;
 
   @Nested
   final class ErrorCases {
@@ -140,6 +137,45 @@ class PlayerNameAssignerTest {
         PlayerNameAssigner.assignName(
             NAME_1, MAC, createMacToPlayerMap(MAC, NAME_2 + " (2)", MAC, NAME_2)),
         is(NAME_2 + " (1)"));
+  }
+
+  @Test
+  void assignNameIgnoresExistingBots() {
+    assertThat(
+        "with a bot logged in already, mac check should ignore the signed in name",
+        PlayerNameAssigner.assignName(
+            NAME_1,
+            MAC,
+            createMacToPlayerMap(MAC, "Bot01_bot_" + LobbyConstants.LOBBY_WATCHER_NAME)),
+        is(NAME_1));
+
+    assertThat(
+        "with a bot logged in, but having another name logged in, we should de-dupe against "
+            + "the already logged in name.",
+        PlayerNameAssigner.assignName(
+            NAME_1,
+            MAC,
+            createMacToPlayerMap(
+                MAC, "Bot01_bot_" + LobbyConstants.LOBBY_WATCHER_NAME, MAC, NAME_2)),
+        is(NAME_2 + " (1)"));
+  }
+
+  @Test
+  void multipleBotNames() {
+    final String bot01 = "Bot01_bot" + LobbyConstants.LOBBY_WATCHER_NAME;
+    final String bot02 = "Bot02_bot" + LobbyConstants.LOBBY_WATCHER_NAME;
+    final String bot03 = "Bot02_bot" + LobbyConstants.LOBBY_WATCHER_NAME;
+
+    assertThat(
+        "with a bot logged in already, mac check should ignore the already logged in bot",
+        PlayerNameAssigner.assignName(bot01, MAC, createMacToPlayerMap(MAC, bot02)),
+        is(bot01));
+
+    assertThat(
+        "again, even with multiple bots logged in, mac check should ignore existing logins "
+            + "that have a bot lobby watch name",
+        PlayerNameAssigner.assignName(bot01, MAC, createMacToPlayerMap(MAC, bot02, MAC, bot03)),
+        is(bot01));
   }
 
   private static Multimap<String, String> createMacToPlayerMap(
