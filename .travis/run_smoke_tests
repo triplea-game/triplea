@@ -26,6 +26,8 @@ readonly BOT_OUTPUT="bot-output"
 function main() {
   buildJars
   LOBBY_PID=$(startLobby)
+  # Give lobby some time to start up
+  sleep 5
   BOT_PID=$(startBot)
   
   # On exit, print out the logs for debugging and stop bot and lobby
