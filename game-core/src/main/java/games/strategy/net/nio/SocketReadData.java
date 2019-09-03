@@ -71,7 +71,6 @@ class SocketReadData {
     }
     // http://javaalmanac.com/egs/java.nio/DetectClosed.html
     final int size = channel.read(contentBuffer);
-    log.finest(() -> "read content bytes:" + size);
     if (size == -1) {
       throw new IOException("Socket closed");
     }
