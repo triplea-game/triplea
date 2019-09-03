@@ -2,6 +2,10 @@ dist: xenial
 sudo: false
 language: java
 if: tag is blank
+
+# Note: Travis generally does not allocate more than 5 VMs at once.
+# Avoid running more than 5 jobs in parallel. Try to keep the jobs
+# balanced so that they each take about the same amount of time.
 jobs:
   include:
     - stage: verify
@@ -34,6 +38,14 @@ jobs:
       script:
         - ./gradlew --parallel test jacocoTestReport
         - bash <(curl -s https://codecov.io/bash)  # upload coverage report - https://github.com/codecov/example-gradle
+    - stage: verify
+      jdk: openjdk11
+      env: DESCRIPTION="Smoke Test"
+      addons: {postgresql: "10"}
+      install: skip
+      script:
+        - ./.travis/setup_database
+        - ./.travis/run_smoke_tests
     - stage: deploy
       if: (branch = master) and (repo = 'triplea-game/triplea') and (type != 'pull_request')
       install: skip
