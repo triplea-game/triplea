@@ -41,16 +41,21 @@ jar {
     }
 }
 
+clean.doFirst {
+  delete "$projectDir/.assets/"
+  delete "$projectDir/assets/"
+}
+
 task downloadAssets {
     doLast {
-        file('.assets.txt').eachLine { path ->
-            if (!path.startsWith('#')) {
-                download {
-                    src "https://raw.githubusercontent.com/triplea-game/assets/master/game_headed_assets/$path"
-                    dest "$projectDir/assets/$path"
-                    overwrite false
-                }
-            }
+        download {
+            src "https://github.com/triplea-game/assets/releases/download/3/game_headed_assets.zip"
+            dest "$projectDir/.assets/assets.zip"
+            overwrite false
+        }
+        copy {
+            from zipTree(file("$projectDir/.assets/assets.zip"))
+            into "$projectDir/assets/"
         }
     }
 }
