@@ -56,6 +56,7 @@ public final class PlayerNameAssigner {
 
     return loggedInMacsToNames.entries().stream()
         .filter(entry -> mac.equals(entry.getKey()))
+        .filter(entry -> !isBotName(entry.getValue()))
         .map(Map.Entry::getValue)
         .min(Comparator.naturalOrder());
   }
