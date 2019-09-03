@@ -59,6 +59,7 @@
 
 <!--
 Code standards and PR guidelines can be found at:
-https://github.com/triplea-game/triplea/tree/master/docs/dev
+- https://github.com/triplea-game/triplea/wiki/Contribution-Guidelines
+- https://github.com/triplea-game/triplea/wiki/Code-Reviews
 -->
 
