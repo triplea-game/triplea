@@ -637,8 +637,6 @@ public class MapPanel extends ImageScrollerLargeView {
     super.paint(g2d);
     g2d.scale(scale, scale);
     g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight()));
-    int x = model.getX();
-    int y = model.getY();
     final List<Tile> images = new ArrayList<>();
     final List<Tile> undrawnTiles = new ArrayList<>();
     // make sure we use the same data for the entire paint
@@ -646,6 +644,8 @@ public class MapPanel extends ImageScrollerLargeView {
     // if the map fits on screen, don't draw any overlap
     final boolean fitAxisX = !mapWidthFitsOnScreen() && uiContext.getMapData().scrollWrapX();
     final boolean fitAxisY = !mapHeightFitsOnScreen() && uiContext.getMapData().scrollWrapY();
+    int x = fitAxisX ? model.getX() : 0;
+    int y = fitAxisY ? model.getY() : 0;
     if (fitAxisX || fitAxisY) {
       if (fitAxisX && x + (int) getScaledWidth() > model.getMaxWidth()) {
         x -= model.getMaxWidth();
