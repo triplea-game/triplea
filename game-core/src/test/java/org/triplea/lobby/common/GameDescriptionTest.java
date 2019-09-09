@@ -53,10 +53,10 @@ final class GameDescriptionTest {
   @Nested
   final class FormatBotStartTimeTest {
     @Test
-    void shouldNotThrowExceptionWhenStartedDateIsNull() {
+    void nullStartDateTimeIsFormattedToEmptyString() {
       final GameDescription gameDescription = GameDescription.builder().build();
 
-      assertDoesNotThrow(gameDescription::getFormattedBotStartTime);
+      assertThat(gameDescription.getFormattedBotStartTime(), is(""));
     }
 
     @Test

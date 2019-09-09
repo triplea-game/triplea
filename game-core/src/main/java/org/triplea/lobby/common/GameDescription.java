@@ -60,9 +60,11 @@ public class GameDescription implements Serializable {
   }
 
   public String getFormattedBotStartTime() {
-    return new DateTimeFormatterBuilder()
-        .appendLocalized(null, FormatStyle.SHORT)
-        .toFormatter()
-        .format(LocalDateTime.ofInstant(startDateTime, ZoneOffset.systemDefault()));
+    return startDateTime == null
+        ? ""
+        : new DateTimeFormatterBuilder()
+            .appendLocalized(null, FormatStyle.SHORT)
+            .toFormatter()
+            .format(LocalDateTime.ofInstant(startDateTime, ZoneOffset.systemDefault()));
   }
 }
