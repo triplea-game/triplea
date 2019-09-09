@@ -6,13 +6,13 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.google.common.util.concurrent.Runnables;
+import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
-import games.strategy.net.Messengers;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,9 +52,12 @@ final class LobbyGameTableModelTest {
       Mockito.when(mockRemoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME))
           .thenReturn(mockLobbyController);
       Mockito.when(mockLobbyController.listGames()).thenReturn(fakeGameMap);
-      testObj =
-          new LobbyGameTableModel(
-              true, new Messengers(mockMessenger, mockRemoteMessenger, mockChannelMessenger));
+
+      final LobbyClient lobbyClient = new LobbyClient(mockMessenger, true);
+
+      testObj = new LobbyGameTableModel(lobbyClient);
+      //              true, new Messengers(mockMessenger, mockRemoteMessenger,
+      // mockChannelMessenger));
       Mockito.verify(mockLobbyController, Mockito.times(1)).listGames();
 
       MessageContext.setSenderNodeForThread(serverNode);

@@ -1,13 +1,7 @@
 package games.strategy.engine.lobby.client.ui;
 
-import com.google.common.annotations.VisibleForTesting;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.net.GUID;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +11,7 @@ import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.util.Tuple;
 
-class LobbyGameTableModel extends AbstractTableModel {
+class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadcaster {
   private static final long serialVersionUID = 6399458368730633993L;
 
   enum Column {
@@ -37,22 +31,9 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   // these must only be accessed in the swing event thread
   private final List<Tuple<GUID, GameDescription>> gameList = new ArrayList<>();
-  private final ILobbyGameBroadcaster lobbyGameBroadcaster =
-      new ILobbyGameBroadcaster() {
-        @Override
-        public void gameUpdated(final GUID gameId, final GameDescription description) {
-          updateGame(gameId, description);
-        }
-
-        @Override
-        public void gameRemoved(final GUID gameId) {
-          removeGame(gameId);
-        }
-      };
 
   LobbyGameTableModel(final LobbyClient lobbyClient) {
     this.lobbyClient = lobbyClient;
-    lobbyClient.addGameChangeListener(lobbyGameBroadcaster);
 
     final Map<GUID, GameDescription> games = lobbyClient.listGames();
     for (final Map.Entry<GUID, GameDescription> entry : games.entrySet()) {
@@ -60,13 +41,23 @@ class LobbyGameTableModel extends AbstractTableModel {
     }
   }
 
+  @Override
+  public void gameUpdated(final GUID gameId, final GameDescription description) {
+    if (gameId != null) {
+      updateGame(gameId, description);
+    }
+  }
+
+  @Override
+  public void gameRemoved(final GUID gameId) {
+    if (gameId != null) {
+      removeGame(gameId);
+    }
+  }
+
   private void removeGame(final GUID gameId) {
     SwingUtilities.invokeLater(
         () -> {
-          if (gameId == null) {
-            return;
-          }
-
           final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
           if (gameToRemove != null) {
             final int index = gameList.indexOf(gameToRemove);
@@ -83,18 +74,11 @@ class LobbyGameTableModel extends AbstractTableModel {
         .orElse(null);
   }
 
-  ILobbyGameBroadcaster getLobbyGameBroadcaster() {
-    return lobbyGameBroadcaster;
-  }
-
   GameDescription get(final int i) {
     return gameList.get(i).getSecond();
   }
 
   private void updateGame(final GUID gameId, final GameDescription description) {
-    if (gameId == null) {
-      return;
-    }
     SwingUtilities.invokeLater(
         () -> {
           final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
@@ -154,19 +138,11 @@ class LobbyGameTableModel extends AbstractTableModel {
       case Comments:
         return description.getComment();
       case Started:
-        return formatBotStartTime(description.getStartDateTime());
+        return description.getFormattedBotStartTime();
       case GUID:
         return gameList.get(rowIndex).getFirst();
       default:
         throw new IllegalStateException("Unknown column:" + column);
     }
-  }
-
-  @VisibleForTesting
-  static String formatBotStartTime(final Instant instant) {
-    return new DateTimeFormatterBuilder()
-        .appendLocalized(null, FormatStyle.SHORT)
-        .toFormatter()
-        .format(LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault()));
   }
 }

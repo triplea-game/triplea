@@ -52,7 +52,11 @@ public class LobbyFrame extends JFrame {
     chatPlayers.setChat(chat);
     chatPlayers.setPreferredSize(new Dimension(200, 600));
     chatPlayers.addActionFactory(this::newAdminActions);
-    final LobbyGamePanel gamePanel = new LobbyGamePanel(client, new LobbyGameTableModel(client));
+
+    final LobbyGameTableModel tableModel = new LobbyGameTableModel(client);
+    client.addGameChangeListener(tableModel);
+    final LobbyGamePanel gamePanel = new LobbyGamePanel(client, tableModel);
+
     final JSplitPane leftSplit = new JSplitPane();
     leftSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
     leftSplit.setTopComponent(gamePanel);

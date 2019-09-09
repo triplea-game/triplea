@@ -1,8 +1,13 @@
 package org.triplea.lobby.common;
 
+import com.google.common.annotations.VisibleForTesting;
 import games.strategy.net.INode;
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,5 +58,13 @@ public class GameDescription implements Serializable {
   public boolean isBot() {
     return hostName.startsWith(HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
         && HeadlessGameServer.BOT_GAME_HOST_COMMENT.equals(comment);
+  }
+
+
+  public String getFormattedBotStartTime() {
+    return new DateTimeFormatterBuilder()
+        .appendLocalized(null, FormatStyle.SHORT)
+        .toFormatter()
+        .format(LocalDateTime.ofInstant(startDateTime, ZoneOffset.systemDefault()));
   }
 }
