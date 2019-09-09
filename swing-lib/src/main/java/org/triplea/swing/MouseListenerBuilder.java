@@ -63,7 +63,7 @@ public class MouseListenerBuilder {
   }
 
   public MouseListenerBuilder mouseReleased(final Consumer<MouseEvent> mouseReleased) {
-    this.mouseReleased = mousePressed;
+    this.mouseReleased = mouseReleased;
     return this;
   }
 
@@ -73,7 +73,7 @@ public class MouseListenerBuilder {
   }
 
   public MouseListenerBuilder mouseEntered(final Consumer<MouseEvent> mouseEntered) {
-    this.mouseReleased = mousePressed;
+    this.mouseEntered = mouseEntered;
     return this;
   }
 

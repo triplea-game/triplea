@@ -1,6 +1,5 @@
 package org.triplea.lobby.common;
 
-import com.google.common.annotations.VisibleForTesting;
 import games.strategy.net.INode;
 import java.io.Serializable;
 import java.time.Instant;
@@ -59,7 +58,6 @@ public class GameDescription implements Serializable {
     return hostName.startsWith(HeadlessGameServer.BOT_GAME_HOST_NAME_PREFIX)
         && HeadlessGameServer.BOT_GAME_HOST_COMMENT.equals(comment);
   }
-
 
   public String getFormattedBotStartTime() {
     return new DateTimeFormatterBuilder()
