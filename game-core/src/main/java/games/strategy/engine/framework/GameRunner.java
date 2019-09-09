@@ -22,7 +22,6 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.net.Messengers;
 import games.strategy.triplea.ai.pro.ProAi;
 import java.awt.Component;
 import java.awt.FileDialog;
@@ -228,18 +227,15 @@ public final class GameRunner {
       final String playerName,
       final String comments,
       final String password,
-      final Messengers messengers) {
+      final String lobbyHostAddress,
+      final int lobbyPort) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
     commands.add("-D" + TRIPLEA_SERVER + "=true");
     commands.add("-D" + TRIPLEA_PORT + "=" + port);
     commands.add("-D" + TRIPLEA_NAME + "=" + playerName);
-    commands.add(
-        "-D"
-            + LOBBY_HOST
-            + "="
-            + messengers.getRemoteServerSocketAddress().getAddress().getHostAddress());
-    commands.add("-D" + LOBBY_PORT + "=" + messengers.getRemoteServerSocketAddress().getPort());
+    commands.add("-D" + LOBBY_HOST + "=" + lobbyHostAddress);
+    commands.add("-D" + LOBBY_PORT + "=" + lobbyPort);
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
     if (password != null && password.length() > 0) {
       commands.add("-D" + SERVER_PASSWORD + "=" + password);
@@ -253,7 +249,7 @@ public final class GameRunner {
   }
 
   /** Spawns a new process to join a network game. */
-  public static void joinGame(final GameDescription description, final Messengers messengers) {
+  public static void joinGame(final GameDescription description, final String playerName) {
     final GameDescription.GameStatus status = description.getStatus();
     if (GameDescription.GameStatus.LAUNCHING == status) {
       return;
@@ -266,7 +262,7 @@ public final class GameRunner {
     commands.add(prefix + TRIPLEA_PORT + "=" + description.getHostedBy().getPort());
     commands.add(
         prefix + TRIPLEA_HOST + "=" + description.getHostedBy().getAddress().getHostAddress());
-    commands.add(prefix + TRIPLEA_NAME + "=" + messengers.getLocalNode().getName());
+    commands.add(prefix + TRIPLEA_NAME + "=" + playerName);
     commands.add(Services.loadAny(ApplicationContext.class).getMainClass().getName());
     ProcessRunnerUtil.exec(commands);
   }

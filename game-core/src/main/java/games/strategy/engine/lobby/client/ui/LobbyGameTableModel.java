@@ -1,9 +1,8 @@
 package games.strategy.engine.lobby.client.ui;
 
 import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.message.MessageContext;
+import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.net.GUID;
-import games.strategy.net.Messengers;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -16,7 +15,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
-import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.util.Tuple;
 
 class LobbyGameTableModel extends AbstractTableModel {
@@ -35,8 +33,7 @@ class LobbyGameTableModel extends AbstractTableModel {
     GUID
   }
 
-  private final Messengers messengers;
-  private final boolean admin;
+  private final LobbyClient lobbyClient;
 
   // these must only be accessed in the swing event thread
   private final List<Tuple<GUID, GameDescription>> gameList = new ArrayList<>();
@@ -44,24 +41,20 @@ class LobbyGameTableModel extends AbstractTableModel {
       new ILobbyGameBroadcaster() {
         @Override
         public void gameUpdated(final GUID gameId, final GameDescription description) {
-          assertSentFromServer();
           updateGame(gameId, description);
         }
 
         @Override
         public void gameRemoved(final GUID gameId) {
-          assertSentFromServer();
           removeGame(gameId);
         }
       };
 
-  LobbyGameTableModel(final boolean admin, final Messengers messengers) {
-    this.messengers = messengers;
-    this.admin = admin;
-    messengers.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.REMOTE_NAME);
+  LobbyGameTableModel(final LobbyClient lobbyClient) {
+    this.lobbyClient = lobbyClient;
+    lobbyClient.addGameChangeListener(lobbyGameBroadcaster);
 
-    final Map<GUID, GameDescription> games =
-        ((ILobbyGameController) messengers.getRemote(ILobbyGameController.REMOTE_NAME)).listGames();
+    final Map<GUID, GameDescription> games = lobbyClient.listGames();
     for (final Map.Entry<GUID, GameDescription> entry : games.entrySet()) {
       updateGame(entry.getKey(), entry.getValue());
     }
@@ -98,12 +91,6 @@ class LobbyGameTableModel extends AbstractTableModel {
     return gameList.get(i).getSecond();
   }
 
-  private void assertSentFromServer() {
-    if (!MessageContext.getSender().equals(messengers.getServerNode())) {
-      throw new IllegalStateException("Invalid sender");
-    }
-  }
-
   private void updateGame(final GUID gameId, final GameDescription description) {
     if (gameId == null) {
       return;
@@ -133,7 +120,7 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   @Override
   public int getColumnCount() {
-    final int adminHiddenColumns = admin ? 0 : -1;
+    final int adminHiddenColumns = lobbyClient.isAdmin() ? 0 : -1;
     // -1 so we don't display the guid
     // -1 again if we are not admin to hide the 'started' column
     return Column.values().length - 1 + adminHiddenColumns;

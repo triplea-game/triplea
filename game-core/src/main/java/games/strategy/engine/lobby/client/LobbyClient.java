@@ -1,9 +1,14 @@
 package games.strategy.engine.lobby.client;
 
+import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
+import java.util.Map;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.triplea.lobby.common.GameDescription;
+import org.triplea.lobby.common.ILobbyGameBroadcaster;
+import org.triplea.lobby.common.ILobbyGameController;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IUserManager;
 
@@ -42,5 +47,31 @@ public class LobbyClient {
 
   public boolean isPasswordChangeRequired() {
     return messengers.isPasswordChangeRequired();
+  }
+
+  public Map<GUID, GameDescription> listGames() {
+    return ((ILobbyGameController) messengers.getRemote(ILobbyGameController.REMOTE_NAME))
+        .listGames();
+  }
+
+  public void addGameChangeListener(final ILobbyGameBroadcaster lobbyGameBroadcaster) {
+    messengers.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.REMOTE_NAME);
+  }
+
+  /** Returns the assigned name of the current player connected to the lobby. */
+  public String getPlayerName() {
+    return messengers.getLocalNode().getName();
+  }
+
+  public String getLobbyHostAddress() {
+    return messengers.getRemoteServerSocketAddress().getAddress().getHostAddress();
+  }
+
+  public int getLobbyPort() {
+    return messengers.getRemoteServerSocketAddress().getPort();
+  }
+
+  public IModeratorController getModeratorController() {
+    return (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
   }
 }
