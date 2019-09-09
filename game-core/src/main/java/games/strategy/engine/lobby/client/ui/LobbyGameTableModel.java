@@ -1,14 +1,12 @@
 package games.strategy.engine.lobby.client.ui;
 
 import games.strategy.net.GUID;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
-import org.triplea.util.Tuple;
 
 class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadcaster {
   private static final long serialVersionUID = 6399458368730633993L;
@@ -26,27 +24,25 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
     GUID
   }
 
-  private final List<Tuple<GUID, GameDescription>> gameList = new ArrayList<>();
-
+  private final GameListModel gameListModel;
   private final boolean isAdmin;
 
   LobbyGameTableModel(final Map<GUID, GameDescription> gameList, final boolean isAdmin) {
     this.isAdmin = isAdmin;
+    gameListModel = new GameListModel();
+
     for (final Map.Entry<GUID, GameDescription> entry : gameList.entrySet()) {
       updateGame(entry.getKey(), entry.getValue());
     }
   }
 
   private void updateGame(final GUID gameId, final GameDescription description) {
-    final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
-    if (toReplace == null) {
-      gameList.add(Tuple.of(gameId, description));
-      SwingUtilities.invokeLater(() -> fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1));
-    } else {
-      final int replaceIndex = gameList.indexOf(toReplace);
-      gameList.set(replaceIndex, Tuple.of(gameId, description));
-      SwingUtilities.invokeLater(() -> fireTableRowsUpdated(replaceIndex, replaceIndex));
-    }
+    final Optional<Integer> rowIndex = gameListModel.updateOrAdd(gameId, description);
+    SwingUtilities.invokeLater(
+        () ->
+            rowIndex.ifPresentOrElse(
+                row -> fireTableRowsUpdated(row, row),
+                () -> fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1)));
   }
 
   @Override
@@ -61,26 +57,14 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
     if (gameId == null) {
       return;
     }
-    final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
-    if (gameToRemove != null) {
-      final int index = gameList.indexOf(gameToRemove);
-      SwingUtilities.invokeLater(
-          () -> {
-            gameList.remove(gameToRemove);
-            fireTableRowsDeleted(index, index);
-          });
-    }
-  }
 
-  private Tuple<GUID, GameDescription> findGame(final GUID gameId) {
-    return gameList.stream()
-        .filter(game -> game.getFirst().equals(gameId))
-        .findFirst()
-        .orElse(null);
+    gameListModel
+        .removeGame(gameId)
+        .ifPresent(index -> SwingUtilities.invokeLater(() -> fireTableRowsDeleted(index, index)));
   }
 
   GameDescription get(final int i) {
-    return gameList.get(i).getSecond();
+    return gameListModel.getGameDescriptionByRow(i);
   }
 
   @Override
@@ -102,13 +86,13 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
 
   @Override
   public int getRowCount() {
-    return gameList.size();
+    return gameListModel.size();
   }
 
   @Override
   public Object getValueAt(final int rowIndex, final int columnIndex) {
     final Column column = Column.values()[columnIndex];
-    final GameDescription description = gameList.get(rowIndex).getSecond();
+    final GameDescription description = gameListModel.getGameDescriptionByRow(rowIndex);
     switch (column) {
       case Host:
         return description.getHostName();
@@ -130,7 +114,7 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
       case Started:
         return description.getFormattedBotStartTime();
       case GUID:
-        return gameList.get(rowIndex).getFirst();
+        return gameListModel.getGameGuidByRow(rowIndex);
       default:
         throw new IllegalStateException("Unknown column:" + column);
     }
