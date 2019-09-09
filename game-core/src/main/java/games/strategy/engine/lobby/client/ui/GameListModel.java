@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.ui;
 
+import com.google.common.base.Preconditions;
 import games.strategy.net.GUID;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ class GameListModel {
    * @return Returns the row index of the updated game.
    */
   int update(final GUID gameId, final GameDescription description) {
+    Preconditions.checkNotNull(gameId);
     final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
     final int replaceIndex = gameList.indexOf(toReplace);
     gameList.set(replaceIndex, Tuple.of(gameId, description));

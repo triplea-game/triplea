@@ -51,13 +51,6 @@ final class LobbyGameTableModelTest {
   }
 
   @Test
-  void updateGameWithNullGuidIsIgnored() {
-    gameListModel.update(null, GameDescription.builder().build());
-    assertThat(
-        "expect row count to remain 1, null guid is bogus data", gameListModel.size(), is(1));
-  }
-
-  @Test
   void removeGame() {
     gameListModel.removeGame(gameGuid);
     assertThat(gameListModel.size(), is(0));
