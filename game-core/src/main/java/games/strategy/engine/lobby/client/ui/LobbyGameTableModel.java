@@ -37,6 +37,18 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
     }
   }
 
+  private void updateGame(final GUID gameId, final GameDescription description) {
+    final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
+    if (toReplace == null) {
+      gameList.add(Tuple.of(gameId, description));
+      SwingUtilities.invokeLater(() -> fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1));
+    } else {
+      final int replaceIndex = gameList.indexOf(toReplace);
+      gameList.set(replaceIndex, Tuple.of(gameId, description));
+      SwingUtilities.invokeLater(() -> fireTableRowsUpdated(replaceIndex, replaceIndex));
+    }
+  }
+
   @Override
   public void gameUpdated(final GUID gameId, final GameDescription description) {
     if (gameId != null) {
@@ -46,12 +58,9 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
 
   @Override
   public void gameRemoved(final GUID gameId) {
-    if (gameId != null) {
-      removeGame(gameId);
+    if (gameId == null) {
+      return;
     }
-  }
-
-  private void removeGame(final GUID gameId) {
     final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
     if (gameToRemove != null) {
       final int index = gameList.indexOf(gameToRemove);
@@ -72,18 +81,6 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
 
   GameDescription get(final int i) {
     return gameList.get(i).getSecond();
-  }
-
-  private void updateGame(final GUID gameId, final GameDescription description) {
-    final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
-    if (toReplace == null) {
-      gameList.add(Tuple.of(gameId, description));
-      SwingUtilities.invokeLater(() -> fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1));
-    } else {
-      final int replaceIndex = gameList.indexOf(toReplace);
-      gameList.set(replaceIndex, Tuple.of(gameId, description));
-      SwingUtilities.invokeLater(() -> fireTableRowsUpdated(replaceIndex, replaceIndex));
-    }
   }
 
   @Override
