@@ -11,21 +11,36 @@ class GameListModel {
   private final List<Tuple<GUID, GameDescription>> gameList = new ArrayList<>();
 
   /**
-   * <p>Adds or updates a game identified by GUID.
+   * Checks if a game identified by GUID is in the data model already or not.
    *
-   * @param gameId GUID identifying a game to insert or if existing, to update.
+   * @return True if the table data model contains the given GUID, false otherwise.
+   */
+  boolean containsGame(final GUID gameId) {
+    return findGame(gameId) != null;
+  }
+
+  /**
+   * Adds a game identified by GUID.
+   *
+   * @param gameId GUID identifying the new game to insert.
+   * @param description Description for the new game.
+   */
+  void add(final GUID gameId, final GameDescription description) {
+    gameList.add(Tuple.of(gameId, description));
+  }
+
+  /**
+   * Updates a game identified by GUID.
+   *
+   * @param gameId GUID identifying the game to update.
    * @param description The new description for the game.
    * @return Returns the row index of the updated game.
    */
-  Optional<Integer> updateOrAdd(final GUID gameId, final GameDescription description) {
+  int update(final GUID gameId, final GameDescription description) {
     final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
-    if (toReplace == null) {
-      gameList.add(Tuple.of(gameId, description));
-      return Optional.empty();
-    }
     final int replaceIndex = gameList.indexOf(toReplace);
     gameList.set(replaceIndex, Tuple.of(gameId, description));
-    return Optional.of(replaceIndex);
+    return replaceIndex;
   }
 
   private Tuple<GUID, GameDescription> findGame(final GUID gameId) {

@@ -2,7 +2,6 @@ package games.strategy.engine.lobby.client.ui;
 
 import games.strategy.net.GUID;
 import java.util.Map;
-import java.util.Optional;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import org.triplea.lobby.common.GameDescription;
@@ -37,12 +36,13 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
   }
 
   private void updateGame(final GUID gameId, final GameDescription description) {
-    final Optional<Integer> rowIndex = gameListModel.updateOrAdd(gameId, description);
-    SwingUtilities.invokeLater(
-        () ->
-            rowIndex.ifPresentOrElse(
-                row -> fireTableRowsUpdated(row, row),
-                () -> fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1)));
+    if (gameListModel.containsGame(gameId)) {
+      final int updatedRow = gameListModel.update(gameId, description);
+      SwingUtilities.invokeLater(() -> fireTableRowsUpdated(updatedRow, updatedRow));
+    } else {
+      gameListModel.add(gameId, description);
+      SwingUtilities.invokeLater(() -> fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1));
+    }
   }
 
   @Override
