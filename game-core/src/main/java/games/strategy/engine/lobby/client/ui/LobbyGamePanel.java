@@ -9,7 +9,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.Collection;
 import javax.swing.Action;
@@ -29,13 +28,12 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.swing.MouseListenerBuilder;
 import org.triplea.swing.SwingAction;
 
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
-  private JButton hostGame;
   private JButton joinGame;
-  private JButton bootGame;
   private LobbyGameTableModel gameTableModel;
   private final LobbyClient lobbyClient;
   private JTable gameTable;
@@ -44,9 +42,9 @@ class LobbyGamePanel extends JPanel {
     this.lobbyClient = lobbyClient;
     this.gameTableModel = lobbyGameTableModel;
 
-    hostGame = new JButton("Host Game");
+    final JButton hostGame = new JButton("Host Game");
     joinGame = new JButton("Join Game");
-    bootGame = new JButton("Boot Game");
+    final JButton bootGame = new JButton("Boot Game");
 
     gameTable = new LobbyGameTable(gameTableModel);
     // only allow one row to be selected
@@ -117,39 +115,30 @@ class LobbyGamePanel extends JPanel {
               joinGame.setEnabled(selected);
             });
     gameTable.addMouseListener(
-        new MouseListener() {
-          @Override
-          public void mouseClicked(final MouseEvent e) {
-            if (e.getClickCount() == 2) {
-              joinGame();
-            }
-            mouseOnGamesList(e);
-          }
+        new MouseListenerBuilder()
+            .mouseClicked(this::mouseClicked)
+            .mousePressed(this::mousePressed)
+            .mouseReleased(this::mouseOnGamesList)
+            .build());
+  }
 
-          @Override
-          public void mousePressed(final MouseEvent e) {
-            // right clicks do not 'select' a row by default. so force a row selection at the mouse
-            // point.
-            final int r = gameTable.rowAtPoint(e.getPoint());
-            if (r >= 0 && r < gameTable.getRowCount()) {
-              gameTable.setRowSelectionInterval(r, r);
-            } else {
-              gameTable.clearSelection();
-            }
-            mouseOnGamesList(e);
-          }
+  private void mouseClicked(final MouseEvent e) {
+    if (e.getClickCount() == 2) {
+      joinGame();
+    }
+    mouseOnGamesList(e);
+  }
 
-          @Override
-          public void mouseReleased(final MouseEvent e) {
-            mouseOnGamesList(e);
-          }
-
-          @Override
-          public void mouseEntered(final MouseEvent e) {} // ignore
-
-          @Override
-          public void mouseExited(final MouseEvent e) {} // ignore
-        });
+  private void mousePressed(final MouseEvent e) {
+    // right clicks do not 'select' a row by default. so force a row selection at the mouse
+    // point.
+    final int r = gameTable.rowAtPoint(e.getPoint());
+    if (r >= 0 && r < gameTable.getRowCount()) {
+      gameTable.setRowSelectionInterval(r, r);
+    } else {
+      gameTable.clearSelection();
+    }
+    mouseOnGamesList(e);
   }
 
   private void mouseOnGamesList(final MouseEvent e) {
