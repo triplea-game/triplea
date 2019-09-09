@@ -10,22 +10,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.lobby.common.GameDescription;
-import org.triplea.util.Tuple;
 
 // TODO: rename to GameListModelTest
 @ExtendWith(MockitoExtension.class)
 final class LobbyGameTableModelTest {
   private GameListModel gameListModel = new GameListModel();
 
-  private Tuple<GUID, GameDescription> fakeGame =
-      Tuple.of(new GUID(), GameDescription.builder().build());
-
+  private final GUID gameGuid = new GUID();
+  private final GameDescription gameDescription = GameDescription.builder().build();
   private final GameDescription newDescription =
       GameDescription.builder().comment("comment").build();
 
   @BeforeEach
   void setUp() {
-    gameListModel.add(fakeGame.getFirst(), fakeGame.getSecond());
+    gameListModel.add(gameGuid, gameDescription);
     assertThat("games are loaded on init", gameListModel.size(), is(1));
   }
 
@@ -33,7 +31,7 @@ final class LobbyGameTableModelTest {
   void updateGame() {
     assertThat(gameListModel.getGameDescriptionByRow(0).getComment(), nullValue());
 
-    gameListModel.update(fakeGame.getFirst(), newDescription);
+    gameListModel.update(gameGuid, newDescription);
 
     assertThat(gameListModel.size(), is(1));
     assertThat(
@@ -43,7 +41,7 @@ final class LobbyGameTableModelTest {
   @Test
   void containsGame() {
     assertThat(gameListModel.containsGame(new GUID()), is(false));
-    assertThat(gameListModel.containsGame(fakeGame.getFirst()), is(true));
+    assertThat(gameListModel.containsGame(gameGuid), is(true));
   }
 
   @Test
@@ -61,7 +59,7 @@ final class LobbyGameTableModelTest {
 
   @Test
   void removeGame() {
-    gameListModel.removeGame(fakeGame.getFirst());
+    gameListModel.removeGame(gameGuid);
     assertThat(gameListModel.size(), is(0));
   }
 
