@@ -3,123 +3,75 @@ package games.strategy.engine.lobby.client.ui;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.google.common.util.concurrent.Runnables;
-import games.strategy.engine.lobby.client.LobbyClient;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
-import games.strategy.net.IMessenger;
-import games.strategy.net.INode;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.java.Interruptibles;
 import org.triplea.lobby.common.GameDescription;
-import org.triplea.lobby.common.ILobbyGameController;
-import org.triplea.swing.SwingAction;
 import org.triplea.util.Tuple;
 
+// TODO: rename to GameListModelTest
 final class LobbyGameTableModelTest {
   @ExtendWith(MockitoExtension.class)
   @Nested
   final class RemoveAndUpdateGameTest {
-    private LobbyGameTableModel testObj;
-    @Mock private IMessenger mockMessenger;
-    @Mock private IChannelMessenger mockChannelMessenger;
-    @Mock private IRemoteMessenger mockRemoteMessenger;
-    @Mock private ILobbyGameController mockLobbyController;
-    private Map<GUID, GameDescription> fakeGameMap;
-    private Tuple<GUID, GameDescription> fakeGame;
-    private final GameDescription mockGameDescription = GameDescription.builder().build();
-    @Mock private INode serverNode;
+    private GameListModel gameListModel = new GameListModel();
+
+    private Tuple<GUID, GameDescription> fakeGame =
+        Tuple.of(new GUID(), GameDescription.builder().build());
+
+    private final GameDescription newDescription =
+        GameDescription.builder().comment("comment").build();
 
     @BeforeEach
     void setUp() {
-      fakeGameMap = new HashMap<>();
-      fakeGame = Tuple.of(new GUID(), mockGameDescription);
-      fakeGameMap.put(fakeGame.getFirst(), fakeGame.getSecond());
-
-      Mockito.when(mockRemoteMessenger.getRemote(ILobbyGameController.REMOTE_NAME))
-          .thenReturn(mockLobbyController);
-      Mockito.when(mockLobbyController.listGames()).thenReturn(fakeGameMap);
-
-      final LobbyClient lobbyClient = new LobbyClient(mockMessenger, true);
-
-      testObj = new LobbyGameTableModel(lobbyClient);
-      //              true, new Messengers(mockMessenger, mockRemoteMessenger,
-      // mockChannelMessenger));
-      Mockito.verify(mockLobbyController, Mockito.times(1)).listGames();
-
-      MessageContext.setSenderNodeForThread(serverNode);
-      Mockito.when(mockMessenger.getServerNode()).thenReturn(serverNode);
-      waitForSwingThreads();
-      assertThat("games are loaded on init", testObj.getRowCount(), is(1));
-    }
-
-    private void waitForSwingThreads() {
-      // add a no-op action to the end of the swing event queue, and then wait for it
-      Interruptibles.await(() -> SwingAction.invokeAndWait(Runnables.doNothing()));
+      gameListModel.add(fakeGame.getFirst(), fakeGame.getSecond());
+      assertThat("games are loaded on init", gameListModel.size(), is(1));
     }
 
     @Test
     void updateGame() {
-      final int commentColumnIndex = testObj.getColumnIndex(LobbyGameTableModel.Column.Comments);
-      assertThat(testObj.getValueAt(0, commentColumnIndex), nullValue());
+      assertThat(gameListModel.getGameDescriptionByRow(0).getComment(), nullValue());
 
-      final String newComment = "comment";
-      final GameDescription newDescription = GameDescription.builder().comment(newComment).build();
+      gameListModel.update(fakeGame.getFirst(), newDescription);
 
-      testObj.getLobbyGameBroadcaster().gameUpdated(fakeGame.getFirst(), newDescription);
-      waitForSwingThreads();
-      assertThat(testObj.getRowCount(), is(1));
-      assertThat(testObj.getValueAt(0, commentColumnIndex), is(newComment));
+      assertThat(gameListModel.size(), is(1));
+      assertThat(
+          gameListModel.getGameDescriptionByRow(0).getComment(), is(newDescription.getComment()));
     }
 
     @Test
-    void updateGameAddsIfDoesNotExist() {
-      testObj.getLobbyGameBroadcaster().gameUpdated(new GUID(), GameDescription.builder().build());
-      waitForSwingThreads();
-      assertThat(testObj.getRowCount(), is(2));
+    void containsGame() {
+      assertThat(gameListModel.containsGame(new GUID()), is(false));
+      assertThat(gameListModel.containsGame(fakeGame.getFirst()), is(true));
+    }
+
+    @Test
+    void addGame() {
+      gameListModel.add(new GUID(), GameDescription.builder().build());
+      assertThat(gameListModel.size(), is(2));
     }
 
     @Test
     void updateGameWithNullGuidIsIgnored() {
-      testObj.getLobbyGameBroadcaster().gameUpdated(null, GameDescription.builder().build());
-      waitForSwingThreads();
+      gameListModel.update(null, GameDescription.builder().build());
       assertThat(
-          "expect row count to remain 1, null guid is bogus data", testObj.getRowCount(), is(1));
+          "expect row count to remain 1, null guid is bogus data", gameListModel.size(), is(1));
     }
 
     @Test
     void removeGame() {
-      testObj.getLobbyGameBroadcaster().gameRemoved(fakeGame.getFirst());
-      waitForSwingThreads();
-      assertThat(testObj.getRowCount(), is(0));
+      gameListModel.removeGame(fakeGame.getFirst());
+      assertThat(gameListModel.size(), is(0));
     }
 
     @Test
     void removeGameThatDoesNotExistIsIgnored() {
-      testObj.getLobbyGameBroadcaster().gameRemoved(new GUID());
-      waitForSwingThreads();
-      assertThat(testObj.getRowCount(), is(1));
-    }
-  }
-
-  @Nested
-  final class FormatBotStartTimeTest {
-    @Test
-    void shouldNotThrowException() {
-      assertDoesNotThrow(() -> LobbyGameTableModel.formatBotStartTime(Instant.now()));
+      gameListModel.removeGame(new GUID());
+      assertThat(gameListModel.size(), is(1));
     }
   }
 }
