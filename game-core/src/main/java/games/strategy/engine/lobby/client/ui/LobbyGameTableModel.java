@@ -1,25 +1,13 @@
 package games.strategy.engine.lobby.client.ui;
 
-import com.google.common.annotations.VisibleForTesting;
-import games.strategy.engine.message.MessageContext;
 import games.strategy.net.GUID;
-import games.strategy.net.Messengers;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
-import org.triplea.lobby.common.ILobbyGameController;
-import org.triplea.util.Tuple;
 
-class LobbyGameTableModel extends AbstractTableModel {
+class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadcaster {
   private static final long serialVersionUID = 6399458368730633993L;
 
   enum Column {
@@ -35,91 +23,45 @@ class LobbyGameTableModel extends AbstractTableModel {
     GUID
   }
 
-  private final Messengers messengers;
-  private final boolean admin;
+  private final GameListModel gameListModel;
+  private final boolean isAdmin;
 
-  // these must only be accessed in the swing event thread
-  private final List<Tuple<GUID, GameDescription>> gameList = new ArrayList<>();
-  private final ILobbyGameBroadcaster lobbyGameBroadcaster =
-      new ILobbyGameBroadcaster() {
-        @Override
-        public void gameUpdated(final GUID gameId, final GameDescription description) {
-          assertSentFromServer();
-          updateGame(gameId, description);
-        }
+  LobbyGameTableModel(final Map<GUID, GameDescription> gameList, final boolean isAdmin) {
+    this.isAdmin = isAdmin;
+    gameListModel = new GameListModel();
 
-        @Override
-        public void gameRemoved(final GUID gameId) {
-          assertSentFromServer();
-          removeGame(gameId);
-        }
-      };
-
-  LobbyGameTableModel(final boolean admin, final Messengers messengers) {
-    this.messengers = messengers;
-    this.admin = admin;
-    messengers.registerChannelSubscriber(lobbyGameBroadcaster, ILobbyGameBroadcaster.REMOTE_NAME);
-
-    final Map<GUID, GameDescription> games =
-        ((ILobbyGameController) messengers.getRemote(ILobbyGameController.REMOTE_NAME)).listGames();
-    for (final Map.Entry<GUID, GameDescription> entry : games.entrySet()) {
-      updateGame(entry.getKey(), entry.getValue());
+    for (final Map.Entry<GUID, GameDescription> entry : gameList.entrySet()) {
+      gameUpdated(entry.getKey(), entry.getValue());
     }
   }
 
-  private void removeGame(final GUID gameId) {
-    SwingUtilities.invokeLater(
-        () -> {
-          if (gameId == null) {
-            return;
-          }
-
-          final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
-          if (gameToRemove != null) {
-            final int index = gameList.indexOf(gameToRemove);
-            gameList.remove(gameToRemove);
-            fireTableRowsDeleted(index, index);
-          }
-        });
-  }
-
-  private Tuple<GUID, GameDescription> findGame(final GUID gameId) {
-    return gameList.stream()
-        .filter(game -> game.getFirst().equals(gameId))
-        .findFirst()
-        .orElse(null);
-  }
-
-  ILobbyGameBroadcaster getLobbyGameBroadcaster() {
-    return lobbyGameBroadcaster;
-  }
-
-  GameDescription get(final int i) {
-    return gameList.get(i).getSecond();
-  }
-
-  private void assertSentFromServer() {
-    if (!MessageContext.getSender().equals(messengers.getServerNode())) {
-      throw new IllegalStateException("Invalid sender");
-    }
-  }
-
-  private void updateGame(final GUID gameId, final GameDescription description) {
+  @Override
+  public void gameUpdated(final GUID gameId, final GameDescription description) {
     if (gameId == null) {
       return;
     }
-    SwingUtilities.invokeLater(
-        () -> {
-          final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
-          if (toReplace == null) {
-            gameList.add(Tuple.of(gameId, description));
-            fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
-          } else {
-            final int replaceIndex = gameList.indexOf(toReplace);
-            gameList.set(replaceIndex, Tuple.of(gameId, description));
-            fireTableRowsUpdated(replaceIndex, replaceIndex);
-          }
-        });
+    if (gameListModel.containsGame(gameId)) {
+      final int updatedRow = gameListModel.update(gameId, description);
+      SwingUtilities.invokeLater(() -> fireTableRowsUpdated(updatedRow, updatedRow));
+    } else {
+      gameListModel.add(gameId, description);
+      SwingUtilities.invokeLater(() -> fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1));
+    }
+  }
+
+  @Override
+  public void gameRemoved(final GUID gameId) {
+    if (gameId == null) {
+      return;
+    }
+
+    gameListModel
+        .removeGame(gameId)
+        .ifPresent(index -> SwingUtilities.invokeLater(() -> fireTableRowsDeleted(index, index)));
+  }
+
+  GameDescription get(final int i) {
+    return gameListModel.getGameDescriptionByRow(i);
   }
 
   @Override
@@ -133,7 +75,7 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   @Override
   public int getColumnCount() {
-    final int adminHiddenColumns = admin ? 0 : -1;
+    final int adminHiddenColumns = isAdmin ? 0 : -1;
     // -1 so we don't display the guid
     // -1 again if we are not admin to hide the 'started' column
     return Column.values().length - 1 + adminHiddenColumns;
@@ -141,13 +83,13 @@ class LobbyGameTableModel extends AbstractTableModel {
 
   @Override
   public int getRowCount() {
-    return gameList.size();
+    return gameListModel.size();
   }
 
   @Override
   public Object getValueAt(final int rowIndex, final int columnIndex) {
     final Column column = Column.values()[columnIndex];
-    final GameDescription description = gameList.get(rowIndex).getSecond();
+    final GameDescription description = gameListModel.getGameDescriptionByRow(rowIndex);
     switch (column) {
       case Host:
         return description.getHostName();
@@ -167,19 +109,11 @@ class LobbyGameTableModel extends AbstractTableModel {
       case Comments:
         return description.getComment();
       case Started:
-        return formatBotStartTime(description.getStartDateTime());
+        return description.getFormattedBotStartTime();
       case GUID:
-        return gameList.get(rowIndex).getFirst();
+        return gameListModel.getGameGuidByRow(rowIndex);
       default:
         throw new IllegalStateException("Unknown column:" + column);
     }
-  }
-
-  @VisibleForTesting
-  static String formatBotStartTime(final Instant instant) {
-    return new DateTimeFormatterBuilder()
-        .appendLocalized(null, FormatStyle.SHORT)
-        .toFormatter()
-        .format(LocalDateTime.ofInstant(instant, ZoneOffset.systemDefault()));
   }
 }

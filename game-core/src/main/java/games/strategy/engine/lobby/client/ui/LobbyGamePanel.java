@@ -2,14 +2,13 @@ package games.strategy.engine.lobby.client.ui;
 
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
+import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.net.INode;
-import games.strategy.net.Messengers;
 import games.strategy.net.Node;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.Collection;
 import javax.swing.Action;
@@ -29,30 +28,23 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.LobbyConstants;
+import org.triplea.swing.MouseListenerBuilder;
 import org.triplea.swing.SwingAction;
 
 class LobbyGamePanel extends JPanel {
   private static final long serialVersionUID = -2576314388949606337L;
-  private JButton hostGame;
   private JButton joinGame;
-  private JButton bootGame;
   private LobbyGameTableModel gameTableModel;
-  private final Messengers messengers;
+  private final LobbyClient lobbyClient;
   private JTable gameTable;
 
-  LobbyGamePanel(final Messengers messengers) {
-    this.messengers = messengers;
-    createComponents();
-    layoutComponents();
-    setupListeners();
-    setWidgetActivation();
-  }
+  LobbyGamePanel(final LobbyClient lobbyClient, final LobbyGameTableModel lobbyGameTableModel) {
+    this.lobbyClient = lobbyClient;
+    this.gameTableModel = lobbyGameTableModel;
 
-  private void createComponents() {
-    hostGame = new JButton("Host Game");
+    final JButton hostGame = new JButton("Host Game");
     joinGame = new JButton("Join Game");
-    bootGame = new JButton("Boot Game");
-    gameTableModel = new LobbyGameTableModel(isAdmin(), messengers);
+    final JButton bootGame = new JButton("Boot Game");
 
     gameTable = new LobbyGameTable(gameTableModel);
     // only allow one row to be selected
@@ -77,7 +69,7 @@ class LobbyGamePanel extends JPanel {
         .getColumnModel()
         .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.GV))
         .setPreferredWidth(32);
-    if (isAdmin()) {
+    if (lobbyClient.isAdmin()) {
       gameTable
           .getColumnModel()
           .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started))
@@ -99,66 +91,54 @@ class LobbyGamePanel extends JPanel {
         .getColumnModel()
         .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host))
         .setPreferredWidth(67);
-  }
 
-  private void layoutComponents() {
     final JScrollPane scroll = new JScrollPane(gameTable);
     setLayout(new BorderLayout());
     add(scroll, BorderLayout.CENTER);
     final JToolBar toolBar = new JToolBar();
     toolBar.add(hostGame);
     toolBar.add(joinGame);
-    if (isAdmin()) {
+    if (lobbyClient.isAdmin()) {
       toolBar.add(bootGame);
     }
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.SOUTH);
-  }
 
-  private boolean isAdmin() {
-    return ((IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME))
-        .isAdmin();
-  }
-
-  private void setupListeners() {
     hostGame.addActionListener(e -> hostGame());
     joinGame.addActionListener(e -> joinGame());
     bootGame.addActionListener(e -> bootGame());
-    gameTable.getSelectionModel().addListSelectionListener(e -> setWidgetActivation());
+    gameTable
+        .getSelectionModel()
+        .addListSelectionListener(
+            e -> {
+              final boolean selected = gameTable.getSelectedRow() >= 0;
+              joinGame.setEnabled(selected);
+            });
     gameTable.addMouseListener(
-        new MouseListener() {
-          @Override
-          public void mouseClicked(final MouseEvent e) {
-            if (e.getClickCount() == 2) {
-              joinGame();
-            }
-            mouseOnGamesList(e);
-          }
+        new MouseListenerBuilder()
+            .mouseClicked(this::mouseClicked)
+            .mousePressed(this::mousePressed)
+            .mouseReleased(this::mouseOnGamesList)
+            .build());
+  }
 
-          @Override
-          public void mousePressed(final MouseEvent e) {
-            // right clicks do not 'select' a row by default. so force a row selection at the mouse
-            // point.
-            final int r = gameTable.rowAtPoint(e.getPoint());
-            if (r >= 0 && r < gameTable.getRowCount()) {
-              gameTable.setRowSelectionInterval(r, r);
-            } else {
-              gameTable.clearSelection();
-            }
-            mouseOnGamesList(e);
-          }
+  private void mouseClicked(final MouseEvent e) {
+    if (e.getClickCount() == 2) {
+      joinGame();
+    }
+    mouseOnGamesList(e);
+  }
 
-          @Override
-          public void mouseReleased(final MouseEvent e) {
-            mouseOnGamesList(e);
-          }
-
-          @Override
-          public void mouseEntered(final MouseEvent e) {} // ignore
-
-          @Override
-          public void mouseExited(final MouseEvent e) {} // ignore
-        });
+  private void mousePressed(final MouseEvent e) {
+    // right clicks do not 'select' a row by default. so force a row selection at the mouse
+    // point.
+    final int r = gameTable.rowAtPoint(e.getPoint());
+    if (r >= 0 && r < gameTable.getRowCount()) {
+      gameTable.setRowSelectionInterval(r, r);
+    } else {
+      gameTable.clearSelection();
+    }
+    mouseOnGamesList(e);
   }
 
   private void mouseOnGamesList(final MouseEvent e) {
@@ -177,7 +157,7 @@ class LobbyGamePanel extends JPanel {
 
     getUserGamesListContextActions().forEach(menu::add);
 
-    if (isAdmin()) {
+    if (lobbyClient.isAdmin()) {
       final Collection<Action> generalAdminActions = getGeneralAdminGamesListContextActions();
       if (!generalAdminActions.isEmpty()) {
         menu.addSeparator();
@@ -228,16 +208,13 @@ class LobbyGamePanel extends JPanel {
     // we sort the table, so get the correct index
     final GameDescription description =
         gameTableModel.get(gameTable.convertRowIndexToModel(selectedIndex));
-    GameRunner.joinGame(description, messengers);
+    GameRunner.joinGame(description, lobbyClient.getPlayerName());
   }
 
   private void hostGame() {
     final ServerOptions options =
         new ServerOptions(
-            JOptionPane.getFrameForComponent(this),
-            messengers.getLocalNode().getName(),
-            3300,
-            true);
+            JOptionPane.getFrameForComponent(this), lobbyClient.getPlayerName(), 3300, true);
     options.setLocationRelativeTo(JOptionPane.getFrameForComponent(this));
     options.setNameEditable(false);
     options.setVisible(true);
@@ -249,7 +226,8 @@ class LobbyGamePanel extends JPanel {
         options.getName(),
         options.getComments(),
         options.getPassword(),
-        messengers);
+        lobbyClient.getLobbyHostAddress(),
+        lobbyClient.getLobbyPort());
   }
 
   private void bootGame() {
@@ -267,8 +245,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller =
-        (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
+    final IModeratorController controller = lobbyClient.getModeratorController();
     controller.boot(lobbyWatcherNode);
     JOptionPane.showMessageDialog(
         null, "The game you selected has been disconnected from the lobby.");
@@ -280,8 +257,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller =
-        (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
+    final IModeratorController controller = lobbyClient.getModeratorController();
     final String text = controller.getInformationOn(lobbyWatcherNode);
     final String connections = controller.getHostConnections(lobbyWatcherNode);
     final JTextPane textPane = new JTextPane();
@@ -306,8 +282,7 @@ class LobbyGamePanel extends JPanel {
     }
     // we sort the table, so get the correct index
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller =
-        (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
+    final IModeratorController controller = lobbyClient.getModeratorController();
     final JLabel label =
         new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
@@ -388,8 +363,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller =
-        (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
+    final IModeratorController controller = lobbyClient.getModeratorController();
     final JLabel label =
         new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
@@ -447,8 +421,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller =
-        (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
+    final IModeratorController controller = lobbyClient.getModeratorController();
     final JLabel label =
         new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
@@ -497,8 +470,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller =
-        (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
+    final IModeratorController controller = lobbyClient.getModeratorController();
     final JLabel label =
         new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
@@ -545,8 +517,7 @@ class LobbyGamePanel extends JPanel {
       return;
     }
     final INode lobbyWatcherNode = getLobbyWatcherNodeForTableRow(selectedIndex);
-    final IModeratorController controller =
-        (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
+    final IModeratorController controller = lobbyClient.getModeratorController();
     final JLabel label =
         new JLabel("Enter Host Remote Access Password, (Leave blank for no password).");
     final JPasswordField passwordField = new JPasswordField();
@@ -574,10 +545,5 @@ class LobbyGamePanel extends JPanel {
         controller.shutDownHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
     JOptionPane.showMessageDialog(
         null, (response == null ? "Host shut down successful" : "Failed: " + response));
-  }
-
-  private void setWidgetActivation() {
-    final boolean selected = gameTable.getSelectedRow() >= 0;
-    joinGame.setEnabled(selected);
   }
 }
