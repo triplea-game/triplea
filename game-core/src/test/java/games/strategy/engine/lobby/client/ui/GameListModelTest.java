@@ -11,9 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.lobby.common.GameDescription;
 
-// TODO: rename to GameListModelTest
 @ExtendWith(MockitoExtension.class)
-final class LobbyGameTableModelTest {
+final class GameListModelTest {
   private GameListModel gameListModel = new GameListModel();
 
   private final GUID gameGuid = new GUID();
