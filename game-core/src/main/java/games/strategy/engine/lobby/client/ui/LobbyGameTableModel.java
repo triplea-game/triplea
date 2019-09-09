@@ -26,7 +26,6 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
     GUID
   }
 
-  // these must only be accessed in the swing event thread
   private final List<Tuple<GUID, GameDescription>> gameList = new ArrayList<>();
 
   private final boolean isAdmin;
@@ -53,15 +52,15 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
   }
 
   private void removeGame(final GUID gameId) {
-    SwingUtilities.invokeLater(
-        () -> {
-          final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
-          if (gameToRemove != null) {
-            final int index = gameList.indexOf(gameToRemove);
+    final Tuple<GUID, GameDescription> gameToRemove = findGame(gameId);
+    if (gameToRemove != null) {
+      final int index = gameList.indexOf(gameToRemove);
+      SwingUtilities.invokeLater(
+          () -> {
             gameList.remove(gameToRemove);
             fireTableRowsDeleted(index, index);
-          }
-        });
+          });
+    }
   }
 
   private Tuple<GUID, GameDescription> findGame(final GUID gameId) {
@@ -76,18 +75,15 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
   }
 
   private void updateGame(final GUID gameId, final GameDescription description) {
-    SwingUtilities.invokeLater(
-        () -> {
-          final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
-          if (toReplace == null) {
-            gameList.add(Tuple.of(gameId, description));
-            fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
-          } else {
-            final int replaceIndex = gameList.indexOf(toReplace);
-            gameList.set(replaceIndex, Tuple.of(gameId, description));
-            fireTableRowsUpdated(replaceIndex, replaceIndex);
-          }
-        });
+    final Tuple<GUID, GameDescription> toReplace = findGame(gameId);
+    if (toReplace == null) {
+      gameList.add(Tuple.of(gameId, description));
+      SwingUtilities.invokeLater(() -> fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1));
+    } else {
+      final int replaceIndex = gameList.indexOf(toReplace);
+      gameList.set(replaceIndex, Tuple.of(gameId, description));
+      SwingUtilities.invokeLater(() -> fireTableRowsUpdated(replaceIndex, replaceIndex));
+    }
   }
 
   @Override
