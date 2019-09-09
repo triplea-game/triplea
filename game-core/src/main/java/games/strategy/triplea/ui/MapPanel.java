@@ -637,8 +637,8 @@ public class MapPanel extends ImageScrollerLargeView {
     super.paint(g2d);
     g2d.scale(scale, scale);
     g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight()));
-    int x = model.getX();
-    int y = model.getY();
+    int x = mapWidthFitsOnScreen() ? 0 : model.getX();
+    int y = mapHeightFitsOnScreen() ? 0 : model.getY();
     final List<Tile> images = new ArrayList<>();
     final List<Tile> undrawnTiles = new ArrayList<>();
     // make sure we use the same data for the entire paint
