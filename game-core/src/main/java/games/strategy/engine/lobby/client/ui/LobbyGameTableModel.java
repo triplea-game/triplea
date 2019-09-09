@@ -31,24 +31,21 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
     gameListModel = new GameListModel();
 
     for (final Map.Entry<GUID, GameDescription> entry : gameList.entrySet()) {
-      updateGame(entry.getKey(), entry.getValue());
+      gameUpdated(entry.getKey(), entry.getValue());
     }
   }
 
-  private void updateGame(final GUID gameId, final GameDescription description) {
+  @Override
+  public void gameUpdated(final GUID gameId, final GameDescription description) {
+    if (gameId == null) {
+      return;
+    }
     if (gameListModel.containsGame(gameId)) {
       final int updatedRow = gameListModel.update(gameId, description);
       SwingUtilities.invokeLater(() -> fireTableRowsUpdated(updatedRow, updatedRow));
     } else {
       gameListModel.add(gameId, description);
       SwingUtilities.invokeLater(() -> fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1));
-    }
-  }
-
-  @Override
-  public void gameUpdated(final GUID gameId, final GameDescription description) {
-    if (gameId != null) {
-      updateGame(gameId, description);
     }
   }
 
