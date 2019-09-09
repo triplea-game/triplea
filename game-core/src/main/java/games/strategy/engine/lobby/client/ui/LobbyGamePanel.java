@@ -43,13 +43,7 @@ class LobbyGamePanel extends JPanel {
   LobbyGamePanel(final LobbyClient lobbyClient, final LobbyGameTableModel lobbyGameTableModel) {
     this.lobbyClient = lobbyClient;
     this.gameTableModel = lobbyGameTableModel;
-    createComponents();
-    layoutComponents();
-    setupListeners();
-    setWidgetActivation();
-  }
 
-  private void createComponents() {
     hostGame = new JButton("Host Game");
     joinGame = new JButton("Join Game");
     bootGame = new JButton("Boot Game");
@@ -99,9 +93,7 @@ class LobbyGamePanel extends JPanel {
         .getColumnModel()
         .getColumn(gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host))
         .setPreferredWidth(67);
-  }
 
-  private void layoutComponents() {
     final JScrollPane scroll = new JScrollPane(gameTable);
     setLayout(new BorderLayout());
     add(scroll, BorderLayout.CENTER);
@@ -113,13 +105,17 @@ class LobbyGamePanel extends JPanel {
     }
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.SOUTH);
-  }
 
-  private void setupListeners() {
     hostGame.addActionListener(e -> hostGame());
     joinGame.addActionListener(e -> joinGame());
     bootGame.addActionListener(e -> bootGame());
-    gameTable.getSelectionModel().addListSelectionListener(e -> setWidgetActivation());
+    gameTable
+        .getSelectionModel()
+        .addListSelectionListener(
+            e -> {
+              final boolean selected = gameTable.getSelectedRow() >= 0;
+              joinGame.setEnabled(selected);
+            });
     gameTable.addMouseListener(
         new MouseListener() {
           @Override
@@ -560,10 +556,5 @@ class LobbyGamePanel extends JPanel {
         controller.shutDownHeadlessHostBot(lobbyWatcherNode, hashedPassword, salt);
     JOptionPane.showMessageDialog(
         null, (response == null ? "Host shut down successful" : "Failed: " + response));
-  }
-
-  private void setWidgetActivation() {
-    final boolean selected = gameTable.getSelectedRow() >= 0;
-    joinGame.setEnabled(selected);
   }
 }
