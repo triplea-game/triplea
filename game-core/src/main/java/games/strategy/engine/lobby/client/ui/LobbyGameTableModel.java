@@ -1,6 +1,5 @@
 package games.strategy.engine.lobby.client.ui;
 
-import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.net.GUID;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +26,14 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
     GUID
   }
 
-  private final LobbyClient lobbyClient;
-
   // these must only be accessed in the swing event thread
   private final List<Tuple<GUID, GameDescription>> gameList = new ArrayList<>();
 
-  LobbyGameTableModel(final LobbyClient lobbyClient) {
-    this.lobbyClient = lobbyClient;
+  private final boolean isAdmin;
 
-    final Map<GUID, GameDescription> games = lobbyClient.listGames();
-    for (final Map.Entry<GUID, GameDescription> entry : games.entrySet()) {
+  LobbyGameTableModel(final Map<GUID, GameDescription> gameList, final boolean isAdmin) {
+    this.isAdmin = isAdmin;
+    for (final Map.Entry<GUID, GameDescription> entry : gameList.entrySet()) {
       updateGame(entry.getKey(), entry.getValue());
     }
   }
@@ -104,7 +101,7 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
 
   @Override
   public int getColumnCount() {
-    final int adminHiddenColumns = lobbyClient.isAdmin() ? 0 : -1;
+    final int adminHiddenColumns = isAdmin ? 0 : -1;
     // -1 so we don't display the guid
     // -1 again if we are not admin to hide the 'started' column
     return Column.values().length - 1 + adminHiddenColumns;

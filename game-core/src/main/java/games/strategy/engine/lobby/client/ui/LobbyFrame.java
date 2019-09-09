@@ -53,7 +53,8 @@ public class LobbyFrame extends JFrame {
     chatPlayers.setPreferredSize(new Dimension(200, 600));
     chatPlayers.addActionFactory(this::newAdminActions);
 
-    final LobbyGameTableModel tableModel = new LobbyGameTableModel(client);
+    final LobbyGameTableModel tableModel =
+        new LobbyGameTableModel(client.listGames(), client.isAdmin());
     client.addGameChangeListener(tableModel);
     final LobbyGamePanel gamePanel = new LobbyGamePanel(client, tableModel);
 
