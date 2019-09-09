@@ -637,25 +637,27 @@ public class MapPanel extends ImageScrollerLargeView {
     super.paint(g2d);
     g2d.scale(scale, scale);
     g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight()));
-    int x = model.getX();
-    int y = model.getY();
+    final boolean fittingWidth = mapWidthFitsOnScreen();
+    final boolean fittingHeight = mapHeightFitsOnScreen();
+    int x = fittingWidth ? 0 : model.getX();
+    int y = fittingHeight ? 0 : model.getY();
     final List<Tile> images = new ArrayList<>();
     final List<Tile> undrawnTiles = new ArrayList<>();
     // make sure we use the same data for the entire paint
     final GameData data = gameData;
     // if the map fits on screen, don't draw any overlap
-    final boolean fitAxisX = !mapWidthFitsOnScreen() && uiContext.getMapData().scrollWrapX();
-    final boolean fitAxisY = !mapHeightFitsOnScreen() && uiContext.getMapData().scrollWrapY();
-    if (fitAxisX || fitAxisY) {
-      if (fitAxisX && x + (int) getScaledWidth() > model.getMaxWidth()) {
+    final boolean drawHorizontalOverlap = !fittingWidth && uiContext.getMapData().scrollWrapX();
+    final boolean drawVerticalOverlap = !fittingHeight && uiContext.getMapData().scrollWrapY();
+    if (drawHorizontalOverlap || drawVerticalOverlap) {
+      if (drawHorizontalOverlap && x + (int) getScaledWidth() > model.getMaxWidth()) {
         x -= model.getMaxWidth();
       }
-      if (fitAxisY && y + (int) getScaledHeight() > model.getMaxHeight()) {
+      if (drawVerticalOverlap && y + (int) getScaledHeight() > model.getMaxHeight()) {
         y -= model.getMaxHeight();
       }
       // handle wrapping off the screen
-      if (fitAxisX && x < 0) {
-        if (fitAxisY && y < 0) {
+      if (drawHorizontalOverlap && x < 0) {
+        if (drawVerticalOverlap && y < 0) {
           final Rectangle2D.Double leftUpperBounds =
               new Rectangle2D.Double(model.getMaxWidth() + x, model.getMaxHeight() + y, -x, -y);
           drawTiles(g2d, images, data, leftUpperBounds, undrawnTiles);
@@ -664,7 +666,7 @@ public class MapPanel extends ImageScrollerLargeView {
             new Rectangle2D.Double(model.getMaxWidth() + x, y, -x, getScaledHeight());
         drawTiles(g2d, images, data, leftBounds, undrawnTiles);
       }
-      if (fitAxisY && y < 0) {
+      if (drawVerticalOverlap && y < 0) {
         final Rectangle2D.Double upperBounds =
             new Rectangle2D.Double(x, model.getMaxHeight() + y, getScaledWidth(), -y);
         drawTiles(g2d, images, data, upperBounds, undrawnTiles);
