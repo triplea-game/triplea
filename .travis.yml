@@ -7,12 +7,11 @@ jdk: openjdk11
 # Note: Travis generally does not allocate more than 5 VMs at once.
 # Avoid running more than 5 jobs in parallel. Try to keep the jobs
 # balanced so that they each take about the same amount of time.
-install: skip
-script:
-- echo Event type: $TRAVIS_EVENT_TYPE
-- echo Branch: $TRAVIS_BRANCH
-- echo PR: $TRAVIS_PULL_REQUEST
-- echo Slug: $TRAVIS_PULL_REQUEST_SLUG
+install: 
+  - echo Event type: $TRAVIS_EVENT_TYPE
+  - echo Branch: $TRAVIS_BRANCH
+  - echo PR: $TRAVIS_PULL_REQUEST
+  - echo Slug: $TRAVIS_PULL_REQUEST_SLUG
 after_failure:
   - echo "================ Build step 'after_failure' =================" > /dev/null
-  - test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
+  - test "$TRAVIS_EVENT_TYPE" != "pull_request" && test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
