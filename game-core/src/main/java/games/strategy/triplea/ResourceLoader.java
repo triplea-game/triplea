@@ -235,10 +235,11 @@ public class ResourceLoader implements Closeable {
 
   /**
    * Returns the URL of the resource at the specified path or {@code null} if the resource does not
-   * exist.
+   * exist. Tries the given 2 paths in order first in the map resources then engine resources.
    *
    * @param inputPath (The name of a resource is a '/'-separated path name that identifies the
    *     resource. Do not use '\' or File.separator)
+   * @param inputPath2 Same as inputPath but this takes second priority when loading
    */
   public @Nullable URL getResource(final String inputPath, final String inputPath2) {
     final String path = resourceLocationTracker.getMapPrefix() + inputPath;
