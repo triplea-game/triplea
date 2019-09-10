@@ -228,9 +228,7 @@ public class ResourceLoader implements Closeable {
    */
   public @Nullable URL getResource(final String inputPath) {
     final String path = resourceLocationTracker.getMapPrefix() + inputPath;
-    return getMatchingResources(path).stream()
-        .findFirst()
-        .orElse(getMatchingResources(inputPath).stream().findFirst().orElse(null));
+    return findResource(path).or(() -> findResource(inputPath)).orElse(null);
   }
 
   /**
@@ -244,16 +242,15 @@ public class ResourceLoader implements Closeable {
   public @Nullable URL getResource(final String inputPath, final String inputPath2) {
     final String path = resourceLocationTracker.getMapPrefix() + inputPath;
     final String path2 = resourceLocationTracker.getMapPrefix() + inputPath2;
-    return getMatchingResources(path).stream()
-        .findFirst()
-        .orElse(
-            getMatchingResources(path2).stream()
-                .findFirst()
-                .orElse(
-                    getMatchingResources(inputPath).stream()
-                        .findFirst()
-                        .orElse(
-                            getMatchingResources(inputPath2).stream().findFirst().orElse(null))));
+    return findResource(path)
+        .or(() -> findResource(path2))
+        .or(() -> findResource(inputPath))
+        .or(() -> findResource(inputPath2))
+        .orElse(null);
+  }
+
+  private Optional<URL> findResource(final String searchPath) {
+    return getMatchingResources(searchPath).stream().findFirst();
   }
 
   private List<URL> getMatchingResources(final String path) {
