@@ -1,8 +1,13 @@
-## Overview
-<!-- What changes did you make? Provide a summary of the updates included in this pull request -->
+
+<!-- 
+  Commit comment above summarizing the update.  If multiple commits please 
+  summarize the change above. Commit comments should include an overview of
+  the updates and the goal and reasoning behind the update.
+--> 
+
 
 ## Functional Changes
-<!-- Put an X next to an item -->
+<!-- Put an X next to an item, if other, please specify -->
 [ ] New map or map update
 [ ] New Feature
 [ ] Feature update or enhancement
@@ -10,16 +15,16 @@
 [ ] Code Cleanup or refactor
 [ ] Configuration Change
 [ ] Bug fix
+[ ] Other:
 
 <!-- If fixing a bug, uncomment the below and fill in each section -->
 <!--
-## Bug Fix
 
-### Issue number or Reproduction Steps  (if no existing issue, how can the bug be reproduced?)
+### Bug Issue Number or Reproduction Steps 
 
-### Root Cause (What caused the bug?)
+### Root Cause - What caused the bug?
 
-### Fix description (How is the bug fixed?)
+### Fix description - How was the bug fixed?
 
 -->
 
@@ -31,17 +36,10 @@
 [ ] Covered by newly added automated tests
 [ ] Manually tested
 [ ] No testing done
-
-<!-- 
-  If manually tested, uncomment the section below and list the test-case scenarios manually tested.
--->
-<!--
-### Manual Testing
- 
--->
+<!-- If manually tested, summarize the testing done below this line. -->
 
 
-<!-- If there any user facing changes, uncomment the section below and include screenshots -->
+<!-- If there are UI updates, uncomment and include screenshots below -->
 <!--
 ## Screens Shots
 
@@ -51,8 +49,10 @@
 -->
 
 
-<!-- Uncomment the next section and add here any extra notes that would be helpful to reviewers -->
-
+<!-- 
+  Uncomment the below and add any additional details 
+  that would be helpful for reviewers.
+-->
 <!--
 ## Additional Review Notes
 -->
