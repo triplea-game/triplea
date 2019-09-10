@@ -8,7 +8,6 @@ if: tag is blank
 # balanced so that they each take about the same amount of time.
 jobs:
   include:
-
     - stage: verify
       env: DESCRIPTION="static verification"
       jdk: openjdk11
