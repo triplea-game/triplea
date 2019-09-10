@@ -8,10 +8,11 @@ jdk: openjdk11
 # Avoid running more than 5 jobs in parallel. Try to keep the jobs
 # balanced so that they each take about the same amount of time.
 install: 
-  - echo Event type: $TRAVIS_EVENT_TYPE
-  - echo Branch: $TRAVIS_BRANCH
-  - echo PR: $TRAVIS_PULL_REQUEST
-  - echo Slug: $TRAVIS_PULL_REQUEST_SLUG
+  - echo test
+#  - echo Event type: $TRAVIS_EVENT_TYPE
+#  - echo Branch: $TRAVIS_BRANCH
+#  - echo PR: $TRAVIS_PULL_REQUEST
+#  - echo Slug: $TRAVIS_PULL_REQUEST_SLUG
 after_failure:
   - echo "================ Build step 'after_failure' =================" > /dev/null
   - test "$TRAVIS_EVENT_TYPE" != "pull_request" && test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
