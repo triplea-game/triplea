@@ -7,6 +7,7 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.ui.Util;
 import java.awt.AlphaComposite;
@@ -15,6 +16,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
@@ -46,6 +49,7 @@ public class UnitImageFactory {
   // Scaling factor for unit images
   private double scaleFactor;
   private ResourceLoader resourceLoader;
+  private MapData mapData;
 
   public UnitImageFactory() {}
 
@@ -55,13 +59,15 @@ public class UnitImageFactory {
       final int initialUnitWidth,
       final int initialUnitHeight,
       final int initialUnitCounterOffsetWidth,
-      final int initialUnitCounterOffsetHeight) {
+      final int initialUnitCounterOffsetHeight,
+      final MapData mapData) {
     unitIconWidth = initialUnitWidth;
     unitIconHeight = initialUnitHeight;
     unitCounterOffsetWidth = initialUnitCounterOffsetWidth;
     unitCounterOffsetHeight = initialUnitCounterOffsetHeight;
     this.scaleFactor = scaleFactor;
     resourceLoader = loader;
+    this.mapData = mapData;
     clearImageCache();
   }
 
@@ -115,7 +121,7 @@ public class UnitImageFactory {
     if (images.containsKey(fullName)) {
       return Optional.of(images.get(fullName));
     }
-    final Optional<Image> image = getBaseImage(baseName, player);
+    final Optional<Image> image = getBaseImage(baseName, player, type);
     if (image.isEmpty()) {
       return Optional.empty();
     }
@@ -142,18 +148,53 @@ public class UnitImageFactory {
       final String baseImageName, final PlayerId id, final ResourceLoader resourceLoader) {
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
-    final URL url = resourceLoader.getResource(fileName);
+    final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
+    final URL url = resourceLoader.getResource(fileName, fileName2);
     return Optional.ofNullable(url);
   }
 
-  private Optional<Image> getBaseImage(final String baseImageName, final PlayerId id) {
+  private Optional<Image> getBaseImage(
+      final String baseImageName, final PlayerId id, final UnitType type) {
     final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, id);
     Image image = null;
     if (imageLocation.isPresent()) {
       image = Toolkit.getDefaultToolkit().getImage(getBaseImageUrl(baseImageName, id).get());
       Util.ensureImageLoaded(image);
+      if (!mapData.ignoreColorizingUnit(type.getName())) {
+        if (mapData.getUnitColor(id.getName()).isPresent()) {
+          final Color color = mapData.getUnitColor(id.getName()).get();
+          image = convertToBufferedImage(image);
+          ImageColorizer.applyColor(color, (BufferedImage) image);
+          if (mapData.shouldFlipUnit(id.getName())) {
+            image = flipImage((BufferedImage) image);
+          }
+        } else if (mapData.getUnitHsb(id.getName()).isPresent()) {
+          final int[] hsb = mapData.getUnitHsb(id.getName()).get();
+          image = convertToBufferedImage(image);
+          ImageColorizer.applyHsb(hsb[0], hsb[1], hsb[2], (BufferedImage) image);
+          if (mapData.shouldFlipUnit(id.getName())) {
+            image = flipImage((BufferedImage) image);
+          }
+        }
+      }
     }
     return Optional.ofNullable(image);
+  }
+
+  private static BufferedImage convertToBufferedImage(final Image image) {
+    final BufferedImage newImage =
+        new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D g = newImage.createGraphics();
+    g.drawImage(image, 0, 0, null);
+    g.dispose();
+    return newImage;
+  }
+
+  private static BufferedImage flipImage(final BufferedImage image) {
+    final AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+    tx.translate(-image.getWidth(null), 0);
+    final AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    return op.filter(image, null);
   }
 
   /**
@@ -188,7 +229,7 @@ public class UnitImageFactory {
     if (icons.containsKey(fullName)) {
       return Optional.of(icons.get(fullName));
     }
-    final Optional<Image> image = getBaseImage(baseName, player);
+    final Optional<Image> image = getBaseImage(baseName, player, type);
     if (image.isEmpty()) {
       return Optional.empty();
     }
@@ -271,7 +312,7 @@ public class UnitImageFactory {
   public Dimension getImageDimensions(final UnitType type, final PlayerId player) {
     final String baseName = getBaseImageName(type, player, false, false);
     final Image baseImage =
-        getBaseImage(baseName, player)
+        getBaseImage(baseName, player, type)
             .orElseThrow(
                 () ->
                     new RuntimeException(

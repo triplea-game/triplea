@@ -78,7 +78,8 @@ public class HeadedUiContext extends AbstractUiContext {
         mapData.getDefaultUnitWidth(),
         mapData.getDefaultUnitHeight(),
         mapData.getDefaultUnitCounterOffsetWidth(),
-        mapData.getDefaultUnitCounterOffsetHeight());
+        mapData.getDefaultUnitCounterOffsetHeight(),
+        mapData);
     // TODO: separate scale for resources
     resourceImageFactory.setResourceLoader(resourceLoader);
     territoryEffectImageFactory.setResourceLoader(resourceLoader);
