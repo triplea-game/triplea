@@ -14,4 +14,4 @@ install:
   - echo Slug: $TRAVIS_PULL_REQUEST_SLUG
 after_failure:
   - echo "================ Build step 'after_failure' =================" > /dev/null
-  - test test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
+  - test "$TRAVIS_BRANCH" = master && ./.travis/report_build_status FAILURE
