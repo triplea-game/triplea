@@ -233,6 +233,28 @@ public class ResourceLoader implements Closeable {
         .orElse(getMatchingResources(inputPath).stream().findFirst().orElse(null));
   }
 
+  /**
+   * Returns the URL of the resource at the specified path or {@code null} if the resource does not
+   * exist.
+   *
+   * @param inputPath (The name of a resource is a '/'-separated path name that identifies the
+   *     resource. Do not use '\' or File.separator)
+   */
+  public @Nullable URL getResource(final String inputPath, final String inputPath2) {
+    final String path = resourceLocationTracker.getMapPrefix() + inputPath;
+    final String path2 = resourceLocationTracker.getMapPrefix() + inputPath2;
+    return getMatchingResources(path).stream()
+        .findFirst()
+        .orElse(
+            getMatchingResources(path2).stream()
+                .findFirst()
+                .orElse(
+                    getMatchingResources(inputPath).stream()
+                        .findFirst()
+                        .orElse(
+                            getMatchingResources(inputPath2).stream().findFirst().orElse(null))));
+  }
+
   private List<URL> getMatchingResources(final String path) {
     try {
       return Collections.list(loader.getResources(path));
