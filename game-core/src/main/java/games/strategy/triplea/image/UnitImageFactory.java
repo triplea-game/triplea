@@ -16,8 +16,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
@@ -160,25 +158,25 @@ public class UnitImageFactory {
     if (imageLocation.isPresent()) {
       image = Toolkit.getDefaultToolkit().getImage(getBaseImageUrl(baseImageName, id).get());
       Util.ensureImageLoaded(image);
-      if (!mapData.ignoreColorizingUnit(type.getName())) {
+      if (needToTransformImage(id, type, mapData)) {
+        image = convertToBufferedImage(image);
         if (mapData.getUnitColor(id.getName()).isPresent()) {
           final Color color = mapData.getUnitColor(id.getName()).get();
-          image = convertToBufferedImage(image);
-          ImageColorizer.applyColor(color, (BufferedImage) image);
-          if (mapData.shouldFlipUnit(id.getName())) {
-            image = flipImage((BufferedImage) image);
-          }
-        } else if (mapData.getUnitHsb(id.getName()).isPresent()) {
-          final int[] hsb = mapData.getUnitHsb(id.getName()).get();
-          image = convertToBufferedImage(image);
-          ImageColorizer.applyHsb(hsb[0], hsb[1], hsb[2], (BufferedImage) image);
-          if (mapData.shouldFlipUnit(id.getName())) {
-            image = flipImage((BufferedImage) image);
-          }
+          final int brightness = mapData.getUnitBrightness(id.getName());
+          ImageTransformer.colorize(color, brightness, (BufferedImage) image);
+        }
+        if (mapData.shouldFlipUnit(id.getName())) {
+          image = ImageTransformer.flipHorizontally((BufferedImage) image);
         }
       }
     }
     return Optional.ofNullable(image);
+  }
+
+  private static boolean needToTransformImage(
+      final PlayerId id, final UnitType type, final MapData mapData) {
+    return !mapData.ignoreColorizingUnit(type.getName())
+        && (mapData.getUnitColor(id.getName()).isPresent() || mapData.shouldFlipUnit(id.getName()));
   }
 
   private static BufferedImage convertToBufferedImage(final Image image) {
@@ -188,13 +186,6 @@ public class UnitImageFactory {
     g.drawImage(image, 0, 0, null);
     g.dispose();
     return newImage;
-  }
-
-  private static BufferedImage flipImage(final BufferedImage image) {
-    final AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
-    tx.translate(-image.getWidth(null), 0);
-    final AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-    return op.filter(image, null);
   }
 
   /**
