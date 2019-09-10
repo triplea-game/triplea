@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.extern.java.Log;
@@ -48,15 +49,19 @@ public class MapData implements Closeable {
   public static final String PROPERTY_UNITS_SCALE = "units.scale";
   public static final String PROPERTY_UNITS_WIDTH = "units.width";
   public static final String PROPERTY_UNITS_HEIGHT = "units.height";
+  public static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
+  public static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
+  public static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
+  public static final String PROPERTY_UNITS_COLOR_PREFIX = "units.color.";
+  public static final String PROPERTY_UNITS_HSB_PREFIX = "units.color.hsb.";
+  public static final String PROPERTY_UNITS_COLOR_FLIP_PREFIX = "units.color.flip.";
+  public static final String PROPERTY_UNITS_COLOR_IGNORE = "units.color.ignore";
   public static final String PROPERTY_SCREENSHOT_TITLE_ENABLED = "screenshot.title.enabled";
   public static final String PROPERTY_SCREENSHOT_TITLE_X = "screenshot.title.x";
   public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
   public static final String PROPERTY_SCREENSHOT_TITLE_COLOR = "screenshot.title.color";
   public static final String PROPERTY_SCREENSHOT_TITLE_FONT_SIZE = "screenshot.title.font.size";
   public static final String PROPERTY_COLOR_PREFIX = "color.";
-  public static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
-  public static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
-  public static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
   public static final String PROPERTY_MAP_WIDTH = "map.width";
   public static final String PROPERTY_MAP_HEIGHT = "map.height";
   public static final String PROPERTY_MAP_SCROLLWRAPX = "map.scrollWrapX";
@@ -102,6 +107,10 @@ public class MapData implements Closeable {
 
   private final DefaultColors defaultColors = new DefaultColors();
   private final Map<String, Color> playerColors = new HashMap<>();
+  private final Map<String, Color> unitColors = new HashMap<>();
+  private final Map<String, int[]> unitHsbs = new HashMap<>();
+  private final Map<String, Boolean> unitFlips = new HashMap<>();
+  private Set<String> ignoreColorUnits;
   private final Map<String, Tuple<List<Point>, Boolean>> place = new HashMap<>();
   private final Map<String, List<Polygon>> polys = new HashMap<>();
   private final Map<String, Point> centers = new HashMap<>();
@@ -335,6 +344,68 @@ public class MapData implements Closeable {
     // zero = normal behavior
     final String stack = mapProperties.getProperty(PROPERTY_UNITS_STACK_SIZE, "0");
     return Math.max(0, Integer.parseInt(stack));
+  }
+
+  /** Returns the unit color associated with the player named {@code playerName}. */
+  public Optional<Color> getUnitColor(final String playerName) {
+    // already loaded, just return
+    if (unitColors.containsKey(playerName)) {
+      return Optional.ofNullable(unitColors.get(playerName));
+    }
+    // look in map.properties
+    final Color color;
+    try {
+      color = getColorProperty(PROPERTY_UNITS_COLOR_PREFIX + playerName);
+    } catch (final Exception e) {
+      throw new IllegalStateException(
+          "Unit colors must be a 6 digit hex number, eg FF0011: " + playerName);
+    }
+    unitColors.put(playerName, color);
+    return Optional.ofNullable(color);
+  }
+
+  /** Returns the unit HSB associated with the player named {@code playerName}. */
+  public Optional<int[]> getUnitHsb(final String playerName) {
+    // already loaded, just return
+    if (unitHsbs.containsKey(playerName)) {
+      return Optional.ofNullable(unitHsbs.get(playerName));
+    }
+    // look in map.properties
+    final int[] hsb;
+    final String property = mapProperties.getProperty(PROPERTY_UNITS_HSB_PREFIX + playerName);
+    try {
+      hsb =
+          (property == null)
+              ? null
+              : Stream.of(property.split(",")).mapToInt(Integer::parseInt).toArray();
+    } catch (final Exception e) {
+      throw new IllegalStateException(
+          "Unit HSBs must be 3 comma delimited integers H,S,B, eg 360,100,100: " + playerName);
+    }
+    unitHsbs.put(playerName, hsb);
+    return Optional.ofNullable(hsb);
+  }
+
+  /** Returns the unit color associated with the player named {@code playerName}. */
+  public boolean shouldFlipUnit(final String playerName) {
+    // already loaded, just return
+    if (unitFlips.containsKey(playerName)) {
+      return unitFlips.get(playerName);
+    }
+    // look in map.properties
+    final boolean result =
+        Boolean.parseBoolean(
+            mapProperties.getProperty(PROPERTY_UNITS_COLOR_FLIP_PREFIX + playerName, "false"));
+    unitFlips.put(playerName, result);
+    return result;
+  }
+
+  public boolean ignoreColorizingUnit(final String unitName) {
+    if (ignoreColorUnits == null) {
+      final String property = mapProperties.getProperty(PROPERTY_UNITS_COLOR_IGNORE, "");
+      ignoreColorUnits = new HashSet<>(Arrays.asList(property.split(",")));
+    }
+    return ignoreColorUnits.contains(unitName);
   }
 
   public boolean shouldDrawUnit(final String unitName) {
