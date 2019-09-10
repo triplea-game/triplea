@@ -34,7 +34,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import lombok.extern.java.Log;
@@ -53,7 +52,7 @@ public class MapData implements Closeable {
   public static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
   public static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
   public static final String PROPERTY_UNITS_COLOR_PREFIX = "units.color.";
-  public static final String PROPERTY_UNITS_HSB_PREFIX = "units.color.hsb.";
+  public static final String PROPERTY_UNITS_COLOR_BRIGHTNESS_PREFIX = "units.color.brightness.";
   public static final String PROPERTY_UNITS_COLOR_FLIP_PREFIX = "units.color.flip.";
   public static final String PROPERTY_UNITS_COLOR_IGNORE = "units.color.ignore";
   public static final String PROPERTY_SCREENSHOT_TITLE_ENABLED = "screenshot.title.enabled";
@@ -108,7 +107,7 @@ public class MapData implements Closeable {
   private final DefaultColors defaultColors = new DefaultColors();
   private final Map<String, Color> playerColors = new HashMap<>();
   private final Map<String, Color> unitColors = new HashMap<>();
-  private final Map<String, int[]> unitHsbs = new HashMap<>();
+  private final Map<String, Integer> unitBrightnesses = new HashMap<>();
   private final Map<String, Boolean> unitFlips = new HashMap<>();
   private Set<String> ignoreColorUnits;
   private final Map<String, Tuple<List<Point>, Boolean>> place = new HashMap<>();
@@ -353,37 +352,23 @@ public class MapData implements Closeable {
       return Optional.ofNullable(unitColors.get(playerName));
     }
     // look in map.properties
-    final Color color;
-    try {
-      color = getColorProperty(PROPERTY_UNITS_COLOR_PREFIX + playerName);
-    } catch (final Exception e) {
-      throw new IllegalStateException(
-          "Unit colors must be a 6 digit hex number, eg FF0011: " + playerName);
-    }
+    final Color color = getColorProperty(PROPERTY_UNITS_COLOR_PREFIX + playerName);
     unitColors.put(playerName, color);
     return Optional.ofNullable(color);
   }
 
-  /** Returns the unit HSB associated with the player named {@code playerName}. */
-  public Optional<int[]> getUnitHsb(final String playerName) {
+  /** Returns the unit brightness associated with the player named {@code playerName}. */
+  public int getUnitBrightness(final String playerName) {
     // already loaded, just return
-    if (unitHsbs.containsKey(playerName)) {
-      return Optional.ofNullable(unitHsbs.get(playerName));
+    if (unitBrightnesses.containsKey(playerName)) {
+      return unitBrightnesses.get(playerName);
     }
     // look in map.properties
-    final int[] hsb;
-    final String property = mapProperties.getProperty(PROPERTY_UNITS_HSB_PREFIX + playerName);
-    try {
-      hsb =
-          (property == null)
-              ? null
-              : Stream.of(property.split(",")).mapToInt(Integer::parseInt).toArray();
-    } catch (final Exception e) {
-      throw new IllegalStateException(
-          "Unit HSBs must be 3 comma delimited integers H,S,B, eg 360,100,100: " + playerName);
-    }
-    unitHsbs.put(playerName, hsb);
-    return Optional.ofNullable(hsb);
+    final int brightness =
+        Integer.parseInt(
+            mapProperties.getProperty(PROPERTY_UNITS_COLOR_BRIGHTNESS_PREFIX + playerName, "0"));
+    unitBrightnesses.put(playerName, brightness);
+    return brightness;
   }
 
   /** Returns whether to flip unit images associated with the player named {@code playerName}. */
@@ -393,11 +378,11 @@ public class MapData implements Closeable {
       return unitFlips.get(playerName);
     }
     // look in map.properties
-    final boolean result =
+    final boolean shouldFlipUnit =
         Boolean.parseBoolean(
             mapProperties.getProperty(PROPERTY_UNITS_COLOR_FLIP_PREFIX + playerName, "false"));
-    unitFlips.put(playerName, result);
-    return result;
+    unitFlips.put(playerName, shouldFlipUnit);
+    return shouldFlipUnit;
   }
 
   public boolean ignoreColorizingUnit(final String unitName) {
@@ -533,7 +518,7 @@ public class MapData implements Closeable {
     return Boolean.parseBoolean(mapProperties.getProperty(propertiesKey, "true"));
   }
 
-  public Color getColorProperty(final String propertiesKey) throws IllegalStateException {
+  public Color getColorProperty(final String propertiesKey) {
     return getColorProperty(propertiesKey, null);
   }
 
@@ -543,18 +528,18 @@ public class MapData implements Closeable {
    *
    * @throws IllegalStateException If the property value does not represent a valid color.
    */
-  public Color getColorProperty(final String propertiesKey, final Color defaultColor)
-      throws IllegalStateException {
+  public Color getColorProperty(final String propertiesKey, final Color defaultColor) {
     if (mapProperties.getProperty(propertiesKey) != null) {
       final String colorString = mapProperties.getProperty(propertiesKey);
       if (colorString.length() != 6) {
         throw new IllegalStateException(
-            "Colors must be a 6 digit hex number, eg FF0011, not:" + colorString);
+            "Colors must be 6 digit hex numbers, eg FF0011, not: " + colorString);
       }
       try {
         return new Color(Integer.decode("0x" + colorString));
       } catch (final NumberFormatException nfe) {
-        throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");
+        throw new IllegalStateException(
+            "Colors must be 6 digit hex numbers, eg FF0011, not: " + colorString);
       }
     }
     return defaultColor;
@@ -567,16 +552,9 @@ public class MapData implements Closeable {
       return playerColors.get(playerName);
     }
     // look in map.properties
-    Color color;
-    try {
-      final String propertiesKey = PROPERTY_COLOR_PREFIX + playerName;
-      color = getColorProperty(propertiesKey);
-    } catch (final Exception e) {
-      throw new IllegalStateException("Player colors must be a 6 digit hex number, eg FF0011");
-    }
+    Color color = getColorProperty(PROPERTY_COLOR_PREFIX + playerName);
     if (color == null) {
-      // dont crash, use one of our default colors
-      // its ugly, but usable
+      // use one of our default colors, its ugly, but usable
       color = defaultColors.nextColor();
     }
     playerColors.put(playerName, color);
@@ -619,8 +597,7 @@ public class MapData implements Closeable {
   }
 
   private static void verifyKeys(
-      final GameData data, final Map<String, ?> map, final String dataTypeForErrorMessage)
-      throws IllegalStateException {
+      final GameData data, final Map<String, ?> map, final String dataTypeForErrorMessage) {
     final StringBuilder errors = new StringBuilder();
     final Iterator<String> iter = map.keySet().iterator();
     while (iter.hasNext()) {
