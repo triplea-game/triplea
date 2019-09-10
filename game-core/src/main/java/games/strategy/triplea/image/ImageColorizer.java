@@ -14,6 +14,8 @@ public class ImageColorizer {
   private static final float LUMINANCE_GREEN = 0.7152f;
   private static final float LUMINANCE_BLUE = 0.0722f;
 
+  private ImageColorizer() {}
+
   /**
    * Apply color to the given image. This takes the hue and saturation of the given color and
    * applies it to the image. It ignores the brightness of the color which can cause images to
@@ -44,9 +46,9 @@ public class ImageColorizer {
     for (int i = 0; i < MAX_COLOR; i++) {
       final float brightnessFloat = i / 255f;
       final Color color = Color.getHSBColor(hueFloat, saturationFloat, brightnessFloat);
-      redLookup[i] = (color.getRed());
-      greenLookup[i] = (color.getGreen());
-      blueLookup[i] = (color.getBlue());
+      redLookup[i] = color.getRed();
+      greenLookup[i] = color.getGreen();
+      blueLookup[i] = color.getBlue();
     }
 
     // Loop through image to colorize each pixel
@@ -82,7 +84,7 @@ public class ImageColorizer {
                 + color.getBlue() * LUMINANCE_BLUE);
     if (brightness > 0) {
       lum = (int) (lum * (100f - brightness) / 100f);
-      lum += 255f - (100f - brightness) * 255f / 100f;
+      lum = (int) (lum + (255f - (100f - brightness) * 255f / 100f));
     } else if (brightness < 0) {
       lum = (int) ((lum * (brightness + 100f)) / 100f);
     }
