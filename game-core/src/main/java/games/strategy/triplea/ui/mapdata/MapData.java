@@ -386,7 +386,7 @@ public class MapData implements Closeable {
     return Optional.ofNullable(hsb);
   }
 
-  /** Returns the unit color associated with the player named {@code playerName}. */
+  /** Returns whether to flip unit images associated with the player named {@code playerName}. */
   public boolean shouldFlipUnit(final String playerName) {
     // already loaded, just return
     if (unitFlips.containsKey(playerName)) {
