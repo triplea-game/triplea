@@ -9,14 +9,12 @@ import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.triplea.ui.MacOsIntegration;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import org.triplea.lobby.common.IUserManager;
 import org.triplea.lobby.common.login.RsaAuthenticator;
+import org.triplea.swing.JMenuBuilder;
 import org.triplea.swing.JMenuItemCheckBoxBuilder;
-import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
 
 /** The lobby client menu bar. */
@@ -29,82 +27,47 @@ public final class LobbyMenu extends JMenuBar {
     lobbyFrame = frame;
     // file only has one value, and on mac it is in the apple menu
     if (!SystemProperties.isMac()) {
-      createFileMenu(this);
+      add(new JMenuBuilder("File", 'F').addMenuItem("Exit", 'X', lobbyFrame::shutdown).build());
     } else {
       MacOsIntegration.addQuitHandler(lobbyFrame::shutdown);
     }
 
     if (!lobbyFrame.getLobbyClient().isAnonymousLogin()) {
-      createAccountMenu(this);
+      add(
+          new JMenuBuilder("Account", 'A')
+              .addMenuItem("Update Account...", 'U', this::updateAccountDetails)
+              .build());
     }
 
     if (lobbyFrame.getLobbyClient().isAdmin()) {
-      createAdminMenu(this);
+      add(
+          new JMenuBuilder("Admin", 'M')
+              .addMenuItem("Open Toolbox", 'T', () -> ShowToolboxController.showToolbox(lobbyFrame))
+              .build());
     }
-    createSettingsMenu(this);
-    createHelpMenu(this);
-  }
 
-  private void createAccountMenu(final LobbyMenu menuBar) {
-    final JMenu account = new JMenu("Account");
-    menuBar.add(account);
-    addUpdateAccountMenu(account);
-  }
-
-  private void createAdminMenu(final LobbyMenu menuBar) {
-    final JMenu powerUser = new JMenu("Admin");
-    menuBar.add(powerUser);
-    createToolBoxWindowMenu(powerUser);
-  }
-
-  private void createToolBoxWindowMenu(final JMenu menuBar) {
-    final JMenuItem menuItem = new JMenuItem("Open Toolbox");
-    menuItem.addActionListener(event -> ShowToolboxController.showToolbox(lobbyFrame));
-    menuBar.add(menuItem);
-  }
-
-  private void showErrorDialog(final String message, final String title) {
-    JOptionPane.showMessageDialog(lobbyFrame, message, title, JOptionPane.ERROR_MESSAGE);
-  }
-
-  private void createSettingsMenu(final LobbyMenu menuBar) {
-    final JMenu settings = new JMenu("Settings");
-    menuBar.add(settings);
-    menuBar.add(SoundOptions.buildGlobalSoundSwitchMenuItem());
-    menuBar.add(SoundOptions.buildSoundOptionsMenuItem());
-    addChatTimeMenu(settings);
-  }
-
-  private static void createHelpMenu(final LobbyMenu menuBar) {
-    final JMenu help = new JMenu("Help");
-    menuBar.add(help);
-    addHelpMenu(help);
-  }
-
-  private static void addHelpMenu(final JMenu parentMenu) {
-    final JMenuItem hostingLink = new JMenuItem("User Guide");
-    hostingLink.addActionListener(
-        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.USER_GUIDE));
-    parentMenu.add(hostingLink);
-
-    final JMenuItem warClub = new JMenuItem("TripleA Forum");
-    warClub.addActionListener(
-        e -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM));
-    parentMenu.add(warClub);
-  }
-
-  private void addChatTimeMenu(final JMenu parentMenu) {
-    parentMenu.add(
-        new JMenuItemCheckBoxBuilder("Show Chat Times", 'C')
-            .bindSetting(ClientSetting.showChatTimeSettings)
-            .actionListener(lobbyFrame::setShowChatTime)
+    add(
+        new JMenuBuilder("Settings", 'S')
+            .addMenuItem(SoundOptions.buildGlobalSoundSwitchMenuItem())
+            .addMenuItem(SoundOptions.buildSoundOptionsMenuItem())
+            .addMenuItem(
+                new JMenuItemCheckBoxBuilder("Show Chat Times", 'C')
+                    .bindSetting(ClientSetting.showChatTimeSettings)
+                    .actionListener(lobbyFrame::setShowChatTime)
+                    .build())
             .build());
-  }
 
-  private void addUpdateAccountMenu(final JMenu account) {
-    final JMenuItem update = new JMenuItem("Update Account...");
-    update.addActionListener(e -> updateAccountDetails());
-    account.add(update);
+    add(
+        new JMenuBuilder("Help", 'H')
+            .addMenuItem(
+                "User Guide",
+                'U',
+                () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.USER_GUIDE))
+            .addMenuItem(
+                "TripleA Forum",
+                'F',
+                () -> SwingComponents.newOpenUrlConfirmationDialog(UrlConstants.TRIPLEA_FORUM))
+            .build());
   }
 
   private void updateAccountDetails() {
@@ -112,7 +75,7 @@ public final class LobbyMenu extends JMenuBar {
     final String username = lobbyFrame.getLobbyClient().getMessengers().getLocalNode().getName();
     final String email = manager.getUserEmail(username);
     if (email == null) {
-      showErrorDialog("No user info found", "Error");
+      showErrorDialog("No user info found");
       return;
     }
 
@@ -126,27 +89,14 @@ public final class LobbyMenu extends JMenuBar {
         manager.updateUser(
             username, email, RsaAuthenticator.hashPasswordWithSalt(panel.getPassword()));
     if (error != null) {
-      showErrorDialog(error, "Error");
+      showErrorDialog(error);
       return;
     }
 
     panel.getLobbyLoginPreferences().save();
   }
 
-  private void createFileMenu(final JMenuBar menuBar) {
-    final JMenu fileMenu = new JMenu("File");
-    menuBar.add(fileMenu);
-    addExitMenu(fileMenu);
-  }
-
-  private void addExitMenu(final JMenu parentMenu) {
-    final boolean isMac = SystemProperties.isMac();
-    // Mac OS X automatically creates a Quit menu item under the TripleA menu,
-    // so all we need to do is register that menu item with triplea's shutdown mechanism
-    if (!isMac) { // On non-Mac operating systems, we need to manually create an Exit menu item
-      final JMenuItem menuFileExit =
-          new JMenuItem(SwingAction.of("Exit", e -> lobbyFrame.shutdown()));
-      parentMenu.add(menuFileExit);
-    }
+  private void showErrorDialog(final String message) {
+    JOptionPane.showMessageDialog(lobbyFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
   }
 }
