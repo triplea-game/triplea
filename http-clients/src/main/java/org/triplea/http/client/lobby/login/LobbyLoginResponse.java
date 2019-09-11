@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
+// TODO: Project#12 - move to package org.triplea.http.client.account.login
 public class LobbyLoginResponse {
   private final String loginToken;
   private final String failReason;
