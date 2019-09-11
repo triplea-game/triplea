@@ -119,7 +119,7 @@ public class UnitImageFactory {
     if (images.containsKey(fullName)) {
       return Optional.of(images.get(fullName));
     }
-    final Optional<Image> image = getBaseImage(baseName, player, type);
+    final Optional<Image> image = getTransformedImage(baseName, player, type);
     if (image.isEmpty()) {
       return Optional.empty();
     }
@@ -151,7 +151,7 @@ public class UnitImageFactory {
     return Optional.ofNullable(url);
   }
 
-  private Optional<Image> getBaseImage(
+  private Optional<Image> getTransformedImage(
       final String baseImageName, final PlayerId id, final UnitType type) {
     final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, id);
     Image image = null;
@@ -220,7 +220,7 @@ public class UnitImageFactory {
     if (icons.containsKey(fullName)) {
       return Optional.of(icons.get(fullName));
     }
-    final Optional<Image> image = getBaseImage(baseName, player, type);
+    final Optional<Image> image = getTransformedImage(baseName, player, type);
     if (image.isEmpty()) {
       return Optional.empty();
     }
@@ -303,7 +303,7 @@ public class UnitImageFactory {
   public Dimension getImageDimensions(final UnitType type, final PlayerId player) {
     final String baseName = getBaseImageName(type, player, false, false);
     final Image baseImage =
-        getBaseImage(baseName, player, type)
+        getTransformedImage(baseName, player, type)
             .orElseThrow(
                 () ->
                     new RuntimeException(
