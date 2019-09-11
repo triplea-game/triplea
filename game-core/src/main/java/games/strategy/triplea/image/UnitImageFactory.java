@@ -175,7 +175,7 @@ public class UnitImageFactory {
 
   private static boolean needToTransformImage(
       final PlayerId id, final UnitType type, final MapData mapData) {
-    return !mapData.ignoreColorizingUnit(type.getName())
+    return !mapData.ignoreTransformingUnit(type.getName())
         && (mapData.getUnitColor(id.getName()).isPresent() || mapData.shouldFlipUnit(id.getName()));
   }
 

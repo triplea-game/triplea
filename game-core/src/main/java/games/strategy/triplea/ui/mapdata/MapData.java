@@ -51,10 +51,11 @@ public class MapData implements Closeable {
   public static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
   public static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
   public static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
-  public static final String PROPERTY_UNITS_COLOR_PREFIX = "units.color.";
-  public static final String PROPERTY_UNITS_COLOR_BRIGHTNESS_PREFIX = "units.color.brightness.";
-  public static final String PROPERTY_UNITS_COLOR_FLIP_PREFIX = "units.color.flip.";
-  public static final String PROPERTY_UNITS_COLOR_IGNORE = "units.color.ignore";
+  public static final String PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX = "units.transform.color.";
+  public static final String PROPERTY_UNITS_TRANSFORM_BRIGHTNESS_PREFIX =
+      "units.transform.brightness.";
+  public static final String PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX = "units.transform.flip.";
+  public static final String PROPERTY_UNITS_TRANSFORM_IGNORE = "units.transform.ignore";
   public static final String PROPERTY_SCREENSHOT_TITLE_ENABLED = "screenshot.title.enabled";
   public static final String PROPERTY_SCREENSHOT_TITLE_X = "screenshot.title.x";
   public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
@@ -109,7 +110,7 @@ public class MapData implements Closeable {
   private final Map<String, Color> unitColors = new HashMap<>();
   private final Map<String, Integer> unitBrightnesses = new HashMap<>();
   private final Map<String, Boolean> unitFlips = new HashMap<>();
-  private Set<String> ignoreColorUnits;
+  private Set<String> ignoreTransformingUnits;
   private final Map<String, Tuple<List<Point>, Boolean>> place = new HashMap<>();
   private final Map<String, List<Polygon>> polys = new HashMap<>();
   private final Map<String, Point> centers = new HashMap<>();
@@ -352,7 +353,7 @@ public class MapData implements Closeable {
       return Optional.ofNullable(unitColors.get(playerName));
     }
     // look in map.properties
-    final Color color = getColorProperty(PROPERTY_UNITS_COLOR_PREFIX + playerName);
+    final Color color = getColorProperty(PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX + playerName);
     unitColors.put(playerName, color);
     return Optional.ofNullable(color);
   }
@@ -366,7 +367,8 @@ public class MapData implements Closeable {
     // look in map.properties
     final int brightness =
         Integer.parseInt(
-            mapProperties.getProperty(PROPERTY_UNITS_COLOR_BRIGHTNESS_PREFIX + playerName, "0"));
+            mapProperties.getProperty(
+                PROPERTY_UNITS_TRANSFORM_BRIGHTNESS_PREFIX + playerName, "0"));
     if (brightness < -100 || brightness > 100) {
       throw new IllegalStateException(
           "Valid brightness value range is -100 to 100, not: " + brightness);
@@ -384,17 +386,17 @@ public class MapData implements Closeable {
     // look in map.properties
     final boolean shouldFlipUnit =
         Boolean.parseBoolean(
-            mapProperties.getProperty(PROPERTY_UNITS_COLOR_FLIP_PREFIX + playerName, "false"));
+            mapProperties.getProperty(PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX + playerName, "false"));
     unitFlips.put(playerName, shouldFlipUnit);
     return shouldFlipUnit;
   }
 
-  public boolean ignoreColorizingUnit(final String unitName) {
-    if (ignoreColorUnits == null) {
-      final String property = mapProperties.getProperty(PROPERTY_UNITS_COLOR_IGNORE, "");
-      ignoreColorUnits = new HashSet<>(Arrays.asList(property.split(",")));
+  public boolean ignoreTransformingUnit(final String unitName) {
+    if (ignoreTransformingUnits == null) {
+      final String property = mapProperties.getProperty(PROPERTY_UNITS_TRANSFORM_IGNORE, "");
+      ignoreTransformingUnits = new HashSet<>(Arrays.asList(property.split(",")));
     }
-    return ignoreColorUnits.contains(unitName);
+    return ignoreTransformingUnits.contains(unitName);
   }
 
   public boolean shouldDrawUnit(final String unitName) {
