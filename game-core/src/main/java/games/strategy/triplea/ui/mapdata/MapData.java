@@ -367,6 +367,10 @@ public class MapData implements Closeable {
     final int brightness =
         Integer.parseInt(
             mapProperties.getProperty(PROPERTY_UNITS_COLOR_BRIGHTNESS_PREFIX + playerName, "0"));
+    if (brightness < -100 || brightness > 100) {
+      throw new IllegalStateException(
+          "Valid brightness value range is -100 to 100, not: " + brightness);
+    }
     unitBrightnesses.put(playerName, brightness);
     return brightness;
   }
