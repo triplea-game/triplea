@@ -13,32 +13,23 @@ import org.triplea.lobby.common.IModeratorController;
 import org.triplea.lobby.common.IUserManager;
 
 /** Provides information about a client connection to a lobby server. */
+@Getter
 public class LobbyClient {
-  @Getter private final Messengers messengers;
-  private final boolean isAnonymousLogin;
-  private Boolean isAdmin;
+  private final Messengers messengers;
+  private final boolean anonymousLogin;
+  private final boolean admin;
 
   public LobbyClient(final IMessenger messenger, final boolean anonymousLogin) {
     messengers = new Messengers(messenger);
-    isAnonymousLogin = anonymousLogin;
+    this.anonymousLogin = anonymousLogin;
+    final var moderatorController =
+        (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
+    admin = moderatorController.isAdmin();
   }
 
   @Nullable
   public String updatePassword(final String newPassword) {
     return getUserManager().updateUser(messengers.getLocalNode().getName(), null, newPassword);
-  }
-
-  public boolean isAdmin() {
-    if (isAdmin == null) {
-      final IModeratorController controller =
-          (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
-      isAdmin = controller.isAdmin();
-    }
-    return isAdmin;
-  }
-
-  public boolean isAnonymousLogin() {
-    return isAnonymousLogin;
   }
 
   public IUserManager getUserManager() {
