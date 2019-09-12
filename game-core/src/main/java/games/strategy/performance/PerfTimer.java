@@ -44,6 +44,6 @@ public class PerfTimer implements Closeable {
 
     final long milliFraction = (stopMicros % 1000) / 100;
     final long millis = (stopMicros / 1000);
-    log.info(millis + "." + milliFraction + " ms - " + perfTimer.title);
+    log.info(millis + "." + milliFraction + " ms - " + perfTimer.title + ", " + stopNanos + " ns");
   }
 }
