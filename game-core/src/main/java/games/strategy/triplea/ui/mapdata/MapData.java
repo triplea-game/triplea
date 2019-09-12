@@ -82,7 +82,8 @@ public class MapData implements Closeable {
   private static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION =
       "smallMap.territory.saturation";
   private static final String PROPERTY_MAP_SMALLMAPUNITSIZE = "smallMap.unit.size";
-  private static final String PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR = "smallMap.viewer.borderColor";
+  private static final String PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR =
+      "smallMap.viewer.borderColor";
   private static final String PROPERTY_MAP_SMALLMAPVIEWERFILLCOLOR = "smallMap.viewer.fillColor";
   private static final String PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA = "smallMap.viewer.fillAlpha";
   private static final String PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX = "units.transform.color.";
@@ -90,7 +91,6 @@ public class MapData implements Closeable {
       "units.transform.brightness.";
   private static final String PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX = "units.transform.flip.";
   private static final String PROPERTY_UNITS_TRANSFORM_IGNORE = "units.transform.ignore";
-
 
   private static final String CENTERS_FILE = "centers.txt";
   private static final String POLYGON_FILE = "polygons.txt";
@@ -129,7 +129,6 @@ public class MapData implements Closeable {
   private final Map<String, Image> territoryNameImages = new HashMap<>();
   private final Map<String, Image> effectImages = new HashMap<>();
   private final ResourceLoader resourceLoader;
-
 
   public MapData(final String mapNameDir) {
     this(ResourceLoader.getMapResourceLoader(mapNameDir));
@@ -366,8 +365,8 @@ public class MapData implements Closeable {
 
   /** Returns whether to flip unit images associated with the player named {@code playerName}. */
   public boolean shouldFlipUnit(final String playerName) {
-    return    Boolean.parseBoolean(
-            mapProperties.getProperty(PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX + playerName, "false"));
+    return Boolean.parseBoolean(
+        mapProperties.getProperty(PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX + playerName, "false"));
   }
 
   public boolean ignoreTransformingUnit(final String unitName) {
