@@ -7,6 +7,7 @@ import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.ui.mapdata.MapData;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.ui.Util;
 import java.awt.AlphaComposite;
@@ -46,6 +47,7 @@ public class UnitImageFactory {
   // Scaling factor for unit images
   private double scaleFactor;
   private ResourceLoader resourceLoader;
+  private MapData mapData;
 
   public UnitImageFactory() {}
 
@@ -55,13 +57,15 @@ public class UnitImageFactory {
       final int initialUnitWidth,
       final int initialUnitHeight,
       final int initialUnitCounterOffsetWidth,
-      final int initialUnitCounterOffsetHeight) {
+      final int initialUnitCounterOffsetHeight,
+      final MapData mapData) {
     unitIconWidth = initialUnitWidth;
     unitIconHeight = initialUnitHeight;
     unitCounterOffsetWidth = initialUnitCounterOffsetWidth;
     unitCounterOffsetHeight = initialUnitCounterOffsetHeight;
     this.scaleFactor = scaleFactor;
     resourceLoader = loader;
+    this.mapData = mapData;
     clearImageCache();
   }
 
@@ -115,7 +119,7 @@ public class UnitImageFactory {
     if (images.containsKey(fullName)) {
       return Optional.of(images.get(fullName));
     }
-    final Optional<Image> image = getBaseImage(baseName, player);
+    final Optional<Image> image = getTransformedImage(baseName, player, type);
     if (image.isEmpty()) {
       return Optional.empty();
     }
@@ -142,18 +146,46 @@ public class UnitImageFactory {
       final String baseImageName, final PlayerId id, final ResourceLoader resourceLoader) {
     // URL uses '/' not '\'
     final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
-    final URL url = resourceLoader.getResource(fileName);
+    final String fileName2 = FILE_NAME_BASE + baseImageName + ".png";
+    final URL url = resourceLoader.getResource(fileName, fileName2);
     return Optional.ofNullable(url);
   }
 
-  private Optional<Image> getBaseImage(final String baseImageName, final PlayerId id) {
+  private Optional<Image> getTransformedImage(
+      final String baseImageName, final PlayerId id, final UnitType type) {
     final Optional<URL> imageLocation = getBaseImageUrl(baseImageName, id);
     Image image = null;
     if (imageLocation.isPresent()) {
       image = Toolkit.getDefaultToolkit().getImage(getBaseImageUrl(baseImageName, id).get());
       Util.ensureImageLoaded(image);
+      if (needToTransformImage(id, type, mapData)) {
+        image = convertToBufferedImage(image);
+        if (mapData.getUnitColor(id.getName()).isPresent()) {
+          final Color color = mapData.getUnitColor(id.getName()).get();
+          final int brightness = mapData.getUnitBrightness(id.getName());
+          ImageTransformer.colorize(color, brightness, (BufferedImage) image);
+        }
+        if (mapData.shouldFlipUnit(id.getName())) {
+          image = ImageTransformer.flipHorizontally((BufferedImage) image);
+        }
+      }
     }
     return Optional.ofNullable(image);
+  }
+
+  private static boolean needToTransformImage(
+      final PlayerId id, final UnitType type, final MapData mapData) {
+    return !mapData.ignoreTransformingUnit(type.getName())
+        && (mapData.getUnitColor(id.getName()).isPresent() || mapData.shouldFlipUnit(id.getName()));
+  }
+
+  private static BufferedImage convertToBufferedImage(final Image image) {
+    final BufferedImage newImage =
+        new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D g = newImage.createGraphics();
+    g.drawImage(image, 0, 0, null);
+    g.dispose();
+    return newImage;
   }
 
   /**
@@ -188,7 +220,7 @@ public class UnitImageFactory {
     if (icons.containsKey(fullName)) {
       return Optional.of(icons.get(fullName));
     }
-    final Optional<Image> image = getBaseImage(baseName, player);
+    final Optional<Image> image = getTransformedImage(baseName, player, type);
     if (image.isEmpty()) {
       return Optional.empty();
     }
@@ -271,7 +303,7 @@ public class UnitImageFactory {
   public Dimension getImageDimensions(final UnitType type, final PlayerId player) {
     final String baseName = getBaseImageName(type, player, false, false);
     final Image baseImage =
-        getBaseImage(baseName, player)
+        getTransformedImage(baseName, player, type)
             .orElseThrow(
                 () ->
                     new RuntimeException(
