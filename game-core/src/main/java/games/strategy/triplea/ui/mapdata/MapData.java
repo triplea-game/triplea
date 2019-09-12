@@ -106,10 +106,6 @@ public class MapData implements Closeable {
   private static final String DECORATIONS_FILE = "decorations.txt";
 
   private final DefaultColors defaultColors = new DefaultColors();
-  private final Map<String, Color> playerColors = new HashMap<>();
-  private final Map<String, Color> unitColors = new HashMap<>();
-  private final Map<String, Integer> unitBrightnesses = new HashMap<>();
-  private final Map<String, Boolean> unitFlips = new HashMap<>();
   private Set<String> ignoreTransformingUnits;
   private final Map<String, Tuple<List<Point>, Boolean>> place = new HashMap<>();
   private final Map<String, List<Polygon>> polys = new HashMap<>();
@@ -348,23 +344,12 @@ public class MapData implements Closeable {
 
   /** Returns the unit color associated with the player named {@code playerName}. */
   public Optional<Color> getUnitColor(final String playerName) {
-    // already loaded, just return
-    if (unitColors.containsKey(playerName)) {
-      return Optional.ofNullable(unitColors.get(playerName));
-    }
-    // look in map.properties
     final Color color = getColorProperty(PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX + playerName);
-    unitColors.put(playerName, color);
     return Optional.ofNullable(color);
   }
 
   /** Returns the unit brightness associated with the player named {@code playerName}. */
   public int getUnitBrightness(final String playerName) {
-    // already loaded, just return
-    if (unitBrightnesses.containsKey(playerName)) {
-      return unitBrightnesses.get(playerName);
-    }
-    // look in map.properties
     final int brightness =
         Integer.parseInt(
             mapProperties.getProperty(
@@ -373,22 +358,13 @@ public class MapData implements Closeable {
       throw new IllegalStateException(
           "Valid brightness value range is -100 to 100, not: " + brightness);
     }
-    unitBrightnesses.put(playerName, brightness);
     return brightness;
   }
 
   /** Returns whether to flip unit images associated with the player named {@code playerName}. */
   public boolean shouldFlipUnit(final String playerName) {
-    // already loaded, just return
-    if (unitFlips.containsKey(playerName)) {
-      return unitFlips.get(playerName);
-    }
-    // look in map.properties
-    final boolean shouldFlipUnit =
-        Boolean.parseBoolean(
+    return    Boolean.parseBoolean(
             mapProperties.getProperty(PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX + playerName, "false"));
-    unitFlips.put(playerName, shouldFlipUnit);
-    return shouldFlipUnit;
   }
 
   public boolean ignoreTransformingUnit(final String unitName) {
@@ -553,17 +529,11 @@ public class MapData implements Closeable {
 
   /** Returns the color associated with the player named {@code playerName}. */
   public Color getPlayerColor(final String playerName) {
-    // already loaded, just return
-    if (playerColors.containsKey(playerName)) {
-      return playerColors.get(playerName);
-    }
-    // look in map.properties
     Color color = getColorProperty(PROPERTY_COLOR_PREFIX + playerName);
     if (color == null) {
       // use one of our default colors, its ugly, but usable
       color = defaultColors.nextColor();
     }
-    playerColors.put(playerName, color);
     return color;
   }
 
