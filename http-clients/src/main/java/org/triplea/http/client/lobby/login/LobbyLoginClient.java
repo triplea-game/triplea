@@ -11,6 +11,7 @@ import org.triplea.http.client.HttpConstants;
  * use this to gain a single-use token that can be used to establish a non-https socket connection.
  */
 @SuppressWarnings("InterfaceNeverImplemented")
+// TODO: Project#12 - move to package org.triplea.http.client.account.login
 public interface LobbyLoginClient {
 
   String LOGIN_PATH = "/login";

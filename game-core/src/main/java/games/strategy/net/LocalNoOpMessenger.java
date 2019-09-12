@@ -1,9 +1,12 @@
 package games.strategy.net;
 
+import games.strategy.engine.lobby.ApiKey;
+import games.strategy.engine.lobby.PlayerName;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Set;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 
 /** Implementation of {@link IServerMessenger} for a local game server. */
@@ -90,4 +93,7 @@ public class LocalNoOpMessenger implements IServerMessenger {
   public boolean isPlayerBanned(final String ip, final String mac) {
     return false;
   }
+
+  @Override
+  public void setApiKeyGenerator(final Function<PlayerName, ApiKey> apiKeyGenerator) {}
 }

@@ -58,6 +58,7 @@ public class LobbyLogin {
                               lobbyServerProperties, panel.getUserName(), panel.getPassword()),
                   IOException.class);
       panel.getLobbyLoginPreferences().save();
+      // TODO: Project#12 - Create an HttpLobbyClient here
       return new LobbyClient(messenger, panel.isAnonymousLogin());
     } catch (final CouldNotLogInException e) {
       showError("Login Failed", e.getMessage() + "\n" + playerMacIdString());
@@ -125,6 +126,7 @@ public class LobbyLogin {
                           panel.getPassword()),
                   IOException.class);
       panel.getLobbyLoginPreferences().save();
+      // TODO: Project#12 - Create an HttpLobbyClient here
       return new LobbyClient(messenger, false);
     } catch (final CouldNotLogInException e) {
       showError("Account Creation Failed", e.getMessage());

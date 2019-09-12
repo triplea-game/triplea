@@ -4,6 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.framework.startup.mc.ServerModel;
+import games.strategy.engine.lobby.ApiKey;
 import games.strategy.engine.message.HubInvoke;
 import games.strategy.engine.message.RemoteMethodCall;
 import games.strategy.engine.message.RemoteName;
@@ -45,6 +46,9 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
 
   @Getter(onMethod_ = {@Override})
   private boolean passwordChangeRequired;
+
+  @Getter(onMethod_ = {@Override})
+  private ApiKey apiKey;
 
   /**
    * Note, the name parameter passed in here may not match the name of the ClientMessenger after it
@@ -136,6 +140,7 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
       }
     }
     passwordChangeRequired = conversation.isPasswordChangeRequired();
+    apiKey = conversation.getApiKey();
 
     if (conversation.getErrorMessage() != null
         && conversation

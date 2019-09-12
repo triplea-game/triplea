@@ -1,6 +1,7 @@
 package org.triplea.lobby.server.login;
 
 import com.google.common.annotations.VisibleForTesting;
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.engine.lobby.PlayerNameValidation;
 import games.strategy.net.ILoginValidator;
 import games.strategy.net.nio.ServerQuarantineConversation;
@@ -9,6 +10,7 @@ import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -20,7 +22,6 @@ import org.triplea.lobby.common.login.RsaAuthenticator;
 import org.triplea.lobby.server.User;
 import org.triplea.lobby.server.db.DatabaseDao;
 import org.triplea.lobby.server.db.HashedPassword;
-import org.triplea.lobby.server.login.forgot.password.verify.TempPasswordVerification;
 
 /**
  * The server side of the lobby authentication protocol.
@@ -44,7 +45,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
   private final RsaAuthenticator rsaAuthenticator;
   private final Supplier<String> bcryptSaltGenerator;
   private final FailedLoginThrottle failedLoginThrottle;
-  private final TempPasswordVerification tempPasswordVerification;
+  private final BiPredicate<PlayerName, String> tempPasswordVerification;
   private final AllowLoginRules allowLoginRules;
   private final AllowCreateUserRules allowCreateUserRules;
 
@@ -113,7 +114,7 @@ public final class LobbyLoginValidator implements ILoginValidator {
         pass -> {
           if (hashedPassword.isBcrypted()) {
             // TODO: update tests to verify tempPasswordVerification branch.
-            if (tempPasswordVerification.checkTempPassword(username, pass)) {
+            if (tempPasswordVerification.test(PlayerName.of(username), pass)) {
               return ServerQuarantineConversation.CHANGE_PASSWORD;
             }
 

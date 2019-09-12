@@ -2,6 +2,8 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.engine.lobby.ApiKey;
+import games.strategy.engine.lobby.PlayerName;
 import games.strategy.net.nio.NioSocket;
 import games.strategy.net.nio.NioSocketListener;
 import games.strategy.net.nio.QuarantineConversation;
@@ -23,6 +25,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -46,6 +49,9 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   @Getter(onMethod_ = {@Override})
   @Setter(onMethod_ = {@Override})
   private ILoginValidator loginValidator;
+
+  @Setter(onMethod_ = {@Override})
+  private Function<PlayerName, ApiKey> apiKeyGenerator;
 
   // all our nodes
   private final Map<INode, SocketChannel> nodeToChannel = new ConcurrentHashMap<>();
@@ -278,7 +284,11 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
             }
             final ServerQuarantineConversation conversation =
                 new ServerQuarantineConversation(
-                    loginValidator, socketChannel, nioSocket, ServerMessenger.this);
+                    loginValidator,
+                    socketChannel,
+                    nioSocket,
+                    ServerMessenger.this,
+                    apiKeyGenerator);
             nioSocket.add(socketChannel, conversation);
           } else if (!key.isValid()) {
             key.cancel();

@@ -2,7 +2,10 @@ package games.strategy.net;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import games.strategy.engine.lobby.ApiKey;
+import games.strategy.engine.lobby.PlayerName;
 import java.util.Set;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 
 /** A server messenger. Additional methods for accepting new connections. */
@@ -47,4 +50,6 @@ public interface IServerMessenger extends IMessenger {
     final int spaceIndex = name.indexOf(' ');
     return (spaceIndex != -1) ? name.substring(0, spaceIndex) : name;
   }
+
+  void setApiKeyGenerator(Function<PlayerName, ApiKey> apiKeyGenerator);
 }

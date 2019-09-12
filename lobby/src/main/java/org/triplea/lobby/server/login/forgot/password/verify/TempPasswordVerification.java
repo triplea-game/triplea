@@ -1,5 +1,7 @@
 package org.triplea.lobby.server.login.forgot.password.verify;
 
+import games.strategy.engine.lobby.PlayerName;
+import java.util.function.BiPredicate;
 import lombok.AllArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.server.db.dao.TempPasswordDao;
@@ -9,7 +11,7 @@ import org.triplea.lobby.server.db.dao.TempPasswordDao;
  * password so that it cannot be used again.
  */
 @AllArgsConstructor
-public class TempPasswordVerification {
+public class TempPasswordVerification implements BiPredicate<PlayerName, String> {
 
   private final TempPasswordDao tempPasswordDao;
 
@@ -21,8 +23,9 @@ public class TempPasswordVerification {
    * @param hashedPassword Candidate temporary password.
    * @return True if the hashedPassword matches a temp password for the given user.
    */
-  public boolean checkTempPassword(final String username, final String hashedPassword) {
-    final String tempPassword = tempPasswordDao.fetchTempPassword(username).orElse(null);
+  @Override
+  public boolean test(final PlayerName username, final String hashedPassword) {
+    final String tempPassword = tempPasswordDao.fetchTempPassword(username.getValue()).orElse(null);
     if (tempPassword == null) {
       return false;
     }
@@ -33,7 +36,7 @@ public class TempPasswordVerification {
 
     final int userId =
         tempPasswordDao
-            .lookupUserIdByUsername(username)
+            .lookupUserIdByUsername(username.getValue())
             .orElseThrow(
                 () ->
                     new IllegalStateException(

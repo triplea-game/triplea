@@ -9,6 +9,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @EqualsAndHashCode
+// TODO: Project#12 - move to package org.triplea.http.client.account.login
 public class RegisteredUserLoginRequest {
   @Nonnull private final String name;
   @Nonnull private final String password;
