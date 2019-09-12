@@ -51,11 +51,6 @@ public class MapData implements Closeable {
   public static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
   public static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
   public static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
-  public static final String PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX = "units.transform.color.";
-  public static final String PROPERTY_UNITS_TRANSFORM_BRIGHTNESS_PREFIX =
-      "units.transform.brightness.";
-  public static final String PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX = "units.transform.flip.";
-  public static final String PROPERTY_UNITS_TRANSFORM_IGNORE = "units.transform.ignore";
   public static final String PROPERTY_SCREENSHOT_TITLE_ENABLED = "screenshot.title.enabled";
   public static final String PROPERTY_SCREENSHOT_TITLE_X = "screenshot.title.x";
   public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
@@ -78,17 +73,24 @@ public class MapData implements Closeable {
   public static final String PROPERTY_MAP_SHOWSEAZONENAMES = "map.showSeaZoneNames";
   public static final String PROPERTY_MAP_DRAWNAMESFROMTOPLEFT = "map.drawNamesFromTopLeft";
   public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
-  public static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
   public static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
   public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
   public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
   public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
-  public static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION =
+
+  private static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
+  private static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION =
       "smallMap.territory.saturation";
-  public static final String PROPERTY_MAP_SMALLMAPUNITSIZE = "smallMap.unit.size";
-  public static final String PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR = "smallMap.viewer.borderColor";
-  public static final String PROPERTY_MAP_SMALLMAPVIEWERFILLCOLOR = "smallMap.viewer.fillColor";
-  public static final String PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA = "smallMap.viewer.fillAlpha";
+  private static final String PROPERTY_MAP_SMALLMAPUNITSIZE = "smallMap.unit.size";
+  private static final String PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR = "smallMap.viewer.borderColor";
+  private static final String PROPERTY_MAP_SMALLMAPVIEWERFILLCOLOR = "smallMap.viewer.fillColor";
+  private static final String PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA = "smallMap.viewer.fillAlpha";
+  private static final String PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX = "units.transform.color.";
+  private static final String PROPERTY_UNITS_TRANSFORM_BRIGHTNESS_PREFIX =
+      "units.transform.brightness.";
+  private static final String PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX = "units.transform.flip.";
+  private static final String PROPERTY_UNITS_TRANSFORM_IGNORE = "units.transform.ignore";
+
 
   private static final String CENTERS_FILE = "centers.txt";
   private static final String POLYGON_FILE = "polygons.txt";
@@ -127,6 +129,7 @@ public class MapData implements Closeable {
   private final Map<String, Image> territoryNameImages = new HashMap<>();
   private final Map<String, Image> effectImages = new HashMap<>();
   private final ResourceLoader resourceLoader;
+
 
   public MapData(final String mapNameDir) {
     this(ResourceLoader.getMapResourceLoader(mapNameDir));
@@ -510,7 +513,7 @@ public class MapData implements Closeable {
    *
    * @throws IllegalStateException If the property value does not represent a valid color.
    */
-  public Color getColorProperty(final String propertiesKey, final Color defaultColor) {
+  private Color getColorProperty(final String propertiesKey, final Color defaultColor) {
     if (mapProperties.getProperty(propertiesKey) != null) {
       final String colorString = mapProperties.getProperty(propertiesKey);
       if (colorString.length() != 6) {
