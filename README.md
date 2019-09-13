@@ -1,6 +1,7 @@
 [![Travis](https://img.shields.io/travis/triplea-game/triplea.svg?style=flat-square)](https://travis-ci.org/triplea-game/triplea)
 [![Code Quality: Java](https://img.shields.io/lgtm/grade/java/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/context:java)
 [![Total Alerts](https://img.shields.io/lgtm/alerts/g/triplea-game/triplea.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/triplea-game/triplea/alerts)
+[![Known Vulnerabilities](https://snyk.io//test/github/triplea-game/triplea/badge.svg?targetFile=build.gradle)](https://snyk.io//test/github/triplea-game/triplea?targetFile=build.gradle)
 [![codecov](https://img.shields.io/codecov/c/github/triplea-game/triplea/master.svg?style=flat-square)](https://codecov.io/gh/triplea-game/triplea)
 [![TripleA license](https://img.shields.io/github/license/triplea-game/triplea.svg?style=flat-square)](https://github.com/triplea-game/triplea/blob/master/LICENSE)
  
