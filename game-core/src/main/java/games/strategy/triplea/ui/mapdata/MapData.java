@@ -51,11 +51,6 @@ public class MapData implements Closeable {
   public static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
   public static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
   public static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
-  public static final String PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX = "units.transform.color.";
-  public static final String PROPERTY_UNITS_TRANSFORM_BRIGHTNESS_PREFIX =
-      "units.transform.brightness.";
-  public static final String PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX = "units.transform.flip.";
-  public static final String PROPERTY_UNITS_TRANSFORM_IGNORE = "units.transform.ignore";
   public static final String PROPERTY_SCREENSHOT_TITLE_ENABLED = "screenshot.title.enabled";
   public static final String PROPERTY_SCREENSHOT_TITLE_X = "screenshot.title.x";
   public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
@@ -78,17 +73,24 @@ public class MapData implements Closeable {
   public static final String PROPERTY_MAP_SHOWSEAZONENAMES = "map.showSeaZoneNames";
   public static final String PROPERTY_MAP_DRAWNAMESFROMTOPLEFT = "map.drawNamesFromTopLeft";
   public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
-  public static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
   public static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
   public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
   public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
   public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
-  public static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION =
+
+  private static final String PROPERTY_DONT_DRAW_UNITS = "dont_draw_units";
+  private static final String PROPERTY_MAP_SMALLMAPTERRITORYSATURATION =
       "smallMap.territory.saturation";
-  public static final String PROPERTY_MAP_SMALLMAPUNITSIZE = "smallMap.unit.size";
-  public static final String PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR = "smallMap.viewer.borderColor";
-  public static final String PROPERTY_MAP_SMALLMAPVIEWERFILLCOLOR = "smallMap.viewer.fillColor";
-  public static final String PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA = "smallMap.viewer.fillAlpha";
+  private static final String PROPERTY_MAP_SMALLMAPUNITSIZE = "smallMap.unit.size";
+  private static final String PROPERTY_MAP_SMALLMAPVIEWERBORDERCOLOR =
+      "smallMap.viewer.borderColor";
+  private static final String PROPERTY_MAP_SMALLMAPVIEWERFILLCOLOR = "smallMap.viewer.fillColor";
+  private static final String PROPERTY_MAP_SMALLMAPVIEWERFILLALPHA = "smallMap.viewer.fillAlpha";
+  private static final String PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX = "units.transform.color.";
+  private static final String PROPERTY_UNITS_TRANSFORM_BRIGHTNESS_PREFIX =
+      "units.transform.brightness.";
+  private static final String PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX = "units.transform.flip.";
+  private static final String PROPERTY_UNITS_TRANSFORM_IGNORE = "units.transform.ignore";
 
   private static final String CENTERS_FILE = "centers.txt";
   private static final String POLYGON_FILE = "polygons.txt";
@@ -106,10 +108,6 @@ public class MapData implements Closeable {
   private static final String DECORATIONS_FILE = "decorations.txt";
 
   private final DefaultColors defaultColors = new DefaultColors();
-  private final Map<String, Color> playerColors = new HashMap<>();
-  private final Map<String, Color> unitColors = new HashMap<>();
-  private final Map<String, Integer> unitBrightnesses = new HashMap<>();
-  private final Map<String, Boolean> unitFlips = new HashMap<>();
   private Set<String> ignoreTransformingUnits;
   private final Map<String, Tuple<List<Point>, Boolean>> place = new HashMap<>();
   private final Map<String, List<Polygon>> polys = new HashMap<>();
@@ -348,23 +346,12 @@ public class MapData implements Closeable {
 
   /** Returns the unit color associated with the player named {@code playerName}. */
   public Optional<Color> getUnitColor(final String playerName) {
-    // already loaded, just return
-    if (unitColors.containsKey(playerName)) {
-      return Optional.ofNullable(unitColors.get(playerName));
-    }
-    // look in map.properties
     final Color color = getColorProperty(PROPERTY_UNITS_TRANSFORM_COLOR_PREFIX + playerName);
-    unitColors.put(playerName, color);
     return Optional.ofNullable(color);
   }
 
   /** Returns the unit brightness associated with the player named {@code playerName}. */
   public int getUnitBrightness(final String playerName) {
-    // already loaded, just return
-    if (unitBrightnesses.containsKey(playerName)) {
-      return unitBrightnesses.get(playerName);
-    }
-    // look in map.properties
     final int brightness =
         Integer.parseInt(
             mapProperties.getProperty(
@@ -373,22 +360,13 @@ public class MapData implements Closeable {
       throw new IllegalStateException(
           "Valid brightness value range is -100 to 100, not: " + brightness);
     }
-    unitBrightnesses.put(playerName, brightness);
     return brightness;
   }
 
   /** Returns whether to flip unit images associated with the player named {@code playerName}. */
   public boolean shouldFlipUnit(final String playerName) {
-    // already loaded, just return
-    if (unitFlips.containsKey(playerName)) {
-      return unitFlips.get(playerName);
-    }
-    // look in map.properties
-    final boolean shouldFlipUnit =
-        Boolean.parseBoolean(
-            mapProperties.getProperty(PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX + playerName, "false"));
-    unitFlips.put(playerName, shouldFlipUnit);
-    return shouldFlipUnit;
+    return Boolean.parseBoolean(
+        mapProperties.getProperty(PROPERTY_UNITS_TRANSFORM_FLIP_PREFIX + playerName, "false"));
   }
 
   public boolean ignoreTransformingUnit(final String unitName) {
@@ -534,7 +512,7 @@ public class MapData implements Closeable {
    *
    * @throws IllegalStateException If the property value does not represent a valid color.
    */
-  public Color getColorProperty(final String propertiesKey, final Color defaultColor) {
+  private Color getColorProperty(final String propertiesKey, final Color defaultColor) {
     if (mapProperties.getProperty(propertiesKey) != null) {
       final String colorString = mapProperties.getProperty(propertiesKey);
       if (colorString.length() != 6) {
@@ -553,17 +531,11 @@ public class MapData implements Closeable {
 
   /** Returns the color associated with the player named {@code playerName}. */
   public Color getPlayerColor(final String playerName) {
-    // already loaded, just return
-    if (playerColors.containsKey(playerName)) {
-      return playerColors.get(playerName);
-    }
-    // look in map.properties
     Color color = getColorProperty(PROPERTY_COLOR_PREFIX + playerName);
     if (color == null) {
       // use one of our default colors, its ugly, but usable
       color = defaultColors.nextColor();
     }
-    playerColors.put(playerName, color);
     return color;
   }
 
