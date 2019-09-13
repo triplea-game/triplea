@@ -7,9 +7,7 @@ import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.extern.java.Log;
 import org.triplea.http.client.moderator.toolbox.moderator.management.ModeratorInfo;
-import org.triplea.lobby.server.db.dao.ModeratorApiKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.lobby.server.db.dao.ModeratorSingleUseKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorsDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
@@ -18,8 +16,6 @@ import org.triplea.lobby.server.db.dao.UserJdbiDao;
 class ModeratorsService {
   @Nonnull private final ModeratorsDao moderatorsDao;
   @Nonnull private final UserJdbiDao userJdbiDao;
-  @Nonnull private final ModeratorApiKeyDao moderatorApiKeyDao;
-  @Nonnull private final ModeratorSingleUseKeyDao moderatorSingleUseKeyDao;
   @Nonnull private final ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
   /** Returns a list of all users that are moderators. */
@@ -65,8 +61,6 @@ class ModeratorsService {
     Preconditions.checkState(
         moderatorsDao.removeMod(userId) == 1,
         "Failed to remove moderator status for: " + moderatorNameToRemove);
-    moderatorApiKeyDao.deleteKeysByUserId(userId);
-    moderatorSingleUseKeyDao.deleteKeysByUserId(userId);
 
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()

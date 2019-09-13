@@ -2,7 +2,6 @@ package org.triplea.server.moderator.toolbox.banned.users;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.triplea.server.moderator.toolbox.ControllerTestUtil.verifyResponse;
 
@@ -17,16 +16,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.moderator.toolbox.banned.user.UserBanParams;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 @ExtendWith(MockitoExtension.class)
 class BannedUsersControllerTest {
 
-  private static final int MODERATOR_ID = 1234;
+  // TODO: Project#12 fix test expectation of MODERATOR_ID being hardcoded as zero
+  private static final int MODERATOR_ID = 0;
   private static final String BAN_ID = "Aw, salty death!";
 
   @Mock private UserBanService bannedUsersService;
-  @Mock private ApiKeyValidationService apiKeyValidationService;
 
   @InjectMocks private UserBanController bannedUsersController;
 
@@ -49,7 +47,6 @@ class BannedUsersControllerTest {
     final Response response = bannedUsersController.getUserBans(request);
 
     verifyResponse(response, Collections.singletonList(bannedUserData));
-    verify(apiKeyValidationService).verifyApiKey(request);
   }
 
   @Nested
@@ -74,7 +71,6 @@ class BannedUsersControllerTest {
     }
 
     private void givenBanServiceRemoveBanResult(final boolean result) {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request)).thenReturn(MODERATOR_ID);
       when(bannedUsersService.removeUserBan(MODERATOR_ID, BAN_ID)).thenReturn(result);
     }
   }
@@ -101,7 +97,6 @@ class BannedUsersControllerTest {
     }
 
     private void givenBanServiceAddBanResult(final boolean result) {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request)).thenReturn(MODERATOR_ID);
       when(bannedUsersService.banUser(MODERATOR_ID, banUserParams)).thenReturn(result);
     }
   }

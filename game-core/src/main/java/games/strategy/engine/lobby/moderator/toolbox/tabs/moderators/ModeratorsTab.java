@@ -64,10 +64,9 @@ public final class ModeratorsTab implements Supplier<Component> {
             .tableData(moderatorsTabModel.fetchTableData())
             .build();
     if (moderatorsTabModel.isSuperMod()) {
-      ButtonColumn.attachButtonColumn(table, 2, moderatorsTabActions.generateApiKeyAction());
-      ButtonColumn.attachButtonColumn(table, 3, moderatorsTabActions.removeModAction(parentFrame));
+      ButtonColumn.attachButtonColumn(table, 2, moderatorsTabActions.removeModAction(parentFrame));
       ButtonColumn.attachButtonColumn(
-          table, 4, moderatorsTabActions.addSuperModAction(parentFrame));
+          table, 3, moderatorsTabActions.addSuperModAction(parentFrame));
     }
     return table;
   }

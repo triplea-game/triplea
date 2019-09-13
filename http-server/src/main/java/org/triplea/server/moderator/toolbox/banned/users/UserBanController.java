@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 import lombok.Builder;
 import org.triplea.http.client.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.http.client.moderator.toolbox.banned.user.UserBanParams;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 /** Controller for endpoints to manage user bans, to be used by moderators. */
 @Path("")
@@ -23,13 +22,10 @@ import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationS
 @Builder
 public class UserBanController {
   @Nonnull private final UserBanService bannedUsersService;
-  @Nonnull private final ApiKeyValidationService apiKeyValidationService;
 
   @GET
   @Path(ToolboxUserBanClient.GET_USER_BANS_PATH)
   public Response getUserBans(@Context final HttpServletRequest request) {
-    apiKeyValidationService.verifyApiKey(request);
-
     return Response.ok().entity(bannedUsersService.getBannedUsers()).build();
   }
 
@@ -37,10 +33,10 @@ public class UserBanController {
   @Path(ToolboxUserBanClient.REMOVE_USER_BAN_PATH)
   public Response removeUserBan(@Context final HttpServletRequest request, final String banId) {
     Preconditions.checkArgument(banId != null);
-    final int moderatorId = apiKeyValidationService.lookupModeratorIdByApiKey(request);
 
+    // TODO: Project#12 grab moderator id from auth parameter
+    final int moderatorId = 0;
     final boolean removed = bannedUsersService.removeUserBan(moderatorId, banId);
-
     return Response.status(removed ? 200 : 400).build();
   }
 
@@ -55,10 +51,9 @@ public class UserBanController {
     Preconditions.checkArgument(banUserParams.getUsername() != null);
     Preconditions.checkArgument(banUserParams.getHoursToBan() > 0);
 
-    final int moderatorId = apiKeyValidationService.lookupModeratorIdByApiKey(request);
-
+    // TODO: Project#12 grab moderator id from auth parameter
+    final int moderatorId = 0;
     final boolean banned = bannedUsersService.banUser(moderatorId, banUserParams);
-
     return Response.status(banned ? 200 : 400).build();
   }
 }

@@ -1,6 +1,5 @@
 package org.triplea.server.moderator.toolbox.access.log;
 
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
@@ -14,14 +13,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.PagingParams;
 import org.triplea.http.client.moderator.toolbox.access.log.AccessLogData;
 import org.triplea.server.moderator.toolbox.ControllerTestUtil;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 @ExtendWith(MockitoExtension.class)
 class AccessLogControllerTest {
   private static final PagingParams PAGING_PARAMS =
       PagingParams.builder().pageSize(100).rowNumber(0).build();
 
-  @Mock private ApiKeyValidationService apiKeyValidationService;
   @Mock private AccessLogService accessLogService;
 
   @InjectMocks private AccessLogController accessLogController;
@@ -37,6 +34,5 @@ class AccessLogControllerTest {
     final Response response = accessLogController.fetchAccessLog(request, PAGING_PARAMS);
 
     ControllerTestUtil.verifyResponse(response, Collections.singletonList(accessLogData));
-    verify(apiKeyValidationService).verifyApiKey(request);
   }
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
 /** Http client object for adding, removing and querying server for user name bans. */
@@ -21,10 +20,9 @@ public class ToolboxUsernameBanClient {
   private final ToolboxHttpHeaders toolboxHttpHeaders;
   private final ToolboxUsernameBanFeignClient client;
 
-  public static ToolboxUsernameBanClient newClient(
-      final URI serverUri, final ApiKeyPassword apiKeyPassword) {
+  public static ToolboxUsernameBanClient newClient(final URI serverUri, final String apiKey) {
     return new ToolboxUsernameBanClient(
-        new ToolboxHttpHeaders(apiKeyPassword),
+        new ToolboxHttpHeaders(apiKey),
         new HttpClient<>(ToolboxUsernameBanFeignClient.class, serverUri).get());
   }
 

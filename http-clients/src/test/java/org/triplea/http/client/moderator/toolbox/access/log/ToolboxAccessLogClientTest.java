@@ -4,7 +4,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.triplea.http.client.HttpClientTesting.API_KEY_PASSWORD;
+import static org.triplea.http.client.HttpClientTesting.API_KEY;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -33,16 +33,14 @@ class ToolboxAccessLogClientTest {
 
   private static ToolboxAccessLogClient newClient(final WireMockServer wireMockServer) {
     final URI hostUri = URI.create(wireMockServer.url(""));
-    return ToolboxAccessLogClient.newClient(hostUri, API_KEY_PASSWORD);
+    return ToolboxAccessLogClient.newClient(hostUri, API_KEY);
   }
 
   @Test
   void sendErrorReportSuccessCase(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
         WireMock.post(ToolboxAccessLogClient.FETCH_ACCESS_LOG_PATH)
-            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY_PASSWORD.getApiKey()))
-            .withHeader(
-                ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER, equalTo(API_KEY_PASSWORD.getPassword()))
+            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY))
             .withRequestBody(equalToJson(HttpClientTesting.toJson(HttpClientTesting.PAGING_PARAMS)))
             .willReturn(
                 WireMock.aResponse()

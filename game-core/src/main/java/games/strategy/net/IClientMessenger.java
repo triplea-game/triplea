@@ -3,6 +3,7 @@ package games.strategy.net;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.lobby.ApiKey;
 import java.io.File;
+import java.util.Optional;
 import javax.annotation.Nullable;
 
 /** A client messenger. Additional methods for selecting the game on the server. */
@@ -34,4 +35,13 @@ public interface IClientMessenger extends IMessenger {
   @SuppressWarnings("unused")
   @Nullable
   ApiKey getApiKey();
+
+  default ApiKey getApiKeyOrThrow() {
+    return Optional.ofNullable(getApiKey())
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    "Unexpected missing api key, programmer error. "
+                        + "Likely caused by trying to access API key for a non-lobby connection."));
+  }
 }

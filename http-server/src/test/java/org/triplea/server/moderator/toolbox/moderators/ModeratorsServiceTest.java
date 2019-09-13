@@ -13,9 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.lobby.server.db.dao.ModeratorApiKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
-import org.triplea.lobby.server.db.dao.ModeratorSingleUseKeyDao;
 import org.triplea.lobby.server.db.dao.ModeratorsDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
@@ -28,8 +26,6 @@ class ModeratorsServiceTest {
 
   @Mock private ModeratorsDao moderatorsDao;
   @Mock private UserJdbiDao userJdbiDao;
-  @Mock private ModeratorApiKeyDao moderatorApiKeyDao;
-  @Mock private ModeratorSingleUseKeyDao moderatorSingleUseKeyDao;
   @Mock private ModeratorAuditHistoryDao moderatorAuditHistoryDao;
 
   @InjectMocks private ModeratorsService moderatorsService;
@@ -95,8 +91,6 @@ class ModeratorsServiceTest {
       when(moderatorsDao.removeMod(USER_ID)).thenReturn(1);
       moderatorsService.removeMod(MODERATOR_ID, MODERATOR_NAME);
 
-      verify(moderatorApiKeyDao).deleteKeysByUserId(USER_ID);
-      verify(moderatorSingleUseKeyDao).deleteKeysByUserId(USER_ID);
       verify(moderatorAuditHistoryDao)
           .addAuditRecord(
               ModeratorAuditHistoryDao.AuditArgs.builder()

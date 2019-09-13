@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpInteractionException;
-import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
 /**
@@ -33,8 +32,8 @@ public class ToolboxRegisterNewKeyClient {
    * API key that should be stored in client settings. The password sent along with this API key
    * should be sent along with the new API key for future validations.
    */
-  public RegisterApiKeyResult registerNewKey(final ApiKeyPassword apiKeyPassword) {
-    final ToolboxHttpHeaders headers = new ToolboxHttpHeaders(apiKeyPassword);
+  public RegisterApiKeyResult registerNewKey(final String apiKey) {
+    final ToolboxHttpHeaders headers = new ToolboxHttpHeaders(apiKey);
 
     try {
       return client.registerKey(headers.createHeaders());

@@ -4,7 +4,7 @@ import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
 import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
-import games.strategy.engine.lobby.moderator.toolbox.ShowToolboxController;
+import games.strategy.engine.lobby.moderator.toolbox.ToolBoxWindow;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.UrlConstants;
 import games.strategy.triplea.settings.ClientSetting;
@@ -42,7 +42,16 @@ public final class LobbyMenu extends JMenuBar {
     if (lobbyFrame.getLobbyClient().isAdmin()) {
       add(
           new JMenuBuilder("Admin", 'M')
-              .addMenuItem("Open Toolbox", 'T', () -> ShowToolboxController.showToolbox(lobbyFrame))
+              .addMenuItem(
+                  "Open Toolbox",
+                  'T',
+                  () ->
+                      ToolBoxWindow.showWindow(
+                          lobbyFrame,
+                          lobbyFrame
+                              .getLobbyClient()
+                              .getHttpLobbyClient()
+                              .getHttpModeratorToolboxClient()))
               .build());
     }
 

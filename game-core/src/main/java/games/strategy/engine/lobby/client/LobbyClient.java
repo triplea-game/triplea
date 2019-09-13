@@ -6,6 +6,7 @@ import games.strategy.net.Messengers;
 import java.util.Map;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
 import org.triplea.lobby.common.ILobbyGameController;
@@ -18,9 +19,18 @@ public class LobbyClient {
   private final Messengers messengers;
   private final boolean anonymousLogin;
   private final boolean admin;
+  private final HttpLobbyClient httpLobbyClient;
 
-  public LobbyClient(final IMessenger messenger, final boolean anonymousLogin) {
+  public LobbyClient(final IMessenger messenger, final HttpLobbyClient httpLobbyClient) {
+    this(messenger, httpLobbyClient, false);
+  }
+
+  public LobbyClient(
+      final IMessenger messenger,
+      final HttpLobbyClient httpLobbyClient,
+      final boolean anonymousLogin) {
     messengers = new Messengers(messenger);
+    this.httpLobbyClient = httpLobbyClient;
     this.anonymousLogin = anonymousLogin;
     final var moderatorController =
         (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);

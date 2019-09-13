@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
  * ones will continue to work. Then intent is to prevent a DDOS attack of any existing moderators
  * that have already authenticated.
  */
+// TODO: Project#12 Re-incorporate this cache into server auth flow.
 class ValidKeyCache {
 
   private static final Cache<String, Integer> validKeys =

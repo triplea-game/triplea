@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
 /**
@@ -21,10 +20,9 @@ public class ToolboxUserBanClient {
   private final ToolboxHttpHeaders toolboxHttpHeaders;
   private final ToolboxUserBanFeignClient client;
 
-  public static ToolboxUserBanClient newClient(
-      final URI serverUri, final ApiKeyPassword apiKeyPassword) {
+  public static ToolboxUserBanClient newClient(final URI serverUri, final String apiKey) {
     return new ToolboxUserBanClient(
-        new ToolboxHttpHeaders(apiKeyPassword),
+        new ToolboxHttpHeaders(apiKey),
         new HttpClient<>(ToolboxUserBanFeignClient.class, serverUri).get());
   }
 

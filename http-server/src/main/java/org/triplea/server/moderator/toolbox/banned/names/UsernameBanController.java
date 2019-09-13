@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
 import org.triplea.http.client.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 /** Endpoint for use by moderators to view, add and remove player username bans. */
 @Path("")
@@ -22,14 +21,14 @@ import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationS
 @Builder
 public class UsernameBanController {
   @Nonnull private final UsernameBanService bannedNamesService;
-  @Nonnull private final ApiKeyValidationService apiKeyValidationService;
 
   @POST
   @Path(ToolboxUsernameBanClient.REMOVE_BANNED_USER_NAME_PATH)
   public Response removeBannedUsername(
       @Context final HttpServletRequest request, final String username) {
     Preconditions.checkArgument(username != null && !username.isEmpty());
-    final int moderatorId = apiKeyValidationService.lookupModeratorIdByApiKey(request);
+    // TODO: Project#12 grab moderator id from auth parameter
+    final int moderatorId = 0;
     return Response.status(bannedNamesService.removeUsernameBan(moderatorId, username) ? 200 : 400)
         .build();
   }
@@ -39,7 +38,8 @@ public class UsernameBanController {
   public Response addBannedUsername(
       @Context final HttpServletRequest request, final String username) {
     Preconditions.checkArgument(username != null && !username.isEmpty());
-    final int moderatorId = apiKeyValidationService.lookupModeratorIdByApiKey(request);
+    // TODO: Project#12 grab moderator id from auth parameter
+    final int moderatorId = 0;
     return Response.status(bannedNamesService.addBannedUserName(moderatorId, username) ? 200 : 400)
         .build();
   }
@@ -47,7 +47,7 @@ public class UsernameBanController {
   @GET
   @Path(ToolboxUsernameBanClient.GET_BANNED_USER_NAMES_PATH)
   public Response getBannedUsernames(@Context final HttpServletRequest request) {
-    apiKeyValidationService.verifyApiKey(request);
+    // TODO: Project#12 grab moderator id from auth parameter
     return Response.status(200).entity(bannedNamesService.getBannedUserNames()).build();
   }
 }
