@@ -3,8 +3,6 @@ package games.strategy.net;
 import games.strategy.engine.framework.HeadlessAutoSaveType;
 import games.strategy.engine.lobby.ApiKey;
 import java.io.File;
-import java.util.Optional;
-import javax.annotation.Nullable;
 
 /** A client messenger. Additional methods for selecting the game on the server. */
 public interface IClientMessenger extends IMessenger {
@@ -28,20 +26,5 @@ public interface IClientMessenger extends IMessenger {
    * When connecting to lobby, lobby will provide an API key. <br>
    * When connecting to a game host, an API key will not be provided.
    */
-  // TODO: Project#12
-  // - Create class 'HttpLobbyClient', inject as property into 'lobbyClient'
-  // - Update LobbyLogin to instantiate an HttpLobbyClient and inject into lobbyClient
-  // - Use this API key in LobbyLogin to create the HttpLobbyClient
-  @SuppressWarnings("unused")
-  @Nullable
   ApiKey getApiKey();
-
-  default ApiKey getApiKeyOrThrow() {
-    return Optional.ofNullable(getApiKey())
-        .orElseThrow(
-            () ->
-                new IllegalStateException(
-                    "Unexpected missing api key, programmer error. "
-                        + "Likely caused by trying to access API key for a non-lobby connection."));
-  }
 }

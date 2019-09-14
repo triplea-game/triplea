@@ -61,7 +61,7 @@ public class LobbyLogin {
       return new LobbyClient(
           messenger,
           new HttpLobbyClient(
-              lobbyServerProperties.getHttpsServerUri(), messenger.getApiKeyOrThrow().getValue()),
+              lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey().getValue()),
           panel.isAnonymousLogin());
     } catch (final CouldNotLogInException e) {
       showError("Login Failed", e.getMessage() + "\n" + playerMacIdString());
@@ -132,7 +132,7 @@ public class LobbyLogin {
       return new LobbyClient(
           messenger,
           new HttpLobbyClient(
-              lobbyServerProperties.getHttpsServerUri(), messenger.getApiKeyOrThrow().getValue()));
+              lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey().getValue()));
     } catch (final CouldNotLogInException e) {
       showError("Account Creation Failed", e.getMessage());
       return createAccount(); // NB: potential stack overflow due to recursive call
