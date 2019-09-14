@@ -8,12 +8,12 @@ exemptLabels:
   - "Impact: Bad Game Rules"
   - "Impact: Game Crashing"
 # Label to use when marking an issue as stale
-staleLabel: 'ice box - close and revisit later'
+staleLabel: 'Stale'
 
 markComment: >
   The TripleA team regrets this issue was not solved sooner. To keep focus
   on latest issues and the most pressing tasks, 
-  This issue has been automatically marked as stale because it has not 
+  this issue has been automatically marked as stale because it has not 
   had recent activity.  If the issue may be closed, please do so. 
   If there are remaining items, we encourage for those items to be 
   resubmitted as new, independent, concise tasks. The strategy
@@ -26,5 +26,5 @@ pulls:
    markComment: >
      This pull request has been automatically marked as stale because it has not had
      recent activity. We are eager to see this work completed, please update and
-     re-open as soon as possible, thank you for your contributions!
+     re-open as soon as possible.
 
