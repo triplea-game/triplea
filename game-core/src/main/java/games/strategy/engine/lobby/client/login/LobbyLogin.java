@@ -5,7 +5,6 @@ import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.net.ClientMessengerFactory;
 import games.strategy.net.CouldNotLogInException;
 import games.strategy.net.IClientMessenger;
-import games.strategy.net.IMessenger;
 import games.strategy.net.MacFinder;
 import java.awt.Window;
 import java.io.IOException;
@@ -13,6 +12,7 @@ import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import org.triplea.http.client.forgot.password.ForgotPasswordClient;
 import org.triplea.http.client.forgot.password.ForgotPasswordRequest;
+import org.triplea.http.client.lobby.HttpLobbyClient;
 import org.triplea.swing.DialogBuilder;
 
 /**
@@ -58,8 +58,11 @@ public class LobbyLogin {
                               lobbyServerProperties, panel.getUserName(), panel.getPassword()),
                   IOException.class);
       panel.getLobbyLoginPreferences().save();
-      // TODO: Project#12 - Create an HttpLobbyClient here
-      return new LobbyClient(messenger, panel.isAnonymousLogin());
+      return new LobbyClient(
+          messenger,
+          new HttpLobbyClient(
+              lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey().getValue()),
+          panel.isAnonymousLogin());
     } catch (final CouldNotLogInException e) {
       showError("Login Failed", e.getMessage() + "\n" + playerMacIdString());
       return loginToServer(); // NB: potential stack overflow due to recursive call
@@ -114,7 +117,7 @@ public class LobbyLogin {
 
   private @Nullable LobbyClient createAccount(final CreateUpdateAccountPanel panel) {
     try {
-      final IMessenger messenger =
+      final IClientMessenger messenger =
           GameRunner.newBackgroundTaskRunner()
               .runInBackgroundAndReturn(
                   "Connecting to lobby...",
@@ -126,8 +129,10 @@ public class LobbyLogin {
                           panel.getPassword()),
                   IOException.class);
       panel.getLobbyLoginPreferences().save();
-      // TODO: Project#12 - Create an HttpLobbyClient here
-      return new LobbyClient(messenger, false);
+      return new LobbyClient(
+          messenger,
+          new HttpLobbyClient(
+              lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey().getValue()));
     } catch (final CouldNotLogInException e) {
       showError("Account Creation Failed", e.getMessage());
       return createAccount(); // NB: potential stack overflow due to recursive call

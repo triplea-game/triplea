@@ -3,7 +3,6 @@ package org.triplea.server.moderator.toolbox.audit.history;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
@@ -18,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.PagingParams;
 import org.triplea.http.client.moderator.toolbox.event.log.ModeratorEvent;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 @ExtendWith(MockitoExtension.class)
 class ModeratorAuditHistoryControllerTest {
@@ -34,7 +32,6 @@ class ModeratorAuditHistoryControllerTest {
   private static final int ROW_NUMBER = 60;
   private static final int ROW_COUNT = 50;
 
-  @Mock private ApiKeyValidationService apiKeyValidationService;
   @Mock private ModeratorAuditHistoryService moderatorAuditHistoryService;
 
   @InjectMocks private ModeratorAuditHistoryController moderatorAuditHistoryController;
@@ -68,6 +65,5 @@ class ModeratorAuditHistoryControllerTest {
 
     assertThat(response.getStatus(), is(200));
     assertThat(((List) response.getEntity()).get(0), is(EVENT_1));
-    verify(apiKeyValidationService).verifyApiKey(httpServletRequest);
   }
 }

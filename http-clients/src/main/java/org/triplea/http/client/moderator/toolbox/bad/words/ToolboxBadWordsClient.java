@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.HttpInteractionException;
-import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
 /** Http client class for fetching the list of bad words and adding and removing them. */
@@ -19,10 +18,9 @@ public class ToolboxBadWordsClient {
   private final ToolboxHttpHeaders toolboxHttpHeaders;
   private final ToolboxBadWordsFeignClient client;
 
-  public static ToolboxBadWordsClient newClient(
-      final URI serverUri, final ApiKeyPassword apiKeyPassword) {
+  public static ToolboxBadWordsClient newClient(final URI serverUri, final String apiKey) {
     return new ToolboxBadWordsClient(
-        new ToolboxHttpHeaders(apiKeyPassword),
+        new ToolboxHttpHeaders(apiKey),
         new HttpClient<>(ToolboxBadWordsFeignClient.class, serverUri).get());
   }
 

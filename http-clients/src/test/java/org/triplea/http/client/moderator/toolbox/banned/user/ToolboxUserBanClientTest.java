@@ -4,7 +4,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
-import static org.triplea.http.client.HttpClientTesting.API_KEY_PASSWORD;
+import static org.triplea.http.client.HttpClientTesting.API_KEY;
 import static org.triplea.http.client.HttpClientTesting.serve200ForToolboxPostWithBody;
 import static org.triplea.http.client.HttpClientTesting.serve200ForToolboxPostWithBodyJson;
 
@@ -46,16 +46,14 @@ class ToolboxUserBanClientTest {
 
   private static ToolboxUserBanClient newClient(final WireMockServer wireMockServer) {
     final URI hostUri = URI.create(wireMockServer.url(""));
-    return ToolboxUserBanClient.newClient(hostUri, API_KEY_PASSWORD);
+    return ToolboxUserBanClient.newClient(hostUri, API_KEY);
   }
 
   @Test
   void getUserBans(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
         WireMock.get(ToolboxUserBanClient.GET_USER_BANS_PATH)
-            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY_PASSWORD.getApiKey()))
-            .withHeader(
-                ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER, equalTo(API_KEY_PASSWORD.getPassword()))
+            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY))
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)

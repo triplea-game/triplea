@@ -2,10 +2,9 @@ package games.strategy.engine.lobby.moderator.toolbox;
 
 import games.strategy.engine.lobby.moderator.toolbox.tabs.TabFactory;
 import java.awt.Component;
-import java.net.URI;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
+import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingAction;
@@ -15,10 +14,11 @@ import org.triplea.swing.SwingAction;
  * maps to a DB table.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class ToolBoxWindow {
+public final class ToolBoxWindow {
 
-  static void showWindow(
-      final Component parent, final URI serverUri, final ApiKeyPassword apiKeyPassword) {
+  /** Shows the moderator toolbox UI window. */
+  public static void showWindow(
+      final Component parent, final HttpModeratorToolboxClient httpModeratorToolboxClient) {
     SwingAction.invokeNowOrLater(
         () ->
             JFrameBuilder.builder()
@@ -33,8 +33,7 @@ final class ToolBoxWindow {
                             .addCenter(
                                 TabFactory.builder()
                                     .frame(frame)
-                                    .uri(serverUri)
-                                    .apiKeyPassword(apiKeyPassword)
+                                    .httpModeratorToolboxClient(httpModeratorToolboxClient)
                                     .build()
                                     .buildTabs())
                             .build())

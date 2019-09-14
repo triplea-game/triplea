@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
 import org.triplea.http.client.moderator.toolbox.bad.words.ToolboxBadWordsClient;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 /** Controller for servicing moderator toolbox bad-words tab (provides CRUD operations). */
 @Path("")
@@ -22,7 +21,6 @@ import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationS
 @Builder
 public class BadWordsController {
   @Nonnull private final BadWordsService badWordsService;
-  @Nonnull private final ApiKeyValidationService apiKeyValidationService;
 
   /**
    * Removes a bad word entry from the bad-word table.
@@ -35,7 +33,8 @@ public class BadWordsController {
   @Path(ToolboxBadWordsClient.BAD_WORD_REMOVE_PATH)
   public Response removeBadWord(@Context final HttpServletRequest request, final String word) {
     Preconditions.checkArgument(word != null && !word.isEmpty());
-    final int moderatorId = apiKeyValidationService.lookupModeratorIdByApiKey(request);
+    // TODO: Project#12 get moderator ID from authorized user @Auth param
+    final int moderatorId = 0;
     return badWordsService.removeBadWord(moderatorId, word)
         ? Response.ok().build()
         : Response.status(400)
@@ -53,7 +52,8 @@ public class BadWordsController {
   @Path(ToolboxBadWordsClient.BAD_WORD_ADD_PATH)
   public Response addBadWord(@Context final HttpServletRequest request, final String word) {
     Preconditions.checkArgument(word != null && !word.isEmpty());
-    final int moderatorId = apiKeyValidationService.lookupModeratorIdByApiKey(request);
+    // TODO: Project#12 get moderator ID from authorized user @Auth param
+    final int moderatorId = 0;
     return badWordsService.addBadWord(moderatorId, word)
         ? Response.ok().build()
         : Response.status(400)
@@ -64,7 +64,6 @@ public class BadWordsController {
   @GET
   @Path(ToolboxBadWordsClient.BAD_WORD_GET_PATH)
   public Response getBadWords(@Context final HttpServletRequest request) {
-    apiKeyValidationService.verifyApiKey(request);
     return Response.status(200).entity(badWordsService.getBadWords()).build();
   }
 }

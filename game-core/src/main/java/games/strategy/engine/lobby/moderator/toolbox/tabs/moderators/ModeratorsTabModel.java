@@ -54,10 +54,6 @@ class ModeratorsTabModel {
         .collect(Collectors.toList());
   }
 
-  String generateApiKey(final String user) {
-    return toolboxModeratorManagementClient.generateSingleUseKey(user);
-  }
-
   void removeMod(final String user) {
     toolboxModeratorManagementClient.removeMod(user);
   }

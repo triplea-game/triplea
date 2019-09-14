@@ -2,7 +2,6 @@ package org.triplea.server.moderator.toolbox.banned.names;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
@@ -16,15 +15,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.banned.name.UsernameBanData;
 import org.triplea.server.moderator.toolbox.ControllerTestUtil;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 @ExtendWith(MockitoExtension.class)
 class BannedUsernamesControllerTest {
 
-  private static final int MODERATOR_ID = 8878;
+  // TODO: Project#12 fix test expectation of MODERATOR_ID being hardcoded as zero
+  private static final int MODERATOR_ID = 0;
   private static final String USERNAME = "Ho-ho-ho! halitosis of treasure.";
   @Mock private UsernameBanService bannedNamesService;
-  @Mock private ApiKeyValidationService apiKeyValidationService;
 
   @InjectMocks private UsernameBanController bannedUsernamesController;
 
@@ -53,7 +51,6 @@ class BannedUsernamesControllerTest {
     }
 
     private void givenRemoveBanResult(final boolean result) {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request)).thenReturn(MODERATOR_ID);
       when(bannedNamesService.removeUsernameBan(MODERATOR_ID, USERNAME)).thenReturn(result);
     }
   }
@@ -79,7 +76,6 @@ class BannedUsernamesControllerTest {
     }
 
     private void givenAddBanResult(final boolean result) {
-      when(apiKeyValidationService.lookupModeratorIdByApiKey(request)).thenReturn(MODERATOR_ID);
       when(bannedNamesService.addBannedUserName(MODERATOR_ID, USERNAME)).thenReturn(result);
     }
   }
@@ -92,6 +88,5 @@ class BannedUsernamesControllerTest {
     final Response response = bannedUsernamesController.getBannedUsernames(request);
 
     ControllerTestUtil.verifyResponse(response, Collections.singletonList(bannedUsernameData));
-    verify(apiKeyValidationService).verifyApiKey(request);
   }
 }

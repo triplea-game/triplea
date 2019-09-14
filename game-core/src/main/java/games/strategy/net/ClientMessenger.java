@@ -24,6 +24,7 @@ import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
@@ -47,7 +48,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   @Getter(onMethod_ = {@Override})
   private boolean passwordChangeRequired;
 
-  @Getter(onMethod_ = {@Override})
   private ApiKey apiKey;
 
   /**
@@ -340,5 +340,15 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   @Override
   public String toString() {
     return "ClientMessenger LocalNode:" + node + " ServerNodes:" + serverNode;
+  }
+
+  @Override
+  public ApiKey getApiKey() {
+    return Optional.ofNullable(apiKey)
+        .orElseThrow(
+            () ->
+                new UnsupportedOperationException(
+                    "Unexpected missing api key, programmer error. "
+                        + "Likely caused by trying to access API key for a non-lobby connection."));
   }
 }

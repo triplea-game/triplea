@@ -14,14 +14,12 @@ import lombok.Builder;
 import org.triplea.http.client.moderator.toolbox.PagingParams;
 import org.triplea.http.client.moderator.toolbox.event.log.ModeratorEvent;
 import org.triplea.http.client.moderator.toolbox.event.log.ToolboxEventLogClient;
-import org.triplea.server.moderator.toolbox.api.key.validation.ApiKeyValidationService;
 
 /** Http server endpoints for accessing and returning moderator audit history rows. */
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
 @Builder
 public class ModeratorAuditHistoryController {
-  @Nonnull private final ApiKeyValidationService apiKeyValidationService;
   @Nonnull private final ModeratorAuditHistoryService moderatorAuditHistoryService;
 
   /**
@@ -38,7 +36,6 @@ public class ModeratorAuditHistoryController {
     Preconditions.checkArgument(pagingParams != null);
     Preconditions.checkArgument(pagingParams.getRowNumber() >= 0);
     Preconditions.checkArgument(pagingParams.getPageSize() > 0);
-    apiKeyValidationService.verifyApiKey(request);
 
     final List<ModeratorEvent> moderatorEvents =
         moderatorAuditHistoryService.lookupHistory(

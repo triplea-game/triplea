@@ -6,7 +6,6 @@ import feign.RequestLine;
 import java.util.List;
 import java.util.Map;
 import org.triplea.http.client.HttpConstants;
-import org.triplea.http.client.moderator.toolbox.NewApiKey;
 
 interface ToolboxModeratorManagementFeignClient {
   @RequestLine("GET " + ToolboxModeratorManagementClient.FETCH_MODERATORS_PATH)
@@ -28,10 +27,6 @@ interface ToolboxModeratorManagementFeignClient {
   @RequestLine("POST " + ToolboxModeratorManagementClient.CHECK_USER_EXISTS_PATH)
   @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   boolean checkUserExists(@HeaderMap Map<String, Object> headers, String username);
-
-  @RequestLine("POST " + ToolboxModeratorManagementClient.SUPER_MOD_GENERATE_SINGLE_USE_KEY_PATH)
-  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
-  NewApiKey generateSingleUseKey(@HeaderMap Map<String, Object> headers, String moderatorName);
 
   @RequestLine("POST " + ToolboxModeratorManagementClient.ADD_MODERATOR_PATH)
   @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})

@@ -7,7 +7,6 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.http.client.moderator.toolbox.PagingParams;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
@@ -22,10 +21,9 @@ public class ToolboxEventLogClient {
   private final ToolboxHttpHeaders toolboxHttpHeaders;
   private final ToolboxEventLogFeignClient client;
 
-  public static ToolboxEventLogClient newClient(
-      final URI serverUri, final ApiKeyPassword apiKeyPassword) {
+  public static ToolboxEventLogClient newClient(final URI serverUri, final String apiKey) {
     return new ToolboxEventLogClient(
-        new ToolboxHttpHeaders(apiKeyPassword),
+        new ToolboxHttpHeaders(apiKey),
         new HttpClient<>(ToolboxEventLogFeignClient.class, serverUri).get());
   }
 

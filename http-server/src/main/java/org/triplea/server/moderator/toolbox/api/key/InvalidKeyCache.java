@@ -12,6 +12,7 @@ import org.triplea.server.http.AppConfig;
 import org.triplea.server.http.IpAddressExtractor;
 
 /** Essentially a wrapper around a static Guava cache. Provides a nicer API and easier testing. */
+// TODO: Project#12 Re-incorporate this class into authentication
 public class InvalidKeyCache {
   static {
     InvalidKeyCache.setCache(

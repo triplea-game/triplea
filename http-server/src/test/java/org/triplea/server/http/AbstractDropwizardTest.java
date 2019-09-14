@@ -6,7 +6,6 @@ import java.net.URI;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.test.common.Integration;
 
 @Integration
@@ -23,14 +22,12 @@ public class AbstractDropwizardTest {
     return clientFunction.apply(LOCALHOST);
   }
 
-  protected static <T> T newClient(final BiFunction<URI, ApiKeyPassword, T> clientFunction) {
-    return clientFunction.apply(
-        LOCALHOST, ApiKeyPassword.builder().password("test").apiKey("test").build());
+  protected static <T> T newClient(final BiFunction<URI, String, T> clientFunction) {
+    return clientFunction.apply(LOCALHOST, "test");
   }
 
   protected static <T> T newClientWithInvalidCreds(
-      final BiFunction<URI, ApiKeyPassword, T> clientFunction) {
-    return clientFunction.apply(
-        LOCALHOST, ApiKeyPassword.builder().password("not-correct").apiKey("guessing").build());
+      final BiFunction<URI, String, T> clientFunction) {
+    return clientFunction.apply(LOCALHOST, "not-correct");
   }
 }

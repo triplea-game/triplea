@@ -32,7 +32,6 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
-import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.http.client.moderator.toolbox.PagingParams;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
@@ -40,9 +39,7 @@ import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HttpClientTesting {
 
-  public static final ApiKeyPassword API_KEY_PASSWORD =
-      ApiKeyPassword.builder().apiKey("api-key").password("key-password").build();
-
+  public static final String API_KEY = "api-key";
   public static final PagingParams PAGING_PARAMS = PagingParams.builder().pageSize(10).build();
 
   private static final String CONTENT_TYPE_JSON = "application/json";
@@ -62,9 +59,7 @@ public final class HttpClientTesting {
       final WireMockServer server, final String path, final String body) {
     server.stubFor(
         WireMock.post(path)
-            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY_PASSWORD.getApiKey()))
-            .withHeader(
-                ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER, equalTo(API_KEY_PASSWORD.getPassword()))
+            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY))
             .withRequestBody(equalTo(body))
             .willReturn(WireMock.aResponse().withStatus(200)));
   }
@@ -77,9 +72,7 @@ public final class HttpClientTesting {
       final WireMockServer server, final String path, final T jsonObject) {
     server.stubFor(
         WireMock.post(path)
-            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY_PASSWORD.getApiKey()))
-            .withHeader(
-                ToolboxHttpHeaders.API_KEY_PASSWORD_HEADER, equalTo(API_KEY_PASSWORD.getPassword()))
+            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY))
             .withRequestBody(equalToJson(toJson(jsonObject)))
             .willReturn(WireMock.aResponse().withStatus(200)));
   }
@@ -96,11 +89,6 @@ public final class HttpClientTesting {
     } catch (final JsonProcessingException e) {
       throw new RuntimeException("Failed to convert to JSON string: " + object, e);
     }
-  }
-
-  /** Sends a service call and simulates a 500 response coming back. */
-  public static <T> T sendServiceCallToWireMockRespondWith500(final ServiceCallArgs<T> args) {
-    return sendServiceCallToWireMock(args, HttpStatus.SC_INTERNAL_SERVER_ERROR);
   }
 
   /**

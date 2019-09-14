@@ -20,7 +20,6 @@ import org.triplea.http.client.moderator.toolbox.moderator.management.ToolboxMod
 @ExtendWith(MockitoExtension.class)
 class ModeratorsTabModelTest {
   private static final String USERNAME = "Gar, yer not fearing me without a treasure!";
-  private static final String SAMPLE_KEY = "Pestilence, strength, and adventure.";
   private static final ModeratorInfo MODERATOR_INFO =
       ModeratorInfo.builder().name("Ahoy, heavy-hearted faith!").lastLogin(Instant.now()).build();
 
@@ -99,15 +98,6 @@ class ModeratorsTabModelTest {
           tableData, 0, MODERATOR_INFO.getName(), MODERATOR_INFO.getLastLogin().toString());
       ToolboxTabModelTestUtil.verifyTableDataAtRow(tableData, 1, MODERATOR_INFO.getName(), "");
     }
-  }
-
-  @Test
-  void generateApiKey() {
-    when(toolboxModeratorManagementClient.generateSingleUseKey(USERNAME)).thenReturn(SAMPLE_KEY);
-
-    assertThat(
-        new ModeratorsTabModel(toolboxModeratorManagementClient).generateApiKey(USERNAME),
-        is(SAMPLE_KEY));
   }
 
   @Test

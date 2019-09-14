@@ -7,7 +7,6 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.moderator.toolbox.ApiKeyPassword;
 import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
 /**
@@ -21,18 +20,15 @@ public class ToolboxModeratorManagementClient {
   public static final String REMOVE_MOD_PATH = "/moderator-toolbox/super-mod/remove-mod";
   public static final String ADD_SUPER_MOD_PATH = "/moderator-toolbox/super-mod/add-super-mod";
   public static final String CHECK_USER_EXISTS_PATH = "/moderator-toolbox/does-user-exist";
-
-  public static final String SUPER_MOD_GENERATE_SINGLE_USE_KEY_PATH =
-      "/moderator-toolbox/super-mod/generate-single-use-key";
   public static final String ADD_MODERATOR_PATH = "/moderator-toolbox/super-mod/add-moderator";
 
   private final ToolboxHttpHeaders httpHeaders;
   private final ToolboxModeratorManagementFeignClient client;
 
   public static ToolboxModeratorManagementClient newClient(
-      final URI serverUri, final ApiKeyPassword apiKeyPassword) {
+      final URI serverUri, final String apiKey) {
     return new ToolboxModeratorManagementClient(
-        new ToolboxHttpHeaders(apiKeyPassword),
+        new ToolboxHttpHeaders(apiKey),
         new HttpClient<>(ToolboxModeratorManagementFeignClient.class, serverUri).get());
   }
 
@@ -57,11 +53,6 @@ public class ToolboxModeratorManagementClient {
   public boolean checkUserExists(final String usernameRequested) {
     checkArgument(usernameRequested.length() > 3);
     return client.checkUserExists(httpHeaders.createHeaders(), usernameRequested);
-  }
-
-  public String generateSingleUseKey(final String moderatorName) {
-    checkArgument(moderatorName != null);
-    return client.generateSingleUseKey(httpHeaders.createHeaders(), moderatorName).getApiKey();
   }
 
   public void addModerator(final String username) {

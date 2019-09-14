@@ -8,14 +8,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ToolboxHttpHeaders {
   public static final String API_KEY_HEADER = "Moderator-api-key";
-  public static final String API_KEY_PASSWORD_HEADER = "Moderator-api-key-password";
 
-  private final ApiKeyPassword apiKeyPassword;
+  private final String apiKey;
 
   public Map<String, Object> createHeaders() {
     final Map<String, Object> headerMap = new HashMap<>();
-    headerMap.put(API_KEY_HEADER, apiKeyPassword.getApiKey());
-    headerMap.put(API_KEY_PASSWORD_HEADER, apiKeyPassword.getPassword());
+    headerMap.put(API_KEY_HEADER, apiKey);
     return headerMap;
   }
 }

@@ -12,6 +12,7 @@ import lombok.extern.java.Log;
  * attempting to guess an API key.
  */
 @Log
+// TODO: Project#12 Re-incorporate this class into authentication
 public class InvalidKeyLockOut {
 
   @Nonnull private final InvalidKeyCache invalidKeyCache;
