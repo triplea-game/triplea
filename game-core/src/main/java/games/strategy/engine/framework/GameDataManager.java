@@ -19,11 +19,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import javax.swing.JOptionPane;
 import org.apache.commons.io.IOUtils;
-import org.triplea.game.server.HeadlessGameServer;
-import org.triplea.java.Interruptibles;
-import org.triplea.swing.SwingAction;
 import org.triplea.util.Version;
 
 /** Responsible for loading saved games, new games from xml, and saving games. */
@@ -64,7 +60,6 @@ public final class GameDataManager {
     final ObjectInputStream input = new ObjectInputStream(new GZIPInputStream(is));
     try {
       final Version readVersion = (Version) input.readObject();
-      final boolean headless = HeadlessGameServer.headless();
       if (!ClientContext.engineVersion().isCompatibleWithEngineVersion(readVersion)) {
         final String error =
             "Incompatible engine versions. We are: "
@@ -74,12 +69,6 @@ public final class GameDataManager {
                 + "\nTo download the latest version of TripleA, Please visit "
                 + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE;
         throw new IOException(error);
-      } else if (!headless && readVersion.isGreaterThan(ClientContext.engineVersion())) {
-        // we can still load it because our engine is compatible, however this save was made by a
-        // newer engine, so prompt the user to upgrade
-        if (!promptToLoadNewerSaveGame(readVersion)) {
-          return null;
-        }
       }
 
       final GameData data = (GameData) input.readObject();
@@ -89,38 +78,6 @@ public final class GameDataManager {
     } catch (final ClassNotFoundException cnfe) {
       throw new IOException(cnfe.getMessage());
     }
-  }
-
-  private static boolean promptToLoadNewerSaveGame(final Version saveGameVersion) {
-    final int answer =
-        Interruptibles.awaitResult(
-                () ->
-                    SwingAction.invokeAndWaitResult(
-                        () -> {
-                          final String message =
-                              "Your TripleA engine is OUT OF DATE. "
-                                  + "This save was made by a newer version of TripleA.\n\n"
-                                  + "However, because the first 3 version numbers are the same "
-                                  + "as your current version, we can still open the save.\n\n"
-                                  + "This TripleA engine is version "
-                                  + ClientContext.engineVersion()
-                                  + " and you are trying "
-                                  + "to open a save made with version "
-                                  + saveGameVersion
-                                  + "\n\n"
-                                  + "To download the latest version of TripleA, please visit "
-                                  + UrlConstants.LATEST_GAME_DOWNLOAD_WEBSITE
-                                  + ".\n\n"
-                                  + "It is recommended that you upgrade to the latest version of "
-                                  + "TripleA before playing this save.\n\n"
-                                  + "Do you wish to continue and open this save with your "
-                                  + "current 'old' version?";
-                          return JOptionPane.showConfirmDialog(
-                              null, message, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
-                        }))
-            .result
-            .orElse(JOptionPane.NO_OPTION);
-    return answer == JOptionPane.YES_OPTION;
   }
 
   private static void loadDelegates(final ObjectInputStream input, final GameData data)
