@@ -7,26 +7,15 @@
 
 
 ## Functional Changes
-<!-- Put an X next to an item, if other, please specify -->
+<!-- Put an X next any that apply -->
 [ ] New map or map update
 [ ] New Feature
 [ ] Feature update or enhancement
 [ ] Feature Removal
 [ ] Code Cleanup or refactor
 [ ] Configuration Change
-[ ] Bug fix
-[ ] Other:
-
-<!-- If fixing a bug, uncomment the below and fill in each section -->
-<!--
-
-### Bug Issue Number or Reproduction Steps 
-
-### Root Cause - What caused the bug?
-
-### Fix description - How was the bug fixed?
-
--->
+[ ] Bug fix:  <!-- Link to bug issue or forum post here -->
+[ ] Other:   <!-- Please specify -->
 
 
 ## Testing
@@ -50,8 +39,7 @@
 
 
 <!-- 
-  Uncomment the below and add any additional details 
-  that would be helpful for reviewers.
+  Uncomment the below and add any additional details that would be helpful for reviewers.
 -->
 <!--
 ## Additional Review Notes
