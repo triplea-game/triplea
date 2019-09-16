@@ -26,7 +26,7 @@ import org.triplea.lobby.server.db.dao.UserBanDao;
 import org.triplea.lobby.server.db.data.UserBanDaoData;
 
 @ExtendWith(MockitoExtension.class)
-class BannedUsersServiceTest {
+class UserBanServiceTest {
 
   private static final int MODERATOR_ID = 123;
   private static final String BAN_ID = "Parrots grow with pestilence at the sunny madagascar!";

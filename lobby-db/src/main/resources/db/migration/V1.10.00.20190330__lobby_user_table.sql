@@ -3,14 +3,16 @@ create table lobby_user
     id              serial primary key,
     username        character varying(40) not null unique,
     password        character varying(60),
-    email           character varying(40) not null, check (email <> ''),
+    email           character varying(40) not null,
+    check (email <> ''),
     date_created    timestamptz           not null default current_timestamp,
     last_login      timestamptz,
-    admin           boolean               not null default false,
+    role            character varying(16) not null default 'PLAYER' check (role in ('PLAYER', 'MODERATOR', 'ADMIN')),
     bcrypt_password character(60) check (char_length(bcrypt_password) = 60)
 );
 
-alter table lobby_user owner to lobby_user;
+alter table lobby_user
+    owner to lobby_user;
 alter table lobby_user
     add constraint lobby_user_pass_check check (password IS NOT NULL OR bcrypt_password IS NOT NULL);
 
@@ -22,15 +24,11 @@ comment on column lobby_user.password is 'The legacy MD5Crypt hash of the passwo
 comment on column lobby_user.email is 'Email storage of every user. Large size to match the maximum email length. More information here: https://stackoverflow.com/a/574698.';
 comment on column lobby_user.date_created is 'The timestamp of the creation of the account.';
 comment on column lobby_user.last_login is 'The timestamp of the last successful login.';
-comment on column lobby_user.admin is 'The role of the user, controls privileges. If true the user is able to ban and mute other people.';
+comment on column lobby_user.role is
+    $$The role of the user, controls privileges. If moderator the user is able to ban and mute other people.
+     Admin is able to add/remove other moderators.$$;
 comment on column lobby_user.bcrypt_password is 'The BCrypt-Hashed password of the user, should be the same as the md5 password but in another form. The length of the hash must always be 60 chars. Either password or bcrypt_password must be not null.';
 
-
-insert into lobby_user (username, password, email, date_created, last_login, admin)
-select username, password, email, joined, lastLogin, admin
-from ta_users;
-
-drop table ta_users;
 
 create table moderator_action_history
 (
@@ -41,7 +39,8 @@ create table moderator_action_history
     action_target varchar(40) not null
 );
 
-alter table moderator_action_history owner to lobby_user;
+alter table moderator_action_history
+    owner to lobby_user;
 
 comment on table moderator_action_history is 'Table storing an audit history of actions taken by moderators';
 comment on column moderator_action_history.id is 'Table storing an audit history of actions taken by moderators';
@@ -50,3 +49,5 @@ comment on column moderator_action_history.lobby_user_id is 'FK to lobby_user ta
 comment on column moderator_action_history.date_created is 'Row creation timestamp, when the action was taken.';
 comment on column moderator_action_history.action_name is 'Specifier of what action the moderator took, eg: ban|mute';
 comment on column moderator_action_history.action_target is 'The target of the action, eg: banned player name, banned mac address';
+
+

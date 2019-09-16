@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import static org.triplea.server.moderator.toolbox.ControllerTestUtil.verifyResponse;
 
 import java.util.Collections;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,19 +15,18 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.banned.user.UserBanData;
 import org.triplea.http.client.moderator.toolbox.banned.user.UserBanParams;
+import org.triplea.server.access.AuthenticatedUser;
 
 @ExtendWith(MockitoExtension.class)
-class BannedUsersControllerTest {
+class UserBanControllerTest {
 
-  // TODO: Project#12 fix test expectation of MODERATOR_ID being hardcoded as zero
-  private static final int MODERATOR_ID = 0;
+  private static final AuthenticatedUser AUTHENTICATED_USER =
+      AuthenticatedUser.builder().userId(100).userRole("").build();
   private static final String BAN_ID = "Aw, salty death!";
 
   @Mock private UserBanService bannedUsersService;
 
   @InjectMocks private UserBanController bannedUsersController;
-
-  @Mock private HttpServletRequest request;
 
   @Mock private UserBanData bannedUserData;
 
@@ -44,7 +42,7 @@ class BannedUsersControllerTest {
   void getUserBans() {
     when(bannedUsersService.getBannedUsers()).thenReturn(Collections.singletonList(bannedUserData));
 
-    final Response response = bannedUsersController.getUserBans(request);
+    final Response response = bannedUsersController.getUserBans();
 
     verifyResponse(response, Collections.singletonList(bannedUserData));
   }
@@ -56,7 +54,7 @@ class BannedUsersControllerTest {
     void removeUserBanFailureCase() {
       givenBanServiceRemoveBanResult(false);
 
-      final Response response = bannedUsersController.removeUserBan(request, BAN_ID);
+      final Response response = bannedUsersController.removeUserBan(AUTHENTICATED_USER, BAN_ID);
 
       assertThat(response.getStatus(), is(400));
     }
@@ -65,13 +63,14 @@ class BannedUsersControllerTest {
     void removeUserBanSuccessCase() {
       givenBanServiceRemoveBanResult(true);
 
-      final Response response = bannedUsersController.removeUserBan(request, BAN_ID);
+      final Response response = bannedUsersController.removeUserBan(AUTHENTICATED_USER, BAN_ID);
 
       assertThat(response.getStatus(), is(200));
     }
 
     private void givenBanServiceRemoveBanResult(final boolean result) {
-      when(bannedUsersService.removeUserBan(MODERATOR_ID, BAN_ID)).thenReturn(result);
+      when(bannedUsersService.removeUserBan(AUTHENTICATED_USER.getUserId(), BAN_ID))
+          .thenReturn(result);
     }
   }
 
@@ -82,7 +81,7 @@ class BannedUsersControllerTest {
     void addBanFailureCase() {
       givenBanServiceAddBanResult(false);
 
-      final Response response = bannedUsersController.banUser(request, banUserParams);
+      final Response response = bannedUsersController.banUser(AUTHENTICATED_USER, banUserParams);
 
       assertThat(response.getStatus(), is(400));
     }
@@ -91,13 +90,14 @@ class BannedUsersControllerTest {
     void addBanSuccessCase() {
       givenBanServiceAddBanResult(true);
 
-      final Response response = bannedUsersController.banUser(request, banUserParams);
+      final Response response = bannedUsersController.banUser(AUTHENTICATED_USER, banUserParams);
 
       assertThat(response.getStatus(), is(200));
     }
 
     private void givenBanServiceAddBanResult(final boolean result) {
-      when(bannedUsersService.banUser(MODERATOR_ID, banUserParams)).thenReturn(result);
+      when(bannedUsersService.banUser(AUTHENTICATED_USER.getUserId(), banUserParams))
+          .thenReturn(result);
     }
   }
 }

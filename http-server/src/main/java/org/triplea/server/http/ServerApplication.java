@@ -1,7 +1,13 @@
 package org.triplea.server.http;
 
+import com.codahale.metrics.MetricRegistry;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import io.dropwizard.Application;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.CachingAuthenticator;
+import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.jdbi3.JdbiFactory;
@@ -9,16 +15,20 @@ import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.jdbi.v3.core.Jdbi;
+import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 import org.triplea.lobby.server.db.JdbiDatabase;
+import org.triplea.lobby.server.db.dao.ApiKeyDao;
+import org.triplea.server.access.ApiKeyAuthenticator;
+import org.triplea.server.access.AuthenticatedUser;
+import org.triplea.server.access.RoleAuthorizer;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
 import org.triplea.server.forgot.password.ForgotPasswordControllerFactory;
 import org.triplea.server.moderator.toolbox.access.log.AccessLogControllerFactory;
-import org.triplea.server.moderator.toolbox.api.key.exception.ApiKeyLockOutMapper;
-import org.triplea.server.moderator.toolbox.api.key.exception.IncorrectApiKeyMapper;
 import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
 import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
 import org.triplea.server.moderator.toolbox.banned.names.UsernameBanControllerFactory;
@@ -79,23 +89,47 @@ public class ServerApplication extends Application<AppConfig> {
                   LoggingFeature.DEFAULT_MAX_ENTITY_SIZE));
     }
 
+    final MetricRegistry metrics = new MetricRegistry();
+    final Jdbi jdbi = createJdbi(configuration, environment);
+
+    enableAuthentication(environment, metrics, jdbi);
+
     exceptionMappers().forEach(mapper -> environment.jersey().register(mapper));
 
-    endPointControllers(configuration, environment)
+    endPointControllers(configuration, jdbi)
         .forEach(controller -> environment.jersey().register(controller));
   }
 
-  private List<Object> exceptionMappers() {
-    return ImmutableList.of(
-        new IllegalArgumentMapper(), new IncorrectApiKeyMapper(), new ApiKeyLockOutMapper());
+  private static void enableAuthentication(
+      final Environment environment, final MetricRegistry metrics, final Jdbi jdbi) {
+    environment
+        .jersey()
+        .register(
+            new AuthDynamicFeature(
+                new OAuthCredentialAuthFilter.Builder<AuthenticatedUser>()
+                    .setAuthenticator(buildAuthenticator(metrics, jdbi))
+                    .setAuthorizer(new RoleAuthorizer())
+                    .setPrefix(ToolboxHttpHeaders.KEY_BEARER_PREFIX)
+                    .buildAuthFilter()));
+    environment.jersey().register(new AuthValueFactoryProvider.Binder<>(AuthenticatedUser.class));
   }
 
-  private List<Object> endPointControllers(
-      final AppConfig appConfig, final Environment environment) {
-    final Jdbi jdbi = createJdbi(appConfig, environment);
+  private static CachingAuthenticator<String, AuthenticatedUser> buildAuthenticator(
+      final MetricRegistry metrics, final Jdbi jdbi) {
+    return new CachingAuthenticator<>(
+        metrics,
+        new ApiKeyAuthenticator(jdbi.onDemand(ApiKeyDao.class)),
+        CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).maximumSize(10000));
+  }
+
+  private List<Object> exceptionMappers() {
+    return ImmutableList.of(new IllegalArgumentMapper());
+  }
+
+  private List<Object> endPointControllers(final AppConfig appConfig, final Jdbi jdbi) {
     return ImmutableList.of(
         AccessLogControllerFactory.buildController(appConfig, jdbi),
-        BadWordControllerFactory.buildController(appConfig, jdbi),
+        BadWordControllerFactory.buildController(jdbi),
         ForgotPasswordControllerFactory.buildController(appConfig, jdbi),
         UsernameBanControllerFactory.buildController(appConfig, jdbi),
         UserBanControllerFactory.buildController(appConfig, jdbi),

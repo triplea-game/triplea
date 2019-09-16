@@ -7,89 +7,88 @@ import static org.mockito.Mockito.when;
 import static org.triplea.server.moderator.toolbox.ControllerTestUtil.verifyResponse;
 
 import java.util.Collections;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.moderator.management.ModeratorInfo;
+import org.triplea.server.access.AuthenticatedUser;
 
-@SuppressWarnings("unchecked")
 @ExtendWith(MockitoExtension.class)
 class ModeratorsControllerTest {
 
   private static final String USERNAME = "The gibbet screams faith like an old cannibal.";
   private static final String MODERATOR_NAME = "Where is the lively cannibal?";
+  private static final ModeratorInfo MODERATOR_INFO = ModeratorInfo.builder().name("name").build();
 
-  // TODO: Project#12 Fix hardcoded user id
-  private static final int USER_ID = 0;
+  private static final AuthenticatedUser AUTHENTICATED_USER =
+      AuthenticatedUser.builder().userId(100).userRole("").build();
 
   @Mock private ModeratorsService moderatorsService;
 
   @InjectMocks private ModeratorsController moderatorsController;
 
-  @Mock private HttpServletRequest request;
-
-  @Mock private ModeratorInfo moderatorInfo;
+  @Mock private AuthenticatedUser authenticatedUser;
 
   @Test
   void checkUserExists() {
     when(moderatorsService.userExistsByName(USERNAME)).thenReturn(true);
 
-    final Response response = moderatorsController.checkUserExists(request, USERNAME);
+    final Response response = moderatorsController.checkUserExists(USERNAME);
 
     verifyResponse(response, true);
   }
 
   @Test
   void getModerators() {
-    when(moderatorsService.fetchModerators()).thenReturn(Collections.singletonList(moderatorInfo));
+    when(moderatorsService.fetchModerators()).thenReturn(Collections.singletonList(MODERATOR_INFO));
 
-    final Response response = moderatorsController.getModerators(request);
+    final Response response = moderatorsController.getModerators();
 
-    verifyResponse(response, Collections.singletonList(moderatorInfo));
+    verifyResponse(response, Collections.singletonList(MODERATOR_INFO));
   }
 
-  // TODO: Project#12 re-enable test
-  @Disabled
   @Test
   void isSuperModPositiveCase() {
-    final Response response = moderatorsController.isSuperMod(request);
+    when(authenticatedUser.isAdmin()).thenReturn(true);
+
+    final Response response = moderatorsController.isSuperMod(authenticatedUser);
 
     verifyResponse(response, true);
   }
 
   @Test
   void isSuperModNegativeCase() {
-    final Response response = moderatorsController.isSuperMod(request);
+    when(authenticatedUser.isAdmin()).thenReturn(false);
+
+    final Response response = moderatorsController.isSuperMod(authenticatedUser);
 
     verifyResponse(response, false);
   }
 
   @Test
   void removeMod() {
-    final Response response = moderatorsController.removeMod(request, MODERATOR_NAME);
+    final Response response = moderatorsController.removeMod(AUTHENTICATED_USER, MODERATOR_NAME);
 
     assertThat(response.getStatus(), is(200));
-    verify(moderatorsService).removeMod(USER_ID, MODERATOR_NAME);
+    verify(moderatorsService).removeMod(AUTHENTICATED_USER.getUserId(), MODERATOR_NAME);
   }
 
   @Test
   void setSuperMod() {
-    final Response response = moderatorsController.setSuperMod(request, MODERATOR_NAME);
+    final Response response = moderatorsController.setSuperMod(AUTHENTICATED_USER, MODERATOR_NAME);
 
     assertThat(response.getStatus(), is(200));
-    verify(moderatorsService).addSuperMod(USER_ID, MODERATOR_NAME);
+    verify(moderatorsService).addSuperMod(AUTHENTICATED_USER.getUserId(), MODERATOR_NAME);
   }
 
   @Test
   void addModerator() {
-    final Response response = moderatorsController.addModerator(request, MODERATOR_NAME);
+    final Response response = moderatorsController.addModerator(AUTHENTICATED_USER, MODERATOR_NAME);
 
     assertThat(response.getStatus(), is(200));
-    verify(moderatorsService).addModerator(USER_ID, MODERATOR_NAME);
+    verify(moderatorsService).addModerator(AUTHENTICATED_USER.getUserId(), MODERATOR_NAME);
   }
 }

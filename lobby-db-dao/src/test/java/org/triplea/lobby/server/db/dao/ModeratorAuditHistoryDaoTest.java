@@ -28,7 +28,7 @@ class ModeratorAuditHistoryDaoTest {
       JdbiDatabase.newConnection().onDemand(ModeratorAuditHistoryDao.class);
 
   @Test
-  @DataSet(cleanBefore = true, value = "moderator_audit/pre-insert.yml")
+  @DataSet(cleanBefore = true, value = "moderator_audit/pre_insert.yml")
   void addAuditRecordThrowsIfModeratorNameNotFound() {
     assertThrows(
         UnableToExecuteStatementException.class,
@@ -42,8 +42,8 @@ class ModeratorAuditHistoryDaoTest {
   }
 
   @Test
-  @DataSet(cleanBefore = true, value = "moderator_audit/pre-insert.yml")
-  @ExpectedDataSet("moderator_audit/post-insert.yml")
+  @DataSet(cleanBefore = true, value = "moderator_audit/pre_insert.yml")
+  @ExpectedDataSet("moderator_audit/post_insert.yml")
   void addAuditRecord() {
     dao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
@@ -54,7 +54,7 @@ class ModeratorAuditHistoryDaoTest {
   }
 
   @Test
-  @DataSet(cleanBefore = true, value = "moderator_audit/history-select.yml")
+  @DataSet(cleanBefore = true, value = "moderator_audit/history_select.yml")
   void selectHistory() {
     List<ModeratorAuditHistoryDaoData> results = dao.lookupHistoryItems(0, 3);
 

@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.triplea.http.client.HttpClientTesting.API_KEY;
+import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 import static org.triplea.http.client.HttpClientTesting.serve200ForToolboxPostWithBody;
 import static org.triplea.http.client.HttpClientTesting.toJson;
 
@@ -37,7 +38,7 @@ class ToolboxModeratorManagementClientTest {
   void fetchModeratorList(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
         WireMock.get(ToolboxModeratorManagementClient.FETCH_MODERATORS_PATH)
-            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY))
+            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)
@@ -61,7 +62,7 @@ class ToolboxModeratorManagementClientTest {
     void expectIsSuperModAndReturn(final WireMockServer server, final boolean value) {
       server.stubFor(
           WireMock.get(ToolboxModeratorManagementClient.IS_SUPER_MOD_PATH)
-              .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY))
+              .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
               .willReturn(WireMock.aResponse().withStatus(200).withBody(String.valueOf(value))));
     }
 

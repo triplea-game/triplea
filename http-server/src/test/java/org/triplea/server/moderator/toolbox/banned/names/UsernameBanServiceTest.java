@@ -23,7 +23,7 @@ import org.triplea.lobby.server.db.dao.UsernameBanDao;
 import org.triplea.lobby.server.db.data.UsernameBanDaoData;
 
 @ExtendWith(MockitoExtension.class)
-class BannedUsernameServiceTest {
+class UsernameBanServiceTest {
 
   private static final String USERNAME = "You haul like an ale.";
   private static final int MODERATOR_ID = 42352;

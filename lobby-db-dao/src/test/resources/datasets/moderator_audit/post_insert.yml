@@ -1,10 +1,3 @@
-lobby_user:
-  - id: 900000
-    username: moderator
-    password: 12345678901234567890123456
-    email: email
-    admin: false
-
 moderator_action_history:
   - id:  "regex:\\d+" #any number
     lobby_user_id: 900000

@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableList;
 import java.time.Instant;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,21 +35,19 @@ class ModeratorAuditHistoryControllerTest {
 
   @InjectMocks private ModeratorAuditHistoryController moderatorAuditHistoryController;
 
-  @Mock private HttpServletRequest httpServletRequest;
-
   @Test
   void verifiesPagingParameters() {
     assertThrows(
         IllegalArgumentException.class,
         () ->
             moderatorAuditHistoryController.lookupAuditHistory(
-                httpServletRequest, PagingParams.builder().rowNumber(-1).pageSize(100).build()));
+                PagingParams.builder().rowNumber(-1).pageSize(100).build()));
 
     assertThrows(
         IllegalArgumentException.class,
         () ->
             moderatorAuditHistoryController.lookupAuditHistory(
-                httpServletRequest, PagingParams.builder().rowNumber(0).pageSize(0).build()));
+                PagingParams.builder().rowNumber(0).pageSize(0).build()));
   }
 
   @Test
@@ -60,7 +57,6 @@ class ModeratorAuditHistoryControllerTest {
 
     final Response response =
         moderatorAuditHistoryController.lookupAuditHistory(
-            httpServletRequest,
             PagingParams.builder().rowNumber(ROW_NUMBER).pageSize(ROW_COUNT).build());
 
     assertThat(response.getStatus(), is(200));

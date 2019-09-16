@@ -13,7 +13,7 @@ final class UserDaoTestSupport {
   static void makeAdmin(final String username) throws SQLException {
     try (Connection con = TestDatabase.newConnection();
         PreparedStatement ps =
-            con.prepareStatement("update lobby_user set admin = true where username = ?")) {
+            con.prepareStatement("update lobby_user set role = 'MODERATOR' where username = ?")) {
       ps.setString(1, username);
       ps.execute();
       con.commit();

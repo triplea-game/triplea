@@ -10,11 +10,13 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import org.triplea.lobby.server.db.dao.ApiKeyDao;
+import org.triplea.lobby.server.db.dao.UserJdbiDao;
 
 @Builder
 public class ApiKeyGenerator implements Function<PlayerName, ApiKey> {
 
   @Nonnull private final ApiKeyDao apiKeyDao;
+  @Nonnull private final UserJdbiDao userDao;
   @Nonnull private final Supplier<ApiKey> keyMaker;
 
   /**
@@ -40,7 +42,10 @@ public class ApiKeyGenerator implements Function<PlayerName, ApiKey> {
   @Override
   public ApiKey apply(final PlayerName playerName) {
     final ApiKey key = keyMaker.get();
-    apiKeyDao.storeKey(playerName.getValue(), key.getValue());
+
+    final Integer userId = userDao.lookupUserIdByName(playerName.getValue()).orElse(null);
+    apiKeyDao.storeKey(userId, key.getValue());
+    apiKeyDao.deleteOldKeys();
     return key;
   }
 }

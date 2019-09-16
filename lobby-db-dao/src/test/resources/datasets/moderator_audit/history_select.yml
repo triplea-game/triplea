@@ -3,12 +3,12 @@ lobby_user:
     username: moderator1
     password: 12345678901234567890123456
     email: email
-    admin: false
+    role: MODERATOR
   - id: 900000
     username: moderator2
     password: 12345678901234567890123456
     email: email
-    admin: false
+    role: MODERATOR
 
 moderator_action_history:
   - lobby_user_id: 800000

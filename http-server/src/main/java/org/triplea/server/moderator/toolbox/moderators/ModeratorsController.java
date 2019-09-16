@@ -1,17 +1,19 @@
 package org.triplea.server.moderator.toolbox.moderators;
 
+import io.dropwizard.auth.Auth;
 import javax.annotation.Nonnull;
-import javax.servlet.http.HttpServletRequest;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
 import org.triplea.http.client.moderator.toolbox.moderator.management.ToolboxModeratorManagementClient;
+import org.triplea.lobby.server.db.data.UserRole;
+import org.triplea.server.access.AuthenticatedUser;
 
 /**
  * Provides endpoint for moderator maintenance actions and to support the moderators toolbox
@@ -27,49 +29,49 @@ public class ModeratorsController {
 
   @POST
   @Path(ToolboxModeratorManagementClient.CHECK_USER_EXISTS_PATH)
-  public Response checkUserExists(
-      @Context final HttpServletRequest request, final String username) {
+  @RolesAllowed(UserRole.ADMIN)
+  public Response checkUserExists(final String username) {
     return Response.ok().entity(moderatorsService.userExistsByName(username)).build();
   }
 
   @GET
   @Path(ToolboxModeratorManagementClient.FETCH_MODERATORS_PATH)
-  public Response getModerators(@Context final HttpServletRequest request) {
+  @RolesAllowed(UserRole.MODERATOR)
+  public Response getModerators() {
     return Response.ok().entity(moderatorsService.fetchModerators()).build();
   }
 
   @GET
   @Path(ToolboxModeratorManagementClient.IS_SUPER_MOD_PATH)
-  public Response isSuperMod(@Context final HttpServletRequest request) {
-    // TODO: Project#12 re-implement this
-    return Response.ok().entity(false).build();
+  @RolesAllowed(UserRole.MODERATOR)
+  public Response isSuperMod(@Auth final AuthenticatedUser authenticatedUser) {
+    return Response.ok().entity(authenticatedUser.isAdmin()).build();
   }
 
   @POST
   @Path(ToolboxModeratorManagementClient.REMOVE_MOD_PATH)
-  public Response removeMod(@Context final HttpServletRequest request, final String moderatorName) {
-    // TODO: Project#12 grab moderator id from auth parameter
-    final int superModId = 0;
-    moderatorsService.removeMod(superModId, moderatorName);
+  @RolesAllowed(UserRole.ADMIN)
+  public Response removeMod(
+      @Auth final AuthenticatedUser authenticatedUser, final String moderatorName) {
+    moderatorsService.removeMod(authenticatedUser.getUserId(), moderatorName);
     return Response.ok().build();
   }
 
   @POST
   @Path(ToolboxModeratorManagementClient.ADD_SUPER_MOD_PATH)
+  @RolesAllowed(UserRole.ADMIN)
   public Response setSuperMod(
-      @Context final HttpServletRequest request, final String moderatorName) {
-    // TODO: Project#12 grab moderator id from auth parameter
-    final int superModId = 0;
-    moderatorsService.addSuperMod(superModId, moderatorName);
+      @Auth final AuthenticatedUser authenticatedUser, final String moderatorName) {
+    moderatorsService.addSuperMod(authenticatedUser.getUserId(), moderatorName);
     return Response.ok().build();
   }
 
   @POST
   @Path(ToolboxModeratorManagementClient.ADD_MODERATOR_PATH)
-  public Response addModerator(@Context final HttpServletRequest request, final String username) {
-    // TODO: Project#12 grab moderator id from auth parameter
-    final int superModId = 0;
-    moderatorsService.addModerator(superModId, username);
+  @RolesAllowed(UserRole.ADMIN)
+  public Response addModerator(
+      @Auth final AuthenticatedUser authenticatedUser, final String username) {
+    moderatorsService.addModerator(authenticatedUser.getUserId(), username);
     return Response.ok().build();
   }
 }
