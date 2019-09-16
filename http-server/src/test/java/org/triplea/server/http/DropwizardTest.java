@@ -39,6 +39,7 @@ abstract class DropwizardTest {
         } catch (final RuntimeException e) {
           // ignore, server is already started
         }
+        // register this extension so 'close' will be called after all tests execute
         context.getRoot().getStore(GLOBAL).put("dropwizard-startup", this);
       }
     }
