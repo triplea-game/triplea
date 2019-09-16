@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
+import org.triplea.lobby.server.db.data.UserRole;
 
 /** Implementation of {@link UserDao} for a Postgres database. */
 @AllArgsConstructor
@@ -149,7 +150,7 @@ final class UserController implements UserDao {
           return false;
         }
         final String role = rs.getString("role");
-        return "ADMIN".equals(role) || "MODERATOR".equals(role);
+        return UserRole.ADMIN.equals(role) || UserRole.MODERATOR.equals(role);
       }
     } catch (final SQLException e) {
       throw new DatabaseException("Error getting admin flag for user: " + username, e);
