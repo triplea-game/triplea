@@ -6,6 +6,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.DBUnitExtension;
 import io.dropwizard.testing.DropwizardTestSupport;
 import java.net.URI;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -25,15 +26,14 @@ abstract class DropwizardTest {
    */
   public static class DropwizardServerExtension
       implements BeforeAllCallback, ExtensionContext.Store.CloseableResource {
-    private static boolean started = false;
+    private static AtomicBoolean started = new AtomicBoolean(false);
 
     private static final DropwizardTestSupport<AppConfig> support =
         new DropwizardTestSupport<>(ServerApplication.class, "configuration-prerelease.yml");
 
     @Override
     public void beforeAll(final ExtensionContext context) {
-      if (!started) {
-        started = true;
+      if (started.compareAndSet(false, true)) {
         try {
           support.before();
         } catch (final RuntimeException e) {
