@@ -3,7 +3,6 @@ package org.triplea.server.moderator.toolbox.access.log;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +22,6 @@ class AccessLogControllerTest {
 
   @InjectMocks private AccessLogController accessLogController;
 
-  @Mock private HttpServletRequest request;
   @Mock private AccessLogData accessLogData;
 
   @Test
@@ -31,7 +29,7 @@ class AccessLogControllerTest {
     when(accessLogService.fetchAccessLog(PAGING_PARAMS))
         .thenReturn(Collections.singletonList(accessLogData));
 
-    final Response response = accessLogController.fetchAccessLog(request, PAGING_PARAMS);
+    final Response response = accessLogController.fetchAccessLog(PAGING_PARAMS);
 
     ControllerTestUtil.verifyResponse(response, Collections.singletonList(accessLogData));
   }

@@ -140,7 +140,7 @@ final class UserController implements UserDao {
 
   @Override
   public boolean isAdmin(final String username) {
-    final String sql = "select admin from lobby_user where username = ?";
+    final String sql = "select role from lobby_user where username = ?";
     try (Connection con = connection.get();
         PreparedStatement ps = con.prepareStatement(sql)) {
       ps.setString(1, username);
@@ -148,7 +148,8 @@ final class UserController implements UserDao {
         if (!rs.next()) {
           return false;
         }
-        return rs.getBoolean("admin");
+        final String role = rs.getString("role");
+        return "ADMIN".equals(role) || "MODERATOR".equals(role);
       }
     } catch (final SQLException e) {
       throw new DatabaseException("Error getting admin flag for user: " + username, e);

@@ -40,6 +40,8 @@ import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 public final class HttpClientTesting {
 
   public static final String API_KEY = "api-key";
+  public static final String EXPECTED_API_KEY =
+      ToolboxHttpHeaders.KEY_BEARER_PREFIX + " " + API_KEY;
   public static final PagingParams PAGING_PARAMS = PagingParams.builder().pageSize(10).build();
 
   private static final String CONTENT_TYPE_JSON = "application/json";
@@ -59,7 +61,7 @@ public final class HttpClientTesting {
       final WireMockServer server, final String path, final String body) {
     server.stubFor(
         WireMock.post(path)
-            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY))
+            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalTo(body))
             .willReturn(WireMock.aResponse().withStatus(200)));
   }
@@ -72,7 +74,7 @@ public final class HttpClientTesting {
       final WireMockServer server, final String path, final T jsonObject) {
     server.stubFor(
         WireMock.post(path)
-            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY))
+            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalToJson(toJson(jsonObject)))
             .willReturn(WireMock.aResponse().withStatus(200)));
   }

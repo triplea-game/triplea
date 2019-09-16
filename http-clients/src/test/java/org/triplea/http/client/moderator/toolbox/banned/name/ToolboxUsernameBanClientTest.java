@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.triplea.http.client.HttpClientTesting.API_KEY;
+import static org.triplea.http.client.HttpClientTesting.EXPECTED_API_KEY;
 import static org.triplea.http.client.HttpClientTesting.serve200ForToolboxPostWithBody;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -55,7 +56,7 @@ class ToolboxUsernameBanClientTest {
   void getUsernameBans(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
         WireMock.get(ToolboxUsernameBanClient.GET_BANNED_USER_NAMES_PATH)
-            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(API_KEY))
+            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)

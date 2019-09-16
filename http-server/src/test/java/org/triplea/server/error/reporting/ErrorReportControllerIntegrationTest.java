@@ -1,30 +1,26 @@
 package org.triplea.server.error.reporting;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-
 import org.junit.jupiter.api.Test;
 import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.http.client.error.report.ErrorUploadRequest;
-import org.triplea.http.client.error.report.ErrorUploadResponse;
-import org.triplea.server.http.AbstractDropwizardTest;
+import org.triplea.server.http.BasicEndpointTest;
 
-class ErrorReportControllerIntegrationTest extends AbstractDropwizardTest {
+class ErrorReportControllerIntegrationTest extends BasicEndpointTest<ErrorUploadClient> {
 
-  private static final ErrorUploadClient client =
-      AbstractDropwizardTest.newClient(ErrorUploadClient::newClient);
+  ErrorReportControllerIntegrationTest() {
+    super(ErrorUploadClient::newClient);
+  }
 
   @Test
   void uploadErrorReport() {
-    final ErrorUploadResponse response =
-        client.uploadErrorReport(ErrorUploadRequest.builder().body("bodY").title("title").build());
-
-    assertThat(response.getGithubIssueLink(), notNullValue());
+    verifyEndpointReturningObject(
+        client ->
+            client.uploadErrorReport(
+                ErrorUploadRequest.builder().body("body").title("title").build()));
   }
 
   @Test
   void canSubmitErrorReport() {
-    assertThat(client.canSubmitErrorReport(), is(true));
+    verifyEndpointReturningObject(ErrorUploadClient::canSubmitErrorReport);
   }
 }

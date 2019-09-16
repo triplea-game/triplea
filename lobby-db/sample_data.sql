@@ -1,26 +1,15 @@
 delete
 from moderator_action_history;
 delete
-from moderator_api_key;
-delete
-from moderator_single_use_key;
-delete
 from lobby_user;
 delete
 from access_log;
 
-insert into lobby_user(id, username, email, admin, super_mod, bcrypt_password)
-values (1000, 'test', 'email@email.com', true, true,
+insert into lobby_user(id, username, email, role,  bcrypt_password)
+values (1000, 'test', 'email@email.com', 'ADMIN',
         '$2a$10$Ut3tvElEhPPr4s5wPd4dFuOvY25fa4r5XH3T7ucFTr5gJsotZl5d6'), -- password = 'test'
-       (1001, 'user1', 'email@email.com', false, false,
+       (1001, 'user1', 'email@email.com', 'PLAYER',
         '$2a$10$C4rHfjK/seKexc6KlyknP.oFVBZ7Wi.kp91qUQFgmkKajwgczXzcS');
-
-insert into moderator_single_use_key(lobby_user_id, api_key)
-values (1000, '$2a$10$IhIXWg4HkQRWrZqjj9kV0uLrpfZqMiKSWoLDp.Yl89itgB9FRwqIW'); -- api key == test
-
-insert into moderator_api_key(lobby_user_id, public_id, api_key)
-values (1000, 'public-id',
-        '$2a$10$IhIXWg4HkQRWrZqjj9kV0uvcsllbXH32XMebGbNU4Stk2GsInF9VO'); -- api key == test, password == test
 
 insert into access_log(access_time, username, ip, mac, registered)
 values (now() - interval '1 days', 'user1', '1.1.1.1', '$1$AA$AA7qDBliIofq8jOm4nM0H/', false),

@@ -70,7 +70,6 @@ class ModeratorsTabModelTest {
           0,
           MODERATOR_INFO.getName(),
           MODERATOR_INFO.getLastLogin().toString(),
-          ModeratorsTabModel.GENERATE_API_KEY_BUTTON_TEXT,
           ModeratorsTabModel.REMOVE_MOD_BUTTON_TEXT,
           ModeratorsTabModel.ADD_SUPER_MOD_BUTTON);
       ToolboxTabModelTestUtil.verifyTableDataAtRow(
@@ -78,7 +77,6 @@ class ModeratorsTabModelTest {
           1,
           MODERATOR_INFO.getName(),
           "",
-          ModeratorsTabModel.GENERATE_API_KEY_BUTTON_TEXT,
           ModeratorsTabModel.REMOVE_MOD_BUTTON_TEXT,
           ModeratorsTabModel.ADD_SUPER_MOD_BUTTON);
     }

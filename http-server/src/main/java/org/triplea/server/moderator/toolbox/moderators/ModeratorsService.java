@@ -10,6 +10,7 @@ import org.triplea.http.client.moderator.toolbox.moderator.management.ModeratorI
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.ModeratorsDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
+import org.triplea.lobby.server.db.data.UserRole;
 
 @Builder
 @Log
@@ -38,7 +39,7 @@ class ModeratorsService {
             .orElseThrow(
                 () -> new IllegalArgumentException("Unable to find username: " + username));
 
-    Preconditions.checkState(moderatorsDao.addMod(userId) == 1);
+    Preconditions.checkState(moderatorsDao.setRole(userId, UserRole.MODERATOR) == 1);
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()
             .moderatorUserId(moderatorIdRequesting)
@@ -59,7 +60,7 @@ class ModeratorsService {
                         "Failed to find moderator by user name: " + moderatorNameToRemove));
 
     Preconditions.checkState(
-        moderatorsDao.removeMod(userId) == 1,
+        moderatorsDao.setRole(userId, UserRole.PLAYER) == 1,
         "Failed to remove moderator status for: " + moderatorNameToRemove);
 
     moderatorAuditHistoryDao.addAuditRecord(
@@ -80,7 +81,7 @@ class ModeratorsService {
                 () -> new IllegalArgumentException("Failed to find user by name: " + username));
 
     Preconditions.checkState(
-        moderatorsDao.addSuperMod(userId) == 1,
+        moderatorsDao.setRole(userId, UserRole.ADMIN) == 1,
         "Failed to add super moderator status for: " + username);
     moderatorAuditHistoryDao.addAuditRecord(
         ModeratorAuditHistoryDao.AuditArgs.builder()

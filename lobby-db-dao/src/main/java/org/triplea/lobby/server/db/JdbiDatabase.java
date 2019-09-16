@@ -10,7 +10,7 @@ import org.jdbi.v3.core.statement.SqlLogger;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.triplea.lobby.server.db.data.AccessLogDaoData;
-import org.triplea.lobby.server.db.data.ApiKeyDaoData;
+import org.triplea.lobby.server.db.data.ApiKeyUserData;
 import org.triplea.lobby.server.db.data.ModeratorAuditHistoryDaoData;
 import org.triplea.lobby.server.db.data.ModeratorUserDaoData;
 import org.triplea.lobby.server.db.data.UserBanDaoData;
@@ -47,7 +47,7 @@ public final class JdbiDatabase {
    */
   public static void registerRowMappers(final Jdbi jdbi) {
     jdbi.registerRowMapper(AccessLogDaoData.class, AccessLogDaoData.buildResultMapper());
-    jdbi.registerRowMapper(ApiKeyDaoData.class, ApiKeyDaoData.buildResultMapper());
+    jdbi.registerRowMapper(ApiKeyUserData.class, ApiKeyUserData.buildResultMapper());
     jdbi.registerRowMapper(UserBanDaoData.class, UserBanDaoData.buildResultMapper());
     jdbi.registerRowMapper(UsernameBanDaoData.class, UsernameBanDaoData.buildResultMapper());
     jdbi.registerRowMapper(

@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.ModeratorsDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;
+import org.triplea.lobby.server.db.data.UserRole;
 
 @ExtendWith(MockitoExtension.class)
 class ModeratorsServiceTest {
@@ -43,7 +44,7 @@ class ModeratorsServiceTest {
     @Test
     void throwsIfModeratorNotAdded() {
       when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.addMod(USER_ID)).thenReturn(0);
+      when(moderatorsDao.setRole(USER_ID, UserRole.MODERATOR)).thenReturn(0);
       assertThrows(
           IllegalStateException.class,
           () -> moderatorsService.addModerator(MODERATOR_ID, USERNAME));
@@ -52,7 +53,7 @@ class ModeratorsServiceTest {
     @Test
     void verifySuccessCase() {
       when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.addMod(USER_ID)).thenReturn(1);
+      when(moderatorsDao.setRole(USER_ID, UserRole.MODERATOR)).thenReturn(1);
 
       moderatorsService.addModerator(MODERATOR_ID, USERNAME);
 
@@ -79,7 +80,8 @@ class ModeratorsServiceTest {
     @Test
     void throwsIfModIsNotRemoved() {
       when(userJdbiDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.removeMod(USER_ID)).thenReturn(0);
+      when(moderatorsDao.setRole(USER_ID, UserRole.PLAYER)).thenReturn(0);
+
       assertThrows(
           IllegalStateException.class,
           () -> moderatorsService.removeMod(MODERATOR_ID, MODERATOR_NAME));
@@ -88,7 +90,8 @@ class ModeratorsServiceTest {
     @Test
     void verifySuccessfulRemove() {
       when(userJdbiDao.lookupUserIdByName(MODERATOR_NAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.removeMod(USER_ID)).thenReturn(1);
+      when(moderatorsDao.setRole(USER_ID, UserRole.PLAYER)).thenReturn(1);
+
       moderatorsService.removeMod(MODERATOR_ID, MODERATOR_NAME);
 
       verify(moderatorAuditHistoryDao)
@@ -114,7 +117,8 @@ class ModeratorsServiceTest {
     @Test
     void throwsIfSuperModNotAdded() {
       when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.addSuperMod(USER_ID)).thenReturn(0);
+      when(moderatorsDao.setRole(USER_ID, UserRole.ADMIN)).thenReturn(0);
+
       assertThrows(
           IllegalStateException.class, () -> moderatorsService.addSuperMod(MODERATOR_ID, USERNAME));
     }
@@ -122,7 +126,8 @@ class ModeratorsServiceTest {
     @Test
     void verifySuccessfulAdd() {
       when(userJdbiDao.lookupUserIdByName(USERNAME)).thenReturn(Optional.of(USER_ID));
-      when(moderatorsDao.addSuperMod(USER_ID)).thenReturn(1);
+      when(moderatorsDao.setRole(USER_ID, UserRole.ADMIN)).thenReturn(1);
+
       moderatorsService.addSuperMod(MODERATOR_ID, USERNAME);
 
       verify(moderatorAuditHistoryDao)

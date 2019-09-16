@@ -38,6 +38,7 @@ class BadWordsTabActions {
    * the new bad word.
    */
   void addBadWord(final JTable table, final String newBadWord) {
+    badWordsTabModel.addBadWord(newBadWord);
     MessagePopup.showMessage(parentFrame, "Added: " + newBadWord);
     ((DefaultTableModel) table.getModel()).addRow(new String[] {newBadWord, REMOVE_BUTTON_TEXT});
     ButtonColumn.attachButtonColumn(table, 1, removeButtonListener());
