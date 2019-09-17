@@ -7,6 +7,7 @@ exemptLabels:
   - "Release Blocker"
   - "Impact: Bad Game Rules"
   - "Impact: Game Crashing"
+  - "Impact: Incorrect UI Behavior"
 # Label to use when marking an issue as stale
 staleLabel: 'Stale'
 
