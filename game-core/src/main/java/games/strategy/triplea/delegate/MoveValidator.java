@@ -1753,8 +1753,7 @@ public class MoveValidator {
 
     Route defaultRoute =
         data.getMap()
-            .getRouteForUnits(
-                start, end, noImpassableOrRestrictedOrNeutral, units, player);
+            .getRouteForUnits(start, end, noImpassableOrRestrictedOrNeutral, units, player);
     if (defaultRoute == null) {
       // Try for a route without impassable territories, but allowing restricted territories, since
       // there is a chance politics may change in the future
@@ -1869,8 +1868,7 @@ public class MoveValidator {
       } else {
         moveCondition = movePreference.and(noImpassableOrRestrictedOrNeutral);
       }
-      final Route route =
-          data.getMap().getRouteForUnits(start, end, moveCondition, units, player);
+      final Route route = data.getMap().getRouteForUnits(start, end, moveCondition, units, player);
       if ((route != null) && (route.numberOfSteps() <= maxSteps)) {
         return route;
       }
