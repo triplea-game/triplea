@@ -96,24 +96,28 @@ public final class ProMoveUtils {
           // Sea unit (including carriers with planes)
           route =
               data.getMap()
-                  .getRoute_IgnoreEnd(
+                  .getRouteForUnit(
                       startTerritory,
                       t,
-                      ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove));
+                      ProMatches.territoryCanMoveSeaUnitsThrough(player, data, isCombatMove),
+                      u,
+                      player);
         } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsLand())) {
 
           // Land unit
           route =
               data.getMap()
-                  .getRoute_IgnoreEnd(
+                  .getRouteForUnit(
                       startTerritory,
                       t,
                       ProMatches.territoryCanMoveLandUnitsThrough(
-                          player, data, u, startTerritory, isCombatMove, new ArrayList<>()));
+                          player, data, u, startTerritory, isCombatMove, new ArrayList<>()),
+                      u,
+                      player);
           if (route == null && startTerritory.equals(lastLandTransport.getFirst())) {
             route =
                 data.getMap()
-                    .getRoute_IgnoreEnd(
+                    .getRouteForUnit(
                         startTerritory,
                         t,
                         ProMatches.territoryCanMoveLandUnitsThrough(
@@ -122,17 +126,21 @@ public final class ProMoveUtils {
                             lastLandTransport.getSecond(),
                             startTerritory,
                             isCombatMove,
-                            new ArrayList<>()));
+                            new ArrayList<>()),
+                        u,
+                        player);
           }
         } else if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsAir())) {
 
           // Air unit
           route =
               data.getMap()
-                  .getRoute_IgnoreEnd(
+                  .getRouteForUnit(
                       startTerritory,
                       t,
-                      ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, isCombatMove));
+                      ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, isCombatMove),
+                      u,
+                      player);
         }
         if (route == null) {
           ProLogger.warn(
@@ -176,7 +184,7 @@ public final class ProMoveUtils {
       // Loop through each amphib attack map
       final Map<Unit, List<Unit>> amphibAttackMap = attackMap.get(t).getAmphibAttackMap();
       for (final Unit transport : amphibAttackMap.keySet()) {
-        int movesLeft = TripleAUnit.get(transport).getMovementLeft();
+        int movesLeft = TripleAUnit.get(transport).getMovementLeft().intValue();
         Territory transportTerritory = ProData.unitTerritoryMap.get(transport);
 
         // Check if units are already loaded or not
@@ -359,10 +367,12 @@ public final class ProMoveUtils {
           // Naval unit
           route =
               data.getMap()
-                  .getRoute_IgnoreEnd(
+                  .getRouteForUnit(
                       startTerritory,
                       bombardFromTerritory,
-                      ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true));
+                      ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true),
+                      u,
+                      player);
         }
         moveRoutes.add(route);
       }
@@ -406,10 +416,12 @@ public final class ProMoveUtils {
         if (!unitList.isEmpty() && unitList.stream().allMatch(Matches.unitIsAir())) {
           route =
               data.getMap()
-                  .getRoute_IgnoreEnd(
+                  .getRouteForUnit(
                       startTerritory,
                       t,
-                      ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true));
+                      ProMatches.territoryCanMoveAirUnitsAndNoAa(player, data, true),
+                      u,
+                      player);
         }
         moveRoutes.add(route);
       }

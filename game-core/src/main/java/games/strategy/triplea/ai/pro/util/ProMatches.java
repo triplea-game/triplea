@@ -600,6 +600,7 @@ public final class ProMatches {
   }
 
   public static Predicate<Unit> unitHasLessMovementThan(final Unit unit) {
-    return u -> TripleAUnit.get(u).getMovementLeft() < TripleAUnit.get(unit).getMovementLeft();
+    return u ->
+        TripleAUnit.get(u).getMovementLeft().compareTo(TripleAUnit.get(unit).getMovementLeft()) < 0;
   }
 }

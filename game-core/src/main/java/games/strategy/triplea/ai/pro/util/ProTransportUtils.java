@@ -160,7 +160,7 @@ public final class ProTransportUtils {
       final Comparator<Unit> comparator;
       if (Matches.unitIsLandTransport().test(transport)) {
         comparator =
-            Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft())
+            Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft().intValue())
                 .thenComparing(getDecreasingAttackComparator(transport.getOwner()));
       } else {
         comparator = getDecreasingAttackComparator(transport.getOwner());
@@ -243,12 +243,12 @@ public final class ProTransportUtils {
     results.add(unit);
     if (Matches.unitIsLandTransportWithoutCapacity().test(unit)) {
       units.sort(
-          Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft())
+          Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft().intValue())
               .thenComparing(getDecreasingAttackComparator(player)));
       results.add(units.get(0));
     } else {
       units.sort(
-          Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft())
+          Comparator.<Unit>comparingInt(u -> TripleAUnit.get(u).getMovementLeft().intValue())
               .thenComparingInt(u -> UnitAttachment.get(u.getType()).getTransportCost())
               .thenComparing(getDecreasingAttackComparator(player)));
       results.addAll(selectUnitsToTransportFromList(unit, units));

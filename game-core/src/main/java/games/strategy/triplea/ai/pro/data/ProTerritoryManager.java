@@ -20,6 +20,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TransportTracker;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -414,7 +415,7 @@ public class ProTerritoryManager {
         final Collection<Unit> airbases = from.getUnitCollection().getMatches(airbasesCanScramble);
         final int maxCanScramble = getMaxScrambleCount(airbases);
         final Route toBattleRoute =
-            data.getMap().getRoute_IgnoreEnd(from, to, Matches.territoryIsNotImpassable());
+            data.getMap().getRoute(from, to, Matches.territoryIsNotImpassable());
         List<Unit> canScrambleAir =
             from.getUnitCollection()
                 .getMatches(
@@ -803,21 +804,22 @@ public class ProTerritoryManager {
         }
 
         // Find range
-        int range = TripleAUnit.get(mySeaUnit).getMovementLeft();
+        BigDecimal range = TripleAUnit.get(mySeaUnit).getMovementLeft();
         if (isCheckingEnemyAttacks) {
-          range = UnitAttachment.get(mySeaUnit.getType()).getMovement(player);
+          range = new BigDecimal(UnitAttachment.get(mySeaUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
                   myUnitTerritory, player, data)
               .test(mySeaUnit)) {
-            range++; // assumes bonus of +1 for now
+            range = range.add(BigDecimal.ONE); // assumes bonus of +1 for now
           }
         }
 
         // Find list of potential territories to move to
         final Set<Territory> possibleMoveTerritories =
             data.getMap()
-                .getNeighbors(
+                .getNeighborsByMovementCost(
                     myUnitTerritory,
+                    mySeaUnit,
                     range,
                     ProMatches.territoryCanMoveSeaUnits(player, data, isCombatMove));
         possibleMoveTerritories.add(myUnitTerritory);
@@ -830,46 +832,30 @@ public class ProTerritoryManager {
         for (final Territory potentialTerritory : potentialTerritories) {
 
           // Find route over water
-          boolean hasNoRoute = true;
-          final List<Territory> eliminatedTerritories = new ArrayList<>();
-          while (true) { // Need a loop to consider different route combinations to avoid canals
-            Route myRoute =
+          Route myRoute =
+              data.getMap()
+                  .getRouteForUnit(
+                      myUnitTerritory,
+                      potentialTerritory,
+                      ProMatches.territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(
+                          player, data, isCombatMove, clearedTerritories, List.of()),
+                      mySeaUnit,
+                      player);
+          if (isCheckingEnemyAttacks) {
+            myRoute =
                 data.getMap()
-                    .getRoute_IgnoreEnd(
+                    .getRouteForUnit(
                         myUnitTerritory,
                         potentialTerritory,
-                        ProMatches.territoryCanMoveSeaUnitsThroughOrClearedAndNotInList(
-                            player, data, isCombatMove, clearedTerritories, eliminatedTerritories));
-            if (isCheckingEnemyAttacks) {
-              myRoute =
-                  data.getMap()
-                      .getRoute_IgnoreEnd(
-                          myUnitTerritory,
-                          potentialTerritory,
-                          ProMatches.territoryCanMoveSeaUnitsAndNotInList(
-                              player, data, isCombatMove, eliminatedTerritories));
-            }
-            if (myRoute == null) {
-              break;
-            }
-            if (MoveValidator.validateCanal(
-                    myRoute, Collections.singletonList(mySeaUnit), player, data)
-                != null) {
-              if (!myRoute.getMiddleSteps().isEmpty()) {
-                eliminatedTerritories.addAll(
-                    myRoute.getMiddleSteps()); // Add failed canal territories to list
-                continue;
-              }
-              break;
-            }
-            final int myRouteLength = myRoute.numberOfSteps();
-            if (myRouteLength > range) {
-              break;
-            }
-            hasNoRoute = false;
-            break;
+                        ProMatches.territoryCanMoveSeaUnits(player, data, isCombatMove),
+                        mySeaUnit,
+                        player);
           }
-          if (hasNoRoute) {
+          if (myRoute == null) {
+            continue;
+          }
+          final BigDecimal myRouteLength = myRoute.getMovementCost(mySeaUnit);
+          if (myRouteLength.compareTo(range) > 0) {
             continue;
           }
 
@@ -930,19 +916,21 @@ public class ProTerritoryManager {
       // Check each land unit individually since they can have different ranges
       for (final Unit myLandUnit : myLandUnits) {
         final Territory startTerritory = ProData.unitTerritoryMap.get(myLandUnit);
-        final int range = TripleAUnit.get(myLandUnit).getMovementLeft();
+        final BigDecimal range = TripleAUnit.get(myLandUnit).getMovementLeft();
         Set<Territory> possibleMoveTerritories =
             data.getMap()
-                .getNeighbors(
+                .getNeighborsByMovementCost(
                     myUnitTerritory,
+                    myLandUnit,
                     range,
                     ProMatches.territoryCanMoveSpecificLandUnit(
                         player, data, isCombatMove, myLandUnit));
         if (isIgnoringRelationships) {
           possibleMoveTerritories =
               data.getMap()
-                  .getNeighbors(
+                  .getNeighborsByMovementCost(
                       myUnitTerritory,
+                      myLandUnit,
                       range,
                       ProMatches.territoryCanPotentiallyMoveSpecificLandUnit(
                           player, data, myLandUnit));
@@ -959,20 +947,17 @@ public class ProTerritoryManager {
           // Find route over land checking whether unit can blitz
           Route myRoute =
               data.getMap()
-                  .getRoute_IgnoreEnd(
+                  .getRouteForUnit(
                       myUnitTerritory,
                       potentialTerritory,
                       ProMatches.territoryCanMoveLandUnitsThrough(
-                          player,
-                          data,
-                          myLandUnit,
-                          startTerritory,
-                          isCombatMove,
-                          enemyTerritories));
+                          player, data, myLandUnit, startTerritory, isCombatMove, enemyTerritories),
+                      myLandUnit,
+                      player);
           if (isCheckingEnemyAttacks) {
             myRoute =
                 data.getMap()
-                    .getRoute_IgnoreEnd(
+                    .getRouteForUnit(
                         myUnitTerritory,
                         potentialTerritory,
                         ProMatches.territoryCanMoveLandUnitsThroughIgnoreEnemyUnits(
@@ -982,7 +967,9 @@ public class ProTerritoryManager {
                             startTerritory,
                             isCombatMove,
                             enemyTerritories,
-                            clearedTerritories));
+                            clearedTerritories),
+                        myLandUnit,
+                        player);
           }
           if (myRoute == null) {
             continue;
@@ -995,8 +982,8 @@ public class ProTerritoryManager {
             continue; // If blitzing then make sure none of the territories cause blitz ability to
             // be lost
           }
-          final int myRouteLength = myRoute.numberOfSteps();
-          if (myRouteLength > range) {
+          final BigDecimal myRouteLength = myRoute.getMovementCost(myLandUnit);
+          if (myRouteLength.compareTo(range) > 0) {
             continue;
           }
 
@@ -1088,28 +1075,30 @@ public class ProTerritoryManager {
       for (final Unit myAirUnit : myAirUnits) {
 
         // Find range
-        int range = TripleAUnit.get(myAirUnit).getMovementLeft();
+        BigDecimal range = TripleAUnit.get(myAirUnit).getMovementLeft();
         if (isCheckingEnemyAttacks) {
-          range = UnitAttachment.get(myAirUnit.getType()).getMovement(player);
+          range = new BigDecimal(UnitAttachment.get(myAirUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
                   myUnitTerritory, player, data)
               .test(myAirUnit)) {
-            range++; // assumes bonus of +1 for now
+            range = range.add(BigDecimal.ONE); // assumes bonus of +1 for now
           }
         }
 
         // Find potential territories to move to
         Set<Territory> possibleMoveTerritories =
             data.getMap()
-                .getNeighbors(
+                .getNeighborsByMovementCost(
                     myUnitTerritory,
+                    myAirUnit,
                     range,
                     ProMatches.territoryCanMoveAirUnits(player, data, isCombatMove));
         if (isIgnoringRelationships) {
           possibleMoveTerritories =
               data.getMap()
-                  .getNeighbors(
+                  .getNeighborsByMovementCost(
                       myUnitTerritory,
+                      myAirUnit,
                       range,
                       ProMatches.territoryCanPotentiallyMoveAirUnits(player, data));
         }
@@ -1133,20 +1122,24 @@ public class ProTerritoryManager {
           }
           final Route myRoute =
               data.getMap()
-                  .getRoute_IgnoreEnd(myUnitTerritory, potentialTerritory, canFlyOverMatch);
+                  .getRouteForUnit(
+                      myUnitTerritory, potentialTerritory, canFlyOverMatch, myAirUnit, player);
           if (myRoute == null) {
             continue;
           }
-          final int myRouteLength = myRoute.numberOfSteps();
-          final int remainingMoves = range - myRouteLength;
-          if (remainingMoves < 0) {
+          final BigDecimal myRouteLength = myRoute.getMovementCost(myAirUnit);
+          final BigDecimal remainingMoves = range.subtract(myRouteLength);
+          if (remainingMoves.compareTo(BigDecimal.ZERO) < 0) {
             continue;
           }
 
           // Check if unit can land
-          if (isCombatMove && (remainingMoves < myRouteLength || myUnitTerritory.isWater())) {
+          if (isCombatMove
+              && (remainingMoves.compareTo(myRouteLength) < 0 || myUnitTerritory.isWater())) {
             final Set<Territory> possibleLandingTerritories =
-                data.getMap().getNeighbors(potentialTerritory, remainingMoves, canFlyOverMatch);
+                data.getMap()
+                    .getNeighborsByMovementCost(
+                        potentialTerritory, myAirUnit, remainingMoves, canFlyOverMatch);
             final List<Territory> landingTerritories =
                 CollectionUtils.getMatches(
                     possibleLandingTerritories,
@@ -1218,7 +1211,7 @@ public class ProTerritoryManager {
       for (final Unit myTransportUnit : myTransportUnits) {
 
         // Get remaining moves
-        int movesLeft = TripleAUnit.get(myTransportUnit).getMovementLeft();
+        int movesLeft = TripleAUnit.get(myTransportUnit).getMovementLeft().intValue();
         if (isCheckingEnemyAttacks) {
           movesLeft = UnitAttachment.get(myTransportUnit.getType()).getMovement(player);
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
@@ -1312,17 +1305,14 @@ public class ProTerritoryManager {
                 for (final Territory neighborTerritory : neighborTerritories) {
                   final Route myRoute =
                       data.getMap()
-                          .getRoute_IgnoreEnd(
+                          .getRouteForUnit(
                               currentTerritory,
                               neighborTerritory,
                               ProMatches.territoryCanMoveSeaUnitsThrough(
-                                  player, data, isCombatMove));
+                                  player, data, isCombatMove),
+                              myTransportUnit,
+                              player);
                   if (myRoute == null) {
-                    continue;
-                  }
-                  if (MoveValidator.validateCanal(
-                          myRoute, Collections.singletonList(myTransportUnit), player, data)
-                      != null) {
                     continue;
                   }
                   seaMoveTerritories.add(neighborTerritory);
@@ -1435,21 +1425,22 @@ public class ProTerritoryManager {
       for (final Unit mySeaUnit : mySeaUnits) {
 
         // Find range
-        int range = TripleAUnit.get(mySeaUnit).getMovementLeft();
+        BigDecimal range = TripleAUnit.get(mySeaUnit).getMovementLeft();
         if (isCheckingEnemyAttacks) {
-          range = UnitAttachment.get(mySeaUnit.getType()).getMovement(player);
+          range = new BigDecimal(UnitAttachment.get(mySeaUnit.getType()).getMovement(player));
           if (Matches.unitCanBeGivenBonusMovementByFacilitiesInItsTerritory(
                   myUnitTerritory, player, data)
               .test(mySeaUnit)) {
-            range++; // assumes bonus of +1 for now
+            range = range.add(BigDecimal.ONE); // assumes bonus of +1 for now
           }
         }
 
         // Find list of potential territories to move to
         final Set<Territory> potentialTerritories =
             data.getMap()
-                .getNeighbors(
+                .getNeighborsByMovementCost(
                     myUnitTerritory,
+                    mySeaUnit,
                     range,
                     ProMatches.territoryCanMoveSeaUnits(player, data, true));
         potentialTerritories.add(myUnitTerritory);
@@ -1459,28 +1450,27 @@ public class ProTerritoryManager {
           // Find route over water with no enemy units blocking
           Route myRoute =
               data.getMap()
-                  .getRoute(
+                  .getRouteForUnit(
                       myUnitTerritory,
                       bombardFromTerritory,
-                      ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true));
+                      ProMatches.territoryCanMoveSeaUnitsThrough(player, data, true),
+                      mySeaUnit,
+                      player);
           if (isCheckingEnemyAttacks) {
             myRoute =
                 data.getMap()
-                    .getRoute(
+                    .getRouteForUnit(
                         myUnitTerritory,
                         bombardFromTerritory,
-                        ProMatches.territoryCanMoveSeaUnits(player, data, true));
+                        ProMatches.territoryCanMoveSeaUnits(player, data, true),
+                        mySeaUnit,
+                        player);
           }
           if (myRoute == null) {
             continue;
           }
-          if (MoveValidator.validateCanal(
-                  myRoute, Collections.singletonList(mySeaUnit), player, data)
-              != null) {
-            continue;
-          }
-          final int myRouteLength = myRoute.numberOfSteps();
-          if (myRouteLength > range) {
+          final BigDecimal myRouteLength = myRoute.getMovementCost(mySeaUnit);
+          if (myRouteLength.compareTo(range) > 0) {
             continue;
           }
 

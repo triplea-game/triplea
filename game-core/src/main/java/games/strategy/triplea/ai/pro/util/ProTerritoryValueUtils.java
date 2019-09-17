@@ -7,7 +7,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ai.pro.ProData;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -117,11 +116,13 @@ public final class ProTerritoryValueUtils {
         for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaTerritories) {
           final Route route =
               data.getMap()
-                  .getRoute_IgnoreEnd(
+                  .getRouteForUnits(
                       t,
                       nearbyEnemySeaTerritory,
-                      ProMatches.territoryCanMoveSeaUnits(player, data, true));
-          if (route == null || MoveValidator.validateCanal(route, null, player, data) != null) {
+                      ProMatches.territoryCanMoveSeaUnits(player, data, true),
+                      Set.of(),
+                      player);
+          if (route == null) {
             continue;
           }
           final int distance = route.numberOfSteps();
@@ -139,11 +140,13 @@ public final class ProTerritoryValueUtils {
         for (final Territory nearbyEnemySeaTerritory : nearbyEnemySeaUnitTerritories) {
           final Route route =
               data.getMap()
-                  .getRoute_IgnoreEnd(
+                  .getRouteForUnits(
                       t,
                       nearbyEnemySeaTerritory,
-                      ProMatches.territoryCanMoveSeaUnits(player, data, true));
-          if (route == null || MoveValidator.validateCanal(route, null, player, data) != null) {
+                      ProMatches.territoryCanMoveSeaUnits(player, data, true),
+                      Set.of(),
+                      player);
+          if (route == null) {
             continue;
           }
           final int distance = route.numberOfSteps();
@@ -348,11 +351,13 @@ public final class ProTerritoryValueUtils {
     for (final Territory enemyCapitalOrFactory : nearbyEnemyCapitalsAndFactories) {
       final Route route =
           data.getMap()
-              .getRoute_IgnoreEnd(
+              .getRouteForUnits(
                   t,
                   enemyCapitalOrFactory,
-                  ProMatches.territoryCanMoveSeaUnits(player, data, true));
-      if (route == null || MoveValidator.validateCanal(route, null, player, data) != null) {
+                  ProMatches.territoryCanMoveSeaUnits(player, data, true),
+                  Set.of(),
+                  player);
+      if (route == null) {
         continue;
       }
       final int distance = route.numberOfSteps();
@@ -379,9 +384,13 @@ public final class ProTerritoryValueUtils {
     for (final Territory nearbyLandTerritory : nearbyLandTerritories) {
       final Route route =
           data.getMap()
-              .getRoute_IgnoreEnd(
-                  t, nearbyLandTerritory, ProMatches.territoryCanMoveSeaUnits(player, data, true));
-      if (route == null || MoveValidator.validateCanal(route, null, player, data) != null) {
+              .getRouteForUnits(
+                  t,
+                  nearbyLandTerritory,
+                  ProMatches.territoryCanMoveSeaUnits(player, data, true),
+                  Set.of(),
+                  player);
+      if (route == null) {
         continue;
       }
       final int distance = route.numberOfSteps();

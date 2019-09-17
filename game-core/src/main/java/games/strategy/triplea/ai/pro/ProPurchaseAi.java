@@ -29,7 +29,6 @@ import games.strategy.triplea.ai.pro.util.ProUtils;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.data.PlaceableUnits;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
@@ -1685,12 +1684,14 @@ class ProPurchaseAi {
           continue;
         }
         final Route route =
-            data.getMap().getRoute_IgnoreEnd(t, nearbySeaTerritory, Matches.territoryIsWater());
+            data.getMap()
+                .getRouteForUnits(
+                    t,
+                    nearbySeaTerritory,
+                    Matches.territoryIsWater(),
+                    enemySeaUnits,
+                    enemySeaUnits.get(0).getOwner());
         if (route == null) {
-          continue;
-        }
-        if (MoveValidator.validateCanal(route, enemySeaUnits, enemySeaUnits.get(0).getOwner(), data)
-            != null) {
           continue;
         }
         final int routeLength = route.numberOfSteps();
