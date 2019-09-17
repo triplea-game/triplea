@@ -61,9 +61,7 @@ class LhtrTest {
     final Territory easternEurope = gameData.getMap().getTerritory("Eastern Europe");
     final UnitType carrirType = GameDataTestUtil.carrier(gameData);
     // move a fighter to the baltic
-    final Route route = new Route();
-    route.setStart(easternEurope);
-    route.add(baltic);
+    final Route route = new Route(easternEurope, baltic);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     delegate.move(
         easternEurope.getUnitCollection().getMatches(Matches.unitIsOfType(fighterType)), route);
@@ -89,9 +87,7 @@ class LhtrTest {
     final Territory baltic = gameData.getMap().getTerritory("5 Sea Zone");
     final Territory easternEurope = gameData.getMap().getTerritory("Eastern Europe");
     // move a fighter to the baltic
-    final Route route = new Route();
-    route.setStart(easternEurope);
-    route.add(baltic);
+    final Route route = new Route(easternEurope, baltic);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     delegate.move(
         easternEurope.getUnitCollection().getMatches(Matches.unitIsOfType(fighterType)), route);
@@ -112,10 +108,11 @@ class LhtrTest {
     delegate.setDelegateBridgeAndPlayer(bridge);
     delegate.start();
     // move 1 fighter over the aa gun in caucus
-    final Route route = new Route();
-    route.setStart(gameData.getMap().getTerritory("Ukraine S.S.R."));
-    route.add(gameData.getMap().getTerritory("Caucasus"));
-    route.add(gameData.getMap().getTerritory("West Russia"));
+    final Route route =
+        new Route(
+            gameData.getMap().getTerritory("Ukraine S.S.R."),
+            gameData.getMap().getTerritory("Caucasus"),
+            gameData.getMap().getTerritory("West Russia"));
     final List<Unit> fighter = route.getStart().getUnitCollection().getMatches(Matches.unitIsAir());
     delegate.move(fighter, route);
     // if we try to move aa, then the game will ask us if we want to move
@@ -154,7 +151,7 @@ class LhtrTest {
     final StrategicBombingRaidBattle battle =
         new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
-        gameData.getMap().getRoute(uk, germany),
+        gameData.getMap().getRoute(uk, germany, Matches.always()),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
         null);
     addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));
@@ -192,7 +189,7 @@ class LhtrTest {
     final StrategicBombingRaidBattle battle =
         new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
-        gameData.getMap().getRoute(uk, germany),
+        gameData.getMap().getRoute(uk, germany, Matches.always()),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
         null);
     addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));

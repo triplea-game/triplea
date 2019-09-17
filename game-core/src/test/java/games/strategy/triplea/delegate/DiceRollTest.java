@@ -26,6 +26,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -375,7 +376,7 @@ class DiceRollTest {
     GameDataTestUtil.addTo(westRussia, aaGunList);
     final UnitType fighterType = GameDataTestUtil.fighter(gameData);
     final List<Unit> fighterList = fighterType.create(6, russians);
-    TripleAUnit.get(fighterList.get(0)).setAlreadyMoved(1);
+    TripleAUnit.get(fighterList.get(0)).setAlreadyMoved(BigDecimal.ONE);
     final IDelegateBridge bridge = newDelegateBridge(russians);
     // aa hits at 0 (0 based)
     final DiceRoll hit =

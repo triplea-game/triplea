@@ -219,7 +219,7 @@ class RevisedTest {
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     final Territory novo = gameData.getMap().getTerritory("Novosibirsk");
-    moveDelegate.move(novo.getUnits(), gameData.getMap().getRoute(novo, sinkiang));
+    moveDelegate.move(novo.getUnits(), new Route(novo, sinkiang));
     moveDelegate.end();
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
     battle.setDelegateBridgeAndPlayer(bridge);
@@ -233,10 +233,7 @@ class RevisedTest {
     moveDelegate.start();
     final Territory russia = gameData.getMap().getTerritory("Russia");
     // move two tanks from russia, then undo
-    final Route r = new Route();
-    r.setStart(russia);
-    r.add(novo);
-    r.add(sinkiang);
+    final Route r = new Route(russia, novo, sinkiang);
     assertNull(moveDelegate.move(russia.getUnitCollection().getMatches(Matches.unitCanBlitz()), r));
     moveDelegate.undoMove(0);
     assertTrue(battle.getBattleTracker().wasConquered(sinkiang));
@@ -277,13 +274,13 @@ class RevisedTest {
     String results =
         moveDelegate.move(
             CollectionUtils.getNMatches(germany.getUnits(), 1, Matches.unitIsOfType(infantryType)),
-            gameData.getMap().getRoute(germany, sz5),
+            new Route(germany, sz5),
             CollectionUtils.getMatches(sz5.getUnits(), Matches.unitIsOfType(trnType)));
     assertNull(results);
     results =
         moveDelegate.move(
             CollectionUtils.getNMatches(sz5.getUnits(), 1, Matches.unitIsOfType(infantryType)),
-            gameData.getMap().getRoute(sz5, karelia));
+            new Route(sz5, karelia));
     assertNull(results);
     moveDelegate.end();
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
@@ -416,9 +413,7 @@ class RevisedTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Route sz14To13 = new Route();
-    sz14To13.setStart(sz14);
-    sz14To13.add(sz13);
+    final Route sz14To13 = new Route(sz14, sz13);
     final List<Unit> transports = sz14.getUnitCollection().getMatches(Matches.unitIsTransport());
     assertEquals(1, transports.size());
     final String error = moveDelegate.move(transports, sz14To13);
@@ -436,9 +431,7 @@ class RevisedTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Route eeToSz5 = new Route();
-    eeToSz5.setStart(eastEurope);
-    eeToSz5.add(sz5);
+    final Route eeToSz5 = new Route(eastEurope, sz5);
     // load the transport in the baltic
     final List<Unit> infantry =
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
@@ -471,9 +464,7 @@ class RevisedTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Route eeToSz5 = new Route();
-    eeToSz5.setStart(eastEurope);
-    eeToSz5.add(sz5);
+    final Route eeToSz5 = new Route(eastEurope, sz5);
     // load the transport in the baltic
     final List<Unit> infantry =
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
@@ -483,9 +474,7 @@ class RevisedTest {
     // load the transport
     String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
-    final Route sz5ToNorway = new Route();
-    sz5ToNorway.setStart(sz5);
-    sz5ToNorway.add(norway);
+    final Route sz5ToNorway = new Route(sz5, norway);
     // move the infantry in two steps
     error = moveDelegate.move(infantry.subList(0, 1), sz5ToNorway);
     assertNull(error);
@@ -519,9 +508,7 @@ class RevisedTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Route eeToSz5 = new Route();
-    eeToSz5.setStart(eastEurope);
-    eeToSz5.add(sz5);
+    final Route eeToSz5 = new Route(eastEurope, sz5);
     // load the transport in the baltic
     final List<Unit> infantry =
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
@@ -562,9 +549,7 @@ class RevisedTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Route eeToSz5 = new Route();
-    eeToSz5.setStart(eastEurope);
-    eeToSz5.add(sz5);
+    final Route eeToSz5 = new Route(eastEurope, sz5);
     // load the transport in the baltic
     final List<Unit> infantry =
         eastEurope
@@ -576,9 +561,7 @@ class RevisedTest {
     String error = moveDelegate.move(infantry, eeToSz5, Collections.singletonList(transport));
     assertNull(error, error);
     // try to unload
-    final Route sz5ToEee = new Route();
-    sz5ToEee.setStart(sz5);
-    sz5ToEee.add(eastEurope);
+    final Route sz5ToEee = new Route(sz5, eastEurope);
     error = moveDelegate.move(infantry, sz5ToEee);
     assertEquals(MoveValidator.CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, error);
   }
@@ -595,9 +578,7 @@ class RevisedTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Route eeToSz5 = new Route();
-    eeToSz5.setStart(eastEurope);
-    eeToSz5.add(sz5);
+    final Route eeToSz5 = new Route(eastEurope, sz5);
     // load the transport in the baltic
     final List<Unit> infantry =
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
@@ -608,17 +589,13 @@ class RevisedTest {
     assertNull(error, error);
     // unload one infantry to Norway
     final Territory norway = gameData.getMap().getTerritory("Norway");
-    final Route sz5ToNorway = new Route();
-    sz5ToNorway.setStart(sz5);
-    sz5ToNorway.add(norway);
+    final Route sz5ToNorway = new Route(sz5, norway);
     error = moveDelegate.move(infantry.subList(0, 1), sz5ToNorway);
     assertNull(error, error);
     // make sure the transport was unloaded
     assertTrue(moveDelegate.getMovesMade().get(1).wasTransportUnloaded(transport));
     // try to unload the other infantry somewhere else, an error occurs
-    final Route sz5ToEastEurope = new Route();
-    sz5ToEastEurope.setStart(sz5);
-    sz5ToEastEurope.add(eastEurope);
+    final Route sz5ToEastEurope = new Route(sz5, eastEurope);
     error = moveDelegate.move(infantry.subList(1, 2), sz5ToEastEurope);
     assertNotNull(error, error);
     assertTrue(error.startsWith(MoveValidator.TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO));
@@ -650,9 +627,7 @@ class RevisedTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Route eeToSz5 = new Route();
-    eeToSz5.setStart(eastEurope);
-    eeToSz5.add(sz5);
+    final Route eeToSz5 = new Route(eastEurope, sz5);
     // load the transport in the baltic
     final List<Unit> infantry =
         eastEurope.getUnitCollection().getMatches(Matches.unitIsOfType(infantryType));
@@ -663,9 +638,7 @@ class RevisedTest {
     assertNull(error, error);
     // unload one infantry to Norway
     final Territory norway = gameData.getMap().getTerritory("Norway");
-    final Route sz5ToNorway = new Route();
-    sz5ToNorway.setStart(sz5);
-    sz5ToNorway.add(norway);
+    final Route sz5ToNorway = new Route(sz5, norway);
     error = moveDelegate.move(infantry.subList(0, 1), sz5ToNorway);
     assertNull(error, error);
     assertTrue(((TripleAUnit) infantry.get(0)).getWasUnloadedInCombatPhase());
@@ -750,18 +723,14 @@ class RevisedTest {
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
     // move a fighter into the sea zone, this will cause a battle
-    final Route sz50To45 = new Route();
-    sz50To45.setStart(sz50);
-    sz50To45.add(sz45);
+    final Route sz50To45 = new Route(sz50, sz45);
     String error =
         moveDelegate.move(sz50.getUnitCollection().getMatches(Matches.unitIsAir()), sz50To45);
     assertNull(error);
     assertEquals(
         1, AbstractMoveDelegate.getBattleTracker(gameData).getPendingBattleSites(false).size());
     // we should be able to move the sub out of the sz
-    final Route sz45To50 = new Route();
-    sz45To50.setStart(sz45);
-    sz45To50.add(sz50);
+    final Route sz45To50 = new Route(sz45, sz50);
     final List<Unit> japSub =
         sz45.getUnitCollection()
             .getMatches(Matches.unitCanEvade().and(Matches.unitIsOwnedBy(japanese)));
@@ -884,7 +853,8 @@ class RevisedTest {
         new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber());
     addTo(germany, bombers);
-    battle.addAttackChange(gameData.getMap().getRoute(uk, germany), bombers, null);
+    battle.addAttackChange(
+        gameData.getMap().getRoute(uk, germany, Matches.always()), bombers, null);
     tracker
         .getBattleRecords()
         .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
@@ -913,7 +883,8 @@ class RevisedTest {
         new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = bomber(gameData).create(2, british);
     addTo(germany, bombers);
-    battle.addAttackChange(gameData.getMap().getRoute(uk, germany), bombers, null);
+    battle.addAttackChange(
+        gameData.getMap().getRoute(uk, germany, Matches.always()), bombers, null);
     tracker
         .getBattleRecords()
         .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
@@ -950,7 +921,8 @@ class RevisedTest {
         new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     final List<Unit> bombers = bomber(gameData).create(7, british);
     addTo(germany, bombers);
-    battle.addAttackChange(gameData.getMap().getRoute(uk, germany), bombers, null);
+    battle.addAttackChange(
+        gameData.getMap().getRoute(uk, germany, Matches.always()), bombers, null);
     tracker
         .getBattleRecords()
         .addBattle(british, battle.getBattleId(), germany, battle.getBattleType());
@@ -978,7 +950,7 @@ class RevisedTest {
     final StrategicBombingRaidBattle battle =
         new StrategicBombingRaidBattle(germany, gameData, british, tracker);
     battle.addAttackChange(
-        gameData.getMap().getRoute(uk, germany),
+        gameData.getMap().getRoute(uk, germany, Matches.always()),
         uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()),
         null);
     addTo(germany, uk.getUnitCollection().getMatches(Matches.unitIsStrategicBomber()));

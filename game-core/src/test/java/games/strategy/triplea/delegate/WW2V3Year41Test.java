@@ -334,9 +334,7 @@ class WW2V3Year41Test {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    final Route sz12To13 = new Route();
-    sz12To13.setStart(sz12);
-    sz12To13.add(sz13);
+    final Route sz12To13 = new Route(sz12, sz13);
     final String error = moveDelegate.move(sz12.getUnits(), sz12To13);
     assertNull(error);
     assertEquals(3, sz13.getUnitCollection().size());
@@ -1368,7 +1366,7 @@ class WW2V3Year41Test {
     addTo(sz40, carrier(gameData).create(1, germans));
     addTo(sz40, fighter(gameData).create(1, italians(gameData)));
     addTo(madagascar, fighter(gameData).create(2, germans));
-    final Route route = gameData.getMap().getRoute(madagascar, sz40);
+    final Route route = gameData.getMap().getRoute(madagascar, sz40, Matches.always());
     final IDelegateBridge bridge = newDelegateBridge(germans);
     advanceToStep(bridge, "CombatMove");
     moveDelegate(gameData).setDelegateBridgeAndPlayer(bridge);
@@ -1424,7 +1422,7 @@ class WW2V3Year41Test {
     final PlayerId germans = germans(gameData);
     final Territory france = territory("France", gameData);
     TechAttachment.get(germans).setParatroopers("true");
-    final Route r = gameData.getMap().getRoute(france, territory("7 Sea Zone", gameData));
+    final Route r = new Route(france, territory("7 Sea Zone", gameData));
     final Collection<Unit> paratroopers =
         france.getUnitCollection().getMatches(Matches.unitIsAirTransportable());
     assertFalse(paratroopers.isEmpty());
@@ -1672,7 +1670,7 @@ class WW2V3Year41Test {
 
     move(
         uk.getUnitCollection().getMatches(Matches.unitIsAir()),
-        gameData.getMap().getRoute(uk, sz5));
+        gameData.getMap().getRoute(uk, sz5, Matches.always()));
     // move units for amphib assault
     moveDelegate(gameData).end();
     advanceToStep(bridge, "Combat");
