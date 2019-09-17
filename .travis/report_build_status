@@ -94,7 +94,7 @@ function reportBuildFailure() {
 
 function openNewFailedBuildIssue() {
   curl -X POST -d "{\"title\": \"$BROKEN_BUILD_ISSUE_TITLE\", \"body\": \
-\"$BROKEN_BUILD_ISSUE_BODY\", \"labels\": [\"Release Blocker\"]}" \
+\"$BROKEN_BUILD_ISSUE_BODY\", \"labels\": [\"Pre-Release Problem\"]}" \
         -H "$API_AUTH" "$API_URL/issues"
 }
 
