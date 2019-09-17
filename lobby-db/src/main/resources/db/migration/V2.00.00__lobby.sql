@@ -7,19 +7,6 @@ create table bad_word (
 alter table bad_word owner to lobby_user;
 comment on table bad_word is 'A table representing a blacklist of words';
 
-
-create table banned_ips (
-    ip character varying(40) not null primary key,
-    ban_till timestamp without time zone
-);
-alter table banned_ips owner to lobby_user;
-
-create table banned_macs (
-    mac character varying(40) not null primary key,
-    ban_till timestamp without time zone
-);
-alter table banned_macs owner to lobby_user;
-
 create table banned_usernames (
     username character varying(40) not null primary key,
     ban_till timestamp without time zone
@@ -45,14 +32,6 @@ alter table ta_users
     alter column admin type boolean using case when admin=0 then false else true end,
     alter column admin set default false;
 
-drop table banned_ips;
-
-delete from banned_macs where ban_till <= now();
-alter table banned_macs
-    alter column mac type character(28),
-	add constraint banned_macs_mac_check check (char_length(mac)=28),
-    alter column ban_till type timestamptz,
-	add constraint banned_macs_ban_till_check check (ban_till is null or ban_till > now());
 
 delete from banned_usernames where ban_till <= now();
 alter table banned_usernames
@@ -68,12 +47,6 @@ comment on column ta_users.email is 'Email storage of every user. Large size to 
 comment on column ta_users.joined is 'The timestamp of the creation of the account. Is created automatically by the DB, should never be modified, e.g. considered immutable';
 comment on column ta_users.lastlogin is 'The timestamp of the last successful login, is altered by the game engine.';
 comment on column ta_users.admin is 'The role of the user, controls privileges. If true the user is able to ban and mute other people. Might be changed to another type once more "ranks" become neccessary. Defaults to false.';
-
-comment on table banned_macs is 'A Table storing banned mac adresses.';
-comment on column banned_macs.mac is 'An MD5Crypted/hashed MAC address. This hashing method should be replaced by SHA-2 or SHA-3 for performance and collision reasons (salting is not needed).  The hash must be of length 28.';
-comment on column banned_macs.ban_till is 'A timestamp indicating how long the ban should be active, if NULL the ban is forever.';
-comment on constraint banned_macs_mac_check on banned_macs is 'Ensures the hashed mac always has the right length.';
-comment on constraint banned_macs_ban_till_check on banned_macs is 'Ensures no storage is being wasted by banning someone backdated to the past.';
 
 comment on table banned_usernames is 'A Table storing banned usernames.';
 comment on column banned_usernames.username is 'The username of the banned user. Actually no direct reference to the ta_users.username, the engine allows to define prohibited usernames, should probably be avoided, and an SQL reference created instead.';
@@ -98,21 +71,6 @@ comment on constraint ta_users_check on ta_users is 'This check constraint ensur
 
 -- audit_bans
 
-alter table banned_macs
-  add column mod_username varchar(40) not null default '__unknown__',
-  add column mod_ip inet not null default '0.0.0.0'::inet,
-  add column mod_mac char(28) not null default '$1$MH$WarCz.YHukJf1YVqmMBoS0',
-  add constraint banned_macs_mod_mac_check check (char_length(mod_mac)=28);
-
-alter table banned_macs
-  alter column mod_username drop default,
-  alter column mod_ip drop default,
-  alter column mod_mac drop default;
-
-comment on column banned_macs.mod_username is 'The username of the moderator that executed the ban.';
-comment on column banned_macs.mod_ip is 'The IP address of the moderator that executed the ban.';
-comment on column banned_macs.mod_mac is 'The hashed MAC address of the moderator that executed the ban.';
-
 alter table banned_usernames
   add column mod_username varchar(40) not null default '__unknown__',
   add column mod_ip inet not null default '0.0.0.0'::inet,
@@ -129,17 +87,6 @@ comment on column banned_usernames.mod_ip is 'The IP address of the moderator th
 comment on column banned_usernames.mod_mac is 'The hashed MAC address of the moderator that executed the ban.';
 
 -- add_all_user_info_to_bans_and_mutes
-
-alter table banned_macs
-  add column username varchar(40) not null default '__unknown__',
-  add column ip inet not null default '0.0.0.0'::inet;
-
-alter table banned_macs
-  alter column username drop default,
-  alter column ip drop default;
-
-comment on column banned_macs.username is 'The username of the banned user.';
-comment on column banned_macs.ip is 'The IP address of the banned user.';
 
 alter table banned_usernames
   add column ip inet not null default '0.0.0.0'::inet,
@@ -274,8 +221,6 @@ create table banned_user
 );
 
 alter table banned_user owner to lobby_user;
-
-drop table banned_macs;
 
 comment on table banned_user is
     $$Table that records player bans, when players join lobby we check their IP address and hashed mac
