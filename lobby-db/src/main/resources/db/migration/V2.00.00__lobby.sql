@@ -26,24 +26,6 @@ create table banned_usernames (
 );
 alter table banned_usernames owner to lobby_user;
 
-create table muted_ips (
-    ip character varying(40) not null primary key,
-    mute_till timestamp without time zone
-);
-alter table muted_ips owner to lobby_user;
-
-create table muted_macs (
-    mac character varying(40) not null primary key,
-    mute_till timestamp without time zone
-);
-alter table muted_macs owner to lobby_user;
-
-create table muted_usernames (
-    username character varying(40) not null primary key,
-    mute_till timestamp without time zone
-);
-alter table muted_usernames owner to lobby_user;
-
 create table ta_users (
     username character varying(40) not null primary key,
     password character varying(60) not null,
@@ -77,20 +59,6 @@ alter table banned_usernames
     alter column ban_till type timestamptz,
 	add constraint banned_usernames_ban_till_check check (ban_till is null or ban_till > now());
 
-drop table muted_ips;
-
-delete from muted_macs where mute_till <= now();
-alter table muted_macs
-    alter column mac type character(28),
-	add constraint muted_macs_mac_check check (char_length(mac)=28),
-    alter column mute_till type timestamptz,
-	add constraint muted_macs_mute_till_check check (mute_till is null or mute_till > now());
-
-delete from muted_usernames where mute_till <= now();
-alter table muted_usernames
-    alter column mute_till type timestamptz,
-	add constraint muted_usernames_mute_till_check check (mute_till is null or mute_till > now());
-
 
 -- Comments
 
@@ -100,9 +68,6 @@ comment on column ta_users.email is 'Email storage of every user. Large size to 
 comment on column ta_users.joined is 'The timestamp of the creation of the account. Is created automatically by the DB, should never be modified, e.g. considered immutable';
 comment on column ta_users.lastlogin is 'The timestamp of the last successful login, is altered by the game engine.';
 comment on column ta_users.admin is 'The role of the user, controls privileges. If true the user is able to ban and mute other people. Might be changed to another type once more "ranks" become neccessary. Defaults to false.';
-
-comment on table bad_words is 'A table representing a blacklist of words, used to filter chat messages and prohibit usernames in the lobby.';
-comment on column bad_words.word is 'This column stores all the banned words. The primary key constraint might be replaced with a unique constraint.';
 
 comment on table banned_macs is 'A Table storing banned mac adresses.';
 comment on column banned_macs.mac is 'An MD5Crypted/hashed MAC address. This hashing method should be replaced by SHA-2 or SHA-3 for performance and collision reasons (salting is not needed).  The hash must be of length 28.';
@@ -114,17 +79,6 @@ comment on table banned_usernames is 'A Table storing banned usernames.';
 comment on column banned_usernames.username is 'The username of the banned user. Actually no direct reference to the ta_users.username, the engine allows to define prohibited usernames, should probably be avoided, and an SQL reference created instead.';
 comment on column banned_usernames.ban_till is 'A timestamp indicating how long the ban should be active, if NULL the ban is forever.';
 comment on constraint banned_usernames_ban_till_check on banned_usernames is 'Ensures no storage is being wasted by banning someone backdated to the past.';
-
-comment on table muted_macs is 'A Table storing muted mac adresses.';
-comment on column muted_macs.mac is 'An MD5Crypted/hashed MAC address. This hashing method should be replaced by SHA-2 or SHA-3 for performance and collision reasons (salting is not needed). The hash must be of length 28.';
-comment on column muted_macs.mute_till is 'A timestamp indicating how long the mute should be active, if NULL the mute is forever.';
-comment on constraint muted_macs_mac_check on muted_macs is 'Ensures the hashed mac always has the right length.';
-comment on constraint muted_macs_mute_till_check on muted_macs is 'Ensures no storage is being wasted by muting someone backdated to the past.';
-
-comment on table muted_usernames is 'A Table storing muted usernames.';
-comment on column muted_usernames.username is 'The username of the muted user. Actually no direct reference to the ta_users.username for whatever reason using an SQL reference would make the mute change along with the username of a user.';
-comment on column muted_usernames.mute_till is 'A timestamp indicating how long the mute should be active, if NULL the mute is forever.';
-comment on constraint muted_usernames_mute_till_check on muted_usernames is 'Ensures no storage is being wasted by muting someone backdated to the past.';
 
 -- add_bcrypt_password_column
 
@@ -174,38 +128,6 @@ comment on column banned_usernames.mod_username is 'The username of the moderato
 comment on column banned_usernames.mod_ip is 'The IP address of the moderator that executed the ban.';
 comment on column banned_usernames.mod_mac is 'The hashed MAC address of the moderator that executed the ban.';
 
--- audit_mutes
-
-alter table muted_macs
-  add column mod_username varchar(40) not null default '__unknown__',
-  add column mod_ip inet not null default '0.0.0.0'::inet,
-  add column mod_mac char(28) not null default '$1$MH$WarCz.YHukJf1YVqmMBoS0',
-  add constraint muted_macs_mod_mac_check check (char_length(mod_mac)=28);
-
-alter table muted_macs
-  alter column mod_username drop default,
-  alter column mod_ip drop default,
-  alter column mod_mac drop default;
-
-comment on column muted_macs.mod_username is 'The username of the moderator that executed the mute.';
-comment on column muted_macs.mod_ip is 'The IP address of the moderator that executed the mute.';
-comment on column muted_macs.mod_mac is 'The hashed MAC address of the moderator that executed the mute.';
-
-alter table muted_usernames
-  add column mod_username varchar(40) not null default '__unknown__',
-  add column mod_ip inet not null default '0.0.0.0'::inet,
-  add column mod_mac char(28) not null default '$1$MH$WarCz.YHukJf1YVqmMBoS0',
-  add constraint muted_usernames_mod_mac_check check (char_length(mod_mac)=28);
-
-alter table muted_usernames
-  alter column mod_username drop default,
-  alter column mod_ip drop default,
-  alter column mod_mac drop default;
-
-comment on column muted_usernames.mod_username is 'The username of the moderator that executed the mute.';
-comment on column muted_usernames.mod_ip is 'The IP address of the moderator that executed the mute.';
-comment on column muted_usernames.mod_mac is 'The hashed MAC address of the moderator that executed the mute.';
-
 -- add_all_user_info_to_bans_and_mutes
 
 alter table banned_macs
@@ -231,29 +153,6 @@ alter table banned_usernames
 comment on column banned_usernames.ip is 'The IP address of the banned user.';
 comment on column banned_usernames.mac is 'The hashed MAC address of the banned user.';
 
-alter table muted_macs
-  add column username varchar(40) not null default '__unknown__',
-  add column ip inet not null default '0.0.0.0'::inet;
-
-alter table muted_macs
-  alter column username drop default,
-  alter column ip drop default;
-
-comment on column muted_macs.username is 'The username of the muted user.';
-comment on column muted_macs.ip is 'The IP address of the muted user.';
-
-alter table muted_usernames
-  add column ip inet not null default '0.0.0.0'::inet,
-  add column mac char(28) not null default '$1$MH$WarCz.YHukJf1YVqmMBoS0',
-  add constraint muted_usernames_mac_check check (char_length(mac)=28);
-
-alter table muted_usernames
-  alter column ip drop default,
-  alter column mac drop default;
-
-comment on column muted_usernames.ip is 'The IP address of the muted user.';
-comment on column muted_usernames.mac is 'The hashed MAC address of the muted user.';
-
 -- add_access_log
 
 create table access_log (
@@ -272,8 +171,6 @@ comment on column access_log.registered is 'True if the user was registered when
 
 alter table access_log owner to lobby_user;
 
--- mute only by network identifiers, drop mute by username
-drop table muted_usernames;
 
 -- 'banned_usernames' will now keep track of username blacklist with no expiration
 alter table banned_usernames
@@ -292,7 +189,7 @@ alter table banned_usernames
 
 alter table banned_usernames
   drop column mod_mac;
-drop table muted_macs;
+
 create table lobby_user
 (
     id              serial primary key,
