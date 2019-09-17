@@ -220,9 +220,7 @@ public class WeakAi extends AbstractAi {
         }
       }
       if (units.size() > 0) {
-        final Route route = new Route();
-        route.setStart(capitol);
-        route.add(neighbor);
+        final Route route = new Route(capitol, neighbor);
         moveUnits.add(units);
         moveRoutes.add(route);
         transportsToLoad.add(neighbor.getUnitCollection().getMatches(Matches.unitIsTransport()));
@@ -246,9 +244,7 @@ public class WeakAi extends AbstractAi {
     final List<Unit> units = lastSeaZoneOnAmphib.getUnitCollection().getMatches(landAndOwned);
     if (units.size() > 0) {
       // just try to make the move, the engine will stop us if it doesnt work
-      final Route route = new Route();
-      route.setStart(lastSeaZoneOnAmphib);
-      route.add(landOn);
+      final Route route = new Route(lastSeaZoneOnAmphib, landOn);
       moveUnits.add(units);
       moveRoutes.add(route);
     }
@@ -376,15 +372,11 @@ public class WeakAi extends AbstractAi {
             .and(Matches.territoryHasEnemyUnits(player, data).negate())
             .and(Matches.territoryHasNonAllowedCanal(player, null, data).negate());
     Route r = data.getMap().getRoute(start, destination, routeCond);
-    if (r == null) {
+    if (r == null && !routeCond.test(destination)) {
       return null;
     }
     if (r.numberOfSteps() > 2) {
-      final Route newRoute = new Route();
-      newRoute.setStart(start);
-      newRoute.add(r.getAllTerritories().get(1));
-      newRoute.add(r.getAllTerritories().get(2));
-      r = newRoute;
+      r = new Route(start, r.getAllTerritories().get(1), r.getAllTerritories().get(2));
     }
     return r;
   }
@@ -428,7 +420,7 @@ public class WeakAi extends AbstractAi {
             final List<Unit> units = owned.getUnitCollection().getMatches(attackable);
             unitsAlreadyMoved.addAll(units);
             moveUnits.add(units);
-            moveRoutes.add(data.getMap().getRoute(owned, t));
+            moveRoutes.add(new Route(owned, t));
           }
         }
       }
@@ -518,7 +510,7 @@ public class WeakAi extends AbstractAi {
         if (capitol != null
             && !data.getRelationshipTracker().isAllied(player, capitol.getOwner())) {
           final Route route = data.getMap().getRoute(t, capitol, moveThrough);
-          if (route != null) {
+          if (route != null && moveThrough.test(capitol)) {
             final int distance = route.numberOfSteps();
             if (distance != 0 && distance < minDistance) {
               minDistance = distance;
@@ -532,9 +524,7 @@ public class WeakAi extends AbstractAi {
           moveUnits.add(units);
           final Route routeToCapitol = data.getMap().getRoute(t, to, moveThrough);
           final Territory firstStep = routeToCapitol.getAllTerritories().get(1);
-          final Route route = new Route();
-          route.setStart(t);
-          route.add(firstStep);
+          final Route route = new Route(t, firstStep);
           moveRoutes.add(route);
         }
       } else { // if we cant move to a capitol, move towards the enemy
@@ -551,9 +541,7 @@ public class WeakAi extends AbstractAi {
         if (newRoute != null && newRoute.numberOfSteps() != 0) {
           moveUnits.add(units);
           final Territory firstStep = newRoute.getAllTerritories().get(1);
-          final Route route = new Route();
-          route.setStart(t);
-          route.add(firstStep);
+          final Route route = new Route(t, firstStep);
           moveRoutes.add(route);
         }
       }
@@ -685,7 +673,7 @@ public class WeakAi extends AbstractAi {
                     .and(Matches.unitIsNotAa())
                     .and(Matches.unitCanNotMoveDuringCombatMove().negate());
             if (!unitsAlreadyMoved.contains(unit) && match.test(unit)) {
-              moveRoutes.add(data.getMap().getRoute(attackFrom, enemy));
+              moveRoutes.add(new Route(attackFrom, enemy));
               // if unloading units, unload all of them, otherwise we wont be able to unload them
               // in non com, for land moves we want to move the minimal
               // number of units, to leave units free to move elsewhere
@@ -759,7 +747,7 @@ public class WeakAi extends AbstractAi {
             if (units.size() > 0) {
               unitsAlreadyMoved.addAll(units);
               moveUnits.add(units);
-              moveRoutes.add(data.getMap().getRoute(owned, enemy));
+              moveRoutes.add(new Route(owned, enemy));
             }
           }
         }

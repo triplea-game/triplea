@@ -53,8 +53,7 @@ final class Utils {
     Route shortestRoute = null;
     for (final Territory t : data.getMap().getTerritories()) {
       if (endCondition.test(t)) {
-        final Predicate<Territory> routeOrEnd = routeCondition.or(Matches.territoryIs(t));
-        final Route r = data.getMap().getRoute(start, t, routeOrEnd);
+        final Route r = data.getMap().getRoute(start, t, routeCondition);
         if (r != null) {
           if (shortestRoute == null || r.numberOfSteps() < shortestRoute.numberOfSteps()) {
             shortestRoute = r;
