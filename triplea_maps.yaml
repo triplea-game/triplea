@@ -1452,9 +1452,9 @@
     <br>Converted up to TripleA1.2.x.x by Veqryn
 - mapName: Cold War 1965
   mapCategory: GOOD
-  url: https://github.com/triplea-maps/cold_war-1965/archive/master.zip
+  url: https://github.com/triplea-maps/cold_war_1965/archive/master.zip
   version: 1
-  img: https://raw.githubusercontent.com/triplea-maps/cold_war-1965/master/map/doc/images/mapScreenshot.png
+  img: https://raw.githubusercontent.com/triplea-maps/cold_war_1965/master/map/doc/images/mapScreenshot.png
   description: |
     <br>Cold War 1965
     <br>
