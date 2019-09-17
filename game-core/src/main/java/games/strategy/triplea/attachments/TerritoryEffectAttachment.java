@@ -9,8 +9,10 @@ import games.strategy.engine.data.MutableProperty;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   private IntegerMap<UnitType> combatDefenseEffect = new IntegerMap<>();
   private IntegerMap<UnitType> combatOffenseEffect = new IntegerMap<>();
+  private Map<UnitType, BigDecimal> movementCostModifier = new HashMap<>();
   private List<UnitType> noBlitz = new ArrayList<>();
   private List<UnitType> unitsNotAllowed = new ArrayList<>();
 
@@ -84,7 +87,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
       final String unitTypeToProduce = iter.next();
       final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
       if (ut == null) {
-        throw new GameParseException("No unit called:" + unitTypeToProduce + thisErrorMsg());
+        throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
       }
       if (defending) {
         combatDefenseEffect.put(ut, effect);
@@ -96,6 +99,36 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
 
   public int getCombatEffect(final UnitType type, final boolean defending) {
     return defending ? combatDefenseEffect.getInt(type) : combatOffenseEffect.getInt(type);
+  }
+
+  private void setMovementCostModifier(final String value) throws GameParseException {
+    final String[] s = splitOnColon(value);
+    if (s.length < 2) {
+      throw new GameParseException(
+          "movementCostModifier must have a count and at least one unitType" + thisErrorMsg());
+    }
+    final Iterator<String> iter = Arrays.asList(s).iterator();
+    final BigDecimal effect = getBigDecimal(iter.next());
+    while (iter.hasNext()) {
+      final String unitTypeToProduce = iter.next();
+      final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
+      if (ut == null) {
+        throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
+      }
+      movementCostModifier.put(ut, effect);
+    }
+  }
+
+  private void setMovementCostModifier(final Map<UnitType, BigDecimal> value) {
+    movementCostModifier = value;
+  }
+
+  public Map<UnitType, BigDecimal> getMovementCostModifier() {
+    return new HashMap<>(movementCostModifier);
+  }
+
+  private void resetMovementCostModifier() {
+    movementCostModifier = new HashMap<>();
   }
 
   private void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException {
@@ -171,6 +204,13 @@ public class TerritoryEffectAttachment extends DefaultAttachment {
                 this::setCombatOffenseEffect,
                 this::getCombatOffenseEffect,
                 this::resetCombatOffenseEffect))
+        .put(
+            "movementCostModifier",
+            MutableProperty.of(
+                this::setMovementCostModifier,
+                this::setMovementCostModifier,
+                this::getMovementCostModifier,
+                this::resetMovementCostModifier))
         .put(
             "noBlitz",
             MutableProperty.of(
