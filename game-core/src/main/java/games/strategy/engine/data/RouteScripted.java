@@ -22,12 +22,6 @@ public class RouteScripted extends Route {
   }
 
   @Override
-  public void add(final Territory t) {
-    // maybe we don't check for loops?
-    super.add(t);
-  }
-
-  @Override
   public int numberOfSteps() {
     if (super.numberOfSteps() <= 0) {
       return 1;

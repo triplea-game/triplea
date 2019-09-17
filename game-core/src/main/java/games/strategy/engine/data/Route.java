@@ -9,7 +9,9 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.AirMovementValidator;
 import games.strategy.triplea.delegate.GameStepPropertiesHelper;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,7 +23,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
 
@@ -29,35 +30,44 @@ import org.triplea.util.Tuple;
  * A route between two territories.
  *
  * <p>A route consists of a start territory, and a sequence of steps. To create a route do, <code>
- * Route aRoute = new Route();
- * route.setStart(someTerritory);
- * route.add(anotherTerritory);
- * route.add(yetAnotherTerritory);
+ * Route aRoute = new Route(someTerritory, anotherTerritory, yetAnotherTerritory);
  * </code>
  */
 public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
 
+  private Territory start;
   private final List<Territory> steps = new ArrayList<>();
-  private @Nullable Territory start;
 
-  public Route() {}
-
-  public Route(final List<Territory> route) {
-    setStart(route.get(0));
-    if (route.size() == 1) {
-      return;
-    }
-    for (final Territory t : route.subList(1, route.size())) {
+  public Route(final List<Territory> territories) {
+    setStart(territories.get(0));
+    for (final Territory t : territories.subList(1, territories.size())) {
       add(t);
     }
   }
 
-  public Route(final Territory start, final Territory... route) {
+  public Route(final Territory start, final Territory... territories) {
     setStart(start);
-    for (final Territory t : route) {
+    for (final Territory t : territories) {
       add(t);
     }
+  }
+
+  /** Set the start of this route. */
+  private void setStart(final Territory newStartTerritory) {
+    checkNotNull(newStartTerritory);
+    start = newStartTerritory;
+  }
+
+  /** Add the given territory to the end of the route. */
+  private void add(final Territory territory) {
+    checkNotNull(territory);
+    if (territory.equals(start) || steps.contains(territory)) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Loops not allowed in steps, route: %s, new territory: %s", this, territory));
+    }
+    steps.add(territory);
   }
 
   /**
@@ -90,8 +100,7 @@ public class Route implements Serializable, Iterable<Territory> {
     if (!CollectionUtils.intersection(c1, c2).isEmpty()) {
       return null;
     }
-    final Route joined = new Route();
-    joined.setStart(r1.getStart());
+    final Route joined = new Route(r1.getStart());
     for (final Territory t : r1.getSteps()) {
       joined.add(t);
     }
@@ -120,13 +129,6 @@ public class Route implements Serializable, Iterable<Territory> {
     return Objects.hash(start, getSteps());
   }
 
-  /** Set the start of this route. */
-  public void setStart(final Territory newStartTerritory) {
-    checkNotNull(newStartTerritory);
-
-    start = newStartTerritory;
-  }
-
   /** Returns start territory for this route. */
   public Territory getStart() {
     return start;
@@ -139,25 +141,11 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return whether the route encounters water other than at the start of the route.
    */
   public boolean crossesWater() {
-    if (hasNoSteps()) {
-      return false;
-    }
     final boolean startLand = !start.isWater();
     final boolean overWater = anyMatch(Territory::isWater);
 
     // If we started on land, went over water, and ended on land, we cross water.
-    return (startLand && overWater && !getEnd().isWater());
-  }
-
-  /** Add the given territory to the end of the route. */
-  public void add(final Territory territory) {
-    checkNotNull(territory);
-    if (territory.equals(start) || steps.contains(territory)) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Loops not allowed in steps, route: %s, new territory: %s", this, territory));
-    }
-    steps.add(territory);
+    return hasSteps() && startLand && overWater && !getEnd().isWater();
   }
 
   /** Returns the number of steps in this route. Does not include start. */
@@ -165,9 +153,12 @@ public class Route implements Serializable, Iterable<Territory> {
     return steps.size();
   }
 
-  /** Returns the number of steps in this route. DOES include start. */
-  public int numberOfStepsIncludingStart() {
-    return this.getAllTerritories().size();
+  public BigDecimal getMovementCost(final Unit unit) {
+    BigDecimal movementCost = BigDecimal.ZERO;
+    for (final Territory t : steps) {
+      movementCost = movementCost.add(TerritoryEffectHelper.getMovementCost(t, unit));
+    }
+    return movementCost;
   }
 
   /**
@@ -175,7 +166,7 @@ public class Route implements Serializable, Iterable<Territory> {
    *
    * @param i step number
    */
-  public Territory getTerritoryAtStep(final int i) {
+  Territory getTerritoryAtStep(final int i) {
     return steps.get(i);
   }
 
@@ -196,11 +187,10 @@ public class Route implements Serializable, Iterable<Territory> {
    *
    * @param match referring match
    */
-  public boolean allMatchMiddleSteps(
-      final Predicate<Territory> match, final boolean defaultWhenNoMiddleSteps) {
+  public boolean allMatchMiddleSteps(final Predicate<Territory> match) {
     final List<Territory> middle = getMiddleSteps();
     if (middle.isEmpty()) {
-      return defaultWhenNoMiddleSteps;
+      return false;
     }
     for (final Territory t : middle) {
       if (!match.test(t)) {
@@ -237,7 +227,6 @@ public class Route implements Serializable, Iterable<Territory> {
 
   /** Returns collection of all territories in this route, without the start. */
   public List<Territory> getSteps() {
-
     return numberOfSteps() > 0 ? steps : new ArrayList<>();
   }
 
@@ -278,7 +267,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return whether the route has 1 step
    */
   public boolean hasExactlyOneStep() {
-    return this.steps.size() == 1;
+    return steps.size() == 1;
   }
 
   /**
@@ -297,13 +286,9 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return whether this route is an unloading route (unloading from transport to land)
    */
   public boolean isUnload() {
-    if (hasNoSteps()) {
-      return false;
-    }
     // we should not check if there is only 1 step, because otherwise movement validation will let
-    // users move their
-    // tanks over water, so long as they end on land
-    return getStart().isWater() && !getEnd().isWater();
+    // users move their tanks over water, so long as they end on land
+    return hasSteps() && getStart().isWater() && !getEnd().isWater();
   }
 
   /**
@@ -312,7 +297,7 @@ public class Route implements Serializable, Iterable<Territory> {
    * @return whether this route is a loading route (loading from land into a transport @ sea)
    */
   public boolean isLoad() {
-    return !hasNoSteps() && !getStart().isWater() && getEnd().isWater();
+    return hasSteps() && !getStart().isWater() && getEnd().isWater();
   }
 
   /** Indicates whether this route has more then one step. */
@@ -346,8 +331,8 @@ public class Route implements Serializable, Iterable<Territory> {
         || !getAllTerritories().stream().allMatch(Matches.territoryIsWater());
   }
 
-  public int getMovementLeft(final Unit unit) {
-    return ((TripleAUnit) unit).getMovementLeft() - numberOfSteps();
+  public BigDecimal getMovementLeft(final Unit unit) {
+    return ((TripleAUnit) unit).getMovementLeft().subtract(getMovementCost(unit));
   }
 
   /** Returns a change object that removes fuel after a given set of units crosses a given route. */
@@ -473,13 +458,5 @@ public class Route implements Serializable, Iterable<Territory> {
       chargedFlatFuelCost = true;
     }
     return Tuple.of(resources, chargedFlatFuelCost);
-  }
-
-  public static Route create(final List<Route> routes) {
-    Route route = new Route();
-    for (final Route r : routes) {
-      route = Route.join(route, r);
-    }
-    return route;
   }
 }
