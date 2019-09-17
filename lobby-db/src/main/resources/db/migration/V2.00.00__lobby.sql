@@ -13,25 +13,36 @@ create table banned_usernames (
 );
 alter table banned_usernames owner to lobby_user;
 
-create table ta_users (
-    username character varying(40) not null primary key,
-    password character varying(60) not null,
-    email character varying(40) not null,
-    joined timestamp without time zone not null,
-    lastlogin timestamp without time zone not null,
-    admin integer not null
+create table lobby_user
+(
+    id              serial primary key,
+    username        character varying(40) not null unique,
+    password        character varying(60),
+    email           character varying(40) not null,
+    check (email <> ''),
+    date_created    timestamptz           not null default current_timestamp,
+    last_login      timestamptz,
+    role            character varying(16) not null default 'PLAYER' check (role in ('PLAYER', 'MODERATOR', 'ADMIN')),
+    bcrypt_password character(60) check (char_length(bcrypt_password) = 60)
 );
-alter table ta_users owner to lobby_user;
--- update_tables
-alter table ta_users
-    alter column email type varchar(254),
-    alter column joined type timestamptz,
-    alter column joined set default current_timestamp,
-    alter column lastlogin type timestamptz,
-    alter column lastlogin set default current_timestamp,
-    alter column admin type boolean using case when admin=0 then false else true end,
-    alter column admin set default false;
 
+alter table lobby_user
+    owner to lobby_user;
+alter table lobby_user
+    add constraint lobby_user_pass_check check (password IS NOT NULL OR bcrypt_password IS NOT NULL);
+
+
+comment on table lobby_user is 'The table storing all the information about Lobby TripleA users.';
+comment on column lobby_user.id is 'Synthetic PK column';
+comment on column lobby_user.username is 'Defines the in-game username of everyone.';
+comment on column lobby_user.password is 'The legacy MD5Crypt hash of the password. The length of the hash must always be 34 chars. Either password or bcrypt_password must be not null.';
+comment on column lobby_user.email is 'Email storage of every user. Large size to match the maximum email length. More information here: https://stackoverflow.com/a/574698.';
+comment on column lobby_user.date_created is 'The timestamp of the creation of the account.';
+comment on column lobby_user.last_login is 'The timestamp of the last successful login.';
+comment on column lobby_user.role is
+    $$The role of the user, controls privileges. If moderator the user is able to ban and mute other people.
+     Admin is able to add/remove other moderators.$$;
+comment on column lobby_user.bcrypt_password is 'The BCrypt-Hashed password of the user, should be the same as the md5 password but in another form. The length of the hash must always be 60 chars. Either password or bcrypt_password must be not null.';
 
 delete from banned_usernames where ban_till <= now();
 alter table banned_usernames
@@ -41,33 +52,10 @@ alter table banned_usernames
 
 -- Comments
 
-comment on table ta_users is 'The table storing all the information about TripleA users.';
-comment on column ta_users.username is 'Defines the in-game username of everyone. The primary key constraint should probably be moved to an id column, preferably using pseudo_encrypt(nextval(''something'')) as default value.';
-comment on column ta_users.email is 'Email storage of every user. Large size to match the maximum email length. More information here: https://stackoverflow.com/a/574698 Should be made unique in the future.';
-comment on column ta_users.joined is 'The timestamp of the creation of the account. Is created automatically by the DB, should never be modified, e.g. considered immutable';
-comment on column ta_users.lastlogin is 'The timestamp of the last successful login, is altered by the game engine.';
-comment on column ta_users.admin is 'The role of the user, controls privileges. If true the user is able to ban and mute other people. Might be changed to another type once more "ranks" become neccessary. Defaults to false.';
-
 comment on table banned_usernames is 'A Table storing banned usernames.';
 comment on column banned_usernames.username is 'The username of the banned user. Actually no direct reference to the ta_users.username, the engine allows to define prohibited usernames, should probably be avoided, and an SQL reference created instead.';
 comment on column banned_usernames.ban_till is 'A timestamp indicating how long the ban should be active, if NULL the ban is forever.';
 comment on constraint banned_usernames_ban_till_check on banned_usernames is 'Ensures no storage is being wasted by banning someone backdated to the past.';
-
--- add_bcrypt_password_column
-
-alter table ta_users add column bcrypt_password character(60) check (char_length(bcrypt_password)=60);
-alter table ta_users alter column password drop not null;
-update ta_users set password=null, bcrypt_password=password where password like '$2a$%';
-alter table ta_users alter column password type character(34);
-alter table ta_users add constraint ta_users_password_check check (char_length(password)=34);
-alter table ta_users add constraint ta_users_check check (password IS NOT NULL OR bcrypt_password IS NOT NULL);
-
--- Comments
-comment on column ta_users.password is 'The legacy MD5Crypt hash of the password. Is going to replaced by the content bcrypt_password in the next incompatible lobby release. The length of the hash must always be 34 chars. Either password or bcrypt_password must be not null.';
-comment on column ta_users.bcrypt_password is 'The BCrypt-Hashed password of the user, should be the same as the md5 password but in another form. The length of the hash must always be 60 chars. Either password or bcrypt_password must be not null.';
-comment on constraint ta_users_password_check on ta_users is 'This check constraint ensures the legacy password hash has the right char length of 34 chars';
-comment on constraint ta_users_bcrypt_password_check on ta_users is 'This check constraint ensures the legacy password hash has the right char length of 60 chars';
-comment on constraint ta_users_check on ta_users is 'This check constraint ensures either password or bcrypt_password is not null.';
 
 -- audit_bans
 
@@ -137,36 +125,6 @@ alter table banned_usernames
 alter table banned_usernames
   drop column mod_mac;
 
-create table lobby_user
-(
-    id              serial primary key,
-    username        character varying(40) not null unique,
-    password        character varying(60),
-    email           character varying(40) not null,
-    check (email <> ''),
-    date_created    timestamptz           not null default current_timestamp,
-    last_login      timestamptz,
-    role            character varying(16) not null default 'PLAYER' check (role in ('PLAYER', 'MODERATOR', 'ADMIN')),
-    bcrypt_password character(60) check (char_length(bcrypt_password) = 60)
-);
-
-alter table lobby_user
-    owner to lobby_user;
-alter table lobby_user
-    add constraint lobby_user_pass_check check (password IS NOT NULL OR bcrypt_password IS NOT NULL);
-
-
-comment on table lobby_user is 'The table storing all the information about Lobby TripleA users.';
-comment on column lobby_user.id is 'Synthetic PK column';
-comment on column lobby_user.username is 'Defines the in-game username of everyone.';
-comment on column lobby_user.password is 'The legacy MD5Crypt hash of the password. The length of the hash must always be 34 chars. Either password or bcrypt_password must be not null.';
-comment on column lobby_user.email is 'Email storage of every user. Large size to match the maximum email length. More information here: https://stackoverflow.com/a/574698.';
-comment on column lobby_user.date_created is 'The timestamp of the creation of the account.';
-comment on column lobby_user.last_login is 'The timestamp of the last successful login.';
-comment on column lobby_user.role is
-    $$The role of the user, controls privileges. If moderator the user is able to ban and mute other people.
-     Admin is able to add/remove other moderators.$$;
-comment on column lobby_user.bcrypt_password is 'The BCrypt-Hashed password of the user, should be the same as the md5 password but in another form. The length of the hash must always be 60 chars. Either password or bcrypt_password must be not null.';
 
 
 create table moderator_action_history
