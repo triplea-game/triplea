@@ -1,8 +1,12 @@
+comment on database lobby_db is 'The Database of the TripleA Lobby';
 
-create table bad_words (
-    word character varying(40) not null primary key
+create table bad_word (
+    word character varying(40) not null primary key,
+    date_created  timestamp without time zone not null default now()
 );
-alter table bad_words owner to lobby_user;
+alter table bad_word owner to lobby_user;
+comment on table bad_word is 'A table representing a blacklist of words';
+
 
 create table banned_ips (
     ip character varying(40) not null primary key,
@@ -89,7 +93,6 @@ alter table muted_usernames
 
 
 -- Comments
-comment on database lobby_db is 'The Database of the TripleA Lobby';
 
 comment on table ta_users is 'The table storing all the information about TripleA users.';
 comment on column ta_users.username is 'Defines the in-game username of everyone. The primary key constraint should probably be moved to an id column, preferably using pseudo_encrypt(nextval(''something'')) as default value.';
@@ -268,27 +271,6 @@ comment on column access_log.mac is 'The hashed MAC address of the user accessin
 comment on column access_log.registered is 'True if the user was registered when accessing the lobby; otherwise false if the user was anonymous';
 
 alter table access_log owner to lobby_user;
-
--- Recreate 'bad_words' table with new table name 'bad_word', updated comments and add 'date_created' column
-
-create table bad_word as
-select word, now() as date_created
-from bad_words;
-
-alter table bad_word
-  add primary key (word);
-
-alter table bad_word
-  alter column date_created set not null;
-
-alter table bad_word
-  alter column date_created set default now();
-
-comment on table bad_word is 'A table representing a blacklist of words';
-comment on column bad_word.word is 'Stores the banned words';
-comment on column bad_word.date_created is 'Row creation date';
-
-drop table bad_words;
 
 -- mute only by network identifiers, drop mute by username
 drop table muted_usernames;
