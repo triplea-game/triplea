@@ -13,6 +13,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -449,7 +450,7 @@ final class UnitChooser extends JPanel {
                 0,
                 0));
         if (i == 0) {
-          if (category.getMovement() != -1) {
+          if (category.getMovement().compareTo(new BigDecimal(-1)) != 0) {
             panel.add(
                 new JLabel("mvt " + category.getMovement()),
                 new GridBagConstraints(

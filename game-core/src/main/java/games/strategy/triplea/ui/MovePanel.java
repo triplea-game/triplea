@@ -32,6 +32,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -955,7 +956,8 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
       final Predicate<Unit> enoughMovement =
           u ->
               BaseEditDelegate.getEditMode(getData())
-                  || (TripleAUnit.get(u).getMovementLeft() >= route.numberOfSteps());
+                  || (TripleAUnit.get(u).getMovementLeft().compareTo(route.getMovementCost(u))
+                      >= 0);
 
       if (route.isUnload()) {
         final Predicate<Unit> notLandAndCanMove = enoughMovement.and(Matches.unitIsNotLand());
@@ -1014,10 +1016,9 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
     }
     Territory last = getFirstSelectedTerritory();
 
-    Route total = new Route();
-    total.setStart(last);
+    Route total = new Route(last);
     for (final Territory current : forced) {
-      final Route add = getData().getMap().getRoute(last, current);
+      final Route add = getRouteNonForced(last, current, selectedUnits);
       final Route newTotal = Route.join(total, add);
       if (newTotal == null) {
         return total;
@@ -1392,12 +1393,12 @@ public class MovePanel extends AbstractMovePanel implements KeyBindingSupplier {
               candidateUnits, mustMoveWithDetails.getMustMoveWith(), true, false);
       for (final UnitCategory category1 : categories) {
         // we cant move these, dont bother to check
-        if (category1.getMovement() == 0) {
+        if (category1.getMovement().compareTo(BigDecimal.ZERO) == 0) {
           continue;
         }
         for (final UnitCategory category2 : categories) {
           // we cant move these, dont bother to check
-          if (category2.getMovement() == 0) {
+          if (category2.getMovement().compareTo(BigDecimal.ZERO) == 0) {
             continue;
           }
           // if we find that two categories are compatible, and some units are selected from one

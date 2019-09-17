@@ -211,8 +211,7 @@ class EditPanel extends ActionPanel {
               }
             }
           }
-          final Route defaultRoute =
-              getData().getMap().getRoute(selectedTerritory, selectedTerritory);
+          final Route defaultRoute = new Route(selectedTerritory);
           getMap().setRoute(defaultRoute, mouseSelectedPoint, mouseCurrentPoint, null);
           getMap().setMouseShadowUnits(selectedUnits);
         }
@@ -960,12 +959,12 @@ class EditPanel extends ActionPanel {
             return Comparator.<TripleAUnit, Collection<Unit>>comparing(
                     TripleAUnit::getTransporting,
                     Comparator.comparingInt(TransportUtils::getTransportCost).reversed())
-                .thenComparingInt(TripleAUnit::getMovementLeft)
+                .thenComparing(TripleAUnit::getMovementLeft)
                 .thenComparingInt(Object::hashCode)
                 .compare(u1, u2);
           }
           // Sort by increasing movement left
-          return Comparator.comparingInt(TripleAUnit::getMovementLeft)
+          return Comparator.comparing(TripleAUnit::getMovementLeft)
               .thenComparingInt(Object::hashCode)
               .compare(u1, u2);
         });
