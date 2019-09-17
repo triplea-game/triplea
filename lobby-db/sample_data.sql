@@ -1,6 +1,8 @@
 delete
 from moderator_action_history;
 delete
+from api_key;
+delete
 from lobby_user;
 delete
 from access_log;
