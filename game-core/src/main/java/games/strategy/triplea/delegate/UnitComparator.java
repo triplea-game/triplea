@@ -6,6 +6,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.util.TransportUtils;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ public final class UnitComparator {
 
   static Comparator<Unit> getLowestToHighestMovementComparator() {
     return Comparator.comparing(
-        TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft));
+        TripleAUnit::get, Comparator.comparing(TripleAUnit::getMovementLeft));
   }
 
   public static Comparator<Unit> getHighestToLowestMovementComparator() {
@@ -53,7 +54,7 @@ public final class UnitComparator {
         .thenComparing(Unit::getOwner, Comparator.comparing(player::equals).reversed())
         .thenComparing(getDecreasingCapacityComparator())
         .thenComparing(
-            TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed())
+            TripleAUnit::get, Comparator.comparing(TripleAUnit::getMovementLeft).reversed())
         .thenComparingInt(Object::hashCode);
   }
 
@@ -63,7 +64,7 @@ public final class UnitComparator {
     return Comparator.comparing(Matches.transportCannotUnload(route.getEnd())::test)
         .thenComparing(Unit::getOwner, Comparator.comparing(player::equals))
         .thenComparing(getDecreasingCapacityComparator())
-        .thenComparing(TripleAUnit::get, Comparator.comparingInt(TripleAUnit::getMovementLeft))
+        .thenComparing(TripleAUnit::get, Comparator.comparing(TripleAUnit::getMovementLeft))
         .thenComparingInt(t -> noTies ? t.hashCode() : 0);
   }
 
@@ -73,13 +74,15 @@ public final class UnitComparator {
     final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator();
     return (u1, u2) -> {
       // Ensure units have enough movement
-      final int left1 = TripleAUnit.get(u1).getMovementLeft();
-      final int left2 = TripleAUnit.get(u2).getMovementLeft();
+      final BigDecimal left1 = TripleAUnit.get(u1).getMovementLeft();
+      final BigDecimal left2 = TripleAUnit.get(u2).getMovementLeft();
       if (route != null) {
-        if ((left1 >= route.numberOfSteps()) && (left2 < route.numberOfSteps())) {
+        if ((left1.compareTo(route.getMovementCost(u1)) >= 0)
+            && (left2.compareTo(route.getMovementCost(u2)) < 0)) {
           return -1;
         }
-        if ((left1 < route.numberOfSteps()) && (left2 >= route.numberOfSteps())) {
+        if ((left1.compareTo(route.getMovementCost(u1)) < 0)
+            && (left2.compareTo(route.getMovementCost(u2)) >= 0)) {
           return 1;
         }
       }
@@ -100,8 +103,10 @@ public final class UnitComparator {
       }
 
       // Sort by increasing movement normally, but by decreasing movement during loading
-      if (left1 != left2) {
-        return (route != null && route.isLoad()) ? (left2 - left1) : (left1 - left2);
+      if (left1.compareTo(left2) != 0) {
+        return (route != null && route.isLoad())
+            ? (left2.compareTo(left1))
+            : (left1.compareTo(left2));
       }
 
       return Integer.compare(u1.hashCode(), u2.hashCode());

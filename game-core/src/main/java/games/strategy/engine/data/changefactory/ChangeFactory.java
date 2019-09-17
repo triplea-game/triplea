@@ -20,6 +20,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.TechAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.data.BattleRecords;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -219,7 +220,7 @@ public class ChangeFactory {
   public static Change markNoMovementChange(final Collection<Unit> units) {
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : units) {
-      if (TripleAUnit.get(unit).getMovementLeft() > 0) {
+      if (TripleAUnit.get(unit).getMovementLeft().compareTo(BigDecimal.ZERO) > 0) {
         change.add(markNoMovementChange(unit));
       }
     }

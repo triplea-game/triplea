@@ -21,6 +21,7 @@ import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -302,8 +303,8 @@ public class MoveDelegate extends AbstractMoveDelegate {
     final CompositeChange change = new CompositeChange();
     for (final Unit u : data.getUnits()) {
       final TripleAUnit taUnit = TripleAUnit.get(u);
-      if (taUnit.getAlreadyMoved() != 0) {
-        change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.ALREADY_MOVED));
+      if (taUnit.getAlreadyMoved().compareTo(BigDecimal.ZERO) != 0) {
+        change.add(ChangeFactory.unitPropertyChange(u, BigDecimal.ZERO, TripleAUnit.ALREADY_MOVED));
       }
       if (taUnit.getWasInCombat()) {
         change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_IN_COMBAT));

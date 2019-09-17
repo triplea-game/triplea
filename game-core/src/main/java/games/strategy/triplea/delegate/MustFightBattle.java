@@ -1141,9 +1141,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
     // make sure we can move through the any canals
     final Predicate<Territory> canalMatch =
         t -> {
-          final Route r = new Route();
-          r.setStart(battleSite);
-          r.add(t);
+          final Route r = new Route(battleSite, t);
           return MoveValidator.validateCanal(r, unitsToRetreat, defender, gameData) == null;
         };
     final Predicate<Territory> match =
@@ -2633,9 +2631,7 @@ public class MustFightBattle extends DependentBattle implements BattleStepString
       final Collection<IBattle> dependentBattles) {
     final CompositeChange change = new CompositeChange();
     for (final IBattle dependent : dependentBattles) {
-      final Route route = new Route();
-      route.setStart(battleSite);
-      route.add(dependent.getTerritory());
+      final Route route = new Route(battleSite, dependent.getTerritory());
       final Collection<Unit> retreatedUnits = dependent.getDependentUnits(units);
       dependent.removeAttack(route, retreatedUnits);
       TransportTracker.reloadTransports(units, change);

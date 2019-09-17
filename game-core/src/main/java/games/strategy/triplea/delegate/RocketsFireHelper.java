@@ -249,12 +249,14 @@ public class RocketsFireHelper implements Serializable {
   private static Set<Territory> getTargetsWithinRange(
       final Territory territory, final GameData data, final PlayerId player) {
     final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
-    final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
+
     final Set<Territory> hasFactory = new HashSet<>();
     final Predicate<Territory> allowed =
         PredicateBuilder.of(Matches.territoryAllowsRocketsCanFlyOver(player, data))
             .andIf(!isRocketsCanFlyOverImpassables(data), Matches.territoryIsNotImpassable())
             .build();
+    final Collection<Territory> possible =
+        data.getMap().getNeighbors(territory, maxDistance, allowed);
     final Predicate<Unit> attackableUnits =
         Matches.enemyUnit(player, data).and(Matches.unitIsBeingTransported().negate());
     for (final Territory current : possible) {

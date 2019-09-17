@@ -5,6 +5,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.attachments.UnitTypeComparator;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,7 +34,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   // Collection of UnitOwners, the type of our dependents, not the dependents
   private Collection<UnitOwner> dependents;
   // movement of the units
-  private final int movement;
+  private final BigDecimal movement;
   // movement of the units
   private final int transportCost;
   private final PlayerId owner;
@@ -46,7 +47,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   public UnitCategory(final UnitType type, final PlayerId owner) {
     this.type = type;
     dependents = Collections.emptyList();
-    movement = -1;
+    movement = new BigDecimal(-1);
     transportCost = -1;
     this.owner = owner;
   }
@@ -54,7 +55,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
   UnitCategory(
       final Unit unit,
       final Collection<Unit> dependents,
-      final int movement,
+      final BigDecimal movement,
       final int damaged,
       final int bombingDamage,
       final boolean disabled,
@@ -117,7 +118,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
 
   private boolean equalsIgnoreDamagedAndBombingDamageAndDisabled(final UnitCategory other) {
     return other.type.equals(this.type)
-        && other.movement == this.movement
+        && other.movement.compareTo(this.movement) == 0
         && other.owner.equals(this.owner)
         && CollectionUtils.haveEqualSizeAndEquivalentElements(this.dependents, other.dependents);
   }
@@ -154,7 +155,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
     return units;
   }
 
-  public int getMovement() {
+  public BigDecimal getMovement() {
     return movement;
   }
 
@@ -179,7 +180,7 @@ public class UnitCategory implements Comparable<UnitCategory> {
     return Comparator.nullsLast(
             Comparator.comparing(UnitCategory::getOwner, Comparator.comparing(PlayerId::getName))
                 .thenComparing(UnitCategory::getType, new UnitTypeComparator())
-                .thenComparingInt(UnitCategory::getMovement)
+                .thenComparing(UnitCategory::getMovement)
                 .thenComparing(
                     UnitCategory::getDependents,
                     (o1, o2) -> {

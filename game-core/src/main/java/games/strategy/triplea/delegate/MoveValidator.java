@@ -22,6 +22,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -390,8 +391,7 @@ public class MoveValidator {
     if (!route.getStart().isWater()
         && Matches.isAtWar(route.getStart().getOwner(), data).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player, data))
-            && !route.allMatchMiddleSteps(
-                Matches.isTerritoryEnemy(player, data).negate(), false))) {
+            && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player, data).negate()))) {
       if (!Matches.territoryIsBlitzable(player, data).test(route.getStart())
           && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
         return result.setErrorReturnResult(
@@ -409,8 +409,7 @@ public class MoveValidator {
     if (!route.getStart().isWater()
         && !Matches.isAtWar(route.getStart().getOwner(), data).test(player)
         && (route.anyMatch(Matches.isTerritoryEnemy(player, data))
-            && !route.allMatchMiddleSteps(
-                Matches.isTerritoryEnemy(player, data).negate(), false))) {
+            && !route.allMatchMiddleSteps(Matches.isTerritoryEnemy(player, data).negate()))) {
       if (!Matches.territoryIsBlitzable(player, data).test(route.getStart())
           && (units.isEmpty() || !units.stream().allMatch(Matches.unitIsAir()))) {
         return result.setErrorReturnResult("Cannot blitz out of a battle into enemy territory");
@@ -990,7 +989,7 @@ public class MoveValidator {
     }
     // if there are no steps, then we began in this sea zone, so see if there are ignored units in
     // this sea zone (not sure if we need !ignoreRouteEnd here).
-    if (steps.isEmpty() && route.numberOfStepsIncludingStart() == 1 && !ignoreRouteEnd) {
+    if (steps.isEmpty() && route.getStart() != null && !ignoreRouteEnd) {
       steps.add(route.getStart());
     }
     boolean validMove = false;
@@ -1102,26 +1101,26 @@ public class MoveValidator {
     return CollectionUtils.getMatches(units, Matches.unitIsAir().or(Matches.unitIsSea()));
   }
 
-  public static int getMaxMovement(final Collection<Unit> units) {
+  public static BigDecimal getMaxMovement(final Collection<Unit> units) {
     if (units.size() == 0) {
       throw new IllegalArgumentException("no units");
     }
-    int max = 0;
+    BigDecimal max = BigDecimal.ZERO;
     for (final Unit unit : units) {
-      final int left = TripleAUnit.get(unit).getMovementLeft();
-      max = Math.max(left, max);
+      final BigDecimal left = TripleAUnit.get(unit).getMovementLeft();
+      max = left.max(max);
     }
     return max;
   }
 
-  static int getLeastMovement(final Collection<Unit> units) {
+  static BigDecimal getLeastMovement(final Collection<Unit> units) {
     if (units.size() == 0) {
       throw new IllegalArgumentException("no units");
     }
-    int least = Integer.MAX_VALUE;
+    BigDecimal least = new BigDecimal(Integer.MAX_VALUE);
     for (final Unit unit : units) {
-      final int left = TripleAUnit.get(unit).getMovementLeft();
-      least = Math.min(left, least);
+      final BigDecimal left = TripleAUnit.get(unit).getMovementLeft();
+      least = left.min(least);
     }
     return least;
   }
@@ -1202,7 +1201,7 @@ public class MoveValidator {
               .and(Matches.unitIsSea())
               .and(Matches.unitIsNotTransportButCouldBeCombatTransport());
       for (final Unit transport : transports) {
-        if (!isNonCombat && route.numberOfStepsIncludingStart() == 2) {
+        if (!isNonCombat) {
           if (Matches.territoryHasEnemyUnits(player, data).test(routeEnd)
               || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).test(routeEnd)) {
             // this is an amphibious assault
@@ -1447,7 +1446,7 @@ public class MoveValidator {
         Matches.unitIsAirTransportable()
             .and(
                 u ->
-                    (TripleAUnit.get(u).getMovementLeft() < route.numberOfSteps())
+                    (TripleAUnit.get(u).getMovementLeft().compareTo(route.getMovementCost(u)) < 0)
                         || route.crossesWater()
                         || route.getEnd().isWater()));
   }
@@ -1754,15 +1753,14 @@ public class MoveValidator {
 
     Route defaultRoute =
         data.getMap()
-            .getRouteIgnoreEndValidatingCanals(
+            .getRouteForUnits(
                 start, end, noImpassableOrRestrictedOrNeutral, units, player);
     if (defaultRoute == null) {
       // Try for a route without impassable territories, but allowing restricted territories, since
-      // there is a chance
-      // politics may change in the future
+      // there is a chance politics may change in the future
       defaultRoute =
           data.getMap()
-              .getRoute_IgnoreEnd(
+              .getRoute(
                   start,
                   end,
                   (isNeutralsImpassable
@@ -1770,7 +1768,7 @@ public class MoveValidator {
                       : Matches.territoryIsImpassable()));
       // There really is nothing, so just return any route, without conditions
       if (defaultRoute == null) {
-        return data.getMap().getRoute(start, end);
+        return data.getMap().getRoute(start, end, Matches.always());
       }
       return defaultRoute;
     }
@@ -1790,7 +1788,7 @@ public class MoveValidator {
     if (!start.isWater() && !end.isWater()) {
       final Route landRoute =
           data.getMap()
-              .getRouteIgnoreEndValidatingCanals(
+              .getRouteForUnits(
                   start,
                   end,
                   Matches.territoryIsLand().and(noImpassableOrRestrictedOrNeutral),
@@ -1812,7 +1810,7 @@ public class MoveValidator {
     if (start.isWater() && end.isWater()) {
       final Route waterRoute =
           data.getMap()
-              .getRouteIgnoreEndValidatingCanals(
+              .getRouteForUnits(
                   start,
                   end,
                   Matches.territoryIsWater().and(noImpassableOrRestrictedOrNeutral),
@@ -1853,7 +1851,7 @@ public class MoveValidator {
     final List<Unit> landUnits =
         CollectionUtils.getMatches(
             unitsWhichAreNotBeingTransportedOrDependent, Matches.unitIsLand());
-    final int maxLandMoves = landUnits.isEmpty() ? 0 : getMaxMovement(landUnits);
+    final int maxLandMoves = landUnits.isEmpty() ? 0 : getMaxMovement(landUnits).intValue();
     final int maxSteps =
         GameStepPropertiesHelper.isCombatMove(data)
             ? defaultRoute.numberOfSteps()
@@ -1872,7 +1870,7 @@ public class MoveValidator {
         moveCondition = movePreference.and(noImpassableOrRestrictedOrNeutral);
       }
       final Route route =
-          data.getMap().getRouteIgnoreEndValidatingCanals(start, end, moveCondition, units, player);
+          data.getMap().getRouteForUnits(start, end, moveCondition, units, player);
       if ((route != null) && (route.numberOfSteps() <= maxSteps)) {
         return route;
       }

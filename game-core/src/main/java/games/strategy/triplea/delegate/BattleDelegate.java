@@ -33,6 +33,7 @@ import games.strategy.triplea.delegate.data.BattleRecord;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -789,8 +790,9 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         // find how many is the max this territory can scramble
         final Collection<Unit> airbases = from.getUnitCollection().getMatches(airbasesCanScramble);
         final int maxCanScramble = getMaxScrambleCount(airbases);
+        // TODO: consider movement cost and canals by checking each air unit separately
         final Route toBattleRoute =
-            data.getMap().getRoute_IgnoreEnd(from, to, Matches.territoryIsNotImpassable());
+            data.getMap().getRoute(from, to, Matches.territoryIsNotImpassable());
         final Collection<Unit> canScrambleAir =
             from.getUnitCollection()
                 .getMatches(
@@ -1111,13 +1113,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         if (!mustReturnToBase
             || !Matches.isTerritoryAllied(u.getOwner(), data).test(originatedFrom)) {
           final Collection<Territory> possible =
-              whereCanAirLand(
-                  Collections.singletonList(u),
-                  t,
-                  u.getOwner(),
-                  data,
-                  battleTracker,
-                  carrierCostOfCurrentTerr);
+              whereCanAirLand(u, t, u.getOwner(), data, battleTracker, carrierCostOfCurrentTerr);
           if (possible.size() > 1) {
             landingTerr =
                 getRemotePlayer(u.getOwner())
@@ -1681,24 +1677,16 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
   }
 
   private static Collection<Territory> whereCanAirLand(
-      final Collection<Unit> strandedAir,
+      final Unit strandedAir,
       final Territory currentTerr,
       final PlayerId alliedPlayer,
       final GameData data,
       final BattleTracker battleTracker,
       final int carrierCostForCurrentTerr) {
     Preconditions.checkNotNull(strandedAir);
-    UnitType ut = null;
-    for (final Unit u : strandedAir) {
-      if (ut == null) {
-        ut = u.getType();
-      } else if (!ut.equals(u.getType())) {
-        throw new IllegalStateException(
-            "whereCanAirLand can only accept 1 UnitType if byMovementCost or scrambled is true");
-      }
-    }
-    final int maxDistance = UnitAttachment.get(ut).getMaxScrambleDistance();
-    if (maxDistance < 1 || strandedAir.isEmpty()) {
+
+    final int maxDistance = UnitAttachment.get(strandedAir.getType()).getMaxScrambleDistance();
+    if (maxDistance <= 0) {
       return Collections.singletonList(currentTerr);
     }
     final boolean areNeutralsPassableByAir =
@@ -1709,19 +1697,26 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
         CollectionUtils.getMatches(
             data.getMap().getTerritories(), Matches.territoryHasEnemyUnits(alliedPlayer, data)));
     final Collection<Territory> possibleTerrs =
-        new ArrayList<>(data.getMap().getNeighbors(currentTerr, maxDistance));
-    if (maxDistance > 1) {
-      final Iterator<Territory> possibleIter = possibleTerrs.iterator();
-      while (possibleIter.hasNext()) {
-        final Route route =
+        new ArrayList<>(
             data.getMap()
-                .getRoute(
+                .getNeighborsByMovementCost(
                     currentTerr,
-                    possibleIter.next(),
-                    Matches.airCanFlyOver(alliedPlayer, data, areNeutralsPassableByAir));
-        if ((route == null) || (route.numberOfSteps() > maxDistance)) {
-          possibleIter.remove();
-        }
+                    strandedAir,
+                    new BigDecimal(maxDistance),
+                    Matches.airCanFlyOver(alliedPlayer, data, areNeutralsPassableByAir)));
+    final Iterator<Territory> possibleIter = possibleTerrs.iterator();
+    while (possibleIter.hasNext()) {
+      final Route route =
+          data.getMap()
+              .getRouteForUnit(
+                  currentTerr,
+                  possibleIter.next(),
+                  Matches.airCanFlyOver(alliedPlayer, data, areNeutralsPassableByAir),
+                  strandedAir,
+                  alliedPlayer);
+      if ((route == null)
+          || (route.getMovementCost(strandedAir).compareTo(new BigDecimal(maxDistance)) > 0)) {
+        possibleIter.remove();
       }
     }
     possibleTerrs.add(currentTerr);
@@ -1733,7 +1728,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
     availableLand.removeAll(canNotLand);
     final Set<Territory> whereCanLand = new HashSet<>(availableLand);
     // now for carrier-air-landing validation
-    if (!strandedAir.isEmpty() && strandedAir.stream().allMatch(Matches.unitCanLandOnCarrier())) {
+    if (Matches.unitCanLandOnCarrier().test(strandedAir)) {
       final Set<Territory> availableWater =
           new HashSet<>(
               CollectionUtils.getMatches(
@@ -1742,8 +1737,7 @@ public class BattleDelegate extends BaseTripleADelegate implements IBattleDelega
                           Matches.unitIsAlliedCarrier(alliedPlayer, data))
                       .and(Matches.territoryIsWater())));
       availableWater.removeAll(battleTracker.getPendingBattleSites(false));
-      // a rather simple calculation, either we can take all the air, or we can't, nothing in the
-      // middle
+      // simple calculation, either we can take all the air, or we can't, nothing in the middle
       final int carrierCost = AirMovementValidator.carrierCost(strandedAir);
       final Iterator<Territory> waterIter = availableWater.iterator();
       while (waterIter.hasNext()) {

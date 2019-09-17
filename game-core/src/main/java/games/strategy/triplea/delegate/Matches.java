@@ -27,12 +27,12 @@ import games.strategy.triplea.attachments.UnitSupportAttachment;
 import games.strategy.triplea.util.TransportUtils;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeparator;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -192,7 +192,7 @@ public final class Matches {
   }
 
   public static Predicate<Unit> unitHasMoved() {
-    return unit -> TripleAUnit.get(unit).getAlreadyMoved() > 0;
+    return unit -> TripleAUnit.get(unit).getAlreadyMoved().compareTo(BigDecimal.ZERO) > 0;
   }
 
   public static Predicate<Unit> unitHasNotMoved() {
@@ -786,11 +786,6 @@ public final class Matches {
     return obj -> UnitAttachment.get(obj.getType()).getArtillerySupportable();
   }
 
-  // TODO: CHECK whether this makes any sense
-  public static Predicate<Territory> territoryIsLandOrWater() {
-    return Objects::nonNull;
-  }
-
   public static Predicate<Territory> territoryIsWater() {
     return Territory::isWater;
   }
@@ -1088,18 +1083,9 @@ public final class Matches {
     return IBattle::isAmphibious;
   }
 
-  public static Predicate<Unit> unitHasEnoughMovementForRoutes(final List<Route> route) {
-    return unitHasEnoughMovementForRoute(Route.create(route));
-  }
-
-  public static Predicate<Unit> unitHasEnoughMovementForRoute(final List<Territory> territories) {
-    return unitHasEnoughMovementForRoute(new Route(territories));
-  }
-
   public static Predicate<Unit> unitHasEnoughMovementForRoute(final Route route) {
     return unit -> {
-      int left = TripleAUnit.get(unit).getMovementLeft();
-      int movementcost = route.numberOfSteps();
+      BigDecimal left = TripleAUnit.get(unit).getMovementLeft();
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       final PlayerId player = unit.getOwner();
       if (ua.getIsAir()) {
@@ -1111,17 +1097,15 @@ public final class Matches {
         if (route.getEnd() != null) {
           taEnd = TerritoryAttachment.get(route.getEnd());
         }
-        movementcost = route.numberOfSteps();
         if (taStart != null && taStart.getAirBase()) {
-          left++;
+          left = left.add(BigDecimal.ONE);
         }
         if (taEnd != null && taEnd.getAirBase()) {
-          left++;
+          left = left.add(BigDecimal.ONE);
         }
       }
       final GameStep stepName = unit.getData().getSequence().getStep();
       if (ua.getIsSea() && stepName.getDisplayName().equals("Non Combat Move")) {
-        movementcost = route.numberOfSteps();
         // If a zone adjacent to the starting and ending sea zones are allied naval bases, increase
         // the range.
         // TODO Still need to be able to handle stops on the way
@@ -1137,19 +1121,20 @@ public final class Matches {
               if (taEndNeighbor != null
                   && taEndNeighbor.getNavalBase()
                   && unit.getData().getRelationshipTracker().isAllied(terrEnd.getOwner(), player)) {
-                left++;
+                left = left.add(BigDecimal.ONE);
                 break;
               }
             }
           }
         }
       }
-      return !(left < 0 || left < movementcost);
+      return !(left.compareTo(BigDecimal.ZERO) < 0
+          || left.compareTo(route.getMovementCost(unit)) < 0);
     };
   }
 
   public static Predicate<Unit> unitHasMovementLeft() {
-    return o -> TripleAUnit.get(o).getMovementLeft() >= 1;
+    return o -> TripleAUnit.get(o).getMovementLeft().compareTo(BigDecimal.ONE) >= 0;
   }
 
   public static Predicate<Unit> unitCanMove() {
@@ -2223,6 +2208,7 @@ public final class Matches {
     };
   }
 
+  // TODO: update scrambling to consider movement cost
   public static Predicate<Unit> unitCanScrambleOnRouteDistance(final Route route) {
     return unit ->
         UnitAttachment.get(unit.getType()).getMaxScrambleDistance() >= route.numberOfSteps();

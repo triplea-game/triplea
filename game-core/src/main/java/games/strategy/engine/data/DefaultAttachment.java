@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import games.strategy.triplea.Constants;
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -64,6 +65,16 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
       return Integer.parseInt(value);
     } catch (final NumberFormatException e) {
       throw new IllegalArgumentException("Attachments: " + value + " is not a valid int value", e);
+    }
+  }
+
+  /** Throws an error if format is invalid. */
+  protected static BigDecimal getBigDecimal(final String value) {
+    try {
+      return new BigDecimal(value);
+    } catch (final NumberFormatException e) {
+      throw new IllegalArgumentException(
+          "Attachments: " + value + " is not a valid decimal value", e);
     }
   }
 

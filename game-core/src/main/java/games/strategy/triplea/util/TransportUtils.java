@@ -210,8 +210,7 @@ public final class TransportUtils {
         Comparator.comparing(TransportTracker::hasTransportUnloadedInPreviousPhase)
             .thenComparingInt(TransportTracker::getAvailableCapacity)
             .thenComparing(
-                TripleAUnit::get,
-                Comparator.comparingInt(TripleAUnit::getMovementLeft).reversed()));
+                TripleAUnit::get, Comparator.comparing(TripleAUnit::getMovementLeft).reversed()));
     return canTransport;
   }
 
@@ -223,7 +222,7 @@ public final class TransportUtils {
             Unit::getType,
             Comparator.comparing(
                 UnitAttachment::get,
-                Comparator.comparingInt(UnitAttachment::getTransportCost).reversed())));
+                Comparator.comparing(UnitAttachment::getTransportCost).reversed())));
     return canBeTransported;
   }
 
