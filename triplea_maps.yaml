@@ -1450,6 +1450,22 @@
     <br>created by ???
     <br>
     <br>Converted up to TripleA1.2.x.x by Veqryn
+- mapName: Cold War 1965
+  mapCategory: GOOD
+  url: https://github.com/triplea-maps/cold_war-1965/archive/master.zip
+  version: 1
+  img: https://raw.githubusercontent.com/triplea-maps/cold_war/master/map/doc/images/mapScreenshot.png
+  description: |
+    <br>Cold War 1965
+    <br>
+    <br>Created by: Dave Ball (Conarymor)
+    <br>Updated by: Redrum
+    <br>
+    <br>The Cold War... a period of great uncertainty. The 1960s saw the Berlin Wall go up, the Cuban Missile Crisis, 
+    <br>the Sino-Soviet split, the Vietnam War, the Six Days War, the continued stand-off between the Koreas, tension between India and Pakistan, 
+    <br>the end of European Colonialism (and the collapse of many successor states), and of course, the proliferation of nuclear arms. 
+    <br>This was a tense period in our history, in which any number of small conflicts could have escalated quickly into WWIII.
+    <br>
 - mapName: The Great Northern War
   mapCategory: EXPERIMENTAL
   url: https://github.com/triplea-maps/the_great_northern_war/archive/master.zip
