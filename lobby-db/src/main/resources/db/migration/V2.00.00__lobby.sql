@@ -9,9 +9,15 @@ comment on table bad_word is 'A table representing a blacklist of words';
 
 create table banned_usernames (
     username character varying(40) not null primary key,
-    ban_till timestamp without time zone
+    date_created timestamptz not null default now()
 );
+
 alter table banned_usernames owner to lobby_user;
+comment on table banned_usernames is 'A Table storing banned usernames.';
+comment on column banned_usernames.username is
+    $$The username of the banned user. Actually no direct reference to the ta_users.username,
+    the engine allows to define prohibited usernames$$;
+
 
 create table lobby_user
 (
@@ -31,7 +37,6 @@ alter table lobby_user
 alter table lobby_user
     add constraint lobby_user_pass_check check (password IS NOT NULL OR bcrypt_password IS NOT NULL);
 
-
 comment on table lobby_user is 'The table storing all the information about Lobby TripleA users.';
 comment on column lobby_user.id is 'Synthetic PK column';
 comment on column lobby_user.username is 'Defines the in-game username of everyone.';
@@ -44,49 +49,6 @@ comment on column lobby_user.role is
      Admin is able to add/remove other moderators.$$;
 comment on column lobby_user.bcrypt_password is 'The BCrypt-Hashed password of the user, should be the same as the md5 password but in another form. The length of the hash must always be 60 chars. Either password or bcrypt_password must be not null.';
 
-delete from banned_usernames where ban_till <= now();
-alter table banned_usernames
-    alter column ban_till type timestamptz,
-	add constraint banned_usernames_ban_till_check check (ban_till is null or ban_till > now());
-
-
--- Comments
-
-comment on table banned_usernames is 'A Table storing banned usernames.';
-comment on column banned_usernames.username is 'The username of the banned user. Actually no direct reference to the ta_users.username, the engine allows to define prohibited usernames, should probably be avoided, and an SQL reference created instead.';
-comment on column banned_usernames.ban_till is 'A timestamp indicating how long the ban should be active, if NULL the ban is forever.';
-comment on constraint banned_usernames_ban_till_check on banned_usernames is 'Ensures no storage is being wasted by banning someone backdated to the past.';
-
--- audit_bans
-
-alter table banned_usernames
-  add column mod_username varchar(40) not null default '__unknown__',
-  add column mod_ip inet not null default '0.0.0.0'::inet,
-  add column mod_mac char(28) not null default '$1$MH$WarCz.YHukJf1YVqmMBoS0',
-  add constraint banned_usernames_mod_mac_check check (char_length(mod_mac)=28);
-
-alter table banned_usernames
-  alter column mod_username drop default,
-  alter column mod_ip drop default,
-  alter column mod_mac drop default;
-
-comment on column banned_usernames.mod_username is 'The username of the moderator that executed the ban.';
-comment on column banned_usernames.mod_ip is 'The IP address of the moderator that executed the ban.';
-comment on column banned_usernames.mod_mac is 'The hashed MAC address of the moderator that executed the ban.';
-
--- add_all_user_info_to_bans_and_mutes
-
-alter table banned_usernames
-  add column ip inet not null default '0.0.0.0'::inet,
-  add column mac char(28) not null default '$1$MH$WarCz.YHukJf1YVqmMBoS0',
-  add constraint banned_usernames_mac_check check (char_length(mac)=28);
-
-alter table banned_usernames
-  alter column ip drop default,
-  alter column mac drop default;
-
-comment on column banned_usernames.ip is 'The IP address of the banned user.';
-comment on column banned_usernames.mac is 'The hashed MAC address of the banned user.';
 
 -- add_access_log
 
@@ -97,34 +59,13 @@ create table access_log (
   mac char(28) not null check (char_length(mac)=28),
   registered boolean not null
 );
+alter table access_log owner to lobby_user;
 
 comment on column access_log.access_time is 'The date and time the lobby was accessed.';
 comment on column access_log.username is 'The name of the user accessing the lobby.';
 comment on column access_log.ip is 'The IP address of the user accessing the lobby.';
 comment on column access_log.mac is 'The hashed MAC address of the user accessing the lobby.';
 comment on column access_log.registered is 'True if the user was registered when accessing the lobby; otherwise false if the user was anonymous';
-
-alter table access_log owner to lobby_user;
-
-
--- 'banned_usernames' will now keep track of username blacklist with no expiration
-alter table banned_usernames
- drop column ip;
-
-alter table banned_usernames
-  drop column mac;
-
-alter table banned_usernames
-  drop column ban_till;
-
-
--- mod name identifies a mod, drop unnecessary network identifier tracking for moderator
-alter table banned_usernames
-  drop column mod_ip;
-
-alter table banned_usernames
-  drop column mod_mac;
-
 
 
 create table moderator_action_history
@@ -160,12 +101,7 @@ comment on table error_report_history is 'Table that stores timestamps by user I
 comment on column error_report_history.id is 'Synthetic PK column';
 comment on column error_report_history.user_ip is 'IP address of a user that has submitted an error report';
 comment on column error_report_history.date_created is 'Timestamp when error report was created in DB';
-alter table banned_usernames
-    add column date_created timestamptz not null default now();
-comment on column banned_usernames.date_created is
-    'Timestamp of when the banned username is added';
-alter table banned_usernames
-    drop column mod_username;
+
 
 create table banned_user
 (
