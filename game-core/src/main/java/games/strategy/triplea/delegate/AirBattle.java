@@ -12,7 +12,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.display.IDisplay;
-import games.strategy.net.GUID;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -29,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import lombok.extern.java.Log;
@@ -920,7 +920,7 @@ public class AirBattle extends AbstractBattle {
   }
 
   private static void notifyCasualties(
-      final GUID battleId,
+      final UUID battleId,
       final IDelegateBridge bridge,
       final String stepName,
       final DiceRoll dice,

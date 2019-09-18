@@ -3,7 +3,6 @@ package games.strategy.engine.message;
 import games.strategy.engine.message.unifiedmessenger.HasEndPointImplementor;
 import games.strategy.engine.message.unifiedmessenger.NoLongerHasEndPointImplementor;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
-import games.strategy.net.GUID;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.IMessageListener;
 import games.strategy.net.IMessenger;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /** The hub node in a spoke-hub messaging architecture. */
@@ -25,7 +25,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   // changes to the list of end points, or reads to it, should be made only while holding this lock
   private final Object endPointMutex = new Object();
   // the invocations that are currently in progress
-  private final Map<GUID, InvocationInProgress> invocations = new ConcurrentHashMap<>();
+  private final Map<UUID, InvocationInProgress> invocations = new ConcurrentHashMap<>();
 
   public UnifiedMessengerHub(final IMessenger messenger, final UnifiedMessenger localUnified) {
     this.messenger = messenger;
@@ -101,7 +101,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   }
 
   private void results(final HubInvocationResults results, final INode from) {
-    final GUID methodId = results.methodCallId;
+    final UUID methodId = results.methodCallId;
     final InvocationInProgress invocationInProgress = invocations.get(methodId);
     final boolean done = invocationInProgress.process(results, from);
     if (done) {
@@ -113,7 +113,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
   }
 
   private void sendResultsToCaller(
-      final GUID methodId, final InvocationInProgress invocationInProgress) {
+      final UUID methodId, final InvocationInProgress invocationInProgress) {
     final RemoteMethodCallResults result = invocationInProgress.getResults();
     final INode caller = invocationInProgress.getCaller();
     final SpokeInvocationResults spokeResults = new SpokeInvocationResults(result, methodId);

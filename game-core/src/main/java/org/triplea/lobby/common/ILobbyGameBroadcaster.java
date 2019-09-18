@@ -2,7 +2,7 @@ package org.triplea.lobby.common;
 
 import games.strategy.engine.message.IChannelSubscriber;
 import games.strategy.engine.message.RemoteName;
-import games.strategy.net.GUID;
+import java.util.UUID;
 
 /**
  * A service that notifies nodes of lobby game state changes (e.g. when games are added to or
@@ -14,7 +14,7 @@ public interface ILobbyGameBroadcaster extends IChannelSubscriber {
           "games.strategy.engine.lobby.server.IGameBroadcaster.CHANNEL",
           ILobbyGameBroadcaster.class);
 
-  void gameUpdated(GUID gameId, GameDescription description);
+  void gameUpdated(UUID gameId, GameDescription description);
 
-  void gameRemoved(GUID gameId);
+  void gameRemoved(UUID gameId);
 }

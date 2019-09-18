@@ -13,7 +13,6 @@ import games.strategy.engine.message.RemoteNotFoundException;
 import games.strategy.engine.message.SpokeInvocationResults;
 import games.strategy.engine.message.SpokeInvoke;
 import games.strategy.engine.message.UnifiedMessengerHub;
-import games.strategy.net.GUID;
 import games.strategy.net.IClientMessenger;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
@@ -21,6 +20,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,10 +44,10 @@ public class UnifiedMessenger {
   // the latch should be removed from the map when you countdown the last result
   // access should be synchronized on pendingLock
   // TODO: how do these get shutdown when we exit a game or close triplea?
-  private final Map<GUID, CountDownLatch> pendingInvocations = new HashMap<>();
+  private final Map<UUID, CountDownLatch> pendingInvocations = new HashMap<>();
   // after the remote has invoked, the results are placed here
   // access should be synchronized on pendingLock
-  private final Map<GUID, RemoteMethodCallResults> results = new HashMap<>();
+  private final Map<UUID, RemoteMethodCallResults> results = new HashMap<>();
   // only non null for the server
   private UnifiedMessengerHub hub;
 
@@ -69,7 +69,7 @@ public class UnifiedMessenger {
 
   private void messengerInvalid(final Throwable cause) {
     synchronized (pendingLock) {
-      for (final GUID id : pendingInvocations.keySet()) {
+      for (final UUID id : pendingInvocations.keySet()) {
         final CountDownLatch latch = pendingInvocations.remove(id);
         latch.countDown();
         results.put(id, new RemoteMethodCallResults(cause));
@@ -102,7 +102,7 @@ public class UnifiedMessenger {
   }
 
   private RemoteMethodCallResults invokeAndWaitRemote(final RemoteMethodCall remoteCall) {
-    final GUID methodCallId = new GUID();
+    final UUID methodCallId = UUID.randomUUID();
     final CountDownLatch latch = new CountDownLatch(1);
     synchronized (pendingLock) {
       pendingInvocations.put(methodCallId, latch);
@@ -304,7 +304,7 @@ public class UnifiedMessenger {
       // maybe an attempt to spoof a message
       assertIsServer(from);
       final SpokeInvocationResults spokeInvocationResults = (SpokeInvocationResults) msg;
-      final GUID methodId = spokeInvocationResults.methodCallId;
+      final UUID methodId = spokeInvocationResults.methodCallId;
       // both of these should already be populated
       // this list should be a synchronized list so we can do the add all
       synchronized (pendingLock) {

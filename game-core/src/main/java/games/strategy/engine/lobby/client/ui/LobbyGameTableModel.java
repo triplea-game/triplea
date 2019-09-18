@@ -1,7 +1,7 @@
 package games.strategy.engine.lobby.client.ui;
 
-import games.strategy.net.GUID;
 import java.util.Map;
+import java.util.UUID;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import org.triplea.lobby.common.GameDescription;
@@ -20,23 +20,23 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
     Status,
     Comments,
     Started,
-    GUID
+    UUID
   }
 
   private final GameListModel gameListModel;
   private final boolean isAdmin;
 
-  LobbyGameTableModel(final Map<GUID, GameDescription> gameList, final boolean isAdmin) {
+  LobbyGameTableModel(final Map<UUID, GameDescription> gameList, final boolean isAdmin) {
     this.isAdmin = isAdmin;
     gameListModel = new GameListModel();
 
-    for (final Map.Entry<GUID, GameDescription> entry : gameList.entrySet()) {
+    for (final Map.Entry<UUID, GameDescription> entry : gameList.entrySet()) {
       gameUpdated(entry.getKey(), entry.getValue());
     }
   }
 
   @Override
-  public void gameUpdated(final GUID gameId, final GameDescription description) {
+  public void gameUpdated(final UUID gameId, final GameDescription description) {
     if (gameId == null) {
       return;
     }
@@ -50,7 +50,7 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
   }
 
   @Override
-  public void gameRemoved(final GUID gameId) {
+  public void gameRemoved(final UUID gameId) {
     if (gameId == null) {
       return;
     }
@@ -110,7 +110,7 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
         return description.getComment();
       case Started:
         return description.getFormattedBotStartTime();
-      case GUID:
+      case UUID:
         return gameListModel.getGameGuidByRow(rowIndex);
       default:
         throw new IllegalStateException("Unknown column:" + column);

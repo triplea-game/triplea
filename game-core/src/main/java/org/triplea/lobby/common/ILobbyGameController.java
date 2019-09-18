@@ -2,8 +2,8 @@ package org.triplea.lobby.common;
 
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.RemoteName;
-import games.strategy.net.GUID;
 import java.util.Map;
+import java.util.UUID;
 
 /** A service that provides management operations for lobby games. */
 public interface ILobbyGameController extends IRemote {
@@ -12,11 +12,11 @@ public interface ILobbyGameController extends IRemote {
           "games.strategy.engine.lobby.server.IGameController.GAME_CONTROLLER_REMOTE",
           ILobbyGameController.class);
 
-  void postGame(GUID gameId, GameDescription description);
+  void postGame(UUID gameId, GameDescription description);
 
-  void updateGame(GUID gameId, GameDescription description);
+  void updateGame(UUID gameId, GameDescription description);
 
-  Map<GUID, GameDescription> listGames();
+  Map<UUID, GameDescription> listGames();
 
   /**
    * Test if the server can connect to the game at this address. This is used to see if the client
@@ -25,5 +25,5 @@ public interface ILobbyGameController extends IRemote {
    *
    * <p>This method may only be called by the node that is hosting this game.
    */
-  String testGame(GUID gameId);
+  String testGame(UUID gameId);
 }

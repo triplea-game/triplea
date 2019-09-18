@@ -3,7 +3,6 @@ package org.triplea.lobby.server;
 import com.google.common.base.Preconditions;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
-import games.strategy.net.GUID;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
@@ -16,6 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import lombok.extern.java.Log;
 import org.triplea.lobby.common.GameDescription;
 import org.triplea.lobby.common.ILobbyGameBroadcaster;
@@ -24,9 +24,9 @@ import org.triplea.lobby.common.ILobbyGameController;
 @Log
 final class LobbyGameController implements ILobbyGameController {
   private final Object mutex = new Object();
-  private final Map<GUID, GameDescription> allGames = new HashMap<>();
+  private final Map<UUID, GameDescription> allGames = new HashMap<>();
   private final ILobbyGameBroadcaster broadcaster;
-  private final Map<INode, Set<GUID>> hostToGame = new HashMap<>();
+  private final Map<INode, Set<UUID>> hostToGame = new HashMap<>();
 
   LobbyGameController(
       final ILobbyGameBroadcaster broadcaster, final IServerMessenger serverMessenger) {
@@ -44,7 +44,7 @@ final class LobbyGameController implements ILobbyGameController {
   }
 
   private void connectionLost(final INode to) {
-    final Set<GUID> games;
+    final Set<UUID> games;
     synchronized (mutex) {
       games = hostToGame.remove(to);
       Optional.ofNullable(games)
@@ -57,7 +57,7 @@ final class LobbyGameController implements ILobbyGameController {
   }
 
   @Override
-  public void postGame(final GUID gameId, final GameDescription description) {
+  public void postGame(final UUID gameId, final GameDescription description) {
     synchronized (mutex) {
       allGames.put(gameId, description);
       hostToGame.computeIfAbsent(MessageContext.getSender(), k -> new HashSet<>()).add(gameId);
@@ -67,7 +67,7 @@ final class LobbyGameController implements ILobbyGameController {
   }
 
   @Override
-  public void updateGame(final GUID gameId, final GameDescription description) {
+  public void updateGame(final UUID gameId, final GameDescription description) {
     assertCorrectGameOwner(gameId);
     synchronized (mutex) {
       allGames.put(gameId, description);
@@ -76,7 +76,7 @@ final class LobbyGameController implements ILobbyGameController {
   }
 
   @Override
-  public Map<GUID, GameDescription> listGames() {
+  public Map<UUID, GameDescription> listGames() {
     synchronized (mutex) {
       return new HashMap<>(allGames);
     }
@@ -87,7 +87,7 @@ final class LobbyGameController implements ILobbyGameController {
   }
 
   @Override
-  public String testGame(final GUID gameId) {
+  public String testGame(final UUID gameId) {
     assertCorrectGameOwner(gameId);
     final GameDescription description;
     synchronized (mutex) {
@@ -106,11 +106,11 @@ final class LobbyGameController implements ILobbyGameController {
     }
   }
 
-  private void assertCorrectGameOwner(final GUID gameId) {
+  private void assertCorrectGameOwner(final UUID gameId) {
     Preconditions.checkNotNull(gameId);
     final INode sender = MessageContext.getSender();
     synchronized (mutex) {
-      final Optional<Set<GUID>> allowedGames = Optional.ofNullable(hostToGame.get(sender));
+      final Optional<Set<UUID>> allowedGames = Optional.ofNullable(hostToGame.get(sender));
       if (!allowedGames.orElseGet(Collections::emptySet).contains(gameId)) {
         throw new IllegalStateException(
             String.format("Invalid Node %s tried accessing other game", sender));

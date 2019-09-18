@@ -10,7 +10,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
-import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -22,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.java.collections.IntegerMap;
@@ -29,7 +29,7 @@ import org.triplea.java.collections.IntegerMap;
 abstract class AbstractBattle implements IBattle {
   private static final long serialVersionUID = 871090498661731337L;
 
-  final GUID battleId = new GUID();
+  final UUID battleId = UUID.randomUUID();
   /**
    * In headless mode we should NOT access any Delegates. In headless mode we are just being used to
    * calculate results for an odds calculator so we can skip some steps for efficiency.
@@ -214,7 +214,7 @@ abstract class AbstractBattle implements IBattle {
   }
 
   @Override
-  public GUID getBattleId() {
+  public UUID getBattleId() {
     return battleId;
   }
 

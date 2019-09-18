@@ -13,7 +13,6 @@ import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.net.GUID;
 import games.strategy.sound.HeadlessSoundChannel;
 import games.strategy.sound.ISound;
 import games.strategy.triplea.ai.AbstractAi;
@@ -28,6 +27,7 @@ import games.strategy.triplea.ui.display.HeadlessDisplay;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import org.triplea.util.Tuple;
 
 /** Class used to avoid making actual data changes when checking objectives. */
@@ -202,7 +202,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
 
     @Override
     public Territory retreatQuery(
-        final GUID battleId,
+        final UUID battleId,
         final boolean submerge,
         final Territory battleSite,
         final Collection<Territory> possibleTerritories,
@@ -236,7 +236,7 @@ public class ObjectiveDummyDelegateBridge implements IDelegateBridge {
         final boolean amphibious,
         final Collection<Unit> amphibiousLandAttackers,
         final CasualtyList defaultCasualties,
-        final GUID battleId,
+        final UUID battleId,
         final Territory battleSite,
         final boolean allowMultipleHitsPerUnit) {
       throw new UnsupportedOperationException();

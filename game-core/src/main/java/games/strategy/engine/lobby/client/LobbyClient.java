@@ -1,9 +1,9 @@
 package games.strategy.engine.lobby.client;
 
-import games.strategy.net.GUID;
 import games.strategy.net.IMessenger;
 import games.strategy.net.Messengers;
 import java.util.Map;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import org.triplea.http.client.lobby.HttpLobbyClient;
@@ -50,7 +50,7 @@ public class LobbyClient {
     return messengers.isPasswordChangeRequired();
   }
 
-  public Map<GUID, GameDescription> listGames() {
+  public Map<UUID, GameDescription> listGames() {
     return ((ILobbyGameController) messengers.getRemote(ILobbyGameController.REMOTE_NAME))
         .listGames();
   }

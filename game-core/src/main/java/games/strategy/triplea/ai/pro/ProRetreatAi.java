@@ -4,7 +4,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.net.GUID;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
 import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.ai.pro.util.ProBattleUtils;
@@ -19,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Pro retreat AI.
@@ -46,7 +46,7 @@ class ProRetreatAi {
   }
 
   Territory retreatQuery(
-      final GUID battleId,
+      final UUID battleId,
       final Territory battleTerritory,
       final Collection<Territory> possibleTerritories) {
 

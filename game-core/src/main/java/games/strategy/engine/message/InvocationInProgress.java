@@ -1,7 +1,7 @@
 package games.strategy.engine.message;
 
-import games.strategy.net.GUID;
 import games.strategy.net.INode;
+import java.util.UUID;
 
 /** We are waiting for the results of a remote invocation. */
 class InvocationInProgress {
@@ -38,7 +38,7 @@ class InvocationInProgress {
     return results;
   }
 
-  GUID getMethodCallId() {
+  UUID getMethodCallId() {
     return methodCall.methodCallId;
   }
 
