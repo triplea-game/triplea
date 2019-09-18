@@ -161,6 +161,16 @@ public class Route implements Serializable, Iterable<Territory> {
     return movementCost;
   }
 
+  public BigDecimal getMovementCostIgnoreEnd(final Unit unit) {
+    BigDecimal movementCost = BigDecimal.ZERO;
+    final List<Territory> territories =
+        steps.size() > 0 ? steps.subList(0, steps.size() - 1) : steps;
+    for (final Territory t : territories) {
+      movementCost = movementCost.add(TerritoryEffectHelper.getMovementCost(t, unit));
+    }
+    return movementCost;
+  }
+
   /**
    * Returns territory we will be in after the i'th step for this route has been made.
    *
@@ -329,10 +339,6 @@ public class Route implements Serializable, Iterable<Territory> {
     return !getStart().isWater()
         || getAllTerritories().isEmpty()
         || !getAllTerritories().stream().allMatch(Matches.territoryIsWater());
-  }
-
-  public BigDecimal getMovementLeft(final Unit unit) {
-    return ((TripleAUnit) unit).getMovementLeft().subtract(getMovementCost(unit));
   }
 
   /** Returns a change object that removes fuel after a given set of units crosses a given route. */

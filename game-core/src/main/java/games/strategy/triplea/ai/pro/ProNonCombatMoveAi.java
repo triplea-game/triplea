@@ -2291,7 +2291,7 @@ class ProNonCombatMoveAi {
         }
 
         // Find number of potential attack options next turn
-        final int range = TripleAUnit.get(u).getMaxMovementAllowed().intValue();
+        final int range = TripleAUnit.get(u).getMaxMovementAllowed();
         final Set<Territory> possibleAttackTerritories =
             data.getMap()
                 .getNeighbors(

@@ -1128,13 +1128,20 @@ public final class Matches {
           }
         }
       }
-      return !(left.compareTo(BigDecimal.ZERO) < 0
-          || left.compareTo(route.getMovementCost(unit)) < 0);
+      if (left.compareTo(BigDecimal.ZERO) < 0) {
+        return false;
+      }
+      final boolean hasMovementForRoute = left.compareTo(route.getMovementCost(unit)) >= 0;
+      if (Properties.getEnterTerritoriesWithHigherMovementCostsThenRemainingMovement(
+          unit.getData())) {
+        return hasMovementForRoute || left.compareTo(route.getMovementCostIgnoreEnd(unit)) > 0;
+      }
+      return hasMovementForRoute;
     };
   }
 
   public static Predicate<Unit> unitHasMovementLeft() {
-    return o -> TripleAUnit.get(o).getMovementLeft().compareTo(BigDecimal.ONE) >= 0;
+    return o -> TripleAUnit.get(o).getMovementLeft().compareTo(BigDecimal.ZERO) > 0;
   }
 
   public static Predicate<Unit> unitCanMove() {

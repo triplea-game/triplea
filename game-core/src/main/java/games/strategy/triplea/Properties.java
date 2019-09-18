@@ -601,6 +601,12 @@ public final class Properties implements Constants {
     return data.getProperties().get(CONTROL_ALL_CANALS_BETWEEN_TERRITORIES_TO_PASS, false);
   }
 
+  public static boolean getEnterTerritoriesWithHigherMovementCostsThenRemainingMovement(
+      final GameData data) {
+    return data.getProperties()
+        .get(ENTER_TERRITORIES_WITH_HIGHER_MOVEMENT_COSTS_THEN_REMAINING_MOVEMENT, false);
+  }
+
   public static boolean getUnitsCanLoadInHostileSeaZones(final GameData data) {
     return data.getProperties().get(UNITS_CAN_LOAD_IN_HOSTILE_SEA_ZONES, false);
   }

@@ -212,7 +212,7 @@ public class ChangeFactory {
   }
 
   /**
-   * Mark units as having no movement.
+   * Mark units as having no movement (less than 0).
    *
    * @param units referring units
    * @return change that contains marking of units as having no movement
@@ -220,7 +220,7 @@ public class ChangeFactory {
   public static Change markNoMovementChange(final Collection<Unit> units) {
     final CompositeChange change = new CompositeChange();
     for (final Unit unit : units) {
-      if (TripleAUnit.get(unit).getMovementLeft().compareTo(BigDecimal.ZERO) > 0) {
+      if (TripleAUnit.get(unit).getMovementLeft().compareTo(BigDecimal.ZERO) >= 0) {
         change.add(markNoMovementChange(unit));
       }
     }
@@ -232,6 +232,6 @@ public class ChangeFactory {
 
   public static Change markNoMovementChange(final Unit unit) {
     return unitPropertyChange(
-        unit, TripleAUnit.get(unit).getMaxMovementAllowed(), TripleAUnit.ALREADY_MOVED);
+        unit, TripleAUnit.get(unit).getMaxMovementAllowed() + 1, TripleAUnit.ALREADY_MOVED);
   }
 }

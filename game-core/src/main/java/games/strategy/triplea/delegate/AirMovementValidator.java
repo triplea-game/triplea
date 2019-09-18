@@ -189,7 +189,9 @@ public final class AirMovementValidator {
         // they are not being moved, they are already at the end
         ? ((TripleAUnit) airBeingValidated).getMovementLeft()
         // they are being moved (they are still at the start location)
-        : route.getMovementLeft(airBeingValidated);
+        : ((TripleAUnit) airBeingValidated)
+            .getMovementLeft()
+            .subtract(route.getMovementCost(airBeingValidated));
   }
 
   private static IntegerMap<Territory> populateStaticAlliedAndBuildingCarrierCapacity(
@@ -681,7 +683,7 @@ public final class AirMovementValidator {
       final Unit unit,
       final Territory current,
       final BigDecimal movementLeft) {
-    if (movementLeft.compareTo(BigDecimal.ZERO) <= 0) {
+    if (movementLeft.compareTo(BigDecimal.ZERO) < 0) {
       return false;
     }
     final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);

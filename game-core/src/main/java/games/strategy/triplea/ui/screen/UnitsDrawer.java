@@ -21,7 +21,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -136,11 +135,11 @@ public class UnitsDrawer extends AbstractDrawable {
 
     if (img.isPresent()
         && ClientSetting.unitFlagDrawMode.getValueOrThrow() != UnitFlagDrawMode.NONE) {
-      final BigDecimal maxRange = new TripleAUnit(type, owner, data).getMaxMovementAllowed();
+      final int maxRange = new TripleAUnit(type, owner, data).getMaxMovementAllowed();
       switch (ClientSetting.unitFlagDrawMode.getValueOrThrow()) {
         case LARGE_FLAG:
           // If unit is not in the "excluded list" it will get drawn
-          if (maxRange.compareTo(BigDecimal.ZERO) != 0) {
+          if (maxRange != 0) {
             final Image flag = uiContext.getFlagImageFactory().getFlag(owner);
             final int xoffset = img.get().getWidth(null) / 2 - flag.getWidth(null) / 2;
             final int yoffset = img.get().getHeight(null) / 2 - flag.getHeight(null) / 4 - 5;
@@ -155,7 +154,7 @@ public class UnitsDrawer extends AbstractDrawable {
         case SMALL_FLAG:
           drawUnit(graphics, img.get(), bounds, data);
           // If unit is not in the "excluded list" it will get drawn
-          if (maxRange.compareTo(BigDecimal.ZERO) != 0) {
+          if (maxRange != 0) {
             final Image flag = uiContext.getFlagImageFactory().getSmallFlag(owner);
             final int xoffset = img.get().getWidth(null) - flag.getWidth(null);
             final int yoffset = img.get().getHeight(null) - flag.getHeight(null);

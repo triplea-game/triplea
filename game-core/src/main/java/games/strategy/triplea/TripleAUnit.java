@@ -189,17 +189,14 @@ public class TripleAUnit extends Unit {
   }
 
   /** Does not account for any movement already made. Generally equal to UnitType movement */
-  public BigDecimal getMaxMovementAllowed() {
-    return BigDecimal.ZERO.max(
-        new BigDecimal(bonusMovement)
-            .add(new BigDecimal(UnitAttachment.get(getType()).getMovement(getOwner()))));
+  public int getMaxMovementAllowed() {
+    return Math.max(0, bonusMovement + UnitAttachment.get(getType()).getMovement(getOwner()));
   }
 
   public BigDecimal getMovementLeft() {
-    return BigDecimal.ZERO.max(
-        new BigDecimal(UnitAttachment.get(getType()).getMovement(getOwner()))
-            .add(new BigDecimal(bonusMovement))
-            .subtract(alreadyMoved));
+    return new BigDecimal(UnitAttachment.get(getType()).getMovement(getOwner()))
+        .add(new BigDecimal(bonusMovement))
+        .subtract(alreadyMoved);
   }
 
   /**
