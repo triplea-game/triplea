@@ -1,4 +1,4 @@
-package org.triplea.swing;
+package org.triplea.swing.jpanel;
 
 import com.google.common.base.Preconditions;
 import java.awt.BorderLayout;
@@ -22,8 +22,8 @@ import javax.swing.border.EtchedBorder;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 import lombok.Value;
-import org.triplea.swing.GridBagHelper.Anchor;
-import org.triplea.swing.GridBagHelper.Fill;
+import org.triplea.swing.jpanel.GridBagHelper.Anchor;
+import org.triplea.swing.jpanel.GridBagHelper.Fill;
 
 /**
  * Example usage:. <code><pre>
@@ -51,7 +51,7 @@ public class JPanelBuilder {
   private int gridBagHelperColumns;
   private Integer preferredHeight;
 
-  private JPanelBuilder() {}
+  public JPanelBuilder() {}
 
   public static JPanelBuilder builder() {
     return new JPanelBuilder();
@@ -157,12 +157,12 @@ public class JPanelBuilder {
     return this;
   }
 
-  public JPanelBuilder horizontalBoxLayout() {
+  public JPanelBuilder boxLayoutHorizontal() {
     boxLayoutType = BoxLayoutType.HORIZONTAL;
     return this;
   }
 
-  public JPanelBuilder verticalBoxLayout() {
+  public JPanelBuilder boxLayoutVertical() {
     boxLayoutType = BoxLayoutType.VERTICAL;
     return this;
   }

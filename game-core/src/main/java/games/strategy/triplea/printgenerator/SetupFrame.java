@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** The top-level UI component for configuring the Setup Chart exporter. */
 public class SetupFrame extends JPanel {
@@ -68,7 +68,7 @@ public class SetupFrame extends JPanel {
         });
 
     final JPanel infoPanel =
-        JPanelBuilder.builder()
+        new JPanelBuilder()
             .gridLayout(3, 1)
             .add(
                 JLabelBuilder.builder()
@@ -87,16 +87,12 @@ public class SetupFrame extends JPanel {
     super.add(infoPanel, BorderLayout.NORTH);
 
     final JPanel textButtonRadioPanel =
-        JPanelBuilder.builder()
+        new JPanelBuilder()
             .borderLayout()
             .addWest(outField)
             .addEast(outDirButton)
             .addSouth(
-                JPanelBuilder.builder()
-                    .gridLayout(1, 2)
-                    .add(originalState)
-                    .add(currentState)
-                    .build())
+                new JPanelBuilder().gridLayout(1, 2).add(originalState).add(currentState).build())
             .build();
 
     super.add(textButtonRadioPanel, BorderLayout.CENTER);

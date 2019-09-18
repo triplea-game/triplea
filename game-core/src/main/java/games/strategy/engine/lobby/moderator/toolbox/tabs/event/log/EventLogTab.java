@@ -9,9 +9,9 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import org.triplea.http.client.moderator.toolbox.event.log.ToolboxEventLogClient;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Simple tab that is a table containing entries from the moderator audit history table. Contains a
@@ -50,8 +50,9 @@ public final class EventLogTab implements Supplier<Component> {
     final JButton loadMoreButton = loadMoreButton(dataTable);
     final JButton refreshButton = refreshButton(dataTable, loadMoreButton);
 
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .border(30)
+        .borderLayout()
         .addNorth(refreshButton)
         .addCenter(SwingComponents.newJScrollPane(dataTable))
         .addSouth(loadMoreButton)
@@ -66,7 +67,7 @@ public final class EventLogTab implements Supplier<Component> {
   }
 
   private JButton refreshButton(final JTable table, final JButton loadMoreButton) {
-    return JButtonBuilder.builder()
+    return new JButtonBuilder()
         .title("Refresh")
         .actionListener(
             () -> {
@@ -77,7 +78,7 @@ public final class EventLogTab implements Supplier<Component> {
   }
 
   private JButton loadMoreButton(final JTable table) {
-    return JButtonBuilder.builder()
+    return new JButtonBuilder()
         .title("Load More")
         .actionListener(
             button -> {

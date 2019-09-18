@@ -6,8 +6,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
 import org.triplea.swing.JFrameBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * This window shows a series of tabs that provide CRUD operations to a moderator. Each tab roughly
@@ -28,8 +28,9 @@ public final class ToolBoxWindow {
                 .minSize(400, 400)
                 .add(
                     frame ->
-                        JPanelBuilder.builder()
+                        new JPanelBuilder()
                             .border(10)
+                            .borderLayout()
                             .addCenter(
                                 TabFactory.builder()
                                     .frame(frame)

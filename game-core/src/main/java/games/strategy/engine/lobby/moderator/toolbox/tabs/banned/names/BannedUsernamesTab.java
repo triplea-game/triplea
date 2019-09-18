@@ -12,10 +12,10 @@ import org.triplea.http.client.moderator.toolbox.banned.name.ToolboxUsernameBanC
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.JTextFieldBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Show a scrollable list of 'banned usernames'. These are exact match usernames not allowed in the
@@ -50,10 +50,11 @@ public final class BannedUsernamesTab implements Supplier<Component> {
   public Component get() {
     final JTable table = buildTable();
 
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .border(10)
+        .borderLayout()
         .addNorth(
-            JButtonBuilder.builder()
+            new JButtonBuilder()
                 .title("Refresh")
                 .actionListener(() -> bannedUsernamesTabActions.refreshTableData(table))
                 .build())
@@ -82,7 +83,7 @@ public final class BannedUsernamesTab implements Supplier<Component> {
             .build();
 
     final JButton addButton =
-        JButtonBuilder.builder()
+        new JButtonBuilder()
             .enabled(false)
             .title("Ban Username")
             .actionListener(
@@ -93,9 +94,9 @@ public final class BannedUsernamesTab implements Supplier<Component> {
     DocumentListenerBuilder.attachDocumentListener(
         addField, () -> addButton.setEnabled(addField.getText().trim().length() >= MIN_LENGTH));
 
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .add(
-            JPanelBuilder.builder()
+            new JPanelBuilder()
                 .flowLayout()
                 .add(addField)
                 .add(Box.createHorizontalStrut(10))

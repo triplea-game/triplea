@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import games.strategy.engine.framework.GameRunner;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,10 +24,10 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JScrollPaneBuilder;
 import org.triplea.swing.JTextAreaBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * UI window with controls to update game settings and preferences. Settings are grouped by type,
@@ -87,9 +86,9 @@ public enum SettingsWindow {
                 tabbedPane.add(
                     settingType.tabTitle, buildTabPanel(getSettingsByType(settingType))));
 
-    return JPanelBuilder.builder()
-        .borderLayout()
+    return new JPanelBuilder()
         .border(10)
+        .borderLayout()
         .addCenter(tabbedPane)
         .addSouth(buildButtonPanel())
         .build();
@@ -102,8 +101,7 @@ public enum SettingsWindow {
   }
 
   private JComponent buildTabPanel(final Iterable<ClientSettingSwingUiBinding> settings) {
-    final JPanel panel = JPanelBuilder.builder().border(10).build();
-    panel.setLayout(new GridBagLayout());
+    final JPanel panel = new JPanelBuilder().border(10).gridBagLayout().build();
 
     // Hack to ensure scroll panes have a border when using a Substance L&F. The default Substance
     // scroll pane border is
@@ -195,19 +193,19 @@ public enum SettingsWindow {
   }
 
   private JComponent buildButtonPanel() {
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .border(20, 0, 0, 0)
-        .horizontalBoxLayout()
         .horizontalAlignmentCenter()
+        .boxLayoutHorizontal()
         .addHorizontalGlue()
-        .add(JButtonBuilder.builder().title("Save").actionListener(this::saveSettings).build())
+        .add(new JButtonBuilder().title("Save").actionListener(this::saveSettings).build())
         .addHorizontalStrut(5)
-        .add(JButtonBuilder.builder().title("Close").actionListener(this::close).build())
+        .add(new JButtonBuilder().title("Close").actionListener(this::close).build())
         .addHorizontalStrut(5)
-        .add(JButtonBuilder.builder().title("Reset").actionListener(this::resetSettings).build())
+        .add(new JButtonBuilder().title("Reset").actionListener(this::resetSettings).build())
         .addHorizontalStrut(5)
         .add(
-            JButtonBuilder.builder()
+            new JButtonBuilder()
                 .title("Reset to Default")
                 .actionListener(this::resetSettingsToDefault)
                 .build())

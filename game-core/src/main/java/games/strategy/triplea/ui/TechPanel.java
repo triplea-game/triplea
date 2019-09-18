@@ -232,7 +232,7 @@ class TechPanel extends ActionPanel {
           } else {
             add(new JButton(getTechRollsAction));
             add(
-                JButtonBuilder.builder()
+                new JButtonBuilder()
                     .title("Done")
                     .actionListener(this::performDone)
                     .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)

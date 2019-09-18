@@ -1,4 +1,4 @@
-package org.triplea.swing;
+package org.triplea.swing.jpanel;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;

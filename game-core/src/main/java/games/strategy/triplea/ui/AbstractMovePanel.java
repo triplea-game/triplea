@@ -41,7 +41,7 @@ abstract class AbstractMovePanel extends ActionPanel {
   private IPlayerBridge playerBridge;
 
   private final JButton cancelMoveButton =
-      JButtonBuilder.builder().title("Cancel").actionListener(this::cancelMove).build();
+      new JButtonBuilder().title("Cancel").actionListener(this::cancelMove).build();
 
   AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame) {
     super(data, map);
@@ -263,7 +263,7 @@ abstract class AbstractMovePanel extends ActionPanel {
     }
     movedUnitsPanel.add(
         SwingComponents.leftBox(
-            JButtonBuilder.builder()
+            new JButtonBuilder()
                 .title("Done")
                 .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)
                 .actionListener(this::performDone)

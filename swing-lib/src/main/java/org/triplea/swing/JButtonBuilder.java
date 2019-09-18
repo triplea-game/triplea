@@ -13,7 +13,7 @@ import javax.swing.UIManager;
 
 /**
  * Example usage:. <code><pre>
- *   JButton button = JButtonBuilder.builder()
+ *   JButton button = new JButtonBuilder()
  *     .text("button text")
  *     .actionListener(() -> handleClickAction())
  *     .build();
@@ -32,11 +32,7 @@ public class JButtonBuilder {
     this.title = title;
   }
 
-  private JButtonBuilder() {}
-
-  public static JButtonBuilder builder() {
-    return new JButtonBuilder();
-  }
+  public JButtonBuilder() {}
 
   /**
    * Constructs a Swing JButton using current builder values. Values that must be set: title,

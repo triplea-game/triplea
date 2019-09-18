@@ -31,11 +31,11 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import org.triplea.swing.GridBagConstraintsAnchor;
-import org.triplea.swing.GridBagConstraintsBuilder;
-import org.triplea.swing.GridBagConstraintsFill;
 import org.triplea.swing.IntTextField;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.jpanel.GridBagConstraintsAnchor;
+import org.triplea.swing.jpanel.GridBagConstraintsBuilder;
+import org.triplea.swing.jpanel.GridBagConstraintsFill;
 
 final class GameMenu extends JMenu {
   private static final long serialVersionUID = -6273782490069588052L;
