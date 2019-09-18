@@ -38,7 +38,8 @@ public class UserBanController {
       @Auth final AuthenticatedUser authenticatedUser, final String banId) {
     Preconditions.checkArgument(banId != null);
 
-    final boolean removed = bannedUsersService.removeUserBan(authenticatedUser.getUserId(), banId);
+    final boolean removed =
+        bannedUsersService.removeUserBan(authenticatedUser.getUserIdOrThrow(), banId);
     return Response.status(removed ? 200 : 400).build();
   }
 
@@ -53,7 +54,8 @@ public class UserBanController {
     Preconditions.checkArgument(banUserParams.getUsername() != null);
     Preconditions.checkArgument(banUserParams.getHoursToBan() > 0);
 
-    final boolean banned = bannedUsersService.banUser(authenticatedUser.getUserId(), banUserParams);
+    final boolean banned =
+        bannedUsersService.banUser(authenticatedUser.getUserIdOrThrow(), banUserParams);
     return Response.status(banned ? 200 : 400).build();
   }
 }

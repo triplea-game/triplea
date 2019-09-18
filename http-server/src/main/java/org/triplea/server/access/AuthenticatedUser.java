@@ -1,6 +1,8 @@
 package org.triplea.server.access;
 
+import com.google.common.base.Preconditions;
 import java.security.Principal;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.Builder;
@@ -22,11 +24,12 @@ public class AuthenticatedUser implements Principal {
     throw new UnsupportedOperationException("Name lookup is not done on authentication.");
   }
 
-  public boolean isAdmin() {
-    return userRole.equals(UserRole.ADMIN);
-  }
-
-  public boolean isModerator() {
-    return userRole.equals(UserRole.MODERATOR);
+  public int getUserIdOrThrow() {
+    Preconditions.checkState(
+        !userRole.equals(UserRole.ANONYMOUS),
+        "Anonymous user is expected to have a null user id, "
+            + "it is the only case expected where user id would be null");
+    return Optional.ofNullable(userId)
+        .orElseThrow(() -> new AssertionError("Expected to have a non-null user id"));
   }
 }

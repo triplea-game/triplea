@@ -31,7 +31,7 @@ public class UsernameBanController {
       @Auth final AuthenticatedUser authenticatedUser, final String username) {
     Preconditions.checkArgument(username != null && !username.isEmpty());
     return Response.status(
-            bannedNamesService.removeUsernameBan(authenticatedUser.getUserId(), username)
+            bannedNamesService.removeUsernameBan(authenticatedUser.getUserIdOrThrow(), username)
                 ? 200
                 : 400)
         .build();
@@ -43,7 +43,7 @@ public class UsernameBanController {
       @Auth final AuthenticatedUser authenticatedUser, final String username) {
     Preconditions.checkArgument(username != null && !username.isEmpty());
     return Response.status(
-            bannedNamesService.addBannedUserName(authenticatedUser.getUserId(), username)
+            bannedNamesService.addBannedUserName(authenticatedUser.getUserIdOrThrow(), username)
                 ? 200
                 : 400)
         .build();

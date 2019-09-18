@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,45 +17,60 @@ class RoleAuthorizerTest {
 
   private final RoleAuthorizer roleAuthorizer = new RoleAuthorizer();
 
-  @Nested
-  final class AdminRole {
-    @Test
-    void authenticateAdmin() {
-      when(authenticatedUser.isAdmin()).thenReturn(true);
+  @Test
+  void authenticateAdmin() {
+    when(authenticatedUser.getUserRole())
+        .thenReturn(UserRole.ADMIN)
+        .thenReturn(UserRole.MODERATOR)
+        .thenReturn(UserRole.PLAYER)
+        .thenReturn(UserRole.ANONYMOUS);
 
-      final boolean result = roleAuthorizer.authorize(authenticatedUser, UserRole.ADMIN);
-
-      assertThat(result, is(true));
-    }
-
-    @Test
-    void authenticateAdminNegativeCase() {
-      when(authenticatedUser.isAdmin()).thenReturn(false);
-
-      final boolean result = roleAuthorizer.authorize(authenticatedUser, UserRole.ADMIN);
-
-      assertThat(result, is(false));
-    }
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.ADMIN), is(true));
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.ADMIN), is(false));
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.ADMIN), is(false));
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.ADMIN), is(false));
   }
 
-  @Nested
-  final class AuthenticateModerator {
-    @Test
-    void authenticateModerator() {
-      when(authenticatedUser.isModerator()).thenReturn(true);
+  @Test
+  void authenticateModerator() {
+    when(authenticatedUser.getUserRole())
+        .thenReturn(UserRole.ADMIN)
+        .thenReturn(UserRole.MODERATOR)
+        .thenReturn(UserRole.PLAYER)
+        .thenReturn(UserRole.ANONYMOUS);
 
-      final boolean result = roleAuthorizer.authorize(authenticatedUser, UserRole.MODERATOR);
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.MODERATOR), is(true));
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.MODERATOR), is(true));
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.MODERATOR), is(false));
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.MODERATOR), is(false));
+  }
 
-      assertThat(result, is(true));
-    }
+  @Test
+  void authenticatePlayer() {
+    when(authenticatedUser.getUserRole())
+        .thenReturn(UserRole.ADMIN)
+        .thenReturn(UserRole.MODERATOR)
+        .thenReturn(UserRole.PLAYER)
+        .thenReturn(UserRole.ANONYMOUS);
 
-    @Test
-    void authenticateModeratorNegativeCase() {
-      when(authenticatedUser.isModerator()).thenReturn(false);
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.PLAYER), is(true));
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.PLAYER), is(true));
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.PLAYER), is(true));
+    // on fourth iteration, role is anonymous, not authorized
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.PLAYER), is(false));
+  }
 
-      final boolean result = roleAuthorizer.authorize(authenticatedUser, UserRole.MODERATOR);
+  @Test
+  void authenticateAnonymous() {
+    when(authenticatedUser.getUserRole())
+        .thenReturn(UserRole.ADMIN)
+        .thenReturn(UserRole.MODERATOR)
+        .thenReturn(UserRole.PLAYER)
+        .thenReturn(UserRole.ANONYMOUS);
 
-      assertThat(result, is(false));
-    }
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.ANONYMOUS), is(true));
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.ANONYMOUS), is(true));
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.ANONYMOUS), is(true));
+    assertThat(roleAuthorizer.authorize(authenticatedUser, UserRole.ANONYMOUS), is(true));
   }
 }

@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.triplea.http.client.moderator.toolbox.moderator.management.ModeratorInfo;
+import org.triplea.lobby.server.db.data.UserRole;
 import org.triplea.server.access.AuthenticatedUser;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +53,7 @@ class ModeratorsControllerTest {
 
   @Test
   void isSuperModPositiveCase() {
-    when(authenticatedUser.isAdmin()).thenReturn(true);
+    when(authenticatedUser.getUserRole()).thenReturn(UserRole.ADMIN);
 
     final Response response = moderatorsController.isSuperMod(authenticatedUser);
 
@@ -61,7 +62,7 @@ class ModeratorsControllerTest {
 
   @Test
   void isSuperModNegativeCase() {
-    when(authenticatedUser.isAdmin()).thenReturn(false);
+    when(authenticatedUser.getUserRole()).thenReturn(UserRole.MODERATOR);
 
     final Response response = moderatorsController.isSuperMod(authenticatedUser);
 
@@ -73,7 +74,8 @@ class ModeratorsControllerTest {
     final Response response = moderatorsController.removeMod(AUTHENTICATED_USER, MODERATOR_NAME);
 
     assertThat(response.getStatus(), is(200));
-    verify(moderatorsService).removeMod(AUTHENTICATED_USER.getUserId(), MODERATOR_NAME);
+
+    verify(moderatorsService).removeMod(AUTHENTICATED_USER.getUserIdOrThrow(), MODERATOR_NAME);
   }
 
   @Test
@@ -81,7 +83,7 @@ class ModeratorsControllerTest {
     final Response response = moderatorsController.setSuperMod(AUTHENTICATED_USER, MODERATOR_NAME);
 
     assertThat(response.getStatus(), is(200));
-    verify(moderatorsService).addSuperMod(AUTHENTICATED_USER.getUserId(), MODERATOR_NAME);
+    verify(moderatorsService).addSuperMod(AUTHENTICATED_USER.getUserIdOrThrow(), MODERATOR_NAME);
   }
 
   @Test
@@ -89,6 +91,6 @@ class ModeratorsControllerTest {
     final Response response = moderatorsController.addModerator(AUTHENTICATED_USER, MODERATOR_NAME);
 
     assertThat(response.getStatus(), is(200));
-    verify(moderatorsService).addModerator(AUTHENTICATED_USER.getUserId(), MODERATOR_NAME);
+    verify(moderatorsService).addModerator(AUTHENTICATED_USER.getUserIdOrThrow(), MODERATOR_NAME);
   }
 }
