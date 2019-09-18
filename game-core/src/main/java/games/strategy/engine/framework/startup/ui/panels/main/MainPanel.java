@@ -50,7 +50,8 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
   private final JPanel gameSetupPanelHolder = new JPanelBuilder().borderLayout().build();
   private final JPanel mainPanel;
   private final JSplitPane chatSplit;
-  private final JPanel chatPanelHolder = new JPanelBuilder().preferredHeight(62).build();
+  private final JPanel chatPanelHolder =
+      new JPanelBuilder().borderLayout().preferredHeight(62).build();
   private SetupPanel gameSetupPanel;
 
   /**
