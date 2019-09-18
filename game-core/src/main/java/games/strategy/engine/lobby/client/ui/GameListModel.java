@@ -70,7 +70,7 @@ class GameListModel {
     return gameList.get(i).getSecond();
   }
 
-  UUID getGameGuidByRow(final int rowIndex) {
+  UUID getGameIdByRow(final int rowIndex) {
     return gameList.get(rowIndex).getFirst();
   }
 }

@@ -111,7 +111,7 @@ class LobbyGameTableModel extends AbstractTableModel implements ILobbyGameBroadc
       case Started:
         return description.getFormattedBotStartTime();
       case UUID:
-        return gameListModel.getGameGuidByRow(rowIndex);
+        return gameListModel.getGameIdByRow(rowIndex);
       default:
         throw new IllegalStateException("Unknown column:" + column);
     }
