@@ -3,6 +3,8 @@ package org.triplea.server.http;
 import com.codahale.metrics.MetricRegistry;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
+import es.moki.ratelimij.dropwizard.RateLimitBundle;
+import es.moki.ratelimitj.inmemory.InMemoryRateLimiterFactory;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -70,6 +72,7 @@ public class ServerApplication extends Application<AppConfig> {
     // otherwise
     // only the common wrapper exception’s stack trace is logged.
     bootstrap.addBundle(new JdbiExceptionsBundle());
+    bootstrap.addBundle(new RateLimitBundle(new InMemoryRateLimiterFactory()));
   }
 
   @Override

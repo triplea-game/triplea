@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JLabelBuilder;
@@ -59,7 +60,11 @@ class StackTraceReportSwingView implements StackTraceReportView {
                         .addWest(
                             JLabelBuilder.builder()
                                 .border(5)
-                                .html("Please describe the error and where it happened:")
+                                .html(
+                                    "You may submit up to "
+                                        + ErrorUploadClient.MAX_REPORTS_PER_DAY
+                                        + " error reports per day.<br/>"
+                                        + "Please describe the error, where and how it happened:")
                                 .toolTip(HELP_TEXT)
                                 .build())
                         .addEast(

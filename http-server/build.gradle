@@ -25,6 +25,8 @@ dependencies {
     implementation project(':lobby-db-dao')
 
     implementation "com.sun.mail:jakarta.mail:$jakartaMailVersion"
+    implementation 'es.moki.ratelimitj:ratelimitj-dropwizard:0.6.0'
+    implementation 'es.moki.ratelimitj:ratelimitj-inmemory:0.6.0'
     implementation "io.dropwizard:dropwizard-core:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-jdbi3:$dropwizardVersion"
     implementation "io.dropwizard:dropwizard-auth:$dropwizardVersion"

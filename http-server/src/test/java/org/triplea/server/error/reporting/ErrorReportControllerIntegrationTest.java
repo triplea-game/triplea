@@ -18,9 +18,4 @@ class ErrorReportControllerIntegrationTest extends BasicEndpointTest<ErrorUpload
             client.uploadErrorReport(
                 ErrorUploadRequest.builder().body("body").title("title").build()));
   }
-
-  @Test
-  void canSubmitErrorReport() {
-    verifyEndpointReturningObject(ErrorUploadClient::canSubmitErrorReport);
-  }
 }

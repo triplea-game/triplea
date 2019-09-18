@@ -18,7 +18,6 @@ import javax.swing.SwingUtilities;
 import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
@@ -138,14 +137,7 @@ public enum ErrorMessage {
       INSTANCE.uploadButton.addActionListener(
           e -> {
             hide();
-            if (serviceClient.canSubmitErrorReport()) {
-              StackTraceReportView.showWindow(windowReference, serviceClient, record);
-            } else {
-              SwingComponents.showDialog(
-                  "Error Report Limit Reached",
-                  "You have reached a daily limit for error uploads. "
-                      + "Please wait a day before submitting additional error reports.");
-            }
+            StackTraceReportView.showWindow(windowReference, serviceClient, record);
           });
     }
   }

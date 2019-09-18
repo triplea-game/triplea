@@ -1,10 +1,12 @@
 package org.triplea.server.error.reporting;
 
+import es.moki.ratelimij.dropwizard.annotation.Rate;
+import es.moki.ratelimij.dropwizard.annotation.RateLimited;
+import es.moki.ratelimij.dropwizard.filter.KeyPart;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -22,10 +24,14 @@ import org.triplea.server.http.IpAddressExtractor;
 @Path("/")
 public class ErrorReportController {
   @Nonnull private final Function<ErrorReportRequest, ErrorUploadResponse> errorReportIngestion;
-  @Nonnull private final Predicate<String> errorReportRateChecker;
 
   @POST
   @Path(ErrorUploadClient.ERROR_REPORT_PATH)
+  @RateLimited(
+      keys = {KeyPart.IP},
+      rates = {
+        @Rate(limit = ErrorUploadClient.MAX_REPORTS_PER_DAY, duration = 1, timeUnit = TimeUnit.DAYS)
+      })
   public ErrorUploadResponse uploadErrorReport(
       @Context final HttpServletRequest request, final ErrorUploadRequest errorReport) {
 
@@ -38,16 +44,5 @@ public class ErrorReportController {
             .clientIp(IpAddressExtractor.extractClientIp(request))
             .errorReport(errorReport)
             .build());
-  }
-
-  /**
-   * Checks if the user has hit their rate limit for submitting error reports.
-   *
-   * @return True if the user can submit an error report, false if they have hit their limit.
-   */
-  @GET
-  @Path(ErrorUploadClient.CAN_REPORT_PATH)
-  public boolean canSubmitErrorReport(@Context final HttpServletRequest request) {
-    return errorReportRateChecker.test(IpAddressExtractor.extractClientIp(request));
   }
 }
