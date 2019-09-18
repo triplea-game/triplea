@@ -28,11 +28,11 @@ public class JButtonBuilder {
   private boolean enabled = true;
   private int biggerFont;
 
+  public JButtonBuilder() {}
+
   public JButtonBuilder(final String title) {
     this.title = title;
   }
-
-  public JButtonBuilder() {}
 
   /**
    * Constructs a Swing JButton using current builder values. Values that must be set: title,
