@@ -93,8 +93,8 @@ create table error_report_history
 );
 alter table error_report_history
     owner to lobby_user;
-comment on table error_report_history is 'Table that stores timestamps by user IP address of when error reports were created. Used to do rate limiting.';
-comment on column error_report_history.id is 'Synthetic PK column';
+comment on table error_report_history is
+    $$Table that stores timestamps by user IP address of when error reports were created. Used to do rate limiting.$$;
 comment on column error_report_history.user_ip is 'IP address of a user that has submitted an error report';
 comment on column error_report_history.date_created is 'Timestamp when error report was created in DB';
 
@@ -132,7 +132,6 @@ alter table temp_password_request
     owner to lobby_user;
 comment on table temp_password_request is
     $$Table that stores temporary passwords issued to players. They are intended to be single use.$$;
-comment on column temp_password_request.id is 'synthetic PK column';
 comment on column temp_password_request.lobby_user_id is 'FK to lobby_user table.';
 comment on column temp_password_request.temp_password is 'Temp password value created for user.';
 comment on column temp_password_request.date_created is 'Timestamp of when the ban temporary password was created.';
@@ -153,7 +152,6 @@ alter table temp_password_request_history
 comment on table temp_password_request_history is
     $$Table that stores requests for temporary passwords for audit purposes. This will let us rate limit requests and
     prevent a single player from spamming email to many userse.$$;
-comment on column temp_password_request_history.id is 'synthetic PK column';
 comment on column temp_password_request_history.inetaddress is 'IP of the address making the temp password request.';
 comment on column temp_password_request_history.username is 'The requested username for a temp password.';
 comment on column temp_password_request_history.date_created is 'Timestamp of when the temp password request is made';
