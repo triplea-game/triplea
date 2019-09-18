@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
  * Class to complement guava "PreConditions" and assert "post" state, for example verifying the
  * state of a return value when a method exits. Java assertions normally would serve this function,
  * but they are not enabled by default. This class serves as an 'always-on' alternative to assertion
- * and provides room for additional functionality such as error messages when asserted states fail.
+ * and provides room for nicer APIs and additional functionality when asserted states fail.
  * <br>
  * Example Usage:
  *
