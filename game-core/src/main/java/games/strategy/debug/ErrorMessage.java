@@ -18,7 +18,6 @@ import javax.swing.SwingUtilities;
 import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.SwingComponents;
 import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
