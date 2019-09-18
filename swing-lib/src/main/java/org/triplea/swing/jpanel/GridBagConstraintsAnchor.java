@@ -1,4 +1,4 @@
-package org.triplea.swing;
+package org.triplea.swing.jpanel;
 
 import java.awt.GridBagConstraints;
 import lombok.AccessLevel;

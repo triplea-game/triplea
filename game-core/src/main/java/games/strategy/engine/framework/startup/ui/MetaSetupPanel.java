@@ -196,7 +196,7 @@ public class MetaSetupPanel extends SetupPanel {
             0));
 
     final JButton mapCreator =
-        JButtonBuilder.builder()
+        new JButtonBuilder()
             .title("Run the Map Creator")
             .actionListener(MapCreator::openMapCreatorWindow)
             .build();

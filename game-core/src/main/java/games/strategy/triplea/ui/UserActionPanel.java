@@ -127,7 +127,7 @@ public class UserActionPanel extends ActionPanel {
           selectUserActionButton.setEnabled(false);
           add(selectUserActionButton);
           doneButton =
-              JButtonBuilder.builder()
+              new JButtonBuilder()
                   .title("Done")
                   .actionListener(this::performDone)
                   .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)

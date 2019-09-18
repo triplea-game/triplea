@@ -13,10 +13,10 @@ import org.triplea.http.client.moderator.toolbox.bad.words.ToolboxBadWordsClient
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.JTextFieldBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Show a scrollable list of 'bad words'. This are words which may not be contained in user names.
@@ -53,13 +53,15 @@ public final class BadWordsTab implements Supplier<Component> {
   public Component get() {
     final JTable table = buildTable();
 
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .border(10)
+        .borderLayout()
         .addNorth(
-            JPanelBuilder.builder()
+            new JPanelBuilder()
+                .borderLayout()
                 .addNorth(new JLabel("Bad words are not allowed to be contained in any user name"))
                 .addCenter(
-                    JButtonBuilder.builder()
+                    new JButtonBuilder()
                         .title("Refresh")
                         .actionListener(() -> badWordsTabActions.refresh(table))
                         .build())
@@ -94,7 +96,7 @@ public final class BadWordsTab implements Supplier<Component> {
             .build();
 
     final JButton addButton =
-        JButtonBuilder.builder()
+        new JButtonBuilder()
             .enabled(false)
             .title("Add Bad Word")
             .actionListener(
@@ -113,10 +115,9 @@ public final class BadWordsTab implements Supplier<Component> {
     DocumentListenerBuilder.attachDocumentListener(
         addField, () -> addButton.setEnabled(addField.getText().trim().length() >= MIN_LENGTH));
 
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .add(
-            JPanelBuilder.builder()
-                .flowLayout()
+            new JPanelBuilder()
                 .add(addField)
                 .add(Box.createHorizontalStrut(10))
                 .add(addButton)

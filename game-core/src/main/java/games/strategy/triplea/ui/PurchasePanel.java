@@ -96,7 +96,7 @@ public class PurchasePanel extends ActionPanel {
           add(buyButton);
 
           add(
-              JButtonBuilder.builder()
+              new JButtonBuilder()
                   .title("Done")
                   .actionListener(this::performDone)
                   .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)

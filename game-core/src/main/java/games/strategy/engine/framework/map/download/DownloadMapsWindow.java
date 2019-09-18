@@ -40,8 +40,8 @@ import org.triplea.java.Interruptibles;
 import org.triplea.java.OptionalUtils;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** Window that allows for map downloads and removal. */
 @Log
@@ -404,7 +404,7 @@ public class DownloadMapsWindow extends JFrame {
       final MapAction action) {
 
     final List<DownloadFileDescription> maps = MapDownloadListSort.sortByMapName(unsortedMaps);
-    final JPanel main = JPanelBuilder.builder().borderLayout().border(30).build();
+    final JPanel main = new JPanelBuilder().border(30).borderLayout().build();
     final JEditorPane descriptionPane = SwingComponents.newHtmlJEditorPane();
     main.add(SwingComponents.newJScrollPane(descriptionPane), BorderLayout.CENTER);
 
@@ -425,7 +425,7 @@ public class DownloadMapsWindow extends JFrame {
 
       main.add(SwingComponents.newJScrollPane(gamesList), BorderLayout.WEST);
       final JPanel southPanel =
-          JPanelBuilder.builder()
+          new JPanelBuilder()
               .gridLayout(2, 1)
               .add(mapSizeLabel)
               .add(newButtonsPanel(action, gamesList, maps, model))
@@ -556,13 +556,13 @@ public class DownloadMapsWindow extends JFrame {
       final List<DownloadFileDescription> maps,
       final DefaultListModel<String> listModel) {
 
-    return JPanelBuilder.builder()
-        .gridLayout(1, 5)
+    return new JPanelBuilder()
         .border(20)
+        .gridLayout(1, 5)
         .add(buildMapActionButton(action, gamesList, maps, listModel))
         .add(Box.createGlue())
         .add(
-            JButtonBuilder.builder()
+            new JButtonBuilder()
                 .title("Help")
                 .toolTip(
                     "Click this button to learn more about the map download feature in TripleA")
@@ -571,7 +571,7 @@ public class DownloadMapsWindow extends JFrame {
                 .build())
         .add(Box.createGlue())
         .add(
-            JButtonBuilder.builder()
+            new JButtonBuilder()
                 .title("Close")
                 .toolTip(
                     "Click this button to close the map download window and "
@@ -594,7 +594,7 @@ public class DownloadMapsWindow extends JFrame {
 
     if (action == MapAction.REMOVE) {
       actionButton =
-          JButtonBuilder.builder()
+          new JButtonBuilder()
               .title("Remove")
               .toolTip(
                   "Click this button to remove the maps selected above from your computer. "
@@ -603,7 +603,7 @@ public class DownloadMapsWindow extends JFrame {
               .build();
     } else {
       actionButton =
-          JButtonBuilder.builder()
+          new JButtonBuilder()
               .title((action == MapAction.INSTALL) ? "Install" : "Update")
               .toolTip(
                   "Click this button to download and install the maps selected above. "

@@ -17,7 +17,7 @@ class JButtonBuilderTest {
   void title() {
     final String value = "testing title";
     final JButton button =
-        JButtonBuilder.builder().title(value).actionListener(Runnables.doNothing()).build();
+        new JButtonBuilder().title(value).actionListener(Runnables.doNothing()).build();
     assertThat(button.getText(), is(value));
   }
 
@@ -27,7 +27,7 @@ class JButtonBuilderTest {
     // get the +1
     final AtomicInteger integer = new AtomicInteger(0);
     final JButton button =
-        JButtonBuilder.builder()
+        new JButtonBuilder()
             .title("title")
             .actionListener(integer::incrementAndGet)
             .toolTip("toolTip")
@@ -42,24 +42,24 @@ class JButtonBuilderTest {
 
   @Test
   void titleCannotBeEmpty() {
-    assertThrows(IllegalArgumentException.class, () -> JButtonBuilder.builder().title(""));
+    assertThrows(IllegalArgumentException.class, () -> new JButtonBuilder().title(""));
   }
 
   @Test
   void titleIsRequired() {
     assertThrows(
         NullPointerException.class,
-        () -> JButtonBuilder.builder().actionListener(Runnables.doNothing()).build());
+        () -> new JButtonBuilder().actionListener(Runnables.doNothing()).build());
   }
 
   @Test
   void actionListenerIsRequired() {
     assertThrows(
-        NullPointerException.class, () -> JButtonBuilder.builder().actionListener((Runnable) null));
+        NullPointerException.class, () -> new JButtonBuilder().actionListener((Runnable) null));
   }
 
   @Test
   void toolTipCanNotBeEmptyIfSpecified() {
-    assertThrows(IllegalArgumentException.class, () -> JButtonBuilder.builder().toolTip(""));
+    assertThrows(IllegalArgumentException.class, () -> new JButtonBuilder().toolTip(""));
   }
 }

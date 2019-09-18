@@ -18,8 +18,8 @@ import javax.swing.SwingUtilities;
 import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Class for showing a modal error dialog to the user. The dialog has an 'ok' button to close it and
@@ -44,7 +44,7 @@ public enum ErrorMessage {
   private volatile boolean enableErrorPopup = false;
 
   private final JButton uploadButton =
-      JButtonBuilder.builder()
+      new JButtonBuilder()
           .title("Report To TripleA")
           .toolTip("Upload error report to TripleA support.")
           .build();
@@ -60,23 +60,23 @@ public enum ErrorMessage {
           }
         });
     windowReference.add(
-        JPanelBuilder.builder()
-            .borderLayout()
+        new JPanelBuilder()
             .border(10)
+            .borderLayout()
             .addCenter(
-                JPanelBuilder.builder()
-                    .horizontalBoxLayout()
+                new JPanelBuilder()
+                    .boxLayoutHorizontal()
                     .addHorizontalGlue()
                     .add(errorMessage)
                     .addHorizontalGlue()
                     .build())
             .addSouth(
-                JPanelBuilder.builder()
-                    .horizontalBoxLayout()
+                new JPanelBuilder()
                     .border(20, 0, 0, 0)
+                    .boxLayoutHorizontal()
                     .addHorizontalGlue()
                     .add(
-                        JButtonBuilder.builder()
+                        new JButtonBuilder()
                             .okTitle()
                             .actionListener(this::hide)
                             .selected(true)

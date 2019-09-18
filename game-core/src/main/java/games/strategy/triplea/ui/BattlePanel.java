@@ -40,9 +40,9 @@ import org.triplea.java.Interruptibles;
 import org.triplea.swing.EventThreadJOptionPane;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingAction;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** UI for fighting battles. */
 @Log
@@ -83,7 +83,7 @@ public final class BattlePanel extends ActionPanel {
           removeAll();
           actionLabel.setText(id.getName() + " battle");
           setLayout(new BorderLayout());
-          final JPanel panel = JPanelBuilder.builder().gridLayout(0, 1).add(actionLabel).build();
+          final JPanel panel = new JPanelBuilder().gridLayout(0, 1).add(actionLabel).build();
           for (final Entry<BattleType, Collection<Territory>> entry : battles.entrySet()) {
             for (final Territory t : entry.getValue()) {
               addBattleActions(panel, t, entry.getKey().isBombingRun(), entry.getKey());
@@ -106,7 +106,7 @@ public final class BattlePanel extends ActionPanel {
       final BattleType battleType) {
 
     panel.add(
-        JPanelBuilder.builder()
+        new JPanelBuilder()
             .borderLayout()
             .addCenter(
                 new JButton(
@@ -114,7 +114,7 @@ public final class BattlePanel extends ActionPanel {
                         battleType.toString() + " in " + territory.getName() + "...",
                         () -> fightBattleAction(territory, bomb, battleType))))
             .addEast(
-                JButtonBuilder.builder()
+                new JButtonBuilder()
                     .title("Center")
                     .actionListener(
                         () ->

@@ -1,4 +1,4 @@
-package org.triplea.swing;
+package org.triplea.swing.jpanel;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;

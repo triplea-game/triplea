@@ -13,7 +13,7 @@ import javax.swing.UIManager;
 
 /**
  * Example usage:. <code><pre>
- *   JButton button = JButtonBuilder.builder()
+ *   JButton button = new JButtonBuilder()
  *     .text("button text")
  *     .actionListener(() -> handleClickAction())
  *     .build();
@@ -28,14 +28,10 @@ public class JButtonBuilder {
   private boolean enabled = true;
   private int biggerFont;
 
+  public JButtonBuilder() {}
+
   public JButtonBuilder(final String title) {
     this.title = title;
-  }
-
-  private JButtonBuilder() {}
-
-  public static JButtonBuilder builder() {
-    return new JButtonBuilder();
   }
 
   /**

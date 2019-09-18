@@ -15,10 +15,10 @@ import org.triplea.java.Interruptibles;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.DocumentListenerBuilder;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.JTextFieldBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** Tab with a table showing list of moderators. Super-mods will see additional controls. */
 public final class ModeratorsTab implements Supplier<Component> {
@@ -41,10 +41,11 @@ public final class ModeratorsTab implements Supplier<Component> {
     final JTable dataTable = buildTable();
 
     final JPanel panel =
-        JPanelBuilder.builder()
+        new JPanelBuilder()
             .border(10)
+            .borderLayout()
             .addNorth(
-                JButtonBuilder.builder()
+                new JButtonBuilder()
                     .title("Refresh")
                     .actionListener(() -> moderatorsTabActions.refreshTableData(dataTable))
                     .build())
@@ -80,7 +81,7 @@ public final class ModeratorsTab implements Supplier<Component> {
             .build();
 
     final JButton addButton =
-        JButtonBuilder.builder()
+        new JButtonBuilder()
             .enabled(false)
             .title("Add moderator")
             .actionListener(button -> moderatorsTabActions.addModerator(addField, button, table))
@@ -109,9 +110,9 @@ public final class ModeratorsTab implements Supplier<Component> {
                     })
                 .start());
 
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .add(
-            JPanelBuilder.builder()
+            new JPanelBuilder()
                 .flowLayout()
                 .add(addField)
                 .add(Box.createHorizontalStrut(10))
