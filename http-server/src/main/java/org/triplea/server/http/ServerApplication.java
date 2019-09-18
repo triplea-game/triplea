@@ -34,6 +34,7 @@ import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
 import org.triplea.server.moderator.toolbox.banned.names.UsernameBanControllerFactory;
 import org.triplea.server.moderator.toolbox.banned.users.UserBanControllerFactory;
 import org.triplea.server.moderator.toolbox.moderators.ModeratorsControllerFactory;
+import org.triplea.server.user.account.UserAccountControllerFactory;
 
 /**
  * Main entry-point for launching drop wizard HTTP server. This class is responsible for configuring
@@ -135,7 +136,8 @@ public class ServerApplication extends Application<AppConfig> {
         UserBanControllerFactory.buildController(appConfig, jdbi),
         ErrorReportControllerFactory.buildController(appConfig, jdbi),
         ModeratorAuditHistoryControllerFactory.buildController(appConfig, jdbi),
-        ModeratorsControllerFactory.buildController(appConfig, jdbi));
+        ModeratorsControllerFactory.buildController(appConfig, jdbi),
+        UserAccountControllerFactory.buildController(jdbi));
   }
 
   private Jdbi createJdbi(final AppConfig configuration, final Environment environment) {
