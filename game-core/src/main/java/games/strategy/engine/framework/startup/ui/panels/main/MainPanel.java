@@ -76,7 +76,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
     chatSplit.setDividerSize(5);
 
     mainPanel =
-        JPanelBuilder.builder()
+        new JPanelBuilder()
             .border(0)
             .gridBagLayout(2)
             .add(gameSelectorPanel, GridBagHelper.Anchor.WEST, GridBagHelper.Fill.VERTICAL)
@@ -104,7 +104,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
             .actionListener(GameRunner::quitGame)
             .build();
     final JPanel buttonsPanel =
-        JPanelBuilder.builder()
+        new JPanelBuilder()
             .borderEtched()
             .flowLayout(JPanelBuilder.FlowLayoutJustification.CENTER)
             .add(playButton)

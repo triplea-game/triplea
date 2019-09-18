@@ -27,7 +27,7 @@ import org.triplea.swing.jpanel.GridBagHelper.Fill;
 
 /**
  * Example usage:. <code><pre>
- *   final JPanel panel = JPanelBuilder.builder()
+ *   final JPanel panel = new JPanelBuilder()
  *       .gridLayout(2, 1)
  *       .add(new JLabel("")
  *       .add(new JLabel("")
@@ -50,12 +50,6 @@ public class JPanelBuilder {
   private boolean useGridBagHelper = false;
   private int gridBagHelperColumns;
   private Integer preferredHeight;
-
-  public JPanelBuilder() {}
-
-  public static JPanelBuilder builder() {
-    return new JPanelBuilder();
-  }
 
   /**
    * Constructs a Swing JPanel using current builder values. Values that must be set: (requires no
