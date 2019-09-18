@@ -50,17 +50,14 @@ class JPanelBuilderTest {
 
   @Test
   void testLayouts() {
-    final GridLayout result =
-        (GridLayout) new JPanelBuilder().gridLayout(1, 2).build().getLayout();
+    final GridLayout result = (GridLayout) new JPanelBuilder().gridLayout(1, 2).build().getLayout();
     assertThat(result.getRows(), is(1));
     assertThat(result.getColumns(), is(2));
 
     assertThat(
-        new JPanelBuilder().gridBagLayout(2).build().getLayout(),
-        instanceOf(GridBagLayout.class));
+        new JPanelBuilder().gridBagLayout(2).build().getLayout(), instanceOf(GridBagLayout.class));
 
-    assertThat(
-        new JPanelBuilder().flowLayout().build().getLayout(), instanceOf(FlowLayout.class));
+    assertThat(new JPanelBuilder().flowLayout().build().getLayout(), instanceOf(FlowLayout.class));
 
     assertThat(
         new JPanelBuilder().borderLayout().build().getLayout(), instanceOf(BorderLayout.class));
