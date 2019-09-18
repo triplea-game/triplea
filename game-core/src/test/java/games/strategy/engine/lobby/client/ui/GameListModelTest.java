@@ -4,7 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 
-import games.strategy.net.GUID;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,14 +15,14 @@ import org.triplea.lobby.common.GameDescription;
 final class GameListModelTest {
   private GameListModel gameListModel = new GameListModel();
 
-  private final GUID gameGuid = new GUID();
+  private final UUID gameId = UUID.randomUUID();
   private final GameDescription gameDescription = GameDescription.builder().build();
   private final GameDescription newDescription =
       GameDescription.builder().comment("comment").build();
 
   @BeforeEach
   void setUp() {
-    gameListModel.add(gameGuid, gameDescription);
+    gameListModel.add(gameId, gameDescription);
     assertThat("games are loaded on init", gameListModel.size(), is(1));
   }
 
@@ -30,7 +30,7 @@ final class GameListModelTest {
   void updateGame() {
     assertThat(gameListModel.getGameDescriptionByRow(0).getComment(), nullValue());
 
-    gameListModel.update(gameGuid, newDescription);
+    gameListModel.update(gameId, newDescription);
 
     assertThat(gameListModel.size(), is(1));
     assertThat(
@@ -39,25 +39,25 @@ final class GameListModelTest {
 
   @Test
   void containsGame() {
-    assertThat(gameListModel.containsGame(new GUID()), is(false));
-    assertThat(gameListModel.containsGame(gameGuid), is(true));
+    assertThat(gameListModel.containsGame(UUID.randomUUID()), is(false));
+    assertThat(gameListModel.containsGame(gameId), is(true));
   }
 
   @Test
   void addGame() {
-    gameListModel.add(new GUID(), GameDescription.builder().build());
+    gameListModel.add(UUID.randomUUID(), GameDescription.builder().build());
     assertThat(gameListModel.size(), is(2));
   }
 
   @Test
   void removeGame() {
-    gameListModel.removeGame(gameGuid);
+    gameListModel.removeGame(gameId);
     assertThat(gameListModel.size(), is(0));
   }
 
   @Test
   void removeGameThatDoesNotExistIsIgnored() {
-    gameListModel.removeGame(new GUID());
+    gameListModel.removeGame(UUID.randomUUID());
     assertThat(gameListModel.size(), is(1));
   }
 }

@@ -6,13 +6,13 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.data.BattleRecord.BattleResultDescription;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /** Represents a battle. */
 public interface IBattle extends Serializable {
@@ -151,5 +151,5 @@ public interface IBattle extends Serializable {
 
   PlayerId getDefender();
 
-  GUID getBattleId();
+  UUID getBattleId();
 }

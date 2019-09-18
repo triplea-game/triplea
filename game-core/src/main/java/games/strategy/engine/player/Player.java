@@ -6,7 +6,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.message.IRemote;
-import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.delegate.data.CasualtyList;
@@ -14,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import org.triplea.java.collections.IntegerMap;
 import org.triplea.util.Tuple;
 
@@ -78,7 +78,7 @@ public interface Player extends IRemote {
       boolean amphibious,
       Collection<Unit> amphibiousLandAttackers,
       CasualtyList defaultCasualties,
-      GUID battleId,
+      UUID battleId,
       Territory battlesite,
       boolean allowMultipleHitsPerUnit);
 
@@ -210,7 +210,7 @@ public interface Player extends IRemote {
    * @return the territory to retreat to, or null if the player doesnt wish to retreat
    */
   Territory retreatQuery(
-      GUID battleId,
+      UUID battleId,
       boolean submerge,
       Territory battleTerritory,
       Collection<Territory> possibleTerritories,
@@ -233,9 +233,9 @@ public interface Player extends IRemote {
   Collection<Unit> selectUnitsQuery(Territory current, Collection<Unit> possible, String message);
 
   /** Allows the user to pause and confirm enemy casualties. */
-  void confirmEnemyCasualties(GUID battleId, String message, PlayerId hitPlayer);
+  void confirmEnemyCasualties(UUID battleId, String message, PlayerId hitPlayer);
 
-  void confirmOwnCasualties(GUID battleId, String message);
+  void confirmOwnCasualties(UUID battleId, String message);
 
   /**
    * Indicates the player accepts the proposed action.

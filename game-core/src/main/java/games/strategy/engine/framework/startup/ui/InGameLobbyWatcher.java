@@ -16,7 +16,6 @@ import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import games.strategy.net.ClientMessengerFactory;
-import games.strategy.net.GUID;
 import games.strategy.net.IClientMessenger;
 import games.strategy.net.IConnectionChangeListener;
 import games.strategy.net.IMessenger;
@@ -28,6 +27,7 @@ import java.net.InetSocketAddress;
 import java.time.Instant;
 import java.util.Observer;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.extern.java.Log;
@@ -46,7 +46,7 @@ public class InGameLobbyWatcher {
   // it is different than the messenger we use to connect to the game lobby
   private final IServerMessenger serverMessenger;
   private boolean isShutdown = false;
-  private final GUID gameId = new GUID();
+  private final UUID gameId = UUID.randomUUID();
   private GameSelectorModel gameSelectorModel;
   private final Observer gameSelectorModelObserver = (o, arg) -> gameSelectorModelUpdated();
   private IGame game;

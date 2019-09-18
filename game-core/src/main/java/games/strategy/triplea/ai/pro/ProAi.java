@@ -8,7 +8,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.pro.data.ProBattleResult;
@@ -45,6 +44,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.util.Tuple;
@@ -287,7 +287,7 @@ public class ProAi extends AbstractAi {
 
   @Override
   public Territory retreatQuery(
-      final GUID battleId,
+      final UUID battleId,
       final boolean submerge,
       final Territory battleTerritory,
       final Collection<Territory> possibleTerritories,
@@ -360,7 +360,7 @@ public class ProAi extends AbstractAi {
       final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties,
-      final GUID battleId,
+      final UUID battleId,
       final Territory battleSite,
       final boolean allowMultipleHitsPerUnit) {
     initializeData();

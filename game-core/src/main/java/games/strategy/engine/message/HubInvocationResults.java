@@ -1,7 +1,7 @@
 package games.strategy.engine.message;
 
 import games.strategy.engine.message.unifiedmessenger.InvocationResults;
-import games.strategy.net.GUID;
+import java.util.UUID;
 
 /** The results of a remote method call invoked via {@link HubInvoke}. */
 public class HubInvocationResults extends InvocationResults {
@@ -9,7 +9,7 @@ public class HubInvocationResults extends InvocationResults {
 
   public HubInvocationResults() {}
 
-  public HubInvocationResults(final RemoteMethodCallResults results, final GUID methodCallId) {
+  public HubInvocationResults(final RemoteMethodCallResults results, final UUID methodCallId) {
     super(results, methodCallId);
   }
 }

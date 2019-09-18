@@ -9,7 +9,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.player.Player;
 import games.strategy.engine.random.IRandomStats.DiceType;
-import games.strategy.net.GUID;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.ai.weak.WeakAi;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -30,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import lombok.extern.java.Log;
@@ -129,7 +129,7 @@ public class BattleCalculator {
       final DiceRoll dice,
       final IDelegateBridge bridge,
       final PlayerId hitPlayer,
-      final GUID battleId,
+      final UUID battleId,
       final Territory terr,
       final Collection<TerritoryEffect> territoryEffects,
       final boolean amphibious,
@@ -586,7 +586,7 @@ public class BattleCalculator {
       final String text,
       final DiceRoll dice,
       final boolean defending,
-      final GUID battleId,
+      final UUID battleId,
       final boolean headLess,
       final int extraHits,
       final boolean allowMultipleHitsPerUnit) {

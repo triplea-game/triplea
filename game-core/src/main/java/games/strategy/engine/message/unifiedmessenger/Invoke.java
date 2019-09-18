@@ -1,23 +1,23 @@
 package games.strategy.engine.message.unifiedmessenger;
 
 import games.strategy.engine.message.RemoteMethodCall;
-import games.strategy.net.GUID;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.UUID;
 
 /** Someone wants us to invoke something locally. */
 public abstract class Invoke implements Externalizable {
   private static final long serialVersionUID = -5453883962199970896L;
-  public GUID methodCallId;
+  public UUID methodCallId;
   public boolean needReturnValues;
   public RemoteMethodCall call;
 
   public Invoke() {}
 
   public Invoke(
-      final GUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call) {
+      final UUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call) {
     if (needReturnValues && methodCallId == null) {
       throw new IllegalArgumentException("Cant have no id and need return values");
     }
@@ -43,7 +43,7 @@ public abstract class Invoke implements Externalizable {
   public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
     needReturnValues = in.read() == 1;
     if (needReturnValues) {
-      methodCallId = (GUID) in.readObject();
+      methodCallId = (UUID) in.readObject();
     }
     call = new RemoteMethodCall();
     call.readExternal(in);

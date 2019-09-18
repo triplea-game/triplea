@@ -1,11 +1,11 @@
 package games.strategy.engine.message;
 
 import games.strategy.engine.message.unifiedmessenger.Invoke;
-import games.strategy.net.GUID;
 import games.strategy.net.INode;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.UUID;
 
 /**
  * A request forwarded by the hub node to invoke a remote method on a spoke node. Instances of this
@@ -19,7 +19,7 @@ public class SpokeInvoke extends Invoke {
   public SpokeInvoke() {}
 
   public SpokeInvoke(
-      final GUID methodCallId,
+      final UUID methodCallId,
       final boolean needReturnValues,
       final RemoteMethodCall call,
       final INode invoker) {
