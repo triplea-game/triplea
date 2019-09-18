@@ -1714,7 +1714,7 @@ public class MoveValidator {
       if (available >= cost) {
         // this is to test if they started in the same sea zone or not, and its not a very good way
         // of testing it.
-        if ((taCarrier.getAlreadyMoved() == taPlane.getAlreadyMoved())
+        if ((taCarrier.getAlreadyMoved().compareTo(taPlane.getAlreadyMoved()) == 0)
             || (Matches.unitHasNotMoved().test(plane) && Matches.unitHasNotMoved().test(carrier))
             || (Matches.unitIsOwnedBy(playerWhoIsDoingTheMovement).negate().test(plane)
                 && Matches.alliedUnit(playerWhoIsDoingTheMovement, data).test(plane))) {

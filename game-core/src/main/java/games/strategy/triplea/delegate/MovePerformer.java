@@ -359,18 +359,18 @@ public class MovePerformer implements Serializable {
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     for (final Unit baseUnit : CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(id))) {
       final TripleAUnit unit = (TripleAUnit) baseUnit;
-      final BigDecimal moved = route.getMovementCost(unit);
+      BigDecimal moved = route.getMovementCost(unit);
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua.getIsAir()) {
         if (taRouteStart != null
             && taRouteStart.getAirBase()
             && relationshipTracker.isAllied(route.getStart().getOwner(), unit.getOwner())) {
-          moved.subtract(BigDecimal.ONE);
+          moved = moved.subtract(BigDecimal.ONE);
         }
         if (taRouteEnd != null
             && taRouteEnd.getAirBase()
             && relationshipTracker.isAllied(route.getEnd().getOwner(), unit.getOwner())) {
-          moved.subtract(BigDecimal.ONE);
+          moved = moved.subtract(BigDecimal.ONE);
         }
       }
       change.add(

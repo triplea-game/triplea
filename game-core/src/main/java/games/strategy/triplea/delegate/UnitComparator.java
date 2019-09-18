@@ -77,12 +77,12 @@ public final class UnitComparator {
       final BigDecimal left1 = TripleAUnit.get(u1).getMovementLeft();
       final BigDecimal left2 = TripleAUnit.get(u2).getMovementLeft();
       if (route != null) {
-        if ((left1.compareTo(route.getMovementCost(u1)) >= 0)
-            && (left2.compareTo(route.getMovementCost(u2)) < 0)) {
+        if (left1.compareTo(route.getMovementCost(u1)) >= 0
+            && left2.compareTo(route.getMovementCost(u2)) < 0) {
           return -1;
         }
-        if ((left1.compareTo(route.getMovementCost(u1)) < 0)
-            && (left2.compareTo(route.getMovementCost(u2)) >= 0)) {
+        if (left1.compareTo(route.getMovementCost(u1)) < 0
+            && left2.compareTo(route.getMovementCost(u2)) >= 0) {
           return 1;
         }
       }
