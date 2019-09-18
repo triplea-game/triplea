@@ -3,10 +3,10 @@ package games.strategy.engine.data;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.ImmutableMap;
-import games.strategy.net.GUID;
 import games.strategy.triplea.attachments.UnitAttachment;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,16 +24,16 @@ public class Unit extends GameDataComponent implements DynamicallyModifiable {
   private static final long serialVersionUID = -7906193079642776282L;
 
   private PlayerId owner;
-  private final GUID id;
+  private final UUID id;
   @Setter private int hits = 0;
   private final UnitType type;
 
   /** Creates new Unit. Owner can be null. */
   public Unit(final UnitType type, final PlayerId owner, final GameData data) {
-    this(type, owner, data, new GUID());
+    this(type, owner, data, UUID.randomUUID());
   }
 
-  public Unit(final UnitType type, final PlayerId owner, final GameData data, final GUID id) {
+  public Unit(final UnitType type, final PlayerId owner, final GameData data, final UUID id) {
     super(data);
 
     checkNotNull(type);

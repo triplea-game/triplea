@@ -6,7 +6,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.startup.ui.PlayerType;
 import games.strategy.engine.player.Player;
-import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
@@ -15,6 +14,7 @@ import games.strategy.triplea.ui.TripleAFrame;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /** Implementation of {@link IDisplay} appropriate for a headed environment. */
 public class TripleADisplay implements IDisplay {
@@ -28,7 +28,7 @@ public class TripleADisplay implements IDisplay {
   // from BattlePane().showBattle( .. ) already
   @Override
   public void showBattle(
-      final GUID battleId,
+      final UUID battleId,
       final Territory location,
       final String battleTitle,
       final Collection<Unit> attackingUnits,
@@ -59,13 +59,13 @@ public class TripleADisplay implements IDisplay {
   }
 
   @Override
-  public void listBattleSteps(final GUID battleId, final List<String> steps) {
+  public void listBattleSteps(final UUID battleId, final List<String> steps) {
     ui.getBattlePanel().listBattle(steps);
   }
 
   @Override
   public void casualtyNotification(
-      final GUID battleId,
+      final UUID battleId,
       final String step,
       final DiceRoll dice,
       final PlayerId player,
@@ -77,7 +77,7 @@ public class TripleADisplay implements IDisplay {
 
   @Override
   public void deadUnitNotification(
-      final GUID battleId,
+      final UUID battleId,
       final PlayerId player,
       final Collection<Unit> killed,
       final Map<Unit, Collection<Unit>> dependents) {
@@ -86,7 +86,7 @@ public class TripleADisplay implements IDisplay {
 
   @Override
   public void changedUnitsNotification(
-      final GUID battleId,
+      final UUID battleId,
       final PlayerId player,
       final Collection<Unit> removedUnits,
       final Collection<Unit> addedUnits,
@@ -95,12 +95,12 @@ public class TripleADisplay implements IDisplay {
   }
 
   @Override
-  public void battleEnd(final GUID battleId, final String message) {
+  public void battleEnd(final UUID battleId, final String message) {
     ui.getBattlePanel().battleEndMessage(message);
   }
 
   @Override
-  public void bombingResults(final GUID battleId, final List<Die> dice, final int cost) {
+  public void bombingResults(final UUID battleId, final List<Die> dice, final int cost) {
     ui.getBattlePanel().bombingResults(dice, cost);
   }
 
@@ -118,7 +118,7 @@ public class TripleADisplay implements IDisplay {
   }
 
   @Override
-  public void notifyRetreat(final GUID battleId, final Collection<Unit> retreating) {
+  public void notifyRetreat(final UUID battleId, final Collection<Unit> retreating) {
     ui.getBattlePanel().notifyRetreat(retreating);
   }
 
@@ -128,7 +128,7 @@ public class TripleADisplay implements IDisplay {
   }
 
   @Override
-  public void gotoBattleStep(final GUID battleId, final String step) {
+  public void gotoBattleStep(final UUID battleId, final String step) {
     ui.getBattlePanel().gotoStep(step);
   }
 

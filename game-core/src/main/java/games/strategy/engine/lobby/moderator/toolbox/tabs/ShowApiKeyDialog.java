@@ -6,8 +6,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTextAreaBuilder;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Parameterized dialog window intended for showing a an API key to the user. The window has a label
@@ -29,7 +29,8 @@ public class ShowApiKeyDialog {
     frame
         .getContentPane()
         .add(
-            JPanelBuilder.builder()
+            new JPanelBuilder()
+                .borderLayout()
                 .addNorth(JLabelBuilder.builder().border(20).text(headerLabel).build())
                 .addCenter(
                     JTextAreaBuilder.builder()
@@ -38,7 +39,7 @@ public class ShowApiKeyDialog {
                         .readOnly()
                         .build())
                 .addSouth(
-                    JButtonBuilder.builder().title("Close").actionListener(frame::dispose).build())
+                    new JButtonBuilder().title("Close").actionListener(frame::dispose).build())
                 .build());
     frame.pack();
     frame.setVisible(true);

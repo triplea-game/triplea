@@ -6,7 +6,7 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** Panel to show who is playing which players. */
 public final class PlayersPanel {
@@ -17,7 +17,7 @@ public final class PlayersPanel {
    * etc.).
    */
   public static void showPlayers(final IGame game, final Component parent) {
-    final JPanel panel = JPanelBuilder.builder().verticalBoxLayout().build();
+    final JPanel panel = new JPanelBuilder().boxLayoutVertical().build();
     for (final String player : game.getPlayerManager().getPlayers()) {
       final PlayerId playerId = game.getData().getPlayerList().getPlayerId(player);
       if (playerId.isAi()) {

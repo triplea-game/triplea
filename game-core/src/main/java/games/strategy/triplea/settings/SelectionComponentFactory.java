@@ -37,8 +37,8 @@ import org.triplea.java.OptionalUtils;
 import org.triplea.java.function.ThrowingFunction;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JComboBoxBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Logic for building UI components that "bind" to ClientSettings. For example, if we have a setting
@@ -67,18 +67,18 @@ final class SelectionComponentFactory {
       final JTextField portText =
           new JTextField(proxyPortClientSetting.getValue().map(Object::toString).orElse(""), 6);
       final JPanel radioPanel =
-          JPanelBuilder.builder()
-              .verticalBoxLayout()
+          new JPanelBuilder()
+              .boxLayoutVertical()
               .addLeftJustified(noneButton)
               .addLeftJustified(systemButton)
               .addLeftJustified(userButton)
               .addLeftJustified(
-                  JPanelBuilder.builder()
-                      .horizontalBoxLayout()
+                  new JPanelBuilder()
+                      .boxLayoutHorizontal()
                       .addHorizontalStrut(getRadioButtonLabelHorizontalOffset())
                       .add(
-                          JPanelBuilder.builder()
-                              .verticalBoxLayout()
+                          new JPanelBuilder()
+                              .boxLayoutHorizontal()
                               .addLeftJustified(new JLabel("Proxy Host:"))
                               .addLeftJustified(hostText)
                               .addLeftJustified(new JLabel("Proxy Port:"))
@@ -259,7 +259,7 @@ final class SelectionComponentFactory {
       final JRadioButton yesButton = new JRadioButton("True");
       final JRadioButton noButton = new JRadioButton("False");
       final JPanel buttonPanel =
-          JPanelBuilder.builder().horizontalBoxLayout().add(yesButton).add(noButton).build();
+          new JPanelBuilder().boxLayoutHorizontal().add(yesButton).add(noButton).build();
 
       @Override
       public JComponent getUiComponent() {
@@ -302,7 +302,7 @@ final class SelectionComponentFactory {
       final JTextField field =
           new JTextField(SelectionComponentUiUtils.toString(clientSetting.getValue()), 20);
       final JButton button =
-          JButtonBuilder.builder()
+          new JButtonBuilder()
               .title("Select")
               .actionListener(
                   () ->
@@ -314,8 +314,8 @@ final class SelectionComponentFactory {
       public JComponent getUiComponent() {
         field.setEditable(false);
 
-        return JPanelBuilder.builder()
-            .horizontalBoxLayout()
+        return new JPanelBuilder()
+            .boxLayoutHorizontal()
             .add(field)
             .addHorizontalStrut(5)
             .add(button)
@@ -517,20 +517,20 @@ final class SelectionComponentFactory {
           new JPasswordField(credentialToString(passwordSetting::getValue), 20);
 
       private final JPanel panel =
-          JPanelBuilder.builder()
-              .verticalBoxLayout()
+          new JPanelBuilder()
+              .boxLayoutVertical()
               .addLeftJustified(new JLabel("Email Server"))
               .addLeftJustified(serverField)
               .addLeftJustified(new JLabel("Port"))
               .addLeftJustified(
-                  JPanelBuilder.builder()
-                      .horizontalBoxLayout()
+                  new JPanelBuilder()
+                      .boxLayoutHorizontal()
                       .addLeftJustified(portSpinner)
                       .addLeftJustified(tlsCheckBox)
                       .build())
               .addVerticalStrut(5)
               .addLeftJustified(
-                  JButtonBuilder.builder()
+                  new JButtonBuilder()
                       .title("Presets...")
                       .actionListener(
                           () -> {
@@ -540,7 +540,7 @@ final class SelectionComponentFactory {
                                     .build();
                             if (JOptionPane.showConfirmDialog(
                                     this.panel.getParent(),
-                                    JPanelBuilder.builder().add(comboBox).build(),
+                                    new JPanelBuilder().add(comboBox).build(),
                                     "Select a Preset",
                                     JOptionPane.OK_CANCEL_OPTION)
                                 == JOptionPane.OK_OPTION) {
@@ -609,8 +609,8 @@ final class SelectionComponentFactory {
           new JPasswordField(credentialToString(passwordSetting::getValue), 20);
 
       private final JPanel mainPanel =
-          JPanelBuilder.builder()
-              .verticalBoxLayout()
+          new JPanelBuilder()
+              .boxLayoutVertical()
               .addLeftJustified(new JLabel("Username:"))
               .addLeftJustified(usernameField)
               .addLeftJustified(new JLabel("Password:"))

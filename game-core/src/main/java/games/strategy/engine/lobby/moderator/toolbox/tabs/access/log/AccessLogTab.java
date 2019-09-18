@@ -10,9 +10,9 @@ import org.triplea.http.client.moderator.toolbox.banned.name.ToolboxUsernameBanC
 import org.triplea.http.client.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Show a scrollable list of 'banned users'. Bans are recorded by IP address and Hashed Mac.
@@ -45,16 +45,17 @@ public final class AccessLogTab implements Supplier<Component> {
 
   @Override
   public Component get() {
-    final JButton loadMoreButton = JButtonBuilder.builder().title("Load More").build();
+    final JButton loadMoreButton = new JButtonBuilder().title("Load More").build();
 
     final JTable table = buildTable(loadMoreButton);
 
     loadMoreButton.addActionListener(e -> accessLogTabActions.loadMore(table, loadMoreButton));
 
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .border(10)
+        .borderLayout()
         .addNorth(
-            JButtonBuilder.builder()
+            new JButtonBuilder()
                 .title("Refresh")
                 .actionListener(() -> accessLogTabActions.reload(table, loadMoreButton))
                 .build())

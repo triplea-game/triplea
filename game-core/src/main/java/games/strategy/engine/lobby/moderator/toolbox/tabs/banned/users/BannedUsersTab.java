@@ -7,9 +7,9 @@ import javax.swing.JTable;
 import org.triplea.http.client.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Show a scrollable list of 'banned users'. Bans are recorded by IP address and Hashed Mac.
@@ -37,10 +37,11 @@ public final class BannedUsersTab implements Supplier<Component> {
   public Component get() {
     final JTable table = buildTable();
 
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .border(10)
+        .borderLayout()
         .addNorth(
-            JButtonBuilder.builder()
+            new JButtonBuilder()
                 .title("Refresh")
                 .actionListener(() -> bannedUsersTabActions.refreshTableData(table))
                 .build())

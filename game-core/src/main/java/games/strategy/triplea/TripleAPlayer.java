@@ -7,7 +7,6 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.net.GUID;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attachments.PlayerAttachment;
@@ -46,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import javax.swing.ButtonModel;
@@ -609,7 +609,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
       final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties,
-      final GUID battleId,
+      final UUID battleId,
       final Territory battlesite,
       final boolean allowMultipleHitsPerUnit) {
     return ui.getBattlePanel()
@@ -718,7 +718,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
 
   @Override
   public Territory retreatQuery(
-      final GUID battleId,
+      final UUID battleId,
       final boolean submerge,
       final Territory battleTerritory,
       final Collection<Territory> possibleTerritories,
@@ -741,7 +741,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
 
   @Override
   public void confirmEnemyCasualties(
-      final GUID battleId, final String message, final PlayerId hitPlayer) {
+      final UUID battleId, final String message, final PlayerId hitPlayer) {
     // no need, we have already confirmed since we are firing player
     if (ui.getLocalPlayers().playing(hitPlayer)) {
       return;
@@ -754,7 +754,7 @@ public abstract class TripleAPlayer extends AbstractHumanPlayer {
   }
 
   @Override
-  public void confirmOwnCasualties(final GUID battleId, final String message) {
+  public void confirmOwnCasualties(final UUID battleId, final String message) {
     ui.getBattlePanel().confirmCasualties(battleId, message);
   }
 

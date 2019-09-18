@@ -124,7 +124,7 @@ public final class ForumPosterComponent extends JPanel {
     postButton.setEnabled(!hasPosted);
     add(postButton);
     add(
-        JButtonBuilder.builder()
+        new JButtonBuilder()
             .title("Done")
             .actionListener(doneAction::run)
             .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)

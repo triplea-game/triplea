@@ -6,7 +6,6 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.net.GUID;
 import games.strategy.sound.SoundUtils;
 import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
@@ -18,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import org.triplea.java.Interruptibles;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -32,7 +32,7 @@ public class FireAa implements IExecutable {
   private final PlayerId hitPlayer;
   private final boolean defending;
   private final Map<Unit, Collection<Unit>> dependentUnits;
-  private final GUID battleId;
+  private final UUID battleId;
   private final boolean headless;
   private final Territory battleSite;
   private final Collection<TerritoryEffect> territoryEffects;

@@ -16,7 +16,6 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.net.GUID;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -40,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -1143,12 +1143,12 @@ public class BattleTracker implements Serializable {
     return null;
   }
 
-  public IBattle getPendingBattle(final GUID guid) {
-    if (guid == null) {
+  public IBattle getPendingBattle(final UUID uuid) {
+    if (uuid == null) {
       return null;
     }
 
-    return pendingBattles.stream().filter(b -> b.getBattleId().equals(guid)).findAny().orElse(null);
+    return pendingBattles.stream().filter(b -> b.getBattleId().equals(uuid)).findAny().orElse(null);
   }
 
   Collection<IBattle> getPendingBattles(final Territory t) {

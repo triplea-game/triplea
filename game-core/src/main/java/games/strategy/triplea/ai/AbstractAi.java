@@ -5,7 +5,6 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attachments.PlayerAttachment;
 import games.strategy.triplea.attachments.PoliticalActionAttachment;
@@ -39,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import lombok.extern.java.Log;
 import org.triplea.java.Interruptibles;
@@ -123,7 +123,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
       final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties,
-      final GUID battleId,
+      final UUID battleId,
       final Territory battleSite,
       final boolean allowMultipleHitsPerUnit) {
     if (defaultCasualties.size() != count) {
@@ -187,7 +187,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
 
   @Override
   public Territory retreatQuery(
-      final GUID battleId,
+      final UUID battleId,
       final boolean submerge,
       final Territory battleTerritory,
       final Collection<Territory> possibleTerritories,
@@ -467,7 +467,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
 
   @Override
   public void confirmEnemyCasualties(
-      final GUID battleId, final String message, final PlayerId hitPlayer) {}
+      final UUID battleId, final String message, final PlayerId hitPlayer) {}
 
   @Override
   public void reportError(final String error) {}
@@ -476,7 +476,7 @@ public abstract class AbstractAi extends AbstractBasePlayer {
   public void reportMessage(final String message, final String title) {}
 
   @Override
-  public void confirmOwnCasualties(final GUID battleId, final String message) {
+  public void confirmOwnCasualties(final UUID battleId, final String message) {
     pause();
   }
 

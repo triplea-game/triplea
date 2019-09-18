@@ -23,10 +23,10 @@ import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import org.triplea.game.chat.ChatModel;
-import org.triplea.swing.GridBagHelper;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingAction;
+import org.triplea.swing.jpanel.GridBagHelper;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * When the game launches, the MainFrame is loaded which will contain the MainPanel. The contents of
@@ -38,20 +38,20 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
   private static final Dimension initialSize = new Dimension(800, 620);
 
   private final JButton playButton =
-      JButtonBuilder.builder()
+      new JButtonBuilder()
           .title("Play")
           .toolTip(
               "<html>Start your game! <br>"
                   + "If not enabled, then you must select a way to play your game first: <br>"
                   + "Play Online, or Local Game, or PBEM, or Host Networked.</html>")
           .build();
-  private final JButton cancelButton = JButtonBuilder.builder().title("Cancel").build();
+  private final JButton cancelButton = new JButtonBuilder().title("Cancel").build();
 
-  private final JPanel gameSetupPanelHolder = JPanelBuilder.builder().borderLayout().build();
+  private final JPanel gameSetupPanelHolder = new JPanelBuilder().borderLayout().build();
   private final JPanel mainPanel;
   private final JSplitPane chatSplit;
   private final JPanel chatPanelHolder =
-      JPanelBuilder.builder().borderLayout().preferredHeight(62).build();
+      new JPanelBuilder().borderLayout().preferredHeight(62).build();
   private SetupPanel gameSetupPanel;
 
   /**
@@ -76,7 +76,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
     chatSplit.setDividerSize(5);
 
     mainPanel =
-        JPanelBuilder.builder()
+        new JPanelBuilder()
             .border(0)
             .gridBagLayout(2)
             .add(gameSelectorPanel, GridBagHelper.Anchor.WEST, GridBagHelper.Fill.VERTICAL)
@@ -98,13 +98,13 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
     }
 
     final JButton quitButton =
-        JButtonBuilder.builder()
+        new JButtonBuilder()
             .title("Quit")
             .toolTip("Close TripleA.")
             .actionListener(GameRunner::quitGame)
             .build();
     final JPanel buttonsPanel =
-        JPanelBuilder.builder()
+        new JPanelBuilder()
             .borderEtched()
             .flowLayout(JPanelBuilder.FlowLayoutJustification.CENTER)
             .add(playButton)

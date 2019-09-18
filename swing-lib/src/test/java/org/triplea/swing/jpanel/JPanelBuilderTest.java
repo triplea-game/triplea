@@ -1,4 +1,4 @@
-package org.triplea.swing;
+package org.triplea.swing.jpanel;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,12 +22,12 @@ class JPanelBuilderTest {
 
   @Test
   void minBuildCase() {
-    assertThat(JPanelBuilder.builder().build(), notNullValue());
+    assertThat(new JPanelBuilder().build(), notNullValue());
   }
 
   @Test
   void horizontalAlignmentCenter() {
-    final JPanel panel = JPanelBuilder.builder().horizontalAlignmentCenter().build();
+    final JPanel panel = new JPanelBuilder().horizontalAlignmentCenter().build();
     assertThat(panel.getAlignmentX(), is(JComponent.CENTER_ALIGNMENT));
   }
 
@@ -35,7 +35,7 @@ class JPanelBuilderTest {
   void testAddComponent() {
     final JLabel label = new JLabel("hi");
 
-    final JPanel panel = JPanelBuilder.builder().add(label).build();
+    final JPanel panel = new JPanelBuilder().add(label).build();
 
     assertThat(
         "Panel children should contain the label we added.",
@@ -45,31 +45,28 @@ class JPanelBuilderTest {
 
   @Test
   void defaultLayoutIsFlowLayout() {
-    assertThat(JPanelBuilder.builder().build().getLayout(), instanceOf(FlowLayout.class));
+    assertThat(new JPanelBuilder().build().getLayout(), instanceOf(FlowLayout.class));
   }
 
   @Test
   void testLayouts() {
-    final GridLayout result =
-        (GridLayout) JPanelBuilder.builder().gridLayout(1, 2).build().getLayout();
+    final GridLayout result = (GridLayout) new JPanelBuilder().gridLayout(1, 2).build().getLayout();
     assertThat(result.getRows(), is(1));
     assertThat(result.getColumns(), is(2));
 
     assertThat(
-        JPanelBuilder.builder().gridBagLayout(2).build().getLayout(),
-        instanceOf(GridBagLayout.class));
+        new JPanelBuilder().gridBagLayout(2).build().getLayout(), instanceOf(GridBagLayout.class));
+
+    assertThat(new JPanelBuilder().flowLayout().build().getLayout(), instanceOf(FlowLayout.class));
 
     assertThat(
-        JPanelBuilder.builder().flowLayout().build().getLayout(), instanceOf(FlowLayout.class));
-
-    assertThat(
-        JPanelBuilder.builder().borderLayout().build().getLayout(), instanceOf(BorderLayout.class));
+        new JPanelBuilder().borderLayout().build().getLayout(), instanceOf(BorderLayout.class));
   }
 
   @Test
   void emptyBorderWithSingleWidth() {
     final int borderWidth = 100;
-    final JPanel panel = JPanelBuilder.builder().border(borderWidth).build();
+    final JPanel panel = new JPanelBuilder().border(borderWidth).build();
     assertThat(panel.getBorder(), instanceOf(EmptyBorder.class));
     final Insets insets = panel.getBorder().getBorderInsets(panel);
     assertThat(insets.top, is(borderWidth));
@@ -80,7 +77,7 @@ class JPanelBuilderTest {
 
   @Test
   void emptyBorderWithIndependentWidths() {
-    final JPanel panel = JPanelBuilder.builder().border(1, 2, 3, 4).build();
+    final JPanel panel = new JPanelBuilder().border(1, 2, 3, 4).build();
 
     assertThat(panel.getBorder(), instanceOf(EmptyBorder.class));
 
@@ -95,7 +92,7 @@ class JPanelBuilderTest {
   void addLabel() {
     final String labelText = "abc";
 
-    final JPanel panel = JPanelBuilder.builder().addLabel(labelText).build();
+    final JPanel panel = new JPanelBuilder().addLabel(labelText).build();
 
     assertThat(panel.getComponents().length, is(1));
     assertThat(panel.getComponents()[0], instanceOf(JLabel.class));

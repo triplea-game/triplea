@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import javax.annotation.Nonnull;
 import javax.swing.AbstractButton;
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -23,9 +24,9 @@ import javax.swing.table.DefaultTableModel;
 import lombok.Builder;
 import org.triplea.http.client.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.swing.JButtonBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 class AccessLogTabActions {
   private static final int PAGE_SIZE = 50;
@@ -106,7 +107,8 @@ class AccessLogTabActions {
     dialog
         .getContentPane()
         .add(
-            JPanelBuilder.builder()
+            new JPanelBuilder()
+                .borderLayout()
                 .addNorth(new JLabel("How long to ban?"))
                 .addCenter(banDurationPanel(dialog, banData))
                 .build());
@@ -131,28 +133,25 @@ class AccessLogTabActions {
     group.add(threeWeeks);
 
     final JPanel radioPanel =
-        JPanelBuilder.builder()
-            .verticalBoxLayout()
+        new JPanelBuilder()
+            .boxLayoutVertical()
             .add(oneHour)
             .add(oneDay)
             .add(oneWeek)
             .add(threeWeeks)
             .build();
 
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
+        .borderLayout()
         .addCenter(radioPanel)
         .addSouth(
-            JPanelBuilder.builder()
+            new JPanelBuilder()
                 .flowLayout()
-                .addHorizontalStrut(10)
+                .add(Box.createHorizontalStrut(10))
+                .add(new JButtonBuilder().title("Cancel").actionListener(dialog::dispose).build())
+                .add(Box.createHorizontalStrut(25))
                 .add(
-                    JButtonBuilder.builder()
-                        .title("Cancel")
-                        .actionListener(dialog::dispose)
-                        .build())
-                .addHorizontalStrut(25)
-                .add(
-                    JButtonBuilder.builder()
+                    new JButtonBuilder()
                         .title("Submit")
                         .actionListener(
                             () -> {

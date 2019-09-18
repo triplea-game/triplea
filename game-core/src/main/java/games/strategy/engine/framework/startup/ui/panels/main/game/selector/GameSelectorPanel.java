@@ -49,19 +49,19 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   private final JLabel saveGameText = new JLabel();
   private final JLabel roundText = new JLabel();
   private final JButton loadSavedGame =
-      JButtonBuilder.builder()
+      new JButtonBuilder()
           .title("Open Saved Game")
           .toolTip("Open a previously saved game, or an autosave.")
           .build();
   private final JButton loadNewGame =
-      JButtonBuilder.builder()
+      new JButtonBuilder()
           .title("Select Map")
           .toolTip(
               "<html>Select a game from all the maps/games that come with TripleA, "
                   + "<br>and the ones you have downloaded.</html>")
           .build();
   private final JButton gameOptions =
-      JButtonBuilder.builder()
+      new JButtonBuilder()
           .title("Map Options")
           .toolTip(
               "<html>Set options for the currently selected game, <br>such as enabling/disabling "
@@ -106,7 +106,7 @@ public final class GameSelectorPanel extends JPanel implements Observer {
     add(loadSavedGame, buildGridRow(0, 8, new Insets(0, 10, 10, 10)));
 
     final JButton downloadMapButton =
-        JButtonBuilder.builder()
+        new JButtonBuilder()
             .title("Download Maps")
             .toolTip("Click this button to install additional maps")
             .actionListener(DownloadMapsWindow::showDownloadMapsWindow)

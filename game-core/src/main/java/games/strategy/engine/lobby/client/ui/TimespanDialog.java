@@ -19,8 +19,8 @@ import javax.swing.SpinnerNumberModel;
 import lombok.AllArgsConstructor;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /** A UI-Utility class that can be used to prompt the user for a ban or mute time. */
 public final class TimespanDialog extends JDialog {
@@ -36,36 +36,36 @@ public final class TimespanDialog extends JDialog {
     super(owner, title, true);
 
     add(
-        JPanelBuilder.builder()
+        new JPanelBuilder()
             .border(10)
-            .verticalBoxLayout()
+            .boxLayoutVertical()
             .add(
-                JPanelBuilder.builder()
-                    .horizontalBoxLayout()
+                new JPanelBuilder()
+                    .boxLayoutHorizontal()
                     .add(JLabelBuilder.builder().text(message).build())
                     .addHorizontalGlue()
                     .build())
             .addVerticalStrut(10)
             .add(
-                JPanelBuilder.builder()
-                    .horizontalBoxLayout()
+                new JPanelBuilder()
+                    .boxLayoutHorizontal()
                     .add(durationSpinner)
                     .addHorizontalStrut(5)
                     .add(timeUnitComboBox)
                     .build())
             .addVerticalStrut(20)
             .add(
-                JPanelBuilder.builder()
-                    .horizontalBoxLayout()
+                new JPanelBuilder()
+                    .boxLayoutHorizontal()
                     .addHorizontalGlue()
                     .add(
-                        JButtonBuilder.builder()
+                        new JButtonBuilder()
                             .title("OK")
                             .actionListener(() -> close(Result.OK))
                             .build())
                     .addHorizontalStrut(5)
                     .add(
-                        JButtonBuilder.builder()
+                        new JButtonBuilder()
                             .title("Cancel")
                             .actionListener(() -> close(Result.CANCEL))
                             .build())

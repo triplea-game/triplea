@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import org.triplea.awt.OpenFileUtility;
-import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * This controller is responsible for showing success/failure confirmation dialogs after an error
@@ -41,7 +41,7 @@ final class ConfirmationDialogController {
           }
         });
 
-    final JPanel messageToShow = JPanelBuilder.builder().border(10).add(editorPane).build();
+    final JPanel messageToShow = new JPanelBuilder().border(10).add(editorPane).build();
 
     // parentComponent == null to avoid pop-up from appearing behind other windows
     JOptionPane.showMessageDialog(
@@ -68,7 +68,7 @@ final class ConfirmationDialogController {
           }
         });
 
-    final JPanel messageToShow = JPanelBuilder.builder().border(10).add(editorPane).build();
+    final JPanel messageToShow = new JPanelBuilder().border(10).add(editorPane).build();
 
     // parentComponent == null to avoid pop-up from appearing behind other windows
     JOptionPane.showMessageDialog(

@@ -1,7 +1,7 @@
 package games.strategy.engine.message;
 
 import games.strategy.engine.message.unifiedmessenger.Invoke;
-import games.strategy.net.GUID;
+import java.util.UUID;
 
 /**
  * A request to invoke a remote method on the hub node. All remote method invocations originate as
@@ -13,7 +13,7 @@ public class HubInvoke extends Invoke {
   public HubInvoke() {}
 
   public HubInvoke(
-      final GUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call) {
+      final UUID methodCallId, final boolean needReturnValues, final RemoteMethodCall call) {
     super(methodCallId, needReturnValues, call);
   }
 }

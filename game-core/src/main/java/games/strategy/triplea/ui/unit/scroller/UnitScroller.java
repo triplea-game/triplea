@@ -30,8 +30,8 @@ import javax.swing.SwingUtilities;
 import org.triplea.java.PredicateBuilder;
 import org.triplea.java.collections.CollectionUtils;
 import org.triplea.swing.DialogBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 /**
  * Unit scroller is a UI component to 'scroll' through units that can be moved. The component is to
@@ -238,8 +238,8 @@ public class UnitScroller {
     sleepButton.addActionListener(e -> sleepCurrentUnits());
 
     final JPanel skipAndSleepPanel =
-        JPanelBuilder.builder()
-            .horizontalBoxLayout()
+        new JPanelBuilder()
+            .boxLayoutHorizontal()
             .add(skipButton)
             .addHorizontalStrut(30)
             .add(sleepButton)

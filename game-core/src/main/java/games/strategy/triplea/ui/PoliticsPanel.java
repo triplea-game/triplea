@@ -169,7 +169,7 @@ public class PoliticsPanel extends ActionPanel {
           selectPoliticalActionButton.setEnabled(false);
           add(selectPoliticalActionButton);
           doneButton =
-              JButtonBuilder.builder()
+              new JButtonBuilder()
                   .title("Done")
                   .actionListener(this::performDone)
                   .toolTip(ActionButtons.DONE_BUTTON_TOOLTIP)

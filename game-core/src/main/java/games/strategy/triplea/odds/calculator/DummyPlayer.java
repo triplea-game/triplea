@@ -5,7 +5,6 @@ import games.strategy.engine.data.PlayerId;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.startup.ui.PlayerType;
-import games.strategy.net.GUID;
 import games.strategy.triplea.ai.AbstractAi;
 import games.strategy.triplea.ai.AiUtils;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Predicate;
 import org.triplea.java.collections.CollectionUtils;
 
@@ -124,7 +124,7 @@ class DummyPlayer extends AbstractAi {
    */
   @Override
   public Territory retreatQuery(
-      final GUID battleId,
+      final UUID battleId,
       final boolean submerge,
       final Territory battleSite,
       final Collection<Territory> possibleTerritories,
@@ -199,7 +199,7 @@ class DummyPlayer extends AbstractAi {
       final boolean amphibious,
       final Collection<Unit> amphibiousLandAttackers,
       final CasualtyList defaultCasualties,
-      final GUID battleId,
+      final UUID battleId,
       final Territory battleSite,
       final boolean allowMultipleHitsPerUnit) {
     final List<Unit> damagedUnits = new ArrayList<>(defaultCasualties.getDamaged());

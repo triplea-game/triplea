@@ -11,8 +11,8 @@ import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JComboBoxBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.SwingComponents;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 final class FindTerritoryDialog extends JDialog {
   private static final long serialVersionUID = -1601616824595826610L;
@@ -41,23 +41,23 @@ final class FindTerritoryDialog extends JDialog {
     }
 
     final JButton okButton =
-        JButtonBuilder.builder().okTitle().actionListener(() -> close(Result.OK)).build();
+        new JButtonBuilder().okTitle().actionListener(() -> close(Result.OK)).build();
     getRootPane().setDefaultButton(okButton);
 
     add(
-        JPanelBuilder.builder()
+        new JPanelBuilder()
             .border(10)
-            .verticalBoxLayout()
+            .boxLayoutVertical()
             .add(territoryComboBox)
             .addVerticalStrut(20)
             .add(
-                JPanelBuilder.builder()
-                    .horizontalBoxLayout()
+                new JPanelBuilder()
+                    .boxLayoutHorizontal()
                     .addHorizontalGlue()
                     .add(okButton)
                     .addHorizontalStrut(5)
                     .add(
-                        JButtonBuilder.builder()
+                        new JButtonBuilder()
                             .cancelTitle()
                             .actionListener(() -> close(Result.CANCEL))
                             .build())

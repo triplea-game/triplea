@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import org.triplea.java.collections.IntegerMap;
-import org.triplea.swing.JPanelBuilder;
+import org.triplea.swing.jpanel.JPanelBuilder;
 import org.triplea.util.Tuple;
 
 class TabbedProductionPanel extends ProductionPanel {
@@ -251,7 +251,7 @@ class TabbedProductionPanel extends ProductionPanel {
   }
 
   private JPanel getRulesPanel(final List<Rule> rules) {
-    final JPanel panel = JPanelBuilder.builder().gridLayout(rows, columns).build();
+    final JPanel panel = new JPanelBuilder().gridLayout(rows, columns).build();
 
     final JPanel[][] panelHolder = new JPanel[rows][columns];
     for (int m = 0; m < rows; m++) {

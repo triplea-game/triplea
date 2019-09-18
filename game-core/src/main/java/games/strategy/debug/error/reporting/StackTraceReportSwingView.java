@@ -12,8 +12,8 @@ import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JFrameBuilder;
 import org.triplea.swing.JLabelBuilder;
-import org.triplea.swing.JPanelBuilder;
 import org.triplea.swing.JTextAreaBuilder;
+import org.triplea.swing.jpanel.JPanelBuilder;
 
 class StackTraceReportSwingView implements StackTraceReportView {
 
@@ -35,29 +35,28 @@ class StackTraceReportSwingView implements StackTraceReportView {
       JTextAreaBuilder.builder().toolTip(HELP_TEXT).build();
 
   private final JButton submitButton =
-      JButtonBuilder.builder()
+      new JButtonBuilder()
           .title("Upload")
           .biggerFont()
           .toolTip("Uploads error report to TripleA support")
           .build();
 
   private final JButton previewButton =
-      JButtonBuilder.builder()
-          .title("Preview")
-          .toolTip("Shows a preview of the error report")
-          .build();
+      new JButtonBuilder().title("Preview").toolTip("Shows a preview of the error report").build();
 
   private final JButton cancelButton =
-      JButtonBuilder.builder().title("Cancel").toolTip("Closes this window").build();
+      new JButtonBuilder().title("Cancel").toolTip("Closes this window").build();
 
   StackTraceReportSwingView(@Nullable final Component parentWindow) {
     window.setLocationRelativeTo(parentWindow);
     window
         .getContentPane()
         .add(
-            JPanelBuilder.builder()
+            new JPanelBuilder()
+                .borderLayout()
                 .addNorth(
-                    JPanelBuilder.builder()
+                    new JPanelBuilder()
+                        .borderLayout()
                         .addWest(
                             JLabelBuilder.builder()
                                 .border(5)
@@ -69,9 +68,9 @@ class StackTraceReportSwingView implements StackTraceReportView {
                                 .toolTip(HELP_TEXT)
                                 .build())
                         .addEast(
-                            JPanelBuilder.builder()
+                            new JPanelBuilder()
                                 .add(
-                                    JButtonBuilder.builder()
+                                    new JButtonBuilder()
                                         .title("(?)")
                                         .actionListener(
                                             () -> JOptionPane.showMessageDialog(window, HELP_TEXT))
@@ -84,20 +83,21 @@ class StackTraceReportSwingView implements StackTraceReportView {
   }
 
   private JPanel buttonPanel() {
-    return JPanelBuilder.builder()
+    return new JPanelBuilder()
         .border(10)
         .add(
-            JPanelBuilder.builder()
+            new JPanelBuilder()
+                .borderLayout()
                 .addWest(
-                    JPanelBuilder.builder()
-                        .horizontalBoxLayout()
+                    new JPanelBuilder()
+                        .boxLayoutHorizontal()
                         .add(submitButton)
                         .add(Box.createHorizontalStrut(30))
                         .add(previewButton)
                         .build())
                 .addEast(
-                    JPanelBuilder.builder()
-                        .horizontalBoxLayout()
+                    new JPanelBuilder()
+                        .boxLayoutHorizontal()
                         .add(Box.createHorizontalStrut(70))
                         .add(cancelButton)
                         .build())
