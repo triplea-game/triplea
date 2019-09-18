@@ -23,29 +23,6 @@ import lombok.Setter;
 public class AppConfig extends Configuration {
   public static final String GITHUB_ORG = "triplea-game";
   public static final URI GITHUB_WEB_SERVICE_API_URL = URI.create("https://api.github.com");
-  public static final int MAX_ERROR_REPORTS_PER_DAY = 5;
-
-  /**
-   * How long (in minutes) we should remember failed API key attempts. Max limits are evaluated
-   * against this window of time. For example if we set this to 5, and we have a max attempt of 10,
-   * then if we have more than 10 failed attempts in any 5 minutes, then we will stop authenticating
-   * new API keys and will need cache values to expire. Of note, cache values are by IP address, so
-   * a single IP address expiring from cache can decrement the max failed attempt by more than one.
-   */
-  public static final long FAILED_API_KEY_CACHE_EXPIRATION = 10;
-
-  /**
-   * How many failed attempts we will allow for any given IP address before that IP address is
-   * locked out from further API key validation attempts.
-   */
-  public static final int MAX_API_KEY_FAILS_BY_IP = 4;
-
-  /**
-   * The total number of api key validation failures that we can allow before we stop validating
-   * *any* new api keys. Valid API keys are cached and are not impacted by api-key authentication
-   * lock-outs.
-   */
-  public static final int MAX_TOTAL_API_KEY_FAILURES = 10;
 
   /** Webservice token, should be an API token for the TripleA builder bot account. */
   @Getter(onMethod_ = {@JsonProperty})

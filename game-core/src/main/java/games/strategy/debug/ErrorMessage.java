@@ -19,7 +19,6 @@ import org.triplea.http.client.error.report.ErrorUploadClient;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JLabelBuilder;
 import org.triplea.swing.JPanelBuilder;
-import org.triplea.swing.SwingComponents;
 
 /**
  * Class for showing a modal error dialog to the user. The dialog has an 'ok' button to close it and
@@ -138,14 +137,7 @@ public enum ErrorMessage {
       INSTANCE.uploadButton.addActionListener(
           e -> {
             hide();
-            if (serviceClient.canSubmitErrorReport()) {
-              StackTraceReportView.showWindow(windowReference, serviceClient, record);
-            } else {
-              SwingComponents.showDialog(
-                  "Error Report Limit Reached",
-                  "You have reached a daily limit for error uploads. "
-                      + "Please wait a day before submitting additional error reports.");
-            }
+            StackTraceReportView.showWindow(windowReference, serviceClient, record);
           });
     }
   }

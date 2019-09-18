@@ -1,8 +1,6 @@
 package org.triplea.server.error.reporting;
 
 import com.google.common.base.Preconditions;
-import java.time.Clock;
-import java.util.function.Predicate;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
@@ -24,14 +22,6 @@ public final class ErrorReportControllerFactory {
             .githubRepo(configuration.getGithubRepo())
             .build();
 
-    final ErrorReportingDao errorReportingDao = jdbi.onDemand(ErrorReportingDao.class);
-    final Predicate<String> errorReportGateKeeper =
-        ErrorReportGateKeeper.builder()
-            .maxReportsPerDay(AppConfig.MAX_ERROR_REPORTS_PER_DAY)
-            .dao(errorReportingDao)
-            .clock(Clock.systemUTC())
-            .build();
-
     if (githubIssueClient.isTest()) {
       Preconditions.checkState(!configuration.isProd());
     }
@@ -40,12 +30,10 @@ public final class ErrorReportControllerFactory {
         .errorReportIngestion(
             CreateIssueStrategy.builder()
                 .githubIssueClient(githubIssueClient)
-                .allowErrorReport(errorReportGateKeeper)
                 .responseAdapter(new ErrorReportResponseConverter())
                 .isProduction(configuration.isProd())
-                .errorReportingDao(errorReportingDao)
+                .errorReportingDao(jdbi.onDemand(ErrorReportingDao.class))
                 .build())
-        .errorReportRateChecker(errorReportGateKeeper)
         .build();
   }
 }

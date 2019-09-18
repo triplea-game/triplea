@@ -5,10 +5,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.google.gson.Gson;
 import java.net.URI;
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.triplea.http.client.HttpClientTesting;
@@ -54,29 +52,5 @@ class ErrorReportClientTest {
         ErrorUploadClient.ERROR_REPORT_PATH,
         HttpClientTesting.RequestType.POST,
         ErrorReportClientTest::doServiceCall);
-  }
-
-  @Test
-  void canSubmitErrorReport(@WiremockResolver.Wiremock final WireMockServer server) {
-    wireMockCanSubmitReport(server, true);
-    final URI hostUri = URI.create(server.url(""));
-
-    MatcherAssert.assertThat(ErrorUploadClient.newClient(hostUri).canSubmitErrorReport(), is(true));
-  }
-
-  private void wireMockCanSubmitReport(
-      final WireMockServer wireMockServer, final boolean response) {
-    wireMockServer.stubFor(
-        WireMock.get(ErrorUploadClient.CAN_REPORT_PATH)
-            .willReturn(WireMock.aResponse().withStatus(200).withBody(String.valueOf(response))));
-  }
-
-  @Test
-  void canNotSubmitErrorReport(@WiremockResolver.Wiremock final WireMockServer server) {
-    wireMockCanSubmitReport(server, false);
-    final URI hostUri = URI.create(server.url(""));
-
-    MatcherAssert.assertThat(
-        ErrorUploadClient.newClient(hostUri).canSubmitErrorReport(), is(false));
   }
 }

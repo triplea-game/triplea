@@ -31,6 +31,15 @@ dependencies {
     implementation 'org.jdbi:jdbi3-core:3.8.2'
     implementation 'org.jdbi:jdbi3-sqlobject:3.8.2'
 
+    // https://mvnrepository.com/artifact/es.moki.ratelimitj/ratelimitj-dropwizard
+    compile group: 'es.moki.ratelimitj', name: 'ratelimitj-dropwizard', version: '0.6.0'
+// https://mvnrepository.com/artifact/es.moki.ratelimitj/ratelimitj-redis
+// https://mvnrepository.com/artifact/es.moki.ratelimitj/ratelimitj-inmemory
+    compile group: 'es.moki.ratelimitj', name: 'ratelimitj-inmemory', version: '0.6.0'
+// https://mvnrepository.com/artifact/es.moki.ratelimitj/ratelimitj-core
+//    compile group: 'es.moki.ratelimitj', name: 'ratelimitj-core', version: '0.6.0'
+
+
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'com.sun.xml.bind:jaxb-impl:2.3.2'
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0'

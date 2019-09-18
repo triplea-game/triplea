@@ -12,7 +12,8 @@ import org.triplea.http.client.HttpConstants;
 public interface ErrorUploadClient {
 
   String ERROR_REPORT_PATH = "/error-report";
-  String CAN_REPORT_PATH = "/can-submit-error-report";
+
+  int MAX_REPORTS_PER_DAY = 5;
 
   /**
    * API to upload an exception error report from a TripleA client to TripleA server.
@@ -22,9 +23,6 @@ public interface ErrorUploadClient {
   @RequestLine("POST " + ERROR_REPORT_PATH)
   @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   ErrorUploadResponse uploadErrorReport(ErrorUploadRequest request);
-
-  @RequestLine("GET " + CAN_REPORT_PATH)
-  boolean canSubmitErrorReport();
 
   /** Creates an error report uploader clients, sends error reports and gets a response back. */
   static ErrorUploadClient newClient(final URI uri) {
