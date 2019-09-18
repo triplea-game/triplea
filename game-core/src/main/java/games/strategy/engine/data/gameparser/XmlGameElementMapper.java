@@ -101,20 +101,7 @@ public final class XmlGameElementMapper {
         .put("TechActivationDelegate", TechActivationDelegate::new)
         .put("TechnologyDelegate", TechnologyDelegate::new)
         .put("UserActionDelegate", UserActionDelegate::new)
-        .putAll(newTwoIfBySeaDelegateFactories())
         .putAll(auxiliaryDelegateFactoriesByTypeName)
-        .build();
-  }
-
-  @SuppressWarnings(
-      "deprecation") // required for map compatibility; remove upon next map-incompatible release
-  private static ImmutableMap<String, Supplier<IDelegate>> newTwoIfBySeaDelegateFactories() {
-    return ImmutableMap.<String, Supplier<IDelegate>>builder()
-        .put(
-            "games.strategy.twoIfBySea.delegate.EndTurnDelegate",
-            games.strategy.triplea.delegate.TwoIfBySeaEndTurnDelegate::new)
-        .put("games.strategy.twoIfBySea.delegate.InitDelegate", InitializationDelegate::new)
-        .put("games.strategy.twoIfBySea.delegate.PlaceDelegate", PlaceDelegate::new)
         .build();
   }
 
