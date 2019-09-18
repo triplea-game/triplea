@@ -124,41 +124,24 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   /**
    * Returns all adjacent neighbors of the starting territory that match the condition. Does NOT
    * include the original/starting territory in the returned Set.
-   *
-   * @param territory referring territory
-   * @param neighborFilter condition the neighboring territories have to match
    */
-  public Set<Territory> getNeighbors(
-      final Territory territory, final Predicate<Territory> neighborFilter) {
-    if (neighborFilter == null) {
+  public Set<Territory> getNeighbors(final Territory territory, final Predicate<Territory> cond) {
+    if (cond == null) {
       return getNeighbors(territory);
     }
     return connections
         .getOrDefault(territory, Collections.emptySet())
         .parallelStream()
-        .filter(neighborFilter)
+        .filter(cond)
         .collect(Collectors.toSet());
   }
 
   /**
    * Returns all neighbors within a certain distance of the starting territory that match the
    * condition. Does NOT include the original/starting territory in the returned Set.
-   *
-   * @param territory referring territory
-   * @param distance maximal distance of the neighboring territories
    */
   public Set<Territory> getNeighbors(final Territory territory, final int distance) {
-    Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
-    if (distance == 0) {
-      return Collections.emptySet();
-    }
-    final Set<Territory> start = getNeighbors(territory);
-    if (distance == 1) {
-      return start;
-    }
-    final Set<Territory> neighbors = getNeighbors(start, new HashSet<>(start), distance - 1);
-    neighbors.remove(territory);
-    return neighbors;
+    return getNeighbors(territory, distance, Matches.always());
   }
 
   /**
@@ -171,13 +154,14 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (distance == 0) {
       return Collections.emptySet();
     }
-    final Set<Territory> start = getNeighbors(territory, cond);
+    final Set<Territory> neighbors = getNeighbors(territory, cond);
     if (distance == 1) {
-      return start;
+      return neighbors;
     }
-    final Set<Territory> neighbors = getNeighbors(start, new HashSet<>(start), distance - 1, cond);
-    neighbors.remove(territory);
-    return neighbors;
+    final Set<Territory> result =
+        getNeighbors(neighbors, new HashSet<>(neighbors), distance - 1, cond);
+    result.remove(territory);
+    return result;
   }
 
   /**
@@ -209,11 +193,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
             .collect(Collectors.toSet());
     searched.addAll(newFrontier);
     return getNeighbors(newFrontier, searched, distance - 1, cond);
-  }
-
-  private Set<Territory> getNeighbors(
-      final Set<Territory> frontier, final Set<Territory> searched, final int distance) {
-    return getNeighbors(frontier, searched, distance, null);
   }
 
   /**
@@ -276,26 +255,10 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * condition. Does NOT include the original/starting territory in the returned Set.
    *
    * <p>TODO: update to properly consider movement cost not just distance
-   *
-   * @param territory referring territory
-   * @param movementLeft maximal distance of the neighboring territories
    */
   public Set<Territory> getNeighborsByMovementCost(
       final Territory territory, final Unit unit, final BigDecimal movementLeft) {
-    Preconditions.checkArgument(
-        movementLeft.compareTo(BigDecimal.ZERO) >= 0,
-        "MovementLeft must be non-negative: " + movementLeft);
-    if (movementLeft.compareTo(BigDecimal.ZERO) == 0) {
-      return Collections.emptySet();
-    }
-    final Set<Territory> start = getNeighbors(territory);
-    if (movementLeft.compareTo(BigDecimal.ONE) <= 0) {
-      return start;
-    }
-    final Set<Territory> neighbors =
-        getNeighbors(start, new HashSet<>(start), movementLeft.intValue() - 1);
-    neighbors.remove(territory);
-    return neighbors;
+    return getNeighborsByMovementCost(territory, unit, movementLeft, Matches.always());
   }
 
   /**
@@ -309,20 +272,21 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
       final Unit unit,
       final BigDecimal movementLeft,
       final Predicate<Territory> cond) {
+    Preconditions.checkNotNull(unit);
     Preconditions.checkArgument(
         movementLeft.compareTo(BigDecimal.ZERO) >= 0,
         "MovementLeft must be non-negative: " + movementLeft);
     if (movementLeft.compareTo(BigDecimal.ZERO) == 0) {
       return Collections.emptySet();
     }
-    final Set<Territory> start = getNeighbors(territory, cond);
+    final Set<Territory> neighbors = getNeighbors(territory, cond);
     if (movementLeft.compareTo(BigDecimal.ONE) <= 0) {
-      return start;
+      return neighbors;
     }
-    final Set<Territory> neighbors =
-        getNeighbors(start, new HashSet<>(start), movementLeft.intValue() - 1, cond);
-    neighbors.remove(territory);
-    return neighbors;
+    final Set<Territory> result =
+        getNeighbors(neighbors, new HashSet<>(neighbors), movementLeft.intValue() - 1, cond);
+    result.remove(territory);
+    return result;
   }
 
   /**
