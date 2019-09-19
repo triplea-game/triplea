@@ -372,7 +372,7 @@ public class WeakAi extends AbstractAi {
             .and(Matches.territoryHasEnemyUnits(player, data).negate())
             .and(Matches.territoryHasNonAllowedCanal(player, null, data).negate());
     Route r = data.getMap().getRoute(start, destination, routeCond);
-    if (r == null && !routeCond.test(destination)) {
+    if (r == null || !routeCond.test(destination)) {
       return null;
     }
     if (r.numberOfSteps() > 2) {
