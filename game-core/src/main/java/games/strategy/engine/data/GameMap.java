@@ -291,8 +291,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
 
   /**
    * Returns the shortest route between two territories so that covered territories except the start
-   * and end match the condition or null if no route exists. Doesn't pass in any units so doesn't
-   * check canals or movement costs.
+   * and end match the condition or null if no route exists. Doesn't pass in any units so ignores
+   * canals and movement costs.
    *
    * @param cond condition that covered territories of the route must match
    */
@@ -302,7 +302,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     checkNotNull(start);
     checkNotNull(end);
     return new RouteFinder(this, Matches.territoryIs(end).or(cond))
-        .findRoute(start, end)
+        .findRouteByDistance(start, end)
         .orElse(null);
   }
 
@@ -326,7 +326,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    *
    * @param cond condition that covered territories of the route must match
    * @param units checked against canals and for movement costs
-   * @param player player to check canal ownership
+   * @param player player used to check canal ownership
    */
   @Nullable
   public Route getRouteForUnits(

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 class RouteFinder {
@@ -37,35 +38,18 @@ class RouteFinder {
     this.player = player;
   }
 
-  Optional<Route> findRoute(final Territory start, final Territory end) {
-    Preconditions.checkNotNull(start);
-    Preconditions.checkNotNull(end);
-
-    if (start.equals(end)) {
-      return Optional.of(new Route(start));
-    }
-
-    final Map<Territory, Territory> previous = new HashMap<>();
-    final Queue<Territory> toVisit = new ArrayDeque<>();
-    toVisit.add(start);
-
-    while (!toVisit.isEmpty()) {
-      final Territory currentTerritory = toVisit.remove();
-      for (final Territory neighbor :
-          map.getNeighborsValidatingCanals(currentTerritory, condition, units, player)) {
-        if (!previous.containsKey(neighbor)) {
-          previous.put(neighbor, currentTerritory);
-          if (neighbor.equals(end)) {
-            return Optional.of(getRoute(start, end, previous));
-          }
-          toVisit.add(neighbor);
-        }
-      }
-    }
-    return Optional.empty();
+  Optional<Route> findRouteByDistance(final Territory start, final Territory end) {
+    return findRouteByCost(start, end, t -> BigDecimal.ONE);
   }
 
   Optional<Route> findRouteByCost(final Territory start, final Territory end) {
+    return findRouteByCost(start, end, this::getMaxMovementCost);
+  }
+
+  private Optional<Route> findRouteByCost(
+      final Territory start,
+      final Territory end,
+      final Function<Territory, BigDecimal> territoryCostFunction) {
     Preconditions.checkNotNull(start);
     Preconditions.checkNotNull(end);
 
@@ -89,7 +73,7 @@ class RouteFinder {
       for (final Territory neighbor :
           map.getNeighborsValidatingCanals(currentTerritory, condition, units, player)) {
         final BigDecimal routeCost =
-            routeCosts.get(currentTerritory).add(getMaxMovementCost(neighbor));
+            routeCosts.get(currentTerritory).add(territoryCostFunction.apply(neighbor));
         if (!previous.containsKey(neighbor) || routeCost.compareTo(routeCosts.get(neighbor)) < 0) {
           previous.put(neighbor, currentTerritory);
           routeCosts.put(neighbor, routeCost);

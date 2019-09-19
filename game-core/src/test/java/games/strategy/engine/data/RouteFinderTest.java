@@ -77,7 +77,7 @@ class RouteFinderTest {
   void testFindRoute() {
     final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
     final Optional<Route> optRoute =
-        routeFinder.findRoute(territories.get(0), territories.get(territories.size() - 1));
+        routeFinder.findRouteByDistance(territories.get(0), territories.get(territories.size() - 1));
     assertTrue(optRoute.isPresent());
     final Route route = optRoute.get();
     final List<Territory> result = route.getAllTerritories();
@@ -87,7 +87,7 @@ class RouteFinderTest {
   @Test
   void testFindRouteEndAndStartAreTheSame() {
     final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
-    final Optional<Route> optRoute = routeFinder.findRoute(territories.get(0), territories.get(0));
+    final Optional<Route> optRoute = routeFinder.findRouteByDistance(territories.get(0), territories.get(0));
     assertTrue(optRoute.isPresent());
     final Route route = optRoute.get();
     assertEquals(Collections.singletonList(territories.get(0)), route.getAllTerritories());
@@ -100,7 +100,7 @@ class RouteFinderTest {
         .thenReturn(Collections.singleton(territories.get(1)));
     final RouteFinder routeFinder = new RouteFinder(map, t -> true, new ArrayList<>(), player);
     final Optional<Route> optRoute =
-        routeFinder.findRoute(territories.get(0), territories.get(territories.size() - 1));
+        routeFinder.findRouteByDistance(territories.get(0), territories.get(territories.size() - 1));
     assertFalse(optRoute.isPresent());
   }
 
