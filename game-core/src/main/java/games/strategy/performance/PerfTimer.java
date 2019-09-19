@@ -7,7 +7,7 @@ import lombok.extern.java.Log;
  * Provides a high level API to the game engine for performance measurements. This class handles the
  * library details and sends output to 'PerformanceConsole.java' <br>
  * Example usage with auto-close try block: <code>
- * try(PerfTimer timer = PerfTimer.startTime("timer_name_0")) {
+ * try(PerfTimer timer = PerfTimer.startTimer("timer_name_0")) {
  *   // code to be timed
  * }
  * </code>
