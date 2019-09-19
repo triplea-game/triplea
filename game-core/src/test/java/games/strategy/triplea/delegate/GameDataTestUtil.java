@@ -295,7 +295,7 @@ public final class GameDataTestUtil {
   /**
    * Returns a UnitType object matching the given name for the specified GameData object if present.
    */
-  private static UnitType unitType(final String name, final GameData data) {
+  static UnitType unitType(final String name, final GameData data) {
     return data.getUnitTypeList().getUnitType(name);
   }
 
