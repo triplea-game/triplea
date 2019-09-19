@@ -12,6 +12,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,27 +37,20 @@ import org.triplea.util.Tuple;
 public class Route implements Serializable, Iterable<Territory> {
   private static final long serialVersionUID = 8743882455488948557L;
 
-  private Territory start;
+  private final Territory start;
   private final List<Territory> steps = new ArrayList<>();
 
   public Route(final List<Territory> territories) {
-    setStart(territories.get(0));
-    for (final Territory t : territories.subList(1, territories.size())) {
-      add(t);
-    }
+    this(
+        territories.get(0),
+        territories.subList(1, territories.size()).toArray(new Territory[territories.size() - 1]));
   }
 
   public Route(final Territory start, final Territory... territories) {
-    setStart(start);
+    this.start = checkNotNull(start);
     for (final Territory t : territories) {
       add(t);
     }
-  }
-
-  /** Set the start of this route. */
-  private void setStart(final Territory newStartTerritory) {
-    checkNotNull(newStartTerritory);
-    start = newStartTerritory;
   }
 
   /** Add the given territory to the end of the route. */
@@ -154,17 +148,18 @@ public class Route implements Serializable, Iterable<Territory> {
   }
 
   public BigDecimal getMovementCost(final Unit unit) {
-    BigDecimal movementCost = BigDecimal.ZERO;
-    for (final Territory t : steps) {
-      movementCost = movementCost.add(TerritoryEffectHelper.getMovementCost(t, unit));
-    }
-    return movementCost;
+    return findMovementCost(unit, steps);
   }
 
   public BigDecimal getMovementCostIgnoreEnd(final Unit unit) {
-    BigDecimal movementCost = BigDecimal.ZERO;
     final List<Territory> territories =
         steps.size() > 0 ? steps.subList(0, steps.size() - 1) : steps;
+    return findMovementCost(unit, territories);
+  }
+
+  private static BigDecimal findMovementCost(
+      final Unit unit, final Collection<Territory> territories) {
+    BigDecimal movementCost = BigDecimal.ZERO;
     for (final Territory t : territories) {
       movementCost = movementCost.add(TerritoryEffectHelper.getMovementCost(t, unit));
     }
@@ -458,7 +453,7 @@ public class Route implements Serializable, Iterable<Territory> {
     }
     final UnitAttachment ua = UnitAttachment.get(unit.getType());
     resources.add(ua.getFuelCost());
-    resources.multiply(numberOfSteps());
+    resources.multiply(getMovementCost(unit).setScale(0, RoundingMode.CEILING).intValue());
     if (!ignoreFlat && Matches.unitHasNotBeenChargedFlatFuelCost().test(unit)) {
       resources.add(ua.getFuelFlatCost());
       chargedFlatFuelCost = true;
