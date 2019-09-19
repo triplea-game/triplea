@@ -232,6 +232,8 @@ public class ChangeFactory {
 
   public static Change markNoMovementChange(final Unit unit) {
     return unitPropertyChange(
-        unit, TripleAUnit.get(unit).getMaxMovementAllowed() + 1, TripleAUnit.ALREADY_MOVED);
+        unit,
+        new BigDecimal(TripleAUnit.get(unit).getMaxMovementAllowed() + 1),
+        TripleAUnit.ALREADY_MOVED);
   }
 }
