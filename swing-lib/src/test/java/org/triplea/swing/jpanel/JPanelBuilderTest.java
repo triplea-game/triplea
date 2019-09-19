@@ -55,7 +55,7 @@ class JPanelBuilderTest {
     assertThat(result.getColumns(), is(2));
 
     assertThat(
-        new JPanelBuilder().gridBagLayout(2).build().getLayout(), instanceOf(GridBagLayout.class));
+        new JPanelBuilder().gridBagLayout().build().getLayout(), instanceOf(GridBagLayout.class));
 
     assertThat(new JPanelBuilder().flowLayout().build().getLayout(), instanceOf(FlowLayout.class));
 

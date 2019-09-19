@@ -22,8 +22,6 @@ import javax.swing.border.EtchedBorder;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 import lombok.Value;
-import org.triplea.swing.jpanel.GridBagHelper.Anchor;
-import org.triplea.swing.jpanel.GridBagHelper.Fill;
 
 /**
  * Example usage:. <code><pre>
@@ -47,8 +45,6 @@ public class JPanelBuilder {
   private Border border;
   private LayoutManager layout;
   private BoxLayoutType boxLayoutType = null;
-  private boolean useGridBagHelper = false;
-  private int gridBagHelperColumns;
   private Integer preferredHeight;
 
   /**
@@ -74,26 +70,11 @@ public class JPanelBuilder {
 
     panel.setLayout(layout);
 
-    GridBagHelper gridBagHelper = null;
-    if (useGridBagHelper) {
-      gridBagHelper = new GridBagHelper(panel, gridBagHelperColumns);
-    }
-
     for (final PanelComponent panelComponent : panelComponents) {
       final PanelProperties panelProperties = panelComponent.getPanelProperties();
 
       if (panelProperties.borderLayoutPosition == BorderLayoutPosition.DEFAULT) {
-        if (gridBagHelper != null) {
-
-          gridBagHelper.add(
-              panelComponent.getComponent(),
-              panelProperties.columnSpan,
-              panelProperties.anchor,
-              panelProperties.fill);
-
-        } else {
-          panel.add(panelComponent.getComponent());
-        }
+        panel.add(panelComponent.getComponent());
       } else {
         switch (panelProperties.borderLayoutPosition) {
           case CENTER:
@@ -131,23 +112,6 @@ public class JPanelBuilder {
   /** Sets the layout to {@code GridBagLayout}. */
   public JPanelBuilder gridBagLayout() {
     layout = new GridBagLayout();
-    return this;
-  }
-
-  /**
-   * Sets the current layout manager to a GridBag. This helper method will do most of the work of
-   * the gridbag for you, but the number of columns in the grid needs to be specified. After this
-   * components can be added as normal, rows will wrap as needed when enough components are added.
-   *
-   * @param gridBagHelperColumns The number of columns to be created before components will wrap to
-   *     a new row.
-   * @deprecated Avoid using this method, uses GridBagHelper, better to use
-   *     GridBagConstraintsBuilder to build constraints.
-   */
-  @Deprecated
-  public JPanelBuilder gridBagLayout(final int gridBagHelperColumns) {
-    this.useGridBagHelper = true;
-    this.gridBagHelperColumns = gridBagHelperColumns;
     return this;
   }
 
@@ -260,13 +224,6 @@ public class JPanelBuilder {
     return this;
   }
 
-  public JPanelBuilder add(
-      final Component component, final GridBagHelper.Anchor anchor, final GridBagHelper.Fill fill) {
-    Preconditions.checkNotNull(component);
-    panelComponents.add(new PanelComponent(component, new PanelProperties(anchor, fill)));
-    return this;
-  }
-
   /** Adds a given component to the southern portion of a border layout. */
   public JPanelBuilder addSouth(final JComponent child) {
     layout = new BorderLayout();
@@ -355,18 +312,10 @@ public class JPanelBuilder {
   /** Struct-like class for the various properties and styles that can be applied to a panel. */
   @ToString
   private static final class PanelProperties {
-    BorderLayoutPosition borderLayoutPosition = BorderLayoutPosition.DEFAULT;
-    final GridBagHelper.ColumnSpan columnSpan = GridBagHelper.ColumnSpan.of(1);
-    GridBagHelper.Fill fill = Fill.NONE;
-    GridBagHelper.Anchor anchor = Anchor.WEST;
+    private final BorderLayoutPosition borderLayoutPosition;
 
     PanelProperties(final BorderLayoutPosition borderLayoutPosition) {
       this.borderLayoutPosition = borderLayoutPosition;
-    }
-
-    PanelProperties(final Anchor anchor, final Fill fill) {
-      this.anchor = anchor;
-      this.fill = fill;
     }
   }
 }
