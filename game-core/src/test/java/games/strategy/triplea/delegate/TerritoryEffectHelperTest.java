@@ -51,6 +51,17 @@ class TerritoryEffectHelperTest extends AbstractDelegateTestCase {
   }
 
   @Test
+  void testGetMaxMovementCostNoEffect() throws Exception {
+    final GameData twwGameData = TestMapGameData.TWW.getGameData();
+    final PlayerId germans = GameDataTestUtil.germany(twwGameData);
+    final Territory sicily = territory("Sicily", twwGameData);
+    final BigDecimal result =
+        TerritoryEffectHelper.getMaxMovementCost(
+            sicily, GameDataTestUtil.unitType("germanMarine", twwGameData).create(1, germans));
+    assertTrue(result.compareTo(BigDecimal.ONE) == 0);
+  }
+
+  @Test
   void testGetMaxMovementCostMultipleUnits() throws Exception {
     final GameData twwGameData = TestMapGameData.TWW.getGameData();
     final PlayerId germans = GameDataTestUtil.germany(twwGameData);
@@ -59,6 +70,7 @@ class TerritoryEffectHelperTest extends AbstractDelegateTestCase {
     units.addAll(GameDataTestUtil.unitType("germanInfantry", twwGameData).create(1, germans));
     units.addAll(GameDataTestUtil.unitType("germanAlpineInfantry", twwGameData).create(1, germans));
     units.addAll(GameDataTestUtil.unitType("germanCombatEngineer", twwGameData).create(1, germans));
+    units.addAll(GameDataTestUtil.unitType("germanMarine", twwGameData).create(1, germans));
     final BigDecimal result = TerritoryEffectHelper.getMaxMovementCost(sicily, units);
     assertTrue(result.compareTo(new BigDecimal("2")) == 0);
   }
