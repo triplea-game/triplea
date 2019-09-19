@@ -690,7 +690,12 @@ public final class AirMovementValidator {
     final PlayerId player = unit.getOwner();
     final List<Territory> possibleSpots =
         CollectionUtils.getMatches(
-            data.getMap().getNeighborsByMovementCost(current, unit, movementLeft),
+            data.getMap()
+                .getNeighborsByMovementCost(
+                    current,
+                    unit,
+                    movementLeft,
+                    Matches.airCanFlyOver(player, data, areNeutralsPassableByAir)),
             Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data));
     for (final Territory landingSpot : possibleSpots) {
       if (canAirReachThisSpot(

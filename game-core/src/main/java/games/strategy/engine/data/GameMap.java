@@ -257,17 +257,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * <p>TODO: update to properly consider movement cost not just distance
    */
   public Set<Territory> getNeighborsByMovementCost(
-      final Territory territory, final Unit unit, final BigDecimal movementLeft) {
-    return getNeighborsByMovementCost(territory, unit, movementLeft, Matches.always());
-  }
-
-  /**
-   * Returns all neighbors within a certain distance of the starting territory that match the
-   * condition. Does NOT include the original/starting territory in the returned Set.
-   *
-   * <p>TODO: update to properly consider movement cost not just distance
-   */
-  public Set<Territory> getNeighborsByMovementCost(
       final Territory territory,
       final Unit unit,
       final BigDecimal movementLeft,
