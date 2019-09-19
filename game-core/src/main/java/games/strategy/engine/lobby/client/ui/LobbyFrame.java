@@ -54,8 +54,7 @@ public class LobbyFrame extends JFrame {
     chatPlayers.addActionFactory(this::newAdminActions);
 
     final LobbyGameTableModel tableModel =
-        new LobbyGameTableModel(client.listGames(), client.isAdmin());
-    client.addGameChangeListener(tableModel);
+        new LobbyGameTableModel(client.isAdmin(), client.getMessengers());
     final LobbyGamePanel gamePanel = new LobbyGamePanel(client, tableModel);
 
     final JSplitPane leftSplit = new JSplitPane();
