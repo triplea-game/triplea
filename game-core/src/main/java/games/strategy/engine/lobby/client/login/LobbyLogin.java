@@ -60,7 +60,7 @@ public class LobbyLogin {
       panel.getLobbyLoginPreferences().save();
       return new LobbyClient(
           messenger,
-          new HttpLobbyClient(
+          HttpLobbyClient.newClient(
               lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey().getValue()),
           panel.isAnonymousLogin());
     } catch (final CouldNotLogInException e) {
@@ -131,7 +131,7 @@ public class LobbyLogin {
       panel.getLobbyLoginPreferences().save();
       return new LobbyClient(
           messenger,
-          new HttpLobbyClient(
+          HttpLobbyClient.newClient(
               lobbyServerProperties.getHttpsServerUri(), messenger.getApiKey().getValue()));
     } catch (final CouldNotLogInException e) {
       showError("Account Creation Failed", e.getMessage());
