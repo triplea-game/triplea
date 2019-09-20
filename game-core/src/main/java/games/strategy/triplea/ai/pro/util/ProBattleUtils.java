@@ -14,7 +14,6 @@ import games.strategy.triplea.ai.pro.logging.ProLogger;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.UnitBattleComparator;
 import java.util.ArrayList;
@@ -323,12 +322,14 @@ public final class ProBattleUtils {
         continue;
       }
       final Route route =
-          data.getMap().getRoute_IgnoreEnd(t, nearbySeaTerritory, Matches.territoryIsWater());
+          data.getMap()
+              .getRouteForUnits(
+                  t,
+                  nearbySeaTerritory,
+                  Matches.territoryIsWater(),
+                  enemySeaUnits,
+                  enemySeaUnits.get(0).getOwner());
       if (route == null) {
-        continue;
-      }
-      if (MoveValidator.validateCanal(route, enemySeaUnits, enemySeaUnits.get(0).getOwner(), data)
-          != null) {
         continue;
       }
       final int routeLength = route.numberOfSteps();

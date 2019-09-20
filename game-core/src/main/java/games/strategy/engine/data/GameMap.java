@@ -7,6 +7,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -123,41 +124,24 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   /**
    * Returns all adjacent neighbors of the starting territory that match the condition. Does NOT
    * include the original/starting territory in the returned Set.
-   *
-   * @param territory referring territory
-   * @param neighborFilter condition the neighboring territories have to match
    */
-  public Set<Territory> getNeighbors(
-      final Territory territory, final Predicate<Territory> neighborFilter) {
-    if (neighborFilter == null) {
+  public Set<Territory> getNeighbors(final Territory territory, final Predicate<Territory> cond) {
+    if (cond == null) {
       return getNeighbors(territory);
     }
     return connections
         .getOrDefault(territory, Collections.emptySet())
         .parallelStream()
-        .filter(neighborFilter)
+        .filter(cond)
         .collect(Collectors.toSet());
   }
 
   /**
    * Returns all neighbors within a certain distance of the starting territory that match the
    * condition. Does NOT include the original/starting territory in the returned Set.
-   *
-   * @param territory referring territory
-   * @param distance maximal distance of the neighboring territories
    */
   public Set<Territory> getNeighbors(final Territory territory, final int distance) {
-    Preconditions.checkArgument(distance >= 0, "Distance must be non-negative: " + distance);
-    if (distance == 0) {
-      return Collections.emptySet();
-    }
-    final Set<Territory> start = getNeighbors(territory);
-    if (distance == 1) {
-      return start;
-    }
-    final Set<Territory> neighbors = getNeighbors(start, new HashSet<>(start), distance - 1);
-    neighbors.remove(territory);
-    return neighbors;
+    return getNeighbors(territory, distance, Matches.always());
   }
 
   /**
@@ -170,13 +154,14 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
     if (distance == 0) {
       return Collections.emptySet();
     }
-    final Set<Territory> start = getNeighbors(territory, cond);
+    final Set<Territory> neighbors = getNeighbors(territory, cond);
     if (distance == 1) {
-      return start;
+      return neighbors;
     }
-    final Set<Territory> neighbors = getNeighbors(start, new HashSet<>(start), distance - 1, cond);
-    neighbors.remove(territory);
-    return neighbors;
+    final Set<Territory> result =
+        getNeighbors(neighbors, new HashSet<>(neighbors), distance - 1, cond);
+    result.remove(territory);
+    return result;
   }
 
   /**
@@ -208,11 +193,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
             .collect(Collectors.toSet());
     searched.addAll(newFrontier);
     return getNeighbors(newFrontier, searched, distance - 1, cond);
-  }
-
-  private Set<Territory> getNeighbors(
-      final Set<Territory> frontier, final Set<Territory> searched, final int distance) {
-    return getNeighbors(frontier, searched, distance, null);
   }
 
   /**
@@ -271,80 +251,84 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
   }
 
   /**
-   * Returns the shortest route between two territories or null if no route exists.
+   * Returns all neighbors within a certain distance of the starting territory that match the
+   * condition. Does NOT include the original/starting territory in the returned Set.
    *
-   * @param t1 start territory of the route
-   * @param t2 end territory of the route
+   * <p>TODO: update to properly consider movement cost not just distance
    */
-  public Route getRoute(final Territory t1, final Territory t2) {
-    return getRoute(t1, t2, Matches.territoryIsLandOrWater());
+  public Set<Territory> getNeighborsByMovementCost(
+      final Territory territory,
+      final Unit unit,
+      final BigDecimal movementLeft,
+      final Predicate<Territory> cond) {
+    Preconditions.checkNotNull(unit);
+    Preconditions.checkArgument(
+        movementLeft.compareTo(BigDecimal.ZERO) >= 0,
+        "MovementLeft must be non-negative: " + movementLeft);
+    if (movementLeft.compareTo(BigDecimal.ZERO) == 0) {
+      return Collections.emptySet();
+    }
+    final Set<Territory> neighbors = getNeighbors(territory, cond);
+    if (movementLeft.compareTo(BigDecimal.ONE) <= 0) {
+      return neighbors;
+    }
+    final Set<Territory> result =
+        getNeighbors(neighbors, new HashSet<>(neighbors), movementLeft.intValue() - 1, cond);
+    result.remove(territory);
+    return result;
   }
 
   /**
-   * Returns the shortest route between two territories so that covered territories match the
-   * condition or null if no route exists.
+   * Returns the shortest route between two territories so that covered territories except the start
+   * and end match the condition or null if no route exists. Doesn't pass in any units so ignores
+   * canals and movement costs.
    *
-   * @param t1 start territory of the route
-   * @param t2 end territory of the route
    * @param cond condition that covered territories of the route must match
    */
   @Nullable
-  public Route getRoute(final Territory t1, final Territory t2, final Predicate<Territory> cond) {
-    checkNotNull(t1);
-    checkNotNull(t2);
-
-    return new RouteFinder(this, cond).findRoute(t1, t2).orElse(null);
-  }
-
-  public Route getRoute_IgnoreEnd(
-      final Territory start, final Territory end, final Predicate<Territory> match) {
-    return getRoute(start, end, Matches.territoryIs(end).or(match));
-  }
-
-  @Nullable
-  public Route getRouteIgnoreEndValidatingCanals(
-      final Territory t1,
-      final Territory t2,
-      final Predicate<Territory> cond,
-      final Collection<Unit> units,
-      final PlayerId player) {
-    checkNotNull(t1);
-    checkNotNull(t2);
-    return new RouteFinder(this, Matches.territoryIs(t2).or(cond), units, player)
-        .findRoute(t1, t2)
+  public Route getRoute(
+      final Territory start, final Territory end, final Predicate<Territory> cond) {
+    checkNotNull(start);
+    checkNotNull(end);
+    return new RouteFinder(this, Matches.territoryIs(end).or(cond))
+        .findRouteByDistance(start, end)
         .orElse(null);
   }
 
-  /**
-   * A composite route between two territories. Example set of matches: [Friendly Land, score: 1]
-   * [Enemy Land, score: 2] [Neutral Land, score = 4] With this example set, an 8 length friendly
-   * route is considered equal in score to a 4 length enemy route and a 2 length neutral route. This
-   * is because the friendly route score is 1/2 of the enemy route score and 1/4 of the neutral
-   * route score. Note that you can choose whatever scores you want, and that the matches can mix
-   * and match with each other in any way. (Recommended that you use 2,3,4 as scores, unless you
-   * will allow routes to be much longer under certain conditions) Returns null if there is no route
-   * that exists that matches any of the matches.
-   *
-   * @param start start territory of the route
-   * @param end end territory of the route
-   * @param matches Map of territory matches for covered territories
-   * @return a composite route between two territories
-   */
-  public Route getCompositeRoute(
+  /** See {@link #getRouteForUnits(Territory, Territory, Predicate, Collection, PlayerId)}. */
+  @Nullable
+  public Route getRouteForUnit(
       final Territory start,
       final Territory end,
-      final Map<Predicate<Territory>, Integer> matches) {
+      final Predicate<Territory> cond,
+      final Unit unit,
+      final PlayerId player) {
+    return getRouteForUnits(start, end, cond, Set.of(unit), player);
+  }
+
+  /**
+   * Returns the route with the minimum movement cost between two territories so that covered
+   * territories except the start and end match the condition or null if no route exists. Also
+   * validates canals between any of the territories. Since different units can have different
+   * movement costs per territory, it takes the max movement cost for each territory of all the
+   * units when comparing movement costs across different routes.
+   *
+   * @param cond condition that covered territories of the route must match
+   * @param units checked against canals and for movement costs
+   * @param player player used to check canal ownership
+   */
+  @Nullable
+  public Route getRouteForUnits(
+      final Territory start,
+      final Territory end,
+      final Predicate<Territory> cond,
+      final Collection<Unit> units,
+      final PlayerId player) {
     checkNotNull(start);
     checkNotNull(end);
-
-    if (start.equals(end)) {
-      return new Route(start);
-    }
-    final Predicate<Territory> allCond = t -> matches.keySet().stream().anyMatch(p -> p.test(t));
-    if (getNeighbors(start, allCond).contains(end)) {
-      return new Route(start, end);
-    }
-    return new CompositeRouteFinder(this, matches).findRoute(start, end);
+    return new RouteFinder(this, Matches.territoryIs(end).or(cond), units, player)
+        .findRouteByCost(start, end)
+        .orElse(null);
   }
 
   /**
@@ -354,7 +338,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory> {
    * @param t2 end territory of the route
    */
   public int getDistance(final Territory t1, final Territory t2) {
-    return getDistance(t1, t2, Matches.territoryIsLandOrWater());
+    return getDistance(t1, t2, Matches.always());
   }
 
   /**

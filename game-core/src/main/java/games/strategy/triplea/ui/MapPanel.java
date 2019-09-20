@@ -48,6 +48,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -853,11 +854,12 @@ public class MapPanel extends ImageScrollerLargeView {
       return;
     }
 
-    final Tuple<Integer, Integer> movementLeft =
+    final Tuple<BigDecimal, BigDecimal> movementLeft =
         TripleAUnit.getMinAndMaxMovementLeft(
             CollectionUtils.getMatches(units, Matches.unitIsBeingTransported().negate()));
     movementLeftForCurrentUnits =
-        movementLeft.getFirst() + (movementLeft.getSecond() > movementLeft.getFirst() ? "+" : "");
+        movementLeft.getFirst()
+            + (movementLeft.getSecond().compareTo(movementLeft.getFirst()) > 0 ? "+" : "");
     gameData.acquireReadLock();
     try {
       movementFuelCost =

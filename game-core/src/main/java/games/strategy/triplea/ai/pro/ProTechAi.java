@@ -133,7 +133,8 @@ final class ProTechAi {
         final List<Unit> enemyFighterUnits =
             enemyFighterTerritory.getUnitCollection().getMatches(enemyPlane);
         maxFighterDistance =
-            Math.max(maxFighterDistance, MoveValidator.getMaxMovement(enemyFighterUnits));
+            Math.max(
+                maxFighterDistance, MoveValidator.getMaxMovement(enemyFighterUnits).intValue());
       }
       // must be able to land...we will miss fighters who have a Carrier that can reach same sea
       // zone...C'est la vie
@@ -147,7 +148,8 @@ final class ProTechAi {
         final List<Unit> enemyTransportUnits =
             enemyTransportTerritory.getUnitCollection().getMatches(transport);
         maxTransportDistance =
-            Math.max(maxTransportDistance, MoveValidator.getMaxMovement(enemyTransportUnits));
+            Math.max(
+                maxTransportDistance, MoveValidator.getMaxMovement(enemyTransportUnits).intValue());
       }
       final List<Unit> alreadyLoaded = new ArrayList<>();
       final List<Route> blitzTerrRoutes = new ArrayList<>();
@@ -207,7 +209,8 @@ final class ProTechAi {
             }
             if (!t4.equals(waterCheck)) {
               final Route seaRoute =
-                  getMaxSeaRoute(data, t4, waterCheck, enemyPlayer, maxTransportDistance);
+                  getMaxSeaRoute(
+                      data, t4, waterCheck, transports, enemyPlayer, maxTransportDistance);
               if (seaRoute == null
                   || seaRoute.getEnd() == null
                   || !seaRoute.getEnd().equals(waterCheck)) {
@@ -431,9 +434,7 @@ final class ProTechAi {
             }
           }
           if (sea) {
-            final Route r = new Route();
-            r.setStart(neighbor);
-            r.add(current);
+            final Route r = new Route(neighbor, current);
             if (MoveValidator.validateCanal(r, null, player, data) != null) {
               continue;
             }
@@ -446,7 +447,7 @@ final class ProTechAi {
             continue;
           }
           for (final Unit u : neighbor.getUnitCollection()) {
-            if (unitCondition.test(u) && Matches.unitHasEnoughMovementForRoutes(routes).test(u)) {
+            if (unitCondition.test(u)) {
               units.add(u);
             }
           }
@@ -455,15 +456,16 @@ final class ProTechAi {
     }
     // pain in the ass, should just redesign stop blitz attack
     for (final Territory t : visited.keySet()) {
-      final Route r = new Route();
+      final List<Territory> territories = new ArrayList<>();
+      territories.add(t);
       Territory t2 = t;
-      r.setStart(t);
       while (t2 != null) {
         t2 = visited.get(t2);
         if (t2 != null) {
-          r.add(t2);
+          territories.add(t2);
         }
       }
+      final Route r = new Route(territories);
       routes.add(r);
     }
     return units;
@@ -528,10 +530,7 @@ final class ProTechAi {
       }
     }
     for (final Unit u : unitDistance.keySet()) {
-      if ((lz != null && Matches.unitHasEnoughMovementForRoute(checked).test(u))
-          || (ac != null
-              && Matches.unitCanLandOnCarrier().test(u)
-              && Matches.unitHasEnoughMovementForRoute(checked).test(u))) {
+      if ((lz != null) || (ac != null && Matches.unitCanLandOnCarrier().test(u))) {
         units.add(u);
       }
     }
@@ -555,6 +554,7 @@ final class ProTechAi {
       final GameData data,
       final Territory start,
       final Territory destination,
+      final Collection<Unit> units,
       final PlayerId player,
       final int maxDistance) {
     // note this does not care if subs are submerged or not
@@ -572,37 +572,18 @@ final class ProTechAi {
             .build();
     final Predicate<Territory> routeCond =
         Matches.territoryHasUnitsThatMatch(unitCond).negate().and(Matches.territoryIsWater());
-    final Predicate<Territory> routeCondition = Matches.territoryIs(destination).or(routeCond);
-    Route r = data.getMap().getRoute(start, destination, routeCondition);
-    if (r == null || r.getEnd() == null) {
-      return null;
-    }
-    // cheating because can't do stepwise calculation with canals
-    // shouldn't be a huge problem
-    // if we fail due to canal, then don't go near any enemy canals
-    if (MoveValidator.validateCanal(r, null, player, data) != null) {
-      r =
-          data.getMap()
-              .getRoute(
-                  start,
-                  destination,
-                  routeCondition.and(
-                      Matches.territoryHasNonAllowedCanal(player, null, data).negate()));
-    }
+    Route r = data.getMap().getRouteForUnits(start, destination, routeCond, units, player);
     if (r == null || r.getEnd() == null) {
       return null;
     }
     final int routeDistance = r.numberOfSteps();
-    Route route2 = new Route();
-    if (routeDistance <= maxDistance) {
-      route2 = r;
-    } else {
-      route2.setStart(start);
-      for (int i = 1; i <= maxDistance; i++) {
-        route2.add(r.getAllTerritories().get(i));
-      }
+    if (routeDistance > maxDistance) {
+      final List<Territory> territories = new ArrayList<>();
+      territories.add(start);
+      territories.addAll(r.getSteps().subList(0, maxDistance));
+      r = new Route(territories);
     }
-    return route2;
+    return r;
   }
 
   /**

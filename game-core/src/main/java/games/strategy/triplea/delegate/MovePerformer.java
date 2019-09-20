@@ -20,6 +20,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.TransportUtils;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -358,23 +359,23 @@ public class MovePerformer implements Serializable {
     final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
     for (final Unit baseUnit : CollectionUtils.getMatches(units, Matches.unitIsOwnedBy(id))) {
       final TripleAUnit unit = (TripleAUnit) baseUnit;
-      int moved = route.numberOfSteps();
+      BigDecimal moved = route.getMovementCost(unit);
       final UnitAttachment ua = UnitAttachment.get(unit.getType());
       if (ua.getIsAir()) {
         if (taRouteStart != null
             && taRouteStart.getAirBase()
             && relationshipTracker.isAllied(route.getStart().getOwner(), unit.getOwner())) {
-          moved--;
+          moved = moved.subtract(BigDecimal.ONE);
         }
         if (taRouteEnd != null
             && taRouteEnd.getAirBase()
             && relationshipTracker.isAllied(route.getEnd().getOwner(), unit.getOwner())) {
-          moved--;
+          moved = moved.subtract(BigDecimal.ONE);
         }
       }
       change.add(
           ChangeFactory.unitPropertyChange(
-              unit, moved + unit.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
+              unit, moved.add(unit.getAlreadyMoved()), TripleAUnit.ALREADY_MOVED));
     }
     // if neutrals were taken over mark land units with 0 movement
     // if entered a non blitzed conquered territory, mark with 0 movement

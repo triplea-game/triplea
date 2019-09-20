@@ -120,7 +120,7 @@ class MapTest {
 
   @Test
   void testImpossibleConditionRoute() {
-    assertNull(map.getRoute(aa, ba, Matches.never()));
+    assertNull(map.getRoute(aa, ca, Matches.never()));
   }
 
   @Test
@@ -159,20 +159,14 @@ class MapTest {
   }
 
   @Test
-  void testRouteToSelf() {
-    final Route rt = map.getRoute(aa, aa);
-    assertEquals(0, rt.numberOfSteps());
-  }
-
-  @Test
   void testRouteSizeOne() {
-    final Route rt = map.getRoute(aa, ab);
+    final Route rt = map.getRoute(aa, ab, Matches.always());
     assertEquals(1, rt.numberOfSteps());
   }
 
   @Test
   void testImpossibleRoute() {
-    final Route rt = map.getRoute(aa, nowhere);
+    final Route rt = map.getRoute(aa, nowhere, Matches.always());
     assertNull(rt);
   }
 
@@ -184,7 +178,7 @@ class MapTest {
 
   @Test
   void testMultiplePossible() {
-    final Route rt = map.getRoute(aa, dd);
+    final Route rt = map.getRoute(aa, dd, Matches.always());
     assertEquals(aa, rt.getStart());
     assertEquals(dd, rt.getEnd());
     assertEquals(6, rt.numberOfSteps());

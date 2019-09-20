@@ -173,14 +173,7 @@ class PacificTest extends AbstractDelegateTestCase {
   @Test
   void testCanLand2Airfields() {
     advanceToStep(bridge, "americanCombatMove");
-    final Route route = new Route();
-    route.setStart(unitedStates);
-    route.add(sz5);
-    route.add(sz4);
-    route.add(sz10);
-    route.add(sz16);
-    route.add(sz27);
-    route.add(newBritain);
+    final Route route = new Route(unitedStates, sz5, sz4, sz10, sz16, sz27, newBritain);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
@@ -190,13 +183,7 @@ class PacificTest extends AbstractDelegateTestCase {
   @Test
   void testCanLand1AirfieldStart() {
     advanceToStep(bridge, "americanCombatMove");
-    final Route route = new Route();
-    route.setStart(unitedStates);
-    route.add(sz5);
-    route.add(sz7);
-    route.add(sz8);
-    route.add(sz20);
-    route.add(midway);
+    final Route route = new Route(unitedStates, sz5, sz7, sz8, sz20, midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
@@ -207,13 +194,7 @@ class PacificTest extends AbstractDelegateTestCase {
   @Test
   void testCanLand1AirfieldEnd() {
     advanceToStep(bridge, "americanCombatMove");
-    final Route route = new Route();
-    route.setStart(unitedStates);
-    route.add(sz5);
-    route.add(sz7);
-    route.add(sz8);
-    route.add(sz20);
-    route.add(midway);
+    final Route route = new Route(unitedStates, sz5, sz7, sz8, sz20, midway);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
@@ -223,11 +204,7 @@ class PacificTest extends AbstractDelegateTestCase {
   @Test
   void testCanMoveNavalBase() {
     advanceToStep(bridge, "americanNonCombatMove");
-    final Route route = new Route();
-    route.setStart(sz5);
-    route.add(sz7);
-    route.add(sz8);
-    route.add(sz20);
+    final Route route = new Route(sz5, sz7, sz8, sz20);
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(fighter, 1);
     final String results = delegate.move(GameDataTestUtil.getUnits(map, route.getStart()), route);
@@ -244,10 +221,8 @@ class PacificTest extends AbstractDelegateTestCase {
     delegate.start();
     final IntegerMap<UnitType> map = new IntegerMap<>();
     map.put(infantry, 1);
-    final Route route = new Route();
-    route.setStart(bonin);
+    final Route route = new Route(bonin, sz24);
     // movement to force boarding
-    route.add(sz24);
     // verify unit counts before move
     assertEquals(2, bonin.getUnitCollection().size());
     assertEquals(1, sz24.getUnitCollection().size());

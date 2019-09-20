@@ -14,6 +14,7 @@ import games.strategy.triplea.attachments.TechAbilityAttachment;
 import games.strategy.triplea.attachments.TerritoryAttachment;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,7 +63,7 @@ public class TripleAUnit extends Unit {
   // was this unit unloaded in combat phase this turn?
   private boolean wasUnloadedInCombatPhase = false;
   // movement used this turn
-  private int alreadyMoved = 0;
+  private BigDecimal alreadyMoved = BigDecimal.ZERO;
   // movement used this turn
   private int bonusMovement = 0;
   // amount of damage unit has sustained
@@ -171,11 +172,11 @@ public class TripleAUnit extends Unit {
     wasUnloadedInCombatPhase = value;
   }
 
-  public int getAlreadyMoved() {
+  public BigDecimal getAlreadyMoved() {
     return alreadyMoved;
   }
 
-  public void setAlreadyMoved(final int alreadyMoved) {
+  public void setAlreadyMoved(final BigDecimal alreadyMoved) {
     this.alreadyMoved = alreadyMoved;
   }
 
@@ -192,9 +193,10 @@ public class TripleAUnit extends Unit {
     return Math.max(0, bonusMovement + UnitAttachment.get(getType()).getMovement(getOwner()));
   }
 
-  public int getMovementLeft() {
-    return Math.max(
-        0, UnitAttachment.get(getType()).getMovement(getOwner()) + bonusMovement - alreadyMoved);
+  public BigDecimal getMovementLeft() {
+    return new BigDecimal(UnitAttachment.get(getType()).getMovement(getOwner()))
+        .add(new BigDecimal(bonusMovement))
+        .subtract(alreadyMoved);
   }
 
   /**
@@ -202,19 +204,20 @@ public class TripleAUnit extends Unit {
    * collection of units, and whose second element indicates the maximum movement remaining for the
    * specified collection of units.
    */
-  public static Tuple<Integer, Integer> getMinAndMaxMovementLeft(final Collection<Unit> units) {
-    int min = 100000;
-    int max = 0;
+  public static Tuple<BigDecimal, BigDecimal> getMinAndMaxMovementLeft(
+      final Collection<Unit> units) {
+    BigDecimal min = new BigDecimal(100000);
+    BigDecimal max = BigDecimal.ZERO;
     for (final Unit u : units) {
-      final int left = ((TripleAUnit) u).getMovementLeft();
-      if (left > max) {
+      final BigDecimal left = ((TripleAUnit) u).getMovementLeft();
+      if (left.compareTo(max) > 0) {
         max = left;
       }
-      if (left < min) {
+      if (left.compareTo(max) < 0) {
         min = left;
       }
     }
-    if (max < min) {
+    if (max.compareTo(min) < 0) {
       min = max;
     }
     return Tuple.of(min, max);

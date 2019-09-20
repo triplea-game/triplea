@@ -1494,7 +1494,7 @@ class ProNonCombatMoveAi {
       for (final Iterator<Unit> it = currentTransportMoveMap.keySet().iterator(); it.hasNext(); ) {
         final Unit transport = it.next();
         final Territory currentTerritory = unitTerritoryMap.get(transport);
-        final int moves = TripleAUnit.get(transport).getMovementLeft();
+        final int moves = TripleAUnit.get(transport).getMovementLeft().intValue();
         if (TransportTracker.isTransporting(transport) || moves <= 0) {
           continue;
         }
@@ -1561,11 +1561,14 @@ class ProNonCombatMoveAi {
                 ProMatches.territoryCanMoveSeaUnitsThrough(player, data, false)
                     .and(Matches.territoryIsInList(cantHoldTerritories).negate());
             final Route route =
-                data.getMap().getRoute_IgnoreEnd(currentTerritory, patd.getTerritory(), match);
-            if (route == null
-                || MoveValidator.validateCanal(
-                        route, Collections.singletonList(transport), player, data)
-                    != null) {
+                data.getMap()
+                    .getRouteForUnits(
+                        currentTerritory,
+                        patd.getTerritory(),
+                        match,
+                        Collections.singletonList(transport),
+                        player);
+            if (route == null) {
               break;
             }
             final List<Territory> territories = route.getAllTerritories();
@@ -2515,11 +2518,13 @@ class ProNonCombatMoveAi {
           // Consider max stack of 1 AA in classic
           final Route r =
               data.getMap()
-                  .getRoute_IgnoreEnd(
+                  .getRouteForUnit(
                       currentTerritory,
                       t,
                       ProMatches.territoryCanMoveLandUnitsThrough(
-                          player, data, u, currentTerritory, false, new ArrayList<>()));
+                          player, data, u, currentTerritory, false, new ArrayList<>()),
+                      u,
+                      player);
           final MoveValidationResult mvr =
               MoveValidator.validateMove(
                   Collections.singletonList(u),

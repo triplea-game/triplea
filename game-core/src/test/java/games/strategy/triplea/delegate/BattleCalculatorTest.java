@@ -24,6 +24,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.CasualtyDetails;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -108,7 +109,7 @@ class BattleCalculatorTest {
     final Collection<Unit> defendingAa =
         territory("Germany", data).getUnitCollection().getMatches(Matches.unitIsAaForAnything());
     whenGetRandom(bridge).thenAnswer(withValues(0));
-    TripleAUnit.get(planes.get(0)).setAlreadyMoved(1);
+    TripleAUnit.get(planes.get(0)).setAlreadyMoved(BigDecimal.ONE);
     final Collection<Unit> casualties =
         BattleCalculator.getAaCasualties(
                 false,

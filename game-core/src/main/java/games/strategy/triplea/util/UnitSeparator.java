@@ -9,6 +9,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.mapdata.MapData;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -101,7 +102,7 @@ public class UnitSeparator {
       categories = new LinkedHashMap<>();
     }
     for (final Unit current : units) {
-      int unitMovement = -1;
+      BigDecimal unitMovement = new BigDecimal(-1);
       if (categorizeMovement
           || (categorizeTrnMovement && Matches.unitIsTransport().test(current))) {
         unitMovement = TripleAUnit.get(current).getMovementLeft();

@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerId;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.changefactory.ChangeFactory;
@@ -156,7 +157,7 @@ class AirThatCantLandUtilTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz45.getUnits(), gameData.getMap().getRoute(sz45, sz44));
+    moveDelegate.move(sz45.getUnits(), new Route(sz45, sz44));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
@@ -207,7 +208,7 @@ class AirThatCantLandUtilTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz45.getUnits(), gameData.getMap().getRoute(sz45, sz44));
+    moveDelegate.move(sz45.getUnits(), new Route(sz45, sz44));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
@@ -255,7 +256,7 @@ class AirThatCantLandUtilTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz11.getUnits(), gameData.getMap().getRoute(sz11, sz9));
+    moveDelegate.move(sz11.getUnits(), new Route(sz11, sz9));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");
@@ -304,10 +305,9 @@ class AirThatCantLandUtilTest {
     advanceToStep(bridge, "CombatMove");
     moveDelegate.setDelegateBridgeAndPlayer(bridge);
     moveDelegate.start();
-    moveDelegate.move(sz11.getUnits(), gameData.getMap().getRoute(sz11, sz9));
+    moveDelegate.move(sz11.getUnits(), new Route(sz11, sz9));
     moveDelegate.move(
-        sz9.getUnitCollection().getUnits(infantryType, 1),
-        gameData.getMap().getRoute(sz9, eastCanada));
+        sz9.getUnitCollection().getUnits(infantryType, 1), new Route(sz9, eastCanada));
     moveDelegate.end();
     // fight the battle
     final BattleDelegate battle = (BattleDelegate) gameData.getDelegate("battle");

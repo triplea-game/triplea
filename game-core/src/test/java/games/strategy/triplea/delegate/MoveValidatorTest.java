@@ -16,6 +16,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
 import games.strategy.triplea.xml.TestMapGameData;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,25 +25,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class MoveValidatorTest extends AbstractDelegateTestCase {
-
-  @Test
-  void testEnemyUnitsInPath() {
-    // japanese unit in congo
-    final Route bad = new Route();
-    // the empty case
-    assertTrue(MoveValidator.noEnemyUnitsOnPathMiddleSteps(bad, british, gameData));
-    bad.add(egypt);
-    bad.add(congo);
-    bad.add(kenya);
-    assertFalse(MoveValidator.noEnemyUnitsOnPathMiddleSteps(bad, british, gameData));
-    final Route good = new Route();
-    good.add(egypt);
-    good.add(kenya);
-    assertTrue(MoveValidator.noEnemyUnitsOnPathMiddleSteps(good, british, gameData));
-    // at end so should still be good
-    good.add(congo);
-    assertTrue(MoveValidator.noEnemyUnitsOnPathMiddleSteps(good, british, gameData));
-  }
 
   @Test
   void testHasUnitsThatCantGoOnWater() {
@@ -73,12 +55,12 @@ class MoveValidatorTest extends AbstractDelegateTestCase {
   @Test
   void testGetLeastMovement() {
     final Collection<Unit> collection = bomber.create(1, british);
-    assertEquals(6, MoveValidator.getLeastMovement(collection));
+    assertEquals(new BigDecimal(6), MoveValidator.getLeastMovement(collection));
     final Object[] objs = collection.toArray();
-    ((TripleAUnit) objs[0]).setAlreadyMoved(1);
-    assertEquals(5, MoveValidator.getLeastMovement(collection));
+    ((TripleAUnit) objs[0]).setAlreadyMoved(BigDecimal.ONE);
+    assertEquals(new BigDecimal(5), MoveValidator.getLeastMovement(collection));
     collection.addAll(factory.create(2, british));
-    assertEquals(0, MoveValidator.getLeastMovement(collection));
+    assertEquals(BigDecimal.ZERO, MoveValidator.getLeastMovement(collection));
   }
 
   @Test

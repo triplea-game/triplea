@@ -11,6 +11,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attachments.UnitAttachment;
 import games.strategy.triplea.delegate.data.MoveValidationResult;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,10 +36,9 @@ public final class AirMovementValidator {
   private AirMovementValidator() {}
 
   // TODO: this class does a pretty good job already, but could be improved by having the carriers
-  // that are potentially
-  // moved also look for any owned air units that are in sea zones without carriers. these would be
-  // air units that have
-  // already been moved this turn, and therefore would need pickup.
+  // that are potentially moved also look for any owned air units that are in sea zones without
+  // carriers. these would be air units that have already been moved this turn, and therefore would
+  // need pickup.
   static MoveValidationResult validateAirCanLand(
       final GameData data,
       final Collection<Unit> units,
@@ -121,10 +121,14 @@ public final class AirMovementValidator {
     // we still have air left, so begin calling carriers to come here to pick up the air
 
     // figure out what is the max distance of our remaining air units
+    // TODO: consider each air unit separately with movement costs
     final int maxMovementLeftForTheseAirUnitsBeingValidated =
-        maxMovementLeftForTheseAirUnitsBeingValidated(airThatMustLandOnCarriers, route, player);
+        maxMovementLeftForTheseAirUnitsBeingValidated(airThatMustLandOnCarriers, route, player)
+            .intValue();
     // figure out what is the max distance of our remaining carrier units
-    final int maxMovementLeftForAllOwnedCarriers = maxMovementLeftForAllOwnedCarriers(player, data);
+    // TODO: consider each carrier unit separately with movement costs
+    final int maxMovementLeftForAllOwnedCarriers =
+        maxMovementLeftForAllOwnedCarriers(player, data).intValue();
     final List<Territory> landingSpots = new ArrayList<>(Collections.singleton(routeEnd));
     landingSpots.addAll(
         data.getMap()
@@ -163,29 +167,31 @@ public final class AirMovementValidator {
     return result;
   }
 
-  private static LinkedHashMap<Unit, Integer> getMovementLeftForValidatingAir(
+  private static LinkedHashMap<Unit, BigDecimal> getMovementLeftForValidatingAir(
       final Collection<Unit> airBeingValidated, final PlayerId player, final Route route) {
-    final LinkedHashMap<Unit, Integer> map = new LinkedHashMap<>();
+    final LinkedHashMap<Unit, BigDecimal> map = new LinkedHashMap<>();
     for (final Unit unit : airBeingValidated) {
       // unit must be in either start or end.
-      final int movementLeft;
+      final BigDecimal movementLeft;
       if (Matches.unitIsOwnedBy(player).test(unit)) {
         movementLeft = getMovementLeftForAirUnitNotMovedYet(unit, route);
       } else {
-        movementLeft = 0;
+        movementLeft = BigDecimal.ZERO;
       }
       map.put(unit, movementLeft);
     }
     return map;
   }
 
-  private static int getMovementLeftForAirUnitNotMovedYet(
+  private static BigDecimal getMovementLeftForAirUnitNotMovedYet(
       final Unit airBeingValidated, final Route route) {
     return route.getEnd().getUnits().contains(airBeingValidated)
         // they are not being moved, they are already at the end
         ? ((TripleAUnit) airBeingValidated).getMovementLeft()
         // they are being moved (they are still at the start location)
-        : route.getMovementLeft(airBeingValidated);
+        : ((TripleAUnit) airBeingValidated)
+            .getMovementLeft()
+            .subtract(route.getMovementCost(airBeingValidated));
   }
 
   private static IntegerMap<Territory> populateStaticAlliedAndBuildingCarrierCapacity(
@@ -215,17 +221,12 @@ public final class AirMovementValidator {
                     data, player)
                 .test(t)) {
           // TODO: Here we are assuming that this factory can produce all of the carriers. Actually
-          // it might not be able
-          // to produce any carriers (because of complex requires units coding) or because of unit
-          // damage or maximum
-          // production.
+          // it might not be able to produce any carriers (because of complex requires units coding)
+          // or because of unit damage or maximum production.
           // TODO: Here we are also assuming that the first territory we find that has an adjacent
-          // factory is the
-          // closest one in terms of unit movement. We have sorted the list of territories so this
-          // IS the closest in
-          // terms of steps, but each unit may have specific movement allowances for different
-          // terrain or some bullshit
-          // like that.
+          // factory is the closest one in terms of unit movement. We have sorted the list of
+          // territories so this IS the closest in terms of steps, but each unit may have specific
+          // movement allowances for different terrain.
           final int producedCarrierCapacity = carrierCapacity(carriersInProductionQueue, t);
           startingSpace.add(t, producedCarrierCapacity);
           carriersInProductionQueue.clear();
@@ -272,7 +273,7 @@ public final class AirMovementValidator {
         // of new carriers
         populateStaticAlliedAndBuildingCarrierCapacity(
             landingSpots, movedCarriersAndTheirFighters, player, data);
-    final LinkedHashMap<Unit, Integer> movementLeftForAirToValidate =
+    final LinkedHashMap<Unit, BigDecimal> movementLeftForAirToValidate =
         // calculate movement left only once
         getMovementLeftForValidatingAir(airThatMustLandOnCarriers, player, route);
     for (final Territory landingSpot : landingSpots) {
@@ -281,6 +282,7 @@ public final class AirMovementValidator {
       final List<Unit> airCanReach = new ArrayList<>();
       for (final Unit air : airThatMustLandOnCarriers) {
         if (canAirReachThisSpot(
+            air,
             data,
             player,
             routeEnd,
@@ -429,25 +431,31 @@ public final class AirMovementValidator {
           }
         }
         final Route toLandingSpot =
-            data.getMap().getRoute(carrierSpot, landingSpot, Matches.seaCanMoveOver(player, data));
+            data.getMap()
+                .getRouteForUnits(
+                    carrierSpot,
+                    landingSpot,
+                    Matches.seaCanMoveOver(player, data),
+                    ownedCarriersInCarrierSpot,
+                    player);
         if (toLandingSpot == null) {
           continue;
         }
-        final List<Unit> carrierCanReach =
+        final List<Unit> carriersThatCanReach =
             CollectionUtils.getMatches(
                 ownedCarriersInCarrierSpot, Matches.unitHasEnoughMovementForRoute(toLandingSpot));
-        if (carrierCanReach.isEmpty()) {
+        if (carriersThatCanReach.isEmpty()) {
           // none can reach
           continue;
         }
-        final List<Unit> carrierNotReach = new ArrayList<>(ownedCarriersInCarrierSpot);
+        final List<Unit> carriersThatCantReach = new ArrayList<>(ownedCarriersInCarrierSpot);
         // we want to see if the air units can be put on the carriers that cannot make it
         // first, before taking up room on the carriers that can make it
-        carrierNotReach.removeAll(carrierCanReach);
-        final List<Unit> allCarriers = new ArrayList<>(carrierNotReach);
+        carriersThatCantReach.removeAll(carriersThatCanReach);
+        final List<Unit> allCarriers = new ArrayList<>(carriersThatCantReach);
         // so we remove them from the list then re-add them so that they will be at the end of the
         // list
-        allCarriers.addAll(carrierCanReach);
+        allCarriers.addAll(carriersThatCanReach);
         // now we want to make a map of the carriers to the units they must carry with them (both
         // allied and owned)
         final Map<Unit, Collection<Unit>> carriersToMove = new HashMap<>();
@@ -482,11 +490,11 @@ public final class AirMovementValidator {
           iter.remove();
           continue;
         }
-        if (carrierFull.containsAll(carrierNotReach)) {
+        if (carrierFull.containsAll(carriersThatCantReach)) {
           iter.remove();
         }
         // ok, now lets move them.
-        for (final Unit carrier : carrierCanReach) {
+        for (final Unit carrier : carriersThatCanReach) {
           movedCarriersAndTheirFighters.put(carrier, carriersToMove.get(carrier));
           landingSpotCapacity += carrierCapacity(carrier, carrierSpot);
           landingSpotCapacity -= carrierCost(carriersToMove.get(carrier));
@@ -540,26 +548,26 @@ public final class AirMovementValidator {
     };
   }
 
-  private static int maxMovementLeftForAllOwnedCarriers(
+  private static BigDecimal maxMovementLeftForAllOwnedCarriers(
       final PlayerId player, final GameData data) {
-    int max = 0;
+    BigDecimal max = BigDecimal.ZERO;
     final Predicate<Unit> ownedCarrier = Matches.unitIsCarrier().and(Matches.unitIsOwnedBy(player));
     for (final Territory t : data.getMap().getTerritories()) {
       for (final Unit carrier : t.getUnitCollection().getMatches(ownedCarrier)) {
-        max = Math.max(max, ((TripleAUnit) carrier).getMovementLeft());
+        max = max.max(((TripleAUnit) carrier).getMovementLeft());
       }
     }
     return max;
   }
 
-  private static int maxMovementLeftForTheseAirUnitsBeingValidated(
+  private static BigDecimal maxMovementLeftForTheseAirUnitsBeingValidated(
       final Collection<Unit> airUnits, final Route route, final PlayerId player) {
-    int max = 0;
+    BigDecimal max = BigDecimal.ZERO;
     for (final Unit u : airUnits) {
       if (Matches.unitIsOwnedBy(player).test(u)) {
         // unit must be in either start or end.
-        final int movementLeft = getMovementLeftForAirUnitNotMovedYet(u, route);
-        if (movementLeft > max) {
+        final BigDecimal movementLeft = getMovementLeftForAirUnitNotMovedYet(u, route);
+        if (movementLeft.compareTo(max) > 0) {
           max = movementLeft;
         }
       }
@@ -624,24 +632,27 @@ public final class AirMovementValidator {
 
   private static Comparator<Unit> getLowestToHighestMovementComparatorIncludingUnitsNotYetMoved(
       final Route route) {
-    return Comparator.comparingInt(u -> getMovementLeftForAirUnitNotMovedYet(u, route));
+    return Comparator.comparing(u -> getMovementLeftForAirUnitNotMovedYet(u, route));
   }
 
   private static boolean canAirReachThisSpot(
+      final Unit unit,
       final GameData data,
       final PlayerId player,
       final Territory currentSpot,
-      final int movementLeft,
+      final BigDecimal movementLeft,
       final Territory landingSpot,
       final boolean areNeutralsPassableByAir) {
     final Route route =
         data.getMap()
-            .getRoute(
+            .getRouteForUnit(
                 currentSpot,
                 landingSpot,
-                Matches.airCanFlyOver(player, data, areNeutralsPassableByAir));
+                Matches.airCanFlyOver(player, data, areNeutralsPassableByAir),
+                unit,
+                player);
     return (route != null)
-        && (route.numberOfSteps() <= movementLeft)
+        && (route.getMovementCost(unit).compareTo(movementLeft) <= 0)
         && (!areNeutralsPassableByAir
             || getNeutralCharge(data, route) <= player.getResources().getQuantity(Constants.PUS));
   }
@@ -657,33 +668,38 @@ public final class AirMovementValidator {
   private static boolean canFindLand(final GameData data, final Unit unit, final Route route) {
     final Territory routeEnd = route.getEnd();
     // unit must be in either start or end.
-    final int movementLeft = getMovementLeftForAirUnitNotMovedYet(unit, route);
+    final BigDecimal movementLeft = getMovementLeftForAirUnitNotMovedYet(unit, route);
     return canFindLand(data, unit, routeEnd, movementLeft);
   }
 
   private static boolean canFindLand(
       final GameData data, final Unit unit, final Territory current) {
-    final int movementLeft = ((TripleAUnit) unit).getMovementLeft();
+    final BigDecimal movementLeft = ((TripleAUnit) unit).getMovementLeft();
     return canFindLand(data, unit, current, movementLeft);
   }
 
   private static boolean canFindLand(
-      final GameData data, final Unit unit, final Territory current, final int movementLeft) {
-    if (movementLeft <= 0) {
+      final GameData data,
+      final Unit unit,
+      final Territory current,
+      final BigDecimal movementLeft) {
+    if (movementLeft.compareTo(BigDecimal.ZERO) < 0) {
       return false;
     }
     final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
     final PlayerId player = unit.getOwner();
     final List<Territory> possibleSpots =
         CollectionUtils.getMatches(
-            data.getMap().getNeighbors(current, movementLeft),
+            data.getMap()
+                .getNeighborsByMovementCost(
+                    current,
+                    unit,
+                    movementLeft,
+                    Matches.airCanFlyOver(player, data, areNeutralsPassableByAir)),
             Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(player, data));
-    // TODO EW: Assuming movement cost of 1, this could get VERY slow when the movement cost is very
-    // high and air units
-    // have a lot of movement capacity.
     for (final Territory landingSpot : possibleSpots) {
       if (canAirReachThisSpot(
-          data, player, current, movementLeft, landingSpot, areNeutralsPassableByAir)) {
+          unit, data, player, current, movementLeft, landingSpot, areNeutralsPassableByAir)) {
         return true;
       }
     }
@@ -808,7 +824,7 @@ public final class AirMovementValidator {
     return sum;
   }
 
-  private static int carrierCost(final Unit unit) {
+  static int carrierCost(final Unit unit) {
     if (Matches.unitCanLandOnCarrier().test(unit)) {
       return UnitAttachment.get(unit.getType()).getCarrierCost();
     }
