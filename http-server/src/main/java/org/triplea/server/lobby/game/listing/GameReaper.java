@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.triplea.server.lobby.game.listing.GameListing.GameId;
 
 /** Removes games that have not had a keep alive. */
 @AllArgsConstructor
@@ -22,8 +23,8 @@ class GameReaper {
    * Returns set of game ids to be reaped. These are games that have not received a keep alive
    * within the cut-off time.
    */
-  Collection<GameListing.GameId> findDeadGames(final Collection<GameListing.GameId> gameIds) {
-    final Collection<GameListing.GameId> deadGames =
+  Collection<GameId> findDeadGames(final Collection<GameId> gameIds) {
+    final Collection<GameId> deadGames =
         gameIds.stream()
             .filter(id -> keepAliveCache.getIfPresent(id.getId()) == null)
             .collect(Collectors.toSet());
