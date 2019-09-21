@@ -8,9 +8,9 @@ import java.util.Map;
 import org.triplea.http.client.HttpConstants;
 import org.triplea.http.client.moderator.toolbox.PagingParams;
 
+@Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
 interface ToolboxEventLogFeignClient {
   @RequestLine("POST " + ToolboxEventLogClient.AUDIT_HISTORY_PATH)
-  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   List<ModeratorEvent> lookupModeratorEvents(
       @HeaderMap Map<String, Object> headerMap, PagingParams params);
 }

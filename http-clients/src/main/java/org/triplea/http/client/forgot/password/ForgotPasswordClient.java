@@ -12,6 +12,7 @@ import org.triplea.http.client.HttpConstants;
  * user.
  */
 @SuppressWarnings("InterfaceNeverImplemented")
+@Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
 public interface ForgotPasswordClient {
 
   String FORGOT_PASSWORD_PATH = "/forgot-password";
@@ -22,7 +23,6 @@ public interface ForgotPasswordClient {
    * @throws FeignException Thrown on non-2xx responses.
    */
   @RequestLine("POST " + FORGOT_PASSWORD_PATH)
-  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   ForgotPasswordResponse sendForgotPasswordRequest(ForgotPasswordRequest request);
 
   /** Creates an error report uploader clients, sends error reports and gets a response back. */
