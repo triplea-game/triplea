@@ -26,10 +26,8 @@ public class AuthenticatedUser implements Principal {
 
   public int getUserIdOrThrow() {
     Preconditions.checkState(
-        !userRole.equals(UserRole.ANONYMOUS),
-        "Anonymous user is expected to have a null user id, "
-            + "it is the only case expected where user id would be null");
+        !userRole.equals(UserRole.ANONYMOUS), "Anonymous users always have a null user id");
     return Optional.ofNullable(userId)
-        .orElseThrow(() -> new AssertionError("Expected to have a non-null user id"));
+        .orElseThrow(() -> new AssertionError("Error, expected to have a non-null user id"));
   }
 }
