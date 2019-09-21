@@ -35,8 +35,8 @@ public class GridBagConstraintsBuilder {
   private double weightX;
   private double weightY;
 
-  private GridBagConstraintsAnchor anchor;
-  private GridBagConstraintsFill fill;
+  private GridBagConstraintsAnchor anchor = GridBagConstraintsAnchor.WEST;
+  private GridBagConstraintsFill fill = GridBagConstraintsFill.NONE;
 
   private Insets insets = new Insets(0, 0, 0, 0);
 
@@ -86,11 +86,20 @@ public class GridBagConstraintsBuilder {
     return this;
   }
 
+  /**
+   * Sets grid bag constraint anchor value, this dictates how components are placed in the grid
+   * cell. If not specified, defaults to: GridBagConstraintsAnchor.WEST
+   */
   public GridBagConstraintsBuilder anchor(final GridBagConstraintsAnchor anchor) {
     this.anchor = anchor;
     return this;
   }
 
+  /**
+   * Sets grid bag constraint fill value, this dictates how components are adjusted when placed in
+   * grid cell, whether they are expanded to fill space. If not specified, defaults to:
+   * GridBagConstraintsFill.NONE
+   */
   public GridBagConstraintsBuilder fill(final GridBagConstraintsFill fill) {
     this.fill = fill;
     return this;
