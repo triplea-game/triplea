@@ -32,7 +32,7 @@ class GameReaper {
     if (!deadGames.isEmpty()) {
       log.info(
           "Game reaper killing games: "
-              + deadGames.stream().map(GameListing.GameId::getId).collect(Collectors.toList()));
+              + deadGames.stream().map(GameId::getId).collect(Collectors.toList()));
     }
     return deadGames;
   }
