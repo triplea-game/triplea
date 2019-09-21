@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.apache.http.client.utils.URIBuilder;
+import org.triplea.java.ArgChecker;
 
 /**
  * Server properties.
@@ -52,6 +53,7 @@ public final class LobbyServerProperties {
 
   /** Convenience method to get the URI of the lobby https server. */
   public URI getHttpsServerUri() {
+    ArgChecker.checkNotEmpty(host);
     try {
       return new URIBuilder()
           // TODO: use https
