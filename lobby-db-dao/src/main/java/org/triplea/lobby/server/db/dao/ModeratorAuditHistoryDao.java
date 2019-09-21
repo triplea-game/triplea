@@ -30,6 +30,8 @@ public interface ModeratorAuditHistoryDao {
 
     REMOVE_USERNAME_BAN,
 
+    BOOT_GAME,
+
     BOOT_USER_FROM_BOT,
 
     BOOT_USER_FROM_LOBBY,

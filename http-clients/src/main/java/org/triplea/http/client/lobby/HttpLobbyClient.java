@@ -2,15 +2,21 @@ package org.triplea.http.client.lobby;
 
 import java.net.URI;
 import lombok.Getter;
+import org.triplea.http.client.lobby.game.listing.GameListingClient;
 import org.triplea.http.client.lobby.moderator.toolbox.HttpModeratorToolboxClient;
 
 /** Holder class for the various http clients that access lobby resources. */
 @Getter
 public class HttpLobbyClient {
   private final HttpModeratorToolboxClient httpModeratorToolboxClient;
-  // TODO: Project#12 Add additional http clients
+  private final GameListingClient gameListingClient;
 
-  public HttpLobbyClient(final URI lobbyUri, final String apiKey) {
+  private HttpLobbyClient(final URI lobbyUri, final String apiKey) {
     httpModeratorToolboxClient = new HttpModeratorToolboxClient(lobbyUri, apiKey);
+    gameListingClient = GameListingClient.newClient(lobbyUri, apiKey);
+  }
+
+  public static HttpLobbyClient newClient(final URI lobbyUri, final String apiKey) {
+    return new HttpLobbyClient(lobbyUri, apiKey);
   }
 }

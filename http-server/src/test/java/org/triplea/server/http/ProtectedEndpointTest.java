@@ -38,11 +38,13 @@ public abstract class ProtectedEndpointTest<T> extends DropwizardTest {
   }
 
   /** Use this to verify an endpoint that returns data. */
-  protected void verifyEndpointReturningObject(final Function<T, ?> methodRunner) {
-    assertThat(methodRunner.apply(clientBuilder.apply(localhost, VALID_API_TOKEN)), notNullValue());
+  protected <X> X verifyEndpointReturningObject(final Function<T, X> methodRunner) {
     assertThrows(
         HttpInteractionException.class,
         () -> methodRunner.apply(clientBuilder.apply(localhost, INVALID_API_TOKEN)));
+    final X value = methodRunner.apply(clientBuilder.apply(localhost, VALID_API_TOKEN));
+    assertThat(value, notNullValue());
+    return value;
   }
 
   /**
