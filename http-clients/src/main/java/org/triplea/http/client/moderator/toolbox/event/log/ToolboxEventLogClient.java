@@ -6,9 +6,9 @@ import java.net.URI;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.moderator.toolbox.PagingParams;
-import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
 /**
  * Client object to query server for the moderator event log. The event log is an audit trail of
@@ -18,12 +18,12 @@ import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 public class ToolboxEventLogClient {
   public static final String AUDIT_HISTORY_PATH = "/moderator-toolbox/audit-history/lookup";
 
-  private final ToolboxHttpHeaders toolboxHttpHeaders;
+  private final AuthenticationHeaders authenticationHeaders;
   private final ToolboxEventLogFeignClient client;
 
   public static ToolboxEventLogClient newClient(final URI serverUri, final String apiKey) {
     return new ToolboxEventLogClient(
-        new ToolboxHttpHeaders(apiKey),
+        new AuthenticationHeaders(apiKey),
         new HttpClient<>(ToolboxEventLogFeignClient.class, serverUri).get());
   }
 
@@ -32,6 +32,6 @@ public class ToolboxEventLogClient {
     checkArgument(pagingParams.getRowNumber() >= 0);
     checkArgument(pagingParams.getPageSize() > 0);
 
-    return client.lookupModeratorEvents(toolboxHttpHeaders.createHeaders(), pagingParams);
+    return client.lookupModeratorEvents(authenticationHeaders.createHeaders(), pagingParams);
   }
 }

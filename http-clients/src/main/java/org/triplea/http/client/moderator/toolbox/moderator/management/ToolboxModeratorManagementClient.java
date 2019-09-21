@@ -6,8 +6,8 @@ import java.net.URI;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
 /**
  * Http client for moderator management. Other than the fetch to display the list of moderators,
@@ -22,13 +22,13 @@ public class ToolboxModeratorManagementClient {
   public static final String CHECK_USER_EXISTS_PATH = "/moderator-toolbox/does-user-exist";
   public static final String ADD_MODERATOR_PATH = "/moderator-toolbox/super-mod/add-moderator";
 
-  private final ToolboxHttpHeaders httpHeaders;
+  private final AuthenticationHeaders httpHeaders;
   private final ToolboxModeratorManagementFeignClient client;
 
   public static ToolboxModeratorManagementClient newClient(
       final URI serverUri, final String apiKey) {
     return new ToolboxModeratorManagementClient(
-        new ToolboxHttpHeaders(apiKey),
+        new AuthenticationHeaders(apiKey),
         new HttpClient<>(ToolboxModeratorManagementFeignClient.class, serverUri).get());
   }
 

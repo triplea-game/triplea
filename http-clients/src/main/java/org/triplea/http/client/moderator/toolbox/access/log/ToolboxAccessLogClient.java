@@ -6,9 +6,9 @@ import java.net.URI;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
 import org.triplea.http.client.moderator.toolbox.PagingParams;
-import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
 /**
  * Http client class for fetching rows of the access log table. That is a table noting users that
@@ -19,18 +19,18 @@ import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 public class ToolboxAccessLogClient {
   public static final String FETCH_ACCESS_LOG_PATH = "/moderator-toolbox/get-access-log";
 
-  private final ToolboxHttpHeaders toolboxHttpHeaders;
+  private final AuthenticationHeaders authenticationHeaders;
   private final ToolboxAccessLogFeignClient client;
 
   public static ToolboxAccessLogClient newClient(final URI serverUri, final String apiKey) {
     return new ToolboxAccessLogClient(
-        new ToolboxHttpHeaders(apiKey),
+        new AuthenticationHeaders(apiKey),
         new HttpClient<>(ToolboxAccessLogFeignClient.class, serverUri).get());
   }
 
   public List<AccessLogData> getAccessLog(final PagingParams pagingParams) {
     checkArgument(pagingParams.getRowNumber() >= 0);
     checkArgument(pagingParams.getPageSize() > 0);
-    return client.getAccessLog(toolboxHttpHeaders.createHeaders(), pagingParams);
+    return client.getAccessLog(authenticationHeaders.createHeaders(), pagingParams);
   }
 }

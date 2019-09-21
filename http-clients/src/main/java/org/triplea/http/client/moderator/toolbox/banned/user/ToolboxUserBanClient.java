@@ -4,8 +4,8 @@ import java.net.URI;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClient;
-import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 
 /**
  * Http client object for adding, removing and querying server for user bans. User bans are done by
@@ -17,24 +17,24 @@ public class ToolboxUserBanClient {
   public static final String REMOVE_USER_BAN_PATH = "/moderator-toolbox/remove-user-ban";
   public static final String BAN_USER_PATH = "/moderator-toolbox/ban-user";
 
-  private final ToolboxHttpHeaders toolboxHttpHeaders;
+  private final AuthenticationHeaders authenticationHeaders;
   private final ToolboxUserBanFeignClient client;
 
   public static ToolboxUserBanClient newClient(final URI serverUri, final String apiKey) {
     return new ToolboxUserBanClient(
-        new ToolboxHttpHeaders(apiKey),
+        new AuthenticationHeaders(apiKey),
         new HttpClient<>(ToolboxUserBanFeignClient.class, serverUri).get());
   }
 
   public List<UserBanData> getUserBans() {
-    return client.getUserBans(toolboxHttpHeaders.createHeaders());
+    return client.getUserBans(authenticationHeaders.createHeaders());
   }
 
   public void removeUserBan(final String banId) {
-    client.removeUserBan(toolboxHttpHeaders.createHeaders(), banId);
+    client.removeUserBan(authenticationHeaders.createHeaders(), banId);
   }
 
   public void banUser(final UserBanParams banUserParams) {
-    client.banUser(toolboxHttpHeaders.createHeaders(), banUserParams);
+    client.banUser(authenticationHeaders.createHeaders(), banUserParams);
   }
 }

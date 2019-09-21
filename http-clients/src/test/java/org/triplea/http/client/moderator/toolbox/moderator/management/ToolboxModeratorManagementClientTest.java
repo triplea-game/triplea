@@ -18,7 +18,7 @@ import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
+import org.triplea.http.client.AuthenticationHeaders;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
@@ -38,7 +38,7 @@ class ToolboxModeratorManagementClientTest {
   void fetchModeratorList(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
         WireMock.get(ToolboxModeratorManagementClient.FETCH_MODERATORS_PATH)
-            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
+            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)
@@ -62,7 +62,7 @@ class ToolboxModeratorManagementClientTest {
     void expectIsSuperModAndReturn(final WireMockServer server, final boolean value) {
       server.stubFor(
           WireMock.get(ToolboxModeratorManagementClient.IS_SUPER_MOD_PATH)
-              .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
+              .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
               .willReturn(WireMock.aResponse().withStatus(200).withBody(String.valueOf(value))));
     }
 
