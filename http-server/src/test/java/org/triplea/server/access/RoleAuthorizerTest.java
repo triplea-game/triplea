@@ -18,7 +18,7 @@ class RoleAuthorizerTest {
   private final RoleAuthorizer roleAuthorizer = new RoleAuthorizer();
 
   @Test
-  void authenticateAdmin() {
+  void authenticateAsAdmin() {
     when(authenticatedUser.getUserRole())
         .thenReturn(UserRole.ADMIN)
         .thenReturn(UserRole.MODERATOR)
@@ -32,7 +32,7 @@ class RoleAuthorizerTest {
   }
 
   @Test
-  void authenticateModerator() {
+  void authenticateAsModerator() {
     when(authenticatedUser.getUserRole())
         .thenReturn(UserRole.ADMIN)
         .thenReturn(UserRole.MODERATOR)
@@ -46,7 +46,7 @@ class RoleAuthorizerTest {
   }
 
   @Test
-  void authenticatePlayer() {
+  void authenticateAsPlayer() {
     when(authenticatedUser.getUserRole())
         .thenReturn(UserRole.ADMIN)
         .thenReturn(UserRole.MODERATOR)
@@ -61,7 +61,7 @@ class RoleAuthorizerTest {
   }
 
   @Test
-  void authenticateAnonymous() {
+  void authenticateAsAnonymous() {
     when(authenticatedUser.getUserRole())
         .thenReturn(UserRole.ADMIN)
         .thenReturn(UserRole.MODERATOR)
