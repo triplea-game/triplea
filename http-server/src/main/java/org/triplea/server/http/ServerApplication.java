@@ -31,12 +31,12 @@ import org.triplea.server.access.RoleAuthorizer;
 import org.triplea.server.error.reporting.ErrorReportControllerFactory;
 import org.triplea.server.forgot.password.ForgotPasswordControllerFactory;
 import org.triplea.server.lobby.game.listing.GameListingControllerFactory;
-import org.triplea.server.moderator.toolbox.access.log.AccessLogControllerFactory;
-import org.triplea.server.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
-import org.triplea.server.moderator.toolbox.bad.words.BadWordControllerFactory;
-import org.triplea.server.moderator.toolbox.banned.names.UsernameBanControllerFactory;
-import org.triplea.server.moderator.toolbox.banned.users.UserBanControllerFactory;
-import org.triplea.server.moderator.toolbox.moderators.ModeratorsControllerFactory;
+import org.triplea.server.lobby.moderator.toolbox.access.log.AccessLogControllerFactory;
+import org.triplea.server.lobby.moderator.toolbox.audit.history.ModeratorAuditHistoryControllerFactory;
+import org.triplea.server.lobby.moderator.toolbox.bad.words.BadWordControllerFactory;
+import org.triplea.server.lobby.moderator.toolbox.banned.names.UsernameBanControllerFactory;
+import org.triplea.server.lobby.moderator.toolbox.banned.users.UserBanControllerFactory;
+import org.triplea.server.lobby.moderator.toolbox.moderators.ModeratorsControllerFactory;
 import org.triplea.server.user.account.UserAccountControllerFactory;
 
 /**
