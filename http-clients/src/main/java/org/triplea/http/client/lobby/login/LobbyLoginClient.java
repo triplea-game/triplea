@@ -11,7 +11,7 @@ import org.triplea.http.client.HttpConstants;
  * use this to gain a single-use token that can be used to establish a non-https socket connection.
  */
 @SuppressWarnings("InterfaceNeverImplemented")
-// TODO: Project#12 - move to package org.triplea.http.client.account.login
+@Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
 public interface LobbyLoginClient {
 
   String LOGIN_PATH = "/login";
@@ -37,7 +37,6 @@ public interface LobbyLoginClient {
    * </pre>
    */
   @RequestLine("POST " + LOGIN_PATH)
-  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   LobbyLoginResponse login(RegisteredUserLoginRequest loginRequest);
 
   /**
@@ -57,6 +56,5 @@ public interface LobbyLoginClient {
    * </pre>
    */
   @RequestLine("POST " + ANONYMOUS_LOGIN_PATH)
-  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   LobbyLoginResponse anonymousLogin(String name);
 }

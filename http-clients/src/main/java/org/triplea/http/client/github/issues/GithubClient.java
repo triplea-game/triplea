@@ -14,6 +14,7 @@ import org.triplea.http.client.error.report.ErrorUploadRequest;
 import org.triplea.http.client.github.issues.create.CreateIssueResponse;
 
 @SuppressWarnings("InterfaceNeverImplemented")
+@Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
 interface GithubClient {
 
   @VisibleForTesting String CREATE_ISSUE_PATH = "/repos/{org}/{repo}/issues";
@@ -24,7 +25,6 @@ interface GithubClient {
    * @throws FeignException Thrown on non-2xx responses.
    */
   @RequestLine("POST " + CREATE_ISSUE_PATH)
-  @Headers({HttpConstants.CONTENT_TYPE_JSON, HttpConstants.ACCEPT_JSON})
   CreateIssueResponse newIssue(
       @HeaderMap Map<String, Object> headerMap,
       @Param("org") String org,
