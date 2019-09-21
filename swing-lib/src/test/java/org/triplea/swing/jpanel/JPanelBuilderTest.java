@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -21,13 +20,9 @@ import org.junit.jupiter.api.Test;
 class JPanelBuilderTest {
 
   @Test
-  void minBuildCase() {
-    assertThat(new JPanelBuilder().build(), notNullValue());
-  }
-
-  @Test
   void horizontalAlignmentCenter() {
-    final JPanel panel = new JPanelBuilder().horizontalAlignmentCenter().build();
+    final JPanel panel =
+        new JPanelBuilder().horizontalAlignmentCenter().add(new JLabel("")).build();
     assertThat(panel.getAlignmentX(), is(JComponent.CENTER_ALIGNMENT));
   }
 
@@ -45,7 +40,8 @@ class JPanelBuilderTest {
 
   @Test
   void defaultLayoutIsFlowLayout() {
-    assertThat(new JPanelBuilder().build().getLayout(), instanceOf(FlowLayout.class));
+    assertThat(
+        new JPanelBuilder().add(new JLabel()).build().getLayout(), instanceOf(FlowLayout.class));
   }
 
   @Test
@@ -66,7 +62,7 @@ class JPanelBuilderTest {
   @Test
   void emptyBorderWithSingleWidth() {
     final int borderWidth = 100;
-    final JPanel panel = new JPanelBuilder().border(borderWidth).build();
+    final JPanel panel = new JPanelBuilder().border(borderWidth).add(new JLabel()).build();
     assertThat(panel.getBorder(), instanceOf(EmptyBorder.class));
     final Insets insets = panel.getBorder().getBorderInsets(panel);
     assertThat(insets.top, is(borderWidth));
@@ -77,7 +73,7 @@ class JPanelBuilderTest {
 
   @Test
   void emptyBorderWithIndependentWidths() {
-    final JPanel panel = new JPanelBuilder().border(1, 2, 3, 4).build();
+    final JPanel panel = new JPanelBuilder().border(1, 2, 3, 4).add(new JLabel()).build();
 
     assertThat(panel.getBorder(), instanceOf(EmptyBorder.class));
 
@@ -92,7 +88,7 @@ class JPanelBuilderTest {
   void addLabel() {
     final String labelText = "abc";
 
-    final JPanel panel = new JPanelBuilder().addLabel(labelText).build();
+    final JPanel panel = new JPanelBuilder().add(new JLabel(labelText)).build();
 
     assertThat(panel.getComponents().length, is(1));
     assertThat(panel.getComponents()[0], instanceOf(JLabel.class));

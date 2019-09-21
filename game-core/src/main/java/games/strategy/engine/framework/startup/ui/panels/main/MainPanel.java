@@ -52,8 +52,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
   private final JPanel gameSetupPanelHolder = new JPanelBuilder().borderLayout().build();
   private final JPanel mainPanel;
   private final JSplitPane chatSplit;
-  private final JPanel chatPanelHolder =
-      new JPanelBuilder().borderLayout().preferredHeight(62).build();
+  private final JPanel chatPanelHolder = new JPanelBuilder().height(62).borderLayout().build();
   private SetupPanel gameSetupPanel;
 
   /**
@@ -111,12 +110,7 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
             .actionListener(GameRunner::quitGame)
             .build();
     final JPanel buttonsPanel =
-        new JPanelBuilder()
-            .borderEtched()
-            .flowLayout(JPanelBuilder.FlowLayoutJustification.CENTER)
-            .add(playButton)
-            .add(quitButton)
-            .build();
+        new JPanelBuilder().borderEtched().add(playButton).add(quitButton).build();
     add(buttonsPanel, BorderLayout.SOUTH);
     setPreferredSize(initialSize);
     setWidgetActivation();

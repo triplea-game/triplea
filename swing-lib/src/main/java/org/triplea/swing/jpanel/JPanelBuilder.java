@@ -1,103 +1,47 @@
 package org.triplea.swing.jpanel;
 
-import com.google.common.base.Preconditions;
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
-import java.util.ArrayList;
-import java.util.Collection;
-import javax.annotation.Nonnull;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
-import lombok.AllArgsConstructor;
-import lombok.ToString;
-import lombok.Value;
 
 /**
- * Example usage:. <code><pre>
+ * Example usage:<br>
+ * <br>
+ * Default layout is a flow layout: <code><pre>
  *   final JPanel panel = new JPanelBuilder()
- *       .gridLayout(2, 1)
- *       .add(new JLabel("")
- *       .add(new JLabel("")
+ *       .addLabel("label")
+ *       .add(new JButton("button"))
  *       .build();
- * </pre></code>
+ *  </pre></code><br>
+ * <br>
+ * Using a grid layout: <code><pre>
+ *   final JPanel panel = new JPanelBuilder()
+ *       .gridLayout()
+ *       .rows(2)
+ *       .columns(1)
+ *       .add(new JLabel(""))
+ *       .add(new JLabel(""))
+ *       .build();
+ * </pre></code><br>
  */
 public class JPanelBuilder {
-
-  @Value
-  private static class PanelComponent {
-    @Nonnull private final Component component;
-    @Nonnull private final PanelProperties panelProperties;
-  }
-
-  private final Collection<PanelComponent> panelComponents = new ArrayList<>();
   private Float horizontalAlignment;
   private Border border;
-  private LayoutManager layout;
-  private BoxLayoutType boxLayoutType = null;
   private Integer preferredHeight;
 
   /**
-   * Constructs a Swing JPanel using current builder values. Values that must be set: (requires no
-   * values to be set)
+   * Constructs JPanel with all properties from JPanelBuilder, in effect this should be everything
+   * minus components placed in their layout.
    */
-  public JPanel build() {
+  JPanel build() {
     final JPanel panel = new JPanel();
-
     panel.setOpaque(false);
-
     if (border != null) {
       panel.setBorder(border);
-    }
-
-    if (layout == null && boxLayoutType != null) {
-      final int boxDirection =
-          boxLayoutType == BoxLayoutType.HORIZONTAL ? BoxLayout.X_AXIS : BoxLayout.Y_AXIS;
-      layout = new BoxLayout(panel, boxDirection);
-    } else if (layout == null) {
-      layout = new FlowLayout();
-    }
-
-    panel.setLayout(layout);
-
-    for (final PanelComponent panelComponent : panelComponents) {
-      final PanelProperties panelProperties = panelComponent.getPanelProperties();
-
-      if (panelProperties.borderLayoutPosition == BorderLayoutPosition.DEFAULT) {
-        panel.add(panelComponent.getComponent());
-      } else {
-        switch (panelProperties.borderLayoutPosition) {
-          case CENTER:
-            panel.add(panelComponent.getComponent(), BorderLayout.CENTER);
-            break;
-          case SOUTH:
-            panel.add(panelComponent.getComponent(), BorderLayout.SOUTH);
-            break;
-          case NORTH:
-            panel.add(panelComponent.getComponent(), BorderLayout.NORTH);
-            break;
-          case WEST:
-            panel.add(panelComponent.getComponent(), BorderLayout.WEST);
-            break;
-          case EAST:
-            panel.add(panelComponent.getComponent(), BorderLayout.EAST);
-            break;
-          default:
-            Preconditions.checkState(layout != null);
-            panel.add(panelComponent.getComponent());
-            break;
-        }
-      }
     }
     if (horizontalAlignment != null) {
       panel.setAlignmentX(horizontalAlignment);
@@ -107,69 +51,6 @@ public class JPanelBuilder {
       panel.setPreferredSize(new Dimension(panel.getWidth(), preferredHeight));
     }
     return panel;
-  }
-
-  /** Sets the layout to {@code GridBagLayout}. */
-  public JPanelBuilder gridBagLayout() {
-    layout = new GridBagLayout();
-    return this;
-  }
-
-  public JPanelBuilder boxLayoutHorizontal() {
-    boxLayoutType = BoxLayoutType.HORIZONTAL;
-    return this;
-  }
-
-  public JPanelBuilder boxLayoutVertical() {
-    boxLayoutType = BoxLayoutType.VERTICAL;
-    return this;
-  }
-
-  /**
-   * Toggles a border layout, adds a given component to the 'north' portion of the border layout.
-   */
-  public JPanelBuilder addNorth(final Component child) {
-    layout = new BorderLayout();
-    Preconditions.checkNotNull(child);
-    panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.NORTH)));
-    return this;
-  }
-
-  /** Toggles a border layout, adds a given component to the 'east' portion of the border layout. */
-  public JPanelBuilder addEast(final Component child) {
-    layout = new BorderLayout();
-    Preconditions.checkNotNull(child);
-    panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.EAST)));
-    return this;
-  }
-
-  /** Toggles a border layout, adds a given component to the 'west' portion of the border layout. */
-  public JPanelBuilder addWest(final Component child) {
-    layout = new BorderLayout();
-    Preconditions.checkNotNull(child);
-    panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.WEST)));
-    return this;
-  }
-
-  /**
-   * Toggles a border layout, adds a given component to the 'center' portion of the border layout.
-   */
-  public JPanelBuilder addCenter(final Component child) {
-    layout = new BorderLayout();
-    panelComponents.add(
-        new PanelComponent(child, new PanelProperties(BorderLayoutPosition.CENTER)));
-    return this;
-  }
-
-  /**
-   * Specify a grid layout with a given number of rows and columns.
-   *
-   * @param rows First parameter for 'new GridLayout'
-   * @param columns Second parameter for 'new GridLayout'
-   */
-  public JPanelBuilder gridLayout(final int rows, final int columns) {
-    layout = new GridLayout(rows, columns);
-    return this;
   }
 
   public JPanelBuilder border(final Border border) {
@@ -197,125 +78,40 @@ public class JPanelBuilder {
     return this;
   }
 
-  public JPanelBuilder flowLayout() {
-    return flowLayout(FlowLayoutJustification.DEFAULT);
-  }
-
-  public JPanelBuilder flowLayout(final FlowLayoutJustification flowLayoutDirection) {
-    layout = flowLayoutDirection.newFlowLayout();
-    return this;
-  }
-
-  /**
-   * Adds {@code component} to the panel and ensures it will be left-justified in the final layout.
-   * Primarily for use with vertical box layouts.
-   */
-  public JPanelBuilder addLeftJustified(final Component component) {
-    final Box box = Box.createHorizontalBox();
-    box.add(component);
-    box.add(Box.createHorizontalGlue());
-    return add(box);
-  }
-
-  public JPanelBuilder add(final Component component) {
-    Preconditions.checkNotNull(component);
-    panelComponents.add(
-        new PanelComponent(component, new PanelProperties(BorderLayoutPosition.DEFAULT)));
-    return this;
-  }
-
-  /** Adds a given component to the southern portion of a border layout. */
-  public JPanelBuilder addSouth(final JComponent child) {
-    layout = new BorderLayout();
-    Preconditions.checkNotNull(child);
-    panelComponents.add(new PanelComponent(child, new PanelProperties(BorderLayoutPosition.SOUTH)));
-    return this;
-  }
-
-  public JPanelBuilder addLabel(final String text) {
-    add(new JLabel(text));
-    return this;
-  }
-
-  /**
-   * use this when you want an empty space component that will take up extra space. For example,
-   * with a gridbag layout with 2 columns, if you have 2 components, the second will be stretched by
-   * default to fill all available space to the right. This right hand component would then resize
-   * with the window. If on the other hand a 3 column grid bag were used and the last element were a
-   * horizontal glue, then the 2nd component would then have a fixed size.
-   */
-  public JPanelBuilder addHorizontalGlue() {
-    add(Box.createHorizontalGlue());
-    return this;
-  }
-
-  public JPanelBuilder addVerticalStrut(final int strutSize) {
-    add(Box.createVerticalStrut(strutSize));
-    return this;
-  }
-
-  public JPanelBuilder addHorizontalStrut(final int strutSize) {
-    add(Box.createHorizontalStrut(strutSize));
-    return this;
-  }
-
-  public JPanelBuilder borderLayout() {
-    layout = new BorderLayout();
-    return this;
-  }
-
-  public JPanelBuilder preferredHeight(final int height) {
+  public JPanelBuilder height(final int height) {
     preferredHeight = height;
     return this;
   }
 
-  /**
-   * BoxLayout needs a reference to the panel component that is using the layout, so we cannot
-   * create the layout until after we create the component. Thus we use a flag to create it, rather
-   * than creating and storing the layout manager directly as we do for the other layouts such as
-   * gridLayout.
-   */
-  private enum BoxLayoutType {
-    NONE,
-    HORIZONTAL,
-    VERTICAL
+  public FlowLayoutBuilder add(final Component component) {
+    return flowLayout().add(component);
   }
 
-  /** Swing border layout locations. */
-  public enum BorderLayoutPosition {
-    DEFAULT,
-    CENTER,
-    SOUTH,
-    NORTH,
-    WEST,
-    EAST
+  public FlowLayoutBuilder flowLayout() {
+    return new FlowLayoutBuilder(this);
   }
 
-  /** Type-safe alias for magic values in {@code FlowLayout}. */
-  @AllArgsConstructor
-  public enum FlowLayoutJustification {
-    DEFAULT(FlowLayout.CENTER),
-
-    CENTER(FlowLayout.CENTER),
-
-    LEFT(FlowLayout.LEFT),
-
-    RIGHT(FlowLayout.RIGHT);
-
-    private final int align;
-
-    FlowLayout newFlowLayout() {
-      return new FlowLayout(align);
-    }
+  public BorderLayoutBuilder borderLayout() {
+    return new BorderLayoutBuilder(this);
   }
 
-  /** Struct-like class for the various properties and styles that can be applied to a panel. */
-  @ToString
-  private static final class PanelProperties {
-    private final BorderLayoutPosition borderLayoutPosition;
+  public GridLayoutBuilder gridLayout(final int rows, final int columns) {
+    return new GridLayoutBuilder(this, rows, columns);
+  }
 
-    PanelProperties(final BorderLayoutPosition borderLayoutPosition) {
-      this.borderLayoutPosition = borderLayoutPosition;
-    }
+  public BoxLayoutBuilder boxLayoutHorizontal() {
+    return new BoxLayoutBuilder(this, BoxLayoutBuilder.BoxLayoutOrientation.HORIZONTAL);
+  }
+
+  public BoxLayoutBuilder boxLayoutVertical() {
+    return new BoxLayoutBuilder(this, BoxLayoutBuilder.BoxLayoutOrientation.VERTICAL);
+  }
+
+  public GridBagLayoutBuilder gridBagLayout() {
+    return new GridBagLayoutBuilder(this);
+  }
+
+  public SimpleGridBagLayoutBuilder gridBagLayout(final int columnCount) {
+    return new SimpleGridBagLayoutBuilder(this, columnCount);
   }
 }
