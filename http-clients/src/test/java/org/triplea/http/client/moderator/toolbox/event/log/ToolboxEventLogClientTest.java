@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClientTesting;
-import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
@@ -43,7 +43,7 @@ class ToolboxEventLogClientTest {
   void lookupModeratorEvents(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
         WireMock.post(ToolboxEventLogClient.AUDIT_HISTORY_PATH)
-            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
+            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalToJson(toJson(PAGING_PARAMS)))
             .willReturn(
                 WireMock.aResponse()

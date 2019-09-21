@@ -16,8 +16,8 @@ import java.util.List;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.http.client.HttpClientTesting;
-import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
 import ru.lanwen.wiremock.ext.WiremockResolver;
 import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
@@ -41,7 +41,7 @@ class ToolboxAccessLogClientTest {
   void sendErrorReportSuccessCase(@WiremockResolver.Wiremock final WireMockServer server) {
     server.stubFor(
         WireMock.post(ToolboxAccessLogClient.FETCH_ACCESS_LOG_PATH)
-            .withHeader(ToolboxHttpHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
+            .withHeader(AuthenticationHeaders.API_KEY_HEADER, equalTo(EXPECTED_API_KEY))
             .withRequestBody(equalToJson(HttpClientTesting.toJson(HttpClientTesting.PAGING_PARAMS)))
             .willReturn(
                 WireMock.aResponse()

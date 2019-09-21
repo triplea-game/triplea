@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.jdbi.v3.core.Jdbi;
-import org.triplea.http.client.moderator.toolbox.ToolboxHttpHeaders;
+import org.triplea.http.client.AuthenticationHeaders;
 import org.triplea.lobby.server.db.JdbiDatabase;
 import org.triplea.lobby.server.db.dao.ApiKeyDao;
 import org.triplea.server.access.ApiKeyAuthenticator;
@@ -114,7 +114,7 @@ public class ServerApplication extends Application<AppConfig> {
                 new OAuthCredentialAuthFilter.Builder<AuthenticatedUser>()
                     .setAuthenticator(buildAuthenticator(metrics, jdbi))
                     .setAuthorizer(new RoleAuthorizer())
-                    .setPrefix(ToolboxHttpHeaders.KEY_BEARER_PREFIX)
+                    .setPrefix(AuthenticationHeaders.KEY_BEARER_PREFIX)
                     .buildAuthFilter()));
     environment.jersey().register(new AuthValueFactoryProvider.Binder<>(AuthenticatedUser.class));
   }
