@@ -45,7 +45,7 @@ public class ModeratorsController {
   @Path(ToolboxModeratorManagementClient.IS_SUPER_MOD_PATH)
   @RolesAllowed(UserRole.MODERATOR)
   public Response isSuperMod(@Auth final AuthenticatedUser authenticatedUser) {
-    return Response.ok().entity(authenticatedUser.isAdmin()).build();
+    return Response.ok().entity(authenticatedUser.getUserRole().equals(UserRole.ADMIN)).build();
   }
 
   @POST
@@ -53,7 +53,7 @@ public class ModeratorsController {
   @RolesAllowed(UserRole.ADMIN)
   public Response removeMod(
       @Auth final AuthenticatedUser authenticatedUser, final String moderatorName) {
-    moderatorsService.removeMod(authenticatedUser.getUserId(), moderatorName);
+    moderatorsService.removeMod(authenticatedUser.getUserIdOrThrow(), moderatorName);
     return Response.ok().build();
   }
 
@@ -62,7 +62,7 @@ public class ModeratorsController {
   @RolesAllowed(UserRole.ADMIN)
   public Response setSuperMod(
       @Auth final AuthenticatedUser authenticatedUser, final String moderatorName) {
-    moderatorsService.addSuperMod(authenticatedUser.getUserId(), moderatorName);
+    moderatorsService.addSuperMod(authenticatedUser.getUserIdOrThrow(), moderatorName);
     return Response.ok().build();
   }
 
@@ -71,7 +71,7 @@ public class ModeratorsController {
   @RolesAllowed(UserRole.ADMIN)
   public Response addModerator(
       @Auth final AuthenticatedUser authenticatedUser, final String username) {
-    moderatorsService.addModerator(authenticatedUser.getUserId(), username);
+    moderatorsService.addModerator(authenticatedUser.getUserIdOrThrow(), username);
     return Response.ok().build();
   }
 }

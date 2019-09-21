@@ -36,7 +36,7 @@ public class BadWordsController {
   public Response removeBadWord(
       @Auth final AuthenticatedUser authenticatedUser, final String word) {
     Preconditions.checkArgument(word != null && !word.isEmpty());
-    return badWordsService.removeBadWord(authenticatedUser.getUserId(), word)
+    return badWordsService.removeBadWord(authenticatedUser.getUserIdOrThrow(), word)
         ? Response.ok().build()
         : Response.status(400)
             .entity(word + " was not removed, it may already have been deleted")
@@ -52,7 +52,7 @@ public class BadWordsController {
   @Path(ToolboxBadWordsClient.BAD_WORD_ADD_PATH)
   public Response addBadWord(@Auth final AuthenticatedUser authenticatedUser, final String word) {
     Preconditions.checkArgument(word != null && !word.isEmpty());
-    return badWordsService.addBadWord(authenticatedUser.getUserId(), word)
+    return badWordsService.addBadWord(authenticatedUser.getUserIdOrThrow(), word)
         ? Response.ok().build()
         : Response.status(400)
             .entity(word + " was not added, it may already have been added")
