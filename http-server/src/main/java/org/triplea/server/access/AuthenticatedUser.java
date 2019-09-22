@@ -18,7 +18,7 @@ import org.triplea.lobby.server.db.data.UserRole;
 public class AuthenticatedUser implements Principal {
   @Getter @Nullable private final Integer userId;
   @Getter @Nonnull private final String userRole;
-  @Getter @Nullable private final String apiKey;
+  @Getter @Nullable private final ApiKey apiKey;
 
   @Override
   public String getName() {

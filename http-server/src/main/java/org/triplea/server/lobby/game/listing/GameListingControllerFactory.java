@@ -1,5 +1,6 @@
 package org.triplea.server.lobby.game.listing;
 
+import com.google.common.cache.CacheBuilder;
 import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,7 @@ public final class GameListingControllerFactory {
         .gameListing(
             GameListing.builder()
                 .auditHistoryDao(jdbi.onDemand(ModeratorAuditHistoryDao.class))
-                .gameReaper(new GameReaper(10, TimeUnit.SECONDS))
-                // TODO: Project#12 Wire game remove/update listeners
-                .gameRemoveListener(game -> {})
-                .gameUpdateListener(game -> {})
+                .games(CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build())
                 .build())
         .build();
   }
