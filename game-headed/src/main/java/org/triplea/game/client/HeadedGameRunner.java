@@ -58,7 +58,7 @@ public final class HeadedGameRunner {
     ArgParser.handleCommandLineArgs(args);
 
     if (SystemProperties.isMac()) {
-      MacOsIntegration.addOpenUriHandler(
+      MacOsIntegration.setOpenUriHandler(
           uri -> {
             final String mapName =
                 URLDecoder.decode(
@@ -67,7 +67,7 @@ public final class HeadedGameRunner {
             SwingUtilities.invokeLater(
                 () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
           });
-      MacOsIntegration.addOpenFilesHandler(
+      MacOsIntegration.setOpenFilesHandler(
           list ->
               list.stream()
                   .findAny()

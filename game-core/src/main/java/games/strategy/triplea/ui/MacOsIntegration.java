@@ -14,25 +14,26 @@ import lombok.extern.java.Log;
 public final class MacOsIntegration {
   private MacOsIntegration() {}
 
-  /** Adds the specified about handler to the application. */
-  public static void addAboutHandler(final Runnable handler) {
+  /** Sets the specified about handler to the application. */
+  public static void setAboutHandler(final Runnable handler) {
     checkNotNull(handler);
     Desktop.getDesktop().setAboutHandler(aboutEvent -> handler.run());
   }
 
-  /** Adds the specified open URI handler to the application. */
-  public static void addOpenUriHandler(final Consumer<URI> handler) {
+  /** Sets the specified open URI handler to the application. */
+  public static void setOpenUriHandler(final Consumer<URI> handler) {
     checkNotNull(handler);
     Desktop.getDesktop().setOpenURIHandler(openURIEvent -> handler.accept(openURIEvent.getURI()));
   }
 
-  public static void addOpenFilesHandler(final Consumer<List<File>> handler) {
+  /** Sets the specified open files handler to the application. */
+  public static void setOpenFilesHandler(final Consumer<List<File>> handler) {
     checkNotNull(handler);
     Desktop.getDesktop().setOpenFileHandler(event -> handler.accept(event.getFiles()));
   }
 
-  /** Adds the specified quit handler to the application. */
-  public static void addQuitHandler(final Runnable handler) {
+  /** Sets the specified quit handler to the application. */
+  public static void setQuitHandler(final Runnable handler) {
     checkNotNull(handler);
     Desktop.getDesktop().setQuitHandler((quitEvent, quitResponse) -> handler.run());
   }
