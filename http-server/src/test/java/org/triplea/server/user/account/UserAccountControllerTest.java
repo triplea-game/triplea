@@ -37,22 +37,22 @@ class UserAccountControllerTest {
   void changePassword() {
     userAccountController.changePassword(AUTHENTICATED_USER, NEW_PASSWORD);
 
-    verify(userAccountService).changePassword(AUTHENTICATED_USER.getUserId(), NEW_PASSWORD);
+    verify(userAccountService).changePassword(AUTHENTICATED_USER.getUserIdOrThrow(), NEW_PASSWORD);
   }
 
   @Test
   void fetchEmail() {
-    when(userAccountService.fetchEmail(AUTHENTICATED_USER.getUserId())).thenReturn(EMAIL);
+    when(userAccountService.fetchEmail(AUTHENTICATED_USER.getUserIdOrThrow())).thenReturn(EMAIL);
 
     final FetchEmailResponse response = userAccountController.fetchEmail(AUTHENTICATED_USER);
 
-    assertThat(response.getUserEmail(), is(EMAIL));
+    assertThat(response, is(new FetchEmailResponse(EMAIL)));
   }
 
   @Test
   void changeEmail() {
     userAccountController.changeEmail(AUTHENTICATED_USER, EMAIL);
 
-    verify(userAccountService).changeEmail(AUTHENTICATED_USER.getUserId(), EMAIL);
+    verify(userAccountService).changeEmail(AUTHENTICATED_USER.getUserIdOrThrow(), EMAIL);
   }
 }
