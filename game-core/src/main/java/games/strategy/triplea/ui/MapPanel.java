@@ -640,8 +640,8 @@ public class MapPanel extends ImageScrollerLargeView {
     g2d.clip(new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight()));
     final boolean fittingWidth = mapWidthFitsOnScreen();
     final boolean fittingHeight = mapHeightFitsOnScreen();
-    int x = fittingWidth ? 0 : model.getX();
-    int y = fittingHeight ? 0 : model.getY();
+    int x = getXOffset();
+    int y = getYOffset();
     final List<Tile> images = new ArrayList<>();
     final List<Tile> undrawnTiles = new ArrayList<>();
     // make sure we use the same data for the entire paint
@@ -739,6 +739,16 @@ public class MapPanel extends ImageScrollerLargeView {
                   }
                   SwingUtilities.invokeLater(MapPanel.this::repaint);
                 }));
+  }
+
+  @Override
+  public int getXOffset() {
+    return mapWidthFitsOnScreen() ? 0 : model.getX();
+  }
+
+  @Override
+  public int getYOffset() {
+    return mapHeightFitsOnScreen() ? 0 : model.getY();
   }
 
   private void clearPendingDrawOperations() {
