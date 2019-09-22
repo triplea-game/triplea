@@ -7,6 +7,7 @@ import games.strategy.debug.ErrorMessage;
 import games.strategy.debug.LoggerManager;
 import games.strategy.debug.console.window.ConsoleConfiguration;
 import games.strategy.engine.framework.ArgParser;
+import games.strategy.engine.framework.CliProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -66,6 +67,15 @@ public final class HeadedGameRunner {
             SwingUtilities.invokeLater(
                 () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
           });
+      MacOsIntegration.addOpenFilesHandler(
+          list ->
+              list.stream()
+                  .findAny()
+                  .ifPresent(
+                      file -> {
+                        System.setProperty(CliProperties.TRIPLEA_GAME, file.getAbsolutePath());
+                        GameRunner.showMainFrame();
+                      }));
     }
 
     if (HttpProxy.isUsingSystemProxy()) {

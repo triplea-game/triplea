@@ -3,7 +3,9 @@ package games.strategy.triplea.ui;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.net.URI;
+import java.util.List;
 import java.util.function.Consumer;
 import lombok.extern.java.Log;
 
@@ -22,6 +24,11 @@ public final class MacOsIntegration {
   public static void addOpenUriHandler(final Consumer<URI> handler) {
     checkNotNull(handler);
     Desktop.getDesktop().setOpenURIHandler(openURIEvent -> handler.accept(openURIEvent.getURI()));
+  }
+
+  public static void addOpenFilesHandler(final Consumer<List<File>> handler) {
+    checkNotNull(handler);
+    Desktop.getDesktop().setOpenFileHandler(event -> handler.accept(event.getFiles()));
   }
 
   /** Adds the specified quit handler to the application. */
