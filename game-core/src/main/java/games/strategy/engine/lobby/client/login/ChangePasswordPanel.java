@@ -1,5 +1,6 @@
 package games.strategy.engine.lobby.client.login;
 
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -8,16 +9,19 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.util.Arrays;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import org.triplea.swing.DocumentListenerBuilder;
+import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.SwingComponents;
 
 /** Panel dedicated to changing password after user has logged in with a temporary password. */
@@ -28,6 +32,8 @@ public final class ChangePasswordPanel extends JPanel {
   private final JPasswordField passwordField = new JPasswordField();
   private final JPasswordField passwordConfirmField = new JPasswordField();
   private final JButton okButton = new JButton("OK");
+  private final JCheckBox rememberPassword =
+      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberLoginPassword).build();
 
   private ChangePasswordPanel() {
     layoutComponents();
@@ -109,6 +115,20 @@ public final class ChangePasswordPanel extends JPanel {
             new Insets(5, 5, 0, 0),
             0,
             0));
+    main.add(
+        rememberPassword,
+        new GridBagConstraints(
+            0,
+            2,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL,
+            new Insets(5, 5, 0, 0),
+            0,
+            0));
 
     final JPanel buttons = new JPanel();
     add(buttons, BorderLayout.SOUTH);
@@ -137,7 +157,7 @@ public final class ChangePasswordPanel extends JPanel {
 
   private boolean validatePasswords() {
     return Arrays.equals(passwordField.getPassword(), passwordConfirmField.getPassword())
-        && passwordField.getPassword().length > 2;
+        && passwordField.getPassword().length > 4;
   }
 
   /**
@@ -146,8 +166,7 @@ public final class ChangePasswordPanel extends JPanel {
    * @param parent The dialog parent window.
    * @return New password entered by user, otherwise null if the window is closed.
    */
-  @Nullable
-  public String show(final Window parent) {
+  public Optional<String> show(final Window parent) {
     dialog = new JDialog(JOptionPane.getFrameForComponent(parent), title, true);
     dialog.getContentPane().add(this);
     SwingComponents.addEscapeKeyListener(dialog, this::close);
@@ -156,6 +175,16 @@ public final class ChangePasswordPanel extends JPanel {
     dialog.setVisible(true);
     dialog.dispose();
     dialog = null;
-    return validatePasswords() ? String.valueOf(passwordField.getPassword()) : null;
+    if (!validatePasswords()) {
+      return Optional.empty();
+    }
+
+    final char[] password = passwordField.getPassword();
+    if (rememberPassword.isSelected()) {
+      ClientSetting.lobbySavedPassword.setValueAndFlush(password);
+    } else {
+      ClientSetting.lobbySavedPassword.resetValue();
+    }
+    return Optional.of(String.valueOf(password));
   }
 }

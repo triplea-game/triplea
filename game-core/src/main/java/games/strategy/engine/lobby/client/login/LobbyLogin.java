@@ -57,7 +57,6 @@ public class LobbyLogin {
                           : ClientMessengerFactory.newRegisteredUserMessenger(
                               lobbyServerProperties, panel.getUserName(), panel.getPassword()),
                   IOException.class);
-      panel.getLobbyLoginPreferences().save();
       return new LobbyClient(
           messenger,
           HttpLobbyClient.newClient(
@@ -85,7 +84,7 @@ public class LobbyLogin {
   }
 
   private @Nullable LobbyClient loginToServer() {
-    final LoginPanel loginPanel = new LoginPanel(LobbyLoginPreferences.load());
+    final LoginPanel loginPanel = new LoginPanel();
     final LoginPanel.ReturnValue returnValue = loginPanel.show(parentWindow);
     switch (returnValue) {
       case LOGON:
@@ -128,7 +127,6 @@ public class LobbyLogin {
                           panel.getEmail(),
                           panel.getPassword()),
                   IOException.class);
-      panel.getLobbyLoginPreferences().save();
       return new LobbyClient(
           messenger,
           HttpLobbyClient.newClient(

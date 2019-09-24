@@ -85,7 +85,7 @@ public final class Util {
   public static Image getBanner(final String text) {
     // code stolen from swingx
     // swingx is lgpl, so no problems with copyright
-    final int w = 400;
+    final int w = 530;
     final int h = 60;
     final BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     final Graphics2D g2 = img.createGraphics();

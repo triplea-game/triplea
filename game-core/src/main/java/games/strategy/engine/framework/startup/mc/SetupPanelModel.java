@@ -120,7 +120,8 @@ public class SetupPanelModel implements ServerSetupModel {
               lobbyFrame.setVisible(true);
 
               if (lobbyClient.isPasswordChangeRequired()) {
-                Optional.ofNullable(ChangePasswordPanel.newChangePasswordPanel().show(lobbyFrame))
+                ChangePasswordPanel.newChangePasswordPanel()
+                    .show(lobbyFrame)
                     .map(RsaAuthenticator::hashPasswordWithSalt)
                     .ifPresentOrElse(
                         pass -> {

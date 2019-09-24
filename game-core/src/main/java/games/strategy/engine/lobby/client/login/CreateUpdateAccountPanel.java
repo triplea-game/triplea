@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import games.strategy.engine.lobby.PlayerEmailValidation;
 import games.strategy.engine.lobby.PlayerNameValidation;
+import games.strategy.triplea.settings.ClientSetting;
 import games.strategy.ui.Util;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -23,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import org.triplea.swing.JCheckBoxBuilder;
 import org.triplea.swing.SwingComponents;
 
 /** The panel used to create a new lobby account or update an existing lobby account. */
@@ -41,7 +43,8 @@ public final class CreateUpdateAccountPanel extends JPanel {
   private final JTextField emailField = new JTextField();
   private final JPasswordField passwordField = new JPasswordField();
   private final JPasswordField passwordConfirmField = new JPasswordField();
-  private final JCheckBox credentialsSavedCheckBox = new JCheckBox("Remember me");
+  private final JCheckBox rememberPasswordCheckbox =
+      new JCheckBoxBuilder("Remember Password").bind(ClientSetting.rememberLoginPassword).build();
   private final JButton okButton = new JButton("OK");
   private final JButton cancelButton = new JButton("Cancel");
   private ReturnValue returnValue = ReturnValue.CANCEL;
@@ -59,22 +62,16 @@ public final class CreateUpdateAccountPanel extends JPanel {
    *
    * @param username The lobby account username to update.
    * @param email The lobby account email to update.
-   * @param lobbyLoginPreferences The user's lobby login preferences.
    * @return A new {@code CreateUpdateAccountPanel}.
    */
-  public static CreateUpdateAccountPanel newUpdatePanel(
-      final String username,
-      final String email,
-      final LobbyLoginPreferences lobbyLoginPreferences) {
+  public static CreateUpdateAccountPanel newUpdatePanel(final String username, final String email) {
     checkNotNull(username);
     checkNotNull(email);
-    checkNotNull(lobbyLoginPreferences);
 
     final CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(false);
     panel.usernameField.setText(username);
     panel.usernameField.setEnabled(false);
     panel.emailField.setText(email);
-    panel.credentialsSavedCheckBox.setSelected(lobbyLoginPreferences.credentialsSaved);
     return panel;
   }
 
@@ -84,7 +81,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
    *
    * @return A new {@code CreateUpdateAccountPanel}.
    */
-  public static CreateUpdateAccountPanel newCreatePanel() {
+  static CreateUpdateAccountPanel newCreatePanel() {
     return new CreateUpdateAccountPanel(true);
   }
 
@@ -224,7 +221,7 @@ public final class CreateUpdateAccountPanel extends JPanel {
             0,
             0));
     main.add(
-        credentialsSavedCheckBox,
+        rememberPasswordCheckbox,
         new GridBagConstraints(
             1,
             4,
@@ -321,16 +318,11 @@ public final class CreateUpdateAccountPanel extends JPanel {
     return new String(passwordField.getPassword());
   }
 
-  public String getEmail() {
+  String getEmail() {
     return emailField.getText();
   }
 
   public String getUserName() {
     return usernameField.getText();
-  }
-
-  public LobbyLoginPreferences getLobbyLoginPreferences() {
-    return new LobbyLoginPreferences(
-        getUserName(), getPassword(), credentialsSavedCheckBox.isSelected(), false);
   }
 }
