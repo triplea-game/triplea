@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
-import java.util.List;
 import java.util.function.Consumer;
 import lombok.extern.java.Log;
 
@@ -26,10 +25,15 @@ public final class MacOsIntegration {
     Desktop.getDesktop().setOpenURIHandler(openURIEvent -> handler.accept(openURIEvent.getURI()));
   }
 
-  /** Sets the specified open files handler to the application. */
-  public static void setOpenFilesHandler(final Consumer<List<File>> handler) {
+  /**
+   * Sets the specified open file handler to the application. Note that while the API technically
+   * allows for multiple files to be opened at once this doesn't make sense for currently existing
+   * use-cases. Therefore this feature can't be accessed via this wrapper.
+   */
+  public static void setOpenFileHandler(final Consumer<File> handler) {
     checkNotNull(handler);
-    Desktop.getDesktop().setOpenFileHandler(event -> handler.accept(event.getFiles()));
+    Desktop.getDesktop()
+        .setOpenFileHandler(event -> event.getFiles().stream().findAny().ifPresent(handler));
   }
 
   /** Sets the specified quit handler to the application. */

@@ -67,15 +67,11 @@ public final class HeadedGameRunner {
             SwingUtilities.invokeLater(
                 () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
           });
-      MacOsIntegration.setOpenFilesHandler(
-          list ->
-              list.stream()
-                  .findAny()
-                  .ifPresent(
-                      file -> {
-                        System.setProperty(CliProperties.TRIPLEA_GAME, file.getAbsolutePath());
-                        GameRunner.showMainFrame();
-                      }));
+      MacOsIntegration.setOpenFileHandler(
+          file -> {
+            System.setProperty(CliProperties.TRIPLEA_GAME, file.getAbsolutePath());
+            GameRunner.showMainFrame();
+          });
     }
 
     if (HttpProxy.isUsingSystemProxy()) {
