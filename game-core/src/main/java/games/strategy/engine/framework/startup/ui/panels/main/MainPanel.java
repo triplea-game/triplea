@@ -149,7 +149,12 @@ public class MainPanel extends JPanel implements Observer, Consumer<SetupPanel> 
 
     Optional.ofNullable(panel.getChatModel())
         .flatMap(ChatModel::getViewComponent)
-        .ifPresent(this::addChat);
+        .ifPresentOrElse(
+            this::addChat,
+            () -> {
+              remove(chatSplit);
+              add(mainPanel);
+            });
 
     revalidate();
   }
