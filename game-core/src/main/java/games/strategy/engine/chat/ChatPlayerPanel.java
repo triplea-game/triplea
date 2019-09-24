@@ -226,11 +226,10 @@ public class ChatPlayerPanel extends JPanel implements IChatListener {
   }
 
   @Override
-  public void addMessageWithSound(
-      final String message, final String from, final boolean thirdPerson, final String sound) {}
+  public void addMessageWithSound(final String message, final String from, final String sound) {}
 
   @Override
-  public void addMessage(final String message, final String from, final boolean thirdPerson) {}
+  public void addMessage(final String message, final String from) {}
 
   private String getDisplayString(final INode node) {
     if (chat == null) {

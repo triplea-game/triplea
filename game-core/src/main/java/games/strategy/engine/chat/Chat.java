@@ -67,27 +67,13 @@ public class Chat {
             return;
           }
           synchronized (mutexNodes) {
-            chatHistory.add(new ChatMessage(message, from.getName(), false));
+            chatHistory.add(new ChatMessage(message, from.getName()));
             for (final IChatListener listener : listeners) {
-              listener.addMessage(message, from.getName(), false);
+              listener.addMessage(message, from.getName());
             }
             // limit the number of messages in our history.
             while (chatHistory.size() > 1000) {
               chatHistory.remove(0);
-            }
-          }
-        }
-
-        @Override
-        public void meMessageOccurred(final String message) {
-          final INode from = MessageContext.getSender();
-          if (isIgnored(from)) {
-            return;
-          }
-          synchronized (mutexNodes) {
-            chatHistory.add(new ChatMessage(message, from.getName(), true));
-            for (final IChatListener listener : listeners) {
-              listener.addMessage(message, from.getName(), true);
             }
           }
         }
@@ -132,15 +118,6 @@ public class Chat {
         }
 
         @Override
-        public void speakerTagUpdated(final INode node, final Tag tag) {
-          synchronized (mutexNodes) {
-            notesMap.remove(node);
-            addToNotesMap(node, tag);
-            updateConnections();
-          }
-        }
-
-        @Override
         public void slapOccurred(final String to) {
           final INode from = MessageContext.getSender();
           if (isIgnored(from)) {
@@ -157,8 +134,8 @@ public class Chat {
 
         private void handleSlap(final String message, final INode from) {
           for (final IChatListener listener : listeners) {
-            chatHistory.add(new ChatMessage(message, from.getName(), false));
-            listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_CHAT_SLAP);
+            chatHistory.add(new ChatMessage(message, from.getName()));
+            listener.addMessageWithSound(message, from.getName(), SoundPath.CLIP_CHAT_SLAP);
           }
         }
 
@@ -303,15 +280,11 @@ public class Chat {
     remote.slapOccurred(playerName);
   }
 
-  public void sendMessage(final String message, final boolean meMessage) {
+  public void sendMessage(final String message) {
     final IChatChannel remote =
         (IChatChannel)
             messengers.getChannelBroadcaster(new RemoteName(chatChannelName, IChatChannel.class));
-    if (meMessage) {
-      remote.meMessageOccurred(message);
-    } else {
-      remote.chatOccurred(message);
-    }
+    remote.chatOccurred(message);
     sentMessages.append(message);
   }
 

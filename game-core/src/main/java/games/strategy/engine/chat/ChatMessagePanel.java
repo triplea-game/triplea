@@ -43,7 +43,6 @@ import org.triplea.swing.SwingAction;
  */
 @Log
 public class ChatMessagePanel extends JPanel implements IChatListener {
-  public static final String ME = "/me ";
   private static final long serialVersionUID = 118727200083595226L;
   private static final int MAX_LINES = 5000;
 
@@ -80,10 +79,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     setChat(chat);
   }
 
-  private static boolean isThirdPerson(final String msg) {
-    return msg.toLowerCase().startsWith(ME);
-  }
-
   private void init() {
     createComponents();
     layoutComponents();
@@ -114,8 +109,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
                     synchronized (chat.getMutex()) {
                       text.setText("");
                       for (final ChatMessage message : chat.getChatHistory()) {
-                        addChatMessage(
-                            message.getMessage(), message.getFrom(), message.isMyMessage());
+                        addChatMessage(message.getMessage(), message.getFrom());
                       }
                     }
                   } else {
@@ -236,14 +230,13 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   /** thread safe. */
   @Override
-  public void addMessage(final String message, final String from, final boolean thirdPerson) {
-    addMessageWithSound(message, from, thirdPerson, SoundPath.CLIP_CHAT_MESSAGE);
+  public void addMessage(final String message, final String from) {
+    addMessageWithSound(message, from, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
   /** thread safe. */
   @Override
-  public void addMessageWithSound(
-      final String message, final String from, final boolean thirdPerson, final String sound) {
+  public void addMessageWithSound(final String message, final String from, final String sound) {
     SwingAction.invokeNowOrLater(
         () -> {
           if (from == null
@@ -255,12 +248,11 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
           }
           if (!floodControl.allow(from, System.currentTimeMillis())) {
             if (from.equals(chat.getLocalNode().getName())) {
-              addChatMessage(
-                  "MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
+              addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL");
             }
             return;
           }
-          addChatMessage(message, from, thirdPerson);
+          addChatMessage(message, from);
           SwingUtilities.invokeLater(
               () -> {
                 final BoundedRangeModel scrollModel = scrollPane.getVerticalScrollBar().getModel();
@@ -270,8 +262,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
         });
   }
 
-  private void addChatMessage(
-      final String originalMessage, final String from, final boolean thirdPerson) {
+  private void addChatMessage(final String originalMessage, final String from) {
     // we don't want to truncate messages from the server as those may be logs with accompanying
     // stack traces
     final String message =
@@ -281,13 +272,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final Document doc = text.getDocument();
     try {
-      if (thirdPerson) {
-        doc.insertString(
-            doc.getLength(), (showTime ? "* " + time + " " + from : "* " + from), bold);
-      } else {
-        doc.insertString(
-            doc.getLength(), (showTime ? time + " " + from + ": " : from + ": "), bold);
-      }
+      doc.insertString(doc.getLength(), (showTime ? time + " " + from + ": " : from + ": "), bold);
       doc.insertString(doc.getLength(), " " + message + "\n", normal);
       // don't let the chat get too big
       trimLines(doc, MAX_LINES);
@@ -360,11 +345,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     if (nextMessage.getText().trim().length() == 0) {
       return;
     }
-    if (isThirdPerson(nextMessage.getText())) {
-      chat.sendMessage(nextMessage.getText().substring(ME.length()), true);
-    } else {
-      chat.sendMessage(nextMessage.getText(), false);
-    }
+    chat.sendMessage(nextMessage.getText());
     nextMessage.setText("");
   }
 
