@@ -112,11 +112,12 @@ class GameListingTest {
     @Test
     void gameExists() {
       when(cache.getIfPresent(ID_0)).thenReturn(lobbyGame0);
+      final Map<GameListing.GameId, LobbyGame> map = new HashMap<>();
+      map.put(ID_0, lobbyGame0);
+      when(cache.asMap()).thenReturn(new ConcurrentHashMap<>(map));
 
       final boolean result = gameListing.keepAlive(API_KEY_0, GAME_ID_0);
       assertThat("Game found, keep alive should return true", result, is(true));
-
-      verify(cache).put(ID_0, lobbyGame0);
     }
   }
 
@@ -145,7 +146,7 @@ class GameListingTest {
   final class UpdateGame {
     @Test
     void updateGameThatDoesNotExist() {
-      when(cache.getIfPresent(ID_0)).thenReturn(null);
+      when(cache.asMap()).thenReturn(new ConcurrentHashMap<>());
 
       final boolean result = gameListing.updateGame(API_KEY_0, GAME_ID_0, lobbyGame0);
 
@@ -155,12 +156,13 @@ class GameListingTest {
 
     @Test
     void updateGameThatDoesExist() {
-      when(cache.getIfPresent(ID_0)).thenReturn(lobbyGame1);
+      final Map<GameListing.GameId, LobbyGame> map = new HashMap<>();
+      map.put(ID_0, lobbyGame1);
+      when(cache.asMap()).thenReturn(new ConcurrentHashMap<>(map));
 
       final boolean result = gameListing.updateGame(API_KEY_0, GAME_ID_0, lobbyGame0);
 
       assertThat(result, is(true));
-      verify(cache).put(ID_0, lobbyGame0);
     }
   }
 
