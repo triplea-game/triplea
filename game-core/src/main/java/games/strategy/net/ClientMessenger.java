@@ -269,11 +269,6 @@ public class ClientMessenger implements IClientMessenger, NioSocketListener {
   }
 
   @Override
-  public InetSocketAddress getRemoteServerSocketAddress() {
-    return (InetSocketAddress) socketChannel.socket().getRemoteSocketAddress();
-  }
-
-  @Override
   public void addConnectionChangeListener(final IConnectionChangeListener listener) {}
 
   @Override

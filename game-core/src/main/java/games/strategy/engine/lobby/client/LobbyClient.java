@@ -64,14 +64,6 @@ public class LobbyClient {
     return messengers.getLocalNode().getName();
   }
 
-  public String getLobbyHostAddress() {
-    return messengers.getRemoteServerSocketAddress().getAddress().getHostAddress();
-  }
-
-  public int getLobbyPort() {
-    return messengers.getRemoteServerSocketAddress().getPort();
-  }
-
   public IModeratorController getModeratorController() {
     return (IModeratorController) messengers.getRemote(IModeratorController.REMOTE_NAME);
   }

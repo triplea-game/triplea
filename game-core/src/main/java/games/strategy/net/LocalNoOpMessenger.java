@@ -3,7 +3,6 @@ package games.strategy.net;
 import games.strategy.engine.lobby.ApiKey;
 import games.strategy.engine.lobby.PlayerName;
 import java.io.Serializable;
-import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Set;
 import java.util.function.Function;
@@ -49,11 +48,6 @@ public class LocalNoOpMessenger implements IServerMessenger {
   @Override
   public INode getServerNode() {
     return node;
-  }
-
-  @Override
-  public InetSocketAddress getRemoteServerSocketAddress() {
-    return null;
   }
 
   @Override

@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
+import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_NAME;
@@ -189,8 +190,10 @@ public class InGameLobbyWatcher {
     Preconditions.checkNotNull(handler);
     final @Nullable String host = getLobbySystemProperty(LOBBY_HOST);
     final @Nullable String port = getLobbySystemProperty(LOBBY_PORT);
+    final @Nullable String httpsPort = getLobbySystemProperty(LOBBY_HTTPS_PORT);
+    // TODO: Project#12 use https port
     final @Nullable String hostedBy = getLobbySystemProperty(TRIPLEA_NAME);
-    if (host == null || port == null) {
+    if (host == null || port == null || httpsPort == null) {
       return null;
     }
 

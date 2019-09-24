@@ -3,6 +3,7 @@ package org.triplea.game.server;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_SUPPORT_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
+import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.MAP_FOLDER;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_GAME;
@@ -565,6 +566,9 @@ public class HeadlessGameServer {
             + "   "
             + LOBBY_PORT
             + "=<LOBBY_PORT>\n"
+            + "   "
+            + LOBBY_HTTPS_PORT
+            + "=<LOBBY_HTTPS_PORT>\n"
             + "   "
             + LOBBY_GAME_SUPPORT_PASSWORD
             + "=<password for remote actions, such as remote stop game>\n"

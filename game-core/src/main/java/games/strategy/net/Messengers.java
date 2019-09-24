@@ -13,7 +13,6 @@ import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.message.unifiedmessenger.UnifiedMessenger;
 import java.io.Serializable;
-import java.net.InetSocketAddress;
 import lombok.ToString;
 
 /** Convenience grouping of a messenger, remote messenger and channel messenger. */
@@ -152,11 +151,6 @@ public class Messengers implements IMessenger, IRemoteMessenger, IChannelMesseng
   @Override
   public INode getServerNode() {
     return messenger.getServerNode();
-  }
-
-  @Override
-  public InetSocketAddress getRemoteServerSocketAddress() {
-    return messenger.getRemoteServerSocketAddress();
   }
 
   @Override
