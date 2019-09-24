@@ -63,16 +63,11 @@ class GameListing {
     return gameId;
   }
 
-  /** Adds or updates a game. If game is updated, emits a game update event. */
+  /** Adds or updates a game. Returns true if game is updated, false if game was not found. */
   boolean updateGame(final ApiKey apiKey, final String gameId, final LobbyGame lobbyGame) {
-    final GameId listedGameId = new GameId(apiKey, gameId);
-    return Optional.ofNullable(games.getIfPresent(listedGameId))
-        .map(
-            game -> {
-              games.put(listedGameId, lobbyGame);
-              return true;
-            })
-        .orElse(false);
+    final var listedGameId = new GameId(apiKey, gameId);
+    final var existingValue = games.asMap().replace(listedGameId, lobbyGame);
+    return existingValue != null;
   }
 
   void removeGame(final ApiKey apiKey, final String gameId) {
