@@ -12,6 +12,7 @@ import games.strategy.triplea.xml.TestMapGameData;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -85,6 +86,15 @@ class TerritoryEffectHelperTest extends AbstractDelegateTestCase {
     assertThat(
         "Expect German units to have 2 movement cost as that is max across all units",
         result.compareTo(new BigDecimal("2")),
+        is(0));
+  }
+
+  @Test
+  void testGetMaxMovementCostForNoUnits() throws Exception {
+    final BigDecimal result = TerritoryEffectHelper.getMaxMovementCost(sicily, Set.of());
+    assertThat(
+        "Expect 1 movement cost when no units are passed in",
+        result.compareTo(BigDecimal.ONE),
         is(0));
   }
 }
