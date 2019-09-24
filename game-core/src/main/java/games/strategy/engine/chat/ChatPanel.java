@@ -31,15 +31,14 @@ public class ChatPanel extends JPanel implements ChatModel {
     setSize(300, 200);
     chatPlayerPanel = new ChatPlayerPanel(chat);
     chatMessagePanel = new ChatMessagePanel(chat);
-    final Container content = this;
-    content.setLayout(new BorderLayout());
+    setLayout(new BorderLayout());
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     split.setLeftComponent(chatMessagePanel);
     split.setRightComponent(chatPlayerPanel);
     split.setOneTouchExpandable(false);
     split.setDividerSize(DIVIDER_SIZE);
     split.setResizeWeight(1);
-    content.add(split, BorderLayout.CENTER);
+    add(split, BorderLayout.CENTER);
   }
 
   /**
