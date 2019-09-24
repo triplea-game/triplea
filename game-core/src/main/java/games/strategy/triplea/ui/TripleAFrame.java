@@ -2518,10 +2518,6 @@ public final class TripleAFrame extends JFrame implements KeyBindingSupplier {
     return game;
   }
 
-  public void setShowChatTime(final boolean showTime) {
-    chatPanel.setShowChatTime(showTime);
-  }
-
   public Optional<InGameLobbyWatcherWrapper> getInGameLobbyWatcher() {
     return ServerGame.class.isAssignableFrom(getGame().getClass())
         ? Optional.ofNullable(((ServerGame) getGame()).getInGameLobbyWatcher())

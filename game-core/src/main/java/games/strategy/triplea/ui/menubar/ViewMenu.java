@@ -468,12 +468,12 @@ final class ViewMenu extends JMenu {
   }
 
   private void addChatTimeMenu() {
-    final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
-    chatTimeBox.setMnemonic(KeyEvent.VK_T);
-    chatTimeBox.addActionListener(e -> frame.setShowChatTime(chatTimeBox.isSelected()));
-    chatTimeBox.setSelected(false);
-    add(chatTimeBox);
-    chatTimeBox.setEnabled(frame.hasChat());
+    if (frame.hasChat()) {
+      add(
+          new JMenuItemCheckBoxBuilder("Show Chat Times", 'T')
+              .bindSetting(ClientSetting.showChatTimeSettings)
+              .build());
+    }
   }
 
   private void addFindTerritory() {

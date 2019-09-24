@@ -62,7 +62,6 @@ public final class LobbyMenu extends JMenuBar {
             .addMenuItem(
                 new JMenuItemCheckBoxBuilder("Show Chat Times", 'C')
                     .bindSetting(ClientSetting.showChatTimeSettings)
-                    .actionListener(lobbyFrame::setShowChatTime)
                     .build())
             .build());
 

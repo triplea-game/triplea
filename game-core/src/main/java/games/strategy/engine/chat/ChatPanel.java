@@ -80,11 +80,6 @@ public class ChatPanel extends JPanel implements ChatModel {
         new Dimension(30, chatMessagePanel.getPreferredSize().height));
   }
 
-  @Override
-  public void setShowChatTime(final boolean showTime) {
-    chatMessagePanel.setShowTime(showTime);
-  }
-
   public ChatMessagePanel getChatMessagePanel() {
     return chatMessagePanel;
   }

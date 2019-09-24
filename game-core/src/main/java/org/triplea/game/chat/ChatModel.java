@@ -16,7 +16,5 @@ public interface ChatModel {
 
   String getAllText();
 
-  void setShowChatTime(boolean showTime);
-
   Optional<Component> getViewComponent();
 }
