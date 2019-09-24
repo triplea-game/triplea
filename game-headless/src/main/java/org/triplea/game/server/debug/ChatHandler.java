@@ -66,7 +66,7 @@ public final class ChatHandler extends Handler {
   private static void sendChatMessage(final String message) {
     Optional.ofNullable(HeadlessGameServer.getInstance())
         .map(HeadlessGameServer::getChat)
-        .ifPresent(chat -> chat.sendMessage(message, false));
+        .ifPresent(chat -> chat.sendMessage(message));
   }
 
   private String formatChatMessage(final LogRecord record) {

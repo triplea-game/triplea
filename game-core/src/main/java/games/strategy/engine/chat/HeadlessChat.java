@@ -62,7 +62,7 @@ public class HeadlessChat implements IChatListener, ChatModel {
       synchronized (this.chat.getMutex()) {
         allText = new StringBuilder();
         for (final ChatMessage message : this.chat.getChatHistory()) {
-          addChatMessage(message.getMessage(), message.getFrom(), message.isMyMessage());
+          addChatMessage(message.getMessage(), message.getFrom());
         }
       }
     } else {
@@ -72,38 +72,32 @@ public class HeadlessChat implements IChatListener, ChatModel {
 
   /** thread safe. */
   @Override
-  public void addMessage(final String message, final String from, final boolean thirdPerson) {
-    addMessageWithSound(message, from, thirdPerson, SoundPath.CLIP_CHAT_MESSAGE);
+  public void addMessage(final String message, final String from) {
+    addMessageWithSound(message, from, SoundPath.CLIP_CHAT_MESSAGE);
   }
 
   /** thread safe. */
   @Override
-  public void addMessageWithSound(
-      final String message, final String from, final boolean thirdPerson, final String sound) {
+  public void addMessageWithSound(final String message, final String from, final String sound) {
     // TODO: I don't really think we need a new thread for this...
     new Thread(
             () -> {
               if (!floodControl.allow(from, System.currentTimeMillis())) {
                 if (from.equals(chat.getLocalNode().getName())) {
-                  addChatMessage(
-                      "MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL", false);
+                  addChatMessage("MESSAGE LIMIT EXCEEDED, TRY AGAIN LATER", "ADMIN_FLOOD_CONTROL");
                 }
                 return;
               }
-              addChatMessage(message, from, thirdPerson);
+              addChatMessage(message, from);
               ClipPlayer.play(sound);
             })
         .start();
   }
 
-  private void addChatMessage(
-      final String originalMessage, final String from, final boolean thirdPerson) {
+  private void addChatMessage(final String originalMessage, final String from) {
     final String message = Ascii.truncate(originalMessage, 200, "...");
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
-    final String prefix =
-        thirdPerson
-            ? (showTime ? "* " + time + " " + from : "* " + from)
-            : (showTime ? time + " " + from + ": " : from + ": ");
+    final String prefix = showTime ? time + " " + from + ": " : from + ": ";
     final String fullMessage = prefix + " " + message + "\n";
     final String currentAllText = allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {

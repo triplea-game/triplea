@@ -422,7 +422,7 @@ public class ClientModel implements IMessengerErrorListener {
     // disconnected.
     if (chatPanel != null) {
       Optional.ofNullable(chatPanel.getChat())
-          .ifPresent(chat -> chat.sendMessage("*** Was Disconnected ***", false));
+          .ifPresent(chat -> chat.sendMessage("*** Was Disconnected ***"));
     }
     EventThreadJOptionPane.showMessageDialog(
         ui,

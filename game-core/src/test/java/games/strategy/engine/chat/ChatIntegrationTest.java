@@ -162,8 +162,7 @@ final class ChatIntegrationTest {
   }
 
   private static void sendMessagesFrom(final Chat node) {
-    new Thread(
-            () -> IntStream.range(0, MESSAGE_COUNT).forEach(i -> node.sendMessage("Test", false)))
+    new Thread(() -> IntStream.range(0, MESSAGE_COUNT).forEach(i -> node.sendMessage("Test")))
         .start();
   }
 
@@ -183,15 +182,14 @@ final class ChatIntegrationTest {
     }
 
     @Override
-    public void addMessageWithSound(
-        final String message, final String from, final boolean thirdPerson, final String sound) {
+    public void addMessageWithSound(final String message, final String from, final String sound) {
       lastMessageReceived.set(message);
       messageCount.incrementAndGet();
     }
 
     @Override
-    public void addMessage(final String message, final String from, final boolean thirdPerson) {
-      addMessageWithSound(message, from, thirdPerson, SoundPath.CLIP_CHAT_MESSAGE);
+    public void addMessage(final String message, final String from) {
+      addMessageWithSound(message, from, SoundPath.CLIP_CHAT_MESSAGE);
     }
 
     @Override
