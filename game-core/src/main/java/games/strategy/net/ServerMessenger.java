@@ -357,11 +357,6 @@ public class ServerMessenger implements IServerMessenger, NioSocketListener {
   }
 
   @Override
-  public InetSocketAddress getRemoteServerSocketAddress() {
-    return node.getSocketAddress();
-  }
-
-  @Override
   public String toString() {
     return getClass().getSimpleName()
         + " LocalNode:"

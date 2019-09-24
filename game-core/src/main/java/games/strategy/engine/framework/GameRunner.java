@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static games.strategy.engine.framework.CliProperties.LOBBY_GAME_COMMENTS;
 import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
+import static games.strategy.engine.framework.CliProperties.LOBBY_HTTPS_PORT;
 import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
 import static games.strategy.engine.framework.CliProperties.SERVER_PASSWORD;
 import static games.strategy.engine.framework.CliProperties.TRIPLEA_CLIENT;
@@ -22,6 +23,7 @@ import games.strategy.engine.framework.startup.mc.SetupPanelModel;
 import games.strategy.engine.framework.startup.ui.panels.main.MainPanelBuilder;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
+import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.triplea.ai.pro.ProAi;
 import java.awt.Component;
 import java.awt.FileDialog;
@@ -227,15 +229,15 @@ public final class GameRunner {
       final String playerName,
       final String comments,
       final String password,
-      final String lobbyHostAddress,
-      final int lobbyPort) {
+      final LobbyServerProperties lobbyServerProperties) {
     final List<String> commands = new ArrayList<>();
     ProcessRunnerUtil.populateBasicJavaArgs(commands);
     commands.add("-D" + TRIPLEA_SERVER + "=true");
     commands.add("-D" + TRIPLEA_PORT + "=" + port);
     commands.add("-D" + TRIPLEA_NAME + "=" + playerName);
-    commands.add("-D" + LOBBY_HOST + "=" + lobbyHostAddress);
-    commands.add("-D" + LOBBY_PORT + "=" + lobbyPort);
+    commands.add("-D" + LOBBY_HOST + "=" + lobbyServerProperties.getHost());
+    commands.add("-D" + LOBBY_PORT + "=" + lobbyServerProperties.getPort());
+    commands.add("-D" + LOBBY_HTTPS_PORT + "=" + lobbyServerProperties.getHttpsPort());
     commands.add("-D" + LOBBY_GAME_COMMENTS + "=" + comments);
     if (password != null && password.length() > 0) {
       commands.add("-D" + SERVER_PASSWORD + "=" + password);

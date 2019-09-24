@@ -1,7 +1,6 @@
 package games.strategy.net;
 
 import java.io.Serializable;
-import java.net.InetSocketAddress;
 
 /**
  * A simple way to connect multiple socket end points. An IMessenger listens for incoming messages,
@@ -36,14 +35,6 @@ public interface IMessenger {
 
   /** Returns the local node if we are a server node. */
   INode getServerNode();
-
-  /**
-   * Get the socket address to which we talk to the server. This may be different than
-   * getServerNode().getSocketAddress() since the server will report the socket that he thinks the
-   * server is running on, if the server is behind a firewall, or a NAT, then this socket will be
-   * different than the actual port we use.
-   */
-  InetSocketAddress getRemoteServerSocketAddress();
 
   /** Add a listener for change in connection status. */
   void addConnectionChangeListener(IConnectionChangeListener listener);

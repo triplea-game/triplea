@@ -74,6 +74,7 @@ function startBot() {
     -Dtriplea.name=Bot01Testing \
     -Dtriplea.lobby.host=localhost \
     -Dtriplea.lobby.port=3304 \
+    -Dtriplea.lobby.https.port=8080 \
     -Dtriplea.lobby.game.supportPassword= \
     -Dtriplea.map.folder=~/triplea/downloadedMaps/ \
     -jar "$BOT_JAR_PATH" > "$BOT_OUTPUT" 2>&1 &

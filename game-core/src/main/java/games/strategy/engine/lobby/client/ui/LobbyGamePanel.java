@@ -3,6 +3,7 @@ package games.strategy.engine.lobby.client.ui;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.client.LobbyClient;
+import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 import java.awt.BorderLayout;
@@ -37,10 +38,15 @@ class LobbyGamePanel extends JPanel {
   private LobbyGameTableModel gameTableModel;
   private final LobbyClient lobbyClient;
   private JTable gameTable;
+  private final LobbyServerProperties lobbyServerProperties;
 
-  LobbyGamePanel(final LobbyClient lobbyClient, final LobbyGameTableModel lobbyGameTableModel) {
+  LobbyGamePanel(
+      final LobbyClient lobbyClient,
+      final LobbyServerProperties lobbyServerProperties,
+      final LobbyGameTableModel lobbyGameTableModel) {
     this.lobbyClient = lobbyClient;
     this.gameTableModel = lobbyGameTableModel;
+    this.lobbyServerProperties = lobbyServerProperties;
 
     final JButton hostGame = new JButton("Host Game");
     joinGame = new JButton("Join Game");
@@ -104,7 +110,7 @@ class LobbyGamePanel extends JPanel {
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.SOUTH);
 
-    hostGame.addActionListener(e -> hostGame());
+    hostGame.addActionListener(e -> hostGame(lobbyServerProperties));
     joinGame.addActionListener(e -> joinGame());
     bootGame.addActionListener(e -> bootGame());
     gameTable
@@ -122,30 +128,30 @@ class LobbyGamePanel extends JPanel {
             .build());
   }
 
-  private void mouseClicked(final MouseEvent e) {
-    if (e.getClickCount() == 2) {
+  private void mouseClicked(final MouseEvent mouseEvent) {
+    if (mouseEvent.getClickCount() == 2) {
       joinGame();
     }
-    mouseOnGamesList(e);
+    mouseOnGamesList(mouseEvent);
   }
 
-  private void mousePressed(final MouseEvent e) {
+  private void mousePressed(final MouseEvent mouseEvent) {
     // right clicks do not 'select' a row by default. so force a row selection at the mouse
     // point.
-    final int r = gameTable.rowAtPoint(e.getPoint());
+    final int r = gameTable.rowAtPoint(mouseEvent.getPoint());
     if (r >= 0 && r < gameTable.getRowCount()) {
       gameTable.setRowSelectionInterval(r, r);
     } else {
       gameTable.clearSelection();
     }
-    mouseOnGamesList(e);
+    mouseOnGamesList(mouseEvent);
   }
 
-  private void mouseOnGamesList(final MouseEvent e) {
-    if (!e.isPopupTrigger()) {
+  private void mouseOnGamesList(final MouseEvent mouseEvent) {
+    if (!mouseEvent.isPopupTrigger()) {
       return;
     }
-    if (!SwingUtilities.isRightMouseButton(e)) {
+    if (!SwingUtilities.isRightMouseButton(mouseEvent)) {
       return;
     }
     final int selectedIndex = gameTable.getSelectedRow();
@@ -155,7 +161,10 @@ class LobbyGamePanel extends JPanel {
 
     final JPopupMenu menu = new JPopupMenu();
 
-    getUserGamesListContextActions().forEach(menu::add);
+    Arrays.asList(
+            SwingAction.of("Join Game", this::joinGame),
+            SwingAction.of("Host Game", () -> hostGame(lobbyServerProperties)))
+        .forEach(menu::add);
 
     if (lobbyClient.isAdmin()) {
       final Collection<Action> generalAdminActions = getGeneralAdminGamesListContextActions();
@@ -176,13 +185,8 @@ class LobbyGamePanel extends JPanel {
     }
 
     if (menu.getComponentCount() > 0) {
-      menu.show(gameTable, e.getX(), e.getY());
+      menu.show(gameTable, mouseEvent.getX(), mouseEvent.getY());
     }
-  }
-
-  private Collection<Action> getUserGamesListContextActions() {
-    return Arrays.asList(
-        SwingAction.of("Join Game", e -> joinGame()), SwingAction.of("Host Game", e -> hostGame()));
   }
 
   private Collection<Action> getGeneralAdminGamesListContextActions() {
@@ -211,7 +215,7 @@ class LobbyGamePanel extends JPanel {
     GameRunner.joinGame(description, lobbyClient.getPlayerName());
   }
 
-  private void hostGame() {
+  private void hostGame(final LobbyServerProperties lobbyServerProperties) {
     final ServerOptions options =
         new ServerOptions(
             JOptionPane.getFrameForComponent(this), lobbyClient.getPlayerName(), 3300, true);
@@ -226,8 +230,7 @@ class LobbyGamePanel extends JPanel {
         options.getName(),
         options.getComments(),
         options.getPassword(),
-        lobbyClient.getLobbyHostAddress(),
-        lobbyClient.getLobbyPort());
+        lobbyServerProperties);
   }
 
   private void bootGame() {
