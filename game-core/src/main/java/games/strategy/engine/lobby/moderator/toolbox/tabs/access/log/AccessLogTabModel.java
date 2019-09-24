@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.triplea.http.client.moderator.toolbox.PagingParams;
-import org.triplea.http.client.moderator.toolbox.access.log.ToolboxAccessLogClient;
-import org.triplea.http.client.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
-import org.triplea.http.client.moderator.toolbox.banned.user.ToolboxUserBanClient;
-import org.triplea.http.client.moderator.toolbox.banned.user.UserBanParams;
+import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
 
 @RequiredArgsConstructor
 class AccessLogTabModel {

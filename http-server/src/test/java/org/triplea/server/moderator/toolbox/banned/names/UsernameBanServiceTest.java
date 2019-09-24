@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.banned.name.UsernameBanData;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.name.UsernameBanData;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.UsernameBanDao;
 import org.triplea.lobby.server.db.data.UsernameBanDaoData;

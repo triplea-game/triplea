@@ -2,12 +2,12 @@ package org.triplea.http.client.lobby.moderator.toolbox;
 
 import java.net.URI;
 import lombok.Getter;
-import org.triplea.http.client.moderator.toolbox.access.log.ToolboxAccessLogClient;
-import org.triplea.http.client.moderator.toolbox.bad.words.ToolboxBadWordsClient;
-import org.triplea.http.client.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
-import org.triplea.http.client.moderator.toolbox.banned.user.ToolboxUserBanClient;
-import org.triplea.http.client.moderator.toolbox.event.log.ToolboxEventLogClient;
-import org.triplea.http.client.moderator.toolbox.moderator.management.ToolboxModeratorManagementClient;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient;
+import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
+import org.triplea.http.client.lobby.moderator.toolbox.words.ToolboxBadWordsClient;
 
 @Getter
 public class HttpModeratorToolboxClient {

@@ -1,8 +1,8 @@
 package org.triplea.server.moderator.toolbox.access.log;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.moderator.toolbox.PagingParams;
-import org.triplea.http.client.moderator.toolbox.access.log.ToolboxAccessLogClient;
+import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
 import org.triplea.server.http.ProtectedEndpointTest;
 
 class AccessLogControllerIntegrationTest extends ProtectedEndpointTest<ToolboxAccessLogClient> {

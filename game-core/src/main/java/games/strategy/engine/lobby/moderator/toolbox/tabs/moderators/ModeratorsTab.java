@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import org.triplea.http.client.moderator.toolbox.moderator.management.ToolboxModeratorManagementClient;
+import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
 import org.triplea.java.Interruptibles;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.DocumentListenerBuilder;

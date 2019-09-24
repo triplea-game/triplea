@@ -12,8 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.banned.user.ToolboxUserBanClient;
-import org.triplea.http.client.moderator.toolbox.banned.user.UserBanData;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
 
 @ExtendWith(MockitoExtension.class)
 class BannedUsersTabModelTest {

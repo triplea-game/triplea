@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.triplea.http.client.moderator.toolbox.PagingParams;
+import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 
 /**
  * Utility class for verifying toolbox tab data. Notably most tabs have table-like views and this

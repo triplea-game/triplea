@@ -1,8 +1,8 @@
 package org.triplea.server.moderator.toolbox.audit.history;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.moderator.toolbox.PagingParams;
-import org.triplea.http.client.moderator.toolbox.event.log.ToolboxEventLogClient;
+import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient;
 import org.triplea.server.http.ProtectedEndpointTest;
 
 class ModeratorAuditHistoryControllerIntegrationTest

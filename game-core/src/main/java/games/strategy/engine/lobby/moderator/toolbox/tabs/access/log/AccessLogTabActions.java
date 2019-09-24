@@ -22,7 +22,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import lombok.Builder;
-import org.triplea.http.client.moderator.toolbox.banned.user.UserBanParams;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;

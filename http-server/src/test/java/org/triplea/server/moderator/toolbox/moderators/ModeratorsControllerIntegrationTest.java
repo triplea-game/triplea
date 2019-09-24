@@ -1,7 +1,7 @@
 package org.triplea.server.moderator.toolbox.moderators;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.moderator.toolbox.moderator.management.ToolboxModeratorManagementClient;
+import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
 import org.triplea.server.http.ProtectedEndpointTest;
 
 class ModeratorsControllerIntegrationTest

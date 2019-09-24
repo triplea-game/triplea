@@ -13,8 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.banned.user.UserBanData;
-import org.triplea.http.client.moderator.toolbox.banned.user.UserBanParams;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanData;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
 import org.triplea.server.access.AuthenticatedUser;
 
 @ExtendWith(MockitoExtension.class)

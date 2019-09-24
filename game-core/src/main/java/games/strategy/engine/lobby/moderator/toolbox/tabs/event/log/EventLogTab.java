@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.swing.JButton;
 import javax.swing.JTable;
-import org.triplea.http.client.moderator.toolbox.event.log.ToolboxEventLogClient;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JTableBuilder;
 import org.triplea.swing.SwingComponents;
