@@ -348,7 +348,7 @@ final class HelpMenu extends JMenu {
                       null, label, "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE)))
           .setMnemonic(KeyEvent.VK_A);
     } else { // On Mac OS X, put the About menu where Mac users expect it to be
-      MacOsIntegration.addAboutHandler(
+      MacOsIntegration.setAboutHandler(
           () ->
               JOptionPane.showMessageDialog(
                   null, label, "About " + gameData.getGameName(), JOptionPane.PLAIN_MESSAGE));

@@ -7,6 +7,7 @@ import games.strategy.debug.ErrorMessage;
 import games.strategy.debug.LoggerManager;
 import games.strategy.debug.console.window.ConsoleConfiguration;
 import games.strategy.engine.framework.ArgParser;
+import games.strategy.engine.framework.CliProperties;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.lookandfeel.LookAndFeel;
 import games.strategy.engine.framework.map.download.DownloadMapsWindow;
@@ -57,7 +58,7 @@ public final class HeadedGameRunner {
     ArgParser.handleCommandLineArgs(args);
 
     if (SystemProperties.isMac()) {
-      MacOsIntegration.addOpenUriHandler(
+      MacOsIntegration.setOpenUriHandler(
           uri -> {
             final String mapName =
                 URLDecoder.decode(
@@ -65,6 +66,11 @@ public final class HeadedGameRunner {
                     StandardCharsets.UTF_8);
             SwingUtilities.invokeLater(
                 () -> DownloadMapsWindow.showDownloadMapsWindowAndDownload(mapName));
+          });
+      MacOsIntegration.setOpenFileHandler(
+          file -> {
+            System.setProperty(CliProperties.TRIPLEA_GAME, file.getAbsolutePath());
+            GameRunner.showMainFrame();
           });
     }
 
