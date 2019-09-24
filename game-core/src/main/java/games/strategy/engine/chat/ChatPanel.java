@@ -28,8 +28,18 @@ public class ChatPanel extends JPanel implements ChatModel {
   private ChatMessagePanel chatMessagePanel;
 
   public ChatPanel(final Chat chat) {
-    init();
-    setChat(chat);
+    setSize(300, 200);
+    chatPlayerPanel = new ChatPlayerPanel(chat);
+    chatMessagePanel = new ChatMessagePanel(chat);
+    final Container content = this;
+    content.setLayout(new BorderLayout());
+    final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    split.setLeftComponent(chatMessagePanel);
+    split.setRightComponent(chatPlayerPanel);
+    split.setOneTouchExpandable(false);
+    split.setDividerSize(DIVIDER_SIZE);
+    split.setResizeWeight(1);
+    content.add(split, BorderLayout.CENTER);
   }
 
   /**
@@ -47,12 +57,6 @@ public class ChatPanel extends JPanel implements ChatModel {
         .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
   }
 
-  private void init() {
-    createComponents();
-    layoutComponents();
-    setSize(300, 200);
-  }
-
   @Override
   public String getAllText() {
     return chatMessagePanel.getAllText();
@@ -67,23 +71,6 @@ public class ChatPanel extends JPanel implements ChatModel {
   @Override
   public Chat getChat() {
     return chatMessagePanel.getChat();
-  }
-
-  private void layoutComponents() {
-    final Container content = this;
-    content.setLayout(new BorderLayout());
-    final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    split.setLeftComponent(chatMessagePanel);
-    split.setRightComponent(chatPlayerPanel);
-    split.setOneTouchExpandable(false);
-    split.setDividerSize(DIVIDER_SIZE);
-    split.setResizeWeight(1);
-    content.add(split, BorderLayout.CENTER);
-  }
-
-  private void createComponents() {
-    chatPlayerPanel = new ChatPlayerPanel(null);
-    chatMessagePanel = new ChatMessagePanel(null);
   }
 
   public void setPlayerRenderer(final DefaultListCellRenderer renderer) {
