@@ -94,7 +94,7 @@ public final class TerritoryEffectHelper {
    * max movement across all units. If no territory effects then just returns the base cost of 1.
    */
   public static BigDecimal getMaxMovementCost(final Territory t, final Collection<Unit> units) {
-    if (getEffects(t).isEmpty()) {
+    if (getEffects(t).isEmpty() || units.isEmpty()) {
       return BigDecimal.ONE;
     }
     BigDecimal max = new BigDecimal(Integer.MIN_VALUE);
