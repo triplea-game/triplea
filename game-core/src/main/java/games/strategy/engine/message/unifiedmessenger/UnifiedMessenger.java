@@ -93,7 +93,13 @@ public class UnifiedMessenger {
     final List<RemoteMethodCallResults> results =
         local.invokeLocal(remoteCall, number, getLocalNode());
     if (results.size() == 0) {
-      throw new RemoteNotFoundException("Not found:" + endPointName);
+      throw new RemoteNotFoundException(
+          "Not found:"
+              + endPointName
+              + ", method name: "
+              + remoteCall.getMethodName()
+              + ", remote name: "
+              + remoteCall.getRemoteName());
     }
     if (results.size() > 1) {
       throw new IllegalStateException("Too many implementors, got back:" + results);

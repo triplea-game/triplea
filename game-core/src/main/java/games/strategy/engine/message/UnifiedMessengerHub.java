@@ -14,8 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.java.Log;
 
 /** The hub node in a spoke-hub messaging architecture. */
+@Log
 public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeListener {
   private final UnifiedMessenger localUnified;
   // the messenger we are based on
@@ -47,6 +49,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
     if (msg instanceof HasEndPointImplementor) {
       synchronized (endPointMutex) {
         final HasEndPointImplementor hasEndPoint = (HasEndPointImplementor) msg;
+        log.info("Adding endpoint: " + hasEndPoint + ", from: " + from);
         final Collection<INode> nodes =
             endPoints.computeIfAbsent(hasEndPoint.endPointName, k -> new ArrayList<>());
         if (nodes.contains(from)) {
@@ -87,7 +90,11 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
         if (invoke.needReturnValues) {
           final RemoteMethodCallResults results =
               new RemoteMethodCallResults(
-                  new RemoteNotFoundException("Not found:" + invoke.call.getRemoteName()));
+                  new RemoteNotFoundException(
+                      "Not found:"
+                          + invoke.call.getRemoteName()
+                          + ", endpoints available: "
+                          + endPoints.keySet()));
           send(new SpokeInvocationResults(results, invoke.methodCallId), from);
         }
         // no end points, this is ok, we are a channel with no implementors
