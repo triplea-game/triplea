@@ -4,7 +4,6 @@ import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.net.Messengers;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.util.Optional;
 import javax.swing.DefaultListCellRenderer;
