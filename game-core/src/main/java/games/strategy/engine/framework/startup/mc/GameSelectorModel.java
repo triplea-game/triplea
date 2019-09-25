@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Observable;
+import java.util.Optional;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -130,7 +131,7 @@ public class GameSelectorModel extends Observable {
   }
 
   public String getFileName() {
-    return (fileName == null) ? "-" : fileName;
+    return Optional.ofNullable(fileName).orElse("-");
   }
 
   void setGameData(final GameData data) {
