@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import org.triplea.http.client.moderator.toolbox.moderator.management.ToolboxModeratorManagementClient;
+import org.triplea.http.client.lobby.moderator.toolbox.management.ToolboxModeratorManagementClient;
 
 class ModeratorsTabModel {
   @VisibleForTesting static final List<String> HEADERS = Arrays.asList("Name", "Last Login");

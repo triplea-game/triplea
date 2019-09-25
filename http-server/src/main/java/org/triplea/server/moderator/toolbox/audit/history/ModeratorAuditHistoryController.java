@@ -10,9 +10,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import lombok.Builder;
-import org.triplea.http.client.moderator.toolbox.PagingParams;
-import org.triplea.http.client.moderator.toolbox.event.log.ModeratorEvent;
-import org.triplea.http.client.moderator.toolbox.event.log.ToolboxEventLogClient;
+import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ModeratorEvent;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient;
 import org.triplea.lobby.server.db.data.UserRole;
 
 /** Http server endpoints for accessing and returning moderator audit history rows. */

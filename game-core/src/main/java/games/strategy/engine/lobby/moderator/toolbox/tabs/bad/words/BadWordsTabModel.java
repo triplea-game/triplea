@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import org.triplea.http.client.moderator.toolbox.bad.words.ToolboxBadWordsClient;
+import org.triplea.http.client.lobby.moderator.toolbox.words.ToolboxBadWordsClient;
 
 /** Model object interacts with backend, does not hold state and is not aware of UI components. */
 @Builder

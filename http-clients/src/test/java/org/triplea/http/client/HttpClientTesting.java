@@ -32,7 +32,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
-import org.triplea.http.client.moderator.toolbox.PagingParams;
+import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 
 /** Utility class with tests for common http client error scenarios. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
 import lombok.extern.java.Log;
-import org.triplea.http.client.moderator.toolbox.moderator.management.ModeratorInfo;
+import org.triplea.http.client.lobby.moderator.toolbox.management.ModeratorInfo;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
 import org.triplea.lobby.server.db.dao.ModeratorsDao;
 import org.triplea.lobby.server.db.dao.UserJdbiDao;

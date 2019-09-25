@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.bad.words.ToolboxBadWordsClient;
+import org.triplea.http.client.lobby.moderator.toolbox.words.ToolboxBadWordsClient;
 
 @ExtendWith(MockitoExtension.class)
 class BadWordsTabModelTest {

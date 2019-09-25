@@ -1,7 +1,7 @@
 package org.triplea.server.moderator.toolbox.banned.names;
 
 import org.junit.jupiter.api.Test;
-import org.triplea.http.client.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
 import org.triplea.server.http.ProtectedEndpointTest;
 
 class UsernameBanControllerIntegrationTest extends ProtectedEndpointTest<ToolboxUsernameBanClient> {

@@ -13,9 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.PagingParams;
-import org.triplea.http.client.moderator.toolbox.event.log.ModeratorEvent;
-import org.triplea.http.client.moderator.toolbox.event.log.ToolboxEventLogClient;
+import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ModeratorEvent;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxEventLogClient;
 
 @ExtendWith(MockitoExtension.class)
 class EventLogTabModelTest {

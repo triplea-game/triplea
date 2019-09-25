@@ -3,7 +3,7 @@ package games.strategy.engine.lobby.moderator.toolbox.tabs;
 import java.util.List;
 import java.util.function.Function;
 import lombok.Builder;
-import org.triplea.http.client.moderator.toolbox.PagingParams;
+import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
 
 /**
  * Class to take care of paging details. Keeps track of current row, when requesting data will

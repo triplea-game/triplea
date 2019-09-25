@@ -14,12 +14,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.triplea.http.client.moderator.toolbox.PagingParams;
-import org.triplea.http.client.moderator.toolbox.access.log.AccessLogData;
-import org.triplea.http.client.moderator.toolbox.access.log.ToolboxAccessLogClient;
-import org.triplea.http.client.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
-import org.triplea.http.client.moderator.toolbox.banned.user.ToolboxUserBanClient;
-import org.triplea.http.client.moderator.toolbox.banned.user.UserBanParams;
+import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.name.ToolboxUsernameBanClient;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.UserBanParams;
+import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogData;
+import org.triplea.http.client.lobby.moderator.toolbox.log.ToolboxAccessLogClient;
 
 @ExtendWith(MockitoExtension.class)
 class AccessLogTabModelTest {

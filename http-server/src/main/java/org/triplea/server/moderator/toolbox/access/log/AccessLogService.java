@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.Builder;
-import org.triplea.http.client.moderator.toolbox.PagingParams;
-import org.triplea.http.client.moderator.toolbox.access.log.AccessLogData;
+import org.triplea.http.client.lobby.moderator.toolbox.PagingParams;
+import org.triplea.http.client.lobby.moderator.toolbox.log.AccessLogData;
 import org.triplea.lobby.server.db.dao.AccessLogDao;
 
 @Builder

@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.util.function.Supplier;
 import javax.swing.JFrame;
 import javax.swing.JTable;
-import org.triplea.http.client.moderator.toolbox.banned.user.ToolboxUserBanClient;
+import org.triplea.http.client.lobby.moderator.toolbox.banned.user.ToolboxUserBanClient;
 import org.triplea.swing.ButtonColumn;
 import org.triplea.swing.JButtonBuilder;
 import org.triplea.swing.JTableBuilder;
