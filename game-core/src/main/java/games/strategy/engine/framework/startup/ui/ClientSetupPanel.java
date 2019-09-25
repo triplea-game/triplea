@@ -52,7 +52,7 @@ public class ClientSetupPanel extends SetupPanel {
   private void internalPlayersChanged() {
     final Map<String, String> players = clientModel.getPlayerToNodesMapping();
     final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder =
-        clientModel.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
+        clientModel.getPlayerNamesAndAlliancesInTurnOrder();
     final Map<String, Boolean> enabledPlayers = clientModel.getPlayersEnabledListing();
     final Collection<String> disableable = clientModel.getPlayersAllowedToBeDisabled();
     if (!clientModel.getIsServerHeadlessCached()) {
