@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.menubar;
 
 import games.strategy.engine.framework.system.SystemProperties;
 import games.strategy.engine.lobby.client.login.CreateUpdateAccountPanel;
-import games.strategy.engine.lobby.client.login.LobbyLoginPreferences;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.engine.lobby.moderator.toolbox.ToolBoxWindow;
 import games.strategy.sound.SoundOptions;
@@ -88,8 +87,7 @@ public final class LobbyMenu extends JMenuBar {
       return;
     }
 
-    final CreateUpdateAccountPanel panel =
-        CreateUpdateAccountPanel.newUpdatePanel(username, email, LobbyLoginPreferences.load());
+    final CreateUpdateAccountPanel panel = CreateUpdateAccountPanel.newUpdatePanel(username, email);
     final CreateUpdateAccountPanel.ReturnValue returnValue = panel.show(lobbyFrame);
     if (returnValue == CreateUpdateAccountPanel.ReturnValue.CANCEL) {
       return;
@@ -101,8 +99,6 @@ public final class LobbyMenu extends JMenuBar {
       showErrorDialog(error);
       return;
     }
-
-    panel.getLobbyLoginPreferences().save();
   }
 
   private void showErrorDialog(final String message) {

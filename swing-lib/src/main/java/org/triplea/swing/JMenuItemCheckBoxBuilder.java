@@ -79,10 +79,4 @@ public class JMenuItemCheckBoxBuilder {
     this.settingPersistence = settingPersistence;
     return this;
   }
-
-  public interface SettingPersistence {
-    void saveSetting(boolean value);
-
-    boolean getSetting();
-  }
 }

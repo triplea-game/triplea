@@ -71,7 +71,13 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
       new IntegerClientSetting("LOBBY_LAST_USED_PORT");
   public static final ClientSetting<Integer> lobbyLastUsedHttpsPort =
       new IntegerClientSetting("LOBBY_LAST_USED_HTTPS_PORT");
+  public static final ClientSetting<char[]> lobbyLoginName =
+      new ProtectedStringClientSetting("LOBBY_LOGIN_NAME");
+  public static final ClientSetting<char[]> lobbySavedPassword =
+      new ProtectedStringClientSetting("LOBBY_LOGIN_SAVED_PASSWORD");
   public static final BooleanClientSetting lockMap = new BooleanClientSetting("LOCK_MAP");
+  public static final BooleanClientSetting loginAnonymously =
+      new BooleanClientSetting("LOGIN_ANONYMOUSLY", false);
   public static final ClientSetting<String> lookAndFeel =
       new StringClientSetting("LOOK_AND_FEEL_PREF", LookAndFeel.getDefaultLookAndFeelClassName());
   public static final ClientSetting<Integer> mapEdgeScrollSpeed =
@@ -91,6 +97,8 @@ public abstract class ClientSetting<T> implements GameSetting<T> {
           HttpProxy.ProxyChoice.class, "PROXY_CHOICE", HttpProxy.ProxyChoice.NONE);
   public static final ClientSetting<String> proxyHost = new StringClientSetting("PROXY_HOST");
   public static final ClientSetting<Integer> proxyPort = new IntegerClientSetting("PROXY_PORT");
+  public static final BooleanClientSetting rememberLoginPassword =
+      new BooleanClientSetting("REMEMBER_PASSWORD", false);
   public static final ClientSetting<Path> saveGamesFolderPath =
       new PathClientSetting(
           "SAVE_GAMES_FOLDER_PATH",

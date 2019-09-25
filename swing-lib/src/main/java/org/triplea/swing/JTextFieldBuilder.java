@@ -9,8 +9,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 /**
  * Builder class for building swing text fields. Example usage:
@@ -28,7 +26,6 @@ import lombok.NoArgsConstructor;
  * </code>
  * </pre>
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JTextFieldBuilder {
 
   private String text;
