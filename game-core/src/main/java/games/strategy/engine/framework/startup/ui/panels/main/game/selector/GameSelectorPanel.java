@@ -297,11 +297,11 @@ public final class GameSelectorPanel extends JPanel implements Observer {
   }
 
   private boolean canSelectLocalGameData() {
-    return model != null && model.canSelect();
+    return model != null && model.isCanSelect();
   }
 
   private boolean canChangeHostBotGameData() {
-    return model != null && model.isHostHeadlessBot();
+    return model != null && model.isHostIsHeadlessBot();
   }
 
   @Override

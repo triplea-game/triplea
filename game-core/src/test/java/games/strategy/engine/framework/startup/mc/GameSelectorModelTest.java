@@ -124,11 +124,11 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
   @Test
   void testCanSelect() {
-    assertThat(testObj.canSelect(), is(true));
+    assertThat(testObj.isCanSelect(), is(true));
     testObj.setCanSelect(false);
-    assertThat(testObj.canSelect(), is(false));
+    assertThat(testObj.isCanSelect(), is(false));
     testObj.setCanSelect(true);
-    assertThat(testObj.canSelect(), is(true));
+    assertThat(testObj.isCanSelect(), is(true));
   }
 
   @Test
@@ -195,11 +195,11 @@ class GameSelectorModelTest extends AbstractClientSettingTestCase {
 
   @Test
   void testSetAndGetIsHostHeadlessBot() {
-    assertThat(testObj.isHostHeadlessBot(), is(false));
+    assertThat(testObj.isHostIsHeadlessBot(), is(false));
     testObj.setIsHostHeadlessBot(true);
-    assertThat(testObj.isHostHeadlessBot(), is(true));
+    assertThat(testObj.isHostIsHeadlessBot(), is(true));
     testObj.setIsHostHeadlessBot(false);
-    assertThat(testObj.isHostHeadlessBot(), is(false));
+    assertThat(testObj.isHostIsHeadlessBot(), is(false));
   }
 
   @Test

@@ -17,6 +17,8 @@ import java.net.URI;
 import java.util.Observable;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.java.Log;
 
 /**
@@ -25,16 +27,16 @@ import lombok.extern.java.Log;
  */
 @Log
 public class GameSelectorModel extends Observable {
-  private GameData gameData = null;
-  private String gameName = "";
-  private String gameVersion = "";
-  private String gameRound = "";
+  @Getter private GameData gameData = null;
+  @Getter private String gameName = "";
+  @Getter private String gameVersion = "";
+  @Getter private String gameRound = "";
   @Nullable private String fileName;
-  private boolean canSelect = true;
-  private boolean isHostHeadlessBot = false;
+  @Getter private boolean canSelect = true;
+  @Getter private boolean hostIsHeadlessBot = false;
   // just for host bots, so we can get the actions for loading/saving games on the bots from this
   // model
-  private ClientModel clientModelForHostBots = null;
+  @Setter @Getter private ClientModel clientModelForHostBots = null;
 
   public GameSelectorModel() {
     resetGameDataToNull();
@@ -98,42 +100,18 @@ public class GameSelectorModel extends Observable {
     }
   }
 
-  public synchronized GameData getGameData() {
-    return gameData;
-  }
-
   synchronized boolean isSavedGame() {
     return fileName != null;
   }
 
   void setCanSelect(final boolean canSelect) {
-    synchronized (this) {
-      this.canSelect = canSelect;
-    }
+    this.canSelect = canSelect;
     notifyObs();
-  }
-
-  public synchronized boolean canSelect() {
-    return canSelect;
   }
 
   void setIsHostHeadlessBot(final boolean isHostHeadlessBot) {
-    synchronized (this) {
-      this.isHostHeadlessBot = isHostHeadlessBot;
-    }
+    this.hostIsHeadlessBot = isHostHeadlessBot;
     notifyObs();
-  }
-
-  public synchronized boolean isHostHeadlessBot() {
-    return isHostHeadlessBot;
-  }
-
-  synchronized void setClientModelForHostBots(final ClientModel clientModel) {
-    clientModelForHostBots = clientModel;
-  }
-
-  public synchronized ClientModel getClientModelForHostBots() {
-    return clientModelForHostBots;
   }
 
   /**
@@ -151,20 +129,8 @@ public class GameSelectorModel extends Observable {
     notifyObs();
   }
 
-  public synchronized String getFileName() {
+  public String getFileName() {
     return (fileName == null) ? "-" : fileName;
-  }
-
-  public synchronized String getGameName() {
-    return gameName;
-  }
-
-  public synchronized String getGameRound() {
-    return gameRound;
-  }
-
-  public synchronized String getGameVersion() {
-    return gameVersion;
   }
 
   void setGameData(final GameData data) {
