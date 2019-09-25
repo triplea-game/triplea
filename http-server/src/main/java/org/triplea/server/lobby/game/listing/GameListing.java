@@ -1,21 +1,22 @@
 package org.triplea.server.lobby.game.listing;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.util.HashMap;
+import com.google.common.cache.Cache;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.triplea.http.client.lobby.game.listing.LobbyGame;
 import org.triplea.http.client.lobby.game.listing.LobbyGameListing;
 import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
+import org.triplea.server.access.ApiKey;
 
 /**
  * Class that stores the set of games in the lobby. Games are identified by a combination of two
@@ -37,116 +38,45 @@ import org.triplea.lobby.server.db.dao.ModeratorAuditHistoryDao;
  *
  * The moderator boot is similar to remove game but there is no check for an API key, any moderator
  * can boot any game.
- *
- * <h2>Event Updates</h2>
- *
- * A listener for game created or updated events and another listener game removed are injected into
- * this class. Those listeners are invoked for the respective events. The listener is then intended
- * to be a websocket to notify players of the change event.
  */
 @Builder
 @Slf4j
-// TODO: Project#12 Create a thread that will invoke game reaper periodically to prune dead games
 class GameListing {
-  @NonNull private final Consumer<LobbyGameListing> gameUpdateListener;
-  @NonNull private final Consumer<String> gameRemoveListener;
-  @NonNull private final GameReaper gameReaper;
   @NonNull private final ModeratorAuditHistoryDao auditHistoryDao;
+  @NonNull private final Cache<GameId, LobbyGame> games;
 
-  private final Map<GameId, LobbyGame> games = new HashMap<>();
-
-  @Builder
+  @AllArgsConstructor
   @EqualsAndHashCode
   @Getter
+  @VisibleForTesting
+  @ToString
   static class GameId {
-    @NonNull private final String apiKey;
+    @NonNull private final ApiKey apiKey;
     @NonNull private final String id;
   }
 
-  @VisibleForTesting
-  class GameNotFound extends RuntimeException {
-    private static final long serialVersionUID = 2161752095040334977L;
-
-    private GameNotFound(final String gameId) {
-      super("Error: Game not found, report this error to TripleA Development");
-      log.error(
-          "Game ID not found: {}, available game IDs: {}",
-          gameId,
-          games.keySet().stream().map(GameId::getId).collect(Collectors.toList()));
-    }
-  }
-
-  @VisibleForTesting
-  static class IncorrectApiKey extends RuntimeException {
-    private static final long serialVersionUID = -131279328512375629L;
-
-    IncorrectApiKey() {
-      super("Illegal game modification attempt, access key is incorrect.");
-    }
-  }
-
-  /** Adds a game. Duplicate postings return the same gameId. */
-  String postGame(final String apiKey, final LobbyGame lobbyGame) {
-    final Optional<String> existingGameId =
-        games.entrySet().stream()
-            .filter(entry -> entry.getKey().apiKey.equals(apiKey))
-            .filter(entry -> entry.getValue().equals(lobbyGame))
-            .map(entry -> entry.getKey().id)
-            .findAny();
-    if (existingGameId.isPresent()) {
-      log.warn("Received duplicate game post request for game: {}", existingGameId.get());
-      return existingGameId.get();
-    }
-
+  /** Adds a game. */
+  String postGame(final ApiKey apiKey, final LobbyGame lobbyGame) {
     final String gameId = UUID.randomUUID().toString();
-    gameReaper.registerKeepAlive(gameId);
-    games.put(GameId.builder().id(gameId).apiKey(apiKey).build(), lobbyGame);
-    gameUpdateListener.accept(
-        LobbyGameListing.builder().gameId(gameId).lobbyGame(lobbyGame).build());
+    games.put(new GameId(apiKey, gameId), lobbyGame);
     log.info("Posted game: {}", gameId);
     return gameId;
   }
 
-  /** Adds or updates a game. If game is updated, emits a game update event. */
-  void updateGame(final String apiKey, final String gameId, final LobbyGame lobbyGame) {
-    final Map.Entry<GameId, LobbyGame> game =
-        // find game by gameId
-        games.entrySet().stream()
-            .filter(entry -> entry.getKey().id.equals(gameId))
-            .findAny()
-            .orElseThrow(() -> new GameNotFound(gameId));
-    if (!game.getKey().apiKey.equals(apiKey)) {
-      throw new IncorrectApiKey();
-    }
-
-    games.put(game.getKey(), lobbyGame);
-    gameUpdateListener.accept(
-        LobbyGameListing.builder().gameId(game.getKey().id).lobbyGame(lobbyGame).build());
+  /** Adds or updates a game. Returns true if game is updated, false if game was not found. */
+  boolean updateGame(final ApiKey apiKey, final String gameId, final LobbyGame lobbyGame) {
+    final var listedGameId = new GameId(apiKey, gameId);
+    final var existingValue = games.asMap().replace(listedGameId, lobbyGame);
+    return existingValue != null;
   }
 
-  void removeGame(final String apiKey, final String gameId) {
-    final var game =
-        games.entrySet().stream().filter(entry -> entry.getKey().id.equals(gameId)).findAny();
-    game.ifPresent(
-        gameEntryToRemove -> {
-          final GameId gameIdToRemove = gameEntryToRemove.getKey();
-          if (!gameIdToRemove.apiKey.equals(apiKey)) {
-            throw new IncorrectApiKey();
-          }
-          removeGame(gameIdToRemove);
-        });
-  }
-
-  private void removeGame(final GameId gameId) {
+  void removeGame(final ApiKey apiKey, final String gameId) {
     log.info("Removing game: {}", gameId);
-    games.remove(gameId);
-    gameRemoveListener.accept(gameId.id);
+    games.invalidate(new GameId(apiKey, gameId));
   }
 
   List<LobbyGameListing> getGames() {
-    gameReaper.findDeadGames(games.keySet()).forEach(this::removeGame);
-
-    return games.entrySet().stream()
+    return games.asMap().entrySet().stream()
         .map(
             entry ->
                 LobbyGameListing.builder()
@@ -163,42 +93,35 @@ class GameListing {
    *     their game. Otherwise true indicates the game is present and the keep-alive period has been
    *     extended.
    */
-  boolean keepAlive(final String apiKey, final String gameId) {
-    final var gameEntry =
-        games.entrySet().stream().filter(entry -> entry.getKey().id.equals(gameId)).findAny();
-    if (gameEntry.isEmpty()) {
-      log.warn("Keep alive received for DEAD game: {}", gameId);
+  boolean keepAlive(final ApiKey apiKey, final String gameId) {
+    final Optional<LobbyGame> game =
+        Optional.ofNullable(games.getIfPresent(new GameId(apiKey, gameId)));
+    if (game.isEmpty()) {
+      log.warn("Keep alive for removed game: {}", gameId);
       return false;
     }
-
-    final var id = gameEntry.get().getKey();
-
-    if (!id.apiKey.equals(apiKey)) {
-      throw new IncorrectApiKey();
-    }
-    gameReaper.registerKeepAlive(gameId);
-    log.info("Keep alive received for game: {}", gameId);
+    updateGame(apiKey, gameId, game.get());
     return true;
   }
 
   /** Moderator action to remove a game. */
   void bootGame(final int moderatorId, final String gameId) {
-    final GameId gameToRemove =
-        games.entrySet().stream()
-            .filter(entry -> entry.getKey().id.equals(gameId))
-            .findAny()
-            .map(Map.Entry::getKey)
-            .orElseThrow(() -> new GameNotFound(gameId));
+    games.asMap().entrySet().stream()
+        .filter(entry -> entry.getKey().id.equals(gameId))
+        .findAny()
+        .ifPresent(
+            gameToRemove -> {
+              final String hostName = gameToRemove.getValue().getHostName();
+              removeGame(gameToRemove.getKey().apiKey, gameToRemove.getKey().id);
 
-    final String hostName = games.get(gameToRemove).getHostName();
-
-    removeGame(gameToRemove);
-    log.info("Moderator {} booted game: {}, hosted by: {}", moderatorId, gameId, hostName);
-    auditHistoryDao.addAuditRecord(
-        ModeratorAuditHistoryDao.AuditArgs.builder()
-            .moderatorUserId(moderatorId)
-            .actionName(ModeratorAuditHistoryDao.AuditAction.BOOT_GAME)
-            .actionTarget(hostName)
-            .build());
+              log.info(
+                  "Moderator {} booted game: {}, hosted by: {}", moderatorId, gameId, hostName);
+              auditHistoryDao.addAuditRecord(
+                  ModeratorAuditHistoryDao.AuditArgs.builder()
+                      .moderatorUserId(moderatorId)
+                      .actionName(ModeratorAuditHistoryDao.AuditAction.BOOT_GAME)
+                      .actionTarget(hostName)
+                      .build());
+            });
   }
 }
