@@ -15,13 +15,14 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import org.triplea.util.Version;
 
 /**
  * Data from the server indicating what players are available to be taken, and what players are
  * being played. This object also contains versioning info which the client should check to ensure
- * that it is playing the same game as the server. (updated by veqryn to be the object that, besides
- * game options, determines the starting setup for game. ie: who is playing what)
+ * that it is playing the same game as the server. Besides game options, determines the starting
+ * setup for game. ie: who is playing what.
  */
 @NetworkData
 public class PlayerListing implements Serializable {
@@ -30,15 +31,15 @@ public class PlayerListing implements Serializable {
   /**
    * Maps String player name -> node Name if node name is null then the player is available to play.
    */
-  private final Map<String, String> playerToNodeListing;
+  @Getter private final Map<String, String> playerToNodeListing;
 
-  private final Map<String, Boolean> playersEnabledListing;
-  private final Map<String, String> localPlayerTypes;
-  private final Collection<String> playersAllowedToBeDisabled;
-  private final Version gameVersion;
-  private final String gameName;
-  private final String gameRound;
-  private final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder;
+  @Getter private final Map<String, Boolean> playersEnabledListing;
+  @Getter private final Map<String, String> localPlayerTypes;
+  @Getter private final Collection<String> playersAllowedToBeDisabled;
+  @Getter private final Version gameVersion;
+  @Getter private final String gameName;
+  @Getter private final String gameRound;
+  @Getter private final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrder;
 
   public PlayerListing(
       final Map<String, String> playerToNodeListing,
@@ -96,37 +97,9 @@ public class PlayerListing implements Serializable {
         this.playerNamesAndAlliancesInTurnOrder.toString());
   }
 
-  public Collection<String> getPlayersAllowedToBeDisabled() {
-    return playersAllowedToBeDisabled;
-  }
-
-  public Map<String, String> getPlayerToNodeListing() {
-    return playerToNodeListing;
-  }
-
-  public Map<String, Boolean> getPlayersEnabledListing() {
-    return playersEnabledListing;
-  }
-
-  public Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
-    return playerNamesAndAlliancesInTurnOrder;
-  }
-
-  public String getGameName() {
-    return gameName;
-  }
-
-  public Version getGameVersion() {
-    return gameVersion;
-  }
-
   @Override
   public String toString() {
     return "PlayerListingMessage:" + playerToNodeListing;
-  }
-
-  public String getGameRound() {
-    return gameRound;
   }
 
   public Map<String, PlayerType> getLocalPlayerTypeMap() {

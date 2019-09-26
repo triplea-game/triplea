@@ -384,8 +384,7 @@ public class ClientModel implements IMessengerErrorListener {
       playersToNodes = listing.getPlayerToNodeListing();
       playersEnabledListing = listing.getPlayersEnabledListing();
       playersAllowedToBeDisabled = listing.getPlayersAllowedToBeDisabled();
-      playerNamesAndAlliancesInTurnOrder =
-          listing.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
+      playerNamesAndAlliancesInTurnOrder = listing.getPlayerNamesAndAlliancesInTurnOrder();
     }
     listener.playerListChanged();
   }
@@ -405,8 +404,7 @@ public class ClientModel implements IMessengerErrorListener {
     return new HashSet<>(playersAllowedToBeDisabled);
   }
 
-  public synchronized Map<String, Collection<String>>
-      getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap() {
+  public synchronized Map<String, Collection<String>> getPlayerNamesAndAlliancesInTurnOrder() {
     return new LinkedHashMap<>(playerNamesAndAlliancesInTurnOrder);
   }
 
