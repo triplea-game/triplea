@@ -20,6 +20,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import javafx.application.Application;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import lombok.extern.java.Log;
 import org.triplea.game.client.ui.javafx.TripleA;
@@ -69,6 +70,13 @@ public final class HeadedGameRunner {
           });
       MacOsIntegration.setOpenFileHandler(
           file -> {
+            SwingUtilities.invokeLater(
+                () ->
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "Unfortunately opening save-games via the OS is currently not supported on macOS.",
+                        "Unsupported feature",
+                        JOptionPane.INFORMATION_MESSAGE));
             System.setProperty(CliProperties.TRIPLEA_GAME, file.getAbsolutePath());
             GameRunner.showMainFrame();
           });
