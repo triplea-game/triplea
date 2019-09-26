@@ -74,7 +74,8 @@ public final class HeadedGameRunner {
                 () ->
                     JOptionPane.showMessageDialog(
                         null,
-                        "Unfortunately opening save-games via the OS is currently not supported on macOS.",
+                        "Unfortunately opening save-games via the OS"
+                            + " is currently not supported on macOS.",
                         "Unsupported feature",
                         JOptionPane.INFORMATION_MESSAGE));
             System.setProperty(CliProperties.TRIPLEA_GAME, file.getAbsolutePath());
