@@ -4,6 +4,7 @@ import com.google.common.base.Ascii;
 import games.strategy.net.INode;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
+import games.strategy.triplea.settings.ClientSetting;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
@@ -53,7 +54,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
   private JButton send;
   private JButton setStatus;
   private Chat chat;
-  private boolean showTime = false;
   private final SimpleAttributeSet bold = new SimpleAttributeSet();
   private final SimpleAttributeSet italic = new SimpleAttributeSet();
   private final SimpleAttributeSet normal = new SimpleAttributeSet();
@@ -122,10 +122,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
 
   public Chat getChat() {
     return chat;
-  }
-
-  public void setShowTime(final boolean showTime) {
-    this.showTime = showTime;
   }
 
   private void layoutComponents() {
@@ -272,7 +268,10 @@ public class ChatMessagePanel extends JPanel implements IChatListener {
     final String time = "(" + TimeManager.getLocalizedTime() + ")";
     final Document doc = text.getDocument();
     try {
-      doc.insertString(doc.getLength(), (showTime ? time + " " + from + ": " : from + ": "), bold);
+      doc.insertString(
+          doc.getLength(),
+          ClientSetting.showChatTimeSettings.getSetting() ? time + " " + from + ": " : from + ": ",
+          bold);
       doc.insertString(doc.getLength(), " " + message + "\n", normal);
       // don't let the chat get too big
       trimLines(doc, MAX_LINES);

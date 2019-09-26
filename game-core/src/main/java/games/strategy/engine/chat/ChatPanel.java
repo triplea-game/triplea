@@ -4,7 +4,6 @@ import games.strategy.engine.chat.Chat.ChatSoundProfile;
 import games.strategy.net.Messengers;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.util.Optional;
 import javax.swing.DefaultListCellRenderer;
@@ -24,12 +23,21 @@ import org.triplea.swing.SwingAction;
 public class ChatPanel extends JPanel implements ChatModel {
   private static final long serialVersionUID = -6177517517279779486L;
   private static final int DIVIDER_SIZE = 5;
-  private ChatPlayerPanel chatPlayerPanel;
-  private ChatMessagePanel chatMessagePanel;
+  private final ChatPlayerPanel chatPlayerPanel;
+  private final ChatMessagePanel chatMessagePanel;
 
   public ChatPanel(final Chat chat) {
-    init();
-    setChat(chat);
+    setSize(300, 200);
+    chatPlayerPanel = new ChatPlayerPanel(chat);
+    chatMessagePanel = new ChatMessagePanel(chat);
+    setLayout(new BorderLayout());
+    final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    split.setLeftComponent(chatMessagePanel);
+    split.setRightComponent(chatPlayerPanel);
+    split.setOneTouchExpandable(false);
+    split.setDividerSize(DIVIDER_SIZE);
+    split.setResizeWeight(1);
+    add(split, BorderLayout.CENTER);
   }
 
   /**
@@ -45,12 +53,6 @@ public class ChatPanel extends JPanel implements ChatModel {
             () -> SwingAction.invokeAndWaitResult(() -> new ChatPanel(chat)))
         .result
         .orElseThrow(() -> new IllegalStateException("Error during Chat Panel creation"));
-  }
-
-  private void init() {
-    createComponents();
-    layoutComponents();
-    setSize(300, 200);
   }
 
   @Override
@@ -69,33 +71,11 @@ public class ChatPanel extends JPanel implements ChatModel {
     return chatMessagePanel.getChat();
   }
 
-  private void layoutComponents() {
-    final Container content = this;
-    content.setLayout(new BorderLayout());
-    final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    split.setLeftComponent(chatMessagePanel);
-    split.setRightComponent(chatPlayerPanel);
-    split.setOneTouchExpandable(false);
-    split.setDividerSize(DIVIDER_SIZE);
-    split.setResizeWeight(1);
-    content.add(split, BorderLayout.CENTER);
-  }
-
-  private void createComponents() {
-    chatPlayerPanel = new ChatPlayerPanel(null);
-    chatMessagePanel = new ChatMessagePanel(null);
-  }
-
   public void setPlayerRenderer(final DefaultListCellRenderer renderer) {
     chatPlayerPanel.setPlayerRenderer(renderer);
     // gets remaining width from parent component, so setting the width is not really necessary
     chatMessagePanel.setPreferredSize(
         new Dimension(30, chatMessagePanel.getPreferredSize().height));
-  }
-
-  @Override
-  public void setShowChatTime(final boolean showTime) {
-    chatMessagePanel.setShowTime(showTime);
   }
 
   public ChatMessagePanel getChatMessagePanel() {

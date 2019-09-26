@@ -46,7 +46,6 @@ public class LobbyFrame extends JFrame {
             Chat.ChatSoundProfile.LOBBY_CHATROOM);
     chatMessagePanel = new ChatMessagePanel(chat);
     lobbyServerProperties.getServerMessage().ifPresent(chatMessagePanel::addServerMessage);
-    chatMessagePanel.setShowTime(true);
     final ChatPlayerPanel chatPlayers = new ChatPlayerPanel(null);
     chatPlayers.addHiddenPlayerName(LobbyConstants.ADMIN_USERNAME);
     chatPlayers.setChat(chat);
@@ -134,12 +133,6 @@ public class LobbyFrame extends JFrame {
 
   public LobbyClient getLobbyClient() {
     return client;
-  }
-
-  public void setShowChatTime(final boolean showTime) {
-    if (chatMessagePanel != null) {
-      chatMessagePanel.setShowTime(showTime);
-    }
   }
 
   public void shutdown() {

@@ -18,7 +18,6 @@ public class HeadlessChat implements IChatListener, ChatModel {
   // roughly 1000 chat messages
   private static final int MAX_LENGTH = 1000 * 200;
   private Chat chat;
-  private boolean showTime = true;
   private StringBuilder allText = new StringBuilder();
   private final ChatFloodControl floodControl = new ChatFloodControl();
 
@@ -41,11 +40,6 @@ public class HeadlessChat implements IChatListener, ChatModel {
   @Override
   public Chat getChat() {
     return chat;
-  }
-
-  @Override
-  public void setShowChatTime(final boolean showTime) {
-    this.showTime = showTime;
   }
 
   @Override
@@ -95,14 +89,14 @@ public class HeadlessChat implements IChatListener, ChatModel {
   }
 
   private void addChatMessage(final String originalMessage, final String from) {
-    final String message = Ascii.truncate(originalMessage, 200, "...");
-    final String time = "(" + TimeManager.getLocalizedTime() + ")";
-    final String prefix = showTime ? time + " " + from + ": " : from + ": ";
-    final String fullMessage = prefix + " " + message + "\n";
     final String currentAllText = allText.toString();
     if (currentAllText.length() > MAX_LENGTH) {
       allText = new StringBuilder(currentAllText.substring(MAX_LENGTH / 2));
     }
+
+    final String message = Ascii.truncate(originalMessage, 200, "...");
+    final String fullMessage =
+        String.format("(%s) %s: %s\n", TimeManager.getLocalizedTime(), from, message);
     allText.append(fullMessage);
   }
 
