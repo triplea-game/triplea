@@ -87,22 +87,14 @@ final class LobbyGameController implements ILobbyGameController {
   }
 
   @Override
-  public String testGame(final UUID gameId) {
-    assertCorrectGameOwner(gameId);
-    final GameDescription description;
-    synchronized (mutex) {
-      description = allGames.get(gameId);
-    }
-    if (description == null) {
-      return "No such game found";
-    }
+  public boolean testGame(final INode node) {
     // make sure we are being tested from the right node
-    final InetSocketAddress address = description.getHostedBy().getSocketAddress();
+    final InetSocketAddress address = node.getSocketAddress();
     try (Socket s = new Socket()) {
       s.connect(address, 10 * 1000);
-      return null;
+      return true;
     } catch (final IOException e) {
-      return "host:" + address.getHostName() + " " + " port:" + address.getPort();
+      return false;
     }
   }
 

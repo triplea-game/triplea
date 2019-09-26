@@ -1,11 +1,15 @@
 package org.triplea.game.server;
 
+import static games.strategy.engine.framework.CliProperties.LOBBY_HOST;
+import static games.strategy.engine.framework.CliProperties.LOBBY_PORT;
+
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.mc.IRemoteModelListener;
 import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcherWrapper;
+import games.strategy.engine.framework.startup.ui.LocalServerAvailabilityCheck;
 import java.util.List;
 import java.util.Map;
 import java.util.Observer;
@@ -15,7 +19,6 @@ import lombok.extern.java.Log;
 import org.triplea.game.chat.ChatModel;
 import org.triplea.game.startup.SetupModel;
 import org.triplea.java.Interruptibles;
-import org.triplea.util.ExitStatus;
 
 /** Server setup model. */
 @Log
@@ -34,23 +37,30 @@ class HeadlessServerSetup implements IRemoteModelListener, SetupModel {
   }
 
   private void createLobbyWatcher() {
-    final InGameLobbyWatcher.LobbyWatcherHandler handler =
-        new InGameLobbyWatcher.LobbyWatcherHandler() {
-          @Override
-          public void reportError(final String message) {
-            log.severe(message);
-            ExitStatus.FAILURE.exit();
-          }
-
-          @Override
-          public boolean isPlayer() {
-            return false;
-          }
-        };
-    lobbyWatcher.setInGameLobbyWatcher(
+    final InGameLobbyWatcher watcher =
         InGameLobbyWatcher.newInGameLobbyWatcher(
-            model.getMessenger(), handler, lobbyWatcher.getInGameLobbyWatcher()));
+                model.getMessenger(), lobbyWatcher.getInGameLobbyWatcher())
+            .orElseThrow(CouldNotConnectToLobby::new);
+
+    lobbyWatcher.setInGameLobbyWatcher(watcher);
     lobbyWatcher.setGameSelectorModel(gameSelectorModel);
+    LocalServerAvailabilityCheck.builder()
+        .localNode(model.getMessenger().getLocalNode())
+        .controller(watcher.getRemoteMessenger().getLobbyGameController())
+        .errorHandler(log::severe)
+        .build()
+        .run();
+  }
+
+  private static class CouldNotConnectToLobby extends RuntimeException {
+    private static final long serialVersionUID = -5946931858867131622L;
+
+    CouldNotConnectToLobby() {
+      super(
+          String.format(
+              "Unable to connect to lobby at: %s, port: %s",
+              System.getProperty(LOBBY_HOST), System.getProperty(LOBBY_PORT)));
+    }
   }
 
   synchronized void repostLobbyWatcher() {
